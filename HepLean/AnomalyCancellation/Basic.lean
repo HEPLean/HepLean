@@ -191,7 +191,7 @@ instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols wher
     intro i
     erw [(χ.quadraticACCs i).map_smul]
     rw [S.quadSol i]
-    simp
+    simp only [mul_zero]
     ⟩
   mul_smul a b S := by
     apply QuadSols.ext
@@ -277,7 +277,7 @@ def Hom.comp {χ η ε : ACCSystem} (g : Hom η ε) (f : Hom χ η) : Hom χ ε 
   charges := LinearMap.comp g.charges f.charges
   anomalyFree := g.anomalyFree ∘ f.anomalyFree
   commute := by
-    simp
+    simp only [LinearMap.coe_comp]
     rw [Function.comp.assoc]
     rw [f.commute, ← Function.comp.assoc, g.commute, Function.comp.assoc]
 
