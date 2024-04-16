@@ -41,7 +41,9 @@ lemma map_smul (f : HomogeneousQuadratic V) (a : ℚ) (S : V) : f (a • S) = a 
 end HomogeneousQuadratic
 
 
+/-- The structure of a bilinear map. -/
 structure BiLinear (V : Type) [AddCommMonoid V] [Module ℚ V] where
+  /-- The underling function. -/
   toFun : V × V → ℚ
   map_smul₁' : ∀ a S T, toFun (a • S, T) = a * toFun (S, T)
   map_smul₂' : ∀ a S T , toFun (S, a • T) = a * toFun (S, T)
@@ -73,7 +75,9 @@ lemma map_add₂ (f : BiLinear V) (S : V) (T1 T2 : V) : f (S, T1 + T2) = f (S, T
 
 end BiLinear
 
+/-- The structure of a symmetric bilinear function. -/
 structure BiLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
+  /-- The underlying function. -/
   toFun : V × V → ℚ
   map_smul₁' : ∀ a S T, toFun (a • S, T) = a * toFun (S, T)
   map_add₁' : ∀ S1 S2 T, toFun (S1 + S2, T) = toFun (S1, T) + toFun (S2, T)
@@ -115,6 +119,7 @@ lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
   rw [f.swap, f.map_add₁, f.swap T1 S, f.swap T2 S]
 
 
+/-- The homogenous quadratic equation obtainable from a bilinear function. -/
 @[simps!]
 def toHomogeneousQuad {V : Type} [AddCommMonoid V] [Module ℚ V]
     (τ : BiLinearSymm V) : HomogeneousQuadratic V where
@@ -135,8 +140,9 @@ lemma toHomogeneousQuad_add {V : Type} [AddCommMonoid V] [Module ℚ V]
 
 end BiLinearSymm
 
-
+/-- The structure of a homogeneous cubic equation. -/
 structure HomogeneousCubic (V : Type) [AddCommMonoid V] [Module ℚ V] where
+  /-- The underlying function. -/
   toFun : V → ℚ
   map_smul' : ∀ a S, toFun (a • S) = a ^ 3 * toFun S
 
@@ -156,7 +162,9 @@ lemma map_smul (f : HomogeneousCubic V) (a : ℚ) (S : V) : f (a • S) = a ^ 3 
 
 end HomogeneousCubic
 
+/-- The structure of a trilinear function. -/
 structure TriLinear (V : Type) [AddCommMonoid V] [Module ℚ V] where
+  /-- The underlying function. -/
   toFun : V × V × V → ℚ
   map_smul₁' : ∀ a S T L, toFun (a • S, T, L) = a * toFun (S, T, L)
   map_smul₂' : ∀ a S T L, toFun (S, a • T, L) = a * toFun (S, T, L)
@@ -178,7 +186,9 @@ instance instFun : FunLike (TriLinear V) (V × V × V) ℚ where
 
 end TriLinear
 
+/-- The structure of a symmetric trilinear function. -/
 structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
+  /-- The underlying function. -/
   toFun : V × V × V → ℚ
   map_smul₁' : ∀ a S T L, toFun (a • S, T, L) = a * toFun (S, T, L)
   map_add₁' : ∀ S1 S2 T L, toFun (S1 + S2, T, L) = toFun (S1, T, L) + toFun (S2, T, L)
@@ -232,6 +242,7 @@ lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
     f (S, T, L1 + L2) = f (S, T, L1) + f (S, T, L2) := by
   rw [f.swap₃, f.map_add₁, f.swap₃, f.swap₃ L2 T S]
 
+/-- The homogenous cubic equation obtainable from a symmetric trilinear function. -/
 @[simps!]
 def toCubic {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
     (τ : TriLinearSymm charges) : HomogeneousCubic charges where
