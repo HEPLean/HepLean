@@ -83,8 +83,6 @@ structure BiLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
   map_add₁' : ∀ S1 S2 T, toFun (S1 + S2, T) = toFun (S1, T) + toFun (S2, T)
   swap' : ∀ S T, toFun (S, T) = toFun (T, S)
 
-
-
 namespace BiLinearSymm
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
