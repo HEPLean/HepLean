@@ -14,6 +14,7 @@ quadratic and cubic equations.
 ## TODO
 
 Use definitions in `Mathlib4` for definitions where possible.
+In particular a HomogeneousQuadratic should be a map `V →ₗ[ℚ] V →ₗ[ℚ] ℚ`  etc.
 
 -/
 
