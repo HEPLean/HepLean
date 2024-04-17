@@ -6,6 +6,10 @@ Aim of this project:
 - Keep the database up-to date with developments in MathLib4. 
 - Create github workflows of relevence to the high energy physics community. 
 
+The documentation for this project can be found at:
+
+https://heplean.github.io/HepLean/
+
 To learn more about this project see: 
 
 https://leanprover.zulipchat.com/#narrow/stream/395462-Natural-sciences/topic/Anomaly.20cancellation.20conditions

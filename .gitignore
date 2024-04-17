@@ -1,10 +1,5 @@
 /build
 /lake-packages/*
-.lake/packages/aesop/
-.lake/packages/Cli/
-.lake/packages/importGraph/
-.lake/packages/mathlib/
-.lake/packages/proofwidgets/
-.lake/packages/Qq/
-.lake/packages/std/
+.lake/packages/*
 .lake/build
+paper

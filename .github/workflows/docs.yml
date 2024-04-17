@@ -3,6 +3,8 @@ on:
     branches: 
       - master
 
+name: Build and deploy documentation
+
 # borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
 permissions: 
   contents: read
@@ -21,7 +23,7 @@ jobs:
       
       - name: Print files to upstream
         run: |
-          grep -r --files-without-match 'import HepLean' AnomalyCancellationInLean | sort > 1.txt
+          grep -r --files-without-match 'import HepLean' HepLean | sort > 1.txt
           grep -r --files-with-match 'sorry' HepLean | sort > 2.txt
           mkdir -p docs/_includes
           comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
