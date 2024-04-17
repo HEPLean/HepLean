@@ -1,7 +1,5 @@
 on: 
   push: 
-    branches: 
-      - master
 
 # borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
 permissions: 
