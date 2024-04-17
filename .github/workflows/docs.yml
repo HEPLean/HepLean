@@ -1,6 +1,9 @@
 on: 
   push: 
-  
+    branches: 
+      - master
+
+name: Build and deploy documentation
 
 # borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
 permissions: 
