@@ -51,7 +51,7 @@ lemma charges_eq_toSpecies_eq (S T : (SMCharges n).charges) :
   apply Iff.intro
   intro h
   rw [h]
-  simp
+  simp only [forall_const]
   intro h
   apply toSpeciesEquiv.injective
   funext i
@@ -108,7 +108,8 @@ def accGrav : (SMCharges n).charges →ₗ[ℚ] ℚ where
 lemma accGrav_ext {S T : (SMCharges n).charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accGrav S = accGrav T := by
-  simp
+  simp only [accGrav, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -137,7 +138,8 @@ def accSU2 : (SMCharges n).charges →ₗ[ℚ] ℚ where
 lemma accSU2_ext {S T : (SMCharges n).charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU2 S = accSU2 T := by
-  simp
+  simp only [accSU2, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -166,7 +168,8 @@ def accSU3 : (SMCharges n).charges →ₗ[ℚ] ℚ where
 lemma accSU3_ext {S T : (SMCharges n).charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU3 S = accSU3 T := by
-  simp
+  simp only [accSU3, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -196,7 +199,8 @@ def accYY : (SMCharges n).charges →ₗ[ℚ] ℚ where
 lemma accYY_ext {S T : (SMCharges n).charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accYY S = accYY T := by
-  simp
+  simp only [accYY, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -224,10 +228,11 @@ def quadBiLin : BiLinearSymm (SMCharges n).charges where
     apply Fintype.sum_congr
     intro i
     repeat erw [map_add]
-    simp
+    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue, neg_mul,
+      one_mul]
     ring
   swap' S T := by
-    simp
+    simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul]
     apply Fintype.sum_congr
     intro i
     ring
@@ -274,15 +279,15 @@ def cubeTriLin : TriLinearSymm (SMCharges n).charges where
     apply Fintype.sum_congr
     intro i
     repeat erw [map_add]
-    simp
+    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
     ring
   swap₁' S T L := by
-    simp
+    simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring
   swap₂' S T L := by
-    simp
+    simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring

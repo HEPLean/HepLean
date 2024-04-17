@@ -9,8 +9,6 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.NumberTheory.FLT.Basic
 import Mathlib.Algebra.QuadraticDiscriminant
-
-universe v u
 /-!
 # Parameterizations for solutions to the linear ACCs for 1 family
 
@@ -22,7 +20,7 @@ These parameterizations are based on:
 https://arxiv.org/abs/1907.00514
 -/
 
-
+universe v u
 namespace SM
 namespace SMNoGrav
 namespace One
@@ -43,7 +41,8 @@ structure linearParameters where
 namespace linearParameters
 
 @[ext]
-lemma ext {S T : linearParameters} (hQ : S.Q' = T.Q') (hY : S.Y = T.Y) (hE : S.E' = T.E')  : S = T := by
+lemma ext {S T : linearParameters} (hQ : S.Q' = T.Q') (hY : S.Y = T.Y) (hE : S.E' = T.E') :
+    S = T := by
   cases' S
   simp_all only
 
@@ -57,7 +56,8 @@ def asCharges (S : linearParameters) : (SMNoGrav 1).charges := fun i =>
   | (3: Fin 5) => - 3 * S.Q'
   | (4 : Fin 5) => S.E'
 
-lemma speciesVal (S : linearParameters) : (toSpecies i) S.asCharges (0 : Fin 1) = S.asCharges i := by
+lemma speciesVal (S : linearParameters) :
+    (toSpecies i) S.asCharges (0 : Fin 1) = S.asCharges i := by
   match i with
   | 0 => rfl
   | 1 => rfl
@@ -76,7 +76,7 @@ def asLinear (S : linearParameters) : (SMNoGrav 1).LinSols :=
     simp only [accSU3, SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero,
       Fin.isValue, Finset.sum_singleton, LinearMap.coe_mk, AddHom.coe_mk]
     repeat erw [speciesVal]
-    simp
+    simp only [asCharges, neg_add_rev]
     ring)
 
 lemma asLinear_val (S : linearParameters) : S.asLinear.val = S.asCharges := by
@@ -92,7 +92,7 @@ lemma cubic (S : linearParameters) :
   simp only [SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton]
   repeat erw [speciesVal]
-  simp
+  simp only [asCharges, neg_add_rev, neg_mul, mul_neg, neg_neg]
   ring
 
 lemma cubic_zero_Q'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
@@ -129,13 +129,13 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
     repeat erw [speciesVal]
     simp only [Fin.isValue]
     repeat erw [speciesVal]
-    simp
+    simp only [asCharges, neg_add_rev]
     ring
     simp only [toSpecies_apply]
     repeat erw [speciesVal]
     rfl
   right_inv S := by
-    simp
+    simp only [Fin.isValue, toSpecies_apply]
     apply ACCSystemLinear.LinSols.ext
     rw [charges_eq_toSpecies_eq]
     intro i
@@ -167,7 +167,7 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
 /-- The bijection between the linear parameters and `(SMNoGrav 1).LinSols` in the special
 case when Q and E are both not zero. -/
 def bijectionQEZero : {S : linearParameters // S.Q' ≠ 0 ∧ S.E' ≠ 0} ≃
-  {S : (SMNoGrav 1).LinSols // Q S.val (0 : Fin 1) ≠ 0 ∧ E S.val (0 : Fin 1) ≠ 0} where
+    {S : (SMNoGrav 1).LinSols // Q S.val (0 : Fin 1) ≠ 0 ∧ E S.val (0 : Fin 1) ≠ 0} where
   toFun S := ⟨bijection S, S.2⟩
   invFun S := ⟨bijection.symm S, S.2⟩
   left_inv S := by
@@ -183,7 +183,7 @@ lemma grav (S : linearParameters) :
   simp only [SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, LinearMap.coe_mk, AddHom.coe_mk]
   repeat erw [speciesVal]
-  simp
+  simp only [asCharges, neg_add_rev, neg_mul, mul_neg]
   ring_nf
   rw [add_comm, add_eq_zero_iff_eq_neg]
   simp
@@ -217,7 +217,8 @@ def toLinearParameters (S : linearParametersQENeqZero) :
   ⟨⟨S.x,   3 * S.x * (S.v - S.w) / (S.v + S.w),  - 6 * S.x  / (S.v + S.w)⟩,
     by
       apply And.intro S.hx
-      simp
+      simp only [neg_mul, ne_eq, div_eq_zero_iff, neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero,
+        false_or]
       rw [not_or]
       exact And.intro S.hx S.hvw⟩
 
@@ -228,11 +229,11 @@ def tolinearParametersQNeqZero (S : {S : linearParameters //  S.Q' ≠  0 ∧ S.
     linearParametersQENeqZero :=
   ⟨S.1.Q', - (3 * S.1.Q' + S.1.Y) / S.1.E', - (3 * S.1.Q' - S.1.Y)/ S.1.E',  S.2.1,
     by
-      simp
+      simp only [ne_eq, neg_add_rev, neg_sub]
       field_simp
       rw [not_or]
       ring_nf
-      simp
+      simp only [neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero, or_false]
       exact S.2⟩
 
 /-- A bijection between the type `linearParametersQENeqZero` and linear parameters
@@ -246,10 +247,11 @@ def bijectionLinearParameters :
     have hvw := S.hvw
     have hQ := S.hx
     apply linearParametersQENeqZero.ext
-    simp
+    simp only [tolinearParametersQNeqZero_x, toLinearParameters_coe_Q']
     field_simp
     ring
-    simp
+    simp only [tolinearParametersQNeqZero_w, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
+      toLinearParameters_coe_E']
     field_simp
     ring
   right_inv S := by
@@ -257,7 +259,7 @@ def bijectionLinearParameters :
     have hQ := S.2.1
     have hE := S.2.2
     apply linearParameters.ext
-    simp
+    simp only [ne_eq, toLinearParameters_coe_Q', tolinearParametersQNeqZero_x]
     field_simp
     ring_nf
     field_simp [hQ, hE]
@@ -275,7 +277,8 @@ def bijection : linearParametersQENeqZero ≃
 lemma cubic (S : linearParametersQENeqZero) :
     accCube (bijection S).1.val = 0 ↔ S.v ^ 3 + S.w ^ 3 = -1 := by
   erw [linearParameters.cubic]
-  simp
+  simp only [ne_eq, bijectionLinearParameters_apply_coe_Q', neg_mul,
+    bijectionLinearParameters_apply_coe_Y, div_pow, bijectionLinearParameters_apply_coe_E']
   have hvw := S.hvw
   have hQ := S.hx
   field_simp
@@ -365,7 +368,7 @@ lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1
   have h' := cube_w_v S h
   cases' h' with h h
   rw [h.1, h.2]
-  simp
+  simp only [add_zero]
   rw [h.1, h.2]
   simp
 

@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.SM.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
-universe v u
 /-!
 # Lemmas for 1 family SM Accs
 
@@ -16,6 +15,7 @@ https://arxiv.org/abs/1907.00514
 That eveery solution to the ACCs without gravity satifies for free the gravitational anomaly.
 -/
 
+universe v u
 namespace SM
 namespace SMNoGrav
 namespace One

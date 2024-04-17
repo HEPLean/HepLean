@@ -66,7 +66,7 @@ def speciesEmbed (m n : ℕ) :
       0
   map_add' S T := by
     funext i
-    simp
+    simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add]
     by_cases hi : i.val < m
     erw [dif_pos hi, dif_pos hi, dif_pos hi]
     erw [dif_neg hi, dif_neg hi, dif_neg hi]
