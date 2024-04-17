@@ -68,7 +68,8 @@ lemma doublePoint_Y₃_Y₃ (R : MSSMACC.LinSols) :
   rw [Y₃AsCharge]
   repeat rw [toSMSpecies_toSpecies_inv]
   rw [Hd_toSpecies_inv, Hu_toSpecies_inv]
-  simp
+  simp only [mul_one, Fin.isValue, toSMSpecies_apply, one_mul, mul_neg, neg_mul, neg_neg, mul_zero,
+    zero_mul, add_zero, Hd_apply, Fin.reduceFinMk, Hu_apply]
   have hLin := R.linearSol
   simp at hLin
   have h3 := hLin 3

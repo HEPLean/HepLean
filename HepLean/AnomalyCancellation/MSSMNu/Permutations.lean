@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.MSSMNu.Basic
 import Mathlib.Tactic.Polyrith
 import HepLean.AnomalyCancellation.GroupActions
-universe v u
 /-!
 # Permutations of MSSM charges and solutions
 
@@ -14,6 +13,9 @@ The three family MSSM charges has a family permutation of S₃⁶. This file def
 and its action on the MSSM.
 
 -/
+
+universe v u
+
 open Nat
 open  Finset
 
