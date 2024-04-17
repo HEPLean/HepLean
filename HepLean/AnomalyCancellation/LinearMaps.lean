@@ -41,7 +41,6 @@ lemma map_smul (f : HomogeneousQuadratic V) (a : ℚ) (S : V) : f (a • S) = a 
 
 end HomogeneousQuadratic
 
-
 /-- The structure of a bilinear map. -/
 structure BiLinear (V : Type) [AddCommMonoid V] [Module ℚ V] where
   /-- The underling function. -/
