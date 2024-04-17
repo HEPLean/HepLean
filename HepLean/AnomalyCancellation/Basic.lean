@@ -4,13 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.LinearMaps
-import Mathlib.Tactic.Polyrith
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.FieldSimp
-import Mathlib.NumberTheory.FLT.Basic
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.Algebra.Module.Basic
-import Mathlib.Algebra.Module.LinearMap.Basic
 /-!
 # Basic set up for anomaly cancellation conditions
 

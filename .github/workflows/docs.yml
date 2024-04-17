@@ -1,0 +1,68 @@
+on: 
+  push: 
+    branches: 
+      - master
+
+# borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
+permissions: 
+  contents: read
+  pages: write
+  id-token: write
+
+jobs: 
+  build_project: 
+    runs-on: ubuntu-latest
+    name: Build project
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Print files to upstream
+        run: |
+          grep -r --files-without-match 'import HepLean' AnomalyCancellationInLean | sort > 1.txt
+          grep -r --files-with-match 'sorry' HepLean | sort > 2.txt
+          mkdir -p docs/_includes
+          comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
+          rm 1.txt 2.txt
+      
+      - name: Install elan
+        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+
+      - name: Get cache
+        run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
+
+      - name: Build project
+        run: ~/.elan/bin/lake -Kenv=dev build HepLean
+
+      - name: Cache mathlib docs
+        uses: actions/cache@v3
+        with:
+          path: |
+            .lake/build/doc/Init
+            .lake/build/doc/Lake
+            .lake/build/doc/Lean
+            .lake/build/doc/Std
+            .lake/build/doc/Mathlib
+            .lake/build/doc/declarations
+            !.lake/build/doc/declarations/declaration-data-HepLean*
+          key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
+          restore-keys: |
+            MathlibDoc-
+      
+      - name: Build documentation
+        run: ~/.elan/bin/lake -Kenv=dev build HepLean:docs
+
+
+      - name: Upload docs & blueprint artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: .lake/build/doc
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+
+

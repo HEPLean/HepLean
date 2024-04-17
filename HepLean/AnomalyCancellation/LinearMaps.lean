@@ -14,6 +14,7 @@ quadratic and cubic equations.
 ## TODO
 
 Use definitions in `Mathlib4` for definitions where possible.
+In particular a HomogeneousQuadratic should be a map `V →ₗ[ℚ] V →ₗ[ℚ] ℚ`  etc.
 
 -/
 
@@ -39,7 +40,6 @@ lemma map_smul (f : HomogeneousQuadratic V) (a : ℚ) (S : V) : f (a • S) = a 
   f.map_smul' a S
 
 end HomogeneousQuadratic
-
 
 /-- The structure of a bilinear map. -/
 structure BiLinear (V : Type) [AddCommMonoid V] [Module ℚ V] where
@@ -82,8 +82,6 @@ structure BiLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
   map_smul₁' : ∀ a S T, toFun (a • S, T) = a * toFun (S, T)
   map_add₁' : ∀ S1 S2 T, toFun (S1 + S2, T) = toFun (S1, T) + toFun (S2, T)
   swap' : ∀ S T, toFun (S, T) = toFun (T, S)
-
-
 
 namespace BiLinearSymm
 
