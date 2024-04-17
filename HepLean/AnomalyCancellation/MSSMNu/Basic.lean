@@ -27,7 +27,7 @@ open BigOperators
 @[simps!]
 def MSSMCharges : ACCSystemCharges := ACCSystemChargesMk 20
 
-/-- THe vector spaces of charges of one species of fermions in the MSSM. -/
+/-- The vector spaces of charges of one species of fermions in the MSSM. -/
 @[simps!]
 def MSSMSpecies : ACCSystemCharges := ACCSystemChargesMk 3
 
