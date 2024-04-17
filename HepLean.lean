@@ -1,2 +1,3 @@
 import HepLean.AnomalyCancellation.Basic
+import HepLean.AnomalyCancellation.GroupActions
 import HepLean.AnomalyCancellation.LinearMaps
