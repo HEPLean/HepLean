@@ -8,15 +8,15 @@ jobs:
     name: check file import 
     runs-on: ubuntu-latest
     steps: 
-     - name: clean up
-       run: |
-        find . -name . -o -prune -exec rm -rf -- {} +
+      - name: clean up
+        run: |
+         find . -name . -o -prune -exec rm -rf -- {} +
 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
   
-    - name: update HepLean.lean 
+      - name: update HepLean.lean 
         run: |
           git ls-files 'HepLean/*.lean' | LC_ALL=C sort | sed 's/\.lean//;s,/,.,g;s/^/import /' > HepLean.lean
 
-    - name: check that all files are imported
+      - name: check that all files are imported
         run: git diff --exit-code
