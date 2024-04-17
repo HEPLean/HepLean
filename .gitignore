@@ -1,3 +1,5 @@
 /build
 /lake-packages/*
-/.lake/*
+.lake/packages/*
+.lake/build
+paper
