@@ -36,6 +36,13 @@ instance instFun : FunLike (HomogeneousQuadratic V) V ℚ where
     cases g
     simp_all
 
+/-- Given an equivariant function from `V` to `ℚ` we get a `HomogeneousQuadratic V`. -/
+def fromEquivariant (f : V →ₑ[((fun a => a ^ 2) : ℚ → ℚ)] ℚ) : HomogeneousQuadratic V where
+  toFun := f
+  map_smul' a S := by
+    rw [map_smulₛₗ]
+    rfl
+
 lemma map_smul (f : HomogeneousQuadratic V) (a : ℚ) (S : V) : f (a • S) = a ^ 2 * f S :=
   f.map_smul' a S
 
@@ -61,6 +68,18 @@ instance instFun : FunLike (BiLinear V) (V × V) ℚ where
     cases g
     simp_all
 
+/-- A bilinear map from a linear function ` V →ₗ[ℚ] V →ₗ[ℚ] ℚ`. -/
+def fromLinearToHom (f : V →ₗ[ℚ] V →ₗ[ℚ] ℚ) : BiLinear V where
+  toFun S := f S.1 S.2
+  map_smul₁' a S T := by
+    simp only [LinearMapClass.map_smul]
+    rfl
+  map_smul₂' a S T := (f S).map_smul a T
+  map_add₁' S1 S2 T := by
+    simp only [f.map_add]
+    rfl
+  map_add₂' S T1 T2 := (f S).map_add T1 T2
+
 lemma map_smul₁ (f : BiLinear V) (a : ℚ) (S T : V) : f (a • S, T) = a * f (S, T) :=
   f.map_smul₁' a S T
 
@@ -83,6 +102,10 @@ structure BiLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
   map_add₁' : ∀ S1 S2 T, toFun (S1 + S2, T) = toFun (S1, T) + toFun (S2, T)
   swap' : ∀ S T, toFun (S, T) = toFun (T, S)
 
+/-- A symmetric bilinear function. -/
+class IsSymmetric {V : Type} [AddCommMonoid V] [Module ℚ V] (f : V →ₗ[ℚ] V →ₗ[ℚ] ℚ) : Prop where
+  swap : ∀ S T, f S T = f T S
+
 namespace BiLinearSymm
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
@@ -95,9 +118,18 @@ instance instFun (V : Type) [AddCommMonoid V] [Module ℚ V] :
     cases g
     simp_all
 
+/-- A bilinear symmetric function from a symemtric `V →ₗ[ℚ] V →ₗ[ℚ] ℚ`. -/
+def fromSymmToHom (f : V →ₗ[ℚ] V →ₗ[ℚ] ℚ) [IsSymmetric f] : BiLinearSymm V where
+  toFun S := f S.1 S.2
+  map_smul₁' a S T := by
+    simp only [LinearMapClass.map_smul]
+    rfl
+  map_add₁' S1 S2 T := by
+    simp only [f.map_add]
+    rfl
+  swap' S T := IsSymmetric.swap S T
 
 lemma toFun_eq_coe (f : BiLinearSymm V) : f.toFun = f := rfl
-
 
 lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S, T) = a * f (S, T) :=
   f.map_smul₁' a S T
@@ -107,7 +139,6 @@ lemma swap (f : BiLinearSymm V) (S T : V) : f (S, T) = f (T, S) :=
 
 lemma map_smul₂ (f : BiLinearSymm V) (a : ℚ)  (S : V) (T : V) : f (S, a • T) = a * f (S, T) := by
   rw [f.swap, f.map_smul₁, f.swap]
-
 
 lemma map_add₁ (f : BiLinearSymm V) (S1 S2 T : V) : f (S1 + S2, T) = f (S1, T) + f (S2, T) :=
   f.map_add₁' S1 S2 T
