@@ -11,7 +11,9 @@ import HepLean.AnomalyCancellation.MSSMNu.PlaneY3B3Orthog
 import HepLean.AnomalyCancellation.MSSMNu.SolsParameterization
 import HepLean.AnomalyCancellation.MSSMNu.Y3
 import HepLean.AnomalyCancellation.PureU1.Basic
+import HepLean.AnomalyCancellation.PureU1.BasisLinear
 import HepLean.AnomalyCancellation.PureU1.ConstAbs
+import HepLean.AnomalyCancellation.PureU1.LineInPlaneCond
 import HepLean.AnomalyCancellation.PureU1.Permutations
 import HepLean.AnomalyCancellation.PureU1.Sort
 import HepLean.AnomalyCancellation.PureU1.VectorLike
