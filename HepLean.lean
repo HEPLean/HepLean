@@ -13,12 +13,14 @@ import HepLean.AnomalyCancellation.MSSMNu.Y3
 import HepLean.AnomalyCancellation.PureU1.Basic
 import HepLean.AnomalyCancellation.PureU1.BasisLinear
 import HepLean.AnomalyCancellation.PureU1.ConstAbs
-import HepLean.AnomalyCancellation.PureU1.LineInPlaneCond
 import HepLean.AnomalyCancellation.PureU1.Even.BasisLinear
+import HepLean.AnomalyCancellation.PureU1.Even.LineInCubic
+import HepLean.AnomalyCancellation.PureU1.LineInPlaneCond
 import HepLean.AnomalyCancellation.PureU1.LowDim.One
 import HepLean.AnomalyCancellation.PureU1.LowDim.Three
 import HepLean.AnomalyCancellation.PureU1.LowDim.Two
 import HepLean.AnomalyCancellation.PureU1.Odd.BasisLinear
+import HepLean.AnomalyCancellation.PureU1.Odd.LineInCubic
 import HepLean.AnomalyCancellation.PureU1.Permutations
 import HepLean.AnomalyCancellation.PureU1.Sort
 import HepLean.AnomalyCancellation.PureU1.VectorLike
