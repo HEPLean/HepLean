@@ -30,7 +30,8 @@ def constAbs (S : (PureU1 n).charges) : Prop := ∀ i j, (S i) ^ 2 = (S j) ^ 2
 
 lemma constAbs_perm (S : (PureU1 n).charges) (M :(FamilyPermutations n).group) :
     constAbs ((FamilyPermutations n).rep M S) ↔ constAbs S := by
-  simp
+  simp only [constAbs, PureU1_numberCharges, FamilyPermutations, permGroup, permCharges,
+    MonoidHom.coe_mk, OneHom.coe_mk, chargeMap_apply]
   apply Iff.intro
   intro h i j
   have h2 := h (M.toFun i) (M.toFun j)
@@ -115,7 +116,7 @@ lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
   simp [accGrav]
   erw [Finset.sum_equiv (Fin.castIso (boundary_split k)).toEquiv]
   intro i
-  simp
+  simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
   intro i
   simp
   rfl
@@ -131,7 +132,8 @@ lemma boundary_accGrav'' (k : Fin n) (hk : boundary S k) :
       S (Fin.cast (boundary_split k)  (Fin.natAdd (k.succ.val) i)) = S k.succ := by
     apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; simp)
   simp only [hfst, hsnd]
-  simp
+  simp only [Fin.val_succ, sum_const, card_fin, nsmul_eq_mul, cast_add, cast_one,
+    succ_sub_succ_eq_sub, Fin.is_le', cast_sub]
   rw [boundary_castSucc hS hk, boundary_succ hS hk]
   ring
 
@@ -175,8 +177,7 @@ lemma AFL_hasBoundary (h : A.val (0 : Fin n.succ) ≠ 0) : hasBoundary A.val := 
   simp_all
 
 lemma AFL_odd_noBoundary {A : (PureU1 (2 * n + 1)).LinSols} (h : constAbsSorted A.val)
-  (hA : A.val (0 : Fin (2*n +1)) ≠ 0) :
-    ¬ hasBoundary A.val := by
+    (hA : A.val (0 : Fin (2*n +1)) ≠ 0) : ¬ hasBoundary A.val := by
   by_contra hn
   obtain ⟨k, hk⟩ := hn
   have h0 := boundary_accGrav'' h k hk
@@ -185,7 +186,7 @@ lemma AFL_odd_noBoundary {A : (PureU1 (2 * n + 1)).LinSols} (h : constAbsSorted 
   simp [hA] at h0
   have h1 : 2 * n = 2 * k.val + 1 := by
     rw [← @Nat.cast_inj ℚ]
-    simp
+    simp only [cast_mul, cast_ofNat, cast_add, cast_one]
     linear_combination - h0
   omega
 
@@ -200,7 +201,8 @@ theorem AFL_odd (A : (PureU1 (2 * n + 1)).LinSols) (h : constAbsSorted A.val) :
   exact  is_zero h (AFL_odd_zero h)
 
 lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : constAbsSorted A.val)
-    (hA : A.val (0 : Fin (2 * n.succ)) ≠ 0) {k : Fin (2 * n + 1)} (hk : boundary A.val k) : k.val = n := by
+    (hA : A.val (0 : Fin (2 * n.succ)) ≠ 0) {k : Fin (2 * n + 1)} (hk : boundary A.val k) :
+    k.val = n := by
   have h0 := boundary_accGrav'' h k hk
   change ∑ i : Fin (succ (Nat.mul 2 n + 1)), A.val i = _ at h0
   erw [pureU1_linear A] at h0
@@ -215,13 +217,14 @@ lemma AFL_even_below' {A : (PureU1 (2 * n.succ)).LinSols} (h : constAbsSorted A.
   rw [← boundary_castSucc h hk]
   apply lt_eq h (le_of_lt hk.left)
   rw [Fin.le_def]
-  simp
+  simp only [PureU1_numberCharges, Fin.coe_cast, Fin.coe_castAdd, mul_eq, Fin.coe_castSucc]
   rw [AFL_even_Boundary h hA hk]
   omega
 
 lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : constAbsSorted A.val)
     (i : Fin n.succ) :
-     A.val (Fin.cast (split_equal n.succ)  (Fin.castAdd n.succ i)) = A.val (0 : Fin (2*n.succ)) := by
+    A.val (Fin.cast (split_equal n.succ)  (Fin.castAdd n.succ i))
+    = A.val (0 : Fin (2*n.succ)) := by
   by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
   rw [is_zero h hA]
   simp
@@ -236,7 +239,7 @@ lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : constAbsSorted A.
   rw [← boundary_succ h hk]
   apply gt_eq h (le_of_lt hk.right)
   rw [Fin.le_def]
-  simp
+  simp only [mul_eq, Fin.val_succ, PureU1_numberCharges, Fin.coe_cast, Fin.coe_natAdd]
   rw [AFL_even_Boundary h hA hk]
   omega
 
