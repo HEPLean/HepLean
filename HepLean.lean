@@ -16,3 +16,5 @@ import HepLean.AnomalyCancellation.SM.NoGrav.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.One.Lemmas
 import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
 import HepLean.AnomalyCancellation.SM.Permutations
+import HepLean.AnomalyCancellation.SMNu.Basic
+import HepLean.AnomalyCancellation.SMNu.FamilyMaps
