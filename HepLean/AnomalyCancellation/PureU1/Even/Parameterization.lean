@@ -119,7 +119,7 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ)).Sols) :
   exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
 theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : genericCase S) :
-      ∃ g f a,  S = parameterization g f a := by
+    ∃ g f a,  S = parameterization g f a := by
   obtain ⟨g, f, hS⟩ := span_basis S.1.1
   use g, f, (accCubeTriLinSymm (P! f, P! f, P g))⁻¹
   rw [parameterization]

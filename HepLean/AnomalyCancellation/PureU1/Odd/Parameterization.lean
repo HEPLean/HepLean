@@ -32,12 +32,12 @@ open VectorLikeOddPlane
 /-- Given a `g f : Fin n → ℚ` and a `a : ℚ` we form a linear solution. We will later
 show that this can be extended to a complete solution. -/
 def parameterizationAsLinear (g f : Fin n → ℚ)  (a : ℚ) :
-  (PureU1 (2 * n + 1)).LinSols :=
+    (PureU1 (2 * n + 1)).LinSols :=
   a • ((accCubeTriLinSymm (P! f, P! f, P g)) • P' g +
   (- accCubeTriLinSymm (P g, P g, P! f)) • P!' f)
 
 lemma parameterizationAsLinear_val (g f : Fin n → ℚ) (a : ℚ) :
-  (parameterizationAsLinear g f a).val =
+    (parameterizationAsLinear g f a).val =
     a • ((accCubeTriLinSymm (P! f, P! f, P g)) • P g +
     (- accCubeTriLinSymm (P g, P g, P! f)) • P! f) := by
   rw [parameterizationAsLinear]
@@ -118,7 +118,7 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
   exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
 theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : genericCase S) :
-      ∃ g f a,  S = parameterization g f a := by
+    ∃ g f a,  S = parameterization g f a := by
   obtain ⟨g, f, hS⟩ := span_basis S.1.1
   use g, f, (accCubeTriLinSymm (P! f, P! f, P g))⁻¹
   rw [parameterization]
