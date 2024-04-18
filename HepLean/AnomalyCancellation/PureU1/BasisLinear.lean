@@ -67,11 +67,11 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
       LinearMap.coe_mk, AddHom.coe_mk, Fin.coe_eq_castSucc]
     rw [Fin.sum_univ_castSucc]
     rw [Finset.sum_eq_single j]
-    simp
+    simp only [asCharges, PureU1_numberCharges, ↓reduceIte]
     have hn : ¬ (Fin.last n = Fin.castSucc j) := by
       have hj := j.prop
       rw [Fin.ext_iff]
-      simp
+      simp only [Fin.val_last, Fin.coe_castSucc, ne_eq]
       omega
     split
     rename_i ht
@@ -99,17 +99,19 @@ noncomputable
 def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
   toFun S := Finsupp.equivFunOnFinite.invFun (S.1 ∘ Fin.castSucc)
   map_add' S T := by
-    simp
+    simp only [PureU1_numberCharges, ACCSystemLinear.linSolsAddCommMonoid_add_val,
+      Equiv.invFun_as_coe]
     ext
     simp
   map_smul' a S := by
-    simp
+    simp only [PureU1_numberCharges, Equiv.invFun_as_coe, eq_ratCast, Rat.cast_eq_id, id_eq]
     ext
     simp
     rfl
   invFun f := ∑ i : Fin n, f i • asLinSols i
   left_inv S := by
-    simp
+    simp only [PureU1_numberCharges, Equiv.invFun_as_coe, Finsupp.equivFunOnFinite_symm_apply_toFun,
+      Function.comp_apply]
     apply pureU1_anomalyFree_ext
     intro j
     rw [sum_of_vectors]
@@ -117,25 +119,25 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
       asLinSols_val, Equiv.toFun_as_coe,
       Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
     rw [Finset.sum_eq_single j]
-    simp
+    simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     intro k _ hkj
     rw [asCharges_ne_castSucc hkj]
-    simp
+    simp only [mul_zero]
     simp
   right_inv f := by
-    simp
+    simp only [PureU1_numberCharges, Equiv.invFun_as_coe]
     ext
     rename_i j
-    simp
+    simp only [Finsupp.equivFunOnFinite_symm_apply_toFun, Function.comp_apply]
     rw [sum_of_vectors]
     simp only [HSMul.hSMul, SMul.smul, PureU1_numberCharges,
       asLinSols_val, Equiv.toFun_as_coe,
       Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
     rw [Finset.sum_eq_single j]
-    simp
+    simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     intro k _ hkj
     rw [asCharges_ne_castSucc hkj]
-    simp
+    simp only [mul_zero]
     simp
 
 /-- The basis of `LinSols`.-/

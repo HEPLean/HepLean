@@ -54,7 +54,7 @@ lemma lineInPlaneCond_perm {S : (PureU1 (n)).LinSols} (hS : lineInPlaneCond S)
 
 
 lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : lineInPlaneCond S)
-   (h : ¬ (S.val ((Fin.last n).castSucc))^2 = (S.val ((Fin.last n).succ))^2 ) :
+    (h : ¬ (S.val ((Fin.last n).castSucc))^2 = (S.val ((Fin.last n).succ))^2 ) :
     (2 - n) * S.val (Fin.last (n + 1)) =
     - (2 - n)* S.val (Fin.castSucc (Fin.last n)) := by
   erw [sq_eq_sq_iff_eq_or_eq_neg] at h
@@ -77,10 +77,8 @@ lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : lineIn
   linear_combination h2
 
 lemma lineInPlaneCond_eq_last {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols}
-    (hS : lineInPlaneCond S) :
-    constAbsProp
-    ((S.val ((Fin.last n.succ.succ.succ).castSucc)), (S.val ((Fin.last n.succ.succ.succ).succ)))
-    := by
+    (hS : lineInPlaneCond S) : constAbsProp ((S.val ((Fin.last n.succ.succ.succ).castSucc)),
+    (S.val ((Fin.last n.succ.succ.succ).succ))) := by
   rw [constAbsProp]
   by_contra hn
   have h := lineInPlaneCond_eq_last' hS hn
@@ -88,7 +86,7 @@ lemma lineInPlaneCond_eq_last {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
   simp [or_not] at hn
   have hx : ((2 : ℚ) - ↑(n + 3))  ≠ 0 := by
     rw [Nat.cast_add]
-    simp
+    simp only [Nat.cast_ofNat, ne_eq]
     apply Not.intro
     intro a
     linarith
@@ -111,7 +109,7 @@ lemma linesInPlane_eq_sq {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols}
   exact lineInPlaneCond_eq_last (lineInPlaneCond_perm hS M)
 
 theorem linesInPlane_constAbs {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols}
-      (hS : lineInPlaneCond S) : constAbs S.val := by
+    (hS : lineInPlaneCond S) : constAbs S.val := by
   intro i j
   by_cases hij : i ≠ j
   exact linesInPlane_eq_sq hS i j hij
@@ -119,7 +117,7 @@ theorem linesInPlane_constAbs {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
   rw [hij]
 
 lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : lineInPlaneCond S.1.1) :
-     constAbsProp (S.val (0 : Fin 4), S.val (1 : Fin 4))  := by
+    constAbsProp (S.val (0 : Fin 4), S.val (1 : Fin 4))  := by
   simp [constAbsProp]
   by_contra hn
   have hLin := pureU1_linear S.1.1
@@ -172,7 +170,7 @@ lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
 
 
 lemma linesInPlane_constAbs_four (S : (PureU1 4).Sols)
-      (hS : lineInPlaneCond S.1.1) : constAbs S.val := by
+    (hS : lineInPlaneCond S.1.1) : constAbs S.val := by
   intro i j
   by_cases hij : i ≠ j
   exact linesInPlane_eq_sq_four hS i j hij
@@ -180,7 +178,7 @@ lemma linesInPlane_constAbs_four (S : (PureU1 4).Sols)
   rw [hij]
 
 theorem linesInPlane_constAbs_AF (S : (PureU1 (n.succ.succ.succ.succ)).Sols)
-      (hS : lineInPlaneCond S.1.1) : constAbs S.val := by
+    (hS : lineInPlaneCond S.1.1) : constAbs S.val := by
   induction n
   exact linesInPlane_constAbs_four S hS
   exact linesInPlane_constAbs hS
