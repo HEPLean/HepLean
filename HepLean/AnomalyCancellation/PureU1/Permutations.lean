@@ -53,7 +53,7 @@ open PureU1Charges in
 def permCharges {n : ℕ} : Representation ℚ (permGroup n) (PureU1 n).charges where
   toFun f := chargeMap f⁻¹
   map_mul' f g :=by
-    simp
+    simp only [permGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
     funext i
@@ -182,7 +182,7 @@ def permTwoInj : Fin 2 ↪ Fin n where
     aesop
 
 lemma permTwoInj_fst : i ∈ Set.range ⇑(permTwoInj hij) := by
-  simp
+  simp only [Set.mem_range]
   use 0
   rfl
 
@@ -191,7 +191,7 @@ lemma permTwoInj_fst_apply :
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permTwoInj hij))).mpr rfl
 
 lemma permTwoInj_snd : j ∈ Set.range ⇑(permTwoInj hij) := by
-  simp
+  simp only [Set.mem_range]
   use 1
   rfl
 
@@ -239,7 +239,7 @@ def permThreeInj : Fin 3 ↪ Fin n where
     aesop
 
 lemma permThreeInj_fst : i ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
-  simp
+  simp only [Set.mem_range]
   use 0
   rfl
 
@@ -250,7 +250,7 @@ lemma permThreeInj_fst_apply :
 
 
 lemma permThreeInj_snd : j ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
-  simp
+  simp only [Set.mem_range]
   use 1
   rfl
 
@@ -259,9 +259,8 @@ lemma permThreeInj_snd_apply :
     ⟨j, permThreeInj_snd  hij hjk hik⟩ = 1 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permThreeInj hij hjk hik))).mpr rfl
 
-
 lemma permThreeInj_thd : k ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
-  simp
+  simp only [Set.mem_range]
   use 2
   rfl
 
