@@ -49,7 +49,7 @@ lemma charges_eq_toSpecies_eq (S T : (SMνCharges n).charges) :
   apply Iff.intro
   intro h
   rw [h]
-  simp
+  simp only [forall_const]
   intro h
   apply toSpeciesEquiv.injective
   funext i
@@ -115,7 +115,8 @@ def accGrav : (SMνCharges n).charges →ₗ[ℚ] ℚ where
 lemma accGrav_decomp (S : (SMνCharges n).charges) :
     accGrav S = 6 * ∑ i, Q S i + 3 * ∑ i, U S i + 3 * ∑ i, D S i + 2 * ∑ i, L S i + ∑ i, E S i +
       ∑ i, N S i := by
-  simp
+  simp only [accGrav, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
 
@@ -148,7 +149,8 @@ def accSU2 : (SMνCharges n).charges →ₗ[ℚ] ℚ where
 
 lemma accSU2_decomp (S : (SMνCharges n).charges) :
     accSU2 S = 3 * ∑ i, Q S i + ∑ i, L S i := by
-  simp
+  simp only [accSU2, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
 
@@ -180,7 +182,8 @@ def accSU3 : (SMνCharges n).charges →ₗ[ℚ] ℚ where
 
 lemma accSU3_decomp (S : (SMνCharges n).charges) :
     accSU3 S = 2 * ∑ i, Q S i + ∑ i, U S i + ∑ i, D S i := by
-  simp
+  simp only [accSU3, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat rw [Finset.sum_add_distrib]
   repeat rw [← Finset.mul_sum]
 
@@ -213,7 +216,8 @@ def accYY : (SMνCharges n).charges →ₗ[ℚ] ℚ where
 
 lemma accYY_decomp (S : (SMνCharges n).charges) :
     accYY S = ∑ i, Q S i + 8 * ∑ i, U S i + 2 * ∑ i, D S i + 3 * ∑ i, L S i + 6 * ∑ i, E S i := by
-  simp
+  simp only [accYY, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
+    AddHom.coe_mk]
   repeat rw [Finset.sum_add_distrib]
   repeat rw [← Finset.mul_sum]
 
@@ -246,10 +250,11 @@ def quadBiLin : BiLinearSymm (SMνCharges n).charges where
     apply Fintype.sum_congr
     intro i
     repeat erw [map_add]
-    simp
+    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue, neg_mul,
+      one_mul]
     ring
   swap' S T := by
-    simp
+    simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul]
     apply Fintype.sum_congr
     intro i
     ring
@@ -262,7 +267,7 @@ lemma quadBiLin_decomp (S T : (SMνCharges n).charges) :
   simp only
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  simp
+  simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul, add_left_inj]
   ring
 
 /-- The quadratic anomaly cancellation condition. -/
@@ -308,15 +313,15 @@ def cubeTriLin : TriLinearSymm (SMνCharges n).charges where
     apply Fintype.sum_congr
     intro i
     repeat erw [map_add]
-    simp
+    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
     ring
   swap₁' S T L := by
-    simp
+    simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring
   swap₂' S T L := by
-    simp
+    simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring

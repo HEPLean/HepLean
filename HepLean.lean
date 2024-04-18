@@ -18,3 +18,4 @@ import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
 import HepLean.AnomalyCancellation.SM.Permutations
 import HepLean.AnomalyCancellation.SMNu.Basic
 import HepLean.AnomalyCancellation.SMNu.FamilyMaps
+import HepLean.AnomalyCancellation.SMNu.Permutations

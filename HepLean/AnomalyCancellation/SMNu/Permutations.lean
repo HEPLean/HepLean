@@ -30,7 +30,7 @@ def permGroup (n : ℕ) := Fin 6 → Equiv.Perm (Fin n)
 
 variable {n : ℕ}
 
-@[simps!]
+@[simp]
 instance : Group (permGroup n) := Pi.group
 
 /-- The image of an element of `permGroup n` under the representation on charges. -/
@@ -52,16 +52,16 @@ def chargeMap (f : permGroup n) : (SMνCharges n).charges →ₗ[ℚ] (SMνCharg
     rfl
 
 /-- The representation of `(permGroup n)` acting on the vector space of charges. -/
-@[simps!]
+@[simp]
 def repCharges {n : ℕ} : Representation ℚ (permGroup n) (SMνCharges n).charges where
   toFun f := chargeMap f⁻¹
   map_mul' f g :=by
-    simp
+    simp only [permGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
     intro i
-    simp
+    simp only [chargeMap_apply, Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, LinearMap.mul_apply]
     repeat erw [toSMSpecies_toSpecies_inv]
     rfl
   map_one' := by
