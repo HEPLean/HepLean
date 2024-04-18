@@ -113,7 +113,7 @@ lemma quadSolToSolInv_α₁_α₂_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0)
   simp
 
 lemma quadSolToSolInv_α₁_α₂_neq_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠  0) :
-   ¬  (α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0) := by
+    ¬  (α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0) := by
   rw [not_and, quadSolToSolInv_1, α₂_AF S]
   intro hn
   simp_all

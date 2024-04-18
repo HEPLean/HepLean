@@ -22,8 +22,8 @@ import HepLean.AnomalyCancellation.SMNu.NoGrav.Basic
 import HepLean.AnomalyCancellation.SMNu.Ordinary.Basic
 import HepLean.AnomalyCancellation.SMNu.Ordinary.FamilyMaps
 import HepLean.AnomalyCancellation.SMNu.Permutations
-import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
 import HepLean.AnomalyCancellation.SMNu.PlusU1.BMinusL
+import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
 import HepLean.AnomalyCancellation.SMNu.PlusU1.FamilyMaps
 import HepLean.AnomalyCancellation.SMNu.PlusU1.HyperCharge
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSol
