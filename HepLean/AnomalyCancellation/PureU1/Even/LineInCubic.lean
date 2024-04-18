@@ -61,8 +61,8 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n.succ)).LinSols} (h : lineInCubic S)
  then `accCubeTriLinSymm.toFun (P g, P g, P! f) = 0`.
 -/
 lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n.succ)).LinSols} (h : lineInCubic S) :
-  ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val =  P g + P! f),
-  accCubeTriLinSymm (P g, P g, P! f) = 0 := by
+    ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val =  P g + P! f),
+    accCubeTriLinSymm (P g, P g, P! f) = 0 := by
   intro g f hS
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
    (lineInCubic_expand h g f hS 1 2) / 6
@@ -83,7 +83,8 @@ lemma lineInCubicPerm_permute {S : (PureU1 (2 * n.succ)).LinSols}
   rw [lineInCubicPerm]
   intro M
   change lineInCubic
-    (((FamilyPermutations (2 * n.succ)).linSolRep M * (FamilyPermutations (2 * n.succ)).linSolRep M') S)
+    (((FamilyPermutations (2 * n.succ)).linSolRep M *
+    (FamilyPermutations (2 * n.succ)).linSolRep M') S)
   erw [← (FamilyPermutations (2 * n.succ)).linSolRep.map_mul M M']
   exact hS (M * M')
 
@@ -104,10 +105,10 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ)).LinSols}
   simpa using h2
 
 lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ )).LinSols}
-     (f : Fin n.succ.succ → ℚ) (g : Fin n.succ → ℚ) (hS : S.val = Pa f g) :
+    (f : Fin n.succ.succ → ℚ) (g : Fin n.succ → ℚ) (hS : S.val = Pa f g) :
     accCubeTriLinSymm.toFun (P f, P f, basis!AsCharges  (Fin.last n)) =
     - (S.val (δ!₂ (Fin.last n)) + S.val (δ!₁ (Fin.last n))) * (2 * S.val δ!₄ +
-     S.val (δ!₂ (Fin.last n))  + S.val (δ!₁ (Fin.last n))) := by
+    S.val (δ!₂ (Fin.last n))  + S.val (δ!₁ (Fin.last n))) := by
   rw [P_P_P!_accCube f  (Fin.last n)]
   have h1 := Pa_δ!₄ f g
   have h2 := Pa_δ!₁ f g (Fin.last n)
