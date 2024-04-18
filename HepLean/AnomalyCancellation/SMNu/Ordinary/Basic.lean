@@ -8,8 +8,7 @@ import HepLean.AnomalyCancellation.SMNu.Permutations
 /-!
 # ACC system for SM with RHN (without hypercharge).
 
-We define the ACC system for the Standard Model with right-handed neutrinos and no gravitational
-anomaly.
+We define the ACC system for the Standard Model (without hypercharge) with right-handed neutrinos.
 
 -/
 

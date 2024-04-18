@@ -19,6 +19,8 @@ import HepLean.AnomalyCancellation.SM.Permutations
 import HepLean.AnomalyCancellation.SMNu.Basic
 import HepLean.AnomalyCancellation.SMNu.FamilyMaps
 import HepLean.AnomalyCancellation.SMNu.NoGrav.Basic
-import HepLean.AnomalyCancellation.SMNu.Permutations
 import HepLean.AnomalyCancellation.SMNu.Ordinary.Basic
 import HepLean.AnomalyCancellation.SMNu.Ordinary.FamilyMaps
+import HepLean.AnomalyCancellation.SMNu.Permutations
+import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
+import HepLean.AnomalyCancellation.SMNu.PlusU1.FamilyMaps
