@@ -117,12 +117,12 @@ lemma sum_δ  (S : Fin (2 * n + 1) → ℚ) :
   have h1 : ∑ i, S i = ∑ i : Fin (n + 1 + n), S (Fin.cast (split_odd n) i) := by
     rw [Finset.sum_equiv (Fin.castIso (split_odd n)).symm.toEquiv]
     intro i
-    simp
+    simp only [mem_univ, Fin.symm_castIso, RelIso.coe_fn_toEquiv, Fin.castIso_apply]
     intro i
     simp
   rw [h1]
   rw [Fin.sum_univ_add, Fin.sum_univ_add]
-  simp
+  simp only [univ_unique, Fin.default_eq_zero, Fin.isValue, sum_singleton, Function.comp_apply]
   nth_rewrite 2 [add_comm]
   rw [add_assoc]
   rw [Finset.sum_add_distrib]
@@ -133,12 +133,12 @@ lemma sum_δ!  (S : Fin (2 * n + 1) → ℚ) :
   have h1 : ∑ i, S i = ∑ i : Fin ((1+n)+n), S (Fin.cast (split_odd! n) i) := by
     rw [Finset.sum_equiv (Fin.castIso (split_odd! n)).symm.toEquiv]
     intro i
-    simp
+    simp only [mem_univ, Fin.symm_castIso, RelIso.coe_fn_toEquiv, Fin.castIso_apply]
     intro i
     simp
   rw [h1]
   rw [Fin.sum_univ_add, Fin.sum_univ_add]
-  simp
+  simp only [univ_unique, Fin.default_eq_zero, Fin.isValue, sum_singleton, Function.comp_apply]
   rw [add_assoc]
   rw [Finset.sum_add_distrib]
   rfl
@@ -293,13 +293,13 @@ lemma basis!_on_δ!₃ (j : Fin n) : basis!AsCharges j δ!₃ = 0 := by
 
 lemma basis_linearACC (j : Fin n) : (accGrav (2 * n + 1)) (basisAsCharges j) = 0 := by
   rw [accGrav]
-  simp
+  simp only [LinearMap.coe_mk, AddHom.coe_mk]
   erw [sum_δ]
   simp [basis_δ₂_eq_minus_δ₁, basis_on_δ₃]
 
 lemma basis!_linearACC (j : Fin n) : (accGrav (2 * n + 1)) (basis!AsCharges j) = 0 := by
   rw [accGrav]
-  simp
+  simp only [LinearMap.coe_mk, AddHom.coe_mk]
   rw [sum_δ!, basis!_on_δ!₃]
   simp [basis!_δ!₂_eq_minus_δ!₁]
 
@@ -364,7 +364,7 @@ lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (δ₁ j) = f j := by
   simp [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
   rw [basis_on_δ₁_self]
-  simp
+  simp only [mul_one]
   intro k _ hkj
   rw [basis_on_δ₁_other hkj]
   simp only [mul_zero]
@@ -375,7 +375,7 @@ lemma P!_δ!₁ (f : Fin n → ℚ)  (j : Fin n) : P! f (δ!₁ j) = f j := by
   simp [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
   rw [basis!_on_δ!₁_self]
-  simp
+  simp only [mul_one]
   intro k _ hkj
   rw [basis!_on_δ!₁_other hkj]
   simp only [mul_zero]
@@ -386,10 +386,10 @@ lemma P_δ₂ (f : Fin n → ℚ) (j : Fin n) : P f (δ₂ j) = - f j := by
   simp [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
   rw [basis_on_δ₂_self]
-  simp
+  simp only [mul_neg, mul_one]
   intro k _ hkj
   rw [basis_on_δ₂_other hkj]
-  simp
+  simp only [mul_zero]
   simp
 
 lemma P!_δ!₂ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₂ j) = - f j := by
@@ -397,10 +397,10 @@ lemma P!_δ!₂ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₂ j) = - f j := by
   simp [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
   rw [basis!_on_δ!₂_self]
-  simp
+  simp only [mul_neg, mul_one]
   intro k _ hkj
   rw [basis!_on_δ!₂_other hkj]
-  simp
+  simp only [mul_zero]
   simp
 
 lemma P_δ₃ (f : Fin n → ℚ) : P f (δ₃) = 0 := by
@@ -413,7 +413,7 @@ lemma P!_δ!₃ (f : Fin n → ℚ) : P! f (δ!₃) = 0 := by
 
 lemma Pa_δa₁ (f g : Fin n.succ → ℚ) : Pa f g δa₁ = f 0 := by
   rw [Pa]
-  simp
+  simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₁_δ₁]
   rw [δa₁_δ!₃]
   rw [P_δ₁, P!_δ!₃]
@@ -421,14 +421,14 @@ lemma Pa_δa₁ (f g : Fin n.succ → ℚ) : Pa f g δa₁ = f 0 := by
 
 lemma Pa_δa₂ (f g : Fin n.succ → ℚ)  (j : Fin n) : Pa f g (δa₂ j) = f j.succ + g j.castSucc := by
   rw [Pa]
-  simp
+  simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₂_δ₁]
   rw [δa₂_δ!₁]
   rw [P_δ₁, P!_δ!₁]
 
 lemma Pa_δa₃ (f g : Fin n.succ → ℚ)  : Pa f g (δa₃) = g (Fin.last n) := by
   rw [Pa]
-  simp
+  simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₃_δ₃]
   rw [δa₃_δ!₁]
   rw [P_δ₃, P!_δ!₁]
@@ -436,7 +436,7 @@ lemma Pa_δa₃ (f g : Fin n.succ → ℚ)  : Pa f g (δa₃) = g (Fin.last n) :
 
 lemma Pa_δa₄ (f g : Fin n.succ → ℚ) (j : Fin n.succ) : Pa f g (δa₄ j) = - f j - g j := by
   rw [Pa]
-  simp
+  simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₄_δ₂]
   rw [δa₄_δ!₂]
   rw [P_δ₂, P!_δ!₂]
@@ -444,19 +444,19 @@ lemma Pa_δa₄ (f g : Fin n.succ → ℚ) (j : Fin n.succ) : Pa f g (δa₄ j) 
 
 lemma P_linearACC (f : Fin n → ℚ) : (accGrav (2 * n + 1)) (P f) = 0 := by
   rw [accGrav]
-  simp
+  simp only [LinearMap.coe_mk, AddHom.coe_mk]
   rw [sum_δ]
   simp [P_δ₂, P_δ₁, P_δ₃]
 
 lemma P!_linearACC (f : Fin n → ℚ) : (accGrav (2 * n + 1)) (P! f) = 0 := by
   rw [accGrav]
-  simp
+  simp only [LinearMap.coe_mk, AddHom.coe_mk]
   rw [sum_δ!]
   simp [P!_δ!₂, P!_δ!₁, P!_δ!₃]
 
 lemma P_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P f) = 0 := by
   rw [accCube_explicit, sum_δ, P_δ₃]
-  simp
+  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Function.comp_apply, zero_add]
   apply Finset.sum_eq_zero
   intro i _
   simp [P_δ₁, P_δ₂]
@@ -464,7 +464,7 @@ lemma P_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P f) = 0 := by
 
 lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P! f) = 0 := by
   rw [accCube_explicit, sum_δ!, P!_δ!₃]
-  simp
+  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Function.comp_apply, zero_add]
   apply Finset.sum_eq_zero
   intro i _
   simp [P!_δ!₁, P!_δ!₂]
@@ -475,13 +475,13 @@ lemma P_P_P!_accCube (g : Fin n → ℚ) (j : Fin n) :
     = (P g (δ!₁ j))^2 - (g j)^2 := by
   simp [accCubeTriLinSymm]
   rw [sum_δ!, basis!_on_δ!₃]
-  simp
+  simp only [mul_zero, Function.comp_apply, zero_add]
   rw [Finset.sum_eq_single j, basis!_on_δ!₁_self, basis!_on_δ!₂_self]
   rw [← δ₂_δ!₂, P_δ₂]
   ring
   intro k _ hkj
   erw [basis!_on_δ!₁_other hkj.symm, basis!_on_δ!₂_other hkj.symm]
-  simp
+  simp only [mul_zero, add_zero]
   simp
 
 
@@ -630,7 +630,7 @@ lemma join_ext (g g' : Fin n → ℚ) (f f' : Fin n → ℚ) :
   rw [h.left, h.right]
 
 lemma join_Pa (g g' : Fin n.succ → ℚ) (f f' : Fin n.succ → ℚ) :
-      Pa' (join g f) = Pa' (join g' f') ↔ Pa g f = Pa g' f' := by
+    Pa' (join g f) = Pa' (join g' f') ↔ Pa g f = Pa g' f' := by
   apply Iff.intro
   intro h
   rw [Pa'_eq] at h
@@ -653,7 +653,7 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n.succ → ℚ) :
 lemma basisa_card :  Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
     FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
-  simp
+  simp only [Fintype.card_sum, Fintype.card_fin]
   omega
 
 /-- The basis formed out of our basisa vectors. -/
@@ -662,7 +662,7 @@ noncomputable def basisaAsBasis :
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card
 
 lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
-      ∃ (g f : Fin n.succ → ℚ) , S.val = P g + P! f  := by
+    ∃ (g f : Fin n.succ → ℚ) , S.val = P g + P! f  := by
   have h := (mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
   obtain ⟨f, hf⟩ := h
   simp [basisaAsBasis] at hf
@@ -700,7 +700,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
   use f'
   change P! f' = _ at hf'
   erw [hf']
-  simp
+  simp only [and_self, and_true]
   change S'.val = P g + (P! f + _)
   rw [← add_assoc, ← hS1]
   apply swap!_as_add at hS
