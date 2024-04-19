@@ -149,7 +149,7 @@ lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
     f (S, T1 + T2) = f (S, T1) + f (S, T2) := by
   rw [f.swap, f.map_add₁, f.swap T1 S, f.swap T2 S]
 
-
+/-- Fixing the second input vectors, the resulting linear map. -/
 def toLinear₁  (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
   toFun S := f (S, T)
   map_add' S1 S2 := by
@@ -301,6 +301,7 @@ lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
     f (S, T, L1 + L2) = f (S, T, L1) + f (S, T, L2) := by
   rw [f.swap₃, f.map_add₁, f.swap₃, f.swap₃ L2 T S]
 
+/-- Fixing the second and third input vectors, the resulting linear map. -/
 def toLinear₁  (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
   toFun S := f (S, T, L)
   map_add' S1 S2 := by

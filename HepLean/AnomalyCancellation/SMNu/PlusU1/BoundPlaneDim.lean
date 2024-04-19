@@ -6,7 +6,13 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
 import HepLean.AnomalyCancellation.SMNu.PlusU1.FamilyMaps
 import HepLean.AnomalyCancellation.SMNu.PlusU1.PlaneNonSols
+/-!
+# Bound on plane dimension
 
+We place an upper bound on the dimension of a plane of charges on which every point is a solution.
+The upper bound is 7, proven in the theorem `plane_exists_dim_le_7`.
+
+-/
 universe v u
 
 namespace SMRHN
@@ -16,6 +22,8 @@ open SMνCharges
 open SMνACCs
 open BigOperators
 
+/-- A proposition which is true if for a given `n` a plane of charges of dimension `n` exists
+in which each point is a solution. -/
 def existsPlane (n : ℕ) : Prop := ∃ (B : Fin n → (PlusU1 3).charges),
    LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).isSolution (∑ i, f i • B i)
 
@@ -33,7 +41,7 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : existsPlane n) :
   have h1 : ∑ x : Fin n, -(g (Sum.inr x) • Y (Sum.inr x)) =
       ∑ x : Fin n, (-g (Sum.inr x)) • Y (Sum.inr x):= by
     apply Finset.sum_congr
-    simp
+    simp only
     intro i _
     simp
   rw [h1] at hg

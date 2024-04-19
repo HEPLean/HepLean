@@ -26,28 +26,40 @@ open BigOperators
 
 namespace ElevenPlane
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₀ : (PlusU1 3).charges := ![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₁ : (PlusU1 3).charges := ![0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₂ : (PlusU1 3).charges := ![0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₃ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₄ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₅ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₆ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₇ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₈  : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₉ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0]
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₁₀ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 
+/-- The charge assignment forming a basis of the plane. -/
 def B : Fin 11 → (PlusU1 3).charges := fun i =>
   match i with
   | 0 => B₀
@@ -76,7 +88,7 @@ lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
   rw [quadBiLin.map_smul₂, Bi_Bj_quad hij.symm]
   simp
 
-
+/-- The coefficents of the quadratic equation in our basis. -/
 @[simp]
 def quadCoeff : Fin 11 → ℚ := ![1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
 
@@ -102,7 +114,7 @@ lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSol
   rw [Fintype.sum_eq_zero_iff_of_nonneg] at hQ
   exact congrFun hQ k
   intro i
-  simp
+  simp only [Pi.zero_apply, quadCoeff]
   rw [mul_nonneg_iff]
   apply Or.inl
   apply And.intro

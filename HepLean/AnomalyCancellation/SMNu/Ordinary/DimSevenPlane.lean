@@ -23,7 +23,7 @@ open BigOperators
 
 namespace PlaneSeven
 
-
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₀ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 0, 0 => 1
@@ -36,6 +36,7 @@ lemma B₀_cubic (S T : (SM 3).charges) : cubeTriLin (B₀, S, T) =
   simp [Fin.sum_univ_three, B₀, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₁ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 1, 0 => 1
@@ -48,6 +49,7 @@ lemma B₁_cubic (S T : (SM 3).charges) : cubeTriLin (B₁, S, T) =
   simp [Fin.sum_univ_three, B₁, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₂ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 2, 0 => 1
@@ -60,6 +62,7 @@ lemma B₂_cubic (S T : (SM 3).charges) : cubeTriLin (B₂, S, T) =
   simp [Fin.sum_univ_three, B₂, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₃ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 3, 0 => 1
@@ -73,6 +76,7 @@ lemma B₃_cubic (S T : (SM 3).charges) : cubeTriLin (B₃, S, T) =
   ring_nf
   rfl
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₄ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 4, 0 => 1
@@ -86,6 +90,7 @@ lemma B₄_cubic (S T : (SM 3).charges) : cubeTriLin (B₄, S, T) =
   ring_nf
   rfl
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₅ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 5, 0 => 1
@@ -99,6 +104,7 @@ lemma B₅_cubic (S T : (SM 3).charges) : cubeTriLin (B₅, S, T) =
   ring_nf
   rfl
 
+/-- A charge assignment forming one of the basis elements of the plane. -/
 def B₆ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 1, 2 => 1
@@ -111,6 +117,7 @@ lemma B₆_cubic (S T : (SM 3).charges) : cubeTriLin (B₆, S, T) =
   simp [Fin.sum_univ_three, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
 
+/-- The charge assignments forming a basis of the plane. -/
 @[simp]
 def B : Fin 7 → (SM 3).charges := fun i =>
   match i with
@@ -191,49 +198,49 @@ lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).charges) :
   exact B₆_Bi_cubic h S
 
 lemma B₀_B₀_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 0, B 0, B i) = 0 := by
+    cubeTriLin (B 0, B 0, B i) = 0 := by
   change cubeTriLin (B₀, B₀, B i) = 0
   rw [B₀_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₁_B₁_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 1, B 1, B i) = 0 := by
+    cubeTriLin (B 1, B 1, B i) = 0 := by
   change cubeTriLin (B₁, B₁, B i) = 0
   rw [B₁_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₂_B₂_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 2, B 2, B i) = 0 := by
+    cubeTriLin (B 2, B 2, B i) = 0 := by
   change cubeTriLin (B₂, B₂, B i) = 0
   rw [B₂_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₃_B₃_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 3, B 3, B i) = 0 := by
+    cubeTriLin (B 3, B 3, B i) = 0 := by
   change cubeTriLin (B₃, B₃, B i) = 0
   rw [B₃_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₄_B₄_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 4, B 4, B i) = 0 := by
+    cubeTriLin (B 4, B 4, B i) = 0 := by
   change cubeTriLin (B₄, B₄, B i) = 0
   rw [B₄_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₅_B₅_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 5, B 5, B i) = 0 := by
+    cubeTriLin (B 5, B 5, B i) = 0 := by
   change cubeTriLin (B₅, B₅, B i) = 0
   rw [B₅_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₆_B₆_Bi_cubic {i : Fin 7} :
-  cubeTriLin (B 6, B 6, B i) = 0 := by
+    cubeTriLin (B 6, B 6, B i) = 0 := by
   change cubeTriLin (B₆, B₆, B i) = 0
   rw [B₆_cubic]
   fin_cases i <;>
@@ -241,7 +248,7 @@ lemma B₆_B₆_Bi_cubic {i : Fin 7} :
 
 
 lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
-  cubeTriLin (B i, B i, B j) = 0 := by
+    cubeTriLin (B i, B i, B j) = 0 := by
   fin_cases i
   exact B₀_B₀_Bi_cubic
   exact B₁_B₁_Bi_cubic
