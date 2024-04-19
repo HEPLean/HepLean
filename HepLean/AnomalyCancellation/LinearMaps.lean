@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Tactic.Polyrith
 import Mathlib.Algebra.Module.LinearMap.Basic
+import Mathlib.Algebra.BigOperators.Fin
 /-!
 # Linear maps
 
@@ -107,6 +108,7 @@ class IsSymmetric {V : Type} [AddCommMonoid V] [Module ℚ V] (f : V →ₗ[ℚ]
   swap : ∀ S T, f S T = f T S
 
 namespace BiLinearSymm
+open BigOperators
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
@@ -146,6 +148,30 @@ lemma map_add₁ (f : BiLinearSymm V) (S1 S2 T : V) : f (S1 + S2, T) = f (S1, T)
 lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
     f (S, T1 + T2) = f (S, T1) + f (S, T2) := by
   rw [f.swap, f.map_add₁, f.swap T1 S, f.swap T2 S]
+
+
+def toLinear₁  (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
+  toFun S := f (S, T)
+  map_add' S1 S2 := by
+    simp only [f.map_add₁]
+  map_smul' a S := by
+    simp only [f.map_smul₁]
+    rfl
+
+lemma toLinear₁_apply (f : BiLinearSymm V) (S T : V) : f (S, T) = f.toLinear₁ T S := rfl
+
+lemma map_sum₁ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V)  :
+    f (∑ i, S i, T) = ∑ i, f (S i, T) := by
+  rw [f.toLinear₁_apply]
+  rw [map_sum]
+  rfl
+
+lemma map_sum₂ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
+    f ( T, ∑ i, S i) = ∑ i, f (T, S i) := by
+  rw [swap, map_sum₁]
+  apply Fintype.sum_congr
+  intro i
+  rw [swap]
 
 
 /-- The homogenous quadratic equation obtainable from a bilinear function. -/
@@ -214,6 +240,11 @@ instance instFun : FunLike (TriLinear V) (V × V × V) ℚ where
     simp_all
 
 end TriLinear
+/-- The structure of a symmetric trilinear function. -/
+structure TriLinearSymm' (V : Type) [AddCommMonoid V] [Module ℚ V] extends
+    V →ₗ[ℚ] V →ₗ[ℚ] V →ₗ[ℚ] ℚ where
+  swap₁' : ∀ S T L, toFun S T L = toFun T S L
+  swap₂' : ∀ S T L, toFun S T L = toFun S L T
 
 /-- The structure of a symmetric trilinear function. -/
 structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
@@ -225,7 +256,7 @@ structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
   swap₂' : ∀ S T L, toFun (S, T, L) = toFun (S, L, T)
 
 namespace TriLinearSymm
-
+open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
 instance instFun : FunLike (TriLinearSymm V) (V × V × V) ℚ where
@@ -234,7 +265,6 @@ instance instFun : FunLike (TriLinearSymm V) (V × V × V) ℚ where
     cases f
     cases g
     simp_all
-
 
 lemma toFun_eq_coe (f : TriLinearSymm V) : f.toFun = f := rfl
 
@@ -270,6 +300,48 @@ lemma map_add₂ (f : TriLinearSymm V) (S T1 T2 L : V) :
 lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
     f (S, T, L1 + L2) = f (S, T, L1) + f (S, T, L2) := by
   rw [f.swap₃, f.map_add₁, f.swap₃, f.swap₃ L2 T S]
+
+def toLinear₁  (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
+  toFun S := f (S, T, L)
+  map_add' S1 S2 := by
+    simp only [f.map_add₁]
+  map_smul' a S := by
+    simp only [f.map_smul₁]
+    rfl
+
+lemma toLinear₁_apply (f : TriLinearSymm V) (S T L : V) : f (S, T, L) = f.toLinear₁ T L S := rfl
+
+lemma map_sum₁ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
+    f (∑ i, S i, T, L) = ∑ i, f (S i, T, L) := by
+  rw [f.toLinear₁_apply]
+  rw [map_sum]
+  rfl
+
+lemma map_sum₂ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
+    f ( T, ∑ i, S i, L) = ∑ i, f (T, S i, L) := by
+  rw [swap₁, map_sum₁]
+  apply Fintype.sum_congr
+  intro i
+  rw [swap₁]
+
+lemma map_sum₃ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
+    f ( T, L, ∑ i, S i) = ∑ i, f (T, L, S i) := by
+  rw [swap₃, map_sum₁]
+  apply Fintype.sum_congr
+  intro i
+  rw [swap₃]
+
+lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
+    (T : Fin n2 → V) (L : Fin n3 → V) :
+    f (∑ i, S i, ∑ i, T i, ∑ i, L i) = ∑ i, ∑ k, ∑ l, f (S i,  T k,  L l) := by
+  rw [map_sum₁]
+  apply Fintype.sum_congr
+  intro i
+  rw [map_sum₂]
+  apply Fintype.sum_congr
+  intro i
+  rw [map_sum₃]
+
 
 /-- The homogenous cubic equation obtainable from a symmetric trilinear function. -/
 @[simps!]
