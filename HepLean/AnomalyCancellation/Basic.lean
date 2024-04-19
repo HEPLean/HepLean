@@ -4,6 +4,8 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.LinearMaps
+import Mathlib.Algebra.Module.Basic
+import Mathlib.LinearAlgebra.FiniteDimensional
 /-!
 # Basic set up for anomaly cancellation conditions
 
@@ -56,6 +58,9 @@ instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.charges :=
 -/
 instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.charges :=
   Module.addCommMonoidToAddCommGroup ℚ
+
+instance (χ : ACCSystemCharges) : Module.Finite ℚ χ.charges :=
+  FiniteDimensional.finiteDimensional_pi ℚ
 
 end ACCSystemCharges
 
@@ -229,6 +234,10 @@ lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
   have h  := ACCSystemQuad.QuadSols.ext h
   cases' S
   simp_all only
+
+/-- We say a charge S is a solution if it extends to a solution. -/
+def isSolution (χ : ACCSystem) (S : χ.charges) : Prop :=
+ ∃ (sol : χ.Sols), sol.val = S
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `Sols`. -/
 instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
