@@ -34,606 +34,400 @@ open MSSMCharges
 open MSSMACCs
 open BigOperators
 
+namespace AnomalyFreePerp
+
+def lineEqProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
+  α₁ R = 0 ∧ α₂ R = 0 ∧ α₃ R = 0
+
+
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (lineEqProp R) := by
+  apply And.decidable
+
+
+def lineEqPropSol (R : MSSMACC.Sols) : Prop :=
+  cubeTriLin (R.val, R.val, Y₃.val) * quadBiLin (B₃.val, R.val) -
+  cubeTriLin (R.val, R.val, B₃.val) * quadBiLin (Y₃.val, R.val) = 0
+
+def lineEqCoeff (T : MSSMACC.Sols) : ℚ := dot (Y₃.val, B₃.val) * α₃ (proj T.1.1)
+
+lemma lineEqPropSol_iff_lineEqCoeff_zero (T : MSSMACC.Sols) :
+    lineEqPropSol T ↔ lineEqCoeff T = 0 := by
+  rw [lineEqPropSol, lineEqCoeff, α₃]
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero,
+    false_or]
+  rw [cube_proj_proj_B₃, cube_proj_proj_Y₃, quad_B₃_proj, quad_Y₃_proj]
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl]
+  simp only [Fin.isValue, Fin.reduceFinMk, OfNat.ofNat_ne_zero, false_or]
+  have h1 : 108 ^ 2 * cubeTriLin (T.val, T.val, Y₃.val) * (108 * quadBiLin (B₃.val, T.val)) -
+      108 ^ 2 * cubeTriLin (T.val, T.val, B₃.val) * (108 * quadBiLin (Y₃.val, T.val)) =
+      108 ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin (B₃.val, T.val) -
+      cubeTriLin (T.val, T.val, B₃.val) * quadBiLin (Y₃.val, T.val) ) := by
+    ring
+  rw [h1]
+  simp
+
+lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
+    lineEqPropSol R ↔ lineEqProp (proj R.1.1) := by
+  rw [lineEqPropSol_iff_lineEqCoeff_zero, lineEqCoeff, lineEqProp]
+  apply Iff.intro
+  intro h
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  simp at h
+  rw [α₁_proj, α₂_proj, h]
+  simp
+  intro h
+  rw [h.2.2]
+  simp
+
+
+/-- Case₂ is defined when the plane lies entirely within the quadratic. -/
+def inQuadProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
+    quadBiLin (R.val, R.val) = 0 ∧ quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0
+
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inQuadProp R) := by
+  apply And.decidable
+
+def inQuadSolProp (R : MSSMACC.Sols) : Prop :=
+    quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0
+
+/-- The coefficent which multiplies a solution on passing through `case₁`. -/
+def quadCoeff (T : MSSMACC.Sols) : ℚ :=
+    2 * dot (Y₃.val, B₃.val) ^ 2 *
+    (quadBiLin (Y₃.val, T.val) ^ 2 + quadBiLin (B₃.val, T.val) ^ 2)
+
+lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : inQuadSolProp T ↔ quadCoeff T = 0 := by
+  apply Iff.intro
+  intro h
+  rw [quadCoeff, h.1, h.2]
+  simp
+  intro h
+  rw [quadCoeff] at h
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+  apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
+    not_false_eq_true, pow_eq_zero_iff] at h
+  exact h
+
+lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
+    inQuadSolProp R ↔ inQuadProp (proj R.1.1) := by
+  rw [inQuadSolProp, inQuadProp]
+  rw [quad_proj, quad_Y₃_proj, quad_B₃_proj]
+  apply Iff.intro
+  intro h
+  rw [h.1, h.2]
+  simp
+  intro h
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk , mul_eq_zero,
+    OfNat.ofNat_ne_zero, or_self, false_or] at h
+  rw [h.2.1, h.2.2]
+  simp
+
+/-- Case₃ is defined when the plane lies entirely within the quadratic and cubic. -/
+def inCubeProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
+    cubeTriLin (R.val, R.val, R.val) = 0 ∧ cubeTriLin (R.val, R.val, B₃.val) = 0 ∧
+    cubeTriLin (R.val, R.val, Y₃.val) = 0
+
+
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inCubeProp R) := by
+  apply And.decidable
+
+def inCubeSolProp (R : MSSMACC.Sols) : Prop :=
+    cubeTriLin (R.val, R.val, B₃.val) = 0 ∧ cubeTriLin (R.val, R.val, Y₃.val) = 0
+
+def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
+    3 * dot (Y₃.val, B₃.val) ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) ^ 2  +
+    cubeTriLin (T.val, T.val, B₃.val) ^ 2 )
+
+lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
+    inCubeSolProp T ↔ cubicCoeff T = 0 := by
+  apply Iff.intro
+  intro h
+  rw [cubicCoeff, h.1, h.2]
+  simp
+  intro h
+  rw [cubicCoeff] at h
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+  apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
+    not_false_eq_true, pow_eq_zero_iff] at h
+  exact h.symm
+
+lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
+    inCubeSolProp R ↔ inCubeProp (proj R.1.1) := by
+  rw [inCubeSolProp, inCubeProp]
+  rw [cube_proj, cube_proj_proj_Y₃, cube_proj_proj_B₃]
+  apply Iff.intro
+  intro h
+  rw [h.1, h.2]
+  simp
+  intro h
+  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+  rw [h.2.1, h.2.2]
+  simp
+
+
 /-- Given a `R ∈ LinSols` perpendicular to $Y_3$, and $B_3$, a solution to the quadratic. -/
-def genericQuad (R : MSSMACC.AnomalyFreePerp) : MSSMACC.QuadSols :=
+def toSolNSQuad (R : MSSMACC.AnomalyFreePerp) : MSSMACC.QuadSols :=
   lineQuad R
     (3 * cubeTriLin (R.val, R.val, Y₃.val))
     (3 * cubeTriLin (R.val, R.val, B₃.val))
     (cubeTriLin (R.val, R.val, R.val))
 
-lemma genericQuad_cube (R : MSSMACC.AnomalyFreePerp) :
-    accCube (genericQuad R).val = 0 := by
-  rw [genericQuad]
+lemma toSolNSQuad_cube (R : MSSMACC.AnomalyFreePerp) :
+    accCube (toSolNSQuad R).val = 0 := by
+  rw [toSolNSQuad]
   rw [lineQuad_val]
   rw [planeY₃B₃_cubic]
   ring
 
-/-- Given a `R ∈ LinSols` perpendicular to $Y_3$, and $B_3$, a element of `Sols`. -/
-def generic (R : MSSMACC.AnomalyFreePerp) : MSSMACC.Sols :=
-  AnomalyFreeMk'' (genericQuad R) (genericQuad_cube R)
-
-lemma generic_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
-    (generic R).1.1 = planeY₃B₃ R (α₁ R) (α₂ R) (α₃ R) := by
+lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
+    (toSolNSQuad R).1 = planeY₃B₃ R (α₁ R) (α₂ R) (α₃ R) := by
   change (planeY₃B₃ _ _ _ _) = _
   apply planeY₃B₃_eq
   rw [α₁, α₂, α₃]
   ring_nf
   simp
 
-/-- Case₁ is when the quadratic and cubic lines in the plane agree, which occurs when
-  `α₁ R = 0`, `α₂ R = 0` and `α₃ R = 0` (if they exist uniquely).  -/
-def case₁prop (R : MSSMACC.AnomalyFreePerp) : Prop :=
-    α₁ R = 0 ∧ α₂ R = 0 ∧ α₃ R = 0
+/-- Given a `R ∈ LinSols` perpendicular to $Y_3$, and $B_3$, a element of `Sols`. -/
+def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ →  MSSMACC.Sols := fun (R, a, _ , _) =>
+  a • AnomalyFreeMk'' (toSolNSQuad R) (toSolNSQuad_cube R)
 
-/-- Case₂ is defined when the plane lies entirely within the quadratic. -/
-def case₂prop (R : MSSMACC.AnomalyFreePerp) : Prop :=
-    quadBiLin (R.val, R.val) = 0 ∧ quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0
+def toSolNSProj (T : MSSMACC.Sols) : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ :=
+  (proj T.1.1, (lineEqCoeff T)⁻¹, 0, 0)
 
-/-- Case₃ is defined when the plane lies entirely within the quadratic and cubic. -/
-def case₃prop (R : MSSMACC.AnomalyFreePerp) : Prop :=
-    quadBiLin (R.val, R.val) = 0 ∧ quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0 ∧
-    cubeTriLin (R.val, R.val, R.val) = 0 ∧ cubeTriLin (R.val, R.val, B₃.val) = 0 ∧
-    cubeTriLin (R.val, R.val, Y₃.val) = 0
-
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (case₁prop R) := by
-  apply And.decidable
-
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (case₂prop R) := by
-  apply And.decidable
-
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (case₃prop R) := by
-  apply And.decidable
-
-section proj
-
-/-- On elements of `Sols`, `generic (proj _)` is equivalent to multiplying
-by `genericProjCoeff`.  -/
-def genericProjCoeff (T : MSSMACC.Sols) : ℚ :=
-    dot (Y₃.val, B₃.val) * α₃ (proj T.1.1)
-
-lemma generic_proj (T : MSSMACC.Sols) :
-    generic (proj T.1.1) = (genericProjCoeff T) • T := by
+lemma toSolNS_proj (T : MSSMACC.Sols) (h : lineEqCoeff T ≠ 0) :
+    toSolNS (toSolNSProj T) = T := by
   apply ACCSystem.Sols.ext
-  erw [generic_eq_planeY₃B₃_on_α]
+  rw [toSolNS, toSolNSProj]
+  change (lineEqCoeff T)⁻¹ • (toSolNSQuad _).1.1 =  _
+  rw [toSolNSQuad_eq_planeY₃B₃_on_α]
   rw [planeY₃B₃_val]
   rw [Y₃_plus_B₃_plus_proj]
   rw [α₁_proj, α₂_proj]
-  simp
-  rfl
-
-lemma genericProjCoeff_ne_zero (T : MSSMACC.Sols) (hT : genericProjCoeff T ≠ 0 ) :
-    (genericProjCoeff T)⁻¹ • generic (proj T.1.1) = T := by
-  rw [generic_proj, ← MulAction.mul_smul, mul_comm, mul_inv_cancel hT]
-  simp
-
-lemma genericProjCoeff_zero_α₃ (T : MSSMACC.Sols) (hT : genericProjCoeff T = 0) :
-    α₃ (proj T.1.1) = 0 := by
-  rw [genericProjCoeff, mul_eq_zero] at hT
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at hT
-  simp at hT
-  exact hT
-
-lemma genericProjCoeff_zero_α₂ (T : MSSMACC.Sols) (hT : genericProjCoeff T = 0) :
-    α₂ (proj T.1.1) = 0 := by
-  rw [α₂_proj, genericProjCoeff_zero_α₃ T hT]
+  ring_nf
+  simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
+  have h1 : α₃ (proj T.toLinSols) * dot (Y₃.val, B₃.val) = lineEqCoeff T := by
+    rw [lineEqCoeff]
+    ring
+  rw [h1]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h]
   simp
 
-lemma genericProjCoeff_zero_α₁ (T : MSSMACC.Sols) (hT : genericProjCoeff T = 0) :
-    α₁ (proj T.1.1) = 0 := by
-  rw [α₁_proj, genericProjCoeff_zero_α₃ T hT]
-  simp
+def inLineEq : Type := {R : MSSMACC.AnomalyFreePerp // lineEqProp R}
 
-lemma genericProjCoeff_zero (T : MSSMACC.Sols) :
-    genericProjCoeff T = 0 ↔ case₁prop (proj T.1.1) := by
-  apply Iff.intro
-  intro hT
-  rw [case₁prop]
-  rw [genericProjCoeff_zero_α₁ T hT, genericProjCoeff_zero_α₂ T hT, genericProjCoeff_zero_α₃ T hT]
-  simp only [and_self]
-  intro h
-  rw [case₁prop] at h
-  rw [genericProjCoeff]
-  rw [h.2.2]
-  simp
+def inLineEqSol : Type := {R : MSSMACC.Sols // lineEqPropSol R}
 
-lemma genericProjCoeff_neq_zero_case₁ (T : MSSMACC.Sols) (hT : genericProjCoeff T ≠ 0) :
-    ¬ case₁prop (proj T.1.1) :=
-  (genericProjCoeff_zero T).mpr.mt hT
+def inLineEqProj (T : inLineEqSol) : inLineEq × ℚ × ℚ × ℚ :=
+  (⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop ⟩,
+  (quadCoeff T.val)⁻¹ * quadBiLin (B₃.val, T.val.val),
+  (quadCoeff T.val)⁻¹ * (- quadBiLin (Y₃.val, T.val.val)),
+  (quadCoeff T.val)⁻¹ * (- quadBiLin (B₃.val, T.val.val) * ( dot (Y₃.val, T.val.val)
+  - dot (B₃.val, T.val.val))
+  - quadBiLin (Y₃.val, T.val.val) * ( dot (Y₃.val, T.val.val) - 2 * dot (B₃.val, T.val.val))))
 
-lemma genericProjCoeff_neq_zero_case₂ (T : MSSMACC.Sols) (hT : genericProjCoeff T ≠ 0) :
-    ¬ case₂prop (proj T.1.1) := by
-  by_contra hn
-  rw [case₂prop] at hn
-  rw [genericProjCoeff, α₃] at hT
-  simp_all
-
-lemma genericProjCoeff_neq_zero_case₃ (T : MSSMACC.Sols) (hT : genericProjCoeff T ≠ 0) :
-    ¬ case₃prop (proj T.1.1) := by
-  by_contra hn
-  rw [case₃prop] at hn
-  rw [genericProjCoeff, α₃] at hT
-  simp_all
-
-end proj
-
-/-- The case when the quadratic and cubic lines agree (if they exist uniquely). -/
-def case₁ (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ)
-    (h : case₁prop R) : MSSMACC.Sols :=
-  AnomalyFreeMk'' (lineQuad R c₁ c₂ c₃)
+def inLineEqToSol : inLineEq × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, c₁, c₂, c₃) =>
+  AnomalyFreeMk'' (lineQuad R.val c₁ c₂ c₃)
     (by
       rw [lineQuad_cube]
-      rw [h.1, h.2.1, h.2.2]
+      rw [R.prop.1, R.prop.2.1, R.prop.2.2]
       simp)
 
-lemma case₁_smul (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ d : ℚ)
-    (h : case₁prop R) : case₁ R (d * c₁) (d * c₂) (d * c₃) h = d • case₁ R c₁ c₂ c₃ h := by
+lemma inLineEqTo_smul (R : inLineEq) (c₁ c₂ c₃ d : ℚ) :
+    inLineEqToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inLineEqToSol (R, c₁, c₂, c₃) := by
   apply ACCSystem.Sols.ext
   change (lineQuad _ _ _ _).val = _
   rw [lineQuad_smul]
   rfl
 
-section proj
-
-/-- The coefficent which multiplies a solution on passing through `case₁`. -/
-def case₁ProjCoeff (T : MSSMACC.Sols) : ℚ :=
-    2 * (quadBiLin (Y₃.val, (proj T.1.1).val) ^ 2  +
-    quadBiLin (B₃.val, (proj T.1.1).val) ^ 2)
-
-/-- The first parameter in case₁ needed to form an inverse on Proj. -/
-def case₁ProjC₁ (T : MSSMACC.Sols) : ℚ := (quadBiLin (B₃.val, T.val))
-
-/-- The second parameter in case₁ needed to form an inverse on Proj. -/
-def case₁ProjC₂ (T : MSSMACC.Sols) : ℚ := (- quadBiLin (Y₃.val, T.val))
-
-/-- The third parameter in case₁ needed to form an inverse on Proj. -/
-def case₁ProjC₃ (T : MSSMACC.Sols) : ℚ :=
-  - quadBiLin (B₃.val, T.val) * ( dot (Y₃.val, T.val)- dot (B₃.val, T.val) )
-  - quadBiLin (Y₃.val, T.val) * ( dot (Y₃.val, T.val) - 2 * dot (B₃.val, T.val) )
-
-lemma case₁_proj (T : MSSMACC.Sols) (h1 : genericProjCoeff T = 0) :
-    case₁ (proj T.1.1)
-       (case₁ProjC₁ T)
-       (case₁ProjC₂ T)
-       (case₁ProjC₃ T)
-       ((genericProjCoeff_zero T).mp h1)
-       = (case₁ProjCoeff T) • T := by
+lemma inLineEqToSol_proj (T : inLineEqSol) (h : quadCoeff T.val ≠ 0) :
+    inLineEqToSol (inLineEqProj T) = T.val := by
+  rw [inLineEqProj, inLineEqTo_smul]
   apply ACCSystem.Sols.ext
-  change (lineQuad _ _ _ _).val = _
+  change _ • (lineQuad _ _ _ _).val = _
   rw [lineQuad_val]
   rw [planeY₃B₃_val]
   rw [Y₃_plus_B₃_plus_proj]
-  rw [case₁ProjCoeff, case₁ProjC₁, case₁ProjC₂, case₁ProjC₃, quad_proj, quad_Y₃_proj, quad_B₃_proj]
+  rw [quad_proj, quad_Y₃_proj, quad_B₃_proj]
   ring_nf
-  simp
-  rfl
-
-lemma case₁ProjCoeff_ne_zero (T : MSSMACC.Sols) (h1 : genericProjCoeff T = 0)
-    (hT : case₁ProjCoeff T ≠ 0 ) :
-    (case₁ProjCoeff T)⁻¹ • case₁ (proj T.1.1)
-       (case₁ProjC₁ T)
-       (case₁ProjC₂ T)
-       (case₁ProjC₃ T)
-       ((genericProjCoeff_zero T).mp h1) = T := by
-  rw [case₁_proj T h1, ← MulAction.mul_smul, mul_comm, mul_inv_cancel hT]
+  simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
+  have h1 : (quadBiLin (Y₃.val, (T).val.val) ^ 2 * dot (Y₃.val, B₃.val) ^ 2 * 2 +
+      dot (Y₃.val, B₃.val) ^ 2 * quadBiLin (B₃.val, (T).val.val) ^ 2 * 2) = quadCoeff T.val := by
+    rw [quadCoeff]
+    ring
+  rw [h1]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h]
   simp
 
-lemma case₁ProjCoeff_zero_Y₃_B₃ (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0) :
-    quadBiLin (Y₃.val, (proj T.1.1).val) = 0 ∧
-    quadBiLin (B₃.val, (proj T.1.1).val) = 0 := by
-  rw [case₁ProjCoeff, mul_eq_zero] at h1
-  simp only [OfNat.ofNat_ne_zero,  Fin.isValue, Fin.reduceFinMk, false_or] at h1
-  have h : quadBiLin (Y₃.val, (proj T.1.1).val) ^ 2 = 0 ∧
-     quadBiLin (B₃.val, (proj T.1.1).val) ^ 2  = 0 :=
-    (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp h1
-  simp only [ Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
-    not_false_eq_true, pow_eq_zero_iff] at h
-  exact h
 
-lemma case₁ProjCoeff_zero_Y₃ (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0) :
-    quadBiLin (Y₃.val, (proj T.1.1).val) = 0 :=
-  (case₁ProjCoeff_zero_Y₃_B₃ T h1).left
+def inQuad : Type := {R : inLineEq // inQuadProp R.val}
 
-lemma case₁ProjCoeff_zero_B₃ (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0) :
-    quadBiLin (B₃.val, (proj T.1.1).val) = 0 :=
-  (case₁ProjCoeff_zero_Y₃_B₃ T h1).right
+def inQuadSol : Type := {R : inLineEqSol // inQuadSolProp R.val}
 
-lemma case₁ProjCoeff_zero_T (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0) :
-    quadBiLin (T.val, (proj T.1.1).val) = 0 := by
-  have hY3 : quadBiLin (T.val, Y₃.val) = 0 := by
-    have h11 := case₁ProjCoeff_zero_Y₃ T h1
-    rw [quad_Y₃_proj] at h11
-    rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h11
-    simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero,
-      false_or] at h11
-    erw [quadBiLin.swap] at h11
-    exact h11
-  have hB3 : quadBiLin (T.val, B₃.val) = 0 := by
-    have h11 := case₁ProjCoeff_zero_B₃ T h1
-    rw [quad_B₃_proj] at h11
-    rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h11
-    simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero,
-      false_or] at h11
-    erw [quadBiLin.swap] at h11
-    exact h11
-  rw [proj_val]
-  rw [quadBiLin.map_add₂, quadBiLin.map_add₂]
-  rw [quadBiLin.map_smul₂, quadBiLin.map_smul₂, quadBiLin.map_smul₂]
-  rw [hY3, hB3]
-  erw [quadSol T.1]
-  simp
-
-lemma case₁ProjCoeff_zero_self (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0)  :
-    quadBiLin ((proj T.1.1).val, (proj T.1.1).val) = 0 := by
-  nth_rewrite 1 [proj_val]
-  rw [quadBiLin.map_add₁, quadBiLin.map_add₁]
-  rw [quadBiLin.map_smul₁, quadBiLin.map_smul₁, quadBiLin.map_smul₁]
-  rw [case₁ProjCoeff_zero_Y₃ T h1, case₁ProjCoeff_zero_B₃ T h1, case₁ProjCoeff_zero_T T h1]
-  simp
-
-lemma case₁ProjCoeff_zero (T : MSSMACC.Sols) :
-    case₁ProjCoeff T = 0 ↔ case₂prop (proj T.1.1) := by
-  apply Iff.intro
-  intro h1
-  rw [case₂prop]
-  rw [case₁ProjCoeff_zero_self T h1, case₁ProjCoeff_zero_Y₃ T h1, case₁ProjCoeff_zero_B₃ T h1]
-  simp only [and_self]
-  intro h
-  rw [case₂prop] at h
-  rw [case₁ProjCoeff]
-  rw [h.2.1, h.2.2]
-  simp
-
-lemma case₁ProjCoeff_ne_zero_case₂ (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T ≠ 0) :
-    ¬ case₂prop (proj T.1.1) :=
-  (case₁ProjCoeff_zero T).mpr.mt h1
-
-lemma case₁ProjCoeff_ne_zero_case₃ (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T ≠ 0) :
-    ¬ case₃prop (proj T.1.1) := by
-  by_contra hn
-  rw [case₃prop] at hn
-  rw [case₁ProjCoeff] at h1
-  simp_all
-
-
-end proj
-
-/-- The case where the plane lies entirely within the quadratic. -/
-def case₂ (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ)
-    (h : case₂prop R) : MSSMACC.Sols :=
-  AnomalyFreeMk' (lineCube R a₁ a₂ a₃)
+def inQuadToSol : inQuad × ℚ × ℚ × ℚ →  MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
+  AnomalyFreeMk' (lineCube R.val.val a₁ a₂ a₃)
     (by
       erw [planeY₃B₃_quad]
-      rw [h.1, h.2.1, h.2.2]
+      rw [R.prop.1, R.prop.2.1, R.prop.2.2]
       simp)
-    (lineCube_cube R a₁ a₂ a₃)
+    (lineCube_cube R.val.val a₁ a₂ a₃)
 
-lemma case₂_smul (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ d : ℚ)
-    (h : case₂prop R) : case₂ R (d * c₁) (d * c₂) (d * c₃) h = d • case₂ R c₁ c₂ c₃ h := by
+lemma inQuadToSol_smul (R : inQuad) (c₁ c₂ c₃ d : ℚ) :
+    inQuadToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadToSol (R, c₁, c₂, c₃) := by
   apply ACCSystem.Sols.ext
   change (lineCube _ _ _ _).val = _
   rw [lineCube_smul]
   rfl
 
-section proj
+def inQuadProj (T : inQuadSol) : inQuad × ℚ × ℚ × ℚ :=
+  (⟨⟨proj T.val.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val.val).mp T.val.prop ⟩,
+    (inQuadSolProp_iff_proj_inQuadProp T.val.val).mp T.prop⟩,
+  (cubicCoeff T.val.val)⁻¹ * (cubeTriLin (T.val.val.val, T.val.val.val, B₃.val)),
+  (cubicCoeff T.val.val)⁻¹ * (- cubeTriLin (T.val.val.val, T.val.val.val, Y₃.val)),
+  (cubicCoeff T.val.val)⁻¹ * (- cubeTriLin (T.val.val.val, T.val.val.val, B₃.val)
+    * (dot (Y₃.val, T.val.val.val) - dot (B₃.val, T.val.val.val))
+    - cubeTriLin (T.val.val.val, T.val.val.val, Y₃.val)
+    * (dot (Y₃.val, T.val.val.val) - 2 * dot (B₃.val, T.val.val.val))))
 
-/-- The coefficent which multiplies a solution on passing through `case₂`. -/
-def case₂ProjCoeff (T : MSSMACC.Sols) : ℚ :=
-    3 * dot (Y₃.val, B₃.val) ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) ^ 2  +
-    cubeTriLin (T.val, T.val, B₃.val) ^ 2 )
 
-/-- The first parameter in `case₂` needed to form an inverse on `Proj`. -/
-def case₂ProjC₁ (T : MSSMACC.Sols) : ℚ := cubeTriLin (T.val, T.val, B₃.val)
-
-/-- The second parameter in `case₂` needed to form an inverse on `Proj`. -/
-def case₂ProjC₂ (T : MSSMACC.Sols) : ℚ := - cubeTriLin (T.val, T.val, Y₃.val)
-
-/-- The third parameter in `case₂` needed to form an inverse on `Proj`. -/
-def case₂ProjC₃ (T : MSSMACC.Sols) : ℚ :=
-  (- cubeTriLin (T.val, T.val, B₃.val) * (dot (Y₃.val, T.val) - dot (B₃.val, T.val))
-  - cubeTriLin (T.val, T.val, Y₃.val) * (dot (Y₃.val, T.val) - 2 * dot (B₃.val, T.val)))
-
-lemma case₂_proj (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0) :
-    case₂ (proj T.1.1)
-       (case₂ProjC₁ T)
-       (case₂ProjC₂ T)
-       (case₂ProjC₃ T)
-       ((case₁ProjCoeff_zero T).mp h1)  = (case₂ProjCoeff T) • T := by
+lemma inQuadToSol_proj (T : inQuadSol) (h : cubicCoeff T.val.val ≠ 0) :
+    inQuadToSol (inQuadProj T) = T.val.val := by
+  rw [inQuadProj, inQuadToSol_smul]
   apply ACCSystem.Sols.ext
-  change (planeY₃B₃ _ _ _ _).val = _
+  change _ • (planeY₃B₃ _ _ _ _).val = _
   rw [planeY₃B₃_val]
   rw [Y₃_plus_B₃_plus_proj]
-  rw [case₂ProjCoeff, case₂ProjC₁, case₂ProjC₂, case₂ProjC₃, cube_proj, cube_proj_proj_B₃,
-    cube_proj_proj_Y₃]
+  rw [cube_proj, cube_proj_proj_B₃, cube_proj_proj_Y₃]
   ring_nf
-  simp
-  rfl
-
-lemma case₂ProjCoeff_ne_zero (T : MSSMACC.Sols) (h1 : case₁ProjCoeff T = 0)
-    (hT : case₂ProjCoeff T ≠ 0 ) :
-    (case₂ProjCoeff T)⁻¹ • case₂ (proj T.1.1)
-      (case₂ProjC₁ T)
-      (case₂ProjC₂ T)
-      (case₂ProjC₃ T)
-      ((case₁ProjCoeff_zero T).mp h1) = T := by
-  rw [case₂_proj T h1, ← MulAction.mul_smul, mul_comm, mul_inv_cancel hT]
+  simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
+  have h1 : (cubeTriLin (T.val.val.val, T.val.val.val, Y₃.val) ^ 2 * dot (Y₃.val, B₃.val) ^ 3 * 3 +
+      dot (Y₃.val, B₃.val) ^ 3 * cubeTriLin (T.val.val.val, T.val.val.val, B₃.val) ^ 2
+       * 3) = cubicCoeff T.val.val := by
+    rw [cubicCoeff]
+    ring
+  rw [h1]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h]
   simp
 
-lemma case₂ProjCoeff_zero_Y₃_B₃ (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T = 0) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, Y₃.val) = 0 ∧
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, B₃.val) = 0 := by
-  rw [case₂ProjCoeff, mul_eq_zero] at h1
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h1
-  simp at h1
-  have h : cubeTriLin (T.val, T.val, Y₃.val) ^ 2 = 0 ∧
-         cubeTriLin (T.val, T.val, B₃.val) ^ 2  = 0 :=
-    (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp h1
-  simp at h
-  have h1 := cube_proj_proj_B₃ T.1.1
-  erw [h.2] at h1
-  have h2 := cube_proj_proj_Y₃ T.1.1
-  erw [h.1] at h2
-  simp_all
+def inQuadCube : Type := {R : inQuad // inCubeProp R.val.val}
 
-
-lemma case₂ProjCoeff_zero_Y₃ (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T = 0) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, Y₃.val)  = 0 :=
-  (case₂ProjCoeff_zero_Y₃_B₃ T h1).left
-
-lemma case₂ProjCoeff_zero_B₃ (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T = 0) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, B₃.val) = 0 :=
-  (case₂ProjCoeff_zero_Y₃_B₃ T h1).right
-
-
-lemma case₂ProjCoeff_zero_T (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T = 0) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, T.val) = 0 := by
-  rw [cube_proj_proj_self]
-  have hr : cubeTriLin (T.val, T.val, Y₃.val) = 0 := by
-    have h11 := case₂ProjCoeff_zero_Y₃ T h1
-    rw [cube_proj_proj_Y₃] at h11
-    rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h11
-    simp at h11
-    exact h11
-  have h2 : cubeTriLin (T.val, T.val, B₃.val) = 0 := by
-    have h11 := case₂ProjCoeff_zero_B₃ T h1
-    rw [cube_proj_proj_B₃] at h11
-    rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h11
-    simp at h11
-    exact h11
-  rw [hr, h2]
-  simp
-
-lemma case₂ProjCoeff_zero_self (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T = 0)  :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, (proj T.1.1).val) = 0 := by
-  nth_rewrite 3 [proj_val]
-  rw [cubeTriLin.map_add₃, cubeTriLin.map_add₃]
-  rw [cubeTriLin.map_smul₃, cubeTriLin.map_smul₃, cubeTriLin.map_smul₃]
-  rw [case₂ProjCoeff_zero_Y₃ T h1, case₂ProjCoeff_zero_B₃ T h1, case₂ProjCoeff_zero_T T h1]
-  simp
-
-
-lemma case₂ProjCoeff_zero (T : MSSMACC.Sols) :
-    (case₁ProjCoeff T = 0 ∧ case₂ProjCoeff T = 0) ↔ case₃prop (proj T.1.1) := by
-  apply Iff.intro
-  intro h1
-  rw [case₃prop]
-  rw [case₂ProjCoeff_zero_self T h1.2, case₂ProjCoeff_zero_Y₃ T h1.2, case₂ProjCoeff_zero_B₃ T h1.2]
-  rw [case₁ProjCoeff_zero_self T h1.1, case₁ProjCoeff_zero_Y₃ T h1.1, case₁ProjCoeff_zero_B₃ T h1.1]
-  simp only [and_self]
-  intro h
-  rw [case₃prop] at h
-  rw [case₁ProjCoeff, case₂ProjCoeff]
-  simp_all only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
-    mul_zero,  mul_eq_zero, pow_eq_zero_iff, false_or, true_and]
-  erw [show dot (Y₃.val, B₃.val) = 108 by rfl]
-  simp only [OfNat.ofNat_ne_zero, false_or]
-  have h1' := cube_proj_proj_B₃ T.1.1
-  have h2' := cube_proj_proj_Y₃ T.1.1
-  erw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h1' h2'
-  simp_all
-
-lemma case₂ProjCoeff_ne_zero_case₃ (T : MSSMACC.Sols) (h1 : case₂ProjCoeff T ≠ 0) :
-    ¬ case₃prop (proj T.1.1) := by
-  have h1 : ¬ (case₁ProjCoeff T = 0 ∧ case₂ProjCoeff T = 0) := by
-    simp_all
-  exact (case₂ProjCoeff_zero T).mpr.mt h1
-
-end proj
+def inQuadCubeSol : Type := {R : inQuadSol // inCubeSolProp R.val.val}
 
 /-- The case where the plane lies entirely within the quadratic and cubic. -/
-def case₃ (R : MSSMACC.AnomalyFreePerp) (b₁ b₂ b₃ : ℚ)
-    (h₃ : case₃prop R)  :
-    MSSMACC.Sols :=
-  AnomalyFreeMk' (planeY₃B₃ R b₁ b₂ b₃)
+def inQuadCubeToSol : inQuadCube × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, b₁, b₂, b₃) =>
+  AnomalyFreeMk' (planeY₃B₃ R.val.val.val b₁ b₂ b₃)
   (by
     rw [planeY₃B₃_quad]
-    rw [h₃.1, h₃.2.1, h₃.2.2.1]
+    rw [R.val.prop.1, R.val.prop.2.1, R.val.prop.2.2]
     simp)
   (by
     rw [planeY₃B₃_cubic]
-    rw [h₃.2.2.2.1, h₃.2.2.2.2.1, h₃.2.2.2.2.2]
+    rw [R.prop.1, R.prop.2.1, R.prop.2.2]
     simp)
 
-lemma case₃_smul (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ d : ℚ)
-    (h : case₃prop R) : case₃ R (d * c₁) (d * c₂) (d * c₃) h = d • case₃ R c₁ c₂ c₃ h := by
+lemma inQuadCubeToSol_smul (R : inQuadCube) (c₁ c₂ c₃ d : ℚ) :
+    inQuadCubeToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadCubeToSol (R, c₁, c₂, c₃):= by
   apply ACCSystem.Sols.ext
   change (planeY₃B₃ _ _ _ _).val = _
   rw [planeY₃B₃_smul]
   rfl
 
 
-section proj
+def inQuadCubeProj (T : inQuadCubeSol) : inQuadCube × ℚ × ℚ × ℚ :=
+  (⟨⟨⟨proj T.val.val.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val.val.val).mp T.val.val.prop ⟩,
+    (inQuadSolProp_iff_proj_inQuadProp T.val.val.val).mp T.val.prop⟩,
+    (inCubeSolProp_iff_proj_inCubeProp T.val.val.val).mp T.prop⟩,
+  (dot (Y₃.val, B₃.val)) ⁻¹  * (dot (Y₃.val, T.val.val.val.val) - dot (B₃.val, T.val.val.val.val)),
+  (dot (Y₃.val, B₃.val)) ⁻¹  * (2 * dot (B₃.val, T.val.val.val.val) -
+  dot (Y₃.val, T.val.val.val.val)), (dot (Y₃.val, B₃.val)) ⁻¹ * 1)
 
-/-- The coefficent which multiplies a solution on passing through `case₃`. -/
-def case₃ProjCoeff : ℚ :=  dot (Y₃.val, B₃.val)
-
-/-- The first parameter in `case₃` needed to form an inverse on `Proj`. -/
-def case₃ProjC₁ (T : MSSMACC.Sols) : ℚ := (dot (Y₃.val, T.val) - dot (B₃.val, T.val))
-
-/-- The second parameter in `case₃` needed to form an inverse on `Proj`. -/
-def case₃ProjC₂ (T : MSSMACC.Sols) : ℚ := (2 * dot (B₃.val, T.val) - dot (Y₃.val, T.val))
-
-lemma case₃_proj (T : MSSMACC.Sols) (h0 : case₁ProjCoeff T = 0) (h1 : case₂ProjCoeff T = 0) :
-    case₃ (proj T.1.1)
-       (case₃ProjC₁ T)
-       (case₃ProjC₂ T)
-       1
-       ((case₂ProjCoeff_zero T).mp (And.intro h0 h1))  =  case₃ProjCoeff • T := by
+lemma inQuadCubeToSol_proj (T : inQuadCubeSol) :
+    inQuadCubeToSol (inQuadCubeProj T) = T.val.val.val := by
+  rw [inQuadCubeProj, inQuadCubeToSol_smul]
   apply ACCSystem.Sols.ext
-  change (planeY₃B₃ _ _ _ _).val = _
+  change _ • (planeY₃B₃ _ _ _ _).val = _
   rw [planeY₃B₃_val]
   rw [Y₃_plus_B₃_plus_proj]
-  rw [case₃ProjC₁, case₃ProjC₂]
   ring_nf
-  simp
-  rfl
-
-lemma case₃_smul_coeff (T : MSSMACC.Sols) (h0 : case₁ProjCoeff T = 0) (h1 : case₂ProjCoeff T = 0) :
-    case₃ProjCoeff⁻¹ • case₃ (proj T.1.1)
-       (case₃ProjC₁ T)
-       (case₃ProjC₂ T)
-       1
-       ((case₂ProjCoeff_zero T).mp (And.intro h0 h1)) = T := by
-  rw [case₃_proj T h0 h1]
+  simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel]
   simp only [one_smul]
-  rw [case₃ProjCoeff]
   rw [show dot (Y₃.val, B₃.val) = 108 by rfl]
-  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true]
+  simp
 
-end proj
-
-/-- A map from `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ ` to `MSSMACC.Sols`.
-This allows generation of solutions given elements of `MSSMACC.AnomalyFreePerp` and
-three rational numbers. -/
-def parameterization :
-    MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ  →  MSSMACC.Sols := fun A =>
-  if h₃ : case₃prop A.1 then
-    case₃ A.1 A.2.1 A.2.2.1 A.2.2.2 h₃
+def toSol :
+    MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ  →  MSSMACC.Sols := fun (R, a, b, c) =>
+  if h₃ : lineEqProp R ∧ inQuadProp R ∧ inCubeProp R  then
+    inQuadCubeToSol (⟨⟨⟨R, h₃.1⟩, h₃.2.1⟩, h₃.2.2⟩, a, b, c)
   else
-    if h₂ : case₂prop A.1 then
-      case₂  A.1 A.2.1 A.2.2.1 A.2.2.2 h₂
+    if h₂ : lineEqProp R ∧ inQuadProp R then
+      inQuadToSol (⟨⟨R, h₂.1⟩, h₂.2⟩, a, b, c)
     else
-      if h₁ : case₁prop A.1 then
-        case₁ A.1 A.2.1 A.2.2.1 A.2.2.2 h₁
+      if h₁ : lineEqProp R then
+        inLineEqToSol (⟨R, h₁⟩, a, b, c)
       else
-        A.2.1 • generic A.1
+        toSolNS ⟨R, a, b, c⟩
 
-lemma parameterization_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
-    parameterization (R, d * a, d * b, d * c) = d • parameterization (R, a, b, c) := by
-  rw [parameterization, parameterization]
-  by_cases h₃ : case₃prop R
-  rw [dif_pos h₃, dif_pos h₃]
-  rw [case₃_smul]
-  rw [dif_neg h₃, dif_neg h₃]
-  by_cases h₂ : case₂prop R
-  rw [dif_pos h₂, dif_pos h₂]
-  rw [case₂_smul]
-  rw [dif_neg h₂, dif_neg h₂]
-  by_cases h₁ : case₁prop R
-  rw [dif_pos h₁, dif_pos h₁]
-  rw [case₁_smul]
-  rw [dif_neg h₁, dif_neg h₁]
-  rw [mul_smul]
-
-lemma parameterization_not₁₂₃ (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ)
-    (h1 : ¬ case₁prop R) (h2 : ¬ case₂prop R) (h3 : ¬ case₃prop R) :
-    parameterization (R, a, b, c) = a • generic R := by
-  rw [parameterization]
-  rw [dif_neg h3]
-  rw [dif_neg h2]
-  rw [dif_neg h1]
-
-lemma parameterization_is₁_not₂₃ (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ)
-    (h1 : case₁prop R) (h2 : ¬ case₂prop R) (h3 : ¬ case₃prop R) :
-    parameterization (R, a, b, c) = case₁ R a b c h1:= by
-  rw [parameterization]
-  rw [dif_neg h3]
-  rw [dif_neg h2]
-  rw [dif_pos h1]
-
-lemma parameterization_is₁₂_not₃ (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h2 : case₂prop R)
-    (h3 : ¬ case₃prop R) : parameterization (R, a, b, c) = case₂ R a b c h2 := by
-  rw [parameterization]
-  rw [dif_neg h3]
-  rw [dif_pos h2]
-
-lemma parameterization_is₃ (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h3 : case₃prop R) :
-    parameterization (R, a, b, c) = case₃ R a b c h3 := by
-  rw [parameterization]
-  rw [dif_pos h3]
-
-/-- A right inverse of `parameterizaiton`. -/
-def inverse (R : MSSMACC.Sols) : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ :=
-  if genericProjCoeff R ≠ 0 then
-    (proj R.1.1, (genericProjCoeff R)⁻¹, 0, 0)
-  else
-    if case₁ProjCoeff R ≠ 0 then
-      (proj R.1.1, (case₁ProjCoeff R)⁻¹ * case₁ProjC₁ R, (case₁ProjCoeff R)⁻¹ * case₁ProjC₂ R,
-        (case₁ProjCoeff R)⁻¹ * case₁ProjC₃ R)
-    else
-      if case₂ProjCoeff R ≠ 0 then
-        (proj R.1.1, (case₂ProjCoeff R)⁻¹ * case₂ProjC₁ R, (case₂ProjCoeff R)⁻¹ * case₂ProjC₂ R,
-          (case₂ProjCoeff R)⁻¹ * case₂ProjC₃ R)
-      else
-        (proj R.1.1, (case₃ProjCoeff)⁻¹ * case₃ProjC₁ R, (case₃ProjCoeff)⁻¹ * case₃ProjC₂ R,
-          (case₃ProjCoeff)⁻¹ * 1)
-
-lemma inverse_generic (R : MSSMACC.Sols) (h : genericProjCoeff R ≠ 0) :
-    inverse R = (proj R.1.1, (genericProjCoeff R)⁻¹, 0, 0) := by
-  rw [inverse, if_pos h]
-
-lemma inverse_case₁ (R : MSSMACC.Sols) (h0 : genericProjCoeff R = 0)
-    (h1 : case₁ProjCoeff R ≠ 0) : inverse R = (proj R.1.1, (case₁ProjCoeff R)⁻¹ * case₁ProjC₁ R,
-    (case₁ProjCoeff R)⁻¹ * case₁ProjC₂ R, (case₁ProjCoeff R)⁻¹ * case₁ProjC₃ R) := by
-  rw [inverse]
+lemma toSol_toSolNSProj (T : MSSMACC.Sols) (h₁ : ¬ lineEqPropSol T) :
+    toSol (toSolNSProj T) = T := by
+  have h1 : ¬ lineEqProp (toSolNSProj T).1 := (linEqPropSol_iff_proj_linEqProp T).mpr.mt h₁
+  rw [toSol]
   simp_all
+  exact toSolNS_proj T (mt (lineEqPropSol_iff_lineEqCoeff_zero T).mpr h₁)
 
-lemma inverse_case₂ (R : MSSMACC.Sols) (h0 : genericProjCoeff R = 0)
-    (h1 : case₁ProjCoeff R = 0) (h2 : case₂ProjCoeff R ≠ 0) : inverse R = (proj R.1.1,
-    (case₂ProjCoeff R)⁻¹ * case₂ProjC₁ R,
-    (case₂ProjCoeff R)⁻¹ * case₂ProjC₂ R, (case₂ProjCoeff R)⁻¹ * case₂ProjC₃ R) := by
-  rw [inverse]
+lemma toSol_inLineEq (T : MSSMACC.Sols) (h₁ : lineEqPropSol T) (h₂ : ¬ inQuadSolProp T) :
+    ∃ X, toSol X = T := by
+  let X := inLineEqProj ⟨T, h₁⟩
+  use ⟨X.1.val, X.2.1, X.2.2⟩
+  have ha₁ : ¬ inQuadProp X.1.val := (inQuadSolProp_iff_proj_inQuadProp T).mpr.mt h₂
+  have ha₂ : lineEqProp X.1.val := (linEqPropSol_iff_proj_linEqProp T).mp h₁
+  rw [toSol]
   simp_all
+  exact inLineEqToSol_proj ⟨T, h₁⟩ (mt (inQuadSolProp_iff_quadCoeff_zero T).mpr h₂)
 
-lemma inverse_case₃ (R : MSSMACC.Sols) (h0 : genericProjCoeff R = 0)
-    (h1 : case₁ProjCoeff R = 0) (h2 : case₂ProjCoeff R = 0)  :
-    inverse R =  (proj R.1.1, (case₃ProjCoeff)⁻¹ * case₃ProjC₁ R,
-    (case₃ProjCoeff)⁻¹ * case₃ProjC₂ R,
-    (case₃ProjCoeff)⁻¹ * 1) := by
-  rw [inverse]
+lemma toSol_inQuad (T : MSSMACC.Sols) (h₁ : lineEqPropSol T) (h₂ : inQuadSolProp T)
+    (h₃ : ¬ inCubeSolProp T) : ∃ X, toSol X = T := by
+  let X := inQuadProj ⟨⟨T, h₁⟩, h₂⟩
+  use ⟨X.1.val.val, X.2.1, X.2.2⟩
+  have ha₁ : ¬ inCubeProp X.1.val.val := (inCubeSolProp_iff_proj_inCubeProp T).mpr.mt h₃
+  have ha₂ : inQuadProp X.1.val.val := (inQuadSolProp_iff_proj_inQuadProp T).mp h₂
+  have ha₃ : lineEqProp X.1.val.val := (linEqPropSol_iff_proj_linEqProp T).mp h₁
+  rw [toSol]
   simp_all
+  exact inQuadToSol_proj ⟨⟨T, h₁⟩, h₂⟩ (mt (inCubeSolProp_iff_cubicCoeff_zero T).mpr h₃)
 
-lemma inverse_parameterization (R : MSSMACC.Sols) :
-    parameterization (inverse R) = R := by
-  by_cases h0 : genericProjCoeff R ≠ 0
-  rw [inverse_generic R h0]
-  rw [parameterization_not₁₂₃ _ _ _ _ (genericProjCoeff_neq_zero_case₁ R h0)
-   (genericProjCoeff_neq_zero_case₂ R h0) (genericProjCoeff_neq_zero_case₃ R h0)]
-  rw [genericProjCoeff_ne_zero R h0]
-  by_cases h1 : case₁ProjCoeff R ≠ 0
-  simp at h0
-  rw [inverse_case₁ R h0 h1]
-  rw [parameterization_smul]
-  rw [parameterization_is₁_not₂₃ _ _ _ _ ((genericProjCoeff_zero R).mp h0)
-    (case₁ProjCoeff_ne_zero_case₂ R h1) (case₁ProjCoeff_ne_zero_case₃ R h1)]
-  rw [case₁ProjCoeff_ne_zero R h0 h1]
-  simp at h0 h1
-  by_cases h2 : case₂ProjCoeff R ≠ 0
-  rw [inverse_case₂ R h0 h1 h2]
-  rw [parameterization_smul]
-  rw [parameterization_is₁₂_not₃ _ _ _ _ ((case₁ProjCoeff_zero R).mp h1)
-    (case₂ProjCoeff_ne_zero_case₃ R h2)]
-  rw [case₂ProjCoeff_ne_zero R h1 h2]
-  simp at h2
-  rw [inverse_case₃ R h0 h1 h2]
-  rw [parameterization_smul]
-  rw [parameterization_is₃ _ _ _ _ ((case₂ProjCoeff_zero R).mp (And.intro h1 h2))]
-  rw [case₃_smul_coeff R h1 h2]
+lemma toSol_inQuadCube (T : MSSMACC.Sols) (h₁ : lineEqPropSol T) (h₂ : inQuadSolProp T)
+    (h₃ : inCubeSolProp T) : ∃ X, toSol X = T := by
+  let X := inQuadCubeProj ⟨⟨⟨T, h₁⟩, h₂⟩, h₃⟩
+  use ⟨X.1.val.val.val, X.2.1, X.2.2⟩
+  have ha₁ : inCubeProp X.1.val.val.val := (inCubeSolProp_iff_proj_inCubeProp T).mp h₃
+  have ha₂ : inQuadProp X.1.val.val.val := (inQuadSolProp_iff_proj_inQuadProp T).mp h₂
+  have ha₃ : lineEqProp X.1.val.val.val := (linEqPropSol_iff_proj_linEqProp T).mp h₁
+  rw [toSol]
+  simp_all
+  exact inQuadCubeToSol_proj ⟨⟨⟨T, h₁⟩, h₂⟩, h₃⟩
 
-theorem parameterization_surjective : Function.Surjective parameterization := by
+theorem toSol_surjective : Function.Surjective toSol := by
   intro T
-  use inverse T
-  exact inverse_parameterization T
+  by_cases h₁ : ¬ lineEqPropSol T
+  use toSolNSProj T
+  exact toSol_toSolNSProj T h₁
+  simp at h₁
+  by_cases h₂ : ¬ inQuadSolProp T
+  exact toSol_inLineEq T h₁ h₂
+  simp at h₂
+  by_cases h₃ : ¬ inCubeSolProp T
+  exact toSol_inQuad T h₁ h₂ h₃
+  simp at h₃
+  exact toSol_inQuadCube T h₁ h₂ h₃
 
+
+end AnomalyFreePerp
 
 end MSSMACC
