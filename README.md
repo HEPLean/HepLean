@@ -1,23 +1,21 @@
 # High Energy Physics in Lean
 
-Aim of this project: 
+## Aims of this project
 
 - Use Lean to create a database of definitions, theorems and proofs in high energy physics.
 - Keep the database up-to date with developments in MathLib4. 
 - Create github workflows of relevence to the high energy physics community. 
 
-The documentation for this project can be found at:
+## Where to learn more 
 
-https://heplean.github.io/HepLean/
-
-To learn more about this project see: 
-
-https://leanprover.zulipchat.com/#narrow/stream/395462-Natural-sciences/topic/Anomaly.20cancellation.20conditions
+- The documentation for this project is at: 
+  https://heplean.github.io/HepLean/
+- Feel free to connect on the Lean Zulip channel: 
+  https://leanprover.zulipchat.com
 
 ## Contributing 
 
 We follow here the same contribution policies as MathLib4. If you want permission to create a pull-request for this repository contact Joseph Tooby-Smith on the lean Zulip, or email. 
-
 
 ## Installation
 
