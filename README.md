@@ -9,8 +9,10 @@
 ## Where to learn more 
 
 - The documentation for this project is at: 
+
   https://heplean.github.io/HepLean/
 - Feel free to connect on the Lean Zulip channel: 
+
   https://leanprover.zulipchat.com
 
 ## Contributing 
