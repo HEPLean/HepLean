@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.MSSMNu.Basic
 import HepLean.AnomalyCancellation.MSSMNu.LineY3B3
-import HepLean.AnomalyCancellation.MSSMNu.OrthogY3B3
+import HepLean.AnomalyCancellation.MSSMNu.OrthogY3B3.Basic
 import Mathlib.Tactic.Polyrith
 /-!
 # Plane Y₃ B₃ and an orthogonal third point
