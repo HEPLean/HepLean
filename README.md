@@ -2,7 +2,7 @@
 
 ## Aims of this project
 
-- Use Lean to create a database of definitions, theorems and proofs in high energy physics.
+- Use Lean to create a exhaustive database of definitions, theorems, proofs and calculations in high energy physics.
 - Keep the database up-to date with developments in MathLib4. 
 - Create github workflows of relevence to the high energy physics community. 
 
