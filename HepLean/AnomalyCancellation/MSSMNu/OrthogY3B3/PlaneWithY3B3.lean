@@ -146,10 +146,10 @@ def lineQuad (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) : MSSMACC.QuadSols :
   AnomalyFreeQuadMk' (lineQuadAFL R c1 c2 c3) (lineQuadAFL_quad R c1 c2 c3)
 
 lemma lineQuad_val (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) :
-  (lineQuad R c1 c2 c3).val = (planeY₃B₃ R
-  (c2 * quadBiLin R.val R.val - 2 * c3 * quadBiLin B₃.val R.val)
-  (2 * c3 * quadBiLin Y₃.val R.val - c1 * quadBiLin R.val R.val)
-  (2 * c1 * quadBiLin B₃.val R.val - 2 * c2 * quadBiLin Y₃.val R.val)).val  := by
+    (lineQuad R c1 c2 c3).val = (planeY₃B₃ R
+    (c2 * quadBiLin R.val R.val - 2 * c3 * quadBiLin B₃.val R.val)
+    (2 * c3 * quadBiLin Y₃.val R.val - c1 * quadBiLin R.val R.val)
+    (2 * c1 * quadBiLin B₃.val R.val - 2 * c2 * quadBiLin Y₃.val R.val)).val := by
   rfl
 
 lemma lineQuad_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :

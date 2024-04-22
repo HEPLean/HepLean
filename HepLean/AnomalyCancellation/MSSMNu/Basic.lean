@@ -270,11 +270,12 @@ lemma accYY_ext {S T : MSSMCharges.charges}
   rw [hd, hu]
   rfl
 
+/-- The symmetric bilinear function used to define the quadratic ACC. -/
 @[simps!]
 def quadBiLin  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂ (
-  fun S => ∑ i, (Q S.1 i *  Q S.2 i + (- 2) * (U S.1 i *  U S.2 i) +
-    D S.1 i *  D S.2 i + (- 1) * (L S.1 i * L S.2 i)  + E S.1 i * E S.2 i) +
-    (- Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2))
+  fun (S, T) => ∑ i, (Q S i *  Q T i + (- 2) * (U S i *  U T i) +
+    D S i *  D T i + (- 1) * (L S i * L T i)  + E S i * E T i) +
+    (- Hd S * Hd T + Hu S * Hu T))
   (by
     intro a S T
     simp only

@@ -62,6 +62,8 @@ instance instFun (V : Type) [AddCommMonoid V] [Module ℚ V] :
     cases g
     simp_all
 
+/-- The construction of a symmetric bilinear map from smul and map_add in the first factor,
+and swap. -/
 @[simps!]
 def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S, T))
     (map_add : ∀ S1 S2 T, f (S1 + S2, T) = f (S1, T) + f (S2, T))
@@ -70,12 +72,12 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
     toFun := fun T => f (S, T)
     map_add' := by
       intro T1 T2
-      simp
+      simp only
       rw [swap, map_add]
       rw [swap T1 S, swap T2 S]
     map_smul' :=by
       intro a T
-      simp
+      simp only [eq_ratCast, Rat.cast_eq_id, id_eq, smul_eq_mul]
       rw [swap, map_smul]
       rw [swap T S]
   }
@@ -287,7 +289,7 @@ def toCubic {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
     (τ : TriLinearSymm charges) : HomogeneousCubic charges where
   toFun S := τ (S, S, S)
   map_smul' a S := by
-    simp
+    simp only [smul_eq_mul]
     rw [τ.map_smul₁, τ.map_smul₂, τ.map_smul₃]
     ring
 
