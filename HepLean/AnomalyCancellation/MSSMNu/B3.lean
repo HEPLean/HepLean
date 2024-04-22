@@ -59,9 +59,9 @@ def B₃ : MSSMACC.Sols :=
 lemma B₃_val : B₃.val = B₃AsCharge := by
   rfl
 
-lemma doublePoint_B₃_B₃ (R : MSSMACC.LinSols) : cubeTriLin (B₃.val, B₃.val, R.val) = 0 := by
-  rw [← TriLinearSymm.toFun_eq_coe]
-  simp only [cubeTriLin, cubeTriLinToFun, MSSMSpecies_numberCharges]
+lemma doublePoint_B₃_B₃ (R : MSSMACC.LinSols) : cubeTriLin B₃.val B₃.val R.val = 0 := by
+  simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
+    MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
   rw [Fin.sum_univ_three]
   rw [B₃_val]
   rw [B₃AsCharge]

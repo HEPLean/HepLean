@@ -38,42 +38,39 @@ def accGrav (n : ℕ) : ((PureU1Charges n).charges →ₗ[ℚ] ℚ) where
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
-def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).charges where
-  toFun S := ∑ i, S.1 i * S.2.1 i * S.2.2 i
-  map_smul₁' a S L T := by
+def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).charges := TriLinearSymm.mk₃
+  (fun  S =>  ∑ i, S.1 i * S.2.1 i * S.2.2 i)
+  (by
+    intro a S L T
     simp [HSMul.hSMul]
     rw [Finset.mul_sum]
     apply Fintype.sum_congr
     intro i
-    ring
-  map_add₁' S L T R := by
+    ring)
+  (by
+    intro S L T R
     simp only [PureU1Charges_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add]
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro i
     ring
-  swap₁' S L T := by
+    )
+  (by
+    intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
     ring
-  swap₂' S L T := by
+  )
+  (by
+    intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
     ring
+  )
 
-lemma accCubeTriLinSymm_cast {n m : ℕ} (h : m = n)
-    (S :  (PureU1Charges n).charges × (PureU1Charges n).charges × (PureU1Charges n).charges) :
-    accCubeTriLinSymm S = ∑ i : Fin m,
-      S.1 (Fin.cast h i) * S.2.1 (Fin.cast h i) * S.2.2 (Fin.cast h i) := by
-  rw [← accCubeTriLinSymm.toFun_eq_coe, accCubeTriLinSymm]
-  simp only [PureU1Charges_numberCharges]
-  rw [Finset.sum_equiv (Fin.castIso h).symm.toEquiv]
-  intro i
-  simp only [mem_univ, Fin.symm_castIso, RelIso.coe_fn_toEquiv, Fin.castIso_apply]
-  intro i
-  simp
+
 
 /-- The cubic anomaly equation. -/
 @[simp]
@@ -84,9 +81,9 @@ def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).charges) :=
 lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
   rw [accCube, TriLinearSymm.toCubic]
-  change  accCubeTriLinSymm.toFun (S, S, S) = _
+  change  accCubeTriLinSymm S S S = _
   rw [accCubeTriLinSymm]
-  simp only [PureU1Charges_numberCharges]
+  simp only [PureU1Charges_numberCharges, TriLinearSymm.mk₃_toFun_apply_apply]
   apply Finset.sum_congr
   simp only
   ring_nf

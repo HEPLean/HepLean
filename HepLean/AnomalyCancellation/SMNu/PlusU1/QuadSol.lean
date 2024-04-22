@@ -33,14 +33,14 @@ variable (C : (PlusU1 n).QuadSols)
 
 lemma add_AFL_quad (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accQuad (a • S.val + b • C.val) =
-    a * (a * accQuad S.val + 2 * b * quadBiLin (S.val, C.val)) := by
+    a * (a * accQuad S.val + 2 * b * quadBiLin S.val C.val) := by
   erw [BiLinearSymm.toHomogeneousQuad_add, quadSol (b • C)]
   rw [quadBiLin.map_smul₁, quadBiLin.map_smul₂]
   erw [accQuad.map_smul]
   ring
 
 /-- A helper function for what comes later. -/
-def α₁ (S : (PlusU1 n).LinSols) : ℚ := - 2 * quadBiLin (S.val, C.val)
+def α₁ (S : (PlusU1 n).LinSols) : ℚ := - 2 * quadBiLin S.val C.val
 
 /-- A helper function for what comes later. -/
 def α₂ (S : (PlusU1 n).LinSols) : ℚ := accQuad S.val

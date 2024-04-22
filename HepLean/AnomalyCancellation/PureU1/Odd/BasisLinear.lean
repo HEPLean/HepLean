@@ -471,7 +471,7 @@ lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P! f) = 0 := by
   ring
 
 lemma P_P_P!_accCube (g : Fin n → ℚ) (j : Fin n) :
-    accCubeTriLinSymm.toFun (P g, P g, basis!AsCharges j)
+    accCubeTriLinSymm (P g) (P g) (basis!AsCharges j)
     = (P g (δ!₁ j))^2 - (g j)^2 := by
   simp [accCubeTriLinSymm]
   rw [sum_δ!, basis!_on_δ!₃]

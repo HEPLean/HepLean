@@ -74,13 +74,13 @@ def B : Fin 11 → (PlusU1 3).charges := fun i =>
   | 9 => B₉
   | 10 => B₁₀
 
-lemma Bi_Bj_quad {i j : Fin 11} (hi : i ≠ j) : quadBiLin (B i, B j) = 0 := by
+lemma Bi_Bj_quad {i j : Fin 11} (hi : i ≠ j) : quadBiLin (B i) (B j) = 0 := by
   fin_cases i <;> fin_cases j
   any_goals rfl
   all_goals simp at hi
 
 lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
-    quadBiLin (B i, ∑ k, f k • B k) = f i * quadBiLin (B i, B i)  := by
+    quadBiLin (B i) (∑ k, f k • B k) = f i * quadBiLin (B i) (B i)  := by
   rw [quadBiLin.map_sum₂]
   rw [Fintype.sum_eq_single i]
   rw [quadBiLin.map_smul₂]
@@ -92,13 +92,13 @@ lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
 @[simp]
 def quadCoeff : Fin 11 → ℚ := ![1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
 
-lemma quadCoeff_eq_bilinear (i : Fin 11) : quadCoeff i = quadBiLin (B i, B i) := by
+lemma quadCoeff_eq_bilinear (i : Fin 11) : quadCoeff i = quadBiLin (B i) (B i) := by
   fin_cases i
   all_goals rfl
 
 lemma on_accQuad (f : Fin 11 → ℚ) :
     accQuad (∑ i, f i • B i) = ∑ i, quadCoeff i * (f i)^2  := by
-  change quadBiLin _ = _
+  change quadBiLin _ _ = _
   rw [quadBiLin.map_sum₁]
   apply Fintype.sum_congr
   intro i
@@ -204,8 +204,8 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i
     cubeTriLin.map_smul₃, cubeTriLin.map_smul₃] at hc
   rw [show accCube B₉ = 9 by rfl] at hc
   rw [show accCube B₁₀ = 1 by rfl] at hc
-  rw [show cubeTriLin (B₉, B₉, B₁₀) = 0 by rfl] at hc
-  rw [show cubeTriLin (B₁₀, B₁₀, B₉) = 0 by rfl] at hc
+  rw [show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl] at hc
+  rw [show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
   simp at hc
   have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by
     ring

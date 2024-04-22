@@ -60,9 +60,9 @@ lemma Y₃_val : Y₃.val = Y₃AsCharge := by
   rfl
 
 lemma doublePoint_Y₃_Y₃ (R : MSSMACC.LinSols) :
-    cubeTriLin (Y₃.val, Y₃.val, R.val) = 0 := by
-  rw [← TriLinearSymm.toFun_eq_coe]
-  simp only [cubeTriLin, cubeTriLinToFun, MSSMSpecies_numberCharges]
+    cubeTriLin Y₃.val Y₃.val R.val = 0 := by
+  simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
+    MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
   rw [Fin.sum_univ_three]
   rw [Y₃_val]
   rw [Y₃AsCharge]

@@ -42,8 +42,8 @@ def lineInCubic (S : (PureU1 (2 * n.succ)).LinSols) : Prop :=
 
 lemma lineInCubic_expand {S : (PureU1 (2 * n.succ)).LinSols} (h : lineInCubic S) :
     ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ) ,
-    3 * a * b * (a * accCubeTriLinSymm (P g, P g, P! f)
-    + b * accCubeTriLinSymm (P! f, P! f, P g)) = 0 := by
+    3 * a * b * (a * accCubeTriLinSymm (P g) (P g) (P! f)
+    + b * accCubeTriLinSymm (P! f) (P! f) (P g)) = 0 := by
   intro g f hS a b
   have h1 := h g f hS a b
   change accCubeTriLinSymm.toCubic (a • P g + b • P! f) = 0 at h1
@@ -62,7 +62,7 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n.succ)).LinSols} (h : lineInCubic S)
 -/
 lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n.succ)).LinSols} (h : lineInCubic S) :
     ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val =  P g + P! f),
-    accCubeTriLinSymm (P g, P g, P! f) = 0 := by
+    accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
    (lineInCubic_expand h g f hS 1 2) / 6
@@ -92,7 +92,7 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ)).LinSols}
     (LIC : lineInCubicPerm S) :
     ∀ (j : Fin n) (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = Pa g f) ,
       (S.val (δ!₂ j) - S.val (δ!₁ j))
-      * accCubeTriLinSymm.toFun (P g, P g, basis!AsCharges j) = 0 := by
+      * accCubeTriLinSymm (P g) (P g) (basis!AsCharges j) = 0 := by
   intro j g f h
   let S' :=  (FamilyPermutations (2 * n.succ)).linSolRep (pairSwap (δ!₁ j) (δ!₂ j)) S
   have hSS' : ((FamilyPermutations (2 * n.succ)).linSolRep (pairSwap (δ!₁ j) (δ!₂ j))) S = S' := rfl
@@ -106,7 +106,7 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ)).LinSols}
 
 lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ )).LinSols}
     (f : Fin n.succ.succ → ℚ) (g : Fin n.succ → ℚ) (hS : S.val = Pa f g) :
-    accCubeTriLinSymm.toFun (P f, P f, basis!AsCharges  (Fin.last n)) =
+    accCubeTriLinSymm (P f) (P f) (basis!AsCharges  (Fin.last n)) =
     - (S.val (δ!₂ (Fin.last n)) + S.val (δ!₁ (Fin.last n))) * (2 * S.val δ!₄ +
     S.val (δ!₂ (Fin.last n))  + S.val (δ!₁ (Fin.last n))) := by
   rw [P_P_P!_accCube f  (Fin.last n)]

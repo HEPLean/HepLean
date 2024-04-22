@@ -470,7 +470,7 @@ lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n.succ) (P! f) = 0 := by
   ring
 
 lemma P_P_P!_accCube (g : Fin n.succ → ℚ) (j : Fin n) :
-    accCubeTriLinSymm.toFun (P g, P g, basis!AsCharges j)
+    accCubeTriLinSymm (P g) (P g) (basis!AsCharges j)
     = g (j.succ) ^ 2 - g (j.castSucc) ^ 2 := by
   simp [accCubeTriLinSymm]
   rw [sum_δ!₁_δ!₂, basis!_on_δ!₃, basis!_on_δ!₄]
@@ -485,7 +485,7 @@ lemma P_P_P!_accCube (g : Fin n.succ → ℚ) (j : Fin n) :
   simp
 
 lemma P_P!_P!_accCube (g : Fin n → ℚ) (j : Fin n.succ) :
-    accCubeTriLinSymm.toFun (P! g, P! g, basisAsCharges j)
+    accCubeTriLinSymm (P! g) (P! g) (basisAsCharges j)
     =  (P! g (δ₁ j))^2 -  (P! g (δ₂ j))^2 := by
   simp [accCubeTriLinSymm]
   rw [sum_δ₁_δ₂]
