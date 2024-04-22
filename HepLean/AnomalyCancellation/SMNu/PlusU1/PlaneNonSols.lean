@@ -204,8 +204,8 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i
     cubeTriLin.map_smul₃, cubeTriLin.map_smul₃] at hc
   rw [show accCube B₉ = 9 by rfl] at hc
   rw [show accCube B₁₀ = 1 by rfl] at hc
-  rw [show cubeTriLin (B₉, B₉, B₁₀) = 0 by rfl] at hc
-  rw [show cubeTriLin (B₁₀, B₁₀, B₉) = 0 by rfl] at hc
+  rw [show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl] at hc
+  rw [show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
   simp at hc
   have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by
     ring

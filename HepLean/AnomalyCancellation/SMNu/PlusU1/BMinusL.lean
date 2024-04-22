@@ -91,7 +91,7 @@ lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ): addQuad S a 0 = a • S 
   rfl
 
 lemma on_cubeTriLin (S : (PlusU1 n).charges) :
-    cubeTriLin ((BL n).val, (BL n).val, S) = 9 * accGrav S - 24 * accSU3 S := by
+    cubeTriLin (BL n).val (BL n).val S = 9 * accGrav S - 24 * accSU3 S := by
   erw [familyUniversal_cubeTriLin']
   rw [accGrav_decomp, accSU3_decomp]
   simp only [Fin.isValue, BL₁_val, mul_one, SMνSpecies_numberCharges, toSpecies_apply, mul_neg,
@@ -99,18 +99,18 @@ lemma on_cubeTriLin (S : (PlusU1 n).charges) :
   ring
 
 lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
-    cubeTriLin ((BL n).val, (BL n).val, S.val) = 0 := by
+    cubeTriLin (BL n).val (BL n).val S.val = 0 := by
   rw [on_cubeTriLin]
   rw [gravSol S, SU3Sol S]
   simp
 
 lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accCube (a • S.val + b • (BL n).val) =
-    a ^ 2 * (a * accCube S.val + 3 * b * cubeTriLin (S.val, S.val, (BL n).val)) := by
+    a ^ 2 * (a * accCube S.val + 3 * b * cubeTriLin S.val S.val (BL n).val) := by
   erw [TriLinearSymm.toCubic_add, cubeSol (b • (BL n)), accCube.map_smul]
   repeat rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [on_cubeTriLin_AFL]
-  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, cubeTriLin_toFun, Fin.isValue,
+  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, Fin.isValue,
     add_zero, BL_val, mul_zero]
   ring
 

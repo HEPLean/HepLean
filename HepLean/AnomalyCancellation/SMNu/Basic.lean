@@ -295,47 +295,52 @@ lemma accQuad_ext {S T : (SMνCharges n).charges}
 
 /-- The symmetric trilinear form used to define the cubic acc. -/
 @[simps!]
-def cubeTriLin : TriLinearSymm (SMνCharges n).charges where
-  toFun S := ∑ i, (6 * ((Q S.1 i) * (Q S.2.1 i) * (Q S.2.2 i))
+def cubeTriLin : TriLinearSymm (SMνCharges n).charges := TriLinearSymm.mk₃
+  (fun S => ∑ i, (6 * ((Q S.1 i) * (Q S.2.1 i) * (Q S.2.2 i))
     + 3 * ((U S.1 i) * (U S.2.1 i) * (U S.2.2 i))
     + 3 * ((D S.1 i) * (D S.2.1 i) * (D S.2.2 i))
     + 2 * ((L S.1 i) * (L S.2.1 i) * (L S.2.2 i))
     +  ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))
-    +  ((N S.1 i) * (N S.2.1 i) * (N S.2.2 i)))
-  map_smul₁' a S T R := by
+    +  ((N S.1 i) * (N S.2.1 i) * (N S.2.2 i))))
+  (by
+    intro a S T R
     simp only
     rw [Finset.mul_sum]
     apply Fintype.sum_congr
     intro i
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
-    ring
-  map_add₁' S T R L := by
+    ring)
+  (by
+    intro S T R L
     simp only
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro i
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
-    ring
-  swap₁' S T L := by
+    ring)
+  (by
+    intro S T L
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
-    ring
-  swap₂' S T L := by
+    ring)
+  (by
+    intro S T L
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
-    ring
+    ring)
 
 lemma cubeTriLin_decomp (S T R : (SMνCharges n).charges) :
-    cubeTriLin (S, T, R) = 6 * ∑ i, (Q S i * Q T i * Q R i) + 3 * ∑ i,  (U S i * U T i * U R i) +
+    cubeTriLin S T R = 6 * ∑ i, (Q S i * Q T i * Q R i) + 3 * ∑ i,  (U S i * U T i * U R i) +
       3 * ∑ i,  (D S i * D T i * D R i) + 2 * ∑ i, (L S i * L T i * L R i) +
       ∑ i, (E S i * E T i * E R i) + ∑ i, (N S i * N T i * N R i) := by
   erw [← cubeTriLin.toFun_eq_coe]
   rw [cubeTriLin]
-  simp only
+  simp only [TriLinearSymm.mk₃, BiLinearSymm.mk₂, SMνSpecies_numberCharges, toSpecies_apply,
+    Fin.isValue, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
 

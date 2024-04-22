@@ -46,8 +46,8 @@ instance (R : MSSMACC.AnomalyFreePerp) : Decidable (lineEqProp R) := by
 /-- A condition on `Sols` which we will show in `linEqPropSol_iff_proj_linEqProp` that is equivalent
  to the condition that the `proj` of the solution satisfies `lineEqProp`. -/
 def lineEqPropSol (R : MSSMACC.Sols) : Prop :=
-  cubeTriLin (R.val, R.val, Y₃.val) * quadBiLin B₃.val R.val -
-  cubeTriLin (R.val, R.val, B₃.val) * quadBiLin Y₃.val R.val = 0
+  cubeTriLin R.val R.val Y₃.val * quadBiLin B₃.val R.val -
+  cubeTriLin R.val R.val B₃.val * quadBiLin Y₃.val R.val = 0
 
 /-- A rational which appears in `toSolNS` acting on sols, and which been zero is
 equivalent to satisfying `lineEqPropSol`. -/
@@ -134,8 +134,8 @@ lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the cubic surface. -/
 def inCubeProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
-    cubeTriLin (R.val, R.val, R.val) = 0 ∧ cubeTriLin (R.val, R.val, B₃.val) = 0 ∧
-    cubeTriLin (R.val, R.val, Y₃.val) = 0
+    cubeTriLin R.val R.val R.val = 0 ∧ cubeTriLin R.val R.val B₃.val = 0 ∧
+    cubeTriLin R.val R.val Y₃.val = 0
 
 
 instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inCubeProp R) := by
@@ -144,13 +144,13 @@ instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inCubeProp R) := by
 /-- A condition which is satisfied if the plane spanned by the solutions `R`, `Y₃` and `B₃`
 lies entirely in the cubic surface. -/
 def inCubeSolProp (R : MSSMACC.Sols) : Prop :=
-    cubeTriLin (R.val, R.val, B₃.val) = 0 ∧ cubeTriLin (R.val, R.val, Y₃.val) = 0
+    cubeTriLin R.val R.val B₃.val = 0 ∧ cubeTriLin R.val R.val Y₃.val = 0
 
 /-- A rational which has two properties. It is zero for a solution `T` if and only if
 that solution satisfies `inCubeSolProp`. It appears in the definition of `inLineEqProj`. -/
 def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
-    3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) ^ 2  +
-    cubeTriLin (T.val, T.val, B₃.val) ^ 2 )
+    3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin T.val T.val Y₃.val ^ 2  +
+    cubeTriLin T.val T.val B₃.val ^ 2 )
 
 lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
     inCubeSolProp T ↔ cubicCoeff T = 0 := by
@@ -214,9 +214,9 @@ def inQuadCubeSol : Type :=
 /-- Given a `R` perpendicular to `Y₃` and `B₃` a quadratic solution. -/
 def toSolNSQuad (R : MSSMACC.AnomalyFreePerp) : MSSMACC.QuadSols :=
   lineQuad R
-    (3 * cubeTriLin (R.val, R.val, Y₃.val))
-    (3 * cubeTriLin (R.val, R.val, B₃.val))
-    (cubeTriLin (R.val, R.val, R.val))
+    (3 * cubeTriLin R.val R.val Y₃.val)
+    (3 * cubeTriLin R.val R.val B₃.val)
+    (cubeTriLin R.val R.val R.val)
 
 lemma toSolNSQuad_cube (R : MSSMACC.AnomalyFreePerp) :
     accCube (toSolNSQuad R).val = 0 := by
@@ -325,11 +325,11 @@ lemma inQuadToSol_smul (R : inQuad) (c₁ c₂ c₃ d : ℚ) :
 def inQuadProj (T : inQuadSol) : inQuad × ℚ × ℚ × ℚ :=
   (⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
     (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1⟩,
-  (cubicCoeff T.val)⁻¹ * (cubeTriLin (T.val.val, T.val.val, B₃.val)),
-  (cubicCoeff T.val)⁻¹ * (- cubeTriLin (T.val.val, T.val.val, Y₃.val)),
+  (cubicCoeff T.val)⁻¹ * (cubeTriLin T.val.val T.val.val B₃.val),
+  (cubicCoeff T.val)⁻¹ * (- cubeTriLin T.val.val T.val.val Y₃.val),
   (cubicCoeff T.val)⁻¹ *
-  (cubeTriLin (T.val.val, T.val.val, B₃.val) * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
-  - cubeTriLin (T.val.val, T.val.val, Y₃.val)
+  (cubeTriLin T.val.val T.val.val B₃.val * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
+  - cubeTriLin T.val.val T.val.val Y₃.val
     * (dot Y₃.val T.val.val - 2 * dot B₃.val T.val.val)))
 
 
@@ -342,8 +342,8 @@ lemma inQuadToSol_proj (T : inQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
   rw [cube_proj, cube_proj_proj_B₃, cube_proj_proj_Y₃]
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
-  have h1 : (cubeTriLin (T.val.val, T.val.val, Y₃.val) ^ 2 * dot Y₃.val B₃.val ^ 3 * 3 +
-      dot Y₃.val B₃.val ^ 3 * cubeTriLin (T.val.val, T.val.val, B₃.val) ^ 2
+  have h1 : (cubeTriLin T.val.val T.val.val Y₃.val ^ 2 * dot Y₃.val B₃.val ^ 3 * 3 +
+      dot Y₃.val B₃.val ^ 3 * cubeTriLin T.val.val T.val.val B₃.val ^ 2
        * 3) = cubicCoeff T.val := by
     rw [cubicCoeff]
     ring

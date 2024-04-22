@@ -210,7 +210,7 @@ lemma familyUniversal_accQuad (S : (SMνCharges 1).charges) :
   ring
 
 lemma familyUniversal_cubeTriLin (S : (SMνCharges 1).charges) (T R : (SMνCharges n).charges) :
-    cubeTriLin (familyUniversal n S, T, R) = 6 * S (0 : Fin 6) * ∑ i, (Q T i * Q R i) +
+    cubeTriLin (familyUniversal n S) T R = 6 * S (0 : Fin 6) * ∑ i, (Q T i * Q R i) +
       3 * S (1 : Fin 6) * ∑ i,  (U T i * U R i) + 3 * S (2 : Fin 6) * ∑ i,  (D T i * D R i)
       + 2 * S (3 : Fin 6) * ∑ i, (L T i * L R i) +
       S (4 : Fin 6) * ∑ i, (E T i * E R i) + S (5 : Fin 6) * ∑ i, (N T i * N R i) := by
@@ -221,7 +221,7 @@ lemma familyUniversal_cubeTriLin (S : (SMνCharges 1).charges) (T R : (SMνCharg
   ring
 
 lemma familyUniversal_cubeTriLin' (S T : (SMνCharges 1).charges) (R : (SMνCharges n).charges) :
-    cubeTriLin (familyUniversal n S, familyUniversal n T, R) =
+    cubeTriLin (familyUniversal n S) (familyUniversal n T) R =
       6 * S (0 : Fin 6) * T (0 : Fin 6) * ∑ i, Q R i +
        3 * S (1 : Fin 6) * T (1 : Fin 6) * ∑ i, U R i
       + 3 * S (2 : Fin 6) * T (2 : Fin 6) * ∑ i, D R i +

@@ -115,8 +115,8 @@ lemma planeY₃B₃_quad (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
 
 lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
     accCube (planeY₃B₃ R a b c).val = c ^ 2 *
-    (3 * a *  cubeTriLin (R.val, R.val, Y₃.val)
-    + 3 * b *  cubeTriLin (R.val, R.val, B₃.val) + c * cubeTriLin (R.val, R.val, R.val) ) := by
+    (3 * a *  cubeTriLin R.val R.val Y₃.val
+    + 3 * b *  cubeTriLin R.val R.val B₃.val + c * cubeTriLin R.val R.val R.val) := by
   rw [planeY₃B₃_val]
   erw [TriLinearSymm.toCubic_add]
   erw [lineY₃B₃Charges_cubic]
@@ -124,7 +124,7 @@ lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
   rw [cubeTriLin.toCubic.map_smul]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂]
   rw [cubeTriLin.map_add₃, cubeTriLin.map_smul₃, cubeTriLin.map_smul₃]
-  rw [show (TriLinearSymm.toCubic cubeTriLin) R.val = cubeTriLin (R.val, R.val, R.val) by rfl]
+  rw [show (TriLinearSymm.toCubic cubeTriLin) R.val = cubeTriLin R.val R.val R.val by rfl]
   ring
 
 /-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the quadratic,
@@ -163,18 +163,18 @@ lemma lineQuad_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
 
 /-- A helper function to simplify following expressions. -/
 def α₁ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-  (3 * cubeTriLin (T.val, T.val, B₃.val) * quadBiLin T.val T.val -
-    2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin B₃.val T.val)
+  (3 * cubeTriLin T.val T.val B₃.val * quadBiLin T.val T.val -
+    2 * cubeTriLin T.val T.val T.val * quadBiLin B₃.val T.val)
 
   /-- A helper function to simplify following expressions. -/
   def α₂ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-    (2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin Y₃.val T.val -
-    3 * cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin T.val T.val)
+    (2 * cubeTriLin T.val T.val T.val * quadBiLin Y₃.val T.val -
+    3 * cubeTriLin T.val T.val Y₃.val * quadBiLin T.val T.val)
 
   /-- A helper function to simplify following expressions. -/
   def α₃ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-    6 * ((cubeTriLin (T.val, T.val, Y₃.val)) * quadBiLin B₃.val T.val -
-        (cubeTriLin (T.val, T.val, B₃.val)) * quadBiLin Y₃.val T.val)
+    6 * ((cubeTriLin T.val T.val Y₃.val) * quadBiLin B₃.val T.val -
+        (cubeTriLin T.val T.val B₃.val) * quadBiLin Y₃.val T.val)
 
   lemma lineQuad_cube (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ) :
       accCube (lineQuad R c₁ c₂ c₃).val =
@@ -188,9 +188,9 @@ def α₁ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
 def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
     MSSMACC.LinSols :=
   planeY₃B₃ R
-    (a₂ * cubeTriLin (R.val, R.val, R.val) - 3 * a₃ * cubeTriLin (R.val, R.val, B₃.val))
-    (3 * a₃ * cubeTriLin (R.val, R.val, Y₃.val) -  a₁ * cubeTriLin (R.val, R.val, R.val))
-    (3 * (a₁ * cubeTriLin (R.val, R.val, B₃.val) - a₂ * cubeTriLin (R.val, R.val, Y₃.val)))
+    (a₂ * cubeTriLin R.val R.val R.val - 3 * a₃ * cubeTriLin R.val R.val B₃.val)
+    (3 * a₃ * cubeTriLin R.val R.val Y₃.val -  a₁ * cubeTriLin R.val R.val R.val)
+    (3 * (a₁ * cubeTriLin R.val R.val B₃.val - a₂ * cubeTriLin R.val R.val Y₃.val))
 
 
 lemma lineCube_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
@@ -210,7 +210,7 @@ lemma lineCube_cube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
 
 lemma lineCube_quad (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
     accQuad (lineCube R a₁ a₂ a₃).val =
-    3 * (a₁ * cubeTriLin (R.val, R.val, B₃.val) - a₂ * cubeTriLin (R.val, R.val, Y₃.val)) *
+    3 * (a₁ * cubeTriLin R.val R.val B₃.val - a₂ * cubeTriLin R.val R.val Y₃.val) *
     (α₁ R * a₁ + α₂ R * a₂ + α₃ R * a₃) := by
   erw [planeY₃B₃_quad]
   rw [α₁, α₂, α₃]
@@ -221,8 +221,8 @@ section proj
 
 lemma α₃_proj  (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
     6 * dot Y₃.val B₃.val ^ 3 * (
-    cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin B₃.val T.val -
-    cubeTriLin (T.val, T.val, B₃.val) * quadBiLin Y₃.val T.val) := by
+    cubeTriLin T.val T.val Y₃.val * quadBiLin B₃.val T.val -
+    cubeTriLin T.val T.val B₃.val * quadBiLin Y₃.val T.val) := by
   rw [α₃]
   rw [cube_proj_proj_Y₃, cube_proj_proj_B₃, quad_B₃_proj, quad_Y₃_proj]
   ring

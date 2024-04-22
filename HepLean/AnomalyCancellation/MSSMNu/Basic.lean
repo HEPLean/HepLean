@@ -409,12 +409,13 @@ lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.charges) :
   ring
 
 /-- The symmetric trilinear form used to define the cubic ACC. -/
-def cubeTriLin : TriLinearSymm MSSMCharges.charges where
-  toFun S := cubeTriLinToFun S
-  map_smul₁' := cubeTriLinToFun_map_smul₁
-  map_add₁' := cubeTriLinToFun_map_add₁
-  swap₁' := cubeTriLinToFun_swap1
-  swap₂' := cubeTriLinToFun_swap2
+@[simps!]
+def cubeTriLin : TriLinearSymm MSSMCharges.charges := TriLinearSymm.mk₃
+  cubeTriLinToFun
+  cubeTriLinToFun_map_smul₁
+  cubeTriLinToFun_map_add₁
+  cubeTriLinToFun_swap1
+  cubeTriLinToFun_swap2
 
 /-- The cubic ACC. -/
 @[simp]
@@ -426,10 +427,8 @@ lemma accCube_ext {S T : MSSMCharges.charges}
     ∑ i, ((fun a => a^3) ∘ toSMSpecies j T) i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T)  :
     accCube S = accCube T := by
-  simp [cubeTriLin, cubeTriLinToFun]
-  erw [← cubeTriLin.toFun_eq_coe]
-  rw [cubeTriLin]
-  simp only [cubeTriLinToFun]
+  simp only [HomogeneousCubic, accCube, cubeTriLin, TriLinearSymm.toCubic_apply,
+    TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   ring_nf

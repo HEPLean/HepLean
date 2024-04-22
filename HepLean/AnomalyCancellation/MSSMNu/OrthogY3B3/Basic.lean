@@ -121,8 +121,8 @@ lemma quad_proj (T : MSSMACC.Sols) :
 
 
 lemma cube_proj_proj_Y₃ (T : MSSMACC.LinSols) :
-    cubeTriLin ((proj T).val, (proj T).val, Y₃.val) =
-    (dot Y₃.val B₃.val)^2 * cubeTriLin (T.val, T.val, Y₃.val) := by
+    cubeTriLin (proj T).val (proj T).val Y₃.val =
+    (dot Y₃.val B₃.val)^2 * cubeTriLin T.val T.val Y₃.val := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
   erw [lineY₃B₃_doublePoint]
@@ -143,8 +143,8 @@ lemma cube_proj_proj_Y₃ (T : MSSMACC.LinSols) :
   ring
 
 lemma cube_proj_proj_B₃ (T : MSSMACC.LinSols) :
-    cubeTriLin ((proj T).val, (proj T).val, B₃.val) =
-    (dot Y₃.val B₃.val)^2 * cubeTriLin (T.val, T.val, B₃.val) := by
+    cubeTriLin (proj T).val (proj T).val B₃.val =
+    (dot Y₃.val B₃.val)^2 * cubeTriLin T.val T.val B₃.val := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
   erw [lineY₃B₃_doublePoint]
@@ -159,10 +159,10 @@ lemma cube_proj_proj_B₃ (T : MSSMACC.LinSols) :
   ring
 
 lemma cube_proj_proj_self (T : MSSMACC.Sols) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, T.val) =
+    cubeTriLin (proj T.1.1).val (proj T.1.1).val T.val =
     2 * dot Y₃.val B₃.val *
-    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin (T.val, T.val, Y₃.val)  +
-    ( dot Y₃.val T.val- 2 * dot B₃.val T.val) * cubeTriLin (T.val, T.val, B₃.val)) := by
+    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val  +
+    ( dot Y₃.val T.val- 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
   erw [lineY₃B₃_doublePoint]
@@ -176,10 +176,10 @@ lemma cube_proj_proj_self (T : MSSMACC.Sols) :
   ring
 
 lemma cube_proj (T : MSSMACC.Sols) :
-    cubeTriLin ((proj T.1.1).val, (proj T.1.1).val, (proj T.1.1).val) =
+    cubeTriLin (proj T.1.1).val (proj T.1.1).val (proj T.1.1).val =
     3 *  dot Y₃.val B₃.val ^ 2 *
-    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin (T.val, T.val, Y₃.val) +
-        (dot Y₃.val T.val - 2 * dot B₃.val T.val) * cubeTriLin (T.val, T.val, B₃.val)) := by
+    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val +
+        (dot Y₃.val T.val - 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
   nth_rewrite 3 [proj_val]
   repeat rw [cubeTriLin.map_add₃]
   repeat rw [cubeTriLin.map_smul₃]

@@ -31,7 +31,7 @@ def B₀ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₀_cubic (S T : (SM 3).charges) : cubeTriLin (B₀, S, T) =
+lemma B₀_cubic (S T : (SM 3).charges) : cubeTriLin B₀ S T =
     6 * (S (0 : Fin 18) * T  (0 : Fin 18) - S  (1 : Fin 18) * T  (1 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₀, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
@@ -44,7 +44,7 @@ def B₁ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₁_cubic (S T : (SM 3).charges) : cubeTriLin (B₁, S, T) =
+lemma B₁_cubic (S T : (SM 3).charges) : cubeTriLin B₁ S T =
     3 * (S (3 : Fin 18) * T  (3 : Fin 18) - S  (4 : Fin 18) * T  (4 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₁, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
@@ -57,7 +57,7 @@ def B₂ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₂_cubic (S T : (SM 3).charges) : cubeTriLin (B₂, S, T) =
+lemma B₂_cubic (S T : (SM 3).charges) : cubeTriLin B₂ S T =
     3 * (S (6 : Fin 18) * T  (6 : Fin 18) - S  (7 : Fin 18) * T  (7 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₂, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
@@ -70,7 +70,7 @@ def B₃ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₃_cubic (S T : (SM 3).charges) : cubeTriLin (B₃, S, T) =
+lemma B₃_cubic (S T : (SM 3).charges) : cubeTriLin B₃ S T =
     2 * (S (9 : Fin 18) * T  (9 : Fin 18) - S  (10 : Fin 18) * T  (10 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₃, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
@@ -84,7 +84,7 @@ def B₄ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₄_cubic (S T : (SM 3).charges) : cubeTriLin (B₄, S, T) =
+lemma B₄_cubic (S T : (SM 3).charges) : cubeTriLin B₄ S T =
     (S (12 : Fin 18) * T  (12 : Fin 18) - S  (13 : Fin 18) * T  (13 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₄, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
@@ -98,7 +98,7 @@ def B₅ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₅_cubic (S T : (SM 3).charges) : cubeTriLin (B₅, S, T) =
+lemma B₅_cubic (S T : (SM 3).charges) : cubeTriLin B₅ S T =
     (S (15 : Fin 18) * T  (15 : Fin 18) - S  (16 : Fin 18) * T  (16 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₅, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
@@ -112,7 +112,7 @@ def B₆ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   | _, _ => 0
   )
 
-lemma B₆_cubic (S T : (SM 3).charges) : cubeTriLin (B₆, S, T) =
+lemma B₆_cubic (S T : (SM 3).charges) : cubeTriLin B₆ S T =
     3* (S (5 : Fin 18) * T  (5 : Fin 18) - S  (8 : Fin 18) * T  (8 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
@@ -130,8 +130,8 @@ def B : Fin 7 → (SM 3).charges := fun i =>
   | 6 => B₆
 
 lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 0, B i, S) = 0 := by
-  change cubeTriLin (B₀, B i, S) = 0
+    cubeTriLin (B 0) (B i) S = 0 := by
+  change cubeTriLin B₀ (B i) S = 0
   rw [B₀_cubic]
   fin_cases i <;>
     simp at hi <;>
@@ -139,55 +139,55 @@ lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).charges) :
 
 
 lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 1, B i, S) = 0 := by
-  change cubeTriLin (B₁, B i, S) = 0
+    cubeTriLin (B 1) (B i) S = 0 := by
+  change cubeTriLin B₁ (B i) S = 0
   rw [B₁_cubic]
   fin_cases i <;>
     simp at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 2, B i, S) = 0 := by
-  change cubeTriLin (B₂, B i, S) = 0
+    cubeTriLin (B 2) (B i) S = 0 := by
+  change cubeTriLin B₂ (B i) S = 0
   rw [B₂_cubic]
   fin_cases i <;>
     simp at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 3, B i, S) = 0 := by
-  change cubeTriLin (B₃, B i, S) = 0
+    cubeTriLin (B 3) (B i) S = 0 := by
+  change cubeTriLin (B₃) (B i) S = 0
   rw [B₃_cubic]
   fin_cases i <;>
-    simp at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp at hi <;>
+  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 4, B i, S) = 0 := by
-  change cubeTriLin (B₄, B i, S) = 0
+    cubeTriLin (B 4) (B i) S = 0 := by
+  change cubeTriLin (B₄) (B i) S = 0
   rw [B₄_cubic]
   fin_cases i <;>
-    simp at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp at hi <;>
+  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 5, B i, S) = 0 := by
-  change cubeTriLin (B₅, B i, S) = 0
+    cubeTriLin (B 5) (B i) S = 0 := by
+  change cubeTriLin (B₅) (B i) S = 0
   rw [B₅_cubic]
   fin_cases i <;>
-    simp at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp at hi <;>
+  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).charges) :
-    cubeTriLin (B 6, B i, S) = 0 := by
-  change cubeTriLin (B₆, B i, S) = 0
+    cubeTriLin (B 6) (B i) S = 0 := by
+  change cubeTriLin (B₆) (B i) S = 0
   rw [B₆_cubic]
   fin_cases i <;>
-    simp at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp at hi <;>
+  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).charges) :
-    cubeTriLin (B i, B j, S) = 0 := by
+    cubeTriLin (B i) (B j) S = 0 := by
   fin_cases i
   exact B₀_Bi_cubic h S
   exact B₁_Bi_cubic h S
@@ -198,57 +198,57 @@ lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).charges) :
   exact B₆_Bi_cubic h S
 
 lemma B₀_B₀_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 0, B 0, B i) = 0 := by
-  change cubeTriLin (B₀, B₀, B i) = 0
+    cubeTriLin (B 0) (B 0) (B i) = 0 := by
+  change cubeTriLin (B₀) (B₀) (B i) = 0
   rw [B₀_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₁_B₁_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 1, B 1, B i) = 0 := by
-  change cubeTriLin (B₁, B₁, B i) = 0
+    cubeTriLin (B 1) (B 1) (B i) = 0 := by
+  change cubeTriLin (B₁) (B₁) (B i) = 0
   rw [B₁_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₂_B₂_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 2, B 2, B i) = 0 := by
-  change cubeTriLin (B₂, B₂, B i) = 0
+    cubeTriLin (B 2) (B 2) (B i) = 0 := by
+  change cubeTriLin (B₂) (B₂) (B i) = 0
   rw [B₂_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₃_B₃_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 3, B 3, B i) = 0 := by
-  change cubeTriLin (B₃, B₃, B i) = 0
+    cubeTriLin (B 3) (B 3) (B i) = 0 := by
+  change cubeTriLin (B₃) (B₃) (B i) = 0
   rw [B₃_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₄_B₄_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 4, B 4, B i) = 0 := by
-  change cubeTriLin (B₄, B₄, B i) = 0
+    cubeTriLin (B 4) (B 4) (B i) = 0 := by
+  change cubeTriLin (B₄) (B₄) (B i) = 0
   rw [B₄_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₅_B₅_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 5, B 5, B i) = 0 := by
-  change cubeTriLin (B₅, B₅, B i) = 0
+    cubeTriLin (B 5) (B 5) (B i) = 0 := by
+  change cubeTriLin (B₅) (B₅) (B i) = 0
   rw [B₅_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₆_B₆_Bi_cubic {i : Fin 7} :
-    cubeTriLin (B 6, B 6, B i) = 0 := by
-  change cubeTriLin (B₆, B₆, B i) = 0
+    cubeTriLin (B 6) (B 6) (B i) = 0 := by
+  change cubeTriLin (B₆) (B₆) (B i) = 0
   rw [B₆_cubic]
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 
 lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
-    cubeTriLin (B i, B i, B j) = 0 := by
+    cubeTriLin (B i) (B i) (B j) = 0 := by
   fin_cases i
   exact B₀_B₀_Bi_cubic
   exact B₁_B₁_Bi_cubic
@@ -259,7 +259,7 @@ lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
   exact B₆_B₆_Bi_cubic
 
 lemma Bi_Bj_Bk_cubic (i j k : Fin 7) :
-    cubeTriLin (B i, B j, B k) = 0 := by
+    cubeTriLin (B i) (B j) (B k) = 0 := by
   by_cases hij : i ≠ j
   exact Bi_Bj_ne_cubic hij (B k)
   simp at hij
@@ -267,7 +267,7 @@ lemma Bi_Bj_Bk_cubic (i j k : Fin 7) :
   exact Bi_Bi_Bj_cubic j k
 
 theorem B_in_accCube (f : Fin 7 → ℚ) : accCube (∑ i, f i • B i) = 0 := by
-  change cubeTriLin _ = 0
+  change cubeTriLin _ _ _ = 0
   rw [cubeTriLin.map_sum₁₂₃]
   apply Fintype.sum_eq_zero
   intro i

@@ -262,13 +262,14 @@ lemma accQuad_ext {S T : (SMCharges n).charges}
 
 /-- The trilinear function defining the cubic. -/
 @[simps!]
-def cubeTriLin : TriLinearSymm (SMCharges n).charges where
-  toFun S := ∑ i, (6 * ((Q S.1 i) * (Q S.2.1 i) * (Q S.2.2 i))
+def cubeTriLin : TriLinearSymm (SMCharges n).charges := TriLinearSymm.mk₃
+  (fun S => ∑ i, (6 * ((Q S.1 i) * (Q S.2.1 i) * (Q S.2.2 i))
     + 3 * ((U S.1 i) * (U S.2.1 i) * (U S.2.2 i))
     + 3 * ((D S.1 i) * (D S.2.1 i) * (D S.2.2 i))
     + 2 * ((L S.1 i) * (L S.2.1 i) * (L S.2.2 i))
-    +  ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i)))
-  map_smul₁' a S T R := by
+    +  ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))))
+  (by
+    intro a S T R
     simp only
     rw [Finset.mul_sum]
     apply Fintype.sum_congr
@@ -276,7 +277,9 @@ def cubeTriLin : TriLinearSymm (SMCharges n).charges where
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
     ring
-  map_add₁' S T R L := by
+  )
+  (by
+    intro S T R L
     simp only
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
@@ -284,16 +287,21 @@ def cubeTriLin : TriLinearSymm (SMCharges n).charges where
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
     ring
-  swap₁' S T L := by
+  )
+  (by
+    intro S T L
     simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring
-  swap₂' S T L := by
+  )
+  (by
+    intro S T L
     simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
     ring
+  )
 
 /-- The cubic acc. -/
 @[simp]
@@ -304,10 +312,8 @@ lemma accCube_ext {S T : (SMCharges n).charges}
     (h : ∀ j, ∑ i, ((fun a => a^3) ∘ toSpecies j S) i =
     ∑ i, ((fun a => a^3) ∘ toSpecies j T) i) :
     accCube S = accCube T := by
-  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply]
-  erw [← cubeTriLin.toFun_eq_coe]
-  rw [cubeTriLin]
-  simp only
+  simp only [HomogeneousCubic, accCube, cubeTriLin, TriLinearSymm.toCubic_apply,
+    TriLinearSymm.mk₃_toFun_apply_apply]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   ring_nf

@@ -84,9 +84,8 @@ lemma asLinear_val (S : linearParameters) : S.asLinear.val = S.asCharges := by
 
 lemma cubic (S : linearParameters) :
     accCube (S.asCharges) = - 54 * S.Q'^3 - 18 * S.Q' * S.Y ^ 2 + S.E'^3 := by
-  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, neg_mul]
-  erw [← TriLinearSymm.toFun_eq_coe]
-  rw [cubeTriLin]
+  simp only [HomogeneousCubic, accCube, cubeTriLin, TriLinearSymm.toCubic_apply,
+    TriLinearSymm.mk₃_toFun_apply_apply]
   simp only [SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton]
   repeat erw [speciesVal]

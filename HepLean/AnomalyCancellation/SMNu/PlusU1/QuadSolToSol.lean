@@ -29,7 +29,7 @@ open BigOperators
 variable {n : ℕ}
 /-- A helper function for what follows. -/
 @[simp]
-def α₁ (S : (PlusU1 n).QuadSols) : ℚ := - 3 * cubeTriLin (S.val, S.val, (BL n).val)
+def α₁ (S : (PlusU1 n).QuadSols) : ℚ := - 3 * cubeTriLin S.val S.val (BL n).val
 
 /-- A helper function for what follows. -/
 @[simp]

@@ -54,8 +54,8 @@ lemma lineY₃B₃Charges_cubic (a b : ℚ) : accCube (lineY₃B₃Charges a b).
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   erw [Y₃.cubicSol,  B₃.cubicSol]
-  rw [show cubeTriLin (Y₃.val, Y₃.val, B₃.val) = 0 by rfl]
-  rw [show cubeTriLin (B₃.val, B₃.val, Y₃.val) = 0 by rfl]
+  rw [show cubeTriLin Y₃.val Y₃.val B₃.val = 0 by rfl]
+  rw [show cubeTriLin B₃.val B₃.val Y₃.val = 0 by rfl]
   simp
 
 /-- The line through $Y_3$ and $B_3$ as `Sols`. -/
@@ -63,9 +63,9 @@ def lineY₃B₃ (a b : ℚ) : MSSMACC.Sols :=
   AnomalyFreeMk' (lineY₃B₃Charges a b) (lineY₃B₃Charges_quad a b) (lineY₃B₃Charges_cubic a b)
 
 lemma doublePoint_Y₃_B₃ (R : MSSMACC.LinSols) :
-    cubeTriLin (Y₃.val, B₃.val, R.val) = 0 := by
-  rw [← TriLinearSymm.toFun_eq_coe]
-  simp only [cubeTriLin, cubeTriLinToFun, MSSMSpecies_numberCharges]
+    cubeTriLin Y₃.val B₃.val R.val = 0 := by
+  simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
+    MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
   rw [Fin.sum_univ_three]
   rw [B₃_val, Y₃_val]
   rw [B₃AsCharge, Y₃AsCharge]
@@ -83,8 +83,8 @@ lemma doublePoint_Y₃_B₃ (R : MSSMACC.LinSols) :
   linear_combination -(12 * h2) + 9 * h1 + 3 * h3
 
 lemma lineY₃B₃_doublePoint (R : MSSMACC.LinSols) (a b : ℚ) :
-    cubeTriLin ((lineY₃B₃ a b).val, (lineY₃B₃ a b).val, R.val) = 0 := by
-  change cubeTriLin (a • Y₃.val + b • B₃.val , a • Y₃.val + b • B₃.val, R.val ) = 0
+    cubeTriLin (lineY₃B₃ a b).val (lineY₃B₃ a b).val R.val = 0 := by
+  change cubeTriLin (a • Y₃.val + b • B₃.val) (a • Y₃.val + b • B₃.val) R.val = 0
   rw [cubeTriLin.map_add₂, cubeTriLin.map_add₁, cubeTriLin.map_add₁]
   repeat rw [cubeTriLin.map_smul₂, cubeTriLin.map_smul₁]
   rw [doublePoint_B₃_B₃, doublePoint_Y₃_Y₃, doublePoint_Y₃_B₃]

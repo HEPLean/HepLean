@@ -55,7 +55,7 @@ open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
 instance instFun (V : Type) [AddCommMonoid V] [Module ℚ V] :
-    FunLike (BiLinearSymm V) (V) (V →ₗ[ℚ] ℚ ) where
+    FunLike (BiLinearSymm V) V (V →ₗ[ℚ] ℚ) where
   coe f := f.toFun
   coe_injective' f g h := by
     cases f
@@ -180,92 +180,119 @@ lemma map_smul (f : HomogeneousCubic V) (a : ℚ) (S : V) : f (a • S) = a ^ 3 
 end HomogeneousCubic
 
 /-- The structure of a symmetric trilinear function. -/
-structure TriLinearSymm' (V : Type) [AddCommMonoid V] [Module ℚ V] extends
+structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] extends
     V →ₗ[ℚ] V →ₗ[ℚ] V →ₗ[ℚ] ℚ where
-  swap₁' : ∀ S T L, toFun S T L = toFun T S L
+  swap₁' : ∀ S T L, toFun S T L  = toFun T S L
   swap₂' : ∀ S T L, toFun S T L = toFun S L T
-
-/-- The structure of a symmetric trilinear function. -/
-structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] where
-  /-- The underlying function. -/
-  toFun : V × V × V → ℚ
-  map_smul₁' : ∀ a S T L, toFun (a • S, T, L) = a * toFun (S, T, L)
-  map_add₁' : ∀ S1 S2 T L, toFun (S1 + S2, T, L) = toFun (S1, T, L) + toFun (S2, T, L)
-  swap₁' : ∀ S T L, toFun (S, T, L) = toFun (T, S, L)
-  swap₂' : ∀ S T L, toFun (S, T, L) = toFun (S, L, T)
 
 namespace TriLinearSymm
 open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
-instance instFun : FunLike (TriLinearSymm V) (V × V × V) ℚ where
+instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ )  where
   coe f := f.toFun
   coe_injective' f g h := by
     cases f
     cases g
     simp_all
 
-lemma toFun_eq_coe (f : TriLinearSymm V) : f.toFun = f := rfl
+/-- The construction of a symmetric trilinear map from smul and map_add in the first factor,
+and two swap. -/
+@[simps!]
+def mk₃ (f : V × V × V→ ℚ) (map_smul : ∀ a S T L, f (a • S, T, L) = a * f (S, T, L))
+    (map_add : ∀ S1 S2 T L, f (S1 + S2, T, L) = f (S1, T, L) + f (S2, T, L))
+    (swap₁ : ∀ S T L, f (S, T, L) = f (T, S, L))
+    (swap₂ : ∀ S T L, f (S, T, L) = f (S, L, T)) : TriLinearSymm V where
+  toFun := fun S => (BiLinearSymm.mk₂ (fun T => f (S, T))
+    (by
+      intro a T L
+      simp only
+      rw [swap₁, map_smul, swap₁])
+    (by
+      intro S1 S2 T
+      simp only
+      rw [swap₁, map_add, swap₁, swap₁ S2 S T])
+    (by
+      intro L T
+      simp only
+      rw [swap₂])).toLinearMap
+  map_add' S1 S2 := by
+    apply LinearMap.ext
+    intro T
+    apply LinearMap.ext
+    intro S
+    simp [BiLinearSymm.mk₂, map_add]
+  map_smul' a S := by
+    apply LinearMap.ext
+    intro T
+    apply LinearMap.ext
+    intro L
+    simp [BiLinearSymm.mk₂, map_smul]
+  swap₁' := swap₁
+  swap₂' := swap₂
 
-lemma swap₁ (f : TriLinearSymm V) (S T L : V) : f (S, T, L) = f (T, S, L) :=
+
+lemma swap₁ (f : TriLinearSymm V) (S T L : V) : f S T L = f T S L :=
   f.swap₁' S T L
 
-lemma swap₂ (f : TriLinearSymm V) (S T L : V) : f (S, T, L) = f (S, L, T) :=
+lemma swap₂ (f : TriLinearSymm V) (S T L : V) : f S T L = f S L T :=
   f.swap₂' S T L
 
-lemma swap₃ (f : TriLinearSymm V) (S T L : V) : f (S, T, L) = f (L, T, S) := by
+lemma swap₃ (f : TriLinearSymm V) (S T L : V) : f S T L = f L T S := by
   rw [f.swap₁, f.swap₂, f.swap₁]
 
 lemma map_smul₁ (f : TriLinearSymm V) (a : ℚ) (S T L : V) :
-    f (a • S, T, L) = a * f (S, T, L) :=
-  f.map_smul₁' a S T L
+    f (a • S) T L = a * f S T L := by
+  erw [f.map_smul a S]
+  rfl
 
 lemma map_smul₂ (f : TriLinearSymm V) (S : V) (a : ℚ) (T L : V) :
-    f (S, a • T, L) = a * f (S, T, L) := by
+    f S (a • T) L = a * f S T L := by
   rw [f.swap₁, f.map_smul₁, f.swap₁]
 
 lemma map_smul₃ (f : TriLinearSymm V) (S T : V) (a : ℚ) (L : V) :
-    f (S, T, a • L) = a * f (S, T, L) := by
+    f S T (a • L) = a * f S T L := by
   rw [f.swap₃, f.map_smul₁, f.swap₃]
 
 lemma map_add₁ (f : TriLinearSymm V) (S1 S2 T L : V) :
-    f (S1 + S2, T, L) = f (S1, T, L) + f (S2, T, L) :=
-  f.map_add₁' S1 S2 T L
+    f (S1 + S2) T L = f S1 T L + f S2 T L := by
+  erw [f.map_add]
+  rfl
 
 lemma map_add₂ (f : TriLinearSymm V) (S T1 T2 L : V) :
-    f (S, T1 + T2, L) = f (S, T1, L) + f (S, T2, L) := by
+    f S (T1 + T2) L = f S T1 L + f S T2 L := by
   rw [f.swap₁, f.map_add₁, f.swap₁ S T1, f.swap₁ S T2]
 
 lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
-    f (S, T, L1 + L2) = f (S, T, L1) + f (S, T, L2) := by
+    f S T (L1 + L2) = f S T L1 + f S T L2 := by
   rw [f.swap₃, f.map_add₁, f.swap₃, f.swap₃ L2 T S]
 
 /-- Fixing the second and third input vectors, the resulting linear map. -/
 def toLinear₁  (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
-  toFun S := f (S, T, L)
+  toFun S := f S T L
   map_add' S1 S2 := by
     simp only [f.map_add₁]
   map_smul' a S := by
     simp only [f.map_smul₁]
     rfl
 
-lemma toLinear₁_apply (f : TriLinearSymm V) (S T L : V) : f (S, T, L) = f.toLinear₁ T L S := rfl
+lemma toLinear₁_apply (f : TriLinearSymm V) (S T L : V) : f S T L = f.toLinear₁ T L S := rfl
 
 lemma map_sum₁ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
-    f (∑ i, S i, T, L) = ∑ i, f (S i, T, L) := by
+    f (∑ i, S i) T L = ∑ i, f (S i) T L := by
   rw [f.toLinear₁_apply]
   rw [map_sum]
   rfl
 
 lemma map_sum₂ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
-    f ( T, ∑ i, S i, L) = ∑ i, f (T, S i, L) := by
+    f T (∑ i, S i) L = ∑ i, f T (S i) L := by
   rw [swap₁, map_sum₁]
   apply Fintype.sum_congr
   intro i
   rw [swap₁]
 
 lemma map_sum₃ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
-    f ( T, L, ∑ i, S i) = ∑ i, f (T, L, S i) := by
+    f T L (∑ i, S i) = ∑ i, f T L (S i) := by
   rw [swap₃, map_sum₁]
   apply Fintype.sum_congr
   intro i
@@ -273,7 +300,7 @@ lemma map_sum₃ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : 
 
 lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
     (T : Fin n2 → V) (L : Fin n3 → V) :
-    f (∑ i, S i, ∑ i, T i, ∑ i, L i) = ∑ i, ∑ k, ∑ l, f (S i,  T k,  L l) := by
+    f (∑ i, S i) (∑ i, T i) (∑ i, L i) = ∑ i, ∑ k, ∑ l, f (S i) (T k) (L l) := by
   rw [map_sum₁]
   apply Fintype.sum_congr
   intro i
@@ -287,7 +314,7 @@ lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
 @[simps!]
 def toCubic {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
     (τ : TriLinearSymm charges) : HomogeneousCubic charges where
-  toFun S := τ (S, S, S)
+  toFun S := τ S S S
   map_smul' a S := by
     simp only [smul_eq_mul]
     rw [τ.map_smul₁, τ.map_smul₂, τ.map_smul₃]
@@ -296,7 +323,7 @@ def toCubic {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
 lemma toCubic_add {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
     (τ : TriLinearSymm charges) (S T : charges) :
     τ.toCubic (S + T) = τ.toCubic S +
-    τ.toCubic T + 3 * τ (S, S, T) + 3 * τ (T, T, S) := by
+    τ.toCubic T + 3 * τ S S T + 3 * τ T T S := by
   simp only [HomogeneousCubic, toCubic_apply]
   rw [τ.map_add₁, τ.map_add₂, τ.map_add₂, τ.map_add₃, τ.map_add₃, τ.map_add₃, τ.map_add₃]
   rw [τ.swap₂ S T S, τ.swap₁ T S S, τ.swap₂ S T S, τ.swap₂ T S T, τ.swap₁ S T T, τ.swap₂ T S T]
