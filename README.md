@@ -14,7 +14,7 @@
 
 - A list of 'Frequently asked questions' can be found on the Wiki for this project: 
 
-https://github.com/HEPLean/HepLean/wiki/The-answers-to-some-questions
+  https://github.com/HEPLean/HepLean/wiki/The-answers-to-some-questions
 - Feel free to connect on the Lean Zulip channel: 
 
   https://leanprover.zulipchat.com
