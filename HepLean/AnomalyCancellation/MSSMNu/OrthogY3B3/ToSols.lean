@@ -46,12 +46,12 @@ instance (R : MSSMACC.AnomalyFreePerp) : Decidable (lineEqProp R) := by
 /-- A condition on `Sols` which we will show in `linEqPropSol_iff_proj_linEqProp` that is equivalent
  to the condition that the `proj` of the solution satisfies `lineEqProp`. -/
 def lineEqPropSol (R : MSSMACC.Sols) : Prop :=
-  cubeTriLin (R.val, R.val, Y₃.val) * quadBiLin (B₃.val, R.val) -
-  cubeTriLin (R.val, R.val, B₃.val) * quadBiLin (Y₃.val, R.val) = 0
+  cubeTriLin (R.val, R.val, Y₃.val) * quadBiLin B₃.val R.val -
+  cubeTriLin (R.val, R.val, B₃.val) * quadBiLin Y₃.val R.val = 0
 
 /-- A rational which appears in `toSolNS` acting on sols, and which been zero is
 equivalent to satisfying `lineEqPropSol`. -/
-def lineEqCoeff (T : MSSMACC.Sols) : ℚ := dot (Y₃.val, B₃.val) * α₃ (proj T.1.1)
+def lineEqCoeff (T : MSSMACC.Sols) : ℚ := dot Y₃.val B₃.val * α₃ (proj T.1.1)
 
 lemma lineEqPropSol_iff_lineEqCoeff_zero (T : MSSMACC.Sols) :
     lineEqPropSol T ↔ lineEqCoeff T = 0 := by
@@ -59,7 +59,7 @@ lemma lineEqPropSol_iff_lineEqCoeff_zero (T : MSSMACC.Sols) :
   simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero,
     false_or]
   rw [cube_proj_proj_B₃, cube_proj_proj_Y₃, quad_B₃_proj, quad_Y₃_proj]
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl]
+  rw [show dot Y₃.val B₃.val = 108 by rfl]
   simp only [Fin.isValue, Fin.reduceFinMk, OfNat.ofNat_ne_zero, false_or]
   ring_nf
   rw [mul_comm _ 1259712, mul_comm _ 1259712, ← mul_sub]
@@ -70,10 +70,10 @@ lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
   rw [lineEqPropSol_iff_lineEqCoeff_zero, lineEqCoeff, lineEqProp]
   apply Iff.intro
   intro h
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
   simp at h
   rw [α₁_proj, α₂_proj, h]
-  simp only [neg_zero, dot_toFun, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
+  simp only [neg_zero, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
   intro h
   rw [h.2.2]
   simp
@@ -82,7 +82,7 @@ lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the quadratic surface. -/
 def inQuadProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
-    quadBiLin (R.val, R.val) = 0 ∧ quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0
+    quadBiLin R.val R.val = 0 ∧ quadBiLin Y₃.val R.val = 0 ∧ quadBiLin B₃.val R.val = 0
 
 instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inQuadProp R) := by
   apply And.decidable
@@ -90,23 +90,23 @@ instance (R : MSSMACC.AnomalyFreePerp) : Decidable (inQuadProp R) := by
 /-- A condition which is satisfied if the plane spanned by the solutions `R`, `Y₃` and `B₃`
 lies entirely in the quadratic surface. -/
 def inQuadSolProp (R : MSSMACC.Sols) : Prop :=
-    quadBiLin (Y₃.val, R.val) = 0 ∧ quadBiLin (B₃.val, R.val) = 0
+    quadBiLin Y₃.val R.val = 0 ∧ quadBiLin B₃.val R.val = 0
 
 /-- A rational which has two properties. It is zero for a solution `T` if and only if
 that solution satisfies `inQuadSolProp`. It appears in the definition of `inQuadProj`. -/
 def quadCoeff (T : MSSMACC.Sols) : ℚ :=
-    2 * dot (Y₃.val, B₃.val) ^ 2 *
-    (quadBiLin (Y₃.val, T.val) ^ 2 + quadBiLin (B₃.val, T.val) ^ 2)
+    2 * dot Y₃.val B₃.val ^ 2 *
+    (quadBiLin Y₃.val T.val ^ 2 + quadBiLin B₃.val T.val ^ 2)
 
 lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : inQuadSolProp T ↔ quadCoeff T = 0 := by
   apply Iff.intro
   intro h
   rw [quadCoeff, h.1, h.2]
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
     zero_pow, add_zero, mul_zero]
   intro h
   rw [quadCoeff] at h
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
   simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
     not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
   apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
@@ -123,10 +123,10 @@ lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
   apply Iff.intro
   intro h
   rw [h.1, h.2]
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
   intro h
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk , mul_eq_zero,
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+  simp only [Fin.isValue, Fin.reduceFinMk , mul_eq_zero,
     OfNat.ofNat_ne_zero, or_self, false_or] at h
   rw [h.2.1, h.2.2]
   simp
@@ -149,7 +149,7 @@ def inCubeSolProp (R : MSSMACC.Sols) : Prop :=
 /-- A rational which has two properties. It is zero for a solution `T` if and only if
 that solution satisfies `inCubeSolProp`. It appears in the definition of `inLineEqProj`. -/
 def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
-    3 * dot (Y₃.val, B₃.val) ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) ^ 2  +
+    3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin (T.val, T.val, Y₃.val) ^ 2  +
     cubeTriLin (T.val, T.val, B₃.val) ^ 2 )
 
 lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
@@ -157,11 +157,11 @@ lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
   apply Iff.intro
   intro h
   rw [cubicCoeff, h.1, h.2]
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
     zero_pow, add_zero, mul_zero]
   intro h
   rw [cubicCoeff] at h
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
   simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
     not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
   apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
@@ -176,10 +176,10 @@ lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
   apply Iff.intro
   intro h
   rw [h.1, h.2]
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
   intro h
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h
-  simp only [dot_toFun, Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
     not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
   rw [h.2.1, h.2.2]
   simp
@@ -254,7 +254,7 @@ lemma toSolNS_proj (T : notInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val :=
   rw [α₁_proj, α₂_proj]
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
-  have h1 : α₃ (proj T.val.toLinSols) * dot (Y₃.val, B₃.val) = lineEqCoeff T.val := by
+  have h1 : α₃ (proj T.val.toLinSols) * dot Y₃.val B₃.val = lineEqCoeff T.val := by
     rw [lineEqCoeff]
     ring
   rw [h1]
@@ -273,12 +273,11 @@ def inLineEqToSol : inLineEq × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, c�
 /-- On elements of `inLineEqSol` a right-inverse to `inLineEqSol`. -/
 def inLineEqProj (T : inLineEqSol) : inLineEq × ℚ × ℚ × ℚ :=
   (⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
-  (quadCoeff T.val)⁻¹ * quadBiLin (B₃.val, T.val.val),
-  (quadCoeff T.val)⁻¹ * (- quadBiLin (Y₃.val, T.val.val)),
+  (quadCoeff T.val)⁻¹ * quadBiLin B₃.val T.val.val,
+  (quadCoeff T.val)⁻¹ * (- quadBiLin Y₃.val T.val.val),
   (quadCoeff T.val)⁻¹ * (
-  quadBiLin (B₃.val, T.val.val) * (dot (B₃.val, T.val.val) - dot (Y₃.val, T.val.val))
-  - quadBiLin (Y₃.val, T.val.val) * (dot (Y₃.val, T.val.val) - 2 * dot (B₃.val, T.val.val))))
-
+  quadBiLin B₃.val T.val.val * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
+  - quadBiLin Y₃.val T.val.val * (dot Y₃.val T.val.val - 2 * dot B₃.val T.val.val)))
 
 lemma inLineEqTo_smul (R : inLineEq) (c₁ c₂ c₃ d : ℚ) :
     inLineEqToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inLineEqToSol (R, c₁, c₂, c₃) := by
@@ -297,8 +296,8 @@ lemma inLineEqToSol_proj (T : inLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
   rw [quad_proj, quad_Y₃_proj, quad_B₃_proj]
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
-  have h1 : (quadBiLin (Y₃.val, (T).val.val) ^ 2 * dot (Y₃.val, B₃.val) ^ 2 * 2 +
-      dot (Y₃.val, B₃.val) ^ 2 * quadBiLin (B₃.val, (T).val.val) ^ 2 * 2) = quadCoeff T.val := by
+  have h1 : (quadBiLin Y₃.val T.val.val ^ 2 * dot Y₃.val B₃.val ^ 2 * 2 +
+      dot Y₃.val B₃.val ^ 2 * quadBiLin B₃.val T.val.val ^ 2 * 2) = quadCoeff T.val := by
     rw [quadCoeff]
     ring
   rw [h1]
@@ -329,9 +328,9 @@ def inQuadProj (T : inQuadSol) : inQuad × ℚ × ℚ × ℚ :=
   (cubicCoeff T.val)⁻¹ * (cubeTriLin (T.val.val, T.val.val, B₃.val)),
   (cubicCoeff T.val)⁻¹ * (- cubeTriLin (T.val.val, T.val.val, Y₃.val)),
   (cubicCoeff T.val)⁻¹ *
-  (cubeTriLin (T.val.val, T.val.val, B₃.val) * (dot (B₃.val, T.val.val) - dot (Y₃.val, T.val.val))
+  (cubeTriLin (T.val.val, T.val.val, B₃.val) * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
   - cubeTriLin (T.val.val, T.val.val, Y₃.val)
-    * (dot (Y₃.val, T.val.val) - 2 * dot (B₃.val, T.val.val))))
+    * (dot Y₃.val T.val.val - 2 * dot B₃.val T.val.val)))
 
 
 lemma inQuadToSol_proj (T : inQuadSol) : inQuadToSol (inQuadProj T) = T.val := by
@@ -343,8 +342,8 @@ lemma inQuadToSol_proj (T : inQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
   rw [cube_proj, cube_proj_proj_B₃, cube_proj_proj_Y₃]
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
-  have h1 : (cubeTriLin (T.val.val, T.val.val, Y₃.val) ^ 2 * dot (Y₃.val, B₃.val) ^ 3 * 3 +
-      dot (Y₃.val, B₃.val) ^ 3 * cubeTriLin (T.val.val, T.val.val, B₃.val) ^ 2
+  have h1 : (cubeTriLin (T.val.val, T.val.val, Y₃.val) ^ 2 * dot Y₃.val B₃.val ^ 3 * 3 +
+      dot Y₃.val B₃.val ^ 3 * cubeTriLin (T.val.val, T.val.val, B₃.val) ^ 2
        * 3) = cubicCoeff T.val := by
     rw [cubicCoeff]
     ring
@@ -378,9 +377,9 @@ def inQuadCubeProj (T : inQuadCubeSol) : inQuadCube × ℚ × ℚ × ℚ :=
   (⟨⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
     (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1⟩,
     (inCubeSolProp_iff_proj_inCubeProp T.val).mp T.prop.2.2⟩,
-  (dot (Y₃.val, B₃.val))⁻¹ * (dot (Y₃.val, T.val.val) - dot (B₃.val, T.val.val)),
-  (dot (Y₃.val, B₃.val))⁻¹ * (2 * dot (B₃.val, T.val.val) - dot (Y₃.val, T.val.val)),
-  (dot (Y₃.val, B₃.val))⁻¹ * 1)
+  (dot Y₃.val B₃.val)⁻¹ * (dot Y₃.val T.val.val - dot B₃.val T.val.val),
+  (dot Y₃.val B₃.val)⁻¹ * (2 * dot B₃.val T.val.val - dot Y₃.val T.val.val),
+  (dot Y₃.val B₃.val)⁻¹ * 1)
 
 lemma inQuadCubeToSol_proj (T : inQuadCubeSol) :
     inQuadCubeToSol (inQuadCubeProj T) = T.val := by
@@ -393,7 +392,7 @@ lemma inQuadCubeToSol_proj (T : inQuadCubeSol) :
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel]
   simp only [one_smul]
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl]
+  rw [show dot Y₃.val B₃.val = 108 by rfl]
   simp
 
 /-- Given an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` a solution. We will

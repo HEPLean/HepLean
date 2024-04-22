@@ -190,7 +190,7 @@ lemma familyUniversal_accYY (S : (SMνCharges 1).charges) :
   ring
 
 lemma familyUniversal_quadBiLin (S : (SMνCharges 1).charges) (T : (SMνCharges n).charges) :
-    quadBiLin (familyUniversal n S, T) =
+    quadBiLin (familyUniversal n S) T =
     S (0 : Fin 6) * ∑ i, Q T i - 2 * S (1 : Fin 6) * ∑ i, U T i + S (2 : Fin 6) *∑ i, D T i -
     S (3 : Fin 6) * ∑ i, L T i + S (4 : Fin 6) * ∑ i, E T i  := by
   rw [quadBiLin_decomp]

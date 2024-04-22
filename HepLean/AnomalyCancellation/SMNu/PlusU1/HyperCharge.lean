@@ -56,7 +56,7 @@ namespace Y
 variable {n : ℕ}
 
 lemma on_quadBiLin (S : (PlusU1 n).charges) :
-    quadBiLin ((Y n).val, S) = accYY S := by
+    quadBiLin (Y n).val S = accYY S := by
   erw [familyUniversal_quadBiLin]
   rw [accYY_decomp]
   simp only [Fin.isValue, Y₁_val, SMνSpecies_numberCharges, toSpecies_apply, one_mul, mul_neg,
@@ -64,7 +64,7 @@ lemma on_quadBiLin (S : (PlusU1 n).charges) :
   ring_nf
   simp
 
-lemma on_quadBiLin_AFL (S : (PlusU1 n).LinSols) : quadBiLin ((Y n).val, S.val) = 0 := by
+lemma on_quadBiLin_AFL (S : (PlusU1 n).LinSols) : quadBiLin (Y n).val S.val = 0 := by
   rw [on_quadBiLin]
   rw [YYsol S]
 
@@ -123,8 +123,8 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
   erw [TriLinearSymm.toCubic_add, cubeSol (b • (Y n)), accCube.map_smul]
   repeat rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [on_cubeTriLin_AFL]
-  simp only [accCube, TriLinearSymm.toCubic_toFun, cubeTriLin_toFun, Fin.isValue, add_zero, Y_val,
-    mul_zero]
+  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, cubeTriLin_toFun, Fin.isValue,
+    add_zero, Y_val, mul_zero]
   ring
 
 lemma add_AFQ_cube (S : (PlusU1 n).QuadSols) (a b : ℚ) :

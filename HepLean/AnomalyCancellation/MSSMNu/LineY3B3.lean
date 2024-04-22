@@ -40,7 +40,7 @@ lemma lineY₃B₃Charges_quad (a b : ℚ) : accQuad (lineY₃B₃Charges a b).v
   rw [quadBiLin.toHomogeneousQuad.map_smul]
   rw [quadBiLin.map_smul₁, quadBiLin.map_smul₂]
   erw [quadSol Y₃.1, quadSol B₃.1]
-  simp only [mul_zero, add_zero, quadBiLin_toFun, Fin.isValue, Fin.reduceFinMk, zero_add,
+  simp only [mul_zero, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add,
     mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
   apply Or.inr ∘ Or.inr
   rfl

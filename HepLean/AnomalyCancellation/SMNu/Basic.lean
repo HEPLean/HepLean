@@ -230,21 +230,23 @@ lemma accYY_ext {S T : (SMνCharges n).charges}
 
 /-- The quadratic bilinear map. -/
 @[simps!]
-def quadBiLin : BiLinearSymm (SMνCharges n).charges where
-  toFun S := ∑ i, (Q S.1 i * Q S.2 i +
+def quadBiLin : BiLinearSymm (SMνCharges n).charges := BiLinearSymm.mk₂
+  (fun S => ∑ i, (Q S.1 i * Q S.2 i +
     - 2 * (U S.1 i * U S.2 i) +
     D S.1 i * D S.2 i +
     (- 1) * (L S.1 i * L S.2 i) +
-    E S.1 i * E S.2 i)
-  map_smul₁' a S T := by
+    E S.1 i * E S.2 i))
+  (by
+    intro a S T
     simp only
     rw [Finset.mul_sum]
     apply Fintype.sum_congr
     intro i
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
-    ring
-  map_add₁' S T R := by
+    ring)
+  (by
+    intro S T R
     simp only
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
@@ -252,19 +254,20 @@ def quadBiLin : BiLinearSymm (SMνCharges n).charges where
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue, neg_mul,
       one_mul]
-    ring
-  swap' S T := by
+    ring)
+  (by
+    intro S T
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul]
     apply Fintype.sum_congr
     intro i
-    ring
+    ring)
 
 lemma quadBiLin_decomp (S T : (SMνCharges n).charges) :
-    quadBiLin (S, T) = ∑ i, Q S i * Q T i  - 2 *  ∑ i, U S i * U T i +
+    quadBiLin S T = ∑ i, Q S i * Q T i  - 2 *  ∑ i, U S i * U T i +
        ∑ i, D S i * D T i -  ∑ i, L S i * L T i +  ∑ i, E S i * E T i := by
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
-  simp only
+  simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul, add_left_inj]

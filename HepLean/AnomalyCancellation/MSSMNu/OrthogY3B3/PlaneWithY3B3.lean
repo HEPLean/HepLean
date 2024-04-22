@@ -53,8 +53,8 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
     (h : (planeY₃B₃ R a b c).val = (planeY₃B₃ R a' b' c').val) :
      a = a' ∧ b = b' ∧ c = c' := by
   rw [planeY₃B₃_val, planeY₃B₃_val] at h
-  have h1 := congrArg (fun S => dot (Y₃.val, S)) h
-  have h2 := congrArg (fun S => dot (B₃.val, S)) h
+  have h1 := congrArg (fun S => dot Y₃.val S) h
+  have h2 := congrArg (fun S => dot B₃.val S) h
   simp only [ Fin.isValue, ACCSystemCharges.chargesAddCommMonoid_add, Fin.reduceFinMk] at h1 h2
   erw [dot.map_add₂, dot.map_add₂] at h1 h2
   erw [dot.map_add₂ Y₃.val (a' • Y₃.val + b' • B₃.val) (c' • R.val)] at h1
@@ -64,10 +64,10 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
   rw [dot.map_smul₂, dot.map_smul₂, dot.map_smul₂] at h1 h2
   rw [R.perpY₃] at h1
   rw [R.perpB₃] at h2
-  rw [show dot (Y₃.val, Y₃.val) = 216 by rfl] at h1
-  rw [show dot (B₃.val, B₃.val) = 108 by rfl] at h2
-  rw [show dot (Y₃.val, B₃.val) = 108 by rfl] at h1
-  rw [show dot (B₃.val, Y₃.val) = 108 by rfl] at h2
+  rw [show dot Y₃.val Y₃.val = 216 by rfl] at h1
+  rw [show dot B₃.val B₃.val = 108 by rfl] at h2
+  rw [show dot Y₃.val B₃.val = 108 by rfl] at h1
+  rw [show dot B₃.val Y₃.val = 108 by rfl] at h2
   simp_all
   have ha : a = a' := by
     linear_combination h1 / 108 + -1 * h2 / 108
@@ -102,15 +102,15 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
 
 
 lemma planeY₃B₃_quad (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
-    accQuad (planeY₃B₃ R a b c).val = c * (2 * a * quadBiLin (Y₃.val, R.val)
-    + 2 * b * quadBiLin (B₃.val, R.val) + c * quadBiLin (R.val, R.val)) := by
+    accQuad (planeY₃B₃ R a b c).val = c * (2 * a * quadBiLin Y₃.val R.val
+    + 2 * b * quadBiLin B₃.val R.val + c * quadBiLin R.val R.val) := by
   rw [planeY₃B₃_val]
   erw [BiLinearSymm.toHomogeneousQuad_add]
   erw [lineY₃B₃Charges_quad]
   rw [quadBiLin.toHomogeneousQuad.map_smul]
   rw [quadBiLin.map_add₁, quadBiLin.map_smul₁, quadBiLin.map_smul₁]
   rw [quadBiLin.map_smul₂, quadBiLin.map_smul₂]
-  rw [show (BiLinearSymm.toHomogeneousQuad quadBiLin) R.val = quadBiLin (R.val, R.val) by rfl]
+  rw [show (BiLinearSymm.toHomogeneousQuad quadBiLin) R.val = quadBiLin R.val R.val by rfl]
   ring
 
 lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
@@ -130,9 +130,9 @@ lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
 /-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the quadratic,
 as `LinSols`. -/
 def lineQuadAFL (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) : MSSMACC.LinSols :=
-  planeY₃B₃ R (c2 * quadBiLin (R.val, R.val) - 2 * c3 * quadBiLin (B₃.val, R.val))
-  (2 * c3 * quadBiLin (Y₃.val, R.val) - c1 * quadBiLin (R.val, R.val))
-  (2 * c1 * quadBiLin (B₃.val, R.val) - 2 * c2 * quadBiLin (Y₃.val, R.val))
+  planeY₃B₃ R (c2 * quadBiLin R.val R.val - 2 * c3 * quadBiLin B₃.val R.val)
+  (2 * c3 * quadBiLin Y₃.val R.val - c1 * quadBiLin R.val R.val)
+  (2 * c1 * quadBiLin B₃.val R.val - 2 * c2 * quadBiLin Y₃.val R.val)
 
 lemma lineQuadAFL_quad (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) :
     accQuad (lineQuadAFL R c1 c2 c3).val = 0 := by
@@ -146,10 +146,10 @@ def lineQuad (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) : MSSMACC.QuadSols :
   AnomalyFreeQuadMk' (lineQuadAFL R c1 c2 c3) (lineQuadAFL_quad R c1 c2 c3)
 
 lemma lineQuad_val (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) :
-    (lineQuad R c1 c2 c3).val = (planeY₃B₃ R
-    (c2 * quadBiLin (R.val, R.val) - 2 * c3 * quadBiLin (B₃.val, R.val))
-    (2 * c3 * quadBiLin (Y₃.val, R.val) - c1 * quadBiLin (R.val, R.val))
-    (2 * c1 * quadBiLin (B₃.val, R.val) - 2 * c2 * quadBiLin (Y₃.val, R.val))).val  := by
+  (lineQuad R c1 c2 c3).val = (planeY₃B₃ R
+  (c2 * quadBiLin R.val R.val - 2 * c3 * quadBiLin B₃.val R.val)
+  (2 * c3 * quadBiLin Y₃.val R.val - c1 * quadBiLin R.val R.val)
+  (2 * c1 * quadBiLin B₃.val R.val - 2 * c2 * quadBiLin Y₃.val R.val)).val  := by
   rfl
 
 lemma lineQuad_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
@@ -163,26 +163,26 @@ lemma lineQuad_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
 
 /-- A helper function to simplify following expressions. -/
 def α₁ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-  (3 * cubeTriLin (T.val, T.val, B₃.val) * quadBiLin (T.val, T.val) -
-   2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin (B₃.val, T.val))
+  (3 * cubeTriLin (T.val, T.val, B₃.val) * quadBiLin T.val T.val -
+    2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin B₃.val T.val)
 
-/-- A helper function to simplify following expressions. -/
-def α₂ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-  (2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin (Y₃.val, T.val) -
-  3 * cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin (T.val, T.val))
+  /-- A helper function to simplify following expressions. -/
+  def α₂ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
+    (2 * cubeTriLin (T.val, T.val, T.val) * quadBiLin Y₃.val T.val -
+    3 * cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin T.val T.val)
 
-/-- A helper function to simplify following expressions. -/
-def α₃ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-  6 * ((cubeTriLin (T.val, T.val, Y₃.val)) * quadBiLin (B₃.val, T.val) -
-      (cubeTriLin (T.val, T.val, B₃.val)) * quadBiLin (Y₃.val, T.val))
+  /-- A helper function to simplify following expressions. -/
+  def α₃ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
+    6 * ((cubeTriLin (T.val, T.val, Y₃.val)) * quadBiLin B₃.val T.val -
+        (cubeTriLin (T.val, T.val, B₃.val)) * quadBiLin Y₃.val T.val)
 
-lemma lineQuad_cube (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ) :
-    accCube (lineQuad R c₁ c₂ c₃).val =
-    - 4 * ( c₁ * quadBiLin (B₃.val, R.val) - c₂ * quadBiLin (Y₃.val, R.val)) ^ 2 *
-    ( α₁ R * c₁ + α₂ R * c₂ + α₃ R * c₃ ) := by
-  rw [lineQuad_val]
-  rw [planeY₃B₃_cubic, α₁, α₂, α₃]
-  ring
+  lemma lineQuad_cube (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ) :
+      accCube (lineQuad R c₁ c₂ c₃).val =
+      - 4 * ( c₁ * quadBiLin B₃.val R.val - c₂ * quadBiLin Y₃.val R.val) ^ 2 *
+      ( α₁ R * c₁ + α₂ R * c₂ + α₃ R * c₃ ) := by
+    rw [lineQuad_val]
+    rw [planeY₃B₃_cubic, α₁, α₂, α₃]
+    ring
 
 /-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the cubic. -/
 def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
@@ -220,21 +220,21 @@ lemma lineCube_quad (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
 section proj
 
 lemma α₃_proj  (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
-    6 * dot (Y₃.val, B₃.val) ^ 3 * (
-    cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin (B₃.val, T.val) -
-    cubeTriLin (T.val, T.val, B₃.val) * quadBiLin (Y₃.val, T.val)) := by
+    6 * dot Y₃.val B₃.val ^ 3 * (
+    cubeTriLin (T.val, T.val, Y₃.val) * quadBiLin B₃.val T.val -
+    cubeTriLin (T.val, T.val, B₃.val) * quadBiLin Y₃.val T.val) := by
   rw [α₃]
   rw [cube_proj_proj_Y₃, cube_proj_proj_B₃, quad_B₃_proj, quad_Y₃_proj]
   ring
 
 lemma α₂_proj (T : MSSMACC.Sols) : α₂ (proj T.1.1) =
-    - α₃ (proj T.1.1) * (dot (Y₃.val, T.val) - 2 * dot (B₃.val, T.val))   := by
+    - α₃ (proj T.1.1) * (dot Y₃.val T.val - 2 * dot B₃.val T.val)   := by
   rw [α₃_proj, α₂]
   rw [cube_proj_proj_Y₃, quad_Y₃_proj, quad_proj, cube_proj]
   ring
 
 lemma α₁_proj (T : MSSMACC.Sols) : α₁ (proj T.1.1) =
-    - α₃ (proj T.1.1) * (dot (B₃.val, T.val) - dot (Y₃.val, T.val))   := by
+    - α₃ (proj T.1.1) * (dot B₃.val T.val - dot Y₃.val T.val)   := by
   rw [α₃_proj, α₁]
   rw [cube_proj_proj_B₃, quad_B₃_proj, quad_proj, cube_proj]
   ring

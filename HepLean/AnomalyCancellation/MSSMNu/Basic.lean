@@ -270,13 +270,13 @@ lemma accYY_ext {S T : MSSMCharges.charges}
   rw [hd, hu]
   rfl
 
-/-- The symmetric bilinear form used to define the quadratic ACC. -/
 @[simps!]
-def quadBiLin  : BiLinearSymm MSSMCharges.charges where
-  toFun S := ∑ i, (Q S.1 i *  Q S.2 i + (- 2) * (U S.1 i *  U S.2 i) +
+def quadBiLin  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂ (
+  fun S => ∑ i, (Q S.1 i *  Q S.2 i + (- 2) * (U S.1 i *  U S.2 i) +
     D S.1 i *  D S.2 i + (- 1) * (L S.1 i * L S.2 i)  + E S.1 i * E S.2 i) +
-    (- Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2)
-  map_smul₁' a S T := by
+    (- Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2))
+  (by
+    intro a S T
     simp only
     rw [mul_add]
     congr 1
@@ -287,8 +287,9 @@ def quadBiLin  : BiLinearSymm MSSMCharges.charges where
     simp only [HSMul.hSMul, SMul.smul, toSMSpecies_apply, Fin.isValue, neg_mul, one_mul]
     ring
     simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, neg_mul, Hu_apply]
-    ring
-  map_add₁' S T R := by
+    ring)
+  (by
+    intro S T R
     simp only
     rw [add_assoc, ← add_assoc (-Hd S * Hd R + Hu S * Hu R) _ _]
     rw [add_comm (-Hd S * Hd R + Hu S * Hu R) _]
@@ -303,15 +304,17 @@ def quadBiLin  : BiLinearSymm MSSMCharges.charges where
       one_mul]
     ring
     rw [Hd.map_add, Hu.map_add]
-    ring
-  swap' S L := by
+    ring)
+  (by
+    intro S L
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, neg_mul, one_mul,
       Hd_apply, Fin.reduceFinMk, Hu_apply]
     congr 1
     rw [Fin.sum_univ_three, Fin.sum_univ_three]
     simp only [Fin.isValue]
     ring
-    ring
+    ring)
+
 
 /-- The quadratic ACC. -/
 @[simp]
@@ -323,10 +326,9 @@ lemma accQuad_ext {S T : (MSSMCharges).charges}
     ∑ i, ((fun a => a^2) ∘ toSMSpecies j T) i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accQuad S = accQuad T := by
-  simp only [accQuad, BiLinearSymm.toHomogeneousQuad_toFun]
+  simp only [HomogeneousQuadratic, accQuad, BiLinearSymm.toHomogeneousQuad_apply]
   erw [← quadBiLin.toFun_eq_coe]
-  rw [quadBiLin]
-  simp only
+  simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   ring_nf
@@ -336,6 +338,7 @@ lemma accQuad_ext {S T : (MSSMCharges).charges}
     rfl
   repeat rw [h1]
   rw [hd, hu]
+
 
 /-- The function underlying the symmetric trilinear form used to define the cubic ACC. -/
 @[simp]
@@ -461,7 +464,7 @@ open MSSMCharges
 
 lemma quadSol  (S : MSSMACC.QuadSols) : accQuad S.val = 0 := by
   have hS := S.quadSol
-  simp  [MSSMACCs.accQuad, HomogeneousQuadratic.toFun] at hS
+  simp only [MSSMACC_numberQuadratic, HomogeneousQuadratic, MSSMACC_quadraticACCs] at hS
   exact hS 0
 
 /-- A solution from a charge satisfying the ACCs. -/
@@ -523,30 +526,33 @@ lemma AnomalyFreeMk''_val (S : MSSMACC.QuadSols)
 
 /-- The dot product on the vector space of charges. -/
 @[simps!]
-def dot  : BiLinearSymm MSSMCharges.charges where
-  toFun S := ∑ i, (Q S.1 i *  Q S.2 i +  U S.1 i *  U S.2 i +
+def dot  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂
+  (fun S => ∑ i, (Q S.1 i *  Q S.2 i +  U S.1 i *  U S.2 i +
     D S.1 i *  D S.2 i + L S.1 i * L S.2 i  + E S.1 i * E S.2 i
-    + N S.1 i * N S.2 i) + Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2
-  map_smul₁' a S T := by
+    + N S.1 i * N S.2 i) + Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2)
+  (by
+    intro a S T
     simp only [MSSMSpecies_numberCharges]
     repeat rw [(toSMSpecies _).map_smul]
     rw [Hd.map_smul, Hu.map_smul]
     rw [Fin.sum_univ_three, Fin.sum_univ_three]
     simp only [HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply, Hd_apply, Fin.reduceFinMk,
       Hu_apply]
-    ring
-  map_add₁' S T R := by
+    ring)
+  (by
+    intro S1 S2 T
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
       ACCSystemCharges.chargesAddCommMonoid_add, map_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [AddHom.map_add]
     rw [Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
     simp only [Fin.isValue]
-    ring
-  swap' S L := by
+    ring)
+  (by
+    intro S T
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply, Fin.reduceFinMk,
       Hu_apply]
     rw [Fin.sum_univ_three, Fin.sum_univ_three]
     simp only [Fin.isValue]
-    ring
+    ring)
 
 end MSSMACC
