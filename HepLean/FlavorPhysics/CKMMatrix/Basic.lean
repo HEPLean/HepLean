@@ -14,7 +14,7 @@ noncomputable section
 
 @[simp]
 def phaseShiftMatrix (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  ![![ Complex.exp (I * a), 0, 0], ![0,  Complex.exp (I * b), 0], ![0, 0, Complex.exp (I * c)]]
+  ![![ cexp (I * a), 0, 0], ![0,  cexp (I * b), 0], ![0, 0, cexp (I * c)]]
 
 lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   ext i j
@@ -97,7 +97,124 @@ def phaseShiftEquivRelation : Equivalence phaseShiftRelation where
 
 def CKMMatrix : Type := unitaryGroup (Fin 3) ℂ
 
+lemma CKMMatrix_ext {U V : CKMMatrix} (h : U.val = V.val) : U = V := by
+  cases U; cases V
+  simp at h
+  subst h
+  rfl
+scoped[CKMMatrix] notation (name := ud_element) "[" V "]ud" => V.1 0 0
+scoped[CKMMatrix] notation (name := us_element) "[" V "]us" => V.1 0 1
+scoped[CKMMatrix] notation (name := ub_element) "[" V "]ub" => V.1 0 2
+scoped[CKMMatrix] notation (name := cd_element) "[" V "]cd" => V.1 1 0
+scoped[CKMMatrix] notation (name := cs_element) "[" V "]cs" => V.1 1 1
+scoped[CKMMatrix] notation (name := cb_element) "[" V "]cb" => V.1 1 2
+scoped[CKMMatrix] notation (name := td_element) "[" V "]td" => V.1 2 0
+scoped[CKMMatrix] notation (name := ts_element) "[" V "]ts" => V.1 2 1
+scoped[CKMMatrix] notation (name := tb_element) "[" V "]tb" => V.1 2 2
+
 instance CKMMatrixSetoid : Setoid CKMMatrix := ⟨phaseShiftRelation, phaseShiftEquivRelation⟩
+
+@[simps!]
+def phaseShiftApply (V : CKMMatrix) (a b c d e f : ℝ) : CKMMatrix :=
+    phaseShift a b c * ↑V * phaseShift d e f
+
+namespace phaseShiftApply
+lemma equiv (V : CKMMatrix) (a b c d e f : ℝ) :
+    V ≈ phaseShiftApply V a b c d e f := by
+  symm
+  use a, b, c, d, e, f
+  rfl
+
+lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 0 0 = cexp (a * I + d * I) * V.1 0 0  := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  change _ + _ * _ * 0 = _
+  rw [exp_add]
+  ring_nf
+
+lemma us (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 0 1 = cexp (a * I + e * I) * V.1 0 1  := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  rw [exp_add]
+  ring_nf
+
+lemma ub (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 0 2 = cexp (a * I + f * I) * V.1 0 2  := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  rw [exp_add]
+  ring_nf
+
+lemma cd (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 1 0= cexp (b * I + d * I) * V.1 1 0 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  change _ + _ * _ * 0 = _
+  rw [exp_add]
+  ring_nf
+
+lemma cs (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 1 1 = cexp (b * I + e * I) * V.1 1 1 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  rw [exp_add]
+  ring_nf
+
+lemma cb (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 1 2 = cexp (b * I + f * I) * V.1 1 2 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  rw [exp_add]
+  ring_nf
+
+lemma td (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 2 0= cexp (c * I + d * I) * V.1 2 0 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  change (0 * _  + _ ) * _ + (0 * _  + _ ) * 0 = _
+  simp
+  rw [exp_add]
+  ring_nf
+
+lemma ts (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 2 1 = cexp (c * I + e * I) * V.1 2 1 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  change (0 * _ + _) * _ = _
+  rw [exp_add]
+  ring_nf
+
+lemma tb (V : CKMMatrix) (a b c d e f : ℝ) :
+    (phaseShiftApply V a b c d e f).1 2 2 = cexp (c * I + f * I) * V.1 2 2 := by
+  simp
+  rw [mul_apply, Fin.sum_univ_three]
+  rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
+  simp
+  change (0 * _ + _) * _ = _
+  rw [exp_add]
+  ring_nf
+
+end phaseShiftApply
+
+
 
 @[simp]
 def VAbs' (V : unitaryGroup (Fin 3) ℂ) (i j : Fin 3) : ℝ := Complex.abs (V i j)
@@ -191,6 +308,7 @@ lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤
   change VAbs i 2 V ≤ 1
   nlinarith
 
+
 lemma VAbs_thd_eq_one_fst_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV : VAbs i 2 V = 1) :
     VAbs i 0 V = 0 := by
   have h := VAbs_sum_sq_row_eq_one V i
@@ -264,6 +382,8 @@ lemma fst_row_thd_row (V : CKMMatrix) :  V.1 2 0 * conj (V.1 0 0) +  V.1 2 1 * c
   have ht := congrFun (congrFun hV 2) 0
   simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
   exact ht
+
+
 
 
 end CKMMatrix
