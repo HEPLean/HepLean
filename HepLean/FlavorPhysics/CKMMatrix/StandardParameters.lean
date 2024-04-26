@@ -31,17 +31,48 @@ lemma S₁₃_eq_sin_θ₁₃ (V : Quotient CKMMatrixSetoid) : Real.sin (θ₁�
   rw [← VubAbs_eq_S₁₃]
   exact (VAbs_leq_one 0 2 V)
 
-lemma S₁₃_of_Vub_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V = 1) : S₁₃ V = 1 := by
-  rw [← VubAbs_eq_S₁₃, ha]
-
 lemma S₁₃_eq_ℂsin_θ₁₃ (V : Quotient CKMMatrixSetoid) : Complex.sin (θ₁₃ V) = S₁₃ V := by
   rw [← S₁₃_eq_sin_θ₁₃]
   simp
+
+lemma complexAbs_sin_θ₁₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.sin (θ₁₃ V)) =
+    sin (θ₁₃ V):= by
+  rw [S₁₃_eq_ℂsin_θ₁₃, ← VubAbs_eq_S₁₃]
+  rw [Complex.abs_ofReal]
+  simp
+  exact VAbs_ge_zero 0 2 V
+
+
+lemma S₁₃_of_Vub_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V = 1) : S₁₃ V = 1 := by
+  rw [← VubAbs_eq_S₁₃, ha]
+
 
 def C₁₃ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₁₃ V)
 
 lemma C₁₃_eq_ℂcos_θ₁₃ (V : Quotient CKMMatrixSetoid) : Complex.cos (θ₁₃ V) = C₁₃ V := by
   simp [C₁₃]
+
+lemma complexAbs_cos_θ₁₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₁₃ V)) =
+    cos (θ₁₃ V):= by
+  rw [C₁₃_eq_ℂcos_θ₁₃, Complex.abs_ofReal]
+  simp
+  exact Real.cos_arcsin_nonneg _
+
+lemma cos_θ₁₃_zero {V : Quotient CKMMatrixSetoid} (h1 : Real.cos (θ₁₃ V) = 0) :
+    VubAbs V = 1 := by
+  rw [θ₁₃, Real.cos_arcsin, ← VubAbs_eq_S₁₃, Real.sqrt_eq_zero] at h1
+  have h2 : VubAbs V ^ 2 = 1 := by linear_combination -(1 * h1)
+  simp at h2
+  cases' h2 with h2 h2
+  exact h2
+  have h3 := VAbs_ge_zero 0 2 V
+  rw [h2] at h3
+  simp at h3
+  linarith
+  simp
+  rw [_root_.abs_of_nonneg (VAbs_ge_zero 0 2 V)]
+  exact VAbs_leq_one 0 2 V
+
 
 lemma S₁₃_sq_add_C₁₃_sq (V : Quotient CKMMatrixSetoid) : S₁₃ V ^ 2 + C₁₃ V ^ 2 = 1 := by
   rw [← S₁₃_eq_sin_θ₁₃ V, C₁₃]
@@ -70,6 +101,7 @@ lemma S₁₂_nonneg (V : Quotient CKMMatrixSetoid) : 0 ≤ S₁₂ V := by
   exact VAbs_ge_zero 0 1 V
   exact Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2)
 
+
 lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
   rw [S₁₂]
   rw [@div_le_one_iff]
@@ -96,6 +128,12 @@ lemma S₁₂_eq_ℂsin_θ₁₂ (V : Quotient CKMMatrixSetoid) : Complex.sin (�
   rw [← S₁₂_eq_sin_θ₁₂]
   simp
 
+lemma complexAbs_sin_θ₁₂ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.sin (θ₁₂ V)) =
+    sin (θ₁₂ V):= by
+  rw [S₁₂_eq_ℂsin_θ₁₂, Complex.abs_ofReal]
+  simp
+  exact S₁₂_nonneg _
+
 lemma S₁₂_of_Vub_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V = 1) : S₁₂ V = 0 := by
   rw [S₁₂]
   have h1 : 1 - VubAbs V ^ 2 = VudAbs V ^ 2 + VusAbs V ^ 2 := by
@@ -108,6 +146,12 @@ def C₁₂ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₁₂ V)
 
 lemma C₁₂_eq_ℂcos_θ₁₂ (V : Quotient CKMMatrixSetoid) : Complex.cos (θ₁₂ V) = C₁₂ V := by
   simp [C₁₂]
+
+lemma complexAbs_cos_θ₁₂ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₁₂ V)) =
+    cos (θ₁₂ V):= by
+  rw [C₁₂_eq_ℂcos_θ₁₂, Complex.abs_ofReal]
+  simp
+  exact Real.cos_arcsin_nonneg _
 
 lemma C₁₂_of_Vub_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V = 1) : C₁₂ V = 1 := by
   rw [C₁₂, θ₁₂, Real.cos_arcsin, S₁₂_of_Vub_one ha]
@@ -205,6 +249,11 @@ lemma S₂₃_eq_ℂsin_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.sin (�
   rw [← S₂₃_eq_sin_θ₂₃]
   simp
 
+lemma complexAbs_sin_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.sin (θ₂₃ V)) =
+    sin (θ₂₃ V):= by
+  rw [S₂₃_eq_ℂsin_θ₂₃, Complex.abs_ofReal]
+  simp
+  exact S₂₃_nonneg _
 
 lemma S₂₃_of_Vub_eq_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V = 1) : S₂₃ V = VcdAbs V := by
   rw [S₂₃, if_pos ha]
@@ -217,6 +266,12 @@ def C₂₃ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₂₃ V)
 
 lemma C₂₃_eq_ℂcos_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.cos (θ₂₃ V) = C₂₃ V := by
   simp [C₂₃]
+
+lemma complexAbs_cos_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₂₃ V)) =
+    cos (θ₂₃ V):= by
+  rw [C₂₃_eq_ℂcos_θ₂₃, Complex.abs_ofReal]
+  simp
+  exact Real.cos_arcsin_nonneg _
 
 lemma S₂₃_sq_add_C₂₃_sq (V : Quotient CKMMatrixSetoid) : S₂₃ V ^ 2 + C₂₃ V ^ 2 = 1 := by
   rw [← S₂₃_eq_sin_θ₂₃ V, C₂₃]
@@ -385,6 +440,148 @@ lemma eq_sP (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : [U
   apply ext_Rows hu hc
   rw [hU, sP_cross, hu, hc]
 
+lemma eq_phases_sP (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h : cexp (δ₁₃ * I) = cexp (δ₁₃' * I)) :
+    sP θ₁₂ θ₁₃ θ₂₃ δ₁₃ = sP θ₁₂ θ₁₃ θ₂₃ δ₁₃' := by
+  simp [sP, standardParameterizationAsMatrix]
+  apply CKMMatrix_ext
+  simp
+  rw [show  exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]
+  rw [show cexp (-(I * ↑δ₁₃)) = cexp (-(I * ↑δ₁₃')) by rw [exp_neg, exp_neg, mul_comm, h, mul_comm]]
+
+section zeroEntries
+variable (a b c d e f : ℝ)
+
+lemma sP_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₃ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  have hS13 := congrArg ofReal (S₁₃_of_Vub_one (cos_θ₁₃_zero  h))
+  simp [← S₁₃_eq_ℂsin_θ₁₃] at hS13
+  have hC12 := congrArg ofReal (C₁₂_of_Vub_one (cos_θ₁₃_zero h))
+  simp [← C₁₂_eq_ℂcos_θ₁₂] at hC12
+  have hS12 := congrArg ofReal (S₁₂_of_Vub_one (cos_θ₁₃_zero h))
+  simp [← S₁₂_eq_ℂsin_θ₁₂] at hS12
+  use 0, 0, 0, δ₁₃, 0, -δ₁₃
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, hS13, hC12, hS12]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  rfl
+  rfl
+
+lemma sP_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₂ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  use 0, δ₁₃, δ₁₃, -δ₁₃, 0, - δ₁₃
+  have hb := exp_ne_zero (I * δ₁₃)
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, exp_neg]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  apply Or.inr
+  rfl
+  change _ = _ + _ * 0
+  simp
+  field_simp
+  ring
+  ring
+  field_simp
+  ring
+  change _ = _ + _ * 0
+  simp
+  field_simp
+  ring
+  ring
+  field_simp
+  ring
+
+lemma sP_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₂₃ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  use 0, δ₁₃, 0, 0, 0, - δ₁₃
+  have hb := exp_ne_zero (I * δ₁₃)
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, exp_neg]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  apply Or.inr
+  rfl
+  ring_nf
+  change _ = _ + _ * 0
+  simp
+  ring
+  field_simp
+  ring
+
+lemma sP_sin_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₁₃ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  use 0, 0, 0, 0, 0, 0
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, exp_neg]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  apply Or.inr
+  rfl
+  apply Or.inr
+  rfl
+
+lemma sP_sin_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₁₂ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  use 0, δ₁₃, δ₁₃, 0, -δ₁₃, - δ₁₃
+  have hb := exp_ne_zero (I * δ₁₃)
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, exp_neg]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  apply Or.inr
+  rfl
+  change _ = _ + _ * 0
+  simp
+  ring
+  field_simp
+  ring
+  field_simp
+  ring
+  change _ = _ + _ * 0
+  simp
+  ring
+  field_simp
+  ring
+  field_simp
+  ring
+
+
+lemma sP_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₂₃ ⟦V⟧) = 0) :
+    sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
+  use 0, 0, δ₁₃, 0, 0, - δ₁₃
+  have hb := exp_ne_zero (I * δ₁₃)
+  simp [sP, standardParameterizationAsMatrix, h, phaseShift, exp_neg]
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+  apply Or.inr
+  rfl
+  change _ = _ + _ * 0
+  simp
+  ring
+  ring
+  field_simp
+  ring
+
+
+lemma Vs_zero_iff_cos_sin_zero (V : CKMMatrix) :
+    VudAbs ⟦V⟧ = 0 ∨ VubAbs ⟦V⟧ = 0 ∨ VusAbs ⟦V⟧ = 0 ∨ VcbAbs ⟦V⟧ = 0 ∨ VtbAbs ⟦V⟧ = 0
+    ↔ Real.cos (θ₁₂ ⟦V⟧) = 0 ∨ Real.cos (θ₁₃ ⟦V⟧) = 0 ∨ Real.cos (θ₂₃ ⟦V⟧) = 0 ∨
+      Real.sin (θ₁₂ ⟦V⟧) = 0 ∨ Real.sin (θ₁₃ ⟦V⟧) = 0 ∨ Real.sin (θ₂₃ ⟦V⟧) = 0 := by
+  rw [VudAbs_eq_C₁₂_mul_C₁₃, VubAbs_eq_S₁₃, VusAbs_eq_S₁₂_mul_C₁₃, VcbAbs_eq_S₂₃_mul_C₁₃,
+    VtbAbs_eq_C₂₃_mul_C₁₃]
+  rw [C₁₂, C₁₃, C₂₃, S₁₂_eq_sin_θ₁₂, S₂₃_eq_sin_θ₂₃, S₁₃_eq_sin_θ₁₃]
+  aesop
+
+
+
+
+
+
+
+
+end zeroEntries
 
 lemma UCond₁_eq_sP {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) (ha : [V]cb ≠ 0)
     (hV : UCond₁ V) : V = sP (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) (- arg [V]ub) := by

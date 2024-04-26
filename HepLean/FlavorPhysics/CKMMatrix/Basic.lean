@@ -384,8 +384,6 @@ lemma fst_row_thd_row (V : CKMMatrix) :  V.1 2 0 * conj (V.1 0 0) +  V.1 2 1 * c
   exact ht
 
 
-
-
 end CKMMatrix
 
 end
