@@ -206,8 +206,8 @@ lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
   simp [exp_neg]
   have h1 := exp_ne_zero (τ * I)
   field_simp
-  have h2 : cexp (τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]ud = cexp (τ * I) * [V]cs
-      * [V]ud * conj [V]ud - cexp (τ * I) * [V]us * ([V]cd * conj [V]ud) := by
+  have h2 : ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]ud =  [V]cs
+      * [V]ud * conj [V]ud - [V]us * ([V]cd * conj [V]ud) := by
     ring
   rw [h2, V.Vcd_mul_conj_Vud]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]
@@ -222,8 +222,8 @@ lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
   simp [exp_neg]
   have h1 := exp_ne_zero (τ * I)
   field_simp
-  have h2 : cexp (τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]us = cexp (τ * I) * ([V]cs
-      * conj [V]us) * [V]ud - cexp (τ * I) * [V]us * [V]cd * conj [V]us := by
+  have h2 :  ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]us = ([V]cs
+      * conj [V]us) * [V]ud - [V]us * [V]cd * conj [V]us := by
     ring
   rw [h2, V.Vcs_mul_conj_Vus]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]

@@ -260,11 +260,10 @@ def bijectionLinearParameters :
     field_simp
     ring_nf
     field_simp [hQ, hE]
-    ring
+    ring_nf
     field_simp
     ring_nf
     field_simp [hQ, hE]
-    ring
 
 /-- The bijection between `linearParametersQENeqZero` and `LinSols` with `Q` and `E` non-zero. -/
 def bijection : linearParametersQENeqZero ≃

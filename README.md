@@ -15,7 +15,7 @@
 
 - Watch this overview of HepLean:
 
-  https://www.youtube.com/watch?v=W2cObnopqas&t=3s
+  https://www.youtube.com/watch?v=W2cObnopqas
 - A list of 'Frequently asked questions' can be found on the Wiki for this project: 
 
   https://github.com/HEPLean/HepLean/wiki/The-answers-to-some-questions

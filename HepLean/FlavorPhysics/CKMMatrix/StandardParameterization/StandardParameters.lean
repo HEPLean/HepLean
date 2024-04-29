@@ -424,16 +424,16 @@ lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   simp only [mul_zero, add_zero, neg_inj]
   field_simp
   ring
-  ring
+  ring_nf
   field_simp
-  ring
+  ring_nf
   change _ = _ + _ * 0
   simp only [mul_zero, add_zero]
   field_simp
   ring
-  ring
+  ring_nf
   field_simp
-  ring
+
 
 lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₂₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
@@ -450,7 +450,7 @@ lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   simp only [mul_zero, add_zero]
   ring
   field_simp
-  ring
+
 
 lemma on_param_sin_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₁₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
@@ -478,16 +478,16 @@ lemma on_param_sin_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
   simp only [mul_zero, add_zero, neg_inj]
   ring
   field_simp
-  ring
+  ring_nf
   field_simp
-  ring
+  ring_nf
   change _ = _ + _ * 0
   simp only [mul_zero, add_zero, neg_inj]
-  ring
+  ring_nf
   field_simp
-  ring
+  ring_nf
   field_simp
-  ring
+
 
 
 lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₂₃ ⟦V⟧) = 0) :
@@ -505,7 +505,7 @@ lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
   ring
   ring
   field_simp
-  ring
+
 
 
 
