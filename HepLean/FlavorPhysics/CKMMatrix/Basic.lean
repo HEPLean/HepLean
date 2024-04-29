@@ -14,7 +14,7 @@ noncomputable section
 
 @[simp]
 def phaseShiftMatrix (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  ![![ cexp (I * a), 0, 0], ![0,  cexp (I * b), 0], ![0, 0, cexp (I * c)]]
+  ![![cexp (I * a), 0, 0], ![0,  cexp (I * b), 0], ![0, 0, cexp (I * c)]]
 
 lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   ext i j
@@ -266,122 +266,58 @@ abbrev VtsAbs := VAbs 2 1
 @[simp]
 abbrev VtbAbs := VAbs 2 2
 
-lemma VAbs_ge_zero  (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : 0 ≤ VAbs i j V := by
-  obtain ⟨V, hV⟩ := Quot.exists_rep V
-  rw [← hV]
-  exact Complex.abs.nonneg _
-
-lemma VAbs_sum_sq_row_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
-    (VAbs i 0 V) ^ 2 + (VAbs i 1 V) ^ 2 + (VAbs i 2 V) ^ 2 = 1 := by
-  obtain ⟨V, hV⟩ := Quot.exists_rep V
-  subst hV
-  have hV := V.prop
-  rw [mem_unitaryGroup_iff] at hV
-  have ht := congrFun (congrFun hV i) i
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
-  rw [mul_conj, mul_conj, mul_conj] at ht
-  repeat rw [← Complex.sq_abs] at ht
-  rw [← ofReal_inj]
-  simpa using ht
-
-lemma VAbs_sum_sq_col_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
-    (VAbs 0 i V) ^ 2 + (VAbs 1 i V) ^ 2 + (VAbs 2 i V) ^ 2 = 1 := by
-  obtain ⟨V, hV⟩ := Quot.exists_rep V
-  subst hV
-  have hV := V.prop
-  rw [mem_unitaryGroup_iff'] at hV
-  have ht := congrFun (congrFun hV i) i
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
-  rw [mul_comm, mul_conj, mul_comm, mul_conj, mul_comm, mul_conj] at ht
-  repeat rw [← Complex.sq_abs] at ht
-  rw [← ofReal_inj]
-  simpa using ht
-
-
-lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤ 1 := by
-  have h := VAbs_sum_sq_row_eq_one V i
-  fin_cases j
-  change VAbs i 0 V ≤ 1
-  nlinarith
-  change VAbs i 1 V ≤ 1
-  nlinarith
-  change VAbs i 2 V ≤ 1
-  nlinarith
-
-
-lemma VAbs_thd_eq_one_fst_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV : VAbs i 2 V = 1) :
-    VAbs i 0 V = 0 := by
-  have h := VAbs_sum_sq_row_eq_one V i
-  rw [hV] at h
-  simp at h
-  nlinarith
-
-lemma VAbs_thd_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV : VAbs i 2 V = 1) :
-    VAbs i 1 V = 0 := by
-  have h := VAbs_sum_sq_row_eq_one V i
-  rw [hV] at h
-  simp at h
-  nlinarith
-
-lemma VAbs_fst_col_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs 0 i V = 1) : VAbs 1 i V = 0 := by
-  have h := VAbs_sum_sq_col_eq_one V i
-  rw [hV] at h
-  simp at h
-  nlinarith
-
-lemma VAbs_fst_col_eq_one_thd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs 0 i V = 1) : VAbs 2 i V = 0 := by
-  have h := VAbs_sum_sq_col_eq_one V i
-  rw [hV] at h
-  simp at h
-  nlinarith
-
-lemma VAbs_thd_neq_one_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : (VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  have h1 : 1 - VAbs i 2 V ^ 2 = VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2 := by
-    linear_combination - (VAbs_sum_sq_row_eq_one V i)
-  rw [← h1]
-  by_contra h
-  have h2 : VAbs i 2 V ^2 = 1 := by
-    nlinarith
-  simp only [Fin.isValue, sq_eq_one_iff] at h2
-  have h3 : 0 ≤  VAbs i 2 V := VAbs_ge_zero i 2 V
-  have h4 : VAbs i 2 V = 1 := by
-    nlinarith
-  exact hV h4
-
-lemma VAbs_thd_neq_one_sqrt_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : √(VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  rw [Real.sqrt_ne_zero (Left.add_nonneg (sq_nonneg (VAbs i 0 V)) (sq_nonneg (VAbs i 1 V)))]
-  exact VAbs_thd_neq_one_fst_snd_sq_neq_zero hV
-
-lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
-    VcbAbs V ^ 2 + VtbAbs V ^ 2 = 1 - VubAbs V ^2 := by
-  linear_combination (VAbs_sum_sq_col_eq_one V 2)
-
-lemma VudAbs_sq_add_VusAbs_sq : VudAbs V ^ 2 + VusAbs V ^2 = 1 - VubAbs V ^2  := by
-  linear_combination (VAbs_sum_sq_row_eq_one V 0)
 
 namespace CKMMatrix
 open ComplexConjugate
 
-lemma fst_row_snd_row (V : CKMMatrix) : V.1 1 0 * conj (V.1 0 0) +  V.1 1 1 * conj (V.1 0 1)
-    + V.1 1 2 * conj (V.1 0 2) = 0 := by
-  have hV := V.prop
-  rw [mem_unitaryGroup_iff] at hV
-  have ht := congrFun (congrFun hV 1) 0
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
-  exact ht
+
+section ratios
+
+-- A
+def Rubud (V : CKMMatrix) : ℂ := [V]ub / [V]ud
+
+scoped[CKMMatrix] notation (name := ub_ud_ratio) "[" V "]ub|ud" => Rubud V
+-- B
+def Rusud (V : CKMMatrix) : ℂ := [V]us / [V]ud
+
+scoped[CKMMatrix] notation (name := us_ud_ratio) "[" V "]us|ud" => Rusud V
+
+def Rudus (V : CKMMatrix) : ℂ := [V]ud / [V]us
+
+scoped[CKMMatrix] notation (name := ud_us_ratio) "[" V "]ud|us" => Rudus V
+
+def Rubus (V : CKMMatrix) : ℂ := [V]ub / [V]us
+
+scoped[CKMMatrix] notation (name := ub_us_ratio) "[" V "]ub|us" => Rubus V
+-- D
+def Rcdcb (V : CKMMatrix) : ℂ := [V]cd / [V]cb
+
+scoped[CKMMatrix] notation (name := cd_cb_ratio) "[" V "]cd|cb" => Rcdcb V
+
+lemma Rcdcb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cd = Rcdcb V * [V]cb := by
+  rw [Rcdcb]
+  exact (div_mul_cancel₀ (V.1 1 0) h).symm
+
+-- C'
+def Rcscb (V : CKMMatrix) : ℂ := [V]cs / [V]cb
+
+scoped[CKMMatrix] notation (name := cs_cb_ratio) "[" V "]cs|cb" => Rcscb V
+
+lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cs = Rcscb V * [V]cb := by
+  rw [Rcscb]
+  exact (div_mul_cancel₀ [V]cs h).symm
 
 
-lemma fst_row_thd_row (V : CKMMatrix) :  V.1 2 0 * conj (V.1 0 0) +  V.1 2 1 * conj (V.1 0 1)
-    + V.1 2 2 * conj (V.1 0 2) = 0 := by
-  have hV := V.prop
-  rw [mem_unitaryGroup_iff] at hV
-  have ht := congrFun (congrFun hV 2) 0
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
-  exact ht
+def Rtb!cbud (V : CKMMatrix) : ℂ := conj [V]tb / ([V]cb * [V]ud)
+
+scoped[CKMMatrix] notation (name := tb_cb_ud_ratio) "[" V "]tb*|cb|ud" => Rtb!cbud V
+
+def Rtb!cbus (V : CKMMatrix) : ℂ := conj [V]tb / ([V]cb * [V]us)
+
+scoped[CKMMatrix] notation (name := tb_cb_us_ratio) "[" V "]tb*|cb|us" => Rtb!cbus V
+
+
+end ratios
 
 
 end CKMMatrix

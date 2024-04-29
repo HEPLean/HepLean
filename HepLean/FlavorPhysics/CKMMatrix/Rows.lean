@@ -283,9 +283,6 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
   rw [hx, hτ]
 
 
-
-
-
 def uRow₁₂ (V : CKMMatrix) : Fin 2 → ℂ := ![[V]ud, [V]us]
 
 def cRow₁₂ (V : CKMMatrix) : Fin 2 → ℂ := ![[V]cd, [V]cs]
