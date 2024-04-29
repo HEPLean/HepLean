@@ -6,7 +6,13 @@ Authors: Joseph Tooby-Smith
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Rows
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+/-!
+# Relations for the CKM Matrix
 
+This file contains a collection of relations and properties between the elements of the CKM
+matrix.
+
+-/
 
 open Matrix Complex
 
@@ -55,7 +61,6 @@ lemma thd_row_normalized_normSq (V : CKMMatrix) :
   repeat rw [← Complex.sq_abs]
   exact V.thd_row_normalized_abs
 
--- rename
 lemma normSq_Vud_plus_normSq_Vus (V : CKMMatrix) :
     normSq [V]ud + normSq [V]us = 1 - normSq [V]ub := by
   linear_combination (fst_row_normalized_normSq V)
@@ -98,6 +103,26 @@ lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 
   rw [h2] at h3
   have h2 : ¬ 0 ≤ ( -1 : ℝ) := by simp
   exact h2 h3
+
+lemma VAbsub_neq_zero_Vud_Vus_neq_zero {V : Quotient CKMMatrixSetoid}
+    (hV : VAbs 0 2 V ≠ 1) :(VudAbs V ^ 2 + VusAbs  V ^ 2) ≠ 0 := by
+  obtain ⟨V⟩ := V
+  change VubAbs ⟦V⟧ ≠ 1 at hV
+  simp only [VubAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk] at hV
+  rw [← ud_us_neq_zero_iff_ub_neq_one V] at hV
+  simpa [← Complex.sq_abs] using (normSq_Vud_plus_normSq_Vus_neq_zero_ℝ hV)
+
+lemma VAbsub_neq_zero_sqrt_Vud_Vus_neq_zero {V : Quotient CKMMatrixSetoid}
+    (hV : VAbs 0 2 V ≠ 1) : √(VudAbs V ^ 2 + VusAbs  V ^ 2) ≠ 0 := by
+  obtain ⟨V⟩ := V
+  rw [Real.sqrt_ne_zero (Left.add_nonneg (sq_nonneg _) (sq_nonneg _))]
+  change VubAbs ⟦V⟧ ≠ 1 at hV
+  simp only [VubAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk] at hV
+  rw [← ud_us_neq_zero_iff_ub_neq_one V] at hV
+  simpa [← Complex.sq_abs] using (normSq_Vud_plus_normSq_Vus_neq_zero_ℝ hV)
+
+
+
 
 lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℂ  {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
     (normSq [V]ud : ℂ) + normSq [V]us ≠ 0 := by
@@ -186,7 +211,7 @@ lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
     ring
   rw [h2, V.Vcd_mul_conj_Vud]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]
-  simp
+  simp only [Fin.isValue, neg_mul]
   ring
 
 lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
@@ -202,7 +227,7 @@ lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
     ring
   rw [h2, V.Vcs_mul_conj_Vus]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]
-  simp
+  simp only [Fin.isValue, neg_mul]
   ring
 
 
@@ -223,6 +248,7 @@ lemma cd_of_ud_us_ub_cb_tb {V : CKMMatrix}  (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
   rw [conj_Vtb_mul_Vus hτ]
   field_simp
   ring
+
 
 end rows
 
@@ -246,25 +272,6 @@ lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤
 
 
 end individual
-
-lemma VAbs_thd_neq_one_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : (VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  have h1 : 1 - VAbs i 2 V ^ 2 = VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2 := by
-    linear_combination - (VAbs_sum_sq_row_eq_one V i)
-  rw [← h1]
-  by_contra h
-  have h2 : VAbs i 2 V ^2 = 1 := by
-    nlinarith
-  simp only [Fin.isValue, sq_eq_one_iff] at h2
-  have h3 : 0 ≤  VAbs i 2 V := VAbs_ge_zero i 2 V
-  have h4 : VAbs i 2 V = 1 := by
-    nlinarith
-  exact hV h4
-
-lemma VAbs_thd_neq_one_sqrt_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : √(VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  rw [Real.sqrt_ne_zero (Left.add_nonneg (sq_nonneg (VAbs i 0 V)) (sq_nonneg (VAbs i 1 V)))]
-  exact VAbs_thd_neq_one_fst_snd_sq_neq_zero hV
 
 section columns
 
@@ -316,7 +323,7 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
   simp at h1
   simp [VAbs]
   linear_combination h1
-  simp
+  simp only [VcdAbs, Fin.isValue, sub_nonneg, sq_le_one_iff_abs_le_one]
   rw [@abs_le]
   have h1 := VAbs_leq_one 1 0 ⟦V⟧
   have h0 := VAbs_ge_zero 1 0 ⟦V⟧

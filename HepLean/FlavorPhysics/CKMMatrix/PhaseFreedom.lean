@@ -8,7 +8,19 @@ import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.Relations
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+/-!
+# Phase freedom of the CKM Matrix
 
+The CKM matrix is only defined up to an equivalence. This leads to a freedom
+to shift the phases of the matrices elements of the CKM matrix.
+
+In this file we define two sets of conditions on the CKM matrices
+`fstRowThdColRealCond` which we show can be satisfied by any CKM matrix up to equivalence
+and `ubOnePhaseCond` which we show can be satisfied by any CKM matrix up to equivalence as long as
+the ub element as absolute value 1.
+
+
+-/
 open Matrix Complex
 
 
@@ -104,7 +116,7 @@ lemma shift_cd_phase_pi {V : CKMMatrix} (h1 : c + d = Real.pi - arg [V]cd) :
   rfl
 
 lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
-  (hτ : cexp (τ * I) • (conj [V]u ×₃ conj [V]c) = [V]t) (h1 : τ = - u - c - t - d - s - b) :
+    (hτ : cexp (τ * I) • (conj [V]u ×₃ conj [V]c) = [V]t) (h1 : τ = - u - c - t - d - s - b) :
     [phaseShiftApply V u c t d s b]t =
     conj [phaseShiftApply V u c t d s b]u ×₃ conj [phaseShiftApply V u c t d s b]c := by
   change _ = phaseShiftApply.ucCross _ _ _ _ _ _ _
@@ -118,7 +130,7 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
     rw [← hτ0]
     rw [← mul_assoc,  ← exp_add, h1]
     congr 2
-    simp
+    simp only [ofReal_sub, ofReal_neg]
     ring
   · simp
     rw [phaseShiftApply.ucCross_snd]
@@ -128,7 +140,7 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
     rw [← hτ0]
     rw [← mul_assoc, ← exp_add, h1]
     congr 2
-    simp
+    simp only [ofReal_sub, ofReal_neg]
     ring
   · simp
     rw [phaseShiftApply.ucCross_thd]
@@ -138,23 +150,28 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
     rw [← hτ0]
     rw [← mul_assoc, ← exp_add, h1]
     congr 2
-    simp
+    simp only [ofReal_sub, ofReal_neg]
     ring
 
 end phaseShiftApply
 
 variable (a b c d e f : ℝ)
 
--- rename
+/-- A proposition which is satisfied by a CKM matrix if its `ud`, `us`, `cb` and `tb` elements
+are positive and real, and there is no phase difference between the `t`th-row and
+the cross product of the conjugates of the `u`th and `c`th rows. -/
 def fstRowThdColRealCond (U : CKMMatrix) : Prop := [U]ud = VudAbs ⟦U⟧ ∧ [U]us = VusAbs ⟦U⟧
     ∧ [U]cb = VcbAbs ⟦U⟧ ∧ [U]tb = VtbAbs ⟦U⟧ ∧ [U]t = conj [U]u ×₃ conj [U]c
 
--- rename
+/-- A proposition which is satisfied by a CKM matrix `ub` is one, `ud`, `us` and `cb` are zero,
+  there is no phase difference between the `t`th-row and
+the cross product of the conjugates of the `u`th and `c`th rows, and the `cd`th and `cs`th
+elements are real and related in a set way.
+ -/
 def ubOnePhaseCond (U : CKMMatrix) :  Prop :=
     [U]ud = 0 ∧ [U]us = 0 ∧ [U]cb = 0 ∧ [U]ub = 1 ∧ [U]t = conj [U]u ×₃ conj [U]c
     ∧ [U]cd = - VcdAbs ⟦U⟧ ∧ [U]cs = √(1 - VcdAbs ⟦U⟧ ^ 2)
 
--- bad name for this lemma
 lemma fstRowThdColRealCond_shift_solution {V : CKMMatrix} (h1 : a + d = - arg [V]ud)
     (h2 :  a + e = - arg [V]us) (h3 : b + f = - arg [V]cb)
     (h4 : c + f = - arg [V]tb) (h5 : τ = - a - b - c - d - e - f) :
@@ -219,7 +236,7 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
     (- arg [V]us)
     (τ - arg [V]ud - arg [V]us - arg [V]cb - arg [V]tb)
   have hUV : ⟦U⟧ = ⟦V⟧ := by
-    simp
+    simp only [Quotient.eq]
     symm
     exact phaseShiftApply.equiv  _ _ _ _ _ _ _
   use U
@@ -252,7 +269,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
     (Real.pi - arg [V]cd ) (- arg [V]cs)  (- arg [V]ub )
   use U
   have hUV : ⟦U⟧ = ⟦V⟧ := by
-    simp
+    simp only [Quotient.eq]
     symm
     exact phaseShiftApply.equiv  _ _ _ _ _ _ _
   apply And.intro
@@ -288,7 +305,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
     simpa using h1
   apply And.intro
   · have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
-      simp
+      simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
       exact hV.2.2.2.2
     apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
     ring
@@ -304,11 +321,12 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
 
 
 lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    (hV : fstRowThdColRealCond V) : [V]cd = (- VtbAbs ⟦V⟧ * VusAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2)) +
-    (- VubAbs ⟦V⟧ * VudAbs ⟦V⟧ * VcbAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2 )) * cexp (- arg [V]ub * I)
-      := by
+    (hV : fstRowThdColRealCond V) :
+    [V]cd = (- VtbAbs ⟦V⟧ * VusAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2)) +
+    (- VubAbs ⟦V⟧ * VudAbs ⟦V⟧ * VcbAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2 ))
+    * cexp (- arg [V]ub * I) := by
   have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
-    simp
+    simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
     exact hV.2.2.2.2
   rw [cd_of_ud_us_ub_cb_tb hb hτ]
   rw [hV.1, hV.2.1, hV.2.2.1, hV.2.2.2.1]
@@ -323,11 +341,12 @@ lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠
   ring_nf
 
 lemma cs_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    (hV : fstRowThdColRealCond V) : [V]cs = (VtbAbs ⟦V⟧ * VudAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
-      + (- VubAbs ⟦V⟧ *  VusAbs ⟦V⟧ * VcbAbs ⟦V⟧/ (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2)) * cexp (- arg [V]ub * I)
-      := by
+    (hV : fstRowThdColRealCond V) :
+    [V]cs = (VtbAbs ⟦V⟧ * VudAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
+    + (- VubAbs ⟦V⟧ *  VusAbs ⟦V⟧ * VcbAbs ⟦V⟧/ (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
+    * cexp (- arg [V]ub * I) := by
   have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
-    simp
+    simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
     exact hV.2.2.2.2
   rw [cs_of_ud_us_ub_cb_tb hb hτ]
   rw [hV.1, hV.2.1, hV.2.2.1, hV.2.2.2.1]

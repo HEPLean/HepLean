@@ -8,14 +8,25 @@ import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
 import HepLean.FlavorPhysics.CKMMatrix.Invariants
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+/-!
+# Standard parameterization for the CKM Matrix
 
+This file defines the standard parameterization of CKM matrices in terms of
+four real numbers `θ₁₂`, `θ₁₃`, `θ₂₃` and `δ₁₃`.
+
+We will show that every CKM matrix can be written within this standard parameterization
+in the file `FlavorPhysics.CKMMatrix.StandardParameters`.
+
+
+-/
 open Matrix Complex
 open ComplexConjugate
 open CKMMatrix
 
 noncomputable section
 
--- to be renamed stanParamAsMatrix ...
+/-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard paramaterization of the CKM matrix
+as a `3×3` complex matrix. -/
 def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin 3) (Fin 3) ℂ  :=
   ![![Real.cos θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₃ * exp (-I * δ₁₃)],
     ![(-Real.sin θ₁₂ * Real.cos θ₂₃) - (Real.cos θ₁₂ * Real.sin θ₁₃ * Real.sin θ₂₃ * exp (I * δ₁₃)),
@@ -87,6 +98,8 @@ lemma standParamAsMatrix_unitary  (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     rw [sin_sq, sin_sq]
     ring
 
+/-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard paramaterization of the CKM matrix
+as a CKM matrix. -/
 def standParam (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : CKMMatrix :=
   ⟨standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃, by
    rw [mem_unitaryGroup_iff']
@@ -137,13 +150,13 @@ lemma eq_exp_of_phases (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h 
     standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃' := by
   simp [standParam, standParamAsMatrix]
   apply CKMMatrix_ext
-  simp
+  simp only
   rw [show  exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]
   rw [show cexp (-(I * ↑δ₁₃)) = cexp (-(I * ↑δ₁₃')) by rw [exp_neg, exp_neg, mul_comm, h, mul_comm]]
 
 open Invariant in
 lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Real.sin θ₁₂)
-      (h2 : 0 ≤ Real.cos θ₁₃) (h3 : 0 ≤ Real.sin θ₂₃) (h4 : 0 ≤ Real.cos θ₁₂) :
+    (h2 : 0 ≤ Real.cos θ₁₃) (h3 : 0 ≤ Real.sin θ₂₃) (h4 : 0 ≤ Real.cos θ₁₂) :
     VusVubVcdSq ⟦standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃⟧ =
     Real.sin θ₁₂ ^ 2 * Real.cos θ₁₃ ^ 2 * Real.sin θ₁₃ ^ 2 * Real.sin θ₂₃ ^ 2 := by
   simp only [VusVubVcdSq, VusAbs, VAbs, VAbs', Fin.isValue, standParam, standParamAsMatrix,
@@ -152,7 +165,8 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
     VcbAbs, VudAbs, Complex.abs_ofReal]
   by_cases hx : Real.cos θ₁₃ ≠ 0
   · rw [Complex.abs_exp]
-    simp
+    simp only [neg_re, mul_re, I_re, ofReal_re, zero_mul, I_im, ofReal_im, mul_zero, sub_self,
+      neg_zero, Real.exp_zero, mul_one, _root_.sq_abs]
     rw [_root_.abs_of_nonneg h1, _root_.abs_of_nonneg h3, _root_.abs_of_nonneg h2,
       _root_.abs_of_nonneg h4]
     simp [sq]
@@ -175,7 +189,7 @@ lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ 
     Quotient.lift_mk, jarlskogℂCKM, Fin.isValue, cons_val', cons_val_one, head_cons,
     empty_val', cons_val_fin_one, cons_val_zero, cons_val_two, tail_cons, _root_.map_mul, ←
     exp_conj, map_neg, conj_I, conj_ofReal, neg_neg, map_sub]
-  simp
+  simp only [ofReal_sin, ofReal_cos, ofReal_mul, ofReal_pow]
   ring_nf
   rw [exp_neg]
   have h1 : cexp (I * δ₁₃) ≠ 0 := exp_ne_zero _

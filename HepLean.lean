@@ -47,3 +47,10 @@ import HepLean.AnomalyCancellation.SMNu.PlusU1.HyperCharge
 import HepLean.AnomalyCancellation.SMNu.PlusU1.PlaneNonSols
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSol
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSolToSol
+import HepLean.FlavorPhysics.CKMMatrix.Basic
+import HepLean.FlavorPhysics.CKMMatrix.Invariants
+import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
+import HepLean.FlavorPhysics.CKMMatrix.Relations
+import HepLean.FlavorPhysics.CKMMatrix.Rows
+import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
+import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
