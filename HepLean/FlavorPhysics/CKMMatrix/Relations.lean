@@ -60,6 +60,8 @@ lemma normSq_Vud_plus_normSq_Vus (V : CKMMatrix) :
     normSq [V]ud + normSq [V]us = 1 - normSq [V]ub := by
   linear_combination (fst_row_normalized_normSq V)
 
+lemma VudAbs_sq_add_VusAbs_sq : VudAbs V ^ 2 + VusAbs V ^2 = 1 - VubAbs V ^2  := by
+  linear_combination (VAbs_sum_sq_row_eq_one V 0)
 
 lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
     [V]ud ≠ 0 ∨ [V]us ≠ 0 ↔ abs [V]ub ≠ 1 := by
@@ -105,56 +107,38 @@ lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℂ  {V : CKMMatrix} (hb : [V]ud ≠ 0
   simp_all
 
 
+lemma Vabs_sq_add_neq_zero {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
+    ((VudAbs ⟦V⟧ : ℂ) * ↑(VudAbs ⟦V⟧) + ↑(VusAbs ⟦V⟧) * ↑(VusAbs ⟦V⟧)) ≠ 0 := by
+  have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ hb
+  rw [← Complex.sq_abs, ← Complex.sq_abs] at h1
+  simp [sq] at h1
+  exact h1
 
 section orthogonal
 
-lemma fst_row_snd_row (V : CKMMatrix) : V.1 1 0 * conj (V.1 0 0) +  V.1 1 1 * conj (V.1 0 1)
-    + V.1 1 2 * conj (V.1 0 2) = 0 := by
+lemma fst_row_orthog_snd_row (V : CKMMatrix) :
+    [V]cd * conj [V]ud + [V]cs * conj [V]us + [V]cb * conj [V]ub = 0 := by
   have hV := V.prop
   rw [mem_unitaryGroup_iff] at hV
   have ht := congrFun (congrFun hV 1) 0
   simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
   exact ht
 
-lemma fst_row_thd_row (V : CKMMatrix) :  V.1 2 0 * conj (V.1 0 0) +  V.1 2 1 * conj (V.1 0 1)
-    + V.1 2 2 * conj (V.1 0 2) = 0 := by
+lemma fst_row_orthog_thd_row (V : CKMMatrix) :
+    [V]td * conj [V]ud + [V]ts * conj [V]us + [V]tb * conj [V]ub = 0 := by
   have hV := V.prop
   rw [mem_unitaryGroup_iff] at hV
   have ht := congrFun (congrFun hV 2) 0
   simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
   exact ht
 
-lemma Vcd_conj_Vud (V : CKMMatrix) :
+lemma Vcd_mul_conj_Vud (V : CKMMatrix) :
     [V]cd * conj [V]ud = -[V]cs * conj [V]us - [V]cb * conj [V]ub := by
-  linear_combination (V.fst_row_snd_row )
+  linear_combination (V.fst_row_orthog_snd_row )
 
-lemma Vcs_conj_Vus (V : CKMMatrix) :
+lemma Vcs_mul_conj_Vus (V : CKMMatrix) :
     [V]cs * conj [V]us = - [V]cd * conj [V]ud - [V]cb * conj [V]ub := by
-  linear_combination (V.fst_row_snd_row )
-
-
-lemma orthog_fst_snd_row_ratios {V : CKMMatrix} (hb : [V]ud ≠ 0) (ha : [V]cb ≠ 0) :
-    [V]cd|cb + [V]cs|cb  * conj ([V]us|ud) + conj ([V]ub|ud) = 0 := by
-  suffices h1 : ([V]cd * conj [V]ud + [V]cs * conj [V]us
-      + [V]cb * conj [V]ub) / ([V]cb * conj [V]ud) = 0 from
-    by
-     rw [← h1, Rubud, Rusud, Rcdcb, Rcscb]
-     have : conj [V]ud ≠ 0 := star_eq_zero.mp.mt hb
-     field_simp
-     ring
-  simp only [fst_row_snd_row V, Fin.isValue, zero_div]
-
-
-lemma orthog_fst_snd_row_ratios_cb_us {V : CKMMatrix} (hb : [V]us ≠ 0) (ha : [V]cb ≠ 0) :
-    [V]cd|cb * conj [V]ud|us + [V]cs|cb  + conj ([V]ub|us) = 0 := by
-  suffices h1 : ([V]cd * conj [V]ud + [V]cs * conj [V]us
-      + [V]cb * conj [V]ub) / ([V]cb * conj [V]us) = 0 from
-    by
-     rw [← h1, Rubus, Rudus, Rcdcb, Rcscb]
-     have : conj [V]us ≠ 0 := star_eq_zero.mp.mt hb
-     field_simp
-     ring
-  simp only [fst_row_snd_row V, Fin.isValue, zero_div]
+  linear_combination (V.fst_row_orthog_snd_row )
 
 end orthogonal
 
@@ -174,7 +158,7 @@ lemma VAbs_thd_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV
 
 section crossProduct
 
-lemma conj_Vtb_other  {V : CKMMatrix}  {τ : ℝ}
+lemma conj_Vtb_cross_product  {V : CKMMatrix}  {τ : ℝ}
     (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
     conj [V]tb  = cexp (- τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) := by
   have h1 := congrFun hτ 2
@@ -189,36 +173,34 @@ lemma conj_Vtb_other  {V : CKMMatrix}  {τ : ℝ}
 
 end crossProduct
 
-
-lemma conj_Vtb_Vud_other {V : CKMMatrix} {τ : ℝ}
+lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
     (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
     cexp (τ * I) * conj [V]tb * conj [V]ud =
     [V]cs * (normSq [V]ud + normSq [V]us) + [V]cb * conj [V]ub * [V]us := by
-  rw [conj_Vtb_other hτ]
+  rw [conj_Vtb_cross_product hτ]
   simp [exp_neg]
   have h1 := exp_ne_zero (τ * I)
   field_simp
   have h2 : cexp (τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]ud = cexp (τ * I) * [V]cs
       * [V]ud * conj [V]ud - cexp (τ * I) * [V]us * ([V]cd * conj [V]ud) := by
     ring
-  rw [h2, V.Vcd_conj_Vud]
+  rw [h2, V.Vcd_mul_conj_Vud]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]
   simp
   ring
 
--- cexp (τ * I) * conj [V]tb  * conj [V]us
-lemma conj_Vtb_Vus_other {V : CKMMatrix} {τ : ℝ}
+lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
     (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
     cexp (τ * I) * conj [V]tb * conj [V]us =
     - ([V]cd * (normSq [V]ud + normSq [V]us) + [V]cb * conj ([V]ub) * [V]ud) := by
-  rw [conj_Vtb_other hτ]
+  rw [conj_Vtb_cross_product hτ]
   simp [exp_neg]
   have h1 := exp_ne_zero (τ * I)
   field_simp
   have h2 : cexp (τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]us = cexp (τ * I) * ([V]cs
       * conj [V]us) * [V]ud - cexp (τ * I) * [V]us * [V]cd * conj [V]us := by
     ring
-  rw [h2, V.Vcs_conj_Vus]
+  rw [h2, V.Vcs_mul_conj_Vus]
   rw [normSq_eq_conj_mul_self, normSq_eq_conj_mul_self]
   simp
   ring
@@ -229,7 +211,7 @@ lemma cs_of_ud_us_ub_cb_tb {V : CKMMatrix}  (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     [V]cs = (- conj [V]ub * [V]us  * [V]cb +
       cexp (τ * I) * conj [V]tb * conj [V]ud) / (normSq [V]ud + normSq [V]us)  := by
   have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ h
-  rw [conj_Vtb_Vud_other hτ]
+  rw [conj_Vtb_mul_Vud hτ]
   field_simp
   ring
 
@@ -238,47 +220,12 @@ lemma cd_of_ud_us_ub_cb_tb {V : CKMMatrix}  (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     [V]cd = - (conj [V]ub * [V]ud * [V]cb  + cexp (τ * I) * conj [V]tb  * conj [V]us) /
       (normSq [V]ud + normSq [V]us) := by
   have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ h
-  rw [conj_Vtb_Vus_other hτ]
+  rw [conj_Vtb_mul_Vus hτ]
   field_simp
   ring
 
 end rows
 
-section ratios
-
-lemma one_plus_normSq_Rusud_neq_zero_ℝ (V : CKMMatrix):
-    1 + normSq ([V]us|ud) ≠ 0 := by
-  have h1 : 0 ≤ (normSq ([V]us|ud)) := normSq_nonneg ([V]us|ud)
-  have h2 : 0 < 1 + normSq ([V]us|ud) := by linarith
-  by_contra hn
-  have h3 := lt_of_lt_of_eq h2 hn
-  simp at h3
-
-lemma normSq_Rudus_plus_one_neq_zero_ℝ (V : CKMMatrix):
-    normSq ([V]ud|us) + 1 ≠ 0 := by
-  have h1 : 0 ≤ (normSq ([V]ud|us)) := normSq_nonneg ([V]ud|us)
-  have h2 : 0 < normSq ([V]ud|us) + 1 := by linarith
-  by_contra hn
-  have h3 := lt_of_lt_of_eq h2 hn
-  simp at h3
-
-lemma one_plus_normSq_Rusud_neq_zero_ℂ  (V : CKMMatrix):
-    1 + (normSq ([V]us|ud) : ℂ) ≠ 0 := by
-  by_contra hn
-  have h1 := one_plus_normSq_Rusud_neq_zero_ℝ V
-  simp at h1
-  rw [← ofReal_inj] at h1
-  simp_all only [ofReal_add, ofReal_one, ofReal_zero, not_true_eq_false]
-
-lemma normSq_Rudus_plus_one_neq_zero_ℂ (V : CKMMatrix):
-    (normSq ([V]ud|us) : ℂ) + 1 ≠ 0 := by
-  by_contra hn
-  have h1 := normSq_Rudus_plus_one_neq_zero_ℝ V
-  simp at h1
-  rw [← ofReal_inj] at h1
-  simp_all only [ofReal_add, ofReal_one, ofReal_zero, not_true_eq_false]
-
-end ratios
 
 section individual
 
@@ -286,7 +233,6 @@ lemma VAbs_ge_zero  (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : 0 ≤ VAbs i 
   obtain ⟨V, hV⟩ := Quot.exists_rep V
   rw [← hV]
   exact Complex.abs.nonneg _
-
 
 lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤ 1 := by
   have h := VAbs_sum_sq_row_eq_one V i
@@ -300,6 +246,25 @@ lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤
 
 
 end individual
+
+lemma VAbs_thd_neq_one_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
+    (hV : VAbs i 2 V ≠ 1) : (VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
+  have h1 : 1 - VAbs i 2 V ^ 2 = VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2 := by
+    linear_combination - (VAbs_sum_sq_row_eq_one V i)
+  rw [← h1]
+  by_contra h
+  have h2 : VAbs i 2 V ^2 = 1 := by
+    nlinarith
+  simp only [Fin.isValue, sq_eq_one_iff] at h2
+  have h3 : 0 ≤  VAbs i 2 V := VAbs_ge_zero i 2 V
+  have h4 : VAbs i 2 V = 1 := by
+    nlinarith
+  exact hV h4
+
+lemma VAbs_thd_neq_one_sqrt_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
+    (hV : VAbs i 2 V ≠ 1) : √(VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
+  rw [Real.sqrt_ne_zero (Left.add_nonneg (sq_nonneg (VAbs i 0 V)) (sq_nonneg (VAbs i 1 V)))]
+  exact VAbs_thd_neq_one_fst_snd_sq_neq_zero hV
 
 section columns
 
@@ -360,9 +325,9 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
   exact hn.trans h0
   exact VAbs_ge_zero _ _ ⟦V⟧
 
-end columns
-
-
+lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
+    VcbAbs V ^ 2 + VtbAbs V ^ 2 = 1 - VubAbs V ^2 := by
+  linear_combination (VAbs_sum_sq_col_eq_one V 2)
 
 
 
@@ -388,47 +353,6 @@ lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   have h2 : ¬ 0 ≤ ( -1 : ℝ) := by simp
   exact h2 h1
 
-lemma tb_neq_zero_of_cb_zero_ud_us_neq_zero {V : CKMMatrix} (h : [V]cb = 0)
-    (h1 : [V]ud ≠ 0 ∨ [V]us ≠ 0) :  [V]tb ≠ 0 := by
-  rw [ud_us_neq_zero_iff_ub_neq_one] at h1
-  rw [← cb_tb_neq_zero_iff_ub_neq_one] at h1
-  simp_all
-
-
-
-
-lemma normSq_tb_of_cb_zero {V : CKMMatrix} (h : [V]cb = 0) : normSq [V]tb =
-    normSq [V]ud + normSq [V]us := by
-  have h1 := fst_row_normalized_normSq V
-  rw [← thd_col_normalized_normSq V] at h1
-  rw [h] at h1
-  simp at h1
-  linear_combination -(1 * h1)
-
-
-lemma div_td_of_cb_zero_ud_us_neq_zero {V : CKMMatrix} (h : [V]cb = 0)
-    (h1 : [V]ud ≠ 0 ∨ [V]us ≠ 0) (a : ℂ) : a / [V]tb =
-    (a * conj [V]tb) / (normSq [V]ud + normSq [V]us) := by
-  have h2 := tb_neq_zero_of_cb_zero_ud_us_neq_zero h h1
-  have h3 : conj [V]tb ≠ 0 := (AddEquivClass.map_ne_zero_iff starRingAut).mpr h2
-  have h1 : a / [V]tb = a * conj [V]tb / normSq [V]tb := by
-    rw [normSq_eq_conj_mul_self]
-    field_simp
-    ring
-  rw [normSq_tb_of_cb_zero h] at h1
-  simp at h1
-  exact h1
-
-
-lemma Vabs_sq_add_neq_zero {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
-    ((VAbs 0 0 ⟦V⟧ : ℂ) * ↑(VAbs 0 0 ⟦V⟧) + ↑(VAbs 0 1 ⟦V⟧) * ↑(VAbs 0 1 ⟦V⟧)) ≠ 0 := by
-  have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ hb
-  rw [← Complex.sq_abs, ← Complex.sq_abs] at h1
-  simp [sq] at h1
-  exact h1
-
-
-
 lemma VAbs_fst_col_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
     (hV : VAbs 0 i V = 1) : VAbs 1 i V = 0 := by
   have h := VAbs_sum_sq_col_eq_one V i
@@ -443,31 +367,7 @@ lemma VAbs_fst_col_eq_one_thd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
   simp at h
   nlinarith
 
-lemma VAbs_thd_neq_one_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : (VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  have h1 : 1 - VAbs i 2 V ^ 2 = VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2 := by
-    linear_combination - (VAbs_sum_sq_row_eq_one V i)
-  rw [← h1]
-  by_contra h
-  have h2 : VAbs i 2 V ^2 = 1 := by
-    nlinarith
-  simp only [Fin.isValue, sq_eq_one_iff] at h2
-  have h3 : 0 ≤  VAbs i 2 V := VAbs_ge_zero i 2 V
-  have h4 : VAbs i 2 V = 1 := by
-    nlinarith
-  exact hV h4
-
-lemma VAbs_thd_neq_one_sqrt_fst_snd_sq_neq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
-    (hV : VAbs i 2 V ≠ 1) : √(VAbs i 0 V ^ 2 + VAbs i 1 V ^ 2) ≠ 0 := by
-  rw [Real.sqrt_ne_zero (Left.add_nonneg (sq_nonneg (VAbs i 0 V)) (sq_nonneg (VAbs i 1 V)))]
-  exact VAbs_thd_neq_one_fst_snd_sq_neq_zero hV
-
-lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
-    VcbAbs V ^ 2 + VtbAbs V ^ 2 = 1 - VubAbs V ^2 := by
-  linear_combination (VAbs_sum_sq_col_eq_one V 2)
-
-lemma VudAbs_sq_add_VusAbs_sq : VudAbs V ^ 2 + VusAbs V ^2 = 1 - VubAbs V ^2  := by
-  linear_combination (VAbs_sum_sq_row_eq_one V 0)
+end columns
 
 end CKMMatrix
 end

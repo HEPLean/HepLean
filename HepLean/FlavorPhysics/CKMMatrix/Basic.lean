@@ -273,11 +273,10 @@ open ComplexConjugate
 
 section ratios
 
--- A
 def Rubud (V : CKMMatrix) : ℂ := [V]ub / [V]ud
 
 scoped[CKMMatrix] notation (name := ub_ud_ratio) "[" V "]ub|ud" => Rubud V
--- B
+
 def Rusud (V : CKMMatrix) : ℂ := [V]us / [V]ud
 
 scoped[CKMMatrix] notation (name := us_ud_ratio) "[" V "]us|ud" => Rusud V
@@ -289,7 +288,7 @@ scoped[CKMMatrix] notation (name := ud_us_ratio) "[" V "]ud|us" => Rudus V
 def Rubus (V : CKMMatrix) : ℂ := [V]ub / [V]us
 
 scoped[CKMMatrix] notation (name := ub_us_ratio) "[" V "]ub|us" => Rubus V
--- D
+
 def Rcdcb (V : CKMMatrix) : ℂ := [V]cd / [V]cb
 
 scoped[CKMMatrix] notation (name := cd_cb_ratio) "[" V "]cd|cb" => Rcdcb V
@@ -298,7 +297,6 @@ lemma Rcdcb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cd = Rcdcb V * [V]cb :=
   rw [Rcdcb]
   exact (div_mul_cancel₀ (V.1 1 0) h).symm
 
--- C'
 def Rcscb (V : CKMMatrix) : ℂ := [V]cs / [V]cb
 
 scoped[CKMMatrix] notation (name := cs_cb_ratio) "[" V "]cs|cb" => Rcscb V

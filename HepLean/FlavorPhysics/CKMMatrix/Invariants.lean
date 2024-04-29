@@ -43,7 +43,7 @@ def jarlskogℂ : Quotient CKMMatrixSetoid → ℂ :=
 def VusVubVcdSq (V : Quotient CKMMatrixSetoid) : ℝ  :=
     VusAbs V ^ 2 * VubAbs V ^ 2  * VcbAbs V ^2 / (VudAbs V ^ 2 + VusAbs V ^2)
 
-def mulExpδ₃ (V : Quotient CKMMatrixSetoid) : ℂ :=
+def mulExpδ₁₃ (V : Quotient CKMMatrixSetoid) : ℂ :=
   jarlskogℂ V + VusVubVcdSq V
 
 
