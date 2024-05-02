@@ -1,5 +1,7 @@
 # High Energy Physics in Lean
 
+A project to digitalize high energy physics.
+
 ## Aims of this project
 
 - Use Lean to create a exhaustive database of definitions, theorems, proofs and calculations in high energy physics.
