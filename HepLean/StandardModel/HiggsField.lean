@@ -3,6 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.StandardModel.Basic
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
@@ -16,20 +17,15 @@ This file defines the basic properties for the higgs field in the standard model
 -/
 universe v u
 namespace StandardModel
+noncomputable section
 
 open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
 
-/-- The space-time (TODO: Change to Minkowski. Move.) -/
-abbrev spaceTime := EuclideanSpace ℝ (Fin 4)
-
-abbrev guageGroup : Type := specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
-
 /-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
 abbrev higgsBundle := Bundle.Trivial spaceTime (Fin 2 → ℂ)
-
 
 instance : SmoothVectorBundle (Fin 2 → ℂ) higgsBundle (𝓡 4)  :=
   Bundle.Trivial.smoothVectorBundle (Fin 2 → ℂ) 𝓘(ℝ, spaceTime)
@@ -37,7 +33,6 @@ instance : SmoothVectorBundle (Fin 2 → ℂ) higgsBundle (𝓡 4)  :=
 /-- A higgs field is a smooth section of the higgs bundle. -/
 abbrev higgsFields : Type := SmoothSection (𝓡 4) (Fin 2 → ℂ) higgsBundle
 
-/-- -/
 @[simps!]
 noncomputable def higgsRepMap (g : guageGroup) : (Fin 2 → ℂ) →ₗ[ℂ] (Fin 2 → ℂ) where
   toFun S :=  (g.2 ^ 3) • (g.1.1 *ᵥ S)
@@ -101,6 +96,31 @@ lemma isConst_iff_exists_const (Φ : higgsFields) : Φ.isConst ↔ ∃ φ, Φ = 
   subst hφ
   rfl
 
-end higgsFields
+-- rename
+def rotateMatrix (φ : Fin 2 → ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  ![![conj φ 0 / √(normSq (φ 0) + normSq (φ 1)), conj φ 1 / √(normSq (φ 0) + normSq (φ 1))],
+  ![ - φ 1/ √(normSq (φ 0) + normSq (φ 1)), φ 0 / √(normSq (φ 0) + normSq (φ 1))]]
 
+lemma rotateMatrix_det {φ : Fin 2 → ℂ} (hφ : φ ≠ 0) :
+    det (rotateMatrix φ) = 1 := by
+  simp [rotateMatrix, det_fin_two]
+  simp [div_mul_div_comm]
+  rw [← normSq_eq_conj_mul_self, ← normSq_eq_conj_mul_self]
+  rw [div_sub_div_same]
+  simp
+  have h1 : 0 ≤ (normSq (φ 0)) + (normSq (φ 1)) :=
+    add_nonneg (normSq_nonneg _) (normSq_nonneg _)
+  rw [← ofReal_mul]
+  rw [Real.mul_self_sqrt h1, ofReal_add]
+  refine div_self ?_
+
+  sorry
+
+theorem higgs_rotate (φ :  Fin 2 → ℂ) : ∃ (g : guageGroup) (v : ℝ),
+    (higgsRep g) φ = ![(v : ℂ), 0] := by
+  sorry
+
+
+end higgsFields
+end
 end StandardModel
