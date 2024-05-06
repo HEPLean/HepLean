@@ -228,7 +228,6 @@ def tolinearParametersQNeqZero (S : {S : linearParameters //  S.Q' ≠  0 ∧ S.
     by
       simp only [ne_eq, neg_add_rev, neg_sub]
       field_simp
-      rw [not_or]
       ring_nf
       simp only [neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero, or_false]
       exact S.2⟩

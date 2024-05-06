@@ -64,7 +64,7 @@ lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : lineIn
   have h1 (i : Fin n) : S.val i.castSucc.castSucc =
       - (S.val ((Fin.last n).castSucc) +  (S.val ((Fin.last n).succ))) / 2 := by
     have h1S := hS (Fin.last n).castSucc ((Fin.last n).succ) i.castSucc.castSucc
-      (by simp; rw [Fin.ext_iff]; simp; omega)
+      (by simp; rw [Fin.ext_iff]; simp)
       (by simp; rw [Fin.ext_iff]; simp; omega)
       (by simp; rw [Fin.ext_iff]; simp; omega)
     simp_all
