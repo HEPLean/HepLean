@@ -31,6 +31,7 @@ open Matrix
 open Complex
 open ComplexConjugate
 
+/-- The complex vector space in which the Higgs field takes values. -/
 abbrev higgsVec := EuclideanSpace ℂ (Fin 2)
 
 /-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
@@ -49,6 +50,8 @@ instance : NormedAddCommGroup (Fin 2 → ℂ) := by
 
 section higgsVec
 
+/-- The continous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` acheived by
+casting vectors. -/
 def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
   toFun x := x
   map_add' x y := by
@@ -59,9 +62,10 @@ def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
 lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, higgsVec) 𝓘(ℝ, Fin 2 → ℂ) higgsVecToFin2ℂ :=
   ContinuousLinearMap.smooth higgsVecToFin2ℂ
 
+/-- Given an element of `gaugeGroup` the linear automorphism of `higgsVec` it gets taken to. -/
 @[simps!]
 noncomputable def higgsRepMap (g : guageGroup) : higgsVec →ₗ[ℂ] higgsVec where
-  toFun S :=  (g.2 ^ 3) • (g.1.1 *ᵥ S)
+  toFun S :=  (g.2.2 ^ 3) • (g.2.1.1 *ᵥ S)
   map_add' S T := by
     simp [Matrix.mulVec_add, smul_add]
     rw [Matrix.mulVec_add, smul_add]
@@ -94,6 +98,7 @@ end higgsVec
 namespace higgsField
 open  Complex Real
 
+/-- Given a `higgsField`, the corresponding map from `spaceTime` to `higgsVec`. -/
 def toHiggsVec (φ : higgsField) : spaceTime → higgsVec := φ
 
 lemma toHiggsVec_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, higgsVec) φ.toHiggsVec := by
@@ -128,20 +133,22 @@ lemma comp_im_smooth (φ : higgsField) (i : Fin 2):
     Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : spaceTime) =>  (φ x i))) :=
   Smooth.comp (ContinuousLinearMap.smooth imCLM) (φ.comp_smooth i)
 
+/-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
+ higgs vector.  -/
 @[simp]
 def normSq (φ : higgsField) : spaceTime → ℝ := fun x => ( ‖φ x‖ ^ 2)
 
 lemma normSq_expand (φ : higgsField)  :
     φ.normSq  = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1) ).re := by
   funext x
-  simp
+  simp only [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
   rw [@norm_sq_eq_inner ℂ]
   simp
 
 lemma normSq_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
   rw [normSq_expand]
   refine Smooth.add ?_ ?_
-  simp
+  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
   refine Smooth.add ?_ ?_
   refine Smooth.smul ?_ ?_
   exact φ.comp_re_smooth 0
@@ -149,7 +156,7 @@ lemma normSq_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, �
   refine Smooth.smul ?_ ?_
   exact φ.comp_im_smooth 0
   exact φ.comp_im_smooth 0
-  simp
+  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
   refine Smooth.add ?_ ?_
   refine Smooth.smul ?_ ?_
   exact φ.comp_re_smooth 1
@@ -164,6 +171,7 @@ lemma normSq_nonneg (φ : higgsField) (x : spaceTime) : 0 ≤ φ.normSq x := by
 lemma normSq_zero (φ : higgsField) (x : spaceTime) : φ.normSq x = 0 ↔ φ x = 0 := by
   simp only [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
 
+/-- The Higgs potential of the form `- μ² * |φ|² + λ * |φ|⁴`. -/
 @[simp]
 def potential (φ : higgsField) (μSq lambda : ℝ ) (x : spaceTime) :  ℝ :=
   - μSq * φ.normSq x + lambda * φ.normSq x * φ.normSq x
@@ -174,9 +182,6 @@ lemma potential_smooth (φ : higgsField) (μSq lambda : ℝ ) :
   exact Smooth.add
     (Smooth.neg (Smooth.smul smooth_const φ.normSq_smooth))
     (Smooth.smul (Smooth.smul smooth_const φ.normSq_smooth) φ.normSq_smooth)
-
-
-
 
 
 /-- A higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
@@ -202,6 +207,7 @@ lemma potential_const (φ : higgsVec) (μSq lambda : ℝ ) :
   rw [normSq_const]
   ring_nf
 
+/-- Given a element `v : ℝ` the `higgsField` `(0, v/√2)`. -/
 def constStd (v : ℝ) : higgsField := const ![0, v/√2]
 
 lemma normSq_constStd (v : ℝ) : (constStd v).normSq = fun x => v ^ 2 / 2 := by
@@ -211,13 +217,14 @@ lemma normSq_constStd (v : ℝ) : (constStd v).normSq = fun x => v ^ 2 / 2 := by
   rw [Fin.sum_univ_two]
   simp
 
-def potentialConstStd (μSq lambda v: ℝ) : ℝ := - μSq /2 * v ^ 2  + lambda /4 * v ^ 4
+/-- The higgs potential as a function of `v : ℝ` when evaluated on a `constStd` field. -/
+def potentialConstStd (μSq lambda v : ℝ) : ℝ := - μSq /2 * v ^ 2  + lambda /4 * v ^ 4
 
 lemma potential_constStd (v μSq lambda : ℝ) :
     (constStd v).potential μSq lambda = fun _ => potentialConstStd μSq lambda v := by
   unfold potential potentialConstStd
   rw [normSq_constStd]
-  simp
+  simp only [neg_mul]
   ring_nf
 
 lemma smooth_potentialConstStd (μSq lambda : ℝ) :
@@ -236,7 +243,8 @@ lemma deriv_potentialConstStd (μSq lambda v : ℝ) :
     deriv (fun v => potentialConstStd μSq lambda v) v = - μSq * v + lambda * v ^ 3 := by
   simp only [potentialConstStd]
   rw [deriv_add, deriv_mul, deriv_mul,  deriv_const, deriv_const, deriv_pow, deriv_pow]
-  simp
+  simp only [zero_mul, Nat.cast_ofNat, Nat.succ_sub_succ_eq_sub, tsub_zero, pow_one, zero_add,
+    neg_mul]
   ring
   exact differentiableAt_const _
   exact differentiableAt_pow _
@@ -278,7 +286,7 @@ lemma potentialConstStd_bounded' (μSq lambda v x : ℝ) (hLam : 0 < lambda) :
   ring_nf at h4
   ring_nf
   exact h4
-  simp
+  simp only [ne_eq, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
   exact OrderIso.mulLeft₀.proof_1 lambda hLam
 
 lemma potentialConstStd_bounded (μSq lambda v : ℝ) (hLam : 0 < lambda) :
@@ -300,7 +308,8 @@ lemma potentialConstStd_vsq_of_eq_bound (μSq lambda v : ℝ) (hLam : 0 < lambda
   intro h
   simp [potentialConstStd] at h
   field_simp at h
-  have h1 :  (8 * lambda ^ 2) * v ^ 2 * v ^ 2 + (- 16 * μSq * lambda ) * v ^ 2 + (8 * μSq ^ 2) = 0 := by
+  have h1 :  (8 * lambda ^ 2) * v ^ 2 * v ^ 2 + (- 16 * μSq * lambda ) * v ^ 2
+      + (8 * μSq ^ 2) = 0 := by
     linear_combination h
   have hd : discrim (8 * lambda ^ 2) (- 16 * μSq * lambda) (8 * μSq ^ 2) = 0 := by
     simp [discrim]
@@ -315,7 +324,7 @@ lemma potentialConstStd_vsq_of_eq_bound (μSq lambda v : ℝ) (hLam : 0 < lambda
   ring_nf
   rw [← h1]
   ring
-  simp
+  simp only [ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, false_or]
   exact OrderIso.mulLeft₀.proof_1 lambda hLam
   intro h
   simp [potentialConstStd, h]
@@ -343,9 +352,6 @@ lemma potentialConstStd_IsMinOn (μSq lambda v : ℝ) (hLam : 0 < lambda) (hμSq
   intro h
   rw [← potentialConstStd_vsq_of_eq_bound μSq lambda v hLam] at h
   exact potentialConstStd_IsMinOn_of_eq_bound μSq lambda v hLam h
-
-
-
 
 
 lemma potentialConstStd_muSq_le_zero_nonneg (μSq lambda v : ℝ) (hLam : 0 < lambda)
@@ -388,13 +394,13 @@ lemma potentialConstStd_zero_muSq_le_zero (μSq lambda v : ℝ) (hLam : 0 < lamb
     simpa using h2
     have h3 :  ¬ (0 ≤ 4 * μSq / (2 * lambda)) := by
       rw [div_nonneg_iff]
-      simp
+      simp only [gt_iff_lt, Nat.ofNat_pos, mul_nonneg_iff_of_pos_left]
       rw [not_or]
       apply And.intro
-      simp
+      simp only [not_and, not_le]
       intro hm
       exact (hμSqZ (le_antisymm hμSq hm)).elim
-      simp
+      simp only [not_and, not_le, gt_iff_lt, Nat.ofNat_pos, mul_pos_iff_of_pos_left]
       intro _
       simp_all only [true_or]
     rw [← h2] at h3
@@ -421,7 +427,6 @@ lemma potentialConstStd_IsMinOn_muSq_le_zero (μSq lambda v : ℝ) (hLam : 0 < l
   rw [h, isMinOn_univ_iff, hx]
   intro x
   exact potentialConstStd_muSq_le_zero_nonneg μSq lambda x hLam hμSq
-
 
 
 

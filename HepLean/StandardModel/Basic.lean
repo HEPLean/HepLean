@@ -8,7 +8,12 @@ import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.RepresentationTheory.Basic
+/-!
+# The Standard Model
 
+This file defines the basic properties of the standard model in particle physics.
+
+-/
 universe v u
 namespace StandardModel
 
@@ -20,6 +25,8 @@ open ComplexConjugate
 /-- The space-time (TODO: Change to Minkowski.) -/
 abbrev spaceTime := EuclideanSpace ℝ (Fin 4)
 
-abbrev guageGroup : Type := specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
+/-- The global gauge group of the standard model. -/
+abbrev guageGroup : Type := specialUnitaryGroup (Fin 3) ℂ ×
+  specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
 end StandardModel
