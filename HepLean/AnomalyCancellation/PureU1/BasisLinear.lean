@@ -88,7 +88,7 @@ lemma sum_of_vectors {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
   induction k
   simp
   rfl
-  rename_i k l hl
+  rename_i _ l hl
   rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
   have hlt := hl (f ∘ Fin.castSucc)
   erw [← hlt]
