@@ -22,5 +22,4 @@ abbrev spaceTime := EuclideanSpace ℝ (Fin 4)
 
 abbrev guageGroup : Type := specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
-
 end StandardModel
