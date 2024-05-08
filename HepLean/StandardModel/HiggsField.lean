@@ -21,6 +21,10 @@ import Mathlib.Algebra.QuadraticDiscriminant
 
 This file defines the basic properties for the higgs field in the standard model.
 
+## References
+
+- We use conventions given in: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-higgs-boson.pdf
+
 -/
 universe v u
 namespace StandardModel
@@ -233,7 +237,6 @@ lemma potential_eq_bound_IsMinOn_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < 
   rw [hv]
   exact potential_bounded_below_of_μSq_nonpos hLam hμSq x
 
-
 lemma potential_bound_reached_of_μSq_nonneg {μSq lambda : ℝ} (hLam : 0 < lambda) (hμSq : 0 ≤ μSq) :
     ∃ (φ : higgsVec), potential μSq lambda φ = - μSq ^ 2 / (4  * lambda) := by
   use ![√(μSq/(2 * lambda)), 0]
@@ -269,6 +272,83 @@ lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambd
     rw [← potential_eq_bound_iff_of_μSq_nonpos hLam hμSq φ] at h
     exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ h
 
+/-- Given a Higgs vector, a rotation matrix which puts the fst component of the
+vector to zero, and the snd componenet to a real -/
+def rotateMatrix (φ : higgsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
+  ![![φ 1 /‖φ‖ , - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖ , conj (φ 1) / ‖φ‖] ]
+
+lemma rotateMatrix_star (φ : higgsVec) :
+    star φ.rotateMatrix =
+    ![![conj (φ 1) /‖φ‖ ,  φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖ , φ 1 / ‖φ‖] ] := by
+  simp [star]
+  rw [rotateMatrix, conjTranspose]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [conj_ofReal]
+
+
+lemma rotateMatrix_det {φ : higgsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det = 1 := by
+  simp [rotateMatrix, det_fin_two]
+  have h1 : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+  field_simp
+  rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+    Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
+  rfl
+
+lemma rotateMatrix_unitary {φ : higgsVec} (hφ : φ ≠ 0) :
+    (rotateMatrix φ) ∈ unitaryGroup (Fin 2) ℂ := by
+  rw [mem_unitaryGroup_iff', rotateMatrix_star, rotateMatrix]
+  erw [mul_fin_two, one_fin_two]
+  have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+  congr
+  field_simp
+  ext i j
+  fin_cases i <;> fin_cases j <;> field_simp
+  · rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
+    rfl
+  · ring_nf
+  · ring_nf
+  · rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
+    rfl
+
+lemma rotateMatrix_specialUnitary {φ : higgsVec} (hφ : φ ≠ 0) :
+    (rotateMatrix φ) ∈ specialUnitaryGroup (Fin 2) ℂ :=
+  mem_specialUnitaryGroup_iff.mpr ⟨rotateMatrix_unitary hφ, rotateMatrix_det hφ⟩
+
+/-- Given a Higgs vector, an element of the gauge group which puts the fst component of the
+vector to zero, and the snd componenet to a real -/
+def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : guageGroup :=
+    ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
+
+lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
+    higgsRep (rotateGuageGroup hφ) φ = ![0, ofReal ‖φ‖] := by
+  simp [higgsRep, higgsRepMap, rotateGuageGroup, rotateMatrix, higgsRepMap]
+  ext i
+  fin_cases i
+  simp [mulVec, vecHead, vecTail]
+  ring_nf
+  simp only [Fin.mk_one, Fin.isValue, cons_val_one, head_cons]
+  simp [mulVec, vecHead, vecTail]
+  have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+  field_simp
+  rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
+  rfl
+
+theorem rotate_fst_zero_snd_real (φ : higgsVec) :
+    ∃ (g : guageGroup), higgsRep g φ = ![0, ofReal ‖φ‖] := by
+  by_cases h : φ = 0
+  · use ⟨1, 1, 1⟩
+    simp [h, higgsRep, higgsRepMap]
+    ext i
+    fin_cases i <;> rfl
+  · use rotateGuageGroup h
+    exact rotateGuageGroup_apply h
 
 end higgsVec
 end higgsVec
@@ -396,12 +476,12 @@ lemma isConst_iff_of_higgsVec (Φ : higgsField) : Φ.isConst ↔ ∃ (φ : higgs
   subst hφ
   rfl
 
-lemma normSq_of_higgsVec (φ : higgsVec) :φ.toField.normSq = fun x => (norm φ) ^ 2 := by
+lemma normSq_of_higgsVec (φ : higgsVec) : φ.toField.normSq = fun x => (norm φ) ^ 2 := by
   simp only [normSq, higgsVec.toField]
   funext x
   simp
 
-lemma potential_of_higgsVec (φ : higgsVec) (μSq lambda : ℝ ) :
+lemma potential_of_higgsVec (φ : higgsVec) (μSq lambda : ℝ) :
     φ.toField.potential μSq lambda = fun _ => higgsVec.potential μSq lambda φ := by
   simp [higgsVec.potential]
   unfold potential
@@ -409,6 +489,7 @@ lemma potential_of_higgsVec (φ : higgsVec) (μSq lambda : ℝ ) :
   funext x
   simp only [neg_mul, add_right_inj]
   ring_nf
+
 
 
 end higgsField
