@@ -11,6 +11,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.RepresentationTheory.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Geometry.Manifold.ContMDiff.Product
 import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.Calculus.Deriv.Add
@@ -68,7 +69,7 @@ lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, higgsVec) 𝓘(ℝ, Fin 2 → 
 
 /-- Given an element of `gaugeGroup` the linear automorphism of `higgsVec` it gets taken to. -/
 @[simps!]
-noncomputable def higgsRepMap (g : guageGroup) : higgsVec →ₗ[ℂ] higgsVec where
+noncomputable def higgsRepMap (g : guageGroup) : higgsVec →L[ℂ] higgsVec where
   toFun S :=  (g.2.2 ^ 3) • (g.2.1.1 *ᵥ S)
   map_add' S T := by
     simp [Matrix.mulVec_add, smul_add]
@@ -77,11 +78,13 @@ noncomputable def higgsRepMap (g : guageGroup) : higgsVec →ₗ[ℂ] higgsVec w
     simp [Matrix.mulVec_smul]
     rw [Matrix.mulVec_smul]
     exact smul_comm  _ _ _
-
+  cont := by
+    exact (continuous_const_smul_iff _).mpr (Continuous.matrix_mulVec continuous_const
+      (Pi.continuous_precomp fun x => x))
 
 /-- The representation of the SM guage group acting on `ℂ²`. -/
 noncomputable def higgsRep : Representation ℂ guageGroup higgsVec where
-  toFun := higgsRepMap
+  toFun g := (higgsRepMap g).toLinearMap
   map_mul' U V := by
     apply LinearMap.ext
     intro S
