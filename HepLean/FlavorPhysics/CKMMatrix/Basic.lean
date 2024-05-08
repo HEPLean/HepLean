@@ -108,7 +108,7 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   rw [add_comm k e, add_comm l f, add_comm m g]
 
 
-lemma phaseShiftEquivRelation : Equivalence phaseShiftRelation where
+lemma phaseShiftRelation_equiv : Equivalence phaseShiftRelation where
   refl := phaseShiftRelation_refl
   symm := phaseShiftRelation_symm
   trans := phaseShiftRelation_trans
@@ -149,7 +149,7 @@ scoped[CKMMatrix] notation (name := ts_element) "[" V "]ts" => V.1 2 1
 /-- The `tb`th element of the CKM matrix. -/
 scoped[CKMMatrix] notation (name := tb_element) "[" V "]tb" => V.1 2 2
 
-instance CKMMatrixSetoid : Setoid CKMMatrix := ⟨phaseShiftRelation, phaseShiftEquivRelation⟩
+instance CKMMatrixSetoid : Setoid CKMMatrix := ⟨phaseShiftRelation, phaseShiftRelation_equiv⟩
 
 /-- The matrix obtained from `V` by shifting the phases of the fermions. -/
 @[simps!]

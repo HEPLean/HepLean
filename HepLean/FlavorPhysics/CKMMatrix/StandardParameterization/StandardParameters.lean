@@ -614,7 +614,7 @@ lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
 theorem exists_δ₁₃ (V : CKMMatrix) :
     ∃ (δ₃ : ℝ), V ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₃ := by
   obtain ⟨U, hU⟩ := fstRowThdColRealCond_holds_up_to_equiv V
-  have hUV : ⟦U⟧ = ⟦V⟧ := (Quotient.eq.mpr (phaseShiftEquivRelation.symm hU.1))
+  have hUV : ⟦U⟧ = ⟦V⟧ := (Quotient.eq.mpr (phaseShiftRelation_equiv.symm hU.1))
   by_cases ha : [V]ud ≠ 0 ∨ [V]us ≠ 0
   · have haU : [U]ud ≠ 0 ∨ [U]us ≠ 0 := by -- should be much simplier
       by_contra hn
@@ -638,8 +638,8 @@ theorem exists_δ₁₃ (V : CKMMatrix) :
         exact ha
       simpa [not_or, VAbs] using h1
     have ⟨U2, hU2⟩ := ubOnePhaseCond_hold_up_to_equiv_of_ub_one haU hU.2
-    have hUVa2 : V ≈ U2 := phaseShiftEquivRelation.trans hU.1 hU2.1
-    have hUV2 : ⟦U2⟧ = ⟦V⟧ := (Quotient.eq.mpr (phaseShiftEquivRelation.symm hUVa2))
+    have hUVa2 : V ≈ U2 := phaseShiftRelation_equiv.trans hU.1 hU2.1
+    have hUV2 : ⟦U2⟧ = ⟦V⟧ := (Quotient.eq.mpr (phaseShiftRelation_equiv.symm hUVa2))
     have hx := eq_standParam_of_ubOnePhaseCond hU2.2
     use 0
     rw [← hUV2, ← hx]
@@ -661,7 +661,7 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
     simp
   rw [h1]
   rw [mulExpδ₁₃_on_param_eq_zero_iff, Vs_zero_iff_cos_sin_zero] at h
-  refine phaseShiftEquivRelation.trans hδ₃ ?_
+  refine phaseShiftRelation_equiv.trans hδ₃ ?_
   rcases h with h | h | h | h | h | h
   exact on_param_cos_θ₁₂_eq_zero δ₁₃' h
   exact on_param_cos_θ₁₃_eq_zero δ₁₃' h
