@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.StandardModel.Basic
+import HepLean.StandardModel.Representations
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Tactic.Polyrith
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
@@ -13,14 +14,14 @@ import Mathlib.RepresentationTheory.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Geometry.Manifold.ContMDiff.Product
-import Mathlib.Analysis.Complex.RealDeriv
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Algebra.QuadraticDiscriminant
 /-!
-# The Higgs field
+# The Higgs vector space
 
-This file defines the basic properties for the higgs field in the standard model.
+This file defines the target vector space of the Higgs boson, the potential on it,
+and the representation of the SM gauge group acting on it.
+
+This file is a import of `SM.HiggsBoson.Basic`.
 
 ## References
 
@@ -39,23 +40,7 @@ open ComplexConjugate
 /-- The complex vector space in which the Higgs field takes values. -/
 abbrev higgsVec := EuclideanSpace ℂ (Fin 2)
 
-/-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
-abbrev higgsBundle := Bundle.Trivial spaceTime higgsVec
-
-instance : SmoothVectorBundle higgsVec higgsBundle (𝓡 4)  :=
-  Bundle.Trivial.smoothVectorBundle higgsVec 𝓘(ℝ, spaceTime)
-
-/-- A higgs field is a smooth section of the higgs bundle. -/
-abbrev higgsField : Type := SmoothSection (𝓡 4) higgsVec higgsBundle
-
-instance : NormedAddCommGroup (Fin 2 → ℂ) := by
-  exact Pi.normedAddCommGroup
-
-
-
 section higgsVec
-
-
 
 /-- The continous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` acheived by
 casting vectors. -/
@@ -69,40 +54,19 @@ def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
 lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, higgsVec) 𝓘(ℝ, Fin 2 → ℂ) higgsVecToFin2ℂ :=
   ContinuousLinearMap.smooth higgsVecToFin2ℂ
 
-/-- Given an element of `gaugeGroup` the linear automorphism of `higgsVec` it gets taken to. -/
-@[simps!]
-noncomputable def higgsRepMap (g : guageGroup) : higgsVec →L[ℂ] higgsVec where
-  toFun S :=  (g.2.2 ^ 3) • (g.2.1.1 *ᵥ S)
-  map_add' S T := by
-    simp [Matrix.mulVec_add, smul_add]
-    rw [Matrix.mulVec_add, smul_add]
-  map_smul' a S := by
-    simp [Matrix.mulVec_smul]
-    rw [Matrix.mulVec_smul]
-    exact smul_comm  _ _ _
-  cont := by
-    exact (continuous_const_smul_iff _).mpr (Continuous.matrix_mulVec continuous_const
-      (Pi.continuous_precomp fun x => x))
-
-/-- The representation of the SM guage group acting on `ℂ²`. -/
-noncomputable def higgsRep : Representation ℂ guageGroup higgsVec where
-  toFun g := (higgsRepMap g).toLinearMap
-  map_mul' U V := by
-    apply LinearMap.ext
-    intro S
-    simp only [higgsRepMap, Prod.snd_mul, Submonoid.coe_inf, Prod.fst_mul, Submonoid.coe_mul,
-      LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, LinearMap.map_smul_of_tower,
-      mulVec_mulVec]
-    simp  [mul_pow, smul_smul, mul_comm]
-  map_one' := by
-    apply LinearMap.ext
-    intro S
-    simp only [higgsRepMap, LinearMap.mul_apply, AddHom.coe_mk, LinearMap.coe_mk]
-    change 1 ^ 3 • (1 *ᵥ _) = _
-    rw [one_pow, Matrix.one_mulVec]
-    simp only [one_smul, LinearMap.one_apply]
-
 namespace higgsVec
+
+@[simps!]
+noncomputable def higgsRepUnitary : guageGroup →* unitaryGroup (Fin 2) ℂ where
+  toFun g := repU1 g.2.2 * fundamentalSU2 g.2.1
+  map_mul'  := by
+    intro ⟨_, a2, a3⟩ ⟨_, b2, b3⟩
+    change repU1 (a3 * b3) *  fundamentalSU2 (a2 * b2) = _
+    rw [repU1.map_mul, fundamentalSU2.map_mul]
+    rw [mul_assoc, mul_assoc, ← mul_assoc (repU1 b3) _ _, repU1_fundamentalSU2_commute]
+    repeat rw [mul_assoc]
+  map_one' := by
+    simp only [Prod.snd_one, _root_.map_one, Prod.fst_one, mul_one]
 
 /-- An orthonomral basis of higgsVec. -/
 noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ higgsVec :=
@@ -119,7 +83,7 @@ noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (higgsVec →L[�
 
 lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
     matrixToLin (star g) = star (matrixToLin g) :=
-  ContinuousLinearMap.coe_inj.mp (Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g)
+  ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g
 
 lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
     matrixToLin g ∈ unitary (higgsVec →L[ℂ] higgsVec) := by
@@ -127,6 +91,7 @@ lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
   rw [mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
   simp
 
+@[simps!]
 noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (higgsVec →L[ℂ] higgsVec) where
   toFun g := ⟨matrixToLin g, matrixToLin_unitary g⟩
   map_mul' g h := by
@@ -144,17 +109,17 @@ def unitToLinear : unitary (higgsVec →L[ℂ] higgsVec) →* higgsVec →ₗ[�
 def rep : Representation ℂ guageGroup higgsVec :=
    unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
 
+lemma higgsRepUnitary_mul (g : guageGroup) (φ : higgsVec) :
+    (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
+  simp only [higgsRepUnitary_apply_coe]
+  exact smul_mulVec_assoc (g.2.2 ^ 3) (g.2.1.1) φ
+
+lemma rep_apply (g : guageGroup) (φ : higgsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
+  higgsRepUnitary_mul g φ
+
+
 lemma norm_invariant (g : guageGroup) (φ : higgsVec) : ‖rep g φ‖ = ‖φ‖ :=
   ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
-
-/-- Given a vector `ℂ²` the constant higgs field with value equal to that
-section. -/
-noncomputable def toField (φ : higgsVec) : higgsField where
-  toFun := fun _ => φ
-  contMDiff_toFun := by
-    intro x
-    rw [Bundle.contMDiffAt_section]
-    exact smoothAt_const
 
 /-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
 def potential (μSq lambda : ℝ) (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2  +
@@ -178,7 +143,7 @@ lemma potential_as_quad (μSq lambda : ℝ) (φ : higgsVec) :
   ring
 
 lemma zero_le_potential_discrim (μSq lambda : ℝ) (φ : higgsVec) (hLam : 0 < lambda) :
-    0 ≤ discrim (lambda ) (- μSq ) (- potential μSq lambda φ) := by
+    0 ≤ discrim (lambda) (- μSq ) (- potential μSq lambda φ) := by
   have h1 := potential_as_quad μSq lambda φ
   rw [quadratic_eq_zero_iff_discrim_eq_sq] at h1
   rw [h1]
@@ -378,8 +343,9 @@ def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : guageGroup :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
-    higgsRep (rotateGuageGroup hφ) φ = ![0, ofReal ‖φ‖] := by
-  simp [higgsRep, higgsRepMap, rotateGuageGroup, rotateMatrix, higgsRepMap]
+    rep (rotateGuageGroup hφ) φ = ![0, ofReal ‖φ‖] := by
+  rw [rep_apply]
+  simp [rotateGuageGroup, rotateMatrix]
   ext i
   fin_cases i
   simp [mulVec, vecHead, vecTail]
@@ -394,10 +360,10 @@ lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
   rfl
 
 theorem rotate_fst_zero_snd_real (φ : higgsVec) :
-    ∃ (g : guageGroup), higgsRep g φ = ![0, ofReal ‖φ‖] := by
+    ∃ (g : guageGroup), rep g φ = ![0, ofReal ‖φ‖] := by
   by_cases h : φ = 0
   · use ⟨1, 1, 1⟩
-    simp [h, higgsRep, higgsRepMap]
+    simp [h]
     ext i
     fin_cases i <;> rfl
   · use rotateGuageGroup h
@@ -406,145 +372,5 @@ theorem rotate_fst_zero_snd_real (φ : higgsVec) :
 end higgsVec
 end higgsVec
 
-namespace higgsField
-open  Complex Real
-
-/-- Given a `higgsField`, the corresponding map from `spaceTime` to `higgsVec`. -/
-def toHiggsVec (φ : higgsField) : spaceTime → higgsVec := φ
-
-
-lemma toHiggsVec_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, higgsVec) φ.toHiggsVec := by
-  intro x0
-  have h1 := φ.contMDiff x0
-  rw [Bundle.contMDiffAt_section] at h1
-  have h2 :
-    (fun x => ((trivializationAt higgsVec (Bundle.Trivial spaceTime higgsVec) x0)
-    { proj := x, snd := φ x }).2) = φ := by
-    rfl
-  simp only [h2] at h1
-  exact h1
-
-lemma toField_toHiggsVec_apply (φ : higgsField) (x : spaceTime) :
-    (φ.toHiggsVec x).toField x = φ x := by
-  rfl
-
-lemma higgsVecToFin2ℂ_toHiggsVec (φ : higgsField) : higgsVecToFin2ℂ ∘ φ.toHiggsVec = φ := by
-  ext x
-  rfl
-
-lemma toVec_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, Fin 2 → ℂ) φ := by
-  rw [← φ.higgsVecToFin2ℂ_toHiggsVec]
-  exact Smooth.comp smooth_higgsVecToFin2ℂ (φ.toHiggsVec_smooth)
-
-lemma apply_smooth (φ : higgsField) :
-    ∀ i, Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℂ) (fun (x : spaceTime) => (φ x i)) := by
-  rw [← smooth_pi_space]
-  exact φ.toVec_smooth
-
-lemma apply_re_smooth (φ : higgsField) (i : Fin 2):
-    Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) (reCLM ∘ (fun (x : spaceTime) =>  (φ x i))) :=
-  Smooth.comp (ContinuousLinearMap.smooth reCLM) (φ.apply_smooth i)
-
-lemma apply_im_smooth (φ : higgsField) (i : Fin 2):
-    Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : spaceTime) =>  (φ x i))) :=
-  Smooth.comp (ContinuousLinearMap.smooth imCLM) (φ.apply_smooth i)
-
-/-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
- higgs vector.  -/
-@[simp]
-def normSq (φ : higgsField) : spaceTime → ℝ := fun x => ( ‖φ x‖ ^ 2)
-
-lemma toHiggsVec_norm (φ : higgsField) (x : spaceTime) :
-    ‖φ x‖  = ‖φ.toHiggsVec x‖ := rfl
-
-lemma normSq_expand (φ : higgsField)  :
-    φ.normSq  = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1) ).re := by
-  funext x
-  simp only [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
-  rw [@norm_sq_eq_inner ℂ]
-  simp
-
-lemma normSq_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
-  rw [normSq_expand]
-  refine Smooth.add ?_ ?_
-  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
-  refine Smooth.add ?_ ?_
-  refine Smooth.smul ?_ ?_
-  exact φ.apply_re_smooth 0
-  exact φ.apply_re_smooth 0
-  refine Smooth.smul ?_ ?_
-  exact φ.apply_im_smooth 0
-  exact φ.apply_im_smooth 0
-  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
-  refine Smooth.add ?_ ?_
-  refine Smooth.smul ?_ ?_
-  exact φ.apply_re_smooth 1
-  exact φ.apply_re_smooth 1
-  refine Smooth.smul ?_ ?_
-  exact φ.apply_im_smooth 1
-  exact φ.apply_im_smooth 1
-
-lemma normSq_nonneg (φ : higgsField) (x : spaceTime) : 0 ≤ φ.normSq x := by
-  simp only [normSq, ge_iff_le, norm_nonneg, pow_nonneg]
-
-lemma normSq_zero (φ : higgsField) (x : spaceTime) : φ.normSq x = 0 ↔ φ x = 0 := by
-  simp only [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
-
-/-- The Higgs potential of the form `- μ² * |φ|² + λ * |φ|⁴`. -/
-@[simp]
-def potential (φ : higgsField) (μSq lambda : ℝ ) (x : spaceTime) :  ℝ :=
-  - μSq * φ.normSq x + lambda * φ.normSq x * φ.normSq x
-
-lemma potential_smooth (φ : higgsField) (μSq lambda : ℝ) :
-    Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) (fun x => φ.potential μSq lambda x) := by
-  simp only [potential, normSq, neg_mul]
-  exact Smooth.add
-    (Smooth.neg (Smooth.smul smooth_const φ.normSq_smooth))
-    (Smooth.smul (Smooth.smul smooth_const φ.normSq_smooth) φ.normSq_smooth)
-
-
-lemma potential_apply (φ : higgsField) (μSq lambda : ℝ) (x : spaceTime) :
-    (φ.potential μSq lambda) x = higgsVec.potential μSq lambda (φ.toHiggsVec x) := by
-  simp [higgsVec.potential, toHiggsVec_norm]
-  ring
-
-
-/-- A higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
-def isConst (Φ : higgsField) : Prop := ∀ x y, Φ x = Φ y
-
-lemma isConst_of_higgsVec (φ : higgsVec) : φ.toField.isConst := by
-  intro x _
-  simp [higgsVec.toField]
-
-lemma isConst_iff_of_higgsVec (Φ : higgsField) : Φ.isConst ↔ ∃ (φ : higgsVec), Φ = φ.toField := by
-  apply Iff.intro
-  intro h
-  use Φ 0
-  ext x y
-  rw [← h x 0]
-  rfl
-  intro h
-  intro x y
-  obtain ⟨φ, hφ⟩ := h
-  subst hφ
-  rfl
-
-lemma normSq_of_higgsVec (φ : higgsVec) : φ.toField.normSq = fun x => (norm φ) ^ 2 := by
-  simp only [normSq, higgsVec.toField]
-  funext x
-  simp
-
-lemma potential_of_higgsVec (φ : higgsVec) (μSq lambda : ℝ) :
-    φ.toField.potential μSq lambda = fun _ => higgsVec.potential μSq lambda φ := by
-  simp [higgsVec.potential]
-  unfold potential
-  rw [normSq_of_higgsVec]
-  funext x
-  simp only [neg_mul, add_right_inj]
-  ring_nf
-
-
-
-end higgsField
 end
 end StandardModel
