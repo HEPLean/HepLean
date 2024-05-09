@@ -28,7 +28,7 @@ open ComplexConjugate
 abbrev spaceTime := EuclideanSpace ℝ (Fin 4)
 
 /-- The global gauge group of the standard model. TODO: Generalize to quotient. -/
-abbrev guageGroup : Type :=
+abbrev gaugeGroup : Type :=
   specialUnitaryGroup (Fin 3) ℂ × specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
 end StandardModel

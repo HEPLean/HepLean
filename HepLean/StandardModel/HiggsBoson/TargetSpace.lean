@@ -56,8 +56,9 @@ lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, higgsVec) 𝓘(ℝ, Fin 2 → 
 
 namespace higgsVec
 
+/-- The Higgs representation as a homomorphism from the gauge group to unitary `2×2`-matrices. -/
 @[simps!]
-noncomputable def higgsRepUnitary : guageGroup →* unitaryGroup (Fin 2) ℂ where
+noncomputable def higgsRepUnitary : gaugeGroup →* unitaryGroup (Fin 2) ℂ where
   toFun g := repU1 g.2.2 * fundamentalSU2 g.2.1
   map_mul'  := by
     intro ⟨_, a2, a3⟩ ⟨_, b2, b3⟩
@@ -73,7 +74,6 @@ noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ higgsVec :=
   EuclideanSpace.basisFun (Fin 2) ℂ
 
 /-- Takes in a `2×2`-matrix and returns a linear map of `higgsVec`. -/
-@[simps!]
 noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (higgsVec →L[ℂ] higgsVec) where
   toFun g := LinearMap.toContinuousLinearMap
     $ Matrix.toLin orthonormBasis.toBasis orthonormBasis.toBasis g
@@ -91,7 +91,8 @@ lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
   rw [mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
   simp
 
-@[simps!]
+/-- The natural homomorphism from unitary `2×2` complex matrices to unitary transformations
+of `higgsVec`. -/
 noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (higgsVec →L[ℂ] higgsVec) where
   toFun g := ⟨matrixToLin g, matrixToLin_unitary g⟩
   map_mul' g h := by
@@ -101,31 +102,33 @@ noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (higgsVec
     ext
     simp
 
+/-- The inclusion of unitary transformations on `higgsVec` into all linear transformations. -/
 @[simps!]
 def unitToLinear : unitary (higgsVec →L[ℂ] higgsVec) →* higgsVec →ₗ[ℂ] higgsVec :=
   DistribMulAction.toModuleEnd ℂ higgsVec
 
+/-- The representation of the gauge group acting on `higgsVec`. -/
 @[simps!]
-def rep : Representation ℂ guageGroup higgsVec :=
+def rep : Representation ℂ gaugeGroup higgsVec :=
    unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
 
-lemma higgsRepUnitary_mul (g : guageGroup) (φ : higgsVec) :
+lemma higgsRepUnitary_mul (g : gaugeGroup) (φ : higgsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
   simp only [higgsRepUnitary_apply_coe]
   exact smul_mulVec_assoc (g.2.2 ^ 3) (g.2.1.1) φ
 
-lemma rep_apply (g : guageGroup) (φ : higgsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
+lemma rep_apply (g : gaugeGroup) (φ : higgsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
 
-lemma norm_invariant (g : guageGroup) (φ : higgsVec) : ‖rep g φ‖ = ‖φ‖ :=
+lemma norm_invariant (g : gaugeGroup) (φ : higgsVec) : ‖rep g φ‖ = ‖φ‖ :=
   ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
 
 /-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
 def potential (μSq lambda : ℝ) (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2  +
   lambda * ‖φ‖ ^ 4
 
-lemma potential_invariant (μSq lambda : ℝ) (φ : higgsVec)  (g : guageGroup) :
+lemma potential_invariant (μSq lambda : ℝ) (φ : higgsVec)  (g : gaugeGroup) :
     potential μSq lambda (rep g φ) = potential μSq lambda φ := by
   simp only [potential, neg_mul]
   rw [norm_invariant]
@@ -339,7 +342,7 @@ lemma rotateMatrix_specialUnitary {φ : higgsVec} (hφ : φ ≠ 0) :
 
 /-- Given a Higgs vector, an element of the gauge group which puts the fst component of the
 vector to zero, and the snd componenet to a real -/
-def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : guageGroup :=
+def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : gaugeGroup :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
@@ -360,7 +363,7 @@ lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
   rfl
 
 theorem rotate_fst_zero_snd_real (φ : higgsVec) :
-    ∃ (g : guageGroup), rep g φ = ![0, ofReal ‖φ‖] := by
+    ∃ (g : gaugeGroup), rep g φ = ![0, ofReal ‖φ‖] := by
   by_cases h : φ = 0
   · use ⟨1, 1, 1⟩
     simp [h]

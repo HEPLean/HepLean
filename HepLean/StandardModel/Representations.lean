@@ -25,7 +25,7 @@ open Matrix
 open Complex
 open ComplexConjugate
 
-
+/-- The 2d representation of U(1) with charge 3 as a map from U(1) to `unitaryGroup (Fin 2) ℂ`. -/
 @[simps!]
 noncomputable def repU1Map (g : unitary ℂ) : unitaryGroup (Fin 2) ℂ :=
   ⟨g ^ 3 • 1, by
@@ -36,6 +36,8 @@ noncomputable def repU1Map (g : unitary ℂ) : unitaryGroup (Fin 2) ℂ :=
     erw [(unitary.mem_iff.mp g.prop).2]
     simp only [one_pow, one_smul]⟩
 
+/-- The 2d representation of U(1) with charge 3 as a homomorphism
+ from U(1) to `unitaryGroup (Fin 2) ℂ`. -/
 @[simps!]
 noncomputable def repU1 : unitary ℂ →* unitaryGroup (Fin 2) ℂ where
   toFun g := repU1Map g
@@ -44,6 +46,7 @@ noncomputable def repU1 : unitary ℂ →* unitaryGroup (Fin 2) ℂ where
   map_one' := by
     simp only [repU1Map, one_pow, one_smul, Submonoid.mk_eq_one]
 
+/-- The fundamental representation of SU(2) as a homomorphism to `unitaryGroup (Fin 2) ℂ`. -/
 @[simps!]
 def fundamentalSU2 : specialUnitaryGroup (Fin 2) ℂ →* unitaryGroup (Fin 2) ℂ where
   toFun g := ⟨g.1, g.prop.1⟩
