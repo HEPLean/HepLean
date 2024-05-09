@@ -15,6 +15,11 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 This file defines the basic properties of the standard model in particle physics.
 
+## TODO
+
+- Change the gauge group to a quotient of SU(3) x SU(2) x U(1) by a subgroup of ℤ₆.
+(see e.g. pg 97 of  http://www.damtp.cam.ac.uk/user/tong/gaugetheory/gt.pdf)
+
 -/
 universe v u
 namespace StandardModel
