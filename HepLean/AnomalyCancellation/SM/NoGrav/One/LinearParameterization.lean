@@ -285,9 +285,9 @@ lemma cubic (S : linearParametersQENeqZero) :
   simp_all
   rw [add_eq_zero_iff_eq_neg]
 
-lemma FLTThree : FermatLastTheoremWith ℚ 3 := by sorry
 
-lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
+lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
+    (FLTThree : FermatLastTheoremWith ℚ 3) :
     S.v = 0 ∨ S.w = 0 := by
   rw [S.cubic] at h
   have h1 : (-1)^3 = (-1 : ℚ):= by rfl
@@ -335,9 +335,10 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
   simp_all
   linear_combination h'
 
-lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
+lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
+    (FLTThree : FermatLastTheoremWith ℚ 3) :
     (S.v = -1 ∧ S.w = 0) ∨ (S.v = 0 ∧ S.w = -1) := by
-  have h' := cubic_v_or_w_zero S h
+  have h' := cubic_v_or_w_zero S h FLTThree
   cases' h' with hx hx
   simp [hx]
   exact cubic_v_zero S h hx
@@ -357,10 +358,11 @@ lemma grav (S : linearParametersQENeqZero) : accGrav (bijection S).1.val = 0 ↔
   rw [h]
   ring
 
-lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
+lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
+    (FLTThree : FermatLastTheoremWith ℚ 3) :
     accGrav (bijection S).1.val = 0 := by
   rw [grav]
-  have h' := cube_w_v S h
+  have h' := cube_w_v S h FLTThree
   cases' h' with h h
   rw [h.1, h.2]
   simp only [add_zero]
