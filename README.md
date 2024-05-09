@@ -43,8 +43,7 @@ See: https://leanprover-community.github.io/get_started.html
 
 ### Quick installation 
 
-1. Clone this repository. 
-2. Open a terminal in the cloned directory. 
-2. Run `lake -Kenv=dev update`.
-
-Depending on how up to date this directory is compared to MathLib4 this may lead to errors.
+- clone this repository
+- Open a terminal in the corresponding directory.
+- Run `lake exe cache get`.
+- Rune `lake build`. 
