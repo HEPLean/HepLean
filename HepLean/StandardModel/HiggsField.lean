@@ -55,6 +55,8 @@ instance : NormedAddCommGroup (Fin 2 → ℂ) := by
 
 section higgsVec
 
+
+
 /-- The continous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` acheived by
 casting vectors. -/
 def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
@@ -102,6 +104,49 @@ noncomputable def higgsRep : Representation ℂ guageGroup higgsVec where
 
 namespace higgsVec
 
+/-- An orthonomral basis of higgsVec. -/
+noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ higgsVec :=
+  EuclideanSpace.basisFun (Fin 2) ℂ
+
+/-- Takes in a `2×2`-matrix and returns a linear map of `higgsVec`. -/
+@[simps!]
+noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (higgsVec →L[ℂ] higgsVec) where
+  toFun g := LinearMap.toContinuousLinearMap
+    $ Matrix.toLin orthonormBasis.toBasis orthonormBasis.toBasis g
+  map_mul' g h := ContinuousLinearMap.coe_inj.mp $
+    Matrix.toLin_mul orthonormBasis.toBasis orthonormBasis.toBasis orthonormBasis.toBasis g h
+  map_one' := ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_one orthonormBasis.toBasis
+
+lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
+    matrixToLin (star g) = star (matrixToLin g) :=
+  ContinuousLinearMap.coe_inj.mp (Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g)
+
+lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
+    matrixToLin g ∈ unitary (higgsVec →L[ℂ] higgsVec) := by
+  rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul]
+  rw [mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
+  simp
+
+noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (higgsVec →L[ℂ] higgsVec) where
+  toFun g := ⟨matrixToLin g, matrixToLin_unitary g⟩
+  map_mul' g h := by
+    ext
+    simp
+  map_one' := by
+    ext
+    simp
+
+@[simps!]
+def unitToLinear : unitary (higgsVec →L[ℂ] higgsVec) →* higgsVec →ₗ[ℂ] higgsVec :=
+  DistribMulAction.toModuleEnd ℂ higgsVec
+
+@[simps!]
+def rep : Representation ℂ guageGroup higgsVec :=
+   unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
+
+lemma norm_invariant (g : guageGroup) (φ : higgsVec) : ‖rep g φ‖ = ‖φ‖ :=
+  ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
+
 /-- Given a vector `ℂ²` the constant higgs field with value equal to that
 section. -/
 noncomputable def toField (φ : higgsVec) : higgsField where
@@ -114,6 +159,11 @@ noncomputable def toField (φ : higgsVec) : higgsField where
 /-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
 def potential (μSq lambda : ℝ) (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2  +
   lambda * ‖φ‖ ^ 4
+
+lemma potential_invariant (μSq lambda : ℝ) (φ : higgsVec)  (g : guageGroup) :
+    potential μSq lambda (rep g φ) = potential μSq lambda φ := by
+  simp only [potential, neg_mul]
+  rw [norm_invariant]
 
 lemma potential_snd_term_nonneg {lambda : ℝ} (hLam : 0 < lambda) (φ : higgsVec) :
     0 ≤ lambda * ‖φ‖ ^ 4 := by
