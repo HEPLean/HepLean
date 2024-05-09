@@ -55,4 +55,6 @@ import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
 import HepLean.StandardModel.Basic
-import HepLean.StandardModel.HiggsField
+import HepLean.StandardModel.HiggsBoson.Basic
+import HepLean.StandardModel.HiggsBoson.TargetSpace
+import HepLean.StandardModel.Representations
