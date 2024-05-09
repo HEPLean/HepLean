@@ -120,34 +120,46 @@ lemma higgsRepUnitary_mul (g : gaugeGroup) (φ : higgsVec) :
 lemma rep_apply (g : gaugeGroup) (φ : higgsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
-
 lemma norm_invariant (g : gaugeGroup) (φ : higgsVec) : ‖rep g φ‖ = ‖φ‖ :=
   ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
 
-/-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
-def potential (μSq lambda : ℝ) (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2  +
-  lambda * ‖φ‖ ^ 4
+section potentialDefn
 
-lemma potential_invariant (μSq lambda : ℝ) (φ : higgsVec)  (g : gaugeGroup) :
-    potential μSq lambda (rep g φ) = potential μSq lambda φ := by
+variable (μSq lambda : ℝ)
+local notation "λ" => lambda
+
+/-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
+def potential (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2 + λ * ‖φ‖ ^ 4
+
+lemma potential_invariant (φ : higgsVec)  (g : gaugeGroup) :
+    potential μSq (λ) (rep g φ) = potential μSq (λ) φ := by
   simp only [potential, neg_mul]
   rw [norm_invariant]
 
-lemma potential_snd_term_nonneg {lambda : ℝ} (hLam : 0 < lambda) (φ : higgsVec) :
-    0 ≤ lambda * ‖φ‖ ^ 4 := by
+lemma potential_as_quad (φ : higgsVec) :
+    λ  * ‖φ‖ ^ 2 * ‖φ‖ ^ 2 + (- μSq ) * ‖φ‖ ^ 2 + (- potential μSq (λ) φ) = 0 := by
+  simp [potential]
+  ring
+
+end potentialDefn
+section potentialProp
+
+variable {lambda : ℝ}
+variable (μSq : ℝ)
+variable (hLam : 0 < lambda)
+local notation "λ" => lambda
+
+lemma potential_snd_term_nonneg (φ : higgsVec) :
+    0 ≤ λ * ‖φ‖ ^ 4 := by
   rw [mul_nonneg_iff]
   apply Or.inl
   simp_all only [ge_iff_le, norm_nonneg, pow_nonneg, and_true]
   exact le_of_lt hLam
 
-lemma potential_as_quad (μSq lambda : ℝ) (φ : higgsVec) :
-    lambda  * ‖φ‖ ^ 2 * ‖φ‖ ^ 2 + (- μSq ) * ‖φ‖ ^ 2 + (- potential μSq lambda φ ) = 0 := by
-  simp [potential]
-  ring
 
-lemma zero_le_potential_discrim (μSq lambda : ℝ) (φ : higgsVec) (hLam : 0 < lambda) :
-    0 ≤ discrim (lambda) (- μSq ) (- potential μSq lambda φ) := by
-  have h1 := potential_as_quad μSq lambda φ
+lemma zero_le_potential_discrim  (φ : higgsVec) :
+    0 ≤ discrim (λ) (- μSq ) (- potential μSq (λ) φ) := by
+  have h1 := potential_as_quad μSq (λ) φ
   rw [quadratic_eq_zero_iff_discrim_eq_sq] at h1
   rw [h1]
   exact sq_nonneg (2 * (lambda ) * ‖φ‖ ^ 2 + -μSq)
@@ -155,9 +167,9 @@ lemma zero_le_potential_discrim (μSq lambda : ℝ) (φ : higgsVec) (hLam : 0 < 
   exact ne_of_gt hLam
 
 
-lemma potential_eq_zero_sol (μSq lambda : ℝ) (hLam : 0 < lambda)(φ : higgsVec)
-    (hV : potential μSq lambda φ = 0) : φ = 0 ∨ ‖φ‖ ^ 2 = μSq / lambda := by
-  have h1 := potential_as_quad μSq lambda φ
+lemma potential_eq_zero_sol (φ : higgsVec)
+    (hV : potential μSq (λ) φ = 0) : φ = 0 ∨ ‖φ‖ ^ 2 = μSq / λ := by
+  have h1 := potential_as_quad μSq (λ) φ
   rw [hV] at h1
   have h2 : ‖φ‖ ^ 2 * (lambda  * ‖φ‖ ^ 2  + -μSq ) = 0 := by
     linear_combination h1
@@ -169,34 +181,34 @@ lemma potential_eq_zero_sol (μSq lambda : ℝ) (hLam : 0 < lambda)(φ : higgsVe
   ring_nf
   linear_combination h2
 
-lemma potential_eq_zero_sol_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambda) (hμSq : μSq ≤ 0)
-    (φ : higgsVec)  (hV : potential μSq lambda φ = 0) : φ = 0 := by
-  cases' (potential_eq_zero_sol μSq lambda hLam φ hV) with h1 h1
+lemma potential_eq_zero_sol_of_μSq_nonpos  (hμSq : μSq ≤ 0)
+    (φ : higgsVec)  (hV : potential μSq (λ) φ = 0) : φ = 0 := by
+  cases' (potential_eq_zero_sol μSq hLam φ hV) with h1 h1
   exact h1
   by_cases hμSqZ : μSq = 0
   simpa [hμSqZ] using h1
-  refine ((?_ : ¬ 0 ≤  μSq / lambda) (?_)).elim
+  refine ((?_ : ¬ 0 ≤  μSq / λ) (?_)).elim
   · simp_all [div_nonneg_iff]
     intro h
     exact lt_imp_lt_of_le_imp_le (fun _ => h) (lt_of_le_of_ne hμSq hμSqZ)
   · rw [← h1]
     exact sq_nonneg ‖φ‖
 
-lemma potential_bounded_below (μSq lambda : ℝ) (hLam : 0 < lambda) (φ : higgsVec) :
-    - μSq ^ 2 / (4 * lambda) ≤ potential μSq lambda φ  := by
-  have h1 := zero_le_potential_discrim μSq lambda φ hLam
+lemma potential_bounded_below (φ : higgsVec) :
+    - μSq ^ 2 / (4 * (λ)) ≤ potential μSq (λ) φ  := by
+  have h1 := zero_le_potential_discrim μSq hLam φ
   simp [discrim] at h1
   ring_nf at h1
   rw [← neg_le_iff_add_nonneg'] at h1
-  have h3 : lambda * potential μSq lambda φ * 4 = (4 * lambda) * potential μSq lambda φ := by
+  have h3 : (λ) * potential μSq (λ) φ * 4 = (4 * λ) * potential μSq (λ) φ := by
     ring
   rw [h3] at h1
-  have h2 :=  (div_le_iff' (by simp [hLam] : 0 < 4 * lambda )).mpr h1
+  have h2 :=  (div_le_iff' (by simp [hLam] : 0 < 4 * λ )).mpr h1
   ring_nf at h2 ⊢
   exact h2
 
-lemma potential_bounded_below_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambda)
-    (hμSq : μSq ≤ 0) (φ : higgsVec) : 0 ≤ potential μSq lambda φ := by
+lemma potential_bounded_below_of_μSq_nonpos  {μSq : ℝ}
+    (hμSq : μSq ≤ 0) (φ : higgsVec) : 0 ≤ potential μSq (λ) φ := by
   simp only [potential, neg_mul, add_zero]
   refine add_nonneg ?_ (potential_snd_term_nonneg hLam φ)
   field_simp
@@ -204,53 +216,53 @@ lemma potential_bounded_below_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lam
   simp_all only [ge_iff_le, norm_nonneg, pow_nonneg, and_self, or_true]
 
 
-lemma potential_eq_bound_discrim_zero (μSq lambda : ℝ) (hLam : 0 < lambda)(φ : higgsVec)
-    (hV : potential μSq lambda φ = - μSq ^ 2 / (4  * lambda)) :
-    discrim (lambda) (- μSq) (- potential μSq lambda φ) = 0 := by
+lemma potential_eq_bound_discrim_zero (φ : higgsVec)
+    (hV : potential μSq (λ) φ = - μSq ^ 2 / (4  * λ)) :
+    discrim (λ) (- μSq) (- potential μSq (λ) φ) = 0 := by
   simp [discrim, hV]
   field_simp
   ring
 
-lemma potential_eq_bound_higgsVec_sq (μSq lambda : ℝ) (hLam : 0 < lambda)(φ : higgsVec)
-    (hV : potential μSq lambda φ = - μSq ^ 2 / (4  * lambda)) :
-    ‖φ‖ ^ 2 = μSq / (2 * lambda) := by
-  have h1 := potential_as_quad μSq lambda φ
+lemma potential_eq_bound_higgsVec_sq (φ : higgsVec)
+    (hV : potential μSq (λ) φ = - μSq ^ 2 / (4  * (λ))) :
+    ‖φ‖ ^ 2 = μSq / (2 * λ) := by
+  have h1 := potential_as_quad μSq (λ) φ
   rw [quadratic_eq_zero_iff_of_discrim_eq_zero _
-    (potential_eq_bound_discrim_zero μSq lambda hLam φ hV)] at h1
+    (potential_eq_bound_discrim_zero μSq hLam φ hV)] at h1
   rw [h1]
   field_simp
   ring_nf
   simp only [ne_eq, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
   exact ne_of_gt hLam
 
-lemma potential_eq_bound_iff (μSq lambda : ℝ) (hLam : 0 < lambda)(φ : higgsVec) :
-    potential μSq lambda φ = - μSq ^ 2 / (4  * lambda) ↔ ‖φ‖ ^ 2 = μSq / (2 * lambda) := by
+lemma potential_eq_bound_iff (φ : higgsVec) :
+    potential μSq (λ) φ = - μSq ^ 2 / (4  * (λ)) ↔ ‖φ‖ ^ 2 = μSq / (2 * (λ)) := by
   apply Iff.intro
   · intro h
-    exact potential_eq_bound_higgsVec_sq μSq lambda hLam φ h
+    exact potential_eq_bound_higgsVec_sq μSq hLam φ h
   · intro h
     have hv : ‖φ‖  ^ 4 = ‖φ‖ ^ 2 * ‖φ‖ ^ 2 := by
       ring_nf
     field_simp [potential, hv, h]
     ring
 
-lemma potential_eq_bound_iff_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambda)
-    (hμSq : μSq ≤ 0) (φ : higgsVec) : potential μSq lambda φ = 0 ↔ φ = 0 := by
+lemma potential_eq_bound_iff_of_μSq_nonpos  {μSq : ℝ}
+    (hμSq : μSq ≤ 0) (φ : higgsVec) : potential μSq (λ) φ = 0 ↔ φ = 0 := by
   apply Iff.intro
   · intro h
-    exact potential_eq_zero_sol_of_μSq_nonpos hLam hμSq φ h
+    exact potential_eq_zero_sol_of_μSq_nonpos μSq hLam hμSq φ h
   · intro h
     simp [potential, h]
 
-lemma potential_eq_bound_IsMinOn (μSq lambda : ℝ) (hLam : 0 < lambda)  (φ : higgsVec)
+lemma potential_eq_bound_IsMinOn  (φ : higgsVec)
     (hv : potential μSq lambda φ = - μSq ^ 2 / (4  * lambda)) :
     IsMinOn (potential μSq lambda) Set.univ φ := by
   rw [isMinOn_univ_iff]
   intro x
   rw [hv]
-  exact potential_bounded_below μSq lambda hLam x
+  exact potential_bounded_below μSq hLam x
 
-lemma potential_eq_bound_IsMinOn_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambda)
+lemma potential_eq_bound_IsMinOn_of_μSq_nonpos  {μSq : ℝ}
     (hμSq : μSq ≤ 0) (φ : higgsVec) (hv : potential μSq lambda φ = 0) :
     IsMinOn (potential μSq lambda) Set.univ φ := by
   rw [isMinOn_univ_iff]
@@ -258,29 +270,29 @@ lemma potential_eq_bound_IsMinOn_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < 
   rw [hv]
   exact potential_bounded_below_of_μSq_nonpos hLam hμSq x
 
-lemma potential_bound_reached_of_μSq_nonneg {μSq lambda : ℝ} (hLam : 0 < lambda) (hμSq : 0 ≤ μSq) :
+lemma potential_bound_reached_of_μSq_nonneg  {μSq : ℝ} (hμSq : 0 ≤ μSq) :
     ∃ (φ : higgsVec), potential μSq lambda φ = - μSq ^ 2 / (4  * lambda) := by
   use ![√(μSq/(2 * lambda)), 0]
-  refine (potential_eq_bound_iff μSq lambda hLam _).mpr ?_
+  refine (potential_eq_bound_iff μSq hLam _).mpr ?_
   simp [@PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
   field_simp [mul_pow]
 
-lemma IsMinOn_potential_iff_of_μSq_nonneg {μSq lambda : ℝ} (hLam : 0 < lambda) (hμSq : 0 ≤ μSq) :
+lemma IsMinOn_potential_iff_of_μSq_nonneg  {μSq : ℝ} (hμSq : 0 ≤ μSq) :
     IsMinOn (potential μSq lambda) Set.univ φ ↔ ‖φ‖ ^ 2 = μSq /(2 * lambda) := by
   apply Iff.intro
   · intro h
     obtain ⟨φm, hφ⟩ := potential_bound_reached_of_μSq_nonneg hLam hμSq
     have hm := isMinOn_univ_iff.mp h φm
     rw [hφ] at hm
-    have h1 := potential_bounded_below μSq lambda hLam φ
-    rw [← potential_eq_bound_iff μSq lambda hLam φ]
+    have h1 := potential_bounded_below μSq hLam φ
+    rw [← potential_eq_bound_iff μSq hLam φ]
     exact (Real.partialOrder.le_antisymm _ _ h1 hm).symm
   · intro h
-    rw [← potential_eq_bound_iff μSq lambda hLam φ] at h
-    exact potential_eq_bound_IsMinOn μSq lambda hLam φ h
+    rw [← potential_eq_bound_iff μSq hLam φ] at h
+    exact potential_eq_bound_IsMinOn μSq hLam φ h
 
 
-lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambda) (hμSq : μSq ≤ 0) :
+lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq : ℝ} (hμSq : μSq ≤ 0) :
     IsMinOn (potential μSq lambda) Set.univ φ ↔ φ = 0 := by
   apply Iff.intro
   · intro h
@@ -293,6 +305,7 @@ lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq lambda : ℝ} (hLam : 0 < lambd
     rw [← potential_eq_bound_iff_of_μSq_nonpos hLam hμSq φ] at h
     exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ h
 
+end potentialProp
 /-- Given a Higgs vector, a rotation matrix which puts the fst component of the
 vector to zero, and the snd componenet to a real -/
 def rotateMatrix (φ : higgsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
