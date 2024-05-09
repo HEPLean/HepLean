@@ -31,7 +31,7 @@ A project to digitalize high energy physics.
 
 ## Contributing 
 
-We follow here roughly the same contribution policies as MathLib4 (which can be found [here](https://leanprover-community.github.io/contribute/index.html)). With the exception that we allow some `sorry` statements, if a theorem is widly expected to be true by the community. 
+We follow here roughly the same contribution policies as MathLib4 (which can be found [here](https://leanprover-community.github.io/contribute/index.html)). 
 
 If you want permission to create a pull-request for this repository contact Joseph Tooby-Smith on the lean Zulip, or email. 
 
