@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+python3 ./scripts/check-file-import.py
+
 echo "Running linter for Lean files"
 
 ./scripts/lint-style.sh
