@@ -53,6 +53,7 @@ def linSolMap {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group) :
     apply ACCSystemLinear.LinSols.ext
     exact (G.rep g).map_smul' _ _
 
+/-- The representation acting on the vector space of solutions to the linear ACCs. -/
 @[simps!]
 def linSolRep {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     Representation ℚ G.group χ.LinSols where
