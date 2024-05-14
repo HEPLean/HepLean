@@ -38,7 +38,7 @@ jobs:
         with:
           linters: gcc
           run: |
-            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI HepLean | tee stdout.log"
+            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build HepLean | tee stdout.log"
       
       - name: lint HepLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
