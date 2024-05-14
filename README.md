@@ -39,11 +39,13 @@ If you want permission to create a pull-request for this repository contact Jose
 
 ### Installing Lean 4 
 
-See: https://leanprover-community.github.io/get_started.html
+The installation instructions for Lean 4 are given here: https://leanprover-community.github.io/get_started.html. 
 
-### Quick installation 
+### Installing HepLean 
 
-- clone this repository
-- Open a terminal in the corresponding directory.
-- Run `lake exe cache get`.
-- Rune `lake build`. 
+- Clone this repository (or download the repository as a Zip file) 
+- Open a terminal at the top-level in the corresponding directory.
+- Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
+- Run `lake build`.
+- Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
+  
