@@ -34,15 +34,16 @@ open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
+open spaceTime
 
 /-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
 abbrev higgsBundle := Bundle.Trivial spaceTime higgsVec
 
-instance : SmoothVectorBundle higgsVec higgsBundle (𝓡 4)  :=
+instance : SmoothVectorBundle higgsVec higgsBundle spaceTime.asSmoothManifold  :=
   Bundle.Trivial.smoothVectorBundle higgsVec 𝓘(ℝ, spaceTime)
 
 /-- A higgs field is a smooth section of the higgs bundle. -/
-abbrev higgsField : Type := SmoothSection (𝓡 4) higgsVec higgsBundle
+abbrev higgsField : Type := SmoothSection spaceTime.asSmoothManifold higgsVec higgsBundle
 
 instance : NormedAddCommGroup (Fin 2 → ℂ) := by
   exact Pi.normedAddCommGroup
