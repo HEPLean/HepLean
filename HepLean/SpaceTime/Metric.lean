@@ -131,9 +131,9 @@ lemma ηLin_η_stdBasis (μ ν : Fin 4) : ηLin (stdBasis μ) (stdBasis ν) = η
   by_cases h : μ = ν
   rw [stdBasis_apply]
   subst h
-  simp
+  simp only [↓reduceIte, mul_one]
   rw [stdBasis_not_eq, η_off_diagonal h]
-  simp
+  simp only [mul_zero]
   exact fun a => h (id a.symm)
 
 lemma ηLin_mulVec_left (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
@@ -156,7 +156,7 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
   apply Iff.intro
   intro h
   subst h
-  simp
+  simp only [ηLin_apply_apply, one_mulVec, implies_true]
   intro h
   funext μ ν
   have h1 := h (stdBasis μ) (stdBasis ν)

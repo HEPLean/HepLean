@@ -40,6 +40,8 @@ open ComplexConjugate
 /-- The structure of a smooth manifold on spacetime. -/
 def asSmoothManifold : ModelWithCorners ℝ spaceTime spaceTime := 𝓘(ℝ, spaceTime)
 
+instance : ChartedSpace spaceTime spaceTime := chartedSpaceSelf spaceTime
+
 /-- The standard basis for spacetime. -/
 def stdBasis : Basis (Fin 4) ℝ spaceTime := Pi.basisFun ℝ (Fin 4)
 
@@ -73,7 +75,7 @@ lemma stdBasis_3 : stdBasis 3 = ![0, 0, 0, 1] := by
 lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     (Λ *ᵥ stdBasis μ) ν = Λ ν μ := by
   rw [mulVec, dotProduct, Fintype.sum_eq_single μ, stdBasis_apply]
-  simp
+  simp only [↓reduceIte, mul_one]
   intro x h
   rw [stdBasis_apply, if_neg (Ne.symm h)]
   simp
