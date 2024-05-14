@@ -30,7 +30,7 @@ jobs:
       
       - name: build cache
         run: |
-          lake build cache
+          lake exe cache get
 
       - name: Build HepLean
         run: lake build HepLean
