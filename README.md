@@ -4,10 +4,10 @@ A project to digitalize high energy physics.
 
 ## Aims of this project
 
-- Use Lean to create a exhaustive database of definitions, theorems, proofs and calculations in high energy physics.
-- Make a libary that is easy to use by the high energy physics community.
+- Use Lean to create an exhaustive database of definitions, theorems, proofs, and calculations in high energy physics.
+- Make a library that is easy to use by the high energy physics community.
 - Keep the database up-to date with developments in MathLib4. 
-- Create github workflows of relevence to the high energy physics community. 
+- Create gitHub workflows of relevance to the high energy physics community. 
 
 ## Where to learn more 
 
@@ -48,4 +48,4 @@ See: https://leanprover-community.github.io/get_started.html
 - Clone this repository
 - Open a terminal in the corresponding directory.
 - Run `lake exe cache get`.
-- Rune `lake build`. 
+- Run `lake build`. 
