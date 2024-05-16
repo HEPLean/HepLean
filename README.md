@@ -33,6 +33,8 @@ A project to digitalize high energy physics.
 
 We follow here roughly the same contribution policies as MathLib4 (which can be found [here](https://leanprover-community.github.io/contribute/index.html)). 
 
+A guide to contributing can be found [here](https://github.com/HEPLean/HepLean/blob/master/CONTRIBUTING.md).
+
 If you want permission to create a pull-request for this repository contact Joseph Tooby-Smith on the lean Zulip, or email. 
 
 ## Installation
@@ -43,7 +45,7 @@ See: https://leanprover-community.github.io/get_started.html
 
 ### Quick installation 
 
-- clone this repository
+- Clone this repository
 - Open a terminal in the corresponding directory.
 - Run `lake exe cache get`.
 - Rune `lake build`. 
