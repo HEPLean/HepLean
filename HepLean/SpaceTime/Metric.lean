@@ -24,7 +24,7 @@ open ComplexConjugate
 
 /-- The metric as a `4×4` real matrix. -/
 def η : Matrix (Fin 4) (Fin 4) ℝ :=
-  ![![1, 0, 0, 0], ![0, -1, 0, 0], ![0, 0, -1, 0], ![0, 0, 0, -1]]
+  !![1, 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 0, -1]
 
 lemma η_off_diagonal {μ ν : Fin 4} (h : μ ≠ ν) : η μ ν = 0 := by
   fin_cases μ <;>
@@ -46,8 +46,8 @@ lemma η_transpose : η.transpose = η := by
   rw [transpose_apply, η_symmetric]
 
 lemma det_η : η.det = - 1 := by
-  simp only [η, det_succ_row_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, cons_val',
-    empty_val', cons_val_fin_one, cons_val_zero, submatrix_apply, Fin.succ_zero_eq_one,
+  simp only [η, det_succ_row_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, of_apply,
+    cons_val', empty_val', cons_val_fin_one, cons_val_zero, submatrix_apply, Fin.succ_zero_eq_one,
     cons_val_one, head_cons, submatrix_submatrix, Function.comp_apply, Fin.succ_one_eq_two,
     cons_val_two, tail_cons, det_unique, Fin.default_eq_zero, cons_val_succ, head_fin_const,
     Fin.sum_univ_succ, Fin.val_zero, pow_zero, one_mul, Fin.zero_succAbove, Finset.univ_unique,
