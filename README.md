@@ -11,6 +11,10 @@ A project to digitalize high energy physics.
 
 ## Where to learn more 
 
+- Read the associated paper:
+
+  https://arxiv.org/abs/2405.08863
+
 - The documentation for this project is at: 
 
   https://heplean.github.io/HepLean/
