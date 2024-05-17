@@ -56,13 +56,10 @@ def lorentzGroup : Subgroup (GeneralLinearGroup (Fin 4) ℝ) where
 instance : TopologicalGroup lorentzGroup :=
   Subgroup.instTopologicalGroupSubtypeMem lorentzGroup
 
-lemma mem_lorentzGroup_iff (Λ : GeneralLinearGroup (Fin 4) ℝ) :
-    Λ ∈ lorentzGroup ↔ ∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y := by
-  rfl
 
-lemma mem_lorentzGroup_iff' (Λ : GeneralLinearGroup (Fin 4) ℝ) :
-    Λ ∈ lorentzGroup ↔ ∀ (x y : spaceTime), ηLin (x) ((η * Λ.1ᵀ * η * Λ.1) *ᵥ y) = ηLin x y := by
-  rw [mem_lorentzGroup_iff]
+lemma preserve_ηLin_iff' (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+    (∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) ↔
+    ∀ (x y : spaceTime), ηLin (x) ((η * Λᵀ * η * Λ) *ᵥ y) = ηLin x y := by
   apply Iff.intro
   intro h
   intro x y
@@ -74,19 +71,73 @@ lemma mem_lorentzGroup_iff' (Λ : GeneralLinearGroup (Fin 4) ℝ) :
   rw [ηLin_mulVec_left, mulVec_mulVec]
   exact h x y
 
+
+lemma preserve_ηLin_iff'' (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+    (∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) ↔
+     η * Λᵀ * η * Λ = 1  := by
+  rw [preserve_ηLin_iff', ηLin_matrix_eq_identity_iff (η * Λᵀ * η * Λ)]
+  apply Iff.intro
+  · simp_all  [ηLin, implies_true, iff_true, one_mulVec]
+  · simp_all only [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply,
+    mulVec_mulVec, implies_true]
+
+lemma preserve_ηLin_iff''' (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+    (∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) ↔
+    Λ * (η * Λᵀ * η) = 1  := by
+  rw [preserve_ηLin_iff'']
+  apply Iff.intro
+  intro h
+  exact mul_eq_one_comm.mp h
+  intro h
+  exact mul_eq_one_comm.mp h
+
+lemma preserve_ηLin_iff_transpose (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+    (∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) ↔
+    (∀ (x y : spaceTime), ηLin (Λᵀ *ᵥ x) (Λᵀ *ᵥ y) = ηLin x y) := by
+  apply Iff.intro
+  intro h
+  have h1 := congrArg transpose ((preserve_ηLin_iff'' Λ).mp h)
+  rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
+    ← mul_assoc, transpose_one] at h1
+  rw [preserve_ηLin_iff''' Λ.transpose, ← h1]
+  repeat rw [← mul_assoc]
+  intro h
+  have h1 := congrArg transpose ((preserve_ηLin_iff'' Λ.transpose).mp h)
+  rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
+    ← mul_assoc, transpose_one, transpose_transpose] at h1
+  rw [preserve_ηLin_iff''', ← h1]
+  repeat rw [← mul_assoc]
+
+def preserveηLinGLnLift {Λ : Matrix (Fin 4) (Fin 4) ℝ}
+    (h : ∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) : GL (Fin 4) ℝ :=
+  ⟨Λ, η * Λᵀ * η  ,(preserve_ηLin_iff''' Λ).mp h , (preserve_ηLin_iff'' Λ).mp h⟩
+
+lemma mem_lorentzGroup_iff (Λ : GeneralLinearGroup (Fin 4) ℝ) :
+    Λ ∈ lorentzGroup ↔ ∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y := by
+  rfl
+
+
+lemma mem_lorentzGroup_iff' (Λ : GeneralLinearGroup (Fin 4) ℝ) :
+    Λ ∈ lorentzGroup ↔ ∀ (x y : spaceTime), ηLin (x) ((η * Λ.1ᵀ * η * Λ.1) *ᵥ y) = ηLin x y := by
+  rw [mem_lorentzGroup_iff]
+  exact preserve_ηLin_iff' Λ.1
+
+
 lemma mem_lorentzGroup_iff'' (Λ : GL (Fin 4) ℝ) :
     Λ ∈ lorentzGroup ↔ η * Λ.1ᵀ * η * Λ.1 = 1 := by
-  rw [mem_lorentzGroup_iff', ηLin_matrix_eq_identity_iff (η * Λ.1ᵀ * η * Λ.1)]
-  apply Iff.intro
-  · simp_all only [ηLin_apply_apply, implies_true, iff_true, one_mulVec]
-  · simp_all only [ηLin_apply_apply, mulVec_mulVec, implies_true]
+  rw [mem_lorentzGroup_iff]
+  exact preserve_ηLin_iff'' Λ
 
 lemma mem_lorentzGroup_iff''' (Λ : GL (Fin 4) ℝ) :
     Λ ∈ lorentzGroup ↔ η * Λ.1ᵀ * η = Λ⁻¹ := by
   rw [mem_lorentzGroup_iff'']
   exact Units.mul_eq_one_iff_eq_inv
 
+def preserveηLinLorentzLift {Λ : Matrix (Fin 4) (Fin 4) ℝ}
+    (h : ∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y) : lorentzGroup :=
+  ⟨preserveηLinGLnLift h, (mem_lorentzGroup_iff (preserveηLinGLnLift h)).mpr h⟩
 
+-- TODO: Simplify using preserveηLinLorentzLift.
 lemma mem_lorentzGroup_iff_transpose (Λ : GL (Fin 4) ℝ) :
     Λ ∈ lorentzGroup ↔ ⟨transpose Λ, (transpose Λ)⁻¹, by
         rw [← transpose_nonsing_inv, ← transpose_mul, (coe_units_inv Λ).symm]
@@ -147,6 +198,8 @@ lemma det_eq_one_or_neg_one (Λ : lorentzGroup) : Λ.1.1.det = 1 ∨ Λ.1.1.det 
     (congrArg det ((mem_lorentzGroup_iff'' Λ.1).mp Λ.2))
 
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
+
+instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
 /-- A group homomorphism from `lorentzGroup` to `ℤ₂` taking a matrix to
 0 if it's determinant is 1 and 1 if its determinant is -1.-/
