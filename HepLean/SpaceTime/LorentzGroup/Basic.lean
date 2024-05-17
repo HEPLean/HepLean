@@ -113,9 +113,9 @@ def lorentzGroup : Subgroup (GL (Fin 4) ℝ) where
 instance : TopologicalGroup lorentzGroup :=
   Subgroup.instTopologicalGroupSubtypeMem lorentzGroup
 
-@[simps!]
+/-- The lift of a matrix perserving `ηLin` to a Lorentz Group element. -/
 def PreservesηLin.liftLor {Λ : Matrix (Fin 4) (Fin 4) ℝ} (h : PreservesηLin Λ) :
-  lorentzGroup := ⟨liftGL h, h⟩
+    lorentzGroup := ⟨liftGL h, h⟩
 
 namespace lorentzGroup
 
@@ -127,6 +127,8 @@ def transpose (Λ : lorentzGroup) : lorentzGroup :=
   PreservesηLin.liftLor ((PreservesηLin.iff_transpose Λ.1).mp Λ.2)
 
 
+/-- The continuous map from `GL (Fin 4) ℝ` to `Matrix (Fin 4) (Fin 4) ℝ` whose kernal is
+the Lorentz group. -/
 def kernalMap : C(GL (Fin 4) ℝ, Matrix (Fin 4) (Fin 4) ℝ) where
   toFun Λ := η * Λ.1ᵀ * η * Λ.1
   continuous_toFun := by

@@ -34,7 +34,7 @@ namespace lorentzGroup
 
 open FourVelocity
 
-
+/-- An auxillary linear map used in the definition of a genearlised boost. -/
 def genBoostAux₁ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
   toFun x := (2 * ηLin x u) • v.1.1
   map_add' x y := by
@@ -45,7 +45,7 @@ def genBoostAux₁ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
       RingHom.id_apply]
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
-
+/-- An auxillary linear map used in the definition of a genearlised boost. -/
 def genBoostAux₂ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
   toFun x := - (ηLin x (u + v) / (1 + ηLin u v)) • (u + v)
   map_add' x y := by
@@ -60,6 +60,8 @@ def genBoostAux₂ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
     rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
 
+/-- An genearlised boost. This is a Lorentz transformation which takes the four velocity `u`
+to `v`. -/
 def genBoost (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime :=
   LinearMap.id + genBoostAux₁ u v + genBoostAux₂ u v
 
@@ -81,6 +83,7 @@ lemma self (u : FourVelocity) : genBoost u u = LinearMap.id := by
   ring
   rfl
 
+/-- A generalised boost as a matrix. -/
 def toMatrix (u v : FourVelocity) : Matrix (Fin 4) (Fin 4) ℝ :=
   LinearMap.toMatrix stdBasis stdBasis (genBoost u v)
 
@@ -124,7 +127,6 @@ lemma toMatrix_continuous (u : FourVelocity) : Continuous (toMatrix u) := by
   exact fun x => one_plus_ne_zero u x
 
 
-
 lemma toMatrix_PreservesηLin (u v : FourVelocity) : PreservesηLin (toMatrix u v) := by
   intro x y
   rw [toMatrix_mulVec, toMatrix_mulVec, genBoost, genBoostAux₁, genBoostAux₂]
@@ -136,6 +138,7 @@ lemma toMatrix_PreservesηLin (u v : FourVelocity) : PreservesηLin (toMatrix u 
   rw [u.1.2, v.1.2, ηLin_symm v u, ηLin_symm u y, ηLin_symm v y]
   ring
 
+/-- A generalised boost as an element of the Lorentz Group. -/
 def toLorentz (u v : FourVelocity) : lorentzGroup :=
   PreservesηLin.liftLor (toMatrix_PreservesηLin u v)
 

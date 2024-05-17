@@ -15,6 +15,7 @@ We define
 -/
 open spaceTime
 
+/-- A `spaceTime` vector for which `ηLin x x = 1`. -/
 @[simp]
 def PreFourVelocity : Set spaceTime :=
   fun x => ηLin x x = 1
@@ -26,6 +27,7 @@ namespace PreFourVelocity
 lemma mem_PreFourVelocity_iff {x : spaceTime} : x ∈ PreFourVelocity ↔ ηLin x x = 1 := by
   rfl
 
+/-- The negative of a `PreFourVelocity` as a `PreFourVelocity`. -/
 def neg (v : PreFourVelocity) : PreFourVelocity := ⟨-v, by
   rw [mem_PreFourVelocity_iff]
   simp only [map_neg, LinearMap.neg_apply, neg_neg]
@@ -68,6 +70,7 @@ lemma zero_nonneg_iff (v : PreFourVelocity) : 0 ≤ v.1 0 ↔ 1 ≤ v.1 0 := by
   · intro h
     linarith
 
+/-- A `PreFourVelocity` is a `FourVelocity` if its time componenet is non-negative. -/
 def IsFourVelocity (v : PreFourVelocity) : Prop := 0 ≤ v.1 0
 
 
@@ -141,6 +144,7 @@ lemma euclid_norm_not_IsFourVelocity_IsFourVelocity {v v' : PreFourVelocity}
 
 end PreFourVelocity
 
+/-- The set of `PreFourVelocity`'s which are four velocities. -/
 def FourVelocity : Set PreFourVelocity :=
   fun x => PreFourVelocity.IsFourVelocity x
 
@@ -158,11 +162,13 @@ lemma time_comp (x : FourVelocity) : x.1.1 0 = √(1 + ‖x.1.1.space‖ ^ 2) :=
   refine Or.inl (And.intro ?_ x.2)
   rw [← PreFourVelocity.zero_sq x.1, sq]
 
+/-- The `FourVelocity` which has all space components zero. -/
 def zero : FourVelocity := ⟨⟨![1, 0, 0, 0], by
   rw [mem_PreFourVelocity_iff, ηLin_expand]; simp⟩, by
   rw [mem_FourVelocity_iff]; simp⟩
 
 
+/-- A continuous path from the zero `FourVelocity` to any other. -/
 noncomputable def pathFromZero (u : FourVelocity) : Path zero u where
   toFun t := ⟨
     ⟨![√(1 + t ^ 2 * ‖u.1.1.space‖ ^ 2), t * u.1.1 1, t * u.1.1 2, t * u.1.1 3],
@@ -189,15 +195,16 @@ noncomputable def pathFromZero (u : FourVelocity) : Path zero u where
     fin_cases i
       <;> continuity
   source' := by
-    simp
+    simp only [Set.Icc.coe_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, space,
+      Fin.isValue, zero_mul, add_zero, Real.sqrt_one]
     rfl
   target' := by
-    simp
+    simp only [Set.Icc.coe_one, one_pow, space, Fin.isValue, one_mul]
     refine SetCoe.ext ?_
     refine SetCoe.ext ?_
     funext i
     fin_cases i
-    simp
+    simp only [Fin.isValue, Fin.zero_eta, Matrix.cons_val_zero]
     exact (time_comp _).symm
     all_goals rfl
 
