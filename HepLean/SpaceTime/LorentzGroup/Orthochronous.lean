@@ -3,6 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.SpaceTime.FourVelocity
 import HepLean.SpaceTime.LorentzGroup.Proper
 import Mathlib.GroupTheory.SpecificGroups.KleinFour
 /-!
@@ -10,6 +11,10 @@ import Mathlib.GroupTheory.SpecificGroups.KleinFour
 
 We define the give a series of lemmas related to the orthochronous property of lorentz
 matrices.
+
+## TODO
+
+- Prove topological properties.
 
 -/
 
@@ -24,99 +29,163 @@ open Complex
 open ComplexConjugate
 
 namespace lorentzGroup
+open PreFourVelocity
 
-/-- The determinant of a member of the lorentz group is `1` or `-1`. -/
-lemma det_eq_one_or_neg_one (Λ : lorentzGroup) : Λ.1.1.det = 1 ∨ Λ.1.1.det = -1 := by
-  simpa [← sq, det_one, det_mul, det_mul, det_mul, det_transpose, det_η] using
-    (congrArg det ((PreservesηLin.iff_matrix' Λ.1).mp ((mem_iff Λ.1).mp Λ.2)))
+/-- The first column of a lorentz matrix as a `PreFourVelocity`. -/
+@[simp]
+def fstCol (Λ : lorentzGroup) : PreFourVelocity := ⟨Λ.1 *ᵥ stdBasis 0, by
+  rw [mem_PreFourVelocity_iff, ηLin_expand]
+  simp only [Fin.isValue, stdBasis_mulVec]
+  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp ((mem_iff Λ.1).mp Λ.2)) 0) 0
+  simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
+    not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
+    zero_add, one_apply_eq] at h00
+  simp only [η, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
+    vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul, cons_val_two,
+    Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three, head_fin_const] at h00
+  rw [← h00]
+  ring⟩
+
+def IsOrthochronous (Λ : lorentzGroup) : Prop := 0 ≤ Λ.1 0 0
+
+lemma IsOrthochronous_iff_transpose (Λ : lorentzGroup) :
+    IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by
+  simp [IsOrthochronous]
+  simp [transpose]
+
+lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : lorentzGroup) :
+    IsOrthochronous Λ ↔ IsFourVelocity (fstCol Λ) := by
+  simp [IsOrthochronous, IsFourVelocity]
+  rw [stdBasis_mulVec]
+
+def mapZeroZeroComp : C(lorentzGroup, ℝ) := ⟨fun Λ => Λ.1 0 0, by
+  refine Continuous.matrix_elem ?_ 0 0
+  refine Continuous.comp' Units.continuous_val continuous_subtype_val⟩
+
+
+def stepFunction : ℝ → ℝ := fun t =>
+  if t ≤ -1 then -1 else
+    if 1 ≤  t then 1 else t
+
+lemma stepFunction_continuous : Continuous stepFunction := by
+  apply Continuous.if ?_ continuous_const (Continuous.if ?_ continuous_const continuous_id)
+   <;> intro a ha
+  rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
+  rw [ha]
+  simp  [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
+  have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
+  rw [if_neg h1]
+  rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha
+  simp [ha]
+
+def orthchroMapReal : C(lorentzGroup, ℝ) := ContinuousMap.comp
+  ⟨stepFunction, stepFunction_continuous⟩ mapZeroZeroComp
+
+lemma orthchroMapReal_on_IsOrthochronous {Λ : lorentzGroup} (h : IsOrthochronous Λ) :
+    orthchroMapReal Λ = 1 := by
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h
+  simp only [IsFourVelocity] at h
+  rw [zero_nonneg_iff] at h
+  simp [stdBasis_mulVec] at h
+  have h1 : ¬  Λ.1 0 0 ≤  (-1 : ℝ) := by linarith
+  change stepFunction (Λ.1 0 0) = 1
+  rw [stepFunction, if_neg h1, if_pos h]
+
+
+lemma orthchroMapReal_on_not_IsOrthochronous {Λ : lorentzGroup} (h : ¬ IsOrthochronous Λ) :
+    orthchroMapReal Λ = - 1 := by
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h
+  rw [not_IsFourVelocity_iff, zero_nonpos_iff] at h
+  simp only [fstCol, Fin.isValue, stdBasis_mulVec] at h
+  change stepFunction (Λ.1 0 0) = - 1
+  rw [stepFunction, if_pos h]
+
+lemma orthchroMapReal_minus_one_or_one (Λ : lorentzGroup) :
+    orthchroMapReal Λ = -1 ∨ orthchroMapReal Λ = 1 := by
+  by_cases h : IsOrthochronous Λ
+  apply Or.inr $ orthchroMapReal_on_IsOrthochronous h
+  apply Or.inl $ orthchroMapReal_on_not_IsOrthochronous h
 
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
 
-instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
+def orthchroMap : C(lorentzGroup, ℤ₂) :=
+  ContinuousMap.comp coeForℤ₂ {
+    toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,
+    continuous_toFun :=  Continuous.subtype_mk (ContinuousMap.continuous orthchroMapReal) _}
 
-instance : DiscreteTopology ℤ₂ := by
-  exact forall_open_iff_discrete.mp fun _ => trivial
+lemma orthchroMap_IsOrthochronous {Λ : lorentzGroup} (h : IsOrthochronous Λ) :
+    orthchroMap Λ = 1 := by
+  simp [orthchroMap, orthchroMapReal_on_IsOrthochronous h]
 
-instance : TopologicalGroup ℤ₂ := TopologicalGroup.mk
+lemma orthchroMap_not_IsOrthochronous {Λ : lorentzGroup} (h : ¬ IsOrthochronous Λ) :
+    orthchroMap Λ =  Additive.toMul (1 : ZMod 2) := by
+  simp [orthchroMap, orthchroMapReal_on_not_IsOrthochronous h]
+  rfl
 
-/-- A continuous function from `({-1, 1} : Set ℝ)` to `ℤ₂`. -/
-@[simps!]
-def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
-  toFun x := if x = ⟨1, by simp⟩ then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
-  continuous_toFun := by
-    haveI : DiscreteTopology ({-1, 1} : Set ℝ) := discrete_of_t1_of_finite
-    exact continuous_of_discreteTopology
+lemma zero_zero_mul (Λ Λ' : lorentzGroup) :
+    (Λ * Λ').1 0 0 =  (fstCol (transpose Λ)).1 0 * (fstCol Λ').1 0 +
+    ⟪(fstCol (transpose Λ)).1.space, (fstCol Λ').1.space⟫_ℝ := by
+  rw [@Subgroup.coe_mul, @GeneralLinearGroup.coe_mul, mul_apply, Fin.sum_univ_four]
+  rw [@PiLp.inner_apply, Fin.sum_univ_three]
+  simp [transpose, stdBasis_mulVec]
+  ring
 
-/-- The continuous map taking a lorentz matrix to its determinant. -/
-def detContinuous :  C(lorentzGroup, ℤ₂) :=
-  ContinuousMap.comp  coeForℤ₂ {
-    toFun := fun Λ => ⟨Λ.1.1.det, Or.symm (lorentzGroup.det_eq_one_or_neg_one _)⟩,
-    continuous_toFun := by
-      refine Continuous.subtype_mk ?_ _
-      exact Continuous.matrix_det $
-        Continuous.comp' Units.continuous_val continuous_subtype_val}
+lemma mul_othchron_of_othchron_othchron {Λ Λ' : lorentzGroup} (h : IsOrthochronous Λ)
+    (h' : IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
+  rw [IsOrthochronous_iff_transpose] at h
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
+  rw [IsOrthochronous, zero_zero_mul]
+  exact euclid_norm_IsFourVelocity_IsFourVelocity h h'
 
-lemma detContinuous_eq_iff_det_eq (Λ Λ' : lorentzGroup) :
-    detContinuous Λ = detContinuous Λ' ↔ Λ.1.1.det = Λ'.1.1.det := by
-  apply Iff.intro
-  intro h
-  simp [detContinuous] at h
-  cases'  det_eq_one_or_neg_one Λ with h1 h1
-    <;> cases'  det_eq_one_or_neg_one Λ' with h2 h2
-    <;> simp_all [h1, h2, h]
-  rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
-  change (0 : Fin 2) = (1 : Fin 2) at h
-  simp only [Fin.isValue, zero_ne_one] at h
-  nth_rewrite 2 [← toMul_zero] at h
-  rw [@Equiv.apply_eq_iff_eq] at h
-  change (1 : Fin 2) = (0 : Fin 2) at h
-  simp [Fin.isValue, zero_ne_one] at h
-  intro h
-  simp [detContinuous, h]
+lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : lorentzGroup} (h : ¬  IsOrthochronous Λ)
+    (h' : ¬ IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
+  rw [IsOrthochronous_iff_transpose] at h
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
+  rw [IsOrthochronous, zero_zero_mul]
+  exact euclid_norm_not_IsFourVelocity_not_IsFourVelocity h h'
 
+lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : lorentzGroup} (h :  IsOrthochronous Λ)
+    (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
+  rw [IsOrthochronous_iff_transpose] at h
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity, not_IsFourVelocity_iff]
+  simp [stdBasis_mulVec]
+  change (Λ * Λ').1 0 0  ≤ _
+  rw [zero_zero_mul]
+  exact euclid_norm_IsFourVelocity_not_IsFourVelocity h h'
 
-/-- The representation taking a lorentz matrix to its determinant. -/
-@[simps!]
-def detRep : lorentzGroup →* ℤ₂ where
-  toFun Λ := detContinuous Λ
+lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : lorentzGroup} (h : ¬ IsOrthochronous Λ)
+    (h' : IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
+  rw [IsOrthochronous_iff_transpose] at h
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
+  rw [IsOrthochronous_iff_fstCol_IsFourVelocity, not_IsFourVelocity_iff]
+  simp [stdBasis_mulVec]
+  change (Λ * Λ').1 0 0  ≤ _
+  rw [zero_zero_mul]
+  exact euclid_norm_not_IsFourVelocity_IsFourVelocity h h'
+
+def orthchroRep : lorentzGroup →* ℤ₂ where
+  toFun := orthchroMap
   map_one' := by
-    simp [detContinuous]
-  map_mul' := by
-    intro Λ1 Λ2
-    simp only [Submonoid.coe_mul, Subgroup.coe_toSubmonoid, Units.val_mul, det_mul, toMul_zero,
-      mul_ite, mul_one, ite_mul, one_mul]
-    cases' (det_eq_one_or_neg_one Λ1) with h1 h1
-      <;> cases' (det_eq_one_or_neg_one Λ2) with h2 h2
-      <;> simp [h1, h2, detContinuous]
+    have h1 : IsOrthochronous 1 := by simp [IsOrthochronous]
+    rw [orthchroMap_IsOrthochronous h1]
+  map_mul' Λ Λ' := by
+    simp
+    by_cases h : IsOrthochronous Λ
+     <;> by_cases h' : IsOrthochronous Λ'
+    rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',
+      orthchroMap_IsOrthochronous (mul_othchron_of_othchron_othchron h h')]
+    simp
+    rw [orthchroMap_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
+      orthchroMap_not_IsOrthochronous (mul_not_othchron_of_othchron_not_othchron h h')]
+    simp
+    rw [orthchroMap_not_IsOrthochronous h, orthchroMap_IsOrthochronous h',
+      orthchroMap_not_IsOrthochronous (mul_not_othchron_of_not_othchron_othchron h h')]
+    simp
+    rw [orthchroMap_not_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
+      orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
+    simp only [Nat.reduceAdd]
     rfl
-
-lemma detRep_continuous : Continuous detRep := detContinuous.2
-
-lemma det_on_connected_component {Λ Λ'  : lorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
-    Λ.1.1.det = Λ'.1.1.det := by
-  obtain ⟨s, hs, hΛ'⟩ := h
-  let f : ContinuousMap s ℤ₂ := ContinuousMap.restrict s detContinuous
-  haveI : PreconnectedSpace s := isPreconnected_iff_preconnectedSpace.mp hs.1
-  simpa [f, detContinuous_eq_iff_det_eq] using
-    (@IsPreconnected.subsingleton ℤ₂ _ _ _ (isPreconnected_range f.2))
-    (Set.mem_range_self ⟨Λ, hs.2⟩)  (Set.mem_range_self ⟨Λ', hΛ'⟩)
-
-lemma det_of_joined {Λ Λ' : lorentzGroup} (h : Joined Λ Λ') : Λ.1.1.det = Λ'.1.1.det :=
-  det_on_connected_component $ pathComponent_subset_component _ h
-
-/-- A Lorentz Matrix is proper if its determinant is 1. -/
-@[simp]
-def IsProper (Λ : lorentzGroup) : Prop := Λ.1.1.det = 1
-
-instance : DecidablePred IsProper := by
-  intro Λ
-  apply Real.decidableEq
-
-lemma IsProper_iff (Λ : lorentzGroup) : IsProper Λ ↔ detRep Λ = 1 := by
-  rw [show 1 = detRep 1 by simp]
-  rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
-  simp only [IsProper, OneMemClass.coe_one, Units.val_one, det_one]
-
 
 end lorentzGroup
 

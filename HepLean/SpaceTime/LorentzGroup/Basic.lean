@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Metric
+import HepLean.SpaceTime.FourVelocity
 import Mathlib.GroupTheory.SpecificGroups.KleinFour
 /-!
 # The Lorentz Group
@@ -112,7 +113,7 @@ def lorentzGroup : Subgroup (GL (Fin 4) ℝ) where
 instance : TopologicalGroup lorentzGroup :=
   Subgroup.instTopologicalGroupSubtypeMem lorentzGroup
 
-
+@[simps!]
 def PreservesηLin.liftLor {Λ : Matrix (Fin 4) (Fin 4) ℝ} (h : PreservesηLin Λ) :
   lorentzGroup := ⟨liftGL h, h⟩
 
@@ -142,62 +143,6 @@ lemma kernalMap_kernal_eq_lorentzGroup : lorentzGroup = kernalMap ⁻¹' {1} := 
 theorem isClosed_of_GL4 : IsClosed (lorentzGroup : Set (GL (Fin 4) ℝ)) := by
   rw [kernalMap_kernal_eq_lorentzGroup]
   exact continuous_iff_isClosed.mp kernalMap.2 {1} isClosed_singleton
-
-section Relations
-
-/-- The first column of a lorentz matrix. -/
-@[simp]
-def fstCol (Λ : lorentzGroup) : spaceTime := fun i => Λ.1 i 0
-
-lemma ηLin_fstCol (Λ : lorentzGroup) : ηLin (fstCol Λ) (fstCol Λ) = 1 := by
-  rw [ηLin_expand]
-  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp ((mem_iff Λ.1).mp Λ.2)) 0) 0
-  simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
-    not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
-    zero_add, one_apply_eq] at h00
-  simp only [η, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-    vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul, cons_val_two,
-    Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three, head_fin_const] at h00
-  rw [← h00]
-  simp only [fstCol, Fin.isValue]
-  ring
-
-lemma zero_component (x : { x : spaceTime  // ηLin x x = 1}) :
-    x.1 0 ^ 2 = 1 + ‖x.1.space‖ ^ 2  := by
-  sorry
-
-/-- The space-like part of the first row of of a Lorentz matrix. -/
-@[simp]
-def fstSpaceRow (Λ : lorentzGroup) : EuclideanSpace ℝ (Fin 3) := fun i => Λ.1 0 i.succ
-
-/-- The space-like part of the first column of of a Lorentz matrix. -/
-@[simp]
-def fstSpaceCol (Λ : lorentzGroup) : EuclideanSpace ℝ (Fin 3) := fun i => Λ.1 i.succ 0
-
-lemma fstSpaceRow_transpose (Λ : lorentzGroup) : fstSpaceRow (transpose Λ) = fstSpaceCol Λ := by
-  rfl
-
-lemma fstSpaceCol_transpose (Λ : lorentzGroup) : fstSpaceCol (transpose Λ) = fstSpaceRow Λ := by
-  rfl
-
-lemma fst_col_normalized (Λ : lorentzGroup) :
-    (Λ.1 0 0) ^ 2 - ‖fstSpaceCol Λ‖ ^ 2  = 1 := by
-  rw [← @real_inner_self_eq_norm_sq, @PiLp.inner_apply, Fin.sum_univ_three]
-  simp
-  rw [show Fin.succ 2 = 3 by rfl]
-  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp ((mem_iff Λ.1).mp Λ.2)) 0) 0
-  simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
-    not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
-    zero_add, one_apply_eq] at h00
-  simp only [η, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-    vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul, cons_val_two,
-    Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three, head_fin_const] at h00
-  rw [← h00]
-  ring
-
-lemma fst_row_normalized
-
-end Relations
 
 end lorentzGroup
 
