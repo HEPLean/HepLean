@@ -56,7 +56,11 @@ import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
-import HepLean.SpaceTime.LorentzGroup
+import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.LorentzGroup.Basic
+import HepLean.SpaceTime.LorentzGroup.Boosts
+import HepLean.SpaceTime.LorentzGroup.Orthochronous
+import HepLean.SpaceTime.LorentzGroup.Proper
 import HepLean.SpaceTime.Metric
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic

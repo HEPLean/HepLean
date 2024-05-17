@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
+import Mathlib.Analysis.InnerProductSpace.Adjoint
+
 /-!
 # Space time
 
@@ -36,6 +38,9 @@ open Matrix
 open Complex
 open ComplexConjugate
 
+/-- The space part of spacetime. -/
+@[simp]
+def space (x : spaceTime) : EuclideanSpace ℝ (Fin 3) := ![x 1, x 2, x 3]
 
 /-- The structure of a smooth manifold on spacetime. -/
 def asSmoothManifold : ModelWithCorners ℝ spaceTime spaceTime := 𝓘(ℝ, spaceTime)
