@@ -13,7 +13,7 @@ import Mathlib.Logic.Equiv.Fin
 /-!
 # Anomaly cancellation conditions for n family SM.
 
-We define the ACC system for the Standard Model with`n`-famlies and no RHN.
+We define the ACC system for the Standard Model with`n`-families and no RHN.
 
 -/
 
@@ -21,7 +21,7 @@ universe v u
 open Nat
 open BigOperators
 
-/-- Aassociate to each (including RHN) SM fermion a set of charges-/
+/-- Associate to each (including RHN) SM fermion a set of charges-/
 @[simps!]
 def SMCharges (n : ℕ) : ACCSystemCharges := ACCSystemChargesMk (5 * n)
 
