@@ -7,7 +7,7 @@ import HepLean.AnomalyCancellation.SM.Basic
 /-!
 # Family maps for the Standard Model ACCs
 
-We define the a series of maps between the charges for different numbers of famlies.
+We define the a series of maps between the charges for different numbers of families.
 
 -/
 
@@ -84,7 +84,7 @@ other charges zero.  -/
 def familyEmbedding (m n : ℕ) : (SMCharges m).charges →ₗ[ℚ] (SMCharges n).charges :=
   chargesMapOfSpeciesMap (speciesEmbed m n)
 
-/-- For species, the embeddding of the `1`-family charges into the `n`-family charges in
+/-- For species, the embedding of the `1`-family charges into the `n`-family charges in
 a universal manor. -/
 @[simps!]
 def speciesFamilyUniversial (n : ℕ) :
@@ -98,7 +98,7 @@ def speciesFamilyUniversial (n : ℕ) :
     simp [HSMul.hSMul]
     --rw [show Rat.cast a = a from rfl]
 
-/-- The embeddding of the `1`-family charges into the `n`-family charges in
+/-- The embedding of the `1`-family charges into the `n`-family charges in
 a universal manor. -/
 def familyUniversal ( n : ℕ) : (SMCharges 1).charges →ₗ[ℚ] (SMCharges n).charges :=
   chargesMapOfSpeciesMap (speciesFamilyUniversial n)
