@@ -12,7 +12,7 @@ import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
 The main result of this file is the conclusion of this paper:
 https://arxiv.org/abs/1907.00514
 
-That eveery solution to the ACCs without gravity satifies for free the gravitational anomaly.
+That eveery solution to the ACCs without gravity satisfies for free the gravitational anomaly.
 -/
 
 universe v u
@@ -67,7 +67,7 @@ lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0
   rw [← hS']
   exact S'.grav_of_cubic hC FLTThree
 
-/-- Any solution to the ACCs without gravity satifies the gravitational ACC.  -/
+/-- Any solution to the ACCs without gravity satisfies the gravitational ACC.  -/
 theorem accGravSatisfied {S : (SMNoGrav 1).Sols} (FLTThree : FermatLastTheoremWith ℚ 3) :
     accGrav S.val = 0 := by
   by_cases hQ : Q S.val (0 : Fin 1)= 0
