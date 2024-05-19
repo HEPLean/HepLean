@@ -77,7 +77,7 @@ namespace ACCSystemLinear
 structure LinSols (χ : ACCSystemLinear) where
   /-- The underlying charge. -/
   val : χ.1.charges
-  /-- The condition that the charge satifies the linear ACCs. -/
+  /-- The condition that the charge satisfies the linear ACCs. -/
   linearSol : ∀ i : Fin χ.numberLinear, χ.linearACCs i val = 0
 
 /-- Two solutions are equal if the underlying charges are equal. -/
@@ -172,7 +172,7 @@ namespace ACCSystemQuad
 
 /-- The type of solutions to the linear and quadratic ACCs. -/
 structure QuadSols (χ : ACCSystemQuad) extends χ.LinSols where
-  /-- The condition that the charge satifies the quadratic ACCs. -/
+  /-- The condition that the charge satisfies the quadratic ACCs. -/
   quadSol : ∀ i : Fin χ.numberQuadratic, (χ.quadraticACCs i) val = 0
 
 /-- Two `QuadSols` are equal if the underlying charges are equal. -/
@@ -225,7 +225,7 @@ namespace ACCSystem
 
 /-- The type of solutions to the anomaly cancellation conditions. -/
 structure Sols (χ : ACCSystem) extends χ.QuadSols where
-  /-- The condition that the charge satifies the cubic ACC. -/
+  /-- The condition that the charge satisfies the cubic ACC. -/
   cubicSol : χ.cubicACC val = 0
 
 /-- Two solutions are equal if the underlying charges are equal. -/
