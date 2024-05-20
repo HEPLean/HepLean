@@ -113,7 +113,7 @@ def lorentzGroup : Subgroup (GL (Fin 4) ℝ) where
 instance : TopologicalGroup lorentzGroup :=
   Subgroup.instTopologicalGroupSubtypeMem lorentzGroup
 
-/-- The lift of a matrix perserving `ηLin` to a Lorentz Group element. -/
+/-- The lift of a matrix preserving `ηLin` to a Lorentz Group element. -/
 def PreservesηLin.liftLor {Λ : Matrix (Fin 4) (Fin 4) ℝ} (h : PreservesηLin Λ) :
     lorentzGroup := ⟨liftGL h, h⟩
 
@@ -127,24 +127,24 @@ def transpose (Λ : lorentzGroup) : lorentzGroup :=
   PreservesηLin.liftLor ((PreservesηLin.iff_transpose Λ.1).mp Λ.2)
 
 
-/-- The continuous map from `GL (Fin 4) ℝ` to `Matrix (Fin 4) (Fin 4) ℝ` whose kernal is
+/-- The continuous map from `GL (Fin 4) ℝ` to `Matrix (Fin 4) (Fin 4) ℝ` whose kernel is
 the Lorentz group. -/
-def kernalMap : C(GL (Fin 4) ℝ, Matrix (Fin 4) (Fin 4) ℝ) where
+def kernelMap : C(GL (Fin 4) ℝ, Matrix (Fin 4) (Fin 4) ℝ) where
   toFun Λ := η * Λ.1ᵀ * η * Λ.1
   continuous_toFun := by
     apply Continuous.mul _ Units.continuous_val
     apply Continuous.mul _ continuous_const
     exact Continuous.mul continuous_const (Continuous.matrix_transpose (Units.continuous_val))
 
-lemma kernalMap_kernal_eq_lorentzGroup : lorentzGroup = kernalMap ⁻¹' {1} := by
+lemma kernelMap_kernel_eq_lorentzGroup : lorentzGroup = kernelMap ⁻¹' {1} := by
   ext Λ
   erw [mem_iff Λ, PreservesηLin.iff_matrix]
   rfl
 
 /-- The Lorentz Group is a closed subset of `GL (Fin 4) ℝ`. -/
 theorem isClosed_of_GL4 : IsClosed (lorentzGroup : Set (GL (Fin 4) ℝ)) := by
-  rw [kernalMap_kernal_eq_lorentzGroup]
-  exact continuous_iff_isClosed.mp kernalMap.2 {1} isClosed_singleton
+  rw [kernelMap_kernel_eq_lorentzGroup]
+  exact continuous_iff_isClosed.mp kernelMap.2 {1} isClosed_singleton
 
 end lorentzGroup
 
