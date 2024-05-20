@@ -100,6 +100,11 @@ lemma det_on_connected_component {Λ Λ'  : lorentzGroup} (h : Λ' ∈ connected
     (@IsPreconnected.subsingleton ℤ₂ _ _ _ (isPreconnected_range f.2))
     (Set.mem_range_self ⟨Λ, hs.2⟩)  (Set.mem_range_self ⟨Λ', hΛ'⟩)
 
+lemma detRep_on_connected_component {Λ Λ'  : lorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
+    detRep Λ = detRep Λ' := by
+  simp [detRep_apply, detRep_apply, detContinuous]
+  rw [det_on_connected_component h]
+
 lemma det_of_joined {Λ Λ' : lorentzGroup} (h : Joined Λ Λ') : Λ.1.1.det = Λ'.1.1.det :=
   det_on_connected_component $ pathComponent_subset_component _ h
 
@@ -116,6 +121,13 @@ lemma IsProper_iff (Λ : lorentzGroup) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
   simp only [IsProper, OneMemClass.coe_one, Units.val_one, det_one]
 
+lemma id_IsProper : IsProper 1 := by
+  simp [IsProper]
+
+lemma isProper_on_connected_component {Λ Λ'  : lorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
+    IsProper Λ ↔ IsProper Λ' := by
+  simp [detRep_apply, detRep_apply, detContinuous]
+  rw [det_on_connected_component h]
 
 end lorentzGroup
 

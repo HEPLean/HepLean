@@ -163,6 +163,12 @@ lemma toLorentz_joined_to_1 (u v : FourVelocity) : Joined 1 (toLorentz u v) := b
     simp [PreservesηLin.liftGL, toMatrix, self u]
   · simp
 
+lemma toLorentz_in_connected_component_1 (u v : FourVelocity) :
+    toLorentz u v ∈ connectedComponent 1 :=
+  pathComponent_subset_component _ (toLorentz_joined_to_1 u v)
+
+lemma isProper (u v : FourVelocity) : IsProper (toLorentz u v) :=
+  (isProper_on_connected_component (toLorentz_in_connected_component_1 u v)).mp id_IsProper
 
 end genBoost
 
