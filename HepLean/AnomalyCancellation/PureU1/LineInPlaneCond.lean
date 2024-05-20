@@ -12,7 +12,7 @@ import Mathlib.RepresentationTheory.Basic
 /-!
 # Line in plane condition
 
-We say a `LinSol` satifies the `line in plane` condition if for all distinct `i1`, `i2`, `i3` in
+We say a `LinSol` satisfies the `line in plane` condition if for all distinct `i1`, `i2`, `i3` in
 `Fin n`, we have
 `S i1 = S i2`  or  `S i1 = - S i2` or  `2 S i3 + S i1 + S i2 = 0`.
 
@@ -21,7 +21,7 @@ The main reference for this material is
 
 - https://arxiv.org/pdf/1912.04804.pdf
 
-We will show that `n ≥ 4` the `line in plane` condition on solutions inplies the
+We will show that `n ≥ 4` the `line in plane` condition on solutions implies the
 `constAbs` condition.
 
 -/

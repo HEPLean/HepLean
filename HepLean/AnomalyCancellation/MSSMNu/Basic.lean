@@ -206,7 +206,7 @@ lemma accSU2_ext {S T : MSSMCharges.charges}
   rw [hd, hu]
   rfl
 
-/-- The anomaly cancelation condition for SU(3) anomaly. -/
+/-- The anomaly cancellation condition for SU(3) anomaly. -/
 @[simp]
 def accSU3 : MSSMCharges.charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (2 * (Q S i) + (U S i) + (D S i))
