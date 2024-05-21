@@ -141,6 +141,18 @@ def embeddingGL : Embedding toGL.toFun where
 instance : TopologicalGroup SO(3) :=
   Inducing.topologicalGroup toGL embeddingGL.toInducing
 
+lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
+  have h1 : det (A.1 - 1) = - det (A.1 - 1)  :=
+    calc
+      det (A.1 - 1) = det (A.1 - A.1 *  A.1ᵀ)  := by simp [A.2.2]
+      _ = det A.1 * det (1 -  A.1ᵀ) :=  by rw [← det_mul, mul_sub, mul_one]
+      _ = det (1 - A.1ᵀ):= by simp [A.2.1]
+      _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
+      _ = det (1 - A.1) := by simp
+      _ = det (- (A.1 - 1)) := by simp
+      _ = (- 1) ^ 3  * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = -  det (A.1 - 1)  := by simp [pow_three]
+  simpa using h1
 
 
 
