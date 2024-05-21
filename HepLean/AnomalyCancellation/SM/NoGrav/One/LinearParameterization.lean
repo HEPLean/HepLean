@@ -46,7 +46,7 @@ lemma ext {S T : linearParameters} (hQ : S.Q' = T.Q') (hY : S.Y = T.Y) (hE : S.E
   cases' S
   simp_all only
 
-/-- The map from the linear paramaters to elements of `(SMNoGrav 1).charges`. -/
+/-- The map from the linear parameters to elements of `(SMNoGrav 1).charges`. -/
 @[simp]
 def asCharges (S : linearParameters) : (SMNoGrav 1).charges := fun i =>
   match i with
