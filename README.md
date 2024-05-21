@@ -1,5 +1,9 @@
 # High Energy Physics in Lean
 
+[![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.github.io/HepLean/)
+[![](https://img.shields.io/badge/PRs-Welcome-green)](https://github.com/HEPLean/HepLean/pulls)
+[![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
+
 A project to digitalize high energy physics.
 
 ## Aims of this project
@@ -53,4 +57,33 @@ The installation instructions for Lean 4 are given here: https://leanprover-comm
 - Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
-  
+
+### Adding Lean Copilot (optional)
+
+[Lean Copilot](https://github.com/lean-dojo/LeanCopilot) allows the use of large language models in Lean. Using Lean Copilot with HepLean can be done in the following way:
+
+Either: 
+
+- Run the script `./scripts/add-copilot.sh` 
+
+Or: 
+
+- Copy the file `./scripts/copilot_lakefile.txt` over to `lakefile.lean`,
+- Run `lake update LeanCopilot`,
+- Run `lake exe LeanCopilot/download`,
+- Run `lake build`.
+
+To use LeanCopilot add `import LeanCopilot` to the top of the lean file you are working in. 
+The following commands should then become available to you:
+- `suggest_tactics`,
+- `search_proofs`,
+- `select_premises`.
+
+Adding Lean Copilot will modify a number of files. If you have added Lean Copilot, please do not push changes to the following files:
+
+- `lakefile.lean`,
+- `.lake/lakefile.olean`,
+- `.lake/lakefile.olean.trace`,
+- `lake-manifest.json`.
+
+Please also ensure that there are not any `import LeanCopilot` statements in the lean files.

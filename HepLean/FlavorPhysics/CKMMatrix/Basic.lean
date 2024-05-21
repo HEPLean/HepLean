@@ -9,7 +9,7 @@ import Mathlib.Tactic.Polyrith
 /-!
 # The CKM Matrix
 
-The definition of the type of CKM matries as unitary $3×3$-matries.
+The definition of the type of CKM matrices as unitary $3×3$-matrices.
 
 An equivalence relation on CKM matrices is defined, where two matrices are equivalent if they are
 related by phase shifts.

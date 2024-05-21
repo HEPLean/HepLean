@@ -8,7 +8,7 @@ import Mathlib.Tactic.Polyrith
 /-!
 # Hypercharge in MSSM.
 
-Relavent definitions for the MSSM hypercharge.
+Relevant definitions for the MSSM hypercharge.
 
 -/
 
