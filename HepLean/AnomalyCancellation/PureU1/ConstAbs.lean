@@ -24,7 +24,7 @@ variable {n : ℕ}
 /-- The condition for two rationals to have the same square (equivalent to same abs). -/
 def constAbsProp : ℚ × ℚ → Prop := fun s => s.1^2 = s.2^2
 
-/-- The condition on a charge assigment `S` to have constant absolute value among charges. -/
+/-- The condition on a charge assignment `S` to have constant absolute value among charges. -/
 @[simp]
 def constAbs (S : (PureU1 n).charges) : Prop := ∀ i j, (S i) ^ 2 = (S j) ^ 2
 
@@ -137,7 +137,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : boundary S k) :
   rw [boundary_castSucc hS hk, boundary_succ hS hk]
   ring
 
-/-- We say a `S ∈ charges` has a boundry if there exists a `k ∈ Fin n` which is a boundary. -/
+/-- We say a `S ∈ charges` has a boundary if there exists a `k ∈ Fin n` which is a boundary. -/
 @[simp]
 def hasBoundary (S : (PureU1 n.succ).charges) : Prop :=
   ∃ (k : Fin n), boundary S k
