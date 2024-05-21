@@ -16,10 +16,10 @@ import Mathlib.RepresentationTheory.Basic
 # Line In Cubic Odd case
 
 We say that a linear solution satisfies the `lineInCubic` property
-if the line through that point and through the two different planes formed by the baisis of
+if the line through that point and through the two different planes formed by the basis of
 `LinSols` lies in the cubic.
 
-We show that for a solution all its permutations satsfiy this property,
+We show that for a solution all its permutations satisfy this property,
 then the charge must be zero.
 
 The main reference for this file is:
@@ -34,7 +34,7 @@ open BigOperators
 variable {n : ℕ}
 open VectorLikeOddPlane
 
-/-- A  property on `LinSols`, statified if every point on the line between the two planes
+/-- A  property on `LinSols`, satisfied if every point on the line between the two planes
 in the basis through that point is in the cubic. -/
 def lineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (g f : Fin n → ℚ)  (_ : S.val = Pa g f) (a b : ℚ) ,
@@ -64,7 +64,7 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : lineInCubic S
 
 
 
-/-- We say a `LinSol` satifies  `lineInCubicPerm` if all its permutations satsify `lineInCubic`. -/
+/-- We say a `LinSol` satisfies  `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def lineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (M : (FamilyPermutations (2 * n + 1)).group ),
     lineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
