@@ -10,7 +10,7 @@ import Mathlib.Logic.Equiv.Fin
 /-!
 # Basis of `LinSols` in the even case
 
-We give a basis of `LinSols` in the even case. This basis has the special propoerty
+We give a basis of `LinSols` in the even case. This basis has the special property
 that splits into two planes on which every point is a solution to the ACCs.
 -/
 universe v u

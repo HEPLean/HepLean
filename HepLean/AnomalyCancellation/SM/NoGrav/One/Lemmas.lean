@@ -12,7 +12,7 @@ import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
 The main result of this file is the conclusion of this paper:
 https://arxiv.org/abs/1907.00514
 
-That eveery solution to the ACCs without gravity satisfies for free the gravitational anomaly.
+That every solution to the ACCs without gravity satisfies for free the gravitational anomaly.
 -/
 
 universe v u

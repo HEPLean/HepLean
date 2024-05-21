@@ -13,7 +13,7 @@ under which the anomaly equations are invariant.
 
 From this we define
 - The representation acting on the vector space of solutions to the linear ACCs.
-- The group action acting on solutions to the linera + quadratic equations.
+- The group action acting on solutions to the linear + quadratic equations.
 - The group action acting on solutions to the anomaly cancellation conditions.
 
 -/

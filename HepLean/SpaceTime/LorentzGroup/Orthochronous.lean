@@ -112,7 +112,7 @@ lemma orthchroMapReal_minus_one_or_one (Λ : lorentzGroup) :
 
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
 
-/-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
+/-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroMap : C(lorentzGroup, ℤ₂) :=
   ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,
@@ -169,7 +169,7 @@ lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : lorentzGroup} (h : ¬ 
   rw [zero_zero_mul]
   exact euclid_norm_not_IsFourVelocity_IsFourVelocity h h'
 
-/-- The representation from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
+/-- The representation from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroRep : lorentzGroup →* ℤ₂ where
   toFun := orthchroMap
   map_one' := by

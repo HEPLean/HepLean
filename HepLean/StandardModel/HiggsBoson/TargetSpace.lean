@@ -42,7 +42,7 @@ abbrev higgsVec := EuclideanSpace ℂ (Fin 2)
 
 section higgsVec
 
-/-- The continous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` acheived by
+/-- The continuous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` achieved by
 casting vectors. -/
 def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
   toFun x := x
@@ -69,7 +69,7 @@ noncomputable def higgsRepUnitary : gaugeGroup →* unitaryGroup (Fin 2) ℂ whe
   map_one' := by
     simp only [Prod.snd_one, _root_.map_one, Prod.fst_one, mul_one]
 
-/-- An orthonomral basis of higgsVec. -/
+/-- An orthonormal basis of higgsVec. -/
 noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ higgsVec :=
   EuclideanSpace.basisFun (Fin 2) ℂ
 
@@ -306,8 +306,8 @@ lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq : ℝ} (hμSq : μSq ≤ 0) :
     exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ h
 
 end potentialProp
-/-- Given a Higgs vector, a rotation matrix which puts the fst component of the
-vector to zero, and the snd componenet to a real -/
+/-- Given a Higgs vector, a rotation matrix which puts the first component of the
+vector to zero, and the second component to a real -/
 def rotateMatrix (φ : higgsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
   ![![φ 1 /‖φ‖ , - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖ , conj (φ 1) / ‖φ‖] ]
 
@@ -353,8 +353,8 @@ lemma rotateMatrix_specialUnitary {φ : higgsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ specialUnitaryGroup (Fin 2) ℂ :=
   mem_specialUnitaryGroup_iff.mpr ⟨rotateMatrix_unitary hφ, rotateMatrix_det hφ⟩
 
-/-- Given a Higgs vector, an element of the gauge group which puts the fst component of the
-vector to zero, and the snd componenet to a real -/
+/-- Given a Higgs vector, an element of the gauge group which puts the first component of the
+vector to zero, and the second component to a real -/
 def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : gaugeGroup :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 

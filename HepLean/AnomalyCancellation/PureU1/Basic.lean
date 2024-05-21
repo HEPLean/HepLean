@@ -10,7 +10,7 @@ import Mathlib.Algebra.BigOperators.Fin
 /-!
 # Pure U(1) ACC system.
 
-We define the anomaly cancellation conditions for a pure U(1) gague theory with `n` fermions.
+We define the anomaly cancellation conditions for a pure U(1) gauge theory with `n` fermions.
 
 -/
 universe v u

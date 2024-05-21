@@ -34,7 +34,7 @@ def MSSMSpecies : ACCSystemCharges := ACCSystemChargesMk 3
 namespace MSSMCharges
 
 /-- An equivalence between `MSSMCharges.charges` and the space of maps
-`(Fin 18 ⊕ Fin 2 → ℚ)`. The first 18 factors corresponds to the SM fermions, whils the last two
+`(Fin 18 ⊕ Fin 2 → ℚ)`. The first 18 factors corresponds to the SM fermions, while the last two
 are the higgsions. -/
 @[simps!]
 def toSMPlusH : MSSMCharges.charges ≃ (Fin 18 ⊕ Fin 2 → ℚ) :=
@@ -173,7 +173,7 @@ lemma accGrav_ext {S T : MSSMCharges.charges}
   rw [hd, hu]
   rfl
 
-/-- The anomaly cancelation condition for SU(2) anomaly. -/
+/-- The anomaly cancellation condition for SU(2) anomaly. -/
 @[simp]
 def accSU2 : MSSMCharges.charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (3 * Q S i + L S i) + Hd S + Hu S
