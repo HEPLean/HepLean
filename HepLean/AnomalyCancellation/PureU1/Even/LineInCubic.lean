@@ -15,10 +15,10 @@ import Mathlib.Tactic.Polyrith
 # Line In Cubic Even case
 
 We say that a linear solution satisfies the `lineInCubic` property
-if the line through that point and through the two different planes formed by the baisis of
+if the line through that point and through the two different planes formed by the basis of
 `LinSols` lies in the cubic.
 
-We show that for a solution all its permutations satsfiy this property, then there exists
+We show that for a solution all its permutations satisfy this property, then there exists
 a permutation for which it lies in the plane spanned by the first part of the basis.
 
 The main reference for this file is:
@@ -34,7 +34,7 @@ open BigOperators
 variable {n : ℕ}
 open VectorLikeEvenPlane
 
-/-- A  property on `LinSols`, statified if every point on the line between the two planes
+/-- A  property on `LinSols`, satisfied if every point on the line between the two planes
 in the basis through that point is in the cubic. -/
 def lineInCubic (S : (PureU1 (2 * n.succ)).LinSols) : Prop :=
   ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ) ,
