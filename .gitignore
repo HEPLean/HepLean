@@ -2,9 +2,3 @@
 /lake-packages/*
 .lake/packages/*
 .lake/build
-# Section: To be ignored, except when updating Lean and MathLib versions
-.lake/lakefile.olean
-.lake/lakefile.olean.trace
-lake-manifest.json
-lakefile.lean
-# End Section.
