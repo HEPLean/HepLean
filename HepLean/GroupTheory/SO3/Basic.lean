@@ -45,7 +45,6 @@ scoped[GroupTheory] notation (name := SO3_notation) "SO(3)" => SO3
 /-- SO3 has the subtype topology. -/
 instance : TopologicalSpace SO3 := instTopologicalSpaceSubtype
 
-
 namespace SO3
 
 @[simp]
@@ -139,11 +138,8 @@ def embeddingGL : Embedding toGL.toFun where
       apply And.intro (isOpen_induced hU1)
       exact hU2
 
-
-
-
-
-
+instance : TopologicalGroup SO(3) :=
+  Inducing.topologicalGroup toGL embeddingGL.toInducing
 
 
 
