@@ -7,7 +7,7 @@ import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.LinearAlgebra.EigenSpace.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
