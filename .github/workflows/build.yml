@@ -24,11 +24,11 @@ jobs:
         run: |
           lean --version
           lake --version
-          cat lean-toolchain
       
       - name: check ls 
         run: |
           ls -a
+          ls .lake/packages/mathlib/Mathlib/LinearAlgebra/Eigenspace/
       
       - name: build cache
         run: |
