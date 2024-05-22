@@ -28,12 +28,14 @@ jobs:
       - name: check ls 
         run: |
           ls -a
-          ls .lake/packages/mathlib/Mathlib/LinearAlgebra/Eigenspace/
+          
       
       - name: build cache
         run: |
           lake exe cache get
-  
+      - name: check ls2 
+        run : |
+          ls .lake/packages/mathlib/Mathlib/LinearAlgebra/Eigenspace/
       - name: build HepLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3
