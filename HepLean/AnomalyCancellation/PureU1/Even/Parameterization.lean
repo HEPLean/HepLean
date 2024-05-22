@@ -16,7 +16,7 @@ import Mathlib.Tactic.Polyrith
 
 Given maps `g : Fin n.succ → ℚ`,  `f : Fin n → ℚ` and `a : ℚ` we form a solution to the anomaly
 equations. We show that every solution can be got in this way, up to permutation, unless it, up to
-permutaiton, lives in the plane spanned by the firt part of the basis vector.
+permutation, lives in the plane spanned by the first part of the basis vector.
 
 The main reference is:
 
@@ -32,7 +32,7 @@ open BigOperators
 variable {n : ℕ}
 open VectorLikeEvenPlane
 
-/-- Given coefficents `g` of a point in `P` and `f` of a point in `P!`, and a rational, we get a
+/-- Given coefficients `g` of a point in `P` and `f` of a point in `P!`, and a rational, we get a
 rational `a ∈ ℚ`, we get a
 point in `(PureU1 (2 * n.succ)).AnomalyFreeLinear`, which we will later show extends to an anomaly
 free point. -/

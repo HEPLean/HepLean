@@ -16,7 +16,7 @@ It defines a module structure on the charges, and the solutions to the linear AC
 ## TODO
 
 - Derive ACC systems from gauge algebras and fermionic representations.
-- Relate ACCSystems to algebraic varities.
+- Relate ACCSystems to algebraic varieties.
 
 -/
 
@@ -86,7 +86,7 @@ lemma LinSols.ext {χ : ACCSystemLinear} {S T : χ.LinSols} (h : S.val = T.val) 
   cases' S
   simp_all only
 
-/-- An instance providng the operations and properties for `LinSols` to form an
+/-- An instance providing the operations and properties for `LinSols` to form an
   addative commutative monoid. -/
 @[simps!]
 instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
@@ -121,7 +121,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
     apply LinSols.ext
     exact χ.chargesAddCommMonoid.nsmul_succ _ _
 
-/-- An instance providng the operations and properties for `LinSols` to form an
+/-- An instance providing the operations and properties for `LinSols` to form an
   module over `ℚ`. -/
 @[simps!]
 instance linSolsModule  (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
@@ -149,7 +149,7 @@ instance linSolsModule  (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
     exact χ.chargesModule.add_smul _ _ _
 
 /-- An instance providing the operations and properties for `LinSols` to form an
-  an addative community. -/
+  an additive community. -/
 instance linSolsAddCommGroup (χ : ACCSystemLinear) : AddCommGroup χ.LinSols :=
   Module.addCommMonoidToAddCommGroup ℚ
 
@@ -271,7 +271,7 @@ structure Hom (χ η : ACCSystem) where
   charges : χ.charges →ₗ[ℚ] η.charges
   /-- The map between solutions. -/
   anomalyFree : χ.Sols → η.Sols
-  /-- The condition that the map commutes with the relevent inclusions. -/
+  /-- The condition that the map commutes with the relevant inclusions. -/
   commute : charges ∘ χ.solsIncl = η.solsIncl ∘ anomalyFree
 
 /-- The definition of composition between two ACCSystems. -/

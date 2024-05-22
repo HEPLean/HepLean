@@ -7,7 +7,7 @@ import HepLean.AnomalyCancellation.SM.Basic
 /-!
 # Anomaly Cancellation in the Standard Model without Gravity
 
-This file defines the system of anaomaly equations for the SM without RHN, and
+This file defines the system of anomaly equations for the SM without RHN, and
 without the gravitational ACC.
 
 -/
