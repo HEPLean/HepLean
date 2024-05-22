@@ -11,8 +11,7 @@ import Mathlib.LinearAlgebra.EigenSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
-# the 3d special orthogonal group
-
+# The group SO(3)
 
 
 -/
@@ -20,8 +19,10 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 namespace GroupTheory
 open Matrix
 
+/-- The group of `3×3` real matrices with determinant 1 and `A * Aᵀ = 1`. -/
 def SO3 : Type := {A : Matrix (Fin 3) (Fin 3) ℝ // A.det = 1 ∧ A * Aᵀ = 1}
 
+@[simps mul_coe one_coe inv div]
 instance SO3Group : Group SO3 where
   mul A B := ⟨A.1 * B.1,
     by
@@ -43,6 +44,7 @@ instance SO3Group : Group SO3 where
     apply Subtype.eq
     exact mul_eq_one_comm.mpr A.2.2
 
+/-- Notation for the group `SO3`. -/
 scoped[GroupTheory] notation (name := SO3_notation) "SO(3)" => SO3
 
 /-- SO3 has the subtype topology. -/
@@ -50,19 +52,18 @@ instance : TopologicalSpace SO3 := instTopologicalSpaceSubtype
 
 namespace SO3
 
-@[simp]
 lemma coe_inv (A : SO3) : (A⁻¹).1 = A.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact mul_eq_one_comm.mpr A.2.2
 
-@[simps!]
-def toGL : SO3 →* GL (Fin 3) ℝ where
+/-- The inclusion of `SO(3)` into `GL (Fin 3) ℝ`. -/
+def toGL : SO(3) →* GL (Fin 3) ℝ where
   toFun A := ⟨A.1, (A⁻¹).1, A.2.2, mul_eq_one_comm.mpr A.2.2⟩
   map_one' := by
     simp
     rfl
   map_mul' x y  := by
-    simp
+    simp only [_root_.mul_inv_rev, coe_inv]
     ext
     rfl
 
@@ -77,9 +78,8 @@ lemma toGL_injective : Function.Injective toGL := by
   rw [@Units.ext_iff] at h
   simpa using h
 
-example : TopologicalSpace (GL (Fin 3) ℝ) := by
-  exact Units.instTopologicalSpaceUnits
-
+/-- The inclusion of `SO(3)` into the monoid of matrices times the opposite of
+  the monoid of matrices. -/
 @[simps!]
 def toProd : SO(3) →* (Matrix (Fin 3) (Fin 3) ℝ) × (Matrix (Fin 3) (Fin 3) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
@@ -110,20 +110,22 @@ lemma toProd_continuous : Continuous toProd := by
   exact continuous_iff_le_induced.mpr fun U a => a
 
 
-def embeddingProd : Embedding toProd where
+/-- The embedding of `SO(3)` into the monoid of matrices times the opposite of
+  the monoid of matrices. -/
+lemma toProd_embedding : Embedding toProd where
   inj := toProd_injective
   induced := by
     refine (inducing_iff ⇑toProd).mp ?_
     refine inducing_of_inducing_compose toProd_continuous continuous_fst ?hgf
     exact (inducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl
 
-
-def embeddingGL : Embedding toGL.toFun where
+/-- The embedding of `SO(3)` into `GL (Fin 3) ℝ`. -/
+lemma toGL_embedding : Embedding toGL.toFun where
   inj := toGL_injective
   induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) ?_).symm
     intro s
-    rw [TopologicalSpace.ext_iff.mp embeddingProd.induced s ]
+    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s ]
     rw [isOpen_induced_iff, isOpen_induced_iff]
     apply Iff.intro ?_ ?_
     · intro h
@@ -142,7 +144,7 @@ def embeddingGL : Embedding toGL.toFun where
       exact hU2
 
 instance : TopologicalGroup SO(3) :=
-  Inducing.topologicalGroup toGL embeddingGL.toInducing
+  Inducing.topologicalGroup toGL toGL_embedding.toInducing
 
 lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
   have h1 : det (A.1 - 1) = - det (A.1 - 1)  :=
@@ -170,13 +172,14 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
 @[simp]
 lemma one_in_spectrum (A : SO(3)) : 1 ∈ spectrum ℝ (A.1) := by
   rw [spectrum.mem_iff]
-  simp
+  simp only [_root_.map_one]
   rw [Matrix.isUnit_iff_isUnit_det]
   simp
 
 noncomputable section action
 open Module
 
+/-- The endomorphism of `EuclideanSpace ℝ (Fin 3)` associated to a element of `SO(3)`. -/
 @[simps!]
 def toEnd (A : SO(3)) : End ℝ (EuclideanSpace ℝ (Fin 3)) :=
   Matrix.toLin (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis

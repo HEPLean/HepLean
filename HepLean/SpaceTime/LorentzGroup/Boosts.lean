@@ -141,16 +141,12 @@ lemma toMatrix_PreservesηLin (u v : FourVelocity) : PreservesηLin (toMatrix u 
 
 /-- A generalised boost as an element of the Lorentz Group. -/
 def toLorentz (u v : FourVelocity) : lorentzGroup :=
-  PreservesηLin.liftLor (toMatrix_PreservesηLin u v)
+  ⟨toMatrix u v, toMatrix_PreservesηLin u v⟩
 
 lemma toLorentz_continuous (u : FourVelocity) : Continuous (toLorentz u) := by
-  refine Continuous.subtype_mk ?_ fun x => (PreservesηLin.liftLor (toMatrix_PreservesηLin u x)).2
-  refine Units.continuous_iff.mpr (And.intro ?_ ?_)
+  refine Continuous.subtype_mk ?_ (fun x => toMatrix_PreservesηLin u x)
   exact toMatrix_continuous u
-  change Continuous fun x => (η * (toMatrix u x).transpose * η)
-  refine Continuous.matrix_mul ?_ continuous_const
-  refine Continuous.matrix_mul continuous_const ?_
-  exact Continuous.matrix_transpose (toMatrix_continuous u)
+
 
 
 lemma toLorentz_joined_to_1 (u v : FourVelocity) : Joined 1 (toLorentz u v) := by
@@ -158,8 +154,7 @@ lemma toLorentz_joined_to_1 (u v : FourVelocity) : Joined 1 (toLorentz u v) := b
   use ContinuousMap.comp ⟨toLorentz u, toLorentz_continuous u⟩ f
   · simp only [ContinuousMap.toFun_eq_coe, ContinuousMap.comp_apply, ContinuousMap.coe_coe,
     Path.source, ContinuousMap.coe_mk]
-    rw [@Subtype.ext_iff, toLorentz, PreservesηLin.liftLor]
-    refine Units.val_eq_one.mp ?_
+    rw [@Subtype.ext_iff, toLorentz]
     simp [PreservesηLin.liftGL, toMatrix, self u]
   · simp
 

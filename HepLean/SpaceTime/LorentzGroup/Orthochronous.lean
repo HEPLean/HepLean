@@ -36,7 +36,7 @@ open PreFourVelocity
 def fstCol (Λ : lorentzGroup) : PreFourVelocity := ⟨Λ.1 *ᵥ stdBasis 0, by
   rw [mem_PreFourVelocity_iff, ηLin_expand]
   simp only [Fin.isValue, stdBasis_mulVec]
-  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp ((mem_iff Λ.1).mp Λ.2)) 0) 0
+  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp  Λ.2) 0) 0
   simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
     not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
     zero_add, one_apply_eq] at h00
@@ -51,7 +51,7 @@ def IsOrthochronous (Λ : lorentzGroup) : Prop := 0 ≤ Λ.1 0 0
 
 lemma IsOrthochronous_iff_transpose (Λ : lorentzGroup) :
     IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by
-  simp only [IsOrthochronous, Fin.isValue, transpose, PreservesηLin.liftLor, PreservesηLin.liftGL,
+  simp only [IsOrthochronous, Fin.isValue, transpose, PreservesηLin.liftGL,
     transpose_transpose, transpose_apply]
 
 lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : lorentzGroup) :
@@ -62,7 +62,7 @@ lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : lorentzGroup) :
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
 def mapZeroZeroComp : C(lorentzGroup, ℝ) := ⟨fun Λ => Λ.1 0 0, by
   refine Continuous.matrix_elem ?_ 0 0
-  refine Continuous.comp' Units.continuous_val continuous_subtype_val⟩
+  refine Continuous.comp' (continuous_iff_le_induced.mpr fun U a => a) continuous_id'⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
 def stepFunction : ℝ → ℝ := fun t =>
@@ -130,9 +130,10 @@ lemma orthchroMap_not_IsOrthochronous {Λ : lorentzGroup} (h : ¬ IsOrthochronou
 lemma zero_zero_mul (Λ Λ' : lorentzGroup) :
     (Λ * Λ').1 0 0 =  (fstCol (transpose Λ)).1 0 * (fstCol Λ').1 0 +
     ⟪(fstCol (transpose Λ)).1.space, (fstCol Λ').1.space⟫_ℝ := by
-  rw [@Subgroup.coe_mul, @GeneralLinearGroup.coe_mul, mul_apply, Fin.sum_univ_four]
-  rw [@PiLp.inner_apply, Fin.sum_univ_three]
-  simp [transpose, stdBasis_mulVec, PreservesηLin.liftLor, PreservesηLin.liftGL]
+  simp only [Fin.isValue, lorentzGroupIsGroup_mul_coe, mul_apply, Fin.sum_univ_four, fstCol,
+    transpose, stdBasis_mulVec, transpose_apply, space, PiLp.inner_apply, Nat.succ_eq_add_one,
+    Nat.reduceAdd, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three, cons_val_zero,
+    cons_val_one, head_cons, cons_val_two, tail_cons]
   ring
 
 lemma mul_othchron_of_othchron_othchron {Λ Λ' : lorentzGroup} (h : IsOrthochronous Λ)

@@ -73,7 +73,8 @@ lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
   fin_cases i <;> fin_cases j
     <;> simp_all only [Fin.zero_eta, reindex_apply, submatrix_apply]
   any_goals rfl
-  all_goals simp [finSumFinEquiv, Fin.addCases, η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
+  all_goals simp [finSumFinEquiv, Fin.addCases, η, Fin.zero_eta, Matrix.cons_val',
+      Matrix.cons_val_fin_one, Matrix.cons_val_one,
       Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
       Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
       vecHead, vecTail, Function.comp_apply]
