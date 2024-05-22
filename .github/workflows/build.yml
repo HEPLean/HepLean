@@ -24,6 +24,7 @@ jobs:
         run: |
           lean --version
           lake --version
+          cat lean-toolchain
       
       - name: check ls 
         run: |
@@ -32,14 +33,14 @@ jobs:
       - name: build cache
         run: |
           lake exe cache get
-   
+  
       - name: build HepLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: gcc
           run: |
-            lake build
+            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
       
       - name: lint HepLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
