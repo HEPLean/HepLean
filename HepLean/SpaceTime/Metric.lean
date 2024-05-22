@@ -66,6 +66,23 @@ lemma η_sq : η * η = 1 := by
       Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
       vecHead, vecTail, Function.comp_apply]
 
+lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
+    Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin 3) (Fin 3) ℝ)) := by
+  apply Matrix.ext
+  intro i j
+  fin_cases i <;> fin_cases j
+    <;> simp_all only [Fin.zero_eta, reindex_apply, submatrix_apply]
+  any_goals rfl
+  all_goals simp [finSumFinEquiv, Fin.addCases, η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
+      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
+      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
+      vecHead, vecTail, Function.comp_apply]
+  any_goals rfl
+  all_goals split
+  all_goals simp
+  all_goals rfl
+
+
 
 lemma η_diag_mul_self (μ : Fin 4) : η μ μ * η μ μ  = 1 := by
   fin_cases μ

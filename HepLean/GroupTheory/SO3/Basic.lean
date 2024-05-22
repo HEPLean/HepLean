@@ -7,6 +7,9 @@ import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
+import Mathlib.LinearAlgebra.EigenSpace.Basic
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 # the 3d special orthogonal group
 
@@ -154,8 +157,74 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
       _ = -  det (A.1 - 1)  := by simp [pow_three]
   simpa using h1
 
+@[simp]
+lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
+  have h1 : det (1 - A.1) = - det (A.1 - 1) := by
+    calc
+      det (1 - A.1) = det (- (A.1 - 1)) := by simp
+      _ = (- 1) ^ 3  *  det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = -  det (A.1 - 1) := by simp [pow_three]
+  rw [h1, det_minus_id]
+  simp only [neg_zero]
+
+@[simp]
+lemma one_in_spectrum (A : SO(3)) : 1 ∈ spectrum ℝ (A.1) := by
+  rw [spectrum.mem_iff]
+  simp
+  rw [Matrix.isUnit_iff_isUnit_det]
+  simp
+
+noncomputable section action
+open Module
+
+@[simps!]
+def toEnd (A : SO(3)) : End ℝ (EuclideanSpace ℝ (Fin 3)) :=
+  Matrix.toLin (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis
+  (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis A.1
+
+lemma one_is_eigenvalue (A : SO(3)) : A.toEnd.HasEigenvalue 1 := by
+  rw [End.hasEigenvalue_iff_mem_spectrum]
+  erw [AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis ) A.1]
+  exact one_in_spectrum A
+
+lemma exists_stationary_vec (A : SO(3)) :
+    ∃ (v : EuclideanSpace ℝ (Fin 3)),
+    Orthonormal ℝ (({0} : Set (Fin 3)).restrict (fun _ => v ))
+    ∧ A.toEnd v = v := by
+  obtain ⟨v, hv⟩ := End.HasEigenvalue.exists_hasEigenvector $ one_is_eigenvalue A
+  have hvn : ‖v‖ ≠ 0 := norm_ne_zero_iff.mpr hv.2
+  use (1/‖v‖) • v
+  apply And.intro
+  rw [@orthonormal_iff_ite]
+  intro v1 v2
+  have hv1 := v1.2
+  have hv2 := v2.2
+  simp_all only [one_div, Set.mem_singleton_iff]
+  have hveq : v1 = v2 := by
+    rw [@Subtype.ext_iff]
+    simp_all only
+  subst hveq
+  simp only [Set.restrict_apply, PiLp.smul_apply, smul_eq_mul,
+    _root_.map_mul, map_inv₀, conj_trivial, ↓reduceIte]
+  rw [inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
+  field_simp
+  ring
+  rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1 ]
+  simp
+
+lemma exists_basis_preserved (A : SO(3)) :
+    ∃ (b : OrthonormalBasis (Fin 3) ℝ (EuclideanSpace ℝ (Fin 3))), A.toEnd (b 0) = b 0 := by
+  obtain ⟨v, hv⟩ := exists_stationary_vec A
+  have h3 : FiniteDimensional.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
+    simp_all only [toEnd_apply, finrank_euclideanSpace, Fintype.card_fin]
+  obtain ⟨b, hb⟩ :=  Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
+  simp at hb
+  use b
+  rw [hb, hv.2]
 
 
+
+end action
 end SO3
 
 
