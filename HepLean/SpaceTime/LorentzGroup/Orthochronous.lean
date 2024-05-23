@@ -40,9 +40,10 @@ def fstCol (Λ : lorentzGroup) : PreFourVelocity := ⟨Λ.1 *ᵥ stdBasis 0, by
   simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
     not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
     zero_add, one_apply_eq] at h00
-  simp only [η, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-    vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul, cons_val_two,
-    Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three, head_fin_const] at h00
+  simp only [η_explicit, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val',
+    cons_val_fin_one, vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul,
+    cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three,
+     head_fin_const] at h00
   rw [← h00]
   ring⟩
 

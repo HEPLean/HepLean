@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.SpaceTime.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
+import Mathlib.Algebra.Lie.Classical
 /-!
 # Spacetime Metric
 
@@ -23,51 +24,22 @@ open Complex
 open ComplexConjugate
 
 /-- The metric as a `4×4` real matrix. -/
-def η : Matrix (Fin 4) (Fin 4) ℝ :=
-  !![1, 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 0, -1]
-
-lemma η_off_diagonal {μ ν : Fin 4} (h : μ ≠ ν) : η μ ν = 0 := by
-  fin_cases μ <;>
-    fin_cases ν <;>
-      simp_all [η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
-      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
-      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
-      vecHead, vecTail, Function.comp_apply]
-
-lemma η_symmetric (μ ν : Fin 4) : η μ ν = η ν μ := by
-  by_cases h : μ = ν
-  rw [h]
-  rw [η_off_diagonal h]
-  refine (η_off_diagonal ?_).symm
-  exact fun a => h (id a.symm)
-
-lemma η_transpose : η.transpose = η := by
-  funext μ ν
-  rw [transpose_apply, η_symmetric]
-
-lemma det_η : η.det = - 1 := by
-  simp only [η, det_succ_row_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, of_apply,
-    cons_val', empty_val', cons_val_fin_one, cons_val_zero, submatrix_apply, Fin.succ_zero_eq_one,
-    cons_val_one, head_cons, submatrix_submatrix, Function.comp_apply, Fin.succ_one_eq_two,
-    cons_val_two, tail_cons, det_unique, Fin.default_eq_zero, cons_val_succ, head_fin_const,
-    Fin.sum_univ_succ, Fin.val_zero, pow_zero, one_mul, Fin.zero_succAbove, Finset.univ_unique,
-    Fin.val_succ, Fin.coe_fin_one, zero_add, pow_one, neg_mul, Fin.succ_succAbove_zero,
-    Finset.sum_neg_distrib, Finset.sum_singleton, Fin.succ_succAbove_one, even_two, Even.neg_pow,
-    one_pow, mul_one, mul_neg, neg_neg, mul_zero, neg_zero, add_zero, zero_mul,
-    Finset.sum_const_zero]
-
-
-lemma η_sq : η * η = 1 := by
-  funext μ ν
-  rw [mul_apply, Fin.sum_univ_four]
-  fin_cases μ <;> fin_cases ν <;>
-     simp [η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
-      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
-      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
-      vecHead, vecTail, Function.comp_apply]
+def η : Matrix (Fin 4) (Fin 4) ℝ := Matrix.reindex finSumFinEquiv finSumFinEquiv
+  $ LieAlgebra.Orthogonal.indefiniteDiagonal (Fin 1) (Fin 3) ℝ
 
 lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin 3) (Fin 3) ℝ)) := by
+  rw [η]
+  congr
+  simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
+  rw [← @fromBlocks_diagonal]
+  refine fromBlocks_inj.mpr ?_
+  simp only [diagonal_one, true_and]
+  funext i j
+  fin_cases i <;> fin_cases j <;> simp
+
+lemma η_explicit : η = !![(1 : ℝ), 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 0, -1] := by
+  rw [η_block]
   apply Matrix.ext
   intro i j
   fin_cases i <;> fin_cases j
@@ -83,19 +55,61 @@ lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
   all_goals simp
   all_goals rfl
 
+@[simp]
+lemma η_off_diagonal {μ ν : Fin 4} (h : μ ≠ ν) : η μ ν = 0 := by
+  fin_cases μ <;>
+    fin_cases ν <;>
+      simp_all [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one,
+      Matrix.cons_val_one,
+      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
+      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
+      vecHead, vecTail, Function.comp_apply]
 
+lemma η_symmetric (μ ν : Fin 4) : η μ ν = η ν μ := by
+  by_cases h : μ = ν
+  rw [h]
+  rw [η_off_diagonal h]
+  refine (η_off_diagonal ?_).symm
+  exact fun a => h (id a.symm)
+
+@[simp]
+lemma η_transpose : η.transpose = η := by
+  funext μ ν
+  rw [transpose_apply, η_symmetric]
+
+@[simp]
+lemma det_η : η.det = - 1 := by
+  simp only [η_explicit, det_succ_row_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+    of_apply, cons_val', empty_val', cons_val_fin_one, cons_val_zero, submatrix_apply,
+    Fin.succ_zero_eq_one, cons_val_one, head_cons, submatrix_submatrix, Function.comp_apply,
+    Fin.succ_one_eq_two, cons_val_two, tail_cons, det_unique, Fin.default_eq_zero, cons_val_succ,
+    head_fin_const, Fin.sum_univ_succ, Fin.val_zero, pow_zero, one_mul, Fin.zero_succAbove,
+    Finset.univ_unique, Fin.val_succ, Fin.coe_fin_one, zero_add, pow_one, neg_mul,
+    Fin.succ_succAbove_zero, Finset.sum_neg_distrib, Finset.sum_singleton, Fin.succ_succAbove_one,
+    even_two, Even.neg_pow, one_pow, mul_one, mul_neg, neg_neg, mul_zero, neg_zero, add_zero,
+    zero_mul, Finset.sum_const_zero]
+
+@[simp]
+lemma η_sq : η * η = 1 := by
+  funext μ ν
+  rw [mul_apply, Fin.sum_univ_four]
+  fin_cases μ <;> fin_cases ν <;>
+     simp [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
+      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
+      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
+      vecHead, vecTail, Function.comp_apply]
 
 lemma η_diag_mul_self (μ : Fin 4) : η μ μ * η μ μ  = 1 := by
   fin_cases μ
-    <;> simp [η]
+    <;> simp [η_explicit]
 
 lemma η_mulVec (x : spaceTime) : η *ᵥ x = ![x 0, -x 1, -x 2, -x 3] := by
   rw [explicit x]
-  rw [η]
+  rw [η_explicit]
   funext i
   rw [mulVec, dotProduct, Fin.sum_univ_four]
   fin_cases i <;>
-    simp [η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
+    simp [Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
       Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
       Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
       vecHead, vecTail, Function.comp_apply]
@@ -176,7 +190,7 @@ lemma ηLin_symm (x y : spaceTime) : ηLin x y = ηLin y x := by
 lemma ηLin_stdBasis_apply (μ : Fin 4) (x : spaceTime) : ηLin (stdBasis μ) x = η μ μ * x μ := by
   rw [ηLin_expand]
   fin_cases μ
-   <;> simp [stdBasis_0, stdBasis_1, stdBasis_2, stdBasis_3, η]
+   <;> simp [stdBasis_0, stdBasis_1, stdBasis_2, stdBasis_3, η_explicit]
 
 
 lemma ηLin_η_stdBasis (μ ν : Fin 4) : ηLin (stdBasis μ) (stdBasis ν) = η μ ν := by
@@ -219,7 +233,8 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
   have h1 := h (stdBasis μ) (stdBasis ν)
   rw [ηLin_matrix_stdBasis, ηLin_η_stdBasis] at h1
   fin_cases μ <;> fin_cases ν <;>
-    simp_all [η, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one, Matrix.cons_val_one,
+    simp_all [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one,
+      Matrix.cons_val_one,
       Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
       Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
       vecHead, vecTail, Function.comp_apply]
