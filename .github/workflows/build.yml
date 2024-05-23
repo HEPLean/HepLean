@@ -28,11 +28,12 @@ jobs:
       - name: check ls 
         run: |
           ls -a
+          
       
       - name: build cache
         run: |
           lake exe cache get
-
+ 
       - name: build HepLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3

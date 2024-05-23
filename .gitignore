@@ -2,4 +2,3 @@
 /lake-packages/*
 .lake/packages/*
 .lake/build
-paper
