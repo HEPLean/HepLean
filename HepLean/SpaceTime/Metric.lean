@@ -7,6 +7,7 @@ import HepLean.SpaceTime.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
 import Mathlib.Algebra.Lie.Classical
+import Mathlib.Algebra.Lie.TensorProduct
 /-!
 # Spacetime Metric
 
@@ -22,6 +23,7 @@ open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
+open TensorProduct
 
 /-- The metric as a `4×4` real matrix. -/
 def η : Matrix (Fin 4) (Fin 4) ℝ := Matrix.reindex finSumFinEquiv finSumFinEquiv
@@ -37,6 +39,10 @@ lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
   simp only [diagonal_one, true_and]
   funext i j
   fin_cases i <;> fin_cases j <;> simp
+
+lemma η_reindex : (Matrix.reindex finSumFinEquiv finSumFinEquiv).symm η =
+    LieAlgebra.Orthogonal.indefiniteDiagonal (Fin 1) (Fin 3) ℝ :=
+  (Equiv.symm_apply_eq (reindex finSumFinEquiv finSumFinEquiv)).mpr rfl
 
 lemma η_explicit : η = !![(1 : ℝ), 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 0, -1] := by
   rw [η_block]
@@ -241,6 +247,11 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
 
 /-- The metric as a quadratic form on `spaceTime`. -/
 def quadraticForm : QuadraticForm ℝ spaceTime := ηLin.toQuadraticForm
+
+@[simps!]
+def ηTensor : (spaceTime ⊗[ℝ] spaceTime) →ₗ[ℝ] ℝ :=
+   TensorProduct.lift ηLin
+
 
 
 end spaceTime
