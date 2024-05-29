@@ -108,18 +108,6 @@ instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra spaceTime where
     simp [Bracket.bracket]
     rw [mulVec_smul]
 
-@[simps!]
-local instance : LieRingModule lorentzAlgebra ℝ where
-  bracket _ _ := 0
-  add_lie _ _ _ := by simp
-  lie_add _ _ _ := by simp
-  leibniz_lie _ _ _ := by simp
-
-@[simps!]
-local instance : LieModule ℝ lorentzAlgebra ℝ where
-  smul_lie _ _ _ := by simp [Bracket.bracket]
-  lie_smul _ _ _ := by simp [Bracket.bracket]
-
 
 
 
