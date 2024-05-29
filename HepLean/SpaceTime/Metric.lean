@@ -248,9 +248,6 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
 /-- The metric as a quadratic form on `spaceTime`. -/
 def quadraticForm : QuadraticForm ℝ spaceTime := ηLin.toQuadraticForm
 
-@[simps!]
-def ηTensor : (spaceTime ⊗[ℝ] spaceTime) →ₗ[ℝ] ℝ :=
-   TensorProduct.lift ηLin
 
 
 

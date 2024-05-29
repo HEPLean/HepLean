@@ -68,7 +68,7 @@ lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 4) (Fin 4) ℝ}
   simpa using h1
 
 
-lemma mem_iff (A : Matrix (Fin 4) (Fin 4) ℝ) : A ∈ lorentzAlgebra ↔
+lemma mem_iff {A : Matrix (Fin 4) (Fin 4) ℝ} : A ∈ lorentzAlgebra ↔
     Aᵀ * η  = - η * A := by
   apply Iff.intro
   · intro h
@@ -76,7 +76,15 @@ lemma mem_iff (A : Matrix (Fin 4) (Fin 4) ℝ) : A ∈ lorentzAlgebra ↔
   · intro h
     exact mem_of_transpose_eta_eq_eta_mul_self h
 
-
+lemma mem_iff'  (A : Matrix (Fin 4) (Fin 4) ℝ) : A ∈ lorentzAlgebra ↔ A  = - η * Aᵀ * η := by
+  apply Iff.intro
+  intro h
+  rw [mul_assoc, mem_iff.mp h]
+  simp only [neg_mul, mul_neg, ← mul_assoc, η_sq, one_mul, neg_neg]
+  intro h
+  rw [mem_iff]
+  nth_rewrite 2 [h]
+  simp [← mul_assoc, η_sq]
 
 
 end lorentzAlgebra
@@ -87,7 +95,7 @@ instance spaceTimeAsLieRingModule : LieRingModule lorentzAlgebra spaceTime where
   add_lie Λ1 Λ2 x := by
     simp [add_mulVec]
   lie_add Λ x1 x2 := by
-    simp
+    simp only
     exact mulVec_add _ _ _
   leibniz_lie Λ1 Λ2 x := by
     simp [mulVec_add, Bracket.bracket, sub_mulVec]
