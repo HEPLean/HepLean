@@ -58,6 +58,7 @@ import HepLean.GroupTheory.SO3.Basic
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
 import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.LorentzAlgebra.Basic
 import HepLean.SpaceTime.LorentzGroup.Basic
 import HepLean.SpaceTime.LorentzGroup.Boosts
 import HepLean.SpaceTime.LorentzGroup.Orthochronous
