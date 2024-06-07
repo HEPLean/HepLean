@@ -27,8 +27,8 @@ open MSSMCharges
 open MSSMACCs
 open BigOperators
 
-/-- The plane of linear solutions spanned by $Y_3$, $B_3$ and $R$, a point orthogonal
-to $Y_3$ and $B_3$. -/
+/-- The plane of linear solutions spanned by `Y₃`, `B₃` and `R`, a point orthogonal
+to `Y₃` and `B₃`. -/
 def planeY₃B₃ (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) : MSSMACC.LinSols :=
   a • Y₃.1.1 + b • B₃.1.1 + c • R.1
 
@@ -127,7 +127,7 @@ lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
   rw [show (TriLinearSymm.toCubic cubeTriLin) R.val = cubeTriLin R.val R.val R.val by rfl]
   ring
 
-/-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the quadratic,
+/-- The line in the plane spanned by `Y₃`, `B₃` and `R` which is in the quadratic,
 as `LinSols`. -/
 def lineQuadAFL (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) : MSSMACC.LinSols :=
   planeY₃B₃ R (c2 * quadBiLin R.val R.val - 2 * c3 * quadBiLin B₃.val R.val)
@@ -141,7 +141,7 @@ lemma lineQuadAFL_quad (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) :
   apply Or.inr
   ring
 
-/-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the quadratic. -/
+/-- The line in the plane spanned by `Y₃`, `B₃` and `R` which is in the quadratic. -/
 def lineQuad (R : MSSMACC.AnomalyFreePerp) (c1 c2 c3 : ℚ) : MSSMACC.QuadSols :=
   AnomalyFreeQuadMk' (lineQuadAFL R c1 c2 c3) (lineQuadAFL_quad R c1 c2 c3)
 
@@ -184,7 +184,7 @@ def α₁ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
     rw [planeY₃B₃_cubic, α₁, α₂, α₃]
     ring
 
-/-- The line in the plane spanned by $Y_3$, $B_3$ and $R$ which is in the cubic. -/
+/-- The line in the plane spanned by `Y₃`, `B₃` and `R` which is in the cubic. -/
 def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
     MSSMACC.LinSols :=
   planeY₃B₃ R
