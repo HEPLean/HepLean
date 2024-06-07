@@ -70,7 +70,7 @@ lemma zero_nonneg_iff (v : PreFourVelocity) : 0 ≤ v.1 0 ↔ 1 ≤ v.1 0 := by
   · intro h
     linarith
 
-/-- A `PreFourVelocity` is a `FourVelocity` if its time componenet is non-negative. -/
+/-- A `PreFourVelocity` is a `FourVelocity` if its time component is non-negative. -/
 def IsFourVelocity (v : PreFourVelocity) : Prop := 0 ≤ v.1 0
 
 
