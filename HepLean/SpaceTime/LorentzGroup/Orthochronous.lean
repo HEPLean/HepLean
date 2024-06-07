@@ -171,7 +171,7 @@ lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : lorentzGroup} (h : ¬ 
   rw [zero_zero_mul]
   exact euclid_norm_not_IsFourVelocity_IsFourVelocity h h'
 
-/-- The homomorphism from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
+/-- The homomorphism from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroRep : lorentzGroup →* ℤ₂ where
   toFun := orthchroMap
   map_one' := by
