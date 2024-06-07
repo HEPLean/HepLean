@@ -100,6 +100,10 @@ lemma apply_im_smooth (φ : higgsField) (i : Fin 2):
     Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : spaceTime) =>  (φ x i))) :=
   Smooth.comp (ContinuousLinearMap.smooth imCLM) (φ.apply_smooth i)
 
+/-- Given two `higgsField`, the map `spaceTime → ℂ` obtained by taking their inner product. -/
+def innerProd (φ1 φ2 : higgsField) : spaceTime → ℂ := fun x => ⟪φ1 x, φ2 x⟫_ℂ
+
+
 /-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
  higgs vector.  -/
 @[simp]
