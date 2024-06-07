@@ -75,7 +75,7 @@ def δa₄ (j : Fin n.succ) : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.natAdd ((1+n)+1) j)
 
 lemma δa₁_δ₁ : @δa₁ n = δ₁ 0 := by
-  rfl
+  exact Fin.rev_inj.mp rfl
 
 lemma δa₁_δ!₃ : @δa₁ n = δ!₃ := by
   rfl
@@ -115,9 +115,9 @@ lemma δ₂_δ!₂ (j : Fin n) : δ₂ j = δ!₂ j := by
 lemma sum_δ  (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ₃ + ∑ i : Fin n, ((S ∘ δ₁) i + (S ∘ δ₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin (n + 1 + n), S (Fin.cast (split_odd n) i) := by
-    rw [Finset.sum_equiv (Fin.castIso (split_odd n)).symm.toEquiv]
+    rw [Finset.sum_equiv (Fin.castOrderIso (split_odd n)).symm.toEquiv]
     intro i
-    simp only [mem_univ, Fin.symm_castIso, RelIso.coe_fn_toEquiv, Fin.castIso_apply]
+    simp only [mem_univ, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv]
     intro i
     simp
   rw [h1]
@@ -131,9 +131,9 @@ lemma sum_δ  (S : Fin (2 * n + 1) → ℚ) :
 lemma sum_δ!  (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ!₃ + ∑ i : Fin n, ((S ∘ δ!₁) i + (S ∘ δ!₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin ((1+n)+n), S (Fin.cast (split_odd! n) i) := by
-    rw [Finset.sum_equiv (Fin.castIso (split_odd! n)).symm.toEquiv]
+    rw [Finset.sum_equiv (Fin.castOrderIso (split_odd! n)).symm.toEquiv]
     intro i
-    simp only [mem_univ, Fin.symm_castIso, RelIso.coe_fn_toEquiv, Fin.castIso_apply]
+    simp only [mem_univ, Fin.castOrderIso, RelIso.coe_fn_toEquiv]
     intro i
     simp
   rw [h1]

@@ -114,12 +114,12 @@ lemma boundary_split (k : Fin n) :  k.succ.val + (n.succ - k.succ.val) = n.succ 
 lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
     ∑ i : Fin (k.succ.val + (n.succ - k.succ.val)), S (Fin.cast (boundary_split k) i) := by
   simp [accGrav]
-  erw [Finset.sum_equiv (Fin.castIso (boundary_split k)).toEquiv]
+  erw [Finset.sum_equiv (Fin.castOrderIso (boundary_split k)).toEquiv]
   intro i
   simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
   intro i
   simp
-  rfl
+
 
 lemma boundary_accGrav'' (k : Fin n) (hk : boundary S k) :
     accGrav n.succ S = (2 * ↑↑k + 1 - ↑n) * S (0 : Fin n.succ) := by

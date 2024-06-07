@@ -235,7 +235,7 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
     (- arg [V]ud )
     (- arg [V]us)
     (τ - arg [V]ud - arg [V]us - arg [V]cb - arg [V]tb)
-  have hUV : ⟦U⟧ = ⟦V⟧ := by
+  have hUV : Quotient.mk CKMMatrixSetoid U = ⟦V⟧ := by
     simp only [Quotient.eq]
     symm
     exact phaseShiftApply.equiv  _ _ _ _ _ _ _
@@ -268,7 +268,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
   let U : CKMMatrix := phaseShiftApply V 0 0 (- Real.pi + arg [V]cd + arg [V]cs + arg [V]ub)
     (Real.pi - arg [V]cd ) (- arg [V]cs)  (- arg [V]ub )
   use U
-  have hUV : ⟦U⟧ = ⟦V⟧ := by
+  have hUV : Quotient.mk CKMMatrixSetoid U= ⟦V⟧ := by
     simp only [Quotient.eq]
     symm
     exact phaseShiftApply.equiv  _ _ _ _ _ _ _
