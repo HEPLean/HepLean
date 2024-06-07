@@ -9,7 +9,7 @@ import Mathlib.Algebra.BigOperators.Fin
 /-!
 # Linear maps
 
-Some definitions and properites of linear, bilinear, and trilinear maps, along with homogeneous
+Some definitions and properties of linear, bilinear, and trilinear maps, along with homogeneous
 quadratic and cubic equations.
 
 ## TODO
@@ -62,7 +62,7 @@ instance instFun (V : Type) [AddCommMonoid V] [Module ℚ V] :
     cases g
     simp_all
 
-/-- The construction of a symmetric bilinear map from smul and map_add in the first factor,
+/-- The construction of a symmetric bilinear map from `smul` and `map_add` in the first factor,
 and swap. -/
 @[simps!]
 def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S, T))
@@ -196,7 +196,7 @@ instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ 
     cases g
     simp_all
 
-/-- The construction of a symmetric trilinear map from smul and map_add in the first factor,
+/-- The construction of a symmetric trilinear map from `smul` and `map_add` in the first factor,
 and two swap. -/
 @[simps!]
 def mk₃ (f : V × V × V→ ℚ) (map_smul : ∀ a S T L, f (a • S, T, L) = a * f (S, T, L))
