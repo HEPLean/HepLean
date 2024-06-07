@@ -233,7 +233,7 @@ lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
   ring_nf
   simp
 
-/-- Given a `R ` perpendicular to $Y_3$, and $B_3$, a element of `Sols`. This map is
+/-- Given a `R ` perpendicular to `Y₃` and `B₃`, an element of `Sols`. This map is
 not surjective. -/
 def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, _ , _) =>
   a • AnomalyFreeMk'' (toSolNSQuad R) (toSolNSQuad_cube R)
@@ -332,7 +332,6 @@ def inQuadProj (T : inQuadSol) : inQuad × ℚ × ℚ × ℚ :=
   - cubeTriLin T.val.val T.val.val Y₃.val
     * (dot Y₃.val T.val.val - 2 * dot B₃.val T.val.val)))
 
-
 lemma inQuadToSol_proj (T : inQuadSol) : inQuadToSol (inQuadProj T) = T.val := by
   rw [inQuadProj, inQuadToSol_smul]
   apply ACCSystem.Sols.ext
@@ -370,7 +369,6 @@ lemma inQuadCubeToSol_smul (R : inQuadCube) (c₁ c₂ c₃ d : ℚ) :
   change (planeY₃B₃ _ _ _ _).val = _
   rw [planeY₃B₃_smul]
   rfl
-
 
 /-- On elements of `inQuadCubeSol` a right-inverse to `inQuadCubeToSol`. -/
 def inQuadCubeProj (T : inQuadCubeSol) : inQuadCube × ℚ × ℚ × ℚ :=
