@@ -7,7 +7,7 @@ import HepLean.AnomalyCancellation.MSSMNu.Basic
 /-!
 # The definition of the solution B₃ and properties thereof
 
-We define $B_3$ and show that it is a double point of the cubic.
+We define `B₃` and show that it is a double point of the cubic.
 
 # References
 
@@ -24,7 +24,7 @@ open MSSMCharges
 open MSSMACCs
 open BigOperators
 
-/-- $B_3$ is the charge which is $B-L$ in all families, but with the third
+/-- `B₃` is the charge which is $B-L$ in all families, but with the third
 family of the opposite sign. -/
 def B₃AsCharge : MSSMACC.charges := toSpecies.symm
   ⟨fun s => fun i =>
@@ -52,7 +52,7 @@ def B₃AsCharge : MSSMACC.charges := toSpecies.symm
     | 0 => -3
     | 1 => 3⟩
 
-/-- $B_3$ as a solution. -/
+/-- `B₃` as a solution. -/
 def B₃ : MSSMACC.Sols :=
   MSSMACC.AnomalyFreeMk B₃AsCharge (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
 
