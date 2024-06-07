@@ -4,6 +4,15 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.StandardModel.HiggsBoson.Basic
+/-!
+
+# The Two Higgs Doublet Model
+
+The two Higgs doublet model is the standard model plus an additional Higgs doublet.
+
+Currently this file contains the definition of the 2HDM optential.
+
+-/
 
 namespace TwoHDM
 
