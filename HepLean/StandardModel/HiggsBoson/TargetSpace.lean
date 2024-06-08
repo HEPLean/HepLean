@@ -225,7 +225,8 @@ lemma potential_eq_bound_iff (φ : higgsVec) :
 
 lemma potential_eq_bound_iff_of_μSq_nonpos  {μSq : ℝ}
     (hμSq : μSq ≤ 0) (φ : higgsVec) : potential μSq (λ) φ = 0 ↔ φ = 0 :=
-  Iff.intro (fun h ↦ potential_eq_zero_sol_of_μSq_nonpos μSq hLam hμSq φ h) (fun h ↦ by simp [potential, h])
+  Iff.intro (fun h ↦ potential_eq_zero_sol_of_μSq_nonpos μSq hLam hμSq φ h)
+  (fun h ↦ by simp [potential, h])
 
 lemma potential_eq_bound_IsMinOn (φ : higgsVec)
     (hv : potential μSq lambda φ = - μSq ^ 2 / (4  * lambda)) :
@@ -292,7 +293,8 @@ lemma rotateMatrix_unitary {φ : higgsVec} (hφ : φ ≠ 0) :
   erw [mul_fin_two, one_fin_two]
   have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   ext i j
-  fin_cases i <;> fin_cases j <;> field_simp <;> rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  fin_cases i <;> fin_cases j <;> field_simp
+  <;> rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
   · simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
   · ring_nf
