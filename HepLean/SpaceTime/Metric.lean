@@ -94,8 +94,7 @@ lemma η_sq : η * η = 1 := by
      simp [η_explicit, vecHead, vecTail]
 
 lemma η_diag_mul_self (μ : Fin 4) : η μ μ * η μ μ  = 1 := by
-  fin_cases μ
-    <;> simp [η_explicit]
+  fin_cases μ <;> simp [η_explicit]
 
 lemma η_mulVec (x : spaceTime) : η *ᵥ x = ![x 0, -x 1, -x 2, -x 3] := by
   rw [explicit x, η_explicit]
@@ -151,7 +150,7 @@ lemma time_elm_sq_of_ηLin (x : spaceTime) : x 0 ^ 2 = ηLin x x + ‖x.space‖
 
 lemma ηLin_leq_time_sq (x : spaceTime) : ηLin x x ≤ x 0 ^ 2 := by
   rw [time_elm_sq_of_ηLin]
-  apply (le_add_iff_nonneg_right _).mpr $ sq_nonneg ‖x.space‖
+  exact (le_add_iff_nonneg_right _).mpr $ sq_nonneg ‖x.space‖
 
 lemma ηLin_space_inner_product (x y : spaceTime) :
     ηLin x y = x 0 * y 0 - ⟪x.space, y.space⟫_ℝ  := by
@@ -185,18 +184,18 @@ lemma ηLin_stdBasis_apply (μ : Fin 4) (x : spaceTime) : ηLin (stdBasis μ) x 
 lemma ηLin_η_stdBasis (μ ν : Fin 4) : ηLin (stdBasis μ) (stdBasis ν) = η μ ν := by
   rw [ηLin_stdBasis_apply]
   by_cases h : μ = ν
-  rw [stdBasis_apply]
-  subst h
-  simp only [↓reduceIte, mul_one]
-  rw [stdBasis_not_eq, η_off_diagonal h]
-  simp only [mul_zero]
-  exact fun a => h (id a.symm)
+  · rw [stdBasis_apply]
+    subst h
+    simp
+  · rw [stdBasis_not_eq, η_off_diagonal h]
+    simp only [mul_zero]
+    exact fun a ↦ h (id a.symm)
 
 lemma ηLin_mulVec_left (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     ηLin (Λ *ᵥ x) y = ηLin x ((η * Λᵀ * η) *ᵥ y) := by
-  simp only [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply, mulVec_mulVec]
-  rw [(vecMul_transpose Λ x).symm, ← dotProduct_mulVec, mulVec_mulVec]
-  rw [← mul_assoc, ← mul_assoc, η_sq, one_mul]
+  simp [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply,
+    mulVec_mulVec, (vecMul_transpose Λ x).symm, ← dotProduct_mulVec, mulVec_mulVec,
+    ← mul_assoc, ← mul_assoc, η_sq, one_mul]
 
 lemma ηLin_mulVec_right (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     ηLin x (Λ *ᵥ y) = ηLin ((η * Λᵀ * η) *ᵥ x) y := by
@@ -214,14 +213,14 @@ lemma ηLin_matrix_stdBasis' (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
 lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     Λ = 1 ↔ ∀ (x y : spaceTime), ηLin x y = ηLin x (Λ *ᵥ y) := by
   apply Iff.intro
-  intro h
-  subst h
-  simp only [ηLin, one_mulVec, implies_true]
-  intro h
-  funext μ ν
-  have h1 := h (stdBasis μ) (stdBasis ν)
-  rw [ηLin_matrix_stdBasis, ηLin_η_stdBasis] at h1
-  fin_cases μ <;> fin_cases ν <;>
+  · intro h
+    subst h
+    simp only [ηLin, one_mulVec, implies_true]
+  · intro h
+    funext μ ν
+    have h1 := h (stdBasis μ) (stdBasis ν)
+    rw [ηLin_matrix_stdBasis, ηLin_η_stdBasis] at h1
+    fin_cases μ <;> fin_cases ν <;>
     simp_all [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one,
       Matrix.cons_val_one,
       Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
@@ -230,9 +229,6 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
 
 /-- The metric as a quadratic form on `spaceTime`. -/
 def quadraticForm : QuadraticForm ℝ spaceTime := ηLin.toQuadraticForm
-
-
-
 
 end spaceTime
 
