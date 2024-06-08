@@ -75,10 +75,10 @@ lemma toHiggsVec_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ
   exact h1
 
 lemma toField_toHiggsVec_apply (φ : higgsField) (x : spaceTime) :
-  (φ.toHiggsVec x).toField x = φ x := rfl
+    (φ.toHiggsVec x).toField x = φ x := rfl
 
 lemma higgsVecToFin2ℂ_toHiggsVec (φ : higgsField) :
-  higgsVecToFin2ℂ ∘ φ.toHiggsVec = φ := rfl
+    higgsVecToFin2ℂ ∘ φ.toHiggsVec = φ := rfl
 
 lemma toVec_smooth (φ : higgsField) : Smooth 𝓘(ℝ, spaceTime) 𝓘(ℝ, Fin 2 → ℂ) φ :=
   smooth_higgsVecToFin2ℂ.comp φ.toHiggsVec_smooth
