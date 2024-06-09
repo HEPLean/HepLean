@@ -10,7 +10,7 @@ import HepLean.StandardModel.HiggsBoson.Basic
 
 The two Higgs doublet model is the standard model plus an additional Higgs doublet.
 
-Currently this file contains the definition of the 2HDM optential.
+Currently this file contains the definition of the 2HDM potential.
 
 -/
 

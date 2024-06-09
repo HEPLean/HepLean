@@ -12,14 +12,14 @@ import Mathlib.Topology.Constructions
 
 This file defines those Lorentz which are boosts.
 
-We first define generalised boosts, which are restricted lorentz transforamations taking
-a four velocity `u` to a four velcoity `v`.
+We first define generalised boosts, which are restricted lorentz transformations taking
+a four velocity `u` to a four velocity `v`.
 
-A boost is the speical case of a generalised boost when `u = stdBasis 0`.
+A boost is the special case of a generalised boost when `u = stdBasis 0`.
 
 ## TODO
 
-- Show that generalised boosts are in the restircted Lorentz group.
+- Show that generalised boosts are in the restricted Lorentz group.
 - Define boosts.
 
 ## References
@@ -35,7 +35,7 @@ namespace lorentzGroup
 
 open FourVelocity
 
-/-- An auxillary linear map used in the definition of a genearlised boost. -/
+/-- An auxillary linear map used in the definition of a generalised boost. -/
 def genBoostAux₁ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
   toFun x := (2 * ηLin x u) • v.1.1
   map_add' x y := by
@@ -61,7 +61,7 @@ def genBoostAux₂ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
     rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
 
-/-- An genearlised boost. This is a Lorentz transformation which takes the four velocity `u`
+/-- An generalised boost. This is a Lorentz transformation which takes the four velocity `u`
 to `v`. -/
 def genBoost (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime :=
   LinearMap.id + genBoostAux₁ u v + genBoostAux₂ u v

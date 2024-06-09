@@ -87,7 +87,7 @@ lemma LinSols.ext {χ : ACCSystemLinear} {S T : χ.LinSols} (h : S.val = T.val) 
   simp_all only
 
 /-- An instance providing the operations and properties for `LinSols` to form an
-  addative commutative monoid. -/
+  additive commutative monoid. -/
 @[simps!]
 instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
     AddCommMonoid χ.LinSols where
