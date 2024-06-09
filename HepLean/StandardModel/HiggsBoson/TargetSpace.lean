@@ -46,10 +46,8 @@ section higgsVec
 casting vectors. -/
 def higgsVecToFin2ℂ : higgsVec →L[ℝ] (Fin 2 → ℂ) where
   toFun x := x
-  map_add' x y := by
-    simp
-  map_smul' a x := by
-    simp
+  map_add' x y := by simp
+  map_smul' a x := by simp
 
 lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, higgsVec) 𝓘(ℝ, Fin 2 → ℂ) higgsVecToFin2ℂ :=
   ContinuousLinearMap.smooth higgsVecToFin2ℂ
@@ -63,11 +61,10 @@ noncomputable def higgsRepUnitary : gaugeGroup →* unitaryGroup (Fin 2) ℂ whe
   map_mul'  := by
     intro ⟨_, a2, a3⟩ ⟨_, b2, b3⟩
     change repU1 (a3 * b3) *  fundamentalSU2 (a2 * b2) = _
-    rw [repU1.map_mul, fundamentalSU2.map_mul]
-    rw [mul_assoc, mul_assoc, ← mul_assoc (repU1 b3) _ _, repU1_fundamentalSU2_commute]
+    rw [repU1.map_mul, fundamentalSU2.map_mul, mul_assoc, mul_assoc,
+      ← mul_assoc (repU1 b3) _ _, repU1_fundamentalSU2_commute]
     repeat rw [mul_assoc]
-  map_one' := by
-    simp only [Prod.snd_one, _root_.map_one, Prod.fst_one, mul_one]
+  map_one' := by simp
 
 /-- An orthonormal basis of higgsVec. -/
 noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ higgsVec :=
@@ -87,20 +84,16 @@ lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
 
 lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
     matrixToLin g ∈ unitary (higgsVec →L[ℂ] higgsVec) := by
-  rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul]
-  rw [mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
+  rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul,
+    mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
   simp
 
 /-- The natural homomorphism from unitary `2×2` complex matrices to unitary transformations
 of `higgsVec`. -/
 noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (higgsVec →L[ℂ] higgsVec) where
   toFun g := ⟨matrixToLin g, matrixToLin_unitary g⟩
-  map_mul' g h := by
-    ext
-    simp
-  map_one' := by
-    ext
-    simp
+  map_mul' g h := by simp
+  map_one' := by simp
 
 /-- The inclusion of unitary transformations on `higgsVec` into all linear transformations. -/
 @[simps!]
@@ -114,8 +107,7 @@ def rep : Representation ℂ gaugeGroup higgsVec :=
 
 lemma higgsRepUnitary_mul (g : gaugeGroup) (φ : higgsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
-  simp only [higgsRepUnitary_apply_coe]
-  exact smul_mulVec_assoc (g.2.2 ^ 3) (g.2.1.1) φ
+  simp [higgsRepUnitary_apply_coe, smul_mulVec_assoc]
 
 lemma rep_apply (g : gaugeGroup) (φ : higgsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
@@ -133,13 +125,11 @@ def potential (φ : higgsVec) : ℝ := - μSq  * ‖φ‖ ^ 2 + λ * ‖φ‖ ^ 
 
 lemma potential_invariant (φ : higgsVec)  (g : gaugeGroup) :
     potential μSq (λ) (rep g φ) = potential μSq (λ) φ := by
-  simp only [potential, neg_mul]
-  rw [norm_invariant]
+  simp only [potential, neg_mul, norm_invariant]
 
 lemma potential_as_quad (φ : higgsVec) :
     λ  * ‖φ‖ ^ 2 * ‖φ‖ ^ 2 + (- μSq ) * ‖φ‖ ^ 2 + (- potential μSq (λ) φ) = 0 := by
-  simp [potential]
-  ring
+  simp [potential]; ring
 
 end potentialDefn
 section potentialProp
@@ -161,11 +151,9 @@ lemma zero_le_potential_discrim  (φ : higgsVec) :
     0 ≤ discrim (λ) (- μSq ) (- potential μSq (λ) φ) := by
   have h1 := potential_as_quad μSq (λ) φ
   rw [quadratic_eq_zero_iff_discrim_eq_sq] at h1
-  rw [h1]
-  exact sq_nonneg (2 * (lambda ) * ‖φ‖ ^ 2 + -μSq)
-  simp only [ne_eq, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
-  exact ne_of_gt hLam
-
+  · simp only [h1, ne_eq, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
+    exact sq_nonneg (2 * lambda * ‖φ‖ ^ 2 + -μSq)
+  · exact ne_of_gt hLam
 
 lemma potential_eq_zero_sol (φ : higgsVec)
     (hV : potential μSq (λ) φ = 0) : φ = 0 ∨ ‖φ‖ ^ 2 = μSq / λ := by
@@ -209,19 +197,14 @@ lemma potential_bounded_below (φ : higgsVec) :
 
 lemma potential_bounded_below_of_μSq_nonpos  {μSq : ℝ}
     (hμSq : μSq ≤ 0) (φ : higgsVec) : 0 ≤ potential μSq (λ) φ := by
-  simp only [potential, neg_mul, add_zero]
   refine add_nonneg ?_ (potential_snd_term_nonneg hLam φ)
-  field_simp
-  rw [@mul_nonpos_iff]
-  simp_all only [ge_iff_le, norm_nonneg, pow_nonneg, and_self, or_true]
-
+  field_simp [mul_nonpos_iff]
+  simp_all [ge_iff_le, norm_nonneg, pow_nonneg, and_self, or_true]
 
 lemma potential_eq_bound_discrim_zero (φ : higgsVec)
     (hV : potential μSq (λ) φ = - μSq ^ 2 / (4  * λ)) :
     discrim (λ) (- μSq) (- potential μSq (λ) φ) = 0 := by
-  simp [discrim, hV]
-  field_simp
-  ring
+  field_simp [discrim, hV]
 
 lemma potential_eq_bound_higgsVec_sq (φ : higgsVec)
     (hV : potential μSq (λ) φ = - μSq ^ 2 / (4  * (λ))) :
@@ -229,81 +212,60 @@ lemma potential_eq_bound_higgsVec_sq (φ : higgsVec)
   have h1 := potential_as_quad μSq (λ) φ
   rw [quadratic_eq_zero_iff_of_discrim_eq_zero _
     (potential_eq_bound_discrim_zero μSq hLam φ hV)] at h1
-  rw [h1]
-  field_simp
-  ring_nf
-  simp only [ne_eq, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
+  simp_rw [h1, neg_neg]
   exact ne_of_gt hLam
 
 lemma potential_eq_bound_iff (φ : higgsVec) :
-    potential μSq (λ) φ = - μSq ^ 2 / (4  * (λ)) ↔ ‖φ‖ ^ 2 = μSq / (2 * (λ)) := by
-  apply Iff.intro
-  · intro h
-    exact potential_eq_bound_higgsVec_sq μSq hLam φ h
-  · intro h
-    have hv : ‖φ‖  ^ 4 = ‖φ‖ ^ 2 * ‖φ‖ ^ 2 := by
-      ring_nf
-    field_simp [potential, hv, h]
-    ring
+    potential μSq (λ) φ = - μSq ^ 2 / (4  * (λ)) ↔ ‖φ‖ ^ 2 = μSq / (2 * (λ)) :=
+  Iff.intro (potential_eq_bound_higgsVec_sq μSq hLam φ)
+    (fun h ↦ by
+      have hv : ‖φ‖ ^ 4 = ‖φ‖ ^ 2 * ‖φ‖ ^ 2 := by ring_nf
+      field_simp [potential, hv, h]
+      ring_nf)
 
 lemma potential_eq_bound_iff_of_μSq_nonpos  {μSq : ℝ}
-    (hμSq : μSq ≤ 0) (φ : higgsVec) : potential μSq (λ) φ = 0 ↔ φ = 0 := by
-  apply Iff.intro
-  · intro h
-    exact potential_eq_zero_sol_of_μSq_nonpos μSq hLam hμSq φ h
-  · intro h
-    simp [potential, h]
+    (hμSq : μSq ≤ 0) (φ : higgsVec) : potential μSq (λ) φ = 0 ↔ φ = 0 :=
+  Iff.intro (fun h ↦ potential_eq_zero_sol_of_μSq_nonpos μSq hLam hμSq φ h)
+  (fun h ↦ by simp [potential, h])
 
-lemma potential_eq_bound_IsMinOn  (φ : higgsVec)
+lemma potential_eq_bound_IsMinOn (φ : higgsVec)
     (hv : potential μSq lambda φ = - μSq ^ 2 / (4  * lambda)) :
     IsMinOn (potential μSq lambda) Set.univ φ := by
-  rw [isMinOn_univ_iff]
-  intro x
-  rw [hv]
-  exact potential_bounded_below μSq hLam x
+  rw [isMinOn_univ_iff, hv]
+  exact fun x ↦ potential_bounded_below μSq hLam x
 
 lemma potential_eq_bound_IsMinOn_of_μSq_nonpos  {μSq : ℝ}
     (hμSq : μSq ≤ 0) (φ : higgsVec) (hv : potential μSq lambda φ = 0) :
     IsMinOn (potential μSq lambda) Set.univ φ := by
-  rw [isMinOn_univ_iff]
-  intro x
-  rw [hv]
-  exact potential_bounded_below_of_μSq_nonpos hLam hμSq x
+  rw [isMinOn_univ_iff, hv]
+  exact fun x ↦ potential_bounded_below_of_μSq_nonpos hLam hμSq x
 
 lemma potential_bound_reached_of_μSq_nonneg  {μSq : ℝ} (hμSq : 0 ≤ μSq) :
     ∃ (φ : higgsVec), potential μSq lambda φ = - μSq ^ 2 / (4  * lambda) := by
   use ![√(μSq/(2 * lambda)), 0]
   refine (potential_eq_bound_iff μSq hLam _).mpr ?_
-  simp [@PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
+  simp [PiLp.norm_sq_eq_of_L2]
   field_simp [mul_pow]
 
 lemma IsMinOn_potential_iff_of_μSq_nonneg  {μSq : ℝ} (hμSq : 0 ≤ μSq) :
     IsMinOn (potential μSq lambda) Set.univ φ ↔ ‖φ‖ ^ 2 = μSq /(2 * lambda) := by
-  apply Iff.intro
+  apply Iff.intro <;> rw [← potential_eq_bound_iff μSq hLam φ]
   · intro h
     obtain ⟨φm, hφ⟩ := potential_bound_reached_of_μSq_nonneg hLam hμSq
     have hm := isMinOn_univ_iff.mp h φm
     rw [hφ] at hm
-    have h1 := potential_bounded_below μSq hLam φ
-    rw [← potential_eq_bound_iff μSq hLam φ]
-    exact (Real.partialOrder.le_antisymm _ _ h1 hm).symm
-  · intro h
-    rw [← potential_eq_bound_iff μSq hLam φ] at h
-    exact potential_eq_bound_IsMinOn μSq hLam φ h
-
+    exact (Real.partialOrder.le_antisymm _ _ (potential_bounded_below μSq hLam φ) hm).symm
+  · exact potential_eq_bound_IsMinOn μSq hLam φ
 
 lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq : ℝ} (hμSq : μSq ≤ 0) :
     IsMinOn (potential μSq lambda) Set.univ φ ↔ φ = 0 := by
-  apply Iff.intro
+  apply Iff.intro <;> rw [← potential_eq_bound_iff_of_μSq_nonpos hLam hμSq φ]
   · intro h
     have h0 := isMinOn_univ_iff.mp h 0
-    rw [(potential_eq_bound_iff_of_μSq_nonpos hLam hμSq 0).mpr (by rfl)] at h0
     have h1 := potential_bounded_below_of_μSq_nonpos hLam hμSq φ
-    rw [← (potential_eq_bound_iff_of_μSq_nonpos hLam hμSq φ)]
+    rw [(potential_eq_bound_iff_of_μSq_nonpos hLam hμSq 0).mpr (by rfl)] at h0
     exact (Real.partialOrder.le_antisymm _ _ h1 h0).symm
-  · intro h
-    rw [← potential_eq_bound_iff_of_μSq_nonpos hLam hμSq φ] at h
-    exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ h
+  · exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ
 
 end potentialProp
 /-- Given a Higgs vector, a rotation matrix which puts the first component of the
@@ -314,40 +276,31 @@ def rotateMatrix (φ : higgsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
 lemma rotateMatrix_star (φ : higgsVec) :
     star φ.rotateMatrix =
     ![![conj (φ 1) /‖φ‖ ,  φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖ , φ 1 / ‖φ‖] ] := by
-  simp [star]
-  rw [rotateMatrix, conjTranspose]
+  simp_rw [star, rotateMatrix, conjTranspose]
   ext i j
   fin_cases i <;> fin_cases j <;> simp [conj_ofReal]
 
-
 lemma rotateMatrix_det {φ : higgsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det = 1 := by
-  simp [rotateMatrix, det_fin_two]
   have h1 : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
-  field_simp
+  field_simp [rotateMatrix, det_fin_two]
   rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
     Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
-  rfl
 
 lemma rotateMatrix_unitary {φ : higgsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ unitaryGroup (Fin 2) ℂ := by
   rw [mem_unitaryGroup_iff', rotateMatrix_star, rotateMatrix]
   erw [mul_fin_two, one_fin_two]
   have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
-  congr
-  field_simp
   ext i j
   fin_cases i <;> fin_cases j <;> field_simp
-  · rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-    simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  <;> rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  · simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
-    rfl
   · ring_nf
   · ring_nf
-  · rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-    simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  · simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
-    rfl
 
 lemma rotateMatrix_specialUnitary {φ : higgsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ specialUnitaryGroup (Fin 2) ℂ :=
@@ -361,19 +314,22 @@ def rotateGuageGroup {φ : higgsVec} (hφ : φ ≠ 0) : gaugeGroup :=
 lemma rotateGuageGroup_apply {φ : higgsVec} (hφ : φ ≠ 0) :
     rep (rotateGuageGroup hφ) φ = ![0, ofReal ‖φ‖] := by
   rw [rep_apply]
-  simp [rotateGuageGroup, rotateMatrix]
+  simp only [rotateGuageGroup, rotateMatrix, one_pow, one_smul,
+     Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe]
   ext i
   fin_cases i
-  simp [mulVec, vecHead, vecTail]
-  ring_nf
-  simp only [Fin.mk_one, Fin.isValue, cons_val_one, head_cons]
-  simp [mulVec, vecHead, vecTail]
-  have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
-  field_simp
-  rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  simp only [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  · simp only [mulVec, Fin.zero_eta, Fin.isValue, cons_val', empty_val', cons_val_fin_one,
+    cons_val_zero, cons_dotProduct, vecHead, vecTail, Nat.succ_eq_add_one, Nat.reduceAdd,
+    Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
+    ring_nf
+  · simp only [Fin.mk_one, Fin.isValue, cons_val_one, head_cons, mulVec, Fin.isValue,
+    cons_val', empty_val', cons_val_fin_one, vecHead, cons_dotProduct, vecTail, Nat.succ_eq_add_one,
+    Nat.reduceAdd, Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
+    have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+    field_simp
+    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
-  rfl
 
 theorem rotate_fst_zero_snd_real (φ : higgsVec) :
     ∃ (g : gaugeGroup), rep g φ = ![0, ofReal ‖φ‖] := by
