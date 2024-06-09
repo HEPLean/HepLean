@@ -198,7 +198,8 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     ∃ (κ : ℝ), [V]u = cexp (κ * I) • (conj [V]c ×₃ conj [V]t) := by
   obtain ⟨g, hg⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
     (conj [V]c ×₃ conj [V]t))
-  simp only [Fin.sum_univ_three, rowBasis, Fin.isValue, coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
+  simp only [Fin.sum_univ_three, rowBasis, Fin.isValue,
+    coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]c  ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]t  ⬝ᵥ X) hg
   simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,
