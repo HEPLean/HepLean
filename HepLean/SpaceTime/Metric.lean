@@ -29,6 +29,27 @@ open TensorProduct
 def η : Matrix (Fin 4) (Fin 4) ℝ := Matrix.reindex finSumFinEquiv finSumFinEquiv
   $ LieAlgebra.Orthogonal.indefiniteDiagonal (Fin 1) (Fin 3) ℝ
 
+/-- The metric with lower indices. -/
+notation "η_[" μ "]_[" ν "]" => η μ ν
+
+/-- The metric with upper indices. -/
+notation "η^[" μ "]^[" ν "]" => η μ ν
+
+/-- The metric with one lower and one upper index. -/
+notation "η_[" μ "]^[" ν "]" => η_[μ]_[0] * η^[0]^[ν] + η_[μ]_[1] * η^[1]^[ν] +
+  η_[μ]_[2] * η^[2]^[ν] + η_[μ]_[3] * η^[3]^[ν]
+
+/-- The metric with one lower and one upper index. -/
+notation "η^[" μ "]_[" ν "]" => η^[μ]^[0] * η_[0]_[ν] + η^[μ]^[1] * η_[1]_[ν]
+  + η^[μ]^[2] * η_[2]_[ν] + η^[μ]^[3] * η_[3]_[ν]
+
+/-- A matrix with one lower and one upper index. -/
+notation "["Λ"]^[" μ "]_[" ν "]" => (Λ : Matrix (Fin 4) (Fin 4) ℝ) μ ν
+
+/-- A matrix with both lower indices. -/
+notation "["Λ"]_[" μ "]_[" ν "]" => ∑ ρ, η_[μ]_[ρ] * [Λ]^[ρ]_[ν]
+
+
 lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin 3) (Fin 3) ℝ)) := by
   rw [η]
@@ -101,6 +122,13 @@ lemma η_mulVec (x : spaceTime) : η *ᵥ x = ![x 0, -x 1, -x 2, -x 3] := by
   funext i
   fin_cases i <;>
   simp [vecHead, vecTail]
+
+lemma η_as_diagonal : η = diagonal ![1, -1, -1, -1] := by
+  rw [η_explicit]
+  apply Matrix.ext
+  intro μ ν
+  fin_cases μ <;> fin_cases ν <;> rfl
+
 
 /-- Given a point in spaceTime `x` the linear map `y → x ⬝ᵥ (η *ᵥ y)`. -/
 @[simps!]
