@@ -114,11 +114,12 @@ noncomputable def σCoordinateMap : lorentzAlgebra ≃ₗ[ℝ] Fin 6 →₀ ℝ 
   invFun c := c 0 • σ 0 1 + c 1 • σ 0 2 + c 2 • σ 0 3 +
       c 3 • σ 1 2 + c 4 • σ 1 3 + c 5 • σ 2 3
   left_inv Λ := by
-    simp
+    simp only [Fin.isValue, Equiv.invFun_as_coe, Finsupp.equivFunOnFinite_symm_apply_toFun]
     exact (eq_span_σ Λ).symm
   right_inv c := by
     ext i
-    fin_cases i <;> simp only  [Fin.isValue, Set.Finite.toFinset_setOf, ne_eq, Finsupp.coe_mk, Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.reduceFinMk, AddSubmonoid.coe_add,
+    fin_cases i <;> simp only  [Fin.isValue, Set.Finite.toFinset_setOf, ne_eq, Finsupp.coe_mk,
+    Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.reduceFinMk, AddSubmonoid.coe_add,
      Submodule.coe_toAddSubmonoid, Submodule.coe_smul_of_tower, σ_coe,
      add_apply, smul_apply, σMat, ηUpDown, ne_eq, zero_ne_one, not_false_eq_true,
      one_apply_ne, η_explicit, of_apply, cons_val', cons_val_zero, empty_val',
