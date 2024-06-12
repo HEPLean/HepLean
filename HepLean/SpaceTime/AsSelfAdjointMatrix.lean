@@ -23,7 +23,7 @@ open Complex
 /-- A 2×2-complex matrix formed from a space-time point. -/
 @[simp]
 def toMatrix (x : spaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![x 0 + x 3, x 1 - x 2 * I ; x 1 + x 2 * I, x 0 - x 3]
+  !![x 0 + x 3, x 1 - x 2 * I; x 1 + x 2 * I, x 0 - x 3]
 
 /-- The matrix `x.toMatrix` for `x ∈ spaceTime` is self adjoint. -/
 lemma toMatrix_isSelfAdjoint (x : spaceTime) : IsSelfAdjoint x.toMatrix := by
