@@ -56,6 +56,7 @@ import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
 import HepLean.GroupTheory.SO3.Basic
+import HepLean.SpaceTime.AsSelfAdjointMatrix
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
 import HepLean.SpaceTime.FourVelocity
