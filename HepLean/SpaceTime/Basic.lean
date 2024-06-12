@@ -89,6 +89,11 @@ lemma explicit (x : spaceTime) : x = ![x 0, x 1, x 2, x 3] := by
   funext i
   fin_cases i <;> rfl
 
+@[simp]
+lemma add_apply (x y : spaceTime) (i : Fin 4) : (x + y) i = x i + y i := rfl
+
+@[simp]
+lemma smul_apply (x : spaceTime) (a : ℝ) (i : Fin 4) : (a • x) i = a * x i := rfl
 
 end spaceTime
 
