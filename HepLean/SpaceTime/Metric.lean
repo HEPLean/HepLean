@@ -32,22 +32,23 @@ def η : Matrix (Fin 4) (Fin 4) ℝ := Matrix.reindex finSumFinEquiv finSumFinEq
 /-- The metric with lower indices. -/
 notation "η_[" μ "]_[" ν "]" => η μ ν
 
+/-- The inverse of `η`. Used for notation. -/
+def ηInv : Matrix (Fin 4) (Fin 4) ℝ := η
+
 /-- The metric with upper indices. -/
-notation "η^[" μ "]^[" ν "]" => η μ ν
-
-/-- The metric with one lower and one upper index. -/
-notation "η_[" μ "]^[" ν "]" => η_[μ]_[0] * η^[0]^[ν] + η_[μ]_[1] * η^[1]^[ν] +
-  η_[μ]_[2] * η^[2]^[ν] + η_[μ]_[3] * η^[3]^[ν]
-
-/-- The metric with one lower and one upper index. -/
-notation "η^[" μ "]_[" ν "]" => η^[μ]^[0] * η_[0]_[ν] + η^[μ]^[1] * η_[1]_[ν]
-  + η^[μ]^[2] * η_[2]_[ν] + η^[μ]^[3] * η_[3]_[ν]
+notation "η^[" μ "]^[" ν "]" => ηInv μ ν
 
 /-- A matrix with one lower and one upper index. -/
 notation "["Λ"]^[" μ "]_[" ν "]" => (Λ : Matrix (Fin 4) (Fin 4) ℝ) μ ν
 
 /-- A matrix with both lower indices. -/
 notation "["Λ"]_[" μ "]_[" ν "]" => ∑ ρ, η_[μ]_[ρ] * [Λ]^[ρ]_[ν]
+
+/--  `η` with $η^μ_ν$ indices. This is equivalent to the identity. This is used for notation. -/
+def ηUpDown : Matrix (Fin 4) (Fin 4) ℝ := 1
+
+/-- The metric with one lower and one upper index. -/
+notation "η^[" μ "]_[" ν "]" => ηUpDown μ ν
 
 
 lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
@@ -128,6 +129,26 @@ lemma η_as_diagonal : η = diagonal ![1, -1, -1, -1] := by
   apply Matrix.ext
   intro μ ν
   fin_cases μ <;> fin_cases ν <;> rfl
+
+lemma η_mul (Λ : Matrix (Fin 4) (Fin 4) ℝ) (μ ρ : Fin 4) :
+    [η * Λ]^[μ]_[ρ] = [η]^[μ]_[μ] * [Λ]^[μ]_[ρ] := by
+  rw  [η_as_diagonal, @diagonal_mul, diagonal_apply_eq ![1, -1, -1, -1] μ]
+
+lemma mul_η (Λ : Matrix (Fin 4) (Fin 4) ℝ) (μ ρ : Fin 4) :
+    [Λ * η]^[μ]_[ρ] =  [Λ]^[μ]_[ρ] * [η]^[ρ]_[ρ] := by
+  rw  [η_as_diagonal, @mul_diagonal, diagonal_apply_eq ![1, -1, -1, -1] ρ]
+
+lemma η_mul_self (μ ν : Fin 4) : η^[ν]_[μ] * η_[ν]_[ν] = η_[μ]_[ν] := by
+  fin_cases μ <;> fin_cases ν <;> simp [ηUpDown]
+
+lemma η_contract_self (μ ν : Fin 4) : ∑ x, (η^[x]_[μ] * η_[x]_[ν]) = η_[μ]_[ν] := by
+  rw [Fin.sum_univ_four]
+  fin_cases μ <;> fin_cases ν <;> simp [ηUpDown]
+
+lemma η_contract_self' (μ ν : Fin 4) : ∑ x, (η^[x]_[μ] * η_[ν]_[x]) = η_[ν]_[μ] := by
+  rw [Fin.sum_univ_four]
+  fin_cases μ <;> fin_cases ν <;> simp [ηUpDown]
+
 
 
 /-- Given a point in spaceTime `x` the linear map `y → x ⬝ᵥ (η *ᵥ y)`. -/
