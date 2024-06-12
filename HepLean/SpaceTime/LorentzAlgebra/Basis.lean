@@ -65,7 +65,7 @@ lemma σ_comm (α β γ δ : Fin 4) :
   change σMat α β * σ γ δ -  σ γ δ * σ α β = _
   funext a b
   simp only [σ_coe, sub_apply, AddSubmonoid.coe_add, Submodule.coe_toAddSubmonoid,
-    Submodule.coe_smul_of_tower, add_apply, smul_apply, σMat, smul_eq_mul]
+    Submodule.coe_smul_of_tower, Matrix.add_apply, Matrix.smul_apply, σMat, smul_eq_mul]
   rw [σMat_mul, σMat_mul, η_symmetric α γ, η_symmetric α δ, η_symmetric β γ, η_symmetric β δ]
   ring
 
@@ -77,7 +77,7 @@ lemma eq_span_σ (Λ : lorentzAlgebra) :
   fin_cases a <;> fin_cases b <;>
     simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.reduceFinMk, AddSubmonoid.coe_add,
      Submodule.coe_smul_of_tower, σ_coe,
-     add_apply, smul_apply, σMat, ηUpDown, ne_eq, zero_ne_one, not_false_eq_true,
+     Matrix.add_apply, Matrix.smul_apply, σMat, ηUpDown, ne_eq, zero_ne_one, not_false_eq_true,
      one_apply_ne, η_explicit, of_apply, cons_val_zero,
      mul_zero, one_apply_eq, mul_one, sub_neg_eq_add,
      zero_add, smul_eq_mul, Fin.reduceEq, cons_val_one, vecHead, vecTail,
@@ -121,7 +121,7 @@ noncomputable def σCoordinateMap : lorentzAlgebra ≃ₗ[ℝ] Fin 6 →₀ ℝ 
     fin_cases i <;> simp only  [Fin.isValue, Set.Finite.toFinset_setOf, ne_eq, Finsupp.coe_mk,
     Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.reduceFinMk, AddSubmonoid.coe_add,
      Submodule.coe_toAddSubmonoid, Submodule.coe_smul_of_tower, σ_coe,
-     add_apply, smul_apply, σMat, ηUpDown, ne_eq, zero_ne_one, not_false_eq_true,
+     Matrix.add_apply, Matrix.smul_apply, σMat, ηUpDown, ne_eq, zero_ne_one, not_false_eq_true,
      one_apply_ne, η_explicit, of_apply, cons_val', cons_val_zero, empty_val',
      cons_val_fin_one, vecCons_const, mul_zero, one_apply_eq, mul_one, sub_neg_eq_add,
      zero_add, smul_eq_mul, Fin.reduceEq, cons_val_one, vecHead, vecTail, Nat.succ_eq_add_one,
