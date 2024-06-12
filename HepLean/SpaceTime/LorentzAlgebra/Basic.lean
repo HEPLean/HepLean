@@ -76,6 +76,28 @@ lemma mem_iff'  (A : Matrix (Fin 4) (Fin 4) ℝ) : A ∈ lorentzAlgebra ↔ A  =
   nth_rewrite 2 [h]
   simp [← mul_assoc, η_sq]
 
+lemma diag_comp (Λ : lorentzAlgebra) (μ : Fin 4) : Λ.1 μ μ = 0 := by
+  have h := congrArg (fun M ↦ M μ μ) $ mem_iff.mp Λ.2
+  simp at h
+  fin_cases μ <;>
+    rw [η_mul, mul_η, η_explicit] at h
+    <;> simpa using h
+
+lemma time_comps (Λ : lorentzAlgebra) (i : Fin 3) : Λ.1 i.succ 0 = Λ.1 0 i.succ := by
+  have h := congrArg (fun M ↦ M 0 i.succ) $ mem_iff.mp Λ.2
+  simp at h
+  fin_cases i <;>
+    rw [η_mul, mul_η, η_explicit] at h <;>
+    simpa using h
+
+lemma space_comps (Λ : lorentzAlgebra) (i j : Fin 3) :
+    Λ.1 i.succ j.succ = - Λ.1 j.succ i.succ := by
+  have h := congrArg (fun M ↦ M i.succ j.succ) $ mem_iff.mp Λ.2
+  simp at h
+  fin_cases i <;> fin_cases j <;>
+    rw [η_mul, mul_η, η_explicit] at h <;>
+    simpa using h.symm
+
 
 end lorentzAlgebra
 
