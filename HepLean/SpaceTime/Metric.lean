@@ -73,11 +73,7 @@ lemma η_explicit : η = !![(1 : ℝ), 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 
   fin_cases i <;> fin_cases j
     <;> simp_all only [Fin.zero_eta, reindex_apply, submatrix_apply]
   any_goals rfl
-  all_goals simp [finSumFinEquiv, Fin.addCases, η, Fin.zero_eta, Matrix.cons_val',
-      Matrix.cons_val_fin_one, Matrix.cons_val_one,
-      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
-      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
-      vecHead, vecTail, Function.comp_apply]
+  all_goals simp [finSumFinEquiv, Fin.addCases, η, vecHead, vecTail]
   any_goals rfl
   all_goals split
   all_goals simp
@@ -87,11 +83,7 @@ lemma η_explicit : η = !![(1 : ℝ), 0, 0, 0; 0, -1, 0, 0; 0, 0, -1, 0; 0, 0, 
 lemma η_off_diagonal {μ ν : Fin 4} (h : μ ≠ ν) : η μ ν = 0 := by
   fin_cases μ <;>
     fin_cases ν <;>
-      simp_all [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one,
-      Matrix.cons_val_one,
-      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
-      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
-      vecHead, vecTail, Function.comp_apply]
+      simp_all [η_explicit, Fin.mk_one, Fin.mk_one, vecHead, vecTail]
 
 lemma η_symmetric (μ ν : Fin 4) : η μ ν = η ν μ := by
   by_cases h : μ = ν
@@ -270,11 +262,7 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     have h1 := h (stdBasis μ) (stdBasis ν)
     rw [ηLin_matrix_stdBasis, ηLin_η_stdBasis] at h1
     fin_cases μ <;> fin_cases ν <;>
-    simp_all [η_explicit, Fin.zero_eta, Matrix.cons_val', Matrix.cons_val_fin_one,
-      Matrix.cons_val_one,
-      Matrix.cons_val_succ', Matrix.cons_val_zero, Matrix.empty_val', Matrix.head_cons,
-      Matrix.head_fin_const, Matrix.head_cons, Matrix.vecCons_const, Fin.mk_one, Fin.mk_one,
-      vecHead, vecTail, Function.comp_apply]
+    simp_all [η_explicit,  Fin.mk_one, Fin.mk_one, vecHead, vecTail]
 
 /-- The metric as a quadratic form on `spaceTime`. -/
 def quadraticForm : QuadraticForm ℝ spaceTime := ηLin.toQuadraticForm
