@@ -129,7 +129,7 @@ noncomputable def σCoordinateMap : lorentzAlgebra ≃ₗ[ℝ] Fin 6 →₀ ℝ 
      cons_val_three, Fin.succ_one_eq_two, mul_neg, neg_zero, sub_zero, Finsupp.equivFunOnFinite]
 
 /-- The basis formed by the matrices `σ`. -/
-@[simps!]
+@[simps! repr_apply_support_val repr_apply_toFun]
 noncomputable def σBasis : Basis (Fin 6) ℝ lorentzAlgebra where
   repr := σCoordinateMap
 
