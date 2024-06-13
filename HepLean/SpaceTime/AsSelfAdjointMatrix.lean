@@ -31,7 +31,7 @@ lemma toMatrix_isSelfAdjoint (x : spaceTime) : IsSelfAdjoint x.toMatrix := by
   intro i j
   fin_cases i <;> fin_cases j <;>
     simp [toMatrix, conj_ofReal]
-  ring
+  rfl
 
 /-- A self-adjoint matrix formed from a space-time point. -/
 @[simps!]
@@ -69,9 +69,7 @@ noncomputable def spaceTimeToHerm : spaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (F
     exact conj_eq_iff_re.mp (congrArg (fun M => M 0 0) $ selfAdjoint.mem_iff.mp x.2 )
     have h01 := congrArg (fun M => M 0 1) $ selfAdjoint.mem_iff.mp x.2
     simp only [Fin.isValue, star_apply, RCLike.star_def] at h01
-    rw [← h01]
-    rw [RCLike.conj_eq_re_sub_im]
-    simp only [Fin.isValue, RCLike.re_to_complex, RCLike.im_to_complex, RCLike.I_to_complex]
+    rw [← h01, RCLike.conj_eq_re_sub_im]
     rfl
     exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2 )
   map_add' x y  := by

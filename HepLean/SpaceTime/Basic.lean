@@ -83,7 +83,7 @@ lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
   simp only [↓reduceIte, mul_one]
   intro x h
   rw [stdBasis_apply, if_neg (Ne.symm h)]
-  simp
+  exact CommMonoidWithZero.mul_zero (Λ ν x)
 
 lemma explicit (x : spaceTime) : x = ![x 0, x 1, x 2, x 3] := by
   funext i

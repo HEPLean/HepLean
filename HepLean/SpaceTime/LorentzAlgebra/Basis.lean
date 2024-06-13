@@ -139,10 +139,9 @@ instance : Module.Finite ℝ lorentzAlgebra :=
 /-- The Lorentz algebra is 6-dimensional. -/
 theorem finrank_eq_six : FiniteDimensional.finrank ℝ lorentzAlgebra = 6 := by
   have h  :=  Module.mk_finrank_eq_card_basis σBasis
-  simp_all
-  simp [FiniteDimensional.finrank]
-  rw [h]
-  simp only [Cardinal.toNat_ofNat]
+  simp only [finrank_eq_rank, Cardinal.mk_fintype, Fintype.card_fin, Nat.cast_ofNat] at h
+  exact FiniteDimensional.finrank_eq_of_rank_eq h
+
 
 end lorentzAlgebra
 

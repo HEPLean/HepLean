@@ -38,19 +38,8 @@ instance : Group (permGroup n) := Pi.group
 @[simps!]
 def chargeMap (f : permGroup n) : (SMCharges n).charges →ₗ[ℚ] (SMCharges n).charges where
   toFun S := toSpeciesEquiv.symm (fun i => toSpecies i S ∘ f i )
-  map_add' S T := by
-    simp only
-    rw [charges_eq_toSpecies_eq]
-    intro i
-    rw [(toSpecies i).map_add]
-    rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rfl
-  map_smul' a S := by
-    simp only
-    rw [charges_eq_toSpecies_eq]
-    intro i
-    rw [(toSpecies i).map_smul, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 /-- The representation of `(permGroup n)` acting on the vector space of charges. -/
 @[simp]
@@ -81,10 +70,10 @@ lemma repCharges_toSpecies (f : permGroup n) (S : (SMCharges n).charges) (j : Fi
 lemma toSpecies_sum_invariant (m : ℕ) (f : permGroup n) (S : (SMCharges n).charges) (j : Fin 5) :
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
-  erw [repCharges_toSpecies]
-  change  ∑ i : Fin n, ((fun a => a ^ m) ∘ _) (⇑(f⁻¹ _) i) = ∑ i : Fin n, ((fun a => a ^ m) ∘ _) i
-  refine Equiv.Perm.sum_comp _ _ _ ?_
-  simp only [permGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
+  rw [repCharges_toSpecies]
+  exact Fintype.sum_equiv (f⁻¹ j) (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S ∘ ⇑(f⁻¹ j)) x)
+   (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
+
 
 
 lemma accGrav_invariant (f : permGroup n) (S : (SMCharges n).charges)  :
@@ -116,7 +105,6 @@ lemma accQuad_invariant (f : permGroup n) (S : (SMCharges n).charges)  :
 
 lemma accCube_invariant (f : permGroup n) (S : (SMCharges n).charges)  :
     accCube (repCharges f S) = accCube S :=
-  accCube_ext
-    (by simpa using toSpecies_sum_invariant 3 f S)
+  accCube_ext (fun j => toSpecies_sum_invariant 3 f S j)
 
 end SM

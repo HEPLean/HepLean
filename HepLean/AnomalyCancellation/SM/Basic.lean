@@ -43,19 +43,16 @@ def toSpeciesEquiv : (SMCharges n).charges ≃ (Fin 5 → Fin n → ℚ) :=
 @[simps!]
 def toSpecies (i : Fin 5) : (SMCharges n).charges →ₗ[ℚ] (SMSpecies n).charges where
   toFun S := toSpeciesEquiv S i
-  map_add' _ _ := by aesop
-  map_smul' _ _ := by aesop
+  map_add' _ _ := by rfl
+  map_smul' _ _ := by rfl
 
 lemma charges_eq_toSpecies_eq (S T : (SMCharges n).charges) :
     S = T ↔ ∀ i, toSpecies i S = toSpecies i T := by
   apply Iff.intro
-  intro h
-  rw [h]
-  simp only [forall_const]
+  exact fun a i => congrArg (⇑(toSpecies i)) a
   intro h
   apply toSpeciesEquiv.injective
-  funext i
-  exact h i
+  exact (Set.eqOn_univ (toSpeciesEquiv S) (toSpeciesEquiv T)).mp fun ⦃x⦄ a => h x
 
 lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f :  (Fin 5 → Fin n → ℚ) ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
@@ -142,8 +139,7 @@ lemma accSU2_ext {S T : (SMCharges n).charges}
     AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  repeat erw [hj]
-  rfl
+  exact Mathlib.Tactic.LinearCombination.add_pf (congrArg (HMul.hMul 3) (hj 0)) (hj 3)
 
 /-- The `SU(3)` anomaly equations. -/
 @[simp]

@@ -44,7 +44,7 @@ lemma zero_abs_ge_one (v : PreFourVelocity) : 1 ≤ |v.1 0| := by
 
 lemma zero_abs_gt_norm_space (v : PreFourVelocity) : ‖v.1.space‖ < |v.1 0| := by
   rw [(abs_norm _).symm, ← @sq_lt_sq, zero_sq]
-  simp only [space, Fin.isValue, lt_add_iff_pos_left, zero_lt_one]
+  exact lt_one_add (‖(v.1).space‖ ^ 2)
 
 lemma zero_abs_ge_norm_space (v : PreFourVelocity) : ‖v.1.space‖ ≤ |v.1 0| :=
   le_of_lt (zero_abs_gt_norm_space v)
@@ -80,8 +80,7 @@ lemma IsFourVelocity_abs_zero {v : PreFourVelocity} (hv : IsFourVelocity v) :
 lemma not_IsFourVelocity_iff (v : PreFourVelocity) : ¬ IsFourVelocity v ↔ v.1 0 ≤ 0 := by
   rw [IsFourVelocity, not_le]
   apply Iff.intro
-  intro h
-  exact le_of_lt h
+  exact fun a => le_of_lt a
   intro h
   have h1 := (zero_nonpos_iff v).mp h
   linarith
@@ -91,7 +90,7 @@ lemma not_IsFourVelocity_iff_neg {v : PreFourVelocity} : ¬ IsFourVelocity v ↔
   rw [not_IsFourVelocity_iff, IsFourVelocity]
   simp only [Fin.isValue, neg]
   change _ ↔ 0 ≤ - v.1 0
-  simp
+  exact Iff.symm neg_nonneg
 
 lemma zero_abs_mul_sub_norm_space (v v' : PreFourVelocity) :
     0 ≤ |v.1 0| * |v'.1 0| - ‖v.1.space‖ * ‖v'.1.space‖ := by
@@ -125,7 +124,7 @@ lemma euclid_norm_not_IsFourVelocity_not_IsFourVelocity {v v' : PreFourVelocity}
 lemma euclid_norm_IsFourVelocity_not_IsFourVelocity {v v' : PreFourVelocity}
     (h : IsFourVelocity v) (h' : ¬ IsFourVelocity v') :
     (v.1 0) * (v'.1 0) + ⟪v.1.space, v'.1.space⟫_ℝ ≤ 0 := by
-  rw [show (0 : ℝ) = - 0 by simp, le_neg]
+  rw [show (0 : ℝ) = - 0 from zero_eq_neg.mpr rfl, le_neg]
   have h1 := euclid_norm_IsFourVelocity_IsFourVelocity h (not_IsFourVelocity_iff_neg.mp h')
   apply le_of_le_of_eq h1 ?_
   simp [neg, Fin.sum_univ_three, neg]
@@ -211,9 +210,9 @@ noncomputable def pathFromZero (u : FourVelocity) : Path zero u where
 lemma isPathConnected_FourVelocity : IsPathConnected (@Set.univ FourVelocity) := by
   use zero
   apply And.intro trivial  ?_
-  intro y _
+  intro y a
   use pathFromZero y
-  simp only [Set.mem_univ, implies_true]
+  exact fun _ => a
 
 lemma η_pos (u v : FourVelocity) : 0 < ηLin u v := by
   refine lt_of_lt_of_le ?_ (ηLin_ge_sub_norm u v)

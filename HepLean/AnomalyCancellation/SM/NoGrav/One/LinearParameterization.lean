@@ -107,7 +107,7 @@ lemma cubic_zero_E'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
   rw [h1] at hc
   simp at hc
   cases' hc with hc hc
-  have h2 := (add_eq_zero_iff' (by nlinarith) (by nlinarith)).mp hc
+  have h2 := (add_eq_zero_iff' (by nlinarith) (sq_nonneg S.Y)).mp hc
   simp at h2
   exact h2.1
   exact hc
@@ -120,8 +120,6 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
      SMCharges.E S.val (0 : Fin 1)⟩
   left_inv S := by
     apply linearParameters.ext
-    simp only [Fin.isValue, toSpecies_apply]
-    repeat erw [speciesVal]
     rfl
     repeat erw [speciesVal]
     simp only [Fin.isValue]
@@ -243,7 +241,7 @@ def bijectionLinearParameters :
     have hvw := S.hvw
     have hQ := S.hx
     apply linearParametersQENeqZero.ext
-    simp only [tolinearParametersQNeqZero_x, toLinearParameters_coe_Q']
+    rfl
     field_simp
     ring
     simp only [tolinearParametersQNeqZero_w, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
@@ -255,7 +253,7 @@ def bijectionLinearParameters :
     have hQ := S.2.1
     have hE := S.2.2
     apply linearParameters.ext
-    simp only [ne_eq, toLinearParameters_coe_Q', tolinearParametersQNeqZero_x]
+    rfl
     field_simp
     ring_nf
     field_simp [hQ, hE]
@@ -283,7 +281,7 @@ lemma cubic (S : linearParametersQENeqZero) :
     ring
   rw [h1]
   simp_all
-  rw [add_eq_zero_iff_eq_neg]
+  exact add_eq_zero_iff_eq_neg
 
 
 lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
@@ -294,8 +292,8 @@ lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection 
   rw [← h1] at h
   by_contra hn
   simp [not_or] at hn
-  have h2 := FLTThree S.v S.w (-1) hn.1 hn.2 (by simp)
-  simp_all
+  have h2 := FLTThree S.v S.w (-1) hn.1 hn.2 (Ne.symm (ne_of_beq_false (by rfl)))
+  exact h2 h
 
 lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (hv : S.v = 0 ) : S.w = -1 := by
@@ -303,8 +301,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
   simp at h
   have h' : (S.w + 1) * (1 * S.w * S.w + (-1) * S.w + 1) = 0 := by
     ring_nf
-    rw [add_comm]
-    exact add_eq_zero_iff_eq_neg.mpr h
+    exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
   have h'' : (1 * S.w * S.w + (-1) * S.w + 1)  ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.w
     intro s
@@ -314,7 +311,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
       simp [discrim]
     nlinarith
   simp_all
-  linear_combination h'
+  exact eq_neg_of_add_eq_zero_left h'
 
 lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (hw : S.w = 0 ) : S.v = -1 := by
@@ -322,8 +319,7 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
   simp at h
   have h' : (S.v + 1) * (1 * S.v * S.v + (-1) * S.v + 1) = 0 := by
     ring_nf
-    rw [add_comm]
-    exact add_eq_zero_iff_eq_neg.mpr h
+    exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
   have h'' : (1 * S.v * S.v + (-1) * S.v + 1)  ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.v
     intro s
@@ -333,7 +329,7 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
       simp [discrim]
     nlinarith
   simp_all
-  linear_combination h'
+  exact eq_neg_of_add_eq_zero_left h'
 
 lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (FLTThree : FermatLastTheoremWith ℚ 3) :
@@ -356,7 +352,7 @@ lemma grav (S : linearParametersQENeqZero) : accGrav (bijection S).1.val = 0 ↔
   linear_combination -1 * h / 6
   intro h
   rw [h]
-  ring
+  exact Eq.symm (mul_neg_one (6 * S.x))
 
 lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (FLTThree : FermatLastTheoremWith ℚ 3) :
@@ -365,9 +361,9 @@ lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1
   have h' := cube_w_v S h FLTThree
   cases' h' with h h
   rw [h.1, h.2]
-  simp only [add_zero]
+  exact Rat.add_zero (-1)
   rw [h.1, h.2]
-  simp
+  exact Rat.zero_add (-1)
 
 end linearParametersQENeqZero
 

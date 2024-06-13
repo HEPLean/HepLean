@@ -8,6 +8,7 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
 import Mathlib.Algebra.Lie.Classical
 import Mathlib.Algebra.Lie.TensorProduct
+import Mathlib.Tactic.RewriteSearch
 /-!
 # Spacetime Metric
 
@@ -56,11 +57,12 @@ lemma η_block : η = Matrix.reindex finSumFinEquiv finSumFinEquiv (
   rw [η]
   congr
   simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
-  rw [← @fromBlocks_diagonal]
+  rw [← fromBlocks_diagonal]
   refine fromBlocks_inj.mpr ?_
   simp only [diagonal_one, true_and]
   funext i j
-  fin_cases i <;> fin_cases j <;> simp
+  rw [← diagonal_neg]
+  rfl
 
 lemma η_reindex : (Matrix.reindex finSumFinEquiv finSumFinEquiv).symm η =
     LieAlgebra.Orthogonal.indefiniteDiagonal (Fin 1) (Fin 3) ℝ :=
@@ -89,8 +91,7 @@ lemma η_symmetric (μ ν : Fin 4) : η μ ν = η ν μ := by
   by_cases h : μ = ν
   rw [h]
   rw [η_off_diagonal h]
-  refine (η_off_diagonal ?_).symm
-  exact fun a => h (id a.symm)
+  exact Eq.symm (η_off_diagonal fun a => h (id (Eq.symm a)))
 
 @[simp]
 lemma η_transpose : η.transpose = η := by
@@ -128,7 +129,7 @@ lemma η_mul (Λ : Matrix (Fin 4) (Fin 4) ℝ) (μ ρ : Fin 4) :
 
 lemma mul_η (Λ : Matrix (Fin 4) (Fin 4) ℝ) (μ ρ : Fin 4) :
     [Λ * η]^[μ]_[ρ] =  [Λ]^[μ]_[ρ] * [η]^[ρ]_[ρ] := by
-  rw  [η_as_diagonal, @mul_diagonal, diagonal_apply_eq ![1, -1, -1, -1] ρ]
+  rw [η_as_diagonal, @mul_diagonal, diagonal_apply_eq ![1, -1, -1, -1] ρ]
 
 lemma η_mul_self (μ ν : Fin 4) : η^[ν]_[μ] * η_[ν]_[ν] = η_[μ]_[ν] := by
   fin_cases μ <;> fin_cases ν <;> simp [ηUpDown]
@@ -229,9 +230,10 @@ lemma ηLin_η_stdBasis (μ ν : Fin 4) : ηLin (stdBasis μ) (stdBasis ν) = η
     subst h
     simp
   · rw [stdBasis_not_eq, η_off_diagonal h]
-    simp only [mul_zero]
+    exact CommMonoidWithZero.mul_zero η_[μ]_[μ]
     exact fun a ↦ h (id a.symm)
 
+set_option maxHeartbeats 0
 lemma ηLin_mulVec_left (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     ηLin (Λ *ᵥ x) y = ηLin x ((η * Λᵀ * η) *ᵥ y) := by
   simp [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply,
