@@ -45,19 +45,17 @@ noncomputable def fromSelfAdjointMatrix' (x : selfAdjoint (Matrix (Fin 2) (Fin 2
 
 /-- The linear equivalence between the vector-space `spaceTime` and self-adjoint
   2×2-complex matrices. -/
-noncomputable def spaceTimeToHerm : spaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
+noncomputable def toSelfAdjointMatrix : spaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
   toFun := toSelfAdjointMatrix'
   invFun := fromSelfAdjointMatrix'
   left_inv x := by
-    simp only [fromSelfAdjointMatrix', one_div, Fin.isValue, toSelfAdjointMatrix'_coe, of_apply,
-      cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons,
-      head_fin_const, add_add_sub_cancel, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im,
-      I_im, mul_one, sub_self, add_zero, add_im, mul_im, zero_add, add_sub_sub_cancel,
-      half_add_self]
-    funext i
-    fin_cases i <;> field_simp
-    rfl
-    rfl
+    simp only [fromSelfAdjointMatrix', one_div, toSelfAdjointMatrix'_coe, of_apply, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons, head_fin_const,
+      add_add_sub_cancel, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one,
+      sub_self, add_zero, add_im, mul_im, zero_add, add_sub_sub_cancel, half_add_self]
+    field_simp [spaceTime]
+    ext1 x
+    fin_cases x <;> rfl
   right_inv x := by
     simp only [toSelfAdjointMatrix', toMatrix, fromSelfAdjointMatrix', one_div, Fin.isValue, add_re,
       sub_re, cons_val_zero, ofReal_mul, ofReal_inv, ofReal_ofNat, ofReal_add, cons_val_three,
@@ -73,19 +71,22 @@ noncomputable def spaceTimeToHerm : spaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (F
     rfl
     exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2 )
   map_add' x y  := by
-    simp only [toSelfAdjointMatrix', toMatrix, Fin.isValue, add_apply, ofReal_add,
-      AddSubmonoid.mk_add_mk, of_add_of, add_cons, head_cons, tail_cons, empty_add_empty,
-      Subtype.mk.injEq, EmbeddingLike.apply_eq_iff_eq]
-    ext i j
-    fin_cases i <;> fin_cases j <;>
-      field_simp [fromSelfAdjointMatrix', toMatrix, conj_ofReal, add_apply]
-      <;> ring
+    ext i j : 2
+    simp only [toSelfAdjointMatrix'_coe, add_apply, ofReal_add, of_apply, cons_val', empty_val',
+      cons_val_fin_one, AddSubmonoid.coe_add, AddSubgroup.coe_toAddSubmonoid, Matrix.add_apply]
+    fin_cases i <;> fin_cases j <;> simp <;> ring
   map_smul' r x := by
+    ext i j : 2
     simp only [toSelfAdjointMatrix', toMatrix, Fin.isValue, smul_apply, ofReal_mul,
       RingHom.id_apply]
-    ext i j
     fin_cases i <;> fin_cases j <;>
       field_simp [fromSelfAdjointMatrix', toMatrix, conj_ofReal, smul_apply]
        <;> ring
+
+lemma det_eq_ηLin (x : spaceTime) : det (toSelfAdjointMatrix x).1 = ηLin x x := by
+  simp [toSelfAdjointMatrix, ηLin_expand]
+  ring_nf
+  simp only [Fin.isValue, I_sq, mul_neg, mul_one]
+  ring
 
 end spaceTime

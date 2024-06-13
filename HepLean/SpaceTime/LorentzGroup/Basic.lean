@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Metric
 import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.AsSelfAdjointMatrix
 import Mathlib.GroupTheory.SpecificGroups.KleinFour
 import Mathlib.Geometry.Manifold.Algebra.LieGroup
 import Mathlib.Analysis.Matrix
@@ -45,6 +46,30 @@ namespace PreservesηLin
 
 variable  (Λ : Matrix (Fin 4) (Fin 4) ℝ)
 
+lemma iff_norm : PreservesηLin Λ ↔
+    ∀ (x : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ x) = ηLin x x := by
+  refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
+  have hp := h (x + y)
+  have hn := h (x - y)
+  rw [mulVec_add] at hp
+  rw [mulVec_sub] at hn
+  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
+  rw [ηLin_symm (Λ *ᵥ y) (Λ *ᵥ x), ηLin_symm y x] at hp hn
+  linear_combination hp / 4 + -1 * hn / 4
+
+lemma iff_det_selfAdjoint : PreservesηLin Λ ↔
+    ∀ (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)),
+    det ((toSelfAdjointMatrix ∘ toLin stdBasis stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
+    = det x.1 := by
+  rw [iff_norm]
+  apply Iff.intro
+  intro h x
+  have h1 := congrArg ofReal $ h (toSelfAdjointMatrix.symm x)
+  simpa [← det_eq_ηLin] using h1
+  intro h x
+  have h1 := h (toSelfAdjointMatrix x)
+  simpa [det_eq_ηLin] using h1
+
 lemma iff_on_right : PreservesηLin Λ ↔
     ∀ (x y : spaceTime), ηLin x ((η * Λᵀ * η * Λ) *ᵥ y) = ηLin x y := by
   apply Iff.intro
@@ -74,14 +99,13 @@ lemma iff_transpose : PreservesηLin Λ ↔ PreservesηLin Λᵀ := by
   rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
     ← mul_assoc, transpose_one] at h1
   rw [iff_matrix' Λ.transpose, ← h1]
-  rw [← mul_assoc, ← mul_assoc]
-  exact Matrix.mul_assoc (Λᵀ * η) Λᵀᵀ η
+  noncomm_ring
   intro h
   have h1 := congrArg transpose ((iff_matrix Λ.transpose).mp h)
   rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
     ← mul_assoc, transpose_one, transpose_transpose] at h1
   rw [iff_matrix', ← h1]
-  repeat rw [← mul_assoc]
+  noncomm_ring
 
 /-- The lift of a matrix which preserves `ηLin` to an invertible matrix. -/
 def liftGL {Λ : Matrix (Fin 4) (Fin 4) ℝ} (h : PreservesηLin Λ) : GL (Fin 4) ℝ :=
