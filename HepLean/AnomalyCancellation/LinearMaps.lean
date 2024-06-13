@@ -74,23 +74,15 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
       intro T1 T2
       simp only
       rw [swap, map_add]
-      rw [swap T1 S, swap T2 S]
+      exact Mathlib.Tactic.LinearCombination.add_pf (swap T1 S) (swap T2 S)
     map_smul' :=by
       intro a T
       simp only [eq_ratCast, Rat.cast_eq_id, id_eq, smul_eq_mul]
       rw [swap, map_smul]
-      rw [swap T S]
+      exact congrArg (HMul.hMul a) (swap T S)
   }
-  map_smul' := by
-    intro a S
-    apply LinearMap.ext
-    intro T
-    exact map_smul a S T
-  map_add' := by
-    intro S1 S2
-    apply LinearMap.ext
-    intro T
-    exact map_add S1 S2 T
+  map_smul' := fun a S  => LinearMap.ext fun T => map_smul a S T
+  map_add' := fun S1 S2  => LinearMap.ext fun T => map_add S1 S2 T
   swap' := swap
 
 lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a * f S T := by
@@ -114,8 +106,7 @@ lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
 /-- Fixing the second input vectors, the resulting linear map. -/
 def toLinear₁  (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
   toFun S := f S T
-  map_add' S1 S2 := by
-    simp only [f.map_add₁]
+  map_add' S1 S2 := map_add₁ f S1 S2 T
   map_smul' a S := by
     simp only [f.map_smul₁]
     rfl

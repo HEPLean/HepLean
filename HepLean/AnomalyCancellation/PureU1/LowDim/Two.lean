@@ -28,7 +28,7 @@ def equiv : (PureU1 2).LinSols ≃ (PureU1 2).Sols where
     simp at hLin
     erw [accCube_explicit]
     simp only [Fin.sum_univ_two, Fin.isValue]
-    rw [show S.val (0 : Fin 2) = - S.val (1 : Fin 2) by linear_combination hLin]
+    rw [show S.val (0 : Fin 2) = - S.val (1 : Fin 2) from eq_neg_of_add_eq_zero_left hLin]
     ring⟩
   invFun S := S.1.1
   left_inv S := rfl

@@ -45,10 +45,8 @@ def toSMPlusH : MSSMCharges.charges ≃ (Fin 18 ⊕ Fin 2 → ℚ) :=
 def splitSMPlusH : (Fin 18 ⊕ Fin 2 → ℚ) ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) where
   toFun f := (f ∘ Sum.inl , f ∘ Sum.inr)
   invFun f :=  Sum.elim f.1 f.2
-  left_inv f := by
-    aesop
-  right_inv f := by
-    aesop
+  left_inv f := Sum.elim_comp_inl_inr f
+  right_inv _ := rfl
 
 /-- An equivalence between `MSSMCharges.charges` and `(Fin 18 → ℚ) × (Fin 2 → ℚ)`. This
 splits the charges up into the SM and the additional ones for the MSSM. -/
@@ -74,8 +72,8 @@ corresponding SM species of charges. -/
 @[simps!]
 def toSMSpecies (i : Fin 6) : MSSMCharges.charges →ₗ[ℚ] MSSMSpecies.charges where
   toFun S := (Prod.fst ∘ toSpecies) S i
-  map_add' _ _ := by aesop
-  map_smul' _ _ := by aesop
+  map_add' _ _ := by rfl
+  map_smul' _ _ := by rfl
 
 lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f :  (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ)) :
     (toSMSpecies i) (toSpecies.symm f) = f.1 i := by
@@ -98,16 +96,16 @@ abbrev N := toSMSpecies 5
 /-- The charge `Hd`. -/
 @[simps!]
 def Hd : MSSMCharges.charges →ₗ[ℚ] ℚ where
-  toFun S := S ⟨18, by simp⟩
-  map_add' _ _ := by aesop
-  map_smul' _ _ := by aesop
+  toFun S := S ⟨18, Nat.lt_of_sub_eq_succ rfl⟩
+  map_add' _ _ := by rfl
+  map_smul' _ _ := by rfl
 
 /-- The charge `Hu`. -/
 @[simps!]
 def Hu : MSSMCharges.charges →ₗ[ℚ] ℚ where
-  toFun S := S ⟨19, by simp⟩
-  map_add' _ _ := by aesop
-  map_smul' _ _ := by aesop
+  toFun S := S ⟨19, Nat.lt_of_sub_eq_succ rfl⟩
+  map_add' _ _ := by rfl
+  map_smul' _ _ := by rfl
 
 lemma charges_eq_toSpecies_eq (S T : MSSMCharges.charges) :
     S = T ↔ (∀ i, toSMSpecies i S = toSMSpecies i T) ∧ Hd S = Hd T ∧ Hu S = Hu T  := by
@@ -333,10 +331,7 @@ lemma accQuad_ext {S T : (MSSMCharges).charges}
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   ring_nf
-  have h1 : ∀ j, ∑ i, (toSMSpecies j S i)^2 = ∑ i, (toSMSpecies j T i)^2 := by
-    intro j
-    erw [h]
-    rfl
+  have h1 : ∀ j, ∑ i, (toSMSpecies j S i)^2 = ∑ i, (toSMSpecies j T i)^2 := fun j => h j
   repeat rw [h1]
   rw [hd, hu]
 
