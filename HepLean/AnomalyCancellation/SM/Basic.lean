@@ -52,7 +52,7 @@ lemma charges_eq_toSpecies_eq (S T : (SMCharges n).charges) :
   exact fun a i => congrArg (⇑(toSpecies i)) a
   intro h
   apply toSpeciesEquiv.injective
-  exact (Set.eqOn_univ (toSpeciesEquiv S) (toSpeciesEquiv T)).mp fun ⦃x⦄ a => h x
+  exact (Set.eqOn_univ (toSpeciesEquiv S) (toSpeciesEquiv T)).mp fun ⦃x⦄ _ => h x
 
 lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f :  (Fin 5 → Fin n → ℚ) ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
