@@ -182,9 +182,7 @@ lemma ηLin_expand (x y : spaceTime) : ηLin x y = x 0 * y 0 - x 1 * y 1 - x 2 *
 
 lemma ηLin_expand_self (x : spaceTime) : ηLin x x = x 0 ^ 2 - ‖x.space‖ ^ 2 := by
   rw [← @real_inner_self_eq_norm_sq, @PiLp.inner_apply, Fin.sum_univ_three, ηLin_expand]
-  simp only [Fin.isValue, space, cons_val_zero, RCLike.inner_apply, conj_trivial, cons_val_one,
-    head_cons, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons]
-  ring
+  noncomm_ring
 
 lemma time_elm_sq_of_ηLin (x : spaceTime) : x 0 ^ 2 = ηLin x x + ‖x.space‖ ^ 2 := by
   rw [ηLin_expand_self]
@@ -197,9 +195,7 @@ lemma ηLin_leq_time_sq (x : spaceTime) : ηLin x x ≤ x 0 ^ 2 := by
 lemma ηLin_space_inner_product (x y : spaceTime) :
     ηLin x y = x 0 * y 0 - ⟪x.space, y.space⟫_ℝ  := by
   rw [ηLin_expand, @PiLp.inner_apply, Fin.sum_univ_three]
-  simp only [Fin.isValue, space, cons_val_zero, RCLike.inner_apply, conj_trivial, cons_val_one,
-    head_cons, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons]
-  ring
+  noncomm_ring
 
 lemma ηLin_ge_abs_inner_product (x y : spaceTime) :
     x 0 * y 0 - ‖⟪x.space, y.space⟫_ℝ‖ ≤ (ηLin x y)  := by
