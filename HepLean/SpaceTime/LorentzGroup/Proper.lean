@@ -41,7 +41,8 @@ instance : TopologicalGroup ℤ₂ := TopologicalGroup.mk
 /-- A continuous function from `({-1, 1} : Set ℝ)` to `ℤ₂`. -/
 @[simps!]
 def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
-  toFun x := if x = ⟨1, by simp⟩ then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
+  toFun x := if x = ⟨1, Set.mem_insert_of_mem (-1) rfl⟩
+    then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
   continuous_toFun := by
     haveI : DiscreteTopology ({-1, 1} : Set ℝ) := discrete_of_t1_of_finite
     exact continuous_of_discreteTopology
@@ -118,7 +119,7 @@ instance : DecidablePred IsProper := by
   apply Real.decidableEq
 
 lemma IsProper_iff (Λ : lorentzGroup) : IsProper Λ ↔ detRep Λ = 1 := by
-  rw [show 1 = detRep 1 by simp]
+  rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep)]
   rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 

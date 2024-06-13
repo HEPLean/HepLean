@@ -68,6 +68,10 @@ def genBoost (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime :=
 
 namespace genBoost
 
+/--
+  This lemma states that for a given four-velocity `u`, the general boost
+  transformation `genBoost u u` is equal to the identity linear map `LinearMap.id`.
+-/
 lemma self (u : FourVelocity) : genBoost u u = LinearMap.id := by
   ext x
   simp [genBoost]

@@ -48,13 +48,11 @@ variable  (Λ : Matrix (Fin 4) (Fin 4) ℝ)
 lemma iff_on_right : PreservesηLin Λ ↔
     ∀ (x y : spaceTime), ηLin x ((η * Λᵀ * η * Λ) *ᵥ y) = ηLin x y := by
   apply Iff.intro
-  intro h
-  intro x y
+  intro h x y
   have h1 := h x y
   rw [ηLin_mulVec_left, mulVec_mulVec] at h1
   exact h1
-  intro h
-  intro x y
+  intro h x y
   rw [ηLin_mulVec_left, mulVec_mulVec]
   exact h x y
 
@@ -62,16 +60,12 @@ lemma iff_matrix : PreservesηLin Λ ↔ η * Λᵀ * η * Λ = 1  := by
   rw [iff_on_right, ηLin_matrix_eq_identity_iff (η * Λᵀ * η * Λ)]
   apply Iff.intro
   · simp_all  [ηLin, implies_true, iff_true, one_mulVec]
-  · simp_all only [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply,
-    mulVec_mulVec, implies_true]
+  · exact fun a x y => Eq.symm (Real.ext_cauchy (congrArg Real.cauchy (a x y)))
 
 lemma iff_matrix' : PreservesηLin Λ ↔ Λ * (η * Λᵀ * η) = 1  := by
   rw [iff_matrix]
-  apply Iff.intro
-  intro h
-  exact mul_eq_one_comm.mp h
-  intro h
-  exact mul_eq_one_comm.mp h
+  exact mul_eq_one_comm
+
 
 lemma iff_transpose : PreservesηLin Λ ↔ PreservesηLin Λᵀ := by
   apply Iff.intro
@@ -80,7 +74,8 @@ lemma iff_transpose : PreservesηLin Λ ↔ PreservesηLin Λᵀ := by
   rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
     ← mul_assoc, transpose_one] at h1
   rw [iff_matrix' Λ.transpose, ← h1]
-  repeat rw [← mul_assoc]
+  rw [← mul_assoc, ← mul_assoc]
+  exact Matrix.mul_assoc (Λᵀ * η) Λᵀᵀ η
   intro h
   have h1 := congrArg transpose ((iff_matrix Λ.transpose).mp h)
   rw [transpose_mul, transpose_mul, transpose_mul, η_transpose,
@@ -157,7 +152,7 @@ lemma toGL_injective : Function.Injective toGL := by
   intro A B h
   apply Subtype.eq
   rw [@Units.ext_iff] at h
-  simpa using h
+  exact h
 
 /-- The homomorphism from the Lorentz Group into the monoid of matrices times the opposite of
   the monoid of matrices. -/
@@ -201,21 +196,8 @@ lemma toGL_embedding : Embedding toGL.toFun where
     intro s
     rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s ]
     rw [isOpen_induced_iff, isOpen_induced_iff]
-    apply Iff.intro ?_ ?_
-    · intro h
-      obtain ⟨U, hU1, hU2⟩ := h
-      rw [isOpen_induced_iff] at hU1
-      obtain ⟨V, hV1, hV2⟩ := hU1
-      use V
-      simp [hV1]
-      rw [← hU2, ← hV2]
-      rfl
-    · intro h
-      obtain ⟨U, hU1, hU2⟩ := h
-      let t := (Units.embedProduct _) ⁻¹' U
-      use t
-      apply And.intro (isOpen_induced hU1)
-      exact hU2
+    exact exists_exists_and_eq_and
+
 
 instance : TopologicalGroup 𝓛 := Inducing.topologicalGroup toGL toGL_embedding.toInducing
 

@@ -59,9 +59,7 @@ lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 4) (Fin 4) ℝ}
     simpa  [Nat.reduceAdd, reindexLieEquiv_symm, reindexLieEquiv_apply,
       LieAlgebra.Orthogonal.so', mem_skewAdjointMatricesLieSubalgebra,
       mem_skewAdjointMatricesSubmodule, IsSkewAdjoint, IsAdjointPair, mul_neg] using h1
-  · change (reindexLieEquiv finSumFinEquiv) _ = _
-    simp only [Nat.reduceAdd, reindexLieEquiv_symm, reindexLieEquiv_apply, reindex_apply,
-    Equiv.symm_symm, submatrix_submatrix, Equiv.self_comp_symm, submatrix_id_id]
+  · exact LieEquiv.apply_symm_apply (reindexLieEquiv finSumFinEquiv) _
 
 
 lemma mem_iff {A : Matrix (Fin 4) (Fin 4) ℝ} : A ∈ lorentzAlgebra ↔ Aᵀ * η  = - η * A :=

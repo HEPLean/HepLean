@@ -44,16 +44,13 @@ def fstCol (Λ : lorentzGroup) : PreFourVelocity := ⟨Λ.1 *ᵥ stdBasis 0, by
     cons_val_fin_one, vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three,
      head_fin_const] at h00
-  rw [← h00]
-  ring⟩
+  exact h00⟩
 
 /-- A Lorentz transformation is  `orthochronous` if its `0 0` element is non-negative. -/
 def IsOrthochronous (Λ : lorentzGroup) : Prop := 0 ≤ Λ.1 0 0
 
 lemma IsOrthochronous_iff_transpose (Λ : lorentzGroup) :
-    IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by
-  simp only [IsOrthochronous, Fin.isValue, transpose, PreservesηLin.liftGL,
-    transpose_transpose, transpose_apply]
+    IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by rfl
 
 lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : lorentzGroup) :
     IsOrthochronous Λ ↔ IsFourVelocity (fstCol Λ) := by
@@ -61,9 +58,8 @@ lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : lorentzGroup) :
   rw [stdBasis_mulVec]
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
-def mapZeroZeroComp : C(lorentzGroup, ℝ) := ⟨fun Λ => Λ.1 0 0, by
-  refine Continuous.matrix_elem ?_ 0 0
-  refine Continuous.comp' (continuous_iff_le_induced.mpr fun U a => a) continuous_id'⟩
+def mapZeroZeroComp : C(lorentzGroup, ℝ) := ⟨fun Λ => Λ.1 0 0,
+   Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) 0 0⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
 def stepFunction : ℝ → ℝ := fun t =>
@@ -77,9 +73,9 @@ lemma stepFunction_continuous : Continuous stepFunction := by
   rw [ha]
   simp  [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
   have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
-  rw [if_neg h1]
+  exact Eq.symm (if_neg h1)
   rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha
-  simp [ha]
+  exact id (Eq.symm ha)
 
 /-- The continuous map from `lorentzGroup` to `ℝ` wh
 taking Orthochronous elements to `1` and non-orthochronous to `-1`. -/
@@ -174,25 +170,22 @@ lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : lorentzGroup} (h : ¬ 
 /-- The homomorphism from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroRep : lorentzGroup →* ℤ₂ where
   toFun := orthchroMap
-  map_one' := by
-    have h1 : IsOrthochronous 1 := by simp [IsOrthochronous]
-    rw [orthchroMap_IsOrthochronous h1]
+  map_one' := orthchroMap_IsOrthochronous (by simp [IsOrthochronous])
   map_mul' Λ Λ' := by
     simp only
     by_cases h : IsOrthochronous Λ
      <;> by_cases h' : IsOrthochronous Λ'
     rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',
       orthchroMap_IsOrthochronous (mul_othchron_of_othchron_othchron h h')]
-    simp only [mul_one]
+    rfl
     rw [orthchroMap_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
       orthchroMap_not_IsOrthochronous (mul_not_othchron_of_othchron_not_othchron h h')]
-    simp only [Nat.reduceAdd, one_mul]
+    rfl
     rw [orthchroMap_not_IsOrthochronous h, orthchroMap_IsOrthochronous h',
       orthchroMap_not_IsOrthochronous (mul_not_othchron_of_not_othchron_othchron h h')]
-    simp only [Nat.reduceAdd, mul_one]
+    rfl
     rw [orthchroMap_not_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
       orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
-    simp only [Nat.reduceAdd]
     rfl
 
 end lorentzGroup
