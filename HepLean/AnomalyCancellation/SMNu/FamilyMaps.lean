@@ -47,13 +47,8 @@ lemma chargesMapOfSpeciesMap_toSpecies {n m : ℕ}
 def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
     (SMνSpecies m).charges →ₗ[ℚ] (SMνSpecies n).charges where
   toFun S := S ∘ Fin.castLE h
-  map_add' S T := by
-    funext i
-    simp
-  map_smul' a S := by
-    funext i
-    simp [HSMul.hSMul]
-    -- rw [show Rat.cast a = a from rfl]
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 /-- The projection of the `m`-family charges onto the first `n`-family charges.  -/
 def familyProjection {m n : ℕ} (h : n ≤ m) : (SMνCharges m).charges →ₗ[ℚ] (SMνCharges n).charges :=
@@ -82,7 +77,8 @@ def speciesEmbed (m n : ℕ) :
     by_cases hi : i.val < m
     erw [dif_pos hi, dif_pos hi]
     erw [dif_neg hi, dif_neg hi]
-    simp
+    exact Eq.symm (Rat.mul_zero a)
+
 
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
 other charges zero.  -/
@@ -95,13 +91,8 @@ a universal manor. -/
 def speciesFamilyUniversial (n : ℕ) :
     (SMνSpecies 1).charges →ₗ[ℚ] (SMνSpecies n).charges where
   toFun S _ := S ⟨0, by simp⟩
-  map_add' S T := by
-    funext _
-    simp
-  map_smul' a S := by
-    funext i
-    simp [HSMul.hSMul]
-    -- rw [show Rat.cast a = a from rfl]
+  map_add' S T := rfl
+  map_smul' a S := rfl
 
 /-- The embedding of the `1`-family charges into the `n`-family charges in
 a universal manor. -/
