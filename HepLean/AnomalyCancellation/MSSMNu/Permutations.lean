@@ -39,27 +39,17 @@ def chargeMap (f : permGroup) : MSSMCharges.charges →ₗ[ℚ] MSSMCharges.char
   map_add' S T := by
     simp only
     rw [charges_eq_toSpecies_eq]
-    apply And.intro
+    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
     intro i
     rw [(toSMSpecies i).map_add]
     rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    simp only
-    erw [(toSMSpecies i).map_add]
-    rfl
-    apply And.intro
-    rw [Hd.map_add, Hd_toSpecies_inv, Hd_toSpecies_inv, Hd_toSpecies_inv]
-    rfl
-    rw [Hu.map_add, Hu_toSpecies_inv, Hu_toSpecies_inv, Hu_toSpecies_inv]
     rfl
   map_smul' a S := by
     simp only
     rw [charges_eq_toSpecies_eq]
-    apply And.intro
+    apply And.intro ?_ $ Prod.mk.inj_iff.mp rfl
     intro i
     rw [(toSMSpecies i).map_smul, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rfl
-    apply And.intro
-    rfl
     rfl
 
 lemma chargeMap_toSpecies (f : permGroup) (S : MSSMCharges.charges) (j : Fin 6) :
@@ -75,26 +65,20 @@ def repCharges : Representation ℚ (permGroup) (MSSMCharges).charges where
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    apply And.intro
+    refine And.intro ?_ $  Prod.mk.inj_iff.mp rfl
     intro i
     simp only [ Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, LinearMap.mul_apply]
     rw [chargeMap_toSpecies, chargeMap_toSpecies]
     simp only [Pi.mul_apply, Pi.inv_apply]
     rw [chargeMap_toSpecies]
     rfl
-    apply And.intro
-    rfl
-    rfl
   map_one' := by
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    apply And.intro
+    refine And.intro ?_ $  Prod.mk.inj_iff.mp rfl
     intro i
     erw [toSMSpecies_toSpecies_inv]
-    rfl
-    apply And.intro
-    rfl
     rfl
 
 lemma repCharges_toSMSpecies (f : permGroup) (S : MSSMCharges.charges) (j : Fin 6) :
@@ -104,10 +88,8 @@ lemma repCharges_toSMSpecies (f : permGroup) (S : MSSMCharges.charges) (j : Fin 
 lemma toSpecies_sum_invariant (m : ℕ) (f : permGroup) (S : MSSMCharges.charges) (j : Fin 6) :
     ∑ i, ((fun a => a ^ m) ∘ toSMSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSMSpecies j S) i := by
-  erw [repCharges_toSMSpecies]
-  change  ∑ i : Fin 3, ((fun a => a ^ m) ∘ _) (⇑(f⁻¹ _) i) = ∑ i : Fin 3, ((fun a => a ^ m) ∘ _) i
-  refine Equiv.Perm.sum_comp _ _ _ ?_
-  simp only [permGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
+  rw [repCharges_toSMSpecies]
+  exact Equiv.sum_comp (f⁻¹ j) ((fun a => a ^ m) ∘ (toSMSpecies j) S)
 
 lemma Hd_invariant (f : permGroup) (S : MSSMCharges.charges)  :
     Hd (repCharges f S) = Hd S := rfl
@@ -151,7 +133,7 @@ lemma accQuad_invariant (f : permGroup) (S : MSSMCharges.charges)  :
 lemma accCube_invariant (f : permGroup) (S : MSSMCharges.charges)  :
     accCube (repCharges f S) = accCube S :=
   accCube_ext
-    (by simpa using toSpecies_sum_invariant 3 f S)
+    (fun j => toSpecies_sum_invariant 3 f S j)
     (Hd_invariant f S)
     (Hu_invariant f S)
 

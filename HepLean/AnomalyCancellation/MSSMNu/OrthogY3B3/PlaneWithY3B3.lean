@@ -80,13 +80,7 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
     rw [← Module.add_smul]
     simp
   rw [← Module.add_smul] at h1i
-  have hR : ∃ i, R.val i ≠ 0 := by
-    by_contra h
-    simp at h
-    have h0 : R.val = 0 := by
-      funext i
-      apply h i
-    exact hR' h0
+  have hR : ∃ i, R.val i ≠ 0 := Function.ne_iff.mp hR'
   obtain ⟨i, hi⟩ := hR
   have h2 := congrArg (fun S => S i) h1i
   change _ = 0 at h2
@@ -242,12 +236,12 @@ lemma α₁_proj (T : MSSMACC.Sols) : α₁ (proj T.1.1) =
 lemma α₁_proj_zero (T : MSSMACC.Sols) (h1 : α₃ (proj T.1.1) = 0) :
     α₁ (proj T.1.1) = 0 := by
   rw [α₁_proj, h1]
-  simp
+  exact mul_eq_zero_of_left rfl ((dot B₃.val) T.val - (dot Y₃.val) T.val)
 
 lemma α₂_proj_zero (T : MSSMACC.Sols) (h1 : α₃ (proj T.1.1) = 0) :
     α₂ (proj T.1.1) = 0 := by
   rw [α₂_proj, h1]
-  simp
+  exact mul_eq_zero_of_left rfl ((dot Y₃.val) T.val - 2 * (dot B₃.val) T.val)
 
 end proj
 

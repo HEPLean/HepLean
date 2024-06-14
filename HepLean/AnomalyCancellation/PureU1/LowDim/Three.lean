@@ -38,7 +38,7 @@ lemma cube_for_linSol (S : (PureU1 3).LinSols) :
     (PureU1 3).cubicACC S.val = 0 := by
   rw [← cube_for_linSol']
   simp only [Fin.isValue, _root_.mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
-  rw [@or_assoc]
+  exact Iff.symm or_assoc
 
 lemma three_sol_zero (S : (PureU1 3).Sols) : S.val (0 : Fin 3) = 0 ∨ S.val (1 : Fin 3) = 0
     ∨ S.val (2 : Fin 3) = 0 := (cube_for_linSol S.1.1).mpr S.cubicSol

@@ -42,10 +42,7 @@ lemma asCharges_ne_castSucc {k j : Fin n} (h : k ≠ j) :
   simp [asCharges]
   split
   rename_i h1
-  rw [Fin.ext_iff] at h1
-  simp_all
-  rw [Fin.ext_iff] at h
-  simp_all
+  exact False.elim (h (id (Eq.symm h1)))
   split
   rename_i h1 h2
   rw [Fin.ext_iff] at h1 h2
@@ -68,11 +65,7 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
     rw [Fin.sum_univ_castSucc]
     rw [Finset.sum_eq_single j]
     simp only [asCharges, PureU1_numberCharges, ↓reduceIte]
-    have hn : ¬ (Fin.last n = Fin.castSucc j) := by
-      have hj := j.prop
-      rw [Fin.ext_iff]
-      simp only [Fin.val_last, Fin.coe_castSucc, ne_eq]
-      omega
+    have hn : ¬ (Fin.last n = Fin.castSucc j) := Fin.ne_of_gt j.prop
     split
     rename_i ht
     exact (hn ht).elim
@@ -84,30 +77,15 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
 
 
 lemma sum_of_vectors {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
-    (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by
-  induction k
-  simp
-  rfl
-  rename_i _ l hl
-  rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  have hlt := hl (f ∘ Fin.castSucc)
-  erw [← hlt]
-  simp
+    (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) :=
+  sum_of_anomaly_free_linear (fun i => f i) j
 
 /-- The coordinate map for the basis. -/
 noncomputable
 def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
   toFun S := Finsupp.equivFunOnFinite.invFun (S.1 ∘ Fin.castSucc)
-  map_add' S T := by
-    simp only [PureU1_numberCharges, ACCSystemLinear.linSolsAddCommMonoid_add_val,
-      Equiv.invFun_as_coe]
-    ext
-    simp
-  map_smul' a S := by
-    simp only [PureU1_numberCharges, Equiv.invFun_as_coe, eq_ratCast, Rat.cast_eq_id, id_eq]
-    ext
-    simp
-    rfl
+  map_add' S T := Finsupp.ext (congrFun rfl)
+  map_smul' a S :=  Finsupp.ext (congrFun rfl)
   invFun f := ∑ i : Fin n, f i • asLinSols i
   left_inv S := by
     simp only [PureU1_numberCharges, Equiv.invFun_as_coe, Finsupp.equivFunOnFinite_symm_apply_toFun,
@@ -122,7 +100,7 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
     simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     intro k _ hkj
     rw [asCharges_ne_castSucc hkj]
-    simp only [mul_zero]
+    exact Rat.mul_zero (S.val k.castSucc)
     simp
   right_inv f := by
     simp only [PureU1_numberCharges, Equiv.invFun_as_coe]
@@ -137,7 +115,7 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
     simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     intro k _ hkj
     rw [asCharges_ne_castSucc hkj]
-    simp only [mul_zero]
+    exact Rat.mul_zero (f k)
     simp
 
 /-- The basis of `LinSols`.-/
@@ -151,11 +129,8 @@ instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
 lemma finrank_AnomalyFreeLinear :
     FiniteDimensional.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by
   have h  :=  Module.mk_finrank_eq_card_basis (@asBasis n)
-  simp_all
-  simp [FiniteDimensional.finrank]
-  rw [h]
-  simp_all only [Cardinal.toNat_natCast]
-
+  simp only [Nat.succ_eq_add_one, finrank_eq_rank, Cardinal.mk_fintype, Fintype.card_fin] at h
+  exact FiniteDimensional.finrank_eq_of_rank_eq h
 
 end BasisLinear
 

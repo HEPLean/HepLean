@@ -27,7 +27,7 @@ theorem solEqZero (S : (PureU1 1).LinSols) : S = 0 := by
   simp at hLin
   funext i
   simp at i
-  rw [show i = (0 : Fin 1) by omega]
+  rw [show i = (0 : Fin 1) from Fin.fin_one_eq_zero i]
   exact hLin
 
 end One

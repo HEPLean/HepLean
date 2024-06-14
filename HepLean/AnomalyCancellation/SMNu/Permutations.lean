@@ -37,25 +37,14 @@ instance : Group (permGroup n) := Pi.group
 @[simps!]
 def chargeMap (f : permGroup n) : (SMνCharges n).charges →ₗ[ℚ] (SMνCharges n).charges where
   toFun S := toSpeciesEquiv.symm (fun i => toSpecies i S ∘ f i )
-  map_add' S T := by
-    simp only
-    rw [charges_eq_toSpecies_eq]
-    intro i
-    rw [(toSpecies i).map_add]
-    rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rfl
-  map_smul' a S := by
-    simp only
-    rw [charges_eq_toSpecies_eq]
-    intro i
-    rw [(toSpecies i).map_smul, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 /-- The representation of `(permGroup n)` acting on the vector space of charges. -/
 @[simp]
 def repCharges {n : ℕ} : Representation ℚ (permGroup n) (SMνCharges n).charges where
   toFun f := chargeMap f⁻¹
-  map_mul' f g :=by
+  map_mul' f g := by
     simp only [permGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
