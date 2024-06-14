@@ -8,7 +8,6 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Data.Finset.Card
 import Mathlib.CategoryTheory.IsomorphismClasses
 import Mathlib.Data.Fintype.Pi
-import LeanCopilot
 /-!
 # Feynman diagrams in Phi^4 theory
 
@@ -103,14 +102,14 @@ lemma fiber_cond_vertex_iff_exists {𝓱𝓥 𝓥 : Type} (𝓱𝓥To𝓥 : 𝓱
     (fun ⟨f1, hb⟩ ↦ match (isIso_iff_bijective f1).mpr hb with
                    | ⟨f2, h1, h2⟩ => ⟨f1, f2, h1, h2⟩)
 
-instance {𝓱𝓔 𝓔 : Type} [Fintype 𝓱𝓔] [Fintype 𝓔] [DecidableEq 𝓔] (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (x : 𝓔):
+instance {𝓱𝓔 𝓔 : Type} [DecidableEq 𝓔] (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (x : 𝓔):
     DecidablePred (fun y => y ∈  𝓱𝓔To𝓔 ⁻¹' {x}) := fun y =>
   match decEq (𝓱𝓔To𝓔 y) x with
-  | isTrue h => isTrue (by simp [h])
-  | isFalse h => isFalse (by simp [h])
+  | isTrue h => isTrue h
+  | isFalse h => isFalse h
 
 
-instance {𝓱𝓔 𝓔 : Type} [Fintype 𝓔] [DecidableEq 𝓔] [DecidableEq 𝓱𝓔]  (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (x : 𝓔) :
+instance {𝓱𝓔 𝓔 : Type} [DecidableEq 𝓱𝓔]  (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (x : 𝓔) :
     DecidableEq $ (𝓱𝓔To𝓔 ⁻¹' {x}) := Subtype.instDecidableEq
 
 instance edgeTypeFintype (x : Fin 1) : Fintype (edgeType x) :=
@@ -144,12 +143,14 @@ instance {𝓥 : Type} (𝓥Label : 𝓥 → Fin 2) (x : 𝓥) :
     Fintype ((vertexType ∘ 𝓥Label) x) := vertexTypeFintype (𝓥Label x)
 
 
-instance {𝓱𝓔 𝓔 : Type}  [Fintype 𝓱𝓔] [DecidableEq 𝓱𝓔]  [Fintype 𝓔] [DecidableEq 𝓔] (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (𝓔Label : 𝓔 → Fin 1) (x : 𝓔) :
-  Decidable (CategoryTheory.IsIsomorphic (𝓱𝓔To𝓔 ⁻¹' {x} : Type) $ (edgeType ∘ 𝓔Label) x) :=
+instance {𝓱𝓔 𝓔 : Type}  [Fintype 𝓱𝓔] [DecidableEq 𝓱𝓔] [DecidableEq 𝓔]
+    (𝓱𝓔To𝓔 : 𝓱𝓔 → 𝓔) (𝓔Label : 𝓔 → Fin 1) (x : 𝓔) :
+    Decidable (CategoryTheory.IsIsomorphic (𝓱𝓔To𝓔 ⁻¹' {x} : Type) $ (edgeType ∘ 𝓔Label) x) :=
   decidable_of_decidable_of_iff (fiber_cond_edge_iff_exists 𝓱𝓔To𝓔 𝓔Label x).symm
 
-instance {𝓱𝓥 𝓥 : Type}  [Fintype 𝓱𝓥] [DecidableEq 𝓱𝓥]  [Fintype 𝓥] [DecidableEq 𝓥] (𝓱𝓥To𝓥 : 𝓱𝓥 → 𝓥) (𝓥Label : 𝓥 → Fin 2) (x : 𝓥) :
-  Decidable (CategoryTheory.IsIsomorphic (𝓱𝓥To𝓥 ⁻¹' {x} : Type) $ (vertexType ∘ 𝓥Label) x) :=
+instance {𝓱𝓥 𝓥 : Type}  [Fintype 𝓱𝓥] [DecidableEq 𝓱𝓥] [DecidableEq 𝓥]
+    (𝓱𝓥To𝓥 : 𝓱𝓥 → 𝓥) (𝓥Label : 𝓥 → Fin 2) (x : 𝓥) :
+    Decidable (CategoryTheory.IsIsomorphic (𝓱𝓥To𝓥 ⁻¹' {x} : Type) $ (vertexType ∘ 𝓥Label) x) :=
   decidable_of_decidable_of_iff (fiber_cond_vertex_iff_exists 𝓱𝓥To𝓥 𝓥Label x).symm
 
 end Decidability
