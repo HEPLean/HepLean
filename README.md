@@ -14,7 +14,7 @@ A project to digitalize high energy physics.
 - Keep the database up-to date with developments in MathLib4. 
 - Create gitHub workflows of relevance to the high energy physics community. 
 
-## Areas of high energy physics currently covered
+## Areas of high energy physics with some coverage in HepLean
 
   
 [![](https://img.shields.io/badge/The_CKM_Matrix-blue)](https://heplean.github.io/HepLean/HepLean/FlavorPhysics/CKMMatrix/Basic.html)
@@ -22,7 +22,7 @@ A project to digitalize high energy physics.
 [![](https://img.shields.io/badge/2HDM-blue)](https://heplean.github.io/HepLean/HepLean/BeyondTheStandardModel/TwoHDM/Basic.html)
 [![](https://img.shields.io/badge/Lorentz_Group-blue)](https://heplean.github.io/HepLean/HepLean/SpaceTime/LorentzGroup/Basic.html)
 [![](https://img.shields.io/badge/Anomaly_Cancellation-blue)](https://heplean.github.io/HepLean/HepLean/AnomalyCancellation/Basic.html)
-
+[![](https://img.shields.io/badge/Feynman_diagrams-blue)](https://heplean.github.io/HepLean/HepLean/FeynmanDiagrams/PhiFour/Basic.html)
 ## Where to learn more 
 
 - Read the associated paper:
@@ -71,4 +71,4 @@ The installation instructions for Lean 4 are given here: https://leanprover-comm
 ### Optional extras
 
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot) allows the use of large language models in Lean.
-- [tryAtEachStep](https://github.com/dwrensha/tryAtEachStep) allows one to apply a tactic, e.g. `exact?` at each step of a each lemma in a file to see if it completes the goal. This is useful for golfing proofs. 
+- [tryAtEachStep](https://github.com/dwrensha/tryAtEachStep) allows one to apply a tactic, e.g. `exact?` at each step of a lemma in a file to see if it completes the goal. This is useful for golfing proofs. 
