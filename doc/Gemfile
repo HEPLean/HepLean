@@ -4,4 +4,4 @@ source 'https://rubygems.org'
 
 gem "jekyll", "~> 4.2"
 
-gem "jekyll-theme-simplex"
+gem "minima", git: "https://github.com/jekyll/minima"
