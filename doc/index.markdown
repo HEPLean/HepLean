@@ -4,6 +4,9 @@
 
 layout: home
 ---
+[![](https://img.shields.io/badge/Documentation-blue)](https://heplean.github.io/HepLean/docs)
+[![](https://img.shields.io/badge/GitHub-blue)](https://github.com/HEPLean/HepLean)
 
-# Documentation  
+(This site is a work in progress. More to follow. Follow the links above to 
+the documentation page or GitHub.)
 

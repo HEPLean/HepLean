@@ -18,17 +18,24 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: HepLean
-email: HEPLean
+title: "HepLean: Digitalizing High-Energy Physics in Lean 4"
+#email: HEPLean
 description: >- # this means to ignore newlines until "baseurl:"
   A project to digitalize results from high-energy physics into Lean 4.  
 baseurl: "/HepLean" # the subpath of your site, e.g. /blog
 url: "https://heplean.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
-github_username:  HEPLean
+github_username: "HEPLean"
 
 # Build settings
 theme: minima
+
+minima:
+  skin: solarized
+  
+author:
+  name: HEPLean
+  email: " "
 
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
