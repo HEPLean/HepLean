@@ -30,36 +30,36 @@ jobs:
           comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
           rm 1.txt 2.txt
       
-      - name: Install elan
-        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+     # - name: Install elan
+     #   run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
 
-      - name: Get cache
-        run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
+     # - name: Get cache
+     #   run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
 
-      - name: Build project
-        run: ~/.elan/bin/lake -Kenv=dev build HepLean
+     # - name: Build project
+      #  run: ~/.elan/bin/lake -Kenv=dev build HepLean
 
-      - name: Cache mathlib docs
-        uses: actions/cache@v3
-        with:
-          path: |
-            .lake/build/doc/Init
-            .lake/build/doc/Lake
-            .lake/build/doc/Lean
-            .lake/build/doc/Std
-            .lake/build/doc/Mathlib
-            .lake/build/doc/declarations
-            !.lake/build/doc/declarations/declaration-data-HepLean*
-          key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
-          restore-keys: |
-            MathlibDoc-
+     # - name: Cache mathlib docs
+       # uses: actions/cache@v3
+       # with:
+       #  path: |
+         #   .lake/build/doc/Init
+       #     .lake/build/doc/Lake
+       #     .lake/build/doc/Lean
+       #     .lake/build/doc/Std
+       #     .lake/build/doc/Mathlib
+       #     .lake/build/doc/declarations
+       #     !.lake/build/doc/declarations/declaration-data-HepLean*
+       #   key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
+        #  restore-keys: |
+       #     MathlibDoc-
       
-      - name: Build documentation
-        run: ~/.elan/bin/lake -Kenv=dev build HepLean:docs
+     # - name: Build documentation
+      #  run: ~/.elan/bin/lake -Kenv=dev build HepLean:docs
 
-      - name: Copy documentation to `docs/docs`
-        run: |
-          mv .lake/build/doc doc/docs
+      #- name: Copy documentation to `docs/docs`
+      #  run: |
+      #    mv .lake/build/doc doc/docs
 
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
