@@ -29,7 +29,7 @@ github_username:  HEPLean
 
 # Build settings
 theme: minima
-
+remote_theme: jekyll/minima 
 
 # Exclude from processing.
 # The following items will not be processed, by default.
