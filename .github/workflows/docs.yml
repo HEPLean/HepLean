@@ -1,55 +1,86 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
-
-on:
-  # Runs on pushes targeting the default branch
-  push:
+on: 
+  push: 
     branches: 
+      - master
       - Update-versions
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+name: Build and deploy documentation
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
+# borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
+permissions: 
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-jobs:
-  # Build job
-  build:
+jobs: 
+  build_project: 
     runs-on: ubuntu-latest
+    name: Build project
     steps:
-      - name: Checkout
+      - name: Checkout project
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
         with:
-          source: ./doc
-          destination: ./doc/_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+          fetch-depth: 0
+      
+      - name: Print files to upstream
+        run: |
+          grep -r --files-without-match 'import HepLean' HepLean | sort > 1.txt
+          grep -r --files-with-match 'sorry' HepLean | sort > 2.txt
+          mkdir -p docs/_includes
+          comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
+          rm 1.txt 2.txt
+      
+     # - name: Install elan
+     #   run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+
+     # - name: Get cache
+     #   run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
+
+     # - name: Build project
+      #  run: ~/.elan/bin/lake -Kenv=dev build HepLean
+
+     # - name: Cache mathlib docs
+       # uses: actions/cache@v3
+       # with:
+       #  path: |
+         #   .lake/build/doc/Init
+       #     .lake/build/doc/Lake
+       #     .lake/build/doc/Lean
+       #     .lake/build/doc/Std
+       #     .lake/build/doc/Mathlib
+       #     .lake/build/doc/declarations
+       #     !.lake/build/doc/declarations/declaration-data-HepLean*
+       #   key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
+        #  restore-keys: |
+       #     MathlibDoc-
+      
+     # - name: Build documentation
+      #  run: ~/.elan/bin/lake -Kenv=dev build HepLean:docs
+
+      #- name: Copy documentation to `docs/docs`
+      #  run: |
+      #    mv .lake/build/doc doc/docs
+
+      - name: Bundle dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: doc
+          ruby-version: "3.1" # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    
+
+      - name: Bundle website
+        working-directory: doc
+        run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: Upload docs & blueprint artifact
+        uses: actions/upload-pages-artifact@v1
         with:
           path:  doc/_site
 
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v1
+
+
+
