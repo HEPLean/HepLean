@@ -28,7 +28,6 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  HEPLean
 
 # Build settings
-theme: minima
 remote_theme: jekyll/minima 
 
 # Exclude from processing.
