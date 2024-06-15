@@ -22,8 +22,8 @@ title: HepLean
 #email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   A project to digitalize results from high-energy physics into Lean 4.  
-baseurl: "https://heplean.github.io/HepLean/" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/HepLean" # the subpath of your site, e.g. /blog
+url: "https://heplean.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
 github_username:  HEPLean
 
