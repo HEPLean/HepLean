@@ -37,6 +37,14 @@ open Matrix
 open Complex
 open ComplexConjugate
 
+/-!
+## Matrices which preserve `ηLin`
+
+We start studying the properties of matrices which preserve `ηLin`.
+These matrices form the Lorentz group, which we will define in the next section at `lorentzGroup`.
+
+-/
+
 /-- We say a matrix `Λ` preserves `ηLin` if for all `x` and `y`,
   `ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y`.  -/
 def PreservesηLin (Λ : Matrix (Fin 4) (Fin 4) ℝ) : Prop :=
@@ -125,6 +133,14 @@ lemma η : PreservesηLin η := by
 
 end PreservesηLin
 
+/-!
+## The Lorentz group
+
+We define the Lorentz group as the set of matrices which preserve `ηLin`.
+We show that the Lorentz group is indeed a group.
+
+-/
+
 /-- The Lorentz group is the subset of matrices which preserve ηLin. -/
 def lorentzGroup : Type := {Λ : Matrix (Fin 4) (Fin 4) ℝ // PreservesηLin Λ}
 
@@ -159,6 +175,19 @@ namespace lorentzGroup
 lemma coe_inv (A : 𝓛) : (A⁻¹).1 = A.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact (PreservesηLin.iff_matrix A.1).mp A.2
+
+/-- The transpose of an matrix in the Lorentz group is an element of the Lorentz group. -/
+def transpose (Λ : lorentzGroup) : lorentzGroup := ⟨Λ.1ᵀ, (PreservesηLin.iff_transpose Λ.1).mp Λ.2⟩
+
+/-!
+
+## Lorentz group as a topological group
+
+We now show that the Lorentz group is a topological group.
+We do this by showing that the natrual map from the Lorentz group to `GL (Fin 4) ℝ` is an
+embedding.
+
+-/
 
 /-- The homomorphism of the Lorentz group into `GL (Fin 4) ℝ`. -/
 def toGL : 𝓛 →* GL (Fin 4) ℝ where
@@ -225,8 +254,6 @@ lemma toGL_embedding : Embedding toGL.toFun where
 
 instance : TopologicalGroup 𝓛 := Inducing.topologicalGroup toGL toGL_embedding.toInducing
 
-/-- The transpose of an matrix in the Lorentz group is an element of the Lorentz group. -/
-def transpose (Λ : lorentzGroup) : lorentzGroup := ⟨Λ.1ᵀ, (PreservesηLin.iff_transpose Λ.1).mp Λ.2⟩
 
 
 end lorentzGroup

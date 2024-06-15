@@ -10,10 +10,6 @@ import Mathlib.RepresentationTheory.Basic
 
 The aim of this file is to give the relationship between `SL(2, ℂ)` and the Lorentz group.
 
-## TODO
-
-This file is a working progress.
-
 -/
 namespace spaceTime
 
@@ -26,6 +22,15 @@ namespace SL2C
 open spaceTime
 
 noncomputable section
+
+/-!
+
+## Representation of SL(2, ℂ) on spacetime
+
+Through the correspondence between spacetime and self-adjoint matrices,
+we can define a representation a representation of `SL(2, ℂ)` on spacetime.
+
+-/
 
 /-- Given an element  `M ∈ SL(2, ℂ)` the linear map from `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` to
  itself defined by  `A ↦ M * A * Mᴴ`. -/
@@ -69,6 +74,16 @@ def repSpaceTime : Representation ℝ SL(2, ℂ) spaceTime where
     ext x : 3
     simp
 
+/-!
+
+## Homomorphism to the Lorentz group
+
+There is a group homomorphism from `SL(2, ℂ)` to the Lorentz group `𝓛`.
+The purpose of this section is to define this homomorphism.
+In the next section we will restrict this homomorphism to the restricted Lorentz group.
+
+-/
+
 /-- Given an element `M ∈ SL(2, ℂ)` the corresponding element of the Lorentz group. -/
 @[simps!]
 def toLorentzGroupElem (M : SL(2, ℂ)) : 𝓛 :=
@@ -86,6 +101,21 @@ def toLorentzGroup : SL(2, ℂ) →* 𝓛 where
     apply Subtype.eq
     simp only [toLorentzGroupElem, _root_.map_mul, LinearMap.toMatrix_mul,
       lorentzGroupIsGroup_mul_coe]
+
+/-!
+
+## Homomorphism to the restricted Lorentz group
+
+The homomorphism `toLorentzGroup` restricts to a homomorphism to the restricted Lorentz group.
+In this section we will define this homomorphism.
+
+### TODO
+
+Complete this section.
+
+-/
+
+
 
 end
 end SL2C
