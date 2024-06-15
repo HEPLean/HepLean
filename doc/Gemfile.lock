@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/jekyll/minima
-  revision: 1d5286cf9a1aae34078420d183d560dd673d98b5
-  specs:
-    minima (3.0.0.dev)
-      jekyll (>= 3.5, < 5.0)
-      jekyll-feed (~> 0.9)
-      jekyll-seo-tag (~> 2.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -51,12 +42,10 @@ GEM
       safe_yaml (~> 1.0)
       terminal-table (>= 1.8, < 4.0)
       webrick (~> 1.7)
-    jekyll-feed (0.17.0)
-      jekyll (>= 3.7, < 5.0)
     jekyll-sass-converter (3.0.0)
       sass-embedded (~> 1.54)
-    jekyll-seo-tag (2.8.0)
-      jekyll (>= 3.8, < 5.0)
+    jekyll-theme-simplex (0.9.8.15)
+      jekyll (~> 4.0)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     kramdown (2.4.0)
@@ -111,7 +100,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 4.2)
-  minima!
+  jekyll-theme-simplex
 
 BUNDLED WITH
    2.5.13

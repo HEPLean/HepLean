@@ -28,7 +28,7 @@ url: "https://heplean.github.io" # the base hostname & protocol for your site, e
 github_username:  HEPLean
 
 # Build settings
-theme: minima
+theme: jekyll-theme-simplex
 
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
