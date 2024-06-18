@@ -16,6 +16,7 @@ import Mathlib.Data.Fintype.Perm
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Connectivity
 import Mathlib.SetTheory.Cardinal.Basic
+import LeanCopilot
 /-!
 # Feynman diagrams
 
@@ -201,6 +202,36 @@ instance preimageEdgeMapFintype  [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
     [Fintype F.left] :
     Fintype  ((P.edgeLabelMap (f v)).left → ((P.preimageEdge v).obj F).left) :=
   Pi.fintype
+
+/-!
+
+## External and internal Vertices
+
+We say a vertex Label is `external` if it has only one half-edge associated with it.
+Otherwise, we say it is `internal`.
+
+We will show that for `IsFinitePreFeynmanRule` the condition of been external is decidable.
+-/
+
+/-- A vertex is external if it has a single half-edge associated to it. -/
+def External {P : PreFeynmanRule} (v : P.VertexLabel) : Prop :=
+  IsIsomorphic (P.vertexLabelMap v).left (Fin 1)
+
+lemma external_iff_exists_bijection {P : PreFeynmanRule}  (v : P.VertexLabel) :
+    External v ↔ ∃ (κ : (P.vertexLabelMap v).left → Fin 1), Function.Bijective κ := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  obtain ⟨κ, κm1, h1, h2⟩ := h
+  let f : (P.vertexLabelMap v).left ≅ (Fin 1) :=  ⟨κ, κm1, h1, h2⟩
+  exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f⟩
+  obtain ⟨κ, h1⟩ := h
+  let f : (P.vertexLabelMap v).left ⟶ (Fin 1) := κ
+  have ft : IsIso f := (isIso_iff_bijective κ).mpr h1
+  obtain ⟨fm, hf1, hf2⟩ := ft
+  exact ⟨f, fm, hf1, hf2⟩
+
+instance externalDecidable [IsFinitePreFeynmanRule P] (v : P.VertexLabel) :
+    Decidable (External v) :=
+  decidable_of_decidable_of_iff (external_iff_exists_bijection v).symm
 
 /-!
 
