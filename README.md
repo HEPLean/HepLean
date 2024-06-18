@@ -1,6 +1,6 @@
 # High Energy Physics in Lean
 
-![HepLean](./doc/HepLeanLogo.pdf)
+![HepLean](./doc/HepLeanLogo.jpeg)
 [![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.github.io/HepLean/)
 [![](https://img.shields.io/badge/PRs-Welcome-green)](https://github.com/HEPLean/HepLean/pulls)
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
