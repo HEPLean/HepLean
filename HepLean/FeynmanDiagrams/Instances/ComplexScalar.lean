@@ -17,6 +17,7 @@ open CategoryTheory
 open FeynmanDiagram
 open PreFeynmanRule
 
+/-- The pre-Feynman rules for a complex scalar theory. -/
 @[simps!]
 def complexScalarFeynmanRules : PreFeynmanRule where
   /- There is 2 types of `half-edge`. -/
@@ -43,7 +44,6 @@ instance (a : ℕ) : OfNat complexScalarFeynmanRules.HalfEdgeLabel a where
 instance (a : ℕ) : OfNat complexScalarFeynmanRules.VertexLabel a where
   ofNat := (a : Fin _)
 
-
 instance : IsFinitePreFeynmanRule complexScalarFeynmanRules where
   edgeLabelDecidable :=  instDecidableEqFin _
   vertexLabelDecidable := instDecidableEqFin _
@@ -65,35 +65,6 @@ instance : IsFinitePreFeynmanRule complexScalarFeynmanRules where
     match v with
     | 0 => instDecidableEqFin _
 
-
-
-
-
-set_option maxRecDepth 1000 in
-def loopProp : FeynmanDiagram complexScalarFeynmanRules :=
-  mk' ![0, 0, 0] ![0, 2, 1] ![⟨0, 0, 0⟩, ⟨1, 0, 1⟩,
-    ⟨0, 1, 1⟩, ⟨1, 1, 1⟩, ⟨0, 2, 1⟩, ⟨1, 2, 2⟩] (by decide)
-
-instance : IsFiniteDiagram loopProp where
-  𝓔Fintype := Fin.fintype _
-  𝓔DecidableEq := instDecidableEqFin _
-  𝓥Fintype := Fin.fintype _
-  𝓥DecidableEq := instDecidableEqFin _
-  𝓱𝓔Fintype := Fin.fintype _
-  𝓱𝓔DecidableEq := instDecidableEqFin _
-
-def prop : FeynmanDiagram complexScalarFeynmanRules :=
-  mk' ![0] ![0, 1] ![⟨0, 0, 0⟩, ⟨1, 0, 1⟩] (by decide)
-
-instance : IsFiniteDiagram prop where
-  𝓔Fintype := Fin.fintype _
-  𝓔DecidableEq := instDecidableEqFin _
-  𝓥Fintype := Fin.fintype _
-  𝓥DecidableEq := instDecidableEqFin _
-  𝓱𝓔Fintype := Fin.fintype _
-  𝓱𝓔DecidableEq := instDecidableEqFin _
-
-lemma prop_symmetryFactor_eq_one : symmetryFactor prop = 1 := by decide
 
 
 

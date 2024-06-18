@@ -19,6 +19,7 @@ open CategoryTheory
 open FeynmanDiagram
 open PreFeynmanRule
 
+/-- The pre-Feynman rules for `Phi^4` theory. -/
 @[simps!]
 def phi4PreFeynmanRules : PreFeynmanRule where
   /- There is only 1 type of `half-edge`. -/
@@ -65,19 +66,5 @@ instance : IsFinitePreFeynmanRule phi4PreFeynmanRules where
     | 0 => instDecidableEqFin _
 
 
-def figureEight : FeynmanDiagram phi4PreFeynmanRules :=
-  mk' ![0, 0] ![1] ![⟨0, 0, 0⟩, ⟨0, 0, 0⟩, ⟨0, 1, 0⟩, ⟨0, 1, 0⟩] (by decide)
-
-instance : IsFiniteDiagram figureEight where
-  𝓔Fintype := Fin.fintype _
-  𝓔DecidableEq := instDecidableEqFin _
-  𝓥Fintype := Fin.fintype _
-  𝓥DecidableEq := instDecidableEqFin _
-  𝓱𝓔Fintype := Fin.fintype _
-  𝓱𝓔DecidableEq := instDecidableEqFin _
-
-#eval symmetryFactor figureEight
-
-#eval Connected figureEight
 
 end PhiFour
