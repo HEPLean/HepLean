@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.FeynmanDiagrams.Basic
+import HepLean.FeynmanDiagrams.Momentum
 /-!
 # Feynman diagrams in Phi^4 theory
 
@@ -65,6 +65,32 @@ instance : IsFinitePreFeynmanRule phi4PreFeynmanRules where
     match v with
     | 0 => instDecidableEqFin _
 
+/-!
+
+## The figure eight diagram
+
+This section provides an example of the use of Feynman diagrams in HepLean.
+
+-/
+section Example
+
+/-- The figure eight Feynman diagram. -/
+abbrev figureEight : FeynmanDiagram phi4PreFeynmanRules :=
+  mk'
+    ![0, 0] -- edges
+    ![1] -- one internal vertex
+    ![⟨0, 0, 0⟩, ⟨0, 0, 0⟩, ⟨0, 1, 0⟩, ⟨0, 1, 0⟩] -- four half-edges
+    (by decide) -- the condition to form a Feynman diagram.
+
+/-- `figureEight` is connected. We can get this from
+  `#eval Connected figureEight`. -/
+lemma figureEight_connected : Connected figureEight := by decide
+
+/-- The symmetry factor of `figureEight` is 8. We can get this from
+  `#eval symmetryFactor figureEight`. -/
+lemma figureEight_symmetryFactor : symmetryFactor figureEight = 8 := by decide
+
+end Example
 
 
 end PhiFour
