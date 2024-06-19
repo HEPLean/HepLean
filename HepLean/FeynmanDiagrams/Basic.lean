@@ -16,7 +16,6 @@ import Mathlib.Data.Fintype.Perm
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Connectivity
 import Mathlib.SetTheory.Cardinal.Basic
-import LeanCopilot
 /-!
 # Feynman diagrams
 

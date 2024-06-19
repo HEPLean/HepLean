@@ -90,9 +90,6 @@ lemma figureEight_connected : Connected figureEight := by decide
   `#eval symmetryFactor figureEight`. -/
 lemma figureEight_symmetryFactor : symmetryFactor figureEight = 8 := by decide
 
-lemma figureEight_halfEdgeToEdgeIntMatrix :
-  figureEight.halfEdgeToEdgeIntMatrix  = !![1, 0; 1, 0 ; 0, 1; 0, 1] := by decide
-
 end Example
 
 
