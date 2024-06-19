@@ -737,7 +737,7 @@ instance [IsFiniteDiagram F] :
 instance [IsFiniteDiagram F] : Decidable F.toSimpleGraph.Connected :=
   decidable_of_iff _ (SimpleGraph.connected_iff F.toSimpleGraph).symm
 
-/-- We say a Feynman diagram is connected if its simple graph is connected. -/
+/-- A Feynman diagram is connected if its simple graph is connected. -/
 def Connected : Prop := F.toSimpleGraph.Connected
 
 instance [IsFiniteDiagram F] : Decidable (Connected F) :=

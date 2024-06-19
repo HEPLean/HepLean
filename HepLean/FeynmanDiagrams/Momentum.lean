@@ -4,13 +4,16 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.FeynmanDiagrams.Basic
-import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Category.ModuleCat.Basic
 /-!
 # Momentum in Feynman diagrams
 
 The aim of this file is to associate with each half-edge of a Feynman diagram a momentum,
 and constrain the momentums based conservation at each vertex and edge.
+
+The number of loops of a Feynman diagram is related to the dimension of the resulting
+vector space.
 
 -/
 
@@ -28,7 +31,8 @@ def SingleMomentumSpace : Type :=  Fin d → ℝ
 
 instance : AddCommGroup (SingleMomentumSpace d) := Pi.addCommGroup
 
-noncomputable instance : Module ℝ (SingleMomentumSpace d) := Pi.module _ _ _
+instance : Module ℝ (SingleMomentumSpace d) := Pi.module _ _ _
+
 
 /-- The type which asociates to each half-edge a `d`-dimensional vector.
  This is to be interpreted as the momentum associated to that half-edge flowing from the
@@ -37,7 +41,7 @@ def FullMomentumSpace : Type := F.𝓱𝓔 → Fin d → ℝ
 
 instance : AddCommGroup (F.FullMomentumSpace d) := Pi.addCommGroup
 
-noncomputable instance : Module ℝ (F.FullMomentumSpace d) := Pi.module _ _ _
+instance : Module ℝ (F.FullMomentumSpace d) := Pi.module _ _ _
 
 /-- The linear map taking a half-edge to its momentum.
  (defined as flowing from the `edge` to the vertex.) -/
@@ -69,5 +73,14 @@ noncomputable def funcFullMomentumSpace : FeynmanDiagram P ⥤ (ModuleCat ℝ)�
 /-!
 ## Edge constraints
 
+There is a linear map from `F.FullMomentumSpace` to `F.EdgeMomentumSpace`, induced
+by the constraints at each edge.
+
+We impose the constraint that we live in the kernal of this linear map.
+
+A similar result is true for the vertex constraints.
+
 -/
+
+
 end FeynmanDiagram
