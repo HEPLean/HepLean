@@ -10,8 +10,10 @@ import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 /-!
 # Spacetime as a self-adjoint matrix
 
-The main result of this file is a linear equivalence `spaceTimeToHerm` between the vector space
-of space-time points and the vector space of 2×2-complex self-adjoint matrices.
+There is a linear equivalence between the vector space of space-time points
+and the vector space of 2×2-complex self-adjoint matrices.
+
+In this file we define this linear equivalence in `toSelfAdjointMatrix`.
 
 -/
 namespace spaceTime
