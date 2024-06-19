@@ -191,5 +191,29 @@ allowed space of half-edge momenta.
   of the space of allowed Half-loop momenta. -/
 noncomputable def numberOfLoops : ℕ := FiniteDimensional.finrank ℝ F.allowedHalfEdgeMomenta
 
+/-!
+
+## Lemmas regarding `numberOfLoops`
+
+We now give a series of lemmas which be used to help calculate the number of loops
+for specific Feynman diagrams.
+
+### TODO
+
+- Complete this section.
+
+
+-/
+
+/-!
+
+## Category theory
+
+### TODO
+
+- Complete this section.
+
+
+-/
 
 end FeynmanDiagram
