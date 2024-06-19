@@ -1,6 +1,5 @@
-# High Energy Physics in Lean
 
-![HepLean](./doc/HepLeanLogo.jpeg)
+![HepLean](./doc/HepLeanLogo_white.jpeg)
 [![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.github.io/HepLean/)
 [![](https://img.shields.io/badge/PRs-Welcome-green)](https://github.com/HEPLean/HepLean/pulls)
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
@@ -13,7 +12,7 @@ A project to digitalize high energy physics.
 - Use Lean to create an exhaustive database of definitions, theorems, proofs, and calculations in high energy physics.
 - Make a library that is easy to use by the high energy physics community.
 - Keep the database up-to date with developments in MathLib4. 
-- Create gitHub workflows of relevance to the high energy physics community. 
+- Create GitHub workflows of relevance to the high energy physics community. 
 
 ## Areas of high energy physics with some coverage in HepLean
 
