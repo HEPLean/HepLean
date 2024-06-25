@@ -28,7 +28,8 @@ jobs:
           mkdir -p docs/_includes
           comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
           rm 1.txt 2.txt
-      
+      ##################
+      # Remove this section if you don't want docs to be made
       - name: Install elan
         run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
 
@@ -59,7 +60,8 @@ jobs:
       - name: Copy documentation to `docs/docs`
         run: |
           mv .lake/build/doc doc/docs
-
+      #End Section
+      ##################
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
         with:
