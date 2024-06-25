@@ -2,6 +2,7 @@ on:
   push: 
     branches: 
       - master
+      - Update-versions
 
 name: Build and deploy documentation
 
