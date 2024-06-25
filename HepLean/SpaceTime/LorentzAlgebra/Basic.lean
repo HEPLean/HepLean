@@ -5,11 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.Metric
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
 import Mathlib.Algebra.Lie.Classical
-import Mathlib.Algebra.Lie.TensorProduct
-import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 # The Lorentz Algebra
 

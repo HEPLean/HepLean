@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SM.Basic
 import Mathlib.Tactic.Polyrith
-import HepLean.AnomalyCancellation.GroupActions
+import Mathlib.RepresentationTheory.Basic
 /-!
 # Permutations of SM with no RHN.
 

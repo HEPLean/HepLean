@@ -4,8 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Metric
-import HepLean.SpaceTime.FourVelocity
-import Mathlib.GroupTheory.SpecificGroups.KleinFour
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 /-!
 # Spacetime as a self-adjoint matrix

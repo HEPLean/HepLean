@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
-import HepLean.AnomalyCancellation.SMNu.PlusU1.FamilyMaps
 /-!
 # Plane of non-solutions
 

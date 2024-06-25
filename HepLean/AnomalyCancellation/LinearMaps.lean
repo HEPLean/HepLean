@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Tactic.Polyrith
 import Mathlib.Algebra.Module.LinearMap.Basic
-import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Data.Fintype.BigOperators
 /-!
 # Linear maps
 

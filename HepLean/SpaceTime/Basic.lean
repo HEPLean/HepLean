@@ -4,9 +4,9 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-
+import Mathlib.Geometry.Manifold.SmoothManifoldWithCorners
+import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.LinearAlgebra.Matrix.DotProduct
 /-!
 # Space time
 

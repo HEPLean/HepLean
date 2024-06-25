@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.Basic
 import HepLean.AnomalyCancellation.SMNu.Permutations
+import HepLean.AnomalyCancellation.GroupActions
 /-!
 # ACC system for SM with RHN
 

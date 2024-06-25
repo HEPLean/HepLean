@@ -4,11 +4,8 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Basic
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
 import Mathlib.Algebra.Lie.Classical
-import Mathlib.Algebra.Lie.TensorProduct
-import Mathlib.Tactic.RewriteSearch
+import Mathlib.LinearAlgebra.QuadraticForm.Basic
 /-!
 # Spacetime Metric
 

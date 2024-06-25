@@ -3,6 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.SpaceTime.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.TargetSpace
 import Mathlib.Data.Complex.Exponential
@@ -14,7 +15,6 @@ import Mathlib.RepresentationTheory.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Geometry.Manifold.ContMDiff.Product
-import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Algebra.QuadraticDiscriminant
 /-!
 # The Higgs field

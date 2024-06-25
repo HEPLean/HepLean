@@ -5,12 +5,9 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.FeynmanDiagrams.Basic
 import Mathlib.Data.Real.Basic
-import Mathlib.Algebra.Category.ModuleCat.Basic
-import Mathlib.LinearAlgebra.StdBasis
-import Mathlib.LinearAlgebra.Matrix.ToLin
-import Mathlib.Data.Matrix.Rank
 import Mathlib.Algebra.DirectSum.Module
 import Mathlib.LinearAlgebra.SesquilinearForm
+import Mathlib.LinearAlgebra.Dimension.Finrank
 /-!
 # Momentum in Feynman diagrams
 

@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Permutations
+import Mathlib.Data.Fin.Tuple.Sort
 /-!
 # Sort for Pure U(1) charges
 
