@@ -27,6 +27,7 @@ url: "https://heplean.github.io" # the base hostname & protocol for your site, e
 #twitter_username: jekyllrb
 github_username: "HEPLean"
 repository: HEPLean/HepLean
+
 # Build settings
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
