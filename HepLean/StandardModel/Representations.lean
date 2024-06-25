@@ -3,14 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.StandardModel.Basic
 import Mathlib.Data.Complex.Exponential
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
-import Mathlib.RepresentationTheory.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLin
-import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 # Representations appearing in the Standard Model
 

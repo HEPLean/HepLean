@@ -4,9 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.FlavorPhysics.CKMMatrix.Basic
-import HepLean.FlavorPhysics.CKMMatrix.Rows
-import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
-import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+import Mathlib.Analysis.Complex.Basic
 /-!
 # Invariants of the CKM Matrix
 

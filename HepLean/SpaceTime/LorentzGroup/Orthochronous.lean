@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.FourVelocity
 import HepLean.SpaceTime.LorentzGroup.Proper
-import Mathlib.GroupTheory.SpecificGroups.KleinFour
 /-!
 # The Orthochronous Lorentz Group
 

@@ -13,3 +13,7 @@ lake build HepLean
 echo "Run linter"
 
 lake exe runLinter HepLean
+
+echo "Run shake"
+
+lake exe shake HepLean

@@ -7,7 +7,6 @@ import HepLean.AnomalyCancellation.PureU1.Basic
 import HepLean.AnomalyCancellation.GroupActions
 import Mathlib.Tactic.Polyrith
 import Mathlib.RepresentationTheory.Basic
-import Mathlib.Data.Fin.Tuple.Sort
 /-!
 # Permutations of Pure U(1) ACC
 

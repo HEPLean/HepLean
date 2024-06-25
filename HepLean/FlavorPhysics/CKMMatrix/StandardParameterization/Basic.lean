@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Rows
-import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
 import HepLean.FlavorPhysics.CKMMatrix.Invariants
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 /-!

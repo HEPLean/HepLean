@@ -7,14 +7,13 @@ import HepLean.StandardModel.Basic
 import HepLean.StandardModel.Representations
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Tactic.Polyrith
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.RepresentationTheory.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Geometry.Manifold.ContMDiff.Product
 import Mathlib.Algebra.QuadraticDiscriminant
+import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 /-!
 # The Higgs vector space
 

@@ -3,16 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.Basic
 import Mathlib.Data.Complex.Exponential
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
-import Mathlib.RepresentationTheory.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLin
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
-import Mathlib.Analysis.NormedSpace.MatrixExponential
 /-!
 # The Standard Model
 

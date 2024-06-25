@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Basic
 import Mathlib.Tactic.Polyrith
-import Mathlib.RepresentationTheory.Basic
+import Mathlib.LinearAlgebra.FreeModule.StrongRankCondition
 /-!
 # Basis of `LinSols`
 

@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Basic
-import Mathlib.GroupTheory.SpecificGroups.KleinFour
 /-!
 # The Proper Lorentz Group
 
