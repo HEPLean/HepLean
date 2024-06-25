@@ -65,14 +65,12 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : lorentzGroup) :
     <;> cases'  det_eq_one_or_neg_one Λ' with h2 h2
     <;> simp_all [h1, h2, h]
   rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
-  change (0 : Fin 2) = (1 : Fin 2) at h
-  simp only [Fin.isValue, zero_ne_one] at h
-  nth_rewrite 2 [← toMul_zero] at h
-  rw [@Equiv.apply_eq_iff_eq] at h
-  change (1 : Fin 2) = (0 : Fin 2) at h
-  simp [Fin.isValue, zero_ne_one] at h
-  intro h
-  simp [detContinuous, h]
+  · change (0 : Fin 2) = (1 : Fin 2) at h
+    simp only [Fin.isValue, zero_ne_one] at h
+  · change (1 : Fin 2) = (0 : Fin 2) at h
+    simp only [Fin.isValue, one_ne_zero] at h
+  · intro h
+    simp [detContinuous, h]
 
 
 /-- The representation taking a lorentz matrix to its determinant. -/
