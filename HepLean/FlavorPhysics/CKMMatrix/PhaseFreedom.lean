@@ -160,7 +160,7 @@ variable (a b c d e f : ℝ)
 /-- A proposition which is satisfied by a CKM matrix if its `ud`, `us`, `cb` and `tb` elements
 are positive and real, and there is no phase difference between the `t`th-row and
 the cross product of the conjugates of the `u`th and `c`th rows. -/
-def fstRowThdColRealCond (U : CKMMatrix) : Prop := [U]ud = VudAbs ⟦U⟧ ∧ [U]us = VusAbs ⟦U⟧
+def FstRowThdColRealCond (U : CKMMatrix) : Prop := [U]ud = VudAbs ⟦U⟧ ∧ [U]us = VusAbs ⟦U⟧
     ∧ [U]cb = VcbAbs ⟦U⟧ ∧ [U]tb = VtbAbs ⟦U⟧ ∧ [U]t = conj [U]u ×₃ conj [U]c
 
 /-- A proposition which is satisfied by a CKM matrix `ub` is one, `ud`, `us` and `cb` are zero,
@@ -226,7 +226,7 @@ lemma ubOnePhaseCond_shift_solution {V : CKMMatrix} (h1 : a + f = - arg [V]ub)
 
 -- rename
 lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
-    ∃ (U : CKMMatrix), V ≈ U ∧ fstRowThdColRealCond U:= by
+    ∃ (U : CKMMatrix), V ≈ U ∧ FstRowThdColRealCond U:= by
   obtain ⟨τ, hτ⟩ := V.uRow_cross_cRow_eq_tRow
   let U : CKMMatrix := phaseShiftApply V
     0
@@ -263,7 +263,7 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
 
 
 lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0))
-    (hV : fstRowThdColRealCond V)  :
+    (hV : FstRowThdColRealCond V)  :
     ∃ (U : CKMMatrix), V ≈ U ∧ ubOnePhaseCond U:= by
   let U : CKMMatrix := phaseShiftApply V 0 0 (- Real.pi + arg [V]cd + arg [V]cs + arg [V]ub)
     (Real.pi - arg [V]cd ) (- arg [V]cs)  (- arg [V]ub )
@@ -321,7 +321,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
 
 
 lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    (hV : fstRowThdColRealCond V) :
+    (hV : FstRowThdColRealCond V) :
     [V]cd = (- VtbAbs ⟦V⟧ * VusAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2)) +
     (- VubAbs ⟦V⟧ * VudAbs ⟦V⟧ * VcbAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2 ))
     * cexp (- arg [V]ub * I) := by
@@ -341,7 +341,7 @@ lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠
   ring_nf
 
 lemma cs_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    (hV : fstRowThdColRealCond V) :
+    (hV : FstRowThdColRealCond V) :
     [V]cs = (VtbAbs ⟦V⟧ * VudAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
     + (- VubAbs ⟦V⟧ *  VusAbs ⟦V⟧ * VcbAbs ⟦V⟧/ (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
     * cexp (- arg [V]ub * I) := by

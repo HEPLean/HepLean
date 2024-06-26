@@ -57,7 +57,7 @@ namespace BL
 
 variable {n : ℕ}
 
-lemma on_quadBiLin (S : (PlusU1 n).charges) :
+lemma on_quadBiLin (S : (PlusU1 n).Charges) :
     quadBiLin (BL n).val S = 1/2 * accYY S + 3/2 * accSU2 S - 2 * accSU3 S := by
   erw [familyUniversal_quadBiLin]
   rw [accYY_decomp, accSU2_decomp, accSU3_decomp]
@@ -90,7 +90,7 @@ lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ): addQuad S a 0 = a • S 
   simp [addQuad, linearToQuad]
   rfl
 
-lemma on_cubeTriLin (S : (PlusU1 n).charges) :
+lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
     cubeTriLin (BL n).val (BL n).val S = 9 * accGrav S - 24 * accSU3 S := by
   erw [familyUniversal_cubeTriLin']
   rw [accGrav_decomp, accSU3_decomp]

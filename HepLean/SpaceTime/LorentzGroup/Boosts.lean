@@ -28,14 +28,14 @@ A boost is the special case of a generalised boost when `u = stdBasis 0`.
 
 -/
 noncomputable section
-namespace spaceTime
+namespace SpaceTime
 
-namespace lorentzGroup
+namespace LorentzGroup
 
 open FourVelocity
 
 /-- An auxillary linear map used in the definition of a generalised boost. -/
-def genBoostAux₁ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
+def genBoostAux₁ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
   toFun x := (2 * ηLin x u) • v.1.1
   map_add' x y := by
     simp only [map_add, LinearMap.add_apply]
@@ -46,7 +46,7 @@ def genBoostAux₁ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
 /-- An auxillary linear map used in the definition of a genearlised boost. -/
-def genBoostAux₂ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
+def genBoostAux₂ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
   toFun x := - (ηLin x (u + v) / (1 + ηLin u v)) • (u + v)
   map_add' x y := by
     simp only
@@ -62,7 +62,7 @@ def genBoostAux₂ (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime where
 
 /-- An generalised boost. This is a Lorentz transformation which takes the four velocity `u`
 to `v`. -/
-def genBoost (u v : FourVelocity) : spaceTime →ₗ[ℝ] spaceTime :=
+def genBoost (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime :=
   LinearMap.id + genBoostAux₁ u v + genBoostAux₂ u v
 
 namespace genBoost
@@ -91,7 +91,7 @@ lemma self (u : FourVelocity) : genBoost u u = LinearMap.id := by
 def toMatrix (u v : FourVelocity) : Matrix (Fin 4) (Fin 4) ℝ :=
   LinearMap.toMatrix stdBasis stdBasis (genBoost u v)
 
-lemma toMatrix_mulVec (u v : FourVelocity) (x : spaceTime) :
+lemma toMatrix_mulVec (u v : FourVelocity) (x : SpaceTime) :
     (toMatrix u v).mulVec x = genBoost u v x :=
   LinearMap.toMatrix_mulVec_repr stdBasis stdBasis (genBoost u v) x
 
@@ -143,7 +143,7 @@ lemma toMatrix_PreservesηLin (u v : FourVelocity) : PreservesηLin (toMatrix u 
   ring
 
 /-- A generalised boost as an element of the Lorentz Group. -/
-def toLorentz (u v : FourVelocity) : lorentzGroup :=
+def toLorentz (u v : FourVelocity) : LorentzGroup :=
   ⟨toMatrix u v, toMatrix_PreservesηLin u v⟩
 
 lemma toLorentz_continuous (u : FourVelocity) : Continuous (toLorentz u) := by
@@ -171,8 +171,8 @@ lemma isProper (u v : FourVelocity) : IsProper (toLorentz u v) :=
 end genBoost
 
 
-end lorentzGroup
+end LorentzGroup
 
 
-end spaceTime
+end SpaceTime
 end

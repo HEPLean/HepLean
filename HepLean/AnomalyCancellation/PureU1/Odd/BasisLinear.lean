@@ -148,7 +148,7 @@ end theDeltas
 section theBasisVectors
 
 /-- The first part of the basis as charge assignments. -/
-def basisAsCharges (j : Fin n) : (PureU1 (2 * n + 1)).charges :=
+def basisAsCharges (j : Fin n) : (PureU1 (2 * n + 1)).Charges :=
   fun i =>
   if i = δ₁ j then
     1
@@ -159,7 +159,7 @@ def basisAsCharges (j : Fin n) : (PureU1 (2 * n + 1)).charges :=
       0
 
 /-- The second part of the basis as charge assignments. -/
-def basis!AsCharges (j : Fin n) : (PureU1 (2 * n + 1)).charges :=
+def basis!AsCharges (j : Fin n) : (PureU1 (2 * n + 1)).Charges :=
   fun i =>
   if i = δ!₁ j then
     1
@@ -351,13 +351,13 @@ lemma swap!_as_add {S S' : (PureU1 (2 * n + 1)).LinSols} (j : Fin n)
   simp
 
 /-- A point in the span of the first part of the basis as a charge. -/
-def P (f : Fin n → ℚ) : (PureU1 (2 * n + 1)).charges := ∑ i, f i • basisAsCharges i
+def P (f : Fin n → ℚ) : (PureU1 (2 * n + 1)).Charges := ∑ i, f i • basisAsCharges i
 
 /-- A point in the span of the second part of the basis as a charge. -/
-def P! (f : Fin n → ℚ) : (PureU1 (2 * n + 1)).charges := ∑ i, f i • basis!AsCharges i
+def P! (f : Fin n → ℚ) : (PureU1 (2 * n + 1)).Charges := ∑ i, f i • basis!AsCharges i
 
 /-- A point in the span of the basis as a charge. -/
-def Pa (f : Fin n → ℚ) (g : Fin n → ℚ) : (PureU1 (2 * n + 1)).charges := P f + P! g
+def Pa (f : Fin n → ℚ) (g : Fin n → ℚ) : (PureU1 (2 * n + 1)).Charges := P f + P! g
 
 lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (δ₁ j) = f j := by
   rw [P, sum_of_charges]

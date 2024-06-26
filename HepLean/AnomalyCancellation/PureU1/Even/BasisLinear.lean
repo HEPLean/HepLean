@@ -135,7 +135,7 @@ lemma δ!₂_δ₂ (j : Fin n) : δ!₂ j = δ₂ j.castSucc := by
 end theδs
 
 /-- The first part of the basis as charges. -/
-def basisAsCharges (j : Fin n.succ) : (PureU1 (2 * n.succ)).charges :=
+def basisAsCharges (j : Fin n.succ) : (PureU1 (2 * n.succ)).Charges :=
   fun i =>
   if i = δ₁ j then
     1
@@ -146,7 +146,7 @@ def basisAsCharges (j : Fin n.succ) : (PureU1 (2 * n.succ)).charges :=
       0
 
 /-- The second part of the basis as charges. -/
-def basis!AsCharges (j : Fin n) : (PureU1 (2 * n.succ)).charges :=
+def basis!AsCharges (j : Fin n) : (PureU1 (2 * n.succ)).Charges :=
   fun i =>
   if i = δ!₁ j then
     1
@@ -357,13 +357,13 @@ lemma swap!_as_add {S S' : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
   simp
 
 /-- A point in the span of the first part of the basis as a charge. -/
-def P (f : Fin n.succ → ℚ) : (PureU1 (2 * n.succ)).charges := ∑ i, f i • basisAsCharges i
+def P (f : Fin n.succ → ℚ) : (PureU1 (2 * n.succ)).Charges := ∑ i, f i • basisAsCharges i
 
 /-- A point in the span of the second part of the basis as a charge. -/
-def P! (f : Fin n → ℚ) : (PureU1 (2 * n.succ)).charges := ∑ i, f i • basis!AsCharges i
+def P! (f : Fin n → ℚ) : (PureU1 (2 * n.succ)).Charges := ∑ i, f i • basis!AsCharges i
 
 /-- A point in the span of the basis as a charge. -/
-def Pa (f : Fin n.succ → ℚ) (g : Fin n → ℚ) : (PureU1 (2 * n.succ)).charges := P f + P! g
+def Pa (f : Fin n.succ → ℚ) (g : Fin n → ℚ) : (PureU1 (2 * n.succ)).Charges := P f + P! g
 
 lemma P_δ₁ (f : Fin n.succ → ℚ) (j : Fin n.succ) : P f (δ₁ j) = f j := by
   rw [P, sum_of_charges]
@@ -727,7 +727,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
   exact hS
 
 lemma vectorLikeEven_in_span (S : (PureU1 (2 * n.succ)).LinSols)
-    (hS : vectorLikeEven S.val) :
+    (hS : VectorLikeEven S.val) :
    ∃ (M : (FamilyPermutations (2 * n.succ)).group),
     (FamilyPermutations (2 * n.succ)).linSolRep M S
     ∈ Submodule.span ℚ (Set.range basis) := by

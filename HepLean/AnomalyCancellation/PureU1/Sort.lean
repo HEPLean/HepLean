@@ -23,29 +23,29 @@ variable {n : ℕ}
 
 /-- We say a charge is shorted if for all `i ≤ j`, then `S i ≤ S j`. -/
 @[simp]
-def sorted {n : ℕ}  (S : (PureU1 n).charges) : Prop :=
+def Sorted {n : ℕ}  (S : (PureU1 n).Charges) : Prop :=
    ∀ i j (_ : i ≤ j),  S i ≤ S j
 
 /-- Given a charge assignment `S`, the corresponding sorted charge assignment. -/
 @[simp]
-def sort {n : ℕ} (S : (PureU1 n).charges) : (PureU1 n).charges :=
+def sort {n : ℕ} (S : (PureU1 n).Charges) : (PureU1 n).Charges :=
   ((FamilyPermutations n).rep (Tuple.sort S).symm S)
 
-lemma sort_sorted {n : ℕ} (S : (PureU1 n).charges) :  sorted (sort S) := by
-  simp only [sorted, PureU1_numberCharges, sort, FamilyPermutations, permGroup, permCharges,
+lemma sort_sorted {n : ℕ} (S : (PureU1 n).Charges) :  Sorted (sort S) := by
+  simp only [Sorted, PureU1_numberCharges, sort, FamilyPermutations, PermGroup, permCharges,
     MonoidHom.coe_mk, OneHom.coe_mk, chargeMap_apply]
   intro i j hij
   exact Tuple.monotone_sort S hij
 
-lemma sort_perm {n : ℕ} (S : (PureU1 n).charges) (M :(FamilyPermutations n).group) :
+lemma sort_perm {n : ℕ} (S : (PureU1 n).Charges) (M :(FamilyPermutations n).group) :
     sort ((FamilyPermutations n).rep M S) = sort S :=
   @Tuple.comp_perm_comp_sort_eq_comp_sort n ℚ _ S M⁻¹
 
-lemma sort_apply {n : ℕ} (S : (PureU1 n).charges) (j : Fin n) :
+lemma sort_apply {n : ℕ} (S : (PureU1 n).Charges) (j : Fin n) :
     sort S j = S ((Tuple.sort S) j) := by
   rfl
 
-lemma sort_zero {n : ℕ} (S : (PureU1 n).charges)  (hS : sort S = 0) : S = 0 := by
+lemma sort_zero {n : ℕ} (S : (PureU1 n).Charges)  (hS : sort S = 0) : S = 0 := by
   funext i
   have hj : ∀ j, sort S j = 0 := by
     rw [hS]
@@ -57,7 +57,7 @@ lemma sort_zero {n : ℕ} (S : (PureU1 n).charges)  (hS : sort S = 0) : S = 0 :=
   rw [hi]
   rfl
 
-lemma sort_projection {n : ℕ} (S : (PureU1 n).charges) : sort (sort S) = sort S :=
+lemma sort_projection {n : ℕ} (S : (PureU1 n).Charges) : sort (sort S) = sort S :=
   sort_perm S (Tuple.sort S).symm
 
 /-- The sort function acting on `LinSols`. -/

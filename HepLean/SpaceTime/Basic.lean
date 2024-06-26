@@ -17,21 +17,21 @@ This file introduce 4d Minkowski spacetime.
 noncomputable section
 
 /-- The space-time -/
-def spaceTime : Type := Fin 4 → ℝ
+def SpaceTime : Type := Fin 4 → ℝ
 
 /-- Give spacetime the structure of an additive commutative monoid. -/
-instance : AddCommMonoid spaceTime := Pi.addCommMonoid
+instance : AddCommMonoid SpaceTime := Pi.addCommMonoid
 
 
 /-- Give spacetime the structure of a module over the reals. -/
-instance : Module ℝ spaceTime := Pi.module _ _ _
+instance : Module ℝ SpaceTime := Pi.module _ _ _
 
-instance euclideanNormedAddCommGroup : NormedAddCommGroup spaceTime := Pi.normedAddCommGroup
+instance euclideanNormedAddCommGroup : NormedAddCommGroup SpaceTime := Pi.normedAddCommGroup
 
-instance euclideanNormedSpace : NormedSpace ℝ spaceTime := Pi.normedSpace
+instance euclideanNormedSpace : NormedSpace ℝ SpaceTime := Pi.normedSpace
 
 
-namespace spaceTime
+namespace SpaceTime
 
 open Manifold
 open Matrix
@@ -40,15 +40,15 @@ open ComplexConjugate
 
 /-- The space part of spacetime. -/
 @[simp]
-def space (x : spaceTime) : EuclideanSpace ℝ (Fin 3) := ![x 1, x 2, x 3]
+def space (x : SpaceTime) : EuclideanSpace ℝ (Fin 3) := ![x 1, x 2, x 3]
 
 /-- The structure of a smooth manifold on spacetime. -/
-def asSmoothManifold : ModelWithCorners ℝ spaceTime spaceTime := 𝓘(ℝ, spaceTime)
+def asSmoothManifold : ModelWithCorners ℝ SpaceTime SpaceTime := 𝓘(ℝ, SpaceTime)
 
-instance : ChartedSpace spaceTime spaceTime := chartedSpaceSelf spaceTime
+instance : ChartedSpace SpaceTime SpaceTime := chartedSpaceSelf SpaceTime
 
 /-- The standard basis for spacetime. -/
-def stdBasis : Basis (Fin 4) ℝ spaceTime := Pi.basisFun ℝ (Fin 4)
+def stdBasis : Basis (Fin 4) ℝ SpaceTime := Pi.basisFun ℝ (Fin 4)
 
 lemma stdBasis_apply (μ ν : Fin 4) : stdBasis μ ν = if μ = ν then 1 else 0 := by
   erw [stdBasis, Pi.basisFun_apply, LinearMap.stdBasis_apply']
@@ -85,16 +85,16 @@ lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
   rw [stdBasis_apply, if_neg (Ne.symm h)]
   exact CommMonoidWithZero.mul_zero (Λ ν x)
 
-lemma explicit (x : spaceTime) : x = ![x 0, x 1, x 2, x 3] := by
+lemma explicit (x : SpaceTime) : x = ![x 0, x 1, x 2, x 3] := by
   funext i
   fin_cases i <;> rfl
 
 @[simp]
-lemma add_apply (x y : spaceTime) (i : Fin 4) : (x + y) i = x i + y i := rfl
+lemma add_apply (x y : SpaceTime) (i : Fin 4) : (x + y) i = x i + y i := rfl
 
 @[simp]
-lemma smul_apply (x : spaceTime) (a : ℝ) (i : Fin 4) : (a • x) i = a * x i := rfl
+lemma smul_apply (x : SpaceTime) (a : ℝ) (i : Fin 4) : (a • x) i = a * x i := rfl
 
-end spaceTime
+end SpaceTime
 
 end

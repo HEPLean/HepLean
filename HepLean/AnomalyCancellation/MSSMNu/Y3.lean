@@ -26,7 +26,7 @@ open BigOperators
 
 /-- $Y_3$ is the charge which is hypercharge in all families, but with the third
 family of the opposite sign. -/
-def Y₃AsCharge : MSSMACC.charges := toSpecies.symm
+def Y₃AsCharge : MSSMACC.Charges := toSpecies.symm
   ⟨fun s => fun i =>
     match s, i with
     | 0, 0 => 1

@@ -70,7 +70,7 @@ lemma cubeSol  (S : (PlusU1 n).Sols) : accCube S.val = 0 := by
 
 /-- An element of `charges` which satisfies the linear ACCs
   gives us a element of `LinSols`. -/
-def chargeToLinear (S : (PlusU1 n).charges) (hGrav : accGrav S = 0)
+def chargeToLinear (S : (PlusU1 n).Charges) (hGrav : accGrav S = 0)
     (hSU2 : accSU2 S = 0) (hSU3 : accSU3 S = 0) (hYY : accYY S = 0) :
     (PlusU1 n).LinSols :=
   ⟨S, by
@@ -99,14 +99,14 @@ def quadToAF (S : (PlusU1 n).QuadSols) (hc : accCube S.val = 0) :
 
 /-- An element of `charges` which satisfies the linear and quadratic ACCs
   gives us a element of `QuadSols`. -/
-def chargeToQuad (S : (PlusU1 n).charges) (hGrav : accGrav S = 0)
+def chargeToQuad (S : (PlusU1 n).Charges) (hGrav : accGrav S = 0)
     (hSU2 : accSU2 S = 0) (hSU3 : accSU3 S = 0) (hYY : accYY S = 0) (hQ : accQuad S = 0) :
     (PlusU1 n).QuadSols :=
   linearToQuad (chargeToLinear S hGrav hSU2 hSU3 hYY) hQ
 
 /-- An element of `charges` which satisfies the linear, quadratic and cubic ACCs
   gives us a element of `Sols`. -/
-def chargeToAF (S : (PlusU1 n).charges) (hGrav : accGrav S = 0) (hSU2 : accSU2 S = 0)
+def chargeToAF (S : (PlusU1 n).Charges) (hGrav : accGrav S = 0) (hSU2 : accSU2 S = 0)
     (hSU3 : accSU3 S = 0) (hYY : accYY S = 0) (hQ : accQuad S = 0) (hc : accCube S = 0) :
     (PlusU1 n).Sols :=
   quadToAF (chargeToQuad S hGrav hSU2 hSU3 hYY hQ) hc
@@ -119,7 +119,7 @@ def linearToAF (S : (PlusU1 n).LinSols) (hQ : accQuad S.val = 0)
 
 /-- The permutations acting on the ACC system corresponding to the SM with  RHN. -/
 def perm (n : ℕ) : ACCSystemGroupAction (PlusU1 n) where
-  group := permGroup n
+  group := PermGroup n
   groupInst := inferInstance
   rep := repCharges
   linearInvariant := by

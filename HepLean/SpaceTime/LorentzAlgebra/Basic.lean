@@ -19,7 +19,7 @@ We define
 -/
 
 
-namespace spaceTime
+namespace SpaceTime
 open Matrix
 open TensorProduct
 
@@ -96,7 +96,7 @@ lemma space_comps (Λ : lorentzAlgebra) (i j : Fin 3) :
 end lorentzAlgebra
 
 @[simps!]
-instance spaceTimeAsLieRingModule : LieRingModule lorentzAlgebra spaceTime where
+instance spaceTimeAsLieRingModule : LieRingModule lorentzAlgebra SpaceTime where
   bracket Λ x :=  Λ.1.mulVec  x
   add_lie Λ1 Λ2 x := by
     simp [add_mulVec]
@@ -107,7 +107,7 @@ instance spaceTimeAsLieRingModule : LieRingModule lorentzAlgebra spaceTime where
     simp [mulVec_add, Bracket.bracket, sub_mulVec]
 
 @[simps!]
-instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra spaceTime where
+instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra SpaceTime where
   smul_lie r Λ x  := by
     simp [Bracket.bracket, smul_mulVec_assoc]
   lie_smul r Λ x := by
@@ -115,4 +115,4 @@ instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra spaceTime where
     rw [mulVec_smul]
 
 
-end spaceTime
+end SpaceTime

@@ -15,7 +15,7 @@ This file introduces the metric on spacetime in the (+, -, -, -) signature.
 
 noncomputable section
 
-namespace spaceTime
+namespace SpaceTime
 
 open Manifold
 open Matrix
@@ -108,7 +108,7 @@ lemma η_sq : η * η = 1 := by
 lemma η_diag_mul_self (μ : Fin 4) : η μ μ * η μ μ  = 1 := by
   fin_cases μ <;> simp [η_explicit]
 
-lemma η_mulVec (x : spaceTime) : η *ᵥ x = ![x 0, -x 1, -x 2, -x 3] := by
+lemma η_mulVec (x : SpaceTime) : η *ᵥ x = ![x 0, -x 1, -x 2, -x 3] := by
   rw [explicit x, η_explicit]
   funext i
   fin_cases i <;>
@@ -143,7 +143,7 @@ lemma η_contract_self' (μ ν : Fin 4) : ∑ x, (η^[x]_[μ] * η_[ν]_[x]) = �
 
 /-- Given a point in spaceTime `x` the linear map `y → x ⬝ᵥ (η *ᵥ y)`. -/
 @[simps!]
-def linearMapForSpaceTime (x : spaceTime) : spaceTime →ₗ[ℝ] ℝ where
+def linearMapForSpaceTime (x : SpaceTime) : SpaceTime →ₗ[ℝ] ℝ where
   toFun y := x ⬝ᵥ (η *ᵥ y)
   map_add' y z := by
     simp only
@@ -154,7 +154,7 @@ def linearMapForSpaceTime (x : spaceTime) : spaceTime →ₗ[ℝ] ℝ where
     rfl
 
 /-- The metric as a bilinear map from `spaceTime` to `ℝ`. -/
-def ηLin : LinearMap.BilinForm ℝ spaceTime where
+def ηLin : LinearMap.BilinForm ℝ SpaceTime where
   toFun x := linearMapForSpaceTime x
   map_add' x y := by
     apply LinearMap.ext
@@ -168,7 +168,7 @@ def ηLin : LinearMap.BilinForm ℝ spaceTime where
     rw [smul_dotProduct]
     rfl
 
-lemma ηLin_expand (x y : spaceTime) : ηLin x y = x 0 * y 0 - x 1 * y 1 - x 2 * y 2 - x 3 * y 3 := by
+lemma ηLin_expand (x y : SpaceTime) : ηLin x y = x 0 * y 0 - x 1 * y 1 - x 2 * y 2 - x 3 * y 3 := by
   rw [ηLin]
   simp only [LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply, Fin.isValue]
   erw [η_mulVec]
@@ -177,40 +177,40 @@ lemma ηLin_expand (x y : spaceTime) : ηLin x y = x 0 * y 0 - x 1 * y 1 - x 2 *
     cons_val_zero, cons_val_one, head_cons, mul_neg, cons_val_two, tail_cons, cons_val_three]
   ring
 
-lemma ηLin_expand_self (x : spaceTime) : ηLin x x = x 0 ^ 2 - ‖x.space‖ ^ 2 := by
+lemma ηLin_expand_self (x : SpaceTime) : ηLin x x = x 0 ^ 2 - ‖x.space‖ ^ 2 := by
   rw [← @real_inner_self_eq_norm_sq, @PiLp.inner_apply, Fin.sum_univ_three, ηLin_expand]
   noncomm_ring
 
-lemma time_elm_sq_of_ηLin (x : spaceTime) : x 0 ^ 2 = ηLin x x + ‖x.space‖ ^ 2 := by
+lemma time_elm_sq_of_ηLin (x : SpaceTime) : x 0 ^ 2 = ηLin x x + ‖x.space‖ ^ 2 := by
   rw [ηLin_expand_self]
   ring
 
-lemma ηLin_leq_time_sq (x : spaceTime) : ηLin x x ≤ x 0 ^ 2 := by
+lemma ηLin_leq_time_sq (x : SpaceTime) : ηLin x x ≤ x 0 ^ 2 := by
   rw [time_elm_sq_of_ηLin]
   exact (le_add_iff_nonneg_right _).mpr $ sq_nonneg ‖x.space‖
 
-lemma ηLin_space_inner_product (x y : spaceTime) :
+lemma ηLin_space_inner_product (x y : SpaceTime) :
     ηLin x y = x 0 * y 0 - ⟪x.space, y.space⟫_ℝ  := by
   rw [ηLin_expand, @PiLp.inner_apply, Fin.sum_univ_three]
   noncomm_ring
 
-lemma ηLin_ge_abs_inner_product (x y : spaceTime) :
+lemma ηLin_ge_abs_inner_product (x y : SpaceTime) :
     x 0 * y 0 - ‖⟪x.space, y.space⟫_ℝ‖ ≤ (ηLin x y)  := by
   rw [ηLin_space_inner_product, sub_le_sub_iff_left]
   exact Real.le_norm_self ⟪x.space, y.space⟫_ℝ
 
-lemma ηLin_ge_sub_norm (x y : spaceTime) :
+lemma ηLin_ge_sub_norm (x y : SpaceTime) :
     x 0 * y 0 - ‖x.space‖ * ‖y.space‖ ≤ (ηLin x y)  := by
   apply le_trans ?_ (ηLin_ge_abs_inner_product x y)
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm x.space y.space
 
 
-lemma ηLin_symm (x y : spaceTime) : ηLin x y = ηLin y x := by
+lemma ηLin_symm (x y : SpaceTime) : ηLin x y = ηLin y x := by
   rw [ηLin_expand, ηLin_expand]
   ring
 
-lemma ηLin_stdBasis_apply (μ : Fin 4) (x : spaceTime) : ηLin (stdBasis μ) x = η μ μ * x μ := by
+lemma ηLin_stdBasis_apply (μ : Fin 4) (x : SpaceTime) : ηLin (stdBasis μ) x = η μ μ * x μ := by
   rw [ηLin_expand]
   fin_cases μ
    <;> simp [stdBasis_0, stdBasis_1, stdBasis_2, stdBasis_3, η_explicit]
@@ -227,13 +227,13 @@ lemma ηLin_η_stdBasis (μ ν : Fin 4) : ηLin (stdBasis μ) (stdBasis ν) = η
     exact fun a ↦ h (id a.symm)
 
 set_option maxHeartbeats 0
-lemma ηLin_mulVec_left (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+lemma ηLin_mulVec_left (x y : SpaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     ηLin (Λ *ᵥ x) y = ηLin x ((η * Λᵀ * η) *ᵥ y) := by
   simp [ηLin, LinearMap.coe_mk, AddHom.coe_mk, linearMapForSpaceTime_apply,
     mulVec_mulVec, (vecMul_transpose Λ x).symm, ← dotProduct_mulVec, mulVec_mulVec,
     ← mul_assoc, ← mul_assoc, η_sq, one_mul]
 
-lemma ηLin_mulVec_right (x y : spaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
+lemma ηLin_mulVec_right (x y : SpaceTime) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     ηLin x (Λ *ᵥ y) = ηLin ((η * Λᵀ * η) *ᵥ x) y := by
   rw [ηLin_symm, ηLin_symm ((η * Λᵀ * η) *ᵥ x) _ ]
   exact ηLin_mulVec_left y x Λ
@@ -247,7 +247,7 @@ lemma ηLin_matrix_stdBasis' (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
   rw [ηLin_matrix_stdBasis, ← mul_assoc, η_diag_mul_self, one_mul]
 
 lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
-    Λ = 1 ↔ ∀ (x y : spaceTime), ηLin x y = ηLin x (Λ *ᵥ y) := by
+    Λ = 1 ↔ ∀ (x y : SpaceTime), ηLin x y = ηLin x (Λ *ᵥ y) := by
   apply Iff.intro
   · intro h
     subst h
@@ -260,8 +260,8 @@ lemma ηLin_matrix_eq_identity_iff (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     simp_all [η_explicit,  Fin.mk_one, Fin.mk_one, vecHead, vecTail]
 
 /-- The metric as a quadratic form on `spaceTime`. -/
-def quadraticForm : QuadraticForm ℝ spaceTime := ηLin.toQuadraticForm
+def quadraticForm : QuadraticForm ℝ SpaceTime := ηLin.toQuadraticForm
 
-end spaceTime
+end SpaceTime
 
 end

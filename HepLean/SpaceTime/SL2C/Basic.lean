@@ -11,7 +11,7 @@ import Mathlib.RepresentationTheory.Basic
 The aim of this file is to give the relationship between `SL(2, ℂ)` and the Lorentz group.
 
 -/
-namespace spaceTime
+namespace SpaceTime
 
 open Matrix
 open MatrixGroups
@@ -19,7 +19,7 @@ open Complex
 
 namespace SL2C
 
-open spaceTime
+open SpaceTime
 
 noncomputable section
 
@@ -64,7 +64,7 @@ def repSelfAdjointMatrix : Representation ℝ SL(2, ℂ) $ selfAdjoint (Matrix (
 
 /-- The representation of  `SL(2, ℂ)` on `spaceTime` obtained from `toSelfAdjointMatrix` and
   `repSelfAdjointMatrix`. -/
-def repSpaceTime : Representation ℝ SL(2, ℂ) spaceTime where
+def repSpaceTime : Representation ℝ SL(2, ℂ) SpaceTime where
   toFun M := toSelfAdjointMatrix.symm.comp ((repSelfAdjointMatrix M).comp
     toSelfAdjointMatrix.toLinearMap)
   map_one' := by
@@ -120,4 +120,4 @@ Complete this section.
 end
 end SL2C
 
-end spaceTime
+end SpaceTime

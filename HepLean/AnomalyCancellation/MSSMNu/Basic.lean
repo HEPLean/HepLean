@@ -37,7 +37,7 @@ namespace MSSMCharges
 `(Fin 18 ⊕ Fin 2 → ℚ)`. The first 18 factors corresponds to the SM fermions, while the last two
 are the higgsions. -/
 @[simps!]
-def toSMPlusH : MSSMCharges.charges ≃ (Fin 18 ⊕ Fin 2 → ℚ) :=
+def toSMPlusH : MSSMCharges.Charges ≃ (Fin 18 ⊕ Fin 2 → ℚ) :=
   ((@finSumFinEquiv 18 2).arrowCongr (Equiv.refl ℚ)).symm
 
 /-- An equivalence between `Fin 18 ⊕ Fin 2 → ℚ` and `(Fin 18 → ℚ) × (Fin 2 → ℚ)`. -/
@@ -51,7 +51,7 @@ def splitSMPlusH : (Fin 18 ⊕ Fin 2 → ℚ) ≃ (Fin 18 → ℚ) × (Fin 2 →
 /-- An equivalence between `MSSMCharges.charges` and `(Fin 18 → ℚ) × (Fin 2 → ℚ)`. This
 splits the charges up into the SM and the additional ones for the MSSM. -/
 @[simps!]
-def toSplitSMPlusH  : MSSMCharges.charges ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) :=
+def toSplitSMPlusH  : MSSMCharges.Charges ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) :=
   toSMPlusH.trans splitSMPlusH
 
 /-- An equivalence between `(Fin 18 → ℚ)` and `(Fin 6 → Fin 3 → ℚ)`. -/
@@ -64,13 +64,13 @@ def toSpeciesMaps' : (Fin 18 → ℚ) ≃ (Fin 6 → Fin 3 → ℚ) :=
 This split charges up into the SM and additional fermions, and further splits the SM into
 species. -/
 @[simps!]
-def toSpecies : MSSMCharges.charges ≃ (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ) :=
+def toSpecies : MSSMCharges.Charges ≃ (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ) :=
   toSplitSMPlusH.trans (Equiv.prodCongr toSpeciesMaps' (Equiv.refl _))
 
 /-- For a given `i ∈ Fin 6` the projection of `MSSMCharges.charges` down to the
 corresponding SM species of charges. -/
 @[simps!]
-def toSMSpecies (i : Fin 6) : MSSMCharges.charges →ₗ[ℚ] MSSMSpecies.charges where
+def toSMSpecies (i : Fin 6) : MSSMCharges.Charges →ₗ[ℚ] MSSMSpecies.Charges where
   toFun S := (Prod.fst ∘ toSpecies) S i
   map_add' _ _ := by rfl
   map_smul' _ _ := by rfl
@@ -95,19 +95,19 @@ abbrev N := toSMSpecies 5
 
 /-- The charge `Hd`. -/
 @[simps!]
-def Hd : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def Hd : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := S ⟨18, Nat.lt_of_sub_eq_succ rfl⟩
   map_add' _ _ := by rfl
   map_smul' _ _ := by rfl
 
 /-- The charge `Hu`. -/
 @[simps!]
-def Hu : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def Hu : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := S ⟨19, Nat.lt_of_sub_eq_succ rfl⟩
   map_add' _ _ := by rfl
   map_smul' _ _ := by rfl
 
-lemma charges_eq_toSpecies_eq (S T : MSSMCharges.charges) :
+lemma charges_eq_toSpecies_eq (S T : MSSMCharges.Charges) :
     S = T ↔ (∀ i, toSMSpecies i S = toSMSpecies i T) ∧ Hd S = Hd T ∧ Hu S = Hu T  := by
   apply Iff.intro
   intro h
@@ -139,7 +139,7 @@ open MSSMCharges
 
 /-- The gravitational anomaly equation. -/
 @[simp]
-def accGrav : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def accGrav : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (6 * Q S i + 3 * U S i + 3 * D S i
     + 2 * L S i + E S i + N S i) + 2 * (Hd S + Hu S)
   map_add' S T := by
@@ -159,7 +159,7 @@ def accGrav : MSSMCharges.charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accGrav`. -/
-lemma accGrav_ext {S T : MSSMCharges.charges}
+lemma accGrav_ext {S T : MSSMCharges.Charges}
     (hj : ∀ (j : Fin 6),  ∑ i, (toSMSpecies j) S i = ∑ i, (toSMSpecies j) T i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accGrav S = accGrav T := by
@@ -173,7 +173,7 @@ lemma accGrav_ext {S T : MSSMCharges.charges}
 
 /-- The anomaly cancellation condition for SU(2) anomaly. -/
 @[simp]
-def accSU2 : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def accSU2 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (3 * Q S i + L S i) + Hd S + Hu S
   map_add' S T := by
     simp only
@@ -192,7 +192,7 @@ def accSU2 : MSSMCharges.charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accSU2`. -/
-lemma accSU2_ext {S T : MSSMCharges.charges}
+lemma accSU2_ext {S T : MSSMCharges.Charges}
     (hj : ∀ (j : Fin 6),  ∑ i, (toSMSpecies j) S i = ∑ i, (toSMSpecies j) T i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accSU2 S = accSU2 T := by
@@ -206,7 +206,7 @@ lemma accSU2_ext {S T : MSSMCharges.charges}
 
 /-- The anomaly cancellation condition for SU(3) anomaly. -/
 @[simp]
-def accSU3 : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def accSU3 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (2 * (Q S i) + (U S i) + (D S i))
   map_add' S T := by
     simp only
@@ -224,7 +224,7 @@ def accSU3 : MSSMCharges.charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accSU3`. -/
-lemma accSU3_ext {S T : MSSMCharges.charges}
+lemma accSU3_ext {S T : MSSMCharges.Charges}
     (hj : ∀ (j : Fin 6),  ∑ i, (toSMSpecies j) S i = ∑ i, (toSMSpecies j) T i) :
     accSU3 S = accSU3 T := by
   simp only [accSU3, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, LinearMap.coe_mk,
@@ -236,7 +236,7 @@ lemma accSU3_ext {S T : MSSMCharges.charges}
 
 /-- The acc for `Y²`. -/
 @[simp]
-def accYY : MSSMCharges.charges →ₗ[ℚ] ℚ where
+def accYY : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, ((Q S) i + 8 * (U S) i + 2 * (D S) i + 3 * (L S) i
     + 6 * (E S) i) + 3 * (Hd S + Hu S)
   map_add' S T := by
@@ -256,7 +256,7 @@ def accYY : MSSMCharges.charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accGrav`. -/
-lemma accYY_ext {S T : MSSMCharges.charges}
+lemma accYY_ext {S T : MSSMCharges.Charges}
     (hj : ∀ (j : Fin 6),  ∑ i, (toSMSpecies j) S i = ∑ i, (toSMSpecies j) T i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accYY S = accYY T := by
@@ -270,7 +270,7 @@ lemma accYY_ext {S T : MSSMCharges.charges}
 
 /-- The symmetric bilinear function used to define the quadratic ACC. -/
 @[simps!]
-def quadBiLin  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂ (
+def quadBiLin  : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂ (
   fun (S, T) => ∑ i, (Q S i *  Q T i + (- 2) * (U S i *  U T i) +
     D S i *  D T i + (- 1) * (L S i * L T i)  + E S i * E T i) +
     (- Hd S * Hd T + Hu S * Hu T))
@@ -317,10 +317,10 @@ def quadBiLin  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂ (
 
 /-- The quadratic ACC. -/
 @[simp]
-def accQuad : HomogeneousQuadratic MSSMCharges.charges := quadBiLin.toHomogeneousQuad
+def accQuad : HomogeneousQuadratic MSSMCharges.Charges := quadBiLin.toHomogeneousQuad
 
 /-- Extensionality lemma for `accQuad`. -/
-lemma accQuad_ext {S T : (MSSMCharges).charges}
+lemma accQuad_ext {S T : (MSSMCharges).Charges}
     (h : ∀ j, ∑ i, ((fun a => a^2) ∘ toSMSpecies j S) i =
     ∑ i, ((fun a => a^2) ∘ toSMSpecies j T) i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
@@ -339,7 +339,7 @@ lemma accQuad_ext {S T : (MSSMCharges).charges}
 /-- The function underlying the symmetric trilinear form used to define the cubic ACC. -/
 @[simp]
 def cubeTriLinToFun
-    (S : MSSMCharges.charges × MSSMCharges.charges × MSSMCharges.charges) : ℚ :=
+    (S : MSSMCharges.Charges × MSSMCharges.Charges × MSSMCharges.Charges) : ℚ :=
   ∑ i, (6 * (Q S.1 i * Q S.2.1 i * Q S.2.2 i)
     + 3 * (U S.1 i * U S.2.1 i * U S.2.2 i)
     + 3 * (D S.1 i * D S.2.1 i * D S.2.2 i)
@@ -349,7 +349,7 @@ def cubeTriLinToFun
     + (2 * Hd S.1 * Hd S.2.1 * Hd S.2.2
     + 2 * Hu S.1 * Hu S.2.1 * Hu S.2.2)
 
-lemma cubeTriLinToFun_map_smul₁ (a : ℚ)  (S T R : MSSMCharges.charges) :
+lemma cubeTriLinToFun_map_smul₁ (a : ℚ)  (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (a • S, T, R) = a * cubeTriLinToFun (S, T, R) := by
   simp only [cubeTriLinToFun]
   rw [mul_add]
@@ -364,7 +364,7 @@ lemma cubeTriLinToFun_map_smul₁ (a : ℚ)  (S T R : MSSMCharges.charges) :
   ring
 
 
-lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.charges) :
+lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
     cubeTriLinToFun (S + T, R, L) = cubeTriLinToFun (S, R, L) + cubeTriLinToFun (T, R, L) := by
   simp only [cubeTriLinToFun]
   rw [add_assoc, ← add_assoc (2 * Hd S * Hd R * Hd L + 2 * Hu S * Hu R * Hu L) _ _]
@@ -383,7 +383,7 @@ lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.charges) :
   ring
 
 
-lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.charges) :
+lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (S, T, R) = cubeTriLinToFun (T, S, R) := by
   simp only [cubeTriLinToFun, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply,
     Fin.reduceFinMk, Hu_apply]
@@ -393,7 +393,7 @@ lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.charges) :
   ring
   ring
 
-lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.charges) :
+lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (S, T, R) = cubeTriLinToFun (S, R, T) := by
   simp only [cubeTriLinToFun, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply,
     Fin.reduceFinMk, Hu_apply]
@@ -405,7 +405,7 @@ lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.charges) :
 
 /-- The symmetric trilinear form used to define the cubic ACC. -/
 @[simps!]
-def cubeTriLin : TriLinearSymm MSSMCharges.charges := TriLinearSymm.mk₃
+def cubeTriLin : TriLinearSymm MSSMCharges.Charges := TriLinearSymm.mk₃
   cubeTriLinToFun
   cubeTriLinToFun_map_smul₁
   cubeTriLinToFun_map_add₁
@@ -414,10 +414,10 @@ def cubeTriLin : TriLinearSymm MSSMCharges.charges := TriLinearSymm.mk₃
 
 /-- The cubic ACC. -/
 @[simp]
-def accCube : HomogeneousCubic MSSMCharges.charges := cubeTriLin.toCubic
+def accCube : HomogeneousCubic MSSMCharges.Charges := cubeTriLin.toCubic
 
 /-- Extensionality lemma for `accCube`. -/
-lemma accCube_ext {S T : MSSMCharges.charges}
+lemma accCube_ext {S T : MSSMCharges.Charges}
     (h : ∀ j, ∑ i, ((fun a => a^3) ∘ toSMSpecies j S) i =
     ∑ i, ((fun a => a^3) ∘ toSMSpecies j T) i)
     (hd : Hd S = Hd T) (hu : Hu S = Hu T)  :
@@ -464,7 +464,7 @@ lemma quadSol  (S : MSSMACC.QuadSols) : accQuad S.val = 0 := by
 
 /-- A solution from a charge satisfying the ACCs. -/
 @[simp]
-def AnomalyFreeMk (S : MSSMACC.charges) (hg : accGrav S = 0)
+def AnomalyFreeMk (S : MSSMACC.Charges) (hg : accGrav S = 0)
     (hsu2 : accSU2 S = 0) (hsu3 : accSU3 S = 0) (hyy : accYY S = 0)
     (hquad : accQuad S = 0) (hcube : accCube S = 0) : MSSMACC.Sols :=
   ⟨⟨⟨S, by
@@ -481,7 +481,7 @@ def AnomalyFreeMk (S : MSSMACC.charges) (hg : accGrav S = 0)
     | 0 => exact hquad
     ⟩ , by exact hcube ⟩
 
-lemma AnomalyFreeMk_val (S : MSSMACC.charges) (hg : accGrav S = 0)
+lemma AnomalyFreeMk_val (S : MSSMACC.Charges) (hg : accGrav S = 0)
     (hsu2 : accSU2 S = 0) (hsu3 : accSU3 S = 0) (hyy : accYY S = 0)
     (hquad : accQuad S = 0) (hcube : accCube S = 0) :
     (AnomalyFreeMk S hg hsu2 hsu3 hyy hquad hcube).val = S := by
@@ -521,7 +521,7 @@ lemma AnomalyFreeMk''_val (S : MSSMACC.QuadSols)
 
 /-- The dot product on the vector space of charges. -/
 @[simps!]
-def dot  : BiLinearSymm MSSMCharges.charges := BiLinearSymm.mk₂
+def dot  : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂
   (fun S => ∑ i, (Q S.1 i *  Q S.2 i +  U S.1 i *  U S.2 i +
     D S.1 i *  D S.2 i + L S.1 i * L S.2 i  + E S.1 i * E S.2 i
     + N S.1 i * N S.2 i) + Hd S.1 * Hd S.2 + Hu S.1 * Hu S.2)

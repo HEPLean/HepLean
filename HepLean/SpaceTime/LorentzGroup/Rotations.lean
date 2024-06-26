@@ -11,7 +11,7 @@ import Mathlib.Topology.Constructions
 
 -/
 noncomputable section
-namespace spaceTime
+namespace SpaceTime
 
 namespace lorentzGroup
 open GroupTheory
@@ -54,5 +54,5 @@ def SO3ToLorentz : SO(3) →* 𝓛 where
 end lorentzGroup
 
 
-end spaceTime
+end SpaceTime
 end

@@ -26,7 +26,7 @@ open BigOperators
 
 /-- `B₃` is the charge which is $B-L$ in all families, but with the third
 family of the opposite sign. -/
-def B₃AsCharge : MSSMACC.charges := toSpecies.symm
+def B₃AsCharge : MSSMACC.Charges := toSpecies.symm
   ⟨fun s => fun i =>
     match s, i with
     | 0, 0 => 1

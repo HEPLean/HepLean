@@ -28,7 +28,7 @@ def PureU1Charges (n : ℕ) : ACCSystemCharges := ACCSystemChargesMk n
 
 open BigOperators in
 /-- The gravitational anomaly. -/
-def accGrav (n : ℕ) : ((PureU1Charges n).charges →ₗ[ℚ] ℚ) where
+def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
   toFun S := ∑ i : Fin n, S i
   map_add' S T := Finset.sum_add_distrib
   map_smul' a S := by
@@ -38,7 +38,7 @@ def accGrav (n : ℕ) : ((PureU1Charges n).charges →ₗ[ℚ] ℚ) where
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
-def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).charges := TriLinearSymm.mk₃
+def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := TriLinearSymm.mk₃
   (fun  S =>  ∑ i, S.1 i * S.2.1 i * S.2.2 i)
   (by
     intro a S L T
@@ -74,11 +74,11 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).charges := Tri
 
 /-- The cubic anomaly equation. -/
 @[simp]
-def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).charges) :=
+def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).Charges) :=
   (accCubeTriLinSymm).toCubic
 
 
-lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).charges) :
+lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
   rw [accCube, TriLinearSymm.toCubic]
   change  accCubeTriLinSymm S S S = _
@@ -104,7 +104,7 @@ def PureU1 (n : ℕ) : ACCSystem where
 
 /-- An equivalence of vector spaces of charges when the number of fermions is equal. -/
 def pureU1EqCharges {n m : ℕ} (h : n = m):
-    (PureU1 n).charges  ≃ₗ[ℚ] (PureU1 m).charges where
+    (PureU1 n).Charges  ≃ₗ[ℚ] (PureU1 m).Charges where
   toFun f := f ∘ Fin.cast h.symm
   invFun f := f ∘ Fin.cast h
   map_add' _ _ := rfl
@@ -154,7 +154,7 @@ lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
 
 namespace PureU1
 
-lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).charges) (j : Fin n) :
+lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
     (∑ i : Fin k, (f i)) j = ∑ i : Fin k, (f i) j := by
   induction k
   simp

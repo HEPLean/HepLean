@@ -26,7 +26,7 @@ identity.
 
 noncomputable section
 
-namespace spaceTime
+namespace SpaceTime
 
 open Manifold
 open Matrix
@@ -44,14 +44,14 @@ These matrices form the Lorentz group, which we will define in the next section 
 /-- We say a matrix `Λ` preserves `ηLin` if for all `x` and `y`,
   `ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y`.  -/
 def PreservesηLin (Λ : Matrix (Fin 4) (Fin 4) ℝ) : Prop :=
-  ∀ (x y : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y
+  ∀ (x y : SpaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ y) = ηLin x y
 
 namespace PreservesηLin
 
 variable  (Λ : Matrix (Fin 4) (Fin 4) ℝ)
 
 lemma iff_norm : PreservesηLin Λ ↔
-    ∀ (x : spaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ x) = ηLin x x := by
+    ∀ (x : SpaceTime), ηLin (Λ *ᵥ x) (Λ *ᵥ x) = ηLin x x := by
   refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
   have hp := h (x + y)
   have hn := h (x - y)
@@ -75,7 +75,7 @@ lemma iff_det_selfAdjoint : PreservesηLin Λ ↔
   simpa [det_eq_ηLin] using h1
 
 lemma iff_on_right : PreservesηLin Λ ↔
-    ∀ (x y : spaceTime), ηLin x ((η * Λᵀ * η * Λ) *ᵥ y) = ηLin x y := by
+    ∀ (x y : SpaceTime), ηLin x ((η * Λᵀ * η * Λ) *ᵥ y) = ηLin x y := by
   apply Iff.intro
   intro h x y
   have h1 := h x y
@@ -138,10 +138,10 @@ We show that the Lorentz group is indeed a group.
 -/
 
 /-- The Lorentz group is the subset of matrices which preserve ηLin. -/
-def lorentzGroup : Type := {Λ : Matrix (Fin 4) (Fin 4) ℝ // PreservesηLin Λ}
+def LorentzGroup : Type := {Λ : Matrix (Fin 4) (Fin 4) ℝ // PreservesηLin Λ}
 
 @[simps mul_coe one_coe inv div]
-instance lorentzGroupIsGroup : Group lorentzGroup where
+instance lorentzGroupIsGroup : Group LorentzGroup where
   mul A B := ⟨A.1 * B.1, PreservesηLin.mul A.2 B.2⟩
   mul_assoc A B C := by
     apply Subtype.eq
@@ -160,20 +160,20 @@ instance lorentzGroupIsGroup : Group lorentzGroup where
     exact (PreservesηLin.iff_matrix A.1).mp A.2
 
 /-- Notation for the Lorentz group. -/
-scoped[spaceTime] notation (name := lorentzGroup_notation) "𝓛" => lorentzGroup
+scoped[SpaceTime] notation (name := lorentzGroup_notation) "𝓛" => LorentzGroup
 
 
 /-- `lorentzGroup` has the subtype topology. -/
-instance : TopologicalSpace lorentzGroup := instTopologicalSpaceSubtype
+instance : TopologicalSpace LorentzGroup := instTopologicalSpaceSubtype
 
-namespace lorentzGroup
+namespace LorentzGroup
 
-lemma coe_inv (A : 𝓛) : (A⁻¹).1 = A.1⁻¹:= by
+lemma coe_inv (A : LorentzGroup) : (A⁻¹).1 = A.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact (PreservesηLin.iff_matrix A.1).mp A.2
 
 /-- The transpose of an matrix in the Lorentz group is an element of the Lorentz group. -/
-def transpose (Λ : lorentzGroup) : lorentzGroup := ⟨Λ.1ᵀ, (PreservesηLin.iff_transpose Λ.1).mp Λ.2⟩
+def transpose (Λ : LorentzGroup) : LorentzGroup := ⟨Λ.1ᵀ, (PreservesηLin.iff_transpose Λ.1).mp Λ.2⟩
 
 /-!
 
@@ -186,7 +186,7 @@ embedding.
 -/
 
 /-- The homomorphism of the Lorentz group into `GL (Fin 4) ℝ`. -/
-def toGL : 𝓛 →* GL (Fin 4) ℝ where
+def toGL : LorentzGroup →* GL (Fin 4) ℝ where
   toFun A := ⟨A.1, (A⁻¹).1, mul_eq_one_comm.mpr $ (PreservesηLin.iff_matrix A.1).mp A.2,
     (PreservesηLin.iff_matrix A.1).mp A.2⟩
   map_one' := by
@@ -206,7 +206,7 @@ lemma toGL_injective : Function.Injective toGL := by
 /-- The homomorphism from the Lorentz Group into the monoid of matrices times the opposite of
   the monoid of matrices. -/
 @[simps!]
-def toProd : 𝓛 →* (Matrix (Fin 4) (Fin 4) ℝ) × (Matrix (Fin 4) (Fin 4) ℝ)ᵐᵒᵖ :=
+def toProd : LorentzGroup →* (Matrix (Fin 4) (Fin 4) ℝ) × (Matrix (Fin 4) (Fin 4) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
 lemma toProd_eq_transpose_η  : toProd A = (A.1, ⟨η * A.1ᵀ * η⟩) := rfl
@@ -248,11 +248,11 @@ lemma toGL_embedding : Embedding toGL.toFun where
     exact exists_exists_and_eq_and
 
 
-instance : TopologicalGroup 𝓛 := Inducing.topologicalGroup toGL toGL_embedding.toInducing
+instance : TopologicalGroup LorentzGroup := Inducing.topologicalGroup toGL toGL_embedding.toInducing
 
 
 
-end lorentzGroup
+end LorentzGroup
 
 
-end spaceTime
+end SpaceTime

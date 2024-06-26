@@ -24,18 +24,18 @@ namespace PureU1
 
 /-- The permutation group of the n-fermions. -/
 @[simp]
-def permGroup (n  : ℕ) := Equiv.Perm (Fin n)
+def PermGroup (n  : ℕ) := Equiv.Perm (Fin n)
 
-instance {n : ℕ} : Group (permGroup n) := by
-  simp [permGroup]
+instance {n : ℕ} : Group (PermGroup n) := by
+  simp [PermGroup]
   infer_instance
 
 section Charges
 
 /-- The image of an element of `permGroup` under the representation on charges. -/
 @[simps!]
-def chargeMap {n : ℕ} (f : permGroup n) :
-    (PureU1 n).charges  →ₗ[ℚ] (PureU1 n).charges where
+def chargeMap {n : ℕ} (f : PermGroup n) :
+    (PureU1 n).Charges  →ₗ[ℚ] (PureU1 n).Charges where
   toFun S := S ∘ f.toFun
   map_add' S T := by
     funext i
@@ -49,10 +49,10 @@ open PureU1Charges in
 
 /-- The representation of `permGroup` acting on the vector space of charges. -/
 @[simp]
-def permCharges {n : ℕ} : Representation ℚ (permGroup n) (PureU1 n).charges where
+def permCharges {n : ℕ} : Representation ℚ (PermGroup n) (PureU1 n).Charges where
   toFun f := chargeMap f⁻¹
   map_mul' f g :=by
-    simp only [permGroup, mul_inv_rev]
+    simp only [PermGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
     funext i
@@ -63,14 +63,14 @@ def permCharges {n : ℕ} : Representation ℚ (permGroup n) (PureU1 n).charges 
     funext i
     rfl
 
-lemma accGrav_invariant {n : ℕ} (f : (permGroup n)) (S : (PureU1 n).charges) :
+lemma accGrav_invariant {n : ℕ} (f : (PermGroup n)) (S : (PureU1 n).Charges) :
     PureU1.accGrav n (permCharges f S) = accGrav n S := by
   simp [accGrav, permCharges]
   apply (Equiv.Perm.sum_comp _ _ _ ?_)
   simp
 
 open BigOperators
-lemma accCube_invariant {n : ℕ} (f : (permGroup n)) (S : (PureU1 n).charges) :
+lemma accCube_invariant {n : ℕ} (f : (PermGroup n)) (S : (PureU1 n).Charges) :
     accCube n (permCharges f S) = accCube n S := by
   rw [accCube_explicit, accCube_explicit]
   change  ∑ i : Fin n, ((((fun a => a^3) ∘ S) (f.symm i))) = _
@@ -82,7 +82,7 @@ end Charges
 /-- The permutations acting on the ACC system. -/
 @[simp]
 def FamilyPermutations (n : ℕ) : ACCSystemGroupAction (PureU1 n) where
-  group := permGroup n
+  group := PermGroup n
   groupInst := inferInstance
   rep := permCharges
   linearInvariant := by
@@ -97,7 +97,7 @@ def FamilyPermutations (n : ℕ) : ACCSystemGroupAction (PureU1 n) where
   cubicInvariant := accCube_invariant
 
 
-lemma FamilyPermutations_charges_apply (S : (PureU1 n).charges)
+lemma FamilyPermutations_charges_apply (S : (PureU1 n).Charges)
     (i : Fin n) (f : (FamilyPermutations n).group) :
     ((FamilyPermutations n).rep f S) i = S (f.invFun i) := by
   rfl

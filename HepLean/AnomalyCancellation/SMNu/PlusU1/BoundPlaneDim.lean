@@ -23,11 +23,11 @@ open BigOperators
 
 /-- A proposition which is true if for a given `n` a plane of charges of dimension `n` exists
 in which each point is a solution. -/
-def existsPlane (n : ℕ) : Prop := ∃ (B : Fin n → (PlusU1 3).charges),
-   LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).isSolution (∑ i, f i • B i)
+def ExistsPlane (n : ℕ) : Prop := ∃ (B : Fin n → (PlusU1 3).Charges),
+   LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i)
 
-lemma exists_plane_exists_basis {n : ℕ} (hE : existsPlane n) :
-    ∃ (B : Fin 11 ⊕ Fin n → (PlusU1 3).charges), LinearIndependent ℚ B := by
+lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
+    ∃ (B : Fin 11 ⊕ Fin n → (PlusU1 3).Charges), LinearIndependent ℚ B := by
   obtain ⟨E, hE1, hE2⟩ := hE
   obtain ⟨B, hB1, hB2⟩ := eleven_dim_plane_of_no_sols_exists
   let Y := Sum.elim B E
@@ -59,11 +59,11 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : existsPlane n) :
   | Sum.inr i => exact h4 i
 
 
-theorem plane_exists_dim_le_7 {n : ℕ} (hn : existsPlane n) : n ≤ 7 := by
+theorem plane_exists_dim_le_7 {n : ℕ} (hn : ExistsPlane n) : n ≤ 7 := by
   obtain ⟨B, hB⟩ := exists_plane_exists_basis hn
   have h1 := LinearIndependent.fintype_card_le_finrank hB
   simp at h1
-  rw [show FiniteDimensional.finrank ℚ (PlusU1 3).charges = 18 from
+  rw [show FiniteDimensional.finrank ℚ (PlusU1 3).Charges = 18 from
     FiniteDimensional.finrank_fin_fun ℚ] at h1
   exact Nat.le_of_add_le_add_left h1
 
