@@ -41,7 +41,7 @@ jobs:
         run: | 
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
 
-      - name: lint HepLean
+      - name: runLinter on HepLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint
         uses: liskin/gh-problem-matcher-wrap@v3
@@ -50,7 +50,7 @@ jobs:
           run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter HepLean
 
   style_lint: 
-    name: Lint style
+    name: Python based style linter
     runs-on: ubuntu-latest
     steps:
       - name: cleanup

@@ -1,5 +1,7 @@
 name = "hep_lean"
 defaultTargets = ["HepLean"]
+# -- Optional inclusion for LeanCopilot
+#moreLinkArgs = ["-L./.lake/packages/LeanCopilot/.lake/build/lib", "-lctranslate2"]
 
 [[require]]
 name = "mathlib"
@@ -12,6 +14,18 @@ rev = "main"
 
 [[lean_lib]]
 name = "HepLean"
+
+# -- Optional inclusion of tryAtEachStep
+#[[require]]
+#name = "tryAtEachStep" 
+#git = "https://github.com/dwrensha/tryAtEachStep"
+#rev = "main"
+
+# -- Optional inclusion of LeanCopilot
+#[[require]]
+#name = "LeanCopilot"
+#git = "https://github.com/lean-dojo/LeanCopilot.git"
+#rev = "v1.2.2"
 
 [[lean_exe]]
 name = "check_file_imports"
