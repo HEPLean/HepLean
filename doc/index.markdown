@@ -58,5 +58,5 @@ Any area not appearing in the below table has zero coverage in HepLean.
 | [Feynman diagrams](https://heplean.github.io/HepLean/docs/HepLean/FeynmanDiagrams/Basic.html) | ✔️ | ✘  | ✘  |  |
 | [Lorentz Group](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html) | ✔️ | ✘  | ✘  | New lemmas etc.|
 | [2HDM](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html) | ✔️ | ✘  | ✘  | New lemmas etc. |
-
+| All other areas |  ✘ | ✘  | ✘  | New lemmas etc.|
 
