@@ -3,7 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean
+import Batteries.Lean.HashSet
+import Lean
 /-!
 
 # Check file imports
