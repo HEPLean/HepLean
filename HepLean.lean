@@ -73,7 +73,6 @@ import HepLean.SpaceTime.LorentzGroup.Proper
 import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.Metric
 import HepLean.SpaceTime.SL2C.Basic
-import HepLean.StandardModel.Basic
-import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.TargetSpace
+import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.Representations
