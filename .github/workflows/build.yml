@@ -38,11 +38,8 @@ jobs:
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
       - name: check file imports 
-        id : check_file_imports 
-        uses: liskin/gh-problem-matcher-wrap@v3
-        with : 
-          linters : gcc 
-          run : env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports
+        run: | 
+          env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports
 
       - name: lint HepLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
