@@ -27,6 +27,12 @@ name = "HepLean"
 #git = "https://github.com/lean-dojo/LeanCopilot.git"
 #rev = "v1.2.2"
 
+# lean_exe commands defined specifically for HepLean.
+
 [[lean_exe]]
 name = "check_file_imports"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "type_former_lint"
 srcDir = "scripts"
