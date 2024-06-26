@@ -28,7 +28,10 @@ jobs:
       - name: build cache
         run: |
           lake exe cache get
- 
+      - name: check file imports 
+        run: | 
+          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
+  
       - name: build HepLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3
@@ -37,10 +40,7 @@ jobs:
           run: |
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
-      - name: check file imports 
-        run: | 
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
-
+   
       - name: lint HepLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint
