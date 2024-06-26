@@ -1,6 +1,5 @@
 import HepLean.AnomalyCancellation.Basic
 import HepLean.AnomalyCancellation.GroupActions
-import HepLean.AnomalyCancellation.LinearMaps
 import HepLean.AnomalyCancellation.MSSMNu.B3
 import HepLean.AnomalyCancellation.MSSMNu.Basic
 import HepLean.AnomalyCancellation.MSSMNu.HyperCharge
@@ -59,7 +58,8 @@ import HepLean.FlavorPhysics.CKMMatrix.Relations
 import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
-import HepLean.GroupTheory.SO3.Basic
+import HepLean.Mathematics.SO3.Basic
+import HepLean.Mathematics.LinearMaps
 import HepLean.SpaceTime.AsSelfAdjointMatrix
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
