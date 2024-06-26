@@ -33,6 +33,5 @@ def potential (Φ1 Φ2 : higgsField)
   + (lam₆ * Φ1.normSq x * (Φ1.innerProd Φ2) x + conj lam₆ * Φ1.normSq x * (Φ2.innerProd Φ1) x).re
   + (lam₇ * Φ2.normSq x * (Φ1.innerProd Φ2) x + conj lam₇ * Φ2.normSq x * (Φ2.innerProd Φ1) x).re
 
-
 end
 end TwoHDM

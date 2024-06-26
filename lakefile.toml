@@ -12,3 +12,7 @@ rev = "main"
 
 [[lean_lib]]
 name = "HepLean"
+
+[[lean_exe]]
+name = "check_file_imports"
+srcDir = "scripts"
