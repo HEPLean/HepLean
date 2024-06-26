@@ -13,18 +13,18 @@ We define
 - `FourVelocity` : as a space-time element with norm 1 and future pointing.
 
 -/
-open spaceTime
+open SpaceTime
 
 /-- A `spaceTime` vector for which `ηLin x x = 1`. -/
 @[simp]
-def PreFourVelocity : Set spaceTime :=
+def PreFourVelocity : Set SpaceTime :=
   fun x => ηLin x x = 1
 
 instance : TopologicalSpace PreFourVelocity := by
   exact instTopologicalSpaceSubtype
 
 namespace PreFourVelocity
-lemma mem_PreFourVelocity_iff {x : spaceTime} : x ∈ PreFourVelocity ↔ ηLin x x = 1 := by
+lemma mem_PreFourVelocity_iff {x : SpaceTime} : x ∈ PreFourVelocity ↔ ηLin x x = 1 := by
   rfl
 
 /-- The negative of a `PreFourVelocity` as a `PreFourVelocity`. -/
@@ -228,7 +228,7 @@ lemma η_pos (u v : FourVelocity) : 0 < ηLin u v := by
 lemma one_plus_ne_zero (u v : FourVelocity) :  1 + ηLin u v ≠ 0 := by
   linarith [η_pos u v]
 
-lemma η_continuous (u : spaceTime) : Continuous (fun (a : FourVelocity) => ηLin u a) := by
+lemma η_continuous (u : SpaceTime) : Continuous (fun (a : FourVelocity) => ηLin u a) := by
   simp only [ηLin_expand]
   refine Continuous.add ?_ ?_
   refine Continuous.add ?_ ?_

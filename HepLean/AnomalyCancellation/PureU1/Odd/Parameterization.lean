@@ -77,13 +77,13 @@ lemma anomalyFree_param {S : (PureU1 (2 * n + 1)).Sols}
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠  0`.
 In this case our parameterization above will be able to recover this point. -/
-def genericCase (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
+def GenericCase (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
   ∀ (g f : Fin n.succ → ℚ)  (_ : S.val = P g + P! f) ,
   accCubeTriLinSymm (P g) (P g) (P! f) ≠  0
 
 lemma genericCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
     (hs : ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f ∧
-    accCubeTriLinSymm (P g) (P g) (P! f) ≠  0) : genericCase S := by
+    accCubeTriLinSymm (P g) (P g) (P! f) ≠  0) : GenericCase S := by
   intro g f hS hC
   obtain ⟨g', f', hS', hC'⟩ := hs
   rw [hS] at hS'
@@ -93,13 +93,13 @@ lemma genericCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠  0`.
 In this case we will show that S is zero if it is true for all permutations. -/
-def specialCase  (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
+def SpecialCase  (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
   ∀ (g f : Fin n.succ → ℚ) (_ : S.val = P g + P! f) ,
   accCubeTriLinSymm (P g) (P g) (P! f) = 0
 
 lemma specialCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
     (hs : ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f ∧
-    accCubeTriLinSymm (P g) (P g) (P! f) =  0) : specialCase S := by
+    accCubeTriLinSymm (P g) (P g) (P! f) =  0) : SpecialCase S := by
   intro g f hS
   obtain ⟨g', f', hS', hC'⟩ := hs
   rw [hS] at hS'
@@ -108,7 +108,7 @@ lemma specialCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
   exact hC'
 
 lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
-    genericCase S ∨ specialCase S := by
+    GenericCase S ∨ SpecialCase S := by
   obtain ⟨g, f, h⟩ := span_basis S.1.1
   have h1 :  accCubeTriLinSymm (P g) (P g) (P! f) ≠  0 ∨
      accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
@@ -117,7 +117,7 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
   exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
   exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
-theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : genericCase S) :
+theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
     ∃ g f a,  S = parameterization g f a := by
   obtain ⟨g, f, hS⟩ := span_basis S.1.1
   use g, f, (accCubeTriLinSymm (P! f) (P! f) (P g))⁻¹
@@ -135,8 +135,8 @@ theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : genericCase S) :
 
 
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
-    (h : specialCase S) :
-      lineInCubic S.1.1 := by
+    (h : SpecialCase S) :
+      LineInCubic S.1.1 := by
   intro g f hS a b
   erw [TriLinearSymm.toCubic_add]
   rw [HomogeneousCubic.map_smul, HomogeneousCubic.map_smul]
@@ -155,15 +155,15 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
 
 lemma special_case_lineInCubic_perm {S : (PureU1 (2 * n.succ + 1)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ + 1)).group),
-    specialCase ((FamilyPermutations (2 * n.succ + 1)).solAction.toFun S M)) :
-    lineInCubicPerm S.1.1 := by
+    SpecialCase ((FamilyPermutations (2 * n.succ + 1)).solAction.toFun S M)) :
+    LineInCubicPerm S.1.1 := by
   intro M
   have hM := special_case_lineInCubic (h M)
   exact hM
 
 theorem special_case {S : (PureU1 (2 * n.succ.succ + 1)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ.succ + 1)).group),
-    specialCase ((FamilyPermutations (2 * n.succ.succ + 1)).solAction.toFun S M)) :
+    SpecialCase ((FamilyPermutations (2 * n.succ.succ + 1)).solAction.toFun S M)) :
     S.1.1 = 0 := by
   have ht :=  special_case_lineInCubic_perm h
   exact lineInCubicPerm_zero ht

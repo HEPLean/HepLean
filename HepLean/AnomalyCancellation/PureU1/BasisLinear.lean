@@ -23,7 +23,7 @@ namespace BasisLinear
 /-- The basis elements as charges, defined to have a `1` in the `j`th position and a `-1` in the
 last position. -/
 @[simp]
-def asCharges (j : Fin n) : (PureU1 n.succ).charges :=
+def asCharges (j : Fin n) : (PureU1 n.succ).Charges :=
  (fun i =>
   if i = j.castSucc then
     1

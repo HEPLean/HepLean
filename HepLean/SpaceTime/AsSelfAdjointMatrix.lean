@@ -14,7 +14,7 @@ and the vector space of 2×2-complex self-adjoint matrices.
 In this file we define this linear equivalence in `toSelfAdjointMatrix`.
 
 -/
-namespace spaceTime
+namespace SpaceTime
 
 open Matrix
 open MatrixGroups
@@ -22,11 +22,11 @@ open Complex
 
 /-- A 2×2-complex matrix formed from a space-time point. -/
 @[simp]
-def toMatrix (x : spaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
+def toMatrix (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![x 0 + x 3, x 1 - x 2 * I; x 1 + x 2 * I, x 0 - x 3]
 
 /-- The matrix `x.toMatrix` for `x ∈ spaceTime` is self adjoint. -/
-lemma toMatrix_isSelfAdjoint (x : spaceTime) : IsSelfAdjoint x.toMatrix := by
+lemma toMatrix_isSelfAdjoint (x : SpaceTime) : IsSelfAdjoint x.toMatrix := by
   rw [isSelfAdjoint_iff, star_eq_conjTranspose, ← Matrix.ext_iff]
   intro i j
   fin_cases i <;> fin_cases j <;>
@@ -35,17 +35,17 @@ lemma toMatrix_isSelfAdjoint (x : spaceTime) : IsSelfAdjoint x.toMatrix := by
 
 /-- A self-adjoint matrix formed from a space-time point. -/
 @[simps!]
-def toSelfAdjointMatrix' (x : spaceTime) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
+def toSelfAdjointMatrix' (x : SpaceTime) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   ⟨x.toMatrix, toMatrix_isSelfAdjoint x⟩
 
 /-- A self-adjoint matrix formed from a space-time point. -/
 @[simp]
-noncomputable def fromSelfAdjointMatrix' (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) : spaceTime :=
+noncomputable def fromSelfAdjointMatrix' (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) : SpaceTime :=
   ![1/2 * (x.1 0 0 + x.1 1 1).re, (x.1 1 0).re, (x.1 1 0).im , (x.1 0 0 - x.1 1 1).re/2]
 
 /-- The linear equivalence between the vector-space `spaceTime` and self-adjoint
   2×2-complex matrices. -/
-noncomputable def toSelfAdjointMatrix : spaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
+noncomputable def toSelfAdjointMatrix : SpaceTime ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
   toFun := toSelfAdjointMatrix'
   invFun := fromSelfAdjointMatrix'
   left_inv x := by
@@ -53,7 +53,7 @@ noncomputable def toSelfAdjointMatrix : spaceTime ≃ₗ[ℝ] selfAdjoint (Matri
       cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons, head_fin_const,
       add_add_sub_cancel, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one,
       sub_self, add_zero, add_im, mul_im, zero_add, add_sub_sub_cancel, half_add_self]
-    field_simp [spaceTime]
+    field_simp [SpaceTime]
     ext1 x
     fin_cases x <;> rfl
   right_inv x := by
@@ -83,10 +83,10 @@ noncomputable def toSelfAdjointMatrix : spaceTime ≃ₗ[ℝ] selfAdjoint (Matri
       field_simp [fromSelfAdjointMatrix', toMatrix, conj_ofReal, smul_apply]
        <;> ring
 
-lemma det_eq_ηLin (x : spaceTime) : det (toSelfAdjointMatrix x).1 = ηLin x x := by
+lemma det_eq_ηLin (x : SpaceTime) : det (toSelfAdjointMatrix x).1 = ηLin x x := by
   simp [toSelfAdjointMatrix, ηLin_expand]
   ring_nf
   simp only [Fin.isValue, I_sq, mul_neg, mul_one]
   ring
 
-end spaceTime
+end SpaceTime

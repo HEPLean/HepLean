@@ -34,14 +34,14 @@ def ACCSystemChargesMk (n : ℕ) : ACCSystemCharges where
 namespace ACCSystemCharges
 
 /-- The charges as functions from `Fin χ.numberCharges → ℚ`. -/
-def charges (χ : ACCSystemCharges) : Type := Fin χ.numberCharges → ℚ
+def Charges (χ : ACCSystemCharges) : Type := Fin χ.numberCharges → ℚ
 
 /--
   An instance to provide the necessary operations and properties for `charges` to form an additive
   commutative monoid.
 -/
 @[simps!]
-instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.charges :=
+instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges :=
   Pi.addCommMonoid
 
 /--
@@ -49,17 +49,17 @@ instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.charges
   the field `ℚ`.
 -/
 @[simps!]
-instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.charges :=
+instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.Charges :=
   Pi.module _ _ _
 
 /--
   An instance provides the necessary operations and properties for `charges` to form an additive
   commutative group.
 -/
-instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.charges :=
+instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.Charges :=
   Module.addCommMonoidToAddCommGroup ℚ
 
-instance (χ : ACCSystemCharges) : Module.Finite ℚ χ.charges :=
+instance (χ : ACCSystemCharges) : Module.Finite ℚ χ.Charges :=
   FiniteDimensional.finiteDimensional_pi ℚ
 
 end ACCSystemCharges
@@ -69,14 +69,14 @@ structure ACCSystemLinear extends ACCSystemCharges where
   /-- The number of linear ACCs. -/
   numberLinear : ℕ
   /-- The linear ACCs. -/
-  linearACCs : Fin numberLinear → (toACCSystemCharges.charges →ₗ[ℚ] ℚ)
+  linearACCs : Fin numberLinear → (toACCSystemCharges.Charges →ₗ[ℚ] ℚ)
 
 namespace ACCSystemLinear
 
 /-- The type of solutions to the linear ACCs. -/
 structure LinSols (χ : ACCSystemLinear) where
   /-- The underlying charge. -/
-  val : χ.1.charges
+  val : χ.1.Charges
   /-- The condition that the charge satisfies the linear ACCs. -/
   linearSol : ∀ i : Fin χ.numberLinear, χ.linearACCs i val = 0
 
@@ -154,7 +154,7 @@ instance linSolsAddCommGroup (χ : ACCSystemLinear) : AddCommGroup χ.LinSols :=
   Module.addCommMonoidToAddCommGroup ℚ
 
 /-- The inclusion of `LinSols` into `charges`. -/
-def linSolsIncl (χ : ACCSystemLinear) : χ.LinSols →ₗ[ℚ] χ.charges where
+def linSolsIncl (χ : ACCSystemLinear) : χ.LinSols →ₗ[ℚ] χ.Charges where
   toFun S := S.val
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
@@ -166,7 +166,7 @@ structure ACCSystemQuad extends ACCSystemLinear where
   /-- The number of quadratic ACCs. -/
   numberQuadratic : ℕ
   /-- The quadratic ACCs. -/
-  quadraticACCs : Fin numberQuadratic → HomogeneousQuadratic toACCSystemCharges.charges
+  quadraticACCs : Fin numberQuadratic → HomogeneousQuadratic toACCSystemCharges.Charges
 
 namespace ACCSystemQuad
 
@@ -211,7 +211,7 @@ def linSolsInclQuadSolsZero (χ : ACCSystemQuad) (h : χ.numberQuadratic = 0) :
   map_smul' _ _ := rfl
 
 /-- The inclusion of quadratic solutions into all charges. -/
-def quadSolsIncl (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.charges :=
+def quadSolsIncl (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.Charges :=
   MulActionHom.comp χ.linSolsIncl.toMulActionHom χ.quadSolsInclLinSols
 
 end ACCSystemQuad
@@ -219,7 +219,7 @@ end ACCSystemQuad
 /-- The type of charges plus the anomaly cancellation conditions. -/
 structure ACCSystem extends ACCSystemQuad where
   /-- The cubic ACC. -/
-  cubicACC : HomogeneousCubic toACCSystemCharges.charges
+  cubicACC : HomogeneousCubic toACCSystemCharges.Charges
 
 namespace ACCSystem
 
@@ -236,7 +236,7 @@ lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
   simp_all only
 
 /-- We say a charge S is a solution if it extends to a solution. -/
-def isSolution (χ : ACCSystem) (S : χ.charges) : Prop :=
+def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
  ∃ (sol : χ.Sols), sol.val = S
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `Sols`. -/
@@ -262,13 +262,13 @@ def solsInclLinSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.LinSols :=
   MulActionHom.comp χ.quadSolsInclLinSols χ.solsInclQuadSols
 
 /-- The inclusion of `Sols` into `LinSols`. -/
-def solsIncl (χ : ACCSystem) : χ.Sols →[ℚ] χ.charges :=
+def solsIncl (χ : ACCSystem) : χ.Sols →[ℚ] χ.Charges :=
   MulActionHom.comp χ.quadSolsIncl χ.solsInclQuadSols
 
 /-- The structure of a map between two ACCSystems. -/
 structure Hom (χ η : ACCSystem) where
   /-- The linear map between vector spaces of charges. -/
-  charges : χ.charges →ₗ[ℚ] η.charges
+  charges : χ.Charges →ₗ[ℚ] η.Charges
   /-- The map between solutions. -/
   anomalyFree : χ.Sols → η.Sols
   /-- The condition that the map commutes with the relevant inclusions. -/

@@ -20,7 +20,7 @@ open MSSMACCs
 open BigOperators
 
 /-- The hypercharge as an element of `MSSMACC.charges`. -/
-def YAsCharge : MSSMACC.charges := toSpecies.invFun
+def YAsCharge : MSSMACC.Charges := toSpecies.invFun
   ⟨fun s => fun i =>
     match s, i with
     | 0, 0 => 1

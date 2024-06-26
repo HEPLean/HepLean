@@ -36,11 +36,11 @@ open VectorLikeOddPlane
 
 /-- A  property on `LinSols`, satisfied if every point on the line between the two planes
 in the basis through that point is in the cubic. -/
-def lineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
+def LineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (g f : Fin n → ℚ)  (_ : S.val = Pa g f) (a b : ℚ) ,
   accCube (2 * n + 1) (a • P g + b • P! f) = 0
 
-lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : lineInCubic S) :
+lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
     ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) (a b : ℚ) ,
     3 * a * b * (a * accCubeTriLinSymm (P g) (P g) (P! f)
     + b * accCubeTriLinSymm (P! f) (P! f) (P g)) = 0 := by
@@ -55,7 +55,7 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : lineInCubic S) 
   ring
 
 
-lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : lineInCubic S) :
+lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
     ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val =  P g + P! f),
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
@@ -65,19 +65,19 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : lineInCubic S
 
 
 /-- We say a `LinSol` satisfies  `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
-def lineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
+def LineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (M : (FamilyPermutations (2 * n + 1)).group ),
-    lineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
+    LineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
 
 /-- If `lineInCubicPerm S` then `lineInCubic S`.  -/
-lemma lineInCubicPerm_self {S : (PureU1 (2 * n + 1)).LinSols} (hS : lineInCubicPerm S) :
-    lineInCubic S := hS 1
+lemma lineInCubicPerm_self {S : (PureU1 (2 * n + 1)).LinSols} (hS : LineInCubicPerm S) :
+    LineInCubic S := hS 1
 
 /-- If `lineInCubicPerm S` then `lineInCubicPerm (M S)` for all permutations `M`. -/
 lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
-    (hS : lineInCubicPerm S) (M' : (FamilyPermutations (2 * n + 1)).group) :
-    lineInCubicPerm ((FamilyPermutations (2 * n + 1)).linSolRep M' S) := by
-  rw [lineInCubicPerm]
+    (hS : LineInCubicPerm S) (M' : (FamilyPermutations (2 * n + 1)).group) :
+    LineInCubicPerm ((FamilyPermutations (2 * n + 1)).linSolRep M' S) := by
+  rw [LineInCubicPerm]
   intro M
   have ht : ((FamilyPermutations (2 * n + 1)).linSolRep M)
     ((FamilyPermutations (2 * n + 1)).linSolRep M' S)
@@ -88,7 +88,7 @@ lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
 
 
 lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
-    (LIC : lineInCubicPerm S) :
+    (LIC : LineInCubicPerm S) :
     ∀ (j : Fin n.succ) (g f : Fin n.succ → ℚ) (_ : S.val = Pa g f) ,
       (S.val (δ!₂ j) - S.val (δ!₁ j))
       * accCubeTriLinSymm (P g) (P g) (basis!AsCharges j) = 0 := by
@@ -134,8 +134,8 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   ring
 
 lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
-    (LIC : lineInCubicPerm S) :
-    lineInPlaneProp ((S.val (δ!₂ 0)), ((S.val (δ!₁ 0)), (S.val δ!₃))) := by
+    (LIC : LineInCubicPerm S) :
+    LineInPlaneProp ((S.val (δ!₂ 0)), ((S.val (δ!₁ 0)), (S.val δ!₃))) := by
   obtain ⟨g, f, hfg⟩ := span_basis S
   have h1 := lineInCubicPerm_swap LIC  0 g f hfg
   rw [P_P_P!_accCube' g f hfg] at h1
@@ -152,8 +152,8 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
   linear_combination h1
 
 lemma lineInCubicPerm_last_perm  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
-    (LIC : lineInCubicPerm S) : lineInPlaneCond S := by
-  refine @Prop_three (2 * n.succ.succ + 1) lineInPlaneProp S (δ!₂ 0) (δ!₁ 0)
+    (LIC : LineInCubicPerm S) : LineInPlaneCond S := by
+  refine @Prop_three (2 * n.succ.succ + 1) LineInPlaneProp S (δ!₂ 0) (δ!₁ 0)
     δ!₃ ?_ ?_ ?_ ?_
   simp [Fin.ext_iff, δ!₂, δ!₁]
   simp [Fin.ext_iff, δ!₂, δ!₃]
@@ -162,11 +162,11 @@ lemma lineInCubicPerm_last_perm  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   exact lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 
 lemma lineInCubicPerm_constAbs  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
-    (LIC : lineInCubicPerm S) : constAbs S.val :=
+    (LIC : LineInCubicPerm S) : ConstAbs S.val :=
   linesInPlane_constAbs (lineInCubicPerm_last_perm LIC)
 
 theorem  lineInCubicPerm_zero {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
-    (LIC : lineInCubicPerm S) : S = 0 :=
+    (LIC : LineInCubicPerm S) : S = 0 :=
   ConstAbs.boundary_value_odd S (lineInCubicPerm_constAbs LIC)
 
 end Odd

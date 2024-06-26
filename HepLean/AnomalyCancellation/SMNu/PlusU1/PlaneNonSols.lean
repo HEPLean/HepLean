@@ -26,40 +26,40 @@ open BigOperators
 namespace ElevenPlane
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₀ : (PlusU1 3).charges := ![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₀ : (PlusU1 3).Charges := ![1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₁ : (PlusU1 3).charges := ![0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₁ : (PlusU1 3).Charges := ![0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₂ : (PlusU1 3).charges := ![0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₂ : (PlusU1 3).Charges := ![0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₃ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₃ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₄ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₄ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₅ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+def B₅ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₆ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+def B₆ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₇ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+def B₇ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₈  : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+def B₈  : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₉ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0]
+def B₉ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₁₀ : (PlusU1 3).charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+def B₁₀ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 
 /-- The charge assignment forming a basis of the plane. -/
-def B : Fin 11 → (PlusU1 3).charges := fun i =>
+def B : Fin 11 → (PlusU1 3).Charges := fun i =>
   match i with
   | 0 => B₀
   | 1 => B₁
@@ -105,7 +105,7 @@ lemma on_accQuad (f : Fin 11 → ℚ) :
   ring
 
 
-lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i))
+lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11)  : quadCoeff k * (f k)^2 = 0 := by
   obtain ⟨S, hS⟩ := hS
   have hQ := quadSol S.1
@@ -120,46 +120,46 @@ lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSol
   fin_cases i <;> rfl
   exact sq_nonneg (f i)
 
-lemma isSolution_f0 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 0 = 0 := by
+lemma isSolution_f0 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 0 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 0)
 
-lemma isSolution_f1 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 1 = 0 := by
+lemma isSolution_f1 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 1 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 1)
 
-lemma isSolution_f2 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 2 = 0 := by
+lemma isSolution_f2 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 2 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 2)
 
-lemma isSolution_f3 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 3 = 0 := by
+lemma isSolution_f3 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 3 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 3)
 
-lemma isSolution_f4 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 4 = 0 := by
+lemma isSolution_f4 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 4 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 4)
 
-lemma isSolution_f5 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 5 = 0 := by
+lemma isSolution_f5 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 5 = 0 := by
   have h := isSolution_quadCoeff_f_sq_zero f hS 5
   rw [mul_eq_zero] at h
   change 1 = 0 ∨ _ = _ at h
   simpa using h
 
-lemma isSolution_f6 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 6 = 0 := by
+lemma isSolution_f6 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 6 = 0 := by
   have h := isSolution_quadCoeff_f_sq_zero f hS 6
   rw [mul_eq_zero] at h
   change 1 = 0 ∨ _ = _ at h
   simpa using h
 
-lemma isSolution_f7 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 7 = 0 := by
+lemma isSolution_f7 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 7 = 0 := by
   have h := isSolution_quadCoeff_f_sq_zero f hS 7
   rw [mul_eq_zero] at h
   change 1 = 0 ∨ _ = _ at h
   simpa using h
 
-lemma isSolution_f8 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) : f 8 = 0 := by
+lemma isSolution_f8 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 8 = 0 := by
   have h := isSolution_quadCoeff_f_sq_zero f hS 8
   rw [mul_eq_zero] at h
   change 1 = 0 ∨ _ = _ at h
   simpa using h
 
-lemma isSolution_sum_part (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_sum_part (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = f 9 • B₉ + f 10 • B₁₀ := by
   rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_eight]
   change f 0 • B 0 + f 1 • B 1 + f 2 • B 2 + f 3 • B 3 + f 4 • B 4 + f 5 • B 5 + f 6 • B 6 +
@@ -170,7 +170,7 @@ lemma isSolution_sum_part (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ 
   simp
   rfl
 
-lemma isSolution_grav  (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_grav  (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 10 = - 3 * f 9 := by
   have hx := isSolution_sum_part f hS
   obtain ⟨S, hS'⟩ := hS
@@ -183,12 +183,12 @@ lemma isSolution_grav  (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, 
   simp at hg
   linear_combination hg
 
-lemma isSolution_sum_part' (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_sum_part' (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = f 9 • B₉ + (- 3 * f 9) • B₁₀ := by
   rw [isSolution_sum_part f hS]
   rw [isSolution_grav f hS]
 
-lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 9 = 0 := by
   have hx := isSolution_sum_part' f hS
   obtain ⟨S, hS'⟩ := hS
@@ -211,12 +211,12 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i
   rw [h1] at hc
   simpa using hc
 
-lemma isSolution_f10 (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_f10 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 10 = 0 := by
   rw [isSolution_grav f hS, isSolution_f9 f hS]
   simp
 
-lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i))
+lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11) : f k = 0 := by
   fin_cases k
   exact isSolution_f0 f hS
@@ -232,7 +232,7 @@ lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i,
   exact isSolution_f10 f hS
 
 
-lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).isSolution (∑ i, f i • B i)) :
+lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = 0 := by
   rw [isSolution_sum_part f hS]
   rw [isSolution_grav f hS]
@@ -244,7 +244,7 @@ theorem basis_linear_independent : LinearIndependent ℚ B := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
   let X : (PlusU1 3).Sols := chargeToAF 0 (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
-  have hS : (PlusU1 3).isSolution (∑ i, f i • B i) := by
+  have hS : (PlusU1 3).IsSolution (∑ i, f i • B i) := by
     use X
     rw [h]
     rfl
@@ -252,9 +252,9 @@ theorem basis_linear_independent : LinearIndependent ℚ B := by
 
 end ElevenPlane
 
-theorem eleven_dim_plane_of_no_sols_exists : ∃ (B : Fin 11 → (PlusU1 3).charges),
+theorem eleven_dim_plane_of_no_sols_exists : ∃ (B : Fin 11 → (PlusU1 3).Charges),
     LinearIndependent ℚ B ∧
-    ∀ (f : Fin 11 → ℚ), (PlusU1 3).isSolution (∑ i, f i • B i) → ∑ i, f i • B i = 0 := by
+    ∀ (f : Fin 11 → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i) → ∑ i, f i • B i = 0 := by
   use ElevenPlane.B
   apply And.intro
   exact ElevenPlane.basis_linear_independent

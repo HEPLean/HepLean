@@ -26,26 +26,26 @@ open BigOperators
 
 /-- The group of `Sₙ` permutations for each species. -/
 @[simp]
-def permGroup (n : ℕ) := Fin 6 → Equiv.Perm (Fin n)
+def PermGroup (n : ℕ) := Fin 6 → Equiv.Perm (Fin n)
 
 variable {n : ℕ}
 
 @[simp]
-instance : Group (permGroup n) := Pi.group
+instance : Group (PermGroup n) := Pi.group
 
 /-- The image of an element of `permGroup n` under the representation on charges. -/
 @[simps!]
-def chargeMap (f : permGroup n) : (SMνCharges n).charges →ₗ[ℚ] (SMνCharges n).charges where
+def chargeMap (f : PermGroup n) : (SMνCharges n).Charges →ₗ[ℚ] (SMνCharges n).Charges where
   toFun S := toSpeciesEquiv.symm (fun i => toSpecies i S ∘ f i )
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
 /-- The representation of `(permGroup n)` acting on the vector space of charges. -/
 @[simp]
-def repCharges {n : ℕ} : Representation ℚ (permGroup n) (SMνCharges n).charges where
+def repCharges {n : ℕ} : Representation ℚ (PermGroup n) (SMνCharges n).Charges where
   toFun f := chargeMap f⁻¹
   map_mul' f g := by
-    simp only [permGroup, mul_inv_rev]
+    simp only [PermGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
@@ -61,49 +61,49 @@ def repCharges {n : ℕ} : Representation ℚ (permGroup n) (SMνCharges n).char
     erw [toSMSpecies_toSpecies_inv]
     rfl
 
-lemma repCharges_toSpecies (f : permGroup n) (S : (SMνCharges n).charges) (j : Fin 6) :
+lemma repCharges_toSpecies (f : PermGroup n) (S : (SMνCharges n).Charges) (j : Fin 6) :
     toSpecies j (repCharges f S) = toSpecies j S ∘ f⁻¹ j := by
   erw [toSMSpecies_toSpecies_inv]
 
 
-lemma toSpecies_sum_invariant (m : ℕ) (f : permGroup n) (S : (SMνCharges n).charges) (j : Fin 6) :
+lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMνCharges n).Charges) (j : Fin 6) :
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
   erw [repCharges_toSpecies]
   change  ∑ i : Fin n, ((fun a => a ^ m) ∘ _) (⇑(f⁻¹ _) i) = ∑ i : Fin n, ((fun a => a ^ m) ∘ _) i
   refine Equiv.Perm.sum_comp _ _ _ ?_
-  simp only [permGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
+  simp only [PermGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
 
 
-lemma accGrav_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accGrav_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accGrav (repCharges f S) = accGrav S :=
   accGrav_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
 
-lemma accSU2_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accSU2_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accSU2 (repCharges f S) = accSU2 S :=
   accSU2_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
 
-lemma accSU3_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accSU3_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accSU3 (repCharges f S) = accSU3 S :=
   accSU3_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accYY_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accYY_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accYY (repCharges f S) = accYY S :=
   accYY_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
 
-lemma accQuad_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accQuad_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accQuad (repCharges f S) = accQuad S :=
   accQuad_ext
     (toSpecies_sum_invariant 2 f S)
 
-lemma accCube_invariant (f : permGroup n) (S : (SMνCharges n).charges)  :
+lemma accCube_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accCube (repCharges f S) = accCube S :=
   accCube_ext
     (by simpa using toSpecies_sum_invariant 3 f S)

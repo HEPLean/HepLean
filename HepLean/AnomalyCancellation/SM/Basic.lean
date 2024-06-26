@@ -36,17 +36,17 @@ variable  {n : ℕ}
 /-- An equivalence between the set `(SMCharges n).charges` and the set
   `(Fin 5 → Fin n → ℚ)`. -/
 @[simps!]
-def toSpeciesEquiv : (SMCharges n).charges ≃ (Fin 5 → Fin n → ℚ) :=
+def toSpeciesEquiv : (SMCharges n).Charges ≃ (Fin 5 → Fin n → ℚ) :=
   ((Equiv.curry _ _ _).symm.trans ((@finProdFinEquiv 5 n).arrowCongr (Equiv.refl ℚ))).symm
 
 /-- For a given `i ∈ Fin 5`, the projection of a charge onto that species. -/
 @[simps!]
-def toSpecies (i : Fin 5) : (SMCharges n).charges →ₗ[ℚ] (SMSpecies n).charges where
+def toSpecies (i : Fin 5) : (SMCharges n).Charges →ₗ[ℚ] (SMSpecies n).Charges where
   toFun S := toSpeciesEquiv S i
   map_add' _ _ := by rfl
   map_smul' _ _ := by rfl
 
-lemma charges_eq_toSpecies_eq (S T : (SMCharges n).charges) :
+lemma charges_eq_toSpecies_eq (S T : (SMCharges n).Charges) :
     S = T ↔ ∀ i, toSpecies i S = toSpecies i T := by
   apply Iff.intro
   exact fun a i => congrArg (⇑(toSpecies i)) a
@@ -84,7 +84,7 @@ variable  {n : ℕ}
 
 /-- The gravitational anomaly equation. -/
 @[simp]
-def accGrav : (SMCharges n).charges →ₗ[ℚ] ℚ where
+def accGrav : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (6 * Q S i + 3 * U S i + 3 * D S i + 2 * L S i + E S i)
   map_add' S T := by
     simp only
@@ -102,7 +102,7 @@ def accGrav : (SMCharges n).charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accGrav`. -/
-lemma accGrav_ext {S T : (SMCharges n).charges}
+lemma accGrav_ext {S T : (SMCharges n).Charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accGrav S = accGrav T := by
   simp only [accGrav, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
@@ -114,7 +114,7 @@ lemma accGrav_ext {S T : (SMCharges n).charges}
 
 /-- The `SU(2)` anomaly equation. -/
 @[simp]
-def accSU2 : (SMCharges n).charges →ₗ[ℚ] ℚ where
+def accSU2 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (3 * Q S i + L S i)
   map_add' S T := by
     simp only
@@ -132,7 +132,7 @@ def accSU2 : (SMCharges n).charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accSU2`. -/
-lemma accSU2_ext {S T : (SMCharges n).charges}
+lemma accSU2_ext {S T : (SMCharges n).Charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU2 S = accSU2 T := by
   simp only [accSU2, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
@@ -143,7 +143,7 @@ lemma accSU2_ext {S T : (SMCharges n).charges}
 
 /-- The `SU(3)` anomaly equations. -/
 @[simp]
-def accSU3 : (SMCharges n).charges →ₗ[ℚ] ℚ where
+def accSU3 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (2 * Q S i + U S i + D S i)
   map_add' S T := by
     simp only
@@ -161,7 +161,7 @@ def accSU3 : (SMCharges n).charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accSU3`. -/
-lemma accSU3_ext {S T : (SMCharges n).charges}
+lemma accSU3_ext {S T : (SMCharges n).Charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU3 S = accSU3 T := by
   simp only [accSU3, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
@@ -173,7 +173,7 @@ lemma accSU3_ext {S T : (SMCharges n).charges}
 
 /-- The `Y²` anomaly equation. -/
 @[simp]
-def accYY : (SMCharges n).charges →ₗ[ℚ] ℚ where
+def accYY : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (Q S i + 8 * U S i + 2 * D S i + 3 * L S i
     + 6 * E S i)
   map_add' S T := by
@@ -192,7 +192,7 @@ def accYY : (SMCharges n).charges →ₗ[ℚ] ℚ where
     ring
 
 /-- Extensionality lemma for `accYY`. -/
-lemma accYY_ext {S T : (SMCharges n).charges}
+lemma accYY_ext {S T : (SMCharges n).Charges}
     (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accYY S = accYY T := by
   simp only [accYY, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
@@ -204,7 +204,7 @@ lemma accYY_ext {S T : (SMCharges n).charges}
 
 /-- The quadratic bilinear map. -/
 @[simps!]
-def quadBiLin : BiLinearSymm (SMCharges n).charges := BiLinearSymm.mk₂
+def quadBiLin : BiLinearSymm (SMCharges n).Charges := BiLinearSymm.mk₂
   (fun S => ∑ i, (Q S.1 i * Q S.2 i +
     - 2 * (U S.1 i * U S.2 i) +
     D S.1 i * D S.2 i +
@@ -238,11 +238,11 @@ def quadBiLin : BiLinearSymm (SMCharges n).charges := BiLinearSymm.mk₂
 
 /-- The quadratic anomaly cancellation condition. -/
 @[simp]
-def accQuad  : HomogeneousQuadratic (SMCharges n).charges :=
+def accQuad  : HomogeneousQuadratic (SMCharges n).Charges :=
   (@quadBiLin n).toHomogeneousQuad
 
 /-- Extensionality lemma for `accQuad`. -/
-lemma accQuad_ext {S T : (SMCharges n).charges}
+lemma accQuad_ext {S T : (SMCharges n).Charges}
     (h : ∀ j, ∑ i, ((fun a => a^2) ∘ toSpecies j S) i =
     ∑ i, ((fun a => a^2) ∘ toSpecies j T) i) :
     accQuad S = accQuad T := by
@@ -258,7 +258,7 @@ lemma accQuad_ext {S T : (SMCharges n).charges}
 
 /-- The trilinear function defining the cubic. -/
 @[simps!]
-def cubeTriLin : TriLinearSymm (SMCharges n).charges := TriLinearSymm.mk₃
+def cubeTriLin : TriLinearSymm (SMCharges n).Charges := TriLinearSymm.mk₃
   (fun S => ∑ i, (6 * ((Q S.1 i) * (Q S.2.1 i) * (Q S.2.2 i))
     + 3 * ((U S.1 i) * (U S.2.1 i) * (U S.2.2 i))
     + 3 * ((D S.1 i) * (D S.2.1 i) * (D S.2.2 i))
@@ -301,10 +301,10 @@ def cubeTriLin : TriLinearSymm (SMCharges n).charges := TriLinearSymm.mk₃
 
 /-- The cubic acc. -/
 @[simp]
-def accCube : HomogeneousCubic (SMCharges n).charges := cubeTriLin.toCubic
+def accCube : HomogeneousCubic (SMCharges n).Charges := cubeTriLin.toCubic
 
 /-- Extensionality lemma for `accCube`. -/
-lemma accCube_ext {S T : (SMCharges n).charges}
+lemma accCube_ext {S T : (SMCharges n).Charges}
     (h : ∀ j, ∑ i, ((fun a => a^3) ∘ toSpecies j S) i =
     ∑ i, ((fun a => a^3) ∘ toSpecies j T) i) :
     accCube S = accCube T := by

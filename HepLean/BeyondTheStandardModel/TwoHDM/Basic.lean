@@ -22,8 +22,8 @@ open ComplexConjugate
 noncomputable section
 
 /-- The potential of the two Higgs doublet model.  -/
-def potential (Φ1 Φ2 : higgsField)
-    (m11Sq m22Sq lam₁ lam₂ lam₃ lam₄ : ℝ) (m12Sq lam₅ lam₆ lam₇ : ℂ) (x : spaceTime) : ℝ :=
+def potential (Φ1 Φ2 : HiggsField)
+    (m11Sq m22Sq lam₁ lam₂ lam₃ lam₄ : ℝ) (m12Sq lam₅ lam₆ lam₇ : ℂ) (x : SpaceTime) : ℝ :=
   m11Sq * Φ1.normSq x  + m22Sq * Φ2.normSq x
   - (m12Sq * (Φ1.innerProd Φ2) x + conj m12Sq * (Φ2.innerProd Φ1) x).re
   + 1/2 * lam₁ * Φ1.normSq x ^ 2 + 1/2 * lam₂ * Φ2.normSq x ^ 2

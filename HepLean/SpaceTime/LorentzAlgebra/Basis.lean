@@ -11,7 +11,7 @@ We define the standard basis of the Lorentz group.
 
 -/
 
-namespace spaceTime
+namespace SpaceTime
 
 namespace lorentzAlgebra
 open Matrix
@@ -145,4 +145,4 @@ theorem finrank_eq_six : FiniteDimensional.finrank ℝ lorentzAlgebra = 6 := by
 
 end lorentzAlgebra
 
-end spaceTime
+end SpaceTime

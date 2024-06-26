@@ -24,102 +24,102 @@ open BigOperators
 namespace PlaneSeven
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₀ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₀ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 0, 0 => 1
   | 0, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₀_cubic (S T : (SM 3).charges) : cubeTriLin B₀ S T =
+lemma B₀_cubic (S T : (SM 3).Charges) : cubeTriLin B₀ S T =
     6 * (S (0 : Fin 18) * T  (0 : Fin 18) - S  (1 : Fin 18) * T  (1 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₀, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₁ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₁ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 1, 0 => 1
   | 1, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₁_cubic (S T : (SM 3).charges) : cubeTriLin B₁ S T =
+lemma B₁_cubic (S T : (SM 3).Charges) : cubeTriLin B₁ S T =
     3 * (S (3 : Fin 18) * T  (3 : Fin 18) - S  (4 : Fin 18) * T  (4 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₁, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₂ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₂ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 2, 0 => 1
   | 2, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₂_cubic (S T : (SM 3).charges) : cubeTriLin B₂ S T =
+lemma B₂_cubic (S T : (SM 3).Charges) : cubeTriLin B₂ S T =
     3 * (S (6 : Fin 18) * T  (6 : Fin 18) - S  (7 : Fin 18) * T  (7 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₂, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₃ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₃ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 3, 0 => 1
   | 3, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₃_cubic (S T : (SM 3).charges) : cubeTriLin B₃ S T =
+lemma B₃_cubic (S T : (SM 3).Charges) : cubeTriLin B₃ S T =
     2 * (S (9 : Fin 18) * T  (9 : Fin 18) - S  (10 : Fin 18) * T  (10 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₃, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₄ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₄ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 4, 0 => 1
   | 4, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₄_cubic (S T : (SM 3).charges) : cubeTriLin B₄ S T =
+lemma B₄_cubic (S T : (SM 3).Charges) : cubeTriLin B₄ S T =
     (S (12 : Fin 18) * T  (12 : Fin 18) - S  (13 : Fin 18) * T  (13 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₄, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₅ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₅ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 5, 0 => 1
   | 5, 1 => - 1
   | _, _ => 0
   )
 
-lemma B₅_cubic (S T : (SM 3).charges) : cubeTriLin B₅ S T =
+lemma B₅_cubic (S T : (SM 3).Charges) : cubeTriLin B₅ S T =
     (S (15 : Fin 18) * T  (15 : Fin 18) - S  (16 : Fin 18) * T  (16 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₅, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₆ : (SM 3).charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₆ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   match s, i with
   | 1, 2 => 1
   | 2, 2 => -1
   | _, _ => 0
   )
 
-lemma B₆_cubic (S T : (SM 3).charges) : cubeTriLin B₆ S T =
+lemma B₆_cubic (S T : (SM 3).Charges) : cubeTriLin B₆ S T =
     3* (S (5 : Fin 18) * T  (5 : Fin 18) - S  (8 : Fin 18) * T  (8 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
 
 /-- The charge assignments forming a basis of the plane. -/
 @[simp]
-def B : Fin 7 → (SM 3).charges := fun i =>
+def B : Fin 7 → (SM 3).Charges := fun i =>
   match i with
   | 0 => B₀
   | 1 => B₁
@@ -129,7 +129,7 @@ def B : Fin 7 → (SM 3).charges := fun i =>
   | 5 => B₅
   | 6 => B₆
 
-lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).charges) :
+lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 0) (B i) S = 0 := by
   change cubeTriLin B₀ (B i) S = 0
   rw [B₀_cubic]
@@ -138,7 +138,7 @@ lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).charges) :
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 
-lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).charges) :
+lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 1) (B i) S = 0 := by
   change cubeTriLin B₁ (B i) S = 0
   rw [B₁_cubic]
@@ -146,7 +146,7 @@ lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).charges) :
     simp at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).charges) :
+lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 2) (B i) S = 0 := by
   change cubeTriLin B₂ (B i) S = 0
   rw [B₂_cubic]
@@ -154,7 +154,7 @@ lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).charges) :
     simp at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).charges) :
+lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 3) (B i) S = 0 := by
   change cubeTriLin (B₃) (B i) S = 0
   rw [B₃_cubic]
@@ -162,7 +162,7 @@ lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).charges) :
   simp at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).charges) :
+lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 4) (B i) S = 0 := by
   change cubeTriLin (B₄) (B i) S = 0
   rw [B₄_cubic]
@@ -170,7 +170,7 @@ lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).charges) :
   simp at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).charges) :
+lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 5) (B i) S = 0 := by
   change cubeTriLin (B₅) (B i) S = 0
   rw [B₅_cubic]
@@ -178,7 +178,7 @@ lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).charges) :
   simp at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).charges) :
+lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 6) (B i) S = 0 := by
   change cubeTriLin (B₆) (B i) S = 0
   rw [B₆_cubic]
@@ -186,7 +186,7 @@ lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).charges) :
   simp at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).charges) :
+lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).Charges) :
     cubeTriLin (B i) (B j) S = 0 := by
   fin_cases i
   exact B₀_Bi_cubic h S
@@ -279,7 +279,7 @@ theorem B_in_accCube (f : Fin 7 → ℚ) : accCube (∑ i, f i • B i) = 0 := b
   rw [Bi_Bj_Bk_cubic]
   simp
 
-lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).isSolution (∑ i, f i • B i) := by
+lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) := by
   let X := chargeToAF (∑ i, f i • B i) (by
     rw [map_sum]
     apply Fintype.sum_eq_zero
@@ -337,8 +337,8 @@ theorem basis_linear_independent : LinearIndependent ℚ B := by
 
 end PlaneSeven
 
-theorem seven_dim_plane_exists : ∃ (B : Fin 7 → (SM 3).charges),
-    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).isSolution (∑ i, f i • B i)  := by
+theorem seven_dim_plane_exists : ∃ (B : Fin 7 → (SM 3).Charges),
+    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).IsSolution (∑ i, f i • B i)  := by
   use PlaneSeven.B
   apply And.intro
   exact PlaneSeven.basis_linear_independent

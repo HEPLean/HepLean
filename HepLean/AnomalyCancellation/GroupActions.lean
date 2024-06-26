@@ -27,7 +27,7 @@ structure ACCSystemGroupAction (χ : ACCSystem) where
   /-- An instance given group the structure of a group. -/
   groupInst : Group group
   /-- The representation of group acting on the vector space of charges. -/
-  rep : Representation ℚ group χ.charges
+  rep : Representation ℚ group χ.Charges
   /-- The invariance of the linear ACCs under the group action. -/
   linearInvariant : ∀ i g S, χ.linearACCs i (rep g S) = χ.linearACCs i S
   /-- The invariance of the quadratic ACCs under the group action. -/
