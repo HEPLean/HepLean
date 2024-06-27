@@ -4,7 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Basic
-import HepLean.GroupTheory.SO3.Basic
+import HepLean.Mathematics.SO3.Basic
 import Mathlib.Topology.Constructions
 /-!
 # Rotations

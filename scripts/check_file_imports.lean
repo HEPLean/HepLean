@@ -22,10 +22,8 @@ The functions
 
 are adapted from `batteries.scripts.check_imports.lean` authored by Joe Hendrix.
 
-
 -/
 open Lean System Meta
-
 
 /--  Recursively finds files in directory. -/
 partial def addModulesIn (recurse : Bool) (prev : Array Name) (root : Name := .anonymous)
@@ -40,7 +38,6 @@ partial def addModulesIn (recurse : Bool) (prev : Array Name) (root : Name := .a
         | continue
       r := r.push (root.mkStr mod)
   pure r
-
 
 /-- Compute imports expected by `HepLean.lean` by looking at file structure. -/
 def expectedHepLeanImports : IO (Array Name) := do
@@ -80,7 +77,7 @@ def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let mods : Name :=  `HepLean
-  let imp :  Import := {module := mods}
+  let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do
         throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
