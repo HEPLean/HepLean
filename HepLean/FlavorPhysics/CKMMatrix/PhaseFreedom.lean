@@ -224,7 +224,6 @@ lemma ubOnePhaseCond_shift_solution {V : CKMMatrix} (h1 : a + f = - arg [V]ub)
   subst hc
   ring
 
--- rename
 lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
     ∃ (U : CKMMatrix), V ≈ U ∧ FstRowThdColRealCond U:= by
   obtain ⟨τ, hτ⟩ := V.uRow_cross_cRow_eq_tRow
@@ -318,7 +317,6 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
     apply shift_cs_phase_zero _ _ _ _ _ _ _
     ring
   rw [hcs, hUV, cs_of_ud_us_zero hb]
-
 
 lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     (hV : FstRowThdColRealCond V) :
