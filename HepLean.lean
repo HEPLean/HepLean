@@ -58,8 +58,8 @@ import HepLean.FlavorPhysics.CKMMatrix.Relations
 import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
-import HepLean.Mathematics.SO3.Basic
 import HepLean.Mathematics.LinearMaps
+import HepLean.Mathematics.SO3.Basic
 import HepLean.SpaceTime.AsSelfAdjointMatrix
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
