@@ -13,7 +13,7 @@ We define `B₃` and show that it is a double point of the cubic.
 
 The main reference for the material in this file is:
 
-- https://arxiv.org/pdf/2107.07926.pdf
+[Allanach, Madigan and Tooby-Smith][Allanach:2021yjy]
 
 -/
 
