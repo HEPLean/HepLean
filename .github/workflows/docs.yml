@@ -59,25 +59,25 @@ jobs:
 
       - name: Copy documentation to `docs/docs`
         run: |
-          mv .lake/build/doc doc/docs
+          mv .lake/build/doc docs/docs
       #End Section
       ##################
       - name: Bundle dependencies
         uses: ruby/setup-ruby@v1
         with:
-          working-directory: doc
+          working-directory: docs
           ruby-version: "3.1" # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     
 
       - name: Bundle website
-        working-directory: doc
+        working-directory: docs
         run: JEKYLL_ENV=production bundle exec jekyll build
 
       - name: Upload docs & blueprint artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path:  doc/_site
+          path:  docs/_site
 
       - name: Deploy to GitHub Pages
         id: deployment
