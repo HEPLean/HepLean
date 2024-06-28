@@ -10,7 +10,7 @@ import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
 # Lemmas for 1 family SM Accs
 
 The main result of this file is the conclusion of this paper:
-https://arxiv.org/abs/1907.00514
+  [Lohitsiri and Tong][Lohitsiri:2019fuu]
 
 That every solution to the ACCs without gravity satisfies for free the gravitational anomaly.
 -/
