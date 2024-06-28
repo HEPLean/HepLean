@@ -17,8 +17,7 @@ is a solution to the quadratic  `lineY₃B₃Charges_quad` and a double point of
 # References
 
 The main reference for the material in this file is:
-
-- https://arxiv.org/pdf/2107.07926.pdf
+[Allanach, Madigan and Tooby-Smith][Allanach:2021yjy]
 
 -/
 
