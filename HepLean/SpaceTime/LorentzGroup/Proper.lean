@@ -14,7 +14,6 @@ We define the give a series of lemmas related to the determinant of the lorentz 
 
 noncomputable section
 
-namespace SpaceTime
 
 open Manifold
 open Matrix
@@ -23,10 +22,16 @@ open ComplexConjugate
 
 namespace LorentzGroup
 
+open minkowskiMetric
+
+variable {d : ℕ}
+
 /-- The determinant of a member of the lorentz group is `1` or `-1`. -/
-lemma det_eq_one_or_neg_one (Λ : 𝓛) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
-  simpa [← sq, det_one, det_mul, det_mul, det_mul, det_transpose, det_η] using
-    (congrArg det ((PreservesηLin.iff_matrix' Λ.1).mp Λ.2))
+lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
+  have h1 := (congrArg det ((mem_iff_self_mul_dual).mp Λ.2))
+  simp [det_mul, det_dual] at h1
+  exact mul_self_eq_one_iff.mp h1
+
 
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
 
@@ -47,7 +52,7 @@ def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
     exact continuous_of_discreteTopology
 
 /-- The continuous map taking a lorentz matrix to its determinant. -/
-def detContinuous :  C(𝓛, ℤ₂) :=
+def detContinuous :  C(𝓛 d, ℤ₂) :=
   ContinuousMap.comp  coeForℤ₂ {
     toFun := fun Λ => ⟨Λ.1.det, Or.symm (LorentzGroup.det_eq_one_or_neg_one _)⟩,
     continuous_toFun := by
@@ -56,7 +61,7 @@ def detContinuous :  C(𝓛, ℤ₂) :=
         Continuous.comp' (continuous_iff_le_induced.mpr fun U a => a) continuous_id'
       }
 
-lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup) :
+lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
   apply Iff.intro
   intro h
@@ -75,7 +80,7 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup) :
 
 /-- The representation taking a lorentz matrix to its determinant. -/
 @[simps!]
-def detRep : 𝓛 →* ℤ₂ where
+def detRep : 𝓛 d →* ℤ₂ where
   toFun Λ := detContinuous Λ
   map_one' := by
     simp [detContinuous, lorentzGroupIsGroup]
@@ -88,9 +93,9 @@ def detRep : 𝓛 →* ℤ₂ where
       <;> simp [h1, h2, detContinuous]
     rfl
 
-lemma detRep_continuous : Continuous detRep := detContinuous.2
+lemma detRep_continuous : Continuous (@detRep d) := detContinuous.2
 
-lemma det_on_connected_component {Λ Λ'  : LorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
+lemma det_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     Λ.1.det = Λ'.1.det := by
   obtain ⟨s, hs, hΛ'⟩ := h
   let f : ContinuousMap s ℤ₂ := ContinuousMap.restrict s detContinuous
@@ -99,36 +104,35 @@ lemma det_on_connected_component {Λ Λ'  : LorentzGroup} (h : Λ' ∈ connected
     (@IsPreconnected.subsingleton ℤ₂ _ _ _ (isPreconnected_range f.2))
     (Set.mem_range_self ⟨Λ, hs.2⟩)  (Set.mem_range_self ⟨Λ', hΛ'⟩)
 
-lemma detRep_on_connected_component {Λ Λ'  : LorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
+lemma detRep_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     detRep Λ = detRep Λ' := by
   simp [detRep_apply, detRep_apply, detContinuous]
   rw [det_on_connected_component h]
 
-lemma det_of_joined {Λ Λ' : LorentzGroup} (h : Joined Λ Λ') : Λ.1.det = Λ'.1.det :=
+lemma det_of_joined {Λ Λ' : LorentzGroup d} (h : Joined Λ Λ') : Λ.1.det = Λ'.1.det :=
   det_on_connected_component $ pathComponent_subset_component _ h
 
 /-- A Lorentz Matrix is proper if its determinant is 1. -/
 @[simp]
-def IsProper (Λ : LorentzGroup) : Prop := Λ.1.det = 1
+def IsProper (Λ : LorentzGroup d) : Prop := Λ.1.det = 1
 
-instance : DecidablePred IsProper := by
+instance : DecidablePred (@IsProper d) := by
   intro Λ
   apply Real.decidableEq
 
-lemma IsProper_iff (Λ : LorentzGroup) : IsProper Λ ↔ detRep Λ = 1 := by
+lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep)]
   rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 
-lemma id_IsProper : IsProper 1 := by
+lemma id_IsProper : (@IsProper d) 1 := by
   simp [IsProper]
 
-lemma isProper_on_connected_component {Λ Λ'  : LorentzGroup} (h : Λ' ∈ connectedComponent Λ) :
+lemma isProper_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     IsProper Λ ↔ IsProper Λ' := by
   simp [detRep_apply, detRep_apply, detContinuous]
   rw [det_on_connected_component h]
 
 end LorentzGroup
 
-end SpaceTime
 end

@@ -22,7 +22,6 @@ def SpaceTime : Type := Fin 4 → ℝ
 /-- Give spacetime the structure of an additive commutative monoid. -/
 instance : AddCommMonoid SpaceTime := Pi.addCommMonoid
 
-
 /-- Give spacetime the structure of a module over the reals. -/
 instance : Module ℝ SpaceTime := Pi.module _ _ _
 

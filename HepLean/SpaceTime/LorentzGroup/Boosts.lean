@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Proper
 import Mathlib.Topology.Constructions
-import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.LorentzVector.NormOne
 /-!
 # Boosts
 
@@ -28,15 +28,17 @@ A boost is the special case of a generalised boost when `u = stdBasis 0`.
 
 -/
 noncomputable section
-namespace SpaceTime
 
 namespace LorentzGroup
 
-open FourVelocity
+open NormOneLorentzVector
+open minkowskiMetric
+
+variable {d : ℕ}
 
 /-- An auxillary linear map used in the definition of a generalised boost. -/
-def genBoostAux₁ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
-  toFun x := (2 * ηLin x u) • v.1.1
+def genBoostAux₁ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
+  toFun x := (2 * ⟪x, u⟫ₘ) • v.1.1
   map_add' x y := by
     simp only [map_add, LinearMap.add_apply]
     rw [mul_add, add_smul]
@@ -46,17 +48,21 @@ def genBoostAux₁ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
 /-- An auxillary linear map used in the definition of a genearlised boost. -/
-def genBoostAux₂ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
-  toFun x := - (ηLin x (u + v) / (1 + ηLin u v)) • (u + v)
+def genBoostAux₂ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
+  toFun x := - (⟪x, u.1.1 + v⟫ₘ / (1 + ⟪u.1.1, v⟫ₘ)) • (u.1.1 + v)
   map_add' x y := by
     simp only
-    rw [ηLin.map_add, div_eq_mul_one_div]
-    rw [show (ηLin x + ηLin y) (↑u + ↑v) = ηLin x (u+v) + ηLin y (u+v) from rfl]
-    rw [add_mul, neg_add, add_smul, ← div_eq_mul_one_div, ← div_eq_mul_one_div]
+    rw [← add_smul]
+    apply congrFun
+    apply congrArg
+    field_simp
+    apply congrFun
+    apply congrArg
+    ring
   map_smul' c x := by
     simp only
-    rw [ηLin.map_smul]
-    rw [show (c • ηLin x) (↑u + ↑v) = c * ηLin x (u+v) from rfl]
+    rw [map_smul]
+    rw [show (c • minkowskiMetric x) (↑u + ↑v) = c * minkowskiMetric x (u+v) from rfl]
     rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
 
@@ -174,5 +180,4 @@ end genBoost
 end LorentzGroup
 
 
-end SpaceTime
 end

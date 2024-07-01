@@ -11,6 +11,12 @@ import Mathlib.LinearAlgebra.QuadraticForm.Basic
 
 This file introduces the metric on spacetime in the (+, -, -, -) signature.
 
+## TODO
+
+This file needs refactoring.
+- The metric should be defined as a bilinear map on `LorentzVector d`.
+- From this definition, we should derive the metric as a matrix.
+
 -/
 
 noncomputable section
