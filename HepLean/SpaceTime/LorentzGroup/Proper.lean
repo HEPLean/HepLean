@@ -15,7 +15,6 @@ We define the give a series of lemmas related to the determinant of the lorentz 
 noncomputable section
 
 
-open Manifold
 open Matrix
 open Complex
 open ComplexConjugate

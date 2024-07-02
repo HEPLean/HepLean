@@ -13,6 +13,7 @@ import HepLean.SpaceTime.MinkowskiMetric
 
 open minkowskiMetric
 
+/-- The set of Lorentz vectors with norm 1. -/
 @[simp]
 def NormOneLorentzVector (d : ℕ) : Set (LorentzVector d) :=
   fun x => ⟪x, x⟫ₘ = 1
@@ -105,11 +106,8 @@ lemma mem_iff : v ∈ FuturePointing d ↔ 0 < v.1.time := by
   rfl
 
 lemma mem_iff_time_nonneg : v ∈ FuturePointing d ↔ 0 ≤ v.1.time := by
-  refine Iff.intro (fun h => ?_) (fun h => ?_)
-  exact le_of_lt ((mem_iff v).mp h)
-  have h1 := (mem_iff v).mp
-  simp at h1
-  rw [@time_nonneg_iff] at h
+  refine Iff.intro (fun h => le_of_lt h) (fun h => ?_)
+  rw [time_nonneg_iff] at h
   rw [mem_iff]
   linarith
 

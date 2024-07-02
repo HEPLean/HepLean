@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Basic
 import Mathlib.Algebra.Lie.Classical
-import Mathlib.LinearAlgebra.QuadraticForm.Basic
 /-!
 
 # The Minkowski Metric
@@ -33,6 +32,7 @@ namespace minkowskiMatrix
 
 variable {d : ℕ}
 
+/-- Notation for `minkowskiMatrix`. -/
 scoped[minkowskiMatrix] notation "η" => minkowskiMatrix
 
 @[simp]
@@ -116,6 +116,7 @@ open LorentzVector
 variable {d : ℕ}
 variable (v w : LorentzVector d)
 
+/-- Notation for `minkowskiMetric`. -/
 scoped[minkowskiMetric] notation "⟪" v "," w "⟫ₘ" => minkowskiMetric v w
 /-!
 
@@ -318,17 +319,14 @@ lemma basis_left (μ : Fin 1 ⊕ Fin d)  : ⟪e μ, v⟫ₘ  = η μ μ * v μ :
     simp [stdBasis_apply, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   · simp [stdBasis_apply, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
-@[simp]
 lemma on_timeVec : ⟪timeVec, @timeVec d⟫ₘ = 1 := by
   simp only [timeVec, Fin.isValue, basis_left, minkowskiMatrix,
     LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inl, stdBasis_apply,
     ↓reduceIte, mul_one]
 
-@[simp]
 lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, Λ *ᵥ e ν⟫ₘ = η μ μ * Λ μ ν  := by
   simp [basis_left, mulVec, dotProduct, stdBasis_apply]
 
-@[simp]
 lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
   rw [basis_left, stdBasis_apply]
   by_cases h : μ = ν

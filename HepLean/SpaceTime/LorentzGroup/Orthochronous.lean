@@ -21,7 +21,6 @@ matrices.
 noncomputable section
 
 
-open Manifold
 open Matrix
 open Complex
 open ComplexConjugate

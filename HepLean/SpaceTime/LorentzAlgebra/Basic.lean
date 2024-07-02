@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.MinkowskiMetric
 import Mathlib.Algebra.Lie.Classical
 /-!
@@ -42,7 +41,7 @@ lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 
   simpa [LieAlgebra.Orthogonal.so', IsSkewAdjoint, IsAdjointPair] using h
 
 lemma mem_iff {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ} :
-  A ∈ lorentzAlgebra ↔ Aᵀ * η  = - η * A :=
+    A ∈ lorentzAlgebra ↔ Aᵀ * η  = - η * A :=
   Iff.intro (fun h => transpose_eta ⟨A, h⟩) (fun h => mem_of_transpose_eta_eq_eta_mul_self h)
 
 lemma mem_iff'  (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :

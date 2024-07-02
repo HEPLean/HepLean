@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Basic
 import Mathlib.RepresentationTheory.Basic
+import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
@@ -86,7 +87,8 @@ In the next section we will restrict this homomorphism to the restricted Lorentz
 
 lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ):  Λ ∈ LorentzGroup 3 ↔
     ∀ (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)),
-    det ((toSelfAdjointMatrix ∘ toLin LorentzVector.stdBasis LorentzVector.stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
+    det ((toSelfAdjointMatrix ∘
+    toLin LorentzVector.stdBasis LorentzVector.stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
     = det x.1 := by
   rw [LorentzGroup.mem_iff_norm]
   apply Iff.intro

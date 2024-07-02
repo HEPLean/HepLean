@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMetric
-import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.NormOne
 /-!
 # The Lorentz Group
@@ -24,11 +23,8 @@ identity.
 
 -/
 
-
 noncomputable section
 
-
-open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
@@ -159,7 +155,6 @@ open minkowskiMetric
 
 variable  {Λ Λ' : LorentzGroup d}
 
-@[simp]
 lemma coe_inv  : (Λ⁻¹).1 = Λ.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact mem_iff_dual_mul_self.mp Λ.2

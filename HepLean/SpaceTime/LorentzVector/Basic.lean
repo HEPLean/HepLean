@@ -4,10 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
-import Mathlib.Geometry.Manifold.SmoothManifoldWithCorners
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.LinearAlgebra.Matrix.DotProduct
-import LeanCopilot
 /-!
 
 # Lorentz vectors
@@ -62,6 +59,7 @@ def time : ℝ := v (Sum.inl 0)
 @[simps!]
 noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (LorentzVector d) := Pi.basisFun ℝ _
 
+/-- Notation for `stdBasis`. -/
 scoped[LorentzVector] notation "e" => stdBasis
 
 lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 else 0 := by
@@ -72,12 +70,10 @@ lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 els
 /-- The standard unit time vector. -/
 noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)
 
-@[simp]
 lemma timeVec_space : (@timeVec d).space = 0 := by
   funext i
   simp only [space, Function.comp_apply, stdBasis_apply, Fin.isValue, ↓reduceIte, PiLp.zero_apply]
 
-@[simp]
 lemma timeVec_time: (@timeVec d).time = 1 := by
   simp only [time, Fin.isValue, stdBasis_apply, ↓reduceIte]
 
@@ -106,19 +102,14 @@ def spaceReflectionLin : LorentzVector d →ₗ[ℝ] LorentzVector d where
       apply smul_eq_mul
     · simp [ HSMul.hSMul, SMul.smul]
 
-
 /-- The reflection of space. -/
 @[simp]
 def spaceReflection : LorentzVector d := spaceReflectionLin v
 
-@[simp]
 lemma spaceReflection_space : v.spaceReflection.space = - v.space := by
   rfl
 
-@[simp]
 lemma spaceReflection_time : v.spaceReflection.time = v.time := by
   rfl
-
-
 
 end LorentzVector
