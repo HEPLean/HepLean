@@ -65,7 +65,7 @@ scoped[LorentzVector] notation "e" => stdBasis
 lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 else 0 := by
   rw [stdBasis]
   erw [Pi.basisFun_apply]
-  simp
+  exact LinearMap.stdBasis_apply' ℝ μ ν
 
 /-- The standard unit time vector. -/
 noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)
@@ -91,16 +91,14 @@ def spaceReflectionLin : LorentzVector d →ₗ[ℝ] LorentzVector d where
   map_add' x y := by
     funext i
     rcases i with i | i
-    · simp only [Sum.elim_inl]
-      apply Eq.refl
+    · rfl
     · simp only [Sum.elim_inr, Pi.neg_apply]
       apply neg_add
   map_smul' c x := by
     funext i
     rcases i with i | i
-    · simp only [Sum.elim_inl, Pi.smul_apply]
-      apply smul_eq_mul
-    · simp [ HSMul.hSMul, SMul.smul]
+    · rfl
+    · simp [HSMul.hSMul, SMul.smul]
 
 /-- The reflection of space. -/
 @[simp]

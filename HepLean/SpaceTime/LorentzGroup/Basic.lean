@@ -89,7 +89,6 @@ lemma mem_iff_self_mul_dual :  Λ ∈ LorentzGroup d ↔ Λ * dual Λ = 1  := by
   rw [mem_iff_dual_mul_self]
   exact mul_eq_one_comm
 
-
 lemma mem_iff_transpose : Λ ∈ LorentzGroup d ↔ Λᵀ ∈ LorentzGroup d := by
   apply Iff.intro
   · intro h
@@ -236,7 +235,6 @@ lemma toGL_embedding : Embedding (@toGL d).toFun where
     rw [isOpen_induced_iff, isOpen_induced_iff]
     exact exists_exists_and_eq_and
 
-
 instance : TopologicalGroup (LorentzGroup d) :=
 Inducing.topologicalGroup toGL toGL_embedding.toInducing
 
@@ -275,10 +273,6 @@ lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
     RCLike.inner_apply, conj_trivial]
   erw [Pi.basisFun_apply, mulVec_stdBasis]
   simp
-
-
-
-
 
 end
 end LorentzGroup

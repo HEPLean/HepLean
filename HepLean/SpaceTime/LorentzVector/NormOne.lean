@@ -184,7 +184,7 @@ lemma metric_reflect_mem_not_mem (h : v ∈ FuturePointing d) (hw : w ∉ Future
 
 lemma metric_reflect_not_mem_mem (h : v ∉ FuturePointing d) (hw :  w ∈ FuturePointing d) :
     ⟪v.1, w.1.spaceReflection⟫ₘ ≤ 0 := by
-  rw [show (0 : ℝ) = - 0 by simp, le_neg]
+  rw [show (0 : ℝ) = - 0 from zero_eq_neg.mpr rfl, le_neg]
   have h1 := metric_reflect_mem_mem ((not_mem_iff_neg v).mp h)  hw
   apply le_of_le_of_eq h1 ?_
   simp [neg]
@@ -207,7 +207,7 @@ open LorentzVector
 @[simps!]
 noncomputable def timeVecNormOneFuture : FuturePointing d := ⟨⟨timeVec, by
   rw [NormOneLorentzVector.mem_iff, on_timeVec]⟩, by
-  rw [mem_iff, timeVec_time]; simp⟩
+  rw [mem_iff, timeVec_time]; exact Real.zero_lt_one⟩
 
 
 /-- A continuous path from `timeVecNormOneFuture` to any other. -/
@@ -222,15 +222,12 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
         conj_trivial]
       rw [Real.mul_self_sqrt, ← @real_inner_self_eq_norm_sq, @PiLp.inner_apply]
       simp only [Function.comp_apply, RCLike.inner_apply, conj_trivial]
-      have h1 : ∑ x : Fin d, t.1 * u.1.1 (Sum.inr x) * (↑t.1 * u.1.1 (Sum.inr x)) =
-        t ^ 2 * ∑ x : Fin d, u.1.1 (Sum.inr x) * u.1.1 (Sum.inr x) := by
-        rw [Finset.mul_sum]
-        apply Finset.sum_congr rfl
-        intro i _
-        ring
-      rw [h1]
+      refine Eq.symm (eq_sub_of_add_eq (congrArg (HAdd.hAdd 1) ?_))
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _
       ring
-      refine Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _) ⟩,
+      exact Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _) ⟩,
     by
       simp only [space, Function.comp_apply, mem_iff_time_nonneg, time, Real.sqrt_pos]
       exact Real.sqrt_nonneg _⟩
