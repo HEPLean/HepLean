@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.LorentzGroup.Proper
 /-!
 # The Orthochronous Lorentz Group
@@ -20,45 +20,56 @@ matrices.
 
 noncomputable section
 
-namespace SpaceTime
 
-open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
 
 namespace LorentzGroup
-open PreFourVelocity
 
-/-- The first column of a lorentz matrix as a `PreFourVelocity`. -/
-@[simp]
-def fstCol (Λ : LorentzGroup) : PreFourVelocity := ⟨Λ.1 *ᵥ stdBasis 0, by
-  rw [mem_PreFourVelocity_iff, ηLin_expand]
-  simp only [Fin.isValue, stdBasis_mulVec]
-  have h00 := congrFun (congrFun ((PreservesηLin.iff_matrix Λ.1).mp  Λ.2) 0) 0
-  simp only [Fin.isValue, mul_apply, transpose_apply, Fin.sum_univ_four, ne_eq, zero_ne_one,
-    not_false_eq_true, η_off_diagonal, zero_mul, add_zero, Fin.reduceEq, one_ne_zero, mul_zero,
-    zero_add, one_apply_eq] at h00
-  simp only [η_explicit, Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val',
-    cons_val_fin_one, vecCons_const, one_mul, mul_one, cons_val_one, head_cons, mul_neg, neg_mul,
-    cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, cons_val_three,
-     head_fin_const] at h00
-  exact h00⟩
+variable {d : ℕ}
+variable (Λ : LorentzGroup d)
+open LorentzVector
+open minkowskiMetric
 
 /-- A Lorentz transformation is  `orthochronous` if its `0 0` element is non-negative. -/
-def IsOrthochronous (Λ : LorentzGroup) : Prop := 0 ≤ Λ.1 0 0
+def IsOrthochronous : Prop := 0 ≤ timeComp Λ
 
-lemma IsOrthochronous_iff_transpose (Λ : LorentzGroup) :
+lemma IsOrthochronous_iff_futurePointing :
+    IsOrthochronous Λ ↔ (toNormOneLorentzVector Λ) ∈ NormOneLorentzVector.FuturePointing d := by
+  simp only [IsOrthochronous, timeComp_eq_toNormOneLorentzVector]
+  rw [NormOneLorentzVector.FuturePointing.mem_iff_time_nonneg]
+
+lemma IsOrthochronous_iff_transpose :
     IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by rfl
 
-lemma IsOrthochronous_iff_fstCol_IsFourVelocity (Λ : LorentzGroup) :
-    IsOrthochronous Λ ↔ IsFourVelocity (fstCol Λ) := by
-  simp [IsOrthochronous, IsFourVelocity]
-  rw [stdBasis_mulVec]
+lemma IsOrthochronous_iff_ge_one :
+    IsOrthochronous Λ ↔ 1 ≤ timeComp Λ  := by
+  rw [IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.mem_iff,
+    NormOneLorentzVector.time_pos_iff]
+  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
+  erw [Pi.basisFun_apply, mulVec_stdBasis]
+  rfl
+
+lemma not_orthochronous_iff_le_neg_one :
+    ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ -1 := by
+  rw [timeComp, IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.not_mem_iff,
+    NormOneLorentzVector.time_nonpos_iff]
+  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
+  erw [Pi.basisFun_apply, mulVec_stdBasis]
+
+lemma not_orthochronous_iff_le_zero :
+    ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ 0 := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  rw [not_orthochronous_iff_le_neg_one] at h
+  linarith
+  rw [IsOrthochronous_iff_ge_one]
+  linarith
+
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
-def mapZeroZeroComp : C(LorentzGroup, ℝ) := ⟨fun Λ => Λ.1 0 0,
-   Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) 0 0⟩
+def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ  ,
+   Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
 def stepFunction : ℝ → ℝ := fun t =>
@@ -78,29 +89,23 @@ lemma stepFunction_continuous : Continuous stepFunction := by
 
 /-- The continuous map from `lorentzGroup` to `ℝ` wh
 taking Orthochronous elements to `1` and non-orthochronous to `-1`. -/
-def orthchroMapReal : C(LorentzGroup, ℝ) := ContinuousMap.comp
-  ⟨stepFunction, stepFunction_continuous⟩ mapZeroZeroComp
+def orthchroMapReal : C(LorentzGroup d, ℝ) := ContinuousMap.comp
+  ⟨stepFunction, stepFunction_continuous⟩ timeCompCont
 
-lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup} (h : IsOrthochronous Λ) :
+lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMapReal Λ = 1 := by
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h
-  simp only [IsFourVelocity] at h
-  rw [zero_nonneg_iff] at h
-  simp [stdBasis_mulVec] at h
-  have h1 : ¬  Λ.1 0 0 ≤  (-1 : ℝ) := by linarith
-  change stepFunction (Λ.1 0 0) = 1
-  rw [stepFunction, if_neg h1, if_pos h]
+  rw [IsOrthochronous_iff_ge_one, timeComp] at h
+  change stepFunction (Λ.1 _ _) = 1
+  rw [stepFunction, if_pos h, if_neg]
+  linarith
 
-
-lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup} (h : ¬ IsOrthochronous Λ) :
+lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMapReal Λ = - 1 := by
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h
-  rw [not_IsFourVelocity_iff, zero_nonpos_iff] at h
-  simp only [fstCol, Fin.isValue, stdBasis_mulVec] at h
-  change stepFunction (Λ.1 0 0) = - 1
+  rw [not_orthochronous_iff_le_neg_one] at h
+  change stepFunction (timeComp _)= - 1
   rw [stepFunction, if_pos h]
 
-lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup) :
+lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
     orthchroMapReal Λ = -1 ∨ orthchroMapReal Λ = 1 := by
   by_cases h : IsOrthochronous Λ
   apply Or.inr $ orthchroMapReal_on_IsOrthochronous h
@@ -109,65 +114,50 @@ lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup) :
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
 
 /-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
-def orthchroMap : C(LorentzGroup, ℤ₂) :=
+def orthchroMap : C(LorentzGroup d, ℤ₂) :=
   ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,
     continuous_toFun :=  Continuous.subtype_mk (ContinuousMap.continuous orthchroMapReal) _}
 
-lemma orthchroMap_IsOrthochronous {Λ : LorentzGroup} (h : IsOrthochronous Λ) :
+lemma orthchroMap_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMap Λ = 1 := by
   simp [orthchroMap, orthchroMapReal_on_IsOrthochronous h]
 
-lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup} (h : ¬ IsOrthochronous Λ) :
+lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMap Λ =  Additive.toMul (1 : ZMod 2) := by
   simp [orthchroMap, orthchroMapReal_on_not_IsOrthochronous h]
   rfl
 
-lemma zero_zero_mul (Λ Λ' : LorentzGroup) :
-    (Λ * Λ').1 0 0 =  (fstCol (transpose Λ)).1 0 * (fstCol Λ').1 0 +
-    ⟪(fstCol (transpose Λ)).1.space, (fstCol Λ').1.space⟫_ℝ := by
-  simp only [Fin.isValue, lorentzGroupIsGroup_mul_coe, mul_apply, Fin.sum_univ_four, fstCol,
-    transpose, stdBasis_mulVec, transpose_apply, space, PiLp.inner_apply, Nat.succ_eq_add_one,
-    Nat.reduceAdd, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three, cons_val_zero,
-    cons_val_one, head_cons, cons_val_two, tail_cons]
-  ring
-
-lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup} (h : IsOrthochronous Λ)
+lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
-  rw [IsOrthochronous, zero_zero_mul]
-  exact euclid_norm_IsFourVelocity_IsFourVelocity h h'
+  rw [IsOrthochronous_iff_futurePointing] at h h'
+  rw [IsOrthochronous, timeComp_mul]
+  exact NormOneLorentzVector.FuturePointing.metric_reflect_mem_mem h h'
 
-lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup} (h : ¬  IsOrthochronous Λ)
+lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
-  rw [IsOrthochronous, zero_zero_mul]
-  exact euclid_norm_not_IsFourVelocity_not_IsFourVelocity h h'
+  rw [IsOrthochronous_iff_futurePointing] at h h'
+  rw [IsOrthochronous, timeComp_mul]
+  exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_not_mem h h'
 
-lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup} (h :  IsOrthochronous Λ)
+lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h :  IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
+  rw [not_orthochronous_iff_le_zero, timeComp_mul]
   rw [IsOrthochronous_iff_transpose] at h
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity, not_IsFourVelocity_iff]
-  simp [stdBasis_mulVec]
-  change (Λ * Λ').1 0 0  ≤ _
-  rw [zero_zero_mul]
-  exact euclid_norm_IsFourVelocity_not_IsFourVelocity h h'
+  rw [IsOrthochronous_iff_futurePointing] at h h'
+  exact NormOneLorentzVector.FuturePointing.metric_reflect_mem_not_mem h h'
 
-lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup} (h : ¬ IsOrthochronous Λ)
+lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
+  rw [not_orthochronous_iff_le_zero, timeComp_mul]
   rw [IsOrthochronous_iff_transpose] at h
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity] at h h'
-  rw [IsOrthochronous_iff_fstCol_IsFourVelocity, not_IsFourVelocity_iff]
-  simp [stdBasis_mulVec]
-  change (Λ * Λ').1 0 0  ≤ _
-  rw [zero_zero_mul]
-  exact euclid_norm_not_IsFourVelocity_IsFourVelocity h h'
+  rw [IsOrthochronous_iff_futurePointing] at h h'
+  exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_mem h h'
 
 /-- The homomorphism from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
-def orthchroRep : LorentzGroup →* ℤ₂ where
+def orthchroRep : LorentzGroup d →* ℤ₂ where
   toFun := orthchroMap
   map_one' := orthchroMap_IsOrthochronous (by simp [IsOrthochronous])
   map_mul' Λ Λ' := by
@@ -189,5 +179,4 @@ def orthchroRep : LorentzGroup →* ℤ₂ where
 
 end LorentzGroup
 
-end SpaceTime
 end

@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Proper
 import Mathlib.Topology.Constructions
-import HepLean.SpaceTime.FourVelocity
+import HepLean.SpaceTime.LorentzVector.NormOne
 /-!
 # Boosts
 
@@ -28,15 +28,17 @@ A boost is the special case of a generalised boost when `u = stdBasis 0`.
 
 -/
 noncomputable section
-namespace SpaceTime
 
 namespace LorentzGroup
 
-open FourVelocity
+open NormOneLorentzVector
+open minkowskiMetric
+
+variable {d : ℕ}
 
 /-- An auxillary linear map used in the definition of a generalised boost. -/
-def genBoostAux₁ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
-  toFun x := (2 * ηLin x u) • v.1.1
+def genBoostAux₁ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
+  toFun x := (2 * ⟪x, u⟫ₘ) • v.1.1
   map_add' x y := by
     simp only [map_add, LinearMap.add_apply]
     rw [mul_add, add_smul]
@@ -46,23 +48,27 @@ def genBoostAux₁ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
 /-- An auxillary linear map used in the definition of a genearlised boost. -/
-def genBoostAux₂ (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime where
-  toFun x := - (ηLin x (u + v) / (1 + ηLin u v)) • (u + v)
+def genBoostAux₂ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
+  toFun x := - (⟪x, u.1.1 + v⟫ₘ / (1 + ⟪u.1.1, v⟫ₘ)) • (u.1.1 + v)
   map_add' x y := by
     simp only
-    rw [ηLin.map_add, div_eq_mul_one_div]
-    rw [show (ηLin x + ηLin y) (↑u + ↑v) = ηLin x (u+v) + ηLin y (u+v) from rfl]
-    rw [add_mul, neg_add, add_smul, ← div_eq_mul_one_div, ← div_eq_mul_one_div]
+    rw [← add_smul]
+    apply congrFun
+    apply congrArg
+    field_simp
+    apply congrFun
+    apply congrArg
+    ring
   map_smul' c x := by
     simp only
-    rw [ηLin.map_smul]
-    rw [show (c • ηLin x) (↑u + ↑v) = c * ηLin x (u+v) from rfl]
+    rw [map_smul]
+    rw [show (c • minkowskiMetric x) (↑u + ↑v) = c * minkowskiMetric x (u+v) from rfl]
     rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
 
 /-- An generalised boost. This is a Lorentz transformation which takes the four velocity `u`
 to `v`. -/
-def genBoost (u v : FourVelocity) : SpaceTime →ₗ[ℝ] SpaceTime :=
+def genBoost (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d :=
   LinearMap.id + genBoostAux₁ u v + genBoostAux₂ u v
 
 namespace genBoost
@@ -71,7 +77,7 @@ namespace genBoost
   This lemma states that for a given four-velocity `u`, the general boost
   transformation `genBoost u u` is equal to the identity linear map `LinearMap.id`.
 -/
-lemma self (u : FourVelocity) : genBoost u u = LinearMap.id := by
+lemma self (u : FuturePointing d) : genBoost u u = LinearMap.id := by
   ext x
   simp [genBoost]
   rw [add_assoc]
@@ -88,84 +94,88 @@ lemma self (u : FourVelocity) : genBoost u u = LinearMap.id := by
   rfl
 
 /-- A generalised boost as a matrix. -/
-def toMatrix (u v : FourVelocity) : Matrix (Fin 4) (Fin 4) ℝ :=
-  LinearMap.toMatrix stdBasis stdBasis (genBoost u v)
+def toMatrix (u v : FuturePointing d) : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ :=
+  LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (genBoost u v)
 
-lemma toMatrix_mulVec (u v : FourVelocity) (x : SpaceTime) :
+lemma toMatrix_mulVec (u v : FuturePointing d) (x : LorentzVector d) :
     (toMatrix u v).mulVec x = genBoost u v x :=
-  LinearMap.toMatrix_mulVec_repr stdBasis stdBasis (genBoost u v) x
+  LinearMap.toMatrix_mulVec_repr LorentzVector.stdBasis LorentzVector.stdBasis (genBoost u v) x
 
-lemma toMatrix_apply (u v : FourVelocity) (i j : Fin 4) :
-    (toMatrix u v) i j =
-     η i i * (ηLin (stdBasis i) (stdBasis j) + 2 * ηLin (stdBasis j) u * ηLin (stdBasis i) v -
-    ηLin (stdBasis i) (u + v) * ηLin (stdBasis j) (u + v) / (1 + ηLin u v)) := by
-  rw [ηLin_matrix_stdBasis' j i (toMatrix u v), toMatrix_mulVec]
+open minkowskiMatrix LorentzVector in
+@[simp]
+lemma toMatrix_apply (u v : FuturePointing d) (μ ν  : Fin 1 ⊕ Fin d) :
+    (toMatrix u v) μ ν = η μ μ  * (⟪e μ, e ν⟫ₘ + 2 * ⟪e ν, u⟫ₘ * ⟪e μ, v⟫ₘ
+    - ⟪e μ, u + v⟫ₘ * ⟪e ν, u + v⟫ₘ / (1 + ⟪u, v.1.1⟫ₘ)) := by
+  rw [matrix_apply_stdBasis (toMatrix u v) μ ν, toMatrix_mulVec]
   simp only [genBoost, genBoostAux₁, genBoostAux₂, map_add, smul_add, neg_smul, LinearMap.add_apply,
-    LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, LinearMapClass.map_smul, smul_eq_mul,
-    map_neg, mul_eq_mul_left_iff]
-  apply Or.inl
-  ring
+    LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, basis_left, map_smul, smul_eq_mul, map_neg,
+    mul_eq_mul_left_iff]
+  have h1 := FuturePointing.one_add_metric_non_zero u v
+  field_simp
+  ring_nf
+  simp
 
-lemma toMatrix_continuous (u : FourVelocity) : Continuous (toMatrix u) := by
+open minkowskiMatrix LorentzVector in
+lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
   refine continuous_matrix ?_
   intro i j
   simp only [toMatrix_apply]
   refine Continuous.comp' (continuous_mul_left (η i i)) ?hf
   refine Continuous.sub ?_ ?_
-  refine Continuous.comp' (continuous_add_left ((ηLin (stdBasis i)) (stdBasis j))) ?_
-  refine Continuous.comp' (continuous_mul_left (2 * (ηLin (stdBasis j)) ↑u)) ?_
-  exact η_continuous _
+  refine Continuous.comp' (continuous_add_left ⟪e i, e j⟫ₘ) ?_
+  refine Continuous.comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
+  exact FuturePointing.metric_continuous _
   refine Continuous.mul ?_ ?_
   refine Continuous.mul ?_ ?_
-  simp only [(ηLin _).map_add]
+  simp only [(minkowskiMetric _).map_add]
   refine Continuous.comp' ?_ ?_
-  exact continuous_add_left ((ηLin (stdBasis i)) ↑u)
-  exact η_continuous _
-  simp only [(ηLin _).map_add]
+  exact continuous_add_left ((minkowskiMetric (stdBasis i)) ↑u)
+  exact FuturePointing.metric_continuous _
+  simp only [(minkowskiMetric _).map_add]
   refine Continuous.comp' ?_ ?_
   exact continuous_add_left _
-  exact η_continuous _
+  exact FuturePointing.metric_continuous _
   refine Continuous.inv₀ ?_ ?_
   refine Continuous.comp' (continuous_add_left 1) ?_
-  exact η_continuous _
-  exact fun x => one_plus_ne_zero u x
+  exact FuturePointing.metric_continuous _
+  exact fun x => FuturePointing.one_add_metric_non_zero u x
 
 
-lemma toMatrix_PreservesηLin (u v : FourVelocity) : PreservesηLin (toMatrix u v) := by
+lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ LorentzGroup d:= by
   intro x y
   rw [toMatrix_mulVec, toMatrix_mulVec, genBoost, genBoostAux₁, genBoostAux₂]
-  have h1 : (1 + (ηLin ↑u) ↑v) ≠ 0 := one_plus_ne_zero u v
+  have h1 : (1 + (minkowskiMetric ↑u) ↑v.1.1) ≠ 0 := FuturePointing.one_add_metric_non_zero u v
   simp only [map_add, smul_add, neg_smul, LinearMap.add_apply, LinearMap.id_coe,
     id_eq, LinearMap.coe_mk, AddHom.coe_mk, LinearMapClass.map_smul, map_neg, LinearMap.smul_apply,
     smul_eq_mul, LinearMap.neg_apply]
   field_simp
-  rw [u.1.2, v.1.2, ηLin_symm v u, ηLin_symm u y, ηLin_symm v y]
+  rw [u.1.2, v.1.2, minkowskiMetric.symm v.1.1 u, minkowskiMetric.symm u y,
+     minkowskiMetric.symm v y]
   ring
 
 /-- A generalised boost as an element of the Lorentz Group. -/
-def toLorentz (u v : FourVelocity) : LorentzGroup :=
-  ⟨toMatrix u v, toMatrix_PreservesηLin u v⟩
+def toLorentz (u v : FuturePointing d) : LorentzGroup d :=
+  ⟨toMatrix u v, toMatrix_in_lorentzGroup u v⟩
 
-lemma toLorentz_continuous (u : FourVelocity) : Continuous (toLorentz u) := by
-  refine Continuous.subtype_mk ?_ (fun x => toMatrix_PreservesηLin u x)
+lemma toLorentz_continuous (u : FuturePointing d) : Continuous (toLorentz u) := by
+  refine Continuous.subtype_mk ?_ (fun x => toMatrix_in_lorentzGroup u x)
   exact toMatrix_continuous u
 
 
-
-lemma toLorentz_joined_to_1 (u v : FourVelocity) : Joined 1 (toLorentz u v) := by
-  obtain ⟨f, _⟩ := isPathConnected_FourVelocity.joinedIn u trivial v trivial
+lemma toLorentz_joined_to_1 (u v : FuturePointing d) : Joined 1 (toLorentz u v) := by
+  obtain ⟨f, _⟩ := FuturePointing.isPathConnected.joinedIn u trivial v trivial
   use ContinuousMap.comp ⟨toLorentz u, toLorentz_continuous u⟩ f
   · simp only [ContinuousMap.toFun_eq_coe, ContinuousMap.comp_apply, ContinuousMap.coe_coe,
     Path.source, ContinuousMap.coe_mk]
     rw [@Subtype.ext_iff, toLorentz]
-    simp [PreservesηLin.liftGL, toMatrix, self u]
+    simp [toMatrix, self u]
   · simp
 
-lemma toLorentz_in_connected_component_1 (u v : FourVelocity) :
+lemma toLorentz_in_connected_component_1 (u v : FuturePointing d) :
     toLorentz u v ∈ connectedComponent 1 :=
   pathComponent_subset_component _ (toLorentz_joined_to_1 u v)
 
-lemma isProper (u v : FourVelocity) : IsProper (toLorentz u v) :=
+lemma isProper (u v : FuturePointing d) : IsProper (toLorentz u v) :=
   (isProper_on_connected_component (toLorentz_in_connected_component_1 u v)).mp id_IsProper
 
 end genBoost
@@ -174,5 +184,4 @@ end genBoost
 end LorentzGroup
 
 
-end SpaceTime
 end
