@@ -63,7 +63,6 @@ lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
 lemma as_block :  @minkowskiMatrix d =  (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ)) := by
   rw [minkowskiMatrix]
-  congr
   simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
   rw [← fromBlocks_diagonal]
   refine fromBlocks_inj.mpr ?_
