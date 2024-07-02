@@ -60,10 +60,8 @@ import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.SO3.Basic
-import HepLean.SpaceTime.AsSelfAdjointMatrix
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
-import HepLean.SpaceTime.FourVelocity
 import HepLean.SpaceTime.LorentzAlgebra.Basic
 import HepLean.SpaceTime.LorentzAlgebra.Basis
 import HepLean.SpaceTime.LorentzGroup.Basic
@@ -71,7 +69,11 @@ import HepLean.SpaceTime.LorentzGroup.Boosts
 import HepLean.SpaceTime.LorentzGroup.Orthochronous
 import HepLean.SpaceTime.LorentzGroup.Proper
 import HepLean.SpaceTime.LorentzGroup.Rotations
-import HepLean.SpaceTime.Metric
+import HepLean.SpaceTime.LorentzTensors.Basic
+import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
+import HepLean.SpaceTime.LorentzVector.Basic
+import HepLean.SpaceTime.LorentzVector.NormOne
+import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic

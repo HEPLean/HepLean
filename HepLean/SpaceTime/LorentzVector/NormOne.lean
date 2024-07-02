@@ -17,10 +17,13 @@ open minkowskiMetric
 def NormOneLorentzVector (d : ℕ) : Set (LorentzVector d) :=
   fun x => ⟪x, x⟫ₘ = 1
 
+instance : TopologicalSpace (NormOneLorentzVector d) := instTopologicalSpaceSubtype
+
 namespace NormOneLorentzVector
 
 variable {d : ℕ}
 
+section
 variable (v w : NormOneLorentzVector d)
 
 lemma mem_iff {x : LorentzVector d} : x ∈ NormOneLorentzVector d ↔ ⟪x, x⟫ₘ = 1 := by
@@ -91,8 +94,11 @@ lemma time_abs_sub_space_norm  :
 def FuturePointing (d : ℕ) : Set (NormOneLorentzVector d) :=
   fun x => 0 < x.1.time
 
+instance : TopologicalSpace (FuturePointing d) := instTopologicalSpaceSubtype
+
 namespace FuturePointing
 
+section
 variable (f f' : FuturePointing d)
 
 lemma mem_iff : v ∈ FuturePointing d ↔ 0 < v.1.time := by
@@ -124,9 +130,30 @@ lemma time_nonneg : 0 ≤ f.1.1.time := le_of_lt f.2
 
 lemma abs_time : |f.1.1.time| = f.1.1.time := abs_of_nonneg (time_nonneg f)
 
+lemma time_eq_sqrt : f.1.1.time = √(1 + ‖f.1.1.space‖ ^ 2) := by
+  symm
+  rw [Real.sqrt_eq_cases]
+  apply Or.inl
+  rw [← time_sq, sq]
+  exact ⟨rfl, time_nonneg f⟩
+
 /-!
 
-# The value sign of ⟪v, w.1.spaceReflection⟫ₘ different v and w
+# The sign of ⟪v, w.1⟫ₘ different v and w
+
+-/
+
+lemma metric_nonneg : 0 ≤ ⟪f, f'.1.1⟫ₘ := by
+  apply le_trans (time_abs_sub_space_norm f f'.1)
+  rw [abs_time f, abs_time f']
+  exact ge_sub_norm f.1.1 f'.1.1
+
+lemma one_add_metric_non_zero : 1 + ⟪f, f'.1.1⟫ₘ ≠ 0 := by
+  linarith [metric_nonneg f f']
+
+/-!
+
+# The sign of ⟪v, w.1.spaceReflection⟫ₘ different v and w
 
 -/
 
@@ -165,6 +192,108 @@ lemma metric_reflect_not_mem_mem (h : v ∉ FuturePointing d) (hw :  w ∈ Futur
   simp [neg]
 
 end
+end
+
+end FuturePointing
+end
+
+namespace FuturePointing
+/-!
+
+# Topology
+
+-/
+open LorentzVector
+
+/-- The `FuturePointing d` which has all space components zero. -/
+@[simps!]
+noncomputable def timeVecNormOneFuture : FuturePointing d := ⟨⟨timeVec, by
+  rw [NormOneLorentzVector.mem_iff, on_timeVec]⟩, by
+  rw [mem_iff, timeVec_time]; simp⟩
+
+
+/-- A continuous path from `timeVecNormOneFuture` to any other. -/
+noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFuture u where
+  toFun t := ⟨
+    ⟨fun i => match i with
+      | Sum.inl 0 => √(1 + t ^ 2 * ‖u.1.1.space‖ ^ 2)
+      | Sum.inr i => t * u.1.1.space i,
+    by
+      rw [NormOneLorentzVector.mem_iff, minkowskiMetric.eq_time_minus_inner_prod]
+      simp only [time, space, Function.comp_apply, PiLp.inner_apply, RCLike.inner_apply, map_mul,
+        conj_trivial]
+      rw [Real.mul_self_sqrt, ← @real_inner_self_eq_norm_sq, @PiLp.inner_apply]
+      simp only [Function.comp_apply, RCLike.inner_apply, conj_trivial]
+      have h1 : ∑ x : Fin d, t.1 * u.1.1 (Sum.inr x) * (↑t.1 * u.1.1 (Sum.inr x)) =
+        t ^ 2 * ∑ x : Fin d, u.1.1 (Sum.inr x) * u.1.1 (Sum.inr x) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i _
+        ring
+      rw [h1]
+      ring
+      refine Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _) ⟩,
+    by
+      simp only [space, Function.comp_apply, mem_iff_time_nonneg, time, Real.sqrt_pos]
+      exact Real.sqrt_nonneg _⟩
+  continuous_toFun := by
+    refine Continuous.subtype_mk ?_ _
+    refine Continuous.subtype_mk ?_ _
+    apply (continuous_pi_iff).mpr
+    intro i
+    match i with
+    | Sum.inl 0 =>
+      continuity
+    | Sum.inr i =>
+      continuity
+  source' := by
+    ext
+    funext i
+    match i with
+    | Sum.inl 0 =>
+      simp only [Set.Icc.coe_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, space,
+        zero_mul, add_zero, Real.sqrt_one, Fin.isValue, timeVecNormOneFuture_coe_coe]
+      exact Eq.symm timeVec_time
+    | Sum.inr i =>
+      simp only [Set.Icc.coe_zero, space, Function.comp_apply, zero_mul,
+        timeVecNormOneFuture_coe_coe]
+      change _ = timeVec.space i
+      rw [timeVec_space]
+      rfl
+  target' := by
+    ext
+    funext i
+    match i with
+    | Sum.inl 0 =>
+      simp only [Set.Icc.coe_one, one_pow, space, one_mul, Fin.isValue]
+      exact (time_eq_sqrt u).symm
+    | Sum.inr i =>
+      simp only [Set.Icc.coe_one, one_pow, space, one_mul, Fin.isValue]
+      exact rfl
+
+
+
+
+lemma isPathConnected : IsPathConnected (@Set.univ (FuturePointing d)) := by
+  use timeVecNormOneFuture
+  apply And.intro trivial  ?_
+  intro y a
+  use pathFromTime y
+  exact fun _ => a
+
+
+lemma metric_continuous (u : LorentzVector d) :
+    Continuous (fun (a : FuturePointing d) => ⟪u, a.1.1⟫ₘ) := by
+  simp only [minkowskiMetric.eq_time_minus_inner_prod]
+  refine Continuous.add ?_ ?_
+  · refine Continuous.comp' (continuous_mul_left _) $ Continuous.comp'
+      (continuous_apply (Sum.inl 0))
+      (Continuous.comp' continuous_subtype_val continuous_subtype_val)
+  · refine Continuous.comp' continuous_neg $ Continuous.inner
+     (Continuous.comp' (Pi.continuous_precomp Sum.inr) continuous_const)
+     (Continuous.comp' (Pi.continuous_precomp Sum.inr) (Continuous.comp'
+      continuous_subtype_val continuous_subtype_val))
+
 
 end FuturePointing
 

@@ -64,7 +64,7 @@ def repSelfAdjointMatrix : Representation ℝ SL(2, ℂ) $ selfAdjoint (Matrix (
 
 /-- The representation of  `SL(2, ℂ)` on `spaceTime` obtained from `toSelfAdjointMatrix` and
   `repSelfAdjointMatrix`. -/
-def repSpaceTime : Representation ℝ SL(2, ℂ) SpaceTime where
+def repLorentzVector : Representation ℝ SL(2, ℂ) (LorentzVector 3) where
   toFun M := toSelfAdjointMatrix.symm.comp ((repSelfAdjointMatrix M).comp
     toSelfAdjointMatrix.toLinearMap)
   map_one' := by
@@ -84,15 +84,28 @@ In the next section we will restrict this homomorphism to the restricted Lorentz
 
 -/
 
+lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ):  Λ ∈ LorentzGroup 3 ↔
+    ∀ (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)),
+    det ((toSelfAdjointMatrix ∘ toLin LorentzVector.stdBasis LorentzVector.stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
+    = det x.1 := by
+  rw [LorentzGroup.mem_iff_norm]
+  apply Iff.intro
+  intro h x
+  have h1 := congrArg ofReal $ h (toSelfAdjointMatrix.symm x)
+  simpa [← det_eq_ηLin] using h1
+  intro h x
+  have h1 := h (toSelfAdjointMatrix x)
+  simpa [det_eq_ηLin] using h1
+
 /-- Given an element `M ∈ SL(2, ℂ)` the corresponding element of the Lorentz group. -/
 @[simps!]
-def toLorentzGroupElem (M : SL(2, ℂ)) : 𝓛 :=
-  ⟨LinearMap.toMatrix stdBasis stdBasis (repSpaceTime M) ,
-   by simp [repSpaceTime, PreservesηLin.iff_det_selfAdjoint]⟩
+def toLorentzGroupElem (M : SL(2, ℂ)) : LorentzGroup 3 :=
+  ⟨LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (repLorentzVector M) ,
+   by simp [repLorentzVector, iff_det_selfAdjoint]⟩
 
 /-- The group homomorphism from ` SL(2, ℂ)` to the Lorentz group `𝓛`. -/
 @[simps!]
-def toLorentzGroup : SL(2, ℂ) →* 𝓛 where
+def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3  where
   toFun := toLorentzGroupElem
   map_one' := by
     simp only [toLorentzGroupElem, _root_.map_one, LinearMap.toMatrix_one]

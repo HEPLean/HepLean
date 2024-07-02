@@ -60,6 +60,17 @@ lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
+lemma as_block :  @minkowskiMatrix d =  (
+    Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ)) := by
+  rw [minkowskiMatrix]
+  congr
+  simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
+  rw [← fromBlocks_diagonal]
+  refine fromBlocks_inj.mpr ?_
+  simp only [diagonal_one, true_and]
+  funext i j
+  rw [← diagonal_neg]
+  rfl
 
 
 end minkowskiMatrix
@@ -204,15 +215,6 @@ lemma ge_sub_norm : v.time * w.time - ‖v.space‖ * ‖w.space‖ ≤ ⟪v, w�
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm v.space w.space
 
-/-!
-
-# The Minkowski metric and the standard basis
-
--/
-
-lemma on_timeVec : ⟪timeVec, @timeVec d⟫ₘ = 1 := by
-  rw [self_eq_time_minus_norm, timeVec_time, timeVec_space]
-  simp [LorentzVector.stdBasis, minkowskiMetric]
 
 /-!
 
@@ -302,6 +304,51 @@ lemma matrix_eq_id_iff : Λ = 1 ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫�
   simp
 
 
-end matrices
+/-!
 
+# The Minkowski metric and the standard basis
+
+-/
+
+@[simp]
+lemma basis_left (μ : Fin 1 ⊕ Fin d)  : ⟪e μ, v⟫ₘ  = η μ μ * v μ := by
+  rw [as_sum]
+  rcases μ with μ | μ
+  · fin_cases μ
+    simp [stdBasis_apply, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  · simp [stdBasis_apply, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+
+@[simp]
+lemma on_timeVec : ⟪timeVec, @timeVec d⟫ₘ = 1 := by
+  simp only [timeVec, Fin.isValue, basis_left, minkowskiMatrix,
+    LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inl, stdBasis_apply,
+    ↓reduceIte, mul_one]
+
+@[simp]
+lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, Λ *ᵥ e ν⟫ₘ = η μ μ * Λ μ ν  := by
+  simp [basis_left, mulVec, dotProduct, stdBasis_apply]
+
+@[simp]
+lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
+  rw [basis_left, stdBasis_apply]
+  by_cases h : μ = ν
+  · simp [h]
+  · simp [h, LieAlgebra.Orthogonal.indefiniteDiagonal, minkowskiMatrix]
+    exact fun a => False.elim (h (id (Eq.symm a)))
+
+lemma matrix_apply_stdBasis (ν μ :  Fin 1 ⊕ Fin d):
+    Λ ν μ  = η ν ν *  ⟪e ν, Λ *ᵥ e μ⟫ₘ  := by
+  rw [on_basis_mulVec, ← mul_assoc]
+  have h1 : η ν ν * η ν ν = 1 := by
+    simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+    rcases μ
+    · rcases ν
+      · simp_all only [Sum.elim_inl, mul_one]
+      · simp_all only [Sum.elim_inr, mul_neg, mul_one, neg_neg]
+    · rcases ν
+      · simp_all only [Sum.elim_inl, mul_one]
+      · simp_all only [Sum.elim_inr, mul_neg, mul_one, neg_neg]
+  simp [h1]
+
+end matrices
 end minkowskiMetric

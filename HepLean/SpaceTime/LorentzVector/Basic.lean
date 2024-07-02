@@ -33,6 +33,11 @@ noncomputable instance : Module ℝ (LorentzVector d) := Pi.module _ _ _
 
 instance : AddCommGroup (LorentzVector d) := Pi.addCommGroup
 
+/-- The structure of a topological space `LorentzVector d`. -/
+instance : TopologicalSpace (LorentzVector d) :=
+  haveI : NormedAddCommGroup (LorentzVector d) := Pi.normedAddCommGroup
+  UniformSpace.toTopologicalSpace
+
 namespace LorentzVector
 
 variable {d : ℕ}
@@ -53,26 +58,29 @@ def time : ℝ := v (Sum.inl 0)
 
 -/
 
-/-- The standard basis of `LorentzVector`. -/
+/-- The standard basis of `LorentzVector` indexed by `Fin 1 ⊕ Fin (d)`. -/
 @[simps!]
 noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (LorentzVector d) := Pi.basisFun ℝ _
 
+scoped[LorentzVector] notation "e" => stdBasis
+
+lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 else 0 := by
+  rw [stdBasis]
+  erw [Pi.basisFun_apply]
+  simp
+
 /-- The standard unit time vector. -/
-@[simp]
-noncomputable def timeVec : (LorentzVector d) := stdBasis (Sum.inl 0)
+noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)
 
 @[simp]
 lemma timeVec_space : (@timeVec d).space = 0 := by
   funext i
-  simp [space, stdBasis]
-  erw [Pi.basisFun_apply]
-  simp_all only [Fin.isValue, LinearMap.stdBasis_apply', ↓reduceIte]
+  simp only [space, Function.comp_apply, stdBasis_apply, Fin.isValue, ↓reduceIte, PiLp.zero_apply]
 
 @[simp]
 lemma timeVec_time: (@timeVec d).time = 1 := by
-  simp [space, stdBasis]
-  erw [Pi.basisFun_apply]
-  simp_all only [Fin.isValue, LinearMap.stdBasis_apply', ↓reduceIte]
+  simp only [time, Fin.isValue, stdBasis_apply, ↓reduceIte]
+
 
 /-!
 
