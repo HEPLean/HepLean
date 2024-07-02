@@ -538,7 +538,6 @@ def dot  : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂
     intro S1 S2 T
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
       ACCSystemCharges.chargesAddCommMonoid_add, map_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
-    repeat erw [AddHom.map_add]
     rw [Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
     simp only [Fin.isValue]
     ring)

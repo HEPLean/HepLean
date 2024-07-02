@@ -121,13 +121,11 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
   left_inv S := by
     apply linearParameters.ext
     rfl
-    repeat erw [speciesVal]
     simp only [Fin.isValue]
     repeat erw [speciesVal]
     simp only [asCharges, neg_add_rev]
     ring
     simp only [toSpecies_apply]
-    repeat erw [speciesVal]
     rfl
   right_inv S := by
     simp only [Fin.isValue, toSpecies_apply]
@@ -257,7 +255,6 @@ def bijectionLinearParameters :
     field_simp
     ring_nf
     field_simp [hQ, hE]
-    ring_nf
     field_simp
     ring_nf
     field_simp [hQ, hE]

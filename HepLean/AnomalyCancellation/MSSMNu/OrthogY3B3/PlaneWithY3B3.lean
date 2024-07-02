@@ -152,7 +152,6 @@ lemma lineQuad_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
   change _ = (d • planeY₃B₃ R _ _ _).val
   rw [← planeY₃B₃_smul]
   rw [lineQuad_val]
-  congr 2
   ring_nf
 
 /-- A helper function to simplify following expressions. -/
@@ -193,7 +192,6 @@ lemma lineCube_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
   change _ = (d • planeY₃B₃ R _ _ _).val
   rw [← planeY₃B₃_smul]
   change (planeY₃B₃ R _ _ _).val = (planeY₃B₃ R _ _ _).val
-  congr 2
   ring_nf
 
 lemma lineCube_cube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
@@ -209,7 +207,6 @@ lemma lineCube_quad (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
   erw [planeY₃B₃_quad]
   rw [α₁, α₂, α₃]
   ring
-
 
 section proj
 
