@@ -70,13 +70,10 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
     ring
   )
 
-
-
 /-- The cubic anomaly equation. -/
 @[simp]
 def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).Charges) :=
   (accCubeTriLinSymm).toCubic
-
 
 lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
@@ -176,6 +173,5 @@ lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j
   have hlt := hl (f ∘ Fin.castSucc)
   erw [← hlt]
   simp
-
 
 end PureU1

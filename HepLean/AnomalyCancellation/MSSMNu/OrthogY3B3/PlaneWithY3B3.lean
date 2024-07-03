@@ -44,7 +44,6 @@ lemma planeY₃B₃_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
   rw [smul_add, smul_add]
   rw [smul_smul, smul_smul, smul_smul]
 
-
 lemma planeY₃B₃_eq (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h :  a = a' ∧ b = b' ∧ c = c') :
     (planeY₃B₃ R a b c) = (planeY₃B₃ R a' b' c') := by
   rw [h.1, h.2.1, h.2.2]

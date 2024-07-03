@@ -137,7 +137,6 @@ def InCubeProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
     cubeTriLin R.val R.val R.val = 0 ∧ cubeTriLin R.val R.val B₃.val = 0 ∧
     cubeTriLin R.val R.val Y₃.val = 0
 
-
 instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InCubeProp R) := by
   apply And.decidable
 
