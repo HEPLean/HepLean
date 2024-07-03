@@ -83,4 +83,5 @@ noncomputable def graphicalSpecies (d : ℕ) : GraphicalSpecies where
     | ⟨as x⟩, ⟨𝓣⟩, ⟨𝓣⟩, _, _ => rfl
     | ⟨as x⟩, ⟨as y⟩, ⟨𝓣⟩, _, _ => rfl
 
+
 end LorentzTensor
