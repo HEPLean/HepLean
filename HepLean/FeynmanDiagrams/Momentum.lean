@@ -26,7 +26,6 @@ vector space.
 This section is non-computable as we depend on the norm on `F.HalfEdgeMomenta`.
 -/
 
-
 namespace FeynmanDiagram
 
 open CategoryTheory
@@ -78,7 +77,6 @@ def euclidInner : F.HalfEdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta →ₗ[ℝ] �
     simp only [euclidInnerAux_symm, LinearMapClass.map_smul, smul_eq_mul, RingHom.id_apply,
       LinearMap.smul_apply]
 
-
 /-- The type which assocaites to each ege a `1`-dimensional vector space.
  Corresponding to that spanned by its total outflowing momentum.  -/
 def EdgeMomenta : Type := F.𝓔 → ℝ
@@ -86,7 +84,6 @@ def EdgeMomenta : Type := F.𝓔 → ℝ
 instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
 
 instance : Module ℝ F.EdgeMomenta := Pi.module _ _ _
-
 
 /-- The type which assocaites to each ege a `1`-dimensional vector space.
  Corresponding to that spanned by its total inflowing momentum.  -/
@@ -118,7 +115,6 @@ def EdgeVertexMomenta : Type := DirectSum (Fin 2) (EdgeVertexMomentaMap F)
 instance : AddCommGroup F.EdgeVertexMomenta := DirectSum.instAddCommGroup _
 
 instance : Module ℝ F.EdgeVertexMomenta := DirectSum.instModule
-
 
 /-!
 
@@ -199,7 +195,6 @@ for specific Feynman diagrams.
 
 - Complete this section.
 
-
 -/
 
 /-!
@@ -209,7 +204,6 @@ for specific Feynman diagrams.
 ### TODO
 
 - Complete this section.
-
 
 -/
 

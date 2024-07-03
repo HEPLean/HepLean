@@ -77,7 +77,6 @@ lemma timeVec_space : (@timeVec d).space = 0 := by
 lemma timeVec_time: (@timeVec d).time = 1 := by
   simp only [time, Fin.isValue, stdBasis_apply, ↓reduceIte]
 
-
 /-!
 
 # Reflection of space

@@ -183,7 +183,6 @@ lemma grav (S : linearParameters) :
 
 end linearParameters
 
-
 /-- The parameters for solutions to the linear ACCs with the condition that Q and E are non-zero.-/
 structure linearParametersQENeqZero where
   /-- The parameter `x`. -/
@@ -280,7 +279,6 @@ lemma cubic (S : linearParametersQENeqZero) :
   simp_all
   exact add_eq_zero_iff_eq_neg
 
-
 lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (FLTThree : FermatLastTheoremWith ℚ 3) :
     S.v = 0 ∨ S.w = 0 := by
@@ -363,7 +361,6 @@ lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1
   exact Rat.zero_add (-1)
 
 end linearParametersQENeqZero
-
 
 end One
 end SMNoGrav

@@ -40,7 +40,6 @@ lemma map_smul (f : HomogeneousQuadratic V) (a : ℚ) (S : V) : f (a • S) = a 
 
 end HomogeneousQuadratic
 
-
 /-- The structure of a symmetric bilinear function. -/
 structure BiLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] extends V →ₗ[ℚ] V →ₗ[ℚ] ℚ where
   swap' : ∀ S T, toFun S T = toFun T S
@@ -126,7 +125,6 @@ lemma map_sum₂ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
   intro i
   rw [swap]
 
-
 /-- The homogenous quadratic equation obtainable from a bilinear function. -/
 @[simps!]
 def toHomogeneousQuad {V : Type} [AddCommMonoid V] [Module ℚ V]
@@ -145,7 +143,6 @@ lemma toHomogeneousQuad_add {V : Type} [AddCommMonoid V] [Module ℚ V]
   simp [toHomogeneousQuad_apply]
   rw [τ.map_add₁, τ.map_add₁, τ.swap T S]
   ring
-
 
 end BiLinearSymm
 
@@ -221,7 +218,6 @@ def mk₃ (f : V × V × V→ ℚ) (map_smul : ∀ a S T L, f (a • S, T, L) = 
     simp [BiLinearSymm.mk₂, map_smul]
   swap₁' := swap₁
   swap₂' := swap₂
-
 
 lemma swap₁ (f : TriLinearSymm V) (S T L : V) : f S T L = f T S L :=
   f.swap₁' S T L
@@ -299,7 +295,6 @@ lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
   apply Fintype.sum_congr
   intro i
   rw [map_sum₃]
-
 
 /-- The homogenous cubic equation obtainable from a symmetric trilinear function. -/
 @[simps!]

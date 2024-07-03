@@ -44,7 +44,6 @@ def LorentzGroup (d : ℕ) : Set (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ
     {Λ : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ |
      ∀ (x y : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ y⟫ₘ = ⟪x, y⟫ₘ}
 
-
 namespace LorentzGroup
 /-- Notation for the Lorentz group. -/
 scoped[LorentzGroup] notation (name := lorentzGroup_notation) "𝓛" => LorentzGroup

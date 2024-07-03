@@ -319,5 +319,4 @@ lemma accCube_ext {S T : (SMCharges n).Charges}
     rfl
   repeat rw [h1]
 
-
 end SMACCs

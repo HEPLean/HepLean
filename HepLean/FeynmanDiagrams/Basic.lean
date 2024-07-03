@@ -22,7 +22,6 @@ import Mathlib.SetTheory.Cardinal.Basic
 Feynman diagrams are a graphical representation of the terms in the perturbation expansion of
 a quantum field theory.
 
-
 -/
 
 open CategoryTheory
@@ -105,7 +104,6 @@ def preimageEdge {𝓔 𝓥 : Type} (v : 𝓔) :
      (P.toEdge ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
   map {f g} F := Over.homMk ((P.toEdge ⋙ preimageType' v).map F)
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
-
 
 /-!
 
@@ -304,7 +302,6 @@ instance diagramEdgePropDecidable
     (fun _ =>  P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
     (P.diagramEdgeProp_iff F f).symm
 
-
 end PreFeynmanRule
 
 /-!
@@ -377,7 +374,6 @@ instance CondDecidable [IsFinitePreFeynmanRule P] {𝓔 𝓥 𝓱𝓔 : Type} (�
   @And.decidable _ _
     (@diagramEdgePropDecidable P _ _ _ _ _ (Over.mk 𝓱𝓔To𝓔𝓥) _ h 𝓔𝓞)
     (@diagramVertexPropDecidable P _ _ _ _ _ (Over.mk 𝓱𝓔To𝓔𝓥) _ h 𝓥𝓞)
-
 
 /-- Making a Feynman diagram from maps of edges, vertices and half-edges. -/
 def mk' {𝓔 𝓥 𝓱𝓔 : Type} (𝓔𝓞 : 𝓔 → P.EdgeLabel) (𝓥𝓞 : 𝓥 → P.VertexLabel)
@@ -491,7 +487,6 @@ structure Hom (F G : FeynmanDiagram P) where
   /-- The morphism of half-edge objects. -/
   𝓱𝓔To𝓔𝓥 : (edgeVertexFunc 𝓔𝓞.left 𝓥𝓞.left).obj F.𝓱𝓔To𝓔𝓥 ⟶ G.𝓱𝓔To𝓔𝓥
 
-
 namespace Hom
 variable {F G : FeynmanDiagram P}
 variable (f : Hom F G)
@@ -508,11 +503,9 @@ def 𝓥 : F.𝓥 → G.𝓥 := f.𝓥𝓞.left
 @[simp]
 def 𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔 := f.𝓱𝓔To𝓔𝓥.left
 
-
 /-- The morphism `F.𝓱𝓔𝓞 ⟶ G.𝓱𝓔𝓞` induced by a homomorphism of Feynman diagrams. -/
 @[simp]
 def 𝓱𝓔𝓞 : F.𝓱𝓔𝓞 ⟶ G.𝓱𝓔𝓞 := P.toHalfEdge.map f.𝓱𝓔To𝓔𝓥
-
 
 /-- The identity morphism for a Feynman diagram. -/
 def id (F : FeynmanDiagram P) : Hom F F where
@@ -578,7 +571,6 @@ instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFin
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) : Decidable (Cond 𝓔 𝓥 𝓱𝓔) :=
   And.decidable
-
 
 /-- Making a Feynman diagram from maps of edges, vertices and half-edges. -/
 @[simps! 𝓔𝓞_left 𝓥𝓞_left 𝓱𝓔To𝓔𝓥_left]
@@ -667,7 +659,6 @@ We show that the symmetry factor for a finite Feynman diagram is finite.
 /-- The type of isomorphisms of a Feynman diagram. -/
 def SymmetryType : Type := F ≅ F
 
-
 /-- An equivalence between `SymmetryType` and permutation of edges, vertices and half-edges
   satisfying `Hom.Cond`. -/
 def symmetryTypeEquiv :
@@ -727,7 +718,6 @@ instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   fun _ => @And.decidable _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
     @And.decidable _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
     (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _ ) _
-
 
 /-- From a Feynman diagram the simple graph showing those vertices which are connected. -/
 def toSimpleGraph : SimpleGraph F.𝓥 where

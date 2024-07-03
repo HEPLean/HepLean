@@ -50,5 +50,4 @@ def YAsCharge : MSSMACC.Charges := toSpecies.invFun
 def Y : MSSMACC.Sols :=
   MSSMACC.AnomalyFreeMk YAsCharge (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
 
-
 end MSSMACC

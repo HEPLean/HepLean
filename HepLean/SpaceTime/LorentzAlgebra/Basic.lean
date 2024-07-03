@@ -17,7 +17,6 @@ We define
 
 -/
 
-
 namespace SpaceTime
 open Matrix
 open TensorProduct
@@ -33,7 +32,6 @@ lemma transpose_eta (A : lorentzAlgebra) :  A.1ᵀ * η  = - η * A.1  := by
   have h1 := A.2
   erw [mem_skewAdjointMatricesLieSubalgebra] at h1
   simpa [LieAlgebra.Orthogonal.so', IsSkewAdjoint, IsAdjointPair] using h1
-
 
 lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ}
     (h :  Aᵀ * η  = - η * A) : A ∈ lorentzAlgebra := by
@@ -58,7 +56,6 @@ lemma mem_iff'  (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
     rw [minkowskiMatrix.sq]
     all_goals noncomm_ring
 
-
 lemma diag_comp (Λ : lorentzAlgebra) (μ : Fin 1 ⊕ Fin 3) : Λ.1 μ μ = 0 := by
   have h := congrArg (fun M ↦ M μ μ) $ mem_iff.mp Λ.2
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
@@ -67,21 +64,17 @@ lemma diag_comp (Λ : lorentzAlgebra) (μ : Fin 1 ⊕ Fin 3) : Λ.1 μ μ = 0 :=
   simpa using h
   simpa using h
 
-
-
 lemma time_comps (Λ : lorentzAlgebra) (i : Fin 3) :
     Λ.1 (Sum.inr i) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inr i) := by
   simpa only [Fin.isValue, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
     transpose_apply, Sum.elim_inr, mul_neg, mul_one, diagonal_neg, diagonal_mul, Sum.elim_inl,
     neg_mul, one_mul, neg_inj] using congrArg (fun M ↦ M (Sum.inl 0) (Sum.inr i)) $ mem_iff.mp Λ.2
 
-
 lemma space_comps (Λ : lorentzAlgebra) (i j : Fin 3) :
     Λ.1 (Sum.inr i) (Sum.inr j) = - Λ.1 (Sum.inr j) (Sum.inr i) := by
   simpa only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_neg, diagonal_mul,
     Sum.elim_inr, neg_neg, one_mul, mul_diagonal, transpose_apply, mul_neg, mul_one] using
     (congrArg (fun M ↦ M (Sum.inr i) (Sum.inr j)) $ mem_iff.mp Λ.2).symm
-
 
 end lorentzAlgebra
 
@@ -103,6 +96,5 @@ instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra (LorentzVector 3) w
   lie_smul r Λ x := by
     simp [Bracket.bracket]
     rw [mulVec_smul]
-
 
 end SpaceTime

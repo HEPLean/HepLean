@@ -120,7 +120,6 @@ lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
   intro i
   simp
 
-
 lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
     accGrav n.succ S = (2 * ↑↑k + 1 - ↑n) * S (0 : Fin n.succ) := by
   rw [boundary_accGrav' k]
@@ -164,7 +163,6 @@ lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
 lemma not_hasBoundary_grav (hnot :  ¬ (HasBoundary S)) :
     accGrav n.succ S = n.succ * S (0 : Fin n.succ) := by
   simp [accGrav, ← not_hasBoundry_zero hS hnot]
-
 
 lemma AFL_hasBoundary (h : A.val (0 : Fin n.succ) ≠ 0) : HasBoundary A.val := by
   by_contra hn
@@ -253,11 +251,9 @@ lemma AFL_even_above (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.v
   rfl
   exact AFL_even_above' h hA i
 
-
 end charges
 
 end ConstAbsSorted
-
 
 namespace ConstAbs
 
@@ -265,7 +261,6 @@ theorem boundary_value_odd (S : (PureU1 (2 * n + 1)).LinSols) (hs : ConstAbs S.v
     S = 0 :=
   have hS := And.intro (constAbs_sort hs) (sort_sorted S.val)
   sortAFL_zero S (ConstAbsSorted.AFL_odd (sortAFL S) hS)
-
 
 theorem boundary_value_even (S : (PureU1 (2 * n.succ)).LinSols) (hs : ConstAbs S.val) :
     VectorLikeEven S.val := by

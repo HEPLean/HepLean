@@ -11,7 +11,6 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 # The group SO(3)
 
-
 -/
 
 namespace GroupTheory
@@ -106,7 +105,6 @@ lemma toProd_continuous : Continuous toProd := by
   exact MulOpposite.continuous_op
   refine Continuous.matrix_transpose ?_
   exact continuous_iff_le_induced.mpr fun U a => a
-
 
 /-- The embedding of `SO(3)` into the monoid of matrices times the opposite of
   the monoid of matrices. -/
@@ -223,10 +221,7 @@ lemma exists_basis_preserved (A : SO(3)) :
   use b
   rw [hb, hv.2]
 
-
-
 end action
 end SO3
-
 
 end GroupTheory

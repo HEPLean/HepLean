@@ -133,7 +133,6 @@ theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
   simp at h
   exact h
 
-
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
     (h : SpecialCase S) :
       LineInCubic S.1.1 := by

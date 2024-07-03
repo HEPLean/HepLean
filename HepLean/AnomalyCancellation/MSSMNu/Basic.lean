@@ -22,7 +22,6 @@ universe v u
 open Nat
 open BigOperators
 
-
 /-- The vector space of charges corresponding to the MSSM fermions. -/
 @[simps!]
 def MSSMCharges : ACCSystemCharges := ACCSystemChargesMk 20
@@ -314,7 +313,6 @@ def quadBiLin  : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂ (
     ring
     ring)
 
-
 /-- The quadratic ACC. -/
 @[simp]
 def accQuad : HomogeneousQuadratic MSSMCharges.Charges := quadBiLin.toHomogeneousQuad
@@ -334,7 +332,6 @@ lemma accQuad_ext {S T : (MSSMCharges).Charges}
   have h1 : ∀ j, ∑ i, (toSMSpecies j S i)^2 = ∑ i, (toSMSpecies j T i)^2 := fun j => h j
   repeat rw [h1]
   rw [hd, hu]
-
 
 /-- The function underlying the symmetric trilinear form used to define the cubic ACC. -/
 @[simp]
@@ -363,7 +360,6 @@ lemma cubeTriLinToFun_map_smul₁ (a : ℚ)  (S T R : MSSMCharges.Charges) :
   simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, Hu_apply]
   ring
 
-
 lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
     cubeTriLinToFun (S + T, R, L) = cubeTriLinToFun (S, R, L) + cubeTriLinToFun (T, R, L) := by
   simp only [cubeTriLinToFun]
@@ -381,7 +377,6 @@ lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
   ring
   rw [Hd.map_add, Hu.map_add]
   ring
-
 
 lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (S, T, R) = cubeTriLinToFun (T, S, R) := by

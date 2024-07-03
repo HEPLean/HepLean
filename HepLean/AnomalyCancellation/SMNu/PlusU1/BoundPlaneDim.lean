@@ -58,7 +58,6 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
   | Sum.inl i => exact h3 i
   | Sum.inr i => exact h4 i
 
-
 theorem plane_exists_dim_le_7 {n : ℕ} (hn : ExistsPlane n) : n ≤ 7 := by
   obtain ⟨B, hB⟩ := exists_plane_exists_basis hn
   have h1 := LinearIndependent.fintype_card_le_finrank hB
@@ -66,7 +65,6 @@ theorem plane_exists_dim_le_7 {n : ℕ} (hn : ExistsPlane n) : n ≤ 7 := by
   rw [show FiniteDimensional.finrank ℚ (PlusU1 3).Charges = 18 from
     FiniteDimensional.finrank_fin_fun ℚ] at h1
   exact Nat.le_of_add_le_add_left h1
-
 
 end PlusU1
 end SMRHN

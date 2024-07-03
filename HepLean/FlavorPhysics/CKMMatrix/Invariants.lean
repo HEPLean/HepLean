@@ -15,16 +15,13 @@ this equivalence.
 
 Of note, this file defines the complex jarlskog invariant.
 
-
 -/
 open Matrix Complex
 open ComplexConjugate
 open CKMMatrix
 
-
 noncomputable section
 namespace Invariant
-
 
 /-- The complex jarlskog invariant for a CKM matrix. -/
 @[simps!]
@@ -61,7 +58,6 @@ def VusVubVcdSq (V : Quotient CKMMatrixSetoid) : ℝ  :=
 standard parameterization. -/
 def mulExpδ₁₃ (V : Quotient CKMMatrixSetoid) : ℂ :=
   jarlskogℂ V + VusVubVcdSq V
-
 
 end Invariant
 end

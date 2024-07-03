@@ -17,11 +17,9 @@ related by phase shifts.
 The notation `[V]ud` etc can be used for the elements of a CKM matrix, and
 `[V]ud|us` etc for the ratios of elements.
 
-
 -/
 
 open Matrix Complex
-
 
 noncomputable section
 
@@ -106,7 +104,6 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   repeat rw [← mul_assoc]
   rw [phaseShiftMatrix_mul]
   rw [add_comm k e, add_comm l f, add_comm m g]
-
 
 lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
   refl := phaseShiftRelation_refl
@@ -270,7 +267,6 @@ lemma tb (V : CKMMatrix) (a b c d e f : ℝ) :
 
 end phaseShiftApply
 
-
 /-- The aboslute value of the `(i,j)`th element of `V`. -/
 @[simp]
 def VAbs' (V : unitaryGroup (Fin 3) ℂ) (i j : Fin 3) : ℝ := Complex.abs (V i j)
@@ -341,10 +337,8 @@ abbrev VtsAbs := VAbs 2 1
 @[simp]
 abbrev VtbAbs := VAbs 2 2
 
-
 namespace CKMMatrix
 open ComplexConjugate
-
 
 section ratios
 
@@ -393,7 +387,6 @@ lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cs = Rcscb V * [V]cb :=
   exact (div_mul_cancel₀ [V]cs h).symm
 
 end ratios
-
 
 end CKMMatrix
 

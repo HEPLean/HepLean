@@ -96,7 +96,6 @@ def FamilyPermutations (n : ℕ) : ACCSystemGroupAction (PureU1 n) where
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
 
-
 lemma FamilyPermutations_charges_apply (S : (PureU1 n).Charges)
     (i : Fin n) (f : (FamilyPermutations n).group) :
     ((FamilyPermutations n).rep f S) i = S (f.invFun i) := by
@@ -106,7 +105,6 @@ lemma FamilyPermutations_anomalyFreeLinear_apply (S : (PureU1 n).LinSols)
     (i : Fin n) (f : (FamilyPermutations n).group) :
     ((FamilyPermutations n).linSolRep f S).val i = S.val (f.invFun i) := by
   rfl
-
 
 /-- The permutation which swaps i and j. TODO: Replace with: `Equiv.swap`. -/
 def pairSwap {n : ℕ} (i j : Fin n) : (FamilyPermutations n).group where
@@ -247,7 +245,6 @@ lemma permThreeInj_fst_apply :
     ⟨i, permThreeInj_fst  hij hjk hik⟩ = 0 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permThreeInj hij hjk hik))).mpr rfl
 
-
 lemma permThreeInj_snd : j ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
   simp only [Set.mem_range]
   use 1
@@ -337,6 +334,5 @@ lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
     S.val ((permThree hij hjk hik hab hbc hac).toFun c)) at h1
   erw [permThree_fst,permThree_snd, permThree_thd] at h1
   exact h1
-
 
 end PureU1

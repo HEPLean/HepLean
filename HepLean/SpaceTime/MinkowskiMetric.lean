@@ -16,7 +16,6 @@ of Lorentz vectors in d dimensions.
 
 -/
 
-
 open Matrix
 
 /-!
@@ -55,7 +54,6 @@ lemma sq : @minkowskiMatrix d * minkowskiMatrix  = 1 := by
 lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_transpose]
 
-
 @[simp]
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
@@ -71,9 +69,7 @@ lemma as_block :  @minkowskiMatrix d =  (
   rw [← diagonal_neg]
   rfl
 
-
 end minkowskiMatrix
-
 
 /-!
 
@@ -133,7 +129,6 @@ lemma as_sum :
     Function.comp_apply, minkowskiMatrix]
   ring
 
-
 /-- The Minkowski metric expressed as a sum for a single vector. -/
 lemma as_sum_self : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 := by
   rw [← real_inner_self_eq_norm_sq, PiLp.inner_apply, as_sum]
@@ -167,7 +162,6 @@ lemma right_spaceReflection : ⟪v, w.spaceReflection⟫ₘ = v.time * w.time + 
   simp only [time, Fin.isValue, space, inner_neg_right, PiLp.inner_apply, Function.comp_apply,
     RCLike.inner_apply, conj_trivial, sub_neg_eq_add]
 
-
 lemma self_spaceReflection_eq_zero_iff : ⟪v, v.spaceReflection⟫ₘ = 0 ↔ v = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [right_spaceReflection] at h
@@ -195,7 +189,6 @@ lemma nondegenerate : (∀ w, ⟪w, v⟫ₘ = 0) ↔ v = 0 := by
   · exact (self_spaceReflection_eq_zero_iff _ ).mp ((symm _ _).trans $ h v.spaceReflection)
   · simp [h]
 
-
 /-!
 
 # Inequalitites involving the Minkowski metric
@@ -214,7 +207,6 @@ lemma ge_sub_norm : v.time * w.time - ‖v.space‖ * ‖w.space‖ ≤ ⟪v, w�
   apply le_trans ?_ (ge_abs_inner_product v w)
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm v.space w.space
-
 
 /-!
 
@@ -302,7 +294,6 @@ lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = �
 lemma matrix_eq_id_iff : Λ = 1 ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫ₘ := by
   rw [matrix_eq_iff_eq_forall]
   simp
-
 
 /-!
 
