@@ -140,7 +140,6 @@ lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
   exact FuturePointing.metric_continuous _
   exact fun x => FuturePointing.one_add_metric_non_zero u x
 
-
 lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ LorentzGroup d:= by
   intro x y
   rw [toMatrix_mulVec, toMatrix_mulVec, genBoost, genBoostAux₁, genBoostAux₂]
@@ -161,7 +160,6 @@ lemma toLorentz_continuous (u : FuturePointing d) : Continuous (toLorentz u) := 
   refine Continuous.subtype_mk ?_ (fun x => toMatrix_in_lorentzGroup u x)
   exact toMatrix_continuous u
 
-
 lemma toLorentz_joined_to_1 (u v : FuturePointing d) : Joined 1 (toLorentz u v) := by
   obtain ⟨f, _⟩ := FuturePointing.isPathConnected.joinedIn u trivial v trivial
   use ContinuousMap.comp ⟨toLorentz u, toLorentz_continuous u⟩ f
@@ -180,8 +178,6 @@ lemma isProper (u v : FuturePointing d) : IsProper (toLorentz u v) :=
 
 end genBoost
 
-
 end LorentzGroup
-
 
 end

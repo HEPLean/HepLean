@@ -114,7 +114,6 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     add_zero, BL_val, mul_zero]
   ring
 
-
 end BL
 end PlusU1
 end SMRHN

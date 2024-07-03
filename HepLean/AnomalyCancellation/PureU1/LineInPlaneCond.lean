@@ -26,7 +26,6 @@ We will show that `n ≥ 4` the `line in plane` condition on solutions implies t
 
 -/
 
-
 namespace PureU1
 
 open BigOperators
@@ -51,7 +50,6 @@ lemma lineInPlaneCond_perm {S : (PureU1 (n)).LinSols} (hS : LineInPlaneCond S)
   refine hS (M.invFun i1) (M.invFun i2) (M.invFun i3) ?_ ?_ ?_
   all_goals simp_all only [ne_eq, Equiv.invFun_as_coe, EmbeddingLike.apply_eq_iff_eq,
     not_false_eq_true]
-
 
 lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : LineInPlaneCond S)
     (h : ¬ (S.val ((Fin.last n).castSucc))^2 = (S.val ((Fin.last n).succ))^2 ) :
@@ -157,7 +155,6 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
   simp at h6
   simp_all
 
-
 lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
     (hS : LineInPlaneCond S.1.1) : ∀ (i j : Fin 4) (_ : i ≠ j),
     ConstAbsProp (S.val i, S.val j) := by
@@ -167,7 +164,6 @@ lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
   have hS' :  LineInPlaneCond S'.1.1 :=
     (lineInPlaneCond_perm hS M)
   exact linesInPlane_four S' hS'
-
 
 lemma linesInPlane_constAbs_four (S : (PureU1 4).Sols)
     (hS : LineInPlaneCond S.1.1) : ConstAbs S.val := by
@@ -182,6 +178,5 @@ theorem linesInPlane_constAbs_AF (S : (PureU1 (n.succ.succ.succ.succ)).Sols)
   induction n
   exact linesInPlane_constAbs_four S hS
   exact linesInPlane_constAbs hS
-
 
 end PureU1

@@ -16,7 +16,6 @@ four real numbers `θ₁₂`, `θ₁₃`, `θ₂₃` and `δ₁₃`.
 We will show that every CKM matrix can be written within this standard parameterization
 in the file `FlavorPhysics.CKMMatrix.StandardParameters`.
 
-
 -/
 open Matrix Complex
 open ComplexConjugate
@@ -193,8 +192,6 @@ lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ 
   rw [exp_neg]
   have h1 : cexp (I * δ₁₃) ≠ 0 := exp_ne_zero _
   field_simp
-
-
 
 end standParam
 end

@@ -19,10 +19,8 @@ In this file we define two sets of conditions on the CKM matrices
 and `ubOnePhaseCond` which we show can be satisfied by any CKM matrix up to equivalence as long as
 the ub element as absolute value 1.
 
-
 -/
 open Matrix Complex
-
 
 noncomputable section
 namespace CKMMatrix
@@ -259,7 +257,6 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
   ring
   apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
   ring
-
 
 lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0))
     (hV : FstRowThdColRealCond V)  :

@@ -54,8 +54,6 @@ def SO3ToLorentz : SO(3) →* LorentzGroup 3 where
     apply Subtype.eq
     simp [Matrix.fromBlocks_multiply]
 
-
 end LorentzGroup
-
 
 end

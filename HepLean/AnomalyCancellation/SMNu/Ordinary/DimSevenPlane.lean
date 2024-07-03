@@ -137,7 +137,6 @@ lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).Charges) :
     simp at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-
 lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 1) (B i) S = 0 := by
   change cubeTriLin B₁ (B i) S = 0
@@ -246,7 +245,6 @@ lemma B₆_B₆_Bi_cubic {i : Fin 7} :
   fin_cases i <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
-
 lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
     cubeTriLin (B i) (B i) (B j) = 0 := by
   fin_cases i
@@ -343,7 +341,6 @@ theorem seven_dim_plane_exists : ∃ (B : Fin 7 → (SM 3).Charges),
   apply And.intro
   exact PlaneSeven.basis_linear_independent
   exact PlaneSeven.B_sum_is_sol
-
 
 end SM
 end SMRHN

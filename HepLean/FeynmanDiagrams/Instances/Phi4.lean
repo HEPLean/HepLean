@@ -10,9 +10,7 @@ import HepLean.FeynmanDiagrams.Basic
 The aim of this file is to start building up the theory of Feynman diagrams in the context of
 Phi^4 theory.
 
-
 -/
-
 
 namespace PhiFour
 open CategoryTheory
@@ -44,7 +42,6 @@ instance (a : ℕ) : OfNat phi4PreFeynmanRules.HalfEdgeLabel a where
 
 instance (a : ℕ) : OfNat phi4PreFeynmanRules.VertexLabel a where
   ofNat := (a : Fin _)
-
 
 instance : IsFinitePreFeynmanRule phi4PreFeynmanRules where
   edgeLabelDecidable :=  instDecidableEqFin _
@@ -91,6 +88,5 @@ lemma figureEight_connected : Connected figureEight := by decide
 lemma figureEight_symmetryFactor : symmetryFactor figureEight = 8 := by decide
 
 end Example
-
 
 end PhiFour

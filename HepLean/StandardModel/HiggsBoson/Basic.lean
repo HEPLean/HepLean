@@ -98,7 +98,6 @@ lemma apply_im_smooth (φ : HiggsField) (i : Fin 2):
 /-- Given two `higgsField`, the map `spaceTime → ℂ` obtained by taking their inner product. -/
 def innerProd (φ1 φ2 : HiggsField) : SpaceTime → ℂ := fun x => ⟪φ1 x, φ2 x⟫_ℂ
 
-
 /-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
  higgs vector.  -/
 @[simp]
@@ -153,7 +152,6 @@ lemma potential_apply (φ : HiggsField) (μSq lambda : ℝ) (x : SpaceTime) :
     (φ.potential μSq lambda) x = HiggsVec.potential μSq lambda (φ.toHiggsVec x) := by
   simp [HiggsVec.potential, toHiggsVec_norm]
   ring
-
 
 /-- A higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
 def IsConst (Φ : HiggsField) : Prop := ∀ x y, Φ x = Φ y

@@ -7,10 +7,7 @@ import HepLean.FeynmanDiagrams.Basic
 /-!
 # Feynman diagrams in a complex scalar field theory
 
-
-
 -/
-
 
 namespace PhiFour
 open CategoryTheory
@@ -64,8 +61,5 @@ instance : IsFinitePreFeynmanRule complexScalarFeynmanRules where
   edgeMapDecidable := fun v =>
     match v with
     | 0 => instDecidableEqFin _
-
-
-
 
 end PhiFour

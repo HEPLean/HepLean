@@ -18,8 +18,6 @@ The plane spanned by Y₃, B₃ and third orthogonal point.
 
 -/
 
-
-
 universe v u
 
 namespace MSSMACC
@@ -92,7 +90,6 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
     linear_combination hc
   rw [ha, hb, hc]
   simp
-
 
 lemma planeY₃B₃_quad (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
     accQuad (planeY₃B₃ R a b c).val = c * (2 * a * quadBiLin Y₃.val R.val
@@ -184,7 +181,6 @@ def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
     (3 * a₃ * cubeTriLin R.val R.val Y₃.val -  a₁ * cubeTriLin R.val R.val R.val)
     (3 * (a₁ * cubeTriLin R.val R.val B₃.val - a₂ * cubeTriLin R.val R.val Y₃.val))
 
-
 lemma lineCube_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
     lineCube R (d * a) (d * b) (d * c) = d • lineCube R a b c := by
   apply ACCSystemLinear.LinSols.ext
@@ -240,6 +236,5 @@ lemma α₂_proj_zero (T : MSSMACC.Sols) (h1 : α₃ (proj T.1.1) = 0) :
   exact mul_eq_zero_of_left rfl ((dot Y₃.val) T.val - 2 * (dot B₃.val) T.val)
 
 end proj
-
 
 end MSSMACC

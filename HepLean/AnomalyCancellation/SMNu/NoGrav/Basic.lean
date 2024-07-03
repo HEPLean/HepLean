@@ -110,7 +110,6 @@ def perm (n : ℕ) : ACCSystemGroupAction (SMNoGrav n) where
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
 
-
 end SMNoGrav
 
 end SMRHN

@@ -33,7 +33,6 @@ variable {n : ℕ}
 @[simp]
 instance : Group (PermGroup n) := Pi.group
 
-
 /-- The image of an element of `permGroup n` under the representation on charges. -/
 @[simps!]
 def chargeMap (f : PermGroup n) : (SMCharges n).Charges →ₗ[ℚ] (SMCharges n).Charges where
@@ -66,7 +65,6 @@ lemma repCharges_toSpecies (f : PermGroup n) (S : (SMCharges n).Charges) (j : Fi
     toSpecies j (repCharges f S) = toSpecies j S ∘ f⁻¹ j := by
   erw [toSMSpecies_toSpecies_inv]
 
-
 lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Charges) (j : Fin 5) :
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
@@ -74,19 +72,15 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Cha
   exact Fintype.sum_equiv (f⁻¹ j) (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S ∘ ⇑(f⁻¹ j)) x)
    (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
 
-
-
 lemma accGrav_invariant (f : PermGroup n) (S : (SMCharges n).Charges)  :
     accGrav (repCharges f S) = accGrav S :=
   accGrav_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-
 lemma accSU2_invariant (f : PermGroup n) (S : (SMCharges n).Charges)  :
     accSU2 (repCharges f S) = accSU2 S :=
   accSU2_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
-
 
 lemma accSU3_invariant (f : PermGroup n) (S : (SMCharges n).Charges)  :
     accSU3 (repCharges f S) = accSU3 S :=

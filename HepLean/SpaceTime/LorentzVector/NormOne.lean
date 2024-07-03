@@ -63,7 +63,6 @@ lemma time_nonpos_iff : v.1.time ≤ 0 ↔ v.1.time ≤ - 1 := by
   · intro h
     linarith
 
-
 lemma time_nonneg_iff : 0 ≤ v.1.time ↔ 1 ≤ v.1.time := by
   apply Iff.intro
   · intro h
@@ -167,13 +166,11 @@ lemma metric_reflect_mem_mem (h : v ∈ FuturePointing d) (hw : w ∈ FuturePoin
   apply le_trans (neg_le_abs _ : _ ≤ |⟪(v.1).space, (w.1).space⟫_ℝ|) ?_
   exact abs_real_inner_le_norm (v.1).space (w.1).space
 
-
 lemma metric_reflect_not_mem_not_mem (h : v ∉ FuturePointing d) (hw : w ∉ FuturePointing d) :
     0 ≤ ⟪v.1, w.1.spaceReflection⟫ₘ  := by
   have h1 := metric_reflect_mem_mem ((not_mem_iff_neg v).mp h) ((not_mem_iff_neg w).mp hw)
   apply le_of_le_of_eq h1 ?_
   simp [neg]
-
 
 lemma metric_reflect_mem_not_mem (h : v ∈ FuturePointing d) (hw : w ∉ FuturePointing d) :
     ⟪v.1, w.1.spaceReflection⟫ₘ ≤ 0 := by
@@ -208,7 +205,6 @@ open LorentzVector
 noncomputable def timeVecNormOneFuture : FuturePointing d := ⟨⟨timeVec, by
   rw [NormOneLorentzVector.mem_iff, on_timeVec]⟩, by
   rw [mem_iff, timeVec_time]; exact Real.zero_lt_one⟩
-
 
 /-- A continuous path from `timeVecNormOneFuture` to any other. -/
 noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFuture u where
@@ -266,16 +262,12 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
       simp only [Set.Icc.coe_one, one_pow, space, one_mul, Fin.isValue]
       exact rfl
 
-
-
-
 lemma isPathConnected : IsPathConnected (@Set.univ (FuturePointing d)) := by
   use timeVecNormOneFuture
   apply And.intro trivial  ?_
   intro y a
   use pathFromTime y
   exact fun _ => a
-
 
 lemma metric_continuous (u : LorentzVector d) :
     Continuous (fun (a : FuturePointing d) => ⟪u, a.1.1⟫ₘ) := by
@@ -289,8 +281,6 @@ lemma metric_continuous (u : LorentzVector d) :
      (Continuous.comp' (Pi.continuous_precomp Sum.inr) (Continuous.comp'
       continuous_subtype_val continuous_subtype_val))
 
-
 end FuturePointing
-
 
 end NormOneLorentzVector

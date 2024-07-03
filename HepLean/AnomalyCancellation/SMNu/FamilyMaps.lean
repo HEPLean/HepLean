@@ -79,7 +79,6 @@ def speciesEmbed (m n : ℕ) :
     erw [dif_neg hi, dif_neg hi]
     exact Eq.symm (Rat.mul_zero a)
 
-
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
 other charges zero.  -/
 def familyEmbedding (m n : ℕ) : (SMνCharges m).Charges →ₗ[ℚ] (SMνCharges n).Charges :=

@@ -104,7 +104,6 @@ lemma on_accQuad (f : Fin 11 → ℚ) :
   rw [quadBiLin.map_smul₁, Bi_sum_quad, quadCoeff_eq_bilinear]
   ring
 
-
 lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11)  : quadCoeff k * (f k)^2 = 0 := by
   obtain ⟨S, hS⟩ := hS
@@ -231,14 +230,12 @@ lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i,
   exact isSolution_f9 f hS
   exact isSolution_f10 f hS
 
-
 lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = 0 := by
   rw [isSolution_sum_part f hS]
   rw [isSolution_grav f hS]
   rw [isSolution_f9 f hS]
   simp
-
 
 theorem basis_linear_independent : LinearIndependent ℚ B := by
   apply Fintype.linearIndependent_iff.mpr

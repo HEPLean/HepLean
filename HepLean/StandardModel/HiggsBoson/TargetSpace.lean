@@ -39,7 +39,6 @@ open ComplexConjugate
 /-- The complex vector space in which the Higgs field takes values. -/
 abbrev HiggsVec := EuclideanSpace ℂ (Fin 2)
 
-
 /-- The continuous linear map from the vector space `higgsVec` to `(Fin 2 → ℂ)` achieved by
 casting vectors. -/
 def higgsVecToFin2ℂ : HiggsVec →L[ℝ] (Fin 2 → ℂ) where
@@ -143,7 +142,6 @@ lemma potential_snd_term_nonneg (φ : HiggsVec) :
   apply Or.inl
   simp_all only [ge_iff_le, norm_nonneg, pow_nonneg, and_true]
   exact le_of_lt hLam
-
 
 lemma zero_le_potential_discrim  (φ : HiggsVec) :
     0 ≤ discrim (λ) (- μSq ) (- potential μSq (λ) φ) := by

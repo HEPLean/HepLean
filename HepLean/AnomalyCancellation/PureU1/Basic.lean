@@ -16,7 +16,6 @@ We define the anomaly cancellation conditions for a pure U(1) gauge theory with 
 universe v u
 open Nat
 
-
 open  Finset
 
 namespace PureU1
@@ -34,7 +33,6 @@ def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
   map_smul' a S := by
    simp [HSMul.hSMul, SMul.smul]
    rw [← Finset.mul_sum]
-
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
@@ -161,7 +159,6 @@ lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
   have hlt := hl (f ∘ Fin.castSucc)
   erw [← hlt]
   simp
-
 
 lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by

@@ -23,7 +23,6 @@ namespace PureU1
 
 variable {n : ℕ}
 
-
 namespace VectorLikeOddPlane
 
 lemma split_odd! (n : ℕ) : (1 + n) + n = 2 * n +1 := by
@@ -484,7 +483,6 @@ lemma P_P_P!_accCube (g : Fin n → ℚ) (j : Fin n) :
   simp only [mul_zero, add_zero]
   simp
 
-
 lemma P_zero (f : Fin n → ℚ) (h : P f = 0) : ∀ i, f i = 0 := by
   intro i
   erw [← P_δ₁ f]
@@ -572,7 +570,6 @@ theorem basis!_linear_independent : LinearIndependent ℚ (@basis! n) := by
   rw [P!'_val] at h1
   exact P!_zero f h1
 
-
 theorem basisa_linear_independent : LinearIndependent ℚ (@basisa n.succ) := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
@@ -648,8 +645,6 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n.succ → ℚ) :
   rw [← join_ext]
   exact Pa'_eq _ _
 
-
-
 lemma basisa_card :  Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
     FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
@@ -706,8 +701,6 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
   apply swap!_as_add at hS
   exact hS
 
-
 end VectorLikeOddPlane
-
 
 end PureU1

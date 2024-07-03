@@ -75,7 +75,6 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
     intro hk
     simp at hk⟩
 
-
 lemma sum_of_vectors {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) :=
   sum_of_anomaly_free_linear (fun i => f i) j
@@ -133,6 +132,5 @@ lemma finrank_AnomalyFreeLinear :
   exact FiniteDimensional.finrank_eq_of_rank_eq h
 
 end BasisLinear
-
 
 end PureU1

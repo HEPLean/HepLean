@@ -29,7 +29,6 @@ instance euclideanNormedAddCommGroup : NormedAddCommGroup SpaceTime := Pi.normed
 
 instance euclideanNormedSpace : NormedSpace ℝ SpaceTime := Pi.normedSpace
 
-
 namespace SpaceTime
 
 open Manifold

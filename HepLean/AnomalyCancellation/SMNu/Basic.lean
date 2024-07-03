@@ -14,7 +14,6 @@ import Mathlib.Logic.Equiv.Fin
 # Anomaly cancellation conditions for n family SM.
 -/
 
-
 universe v u
 open Nat
 open BigOperators
@@ -83,7 +82,6 @@ abbrev E := @toSpecies n 4
 /-- The `N` charges as a map `Fin n → ℚ`. -/
 abbrev N := @toSpecies n 5
 
-
 end SMνCharges
 
 namespace SMνACCs
@@ -111,7 +109,6 @@ def accGrav : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
     -- rw [show Rat.cast a = a from rfl]
     ring
 
-
 lemma accGrav_decomp (S : (SMνCharges n).Charges) :
     accGrav S = 6 * ∑ i, Q S i + 3 * ∑ i, U S i + 3 * ∑ i, D S i + 2 * ∑ i, L S i + ∑ i, E S i +
       ∑ i, N S i := by
@@ -126,7 +123,6 @@ lemma accGrav_ext {S T : (SMνCharges n).Charges}
     accGrav S = accGrav T := by
   rw [accGrav_decomp, accGrav_decomp]
   repeat erw [hj]
-
 
 /-- The `SU(2)` anomaly equation. -/
 @[simp]
@@ -343,7 +339,6 @@ lemma cubeTriLin_decomp (S T R : (SMνCharges n).Charges) :
     Fin.isValue, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-
 
 /-- The cubic ACC. -/
 @[simp]

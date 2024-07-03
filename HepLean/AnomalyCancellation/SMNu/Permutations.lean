@@ -65,7 +65,6 @@ lemma repCharges_toSpecies (f : PermGroup n) (S : (SMνCharges n).Charges) (j : 
     toSpecies j (repCharges f S) = toSpecies j S ∘ f⁻¹ j := by
   erw [toSMSpecies_toSpecies_inv]
 
-
 lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMνCharges n).Charges) (j : Fin 6) :
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
@@ -74,18 +73,15 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMνCharges n).C
   refine Equiv.Perm.sum_comp _ _ _ ?_
   simp only [PermGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
 
-
 lemma accGrav_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accGrav (repCharges f S) = accGrav S :=
   accGrav_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-
 lemma accSU2_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accSU2 (repCharges f S) = accSU2 S :=
   accSU2_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
-
 
 lemma accSU3_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accSU3 (repCharges f S) = accSU3 S :=
@@ -97,7 +93,6 @@ lemma accYY_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
   accYY_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-
 lemma accQuad_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accQuad (repCharges f S) = accQuad S :=
   accQuad_ext
@@ -107,7 +102,5 @@ lemma accCube_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
     accCube (repCharges f S) = accCube S :=
   accCube_ext
     (by simpa using toSpecies_sum_invariant 3 f S)
-
-
 
 end SMRHN
