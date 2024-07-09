@@ -21,30 +21,30 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Print files to upstream
-        run: |
-          grep -r --files-without-match 'import HepLean' HepLean | sort > 1.txt
-          grep -r --files-with-match 'sorry' HepLean | sort > 2.txt
-          mkdir -p docs/_includes
-          comm -23 1.txt 2.txt | sed -e 's/^\(.*\)$/- [`\1`](https:\/\/github.com\/teorth\/HepLean\/blob\/master\/\1)/' > docs/_includes/files_to_upstream.md
-          rm 1.txt 2.txt
       ##################
       # Remove this section if you don't want docs to be made
       - name: Install elan
-        run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:4.0.0
+        run: |
+          set -o pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
+          ~/.elan/bin/lean --version
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
-      - name: Get cache
-        run: ~/.elan/bin/lake -Kenv=dev exe cache get || true
+      - name: Get Mathlib cache
+        run: lake -Kenv=dev exe cache get || true
 
       - name: Build project
-        run: ~/.elan/bin/lake -Kenv=dev build HepLean
+        run: lake -Kenv=dev build HepLean
 
-      - name: Cache mathlib docs
+      - name: Get doc cache
         uses: actions/cache@v3
         with:
           path: |
             .lake/build/doc/Init
+            .lake/build/doc/DocGen4
+            .lake/build/doc/Aesop
             .lake/build/doc/Lake
+            .lake/build/doc/Batteries
             .lake/build/doc/Lean
             .lake/build/doc/Std
             .lake/build/doc/Mathlib
@@ -55,7 +55,10 @@ jobs:
             MathlibDoc-
       
       - name: Build documentation
-        run: ~/.elan/bin/lake -Kenv=dev build HepLean:docs
+        run: lake -Kenv=dev build HepLean:docs
+      
+      - name: make TODO list 
+        run : lake exe find_TODOs mkFile 
 
       - name: Copy documentation to `docs/docs`
         run: |
