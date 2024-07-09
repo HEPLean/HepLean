@@ -24,7 +24,7 @@ This file is a import of `SM.HiggsBoson.Basic`.
 
 ## References
 
-- We use conventions given in: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-higgs-boson.pdf
+- We use conventions given in: [Review of Particle Physics, PDG][ParticleDataGroup:2018ovx]
 
 -/
 universe v u
@@ -35,6 +35,12 @@ open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
+
+/-!
+
+## The definition of the Higgs vector space.
+
+-/
 
 /-- The complex vector space in which the Higgs field takes values. -/
 abbrev HiggsVec := EuclideanSpace ℂ (Fin 2)
@@ -50,6 +56,15 @@ lemma smooth_higgsVecToFin2ℂ : Smooth 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → 
   ContinuousLinearMap.smooth higgsVecToFin2ℂ
 
 namespace HiggsVec
+/-- An orthonormal basis of higgsVec. -/
+noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
+  EuclideanSpace.basisFun (Fin 2) ℂ
+
+/-!
+
+## The representation of the gauge group on the Higgs vector space
+
+-/
 
 /-- The Higgs representation as a homomorphism from the gauge group to unitary `2×2`-matrices. -/
 @[simps!]
@@ -62,10 +77,6 @@ noncomputable def higgsRepUnitary : GaugeGroup →* unitaryGroup (Fin 2) ℂ whe
       ← mul_assoc (repU1 b3) _ _, repU1_fundamentalSU2_commute]
     repeat rw [mul_assoc]
   map_one' := by simp
-
-/-- An orthonormal basis of higgsVec. -/
-noncomputable def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
-  EuclideanSpace.basisFun (Fin 2) ℂ
 
 /-- Takes in a `2×2`-matrix and returns a linear map of `higgsVec`. -/
 noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[ℂ] HiggsVec) where
@@ -109,24 +120,37 @@ lemma higgsRepUnitary_mul (g : GaugeGroup) (φ : HiggsVec) :
 lemma rep_apply (g : GaugeGroup) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
-lemma norm_invariant (g : GaugeGroup) (φ : HiggsVec) : ‖rep g φ‖ = ‖φ‖ :=
-  ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
-
 section potentialDefn
 
 variable (μSq lambda : ℝ)
 local notation "λ" => lambda
 
+/-!
+
+## The potential for a Higgs vector
+
+-/
+
 /-- The higgs potential for `higgsVec`, i.e. for constant higgs fields. -/
 def potential (φ : HiggsVec) : ℝ := - μSq  * ‖φ‖ ^ 2 + λ * ‖φ‖ ^ 4
+
+lemma potential_as_quad (φ : HiggsVec) :
+    λ  * ‖φ‖ ^ 2 * ‖φ‖ ^ 2 + (- μSq ) * ‖φ‖ ^ 2 + (- potential μSq (λ) φ) = 0 := by
+  simp [potential]; ring
+
+/-!
+
+## Invariance of the potential under global gauge transformation
+
+-/
+
+lemma norm_invariant (g : GaugeGroup) (φ : HiggsVec) : ‖rep g φ‖ = ‖φ‖ :=
+  ContinuousLinearMap.norm_map_of_mem_unitary (unitaryToLin (higgsRepUnitary g)).2 φ
 
 lemma potential_invariant (φ : HiggsVec)  (g : GaugeGroup) :
     potential μSq (λ) (rep g φ) = potential μSq (λ) φ := by
   simp only [potential, neg_mul, norm_invariant]
 
-lemma potential_as_quad (φ : HiggsVec) :
-    λ  * ‖φ‖ ^ 2 * ‖φ‖ ^ 2 + (- μSq ) * ‖φ‖ ^ 2 + (- potential μSq (λ) φ) = 0 := by
-  simp [potential]; ring
 
 end potentialDefn
 section potentialProp
@@ -135,6 +159,12 @@ variable {lambda : ℝ}
 variable (μSq : ℝ)
 variable (hLam : 0 < lambda)
 local notation "λ" => lambda
+
+/-!
+
+## Lower bound on potential
+
+-/
 
 lemma potential_snd_term_nonneg (φ : HiggsVec) :
     0 ≤ λ * ‖φ‖ ^ 4 := by
@@ -196,6 +226,12 @@ lemma potential_bounded_below_of_μSq_nonpos  {μSq : ℝ}
   refine add_nonneg ?_ (potential_snd_term_nonneg hLam φ)
   field_simp [mul_nonpos_iff]
   simp_all [ge_iff_le, norm_nonneg, pow_nonneg, and_self, or_true]
+
+/-!
+
+## Minimum of the potential
+
+-/
 
 lemma potential_eq_bound_discrim_zero (φ : HiggsVec)
     (hV : potential μSq (λ) φ = - μSq ^ 2 / (4  * λ)) :
@@ -264,6 +300,12 @@ lemma IsMinOn_potential_iff_of_μSq_nonpos {μSq : ℝ} (hμSq : μSq ≤ 0) :
   · exact potential_eq_bound_IsMinOn_of_μSq_nonpos hLam hμSq φ
 
 end potentialProp
+/-!
+
+## Gauge freedom
+
+-/
+
 /-- Given a Higgs vector, a rotation matrix which puts the first component of the
 vector to zero, and the second component to a real -/
 def rotateMatrix (φ : HiggsVec) : Matrix (Fin 2) (Fin 2) ℂ :=

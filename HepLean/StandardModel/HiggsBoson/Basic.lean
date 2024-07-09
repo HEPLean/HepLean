@@ -23,7 +23,7 @@ This file defines the basic properties for the higgs field in the standard model
 
 ## References
 
-- We use conventions given in: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-higgs-boson.pdf
+- We use conventions given in: [Review of Particle Physics, PDG][ParticleDataGroup:2018ovx]
 
 -/
 universe v u
@@ -35,6 +35,11 @@ open Matrix
 open Complex
 open ComplexConjugate
 open SpaceTime
+/-!
+
+## Definition of the Higgs bundle
+
+-/
 
 /-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
@@ -60,6 +65,12 @@ noncomputable def HiggsVec.toField (φ : HiggsVec) : HiggsField where
 namespace HiggsField
 open  Complex Real
 
+/-!
+
+## Relation to `HiggsVec`
+
+-/
+
 /-- Given a `higgsField`, the corresponding map from `spaceTime` to `higgsVec`. -/
 def toHiggsVec (φ : HiggsField) : SpaceTime → HiggsVec := φ
 
@@ -80,6 +91,88 @@ lemma toField_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
 lemma higgsVecToFin2ℂ_toHiggsVec (φ : HiggsField) :
     higgsVecToFin2ℂ ∘ φ.toHiggsVec = φ := rfl
 
+/-!
+
+## The inner product and norm of Higgs fields
+
+-/
+
+/-- Given two `HiggsField`, the map `spaceTime → ℂ` obtained by taking their inner product. -/
+def innerProd (φ1 φ2 : HiggsField) : SpaceTime → ℂ := fun x => ⟪φ1 x, φ2 x⟫_ℂ
+
+/-- Notation for the inner product of two Higgs fields. -/
+scoped[StandardModel.HiggsField] notation "⟪" φ1 "," φ2 "⟫_H" => innerProd φ1 φ2
+
+@[simp]
+lemma innerProd_left_zero (φ : HiggsField) : ⟪0, φ⟫_H = 0 := by
+  funext x
+  simp [innerProd]
+
+@[simp]
+lemma innerProd_right_zero (φ : HiggsField) : ⟪φ, 0⟫_H = 0 := by
+  funext x
+  simp [innerProd]
+
+lemma innerProd_expand (φ1 φ2 : HiggsField)  :
+    ⟪φ1, φ2⟫_H  = fun x => (conj (φ1 x 0) * (φ2 x 0) + conj (φ1 x 1) * (φ2 x 1) ) := by
+  funext x
+  simp only [innerProd, PiLp.inner_apply, RCLike.inner_apply, Fin.sum_univ_two]
+
+/-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
+ higgs vector.  -/
+@[simp]
+def normSq (φ : HiggsField) : SpaceTime → ℝ := fun x => ( ‖φ x‖ ^ 2)
+
+/-- Notation for the norm squared of a Higgs field. -/
+scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H ^ 2" => normSq φ1
+
+lemma innerProd_self_eq_normSq (φ : HiggsField) (x : SpaceTime) :
+    ⟪φ, φ⟫_H x  = ‖φ‖_H ^ 2 x := by
+  erw [normSq, @PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
+  simp only [ ofReal_add, ofReal_pow, innerProd, PiLp.inner_apply,
+    RCLike.inner_apply, Fin.sum_univ_two, conj_mul']
+
+lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
+    ‖φ x‖ ^ 2 = (⟪φ, φ⟫_H x).re := by
+  rw [innerProd_self_eq_normSq]
+  rfl
+
+lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
+    ‖φ x‖  = ‖φ.toHiggsVec x‖ := rfl
+
+lemma normSq_expand (φ : HiggsField)  :
+    φ.normSq  = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1) ).re := by
+  funext x
+  simp [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add, @norm_sq_eq_inner ℂ]
+
+lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ φ.normSq x := by
+  simp [normSq, ge_iff_le, norm_nonneg, pow_nonneg]
+
+lemma normSq_zero (φ : HiggsField) (x : SpaceTime) : φ.normSq x = 0 ↔ φ x = 0 := by
+  simp [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
+
+/-!
+
+## The Higgs potential
+
+-/
+
+/-- The Higgs potential of the form `- μ² * |φ|² + λ * |φ|⁴`. -/
+@[simp]
+def potential (φ : HiggsField) (μSq lambda : ℝ ) (x : SpaceTime) :  ℝ :=
+  - μSq * φ.normSq x + lambda * φ.normSq x * φ.normSq x
+
+lemma potential_apply (φ : HiggsField) (μSq lambda : ℝ) (x : SpaceTime) :
+    (φ.potential μSq lambda) x = HiggsVec.potential μSq lambda (φ.toHiggsVec x) := by
+  simp [HiggsVec.potential, toHiggsVec_norm]
+  ring
+
+/-!
+
+## Smoothness
+
+-/
+
 lemma toVec_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Fin 2 → ℂ) φ :=
   smooth_higgsVecToFin2ℂ.comp φ.toHiggsVec_smooth
 
@@ -94,22 +187,6 @@ lemma apply_re_smooth (φ : HiggsField) (i : Fin 2):
 lemma apply_im_smooth (φ : HiggsField) (i : Fin 2):
     Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : SpaceTime) =>  (φ x i))) :=
   (ContinuousLinearMap.smooth imCLM).comp (φ.apply_smooth i)
-
-/-- Given two `higgsField`, the map `spaceTime → ℂ` obtained by taking their inner product. -/
-def innerProd (φ1 φ2 : HiggsField) : SpaceTime → ℂ := fun x => ⟪φ1 x, φ2 x⟫_ℂ
-
-/-- Given a `higgsField`, the map `spaceTime → ℝ` obtained by taking the square norm of the
- higgs vector.  -/
-@[simp]
-def normSq (φ : HiggsField) : SpaceTime → ℝ := fun x => ( ‖φ x‖ ^ 2)
-
-lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
-    ‖φ x‖  = ‖φ.toHiggsVec x‖ := rfl
-
-lemma normSq_expand (φ : HiggsField)  :
-    φ.normSq  = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1) ).re := by
-  funext x
-  simp [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add, @norm_sq_eq_inner ℂ]
 
 lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
   rw [normSq_expand]
@@ -131,27 +208,17 @@ lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, �
   exact φ.apply_im_smooth 1
   exact φ.apply_im_smooth 1
 
-lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ φ.normSq x := by
-  simp [normSq, ge_iff_le, norm_nonneg, pow_nonneg]
-
-lemma normSq_zero (φ : HiggsField) (x : SpaceTime) : φ.normSq x = 0 ↔ φ x = 0 := by
-  simp [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
-
-/-- The Higgs potential of the form `- μ² * |φ|² + λ * |φ|⁴`. -/
-@[simp]
-def potential (φ : HiggsField) (μSq lambda : ℝ ) (x : SpaceTime) :  ℝ :=
-  - μSq * φ.normSq x + lambda * φ.normSq x * φ.normSq x
-
 lemma potential_smooth (φ : HiggsField) (μSq lambda : ℝ) :
     Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (fun x => φ.potential μSq lambda x) := by
   simp only [potential, normSq, neg_mul]
   exact (smooth_const.smul φ.normSq_smooth).neg.add
     ((smooth_const.smul φ.normSq_smooth).smul φ.normSq_smooth)
 
-lemma potential_apply (φ : HiggsField) (μSq lambda : ℝ) (x : SpaceTime) :
-    (φ.potential μSq lambda) x = HiggsVec.potential μSq lambda (φ.toHiggsVec x) := by
-  simp [HiggsVec.potential, toHiggsVec_norm]
-  ring
+/-!
+
+## Constant higgs fields
+
+-/
 
 /-- A higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
 def IsConst (Φ : HiggsField) : Prop := ∀ x y, Φ x = Φ y
