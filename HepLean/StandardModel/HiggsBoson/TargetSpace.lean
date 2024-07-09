@@ -27,6 +27,8 @@ This file is a import of `SM.HiggsBoson.Basic`.
 - We use conventions given in: [Review of Particle Physics, PDG][ParticleDataGroup:2018ovx]
 
 -/
+/-! TODO: Move potential to a seperate file, and combine with HiggsBoson.Basic. -/
+
 universe v u
 namespace StandardModel
 noncomputable section

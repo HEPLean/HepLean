@@ -13,11 +13,8 @@ and the vector space of 2×2-complex self-adjoint matrices.
 
 In this file we define this linear equivalence in `toSelfAdjointMatrix`.
 
-## TODO
-
-If possible generalize to arbitrary dimensions.
-
 -/
+/-! TODO: Generalize rep of Lorentz vector as a self-adjoint matrix to arbitary dimension. -/
 namespace SpaceTime
 
 open Matrix

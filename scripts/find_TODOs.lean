@@ -17,8 +17,6 @@ This program finds all instances of `/<!> TODO: ...` (without the `<>`) in HepLe
 Parts of this file are adapted from `Mathlib.Tactic.Linter.TextBased`,
   authored by Michael Rothgang.
 
-
--
 -/
 open Lean System Meta
 
