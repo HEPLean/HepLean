@@ -18,20 +18,89 @@ namespace TwoHDM
 
 open StandardModel
 open ComplexConjugate
+open HiggsField
 
 noncomputable section
 
-/-- The potential of the two Higgs doublet model.  -/
-def potential (Φ1 Φ2 : HiggsField)
-    (m11Sq m22Sq lam₁ lam₂ lam₃ lam₄ : ℝ) (m12Sq lam₅ lam₆ lam₇ : ℂ) (x : SpaceTime) : ℝ :=
-  m11Sq * Φ1.normSq x  + m22Sq * Φ2.normSq x
-  - (m12Sq * (Φ1.innerProd Φ2) x + conj m12Sq * (Φ2.innerProd Φ1) x).re
-  + 1/2 * lam₁ * Φ1.normSq x ^ 2 + 1/2 * lam₂ * Φ2.normSq x ^ 2
-  + lam₃ * Φ1.normSq x * Φ2.normSq x
-  + lam₄ * ‖Φ1.innerProd Φ2 x‖
-  + (1/2 * lam₅ * (Φ1.innerProd Φ2) x ^ 2 + 1/2 * conj lam₅ * (Φ2.innerProd Φ1) x ^ 2).re
-  + (lam₆ * Φ1.normSq x * (Φ1.innerProd Φ2) x + conj lam₆ * Φ1.normSq x * (Φ2.innerProd Φ1) x).re
-  + (lam₇ * Φ2.normSq x * (Φ1.innerProd Φ2) x + conj lam₇ * Φ2.normSq x * (Φ2.innerProd Φ1) x).re
+/-- The potential of the two Higgs doublet model. -/
+def potential (Φ1 Φ2 : HiggsField) (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
+    (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) (x : SpaceTime) : ℝ :=
+  m₁₁2 * ‖Φ1‖_H ^ 2 x  + m₂₂2 * ‖Φ2‖_H ^ 2 x - (m₁₂2 * ⟪Φ1, Φ2⟫_H x + conj m₁₂2 * ⟪Φ2, Φ1⟫_H x).re
+  + 1/2 * 𝓵₁ *  ‖Φ1‖_H ^ 2 x * ‖Φ1‖_H ^ 2 x + 1/2 * 𝓵₂ * ‖Φ2‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
+  + 𝓵₃ * ‖Φ1‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
+  + 𝓵₄ * ‖⟪Φ1, Φ2⟫_H x‖ ^ 2 + (1/2 * 𝓵₅ * ⟪Φ1, Φ2⟫_H  x ^ 2 + 1/2 * conj 𝓵₅ * ⟪Φ2, Φ1⟫_H x ^ 2).re
+  + (𝓵₆ * ‖Φ1‖_H ^ 2 x * ⟪Φ1, Φ2⟫_H x + conj 𝓵₆ * ‖Φ1‖_H ^ 2 x * ⟪Φ2, Φ1⟫_H x).re
+  + (𝓵₇ * ‖Φ2‖_H ^ 2 x * ⟪Φ1, Φ2⟫_H x + conj 𝓵₇ * ‖Φ2‖_H ^ 2 x * ⟪Φ2, Φ1⟫_H x).re
+
+namespace potential
+
+variable (Φ1 Φ2 : HiggsField)
+variable (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
+variable (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ)
+/-!
+
+## Simple properties of the potential
+
+-/
+
+/-- Swapping `Φ1` with `Φ2`, and a number of the parameters (with possible conjugation) leads
+  to an identical potential. -/
+lemma swap_fields :
+    potential Φ1 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇
+    = potential Φ2 Φ1 m₂₂2 m₁₁2 𝓵₂ 𝓵₁ 𝓵₃ 𝓵₄ (conj m₁₂2) (conj 𝓵₅) (conj 𝓵₇) (conj 𝓵₆)  := by
+  funext x
+  simp only [potential, HiggsField.normSq, Complex.add_re, Complex.mul_re, Complex.conj_re,
+    Complex.conj_im, neg_mul, sub_neg_eq_add, one_div, Complex.norm_eq_abs, Complex.inv_re,
+    Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat,
+    neg_zero, zero_div, zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow,
+    RingHomCompTriple.comp_apply, RingHom.id_apply]
+  ring_nf
+  simp only [one_div, add_left_inj, add_right_inj, mul_eq_mul_left_iff]
+  apply Or.inl
+  rw [HiggsField.innerProd, HiggsField.innerProd, ← InnerProductSpace.conj_symm, Complex.abs_conj]
+
+/-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
+lemma right_zero : potential Φ1 0 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
+    StandardModel.HiggsField.potential Φ1 (- m₁₁2) (𝓵₁/2) := by
+  funext x
+  simp only [potential, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, innerProd_right_zero,
+    innerProd_left_zero, Complex.zero_re, sub_zero, one_div, Complex.ofReal_pow,
+    Complex.ofReal_zero, HiggsField.potential, neg_neg, add_right_inj, mul_eq_mul_right_iff,
+    pow_eq_zero_iff, norm_eq_zero, or_self_right]
+  ring_nf
+  simp only [true_or]
+
+/-- If `Φ₁` is zero the potential reduces to the Higgs potential on `Φ₂`. -/
+lemma left_zero : potential 0 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
+    StandardModel.HiggsField.potential Φ2 (- m₂₂2) (𝓵₂/2) := by
+  rw [swap_fields, right_zero]
+
+/-!
+
+## Potential bounded from below
+
+TODO: Complete this section.
+
+-/
+
+/-!
+
+## Smoothness of the potential
+
+TODO: Complete this section.
+
+-/
+
+/-!
+
+## Invariance of the potential under gauge transformations
+
+TODO: Complete this section.
+
+-/
+
+end potential
 
 end
 end TwoHDM
