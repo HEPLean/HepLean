@@ -80,25 +80,25 @@ lemma left_zero : potential 0 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵
 
 ## Potential bounded from below
 
-TODO: Complete this section.
-
 -/
+
+/-! TODO: Prove bounded properties of the 2HDM potential. -/
 
 /-!
 
 ## Smoothness of the potential
 
-TODO: Complete this section.
-
 -/
+
+/-! TODO: Prove smoothness properties of the 2HDM potential. -/
 
 /-!
 
 ## Invariance of the potential under gauge transformations
 
-TODO: Complete this section.
-
 -/
+
+/-! TODO: Prove invariance properties of the 2HDM potential. -/
 
 end potential
 
