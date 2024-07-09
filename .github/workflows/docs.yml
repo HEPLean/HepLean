@@ -30,14 +30,14 @@ jobs:
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
           ~/.elan/bin/lean --version
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-          
-      - name: Get cache
+
+      - name: Get Mathlib cache
         run: lake -Kenv=dev exe cache get || true
 
       - name: Build project
         run: lake -Kenv=dev build HepLean
 
-      - name: Cache mathlib docs
+      - name: Get doc cache
         uses: actions/cache@v3
         with:
           path: |
@@ -57,7 +57,10 @@ jobs:
       
       - name: Build documentation
         run: lake -Kenv=dev build HepLean:docs
-
+      
+      - name: make TODO list 
+        run : lake exe find_TODOs mkFile 
+        
       - name: Copy documentation to `docs/docs`
         run: |
           mv .lake/build/doc docs/docs
