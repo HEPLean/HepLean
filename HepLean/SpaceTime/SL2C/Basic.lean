@@ -124,12 +124,9 @@ def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3  where
 The homomorphism `toLorentzGroup` restricts to a homomorphism to the restricted Lorentz group.
 In this section we will define this homomorphism.
 
-### TODO
-
-Complete this section.
-
 -/
 
+/-! TODO: Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. -/
 end
 end SL2C
 

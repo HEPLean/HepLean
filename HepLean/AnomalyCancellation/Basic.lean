@@ -13,12 +13,10 @@ This file defines the basic structures for the anomaly cancellation conditions.
 
 It defines a module structure on the charges, and the solutions to the linear ACCs.
 
-## TODO
-
-- Derive ACC systems from gauge algebras and fermionic representations.
-- Relate ACCSystems to algebraic varieties.
-
 -/
+/-! TODO: Derive an ACC system from a guage algebra and fermionic representations. -/
+/-! TODO: Relate ACC Systems to algebraic varieties. -/
+/-! TODO: Refactor whole file, and dependent files. -/
 
 /-- A system of charges, specified by the number of charges. -/
 structure ACCSystemCharges where
