@@ -23,7 +23,7 @@ This file defines the basic properties for the higgs field in the standard model
 
 ## References
 
-- We use conventions given in: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-higgs-boson.pdf
+- We use conventions given in: [Review of Particle Physics, PDG][ParticleDataGroup:2018ovx]
 
 -/
 universe v u
