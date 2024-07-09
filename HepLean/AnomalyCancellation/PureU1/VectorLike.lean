@@ -10,11 +10,8 @@ import Mathlib.Logic.Equiv.Fin
 
 For the `n`-even case we define the property of a charge assignment being vector like.
 
-## TODO
-
-The `n`-odd case.
-
 -/
+/-! TODO: Define vector like ACC in the `n`-odd case. -/
 universe v u
 
 open Nat

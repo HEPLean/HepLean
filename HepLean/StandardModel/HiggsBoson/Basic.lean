@@ -41,7 +41,8 @@ open SpaceTime
 
 -/
 
-/-- The trivial vector bundle 𝓡² × ℂ². (TODO: Make associated bundle.) -/
+/-! TODO: Make `HiggsBundle` an associated bundle. -/
+/-- The trivial vector bundle 𝓡² × ℂ². -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
 instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold  :=
