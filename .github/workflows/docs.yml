@@ -2,7 +2,6 @@ on:
   push: 
     branches: 
       - master
-      - Update-versions
 
 name: Build and deploy documentation
 
@@ -60,7 +59,7 @@ jobs:
       
       - name: make TODO list 
         run : lake exe find_TODOs mkFile 
-        
+
       - name: Copy documentation to `docs/docs`
         run: |
           mv .lake/build/doc docs/docs
