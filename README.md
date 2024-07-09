@@ -17,12 +17,12 @@ A project to digitalize high energy physics.
 ## Areas of high energy physics with some coverage in HepLean
 
   
-[![](https://img.shields.io/badge/The_CKM_Matrix-blue)](https://heplean.github.io/HepLean/HepLean/FlavorPhysics/CKMMatrix/Basic.html)
-[![](https://img.shields.io/badge/Higgs_Field-blue)](https://heplean.github.io/HepLean/HepLean/StandardModel/HiggsBoson/Basic.html)
-[![](https://img.shields.io/badge/2HDM-blue)](https://heplean.github.io/HepLean/HepLean/BeyondTheStandardModel/TwoHDM/Basic.html)
-[![](https://img.shields.io/badge/Lorentz_Group-blue)](https://heplean.github.io/HepLean/HepLean/SpaceTime/LorentzGroup/Basic.html)
-[![](https://img.shields.io/badge/Anomaly_Cancellation-blue)](https://heplean.github.io/HepLean/HepLean/AnomalyCancellation/Basic.html)
-[![](https://img.shields.io/badge/Feynman_diagrams-blue)](https://heplean.github.io/HepLean/HepLean/FeynmanDiagrams/PhiFour/Basic.html)
+[![](https://img.shields.io/badge/The_CKM_Matrix-blue)](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html)
+[![](https://img.shields.io/badge/Higgs_Field-blue)](https://heplean.github.io/HepLean/docs/HepLean/StandardModel/HiggsBoson/Basic.html)
+[![](https://img.shields.io/badge/2HDM-blue)](https://heplean.github.io/HepLean/docs/HepLean/BeyondTheStandardModel/TwoHDM/Basic.html)
+[![](https://img.shields.io/badge/Lorentz_Group-blue)](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html)
+[![](https://img.shields.io/badge/Anomaly_Cancellation-blue)](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html)
+[![](https://img.shields.io/badge/Feynman_diagrams-blue)](https://heplean.github.io/HepLean/docs/HepLean/FeynmanDiagrams/PhiFour/Basic.html)
 ## Where to learn more 
 
 - Read the associated paper:
