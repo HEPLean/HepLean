@@ -11,7 +11,7 @@ import Mathlib.Algebra.Lie.Classical
 
 This file introduces the Minkowski metric on spacetime in the mainly-minus signature.
 
-We define the minkowski metric as a bilinear map on the vector space
+We define the Minkowski metric as a bilinear map on the vector space
 of Lorentz vectors in d dimensions.
 
 -/
@@ -77,7 +77,7 @@ end minkowskiMatrix
 
 -/
 
-/-- Given a Lorentz vector `v` we define the the linear map `w ↦ v * η * w  -/
+/-- Given a Lorentz vector `v` we define the the linear map `w ↦ v * η * w`  -/
 @[simps!]
 def minkowskiLinearForm {d : ℕ} (v : LorentzVector d) : LorentzVector d →ₗ[ℝ] ℝ where
   toFun w := v ⬝ᵥ (minkowskiMatrix *ᵥ w)
@@ -191,7 +191,7 @@ lemma nondegenerate : (∀ w, ⟪w, v⟫ₘ = 0) ↔ v = 0 := by
 
 /-!
 
-# Inequalitites involving the Minkowski metric
+# Inequalities involving the Minkowski metric
 
 -/
 
