@@ -23,8 +23,8 @@ open HiggsField
 noncomputable section
 
 /-- The potential of the two Higgs doublet model. -/
-def potential (Φ1 Φ2 : HiggsField) (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
-    (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) (x : SpaceTime) : ℝ :=
+def potential (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
+    (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) (Φ1 Φ2 : HiggsField) (x : SpaceTime) : ℝ :=
   m₁₁2 * ‖Φ1‖_H ^ 2 x  + m₂₂2 * ‖Φ2‖_H ^ 2 x - (m₁₂2 * ⟪Φ1, Φ2⟫_H x + conj m₁₂2 * ⟪Φ2, Φ1⟫_H x).re
   + 1/2 * 𝓵₁ *  ‖Φ1‖_H ^ 2 x * ‖Φ1‖_H ^ 2 x + 1/2 * 𝓵₂ * ‖Φ2‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
   + 𝓵₃ * ‖Φ1‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
@@ -46,8 +46,8 @@ variable (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ)
 /-- Swapping `Φ1` with `Φ2`, and a number of the parameters (with possible conjugation) leads
   to an identical potential. -/
 lemma swap_fields :
-    potential Φ1 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇
-    = potential Φ2 Φ1 m₂₂2 m₁₁2 𝓵₂ 𝓵₁ 𝓵₃ 𝓵₄ (conj m₁₂2) (conj 𝓵₅) (conj 𝓵₇) (conj 𝓵₆)  := by
+    potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 Φ2
+    = potential m₂₂2 m₁₁2 𝓵₂ 𝓵₁ 𝓵₃ 𝓵₄ (conj m₁₂2) (conj 𝓵₅) (conj 𝓵₇) (conj 𝓵₆) Φ2 Φ1 := by
   funext x
   simp only [potential, HiggsField.normSq, Complex.add_re, Complex.mul_re, Complex.conj_re,
     Complex.conj_im, neg_mul, sub_neg_eq_add, one_div, Complex.norm_eq_abs, Complex.inv_re,
@@ -60,7 +60,7 @@ lemma swap_fields :
   rw [HiggsField.innerProd, HiggsField.innerProd, ← InnerProductSpace.conj_symm, Complex.abs_conj]
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
-lemma right_zero : potential Φ1 0 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
+lemma right_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 0 =
     StandardModel.HiggsField.potential (- m₁₁2) (𝓵₁/2) Φ1  := by
   funext x
   simp only [potential, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
@@ -72,7 +72,7 @@ lemma right_zero : potential Φ1 0 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ �
   simp only [true_or]
 
 /-- If `Φ₁` is zero the potential reduces to the Higgs potential on `Φ₂`. -/
-lemma left_zero : potential 0 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
+lemma left_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ 0 Φ2 =
     StandardModel.HiggsField.potential (- m₂₂2) (𝓵₂/2) Φ2 := by
   rw [swap_fields, right_zero]
 
@@ -83,6 +83,10 @@ lemma left_zero : potential 0 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵
 -/
 
 /-! TODO: Prove bounded properties of the 2HDM potential. -/
+
+/-- The proposition on the coefficents for a potential to be bounded. -/
+def IsBounded (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ) (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) : Prop :=
+  ∃ c, ∀ Φ1 Φ2 x, c ≤ potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 Φ2 x
 
 /-!
 

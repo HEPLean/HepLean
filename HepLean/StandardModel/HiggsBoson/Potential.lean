@@ -50,6 +50,30 @@ lemma potential_smooth (μSq lambda : ℝ)  (φ : HiggsField) :
     ((smooth_const.smul φ.normSq_smooth).smul φ.normSq_smooth)
 
 namespace potential
+/-!
+
+## Basic properties
+
+-/
+
+lemma complete_square (μ2 𝓵 : ℝ) (h : 𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime)  :
+    potential μ2 𝓵 φ x = 𝓵 * (‖φ‖_H ^ 2 x - μ2 / (2 * 𝓵)) ^ 2 - μ2 ^ 2 / (4 * 𝓵) := by
+  simp only [potential]
+  field_simp
+  ring
+
+/-!
+
+## Boundness of the potential
+
+-/
+
+/-- The proposition on the coefficents for a potential to be bounded. -/
+def IsBounded (μ2 𝓵 : ℝ)  : Prop :=
+  ∃ c, ∀ Φ x, c ≤ potential μ2 𝓵 Φ x
+
+/-! TODO: Show when 𝓵 < 0, the potential is not bounded. -/
+
 section lowerBound
 /-!
 
