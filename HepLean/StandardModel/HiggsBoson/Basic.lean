@@ -9,7 +9,6 @@ import Mathlib.Tactic.Polyrith
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
-import Mathlib.RepresentationTheory.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.Product
 /-!
