@@ -77,5 +77,7 @@ import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
-import HepLean.StandardModel.HiggsBoson.TargetSpace
+import HepLean.StandardModel.HiggsBoson.GaugeAction
+import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
+import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
