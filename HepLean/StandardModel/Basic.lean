@@ -21,7 +21,7 @@ open Matrix
 open Complex
 open ComplexConjugate
 
-/-- The global gauge group of the standard model. TODO: Generalize to quotient. -/
+/-- The global gauge group of the standard model. -/
 abbrev GaugeGroup : Type :=
   specialUnitaryGroup (Fin 3) ℂ × specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 

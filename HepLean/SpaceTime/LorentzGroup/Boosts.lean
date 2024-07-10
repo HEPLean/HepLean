@@ -16,17 +16,13 @@ a four velocity `u` to a four velocity `v`.
 
 A boost is the special case of a generalised boost when `u = stdBasis 0`.
 
-## TODO
-
-- Show that generalised boosts are in the restricted Lorentz group.
-- Define boosts.
-
 ## References
 
 - The main argument follows: Guillem Cobos, The Lorentz Group, 2015:
   https://diposit.ub.edu/dspace/bitstream/2445/68763/2/memoria.pdf
 
 -/
+/-! TODO: Show that generalised boosts are in the restricted Lorentz group. -/
 noncomputable section
 
 namespace LorentzGroup

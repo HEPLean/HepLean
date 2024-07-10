@@ -11,11 +11,8 @@ import HepLean.SpaceTime.LorentzGroup.Proper
 We define the give a series of lemmas related to the orthochronous property of lorentz
 matrices.
 
-## TODO
-
-- Prove topological properties.
-
 -/
+/-! TODO: Prove topological properties of the Orthochronous Lorentz Group. -/
 
 noncomputable section
 

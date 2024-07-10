@@ -623,7 +623,8 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n) → ℚ)  : Pa' f = Pa' f' ↔ f =
   intro h
   rw [h]
 
-/-- A helper function for what follows. TODO: replace this with mathlib functions. -/
+/-! TODO: Replace the definition of `join` with a Mathlib definition, most likely `Sum.elim`. -/
+/-- A helper function for what follows. -/
 def join (g : Fin n.succ → ℚ) (f : Fin n → ℚ) :  (Fin n.succ) ⊕ (Fin n) → ℚ := fun i =>
   match i with
   | .inl i => g i

@@ -12,12 +12,8 @@ import Mathlib.Data.Fintype.BigOperators
 Some definitions and properties of linear, bilinear, and trilinear maps, along with homogeneous
 quadratic and cubic equations.
 
-## TODO
-
-Use definitions in `Mathlib4` for definitions where possible.
-In particular a HomogeneousQuadratic should be a map `V →ₗ[ℚ] V →ₗ[ℚ] ℚ`  etc.
-
 -/
+/-! TODO: Replace the definitions in this file with Mathlib definitions. -/
 
 /-- The structure defining a homogeneous quadratic equation. -/
 @[simp]
