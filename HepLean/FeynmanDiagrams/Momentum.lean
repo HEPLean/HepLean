@@ -19,7 +19,7 @@ vector space.
 
 ## TODO
 
-- Prove lemmas that make the calcuation of the number of loops of a Feynman diagram easier.
+- Prove lemmas that make the calculation of the number of loops of a Feynman diagram easier.
 
 ## Note
 
