@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.StandardModel.HiggsBoson.Basic
+import HepLean.StandardModel.HiggsBoson.Potential
 /-!
 
 # The Two Higgs Doublet Model
@@ -61,7 +61,7 @@ lemma swap_fields :
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
 lemma right_zero : potential Φ1 0 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
-    StandardModel.HiggsField.potential Φ1 (- m₁₁2) (𝓵₁/2) := by
+    StandardModel.HiggsField.potential (- m₁₁2) (𝓵₁/2) Φ1  := by
   funext x
   simp only [potential, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
     OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, innerProd_right_zero,
@@ -73,7 +73,7 @@ lemma right_zero : potential Φ1 0 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ �
 
 /-- If `Φ₁` is zero the potential reduces to the Higgs potential on `Φ₂`. -/
 lemma left_zero : potential 0 Φ2 m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇  =
-    StandardModel.HiggsField.potential Φ2 (- m₂₂2) (𝓵₂/2) := by
+    StandardModel.HiggsField.potential (- m₂₂2) (𝓵₂/2) Φ2 := by
   rw [swap_fields, right_zero]
 
 /-!
