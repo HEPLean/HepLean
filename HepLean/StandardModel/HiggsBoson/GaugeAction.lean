@@ -4,6 +4,10 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.StandardModel.HiggsBoson.Basic
+import Mathlib.RepresentationTheory.Basic
+import HepLean.StandardModel.Basic
+import HepLean.StandardModel.Representations
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 
 # The action of the gauge group on the Higgs field

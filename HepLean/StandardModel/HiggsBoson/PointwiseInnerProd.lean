@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.StandardModel.HiggsBoson.Basic
-import LeanCopilot
 /-!
 # The pointwise inner product
 
