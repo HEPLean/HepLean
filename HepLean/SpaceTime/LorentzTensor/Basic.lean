@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Basic
 import Mathlib.CategoryTheory.Limits.FintypeCat
-import LeanCopilot
 /-!
 
 # Lorentz Tensors
@@ -158,6 +157,7 @@ lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := by
 ## Rising and lowering indices
 
 Rising or lowering an index corresponds to changing the color of that index.
+
 -/
 
 /-! TODO: Define the rising and lowering of indices using contraction with the metric. -/
