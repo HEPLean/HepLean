@@ -16,7 +16,6 @@ matrix.
 
 open Matrix Complex
 
-
 noncomputable section
 
 namespace CKMMatrix
@@ -121,16 +120,12 @@ lemma VAbsub_neq_zero_sqrt_Vud_Vus_neq_zero {V : Quotient CKMMatrixSetoid}
   rw [← ud_us_neq_zero_iff_ub_neq_one V] at hV
   simpa [← Complex.sq_abs] using (normSq_Vud_plus_normSq_Vus_neq_zero_ℝ hV)
 
-
-
-
 lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℂ  {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
     (normSq [V]ud : ℂ) + normSq [V]us ≠ 0 := by
   have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℝ hb
   simp at h1
   rw [← ofReal_inj] at h1
   simp_all
-
 
 lemma Vabs_sq_add_neq_zero {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
     ((VudAbs ⟦V⟧ : ℂ) * ↑(VudAbs ⟦V⟧) + ↑(VusAbs ⟦V⟧) * ↑(VusAbs ⟦V⟧)) ≠ 0 := by
@@ -230,7 +225,6 @@ lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
   simp only [Fin.isValue, neg_mul]
   ring
 
-
 lemma cs_of_ud_us_ub_cb_tb {V : CKMMatrix}  (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     {τ : ℝ} (hτ : [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c))) :
     [V]cs = (- conj [V]ub * [V]us  * [V]cb +
@@ -249,9 +243,7 @@ lemma cd_of_ud_us_ub_cb_tb {V : CKMMatrix}  (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
   field_simp
   ring
 
-
 end rows
-
 
 section individual
 
@@ -270,11 +262,9 @@ lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤
   change VAbs i 2 V ≤ 1
   nlinarith
 
-
 end individual
 
 section columns
-
 
 lemma VAbs_sum_sq_col_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
     (VAbs 0 i V) ^ 2 + (VAbs 1 i V) ^ 2 + (VAbs 2 i V) ^ 2 = 1 := by
@@ -312,7 +302,6 @@ lemma cb_eq_zero_of_ud_us_zero {V : CKMMatrix} (h :  [V]ud = 0 ∧ [V]us = 0) :
   simp at h1
   exact h1.1
 
-
 lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
     VcsAbs ⟦V⟧ = √(1 - VcdAbs ⟦V⟧ ^ 2) := by
   have h1 := snd_row_normalized_abs V
@@ -335,8 +324,6 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
 lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
     VcbAbs V ^ 2 + VtbAbs V ^ 2 = 1 - VubAbs V ^2 := by
   linear_combination (VAbs_sum_sq_col_eq_one V 2)
-
-
 
 lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
     [V]cb ≠ 0 ∨ [V]tb ≠ 0 ↔ abs [V]ub ≠ 1 := by

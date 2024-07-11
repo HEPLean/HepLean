@@ -18,7 +18,6 @@ These, when used in the standard parameterization return `V` up to equivalence.
 This leads to the theorem `standParam.exists_for_CKMatrix` which says that up to equivalence every
 CKM matrix can be written using the standard parameterization.
 
-
 -/
 open Matrix Complex
 open ComplexConjugate
@@ -333,7 +332,6 @@ lemma Vs_zero_iff_cos_sin_zero (V : CKMMatrix) :
 
 end VAbs
 
-
 namespace standParam
 open Invariant
 
@@ -409,7 +407,6 @@ lemma on_param_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   rfl
   rfl
 
-
 lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₂ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, δ₁₃, δ₁₃, -δ₁₃, 0, - δ₁₃
@@ -434,7 +431,6 @@ lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   ring_nf
   field_simp
 
-
 lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₂₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, δ₁₃, 0, 0, 0, - δ₁₃
@@ -450,7 +446,6 @@ lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   simp only [mul_zero, add_zero]
   ring
   field_simp
-
 
 lemma on_param_sin_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₁₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
@@ -488,8 +483,6 @@ lemma on_param_sin_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
   ring_nf
   field_simp
 
-
-
 lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.sin (θ₂₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, 0, δ₁₃, 0, 0, - δ₁₃
@@ -505,9 +498,6 @@ lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
   ring
   ring
   field_simp
-
-
-
 
 lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     (hV : FstRowThdColRealCond V) : V = standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) (- arg [V]ub) := by
@@ -565,7 +555,6 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
   rw [VcbAbs_eq_S₂₃_mul_C₁₃ ⟦V⟧, S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧, C₁₃]
   simp
 
-
 lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
     V = standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   have h1 : VubAbs ⟦V⟧ = 1 := by
@@ -609,7 +598,6 @@ lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
   simp [cRow, standParam, standParamAsMatrix]
   rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.2.2.1]
   simp
-
 
 theorem exists_δ₁₃ (V : CKMMatrix) :
     ∃ (δ₃ : ℝ), V ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₃ := by
@@ -670,7 +658,6 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
   exact on_param_sin_θ₁₃_eq_zero δ₁₃' h
   exact on_param_sin_θ₂₃_eq_zero δ₁₃' h
 
-
 theorem exists_for_CKMatrix (V : CKMMatrix) :
     ∃ (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ), V ≈ standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ := by
   use θ₁₂ ⟦V⟧, θ₁₃ ⟦V⟧, θ₂₃ ⟦V⟧, δ₁₃ ⟦V⟧
@@ -678,9 +665,6 @@ theorem exists_for_CKMatrix (V : CKMMatrix) :
 
 end standParam
 
-
 open CKMMatrix
-
-
 
 end

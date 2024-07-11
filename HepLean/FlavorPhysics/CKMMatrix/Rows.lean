@@ -14,7 +14,6 @@ proves some properties between them.
 
 The first row can be extracted as `[V]u` for a CKM matrix `V`.
 
-
 -/
 
 open Matrix Complex
@@ -23,7 +22,6 @@ open ComplexConjugate
 noncomputable section
 
 namespace CKMMatrix
-
 
 /-- The `u`th row of the CKM matrix. -/
 def uRow (V : CKMMatrix) : Fin 3 → ℂ := ![[V]ud, [V]us, [V]ub]

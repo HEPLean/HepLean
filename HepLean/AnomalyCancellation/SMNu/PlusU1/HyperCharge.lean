@@ -68,7 +68,6 @@ lemma on_quadBiLin_AFL (S : (PlusU1 n).LinSols) : quadBiLin (Y n).val S.val = 0 
   rw [on_quadBiLin]
   rw [YYsol S]
 
-
 lemma add_AFL_quad (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accQuad (a • S.val + b • (Y n).val) = a ^ 2 * accQuad S.val := by
   erw [BiLinearSymm.toHomogeneousQuad_add, quadSol (b • (Y n)).1]
@@ -143,7 +142,6 @@ lemma add_AF_cube (S : (PlusU1 n).Sols) (a b : ℚ) :
 /-- The `Sol` obtained by adding hypercharge to a `Sol`. -/
 def addCube (S : (PlusU1 n).Sols) (a b : ℚ) : (PlusU1 n).Sols :=
   quadToAF (addQuad S.1 a b) (add_AF_cube S a b)
-
 
 end Y
 end PlusU1

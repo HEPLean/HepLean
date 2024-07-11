@@ -78,8 +78,6 @@ lemma Y₃_plus_B₃_plus_proj (T : MSSMACC.LinSols) (a b c : ℚ) :
   funext i
   linarith
 
-
-
 lemma quad_Y₃_proj (T : MSSMACC.LinSols) :
     quadBiLin Y₃.val (proj T).val = dot Y₃.val B₃.val * quadBiLin Y₃.val T.val := by
   rw [proj_val]
@@ -118,7 +116,6 @@ lemma quad_proj (T : MSSMACC.Sols) :
   repeat rw [quadBiLin.map_smul₁]
   rw [quad_Y₃_proj, quad_B₃_proj, quad_self_proj]
   ring
-
 
 lemma cube_proj_proj_Y₃ (T : MSSMACC.LinSols) :
     cubeTriLin (proj T).val (proj T).val Y₃.val =
@@ -185,7 +182,5 @@ lemma cube_proj (T : MSSMACC.Sols) :
   repeat rw [cubeTriLin.map_smul₃]
   rw [cube_proj_proj_Y₃, cube_proj_proj_B₃, cube_proj_proj_self]
   ring
-
-
 
 end MSSMACC

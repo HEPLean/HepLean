@@ -10,18 +10,13 @@ import HepLean.SpaceTime.LorentzVector.NormOne
 
 We define the Lorentz group.
 
-## TODO
-
-- Show that the Lorentz is a Lie group.
-- Prove that the restricted Lorentz group is equivalent to the connected component of the
-identity.
-- Define the continuous maps from `ℝ³` to `restrictedLorentzGroup` defining boosts.
-
 ## References
 
 - http://home.ku.edu.tr/~amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf
 
 -/
+/-! TODO: Show that the Lorentz is a Lie group. -/
+/-! TODO: Prove restricted Lorentz group equivalent to connected component of identity. -/
 
 noncomputable section
 
@@ -43,7 +38,6 @@ open minkowskiMetric in
 def LorentzGroup (d : ℕ) : Set (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :=
     {Λ : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ |
      ∀ (x y : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ y⟫ₘ = ⟪x, y⟫ₘ}
-
 
 namespace LorentzGroup
 /-- Notation for the Lorentz group. -/

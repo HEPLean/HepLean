@@ -11,9 +11,7 @@ We define the give a series of lemmas related to the determinant of the lorentz 
 
 -/
 
-
 noncomputable section
-
 
 open Matrix
 open Complex
@@ -30,7 +28,6 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   have h1 := (congrArg det ((mem_iff_self_mul_dual).mp Λ.2))
   simp [det_mul, det_dual] at h1
   exact mul_self_eq_one_iff.mp h1
-
 
 local notation  "ℤ₂" => Multiplicative (ZMod 2)
 
@@ -75,7 +72,6 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     simp only [Fin.isValue, one_ne_zero] at h
   · intro h
     simp [detContinuous, h]
-
 
 /-- The representation taking a lorentz matrix to its determinant. -/
 @[simps!]

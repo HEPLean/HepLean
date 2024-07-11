@@ -18,7 +18,6 @@ To define `toSols` we define a series of other maps from various subtypes of
 `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` to `MSSMACC.Sols`. And show that these maps form a
 surjection on certain subtypes of `MSSMACC.Sols`.
 
-
 # References
 
 The main reference for the material in this file is:
@@ -78,7 +77,6 @@ lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
   rw [h.2.2]
   simp
 
-
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the quadratic surface. -/
 def InQuadProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
@@ -136,7 +134,6 @@ entirely in the cubic surface. -/
 def InCubeProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
     cubeTriLin R.val R.val R.val = 0 ∧ cubeTriLin R.val R.val B₃.val = 0 ∧
     cubeTriLin R.val R.val Y₃.val = 0
-
 
 instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InCubeProp R) := by
   apply And.decidable
@@ -237,7 +234,6 @@ lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
 not surjective. -/
 def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, _ , _) =>
   a • AnomalyFreeMk'' (toSolNSQuad R) (toSolNSQuad_cube R)
-
 
 /-- A map from `Sols` to `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` which on elements of
 `notInLineEqSol` will produce a right inverse to `toSolNS`. -/
@@ -457,7 +453,6 @@ theorem toSol_surjective : Function.Surjective toSol := by
   exact toSol_inQuad ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
   simp at h₃
   exact toSol_inQuadCube ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
-
 
 end AnomalyFreePerp
 

@@ -24,7 +24,6 @@ open SMCharges
 open SMACCs
 open BigOperators
 
-
 lemma E_zero_iff_Q_zero {S : (SMNoGrav 1).Sols} : Q S.val (0 : Fin 1) = 0 ↔
     E S.val  (0 : Fin 1) = 0 := by
   let S' := linearParameters.bijection.symm S.1.1
@@ -37,8 +36,6 @@ lemma E_zero_iff_Q_zero {S : (SMNoGrav 1).Sols} : Q S.val (0 : Fin 1) = 0 ↔
   exact S'.cubic_zero_Q'_zero hC hQ
   intro hE
   exact S'.cubic_zero_E'_zero hC hE
-
-
 
 lemma accGrav_Q_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val  (0 : Fin 1) = 0) :
     accGrav S.val = 0 := by
@@ -73,7 +70,6 @@ theorem accGravSatisfied {S : (SMNoGrav 1).Sols} (FLTThree : FermatLastTheoremWi
   by_cases hQ : Q S.val (0 : Fin 1)= 0
   exact accGrav_Q_zero hQ
   exact accGrav_Q_neq_zero hQ FLTThree
-
 
 end One
 end SMNoGrav

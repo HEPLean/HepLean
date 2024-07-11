@@ -190,7 +190,6 @@ lemma basis!_on_other {k : Fin n} {j : Fin (2 * n.succ)} (h1 : j ≠ δ!₁ k)  
   simp [basis!AsCharges]
   simp_all only [ne_eq, ↓reduceIte]
 
-
 lemma basis!_on_δ!₁_other {k j : Fin n} (h : k ≠ j) :
     basis!AsCharges k (δ!₁ j) = 0 := by
   simp [basis!AsCharges]
@@ -309,7 +308,6 @@ lemma basis!_accCube (j : Fin n) :
   intro i _
   simp [basis!_δ!₂_eq_minus_δ!₁]
   ring
-
 
 /-- The first part of the basis as `LinSols`. -/
 @[simps!]
@@ -587,7 +585,6 @@ theorem basis!_linear_independent : LinearIndependent ℚ (@basis! n) := by
   rw [P!'_val] at h1
   exact P!_zero f h1
 
-
 theorem basisa_linear_independent : LinearIndependent ℚ (@basisa n) := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
@@ -626,7 +623,8 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n) → ℚ)  : Pa' f = Pa' f' ↔ f =
   intro h
   rw [h]
 
-/-- A helper function for what follows. TODO: replace this with mathlib functions. -/
+/-! TODO: Replace the definition of `join` with a Mathlib definition, most likely `Sum.elim`. -/
+/-- A helper function for what follows. -/
 def join (g : Fin n.succ → ℚ) (f : Fin n → ℚ) :  (Fin n.succ) ⊕ (Fin n) → ℚ := fun i =>
   match i with
   | .inl i => g i
@@ -663,7 +661,6 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n → ℚ) :
   rw [← join_ext]
   exact Pa'_eq _ _
 
-
 lemma basisa_card :  Fintype.card ((Fin n.succ) ⊕ (Fin n)) =
     FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
@@ -674,7 +671,6 @@ lemma basisa_card :  Fintype.card ((Fin n.succ) ⊕ (Fin n)) =
 noncomputable def basisaAsBasis :
     Basis (Fin (succ n) ⊕ Fin n) ℚ (PureU1 (2 * succ n)).LinSols :=
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card
-
 
 lemma span_basis (S : (PureU1 (2 * n.succ)).LinSols) :
     ∃ (g : Fin n.succ → ℚ) (f : Fin n → ℚ), S.val = P g + P! f  := by

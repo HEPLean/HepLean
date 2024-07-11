@@ -37,7 +37,6 @@ def PlusU1 (n : ℕ) : ACCSystem where
 
 namespace PlusU1
 
-
 variable {n : ℕ}
 
 lemma gravSol  (S : (PlusU1 n).LinSols) : accGrav S.val = 0 := by

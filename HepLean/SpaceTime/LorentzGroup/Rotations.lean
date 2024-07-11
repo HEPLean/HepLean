@@ -11,11 +11,8 @@ import Mathlib.Topology.Constructions
 
 This file describes the embedding of `SO(3)` into `LorentzGroup 3`.
 
-## TODO
-
-Generalize to arbitrary dimensions.
-
 -/
+/-! TODO: Generalize the inclusion of rotations into LorentzGroup to abitary dimension. -/
 noncomputable section
 
 namespace LorentzGroup
@@ -54,8 +51,6 @@ def SO3ToLorentz : SO(3) →* LorentzGroup 3 where
     apply Subtype.eq
     simp [Matrix.fromBlocks_multiply]
 
-
 end LorentzGroup
-
 
 end

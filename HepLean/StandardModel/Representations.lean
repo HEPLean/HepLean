@@ -53,5 +53,4 @@ lemma repU1_fundamentalSU2_commute (u1 : unitary ℂ) (g : specialUnitaryGroup (
   apply Subtype.ext
   simp
 
-
 end StandardModel

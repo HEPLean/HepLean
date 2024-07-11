@@ -37,7 +37,6 @@ def SM (n : ℕ) : ACCSystem where
 
 namespace SM
 
-
 variable {n : ℕ}
 
 lemma gravSol  (S : (SM n).LinSols) : accGrav S.val = 0 := by
@@ -118,7 +117,6 @@ def perm (n : ℕ) : ACCSystemGroupAction (SM n) where
     simp at i
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
-
 
 end SM
 

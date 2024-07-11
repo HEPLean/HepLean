@@ -74,7 +74,6 @@ lemma genericToQuad_neq_zero (S : (PlusU1 n).QuadSols) (h : α₁ C S.1 ≠ 0) :
     (α₁ C S.1)⁻¹ • genericToQuad C S.1 = S := by
   rw [genericToQuad_on_quad, smul_smul, inv_mul_cancel h, one_smul]
 
-
 /-- The construction of a `QuadSol` from a `LinSols` in the special case when `α₁ C S = 0` and
   `α₂ S = 0`. -/
 def specialToQuad (S : (PlusU1 n).LinSols) (a b : ℚ) (h1 : α₁ C S = 0)

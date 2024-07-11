@@ -67,7 +67,6 @@ def sortAFL  {n : ℕ} (S : (PureU1 n).LinSols) : (PureU1 n).LinSols :=
 lemma sortAFL_val {n : ℕ} (S : (PureU1 n).LinSols) :  (sortAFL S).val = sort S.val := by
   rfl
 
-
 lemma sortAFL_zero {n : ℕ} (S : (PureU1 n).LinSols)  (hS : sortAFL S = 0) : S = 0 := by
   apply ACCSystemLinear.LinSols.ext
   have h1 : sort S.val = 0 := by

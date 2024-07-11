@@ -134,7 +134,6 @@ theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : GenericCase S) :
   simp at h
   exact h
 
-
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
     (h : SpecialCase S) : LineInCubic S.1.1 := by
   intro g f hS a b
@@ -152,14 +151,12 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
   erw [h]
   simp
 
-
 lemma special_case_lineInCubic_perm {S : (PureU1 (2 * n.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ)).group),
     SpecialCase ((FamilyPermutations (2 * n.succ)).solAction.toFun S M)) :
     LineInCubicPerm S.1.1 := by
   intro M
   exact special_case_lineInCubic (h M)
-
 
 theorem special_case {S : (PureU1 (2 * n.succ.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ.succ)).group),

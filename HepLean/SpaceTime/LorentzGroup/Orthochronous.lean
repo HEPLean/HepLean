@@ -11,15 +11,10 @@ import HepLean.SpaceTime.LorentzGroup.Proper
 We define the give a series of lemmas related to the orthochronous property of lorentz
 matrices.
 
-## TODO
-
-- Prove topological properties.
-
 -/
-
+/-! TODO: Prove topological properties of the Orthochronous Lorentz Group. -/
 
 noncomputable section
-
 
 open Matrix
 open Complex
@@ -65,7 +60,6 @@ lemma not_orthochronous_iff_le_zero :
   linarith
   rw [IsOrthochronous_iff_ge_one]
   linarith
-
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
 def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ  ,

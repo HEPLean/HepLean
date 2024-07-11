@@ -16,7 +16,6 @@ We define the anomaly cancellation conditions for a pure U(1) gauge theory with 
 universe v u
 open Nat
 
-
 open  Finset
 
 namespace PureU1
@@ -34,7 +33,6 @@ def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
   map_smul' a S := by
    simp [HSMul.hSMul, SMul.smul]
    rw [← Finset.mul_sum]
-
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
@@ -70,13 +68,10 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
     ring
   )
 
-
-
 /-- The cubic anomaly equation. -/
 @[simp]
 def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).Charges) :=
   (accCubeTriLinSymm).toCubic
-
 
 lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
@@ -165,7 +160,6 @@ lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
   erw [← hlt]
   simp
 
-
 lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by
   induction k
@@ -176,6 +170,5 @@ lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j
   have hlt := hl (f ∘ Fin.castSucc)
   erw [← hlt]
   simp
-
 
 end PureU1

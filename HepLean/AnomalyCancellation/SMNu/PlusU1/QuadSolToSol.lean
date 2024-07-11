@@ -78,9 +78,7 @@ lemma special_on_AF (S : (PlusU1 n).Sols)  (h1 : α₁ S.1 = 0) :
   rw [BL.addQuad_zero]
   simp
 
-
 end QuadSolToSol
-
 
 open QuadSolToSol
 /-- A map from `QuadSols × ℚ × ℚ` to `Sols` taking account of the special and generic cases.
