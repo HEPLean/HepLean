@@ -7,7 +7,9 @@ import HepLean.SpaceTime.LorentzGroup.Basic
 /-!
 # The Proper Lorentz Group
 
-We define the give a series of lemmas related to the determinant of the lorentz group.
+The proper Lorentz group is the subgroup of the Lorentz group with determinant `1`.
+
+We define the give a series of lemmas related to the determinant of the Lorentz group.
 
 -/
 
@@ -23,7 +25,7 @@ open minkowskiMetric
 
 variable {d : ℕ}
 
-/-- The determinant of a member of the lorentz group is `1` or `-1`. -/
+/-- The determinant of a member of the Lorentz group is `1` or `-1`. -/
 lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   have h1 := (congrArg det ((mem_iff_self_mul_dual).mp Λ.2))
   simp [det_mul, det_dual] at h1
@@ -47,7 +49,7 @@ def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
     haveI : DiscreteTopology ({-1, 1} : Set ℝ) := discrete_of_t1_of_finite
     exact continuous_of_discreteTopology
 
-/-- The continuous map taking a lorentz matrix to its determinant. -/
+/-- The continuous map taking a Lorentz matrix to its determinant. -/
 def detContinuous :  C(𝓛 d, ℤ₂) :=
   ContinuousMap.comp  coeForℤ₂ {
     toFun := fun Λ => ⟨Λ.1.det, Or.symm (LorentzGroup.det_eq_one_or_neg_one _)⟩,
@@ -73,7 +75,7 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
   · intro h
     simp [detContinuous, h]
 
-/-- The representation taking a lorentz matrix to its determinant. -/
+/-- The representation taking a Lorentz matrix to its determinant. -/
 @[simps!]
 def detRep : 𝓛 d →* ℤ₂ where
   toFun Λ := detContinuous Λ
