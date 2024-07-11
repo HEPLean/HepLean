@@ -3,85 +3,172 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.GraphicalSpecies
 import HepLean.SpaceTime.LorentzVector.Basic
+import Mathlib.CategoryTheory.Limits.FintypeCat
+import LeanCopilot
 /-!
 
 # Lorentz Tensors
 
-This file is currently a work-in-progress.
+In this file we define real Lorentz tensors.
 
-The aim is to define Lorentz tensors, and devlop a systematic way to manipulate them.
+We implicitly follow the definition of a modular operad.
+This will relation should be made explicit in the future.
 
-To manipulate them we will use the theory of modular operads
-(see e.g. [Raynor][raynor2021graphical]).
 
+## References
+
+-- For modular operads see: [Raynor][raynor2021graphical]
+
+-/
+/-! TODO: Do complex tensors, with Van der Waerden notation for fermions. -/
+
+/-!
+
+## Real Lorentz tensors
 
 -/
 
+/-- An index of a real Lorentz tensor is up or down. -/
+inductive RealLorentzTensor.Colors where
+  | up : RealLorentzTensor.Colors
+  | down : RealLorentzTensor.Colors
+
+def RealLorentzTensor.ColorsIndex (d : ℕ) (μ : RealLorentzTensor.Colors) : Type :=
+  match μ with
+  | RealLorentzTensor.Colors.up => Fin 1 ⊕ Fin d
+  | RealLorentzTensor.Colors.down => Fin 1 ⊕ Fin d
+
 /-- A Lorentz Tensor defined by its coordinate map. -/
-def LorentzTensor (d : ℕ) (X : FintypeCat) : Type :=
-  (X → Fin 1 ⊕ Fin d) → ℝ
+structure RealLorentzTensor (d : ℕ) (X : FintypeCat) where
+  color : X → RealLorentzTensor.Colors
+  coord : ((x : X) → RealLorentzTensor.ColorsIndex d (color x)) → ℝ
 
-/-- An instance of a additive commutative monoid on `LorentzTensor`. -/
-instance (d : ℕ) (X : FintypeCat)  : AddCommMonoid (LorentzTensor d X) := Pi.addCommMonoid
-
-/-- An instance of a module on `LorentzVector`. -/
-noncomputable instance (d : ℕ) (X : FintypeCat)  : Module ℝ (LorentzTensor d X) := Pi.module _ _ _
-
-namespace LorentzTensor
+namespace RealLorentzTensor
 open BigOperators
-open elGr
 open CategoryTheory
+universe u1
+variable {d : ℕ} {X Y Z : FintypeCat.{u1}}
 
-variable {d : ℕ} {X Y : FintypeCat}
+/-- An `IndexType` for a tensor is an element of
+`(x : X) → RealLorentzTensor.ColorsIndex d (T.color x)`. -/
+@[simp]
+def IndexType (T : RealLorentzTensor d X) : Type u1 :=
+  (x : X) → RealLorentzTensor.ColorsIndex d (T.color x)
 
-/-- The map taking a list of `LorentzVector d` indexed by `X` to a ` LorentzTensor d X`. -/
-def tmul (t : X → LorentzVector d) : LorentzTensor d X :=
-  fun f => ∏ x, (t x) (f x)
+lemma indexType_eq {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color) :
+    T₁.IndexType = T₂.IndexType := by
+  simp only [IndexType]
+  rw [h]
+
+lemma ext {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color)
+  (h' :  T₁.coord  = T₂.coord ∘ Equiv.cast (indexType_eq h)) : T₁ = T₂ := by
+  cases T₁
+  cases T₂
+  simp_all only [IndexType, mk.injEq]
+  apply And.intro h
+  simp only at h
+  subst h
+  simp only [Equiv.cast_refl, Equiv.coe_refl, CompTriple.comp_eq] at h'
+  subst h'
+  rfl
+
+/-- The involution acting on colors. -/
+def τ : Colors → Colors
+  | Colors.up => Colors.down
+  | Colors.down => Colors.up
+
+/-- The map τ is an involution. -/
+lemma τ_involutive : Function.Involutive τ := by
+  intro x
+  cases x <;> rfl
+
+/-- The color associated with an element of `x ∈ X` for a tensor `T`. -/
+def ch {X : FintypeCat} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
+
+/-!
+
+## Congruence
+
+-/
 
 /- An equivalence between `X → Fin 1 ⊕ Fin d` and `Y → Fin 1 ⊕ Fin d` given an isomorphism
   between `X` and `Y`. -/
-def indexEquivOfIndexHom (f : X ≅ Y) : (X → Fin 1 ⊕ Fin d) ≃ (Y → Fin 1 ⊕ Fin d)  :=
-  Equiv.piCongrLeft' _ (FintypeCat.equivEquivIso.symm f)
+@[simps!]
+def congrSetIndexType (d : ℕ) (f : X ≃ Y) (i : X → Colors) :
+  ((x : X) → ColorsIndex d (i x)) ≃ ((y : Y) → ColorsIndex d ((Equiv.piCongrLeft' _ f) i y))  :=
+  Equiv.piCongrLeft' _ (f)
 
-/-- Given an isomorphism of indexing sets, a linear equivalence on Lorentz tensors. -/
-noncomputable def mapOfIndexHom (f : X ≅ Y) :  LorentzTensor d Y ≃ₗ[ℝ] LorentzTensor d X :=
-  LinearEquiv.piCongrLeft' ℝ _ (indexEquivOfIndexHom f).symm
+/-- Given an equivalence of indexing sets, a map on Lorentz tensors. -/
+@[simps!]
+def congrSetMap (f : X ≃ Y) (T : RealLorentzTensor d X) : RealLorentzTensor d Y where
+    color := (Equiv.piCongrLeft' _ f) T.color
+    coord := (Equiv.piCongrLeft' _ (congrSetIndexType d f T.color)) T.coord
+
+lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X)  :
+    congrSetMap g  (congrSetMap f T) = congrSetMap (f.trans g) T := by
+  apply ext (by rfl)
+  have h1 : (congrSetIndexType d (f.trans g) T.color) = (congrSetIndexType d f T.color).trans
+    (congrSetIndexType d g ((Equiv.piCongrLeft' (fun _ => Colors) f) T.color)) := by
+    simp only [Equiv.piCongrLeft'_apply, Equiv.symm_trans_apply, congrSetIndexType]
+    exact Equiv.coe_inj.mp rfl
+  simp only [congrSetMap, Equiv.piCongrLeft'_apply, IndexType, Equiv.symm_trans_apply, h1,
+    Equiv.cast_refl, Equiv.coe_refl, CompTriple.comp_eq]
+  rfl
+
+/-- An equivalence of Tensors given an equivalence of underlying sets. -/
+@[simps!]
+def congrSet (f : X ≃ Y) : RealLorentzTensor d X ≃ RealLorentzTensor d Y where
+  toFun := congrSetMap f
+  invFun := congrSetMap f.symm
+  left_inv T := by
+    rw [congrSetMap_trans, Equiv.self_trans_symm]
+    rfl
+  right_inv T := by
+    rw [congrSetMap_trans, Equiv.symm_trans_self]
+    rfl
+
+lemma congrSet_trans (f : X ≃ Y) (g : Y ≃ Z) :
+    (@congrSet d _ _ f).trans (congrSet g) = congrSet (f.trans g) := by
+  refine Equiv.coe_inj.mp ?_
+  funext T
+  exact congrSetMap_trans f g T
+
+lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := by
+  rfl
+
+/-!
+
+## Multiplication
+
+-/
+
+/-! TODO: Following the ethos of modular operads, define multiplication of Lorentz tensors. -/
+
+/-!
+
+## Contraction of indices
+
+-/
+
+/-! TODO: Following the ethos of modular operads, define contraction of Lorentz tensors. -/
+
+/-!
+
+## Rising and lowering indices
+
+Rising or lowering an index corresponds to changing the color of that index.
+-/
+
+/-! TODO: Define the rising and lowering of indices using contraction with the metric. -/
 
 /-!
 
 ## Graphical species and Lorentz tensors
 
 -/
-
-/-- The graphical species defined by Lorentz tensors.
-
-For this simple case, 𝓣 gets mapped to `PUnit`, if one wishes to include fermions etc,
-then `PUnit` will change to account for the colouring of edges. -/
-noncomputable def graphicalSpecies (d : ℕ) : GraphicalSpecies where
-  obj x :=
-    match x with
-    | ⟨𝓣⟩ => PUnit
-    | ⟨as f⟩ => LorentzTensor d f
-  map {x y} f :=
-    match x, y, f with
-    | ⟨𝓣⟩, ⟨𝓣⟩, _ => 𝟙 PUnit
-    | ⟨𝓣⟩, ⟨as x⟩, ⟨f⟩ => Empty.elim f
-    | ⟨as f⟩, ⟨𝓣⟩, _ => fun _ => PUnit.unit
-    | ⟨as f⟩, ⟨as g⟩, ⟨h⟩ => (mapOfIndexHom h).toEquiv.toFun
-  map_id X := by
-    match X with
-    | ⟨𝓣⟩ => rfl
-    | ⟨as f⟩ => rfl
-  map_comp {x y z} f g := by
-    match x, y, z, f, g with
-    | ⟨𝓣⟩, ⟨𝓣⟩, ⟨𝓣⟩, _, _ => rfl
-    | _, ⟨𝓣⟩, ⟨as _⟩, _, ⟨g⟩ => exact Empty.elim g
-    | ⟨𝓣⟩, ⟨as _⟩, _, ⟨f⟩, _ =>  exact Empty.elim f
-    | ⟨as x⟩, ⟨as y⟩, ⟨as z⟩, ⟨f⟩, ⟨g⟩ => rfl
-    | ⟨as x⟩, ⟨𝓣⟩, ⟨𝓣⟩, _, _ => rfl
-    | ⟨as x⟩, ⟨as y⟩, ⟨𝓣⟩, _, _ => rfl
+/-! TODO: From Lorentz tensors graphical species. -/
+/-! TODO: Show that the action of the Lorentz group defines an action on the graphical species. -/
 
 
-end LorentzTensor
+end RealLorentzTensor
