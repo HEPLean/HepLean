@@ -16,7 +16,6 @@ We define the Lorentz group.
 
 -/
 /-! TODO: Show that the Lorentz is a Lie group. -/
-/-! TODO: Prove restricted Lorentz group equivalent to connected component of identity. -/
 
 noncomputable section
 
