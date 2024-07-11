@@ -68,6 +68,7 @@ import HepLean.SpaceTime.LorentzGroup.Basic
 import HepLean.SpaceTime.LorentzGroup.Boosts
 import HepLean.SpaceTime.LorentzGroup.Orthochronous
 import HepLean.SpaceTime.LorentzGroup.Proper
+import HepLean.SpaceTime.LorentzGroup.Restricted
 import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
