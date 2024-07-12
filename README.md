@@ -4,7 +4,7 @@
 [![](https://img.shields.io/badge/PRs-Welcome-green)](https://github.com/HEPLean/HepLean/pulls)
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
 [![](https://img.shields.io/badge/TODO-List-green)](https://heplean.github.io/HepLean/TODOList)
-[![](https://img.shields.io/badge/Lean-v4.9.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.9.0)
+[![](https://img.shields.io/badge/Lean-v4.10.0--rc1-blue)](https://github.com/leanprover/lean4/releases/tag/v4.10.0-rc1)
 
 A project to digitalize high energy physics.
 
