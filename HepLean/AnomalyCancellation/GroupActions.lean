@@ -100,7 +100,7 @@ instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     rfl
 
 lemma linSolRep_quadSolAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)
-    (S : χ.QuadSols) :  χ.quadSolsInclLinSols (G.quadSolAction.toFun S g) =
+    (S : χ.QuadSols) : χ.quadSolsInclLinSols (G.quadSolAction.toFun S g) =
     G.linSolRep g (χ.quadSolsInclLinSols S) := rfl
 
 lemma rep_quadSolAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)

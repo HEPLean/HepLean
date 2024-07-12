@@ -31,6 +31,15 @@ def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
+/-- Checks if there is a souble space in the line, which is not at the start. -/
+def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
+  let enumLines := (lines.toList.enumFrom 1)
+  let errors := enumLines.filterMap (fun (lno, l) ↦
+    if String.containsSubstr l.trimLeft "  " then
+      some (s!" Non-initial double space in line. ", lno)
+    else none)
+  errors.toArray
+
 structure HepLeanErrorContext where
   /-- The underlying `message`. -/
   error : String
@@ -47,7 +56,7 @@ def hepLeanLintFile (path : FilePath) : IO Bool := do
   let lines ← IO.FS.lines path
   let allOutput := (Array.map (fun lint ↦
     (Array.map (fun (e, n) ↦ HepLeanErrorContext.mk e n path)) (lint lines)))
-    #[doubleEmptyLineLinter]
+    #[doubleEmptyLineLinter, doubleSpaceLinter]
   let errors := allOutput.flatten
   printErrors errors
   return errors.size > 0

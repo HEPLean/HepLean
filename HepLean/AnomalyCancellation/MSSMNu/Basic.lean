@@ -50,7 +50,7 @@ def splitSMPlusH : (Fin 18 ⊕ Fin 2 → ℚ) ≃ (Fin 18 → ℚ) × (Fin 2 →
 /-- An equivalence between `MSSMCharges.charges` and `(Fin 18 → ℚ) × (Fin 2 → ℚ)`. This
 splits the charges up into the SM and the additional ones for the MSSM. -/
 @[simps!]
-def toSplitSMPlusH  : MSSMCharges.Charges ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) :=
+def toSplitSMPlusH : MSSMCharges.Charges ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) :=
   toSMPlusH.trans splitSMPlusH
 
 /-- An equivalence between `(Fin 18 → ℚ)` and `(Fin 6 → Fin 3 → ℚ)`. -/
@@ -74,7 +74,7 @@ def toSMSpecies (i : Fin 6) : MSSMCharges.Charges →ₗ[ℚ] MSSMSpecies.Charge
   map_add' _ _ := by rfl
   map_smul' _ _ := by rfl
 
-lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f :  (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ)) :
+lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ)) :
     (toSMSpecies i) (toSpecies.symm f) = f.1 i := by
   change (Prod.fst ∘ toSpecies ∘ toSpecies.symm ) _ i= f.1 i
   simp
