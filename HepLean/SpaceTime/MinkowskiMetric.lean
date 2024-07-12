@@ -41,13 +41,17 @@ lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
   rcases i with i | i <;> rcases j with j | j
   · simp only [diagonal, of_apply, Sum.inl.injEq, Sum.elim_inl, mul_one]
     split
-    · simp_all only [one_apply_eq]
+    · rename_i h
+      subst h
+      simp_all only [one_apply_eq]
     · simp_all only [ne_eq, Sum.inl.injEq, not_false_eq_true, one_apply_ne]
   · simp only [ne_eq, not_false_eq_true, diagonal_apply_ne, one_apply_ne]
   · simp only [ne_eq, not_false_eq_true, diagonal_apply_ne, one_apply_ne]
   · simp only [diagonal, of_apply, Sum.inr.injEq, Sum.elim_inr, mul_neg, mul_one, neg_neg]
     split
-    · simp_all only [one_apply_eq]
+    · rename_i h
+      subst h
+      simp_all only [one_apply_eq]
     · simp_all only [ne_eq, Sum.inr.injEq, not_false_eq_true, one_apply_ne]
 
 @[simp]

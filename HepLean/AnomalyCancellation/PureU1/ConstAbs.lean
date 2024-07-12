@@ -225,7 +225,6 @@ lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.v
     = A.val (0 : Fin (2*n.succ)) := by
   by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
   rw [is_zero h hA]
-  simp
   rfl
   exact AFL_even_below' h hA i
 
@@ -244,10 +243,9 @@ lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.
 lemma AFL_even_above (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.val)
     (i : Fin n.succ) :
     A.val (Fin.cast (split_equal n.succ) (Fin.natAdd n.succ i)) =
-    - A.val (0 : Fin (2*n.succ)) := by
-  by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
+    - A.val (0 : Fin (2 * n.succ)) := by
+  by_cases hA : A.val (0 : Fin (2 * n.succ)) = 0
   rw [is_zero h hA]
-  simp
   rfl
   exact AFL_even_above' h hA i
 
