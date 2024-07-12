@@ -240,7 +240,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
 lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     ∃ (τ : ℝ), [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
   obtain ⟨g, hg⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
-    (conj ([V]u) ×₃ conj ([V]c)) )
+    (conj ([V]u) ×₃ conj ([V]c)))
   rw [Fin.sum_univ_three, rowBasis] at hg
   simp at hg
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
@@ -307,20 +307,20 @@ def ucCross : Fin 3 → ℂ :=
   conj [phaseShiftApply V a b c d e f]u ×₃ conj [phaseShiftApply V a b c d e f]c
 
 lemma ucCross_fst (V : CKMMatrix) : (ucCross V a b c d e f) 0 =
-    cexp ((- a * I) + (- b * I) + ( - e * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 0 := by
+    cexp ((- a * I) + (- b * I) + (- e * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 0 := by
   simp [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
     LinearMap.mk₂_apply, Pi.conj_apply, cons_val_zero, neg_mul, uRow, us, ub, cRow, cs, cb,
     exp_add, exp_sub, ← exp_conj, conj_ofReal]
   ring
 
 lemma ucCross_snd (V : CKMMatrix) : (ucCross V a b c d e f) 1 =
-    cexp ((- a * I) + (- b * I) + ( - d * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 1 := by
+    cexp ((- a * I) + (- b * I) + (- d * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 1 := by
   simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add,
     exp_sub, ← exp_conj, conj_ofReal]
   ring
 
 lemma ucCross_thd (V : CKMMatrix) : (ucCross V a b c d e f) 2 =
-    cexp ((- a * I) + (- b * I) + ( - d * I) + (- e * I)) * (conj [V]u ×₃ conj [V]c) 2 := by
+    cexp ((- a * I) + (- b * I) + (- d * I) + (- e * I)) * (conj [V]u ×₃ conj [V]c) 2 := by
   simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add, exp_sub,
     ← exp_conj, conj_ofReal]
   ring

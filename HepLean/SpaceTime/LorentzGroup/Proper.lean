@@ -122,7 +122,7 @@ lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 
-lemma id_IsProper : (@IsProper d) 1 := by
+lemma id_IsProper : @IsProper d 1 := by
   simp [IsProper]
 
 lemma isProper_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :

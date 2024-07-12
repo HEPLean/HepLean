@@ -183,12 +183,12 @@ def toEnd (A : SO(3)) : End ℝ (EuclideanSpace ℝ (Fin 3)) :=
 
 lemma one_is_eigenvalue (A : SO(3)) : A.toEnd.HasEigenvalue 1 := by
   rw [End.hasEigenvalue_iff_mem_spectrum]
-  erw [AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis ) A.1]
+  erw [AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis) A.1]
   exact one_in_spectrum A
 
 lemma exists_stationary_vec (A : SO(3)) :
     ∃ (v : EuclideanSpace ℝ (Fin 3)),
-    Orthonormal ℝ (({0} : Set (Fin 3)).restrict (fun _ => v ))
+    Orthonormal ℝ (({0} : Set (Fin 3)).restrict (fun _ => v))
     ∧ A.toEnd v = v := by
   obtain ⟨v, hv⟩ := End.HasEigenvalue.exists_hasEigenvector $ one_is_eigenvalue A
   have hvn : ‖v‖ ≠ 0 := norm_ne_zero_iff.mpr hv.2

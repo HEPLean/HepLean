@@ -51,22 +51,19 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro i
-    ring
-    )
+    ring)
   (by
     intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
   (by
     intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
 
 /-- The cubic anomaly equation. -/
 @[simp]

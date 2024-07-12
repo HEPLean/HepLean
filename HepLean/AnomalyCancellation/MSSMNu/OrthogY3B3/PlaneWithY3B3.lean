@@ -155,23 +155,23 @@ def α₁ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
   (3 * cubeTriLin T.val T.val B₃.val * quadBiLin T.val T.val -
     2 * cubeTriLin T.val T.val T.val * quadBiLin B₃.val T.val)
 
-  /-- A helper function to simplify following expressions. -/
-  def α₂ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-    (2 * cubeTriLin T.val T.val T.val * quadBiLin Y₃.val T.val -
-    3 * cubeTriLin T.val T.val Y₃.val * quadBiLin T.val T.val)
+/-- A helper function to simplify following expressions. -/
+def α₂ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
+  (2 * cubeTriLin T.val T.val T.val * quadBiLin Y₃.val T.val -
+  3 * cubeTriLin T.val T.val Y₃.val * quadBiLin T.val T.val)
 
-  /-- A helper function to simplify following expressions. -/
-  def α₃ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
-    6 * ((cubeTriLin T.val T.val Y₃.val) * quadBiLin B₃.val T.val -
-        (cubeTriLin T.val T.val B₃.val) * quadBiLin Y₃.val T.val)
+/-- A helper function to simplify following expressions. -/
+def α₃ (T : MSSMACC.AnomalyFreePerp) : ℚ :=
+  6 * ((cubeTriLin T.val T.val Y₃.val) * quadBiLin B₃.val T.val -
+      (cubeTriLin T.val T.val B₃.val) * quadBiLin Y₃.val T.val)
 
-  lemma lineQuad_cube (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ) :
-      accCube (lineQuad R c₁ c₂ c₃).val =
-      - 4 * ( c₁ * quadBiLin B₃.val R.val - c₂ * quadBiLin Y₃.val R.val) ^ 2 *
-      ( α₁ R * c₁ + α₂ R * c₂ + α₃ R * c₃ ) := by
-    rw [lineQuad_val]
-    rw [planeY₃B₃_cubic, α₁, α₂, α₃]
-    ring
+lemma lineQuad_cube (R : MSSMACC.AnomalyFreePerp) (c₁ c₂ c₃ : ℚ) :
+    accCube (lineQuad R c₁ c₂ c₃).val =
+    - 4 * (c₁ * quadBiLin B₃.val R.val - c₂ * quadBiLin Y₃.val R.val) ^ 2 *
+    (α₁ R * c₁ + α₂ R * c₂ + α₃ R * c₃) := by
+  rw [lineQuad_val]
+  rw [planeY₃B₃_cubic, α₁, α₂, α₃]
+  ring
 
 /-- The line in the plane spanned by `Y₃`, `B₃` and `R` which is in the cubic. -/
 def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :

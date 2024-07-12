@@ -70,7 +70,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
       simp only
       rw [swap, map_add]
       exact Mathlib.Tactic.LinearCombination.add_pf (swap T1 S) (swap T2 S)
-    map_smul' :=by
+    map_smul' := by
       intro a T
       simp only [eq_ratCast, Rat.cast_eq_id, id_eq, smul_eq_mul]
       rw [swap, map_smul]
@@ -173,7 +173,7 @@ namespace TriLinearSymm
 open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
-instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ ) where
+instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ) where
   coe f := f.toFun
   coe_injective' f g h := by
     cases f

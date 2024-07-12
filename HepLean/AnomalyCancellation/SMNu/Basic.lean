@@ -31,7 +31,7 @@ namespace SMνCharges
 variable {n : ℕ}
 
 /-- An equivalence between `(SMνCharges n).charges` and `(Fin 6 → Fin n → ℚ)`
-splitting the charges into species.-/
+splitting the charges into species. -/
 @[simps!]
 def toSpeciesEquiv : (SMνCharges n).Charges ≃ (Fin 6 → Fin n → ℚ) :=
   ((Equiv.curry _ _ _).symm.trans ((@finProdFinEquiv 6 n).arrowCongr (Equiv.refl ℚ))).symm
@@ -54,9 +54,9 @@ lemma charges_eq_toSpecies_eq (S T : (SMνCharges n).Charges) :
   funext i
   exact h i
 
-lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : (Fin 6 → Fin n → ℚ) ) :
+lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : Fin 6 → Fin n → ℚ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
-  change (toSpeciesEquiv ∘ toSpeciesEquiv.symm ) _ i = f i
+  change (toSpeciesEquiv ∘ toSpeciesEquiv.symm) _ i = f i
   simp
 
 lemma toSpecies_one (S : (SMνCharges 1).Charges) (j : Fin 6) :

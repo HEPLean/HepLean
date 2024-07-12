@@ -51,7 +51,7 @@ open PureU1Charges in
 @[simp]
 def permCharges {n : ℕ} : Representation ℚ (PermGroup n) (PureU1 n).Charges where
   toFun f := chargeMap f⁻¹
-  map_mul' f g :=by
+  map_mul' f g := by
     simp only [PermGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S
@@ -214,7 +214,7 @@ lemma permTwo_fst : (permTwo hij hij').toFun i' = i := by
 lemma permTwo_snd : (permTwo hij hij').toFun j' = j := by
   rw [permTwo, permOfInjection]
   have ht := Equiv.extendSubtype_apply_of_mem
-    ((permTwoInj hij' ).toEquivRange.symm.trans
+    ((permTwoInj hij').toEquivRange.symm.trans
     (permTwoInj hij).toEquivRange) j' (permTwoInj_snd hij')
   simp at ht
   simp [ht, permTwoInj_snd_apply]
@@ -303,16 +303,15 @@ lemma Prop_two (P : ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
     {a b : Fin n} (hab : a ≠ b)
     (h : ∀ (f : (FamilyPermutations n).group),
     P ((((FamilyPermutations n).linSolRep f S).val a),
-      (((FamilyPermutations n).linSolRep f S).val b)
-    )) : ∀ (i j : Fin n) (_ : i ≠ j),
+      (((FamilyPermutations n).linSolRep f S).val b))) : ∀ (i j : Fin n) (_ : i ≠ j),
     P (S.val i, S.val j) := by
   intro i j hij
-  have h1 := h (permTwo hij hab ).symm
+  have h1 := h (permTwo hij hab).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply] at h1
   simp at h1
   change P
-   (S.val ((permTwo hij hab ).toFun a),
-   S.val ((permTwo hij hab ).toFun b)) at h1
+   (S.val ((permTwo hij hab).toFun a),
+   S.val ((permTwo hij hab).toFun b)) at h1
   erw [permTwo_fst,permTwo_snd] at h1
   exact h1
 
@@ -321,9 +320,8 @@ lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
     (h : ∀ (f : (FamilyPermutations n).group),
     P ((((FamilyPermutations n).linSolRep f S).val a),(
       (((FamilyPermutations n).linSolRep f S).val b),
-      (((FamilyPermutations n).linSolRep f S).val c)
-    ))) : ∀ (i j k : Fin n) (_ : i ≠ j) (_ : j ≠ k) (_ : i ≠ k),
-    P (S.val i, (S.val j, S.val k)) := by
+      (((FamilyPermutations n).linSolRep f S).val c)))) : ∀ (i j k : Fin n)
+      (_ : i ≠ j) (_ : j ≠ k) (_ : i ≠ k), P (S.val i, (S.val j, S.val k)) := by
   intro i j k hij hjk hik
   have h1 := h (permThree hij hjk hik hab hbc hac).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply,

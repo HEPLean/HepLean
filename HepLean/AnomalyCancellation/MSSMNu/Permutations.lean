@@ -60,7 +60,7 @@ lemma chargeMap_toSpecies (f : PermGroup) (S : MSSMCharges.Charges) (j : Fin 6) 
 @[simp]
 def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
   toFun f := chargeMap f⁻¹
-  map_mul' f g :=by
+  map_mul' f g := by
     simp only [PermGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S

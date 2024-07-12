@@ -109,7 +109,7 @@ instance (i : Fin 2) : Module ℝ (EdgeVertexMomentaMap F i) :=
   | 0 => instModuleRealEdgeMomenta F
   | 1 => instModuleRealVertexMomenta F
 
-/-- The direct sum of `EdgeMomenta` and `VertexMomenta`.-/
+/-- The direct sum of `EdgeMomenta` and `VertexMomenta`. -/
 def EdgeVertexMomenta : Type := DirectSum (Fin 2) (EdgeVertexMomentaMap F)
 
 instance : AddCommGroup F.EdgeVertexMomenta := DirectSum.instAddCommGroup _

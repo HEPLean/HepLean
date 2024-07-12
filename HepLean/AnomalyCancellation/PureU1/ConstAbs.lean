@@ -191,7 +191,7 @@ lemma AFL_odd_noBoundary {A : (PureU1 (2 * n + 1)).LinSols} (h : ConstAbsSorted 
 lemma AFL_odd_zero {A : (PureU1 (2 * n + 1)).LinSols} (h : ConstAbsSorted A.val) :
     A.val (0 : Fin (2 * n + 1)) = 0 := by
   by_contra hn
-  exact (AFL_odd_noBoundary h hn ) (AFL_hasBoundary h hn)
+  exact (AFL_odd_noBoundary h hn) (AFL_hasBoundary h hn)
 
 theorem AFL_odd (A : (PureU1 (2 * n + 1)).LinSols) (h : ConstAbsSorted A.val) :
     A = 0 := by

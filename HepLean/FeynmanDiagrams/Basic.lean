@@ -289,7 +289,7 @@ instance diagramVertexPropDecidable
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
     (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
-    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
+    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramVertexProp_iff F f).symm
 
 instance diagramEdgePropDecidable
@@ -299,7 +299,7 @@ instance diagramEdgePropDecidable
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
     (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
-    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
+    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramEdgeProp_iff F f).symm
 
 end PreFeynmanRule
@@ -717,7 +717,7 @@ instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _ (
   fun _ => @And.decidable _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
     @And.decidable _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
-    (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _ ) _
+    (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _) _
 
 /-- From a Feynman diagram the simple graph showing those vertices which are connected. -/
 def toSimpleGraph : SimpleGraph F.𝓥 where

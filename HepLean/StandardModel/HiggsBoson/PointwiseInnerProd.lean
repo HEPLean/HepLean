@@ -95,7 +95,7 @@ lemma smooth_innerProd (φ1 φ2 : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘
 /-- Given a `HiggsField`, the map `SpaceTime → ℝ` obtained by taking the square norm of the
   pointwise Higgs vector. -/
 @[simp]
-def normSq (φ : HiggsField) : SpaceTime → ℝ := fun x => ( ‖φ x‖ ^ 2)
+def normSq (φ : HiggsField) : SpaceTime → ℝ := fun x => ‖φ x‖ ^ 2
 
 /-- Notation for the norm squared of a Higgs field. -/
 scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H ^ 2" => normSq φ1

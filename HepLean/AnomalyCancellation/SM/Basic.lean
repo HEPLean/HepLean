@@ -54,9 +54,9 @@ lemma charges_eq_toSpecies_eq (S T : (SMCharges n).Charges) :
   apply toSpeciesEquiv.injective
   exact (Set.eqOn_univ (toSpeciesEquiv S) (toSpeciesEquiv T)).mp fun ⦃x⦄ _ => h x
 
-lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f : (Fin 5 → Fin n → ℚ) ) :
+lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f : Fin 5 → Fin n → ℚ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
-  change (toSpeciesEquiv ∘ toSpeciesEquiv.symm ) _ i= f i
+  change (toSpeciesEquiv ∘ toSpeciesEquiv.symm) _ i= f i
   simp
 
 /-- The `Q` charges as a map `Fin n → ℚ`. -/
@@ -272,8 +272,7 @@ def cubeTriLin : TriLinearSymm (SMCharges n).Charges := TriLinearSymm.mk₃
     intro i
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
-    ring
-  )
+    ring)
   (by
     intro S T R L
     simp only
@@ -282,22 +281,19 @@ def cubeTriLin : TriLinearSymm (SMCharges n).Charges := TriLinearSymm.mk₃
     intro i
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
-    ring
-  )
+    ring)
   (by
     intro S T L
     simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
   (by
     intro S T L
     simp only [SMSpecies_numberCharges, toSpecies_apply, Fin.isValue]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
 
 /-- The cubic acc. -/
 @[simp]

@@ -236,7 +236,7 @@ lemma td (V : CKMMatrix) (a b c d e f : ℝ) :
   simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const,
     cons_val_two, tail_val', head_val', cons_val_one, head_cons, tail_cons, head_fin_const,
     zero_mul, add_zero, mul_zero]
-  change (0 * _ + _ ) * _ + (0 * _ + _ ) * 0 = _
+  change (0 * _ + _) * _ + (0 * _ + _) * 0 = _
   simp only [Fin.isValue, zero_mul, zero_add, mul_zero, add_zero]
   rw [exp_add]
   ring_nf

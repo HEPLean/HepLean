@@ -76,7 +76,7 @@ def toSMSpecies (i : Fin 6) : MSSMCharges.Charges →ₗ[ℚ] MSSMSpecies.Charge
 
 lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ)) :
     (toSMSpecies i) (toSpecies.symm f) = f.1 i := by
-  change (Prod.fst ∘ toSpecies ∘ toSpecies.symm ) _ i= f.1 i
+  change (Prod.fst ∘ toSpecies ∘ toSpecies.symm) _ i= f.1 i
   simp
 
 /-- The `Q` charges as a map `Fin 3 → ℚ`. -/

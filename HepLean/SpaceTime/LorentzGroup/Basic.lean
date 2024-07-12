@@ -239,7 +239,7 @@ open LorentzVector
 
 -/
 
-/-- The first column of a lorentz matrix as a `NormOneLorentzVector`. -/
+/-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
 @[simps!]
 def toNormOneLorentzVector (Λ : LorentzGroup d) : NormOneLorentzVector d :=
   ⟨Λ.1 *ᵥ timeVec, by rw [NormOneLorentzVector.mem_iff, Λ.2, minkowskiMetric.on_timeVec]⟩

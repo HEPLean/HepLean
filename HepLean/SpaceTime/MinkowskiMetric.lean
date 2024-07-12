@@ -190,7 +190,7 @@ lemma self_spaceReflection_eq_zero_iff : ⟪v, v.spaceReflection⟫ₘ = 0 ↔ v
 /-- The metric tensor is non-degenerate. -/
 lemma nondegenerate : (∀ w, ⟪w, v⟫ₘ = 0) ↔ v = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · exact (self_spaceReflection_eq_zero_iff _ ).mp ((symm _ _).trans $ h v.spaceReflection)
+  · exact (self_spaceReflection_eq_zero_iff _).mp ((symm _ _).trans $ h v.spaceReflection)
   · simp [h]
 
 /-!

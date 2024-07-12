@@ -100,7 +100,7 @@ def speciesFamilyUniversial (n : ℕ) :
 
 /-- The embedding of the `1`-family charges into the `n`-family charges in
 a universal manor. -/
-def familyUniversal ( n : ℕ) : (SMCharges 1).Charges →ₗ[ℚ] (SMCharges n).Charges :=
+def familyUniversal (n : ℕ) : (SMCharges 1).Charges →ₗ[ℚ] (SMCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesFamilyUniversial n)
 
 end SM

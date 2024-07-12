@@ -117,7 +117,7 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
     exact Rat.mul_zero (f k)
     simp
 
-/-- The basis of `LinSols`.-/
+/-- The basis of `LinSols`. -/
 noncomputable
 def asBasis : Basis (Fin n) ℚ ((PureU1 n.succ).LinSols) where
   repr := coordinateMap

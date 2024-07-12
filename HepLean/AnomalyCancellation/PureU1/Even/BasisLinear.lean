@@ -689,7 +689,7 @@ lemma P!_in_span (f : Fin n → ℚ) : P! f ∈ Submodule.span ℚ (Set.range ba
      use f
      rfl
 
-lemma smul_basis!AsCharges_in_span (S : (PureU1 (2 * n.succ )).LinSols) (j : Fin n) :
+lemma smul_basis!AsCharges_in_span (S : (PureU1 (2 * n.succ)).LinSols) (j : Fin n) :
     (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∈
     Submodule.span ℚ (Set.range basis!AsCharges) := by
   apply Submodule.smul_mem

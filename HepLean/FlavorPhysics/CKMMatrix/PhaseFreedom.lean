@@ -227,9 +227,9 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
   obtain ⟨τ, hτ⟩ := V.uRow_cross_cRow_eq_tRow
   let U : CKMMatrix := phaseShiftApply V
     0
-    (- τ + arg [V]ud + arg [V]us + arg [V]tb )
-    (- τ + arg [V]cb + arg [V]ud + arg [V]us )
-    (- arg [V]ud )
+    (- τ + arg [V]ud + arg [V]us + arg [V]tb)
+    (- τ + arg [V]cb + arg [V]ud + arg [V]us)
+    (- arg [V]ud)
     (- arg [V]us)
     (τ - arg [V]ud - arg [V]us - arg [V]cb - arg [V]tb)
   have hUV : Quotient.mk CKMMatrixSetoid U = ⟦V⟧ := by
@@ -262,7 +262,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
     (hV : FstRowThdColRealCond V) :
     ∃ (U : CKMMatrix), V ≈ U ∧ ubOnePhaseCond U:= by
   let U : CKMMatrix := phaseShiftApply V 0 0 (- Real.pi + arg [V]cd + arg [V]cs + arg [V]ub)
-    (Real.pi - arg [V]cd ) (- arg [V]cs) (- arg [V]ub )
+    (Real.pi - arg [V]cd) (- arg [V]cs) (- arg [V]ub)
   use U
   have hUV : Quotient.mk CKMMatrixSetoid U= ⟦V⟧ := by
     simp only [Quotient.eq]
@@ -318,7 +318,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
 lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     (hV : FstRowThdColRealCond V) :
     [V]cd = (- VtbAbs ⟦V⟧ * VusAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2)) +
-    (- VubAbs ⟦V⟧ * VudAbs ⟦V⟧ * VcbAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2 ))
+    (- VubAbs ⟦V⟧ * VudAbs ⟦V⟧ * VcbAbs ⟦V⟧ / (VudAbs ⟦V⟧ ^2 + VusAbs ⟦V⟧ ^2))
     * cexp (- arg [V]ub * I) := by
   have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
     simp only [ofReal_zero, zero_mul, exp_zero, one_smul]

@@ -58,12 +58,12 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S
     ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f),
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
-  linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1 ) -
-     (lineInCubic_expand h g f hS 1 2 ) / 6
+  linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
+     (lineInCubic_expand h g f hS 1 2) / 6
 
 /-- We say a `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
-  ∀ (M : (FamilyPermutations (2 * n + 1)).group ),
+  ∀ (M : (FamilyPermutations (2 * n + 1)).group),
     LineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
 
 /-- If `lineInCubicPerm S` then `lineInCubic S`. -/

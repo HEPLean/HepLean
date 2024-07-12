@@ -43,7 +43,7 @@ lemma cube_for_linSol (S : (PureU1 3).LinSols) :
 lemma three_sol_zero (S : (PureU1 3).Sols) : S.val (0 : Fin 3) = 0 ∨ S.val (1 : Fin 3) = 0
     ∨ S.val (2 : Fin 3) = 0 := (cube_for_linSol S.1.1).mpr S.cubicSol
 
-/-- Given a `LinSol` with a charge equal to zero a `Sol`.-/
+/-- Given a `LinSol` with a charge equal to zero a `Sol`. -/
 def solOfLinear (S : (PureU1 3).LinSols)
     (hS : S.val (0 : Fin 3) = 0 ∨ S.val (1 : Fin 3) = 0 ∨ S.val (2 : Fin 3) = 0) :
     (PureU1 3).Sols :=

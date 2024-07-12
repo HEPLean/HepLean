@@ -56,7 +56,7 @@ def proj (T : MSSMACC.LinSols) : MSSMACC.AnomalyFreePerp :=
 
 lemma proj_val (T : MSSMACC.LinSols) :
     (proj T).val = (dot B₃.val T.val - dot Y₃.val T.val) • Y₃.val +
-    ( (dot Y₃.val T.val - 2 * dot B₃.val T.val)) • B₃.val +
+    (dot Y₃.val T.val - 2 * dot B₃.val T.val) • B₃.val +
     dot Y₃.val B₃.val • T.val := by
   rfl
 
@@ -110,7 +110,7 @@ lemma quad_self_proj (T : MSSMACC.Sols) :
 lemma quad_proj (T : MSSMACC.Sols) :
     quadBiLin (proj T.1.1).val (proj T.1.1).val = 2 * dot Y₃.val B₃.val *
      ((dot B₃.val T.val - dot Y₃.val T.val) * quadBiLin Y₃.val T.val +
-   (dot Y₃.val T.val - 2 * dot B₃.val T.val) * quadBiLin B₃.val T.val ) := by
+   (dot Y₃.val T.val - 2 * dot B₃.val T.val) * quadBiLin B₃.val T.val) := by
   nth_rewrite 1 [proj_val]
   repeat rw [quadBiLin.map_add₁]
   repeat rw [quadBiLin.map_smul₁]
@@ -159,7 +159,7 @@ lemma cube_proj_proj_self (T : MSSMACC.Sols) :
     cubeTriLin (proj T.1.1).val (proj T.1.1).val T.val =
     2 * dot Y₃.val B₃.val *
     ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val +
-    ( dot Y₃.val T.val- 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
+    (dot Y₃.val T.val - 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
   erw [lineY₃B₃_doublePoint]
