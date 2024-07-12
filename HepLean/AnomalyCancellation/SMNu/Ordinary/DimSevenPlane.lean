@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.Ordinary.Basic
@@ -24,12 +24,11 @@ open BigOperators
 namespace PlaneSeven
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₀ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₀ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 0, 0 => 1
   | 0, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₀_cubic (S T : (SM 3).Charges) : cubeTriLin B₀ S T =
     6 * (S (0 : Fin 18) * T (0 : Fin 18) - S (1 : Fin 18) * T (1 : Fin 18)) := by
@@ -37,12 +36,11 @@ lemma B₀_cubic (S T : (SM 3).Charges) : cubeTriLin B₀ S T =
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₁ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₁ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 1, 0 => 1
   | 1, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₁_cubic (S T : (SM 3).Charges) : cubeTriLin B₁ S T =
     3 * (S (3 : Fin 18) * T (3 : Fin 18) - S (4 : Fin 18) * T (4 : Fin 18)) := by
@@ -50,12 +48,11 @@ lemma B₁_cubic (S T : (SM 3).Charges) : cubeTriLin B₁ S T =
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₂ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₂ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 2, 0 => 1
   | 2, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₂_cubic (S T : (SM 3).Charges) : cubeTriLin B₂ S T =
     3 * (S (6 : Fin 18) * T (6 : Fin 18) - S (7 : Fin 18) * T (7 : Fin 18)) := by
@@ -63,12 +60,11 @@ lemma B₂_cubic (S T : (SM 3).Charges) : cubeTriLin B₂ S T =
   ring
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₃ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₃ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 3, 0 => 1
   | 3, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₃_cubic (S T : (SM 3).Charges) : cubeTriLin B₃ S T =
     2 * (S (9 : Fin 18) * T (9 : Fin 18) - S (10 : Fin 18) * T (10 : Fin 18)) := by
@@ -77,12 +73,11 @@ lemma B₃_cubic (S T : (SM 3).Charges) : cubeTriLin B₃ S T =
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₄ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₄ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 4, 0 => 1
   | 4, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₄_cubic (S T : (SM 3).Charges) : cubeTriLin B₄ S T =
     (S (12 : Fin 18) * T (12 : Fin 18) - S (13 : Fin 18) * T (13 : Fin 18)) := by
@@ -91,12 +86,11 @@ lemma B₄_cubic (S T : (SM 3).Charges) : cubeTriLin B₄ S T =
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₅ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₅ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 5, 0 => 1
   | 5, 1 => - 1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₅_cubic (S T : (SM 3).Charges) : cubeTriLin B₅ S T =
     (S (15 : Fin 18) * T (15 : Fin 18) - S (16 : Fin 18) * T (16 : Fin 18)) := by
@@ -105,12 +99,11 @@ lemma B₅_cubic (S T : (SM 3).Charges) : cubeTriLin B₅ S T =
   rfl
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₆ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
+def B₆ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
   match s, i with
   | 1, 2 => 1
   | 2, 2 => -1
-  | _, _ => 0
-  )
+  | _, _ => 0)
 
 lemma B₆_cubic (S T : (SM 3).Charges) : cubeTriLin B₆ S T =
     3 * (S (5 : Fin 18) * T (5 : Fin 18) - S (8 : Fin 18) * T (8 : Fin 18)) := by

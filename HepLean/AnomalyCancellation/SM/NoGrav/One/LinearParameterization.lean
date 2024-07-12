@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SM.Basic
@@ -183,7 +183,8 @@ lemma grav (S : linearParameters) :
 
 end linearParameters
 
-/-- The parameters for solutions to the linear ACCs with the condition that Q and E are non-zero.-/
+/-- The parameters for solutions to the linear ACCs with the condition that Q and E are
+  non-zero. -/
 structure linearParametersQENeqZero where
   /-- The parameter `x`. -/
   x : ℚ
@@ -291,7 +292,7 @@ lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection 
   exact h2 h
 
 lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
-    (hv : S.v = 0 ) : S.w = -1 := by
+    (hv : S.v = 0) : S.w = -1 := by
   rw [S.cubic, hv] at h
   simp at h
   have h' : (S.w + 1) * (1 * S.w * S.w + (-1) * S.w + 1) = 0 := by
@@ -309,7 +310,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
   exact eq_neg_of_add_eq_zero_left h'
 
 lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
-    (hw : S.w = 0 ) : S.v = -1 := by
+    (hw : S.w = 0) : S.v = -1 := by
   rw [S.cubic, hw] at h
   simp at h
   have h' : (S.v + 1) * (1 * S.v * S.v + (-1) * S.v + 1) = 0 := by

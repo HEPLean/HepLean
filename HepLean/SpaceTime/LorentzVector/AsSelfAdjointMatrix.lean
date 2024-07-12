@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMetric
@@ -75,12 +75,12 @@ noncomputable def toSelfAdjointMatrix :
     ext i j
     fin_cases i <;> fin_cases j <;>
       field_simp [fromSelfAdjointMatrix', toMatrix, conj_ofReal]
-    exact conj_eq_iff_re.mp (congrArg (fun M => M 0 0) $ selfAdjoint.mem_iff.mp x.2 )
+    exact conj_eq_iff_re.mp (congrArg (fun M => M 0 0) $ selfAdjoint.mem_iff.mp x.2)
     have h01 := congrArg (fun M => M 0 1) $ selfAdjoint.mem_iff.mp x.2
     simp only [Fin.isValue, star_apply, RCLike.star_def] at h01
     rw [← h01, RCLike.conj_eq_re_sub_im]
     rfl
-    exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2 )
+    exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2)
   map_add' x y := by
     ext i j : 2
     simp only [toSelfAdjointMatrix'_coe, add_apply, ofReal_add, of_apply, cons_val', empty_val',

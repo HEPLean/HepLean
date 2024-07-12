@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMetric
@@ -239,7 +239,7 @@ open LorentzVector
 
 -/
 
-/-- The first column of a lorentz matrix as a `NormOneLorentzVector`. -/
+/-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
 @[simps!]
 def toNormOneLorentzVector (Λ : LorentzGroup d) : NormOneLorentzVector d :=
   ⟨Λ.1 *ᵥ timeVec, by rw [NormOneLorentzVector.mem_iff, Λ.2, minkowskiMetric.on_timeVec]⟩

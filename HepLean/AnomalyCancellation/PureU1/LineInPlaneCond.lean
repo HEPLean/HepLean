@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Basic
@@ -52,7 +52,7 @@ lemma lineInPlaneCond_perm {S : (PureU1 (n)).LinSols} (hS : LineInPlaneCond S)
     not_false_eq_true]
 
 lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : LineInPlaneCond S)
-    (h : ¬ (S.val ((Fin.last n).castSucc))^2 = (S.val ((Fin.last n).succ))^2 ) :
+    (h : ¬ (S.val ((Fin.last n).castSucc))^2 = (S.val ((Fin.last n).succ))^2) :
     (2 - n) * S.val (Fin.last (n + 1)) =
     - (2 - n)* S.val (Fin.castSucc (Fin.last n)) := by
   erw [sq_eq_sq_iff_eq_or_eq_neg] at h

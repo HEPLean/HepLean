@@ -26,7 +26,7 @@ name = "HepLean"
 #[[require]]
 #name = "LeanCopilot"
 #git = "https://github.com/lean-dojo/LeanCopilot.git"
-#rev = "v1.2.2"
+#rev = "v1.4.1"
 
 # lean_exe commands defined specifically for HepLean.
 
@@ -44,4 +44,8 @@ srcDir = "scripts"
 
 [[lean_exe]]
 name = "find_TODOs"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "mathlib_textLint_on_hepLean"
 srcDir = "scripts"

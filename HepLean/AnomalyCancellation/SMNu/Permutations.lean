@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.Basic
@@ -36,7 +36,7 @@ instance : Group (PermGroup n) := Pi.group
 /-- The image of an element of `permGroup n` under the representation on charges. -/
 @[simps!]
 def chargeMap (f : PermGroup n) : (SMνCharges n).Charges →ₗ[ℚ] (SMνCharges n).Charges where
-  toFun S := toSpeciesEquiv.symm (fun i => toSpecies i S ∘ f i )
+  toFun S := toSpeciesEquiv.symm (fun i => toSpecies i S ∘ f i)
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 

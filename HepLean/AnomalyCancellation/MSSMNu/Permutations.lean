@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.MSSMNu.Basic
@@ -60,7 +60,7 @@ lemma chargeMap_toSpecies (f : PermGroup) (S : MSSMCharges.Charges) (j : Fin 6) 
 @[simp]
 def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
   toFun f := chargeMap f⁻¹
-  map_mul' f g :=by
+  map_mul' f g := by
     simp only [PermGroup, mul_inv_rev]
     apply LinearMap.ext
     intro S

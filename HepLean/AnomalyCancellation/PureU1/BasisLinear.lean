@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Basic
@@ -117,7 +117,7 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
     exact Rat.mul_zero (f k)
     simp
 
-/-- The basis of `LinSols`.-/
+/-- The basis of `LinSols`. -/
 noncomputable
 def asBasis : Basis (Fin n) ℚ ((PureU1 n.succ).LinSols) where
   repr := coordinateMap

@@ -46,6 +46,19 @@ def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
+/-- Substring linter. -/
+def substringLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
+  let enumLines := (lines.toList.enumFrom 1)
+  let errors := enumLines.filterMap (fun (lno, l) ↦
+    if String.containsSubstr l s then
+      let k := (Substring.findAllSubstr l s).toList.getLast?
+      let col := match k with
+        | none => 1
+        | some k => String.offsetOfPos l k.stopPos
+      some (s!" Found instance of substring {s}.", lno, col)
+    else none)
+  errors.toArray
+
 structure HepLeanErrorContext where
   /-- The underlying `message`. -/
   error : String
@@ -64,7 +77,8 @@ def hepLeanLintFile (path : FilePath) : IO Bool := do
   let lines ← IO.FS.lines path
   let allOutput := (Array.map (fun lint ↦
     (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
-    #[doubleEmptyLineLinter, doubleSpaceLinter]
+    #[doubleEmptyLineLinter, doubleSpaceLinter, substringLinter ".-/", substringLinter " )",
+    substringLinter "( ", substringLinter "=by", substringLinter "  def "]
   let errors := allOutput.flatten
   printErrors errors
   return errors.size > 0
@@ -72,7 +86,7 @@ def hepLeanLintFile (path : FilePath) : IO Bool := do
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let mods : Name :=  `HepLean
-  let imp :  Import := {module := mods}
+  let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do
         throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
@@ -85,4 +99,6 @@ def main (_ : List String) : IO UInt32 := do
       warned := true
   if warned then
     throw <| IO.userError s!"Errors found."
+  else
+    IO.println "No linting issues found."
   return 0
