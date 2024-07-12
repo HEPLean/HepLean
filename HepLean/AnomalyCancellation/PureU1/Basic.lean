@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.Basic
@@ -51,22 +51,19 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro i
-    ring
-    )
+    ring)
   (by
     intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
   (by
     intro S L T
     simp only [PureU1Charges_numberCharges]
     apply Fintype.sum_congr
     intro i
-    ring
-  )
+    ring)
 
 /-- The cubic anomaly equation. -/
 @[simp]

@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.FlavorPhysics.CKMMatrix.Basic
@@ -84,7 +84,7 @@ lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   simp_all
   have h1 := Complex.abs.nonneg [V]ub
   rw [h2] at h1
-  have h2 : ¬ 0 ≤ ( -1 : ℝ) := by simp
+  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
   exact h2 h1
 
 lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
@@ -100,7 +100,7 @@ lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 
   exact hb h2
   have h3 := Complex.abs.nonneg [V]ub
   rw [h2] at h3
-  have h2 : ¬ 0 ≤ ( -1 : ℝ) := by simp
+  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
   exact h2 h3
 
 lemma VAbsub_neq_zero_Vud_Vus_neq_zero {V : Quotient CKMMatrixSetoid}
@@ -154,11 +154,11 @@ lemma fst_row_orthog_thd_row (V : CKMMatrix) :
 
 lemma Vcd_mul_conj_Vud (V : CKMMatrix) :
     [V]cd * conj [V]ud = -[V]cs * conj [V]us - [V]cb * conj [V]ub := by
-  linear_combination (V.fst_row_orthog_snd_row )
+  linear_combination (V.fst_row_orthog_snd_row)
 
 lemma Vcs_mul_conj_Vus (V : CKMMatrix) :
     [V]cs * conj [V]us = - [V]cd * conj [V]ud - [V]cb * conj [V]ub := by
-  linear_combination (V.fst_row_orthog_snd_row )
+  linear_combination V.fst_row_orthog_snd_row
 
 end orthogonal
 
@@ -344,7 +344,7 @@ lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   simp_all
   have h1 := Complex.abs.nonneg [V]ub
   rw [h2] at h1
-  have h2 : ¬ 0 ≤ ( -1 : ℝ) := by simp
+  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
   exact h2 h1
 
 lemma VAbs_fst_col_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}

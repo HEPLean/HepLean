@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Basic
@@ -69,7 +69,7 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n.succ)).LinSols} (h : LineInCubic 
 
 /-- We say a `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n.succ)).LinSols) : Prop :=
-  ∀ (M : (FamilyPermutations (2 * n.succ)).group ),
+  ∀ (M : (FamilyPermutations (2 * n.succ)).group),
   LineInCubic ((FamilyPermutations (2 * n.succ)).linSolRep M S)
 
 /-- If `lineInCubicPerm S` then `lineInCubic S`. -/
@@ -104,7 +104,7 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ)).LinSols}
   rw [accCubeTriLinSymm.map_add₃, h1, accCubeTriLinSymm.map_smul₃] at h2
   simpa using h2
 
-lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ )).LinSols}
+lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ)).LinSols}
     (f : Fin n.succ.succ → ℚ) (g : Fin n.succ → ℚ) (hS : S.val = Pa f g) :
     accCubeTriLinSymm (P f) (P f) (basis!AsCharges (Fin.last n)) =
     - (S.val (δ!₂ (Fin.last n)) + S.val (δ!₁ (Fin.last n))) * (2 * S.val δ!₄ +
@@ -114,12 +114,12 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ )).LinSols}
   have h2 := Pa_δ!₁ f g (Fin.last n)
   have h3 := Pa_δ!₂ f g (Fin.last n)
   simp at h1 h2 h3
-  have hl : f (Fin.succ (Fin.last (n ))) = - Pa f g δ!₄ := by
+  have hl : f (Fin.succ (Fin.last n)) = - Pa f g δ!₄ := by
     simp_all only [Fin.succ_last, neg_neg]
   erw [hl] at h2
   have hg : g (Fin.last n) = Pa f g (δ!₁ (Fin.last n)) + Pa f g δ!₄ := by
     linear_combination -(1 * h2)
-  have hll : f (Fin.castSucc (Fin.last (n ))) =
+  have hll : f (Fin.castSucc (Fin.last n)) =
       - (Pa f g (δ!₂ (Fin.last n)) + Pa f g (δ!₁ (Fin.last n)) + Pa f g δ!₄) := by
     linear_combination h3 - 1 * hg
   rw [← hS] at hl hll

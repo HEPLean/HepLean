@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.MSSMNu.Basic
@@ -147,7 +147,7 @@ def InCubeSolProp (R : MSSMACC.Sols) : Prop :=
 that solution satisfies `inCubeSolProp`. It appears in the definition of `inLineEqProj`. -/
 def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
     3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin T.val T.val Y₃.val ^ 2 +
-    cubeTriLin T.val T.val B₃.val ^ 2 )
+    cubeTriLin T.val T.val B₃.val ^ 2)
 
 lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
     InCubeSolProp T ↔ cubicCoeff T = 0 := by

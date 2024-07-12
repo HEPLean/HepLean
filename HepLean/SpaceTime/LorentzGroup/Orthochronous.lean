@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.NormOne
@@ -150,7 +150,7 @@ lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : �
   rw [IsOrthochronous_iff_futurePointing] at h h'
   exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_mem h h'
 
-/-- The homomorphism from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
+/-- The homomorphism from `LorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroRep : LorentzGroup d →* ℤ₂ where
   toFun := orthchroMap
   map_one' := orthchroMap_IsOrthochronous (by simp [IsOrthochronous])

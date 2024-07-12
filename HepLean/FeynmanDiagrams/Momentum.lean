@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.FeynmanDiagrams.Basic
@@ -109,7 +109,7 @@ instance (i : Fin 2) : Module ℝ (EdgeVertexMomentaMap F i) :=
   | 0 => instModuleRealEdgeMomenta F
   | 1 => instModuleRealVertexMomenta F
 
-/-- The direct sum of `EdgeMomenta` and `VertexMomenta`.-/
+/-- The direct sum of `EdgeMomenta` and `VertexMomenta`. -/
 def EdgeVertexMomenta : Type := DirectSum (Fin 2) (EdgeVertexMomentaMap F)
 
 instance : AddCommGroup F.EdgeVertexMomenta := DirectSum.instAddCommGroup _

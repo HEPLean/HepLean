@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Algebra.QuadraticDiscriminant
@@ -34,7 +34,7 @@ open SpaceTime
 
 /-- The Higgs potential of the form `- μ² * |φ|² + 𝓵 * |φ|⁴`. -/
 @[simp]
-def potential (μ2 𝓵 : ℝ ) (φ : HiggsField) (x : SpaceTime) : ℝ :=
+def potential (μ2 𝓵 : ℝ) (φ : HiggsField) (x : SpaceTime) : ℝ :=
   - μ2 * ‖φ‖_H ^ 2 x + 𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x
 
 /-!
@@ -94,7 +94,7 @@ lemma snd_term_nonneg (φ : HiggsField) (x : SpaceTime) :
     and_self]
 
 lemma as_quad (μ2 𝓵 : ℝ) (φ : HiggsField) (x : SpaceTime) :
-    𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2 ) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
+    𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
   simp only [normSq, neg_mul, potential, neg_add_rev, neg_neg]
   ring
 
@@ -237,7 +237,7 @@ lemma IsMinOn_iff_of_μSq_nonpos {μ2 : ℝ} (hμ2 : μ2 ≤ 0) :
     have h0 := isMinOn_univ_iff.mp h 0
     have h1 := bounded_below_of_μSq_nonpos h𝓵 hμ2 φ x
     simp only at h0
-    rw [(eq_bound_iff_of_μSq_nonpos h𝓵 hμ2 0 0 ).mpr (by rfl)] at h0
+    rw [(eq_bound_iff_of_μSq_nonpos h𝓵 hμ2 0 0).mpr (by rfl)] at h0
     exact (Real.partialOrder.le_antisymm _ _ h1 h0).symm
   · exact eq_bound_IsMinOn_of_μSq_nonpos h𝓵 hμ2 φ x
 
