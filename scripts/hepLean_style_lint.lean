@@ -19,7 +19,7 @@ Parts of this file are adapted from `Mathlib.Tactic.Linter.TextBased`,
 open Lean System Meta
 
 /-- Given a list of lines, outputs an error message and a line number. -/
-def HepLeanTextLinter : Type := Array String → Array (String × ℕ)
+def HepLeanTextLinter : Type := Array String → Array (String × ℕ × ℕ)
 
 /-- Checks if there are two consecutive empty lines. -/
 def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
@@ -27,7 +27,7 @@ def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
   let pairLines := List.zip enumLines (List.tail! enumLines)
   let errors := pairLines.filterMap (fun ((lno1, l1), _, l2) ↦
     if l1.length == 0 && l2.length == 0  then
-      some (s!" Double empty line. ", lno1)
+      some (s!" Double empty line. ", lno1, 1)
     else none)
   errors.toArray
 
@@ -36,7 +36,11 @@ def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     if String.containsSubstr l.trimLeft "  " then
-      some (s!" Non-initial double space in line. ", lno)
+      let k := (Substring.findAllSubstr l "  ").toList.getLast?
+      let col := match k with
+        | none => 1
+        | some k => k.stopPos.byteIdx
+      some (s!" Non-initial double space in line.", lno, col)
     else none)
   errors.toArray
 
@@ -45,17 +49,19 @@ structure HepLeanErrorContext where
   error : String
   /-- The line number -/
   lineNumber : ℕ
+  /-- The column number -/
+  columnNumber : ℕ
   /-- The file path -/
   path : FilePath
 
 def printErrors (errors : Array HepLeanErrorContext) : IO Unit := do
   for e in errors do
-    IO.println (s!"error: {e.path}:{e.lineNumber}: {e.error}")
+    IO.println (s!"error: {e.path}:{e.lineNumber}:{e.columnNumber}: {e.error}")
 
 def hepLeanLintFile (path : FilePath) : IO Bool := do
   let lines ← IO.FS.lines path
   let allOutput := (Array.map (fun lint ↦
-    (Array.map (fun (e, n) ↦ HepLeanErrorContext.mk e n path)) (lint lines)))
+    (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
     #[doubleEmptyLineLinter, doubleSpaceLinter]
   let errors := allOutput.flatten
   printErrors errors
