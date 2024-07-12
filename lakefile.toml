@@ -45,3 +45,7 @@ srcDir = "scripts"
 [[lean_exe]]
 name = "find_TODOs"
 srcDir = "scripts"
+
+[[lean_exe]]
+name = "mathlib_textLint_on_hepLean"
+srcDir = "scripts"
