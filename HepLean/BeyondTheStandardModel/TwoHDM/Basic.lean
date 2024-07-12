@@ -25,10 +25,10 @@ noncomputable section
 /-- The potential of the two Higgs doublet model. -/
 def potential (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
     (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) (Φ1 Φ2 : HiggsField) (x : SpaceTime) : ℝ :=
-  m₁₁2 * ‖Φ1‖_H ^ 2 x  + m₂₂2 * ‖Φ2‖_H ^ 2 x - (m₁₂2 * ⟪Φ1, Φ2⟫_H x + conj m₁₂2 * ⟪Φ2, Φ1⟫_H x).re
-  + 1/2 * 𝓵₁ *  ‖Φ1‖_H ^ 2 x * ‖Φ1‖_H ^ 2 x + 1/2 * 𝓵₂ * ‖Φ2‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
+  m₁₁2 * ‖Φ1‖_H ^ 2 x + m₂₂2 * ‖Φ2‖_H ^ 2 x - (m₁₂2 * ⟪Φ1, Φ2⟫_H x + conj m₁₂2 * ⟪Φ2, Φ1⟫_H x).re
+  + 1/2 * 𝓵₁ * ‖Φ1‖_H ^ 2 x * ‖Φ1‖_H ^ 2 x + 1/2 * 𝓵₂ * ‖Φ2‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
   + 𝓵₃ * ‖Φ1‖_H ^ 2 x * ‖Φ2‖_H ^ 2 x
-  + 𝓵₄ * ‖⟪Φ1, Φ2⟫_H x‖ ^ 2 + (1/2 * 𝓵₅ * ⟪Φ1, Φ2⟫_H  x ^ 2 + 1/2 * conj 𝓵₅ * ⟪Φ2, Φ1⟫_H x ^ 2).re
+  + 𝓵₄ * ‖⟪Φ1, Φ2⟫_H x‖ ^ 2 + (1/2 * 𝓵₅ * ⟪Φ1, Φ2⟫_H x ^ 2 + 1/2 * conj 𝓵₅ * ⟪Φ2, Φ1⟫_H x ^ 2).re
   + (𝓵₆ * ‖Φ1‖_H ^ 2 x * ⟪Φ1, Φ2⟫_H x + conj 𝓵₆ * ‖Φ1‖_H ^ 2 x * ⟪Φ2, Φ1⟫_H x).re
   + (𝓵₇ * ‖Φ2‖_H ^ 2 x * ⟪Φ1, Φ2⟫_H x + conj 𝓵₇ * ‖Φ2‖_H ^ 2 x * ⟪Φ2, Φ1⟫_H x).re
 
@@ -61,7 +61,7 @@ lemma swap_fields :
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
 lemma right_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 0 =
-    StandardModel.HiggsField.potential (- m₁₁2) (𝓵₁/2) Φ1  := by
+    StandardModel.HiggsField.potential (- m₁₁2) (𝓵₁/2) Φ1 := by
   funext x
   simp only [potential, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
     OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, innerProd_right_zero,

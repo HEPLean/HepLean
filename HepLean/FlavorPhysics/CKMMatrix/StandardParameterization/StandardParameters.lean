@@ -12,7 +12,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 /-!
 # Standard parameters for the CKM Matrix
 
-Given a CKM matrix `V` we can extract  four real numbers `θ₁₂`, `θ₁₃`, `θ₂₃` and `δ₁₃`.
+Given a CKM matrix `V` we can extract four real numbers `θ₁₂`, `θ₁₃`, `θ₂₃` and `δ₁₃`.
 These, when used in the standard parameterization return `V` up to equivalence.
 
 This leads to the theorem `standParam.exists_for_CKMatrix` which says that up to equivalence every
@@ -26,15 +26,15 @@ open CKMMatrix
 noncomputable section
 
 /-- Given a CKM matrix `V` the real number corresponding to `sin θ₁₂` in the
-standard parameterization.  --/
+standard parameterization. --/
 def S₁₂ (V : Quotient CKMMatrixSetoid) : ℝ := VusAbs V / (√ (VudAbs V ^ 2 + VusAbs V ^ 2))
 
 /-- Given a CKM matrix `V` the real number corresponding to `sin θ₁₃` in the
-standard parameterization.  --/
+standard parameterization. --/
 def S₁₃ (V : Quotient CKMMatrixSetoid) : ℝ := VubAbs V
 
 /-- Given a CKM matrix `V` the real number corresponding to `sin θ₂₃` in the
-standard parameterization.  --/
+standard parameterization. --/
 def S₂₃ (V : Quotient CKMMatrixSetoid) : ℝ :=
   if VubAbs V = 1 then VcdAbs V
   else VcbAbs V / √ (VudAbs V ^ 2 + VusAbs V ^ 2)
@@ -56,7 +56,7 @@ standard parameterization. --/
 def C₁₂ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₁₂ V)
 
 /-- Given a CKM matrix `V` the real number corresponding to `cos θ₁₃` in the
-standard parameterization.  --/
+standard parameterization. --/
 def C₁₃ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₁₃ V)
 
 /-- Given a CKM matrix `V` the real number corresponding to `sin θ₂₃` in the
@@ -64,7 +64,7 @@ standard parameterization. --/
 def C₂₃ (V : Quotient CKMMatrixSetoid) : ℝ := Real.cos (θ₂₃ V)
 
 /-- Given a CKM matrix `V` the real number corresponding to the phase `δ₁₃` in the
-standard parameterization.  --/
+standard parameterization. --/
 def δ₁₃ (V : Quotient CKMMatrixSetoid) : ℝ :=
   arg (Invariant.mulExpδ₁₃ V)
 
@@ -336,7 +336,7 @@ namespace standParam
 open Invariant
 
 lemma mulExpδ₁₃_on_param_δ₁₃ (V : CKMMatrix) (δ₁₃ : ℝ) :
-    mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ =
+    mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ =
     sin (θ₁₂ ⟦V⟧) * cos (θ₁₃ ⟦V⟧) ^ 2 * sin (θ₂₃ ⟦V⟧) * sin (θ₁₃ ⟦V⟧)
     * cos (θ₁₂ ⟦V⟧) * cos (θ₂₃ ⟦V⟧) * cexp (I * δ₁₃) := by
   refine mulExpδ₁₃_eq _ _ _ _ ?_ ?_ ?_ ?_
@@ -348,11 +348,11 @@ lemma mulExpδ₁₃_on_param_δ₁₃ (V : CKMMatrix) (δ₁₃ : ℝ) :
   exact Real.cos_arcsin_nonneg _
 
 lemma mulExpδ₁₃_on_param_eq_zero_iff (V : CKMMatrix) (δ₁₃ : ℝ) :
-    mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃  ⟦V⟧) δ₁₃⟧ = 0 ↔
+    mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ = 0 ↔
      VudAbs ⟦V⟧ = 0 ∨ VubAbs ⟦V⟧ = 0 ∨ VusAbs ⟦V⟧ = 0 ∨ VcbAbs ⟦V⟧ = 0 ∨ VtbAbs ⟦V⟧ = 0 := by
   rw [VudAbs_eq_C₁₂_mul_C₁₃, VubAbs_eq_S₁₃, VusAbs_eq_S₁₂_mul_C₁₃, VcbAbs_eq_S₂₃_mul_C₁₃,
    VtbAbs_eq_C₂₃_mul_C₁₃, ← ofReal_inj,
-  ← ofReal_inj, ← ofReal_inj,  ← ofReal_inj, ← ofReal_inj]
+  ← ofReal_inj, ← ofReal_inj, ← ofReal_inj, ← ofReal_inj]
   simp only [ofReal_mul]
   rw [← S₁₃_eq_ℂsin_θ₁₃, ← S₁₂_eq_ℂsin_θ₁₂, ← S₂₃_eq_ℂsin_θ₂₃,
   ← C₁₃_eq_ℂcos_θ₁₃, ← C₂₃_eq_ℂcos_θ₂₃,← C₁₂_eq_ℂcos_θ₁₂]
@@ -364,7 +364,7 @@ lemma mulExpδ₁₃_on_param_eq_zero_iff (V : CKMMatrix) (δ₁₃ : ℝ) :
   aesop
 
 lemma mulExpδ₁₃_on_param_abs (V : CKMMatrix) (δ₁₃ : ℝ) :
-    Complex.abs (mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) =
+    Complex.abs (mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) =
     sin (θ₁₂ ⟦V⟧) * cos (θ₁₃ ⟦V⟧) ^ 2 * sin (θ₂₃ ⟦V⟧) * sin (θ₁₃ ⟦V⟧)
     * cos (θ₁₂ ⟦V⟧) * cos (θ₂₃ ⟦V⟧) := by
   rw [mulExpδ₁₃_on_param_δ₁₃]
@@ -373,19 +373,19 @@ lemma mulExpδ₁₃_on_param_abs (V : CKMMatrix) (δ₁₃ : ℝ) :
     complexAbs_sin_θ₂₃, complexAbs_cos_θ₂₃]
 
 lemma mulExpδ₁₃_on_param_neq_zero_arg (V : CKMMatrix) (δ₁₃ : ℝ)
-    (h1 : mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ ≠ 0 ) :
-    cexp (arg ( mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃  ⟦V⟧) δ₁₃⟧ ) * I) =
+    (h1 : mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ ≠ 0 ) :
+    cexp (arg ( mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ ) * I) =
     cexp (δ₁₃ * I) := by
   have h1a := mulExpδ₁₃_on_param_δ₁₃ V δ₁₃
   have habs := mulExpδ₁₃_on_param_abs V δ₁₃
-  have h2 : mulExpδ₁₃  ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ = Complex.abs
-      (mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) * exp (δ₁₃ * I) := by
+  have h2 : mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ = Complex.abs
+      (mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) * exp (δ₁₃ * I) := by
     rw [habs, h1a]
     ring_nf
   nth_rewrite 1 [← abs_mul_exp_arg_mul_I (mulExpδ₁₃
-    ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃  ⟦V⟧) δ₁₃⟧ )] at h2
+    ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ )] at h2
   have habs_neq_zero :
-      (Complex.abs (mulExpδ₁₃  ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) : ℂ) ≠ 0 := by
+      (Complex.abs (mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧) : ℂ) ≠ 0 := by
     simp only [ne_eq, ofReal_eq_zero, map_eq_zero]
     exact h1
   rw [← mul_right_inj' habs_neq_zero]
@@ -393,7 +393,7 @@ lemma mulExpδ₁₃_on_param_neq_zero_arg (V : CKMMatrix) (δ₁₃ : ℝ)
 
 lemma on_param_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
-  have hS13 := congrArg ofReal (S₁₃_of_Vub_one (VubAbs_of_cos_θ₁₃_zero  h))
+  have hS13 := congrArg ofReal (S₁₃_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
   simp [← S₁₃_eq_ℂsin_θ₁₃] at hS13
   have hC12 := congrArg ofReal (C₁₂_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
   simp [← C₁₂_eq_ℂcos_θ₁₂] at hC12
@@ -638,8 +638,8 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
     V ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) (δ₁₃ ⟦V⟧) := by
   obtain ⟨δ₁₃', hδ₃⟩ := exists_δ₁₃ V
   have hSV := (Quotient.eq.mpr (hδ₃))
-  by_cases h : Invariant.mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃  ⟦V⟧) (θ₂₃  ⟦V⟧) δ₁₃'⟧ ≠ 0
-  have h2 := eq_exp_of_phases (θ₁₂ ⟦V⟧)  (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃'
+  by_cases h : Invariant.mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃'⟧ ≠ 0
+  have h2 := eq_exp_of_phases (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃'
     (δ₁₃ ⟦V⟧) (by rw [← mulExpδ₁₃_on_param_neq_zero_arg V δ₁₃' h, ← hSV, δ₁₃, Invariant.mulExpδ₁₃])
   rw [h2] at hδ₃
   exact hδ₃

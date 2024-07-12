@@ -158,7 +158,7 @@ lemma cube_proj_proj_B₃ (T : MSSMACC.LinSols) :
 lemma cube_proj_proj_self (T : MSSMACC.Sols) :
     cubeTriLin (proj T.1.1).val (proj T.1.1).val T.val =
     2 * dot Y₃.val B₃.val *
-    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val  +
+    ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val +
     ( dot Y₃.val T.val- 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
@@ -168,13 +168,13 @@ lemma cube_proj_proj_self (T : MSSMACC.Sols) :
   repeat rw [cubeTriLin.map_add₂]
   repeat rw [cubeTriLin.map_smul₂]
   erw [T.cubicSol]
-  rw [cubeTriLin.swap₁ Y₃.val T.val T.val, cubeTriLin.swap₂ T.val  Y₃.val T.val]
-  rw [cubeTriLin.swap₁ B₃.val T.val T.val, cubeTriLin.swap₂ T.val  B₃.val T.val]
+  rw [cubeTriLin.swap₁ Y₃.val T.val T.val, cubeTriLin.swap₂ T.val Y₃.val T.val]
+  rw [cubeTriLin.swap₁ B₃.val T.val T.val, cubeTriLin.swap₂ T.val B₃.val T.val]
   ring
 
 lemma cube_proj (T : MSSMACC.Sols) :
     cubeTriLin (proj T.1.1).val (proj T.1.1).val (proj T.1.1).val =
-    3 *  dot Y₃.val B₃.val ^ 2 *
+    3 * dot Y₃.val B₃.val ^ 2 *
     ((dot B₃.val T.val - dot Y₃.val T.val) * cubeTriLin T.val T.val Y₃.val +
         (dot Y₃.val T.val - 2 * dot B₃.val T.val) * cubeTriLin T.val T.val B₃.val) := by
   nth_rewrite 3 [proj_val]

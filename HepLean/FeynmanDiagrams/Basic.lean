@@ -72,14 +72,14 @@ def toEdge {𝓔 𝓥 : Type} : Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over 
 /-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)`
   to `Over (P.HalfEdgeLabel)` induced by projections on products. -/
 @[simps!]
-def toHalfEdge {𝓔 𝓥 : Type}  : Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel :=
+def toHalfEdge {𝓔 𝓥 : Type} : Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel :=
   Over.map Prod.fst
 
 /-- The functor from `Over P.VertexLabel` to `Type` induced by pull-back along insertion of
   `v : P.VertexLabel`. -/
 @[simps!]
 def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
-  obj := fun f =>  f.hom ⁻¹' {v}
+  obj := fun f => f.hom ⁻¹' {v}
   map {f g} F := fun x =>
     ⟨F.left x.1, by
       have h := congrFun F.w x
@@ -88,19 +88,19 @@ def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
       simpa [h] using x.2⟩
 
 /-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
-  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`.  -/
-def preimageVertex  {𝓔 𝓥 : Type} (v : 𝓥) :
+  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`. -/
+def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
-  obj f := Over.mk (fun x =>  Prod.fst (f.hom x.1) :
+  obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
      (P.toVertex ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
   map {f g} F := Over.homMk ((P.toVertex ⋙ preimageType' v).map F)
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
 
 /-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
-  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.EdgeLabel`.  -/
+  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.EdgeLabel`. -/
 def preimageEdge {𝓔 𝓥 : Type} (v : 𝓔) :
-    Over (P.HalfEdgeLabel ×  𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
-  obj f := Over.mk (fun x =>  Prod.fst (f.hom x.1) :
+    Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
+  obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
      (P.toEdge ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
   map {f g} F := Over.homMk ((P.toEdge ⋙ preimageType' v).map F)
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
@@ -117,7 +117,7 @@ properties.
 
 -/
 
-/-- A set of conditions on  `PreFeynmanRule` for it to be considered finite. -/
+/-- A set of conditions on `PreFeynmanRule` for it to be considered finite. -/
 class IsFinitePreFeynmanRule (P : PreFeynmanRule) where
   /-- The type of edge labels is decidable. -/
   edgeLabelDecidable : DecidableEq P.EdgeLabel
@@ -173,31 +173,31 @@ instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : �
   | isFalse h => isFalse h
 
 instance preimageVertexDecidable {𝓔 𝓥 : Type} (v : 𝓥)
-   (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥)) [DecidableEq F.left] :
+   (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageVertex v).obj F).left := Subtype.instDecidableEq
 
 instance preimageEdgeDecidable {𝓔 𝓥 : Type} (v : 𝓔)
-   (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥)) [DecidableEq F.left] :
+   (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageEdge v).obj F).left := Subtype.instDecidableEq
 
-instance preimageVertexFintype  {𝓔 𝓥 : Type} [DecidableEq 𝓥]
-    (v : 𝓥) (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥)) [h : Fintype F.left] :
-    Fintype ((P.preimageVertex v).obj F).left :=  @Subtype.fintype _ _ _ h
+instance preimageVertexFintype {𝓔 𝓥 : Type} [DecidableEq 𝓥]
+    (v : 𝓥) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [h : Fintype F.left] :
+    Fintype ((P.preimageVertex v).obj F).left := @Subtype.fintype _ _ _ h
 
 instance preimageEdgeFintype {𝓔 𝓥 : Type} [DecidableEq 𝓔]
-    (v : 𝓔) (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥)) [h : Fintype F.left] :
-    Fintype ((P.preimageEdge v).obj F).left :=  @Subtype.fintype _ _ _ h
+    (v : 𝓔) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [h : Fintype F.left] :
+    Fintype ((P.preimageEdge v).obj F).left := @Subtype.fintype _ _ _ h
 
-instance preimageVertexMapFintype  [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
-    [DecidableEq 𝓥]  (v : 𝓥) (f : 𝓥 ⟶ P.VertexLabel) (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥))
+instance preimageVertexMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
+    [DecidableEq 𝓥] (v : 𝓥) (f : 𝓥 ⟶ P.VertexLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
-    Fintype  ((P.vertexLabelMap (f v)).left → ((P.preimageVertex v).obj F).left) :=
+    Fintype ((P.vertexLabelMap (f v)).left → ((P.preimageVertex v).obj F).left) :=
   Pi.fintype
 
-instance preimageEdgeMapFintype  [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
-    [DecidableEq 𝓔] (v : 𝓔) (f : 𝓔 ⟶ P.EdgeLabel) (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥))
+instance preimageEdgeMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
+    [DecidableEq 𝓔] (v : 𝓔) (f : 𝓔 ⟶ P.EdgeLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
-    Fintype  ((P.edgeLabelMap (f v)).left → ((P.preimageEdge v).obj F).left) :=
+    Fintype ((P.edgeLabelMap (f v)).left → ((P.preimageEdge v).obj F).left) :=
   Pi.fintype
 
 /-!
@@ -214,11 +214,11 @@ We will show that for `IsFinitePreFeynmanRule` the condition of been external is
 def External {P : PreFeynmanRule} (v : P.VertexLabel) : Prop :=
   IsIsomorphic (P.vertexLabelMap v).left (Fin 1)
 
-lemma external_iff_exists_bijection {P : PreFeynmanRule}  (v : P.VertexLabel) :
+lemma external_iff_exists_bijection {P : PreFeynmanRule} (v : P.VertexLabel) :
     External v ↔ ∃ (κ : (P.vertexLabelMap v).left → Fin 1), Function.Bijective κ := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   obtain ⟨κ, κm1, h1, h2⟩ := h
-  let f : (P.vertexLabelMap v).left ≅ (Fin 1) :=  ⟨κ, κm1, h1, h2⟩
+  let f : (P.vertexLabelMap v).left ≅ (Fin 1) := ⟨κ, κm1, h1, h2⟩
   exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f⟩
   obtain ⟨κ, h1⟩ := h
   let f : (P.vertexLabelMap v).left ⟶ (Fin 1) := κ
@@ -248,7 +248,7 @@ def DiagramVertexProp {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 × �
   `F : Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` for it to be a Feynman diagram.
   This condition corresponds to the edges of `F` having the correct half-edges associated
   with them. -/
-def DiagramEdgeProp {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel  × 𝓔 × 𝓥))
+def DiagramEdgeProp {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     (f : 𝓔 ⟶ P.EdgeLabel) :=
   ∀ v, IsIsomorphic (P.edgeLabelMap (f v)) ((P.preimageEdge v).obj F)
 
@@ -274,7 +274,7 @@ lemma diagramEdgeProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 
     ∧ ((P.preimageEdge v).obj F).hom ∘ κ = (P.edgeLabelMap (f v)).hom := by
   refine Iff.intro (fun h v => ?_) (fun h v => ?_)
   obtain ⟨κ, κm1, h1, h2⟩ := h v
-  let f  := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
+  let f := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
   refine ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f, κ.w⟩
   obtain ⟨κ, h1, h2⟩ := h v
   let f : (P.edgeLabelMap (f v)) ⟶ ((P.preimageEdge v).obj F) := Over.homMk κ h2
@@ -289,17 +289,17 @@ instance diagramVertexPropDecidable
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
     (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
-    (fun _ =>  P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
+    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
     (P.diagramVertexProp_iff F f).symm
 
 instance diagramEdgePropDecidable
-    [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓔]  [DecidableEq 𝓔]
+    [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓔] [DecidableEq 𝓔]
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] [Fintype F.left]
     (f : 𝓔 ⟶ P.EdgeLabel) : Decidable (P.DiagramEdgeProp F f) :=
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
     (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
-    (fun _ =>  P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
+    (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _ ) _)
     (P.diagramEdgeProp_iff F f).symm
 
 end PreFeynmanRule
@@ -358,8 +358,8 @@ def 𝓱𝓔To𝓥 : Over F.𝓥 := P.toVertex.obj F.𝓱𝓔To𝓔𝓥
 
 /-- The condition which must be satisfied by maps to form a Feynman diagram. -/
 def Cond {𝓔 𝓥 𝓱𝓔 : Type} (𝓔𝓞 : 𝓔 → P.EdgeLabel) (𝓥𝓞 : 𝓥 → P.VertexLabel)
-    (𝓱𝓔To𝓔𝓥 : 𝓱𝓔 → P.HalfEdgeLabel × 𝓔 × 𝓥)  : Prop :=
-  P.DiagramEdgeProp (Over.mk 𝓱𝓔To𝓔𝓥) 𝓔𝓞  ∧
+    (𝓱𝓔To𝓔𝓥 : 𝓱𝓔 → P.HalfEdgeLabel × 𝓔 × 𝓥) : Prop :=
+  P.DiagramEdgeProp (Over.mk 𝓱𝓔To𝓔𝓥) 𝓔𝓞 ∧
   P.DiagramVertexProp (Over.mk 𝓱𝓔To𝓔𝓥) 𝓥𝓞
 
 lemma cond_self : Cond F.𝓔𝓞.hom F.𝓥𝓞.hom F.𝓱𝓔To𝓔𝓥.hom :=
@@ -441,7 +441,7 @@ instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓱𝓔 :=
   IsFiniteDiagram.𝓱𝓔DecidableEq
 
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] (i : F.𝓱𝓔) (j : F.𝓔) :
-    Decidable (F.𝓱𝓔To𝓔.hom i = j) :=  IsFiniteDiagram.𝓔DecidableEq (F.𝓱𝓔To𝓔.hom i) j
+    Decidable (F.𝓱𝓔To𝓔.hom i = j) := IsFiniteDiagram.𝓔DecidableEq (F.𝓱𝓔To𝓔.hom i) j
 
 instance fintypeProdHalfEdgeLabel𝓔𝓥 {F : FeynmanDiagram P} [IsFinitePreFeynmanRule P]
     [IsFiniteDiagram F] : DecidableEq (P.HalfEdgeLabel × F.𝓔 × F.𝓥) :=
@@ -457,15 +457,15 @@ This will be used to define the category of Feynman diagrams.
 -/
 
 /-- Given two maps `F.𝓔 ⟶ G.𝓔` and `F.𝓥 ⟶ G.𝓥` the corresponding map
-  `P.HalfEdgeLabel × F.𝓔 × F.𝓥 →  P.HalfEdgeLabel × G.𝓔 × G.𝓥`.  -/
+  `P.HalfEdgeLabel × F.𝓔 × F.𝓥 → P.HalfEdgeLabel × G.𝓔 × G.𝓥`. -/
 @[simps!]
 def edgeVertexMap {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ⟶ G.𝓔) (𝓥 : F.𝓥 ⟶ G.𝓥) :
-    P.HalfEdgeLabel × F.𝓔 × F.𝓥 →  P.HalfEdgeLabel × G.𝓔 × G.𝓥 :=
+    P.HalfEdgeLabel × F.𝓔 × F.𝓥 → P.HalfEdgeLabel × G.𝓔 × G.𝓥 :=
   fun x => ⟨x.1, 𝓔 x.2.1, 𝓥 x.2.2⟩
 
 /-- Given equivalences `F.𝓔 ≃ G.𝓔` and `F.𝓥 ≃ G.𝓥`, the induced equivalence between
   `P.HalfEdgeLabel × F.𝓔 × F.𝓥` and `P.HalfEdgeLabel × G.𝓔 × G.𝓥 ` -/
-def edgeVertexEquiv {F G : FeynmanDiagram P}  (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.𝓥 ≃ G.𝓥) :
+def edgeVertexEquiv {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.𝓥 ≃ G.𝓥) :
     P.HalfEdgeLabel × F.𝓔 × F.𝓥 ≃ P.HalfEdgeLabel × G.𝓔 × G.𝓥 where
   toFun := edgeVertexMap 𝓔.toFun 𝓥.toFun
   invFun := edgeVertexMap 𝓔.invFun 𝓥.invFun
@@ -539,7 +539,7 @@ lemma ext {F G : FeynmanDiagram P} {f g : Hom F G} (h𝓔 : f.𝓔 = g.𝓔)
 def Cond {F G : FeynmanDiagram P} (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) : Prop :=
   (∀ x, G.𝓔𝓞.hom (𝓔 x) = F.𝓔𝓞.hom x) ∧
   (∀ x, G.𝓥𝓞.hom (𝓥 x) = F.𝓥𝓞.hom x) ∧
-  (∀ x, G.𝓱𝓔To𝓔𝓥.hom (𝓱𝓔 x) =  edgeVertexMap 𝓔 𝓥 (F.𝓱𝓔To𝓔𝓥.hom x))
+  (∀ x, G.𝓱𝓔To𝓔𝓥.hom (𝓱𝓔 x) = edgeVertexMap 𝓔 𝓥 (F.𝓱𝓔To𝓔𝓥.hom x))
 
 lemma cond_satisfied {F G : FeynmanDiagram P} (f : Hom F G) :
     Cond f.𝓔 f.𝓥 f.𝓱𝓔 :=
@@ -564,9 +564,9 @@ instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓥 P _ _) _
 
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
-    (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔)  :
-    Decidable (∀ x, G.𝓱𝓔To𝓔𝓥.hom (𝓱𝓔 x) =  edgeVertexMap 𝓔 𝓥 (F.𝓱𝓔To𝓔𝓥.hom x)) :=
-  @Fintype.decidableForallFintype _ _ (fun _ => fintypeProdHalfEdgeLabel𝓔𝓥  _ _) _
+    (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) :
+    Decidable (∀ x, G.𝓱𝓔To𝓔𝓥.hom (𝓱𝓔 x) = edgeVertexMap 𝓔 𝓥 (F.𝓱𝓔To𝓔𝓥.hom x)) :=
+  @Fintype.decidableForallFintype _ _ (fun _ => fintypeProdHalfEdgeLabel𝓔𝓥 _ _) _
 
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) : Decidable (Cond 𝓔 𝓥 𝓱𝓔) :=
@@ -678,7 +678,7 @@ instance [IsFinitePreFeynmanRule P] [IsFiniteDiagram F] : Fintype F.SymmetryType
 @[simp]
 def cardSymmetryFactor : Cardinal := Cardinal.mk (F.SymmetryType)
 
-/-- The symmetry factor of a Finite Feynman diagram, as a natural number.  -/
+/-- The symmetry factor of a Finite Feynman diagram, as a natural number. -/
 @[simp]
 def symmetryFactor [IsFinitePreFeynmanRule P] [IsFiniteDiagram F] : ℕ :=
   (Fintype.card F.SymmetryType)
@@ -714,7 +714,7 @@ def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
 
 instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   @And.decidable _ _ _ $
-  @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _  (
+  @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _ (
   fun _ => @And.decidable _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
     @And.decidable _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
     (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _ ) _

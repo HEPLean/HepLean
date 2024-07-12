@@ -7,9 +7,11 @@ import Lean
 import Mathlib.Tactic.Linter.TextBased
 /-!
 
-# Double line Lint
+# HepLean style linter
 
-This linter double empty lines in files.
+A number of linters on HepLean to enforce a consistent style.
+
+There are currently not enforced at the GitHub action level.
 
 ## Note
 
@@ -31,7 +33,7 @@ def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
-/-- Checks if there is a souble space in the line, which is not at the start. -/
+/-- Checks if there is a double space in the line, which is not at the start. -/
 def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦

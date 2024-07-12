@@ -50,7 +50,7 @@ def B₆ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
 def B₇ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
-def B₈  : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+def B₈ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
 
 /-- A charge assignment forming one of the basis elements of the plane. -/
 def B₉ : (PlusU1 3).Charges := ![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0]
@@ -79,7 +79,7 @@ lemma Bi_Bj_quad {i j : Fin 11} (hi : i ≠ j) : quadBiLin (B i) (B j) = 0 := by
   all_goals simp at hi
 
 lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
-    quadBiLin (B i) (∑ k, f k • B k) = f i * quadBiLin (B i) (B i)  := by
+    quadBiLin (B i) (∑ k, f k • B k) = f i * quadBiLin (B i) (B i) := by
   rw [quadBiLin.map_sum₂]
   rw [Fintype.sum_eq_single i]
   rw [quadBiLin.map_smul₂]
@@ -96,7 +96,7 @@ lemma quadCoeff_eq_bilinear (i : Fin 11) : quadCoeff i = quadBiLin (B i) (B i) :
   all_goals rfl
 
 lemma on_accQuad (f : Fin 11 → ℚ) :
-    accQuad (∑ i, f i • B i) = ∑ i, quadCoeff i * (f i)^2  := by
+    accQuad (∑ i, f i • B i) = ∑ i, quadCoeff i * (f i)^2 := by
   change quadBiLin _ _ = _
   rw [quadBiLin.map_sum₁]
   apply Fintype.sum_congr
@@ -105,7 +105,7 @@ lemma on_accQuad (f : Fin 11 → ℚ) :
   ring
 
 lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
-    (k : Fin 11)  : quadCoeff k * (f k)^2 = 0 := by
+    (k : Fin 11) : quadCoeff k * (f k)^2 = 0 := by
   obtain ⟨S, hS⟩ := hS
   have hQ := quadSol S.1
   rw [hS, on_accQuad] at hQ
@@ -169,7 +169,7 @@ lemma isSolution_sum_part (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ 
   simp
   rfl
 
-lemma isSolution_grav  (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
+lemma isSolution_grav (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 10 = - 3 * f 9 := by
   have hx := isSolution_sum_part f hS
   obtain ⟨S, hS'⟩ := hS

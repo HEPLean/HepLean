@@ -44,20 +44,20 @@ instance (a : ℕ) : OfNat phi4PreFeynmanRules.VertexLabel a where
   ofNat := (a : Fin _)
 
 instance : IsFinitePreFeynmanRule phi4PreFeynmanRules where
-  edgeLabelDecidable :=  instDecidableEqFin _
+  edgeLabelDecidable := instDecidableEqFin _
   vertexLabelDecidable := instDecidableEqFin _
   halfEdgeLabelDecidable := instDecidableEqFin _
   vertexMapFintype := fun v =>
     match v with
     | 0 => Fin.fintype _
-    | 1  => Fin.fintype _
+    | 1 => Fin.fintype _
   edgeMapFintype := fun v =>
     match v with
     | 0 => Fin.fintype _
   vertexMapDecidable := fun v =>
     match v with
     | 0 => instDecidableEqFin _
-    | 1  => instDecidableEqFin _
+    | 1 => instDecidableEqFin _
   edgeMapDecidable := fun v =>
     match v with
     | 0 => instDecidableEqFin _

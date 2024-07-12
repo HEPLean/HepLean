@@ -27,7 +27,7 @@ variable (Λ : LorentzGroup d)
 open LorentzVector
 open minkowskiMetric
 
-/-- A Lorentz transformation is  `orthochronous` if its `0 0` element is non-negative. -/
+/-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/
 def IsOrthochronous : Prop := 0 ≤ timeComp Λ
 
 lemma IsOrthochronous_iff_futurePointing :
@@ -62,7 +62,7 @@ lemma not_orthochronous_iff_le_zero :
   linarith
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
-def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ  ,
+def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ,
    Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
@@ -75,7 +75,7 @@ lemma stepFunction_continuous : Continuous stepFunction := by
    <;> intro a ha
   rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
   rw [ha]
-  simp  [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
+  simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
   have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
   exact Eq.symm (if_neg h1)
   rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha

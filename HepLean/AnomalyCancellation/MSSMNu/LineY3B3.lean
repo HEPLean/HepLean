@@ -11,7 +11,7 @@ import Mathlib.Tactic.Polyrith
 # The line through B₃ and Y₃
 
 We give properties of lines through `B₃` and `Y₃`. We show that every point on this line
-is a solution to the quadratic  `lineY₃B₃Charges_quad` and a double point of the cubic
+is a solution to the quadratic `lineY₃B₃Charges_quad` and a double point of the cubic
 `lineY₃B₃_doublePoint`.
 
 # References
@@ -52,7 +52,7 @@ lemma lineY₃B₃Charges_cubic (a b : ℚ) : accCube (lineY₃B₃Charges a b).
   rw [cubeTriLin.toCubic.map_smul]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
-  erw [Y₃.cubicSol,  B₃.cubicSol]
+  erw [Y₃.cubicSol, B₃.cubicSol]
   rw [show cubeTriLin Y₃.val Y₃.val B₃.val = 0 by rfl]
   rw [show cubeTriLin B₃.val B₃.val Y₃.val = 0 by rfl]
   simp

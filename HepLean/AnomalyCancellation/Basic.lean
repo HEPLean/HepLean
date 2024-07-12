@@ -197,7 +197,7 @@ instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols wher
     exact one_smul _ _
 
 /-- The inclusion of quadratic solutions into linear solutions. -/
-def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols  where
+def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols where
   toFun := QuadSols.toLinSols
   map_smul' _ _ := rfl
 
@@ -229,7 +229,7 @@ structure Sols (χ : ACCSystem) extends χ.QuadSols where
 /-- Two solutions are equal if the underlying charges are equal. -/
 lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
     S = T := by
-  have h  := ACCSystemQuad.QuadSols.ext h
+  have h := ACCSystemQuad.QuadSols.ext h
   cases' S
   simp_all only
 
@@ -251,8 +251,8 @@ instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
     exact one_smul _ _
 
 /-- The inclusion of `Sols` into `QuadSols`. -/
-def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols  where
-  toFun  := Sols.toQuadSols
+def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols where
+  toFun := Sols.toQuadSols
   map_smul' _ _ := rfl
 
 /-- The inclusion of `Sols` into `LinSols`. -/

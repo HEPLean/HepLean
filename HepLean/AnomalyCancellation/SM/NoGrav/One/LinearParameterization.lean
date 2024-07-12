@@ -198,15 +198,15 @@ namespace linearParametersQENeqZero
 
 @[ext]
 lemma ext {S T : linearParametersQENeqZero} (hx : S.x = T.x) (hv : S.v = T.v)
-    (hw : S.w = T.w)  : S = T := by
+    (hw : S.w = T.w) : S = T := by
   cases' S
   simp_all only
 
 /-- A map from `linearParametersQENeqZero` to `linearParameters`. -/
 @[simps!]
 def toLinearParameters (S : linearParametersQENeqZero) :
-    {S : linearParameters // S.Q' ≠  0 ∧ S.E' ≠ 0} :=
-  ⟨⟨S.x,   3 * S.x * (S.v - S.w) / (S.v + S.w),  - 6 * S.x  / (S.v + S.w)⟩,
+    {S : linearParameters // S.Q' ≠ 0 ∧ S.E' ≠ 0} :=
+  ⟨⟨S.x, 3 * S.x * (S.v - S.w) / (S.v + S.w), - 6 * S.x / (S.v + S.w)⟩,
     by
       apply And.intro S.hx
       simp only [neg_mul, ne_eq, div_eq_zero_iff, neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero,
@@ -217,9 +217,9 @@ def toLinearParameters (S : linearParametersQENeqZero) :
 /-- A map from `linearParameters` to `linearParametersQENeqZero` in the special case when
 `Q'` and `E'` of the linear parameters are non-zero. -/
 @[simps!]
-def tolinearParametersQNeqZero (S : {S : linearParameters //  S.Q' ≠  0 ∧ S.E' ≠ 0}) :
+def tolinearParametersQNeqZero (S : {S : linearParameters // S.Q' ≠ 0 ∧ S.E' ≠ 0}) :
     linearParametersQENeqZero :=
-  ⟨S.1.Q', - (3 * S.1.Q' + S.1.Y) / S.1.E', - (3 * S.1.Q' - S.1.Y)/ S.1.E',  S.2.1,
+  ⟨S.1.Q', - (3 * S.1.Q' + S.1.Y) / S.1.E', - (3 * S.1.Q' - S.1.Y)/ S.1.E', S.2.1,
     by
       simp only [ne_eq, neg_add_rev, neg_sub]
       field_simp
@@ -231,7 +231,7 @@ def tolinearParametersQNeqZero (S : {S : linearParameters //  S.Q' ≠  0 ∧ S.
   with `Q'` and `E'` non-zero. -/
 @[simps!]
 def bijectionLinearParameters :
-    linearParametersQENeqZero ≃ {S : linearParameters //  S.Q' ≠ 0 ∧ S.E' ≠ 0} where
+    linearParametersQENeqZero ≃ {S : linearParameters // S.Q' ≠ 0 ∧ S.E' ≠ 0} where
   toFun := toLinearParameters
   invFun := tolinearParametersQNeqZero
   left_inv S := by
@@ -260,7 +260,7 @@ def bijectionLinearParameters :
 
 /-- The bijection between `linearParametersQENeqZero` and `LinSols` with `Q` and `E` non-zero. -/
 def bijection : linearParametersQENeqZero ≃
-    {S : (SMNoGrav 1).LinSols // Q S.val (0 : Fin 1) ≠ 0 ∧ E S.val (0 : Fin 1)  ≠ 0} :=
+    {S : (SMNoGrav 1).LinSols // Q S.val (0 : Fin 1) ≠ 0 ∧ E S.val (0 : Fin 1) ≠ 0} :=
   bijectionLinearParameters.trans (linearParameters.bijectionQEZero)
 
 lemma cubic (S : linearParametersQENeqZero) :
@@ -297,7 +297,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
   have h' : (S.w + 1) * (1 * S.w * S.w + (-1) * S.w + 1) = 0 := by
     ring_nf
     exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
-  have h'' : (1 * S.w * S.w + (-1) * S.w + 1)  ≠ 0 := by
+  have h'' : (1 * S.w * S.w + (-1) * S.w + 1) ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.w
     intro s
     by_contra hn
@@ -315,7 +315,7 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
   have h' : (S.v + 1) * (1 * S.v * S.v + (-1) * S.v + 1) = 0 := by
     ring_nf
     exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
-  have h'' : (1 * S.v * S.v + (-1) * S.v + 1)  ≠ 0 := by
+  have h'' : (1 * S.v * S.v + (-1) * S.v + 1) ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.v
     intro s
     by_contra hn

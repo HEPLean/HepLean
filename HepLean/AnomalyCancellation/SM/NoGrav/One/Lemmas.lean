@@ -25,11 +25,11 @@ open SMACCs
 open BigOperators
 
 lemma E_zero_iff_Q_zero {S : (SMNoGrav 1).Sols} : Q S.val (0 : Fin 1) = 0 ↔
-    E S.val  (0 : Fin 1) = 0 := by
+    E S.val (0 : Fin 1) = 0 := by
   let S' := linearParameters.bijection.symm S.1.1
   have hC := cubeSol S
   have hS' := congrArg (fun S => S.val) (linearParameters.bijection.right_inv S.1.1)
-  change  S'.asCharges = S.val at hS'
+  change S'.asCharges = S.val at hS'
   rw [← hS'] at hC
   apply Iff.intro
   intro hQ
@@ -37,7 +37,7 @@ lemma E_zero_iff_Q_zero {S : (SMNoGrav 1).Sols} : Q S.val (0 : Fin 1) = 0 ↔
   intro hE
   exact S'.cubic_zero_E'_zero hC hE
 
-lemma accGrav_Q_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val  (0 : Fin 1) = 0) :
+lemma accGrav_Q_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) = 0) :
     accGrav S.val = 0 := by
   rw [accGrav]
   simp only [SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
@@ -59,12 +59,12 @@ lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0
   have hC := cubeSol S
   have hS' := congrArg (fun S => S.val.val)
     (linearParametersQENeqZero.bijection.right_inv ⟨S.1.1, And.intro hQ hE⟩)
-  change  _ = S.val at hS'
+  change _ = S.val at hS'
   rw [← hS'] at hC
   rw [← hS']
   exact S'.grav_of_cubic hC FLTThree
 
-/-- Any solution to the ACCs without gravity satisfies the gravitational ACC.  -/
+/-- Any solution to the ACCs without gravity satisfies the gravitational ACC. -/
 theorem accGravSatisfied {S : (SMNoGrav 1).Sols} (FLTThree : FermatLastTheoremWith ℚ 3) :
     accGrav S.val = 0 := by
   by_cases hQ : Q S.val (0 : Fin 1)= 0

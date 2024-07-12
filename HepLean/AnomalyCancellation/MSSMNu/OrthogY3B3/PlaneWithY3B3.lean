@@ -42,7 +42,7 @@ lemma planeY₃B₃_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
   rw [smul_add, smul_add]
   rw [smul_smul, smul_smul, smul_smul]
 
-lemma planeY₃B₃_eq (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h :  a = a' ∧ b = b' ∧ c = c') :
+lemma planeY₃B₃_eq (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h : a = a' ∧ b = b' ∧ c = c') :
     (planeY₃B₃ R a b c) = (planeY₃B₃ R a' b' c') := by
   rw [h.1, h.2.1, h.2.2]
 
@@ -82,7 +82,7 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
   have h2 := congrArg (fun S => S i) h1i
   change _ = 0 at h2
   simp [HSMul.hSMul] at h2
-  have hc :  c + -c' = 0 := by
+  have hc : c + -c' = 0 := by
     cases h2 <;> rename_i h2
     exact h2
     exact (hi h2).elim
@@ -105,8 +105,8 @@ lemma planeY₃B₃_quad (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
 
 lemma planeY₃B₃_cubic (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) :
     accCube (planeY₃B₃ R a b c).val = c ^ 2 *
-    (3 * a *  cubeTriLin R.val R.val Y₃.val
-    + 3 * b *  cubeTriLin R.val R.val B₃.val + c * cubeTriLin R.val R.val R.val) := by
+    (3 * a * cubeTriLin R.val R.val Y₃.val
+    + 3 * b * cubeTriLin R.val R.val B₃.val + c * cubeTriLin R.val R.val R.val) := by
   rw [planeY₃B₃_val]
   erw [TriLinearSymm.toCubic_add]
   erw [lineY₃B₃Charges_cubic]
@@ -178,7 +178,7 @@ def lineCube (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
     MSSMACC.LinSols :=
   planeY₃B₃ R
     (a₂ * cubeTriLin R.val R.val R.val - 3 * a₃ * cubeTriLin R.val R.val B₃.val)
-    (3 * a₃ * cubeTriLin R.val R.val Y₃.val -  a₁ * cubeTriLin R.val R.val R.val)
+    (3 * a₃ * cubeTriLin R.val R.val Y₃.val - a₁ * cubeTriLin R.val R.val R.val)
     (3 * (a₁ * cubeTriLin R.val R.val B₃.val - a₂ * cubeTriLin R.val R.val Y₃.val))
 
 lemma lineCube_smul (R : MSSMACC.AnomalyFreePerp) (a b c d : ℚ) :
@@ -205,7 +205,7 @@ lemma lineCube_quad (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
 
 section proj
 
-lemma α₃_proj  (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
+lemma α₃_proj (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
     6 * dot Y₃.val B₃.val ^ 3 * (
     cubeTriLin T.val T.val Y₃.val * quadBiLin B₃.val T.val -
     cubeTriLin T.val T.val B₃.val * quadBiLin Y₃.val T.val) := by
@@ -214,13 +214,13 @@ lemma α₃_proj  (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
   ring
 
 lemma α₂_proj (T : MSSMACC.Sols) : α₂ (proj T.1.1) =
-    - α₃ (proj T.1.1) * (dot Y₃.val T.val - 2 * dot B₃.val T.val)   := by
+    - α₃ (proj T.1.1) * (dot Y₃.val T.val - 2 * dot B₃.val T.val) := by
   rw [α₃_proj, α₂]
   rw [cube_proj_proj_Y₃, quad_Y₃_proj, quad_proj, cube_proj]
   ring
 
 lemma α₁_proj (T : MSSMACC.Sols) : α₁ (proj T.1.1) =
-    - α₃ (proj T.1.1) * (dot B₃.val T.val - dot Y₃.val T.val)   := by
+    - α₃ (proj T.1.1) * (dot B₃.val T.val - dot Y₃.val T.val) := by
   rw [α₃_proj, α₁]
   rw [cube_proj_proj_B₃, quad_B₃_proj, quad_proj, cube_proj]
   ring

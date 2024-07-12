@@ -25,7 +25,7 @@ noncomputable section
 
 /-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard paramaterization of the CKM matrix
 as a `3×3` complex matrix. -/
-def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin 3) (Fin 3) ℂ  :=
+def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
   ![![Real.cos θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₃ * exp (-I * δ₁₃)],
     ![(-Real.sin θ₁₂ * Real.cos θ₂₃) - (Real.cos θ₁₂ * Real.sin θ₁₃ * Real.sin θ₂₃ * exp (I * δ₁₃)),
       Real.cos θ₁₂ * Real.cos θ₂₃ - Real.sin θ₁₂ * Real.sin θ₁₃ * Real.sin θ₂₃ * exp (I * δ₁₃),
@@ -36,8 +36,8 @@ def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin
 
 open CKMMatrix
 
-lemma standParamAsMatrix_unitary  (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
-    ((standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃)ᴴ *  standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃)  = 1 := by
+lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
+    ((standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃)ᴴ * standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃) = 1 := by
   funext j i
   simp only [standParamAsMatrix, neg_mul, Fin.isValue]
   rw [mul_apply]
@@ -139,7 +139,7 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     ring
 
 lemma eq_rows (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : [U]u = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u)
-    (hc : [U]c = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) (hU :  [U]t = conj [U]u ×₃ conj [U]c) :
+    (hc : [U]c = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) (hU : [U]t = conj [U]u ×₃ conj [U]c) :
     U = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ := by
   apply ext_Rows hu hc
   rw [hU, cross_product_t, hu, hc]
@@ -149,7 +149,7 @@ lemma eq_exp_of_phases (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h 
   simp [standParam, standParamAsMatrix]
   apply CKMMatrix_ext
   simp only
-  rw [show  exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]
+  rw [show exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]
   rw [show cexp (-(I * ↑δ₁₃)) = cexp (-(I * ↑δ₁₃')) by rw [exp_neg, exp_neg, mul_comm, h, mul_comm]]
 
 open Invariant in
@@ -179,9 +179,9 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
 
 open Invariant in
 lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Real.sin θ₁₂)
-    (h2 : 0 ≤ Real.cos θ₁₃) (h3 : 0 ≤ Real.sin θ₂₃) (h4 : 0 ≤ Real.cos θ₁₂)  :
+    (h2 : 0 ≤ Real.cos θ₁₃) (h3 : 0 ≤ Real.sin θ₂₃) (h4 : 0 ≤ Real.cos θ₁₂) :
     mulExpδ₁₃ ⟦standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃⟧ =
-    sin θ₁₂ * cos θ₁₃ ^ 2 * sin θ₂₃ * sin θ₁₃ * cos θ₁₂ * cos θ₂₃ * cexp (I * δ₁₃)  := by
+    sin θ₁₂ * cos θ₁₃ ^ 2 * sin θ₂₃ * sin θ₁₃ * cos θ₁₂ * cos θ₂₃ * cexp (I * δ₁₃) := by
   rw [mulExpδ₁₃, VusVubVcdSq_eq _ _ _ _ h1 h2 h3 h4 ]
   simp only [jarlskogℂ, standParam, standParamAsMatrix, neg_mul,
     Quotient.lift_mk, jarlskogℂCKM, Fin.isValue, cons_val', cons_val_one, head_cons,

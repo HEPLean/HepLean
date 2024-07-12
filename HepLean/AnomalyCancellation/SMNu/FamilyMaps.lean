@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.Basic
 /-!
-# Family maps for the Standard Model  for RHN ACCs
+# Family maps for the Standard Model for RHN ACCs
 
 We define the a series of maps between the charges for different numbers of families.
 
@@ -39,10 +39,10 @@ def chargesMapOfSpeciesMap {n m : ℕ} (f : (SMνSpecies n).Charges →ₗ[ℚ] 
 lemma chargesMapOfSpeciesMap_toSpecies {n m : ℕ}
     (f : (SMνSpecies n).Charges →ₗ[ℚ] (SMνSpecies m).Charges)
     (S : (SMνCharges n).Charges) (j : Fin 6) :
-    toSpecies j (chargesMapOfSpeciesMap f S) =  (LinearMap.comp f (toSpecies j)) S := by
+    toSpecies j (chargesMapOfSpeciesMap f S) = (LinearMap.comp f (toSpecies j)) S := by
   erw [toSMSpecies_toSpecies_inv]
 
-/-- The projection of the `m`-family charges onto the first `n`-family charges for species.  -/
+/-- The projection of the `m`-family charges onto the first `n`-family charges for species. -/
 @[simps!]
 def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
     (SMνSpecies m).Charges →ₗ[ℚ] (SMνSpecies n).Charges where
@@ -50,12 +50,12 @@ def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-/-- The projection of the `m`-family charges onto the first `n`-family charges.  -/
+/-- The projection of the `m`-family charges onto the first `n`-family charges. -/
 def familyProjection {m n : ℕ} (h : n ≤ m) : (SMνCharges m).Charges →ₗ[ℚ] (SMνCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesFamilyProj h)
 
 /-- For species, the embedding of the `m`-family charges onto the `n`-family charges, with all
-other charges zero.  -/
+other charges zero. -/
 @[simps!]
 def speciesEmbed (m n : ℕ) :
     (SMνSpecies m).Charges →ₗ[ℚ] (SMνSpecies n).Charges where
@@ -80,7 +80,7 @@ def speciesEmbed (m n : ℕ) :
     exact Eq.symm (Rat.mul_zero a)
 
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
-other charges zero.  -/
+other charges zero. -/
 def familyEmbedding (m n : ℕ) : (SMνCharges m).Charges →ₗ[ℚ] (SMνCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesEmbed m n)
 
@@ -118,7 +118,7 @@ lemma sum_familyUniversal {n : ℕ} (m : ℕ) (S : (SMνCharges 1).Charges) (j :
   intro i _
   erw [toSpecies_familyUniversal]
 
-lemma sum_familyUniversal_one  {n : ℕ} (S : (SMνCharges 1).Charges) (j : Fin 6) :
+lemma sum_familyUniversal_one {n : ℕ} (S : (SMνCharges 1).Charges) (j : Fin 6) :
     ∑ i, toSpecies j (familyUniversal n S) i = n * (toSpecies j S ⟨0, by simp⟩) := by
   simpa using @sum_familyUniversal n 1 S j
 
@@ -134,7 +134,7 @@ lemma sum_familyUniversal_two {n : ℕ} (S : (SMνCharges 1).Charges)
   erw [toSpecies_familyUniversal]
   rfl
 
-lemma sum_familyUniversal_three  {n : ℕ} (S : (SMνCharges 1).Charges)
+lemma sum_familyUniversal_three {n : ℕ} (S : (SMνCharges 1).Charges)
     (T L : (SMνCharges n).Charges) (j : Fin 6) :
     ∑ i, (toSpecies j (familyUniversal n S) i * toSpecies j T i * toSpecies j L i) =
     (toSpecies j S ⟨0, by simp⟩) * ∑ i, toSpecies j T i * toSpecies j L i := by
@@ -148,7 +148,7 @@ lemma sum_familyUniversal_three  {n : ℕ} (S : (SMνCharges 1).Charges)
   ring
 
 lemma familyUniversal_accGrav (S : (SMνCharges 1).Charges) :
-    accGrav (familyUniversal n S)  = n * (accGrav S) := by
+    accGrav (familyUniversal n S) = n * (accGrav S) := by
   rw [accGrav_decomp, accGrav_decomp]
   repeat rw [sum_familyUniversal_one]
   simp only [Fin.isValue, SMνSpecies_numberCharges, Fin.zero_eta, toSpecies_apply,
@@ -156,7 +156,7 @@ lemma familyUniversal_accGrav (S : (SMνCharges 1).Charges) :
   ring
 
 lemma familyUniversal_accSU2 (S : (SMνCharges 1).Charges) :
-    accSU2 (familyUniversal n S)  = n * (accSU2 S) := by
+    accSU2 (familyUniversal n S) = n * (accSU2 S) := by
   rw [accSU2_decomp, accSU2_decomp]
   repeat rw [sum_familyUniversal_one]
   simp only [Fin.isValue, SMνSpecies_numberCharges, Fin.zero_eta, toSpecies_apply,
@@ -164,7 +164,7 @@ lemma familyUniversal_accSU2 (S : (SMνCharges 1).Charges) :
   ring
 
 lemma familyUniversal_accSU3 (S : (SMνCharges 1).Charges) :
-    accSU3 (familyUniversal n S)  = n * (accSU3 S) := by
+    accSU3 (familyUniversal n S) = n * (accSU3 S) := by
   rw [accSU3_decomp, accSU3_decomp]
   repeat rw [sum_familyUniversal_one]
   simp only [Fin.isValue, SMνSpecies_numberCharges, Fin.zero_eta, toSpecies_apply,
@@ -172,7 +172,7 @@ lemma familyUniversal_accSU3 (S : (SMνCharges 1).Charges) :
   ring
 
 lemma familyUniversal_accYY (S : (SMνCharges 1).Charges) :
-    accYY (familyUniversal n S)  = n * (accYY S) := by
+    accYY (familyUniversal n S) = n * (accYY S) := by
   rw [accYY_decomp, accYY_decomp]
   repeat rw [sum_familyUniversal_one]
   simp only [Fin.isValue, SMνSpecies_numberCharges, Fin.zero_eta, toSpecies_apply,
@@ -182,7 +182,7 @@ lemma familyUniversal_accYY (S : (SMνCharges 1).Charges) :
 lemma familyUniversal_quadBiLin (S : (SMνCharges 1).Charges) (T : (SMνCharges n).Charges) :
     quadBiLin (familyUniversal n S) T =
     S (0 : Fin 6) * ∑ i, Q T i - 2 * S (1 : Fin 6) * ∑ i, U T i + S (2 : Fin 6) *∑ i, D T i -
-    S (3 : Fin 6) * ∑ i, L T i + S (4 : Fin 6) * ∑ i, E T i  := by
+    S (3 : Fin 6) * ∑ i, L T i + S (4 : Fin 6) * ∑ i, E T i := by
   rw [quadBiLin_decomp]
   repeat rw [sum_familyUniversal_two]
   repeat rw [toSpecies_one]
@@ -191,7 +191,7 @@ lemma familyUniversal_quadBiLin (S : (SMνCharges 1).Charges) (T : (SMνCharges 
   ring
 
 lemma familyUniversal_accQuad (S : (SMνCharges 1).Charges) :
-    accQuad (familyUniversal n S)  = n * (accQuad S) := by
+    accQuad (familyUniversal n S) = n * (accQuad S) := by
   rw [accQuad_decomp]
   repeat erw [sum_familyUniversal]
   rw [accQuad_decomp]
@@ -201,7 +201,7 @@ lemma familyUniversal_accQuad (S : (SMνCharges 1).Charges) :
 
 lemma familyUniversal_cubeTriLin (S : (SMνCharges 1).Charges) (T R : (SMνCharges n).Charges) :
     cubeTriLin (familyUniversal n S) T R = 6 * S (0 : Fin 6) * ∑ i, (Q T i * Q R i) +
-      3 * S (1 : Fin 6) * ∑ i,  (U T i * U R i) + 3 * S (2 : Fin 6) * ∑ i,  (D T i * D R i)
+      3 * S (1 : Fin 6) * ∑ i, (U T i * U R i) + 3 * S (2 : Fin 6) * ∑ i, (D T i * D R i)
       + 2 * S (3 : Fin 6) * ∑ i, (L T i * L R i) +
       S (4 : Fin 6) * ∑ i, (E T i * E R i) + S (5 : Fin 6) * ∑ i, (N T i * N R i) := by
   rw [cubeTriLin_decomp]

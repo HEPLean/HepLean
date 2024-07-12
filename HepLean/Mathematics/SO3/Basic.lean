@@ -81,7 +81,7 @@ lemma toGL_injective : Function.Injective toGL := by
 def toProd : SO(3) →* (Matrix (Fin 3) (Fin 3) ℝ) × (Matrix (Fin 3) (Fin 3) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
-lemma toProd_eq_transpose  : toProd A = (A.1, ⟨A.1ᵀ⟩) := by
+lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := by
   simp only [toProd, Units.embedProduct, coe_units_inv, MulOpposite.op_inv, toGL, coe_inv,
     MonoidHom.coe_comp, MonoidHom.coe_mk, OneHom.coe_mk, Function.comp_apply, Prod.mk.injEq,
     true_and]
@@ -145,8 +145,8 @@ instance : TopologicalGroup SO(3) :=
 lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
   have h1 : det (A.1 - 1) = - det (A.1 - 1) :=
     calc
-      det (A.1 - 1) = det (A.1 - A.1 *  A.1ᵀ)  := by simp [A.2.2]
-      _ = det A.1 * det (1 -  A.1ᵀ) := by rw [← det_mul, mul_sub, mul_one]
+      det (A.1 - 1) = det (A.1 - A.1 * A.1ᵀ) := by simp [A.2.2]
+      _ = det A.1 * det (1 - A.1ᵀ) := by rw [← det_mul, mul_sub, mul_one]
       _ = det (1 - A.1ᵀ):= by simp [A.2.1]
       _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
       _ = det (1 - A.1) := by simp
@@ -160,7 +160,7 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
   have h1 : det (1 - A.1) = - det (A.1 - 1) := by
     calc
       det (1 - A.1) = det (- (A.1 - 1)) := by simp
-      _ = (- 1) ^ 3  *  det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
       _ = - det (A.1 - 1) := by simp [pow_three]
   rw [h1, det_minus_id]
   simp only [neg_zero]

@@ -16,7 +16,7 @@ that splits into two planes on which every point is a solution to the ACCs.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 open BigOperators
 
 namespace PureU1
@@ -111,7 +111,7 @@ lemma δ₂_δ!₂ (j : Fin n) : δ₂ j = δ!₂ j := by
   simp [δ₂, δ!₂]
   omega
 
-lemma sum_δ  (S : Fin (2 * n + 1) → ℚ) :
+lemma sum_δ (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ₃ + ∑ i : Fin n, ((S ∘ δ₁) i + (S ∘ δ₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin (n + 1 + n), S (Fin.cast (split_odd n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd n)).symm.toEquiv]
@@ -127,7 +127,7 @@ lemma sum_δ  (S : Fin (2 * n + 1) → ℚ) :
   rw [Finset.sum_add_distrib]
   rfl
 
-lemma sum_δ!  (S : Fin (2 * n + 1) → ℚ) :
+lemma sum_δ! (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ!₃ + ∑ i : Fin n, ((S ∘ δ!₁) i + (S ∘ δ!₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin ((1+n)+n), S (Fin.cast (split_odd! n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd! n)).symm.toEquiv]
@@ -210,12 +210,12 @@ lemma basis!_on_δ!₁_other {k j : Fin n} (h : k ≠ j) :
   omega
   rfl
 
-lemma basis_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ₁ k)  (h2 : j ≠ δ₂ k) :
+lemma basis_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ₁ k) (h2 : j ≠ δ₂ k) :
     basisAsCharges k j = 0 := by
   simp [basisAsCharges]
   simp_all only [ne_eq, ↓reduceIte]
 
-lemma basis!_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ!₁ k)  (h2 : j ≠ δ!₂ k) :
+lemma basis!_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ!₁ k) (h2 : j ≠ δ!₂ k) :
     basis!AsCharges k j = 0 := by
   simp [basis!AsCharges]
   simp_all only [ne_eq, ↓reduceIte]
@@ -333,11 +333,11 @@ end theBasisVectors
 /-- Swapping the elements δ!₁ j and δ!₂ j is equivalent to adding a vector basis!AsCharges j. -/
 lemma swap!_as_add {S S' : (PureU1 (2 * n + 1)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n + 1)).linSolRep
-    (pairSwap (δ!₁ j)  (δ!₂ j))) S = S') :
+    (pairSwap (δ!₁ j) (δ!₂ j))) S = S') :
     S'.val = S.val + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j := by
   funext i
   rw [← hS, FamilyPermutations_anomalyFreeLinear_apply]
-  by_cases  hi : i = δ!₁ j
+  by_cases hi : i = δ!₁ j
   subst hi
   simp [HSMul.hSMul, basis!_on_δ!₁_self, pairSwap_inv_fst]
   by_cases hi2 : i = δ!₂ j
@@ -345,7 +345,7 @@ lemma swap!_as_add {S S' : (PureU1 (2 * n + 1)).LinSols} (j : Fin n)
   simp [HSMul.hSMul,basis!_on_δ!₂_self, pairSwap_inv_snd]
   simp [HSMul.hSMul]
   rw [basis!_on_other hi hi2]
-  change  S.val ((pairSwap (δ!₁ j) (δ!₂ j)).invFun i) =_
+  change S.val ((pairSwap (δ!₁ j) (δ!₂ j)).invFun i) =_
   erw [pairSwap_inv_other (Ne.symm hi) (Ne.symm hi2)]
   simp
 
@@ -369,7 +369,7 @@ lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (δ₁ j) = f j := by
   simp only [mul_zero]
   simp only [mem_univ, not_true_eq_false, _root_.mul_eq_zero, IsEmpty.forall_iff]
 
-lemma P!_δ!₁ (f : Fin n → ℚ)  (j : Fin n) : P! f (δ!₁ j) = f j := by
+lemma P!_δ!₁ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₁ j) = f j := by
   rw [P!, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
@@ -418,14 +418,14 @@ lemma Pa_δa₁ (f g : Fin n.succ → ℚ) : Pa f g δa₁ = f 0 := by
   rw [P_δ₁, P!_δ!₃]
   simp
 
-lemma Pa_δa₂ (f g : Fin n.succ → ℚ)  (j : Fin n) : Pa f g (δa₂ j) = f j.succ + g j.castSucc := by
+lemma Pa_δa₂ (f g : Fin n.succ → ℚ) (j : Fin n) : Pa f g (δa₂ j) = f j.succ + g j.castSucc := by
   rw [Pa]
   simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₂_δ₁]
   rw [δa₂_δ!₁]
   rw [P_δ₁, P!_δ!₁]
 
-lemma Pa_δa₃ (f g : Fin n.succ → ℚ)  : Pa f g (δa₃) = g (Fin.last n) := by
+lemma Pa_δa₃ (f g : Fin n.succ → ℚ) : Pa f g (δa₃) = g (Fin.last n) := by
   rw [Pa]
   simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [δa₃_δ₃]
@@ -495,7 +495,7 @@ lemma P!_zero (f : Fin n → ℚ) (h : P! f = 0) : ∀ i, f i = 0 := by
   rw [h]
   rfl
 
-lemma Pa_zero (f g : Fin n.succ → ℚ)  (h : Pa f g = 0) :
+lemma Pa_zero (f g : Fin n.succ → ℚ) (h : Pa f g = 0) :
     ∀ i, f i = 0 := by
   have h₃ := Pa_δa₁ f g
   rw [h] at h₃
@@ -589,7 +589,7 @@ theorem basisa_linear_independent : LinearIndependent ℚ (@basisa n.succ) := by
   simp_all
   simp_all
 
-lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n.succ) → ℚ)  : Pa' f = Pa' f' ↔ f = f' := by
+lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n.succ) → ℚ) : Pa' f = Pa' f' ↔ f = f' := by
   apply Iff.intro
   intro h
   funext i
@@ -610,7 +610,7 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n.succ) → ℚ)  : Pa' f = Pa' f' �
 
 /-! TODO: Replace the definition of `join` with a Mathlib definition, most likely `Sum.elim`. -/
 /-- A helper function for what follows. -/
-def join (g f : Fin n → ℚ) :  Fin n ⊕ Fin n → ℚ := fun i =>
+def join (g f : Fin n → ℚ) : Fin n ⊕ Fin n → ℚ := fun i =>
   match i with
   | .inl i => g i
   | .inr i => f i
@@ -646,7 +646,7 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n.succ → ℚ) :
   rw [← join_ext]
   exact Pa'_eq _ _
 
-lemma basisa_card :  Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
+lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
     FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
   simp only [Fintype.card_sum, Fintype.card_fin]
@@ -658,7 +658,7 @@ noncomputable def basisaAsBasis :
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card
 
 lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
-    ∃ (g f : Fin n.succ → ℚ) , S.val = P g + P! f  := by
+    ∃ (g f : Fin n.succ → ℚ) , S.val = P g + P! f := by
   have h := (mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
   obtain ⟨f, hf⟩ := h
   simp [basisaAsBasis] at hf
@@ -686,7 +686,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     apply SetLike.mem_of_subset
     apply Submodule.subset_span
     simp_all only [Set.mem_range, exists_apply_eq_apply]
-  have hX : X ∈  Submodule.span ℚ (Set.range (basis!AsCharges)) := by
+  have hX : X ∈ Submodule.span ℚ (Set.range (basis!AsCharges)) := by
     apply Submodule.add_mem
     exact hf
     exact hP

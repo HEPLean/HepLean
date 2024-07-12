@@ -27,7 +27,7 @@ noncomputable section
 leading diagonal. -/
 @[simp]
 def phaseShiftMatrix (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  ![![cexp (I * a), 0, 0], ![0,  cexp (I * b), 0], ![0, 0, cexp (I * c)]]
+  ![![cexp (I * a), 0, 0], ![0, cexp (I * b), 0], ![0, 0, cexp (I * c)]]
 
 lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   ext i j
@@ -49,7 +49,7 @@ lemma phaseShiftMatrix_mul (a b c d e f : ℝ) :
   fin_cases i <;> fin_cases j <;>
   simp [Matrix.mul_apply, Fin.sum_univ_three]
   any_goals rw [mul_add, exp_add]
-  change cexp (I * ↑c)  * 0 = 0
+  change cexp (I * ↑c) * 0 = 0
   simp
 
 /-- Given three real numbers `a b c` the unitary matrix with `exp (I * a)` etc on the
@@ -161,7 +161,7 @@ lemma equiv (V : CKMMatrix) (a b c d e f : ℝ) :
   rfl
 
 lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
-    (phaseShiftApply V a b c d e f).1 0 0 = cexp (a * I + d * I) * V.1 0 0  := by
+    (phaseShiftApply V a b c d e f).1 0 0 = cexp (a * I + d * I) * V.1 0 0 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
@@ -173,7 +173,7 @@ lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
   ring_nf
 
 lemma us (V : CKMMatrix) (a b c d e f : ℝ) :
-    (phaseShiftApply V a b c d e f).1 0 1 = cexp (a * I + e * I) * V.1 0 1  := by
+    (phaseShiftApply V a b c d e f).1 0 1 = cexp (a * I + e * I) * V.1 0 1 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
@@ -184,7 +184,7 @@ lemma us (V : CKMMatrix) (a b c d e f : ℝ) :
   ring_nf
 
 lemma ub (V : CKMMatrix) (a b c d e f : ℝ) :
-    (phaseShiftApply V a b c d e f).1 0 2 = cexp (a * I + f * I) * V.1 0 2  := by
+    (phaseShiftApply V a b c d e f).1 0 2 = cexp (a * I + f * I) * V.1 0 2 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
@@ -236,7 +236,7 @@ lemma td (V : CKMMatrix) (a b c d e f : ℝ) :
   simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const,
     cons_val_two, tail_val', head_val', cons_val_one, head_cons, tail_cons, head_fin_const,
     zero_mul, add_zero, mul_zero]
-  change (0 * _  + _ ) * _ + (0 * _  + _ ) * 0 = _
+  change (0 * _ + _ ) * _ + (0 * _ + _ ) * 0 = _
   simp only [Fin.isValue, zero_mul, zero_add, mul_zero, add_zero]
   rw [exp_add]
   ring_nf
@@ -272,7 +272,7 @@ end phaseShiftApply
 def VAbs' (V : unitaryGroup (Fin 3) ℂ) (i j : Fin 3) : ℝ := Complex.abs (V i j)
 
 lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
-    VAbs' V i j = VAbs' U i j  := by
+    VAbs' V i j = VAbs' U i j := by
   simp only [VAbs']
   obtain ⟨a, b, c, e, f, g, h⟩ := h
   rw [h]
@@ -288,7 +288,7 @@ lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
   all_goals change Complex.abs (0 * _ + _) = _
   all_goals simp [Complex.abs_exp]
 
-/-- The absolute value of the `(i,j)`th any representative of `⟦V⟧`.  -/
+/-- The absolute value of the `(i,j)`th any representative of `⟦V⟧`. -/
 def VAbs (i j : Fin 3) : Quotient CKMMatrixSetoid → ℝ :=
   Quotient.lift (fun V => VAbs' V i j) (VAbs'_equiv i j)
 

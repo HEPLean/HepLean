@@ -71,7 +71,7 @@ def special (S : (PlusU1 n).QuadSols) (a b : ℚ) (h1 : α₁ S = 0) (h2 : α₂
     (PlusU1 n).Sols :=
   quadToAF (BL.addQuad S a b) (cube_α₁_α₂_zero S a b h1 h2)
 
-lemma special_on_AF (S : (PlusU1 n).Sols)  (h1 : α₁ S.1 = 0) :
+lemma special_on_AF (S : (PlusU1 n).Sols) (h1 : α₁ S.1 = 0) :
     special S.1 1 0 h1 (α₂_AF S) = S := by
   apply ACCSystem.Sols.ext
   change (BL.addQuad S.1 1 0).val = _
@@ -84,7 +84,7 @@ open QuadSolToSol
 /-- A map from `QuadSols × ℚ × ℚ` to `Sols` taking account of the special and generic cases.
 We will show that this map is a surjection. -/
 def quadSolToSol {n : ℕ} : (PlusU1 n).QuadSols × ℚ × ℚ → (PlusU1 n).Sols := fun S =>
-  if h1 : α₁ S.1 = 0 ∧  α₂ S.1 = 0 then
+  if h1 : α₁ S.1 = 0 ∧ α₂ S.1 = 0 then
     special S.1 S.2.1 S.2.2 h1.1 h1.2
   else
     S.2.1 • generic S.1
@@ -98,7 +98,7 @@ def quadSolToSolInv {n : ℕ} : (PlusU1 n).Sols → (PlusU1 n).QuadSols × ℚ �
   else
     (S.1, (α₁ S.1)⁻¹, 0)
 
-lemma quadSolToSolInv_1 (S : (PlusU1 n).Sols)  :
+lemma quadSolToSolInv_1 (S : (PlusU1 n).Sols) :
     (quadSolToSolInv S).1 = S.1 := by
   simp [quadSolToSolInv]
   split
@@ -110,24 +110,24 @@ lemma quadSolToSolInv_α₁_α₂_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0)
   rw [quadSolToSolInv_1, α₂_AF S, h]
   simp
 
-lemma quadSolToSolInv_α₁_α₂_neq_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠  0) :
-    ¬  (α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0) := by
+lemma quadSolToSolInv_α₁_α₂_neq_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
+    ¬ (α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0) := by
   rw [not_and, quadSolToSolInv_1, α₂_AF S]
   intro hn
   simp_all
 
 lemma quadSolToSolInv_special (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0) :
     special (quadSolToSolInv S).1 (quadSolToSolInv S).2.1 (quadSolToSolInv S).2.2
-    (quadSolToSolInv_α₁_α₂_zero S h).1 (quadSolToSolInv_α₁_α₂_zero S h).2   = S := by
+    (quadSolToSolInv_α₁_α₂_zero S h).1 (quadSolToSolInv_α₁_α₂_zero S h).2 = S := by
   simp [quadSolToSolInv_1]
-  rw [show (quadSolToSolInv S).2.1  = 1 by rw [quadSolToSolInv, if_pos h]]
-  rw [show (quadSolToSolInv S).2.2  = 0 by rw [quadSolToSolInv, if_pos h]]
+  rw [show (quadSolToSolInv S).2.1 = 1 by rw [quadSolToSolInv, if_pos h]]
+  rw [show (quadSolToSolInv S).2.2 = 0 by rw [quadSolToSolInv, if_pos h]]
   rw [special_on_AF]
 
 lemma quadSolToSolInv_generic (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
-    (quadSolToSolInv S).2.1 • generic (quadSolToSolInv S).1  = S := by
+    (quadSolToSolInv S).2.1 • generic (quadSolToSolInv S).1 = S := by
   simp [quadSolToSolInv_1]
-  rw [show (quadSolToSolInv S).2.1  = (α₁ S.1)⁻¹ by rw [quadSolToSolInv, if_neg h]]
+  rw [show (quadSolToSolInv S).2.1 = (α₁ S.1)⁻¹ by rw [quadSolToSolInv, if_neg h]]
   rw [generic_on_AF_α₁_ne_zero S h]
 
 lemma quadSolToSolInv_rightInverse : Function.RightInverse (@quadSolToSolInv n) quadSolToSol := by

@@ -76,7 +76,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
       rw [swap, map_smul]
       exact congrArg (HMul.hMul a) (swap T S)
   }
-  map_smul' := fun a S  => LinearMap.ext fun T => map_smul a S T
+  map_smul' := fun a S => LinearMap.ext fun T => map_smul a S T
   map_add' := fun S1 S2 => LinearMap.ext fun T => map_add S1 S2 T
   swap' := swap
 
@@ -87,7 +87,7 @@ lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a *
 lemma swap (f : BiLinearSymm V) (S T : V) : f S T = f T S :=
   f.swap' S T
 
-lemma map_smul₂ (f : BiLinearSymm V) (a : ℚ)  (S : V) (T : V) : f S (a • T) = a * f S T := by
+lemma map_smul₂ (f : BiLinearSymm V) (a : ℚ) (S : V) (T : V) : f S (a • T) = a * f S T := by
   rw [f.swap, f.map_smul₁, f.swap]
 
 lemma map_add₁ (f : BiLinearSymm V) (S1 S2 T : V) : f (S1 + S2) T = f S1 T + f S2 T := by
@@ -108,7 +108,7 @@ def toLinear₁ (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
 
 lemma toLinear₁_apply (f : BiLinearSymm V) (S T : V) : f S T = f.toLinear₁ T S := rfl
 
-lemma map_sum₁ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V)  :
+lemma map_sum₁ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
     f (∑ i, S i) T = ∑ i, f (S i) T := by
   rw [f.toLinear₁_apply]
   rw [map_sum]
@@ -173,7 +173,7 @@ namespace TriLinearSymm
 open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
-instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ )  where
+instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ ) where
   coe f := f.toFun
   coe_injective' f g h := by
     cases f
@@ -251,7 +251,7 @@ lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
   rw [f.swap₃, f.map_add₁, f.swap₃, f.swap₃ L2 T S]
 
 /-- Fixing the second and third input vectors, the resulting linear map. -/
-def toLinear₁  (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
+def toLinear₁ (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
   toFun S := f S T L
   map_add' S1 S2 := by
     simp only [f.map_add₁]

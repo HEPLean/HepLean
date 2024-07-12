@@ -31,7 +31,7 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   simp [det_mul, det_dual] at h1
   exact mul_self_eq_one_iff.mp h1
 
-local notation  "ℤ₂" => Multiplicative (ZMod 2)
+local notation "ℤ₂" => Multiplicative (ZMod 2)
 
 instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
@@ -51,7 +51,7 @@ def coeForℤ₂ : C(({-1, 1} : Set ℝ), ℤ₂) where
 
 /-- The continuous map taking a Lorentz matrix to its determinant. -/
 def detContinuous : C(𝓛 d, ℤ₂) :=
-  ContinuousMap.comp  coeForℤ₂ {
+  ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨Λ.1.det, Or.symm (LorentzGroup.det_eq_one_or_neg_one _)⟩,
     continuous_toFun := by
       refine Continuous.subtype_mk ?_ _
@@ -65,7 +65,7 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
   intro h
   simp [detContinuous] at h
   cases' det_eq_one_or_neg_one Λ with h1 h1
-    <;> cases'  det_eq_one_or_neg_one Λ' with h2 h2
+    <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
     <;> simp_all [h1, h2, h]
   rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
   · change (0 : Fin 2) = (1 : Fin 2) at h

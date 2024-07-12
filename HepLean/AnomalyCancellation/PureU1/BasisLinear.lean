@@ -84,7 +84,7 @@ noncomputable
 def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
   toFun S := Finsupp.equivFunOnFinite.invFun (S.1 ∘ Fin.castSucc)
   map_add' S T := Finsupp.ext (congrFun rfl)
-  map_smul' a S :=  Finsupp.ext (congrFun rfl)
+  map_smul' a S := Finsupp.ext (congrFun rfl)
   invFun f := ∑ i : Fin n, f i • asLinSols i
   left_inv S := by
     simp only [PureU1_numberCharges, Equiv.invFun_as_coe, Finsupp.equivFunOnFinite_symm_apply_toFun,
@@ -92,7 +92,7 @@ def coordinateMap : ((PureU1 n.succ).LinSols) ≃ₗ[ℚ] Fin n →₀ ℚ where
     apply pureU1_anomalyFree_ext
     intro j
     rw [sum_of_vectors]
-    simp only [HSMul.hSMul, SMul.smul,  PureU1_numberCharges,
+    simp only [HSMul.hSMul, SMul.smul, PureU1_numberCharges,
       asLinSols_val, Equiv.toFun_as_coe,
       Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
     rw [Finset.sum_eq_single j]
@@ -127,7 +127,7 @@ instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
 
 lemma finrank_AnomalyFreeLinear :
     FiniteDimensional.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by
-  have h  :=  Module.mk_finrank_eq_card_basis (@asBasis n)
+  have h := Module.mk_finrank_eq_card_basis (@asBasis n)
   simp only [Nat.succ_eq_add_one, finrank_eq_rank, Cardinal.mk_fintype, Fintype.card_fin] at h
   exact FiniteDimensional.finrank_eq_of_rank_eq h
 

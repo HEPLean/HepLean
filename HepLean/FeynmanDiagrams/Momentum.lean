@@ -45,8 +45,8 @@ We define the direct sum of the edge and vertex momentum spaces.
 -/
 
 /-- The type which assocaites to each half-edge a `1`-dimensional vector space.
- Corresponding to that spanned by its momentum.  -/
-def HalfEdgeMomenta : Type :=  F.𝓱𝓔 → ℝ
+ Corresponding to that spanned by its momentum. -/
+def HalfEdgeMomenta : Type := F.𝓱𝓔 → ℝ
 
 instance : AddCommGroup F.HalfEdgeMomenta := Pi.addCommGroup
 
@@ -54,14 +54,14 @@ instance : Module ℝ F.HalfEdgeMomenta := Pi.module _ _ _
 
 /-- An auxillary function used to define the Euclidean inner product on `F.HalfEdgeMomenta`. -/
 def euclidInnerAux (x : F.HalfEdgeMomenta) : F.HalfEdgeMomenta →ₗ[ℝ] ℝ where
-  toFun y := ∑ i,  (x i) * (y i)
+  toFun y := ∑ i, (x i) * (y i)
   map_add' z y :=
     show (∑ i, (x i) * (z i + y i)) = (∑ i, x i * z i) + ∑ i, x i * (y i) by
       simp only [mul_add, Finset.sum_add_distrib]
   map_smul' c y :=
     show (∑ i, x i * (c * y i)) = c * ∑ i, x i * y i by
       rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl (fun _ _  => by ring)
+      refine Finset.sum_congr rfl (fun _ _ => by ring)
 
 lemma euclidInnerAux_symm (x y : F.HalfEdgeMomenta) :
     F.euclidInnerAux x y = F.euclidInnerAux y x := Finset.sum_congr rfl (fun _ _ => by ring)
@@ -70,15 +70,15 @@ lemma euclidInnerAux_symm (x y : F.HalfEdgeMomenta) :
 def euclidInner : F.HalfEdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta →ₗ[ℝ] ℝ where
   toFun x := F.euclidInnerAux x
   map_add' x y := by
-    refine LinearMap.ext (fun z  => ?_)
+    refine LinearMap.ext (fun z => ?_)
     simp only [euclidInnerAux_symm, map_add, LinearMap.add_apply]
   map_smul' c x := by
-    refine LinearMap.ext (fun z  => ?_)
+    refine LinearMap.ext (fun z => ?_)
     simp only [euclidInnerAux_symm, LinearMapClass.map_smul, smul_eq_mul, RingHom.id_apply,
       LinearMap.smul_apply]
 
 /-- The type which assocaites to each ege a `1`-dimensional vector space.
- Corresponding to that spanned by its total outflowing momentum.  -/
+ Corresponding to that spanned by its total outflowing momentum. -/
 def EdgeMomenta : Type := F.𝓔 → ℝ
 
 instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
@@ -86,7 +86,7 @@ instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
 instance : Module ℝ F.EdgeMomenta := Pi.module _ _ _
 
 /-- The type which assocaites to each ege a `1`-dimensional vector space.
- Corresponding to that spanned by its total inflowing momentum.  -/
+ Corresponding to that spanned by its total inflowing momentum. -/
 def VertexMomenta : Type := F.𝓥 → ℝ
 
 instance : AddCommGroup F.VertexMomenta := Pi.addCommGroup
@@ -96,8 +96,8 @@ instance : Module ℝ F.VertexMomenta := Pi.module _ _ _
 /-- The map from `Fin 2` to `Type` landing on `EdgeMomenta` and `VertexMomenta`. -/
 def EdgeVertexMomentaMap : Fin 2 → Type := fun i =>
   match i with
-  | 0 =>  F.EdgeMomenta
-  | 1 =>  F.VertexMomenta
+  | 0 => F.EdgeMomenta
+  | 1 => F.VertexMomenta
 
 instance (i : Fin 2) : AddCommGroup (EdgeVertexMomentaMap F i) :=
   match i with

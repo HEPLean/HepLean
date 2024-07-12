@@ -16,7 +16,7 @@ We define the group of permutations for the SM charges with RHN.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace SMRHN
 
@@ -69,36 +69,36 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMνCharges n).C
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
   erw [repCharges_toSpecies]
-  change  ∑ i : Fin n, ((fun a => a ^ m) ∘ _) (⇑(f⁻¹ _) i) = ∑ i : Fin n, ((fun a => a ^ m) ∘ _) i
+  change ∑ i : Fin n, ((fun a => a ^ m) ∘ _) (⇑(f⁻¹ _) i) = ∑ i : Fin n, ((fun a => a ^ m) ∘ _) i
   refine Equiv.Perm.sum_comp _ _ _ ?_
   simp only [PermGroup, Fin.isValue, Pi.inv_apply, ne_eq, coe_univ, Set.subset_univ]
 
-lemma accGrav_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accGrav_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accGrav (repCharges f S) = accGrav S :=
   accGrav_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accSU2_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accSU2_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accSU2 (repCharges f S) = accSU2 S :=
   accSU2_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accSU3_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accSU3_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accSU3 (repCharges f S) = accSU3 S :=
   accSU3_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accYY_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accYY_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accYY (repCharges f S) = accYY S :=
   accYY_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accQuad_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accQuad_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accQuad (repCharges f S) = accQuad S :=
   accQuad_ext
     (toSpecies_sum_invariant 2 f S)
 
-lemma accCube_invariant (f : PermGroup n) (S : (SMνCharges n).Charges)  :
+lemma accCube_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accCube (repCharges f S) = accCube S :=
   accCube_ext
     (by simpa using toSpecies_sum_invariant 3 f S)

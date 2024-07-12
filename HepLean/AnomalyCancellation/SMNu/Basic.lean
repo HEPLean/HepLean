@@ -28,7 +28,7 @@ def SMνSpecies (n : ℕ) : ACCSystemCharges := ACCSystemChargesMk n
 
 namespace SMνCharges
 
-variable  {n : ℕ}
+variable {n : ℕ}
 
 /-- An equivalence between `(SMνCharges n).charges` and `(Fin 6 → Fin n → ℚ)`
 splitting the charges into species.-/
@@ -54,12 +54,12 @@ lemma charges_eq_toSpecies_eq (S T : (SMνCharges n).Charges) :
   funext i
   exact h i
 
-lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f :  (Fin 6 → Fin n → ℚ) ) :
+lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : (Fin 6 → Fin n → ℚ) ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
   change (toSpeciesEquiv ∘ toSpeciesEquiv.symm ) _ i = f i
   simp
 
-lemma toSpecies_one  (S : (SMνCharges 1).Charges) (j : Fin 6) :
+lemma toSpecies_one (S : (SMνCharges 1).Charges) (j : Fin 6) :
     toSpecies j S ⟨0, by simp⟩ = S j := by
   match j with
   | 0 => rfl
@@ -88,7 +88,7 @@ namespace SMνACCs
 
 open SMνCharges
 
-variable  {n : ℕ}
+variable {n : ℕ}
 
 /-- The gravitational anomaly equation. -/
 @[simp]
@@ -97,7 +97,7 @@ def accGrav : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp  [Pi.add_apply, mul_add]
+    simp [Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -119,7 +119,7 @@ lemma accGrav_decomp (S : (SMνCharges n).Charges) :
 
 /-- Extensionality lemma for `accGrav`. -/
 lemma accGrav_ext {S T : (SMνCharges n).Charges}
-    (hj : ∀ (j : Fin 6),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accGrav S = accGrav T := by
   rw [accGrav_decomp, accGrav_decomp]
   repeat erw [hj]
@@ -131,7 +131,7 @@ def accSU2 : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp  [Pi.add_apply, mul_add]
+    simp [Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -152,7 +152,7 @@ lemma accSU2_decomp (S : (SMνCharges n).Charges) :
 
 /-- Extensionality lemma for `accSU2`. -/
 lemma accSU2_ext {S T : (SMνCharges n).Charges}
-    (hj : ∀ (j : Fin 6),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU2 S = accSU2 T := by
   rw [accSU2_decomp, accSU2_decomp]
   repeat erw [hj]
@@ -164,7 +164,7 @@ def accSU3 : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp  [ Pi.add_apply, mul_add]
+    simp [ Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -185,7 +185,7 @@ lemma accSU3_decomp (S : (SMνCharges n).Charges) :
 
 /-- Extensionality lemma for `accSU3`. -/
 lemma accSU3_ext {S T : (SMνCharges n).Charges}
-    (hj : ∀ (j : Fin 6),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU3 S = accSU3 T := by
   rw [accSU3_decomp, accSU3_decomp]
   repeat rw [hj]
@@ -198,7 +198,7 @@ def accYY : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp  [Pi.add_apply, mul_add]
+    simp [Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -219,7 +219,7 @@ lemma accYY_decomp (S : (SMνCharges n).Charges) :
 
 /-- Extensionality lemma for `accYY`. -/
 lemma accYY_ext {S T : (SMνCharges n).Charges}
-    (hj : ∀ (j : Fin 6),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accYY S = accYY T := by
   rw [accYY_decomp, accYY_decomp]
   repeat rw [hj]
@@ -259,8 +259,8 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
     ring)
 
 lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
-    quadBiLin S T = ∑ i, Q S i * Q T i  - 2 *  ∑ i, U S i * U T i +
-       ∑ i, D S i * D T i -  ∑ i, L S i * L T i +  ∑ i, E S i * E T i := by
+    quadBiLin S T = ∑ i, Q S i * Q T i - 2 * ∑ i, U S i * U T i +
+       ∑ i, D S i * D T i - ∑ i, L S i * L T i + ∑ i, E S i * E T i := by
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
   simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
@@ -271,7 +271,7 @@ lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
 
 /-- The quadratic anomaly cancellation condition. -/
 @[simp]
-def accQuad  : HomogeneousQuadratic (SMνCharges n).Charges :=
+def accQuad : HomogeneousQuadratic (SMνCharges n).Charges :=
   (@quadBiLin n).toHomogeneousQuad
 
 lemma accQuad_decomp (S : (SMνCharges n).Charges) :
@@ -296,8 +296,8 @@ def cubeTriLin : TriLinearSymm (SMνCharges n).Charges := TriLinearSymm.mk₃
     + 3 * ((U S.1 i) * (U S.2.1 i) * (U S.2.2 i))
     + 3 * ((D S.1 i) * (D S.2.1 i) * (D S.2.2 i))
     + 2 * ((L S.1 i) * (L S.2.1 i) * (L S.2.2 i))
-    +  ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))
-    +  ((N S.1 i) * (N S.2.1 i) * (N S.2.2 i))))
+    + ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))
+    + ((N S.1 i) * (N S.2.1 i) * (N S.2.2 i))))
   (by
     intro a S T R
     simp only
@@ -330,8 +330,8 @@ def cubeTriLin : TriLinearSymm (SMνCharges n).Charges := TriLinearSymm.mk₃
     ring)
 
 lemma cubeTriLin_decomp (S T R : (SMνCharges n).Charges) :
-    cubeTriLin S T R = 6 * ∑ i, (Q S i * Q T i * Q R i) + 3 * ∑ i,  (U S i * U T i * U R i) +
-      3 * ∑ i,  (D S i * D T i * D R i) + 2 * ∑ i, (L S i * L T i * L R i) +
+    cubeTriLin S T R = 6 * ∑ i, (Q S i * Q T i * Q R i) + 3 * ∑ i, (U S i * U T i * U R i) +
+      3 * ∑ i, (D S i * D T i * D R i) + 2 * ∑ i, (L S i * L T i * L R i) +
       ∑ i, (E S i * E T i * E R i) + ∑ i, (N S i * N T i * N R i) := by
   erw [← cubeTriLin.toFun_eq_coe]
   rw [cubeTriLin]

@@ -13,7 +13,7 @@ We define an equivalence between `LinSols` and `Sols`.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace PureU1
 
