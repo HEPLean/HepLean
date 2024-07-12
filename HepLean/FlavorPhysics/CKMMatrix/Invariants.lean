@@ -28,10 +28,10 @@ namespace Invariant
 def jarlskogℂCKM (V : CKMMatrix) : ℂ :=
   [V]us * [V]cb * conj [V]ub * conj [V]cs
 
-lemma jarlskogℂCKM_equiv  (V U : CKMMatrix) (h : V ≈ U) :
+lemma jarlskogℂCKM_equiv (V U : CKMMatrix) (h : V ≈ U) :
     jarlskogℂCKM V = jarlskogℂCKM U := by
   obtain ⟨a, b, c, e, f, g, h⟩ := h
-  change V = phaseShiftApply U a b c e f g  at h
+  change V = phaseShiftApply U a b c e f g at h
   rw [h]
   simp only [jarlskogℂCKM, Fin.isValue, phaseShiftApply.ub,
   phaseShiftApply.us, phaseShiftApply.cb, phaseShiftApply.cs]
@@ -51,8 +51,8 @@ def jarlskogℂ : Quotient CKMMatrixSetoid → ℂ :=
 /-- An invariant for CKM mtrices corresponding to the square of the absolute values
  of the `us`, `ub` and `cb` elements multipled together divied by `(VudAbs V ^ 2 + VusAbs V ^2)` .
  -/
-def VusVubVcdSq (V : Quotient CKMMatrixSetoid) : ℝ  :=
-    VusAbs V ^ 2 * VubAbs V ^ 2  * VcbAbs V ^2 / (VudAbs V ^ 2 + VusAbs V ^2)
+def VusVubVcdSq (V : Quotient CKMMatrixSetoid) : ℝ :=
+    VusAbs V ^ 2 * VubAbs V ^ 2 * VcbAbs V ^2 / (VudAbs V ^ 2 + VusAbs V ^2)
 
 /-- An invariant for CKM matrices. The argument of this invariant is `δ₁₃` in the
 standard parameterization. -/

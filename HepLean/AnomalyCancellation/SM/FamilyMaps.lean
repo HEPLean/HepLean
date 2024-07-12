@@ -37,7 +37,7 @@ def chargesMapOfSpeciesMap {n m : ℕ} (f : (SMSpecies n).Charges →ₗ[ℚ] (S
     rw [map_smul]
     rfl
 
-/-- The projection of the `m`-family charges onto the first `n`-family charges for species.  -/
+/-- The projection of the `m`-family charges onto the first `n`-family charges for species. -/
 @[simps!]
 def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
     (SMSpecies m).Charges →ₗ[ℚ] (SMSpecies n).Charges where
@@ -50,12 +50,12 @@ def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
     simp [HSMul.hSMul]
     --rw [show Rat.cast a = a from rfl]
 
-/-- The projection of the `m`-family charges onto the first `n`-family charges.  -/
+/-- The projection of the `m`-family charges onto the first `n`-family charges. -/
 def familyProjection {m n : ℕ} (h : n ≤ m) : (SMCharges m).Charges →ₗ[ℚ] (SMCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesFamilyProj h)
 
 /-- For species, the embedding of the `m`-family charges onto the `n`-family charges, with all
-other charges zero.  -/
+other charges zero. -/
 @[simps!]
 def speciesEmbed (m n : ℕ) :
     (SMSpecies m).Charges →ₗ[ℚ] (SMSpecies n).Charges where
@@ -80,7 +80,7 @@ def speciesEmbed (m n : ℕ) :
     simp
 
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
-other charges zero.  -/
+other charges zero. -/
 def familyEmbedding (m n : ℕ) : (SMCharges m).Charges →ₗ[ℚ] (SMCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesEmbed m n)
 

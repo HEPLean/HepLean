@@ -38,17 +38,17 @@ namespace SMNoGrav
 
 variable {n : ℕ}
 
-lemma SU2Sol  (S : (SMNoGrav n).LinSols) : accSU2 S.val = 0 := by
+lemma SU2Sol (S : (SMNoGrav n).LinSols) : accSU2 S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 0
 
-lemma SU3Sol  (S : (SMNoGrav n).LinSols) : accSU3 S.val = 0 := by
+lemma SU3Sol (S : (SMNoGrav n).LinSols) : accSU3 S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 1
 
-lemma cubeSol  (S : (SMNoGrav n).Sols) : accCube S.val = 0 := by
+lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := by
   exact S.cubicSol
 
 /-- An element of `charges` which satisfies the linear ACCs
@@ -86,7 +86,7 @@ def chargeToAF (S : (SMNoGrav n).Charges) (hSU2 : accSU2 S = 0) (hSU3 : accSU3 S
     (hc : accCube S = 0) : (SMNoGrav n).Sols :=
   quadToAF (chargeToQuad S hSU2 hSU3) hc
 
-/-- An element of `LinSols` which satisfies the  quadratic and cubic ACCs
+/-- An element of `LinSols` which satisfies the quadratic and cubic ACCs
   gives us a element of `Sols`. -/
 def linearToAF (S : (SMNoGrav n).LinSols)
     (hc : accCube S.val = 0) : (SMNoGrav n).Sols :=

@@ -146,7 +146,7 @@ def InCubeSolProp (R : MSSMACC.Sols) : Prop :=
 /-- A rational which has two properties. It is zero for a solution `T` if and only if
 that solution satisfies `inCubeSolProp`. It appears in the definition of `inLineEqProj`. -/
 def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
-    3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin T.val T.val Y₃.val ^ 2  +
+    3 * (dot Y₃.val B₃.val) ^ 3 * (cubeTriLin T.val T.val Y₃.val ^ 2 +
     cubeTriLin T.val T.val B₃.val ^ 2 )
 
 lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
@@ -243,7 +243,7 @@ def toSolNSProj (T : MSSMACC.Sols) : MSSMACC.AnomalyFreePerp × ℚ × ℚ × �
 lemma toSolNS_proj (T : NotInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val := by
   apply ACCSystem.Sols.ext
   rw [toSolNS, toSolNSProj]
-  change (lineEqCoeff T.val)⁻¹ • (toSolNSQuad _).1.1 =  _
+  change (lineEqCoeff T.val)⁻¹ • (toSolNSQuad _).1.1 = _
   rw [toSolNSQuad_eq_planeY₃B₃_on_α]
   rw [planeY₃B₃_val]
   rw [Y₃_plus_B₃_plus_proj]
@@ -254,7 +254,7 @@ lemma toSolNS_proj (T : NotInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val :=
     rw [lineEqCoeff]
     ring
   rw [h1]
-  have h1 :=  (lineEqPropSol_iff_lineEqCoeff_zero T.val).mpr.mt T.prop
+  have h1 := (lineEqPropSol_iff_lineEqCoeff_zero T.val).mpr.mt T.prop
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h1]
   simp
 
@@ -302,7 +302,7 @@ lemma inLineEqToSol_proj (T : InLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
   simp
 
 /-- Given a element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
-def inQuadToSol : InQuad × ℚ × ℚ × ℚ →  MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
+def inQuadToSol : InQuad × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
   AnomalyFreeMk' (lineCube R.val.val a₁ a₂ a₃)
     (by
       erw [planeY₃B₃_quad]
@@ -391,8 +391,8 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
 
 /-- Given an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` a solution. We will
 show that this map is a surjection. -/
-def toSol : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ  →  MSSMACC.Sols := fun (R, a, b, c) =>
-  if h₃ : LineEqProp R ∧ InQuadProp R ∧ InCubeProp R  then
+def toSol : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, b, c) =>
+  if h₃ : LineEqProp R ∧ InQuadProp R ∧ InCubeProp R then
     inQuadCubeToSol (⟨⟨⟨R, h₃.1⟩, h₃.2.1⟩, h₃.2.2⟩, a, b, c)
   else
     if h₂ : LineEqProp R ∧ InQuadProp R then

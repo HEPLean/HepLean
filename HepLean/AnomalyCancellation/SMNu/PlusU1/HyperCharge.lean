@@ -26,11 +26,11 @@ def Y₁ : (PlusU1 1).Sols where
   val := fun i =>
     match i with
     | (0 : Fin 6) => 1
-    | (1 : Fin 6)  => -4
-    | (2 : Fin 6)  => 2
-    | (3 : Fin 6)  => -3
-    | (4 : Fin 6)  => 6
-    | (5 : Fin 6)  => 0
+    | (1 : Fin 6) => -4
+    | (2 : Fin 6) => 2
+    | (3 : Fin 6) => -3
+    | (4 : Fin 6) => 6
+    | (5 : Fin 6) => 0
   linearSol := by
     intro i
     simp at i
@@ -89,7 +89,7 @@ lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ): addQuad S a 0 = a • S 
   rfl
 
 lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
-    cubeTriLin (Y n).val (Y n).val S =  6 * accYY S := by
+    cubeTriLin (Y n).val (Y n).val S = 6 * accYY S := by
   erw [familyUniversal_cubeTriLin']
   rw [accYY_decomp]
   simp only [Fin.isValue, Y₁_val, mul_one, SMνSpecies_numberCharges, toSpecies_apply, mul_neg,
@@ -103,7 +103,7 @@ lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
   simp
 
 lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
-    cubeTriLin (Y n).val S S =  6 * accQuad S := by
+    cubeTriLin (Y n).val S S = 6 * accQuad S := by
   erw [familyUniversal_cubeTriLin]
   rw [accQuad_decomp]
   simp only [Fin.isValue, Y₁_val, mul_one, SMνSpecies_numberCharges, toSpecies_apply, mul_neg,
@@ -127,7 +127,7 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
   ring
 
 lemma add_AFQ_cube (S : (PlusU1 n).QuadSols) (a b : ℚ) :
-    accCube (a • S.val + b • (Y n).val) = a ^ 3 *  accCube S.val := by
+    accCube (a • S.val + b • (Y n).val) = a ^ 3 * accCube S.val := by
   rw [add_AFL_cube]
   rw [cubeTriLin.swap₃]
   rw [on_cubeTriLin'_ALQ]

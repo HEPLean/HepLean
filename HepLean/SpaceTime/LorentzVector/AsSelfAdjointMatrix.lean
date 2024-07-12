@@ -81,7 +81,7 @@ noncomputable def toSelfAdjointMatrix :
     rw [← h01, RCLike.conj_eq_re_sub_im]
     rfl
     exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2 )
-  map_add' x y  := by
+  map_add' x y := by
     ext i j : 2
     simp only [toSelfAdjointMatrix'_coe, add_apply, ofReal_add, of_apply, cons_val', empty_val',
       cons_val_fin_one, AddSubmonoid.coe_add, AddSubgroup.coe_toAddSubmonoid, Matrix.add_apply]
@@ -109,22 +109,22 @@ noncomputable def toSelfAdjointMatrix :
     simp only [toSelfAdjointMatrix'_coe, Fin.isValue, of_apply, cons_val', empty_val',
       cons_val_fin_one, RingHom.id_apply, selfAdjoint.val_smul, smul_apply, real_smul]
     fin_cases i <;> fin_cases j
-    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0)  from rfl]
-      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2)  from rfl]
+    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0) from rfl]
+      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2) from rfl]
       simp only [Fin.isValue, ofReal_mul, Fin.zero_eta, cons_val_zero]
       ring
-    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0)  from rfl]
-      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1)  from rfl]
+    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0) from rfl]
+      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1) from rfl]
       simp only [Fin.isValue, ofReal_mul, Fin.mk_one, cons_val_one, head_cons, Fin.zero_eta,
         cons_val_zero]
       ring
-    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0)  from rfl]
-      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1)  from rfl]
+    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0) from rfl]
+      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1) from rfl]
       simp only [Fin.isValue, ofReal_mul, Fin.zero_eta, cons_val_zero, Fin.mk_one, cons_val_one,
         head_fin_const]
       ring
-    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0)  from rfl]
-      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2)  from rfl]
+    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0) from rfl]
+      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2) from rfl]
       simp only [Fin.isValue, ofReal_mul, Fin.mk_one, cons_val_one, head_cons, head_fin_const]
       ring
 

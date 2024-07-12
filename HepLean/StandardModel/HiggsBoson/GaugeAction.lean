@@ -34,9 +34,9 @@ open ComplexConjugate
 @[simps!]
 noncomputable def higgsRepUnitary : GaugeGroup →* unitaryGroup (Fin 2) ℂ where
   toFun g := repU1 g.2.2 * fundamentalSU2 g.2.1
-  map_mul'  := by
+  map_mul' := by
     intro ⟨_, a2, a3⟩ ⟨_, b2, b3⟩
-    change repU1 (a3 * b3) *  fundamentalSU2 (a2 * b2) = _
+    change repU1 (a3 * b3) * fundamentalSU2 (a2 * b2) = _
     rw [repU1.map_mul, fundamentalSU2.map_mul, mul_assoc, mul_assoc,
       ← mul_assoc (repU1 b3) _ _, repU1_fundamentalSU2_commute]
     repeat rw [mul_assoc]
@@ -97,31 +97,31 @@ def rotateMatrix (φ : HiggsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
 
 lemma rotateMatrix_star (φ : HiggsVec) :
     star φ.rotateMatrix =
-    ![![conj (φ 1) /‖φ‖ ,  φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖ , φ 1 / ‖φ‖] ] := by
+    ![![conj (φ 1) /‖φ‖ , φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖ , φ 1 / ‖φ‖] ] := by
   simp_rw [star, rotateMatrix, conjTranspose]
   ext i j
   fin_cases i <;> fin_cases j <;> simp [conj_ofReal]
 
 lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det = 1 := by
-  have h1 : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+  have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   field_simp [rotateMatrix, det_fin_two]
   rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
     Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
 
 lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ unitaryGroup (Fin 2) ℂ := by
   rw [mem_unitaryGroup_iff', rotateMatrix_star, rotateMatrix]
   erw [mul_fin_two, one_fin_two]
-  have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+  have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   ext i j
   fin_cases i <;> fin_cases j <;> field_simp
   <;> rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  · simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  · simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
   · ring_nf
   · ring_nf
-  · simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+  · simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
 
 lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :
@@ -147,10 +147,10 @@ lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
   · simp only [Fin.mk_one, Fin.isValue, cons_val_one, head_cons, mulVec, Fin.isValue,
     cons_val', empty_val', cons_val_fin_one, vecHead, cons_dotProduct, vecTail, Nat.succ_eq_add_one,
     Nat.reduceAdd, Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
-    have : (‖φ‖ : ℂ)  ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
+    have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     field_simp
     rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-    simp [PiLp.inner_apply, Complex.inner,  neg_mul, sub_neg_eq_add,
+    simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
 
 theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
@@ -166,7 +166,7 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
 end HiggsVec
 
 /-! TODO: Define the global gauge action on HiggsField. -/
-/-! TODO: Prove `⟪φ1, φ2⟫_H`  invariant under the global gauge action. (norm_map_of_mem_unitary) -/
+/-! TODO: Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary) -/
 /-! TODO: Prove invariance of potential under global gauge action. -/
 
 end StandardModel

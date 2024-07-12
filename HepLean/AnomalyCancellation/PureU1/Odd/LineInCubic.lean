@@ -34,10 +34,10 @@ open BigOperators
 variable {n : ℕ}
 open VectorLikeOddPlane
 
-/-- A  property on `LinSols`, satisfied if every point on the line between the two planes
+/-- A property on `LinSols`, satisfied if every point on the line between the two planes
 in the basis through that point is in the cubic. -/
 def LineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
-  ∀ (g f : Fin n → ℚ)  (_ : S.val = Pa g f) (a b : ℚ) ,
+  ∀ (g f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ) ,
   accCube (2 * n + 1) (a • P g + b • P! f) = 0
 
 lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
@@ -55,18 +55,18 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) 
   ring
 
 lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
-    ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val =  P g + P! f),
+    ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f),
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1 ) -
      (lineInCubic_expand h g f hS 1 2 ) / 6
 
-/-- We say a `LinSol` satisfies  `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
+/-- We say a `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (M : (FamilyPermutations (2 * n + 1)).group ),
     LineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
 
-/-- If `lineInCubicPerm S` then `lineInCubic S`.  -/
+/-- If `lineInCubicPerm S` then `lineInCubic S`. -/
 lemma lineInCubicPerm_self {S : (PureU1 (2 * n + 1)).LinSols} (hS : LineInCubicPerm S) :
     LineInCubic S := hS 1
 
@@ -89,7 +89,7 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
       (S.val (δ!₂ j) - S.val (δ!₁ j))
       * accCubeTriLinSymm (P g) (P g) (basis!AsCharges j) = 0 := by
   intro j g f h
-  let S' :=  (FamilyPermutations (2 * n.succ + 1)).linSolRep
+  let S' := (FamilyPermutations (2 * n.succ + 1)).linSolRep
     (pairSwap (δ!₁ j) (δ!₂ j)) S
   have hSS' : ((FamilyPermutations (2 * n.succ + 1)).linSolRep
     (pairSwap (δ!₁ j) (δ!₂ j))) S = S' := rfl
@@ -119,7 +119,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   have h2 := Pa_δa₂ f g 0
   rw [← hS] at h1 h2 h4
   simp at h2
-  have h5 : f 1 = S.val (δa₂ 0) +  S.val δa₁ +  S.val (δa₄ 0):= by
+  have h5 : f 1 = S.val (δa₂ 0) + S.val δa₁ + S.val (δa₄ 0):= by
      linear_combination -(1 * h1) - 1 * h4 - 1 * h2
   rw [h5]
   rw [δa₄_δ!₂]
@@ -133,7 +133,7 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
     (LIC : LineInCubicPerm S) :
     LineInPlaneProp ((S.val (δ!₂ 0)), ((S.val (δ!₁ 0)), (S.val δ!₃))) := by
   obtain ⟨g, f, hfg⟩ := span_basis S
-  have h1 := lineInCubicPerm_swap LIC  0 g f hfg
+  have h1 := lineInCubicPerm_swap LIC 0 g f hfg
   rw [P_P_P!_accCube' g f hfg] at h1
   simp at h1
   cases h1 <;> rename_i h1
@@ -147,7 +147,7 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
   apply Or.inr
   linear_combination h1
 
-lemma lineInCubicPerm_last_perm  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
+lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : LineInPlaneCond S := by
   refine @Prop_three (2 * n.succ.succ + 1) LineInPlaneProp S (δ!₂ 0) (δ!₁ 0)
     δ!₃ ?_ ?_ ?_ ?_
@@ -157,11 +157,11 @@ lemma lineInCubicPerm_last_perm  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   intro M
   exact lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 
-lemma lineInCubicPerm_constAbs  {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
+lemma lineInCubicPerm_constAbs {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : ConstAbs S.val :=
   linesInPlane_constAbs (lineInCubicPerm_last_perm LIC)
 
-theorem  lineInCubicPerm_zero {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
+theorem lineInCubicPerm_zero {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : S = 0 :=
   ConstAbs.boundary_value_odd S (lineInCubicPerm_constAbs LIC)
 

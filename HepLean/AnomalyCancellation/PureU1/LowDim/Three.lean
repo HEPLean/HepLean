@@ -14,7 +14,7 @@ We define a surjective map from `LinSols` with a charge equal to zero to `Sols`.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace PureU1
 

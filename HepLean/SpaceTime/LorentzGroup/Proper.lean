@@ -31,7 +31,7 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   simp [det_mul, det_dual] at h1
   exact mul_self_eq_one_iff.mp h1
 
-local notation  "ℤ₂" => Multiplicative (ZMod 2)
+local notation "ℤ₂" => Multiplicative (ZMod 2)
 
 instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
@@ -42,7 +42,7 @@ instance : TopologicalGroup ℤ₂ := TopologicalGroup.mk
 
 /-- A continuous function from `({-1, 1} : Set ℝ)` to `ℤ₂`. -/
 @[simps!]
-def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
+def coeForℤ₂ : C(({-1, 1} : Set ℝ), ℤ₂) where
   toFun x := if x = ⟨1, Set.mem_insert_of_mem (-1) rfl⟩
     then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
   continuous_toFun := by
@@ -50,8 +50,8 @@ def coeForℤ₂ :  C(({-1, 1} : Set ℝ), ℤ₂) where
     exact continuous_of_discreteTopology
 
 /-- The continuous map taking a Lorentz matrix to its determinant. -/
-def detContinuous :  C(𝓛 d, ℤ₂) :=
-  ContinuousMap.comp  coeForℤ₂ {
+def detContinuous : C(𝓛 d, ℤ₂) :=
+  ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨Λ.1.det, Or.symm (LorentzGroup.det_eq_one_or_neg_one _)⟩,
     continuous_toFun := by
       refine Continuous.subtype_mk ?_ _
@@ -64,8 +64,8 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
   apply Iff.intro
   intro h
   simp [detContinuous] at h
-  cases'  det_eq_one_or_neg_one Λ with h1 h1
-    <;> cases'  det_eq_one_or_neg_one Λ' with h2 h2
+  cases' det_eq_one_or_neg_one Λ with h1 h1
+    <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
     <;> simp_all [h1, h2, h]
   rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
   · change (0 : Fin 2) = (1 : Fin 2) at h
@@ -92,16 +92,16 @@ def detRep : 𝓛 d →* ℤ₂ where
 
 lemma detRep_continuous : Continuous (@detRep d) := detContinuous.2
 
-lemma det_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
+lemma det_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     Λ.1.det = Λ'.1.det := by
   obtain ⟨s, hs, hΛ'⟩ := h
   let f : ContinuousMap s ℤ₂ := ContinuousMap.restrict s detContinuous
   haveI : PreconnectedSpace s := isPreconnected_iff_preconnectedSpace.mp hs.1
   simpa [f, detContinuous_eq_iff_det_eq] using
     (@IsPreconnected.subsingleton ℤ₂ _ _ _ (isPreconnected_range f.2))
-    (Set.mem_range_self ⟨Λ, hs.2⟩)  (Set.mem_range_self ⟨Λ', hΛ'⟩)
+    (Set.mem_range_self ⟨Λ, hs.2⟩) (Set.mem_range_self ⟨Λ', hΛ'⟩)
 
-lemma detRep_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
+lemma detRep_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     detRep Λ = detRep Λ' := by
   simp [detRep_apply, detRep_apply, detContinuous]
   rw [det_on_connected_component h]
@@ -125,7 +125,7 @@ lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
 lemma id_IsProper : (@IsProper d) 1 := by
   simp [IsProper]
 
-lemma isProper_on_connected_component {Λ Λ'  : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
+lemma isProper_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     IsProper Λ ↔ IsProper Λ' := by
   simp [detRep_apply, detRep_apply, detContinuous]
   rw [det_on_connected_component h]

@@ -22,7 +22,7 @@ From this we define
 the vector spaces of charges under which the anomaly equations are invariant.
 -/
 structure ACCSystemGroupAction (χ : ACCSystem) where
-  /-- The underlying type of the group-/
+  /-- The underlying type of the group. -/
   group : Type
   /-- An instance given group the structure of a group. -/
   groupInst : Group group
@@ -100,11 +100,11 @@ instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     rfl
 
 lemma linSolRep_quadSolAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)
-    (S : χ.QuadSols) :  χ.quadSolsInclLinSols (G.quadSolAction.toFun S g) =
+    (S : χ.QuadSols) : χ.quadSolsInclLinSols (G.quadSolAction.toFun S g) =
     G.linSolRep g (χ.quadSolsInclLinSols S) := rfl
 
 lemma rep_quadSolAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)
-    (S : χ.QuadSols) :  χ.quadSolsIncl (G.quadSolAction.toFun S g) =
+    (S : χ.QuadSols) : χ.quadSolsIncl (G.quadSolAction.toFun S g) =
     G.rep g (χ.quadSolsIncl S) := rfl
 
 /-- The group action acting on solutions to the anomaly cancellation conditions. -/
@@ -126,7 +126,7 @@ instance solAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) : MulAction G.
     rfl
 
 lemma quadSolAction_solAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)
-    (S : χ.Sols) :  χ.solsInclQuadSols (G.solAction.toFun S g) =
+    (S : χ.Sols) : χ.solsInclQuadSols (G.solAction.toFun S g) =
     G.quadSolAction.toFun (χ.solsInclQuadSols S) g := rfl
 
 lemma linSolRep_solAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group)

@@ -99,8 +99,8 @@ lemma toMatrix_mulVec (u v : FuturePointing d) (x : LorentzVector d) :
 
 open minkowskiMatrix LorentzVector in
 @[simp]
-lemma toMatrix_apply (u v : FuturePointing d) (μ ν  : Fin 1 ⊕ Fin d) :
-    (toMatrix u v) μ ν = η μ μ  * (⟪e μ, e ν⟫ₘ + 2 * ⟪e ν, u⟫ₘ * ⟪e μ, v⟫ₘ
+lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
+    (toMatrix u v) μ ν = η μ μ * (⟪e μ, e ν⟫ₘ + 2 * ⟪e ν, u⟫ₘ * ⟪e μ, v⟫ₘ
     - ⟪e μ, u + v⟫ₘ * ⟪e ν, u + v⟫ₘ / (1 + ⟪u, v.1.1⟫ₘ)) := by
   rw [matrix_apply_stdBasis (toMatrix u v) μ ν, toMatrix_mulVec]
   simp only [genBoost, genBoostAux₁, genBoostAux₂, map_add, smul_add, neg_smul, LinearMap.add_apply,

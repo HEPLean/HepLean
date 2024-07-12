@@ -47,7 +47,7 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : Fintype (RealLorentzTensor.
   | RealLorentzTensor.Colors.down => instFintypeSum (Fin 1) (Fin d)
 
 /-- An `IndexValue` is a set of actual values an index can take. e.g. for a
-  3-tensor  (0, 1, 2). -/
+  3-tensor (0, 1, 2). -/
 @[simp]
 def RealLorentzTensor.IndexValue {X : FintypeCat} (d : ℕ ) (c : X → RealLorentzTensor.Colors) :
     Type 0 := (x : X) → RealLorentzTensor.ColorsIndex d (c x)
@@ -107,9 +107,9 @@ def congrColorsDual {μ ν : Colors} (h : μ = τ ν) :
     ColorsIndex d μ ≃ ColorsIndex d ν :=
   (castColorsIndex h).trans dualColorsIndex.symm
 
-lemma congrColorsDual_symm {μ ν : Colors}  (h : μ  = τ ν) :
+lemma congrColorsDual_symm {μ ν : Colors} (h : μ = τ ν) :
     (congrColorsDual h).symm =
-    @congrColorsDual d _ _ ((Function.Involutive.eq_iff τ_involutive).mp h.symm)  := by
+    @congrColorsDual d _ _ ((Function.Involutive.eq_iff τ_involutive).mp h.symm) := by
   match μ, ν with
   | Colors.up, Colors.down => rfl
   | Colors.down, Colors.up => rfl
@@ -124,7 +124,7 @@ lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
 -/
 
 /-- An equivalence of Index values from an equality of color maps. -/
-def castIndexValue {X : FintypeCat} {T S : X → Colors}  (h : T = S) :
+def castIndexValue {X : FintypeCat} {T S : X → Colors} (h : T = S) :
     IndexValue d T ≃ IndexValue d S where
   toFun i := (fun μ => castColorsIndex (congrFun h μ) (i μ))
   invFun i := (fun μ => (castColorsIndex (congrFun h μ)).symm (i μ))
@@ -133,7 +133,7 @@ def castIndexValue {X : FintypeCat} {T S : X → Colors}  (h : T = S) :
   right_inv i := by
     simp
 
-lemma indexValue_eq {T₁ T₂ : X → RealLorentzTensor.Colors}  (d : ℕ) (h : T₁ = T₂) :
+lemma indexValue_eq {T₁ T₂ : X → RealLorentzTensor.Colors} (d : ℕ) (h : T₁ = T₂) :
     IndexValue d T₁ = IndexValue d T₂ :=
   pi_congr fun a => congrArg (ColorsIndex d) (congrFun h a)
 
@@ -176,7 +176,7 @@ lemma ext' {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color)
 /-- An equivalence between `X → Fin 1 ⊕ Fin d` and `Y → Fin 1 ⊕ Fin d` given an isomorphism
   between `X` and `Y`. -/
 def congrSetIndexValue (d : ℕ) (f : X ≃ Y) (i : X → Colors) :
-    IndexValue d i ≃ IndexValue d (i ∘ f.symm)  :=
+    IndexValue d i ≃ IndexValue d (i ∘ f.symm) :=
   Equiv.piCongrLeft' _ f
 
 /-- Given an equivalence of indexing sets, a map on Lorentz tensors. -/
@@ -185,8 +185,8 @@ def congrSetMap (f : X ≃ Y) (T : RealLorentzTensor d X) : RealLorentzTensor d 
   color := T.color ∘ f.symm
   coord := T.coord ∘ (congrSetIndexValue d f T.color).symm
 
-lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X)  :
-    congrSetMap g  (congrSetMap f T) = congrSetMap (f.trans g) T := by
+lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X) :
+    congrSetMap g (congrSetMap f T) = congrSetMap (f.trans g) T := by
   apply ext (by rfl)
   have h1 : (congrSetIndexValue d (f.trans g) T.color) = (congrSetIndexValue d f T.color).trans
     (congrSetIndexValue d g ((Equiv.piCongrLeft' (fun _ => Colors) f) T.color)) := by
@@ -259,7 +259,7 @@ def inrIndexValue {Tc : X → Colors} {Sc : Y → Colors}
 def sumCommIndexValue {X Y : FintypeCat} (Tc : X → Colors) (Sc : Y → Colors) :
     IndexValue d (sumElimIndexColor Tc Sc) ≃ IndexValue d (sumElimIndexColor Sc Tc) :=
   (congrSetIndexValue d (sumCommFintypeCat X Y) (sumElimIndexColor Tc Sc)).trans
-  (castIndexValue  ((sumElimIndexColor_symm Sc Tc).symm))
+  (castIndexValue ((sumElimIndexColor_symm Sc Tc).symm))
 
 lemma sumCommIndexValue_inlIndexValue {X Y : FintypeCat} {Tc : X → Colors} {Sc : Y → Colors}
     (i : IndexValue d (sumElimIndexColor Tc Sc)) :
@@ -300,7 +300,7 @@ def unmarkedColor (T : Marked d X n) : X → Colors :=
   T.color ∘ Sum.inl
 
 /-- The colors of marked indices. -/
-def markedColor (T : Marked d X n) :  FintypeCat.of (Σ _ : Fin n, PUnit) → Colors :=
+def markedColor (T : Marked d X n) : FintypeCat.of (Σ _ : Fin n, PUnit) → Colors :=
   T.color ∘ Sum.inr
 
 /-- The index values restricted to unmarked indices. -/

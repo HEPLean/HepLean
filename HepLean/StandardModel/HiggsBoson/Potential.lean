@@ -34,7 +34,7 @@ open SpaceTime
 
 /-- The Higgs potential of the form `- μ² * |φ|² + 𝓵 * |φ|⁴`. -/
 @[simp]
-def potential (μ2 𝓵 : ℝ ) (φ : HiggsField)  (x : SpaceTime) :  ℝ :=
+def potential (μ2 𝓵 : ℝ ) (φ : HiggsField) (x : SpaceTime) : ℝ :=
   - μ2 * ‖φ‖_H ^ 2 x + 𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x
 
 /-!
@@ -43,7 +43,7 @@ def potential (μ2 𝓵 : ℝ ) (φ : HiggsField)  (x : SpaceTime) :  ℝ :=
 
 -/
 
-lemma potential_smooth (μSq lambda : ℝ)  (φ : HiggsField) :
+lemma potential_smooth (μSq lambda : ℝ) (φ : HiggsField) :
     Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (fun x => φ.potential μSq lambda x) := by
   simp only [potential, normSq, neg_mul]
   exact (smooth_const.smul φ.normSq_smooth).neg.add
@@ -56,7 +56,7 @@ namespace potential
 
 -/
 
-lemma complete_square (μ2 𝓵 : ℝ) (h : 𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime)  :
+lemma complete_square (μ2 𝓵 : ℝ) (h : 𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     potential μ2 𝓵 φ x = 𝓵 * (‖φ‖_H ^ 2 x - μ2 / (2 * 𝓵)) ^ 2 - μ2 ^ 2 / (4 * 𝓵) := by
   simp only [potential]
   field_simp
@@ -69,7 +69,7 @@ lemma complete_square (μ2 𝓵 : ℝ) (h : 𝓵 ≠ 0) (φ : HiggsField) (x : S
 -/
 
 /-- The proposition on the coefficents for a potential to be bounded. -/
-def IsBounded (μ2 𝓵 : ℝ)  : Prop :=
+def IsBounded (μ2 𝓵 : ℝ) : Prop :=
   ∃ c, ∀ Φ x, c ≤ potential μ2 𝓵 Φ x
 
 /-! TODO: Show when 𝓵 < 0, the potential is not bounded. -/
@@ -87,19 +87,19 @@ variable (h𝓵 : 0 < 𝓵)
 
 /-- The second term of the potential is non-negative. -/
 lemma snd_term_nonneg (φ : HiggsField) (x : SpaceTime) :
-    0 ≤ 𝓵 * ‖φ‖_H ^ 2 x *  ‖φ‖_H ^ 2 x := by
+    0 ≤ 𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x := by
   rw [mul_nonneg_iff]
   apply Or.inl
   simp_all only [normSq, gt_iff_lt, mul_nonneg_iff_of_pos_left, ge_iff_le, norm_nonneg, pow_nonneg,
     and_self]
 
 lemma as_quad (μ2 𝓵 : ℝ) (φ : HiggsField) (x : SpaceTime) :
-    𝓵  * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2 ) * ‖φ‖_H ^ 2 x  + (- potential μ2 𝓵 φ x) = 0 := by
+    𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2 ) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
   simp only [normSq, neg_mul, potential, neg_add_rev, neg_neg]
   ring
 
 /-- The discriminant of the quadratic formed by the potential is non-negative. -/
-lemma discrim_nonneg  (φ : HiggsField) (x : SpaceTime) :
+lemma discrim_nonneg (φ : HiggsField) (x : SpaceTime) :
     0 ≤ discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) := by
   have h1 := as_quad μ2 𝓵 φ x
   rw [quadratic_eq_zero_iff_discrim_eq_sq] at h1
@@ -111,7 +111,7 @@ lemma eq_zero_at (φ : HiggsField) (x : SpaceTime)
     (hV : potential μ2 𝓵 φ x = 0) : φ x = 0 ∨ ‖φ‖_H ^ 2 x = μ2 / 𝓵 := by
   have h1 := as_quad μ2 𝓵 φ x
   rw [hV] at h1
-  have h2 : ‖φ‖_H ^ 2 x * (𝓵  * ‖φ‖_H ^ 2 x + - μ2) = 0 := by
+  have h2 : ‖φ‖_H ^ 2 x * (𝓵 * ‖φ‖_H ^ 2 x + - μ2) = 0 := by
     linear_combination h1
   simp at h2
   cases' h2 with h2 h2
@@ -121,13 +121,13 @@ lemma eq_zero_at (φ : HiggsField) (x : SpaceTime)
   ring_nf
   linear_combination h2
 
-lemma eq_zero_at_of_μSq_nonpos  {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
-    (φ : HiggsField) (x : SpaceTime)  (hV : potential μ2 𝓵 φ x = 0) : φ x = 0 := by
+lemma eq_zero_at_of_μSq_nonpos {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
+    (φ : HiggsField) (x : SpaceTime) (hV : potential μ2 𝓵 φ x = 0) : φ x = 0 := by
   cases' (eq_zero_at μ2 h𝓵 φ x hV) with h1 h1
   exact h1
   by_cases hμSqZ : μ2 = 0
   simpa [hμSqZ] using h1
-  refine ((?_ : ¬ 0 ≤  μ2 / 𝓵) (?_)).elim
+  refine ((?_ : ¬ 0 ≤ μ2 / 𝓵) (?_)).elim
   · simp_all [div_nonneg_iff]
     intro h
     exact lt_imp_lt_of_le_imp_le (fun _ => h) (lt_of_le_of_ne hμ2 hμSqZ)
@@ -135,17 +135,17 @@ lemma eq_zero_at_of_μSq_nonpos  {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
     exact normSq_nonneg φ x
 
 lemma bounded_below (φ : HiggsField) (x : SpaceTime) :
-    - μ2 ^ 2 / (4 * 𝓵) ≤ potential μ2 𝓵 φ x  := by
+    - μ2 ^ 2 / (4 * 𝓵) ≤ potential μ2 𝓵 φ x := by
   have h1 := discrim_nonneg μ2 h𝓵 φ x
   simp only [discrim, even_two, Even.neg_pow, normSq, neg_mul, neg_add_rev, neg_neg] at h1
   ring_nf at h1
   rw [← neg_le_iff_add_nonneg'] at h1
   rw [show 𝓵 * potential μ2 𝓵 φ x * 4 = (4 * 𝓵) * potential μ2 𝓵 φ x by ring] at h1
-  have h2 :=  (div_le_iff' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
+  have h2 := (div_le_iff' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
   ring_nf at h2 ⊢
   exact h2
 
-lemma bounded_below_of_μSq_nonpos  {μ2 : ℝ}
+lemma bounded_below_of_μSq_nonpos {μ2 : ℝ}
     (hμSq : μ2 ≤ 0) (φ : HiggsField) (x : SpaceTime) : 0 ≤ potential μ2 𝓵 φ x := by
   refine add_nonneg ?_ (snd_term_nonneg h𝓵 φ x)
   field_simp [mul_nonpos_iff]
@@ -165,13 +165,13 @@ variable (h𝓵 : 0 < 𝓵)
 -/
 
 lemma discrim_eq_zero_of_eq_bound (φ : HiggsField) (x : SpaceTime)
-    (hV : potential μ2 𝓵 φ x  = - μ2 ^ 2 / (4  * 𝓵)) :
+    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) = 0 := by
   rw [discrim, hV]
   field_simp
 
 lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
-    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4  * 𝓵)) :
+    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) := by
   have h1 := as_quad μ2 𝓵 φ x
   rw [quadratic_eq_zero_iff_of_discrim_eq_zero _
@@ -180,36 +180,36 @@ lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
   exact ne_of_gt h𝓵
 
 lemma eq_bound_iff (φ : HiggsField) (x : SpaceTime) :
-    potential μ2 𝓵 φ x  = - μ2 ^ 2 / (4  * 𝓵) ↔ ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) :=
+    potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵) ↔ ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) :=
   Iff.intro (normSq_of_eq_bound μ2 h𝓵 φ x)
     (fun h ↦ by
       rw [potential, h]
       field_simp
       ring_nf)
 
-lemma eq_bound_iff_of_μSq_nonpos  {μ2 : ℝ}
+lemma eq_bound_iff_of_μSq_nonpos {μ2 : ℝ}
     (hμ2 : μ2 ≤ 0) (φ : HiggsField) (x : SpaceTime) :
     potential μ2 𝓵 φ x = 0 ↔ φ x = 0 :=
   Iff.intro (fun h ↦ eq_zero_at_of_μSq_nonpos h𝓵 hμ2 φ x h)
   (fun h ↦ by simp [potential, h])
 
 lemma eq_bound_IsMinOn (φ : HiggsField) (x : SpaceTime)
-    (hv : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4  * 𝓵)) :
+    (hv : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     IsMinOn (fun (φ, x) => potential μ2 𝓵 φ x) Set.univ (φ, x) := by
   rw [isMinOn_univ_iff]
   simp only [normSq, neg_mul, le_neg_add_iff_add_le, ge_iff_le, hv]
   exact fun (φ', x') ↦ bounded_below μ2 h𝓵 φ' x'
 
-lemma eq_bound_IsMinOn_of_μSq_nonpos  {μ2 : ℝ}
+lemma eq_bound_IsMinOn_of_μSq_nonpos {μ2 : ℝ}
     (hμ2 : μ2 ≤ 0) (φ : HiggsField) (x : SpaceTime) (hv : potential μ2 𝓵 φ x = 0) :
     IsMinOn (fun (φ, x) => potential μ2 𝓵 φ x) Set.univ (φ, x) := by
   rw [isMinOn_univ_iff]
   simp only [normSq, neg_mul, le_neg_add_iff_add_le, ge_iff_le, hv]
   exact fun (φ', x') ↦ bounded_below_of_μSq_nonpos h𝓵 hμ2 φ' x'
 
-lemma bound_reached_of_μSq_nonneg  {μ2 : ℝ} (hμ2 : 0 ≤ μ2) :
+lemma bound_reached_of_μSq_nonneg {μ2 : ℝ} (hμ2 : 0 ≤ μ2) :
     ∃ (φ : HiggsField) (x : SpaceTime),
-    potential μ2 𝓵 φ x = - μ2 ^ 2 / (4  * 𝓵) := by
+    potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵) := by
   use HiggsVec.toField ![√(μ2/(2 * 𝓵)), 0], 0
   refine (eq_bound_iff μ2 h𝓵 (HiggsVec.toField ![√(μ2/(2 * 𝓵)), 0]) 0).mpr ?_
   simp only [normSq, HiggsVec.toField, ContMDiffSection.coeFn_mk, PiLp.norm_sq_eq_of_L2,
@@ -218,7 +218,7 @@ lemma bound_reached_of_μSq_nonneg  {μ2 : ℝ} (hμ2 : 0 ≤ μ2) :
     not_false_eq_true, zero_pow, add_zero]
   field_simp [mul_pow]
 
-lemma IsMinOn_iff_of_μSq_nonneg  {μ2 : ℝ} (hμ2 : 0 ≤ μ2) :
+lemma IsMinOn_iff_of_μSq_nonneg {μ2 : ℝ} (hμ2 : 0 ≤ μ2) :
     IsMinOn (fun (φ, x) => potential μ2 𝓵 φ x) Set.univ (φ, x) ↔
     ‖φ‖_H ^ 2 x = μ2 /(2 * 𝓵) := by
   apply Iff.intro <;> rw [← eq_bound_iff μ2 h𝓵 φ]

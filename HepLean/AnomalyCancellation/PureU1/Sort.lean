@@ -15,7 +15,7 @@ We define the sort function for Pure U(1) charges, and prove some basic properti
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace PureU1
 
@@ -23,15 +23,15 @@ variable {n : ℕ}
 
 /-- We say a charge is shorted if for all `i ≤ j`, then `S i ≤ S j`. -/
 @[simp]
-def Sorted {n : ℕ}  (S : (PureU1 n).Charges) : Prop :=
-   ∀ i j (_ : i ≤ j),  S i ≤ S j
+def Sorted {n : ℕ} (S : (PureU1 n).Charges) : Prop :=
+   ∀ i j (_ : i ≤ j), S i ≤ S j
 
 /-- Given a charge assignment `S`, the corresponding sorted charge assignment. -/
 @[simp]
 def sort {n : ℕ} (S : (PureU1 n).Charges) : (PureU1 n).Charges :=
   ((FamilyPermutations n).rep (Tuple.sort S).symm S)
 
-lemma sort_sorted {n : ℕ} (S : (PureU1 n).Charges) :  Sorted (sort S) := by
+lemma sort_sorted {n : ℕ} (S : (PureU1 n).Charges) : Sorted (sort S) := by
   simp only [Sorted, PureU1_numberCharges, sort, FamilyPermutations, PermGroup, permCharges,
     MonoidHom.coe_mk, OneHom.coe_mk, chargeMap_apply]
   intro i j hij
@@ -45,7 +45,7 @@ lemma sort_apply {n : ℕ} (S : (PureU1 n).Charges) (j : Fin n) :
     sort S j = S ((Tuple.sort S) j) := by
   rfl
 
-lemma sort_zero {n : ℕ} (S : (PureU1 n).Charges)  (hS : sort S = 0) : S = 0 := by
+lemma sort_zero {n : ℕ} (S : (PureU1 n).Charges) (hS : sort S = 0) : S = 0 := by
   funext i
   have hj : ∀ j, sort S j = 0 := by
     rw [hS]
@@ -61,13 +61,13 @@ lemma sort_projection {n : ℕ} (S : (PureU1 n).Charges) : sort (sort S) = sort 
   sort_perm S (Tuple.sort S).symm
 
 /-- The sort function acting on `LinSols`. -/
-def sortAFL  {n : ℕ} (S : (PureU1 n).LinSols) : (PureU1 n).LinSols :=
+def sortAFL {n : ℕ} (S : (PureU1 n).LinSols) : (PureU1 n).LinSols :=
   ((FamilyPermutations n).linSolRep (Tuple.sort S.val).symm S)
 
-lemma sortAFL_val {n : ℕ} (S : (PureU1 n).LinSols) :  (sortAFL S).val = sort S.val := by
+lemma sortAFL_val {n : ℕ} (S : (PureU1 n).LinSols) : (sortAFL S).val = sort S.val := by
   rfl
 
-lemma sortAFL_zero {n : ℕ} (S : (PureU1 n).LinSols)  (hS : sortAFL S = 0) : S = 0 := by
+lemma sortAFL_zero {n : ℕ} (S : (PureU1 n).LinSols) (hS : sortAFL S = 0) : S = 0 := by
   apply ACCSystemLinear.LinSols.ext
   have h1 : sort S.val = 0 := by
     rw [← sortAFL_val]

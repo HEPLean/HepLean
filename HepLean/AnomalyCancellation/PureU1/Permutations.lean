@@ -18,13 +18,13 @@ We further define the action on the ACC System.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace PureU1
 
 /-- The permutation group of the n-fermions. -/
 @[simp]
-def PermGroup (n  : ℕ) := Equiv.Perm (Fin n)
+def PermGroup (n : ℕ) := Equiv.Perm (Fin n)
 
 instance {n : ℕ} : Group (PermGroup n) := by
   simp [PermGroup]
@@ -35,7 +35,7 @@ section Charges
 /-- The image of an element of `permGroup` under the representation on charges. -/
 @[simps!]
 def chargeMap {n : ℕ} (f : PermGroup n) :
-    (PureU1 n).Charges  →ₗ[ℚ] (PureU1 n).Charges where
+    (PureU1 n).Charges →ₗ[ℚ] (PureU1 n).Charges where
   toFun S := S ∘ f.toFun
   map_add' S T := by
     funext i
@@ -73,7 +73,7 @@ open BigOperators
 lemma accCube_invariant {n : ℕ} (f : (PermGroup n)) (S : (PureU1 n).Charges) :
     accCube n (permCharges f S) = accCube n S := by
   rw [accCube_explicit, accCube_explicit]
-  change  ∑ i : Fin n, ((((fun a => a^3) ∘ S) (f.symm i))) = _
+  change ∑ i : Fin n, ((((fun a => a^3) ∘ S) (f.symm i))) = _
   apply (Equiv.Perm.sum_comp _ _ _ ?_)
   simp
 
@@ -130,22 +130,22 @@ def pairSwap {n : ℕ} (i j : Fin n) : (FamilyPermutations n).group where
   right_inv s := by
     aesop
 
-lemma pairSwap_self_inv {n : ℕ} (i j : Fin n) :  (pairSwap i j)⁻¹ =  (pairSwap i j) := by
+lemma pairSwap_self_inv {n : ℕ} (i j : Fin n) : (pairSwap i j)⁻¹ = (pairSwap i j) := by
   rfl
 
-lemma pairSwap_fst {n : ℕ} (i j : Fin n) : (pairSwap i j).toFun i  = j := by
+lemma pairSwap_fst {n : ℕ} (i j : Fin n) : (pairSwap i j).toFun i = j := by
   simp [pairSwap]
 
-lemma pairSwap_snd {n : ℕ} (i j : Fin n) : (pairSwap i j).toFun j  = i := by
+lemma pairSwap_snd {n : ℕ} (i j : Fin n) : (pairSwap i j).toFun j = i := by
   simp [pairSwap]
 
-lemma pairSwap_inv_fst {n : ℕ} (i j : Fin n) : (pairSwap i j).invFun i  = j := by
+lemma pairSwap_inv_fst {n : ℕ} (i j : Fin n) : (pairSwap i j).invFun i = j := by
   simp [pairSwap]
 
-lemma pairSwap_inv_snd {n : ℕ} (i j : Fin n) : (pairSwap i j).invFun j  = i := by
+lemma pairSwap_inv_snd {n : ℕ} (i j : Fin n) : (pairSwap i j).invFun j = i := by
   simp [pairSwap]
 
-lemma pairSwap_other  {n : ℕ} (i j k : Fin n) (hik : i ≠ k)  (hjk : j ≠ k) :
+lemma pairSwap_other {n : ℕ} (i j k : Fin n) (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).toFun k = k := by
   simp [pairSwap]
   split
@@ -154,7 +154,7 @@ lemma pairSwap_other  {n : ℕ} (i j k : Fin n) (hik : i ≠ k)  (hjk : j ≠ k)
   simp_all
   rfl
 
-lemma pairSwap_inv_other  {n : ℕ} {i j k : Fin n} (hik : i ≠ k)  (hjk : j ≠ k) :
+lemma pairSwap_inv_other {n : ℕ} {i j k : Fin n} (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).invFun k = k := by
   simp [pairSwap]
   split
@@ -164,12 +164,12 @@ lemma pairSwap_inv_other  {n : ℕ} {i j k : Fin n} (hik : i ≠ k)  (hjk : j �
   rfl
 
 /-- A permutation of fermions which takes one ordered subset into another. -/
-noncomputable def permOfInjection (f g : Fin m ↪  Fin n) : (FamilyPermutations n).group :=
+noncomputable def permOfInjection (f g : Fin m ↪ Fin n) : (FamilyPermutations n).group :=
   Equiv.extendSubtype (g.toEquivRange.symm.trans f.toEquivRange)
 
 section permTwo
 
-variable {i j  i' j'  : Fin n} (hij : i ≠ j)  (hij' : i' ≠ j')
+variable {i j i' j' : Fin n} (hij : i ≠ j) (hij' : i' ≠ j')
 
 /-- Given two distinct elements, an embedding of `Fin 2` into `Fin n`. -/
 def permTwoInj : Fin 2 ↪ Fin n where
@@ -185,7 +185,7 @@ lemma permTwoInj_fst : i ∈ Set.range ⇑(permTwoInj hij) := by
   rfl
 
 lemma permTwoInj_fst_apply :
-    (Function.Embedding.toEquivRange (permTwoInj hij)).symm ⟨i, permTwoInj_fst  hij⟩ = 0 := by
+    (Function.Embedding.toEquivRange (permTwoInj hij)).symm ⟨i, permTwoInj_fst hij⟩ = 0 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permTwoInj hij))).mpr rfl
 
 lemma permTwoInj_snd : j ∈ Set.range ⇑(permTwoInj hij) := by
@@ -195,12 +195,12 @@ lemma permTwoInj_snd : j ∈ Set.range ⇑(permTwoInj hij) := by
 
 lemma permTwoInj_snd_apply :
     (Function.Embedding.toEquivRange (permTwoInj hij)).symm
-    ⟨j, permTwoInj_snd  hij⟩ = 1 := by
+    ⟨j, permTwoInj_snd hij⟩ = 1 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permTwoInj hij))).mpr rfl
 
 /-- A permutation which swaps `i` with `i'` and `j` with `j'`. -/
 noncomputable def permTwo : (FamilyPermutations n).group :=
-  permOfInjection (permTwoInj hij)  (permTwoInj hij')
+  permOfInjection (permTwoInj hij) (permTwoInj hij')
 
 lemma permTwo_fst : (permTwo hij hij').toFun i' = i := by
   rw [permTwo, permOfInjection]
@@ -243,7 +243,7 @@ lemma permThreeInj_fst : i ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
 
 lemma permThreeInj_fst_apply :
     (Function.Embedding.toEquivRange (permThreeInj hij hjk hik)).symm
-    ⟨i, permThreeInj_fst  hij hjk hik⟩ = 0 := by
+    ⟨i, permThreeInj_fst hij hjk hik⟩ = 0 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permThreeInj hij hjk hik))).mpr rfl
 
 lemma permThreeInj_snd : j ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
@@ -253,7 +253,7 @@ lemma permThreeInj_snd : j ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
 
 lemma permThreeInj_snd_apply :
     (Function.Embedding.toEquivRange (permThreeInj hij hjk hik)).symm
-    ⟨j, permThreeInj_snd  hij hjk hik⟩ = 1 := by
+    ⟨j, permThreeInj_snd hij hjk hik⟩ = 1 := by
   exact (Equiv.symm_apply_eq (Function.Embedding.toEquivRange (permThreeInj hij hjk hik))).mpr rfl
 
 lemma permThreeInj_thd : k ∈ Set.range ⇑(permThreeInj hij hjk hik) := by
@@ -268,7 +268,7 @@ lemma permThreeInj_thd_apply :
 
 /-- A permutation which swaps three distinct elements with another three. -/
 noncomputable def permThree : (FamilyPermutations n).group :=
-  permOfInjection (permThreeInj hij hjk hik)  (permThreeInj hij' hjk' hik')
+  permOfInjection (permThreeInj hij hjk hik) (permThreeInj hij' hjk' hik')
 
 lemma permThree_fst : (permThree hij hjk hik hij' hjk' hik').toFun i' = i := by
   rw [permThree, permOfInjection]
@@ -310,7 +310,7 @@ lemma Prop_two (P : ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
   have h1 := h (permTwo hij hab ).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply] at h1
   simp at h1
-  change  P
+  change P
    (S.val ((permTwo hij hab ).toFun a),
    S.val ((permTwo hij hab ).toFun b)) at h1
   erw [permTwo_fst,permTwo_snd] at h1
@@ -322,14 +322,14 @@ lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
     P ((((FamilyPermutations n).linSolRep f S).val a),(
       (((FamilyPermutations n).linSolRep f S).val b),
       (((FamilyPermutations n).linSolRep f S).val c)
-    ))) : ∀ (i j k : Fin n) (_ : i ≠ j) (_ : j ≠ k)  (_ : i ≠ k),
+    ))) : ∀ (i j k : Fin n) (_ : i ≠ j) (_ : j ≠ k) (_ : i ≠ k),
     P (S.val i, (S.val j, S.val k)) := by
   intro i j k hij hjk hik
   have h1 := h (permThree hij hjk hik hab hbc hac).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply,
    FamilyPermutations_anomalyFreeLinear_apply] at h1
   simp at h1
-  change  P
+  change P
    (S.val ((permThree hij hjk hik hab hbc hac).toFun a),
    S.val ((permThree hij hjk hik hab hbc hac).toFun b),
     S.val ((permThree hij hjk hik hab hbc hac).toFun c)) at h1

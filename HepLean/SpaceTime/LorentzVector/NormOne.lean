@@ -36,7 +36,7 @@ def neg : NormOneLorentzVector d := ⟨- v, by
   simp only [map_neg, LinearMap.neg_apply, neg_neg]
   exact v.2⟩
 
-lemma time_sq  : v.1.time ^ 2 = 1 + ‖v.1.space‖ ^ 2  := by
+lemma time_sq : v.1.time ^ 2 = 1 + ‖v.1.space‖ ^ 2 := by
   rw [time_sq_eq_metric_add_space, v.2]
 
 lemma abs_time_ge_one : 1 ≤ |v.1.time| := by
@@ -48,7 +48,7 @@ lemma norm_space_le_abs_time : ‖v.1.space‖ < |v.1.time| := by
   rw [(abs_norm _).symm, ← @sq_lt_sq, time_sq]
   exact lt_one_add (‖(v.1).space‖ ^ 2)
 
-lemma norm_space_leq_abs_time  : ‖v.1.space‖ ≤ |v.1.time| :=
+lemma norm_space_leq_abs_time : ‖v.1.space‖ ≤ |v.1.time| :=
   le_of_lt (norm_space_le_abs_time v)
 
 lemma time_le_minus_one_or_ge_one : v.1.time ≤ -1 ∨ 1 ≤ v.1.time :=
@@ -77,7 +77,7 @@ lemma time_pos_iff : 0 < v.1.time ↔ 1 ≤ v.1.time := by
   · exact (time_nonneg_iff v).mp (le_of_lt h)
   · linarith
 
-lemma time_abs_sub_space_norm  :
+lemma time_abs_sub_space_norm :
     0 ≤ |v.1.time| * |w.1.time| - ‖v.1.space‖ * ‖w.1.space‖ := by
   apply sub_nonneg.mpr
   apply mul_le_mul (norm_space_leq_abs_time v) (norm_space_leq_abs_time w) ?_ ?_
@@ -167,7 +167,7 @@ lemma metric_reflect_mem_mem (h : v ∈ FuturePointing d) (hw : w ∈ FuturePoin
   exact abs_real_inner_le_norm (v.1).space (w.1).space
 
 lemma metric_reflect_not_mem_not_mem (h : v ∉ FuturePointing d) (hw : w ∉ FuturePointing d) :
-    0 ≤ ⟪v.1, w.1.spaceReflection⟫ₘ  := by
+    0 ≤ ⟪v.1, w.1.spaceReflection⟫ₘ := by
   have h1 := metric_reflect_mem_mem ((not_mem_iff_neg v).mp h) ((not_mem_iff_neg w).mp hw)
   apply le_of_le_of_eq h1 ?_
   simp [neg]
@@ -179,10 +179,10 @@ lemma metric_reflect_mem_not_mem (h : v ∈ FuturePointing d) (hw : w ∉ Future
   apply le_of_le_of_eq h1 ?_
   simp [neg]
 
-lemma metric_reflect_not_mem_mem (h : v ∉ FuturePointing d) (hw :  w ∈ FuturePointing d) :
+lemma metric_reflect_not_mem_mem (h : v ∉ FuturePointing d) (hw : w ∈ FuturePointing d) :
     ⟪v.1, w.1.spaceReflection⟫ₘ ≤ 0 := by
   rw [show (0 : ℝ) = - 0 from zero_eq_neg.mpr rfl, le_neg]
-  have h1 := metric_reflect_mem_mem ((not_mem_iff_neg v).mp h)  hw
+  have h1 := metric_reflect_mem_mem ((not_mem_iff_neg v).mp h) hw
   apply le_of_le_of_eq h1 ?_
   simp [neg]
 
@@ -264,7 +264,7 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
 
 lemma isPathConnected : IsPathConnected (@Set.univ (FuturePointing d)) := by
   use timeVecNormOneFuture
-  apply And.intro trivial  ?_
+  apply And.intro trivial ?_
   intro y a
   use pathFromTime y
   exact fun _ => a

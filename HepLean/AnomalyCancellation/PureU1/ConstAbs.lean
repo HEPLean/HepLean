@@ -14,7 +14,7 @@ We look at charge assignments in which all charges have the same absolute value.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 open BigOperators
 
 namespace PureU1
@@ -53,7 +53,7 @@ section charges
 variable {S : (PureU1 n.succ).Charges} {A : (PureU1 n.succ).LinSols}
 variable (hS : ConstAbsSorted S) (hA : ConstAbsSorted A.val)
 
-lemma lt_eq  {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := by
+lemma lt_eq {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := by
   have hSS := hS.2 i k hik
   have ht := hS.1 i k
   rw [sq_eq_sq_iff_eq_or_eq_neg] at ht
@@ -61,7 +61,7 @@ lemma lt_eq  {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := 
   exact h
   linarith
 
-lemma val_le_zero  {i : Fin n.succ} (hi : S i ≤ 0) : S i = S (0 : Fin n.succ) := by
+lemma val_le_zero {i : Fin n.succ} (hi : S i ≤ 0) : S i = S (0 : Fin n.succ) := by
   symm
   apply lt_eq hS hi
   simp
@@ -108,7 +108,7 @@ lemma boundary_succ {k : Fin n} (hk : Boundary S k) : S k.succ = - S (0 : Fin n.
   rw [opposite_signs_eq_neg hS (le_of_lt hk.left) (le_of_lt hk.right)] at hn
   linear_combination -(1 * hn)
 
-lemma boundary_split (k : Fin n) :  k.succ.val + (n.succ - k.succ.val) = n.succ := by
+lemma boundary_split (k : Fin n) : k.succ.val + (n.succ - k.succ.val) = n.succ := by
   omega
 
 lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
@@ -128,7 +128,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
       S (Fin.cast (boundary_split k) (Fin.castAdd (n.succ - k.succ.val) i)) = S k.castSucc := by
     apply lt_eq hS (le_of_lt hk.left) (by rw [Fin.le_def]; simp; omega)
   have hsnd (i : Fin (n.succ - k.succ.val)) :
-      S (Fin.cast (boundary_split k)  (Fin.natAdd (k.succ.val) i)) = S k.succ := by
+      S (Fin.cast (boundary_split k) (Fin.natAdd (k.succ.val) i)) = S k.succ := by
     apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; simp)
   simp only [hfst, hsnd]
   simp only [Fin.val_succ, sum_const, card_fin, nsmul_eq_mul, cast_add, cast_one,
@@ -160,7 +160,7 @@ lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
   simp at hi
   exact zero_gt hS hi i
 
-lemma not_hasBoundary_grav (hnot :  ¬ (HasBoundary S)) :
+lemma not_hasBoundary_grav (hnot : ¬ (HasBoundary S)) :
     accGrav n.succ S = n.succ * S (0 : Fin n.succ) := by
   simp [accGrav, ← not_hasBoundry_zero hS hnot]
 
@@ -196,7 +196,7 @@ lemma AFL_odd_zero {A : (PureU1 (2 * n + 1)).LinSols} (h : ConstAbsSorted A.val)
 theorem AFL_odd (A : (PureU1 (2 * n + 1)).LinSols) (h : ConstAbsSorted A.val) :
     A = 0 := by
   apply ACCSystemLinear.LinSols.ext
-  exact  is_zero h (AFL_odd_zero h)
+  exact is_zero h (AFL_odd_zero h)
 
 lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.val)
     (hA : A.val (0 : Fin (2 * n.succ)) ≠ 0) {k : Fin (2 * n + 1)} (hk : Boundary A.val k) :
@@ -209,8 +209,8 @@ lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted 
   linear_combination h0 / 2
 
 lemma AFL_even_below' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.val)
-    (hA : A.val  (0 : Fin (2 * n.succ)) ≠ 0) (i : Fin n.succ)  :
-    A.val (Fin.cast (split_equal n.succ)  (Fin.castAdd n.succ i)) = A.val (0 : Fin (2*n.succ)) := by
+    (hA : A.val (0 : Fin (2 * n.succ)) ≠ 0) (i : Fin n.succ) :
+    A.val (Fin.cast (split_equal n.succ) (Fin.castAdd n.succ i)) = A.val (0 : Fin (2*n.succ)) := by
   obtain ⟨k, hk⟩ := AFL_hasBoundary h hA
   rw [← boundary_castSucc h hk]
   apply lt_eq h (le_of_lt hk.left)
@@ -221,7 +221,7 @@ lemma AFL_even_below' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.
 
 lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.val)
     (i : Fin n.succ) :
-    A.val (Fin.cast (split_equal n.succ)  (Fin.castAdd n.succ i))
+    A.val (Fin.cast (split_equal n.succ) (Fin.castAdd n.succ i))
     = A.val (0 : Fin (2*n.succ)) := by
   by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
   rw [is_zero h hA]
@@ -230,8 +230,8 @@ lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.v
   exact AFL_even_below' h hA i
 
 lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.val)
-    (hA : A.val (0 : Fin (2*n.succ)) ≠ 0) (i : Fin n.succ)  :
-    A.val (Fin.cast (split_equal n.succ)  (Fin.natAdd n.succ i)) =
+    (hA : A.val (0 : Fin (2*n.succ)) ≠ 0) (i : Fin n.succ) :
+    A.val (Fin.cast (split_equal n.succ) (Fin.natAdd n.succ i)) =
     - A.val (0 : Fin (2*n.succ)) := by
   obtain ⟨k, hk⟩ := AFL_hasBoundary h hA
   rw [← boundary_succ h hk]
@@ -243,7 +243,7 @@ lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.
 
 lemma AFL_even_above (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.val)
     (i : Fin n.succ) :
-    A.val (Fin.cast (split_equal n.succ)  (Fin.natAdd n.succ i)) =
+    A.val (Fin.cast (split_equal n.succ) (Fin.natAdd n.succ i)) =
     - A.val (0 : Fin (2*n.succ)) := by
   by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
   rw [is_zero h hA]

@@ -39,7 +39,7 @@ name = "type_former_lint"
 srcDir = "scripts"
 
 [[lean_exe]]
-name = "double_line_lint"
+name = "hepLean_style_lint"
 srcDir = "scripts"
 
 [[lean_exe]]

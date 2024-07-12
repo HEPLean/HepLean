@@ -32,7 +32,7 @@ def B₀ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₀_cubic (S T : (SM 3).Charges) : cubeTriLin B₀ S T =
-    6 * (S (0 : Fin 18) * T  (0 : Fin 18) - S  (1 : Fin 18) * T  (1 : Fin 18)) := by
+    6 * (S (0 : Fin 18) * T (0 : Fin 18) - S (1 : Fin 18) * T (1 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₀, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
@@ -45,7 +45,7 @@ def B₁ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₁_cubic (S T : (SM 3).Charges) : cubeTriLin B₁ S T =
-    3 * (S (3 : Fin 18) * T  (3 : Fin 18) - S  (4 : Fin 18) * T  (4 : Fin 18)) := by
+    3 * (S (3 : Fin 18) * T (3 : Fin 18) - S (4 : Fin 18) * T (4 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₁, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
@@ -58,7 +58,7 @@ def B₂ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₂_cubic (S T : (SM 3).Charges) : cubeTriLin B₂ S T =
-    3 * (S (6 : Fin 18) * T  (6 : Fin 18) - S  (7 : Fin 18) * T  (7 : Fin 18)) := by
+    3 * (S (6 : Fin 18) * T (6 : Fin 18) - S (7 : Fin 18) * T (7 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₂, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring
 
@@ -71,7 +71,7 @@ def B₃ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₃_cubic (S T : (SM 3).Charges) : cubeTriLin B₃ S T =
-    2 * (S (9 : Fin 18) * T  (9 : Fin 18) - S  (10 : Fin 18) * T  (10 : Fin 18)) := by
+    2 * (S (9 : Fin 18) * T (9 : Fin 18) - S (10 : Fin 18) * T (10 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₃, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
@@ -85,7 +85,7 @@ def B₄ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₄_cubic (S T : (SM 3).Charges) : cubeTriLin B₄ S T =
-    (S (12 : Fin 18) * T  (12 : Fin 18) - S  (13 : Fin 18) * T  (13 : Fin 18)) := by
+    (S (12 : Fin 18) * T (12 : Fin 18) - S (13 : Fin 18) * T (13 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₄, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
@@ -99,7 +99,7 @@ def B₅ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₅_cubic (S T : (SM 3).Charges) : cubeTriLin B₅ S T =
-    (S (15 : Fin 18) * T  (15 : Fin 18) - S  (16 : Fin 18) * T  (16 : Fin 18)) := by
+    (S (15 : Fin 18) * T (15 : Fin 18) - S (16 : Fin 18) * T (16 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₅, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
   rfl
@@ -113,7 +113,7 @@ def B₆ : (SM 3).Charges := toSpeciesEquiv.invFun ( fun s => fun i =>
   )
 
 lemma B₆_cubic (S T : (SM 3).Charges) : cubeTriLin B₆ S T =
-    3* (S (5 : Fin 18) * T  (5 : Fin 18) - S  (8 : Fin 18) * T  (8 : Fin 18)) := by
+    3 * (S (5 : Fin 18) * T (5 : Fin 18) - S (8 : Fin 18) * T (8 : Fin 18)) := by
   simp [Fin.sum_univ_three, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
   ring_nf
 
@@ -336,7 +336,7 @@ theorem basis_linear_independent : LinearIndependent ℚ B := by
 end PlaneSeven
 
 theorem seven_dim_plane_exists : ∃ (B : Fin 7 → (SM 3).Charges),
-    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).IsSolution (∑ i, f i • B i)  := by
+    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).IsSolution (∑ i, f i • B i) := by
   use PlaneSeven.B
   apply And.intro
   exact PlaneSeven.basis_linear_independent

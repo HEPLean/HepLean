@@ -61,7 +61,7 @@ lemma accQuad_α₁_α₂_zero (S : (PlusU1 n).LinSols) (h1 : α₁ C S = 0)
 /-- The construction of a `QuadSol` from a `LinSols` in the generic case. -/
 def genericToQuad (S : (PlusU1 n).LinSols) :
     (PlusU1 n).QuadSols :=
-  linearToQuad ((α₁ C S) • S + α₂ S • C.1)  (accQuad_α₁_α₂ C S)
+  linearToQuad ((α₁ C S) • S + α₂ S • C.1) (accQuad_α₁_α₂ C S)
 
 lemma genericToQuad_on_quad (S : (PlusU1 n).QuadSols) :
     genericToQuad C S.1 = (α₁ C S.1) • S := by
@@ -80,7 +80,7 @@ def specialToQuad (S : (PlusU1 n).LinSols) (a b : ℚ) (h1 : α₁ C S = 0)
     (h2 : α₂ S = 0) : (PlusU1 n).QuadSols :=
   linearToQuad (a • S + b • C.1) (accQuad_α₁_α₂_zero C S h1 h2 a b)
 
-lemma special_on_quad (S : (PlusU1 n).QuadSols)  (h1 : α₁ C S.1 = 0) :
+lemma special_on_quad (S : (PlusU1 n).QuadSols) (h1 : α₁ C S.1 = 0) :
     specialToQuad C S.1 1 0 h1 (α₂_AFQ S) = S := by
   apply ACCSystemQuad.QuadSols.ext
   change (1 • S.val + 0 • C.val) = S.val
@@ -123,9 +123,9 @@ lemma toQuadInv_special (S : (PlusU1 n).QuadSols) (h : α₁ C S.1 = 0) :
   rw [special_on_quad]
 
 lemma toQuadInv_generic (S : (PlusU1 n).QuadSols) (h : α₁ C S.1 ≠ 0) :
-    (toQuadInv C S).2.1 • genericToQuad C (toQuadInv C S).1  = S := by
+    (toQuadInv C S).2.1 • genericToQuad C (toQuadInv C S).1 = S := by
   simp only [toQuadInv_fst]
-  rw [show (toQuadInv C S).2.1  = (α₁ C S.1)⁻¹ by rw [toQuadInv, if_neg h]]
+  rw [show (toQuadInv C S).2.1 = (α₁ C S.1)⁻¹ by rw [toQuadInv, if_neg h]]
   rw [genericToQuad_neq_zero C S h]
 
 lemma toQuad_rightInverse : Function.RightInverse (@toQuadInv n C) (toQuad C) := by

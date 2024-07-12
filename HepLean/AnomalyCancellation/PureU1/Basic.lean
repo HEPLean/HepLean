@@ -16,7 +16,7 @@ We define the anomaly cancellation conditions for a pure U(1) gauge theory with 
 universe v u
 open Nat
 
-open  Finset
+open Finset
 
 namespace PureU1
 open BigOperators
@@ -37,7 +37,7 @@ def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
 def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := TriLinearSymm.mk₃
-  (fun  S =>  ∑ i, S.1 i * S.2.1 i * S.2.2 i)
+  (fun S => ∑ i, S.1 i * S.2.1 i * S.2.2 i)
   (by
     intro a S L T
     simp [HSMul.hSMul]
@@ -70,13 +70,13 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
 
 /-- The cubic anomaly equation. -/
 @[simp]
-def accCube (n : ℕ)  : HomogeneousCubic ((PureU1Charges n).Charges) :=
+def accCube (n : ℕ) : HomogeneousCubic ((PureU1Charges n).Charges) :=
   (accCubeTriLinSymm).toCubic
 
 lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
   rw [accCube, TriLinearSymm.toCubic]
-  change  accCubeTriLinSymm S S S = _
+  change accCubeTriLinSymm S S S = _
   rw [accCubeTriLinSymm]
   simp only [PureU1Charges_numberCharges, TriLinearSymm.mk₃_toFun_apply_apply]
   apply Finset.sum_congr
@@ -99,7 +99,7 @@ def PureU1 (n : ℕ) : ACCSystem where
 
 /-- An equivalence of vector spaces of charges when the number of fermions is equal. -/
 def pureU1EqCharges {n m : ℕ} (h : n = m):
-    (PureU1 n).Charges  ≃ₗ[ℚ] (PureU1 m).Charges where
+    (PureU1 n).Charges ≃ₗ[ℚ] (PureU1 m).Charges where
   toFun f := f ∘ Fin.cast h.symm
   invFun f := f ∘ Fin.cast h
   map_add' _ _ := rfl

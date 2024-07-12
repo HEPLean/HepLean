@@ -13,7 +13,7 @@ We define
 - Define `lorentzAlgebra` via `LieAlgebra.Orthogonal.so'` as a subalgebra of
   `Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ`.
 - In `mem_iff` prove that a matrix is in the Lorentz algebra if and only if it satisfies the
-  condition `Aᵀ * η  = - η * A`.
+  condition `Aᵀ * η = - η * A`.
 
 -/
 
@@ -21,29 +21,29 @@ namespace SpaceTime
 open Matrix
 open TensorProduct
 
-/-- The Lorentz algebra as a subalgebra of `Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ`.  -/
+/-- The Lorentz algebra as a subalgebra of `Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ`. -/
 def lorentzAlgebra : LieSubalgebra ℝ (Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :=
   (LieAlgebra.Orthogonal.so' (Fin 1) (Fin 3) ℝ)
 
 namespace lorentzAlgebra
 open minkowskiMatrix
 
-lemma transpose_eta (A : lorentzAlgebra) :  A.1ᵀ * η  = - η * A.1  := by
+lemma transpose_eta (A : lorentzAlgebra) : A.1ᵀ * η = - η * A.1 := by
   have h1 := A.2
   erw [mem_skewAdjointMatricesLieSubalgebra] at h1
   simpa [LieAlgebra.Orthogonal.so', IsSkewAdjoint, IsAdjointPair] using h1
 
 lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ}
-    (h :  Aᵀ * η  = - η * A) : A ∈ lorentzAlgebra := by
+    (h : Aᵀ * η = - η * A) : A ∈ lorentzAlgebra := by
   erw [mem_skewAdjointMatricesLieSubalgebra]
   simpa [LieAlgebra.Orthogonal.so', IsSkewAdjoint, IsAdjointPair] using h
 
 lemma mem_iff {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ} :
-    A ∈ lorentzAlgebra ↔ Aᵀ * η  = - η * A :=
+    A ∈ lorentzAlgebra ↔ Aᵀ * η = - η * A :=
   Iff.intro (fun h => transpose_eta ⟨A, h⟩) (fun h => mem_of_transpose_eta_eq_eta_mul_self h)
 
-lemma mem_iff'  (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
-    A ∈ lorentzAlgebra ↔ A  = - η * Aᵀ * η := by
+lemma mem_iff' (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
+    A ∈ lorentzAlgebra ↔ A = - η * Aᵀ * η := by
   rw [mem_iff]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · trans -η * (Aᵀ * η)
@@ -52,7 +52,7 @@ lemma mem_iff'  (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
     rw [minkowskiMatrix.sq]
     all_goals noncomm_ring
   · nth_rewrite 2 [h]
-    trans  (η * η) * Aᵀ * η
+    trans (η * η) * Aᵀ * η
     rw [minkowskiMatrix.sq]
     all_goals noncomm_ring
 
@@ -80,7 +80,7 @@ end lorentzAlgebra
 
 @[simps!]
 instance lorentzVectorAsLieRingModule : LieRingModule lorentzAlgebra (LorentzVector 3) where
-  bracket Λ x :=  Λ.1.mulVec  x
+  bracket Λ x := Λ.1.mulVec x
   add_lie Λ1 Λ2 x := by
     simp [add_mulVec]
   lie_add Λ x1 x2 := by
@@ -91,7 +91,7 @@ instance lorentzVectorAsLieRingModule : LieRingModule lorentzAlgebra (LorentzVec
 
 @[simps!]
 instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra (LorentzVector 3) where
-  smul_lie r Λ x  := by
+  smul_lie r Λ x := by
     simp [Bracket.bracket, smul_mulVec_assoc]
   lie_smul r Λ x := by
     simp [Bracket.bracket]

@@ -27,7 +27,7 @@ variable (Λ : LorentzGroup d)
 open LorentzVector
 open minkowskiMetric
 
-/-- A Lorentz transformation is  `orthochronous` if its `0 0` element is non-negative. -/
+/-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/
 def IsOrthochronous : Prop := 0 ≤ timeComp Λ
 
 lemma IsOrthochronous_iff_futurePointing :
@@ -39,7 +39,7 @@ lemma IsOrthochronous_iff_transpose :
     IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by rfl
 
 lemma IsOrthochronous_iff_ge_one :
-    IsOrthochronous Λ ↔ 1 ≤ timeComp Λ  := by
+    IsOrthochronous Λ ↔ 1 ≤ timeComp Λ := by
   rw [IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.mem_iff,
     NormOneLorentzVector.time_pos_iff]
   simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
@@ -62,20 +62,20 @@ lemma not_orthochronous_iff_le_zero :
   linarith
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
-def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ  ,
+def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ,
    Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
 def stepFunction : ℝ → ℝ := fun t =>
   if t ≤ -1 then -1 else
-    if 1 ≤  t then 1 else t
+    if 1 ≤ t then 1 else t
 
 lemma stepFunction_continuous : Continuous stepFunction := by
   apply Continuous.if ?_ continuous_const (Continuous.if ?_ continuous_const continuous_id)
    <;> intro a ha
   rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
   rw [ha]
-  simp  [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
+  simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
   have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
   exact Eq.symm (if_neg h1)
   rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha
@@ -105,20 +105,20 @@ lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
   apply Or.inr $ orthchroMapReal_on_IsOrthochronous h
   apply Or.inl $ orthchroMapReal_on_not_IsOrthochronous h
 
-local notation  "ℤ₂" => Multiplicative (ZMod 2)
+local notation "ℤ₂" => Multiplicative (ZMod 2)
 
 /-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
 def orthchroMap : C(LorentzGroup d, ℤ₂) :=
   ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,
-    continuous_toFun :=  Continuous.subtype_mk (ContinuousMap.continuous orthchroMapReal) _}
+    continuous_toFun := Continuous.subtype_mk (ContinuousMap.continuous orthchroMapReal) _}
 
 lemma orthchroMap_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMap Λ = 1 := by
   simp [orthchroMap, orthchroMapReal_on_IsOrthochronous h]
 
 lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
-    orthchroMap Λ =  Additive.toMul (1 : ZMod 2) := by
+    orthchroMap Λ = Additive.toMul (1 : ZMod 2) := by
   simp [orthchroMap, orthchroMapReal_on_not_IsOrthochronous h]
   rfl
 
@@ -136,7 +136,7 @@ lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : �
   rw [IsOrthochronous, timeComp_mul]
   exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_not_mem h h'
 
-lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h :  IsOrthochronous Λ)
+lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
   rw [not_orthochronous_iff_le_zero, timeComp_mul]
   rw [IsOrthochronous_iff_transpose] at h

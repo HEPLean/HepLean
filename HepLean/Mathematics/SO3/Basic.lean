@@ -59,7 +59,7 @@ def toGL : SO(3) →* GL (Fin 3) ℝ where
   map_one' := by
     simp
     rfl
-  map_mul' x y  := by
+  map_mul' x y := by
     simp only [_root_.mul_inv_rev, coe_inv]
     ext
     rfl
@@ -81,7 +81,7 @@ lemma toGL_injective : Function.Injective toGL := by
 def toProd : SO(3) →* (Matrix (Fin 3) (Fin 3) ℝ) × (Matrix (Fin 3) (Fin 3) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
-lemma toProd_eq_transpose  : toProd A = (A.1, ⟨A.1ᵀ⟩) := by
+lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := by
   simp only [toProd, Units.embedProduct, coe_units_inv, MulOpposite.op_inv, toGL, coe_inv,
     MonoidHom.coe_comp, MonoidHom.coe_mk, OneHom.coe_mk, Function.comp_apply, Prod.mk.injEq,
     true_and]
@@ -143,16 +143,16 @@ instance : TopologicalGroup SO(3) :=
   Inducing.topologicalGroup toGL toGL_embedding.toInducing
 
 lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
-  have h1 : det (A.1 - 1) = - det (A.1 - 1)  :=
+  have h1 : det (A.1 - 1) = - det (A.1 - 1) :=
     calc
-      det (A.1 - 1) = det (A.1 - A.1 *  A.1ᵀ)  := by simp [A.2.2]
-      _ = det A.1 * det (1 -  A.1ᵀ) :=  by rw [← det_mul, mul_sub, mul_one]
+      det (A.1 - 1) = det (A.1 - A.1 * A.1ᵀ) := by simp [A.2.2]
+      _ = det A.1 * det (1 - A.1ᵀ) := by rw [← det_mul, mul_sub, mul_one]
       _ = det (1 - A.1ᵀ):= by simp [A.2.1]
       _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
       _ = det (1 - A.1) := by simp
       _ = det (- (A.1 - 1)) := by simp
-      _ = (- 1) ^ 3  * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
-      _ = -  det (A.1 - 1)  := by simp [pow_three]
+      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = - det (A.1 - 1) := by simp [pow_three]
   simpa using h1
 
 @[simp]
@@ -160,8 +160,8 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
   have h1 : det (1 - A.1) = - det (A.1 - 1) := by
     calc
       det (1 - A.1) = det (- (A.1 - 1)) := by simp
-      _ = (- 1) ^ 3  *  det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
-      _ = -  det (A.1 - 1) := by simp [pow_three]
+      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = - det (A.1 - 1) := by simp [pow_three]
   rw [h1, det_minus_id]
   simp only [neg_zero]
 
@@ -216,7 +216,7 @@ lemma exists_basis_preserved (A : SO(3)) :
   obtain ⟨v, hv⟩ := exists_stationary_vec A
   have h3 : FiniteDimensional.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
     simp_all only [toEnd_apply, finrank_euclideanSpace, Fintype.card_fin]
-  obtain ⟨b, hb⟩ :=  Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
   simp at hb
   use b
   rw [hb, hv.2]

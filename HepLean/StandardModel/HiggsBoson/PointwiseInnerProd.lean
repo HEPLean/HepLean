@@ -55,13 +55,13 @@ lemma innerProd_left_zero (φ : HiggsField) : ⟪0, φ⟫_H = 0 := by
 lemma innerProd_right_zero (φ : HiggsField) : ⟪φ, 0⟫_H = 0 := by
   funext x
   simp [innerProd]
-example  (x : ℝ): RCLike.ofReal x = ofReal' x := by
+example (x : ℝ): RCLike.ofReal x = ofReal' x := by
   rfl
 lemma innerProd_expand (φ1 φ2 : HiggsField) :
-    ⟪φ1, φ2⟫_H = fun x =>  equivRealProdCLM.symm (((φ1 x 0).re * (φ2 x 0).re
+    ⟪φ1, φ2⟫_H = fun x => equivRealProdCLM.symm (((φ1 x 0).re * (φ2 x 0).re
     + (φ1 x 1).re * (φ2 x 1).re+ (φ1 x 0).im * (φ2 x 0).im + (φ1 x 1).im * (φ2 x 1).im),
     ((φ1 x 0).re * (φ2 x 0).im + (φ1 x 1).re * (φ2 x 1).im
-    - (φ1 x 0).im * (φ2 x 0).re - (φ1 x 1).im * (φ2 x 1).re))  := by
+    - (φ1 x 0).im * (φ2 x 0).re - (φ1 x 1).im * (φ2 x 1).re)) := by
   funext x
   simp only [innerProd, PiLp.inner_apply, RCLike.inner_apply, Fin.sum_univ_two,
     equivRealProdCLM_symm_apply, ofReal_add, ofReal_mul, ofReal_sub]
@@ -69,7 +69,7 @@ lemma innerProd_expand (φ1 φ2 : HiggsField) :
   nth_rewrite 1 [← RCLike.re_add_im (φ2 x 0)]
   nth_rewrite 1 [← RCLike.re_add_im (φ2 x 1)]
   ring_nf
-  repeat rw [show  RCLike.ofReal _ = ofReal' _ by rfl]
+  repeat rw [show RCLike.ofReal _ = ofReal' _ by rfl]
   simp only [Algebra.id.map_eq_id, RCLike.re_to_complex, RingHom.id_apply, RCLike.I_to_complex,
     RCLike.im_to_complex, I_sq, mul_neg, mul_one, neg_mul, sub_neg_eq_add, one_mul]
   ring
@@ -124,10 +124,10 @@ lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
 -/
 
 lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
-    ‖φ x‖  = ‖φ.toHiggsVec x‖ := rfl
+    ‖φ x‖ = ‖φ.toHiggsVec x‖ := rfl
 
-lemma normSq_expand (φ : HiggsField)  :
-    φ.normSq  = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1) ).re := by
+lemma normSq_expand (φ : HiggsField) :
+    φ.normSq = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1)).re := by
   funext x
   simp [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add, @norm_sq_eq_inner ℂ]
 

@@ -17,7 +17,7 @@ and its action on the MSSM.
 universe v u
 
 open Nat
-open  Finset
+open Finset
 
 namespace MSSM
 
@@ -30,7 +30,7 @@ open BigOperators
 def PermGroup := Fin 6 → Equiv.Perm (Fin 3)
 
 @[simp]
-instance  : Group PermGroup := Pi.group
+instance : Group PermGroup := Pi.group
 
 /-- The image of an element of `permGroup` under the representation on charges. -/
 @[simps!]
@@ -65,7 +65,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    refine And.intro ?_ $  Prod.mk.inj_iff.mp rfl
+    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
     intro i
     simp only [ Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, LinearMap.mul_apply]
     rw [chargeMap_toSpecies, chargeMap_toSpecies]
@@ -76,7 +76,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    refine And.intro ?_ $  Prod.mk.inj_iff.mp rfl
+    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
     intro i
     erw [toSMSpecies_toSpecies_inv]
     rfl
@@ -91,46 +91,46 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup) (S : MSSMCharges.Charges
   rw [repCharges_toSMSpecies]
   exact Equiv.sum_comp (f⁻¹ j) ((fun a => a ^ m) ∘ (toSMSpecies j) S)
 
-lemma Hd_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma Hd_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     Hd (repCharges f S) = Hd S := rfl
 
-lemma Hu_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma Hu_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     Hu (repCharges f S) = Hu S := rfl
 
-lemma accGrav_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accGrav_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accGrav (repCharges f S) = accGrav S :=
   accGrav_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
     (Hd_invariant f S)
     (Hu_invariant f S)
 
-lemma accSU2_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accSU2_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accSU2 (repCharges f S) = accSU2 S :=
   accSU2_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
     (Hd_invariant f S)
     (Hu_invariant f S)
 
-lemma accSU3_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accSU3_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accSU3 (repCharges f S) = accSU3 S :=
   accSU3_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
-lemma accYY_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accYY_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accYY (repCharges f S) = accYY S :=
   accYY_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
     (Hd_invariant f S)
     (Hu_invariant f S)
 
-lemma accQuad_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accQuad_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accQuad (repCharges f S) = accQuad S :=
   accQuad_ext
     (toSpecies_sum_invariant 2 f S)
     (Hd_invariant f S)
     (Hu_invariant f S)
 
-lemma accCube_invariant (f : PermGroup) (S : MSSMCharges.Charges)  :
+lemma accCube_invariant (f : PermGroup) (S : MSSMCharges.Charges) :
     accCube (repCharges f S) = accCube S :=
   accCube_ext
     (fun j => toSpecies_sum_invariant 3 f S j)

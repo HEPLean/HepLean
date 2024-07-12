@@ -108,7 +108,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
   add_zero S := by
     apply LinSols.ext
     exact χ.chargesAddCommMonoid.add_zero _
-  nsmul n S := ⟨n  • S.val, by
+  nsmul n S := ⟨n • S.val, by
     intro i
     rw [nsmul_eq_smul_cast ℚ]
     erw [(χ.linearACCs i).map_smul, S.linearSol i]
@@ -122,7 +122,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
 /-- An instance providing the operations and properties for `LinSols` to form an
   module over `ℚ`. -/
 @[simps!]
-instance linSolsModule  (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
+instance linSolsModule (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
   smul a S := ⟨a • S.val, by
     intro i
     rw [(χ.linearACCs i).map_smul, S.linearSol i]
@@ -177,13 +177,13 @@ structure QuadSols (χ : ACCSystemQuad) extends χ.LinSols where
 @[ext]
 lemma QuadSols.ext {χ : ACCSystemQuad} {S T : χ.QuadSols} (h : S.val = T.val) :
     S = T := by
-  have h  := ACCSystemLinear.LinSols.ext h
+  have h := ACCSystemLinear.LinSols.ext h
   cases' S
   simp_all only
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `QuadSols`. -/
 instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols where
-  smul a S :=  ⟨a • S.toLinSols , by
+  smul a S := ⟨a • S.toLinSols , by
     intro i
     erw [(χ.quadraticACCs i).map_smul]
     rw [S.quadSol i]
@@ -197,8 +197,8 @@ instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols wher
     exact one_smul _ _
 
 /-- The inclusion of quadratic solutions into linear solutions. -/
-def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols  where
-  toFun  := QuadSols.toLinSols
+def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols where
+  toFun := QuadSols.toLinSols
   map_smul' _ _ := rfl
 
 /-- If there are no quadratic equations (i.e. no U(1)'s in the underlying gauge group. The inclusion
@@ -229,7 +229,7 @@ structure Sols (χ : ACCSystem) extends χ.QuadSols where
 /-- Two solutions are equal if the underlying charges are equal. -/
 lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
     S = T := by
-  have h  := ACCSystemQuad.QuadSols.ext h
+  have h := ACCSystemQuad.QuadSols.ext h
   cases' S
   simp_all only
 
@@ -239,7 +239,7 @@ def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `Sols`. -/
 instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
-  smul a S :=  ⟨a • S.toQuadSols , by
+  smul a S := ⟨a • S.toQuadSols, by
     erw [(χ.cubicACC).map_smul]
     rw [S.cubicSol]
     simp⟩
@@ -251,8 +251,8 @@ instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
     exact one_smul _ _
 
 /-- The inclusion of `Sols` into `QuadSols`. -/
-def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols  where
-  toFun  := Sols.toQuadSols
+def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols where
+  toFun := Sols.toQuadSols
   map_smul' _ _ := rfl
 
 /-- The inclusion of `Sols` into `LinSols`. -/

@@ -7,14 +7,16 @@ Taken from Mathlib's linters. These perform text-based linting of the code.
 
 These are to be slowly replaced with code written in Lean.
 
-## double_line_lint
+## hepLean_style_lint
 
-Checks for double empty lines in HepLean. 
+Checks the following in HepLean 
+- There are no double empty lines. 
+- There are no non-initial double spaces.  
 Passing this linter is currently not required to pass CI on github.
 
 Run using 
 ```
-lake exe double_line_lint
+lake exe hepLean_style_lint
 ```
 
 ## check_file_imports.lean 

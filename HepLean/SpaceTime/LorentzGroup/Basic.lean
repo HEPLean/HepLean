@@ -30,7 +30,7 @@ We start studying the properties of matrices which preserve `ηLin`.
 These matrices form the Lorentz group, which we will define in the next section at `lorentzGroup`.
 
 -/
-variable  {d : ℕ}
+variable {d : ℕ}
 
 open minkowskiMetric in
 /-- The Lorentz group is the subset of matrices which preserve the minkowski metric. -/
@@ -44,7 +44,7 @@ scoped[LorentzGroup] notation (name := lorentzGroup_notation) "𝓛" => LorentzG
 
 open minkowskiMetric
 
-variable  {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
+variable {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
 
 /-!
 
@@ -52,7 +52,7 @@ variable  {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
 
 -/
 
-lemma mem_iff_norm :  Λ ∈ LorentzGroup d ↔
+lemma mem_iff_norm : Λ ∈ LorentzGroup d ↔
     ∀ (x : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ x⟫ₘ = ⟪x, x⟫ₘ := by
   refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
   have hp := h (x + y)
@@ -74,11 +74,11 @@ lemma mem_iff_on_right : Λ ∈ LorentzGroup d ↔
   rw [← dual_mulVec_right, mulVec_mulVec]
   exact h x y
 
-lemma mem_iff_dual_mul_self : Λ ∈ LorentzGroup d ↔ dual Λ * Λ = 1  := by
+lemma mem_iff_dual_mul_self : Λ ∈ LorentzGroup d ↔ dual Λ * Λ = 1 := by
   rw [mem_iff_on_right, matrix_eq_id_iff]
   exact forall_comm
 
-lemma mem_iff_self_mul_dual :  Λ ∈ LorentzGroup d ↔ Λ * dual Λ = 1  := by
+lemma mem_iff_self_mul_dual : Λ ∈ LorentzGroup d ↔ Λ * dual Λ = 1 := by
   rw [mem_iff_dual_mul_self]
   exact mul_eq_one_comm
 
@@ -145,9 +145,9 @@ namespace LorentzGroup
 
 open minkowskiMetric
 
-variable  {Λ Λ' : LorentzGroup d}
+variable {Λ Λ' : LorentzGroup d}
 
-lemma coe_inv  : (Λ⁻¹).1 = Λ.1⁻¹:= by
+lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact mem_iff_dual_mul_self.mp Λ.2
 
@@ -172,7 +172,7 @@ def toGL : LorentzGroup d →* GL (Fin 1 ⊕ Fin d) ℝ where
   map_one' := by
     simp
     rfl
-  map_mul' x y  := by
+  map_mul' x y := by
     simp only [lorentzGroupIsGroup, _root_.mul_inv_rev, coe_inv]
     ext
     rfl
@@ -190,7 +190,7 @@ def toProd : LorentzGroup d →* (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ
     (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
-lemma toProd_eq_transpose_η  : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMetric.dual Λ.1) := rfl
+lemma toProd_eq_transpose_η : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMetric.dual Λ.1) := rfl
 
 lemma toProd_injective : Function.Injective (@toProd d) := by
   intro A B h

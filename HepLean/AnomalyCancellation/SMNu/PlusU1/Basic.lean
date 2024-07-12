@@ -39,32 +39,32 @@ namespace PlusU1
 
 variable {n : ℕ}
 
-lemma gravSol  (S : (PlusU1 n).LinSols) : accGrav S.val = 0 := by
+lemma gravSol (S : (PlusU1 n).LinSols) : accGrav S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 0
 
-lemma SU2Sol  (S : (PlusU1 n).LinSols) : accSU2 S.val = 0 := by
+lemma SU2Sol (S : (PlusU1 n).LinSols) : accSU2 S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 1
 
-lemma SU3Sol  (S : (PlusU1 n).LinSols) : accSU3 S.val = 0 := by
+lemma SU3Sol (S : (PlusU1 n).LinSols) : accSU3 S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 2
 
-lemma YYsol  (S : (PlusU1 n).LinSols) : accYY S.val = 0 := by
+lemma YYsol (S : (PlusU1 n).LinSols) : accYY S.val = 0 := by
   have hS := S.linearSol
   simp at hS
   exact hS 3
 
-lemma quadSol  (S : (PlusU1 n).QuadSols) : accQuad S.val = 0 := by
+lemma quadSol (S : (PlusU1 n).QuadSols) : accQuad S.val = 0 := by
   have hS := S.quadSol
   simp at hS
   exact hS 0
 
-lemma cubeSol  (S : (PlusU1 n).Sols) : accCube S.val = 0 := by
+lemma cubeSol (S : (PlusU1 n).Sols) : accCube S.val = 0 := by
   exact S.cubicSol
 
 /-- An element of `charges` which satisfies the linear ACCs
@@ -110,13 +110,13 @@ def chargeToAF (S : (PlusU1 n).Charges) (hGrav : accGrav S = 0) (hSU2 : accSU2 S
     (PlusU1 n).Sols :=
   quadToAF (chargeToQuad S hGrav hSU2 hSU3 hYY hQ) hc
 
-/-- An element of `LinSols` which satisfies the  quadratic and cubic ACCs
+/-- An element of `LinSols` which satisfies the quadratic and cubic ACCs
   gives us a element of `Sols`. -/
 def linearToAF (S : (PlusU1 n).LinSols) (hQ : accQuad S.val = 0)
     (hc : accCube S.val = 0) : (PlusU1 n).Sols :=
   quadToAF (linearToQuad S hQ) hc
 
-/-- The permutations acting on the ACC system corresponding to the SM with  RHN. -/
+/-- The permutations acting on the ACC system corresponding to the SM with RHN. -/
 def perm (n : ℕ) : ACCSystemGroupAction (PlusU1 n) where
   group := PermGroup n
   groupInst := inferInstance

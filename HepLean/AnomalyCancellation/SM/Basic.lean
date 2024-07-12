@@ -31,7 +31,7 @@ def SMSpecies (n : ℕ) : ACCSystemCharges := ACCSystemChargesMk n
 
 namespace SMCharges
 
-variable  {n : ℕ}
+variable {n : ℕ}
 
 /-- An equivalence between the set `(SMCharges n).charges` and the set
   `(Fin 5 → Fin n → ℚ)`. -/
@@ -54,7 +54,7 @@ lemma charges_eq_toSpecies_eq (S T : (SMCharges n).Charges) :
   apply toSpeciesEquiv.injective
   exact (Set.eqOn_univ (toSpeciesEquiv S) (toSpeciesEquiv T)).mp fun ⦃x⦄ _ => h x
 
-lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f :  (Fin 5 → Fin n → ℚ) ) :
+lemma toSMSpecies_toSpecies_inv (i : Fin 5) (f : (Fin 5 → Fin n → ℚ) ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by
   change (toSpeciesEquiv ∘ toSpeciesEquiv.symm ) _ i= f i
   simp
@@ -80,7 +80,7 @@ namespace SMACCs
 
 open SMCharges
 
-variable  {n : ℕ}
+variable {n : ℕ}
 
 /-- The gravitational anomaly equation. -/
 @[simp]
@@ -89,7 +89,7 @@ def accGrav : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp  [Pi.add_apply, mul_add]
+    simp [Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -103,7 +103,7 @@ def accGrav : (SMCharges n).Charges →ₗ[ℚ] ℚ where
 
 /-- Extensionality lemma for `accGrav`. -/
 lemma accGrav_ext {S T : (SMCharges n).Charges}
-    (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 5), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accGrav S = accGrav T := by
   simp only [accGrav, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
@@ -133,7 +133,7 @@ def accSU2 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
 
 /-- Extensionality lemma for `accSU2`. -/
 lemma accSU2_ext {S T : (SMCharges n).Charges}
-    (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 5), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU2 S = accSU2 T := by
   simp only [accSU2, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
@@ -162,7 +162,7 @@ def accSU3 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
 
 /-- Extensionality lemma for `accSU3`. -/
 lemma accSU3_ext {S T : (SMCharges n).Charges}
-    (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 5), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU3 S = accSU3 T := by
   simp only [accSU3, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
@@ -193,7 +193,7 @@ def accYY : (SMCharges n).Charges →ₗ[ℚ] ℚ where
 
 /-- Extensionality lemma for `accYY`. -/
 lemma accYY_ext {S T : (SMCharges n).Charges}
-    (hj : ∀ (j : Fin 5),  ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
+    (hj : ∀ (j : Fin 5), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accYY S = accYY T := by
   simp only [accYY, SMSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
@@ -238,7 +238,7 @@ def quadBiLin : BiLinearSymm (SMCharges n).Charges := BiLinearSymm.mk₂
 
 /-- The quadratic anomaly cancellation condition. -/
 @[simp]
-def accQuad  : HomogeneousQuadratic (SMCharges n).Charges :=
+def accQuad : HomogeneousQuadratic (SMCharges n).Charges :=
   (@quadBiLin n).toHomogeneousQuad
 
 /-- Extensionality lemma for `accQuad`. -/
@@ -263,7 +263,7 @@ def cubeTriLin : TriLinearSymm (SMCharges n).Charges := TriLinearSymm.mk₃
     + 3 * ((U S.1 i) * (U S.2.1 i) * (U S.2.2 i))
     + 3 * ((D S.1 i) * (D S.2.1 i) * (D S.2.2 i))
     + 2 * ((L S.1 i) * (L S.2.1 i) * (L S.2.2 i))
-    +  ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))))
+    + ((E S.1 i) * (E S.2.1 i) * (E S.2.2 i))))
   (by
     intro a S T R
     simp only

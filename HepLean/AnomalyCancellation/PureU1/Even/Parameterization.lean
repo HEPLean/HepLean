@@ -14,7 +14,7 @@ import Mathlib.Tactic.Polyrith
 /-!
 # Parameterization in even case
 
-Given maps `g : Fin n.succ → ℚ`,  `f : Fin n → ℚ` and `a : ℚ` we form a solution to the anomaly
+Given maps `g : Fin n.succ → ℚ`, `f : Fin n → ℚ` and `a : ℚ` we form a solution to the anomaly
 equations. We show that every solution can be got in this way, up to permutation, unless it, up to
 permutation, lives in the plane spanned by the first part of the basis vector.
 
@@ -60,7 +60,7 @@ lemma parameterizationCharge_cube (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (
    accCubeTriLinSymm.map_smul₃]
   ring
 
-/-- The construction of a `Sol` from a `Fin n.succ → ℚ`, a `Fin n → ℚ` and  a `ℚ`. -/
+/-- The construction of a `Sol` from a `Fin n.succ → ℚ`, a `Fin n → ℚ` and a `ℚ`. -/
 def parameterization (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (a : ℚ) :
     (PureU1 (2 * n.succ)).Sols :=
   ⟨⟨parameterizationAsLinear g f a, by intro i; simp at i; exact Fin.elim0 i⟩,
@@ -77,15 +77,15 @@ lemma anomalyFree_param {S : (PureU1 (2 * n.succ)).Sols}
   erw [P!_accCube] at hC
   linear_combination hC / 3
 
-/-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠  0`.
+/-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠ 0`.
 In this case our parameterization above will be able to recover this point. -/
 def GenericCase (S : (PureU1 (2 * n.succ)).Sols) : Prop :=
   ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) ,
-  accCubeTriLinSymm (P g) (P g) (P! f) ≠  0
+  accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0
 
 lemma genericCase_exists (S : (PureU1 (2 * n.succ)).Sols)
     (hs : ∃ (g : Fin n.succ → ℚ) (f : Fin n → ℚ), S.val = P g + P! f ∧
-    accCubeTriLinSymm (P g) (P g) (P! f) ≠  0) : GenericCase S := by
+    accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0) : GenericCase S := by
   intro g f hS hC
   obtain ⟨g', f', hS', hC'⟩ := hs
   rw [hS] at hS'
@@ -94,13 +94,13 @@ lemma genericCase_exists (S : (PureU1 (2 * n.succ)).Sols)
   exact hC' hC
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) = 0`.-/
-def SpecialCase  (S : (PureU1 (2 * n.succ)).Sols) : Prop :=
+def SpecialCase (S : (PureU1 (2 * n.succ)).Sols) : Prop :=
   ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) ,
   accCubeTriLinSymm (P g) (P g) (P! f) = 0
 
 lemma specialCase_exists (S : (PureU1 (2 * n.succ)).Sols)
     (hs : ∃ (g : Fin n.succ → ℚ) (f : Fin n → ℚ), S.val = P g + P! f ∧
-    accCubeTriLinSymm (P g) (P g) (P! f) =  0) : SpecialCase S := by
+    accCubeTriLinSymm (P g) (P g) (P! f) = 0) : SpecialCase S := by
   intro g f hS
   obtain ⟨g', f', hS', hC'⟩ := hs
   rw [hS] at hS'
@@ -111,7 +111,7 @@ lemma specialCase_exists (S : (PureU1 (2 * n.succ)).Sols)
 lemma generic_or_special (S : (PureU1 (2 * n.succ)).Sols) :
     GenericCase S ∨ SpecialCase S := by
   obtain ⟨g, f, h⟩ := span_basis S.1.1
-  have h1 :  accCubeTriLinSymm (P g) (P g) (P! f) ≠  0 ∨
+  have h1 : accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0 ∨
      accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
     exact ne_or_eq _ _
   cases h1 <;> rename_i h1
@@ -119,7 +119,7 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ)).Sols) :
   exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
 theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : GenericCase S) :
-    ∃ g f a,  S = parameterization g f a := by
+    ∃ g f a, S = parameterization g f a := by
   obtain ⟨g, f, hS⟩ := span_basis S.1.1
   use g, f, (accCubeTriLinSymm (P! f) (P! f) (P g))⁻¹
   rw [parameterization]
