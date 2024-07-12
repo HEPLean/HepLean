@@ -7,6 +7,7 @@ import Mathlib.Logic.Function.CompTypeclasses
 import Mathlib.Data.Real.Basic
 import Mathlib.CategoryTheory.FintypeCat
 import Mathlib.Analysis.Normed.Field.Basic
+import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
 
 # Lorentz Tensors
@@ -21,6 +22,7 @@ This will relation should be made explicit in the future.
 -- For modular operads see: [Raynor][raynor2021graphical]
 
 -/
+/-! TODO: Replace `FintypeCat` throughout with `Type` and `Fintype`. -/
 /-! TODO: Do complex tensors, with Van der Waerden notation for fermions. -/
 /-! TODO: Generalize to maps into Lorentz tensors. -/
 /-!
@@ -61,8 +63,39 @@ structure RealLorentzTensor (d : ℕ) (X : FintypeCat) where
 
 namespace RealLorentzTensor
 open CategoryTheory
+open Matrix
 universe u1
 variable {d : ℕ} {X Y Z : FintypeCat.{0}}
+
+/-!
+
+## Some equivalences in FintypeCat
+
+These come in use casting Lorentz tensors.
+There is likely a better way to deal with these castings.
+
+-/
+
+/-- An equivalence between an `X` which is empty and `FintypeCat.of Empty`. -/
+def equivToEmpty (X : FintypeCat) [IsEmpty X] : X ≃ FintypeCat.of Empty :=
+  Equiv.equivEmpty _
+
+/-- An equivalence between an `X ⊕ Empty` and `X`. -/
+def equivToSumEmpty (X : FintypeCat) : FintypeCat.of (X ⊕ Empty) ≃ X :=
+  Equiv.sumEmpty (↑X) Empty
+
+/-- An equivalence from `Empty ⊕ PUnit.{1}` to `Empty ⊕ Σ _ : Fin 1, PUnit`. -/
+def equivPUnitToSigma :
+    FintypeCat.of (Empty ⊕ PUnit.{1}) ≃ FintypeCat.of (Empty ⊕ Σ _ : Fin 1, PUnit) where
+  toFun x := match x with
+    | Sum.inr x => Sum.inr ⟨0, x⟩
+  invFun x := match x with
+    | Sum.inr ⟨0, x⟩ => Sum.inr x
+  left_inv x := match x with
+    | Sum.inr _ => rfl
+  right_inv x := match x with
+    | Sum.inr ⟨0, _⟩ => rfl
+
 /-!
 
 ## Colors
@@ -239,6 +272,7 @@ lemma sumElimIndexColor_symm (Tc : X → Colors) (Sc : Y → Colors) : sumElimIn
   cases x <;> rfl
 
 /-- The sum of two index values for different color maps. -/
+@[simp]
 def sumElimIndexValue {X Y : FintypeCat} {TX : X → Colors} {TY : Y → Colors}
     (i : IndexValue d TX) (j : IndexValue d TY) :
     IndexValue d (sumElimIndexColor TX TY) :=
@@ -329,6 +363,30 @@ def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPo
   | ⟨0, PUnit.unit⟩ => x
   | ⟨1, PUnit.unit⟩ => y
 
+/-- An equivalence of types used to turn the first marked index into an unmarked index. -/
+def unmarkFirstSet (X : FintypeCat) (n : ℕ) : FintypeCat.of (X ⊕ Σ _ : Fin n.succ, PUnit) ≃
+    FintypeCat.of ((X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit) where
+  toFun x := match x with
+    | Sum.inl x => Sum.inl (Sum.inl x)
+    | Sum.inr ⟨0, PUnit.unit⟩ => Sum.inl (Sum.inr PUnit.unit)
+    | Sum.inr ⟨⟨Nat.succ i, h⟩, PUnit.unit⟩ => Sum.inr ⟨⟨i, Nat.succ_lt_succ_iff.mp h⟩, PUnit.unit⟩
+  invFun x := match x with
+    | Sum.inl (Sum.inl x) => Sum.inl x
+    | Sum.inl (Sum.inr PUnit.unit) => Sum.inr ⟨0, PUnit.unit⟩
+    | Sum.inr ⟨⟨i, h⟩, PUnit.unit⟩ => Sum.inr ⟨⟨Nat.succ i, Nat.succ_lt_succ h⟩, PUnit.unit⟩
+  left_inv x := by match x with
+    | Sum.inl x => rfl
+    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
+    | Sum.inr ⟨⟨Nat.succ i, h⟩, PUnit.unit⟩ => rfl
+  right_inv x := by match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr PUnit.unit) => rfl
+    | Sum.inr ⟨⟨i, h⟩, PUnit.unit⟩ => rfl
+
+/-- Unmark the first marked index of a marked thensor. -/
+def unmarkFirst {X : FintypeCat} : Marked d X n.succ ≃ Marked d (FintypeCat.of (X ⊕ PUnit)) n :=
+  congrSet (unmarkFirstSet X n)
+
 end Marked
 
 /-!
@@ -347,9 +405,9 @@ def mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
     RealLorentzTensor d (FintypeCat.of (X ⊕ Y)) where
   color := sumElimIndexColor T.unmarkedColor S.unmarkedColor
   coord := fun i => ∑ x,
-    T.coord (Equiv.cast (indexValue_eq d T.sumElimIndexColor_of_marked)
+    T.coord (castIndexValue T.sumElimIndexColor_of_marked
       (sumElimIndexValue (inlIndexValue i) (T.oneMarkedIndexValue x))) *
-    S.coord (Equiv.cast (indexValue_eq d S.sumElimIndexColor_of_marked) $
+    S.coord (castIndexValue S.sumElimIndexColor_of_marked $
       sumElimIndexValue (inrIndexValue i) (S.oneMarkedIndexValue $ congrColorsDual h x))
 
 /-- Multiplication is well behaved with regard to swapping tensors. -/
@@ -385,12 +443,147 @@ def contr {X : FintypeCat} (T : Marked d X 2)
     RealLorentzTensor d X where
   color := T.unmarkedColor
   coord := fun i =>
-    ∑ x, T.coord (Equiv.cast (indexValue_eq d T.sumElimIndexColor_of_marked)
-      (sumElimIndexValue i (T.twoMarkedIndexValue x ((congrColorsDual h) x))))
+    ∑ x, T.coord (castIndexValue T.sumElimIndexColor_of_marked $
+      sumElimIndexValue i $ T.twoMarkedIndexValue x $ congrColorsDual h x)
 
 /-! TODO: Following the ethos of modular operads, prove properties of contraction. -/
 
 /-! TODO: Use `contr` to generalize to any pair of marked index. -/
+
+/-!
+
+# Tensors from reals, vectors and matrices
+
+Note that that these definitions are not equivariant with respect to an
+action of the Lorentz group. They are provided for constructive purposes.
+
+-/
+
+/-- A 0-tensor from a real number. -/
+def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d (FintypeCat.of Empty) where
+  color := fun _ => Colors.up
+  coord := fun _ => r
+
+/-- A marked 1-tensor with a single up index constructed from a vector.
+
+  Note: This is not the same as rising indices on `ofVecDown`. -/
+def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
+    Marked d (FintypeCat.of Empty) 1 where
+  color := fun _ => Colors.up
+  coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
+
+/-- A marked 1-tensor with a single down index constructed from a vector.
+
+  Note: This is not the same as lowering indices on `ofVecUp`. -/
+def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
+    Marked d (FintypeCat.of Empty) 1 where
+  color := fun _ => Colors.down
+  coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
+
+/-- A tensor with two up indices constructed from a matrix.
+
+Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
+def ofMatUpUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    Marked d (FintypeCat.of Empty) 2 where
+  color := fun _ => Colors.up
+  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+
+/-- A tensor with two down indices constructed from a matrix.
+
+Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
+def ofMatDownDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    Marked d (FintypeCat.of Empty) 2 where
+  color := fun _ => Colors.down
+  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+
+/-- A marked 2-tensor with the first index up and the second index down.
+
+Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
+@[simps!]
+def ofMatUpDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    Marked d (FintypeCat.of Empty) 2 where
+  color := fun i => match i with
+  | Sum.inr ⟨0, PUnit.unit⟩ => Colors.up
+  | Sum.inr ⟨1, PUnit.unit⟩ => Colors.down
+  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+
+/-- A marked 2-tensor with the first index down and the second index up.
+
+Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
+def ofMatDownUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    Marked d (FintypeCat.of Empty) 2 where
+  color := fun i => match i with
+    | Sum.inr ⟨0, PUnit.unit⟩ => Colors.down
+    | Sum.inr ⟨1, PUnit.unit⟩ => Colors.up
+  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+
+/-- Contracting the indices of `ofMatUpDown` returns the trace of the matrix. -/
+lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    contr (ofMatUpDown M) (by rfl) = ofReal d M.trace := by
+  refine ext' ?_ ?_
+  · funext i
+    exact Empty.elim i
+  · funext i
+    simp only [Fin.isValue, contr, IndexValue, Equiv.cast_apply, trace, diag_apply, ofReal,
+      Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
+    apply Finset.sum_congr rfl
+    intro x _
+    rfl
+
+/-- Contracting the indices of `ofMatDownUp` returns the trace of the matrix. -/
+lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
+    contr (ofMatDownUp M) (by rfl) = ofReal d M.trace := by
+  refine ext' ?_ ?_
+  · funext i
+    exact Empty.elim i
+  · funext i
+    rfl
+
+/-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
+@[simp]
+lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
+    congrSet (@equivToEmpty (FintypeCat.of (Empty ⊕ Empty)) instIsEmptySum)
+    (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
+  refine ext' ?_ ?_
+  · funext i
+    exact Empty.elim i
+  · funext i
+    rfl
+
+/-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
+@[simp]
+lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
+    congrSet (@equivToEmpty (FintypeCat.of (Empty ⊕ Empty)) instIsEmptySum)
+    (mul (ofVecDown v₁) (ofVecUp v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
+  refine ext' ?_ ?_
+  · funext i
+    exact Empty.elim i
+  · funext i
+    rfl
+
+lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
+    (v : Fin 1 ⊕ Fin d → ℝ) :
+    congrSet ((equivToSumEmpty (FintypeCat.of (Empty ⊕ PUnit.{1}))).trans equivPUnitToSigma)
+    (mul (unmarkFirst (ofMatUpDown M)) (ofVecUp v) (by rfl)) = ofVecUp (M *ᵥ v) := by
+  refine ext' ?_ ?_
+  · funext i
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
+    fin_cases i
+    rfl
+  · funext i
+    rfl
+
+lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
+    (v : Fin 1 ⊕ Fin d → ℝ) :
+    congrSet ((equivToSumEmpty (FintypeCat.of (Empty ⊕ PUnit.{1}))).trans equivPUnitToSigma)
+    (mul (unmarkFirst (ofMatDownUp M)) (ofVecDown v) (by rfl)) = ofVecDown (M *ᵥ v) := by
+  refine ext' ?_ ?_
+  · funext i
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
+    fin_cases i
+    rfl
+  · funext i
+    rfl
 
 /-!
 
