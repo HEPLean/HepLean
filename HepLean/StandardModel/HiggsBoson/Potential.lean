@@ -34,7 +34,7 @@ open SpaceTime
 
 /-- The Higgs potential of the form `- μ² * |φ|² + 𝓵 * |φ|⁴`. -/
 @[simp]
-def potential (μ2 𝓵 : ℝ ) (φ : HiggsField) (x : SpaceTime) :  ℝ :=
+def potential (μ2 𝓵 : ℝ ) (φ : HiggsField) (x : SpaceTime) : ℝ :=
   - μ2 * ‖φ‖_H ^ 2 x + 𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x
 
 /-!
@@ -94,7 +94,7 @@ lemma snd_term_nonneg (φ : HiggsField) (x : SpaceTime) :
     and_self]
 
 lemma as_quad (μ2 𝓵 : ℝ) (φ : HiggsField) (x : SpaceTime) :
-    𝓵  * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2 ) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
+    𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2 ) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
   simp only [normSq, neg_mul, potential, neg_add_rev, neg_neg]
   ring
 
@@ -121,7 +121,7 @@ lemma eq_zero_at (φ : HiggsField) (x : SpaceTime)
   ring_nf
   linear_combination h2
 
-lemma eq_zero_at_of_μSq_nonpos  {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
+lemma eq_zero_at_of_μSq_nonpos {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
     (φ : HiggsField) (x : SpaceTime) (hV : potential μ2 𝓵 φ x = 0) : φ x = 0 := by
   cases' (eq_zero_at μ2 h𝓵 φ x hV) with h1 h1
   exact h1
@@ -141,7 +141,7 @@ lemma bounded_below (φ : HiggsField) (x : SpaceTime) :
   ring_nf at h1
   rw [← neg_le_iff_add_nonneg'] at h1
   rw [show 𝓵 * potential μ2 𝓵 φ x * 4 = (4 * 𝓵) * potential μ2 𝓵 φ x by ring] at h1
-  have h2 :=  (div_le_iff' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
+  have h2 := (div_le_iff' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
   ring_nf at h2 ⊢
   exact h2
 
@@ -165,13 +165,13 @@ variable (h𝓵 : 0 < 𝓵)
 -/
 
 lemma discrim_eq_zero_of_eq_bound (φ : HiggsField) (x : SpaceTime)
-    (hV : potential μ2 𝓵 φ x  = - μ2 ^ 2 / (4 * 𝓵)) :
+    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) = 0 := by
   rw [discrim, hV]
   field_simp
 
 lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
-    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4  * 𝓵)) :
+    (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) := by
   have h1 := as_quad μ2 𝓵 φ x
   rw [quadratic_eq_zero_iff_of_discrim_eq_zero _
@@ -180,7 +180,7 @@ lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
   exact ne_of_gt h𝓵
 
 lemma eq_bound_iff (φ : HiggsField) (x : SpaceTime) :
-    potential μ2 𝓵 φ x = - μ2 ^ 2 / (4  * 𝓵) ↔ ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) :=
+    potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵) ↔ ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) :=
   Iff.intro (normSq_of_eq_bound μ2 h𝓵 φ x)
     (fun h ↦ by
       rw [potential, h]

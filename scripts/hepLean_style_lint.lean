@@ -39,7 +39,7 @@ def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
       let k := (Substring.findAllSubstr l "  ").toList.getLast?
       let col := match k with
         | none => 1
-        | some k => k.stopPos.byteIdx
+        | some k => String.offsetOfPos l k.stopPos
       some (s!" Non-initial double space in line.", lno, col)
     else none)
   errors.toArray

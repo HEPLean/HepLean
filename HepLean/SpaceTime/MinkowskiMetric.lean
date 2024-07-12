@@ -35,7 +35,7 @@ variable {d : ℕ}
 scoped[minkowskiMatrix] notation "η" => minkowskiMatrix
 
 @[simp]
-lemma sq : @minkowskiMatrix d * minkowskiMatrix  = 1 := by
+lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   ext1 i j
   rcases i with i | i <;> rcases j with j | j
@@ -58,7 +58,7 @@ lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
-lemma as_block :  @minkowskiMatrix d =  (
+lemma as_block : @minkowskiMatrix d = (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ)) := by
   rw [minkowskiMatrix]
   simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
@@ -77,7 +77,7 @@ end minkowskiMatrix
 
 -/
 
-/-- Given a Lorentz vector `v` we define the the linear map `w ↦ v * η * w`  -/
+/-- Given a Lorentz vector `v` we define the the linear map `w ↦ v * η * w`. -/
 @[simps!]
 def minkowskiLinearForm {d : ℕ} (v : LorentzVector d) : LorentzVector d →ₗ[ℝ] ℝ where
   toFun w := v ⬝ᵥ (minkowskiMatrix *ᵥ w)
@@ -90,7 +90,7 @@ def minkowskiLinearForm {d : ℕ} (v : LorentzVector d) : LorentzVector d →ₗ
     rfl
 
 /-- The Minkowski metric as a bilinear map. -/
-def minkowskiMetric {d : ℕ} :  LorentzVector d →ₗ[ℝ] LorentzVector d →ₗ[ℝ] ℝ where
+def minkowskiMetric {d : ℕ} : LorentzVector d →ₗ[ℝ] LorentzVector d →ₗ[ℝ] ℝ where
   toFun v := minkowskiLinearForm v
   map_add' y z := by
     ext1 x
@@ -134,7 +134,7 @@ lemma as_sum_self : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 := by
   rw [← real_inner_self_eq_norm_sq, PiLp.inner_apply, as_sum]
   noncomm_ring
 
-lemma eq_time_minus_inner_prod : ⟪v, w⟫ₘ = v.time * w.time - ⟪v.space, w.space⟫_ℝ  := by
+lemma eq_time_minus_inner_prod : ⟪v, w⟫ₘ = v.time * w.time - ⟪v.space, w.space⟫_ℝ := by
   rw [as_sum, @PiLp.inner_apply]
   noncomm_ring
 
@@ -153,7 +153,7 @@ lemma time_sq_eq_metric_add_space : v.time ^ 2 = ⟪v, v⟫ₘ + ‖v.space‖ ^
 
 /-!
 
-#  Minkowski metric and space reflections
+# Minkowski metric and space reflections
 
 -/
 
@@ -195,7 +195,7 @@ lemma nondegenerate : (∀ w, ⟪w, v⟫ₘ = 0) ↔ v = 0 := by
 
 -/
 
-lemma leq_time_sq  : ⟪v, v⟫ₘ ≤ v.time ^ 2 := by
+lemma leq_time_sq : ⟪v, v⟫ₘ ≤ v.time ^ 2 := by
   rw [time_sq_eq_metric_add_space]
   exact (le_add_iff_nonneg_right _).mpr $ sq_nonneg ‖v.space‖
 
@@ -227,7 +227,7 @@ lemma dual_id : @dual d 1 = 1 := by
 @[simp]
 lemma dual_mul : dual (Λ * Λ') = dual Λ' * dual Λ := by
   simp only [dual, transpose_mul]
-  trans  η * Λ'ᵀ * (η * η) * Λᵀ * η
+  trans η * Λ'ᵀ * (η * η) * Λᵀ * η
   noncomm_ring [minkowskiMatrix.sq]
   noncomm_ring
 
@@ -256,7 +256,7 @@ lemma det_dual : (dual Λ).det = Λ.det := by
   simp
 
 @[simp]
-lemma dual_mulVec_right : ⟪x, (dual Λ) *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ  := by
+lemma dual_mulVec_right : ⟪x, (dual Λ) *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ := by
   simp only [minkowskiMetric, LinearMap.coe_mk, AddHom.coe_mk, dual, minkowskiLinearForm_apply,
     mulVec_mulVec, ← mul_assoc, minkowskiMatrix.sq, one_mul, (vecMul_transpose Λ x).symm, ←
     dotProduct_mulVec]
@@ -265,7 +265,7 @@ lemma dual_mulVec_right : ⟪x, (dual Λ) *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ  
 lemma dual_mulVec_left : ⟪(dual Λ) *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ := by
   rw [symm, dual_mulVec_right, symm]
 
-lemma matrix_apply_eq_iff_sub  : ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ ↔  ⟪v, (Λ - Λ') *ᵥ w⟫ₘ = 0 := by
+lemma matrix_apply_eq_iff_sub : ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ ↔ ⟪v, (Λ - Λ') *ᵥ w⟫ₘ = 0 := by
   rw [← sub_eq_zero, ← LinearMap.map_sub, sub_mulVec]
 
 lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
@@ -278,7 +278,7 @@ lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪
     have h1 := h v
     rw [nondegenerate] at h1
     simp [sub_mulVec] at h1
-    exact  h1
+    exact h1
 
 lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
   rw [← matrix_eq_iff_eq_forall']
@@ -302,7 +302,7 @@ lemma matrix_eq_id_iff : Λ = 1 ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫�
 -/
 
 @[simp]
-lemma basis_left (μ : Fin 1 ⊕ Fin d)  : ⟪e μ, v⟫ₘ  = η μ μ * v μ := by
+lemma basis_left (μ : Fin 1 ⊕ Fin d) : ⟪e μ, v⟫ₘ = η μ μ * v μ := by
   rw [as_sum]
   rcases μ with μ | μ
   · fin_cases μ
@@ -314,7 +314,7 @@ lemma on_timeVec : ⟪timeVec, @timeVec d⟫ₘ = 1 := by
     LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inl, stdBasis_apply,
     ↓reduceIte, mul_one]
 
-lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, Λ *ᵥ e ν⟫ₘ = η μ μ * Λ μ ν  := by
+lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, Λ *ᵥ e ν⟫ₘ = η μ μ * Λ μ ν := by
   simp [basis_left, mulVec, dotProduct, stdBasis_apply]
 
 lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
@@ -324,8 +324,8 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
   · simp [h, LieAlgebra.Orthogonal.indefiniteDiagonal, minkowskiMatrix]
     exact fun a => False.elim (h (id (Eq.symm a)))
 
-lemma matrix_apply_stdBasis (ν μ :  Fin 1 ⊕ Fin d):
-    Λ ν μ  = η ν ν *  ⟪e ν, Λ *ᵥ e μ⟫ₘ  := by
+lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d):
+    Λ ν μ = η ν ν * ⟪e ν, Λ *ᵥ e μ⟫ₘ := by
   rw [on_basis_mulVec, ← mul_assoc]
   have h1 : η ν ν * η ν ν = 1 := by
     simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]

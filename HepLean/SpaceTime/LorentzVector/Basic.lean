@@ -43,7 +43,7 @@ variable (v : LorentzVector d)
 
 /-- The space components. -/
 @[simp]
-def space  : EuclideanSpace ℝ (Fin d) := v ∘ Sum.inr
+def space : EuclideanSpace ℝ (Fin d) := v ∘ Sum.inr
 
 /-- The time component. -/
 @[simp]

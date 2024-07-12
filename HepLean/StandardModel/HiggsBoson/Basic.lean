@@ -72,7 +72,7 @@ We also define the Higgs bundle.
 /-- The trivial vector bundle 𝓡² × ℂ². -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
-instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold  :=
+instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
   Bundle.Trivial.smoothVectorBundle HiggsVec 𝓘(ℝ, SpaceTime)
 
 /-- A Higgs field is a smooth section of the Higgs bundle. -/
@@ -133,11 +133,11 @@ lemma apply_smooth (φ : HiggsField) :
   (smooth_pi_space).mp (φ.toVec_smooth)
 
 lemma apply_re_smooth (φ : HiggsField) (i : Fin 2) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (reCLM ∘ (fun (x : SpaceTime) =>  (φ x i))) :=
+    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (reCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
   (ContinuousLinearMap.smooth reCLM).comp (φ.apply_smooth i)
 
 lemma apply_im_smooth (φ : HiggsField) (i : Fin 2) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : SpaceTime) =>  (φ x i))) :=
+    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
   (ContinuousLinearMap.smooth imCLM).comp (φ.apply_smooth i)
 
 /-!

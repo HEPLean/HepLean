@@ -64,7 +64,7 @@ lemma indexType_eq {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.co
   rw [h]
 
 lemma ext {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color)
-    (h' :  T₁.coord  = T₂.coord ∘ Equiv.cast (indexType_eq h)) : T₁ = T₂ := by
+    (h' : T₁.coord = T₂.coord ∘ Equiv.cast (indexType_eq h)) : T₁ = T₂ := by
   cases T₁
   cases T₂
   simp_all only [IndexType, mk.injEq]
@@ -97,7 +97,7 @@ def ch {X : FintypeCat} (x : X) (T : RealLorentzTensor d X) : Colors := T.color 
 /-- An equivalence between `X → Fin 1 ⊕ Fin d` and `Y → Fin 1 ⊕ Fin d` given an isomorphism
   between `X` and `Y`. -/
 def congrSetIndexType (d : ℕ) (f : X ≃ Y) (i : X → Colors) :
-    ((x : X) → ColorsIndex d (i x)) ≃ ((y : Y) → ColorsIndex d ((Equiv.piCongrLeft' _ f) i y))  :=
+    ((x : X) → ColorsIndex d (i x)) ≃ ((y : Y) → ColorsIndex d ((Equiv.piCongrLeft' _ f) i y)) :=
   Equiv.piCongrLeft' _ (f)
 
 /-- Given an equivalence of indexing sets, a map on Lorentz tensors. -/
@@ -106,8 +106,8 @@ def congrSetMap (f : X ≃ Y) (T : RealLorentzTensor d X) : RealLorentzTensor d 
   color := (Equiv.piCongrLeft' _ f) T.color
   coord := (Equiv.piCongrLeft' _ (congrSetIndexType d f T.color)) T.coord
 
-lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X)  :
-    congrSetMap g  (congrSetMap f T) = congrSetMap (f.trans g) T := by
+lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X) :
+    congrSetMap g (congrSetMap f T) = congrSetMap (f.trans g) T := by
   apply ext (by rfl)
   have h1 : (congrSetIndexType d (f.trans g) T.color) = (congrSetIndexType d f T.color).trans
     (congrSetIndexType d g ((Equiv.piCongrLeft' (fun _ => Colors) f) T.color)) := by

@@ -77,7 +77,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
       exact congrArg (HMul.hMul a) (swap T S)
   }
   map_smul' := fun a S  => LinearMap.ext fun T => map_smul a S T
-  map_add' := fun S1 S2  => LinearMap.ext fun T => map_add S1 S2 T
+  map_add' := fun S1 S2 => LinearMap.ext fun T => map_add S1 S2 T
   swap' := swap
 
 lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a * f S T := by
@@ -99,7 +99,7 @@ lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
   rw [f.swap, f.map_add₁, f.swap T1 S, f.swap T2 S]
 
 /-- Fixing the second input vectors, the resulting linear map. -/
-def toLinear₁  (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
+def toLinear₁ (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
   toFun S := f S T
   map_add' S1 S2 := map_add₁ f S1 S2 T
   map_smul' a S := by
@@ -166,7 +166,7 @@ end HomogeneousCubic
 /-- The structure of a symmetric trilinear function. -/
 structure TriLinearSymm (V : Type) [AddCommMonoid V] [Module ℚ V] extends
     V →ₗ[ℚ] V →ₗ[ℚ] V →ₗ[ℚ] ℚ where
-  swap₁' : ∀ S T L, toFun S T L  = toFun T S L
+  swap₁' : ∀ S T L, toFun S T L = toFun T S L
   swap₂' : ∀ S T L, toFun S T L = toFun S L T
 
 namespace TriLinearSymm
