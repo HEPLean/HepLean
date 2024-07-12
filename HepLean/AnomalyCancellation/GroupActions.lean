@@ -22,7 +22,7 @@ From this we define
 the vector spaces of charges under which the anomaly equations are invariant.
 -/
 structure ACCSystemGroupAction (χ : ACCSystem) where
-  /-- The underlying type of the group-/
+  /-- The underlying type of the group. -/
   group : Type
   /-- An instance given group the structure of a group. -/
   groupInst : Group group
