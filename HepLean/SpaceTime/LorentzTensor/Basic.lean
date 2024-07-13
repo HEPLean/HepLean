@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
-Released under Apache 2.0 license.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Logic.Function.CompTypeclasses
@@ -37,7 +37,7 @@ inductive RealLorentzTensor.Colors where
   | up : RealLorentzTensor.Colors
   | down : RealLorentzTensor.Colors
 
-/-- The association of colors with indices. For up and down this is `Fin 1 ⊕ Fin d`.-/
+/-- The association of colors with indices. For up and down this is `Fin 1 ⊕ Fin d`. -/
 def RealLorentzTensor.ColorsIndex (d : ℕ) (μ : RealLorentzTensor.Colors) : Type :=
   match μ with
   | RealLorentzTensor.Colors.up => Fin 1 ⊕ Fin d
@@ -51,7 +51,7 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : Fintype (RealLorentzTensor.
 /-- An `IndexValue` is a set of actual values an index can take. e.g. for a
   3-tensor (0, 1, 2). -/
 @[simp]
-def RealLorentzTensor.IndexValue {X : FintypeCat} (d : ℕ ) (c : X → RealLorentzTensor.Colors) :
+def RealLorentzTensor.IndexValue {X : FintypeCat} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
     Type 0 := (x : X) → RealLorentzTensor.ColorsIndex d (c x)
 
 /-- A Lorentz Tensor defined by its coordinate map. -/
@@ -246,8 +246,7 @@ lemma congrSet_trans (f : X ≃ Y) (g : Y ≃ Z) :
   funext T
   exact congrSetMap_trans f g T
 
-lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := by
-  rfl
+lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := rfl
 
 /-!
 
@@ -255,7 +254,7 @@ lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := by
 
 -/
 
-/-- An equivalence through commuting sums between types casted from `FintypeCat.of`.-/
+/-- An equivalence through commuting sums between types casted from `FintypeCat.of`. -/
 def sumCommFintypeCat (X Y : FintypeCat) : FintypeCat.of (X ⊕ Y) ≃ FintypeCat.of (Y ⊕ X) :=
   Equiv.sumComm X Y
 
@@ -289,25 +288,24 @@ def inrIndexValue {Tc : X → Colors} {Sc : Y → Colors}
     (i : IndexValue d (sumElimIndexColor Tc Sc)) :
   IndexValue d Sc := fun y => i (Sum.inr y)
 
-/-- An equivalence between index values formed by commuting sums.-/
+/-- An equivalence between index values formed by commuting sums. -/
 def sumCommIndexValue {X Y : FintypeCat} (Tc : X → Colors) (Sc : Y → Colors) :
     IndexValue d (sumElimIndexColor Tc Sc) ≃ IndexValue d (sumElimIndexColor Sc Tc) :=
   (congrSetIndexValue d (sumCommFintypeCat X Y) (sumElimIndexColor Tc Sc)).trans
-  (castIndexValue ((sumElimIndexColor_symm Sc Tc).symm))
+  (castIndexValue (sumElimIndexColor_symm Sc Tc).symm)
 
 lemma sumCommIndexValue_inlIndexValue {X Y : FintypeCat} {Tc : X → Colors} {Sc : Y → Colors}
-    (i : IndexValue d (sumElimIndexColor Tc Sc)) :
+    (i : IndexValue d <| sumElimIndexColor Tc Sc) :
     inlIndexValue (sumCommIndexValue Tc Sc i) = inrIndexValue i := rfl
 
 lemma sumCommIndexValue_inrIndexValue {X Y : FintypeCat} {Tc : X → Colors} {Sc : Y → Colors}
-    (i : IndexValue d (sumElimIndexColor Tc Sc)) :
+    (i : IndexValue d <| sumElimIndexColor Tc Sc) :
     inrIndexValue (sumCommIndexValue Tc Sc i) = inlIndexValue i := rfl
 
 /-- Equivalence between sets of `RealLorentzTensor` formed by commuting sums. -/
 @[simps!]
-def sumComm :
-    RealLorentzTensor d (FintypeCat.of (X ⊕ Y)) ≃ RealLorentzTensor d (FintypeCat.of (Y ⊕ X)) :=
-  congrSet (Equiv.sumComm X Y)
+def sumComm : RealLorentzTensor d (FintypeCat.of (X ⊕ Y))
+    ≃ RealLorentzTensor d (FintypeCat.of (Y ⊕ X)) := congrSet (Equiv.sumComm X Y)
 
 /-!
 
@@ -405,8 +403,8 @@ def mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
     RealLorentzTensor d (FintypeCat.of (X ⊕ Y)) where
   color := sumElimIndexColor T.unmarkedColor S.unmarkedColor
   coord := fun i => ∑ x,
-    T.coord (castIndexValue T.sumElimIndexColor_of_marked
-      (sumElimIndexValue (inlIndexValue i) (T.oneMarkedIndexValue x))) *
+    T.coord (castIndexValue T.sumElimIndexColor_of_marked $
+      sumElimIndexValue (inlIndexValue i) (T.oneMarkedIndexValue x)) *
     S.coord (castIndexValue S.sumElimIndexColor_of_marked $
       sumElimIndexValue (inrIndexValue i) (S.oneMarkedIndexValue $ congrColorsDual h x))
 
@@ -426,7 +424,7 @@ lemma sumComm_mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
   rw [mul_comm]
   repeat apply congrArg
   rw [← congrColorsDual_symm h]
-  exact (Equiv.apply_eq_iff_eq_symm_apply (congrColorsDual h)).mp rfl
+  exact (Equiv.apply_eq_iff_eq_symm_apply <| congrColorsDual h).mp rfl
 
 /-! TODO: Following the ethos of modular operads, prove properties of multiplication. -/
 
