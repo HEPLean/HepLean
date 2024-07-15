@@ -210,8 +210,8 @@ def congrSetMap (f : X ≃ Y) (T : RealLorentzTensor d X) : RealLorentzTensor d 
 lemma congrSetMap_trans (f : X ≃ Y) (g : Y ≃ Z) (T : RealLorentzTensor d X) :
     congrSetMap g (congrSetMap f T) = congrSetMap (f.trans g) T := by
   apply ext (by rfl)
-  have h1 : (congrSetIndexValue d (f.trans g) T.color) = (congrSetIndexValue d f T.color).trans
-    (congrSetIndexValue d g ((Equiv.piCongrLeft' (fun _ => Colors) f) T.color)) := by
+  have h1 : congrSetIndexValue d (f.trans g) T.color = (congrSetIndexValue d f T.color).trans
+    (congrSetIndexValue d g $ Equiv.piCongrLeft' (fun _ => Colors) f T.color) := by
     exact Equiv.coe_inj.mp rfl
   simp only [congrSetMap, Equiv.piCongrLeft'_apply, IndexValue, Equiv.symm_trans_apply, h1,
     Equiv.cast_refl, Equiv.coe_refl, CompTriple.comp_eq]
@@ -340,7 +340,7 @@ def oneMarkedIndexValue (T : Marked d X 1) (x : ColorsIndex d (T.color (markedPo
 
 /-- Contruction of marked index values for the case of 2 marked index. -/
 def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPoint X 0)))
-    (y : ColorsIndex d (T.color (markedPoint X 1))) :
+    (y : ColorsIndex d <| T.color <| markedPoint X 1) :
     T.MarkedIndexValue := fun i =>
   match i with
   | ⟨0, PUnit.unit⟩ => x
@@ -453,7 +453,7 @@ def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d Empty where
 def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
     Marked d Empty 1 where
   color := fun _ => Colors.up
-  coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
+  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
 
 /-- A marked 1-tensor with a single down index constructed from a vector.
 
@@ -461,7 +461,7 @@ def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
 def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
     Marked d Empty 1 where
   color := fun _ => Colors.down
-  coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
+  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
 
 /-- A tensor with two up indices constructed from a matrix.
 
