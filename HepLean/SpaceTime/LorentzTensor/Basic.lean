@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Logic.Function.CompTypeclasses
 import Mathlib.Data.Real.Basic
-import Mathlib.CategoryTheory.FintypeCat
 import Mathlib.Analysis.Normed.Field.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
@@ -22,7 +21,6 @@ This will relation should be made explicit in the future.
 -- For modular operads see: [Raynor][raynor2021graphical]
 
 -/
-/-! TODO: Replace `FintypeCat` throughout with `Type` and `Fintype`. -/
 /-! TODO: Do complex tensors, with Van der Waerden notation for fermions. -/
 /-! TODO: Generalize to maps into Lorentz tensors. -/
 /-!
@@ -51,42 +49,33 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : Fintype (RealLorentzTensor.
 /-- An `IndexValue` is a set of actual values an index can take. e.g. for a
   3-tensor (0, 1, 2). -/
 @[simp]
-def RealLorentzTensor.IndexValue {X : FintypeCat} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
+def RealLorentzTensor.IndexValue {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
     Type 0 := (x : X) → RealLorentzTensor.ColorsIndex d (c x)
 
 /-- A Lorentz Tensor defined by its coordinate map. -/
-structure RealLorentzTensor (d : ℕ) (X : FintypeCat) where
+structure RealLorentzTensor (d : ℕ) (X : Type) where
   /-- The color associated to each index of the tensor. -/
   color : X → RealLorentzTensor.Colors
   /-- The coordinate map for the tensor. -/
   coord : RealLorentzTensor.IndexValue d color → ℝ
 
 namespace RealLorentzTensor
-open CategoryTheory
 open Matrix
 universe u1
-variable {d : ℕ} {X Y Z : FintypeCat.{0}}
+variable {d : ℕ} {X Y Z : Type}
 
 /-!
 
-## Some equivalences in FintypeCat
+## Some equivalences of types
 
 These come in use casting Lorentz tensors.
 There is likely a better way to deal with these castings.
 
 -/
 
-/-- An equivalence between an `X` which is empty and `FintypeCat.of Empty`. -/
-def equivToEmpty (X : FintypeCat) [IsEmpty X] : X ≃ FintypeCat.of Empty :=
-  Equiv.equivEmpty _
-
-/-- An equivalence between an `X ⊕ Empty` and `X`. -/
-def equivToSumEmpty (X : FintypeCat) : FintypeCat.of (X ⊕ Empty) ≃ X :=
-  Equiv.sumEmpty (↑X) Empty
-
 /-- An equivalence from `Empty ⊕ PUnit.{1}` to `Empty ⊕ Σ _ : Fin 1, PUnit`. -/
 def equivPUnitToSigma :
-    FintypeCat.of (Empty ⊕ PUnit.{1}) ≃ FintypeCat.of (Empty ⊕ Σ _ : Fin 1, PUnit) where
+    (Empty ⊕ PUnit.{1}) ≃ (Empty ⊕ Σ _ : Fin 1, PUnit) where
   toFun x := match x with
     | Sum.inr x => Sum.inr ⟨0, x⟩
   invFun x := match x with
@@ -114,7 +103,7 @@ lemma τ_involutive : Function.Involutive τ := by
   cases x <;> rfl
 
 /-- The color associated with an element of `x ∈ X` for a tensor `T`. -/
-def ch {X : FintypeCat} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
+def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 
 /-- An equivalence of `ColorsIndex` between that of a color and that of its dual. -/
 def dualColorsIndex {d : ℕ} {μ : RealLorentzTensor.Colors}:
@@ -157,7 +146,7 @@ lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
 -/
 
 /-- An equivalence of Index values from an equality of color maps. -/
-def castIndexValue {X : FintypeCat} {T S : X → Colors} (h : T = S) :
+def castIndexValue {X : Type} {T S : X → Colors} (h : T = S) :
     IndexValue d T ≃ IndexValue d S where
   toFun i := (fun μ => castColorsIndex (congrFun h μ) (i μ))
   invFun i := (fun μ => (castColorsIndex (congrFun h μ)).symm (i μ))
@@ -254,13 +243,9 @@ lemma congrSet_refl : @congrSet d _ _ (Equiv.refl X) = Equiv.refl _ := rfl
 
 -/
 
-/-- An equivalence through commuting sums between types casted from `FintypeCat.of`. -/
-def sumCommFintypeCat (X Y : FintypeCat) : FintypeCat.of (X ⊕ Y) ≃ FintypeCat.of (Y ⊕ X) :=
-  Equiv.sumComm X Y
-
 /-- The sum of two color maps. -/
 def sumElimIndexColor (Tc : X → Colors) (Sc : Y → Colors) :
-    FintypeCat.of (X ⊕ Y) → Colors :=
+    (X ⊕ Y) → Colors :=
   Sum.elim Tc Sc
 
 /-- The symmetry property on `sumElimIndexColor`. -/
@@ -272,7 +257,7 @@ lemma sumElimIndexColor_symm (Tc : X → Colors) (Sc : Y → Colors) : sumElimIn
 
 /-- The sum of two index values for different color maps. -/
 @[simp]
-def sumElimIndexValue {X Y : FintypeCat} {TX : X → Colors} {TY : Y → Colors}
+def sumElimIndexValue {X Y : Type} {TX : X → Colors} {TY : Y → Colors}
     (i : IndexValue d TX) (j : IndexValue d TY) :
     IndexValue d (sumElimIndexColor TX TY) :=
   fun c => match c with
@@ -289,23 +274,23 @@ def inrIndexValue {Tc : X → Colors} {Sc : Y → Colors}
   IndexValue d Sc := fun y => i (Sum.inr y)
 
 /-- An equivalence between index values formed by commuting sums. -/
-def sumCommIndexValue {X Y : FintypeCat} (Tc : X → Colors) (Sc : Y → Colors) :
+def sumCommIndexValue {X Y : Type} (Tc : X → Colors) (Sc : Y → Colors) :
     IndexValue d (sumElimIndexColor Tc Sc) ≃ IndexValue d (sumElimIndexColor Sc Tc) :=
-  (congrSetIndexValue d (sumCommFintypeCat X Y) (sumElimIndexColor Tc Sc)).trans
+  (congrSetIndexValue d (Equiv.sumComm X Y) (sumElimIndexColor Tc Sc)).trans
   (castIndexValue (sumElimIndexColor_symm Sc Tc).symm)
 
-lemma sumCommIndexValue_inlIndexValue {X Y : FintypeCat} {Tc : X → Colors} {Sc : Y → Colors}
+lemma sumCommIndexValue_inlIndexValue {X Y : Type} {Tc : X → Colors} {Sc : Y → Colors}
     (i : IndexValue d <| sumElimIndexColor Tc Sc) :
     inlIndexValue (sumCommIndexValue Tc Sc i) = inrIndexValue i := rfl
 
-lemma sumCommIndexValue_inrIndexValue {X Y : FintypeCat} {Tc : X → Colors} {Sc : Y → Colors}
+lemma sumCommIndexValue_inrIndexValue {X Y : Type} {Tc : X → Colors} {Sc : Y → Colors}
     (i : IndexValue d <| sumElimIndexColor Tc Sc) :
     inrIndexValue (sumCommIndexValue Tc Sc i) = inlIndexValue i := rfl
 
 /-- Equivalence between sets of `RealLorentzTensor` formed by commuting sums. -/
 @[simps!]
-def sumComm : RealLorentzTensor d (FintypeCat.of (X ⊕ Y))
-    ≃ RealLorentzTensor d (FintypeCat.of (Y ⊕ X)) := congrSet (Equiv.sumComm X Y)
+def sumComm : RealLorentzTensor d (X ⊕ Y) ≃ RealLorentzTensor d (Y ⊕ X) :=
+  congrSet (Equiv.sumComm X Y)
 
 /-!
 
@@ -316,15 +301,15 @@ To define contraction and multiplication of Lorentz tensors we need to mark indi
 -/
 
 /-- A `RealLorentzTensor` with `n` marked indices. -/
-def Marked (d : ℕ) (X : FintypeCat) (n : ℕ) : Type :=
-  RealLorentzTensor d (FintypeCat.of (X ⊕ Σ _ : Fin n, PUnit))
+def Marked (d : ℕ) (X : Type) (n : ℕ) : Type :=
+  RealLorentzTensor d (X ⊕ Σ _ : Fin n, PUnit)
 
 namespace Marked
 
 variable {n m : ℕ}
 
 /-- The marked point. -/
-def markedPoint (X : FintypeCat) (i : Fin n) : FintypeCat.of (X ⊕ Σ _ : Fin n, PUnit) :=
+def markedPoint (X : Type) (i : Fin n) : (X ⊕ Σ _ : Fin n, PUnit) :=
   Sum.inr ⟨i, PUnit.unit⟩
 
 /-- The colors of unmarked indices. -/
@@ -332,7 +317,7 @@ def unmarkedColor (T : Marked d X n) : X → Colors :=
   T.color ∘ Sum.inl
 
 /-- The colors of marked indices. -/
-def markedColor (T : Marked d X n) : FintypeCat.of (Σ _ : Fin n, PUnit) → Colors :=
+def markedColor (T : Marked d X n) : (Σ _ : Fin n, PUnit) → Colors :=
   T.color ∘ Sum.inr
 
 /-- The index values restricted to unmarked indices. -/
@@ -362,8 +347,8 @@ def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPo
   | ⟨1, PUnit.unit⟩ => y
 
 /-- An equivalence of types used to turn the first marked index into an unmarked index. -/
-def unmarkFirstSet (X : FintypeCat) (n : ℕ) : FintypeCat.of (X ⊕ Σ _ : Fin n.succ, PUnit) ≃
-    FintypeCat.of ((X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit) where
+def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Σ _ : Fin n.succ, PUnit) ≃
+    ((X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit) where
   toFun x := match x with
     | Sum.inl x => Sum.inl (Sum.inl x)
     | Sum.inr ⟨0, PUnit.unit⟩ => Sum.inl (Sum.inr PUnit.unit)
@@ -382,7 +367,7 @@ def unmarkFirstSet (X : FintypeCat) (n : ℕ) : FintypeCat.of (X ⊕ Σ _ : Fin 
     | Sum.inr ⟨⟨i, h⟩, PUnit.unit⟩ => rfl
 
 /-- Unmark the first marked index of a marked thensor. -/
-def unmarkFirst {X : FintypeCat} : Marked d X n.succ ≃ Marked d (FintypeCat.of (X ⊕ PUnit)) n :=
+def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ PUnit) n :=
   congrSet (unmarkFirstSet X n)
 
 end Marked
@@ -398,9 +383,9 @@ open Marked
 is dual to the others. The contraction is done via
 `φ^μ ψ_μ = φ^0 ψ_0 + φ^1 ψ_1 + ...`. -/
 @[simps!]
-def mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
+def mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (S.markedColor ⟨0, PUnit.unit⟩)) :
-    RealLorentzTensor d (FintypeCat.of (X ⊕ Y)) where
+    RealLorentzTensor d (X ⊕ Y) where
   color := sumElimIndexColor T.unmarkedColor S.unmarkedColor
   coord := fun i => ∑ x,
     T.coord (castIndexValue T.sumElimIndexColor_of_marked $
@@ -409,12 +394,12 @@ def mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
       sumElimIndexValue (inrIndexValue i) (S.oneMarkedIndexValue $ congrColorsDual h x))
 
 /-- Multiplication is well behaved with regard to swapping tensors. -/
-lemma sumComm_mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
+lemma sumComm_mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (S.markedColor ⟨0, PUnit.unit⟩)) :
     sumComm (mul T S h) = mul S T (color_eq_dual_symm h) := by
   refine ext' (sumElimIndexColor_symm S.unmarkedColor T.unmarkedColor).symm ?_
   change (mul T S h).coord ∘
-    (congrSetIndexValue d (sumCommFintypeCat X Y) (mul T S h).color).symm = _
+    (congrSetIndexValue d (Equiv.sumComm X Y) (mul T S h).color).symm = _
   rw [Equiv.comp_symm_eq]
   funext i
   simp only [mul_coord, IndexValue, mul_color, Function.comp_apply, sumComm_apply_color]
@@ -436,7 +421,7 @@ lemma sumComm_mul {X Y : FintypeCat} (T : Marked d X 1) (S : Marked d Y 1)
 -/
 
 /-- The contraction of the marked indices in a tensor with two marked indices. -/
-def contr {X : FintypeCat} (T : Marked d X 2)
+def contr {X : Type} (T : Marked d X 2)
     (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (T.markedColor ⟨1, PUnit.unit⟩)) :
     RealLorentzTensor d X where
   color := T.unmarkedColor
@@ -458,7 +443,7 @@ action of the Lorentz group. They are provided for constructive purposes.
 -/
 
 /-- A 0-tensor from a real number. -/
-def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d (FintypeCat.of Empty) where
+def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d Empty where
   color := fun _ => Colors.up
   coord := fun _ => r
 
@@ -466,7 +451,7 @@ def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d (FintypeCat.of Empty) where
 
   Note: This is not the same as rising indices on `ofVecDown`. -/
 def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
-    Marked d (FintypeCat.of Empty) 1 where
+    Marked d Empty 1 where
   color := fun _ => Colors.up
   coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
 
@@ -474,7 +459,7 @@ def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
 
   Note: This is not the same as lowering indices on `ofVecUp`. -/
 def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
-    Marked d (FintypeCat.of Empty) 1 where
+    Marked d Empty 1 where
   color := fun _ => Colors.down
   coord := fun i => v (i (Sum.inr ⟨0, PUnit.unit⟩))
 
@@ -482,7 +467,7 @@ def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
 
 Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatUpUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d (FintypeCat.of Empty) 2 where
+    Marked d Empty 2 where
   color := fun _ => Colors.up
   coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
 
@@ -490,7 +475,7 @@ def ofMatUpUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
 
 Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatDownDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d (FintypeCat.of Empty) 2 where
+    Marked d Empty 2 where
   color := fun _ => Colors.down
   coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
 
@@ -499,7 +484,7 @@ def ofMatDownDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 @[simps!]
 def ofMatUpDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d (FintypeCat.of Empty) 2 where
+    Marked d Empty 2 where
   color := fun i => match i with
   | Sum.inr ⟨0, PUnit.unit⟩ => Colors.up
   | Sum.inr ⟨1, PUnit.unit⟩ => Colors.down
@@ -509,7 +494,7 @@ def ofMatUpDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
 
 Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatDownUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d (FintypeCat.of Empty) 2 where
+    Marked d Empty 2 where
   color := fun i => match i with
     | Sum.inr ⟨0, PUnit.unit⟩ => Colors.down
     | Sum.inr ⟨1, PUnit.unit⟩ => Colors.up
@@ -540,7 +525,7 @@ lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 /-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
 @[simp]
 lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (@equivToEmpty (FintypeCat.of (Empty ⊕ Empty)) instIsEmptySum)
+    congrSet (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
     (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
   refine ext' ?_ ?_
   · funext i
@@ -551,8 +536,8 @@ lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 /-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
 @[simp]
 lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (@equivToEmpty (FintypeCat.of (Empty ⊕ Empty)) instIsEmptySum)
-    (mul (ofVecDown v₁) (ofVecUp v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
+    congrSet (Equiv.equivEmpty (Empty ⊕ Empty))
+    (mul (ofVecDown v₁) (ofVecUp v₂) rfl) = ofReal d (v₁ ⬝ᵥ v₂) := by
   refine ext' ?_ ?_
   · funext i
     exact Empty.elim i
@@ -561,8 +546,8 @@ lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((equivToSumEmpty (FintypeCat.of (Empty ⊕ PUnit.{1}))).trans equivPUnitToSigma)
-    (mul (unmarkFirst (ofMatUpDown M)) (ofVecUp v) (by rfl)) = ofVecUp (M *ᵥ v) := by
+    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
+    (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
   refine ext' ?_ ?_
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
@@ -573,8 +558,8 @@ lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) 
 
 lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((equivToSumEmpty (FintypeCat.of (Empty ⊕ PUnit.{1}))).trans equivPUnitToSigma)
-    (mul (unmarkFirst (ofMatDownUp M)) (ofVecDown v) (by rfl)) = ofVecDown (M *ᵥ v) := by
+    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
+    (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
   refine ext' ?_ ?_
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
