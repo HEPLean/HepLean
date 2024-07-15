@@ -9,7 +9,7 @@ import Mathlib.Analysis.Normed.Field.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
 
-# Lorentz Tensors
+# Real Lorentz Tensors
 
 In this file we define real Lorentz tensors.
 
@@ -23,11 +23,6 @@ This will relation should be made explicit in the future.
 -/
 /-! TODO: Do complex tensors, with Van der Waerden notation for fermions. -/
 /-! TODO: Generalize to maps into Lorentz tensors. -/
-/-!
-
-## Real Lorentz tensors
-
--/
 
 /-- The possible `colors` of an index for a RealLorentzTensor.
  There are two possiblities, `up` and `down`. -/
@@ -348,23 +343,11 @@ def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPo
 
 /-- An equivalence of types used to turn the first marked index into an unmarked index. -/
 def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Σ _ : Fin n.succ, PUnit) ≃
-    ((X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit) where
-  toFun x := match x with
-    | Sum.inl x => Sum.inl (Sum.inl x)
-    | Sum.inr ⟨0, PUnit.unit⟩ => Sum.inl (Sum.inr PUnit.unit)
-    | Sum.inr ⟨⟨Nat.succ i, h⟩, PUnit.unit⟩ => Sum.inr ⟨⟨i, Nat.succ_lt_succ_iff.mp h⟩, PUnit.unit⟩
-  invFun x := match x with
-    | Sum.inl (Sum.inl x) => Sum.inl x
-    | Sum.inl (Sum.inr PUnit.unit) => Sum.inr ⟨0, PUnit.unit⟩
-    | Sum.inr ⟨⟨i, h⟩, PUnit.unit⟩ => Sum.inr ⟨⟨Nat.succ i, Nat.succ_lt_succ h⟩, PUnit.unit⟩
-  left_inv x := by match x with
-    | Sum.inl x => rfl
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
-    | Sum.inr ⟨⟨Nat.succ i, h⟩, PUnit.unit⟩ => rfl
-  right_inv x := by match x with
-    | Sum.inl (Sum.inl x) => rfl
-    | Sum.inl (Sum.inr PUnit.unit) => rfl
-    | Sum.inr ⟨⟨i, h⟩, PUnit.unit⟩ => rfl
+    (X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit :=
+  trans (Equiv.sumCongr (Equiv.refl _) $ (Equiv.sigmaPUnit (Fin n.succ)).trans
+  (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm).trans
+  (Equiv.sumCongr finOneEquiv (Equiv.sigmaPUnit (Fin n)).symm)))
+  (Equiv.sumAssoc _ _ _).symm
 
 /-- Unmark the first marked index of a marked thensor. -/
 def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ PUnit) n :=
