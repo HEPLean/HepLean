@@ -17,8 +17,8 @@ import LLM.GPT.API
 This file uses the openAI API to check the doc strings of definitions and theorems in a
 Lean 4 file.
 
-It currently depends on `https://github.com/jstoobysmith/Lean_llm_fork` being imported,
-which is currently not by default.
+This file depends on `https://github.com/leanprover-community/llm` being imported.
+This is not currently done by default.
 
 -/
 open Lean
