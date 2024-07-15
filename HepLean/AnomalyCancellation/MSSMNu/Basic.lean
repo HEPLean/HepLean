@@ -60,7 +60,7 @@ def toSpeciesMaps' : (Fin 18 → ℚ) ≃ (Fin 6 → Fin 3 → ℚ) :=
     ((@finProdFinEquiv 6 3).arrowCongr (Equiv.refl ℚ))).symm
 
 /-- An equivalence between `MSSMCharges.charges` and `(Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ))`.
-This split charges up into the SM and additional fermions, and further splits the SM into
+This splits charges up into the SM and additional fermions, and further splits the SM into
 species. -/
 @[simps!]
 def toSpecies : MSSMCharges.Charges ≃ (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ) :=
@@ -233,7 +233,7 @@ lemma accSU3_ext {S T : MSSMCharges.Charges}
   repeat erw [hj]
   rfl
 
-/-- The acc for `Y²`. -/
+/-- The ACC for `Y²`. -/
 @[simp]
 def accYY : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, ((Q S) i + 8 * (U S) i + 2 * (D S) i + 3 * (L S) i

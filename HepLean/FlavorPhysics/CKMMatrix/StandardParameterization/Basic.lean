@@ -23,7 +23,7 @@ open CKMMatrix
 
 noncomputable section
 
-/-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard paramaterization of the CKM matrix
+/-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard parameterization of the CKM matrix
 as a `3×3` complex matrix. -/
 def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
   ![![Real.cos θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₂ * Real.cos θ₁₃, Real.sin θ₁₃ * exp (-I * δ₁₃)],
@@ -96,8 +96,8 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     rw [sin_sq, sin_sq]
     ring
 
-/-- Given four reals `θ₁₂ θ₁₃ θ₂₃ δ₁₃` the standard paramaterization of the CKM matrix
-as a CKM matrix. -/
+/-- A CKM Matrix from four reals `θ₁₂`, `θ₁₃`, `θ₂₃`,  and `δ₁₃`. This is the standard
+  parameterization of CKM matrices. -/
 def standParam (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : CKMMatrix :=
   ⟨standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃, by
    rw [mem_unitaryGroup_iff']

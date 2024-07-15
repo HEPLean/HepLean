@@ -23,7 +23,7 @@ open Matrix
 # The definition of the Minkowski Matrix
 
 -/
-/-- The `d.succ`-dimensional real of the form `diag(1, -1, -1, -1, ...)`. -/
+/-- The `d.succ`-dimensional real matrix of the form `diag(1, -1, -1, -1, ...)`. -/
 def minkowskiMatrix {d : ℕ} : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ :=
   LieAlgebra.Orthogonal.indefiniteDiagonal (Fin 1) (Fin d) ℝ
 
@@ -146,7 +146,7 @@ lemma self_eq_time_minus_norm : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 :
   rw [← real_inner_self_eq_norm_sq, PiLp.inner_apply, as_sum]
   noncomm_ring
 
-/-- The Minkowski metric is symmetric. -/
+/-- The Minkowski metric is symmetric in its arguments.. -/
 lemma symm : ⟪v, w⟫ₘ = ⟪w, v⟫ₘ := by
   simp only [as_sum]
   ac_rfl

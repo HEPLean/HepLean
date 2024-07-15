@@ -16,6 +16,12 @@ rev = "v4.10.0-rc1"
 [[lean_lib]]
 name = "HepLean"
 
+# -- Optional inclusion of llm. Needed for `openAI_doc_check`
+#[[require]]
+#name = "llm"
+#git = "https://github.com/leanprover-community/llm"
+#rev = "main"
+
 # -- Optional inclusion of tryAtEachStep
 #[[require]]
 #name = "tryAtEachStep" 
@@ -49,3 +55,12 @@ srcDir = "scripts"
 [[lean_exe]]
 name = "mathlib_textLint_on_hepLean"
 srcDir = "scripts"
+
+[[lean_exe]]
+name = "stats"
+srcDir = "scripts"
+
+# -- Optional inclusion of openAI_doc_check. Needs `llm` above.
+#[[lean_exe]]
+#name = "openAI_doc_check"
+#srcDir = "scripts"

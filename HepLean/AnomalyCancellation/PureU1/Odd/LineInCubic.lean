@@ -61,16 +61,16 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
      (lineInCubic_expand h g f hS 1 2) / 6
 
-/-- We say a `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
+/-- A `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (M : (FamilyPermutations (2 * n + 1)).group),
     LineInCubic ((FamilyPermutations (2 * n + 1)).linSolRep M S)
 
-/-- If `lineInCubicPerm S` then `lineInCubic S`. -/
+/-- If `lineInCubicPerm S`, then `lineInCubic S`. -/
 lemma lineInCubicPerm_self {S : (PureU1 (2 * n + 1)).LinSols} (hS : LineInCubicPerm S) :
     LineInCubic S := hS 1
 
-/-- If `lineInCubicPerm S` then `lineInCubicPerm (M S)` for all permutations `M`. -/
+/-- If `lineInCubicPerm S`, then `lineInCubicPerm (M S)` for all permutations `M`. -/
 lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
     (hS : LineInCubicPerm S) (M' : (FamilyPermutations (2 * n + 1)).group) :
     LineInCubicPerm ((FamilyPermutations (2 * n + 1)).linSolRep M' S) := by

@@ -119,7 +119,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
     apply LinSols.ext
     exact χ.chargesAddCommMonoid.nsmul_succ _ _
 
-/-- An instance providing the operations and properties for `LinSols` to form an
+/-- An instance providing the operations and properties for `LinSols` to form a
   module over `ℚ`. -/
 @[simps!]
 instance linSolsModule (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
@@ -147,7 +147,7 @@ instance linSolsModule (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
     exact χ.chargesModule.add_smul _ _ _
 
 /-- An instance providing the operations and properties for `LinSols` to form an
-  an additive community. -/
+  additive commutative group. -/
 instance linSolsAddCommGroup (χ : ACCSystemLinear) : AddCommGroup χ.LinSols :=
   Module.addCommMonoidToAddCommGroup ℚ
 
@@ -201,8 +201,8 @@ def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols w
   toFun := QuadSols.toLinSols
   map_smul' _ _ := rfl
 
-/-- If there are no quadratic equations (i.e. no U(1)'s in the underlying gauge group. The inclusion
-  of linear solutions into quadratic solutions. -/
+/-- The inclusion of the linear solutions into the quadratic solutions, where there is
+  no quadratic equations (i.e. no U(1)'s in the underlying gauge group). -/
 def linSolsInclQuadSolsZero (χ : ACCSystemQuad) (h : χ.numberQuadratic = 0) :
     χ.LinSols →[ℚ] χ.QuadSols where
   toFun S := ⟨S, by intro i; rw [h] at i; exact Fin.elim0 i⟩
@@ -233,7 +233,7 @@ lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
   cases' S
   simp_all only
 
-/-- We say a charge S is a solution if it extends to a solution. -/
+/-- A charge `S` is a solution if it extends to a solution. -/
 def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
  ∃ (sol : χ.Sols), sol.val = S
 
