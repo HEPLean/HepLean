@@ -50,6 +50,7 @@ noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[�
     Matrix.toLin_mul orthonormBasis.toBasis orthonormBasis.toBasis orthonormBasis.toBasis g h
   map_one' := ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_one orthonormBasis.toBasis
 
+/-- `matrixToLin` commutes with the `star` operation. -/
 lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
     matrixToLin (star g) = star (matrixToLin g) :=
   ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g
