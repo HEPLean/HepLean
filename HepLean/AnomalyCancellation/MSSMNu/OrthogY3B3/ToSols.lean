@@ -48,7 +48,7 @@ def LineEqPropSol (R : MSSMACC.Sols) : Prop :=
   cubeTriLin R.val R.val Y₃.val * quadBiLin B₃.val R.val -
   cubeTriLin R.val R.val B₃.val * quadBiLin Y₃.val R.val = 0
 
-/-- A rational which appears in `toSolNS` acting on sols, and which been zero is
+/-- A rational which appears in `toSolNS` acting on sols, and which being zero is
 equivalent to satisfying `lineEqPropSol`. -/
 def lineEqCoeff (T : MSSMACC.Sols) : ℚ := dot Y₃.val B₃.val * α₃ (proj T.1.1)
 
@@ -185,30 +185,30 @@ lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
 `lineEqProp`. -/
 def InLineEq : Type := {R : MSSMACC.AnomalyFreePerp // LineEqProp R}
 
-/-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the condition
+/-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the conditions
 `lineEqProp` and `inQuadProp`. -/
 def InQuad : Type := {R : InLineEq // InQuadProp R.val}
 
-/-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the condition
+/-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the conditions
 `lineEqProp`, `inQuadProp` and `inCubeProp`. -/
 def InQuadCube : Type := {R : InQuad // InCubeProp R.val.val}
 
 /-- Those solutions which do not satisfy the condition `lineEqPropSol`. -/
 def NotInLineEqSol : Type := {R : MSSMACC.Sols // ¬ LineEqPropSol R}
 
-/-- Those solutions which satisfy the condition `lineEqPropSol` by not `inQuadSolProp`. -/
+/-- Those solutions which satisfy the condition `lineEqPropSol` but not `inQuadSolProp`. -/
 def InLineEqSol : Type := {R : MSSMACC.Sols // LineEqPropSol R ∧ ¬ InQuadSolProp R}
 
 /-- Those solutions which satisfy the condition `lineEqPropSol` and `inQuadSolProp` but
 not `inCubeSolProp`. -/
 def InQuadSol : Type := {R : MSSMACC.Sols // LineEqPropSol R ∧ InQuadSolProp R ∧ ¬ InCubeSolProp R}
 
-/-- Those solutions which satisfy the condition all the conditions `lineEqPropSol`, `inQuadSolProp`
+/-- Those solutions which satisfy the conditions `lineEqPropSol`, `inQuadSolProp`
 and `inCubeSolProp`. -/
 def InQuadCubeSol : Type :=
   {R : MSSMACC.Sols // LineEqPropSol R ∧ InQuadSolProp R ∧ InCubeSolProp R}
 
-/-- Given a `R` perpendicular to `Y₃` and `B₃` a quadratic solution. -/
+/-- Given an `R` perpendicular to `Y₃` and `B₃` a quadratic solution. -/
 def toSolNSQuad (R : MSSMACC.AnomalyFreePerp) : MSSMACC.QuadSols :=
   lineQuad R
     (3 * cubeTriLin R.val R.val Y₃.val)
@@ -230,7 +230,7 @@ lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
   ring_nf
   simp
 
-/-- Given a `R ` perpendicular to `Y₃` and `B₃`, an element of `Sols`. This map is
+/-- Given an `R` perpendicular to `Y₃` and `B₃`, an element of `Sols`. This map is
 not surjective. -/
 def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, _ , _) =>
   a • AnomalyFreeMk'' (toSolNSQuad R) (toSolNSQuad_cube R)
@@ -258,7 +258,7 @@ lemma toSolNS_proj (T : NotInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val :=
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h1]
   simp
 
-/-- Given a element of `inLineEq × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
+/-- A solution to the ACCs, given an element of `inLineEq × ℚ × ℚ × ℚ`. -/
 def inLineEqToSol : InLineEq × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, c₁, c₂, c₃) =>
   AnomalyFreeMk'' (lineQuad R.val c₁ c₂ c₃)
     (by
@@ -301,7 +301,7 @@ lemma inLineEqToSol_proj (T : InLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h2]
   simp
 
-/-- Given a element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
+/-- Given an element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
 def inQuadToSol : InQuad × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
   AnomalyFreeMk' (lineCube R.val.val a₁ a₂ a₃)
     (by
@@ -389,7 +389,7 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   rw [show dot Y₃.val B₃.val = 108 by rfl]
   simp
 
-/-- Given an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` a solution. We will
+/-- A solution from an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ`. We will
 show that this map is a surjection. -/
 def toSol : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, b, c) =>
   if h₃ : LineEqProp R ∧ InQuadProp R ∧ InCubeProp R then

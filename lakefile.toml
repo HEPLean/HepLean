@@ -16,6 +16,13 @@ rev = "v4.10.0-rc1"
 [[lean_lib]]
 name = "HepLean"
 
+# -- Optional inclusion of llm. Needed for `openAI_doc_check`
+# TODO: Move over to `leanprover-community/llm` versions there are bumped.  
+#[[require]]
+#name = "llm"
+#git = "https://github.com/jstoobysmith/Lean_llm_fork"
+#rev = "main"
+
 # -- Optional inclusion of tryAtEachStep
 #[[require]]
 #name = "tryAtEachStep" 
@@ -53,3 +60,8 @@ srcDir = "scripts"
 [[lean_exe]]
 name = "stats"
 srcDir = "scripts"
+
+# -- Optional inclusion of openAI_doc_check. Needs `llm` above.
+#[[lean_exe]]
+#name = "openAI_doc_check"
+#srcDir = "scripts"

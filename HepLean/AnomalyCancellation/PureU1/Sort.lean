@@ -21,7 +21,7 @@ namespace PureU1
 
 variable {n : ℕ}
 
-/-- We say a charge is shorted if for all `i ≤ j`, then `S i ≤ S j`. -/
+/-- A charge is sorted if for all `i ≤ j`, then `S i ≤ S j`. -/
 @[simp]
 def Sorted {n : ℕ} (S : (PureU1 n).Charges) : Prop :=
    ∀ i j (_ : i ≤ j), S i ≤ S j

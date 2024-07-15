@@ -130,7 +130,7 @@ lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   mem_specialUnitaryGroup_iff.mpr ⟨rotateMatrix_unitary hφ, rotateMatrix_det hφ⟩
 
 /-- Given a Higgs vector, an element of the gauge group which puts the first component of the
-vector to zero, and the second component to a real -/
+vector to zero, and the second component to a real number. -/
 def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroup :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 

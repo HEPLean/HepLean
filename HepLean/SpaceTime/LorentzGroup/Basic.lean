@@ -151,7 +151,7 @@ lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact mem_iff_dual_mul_self.mp Λ.2
 
-/-- The transpose of an matrix in the Lorentz group is an element of the Lorentz group. -/
+/-- The transpose of a matrix in the Lorentz group is an element of the Lorentz group. -/
 def transpose (Λ : LorentzGroup d) : LorentzGroup d :=
   ⟨Λ.1ᵀ, mem_iff_transpose.mp Λ.2⟩
 

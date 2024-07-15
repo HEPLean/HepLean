@@ -37,6 +37,37 @@ Run using
 lake exe type_former_lint
 ```
 
+## stats.sh 
+
+Outputs statistics for HepLean. 
+
+Run using 
+```
+lake exe stats
+```
+
+## openAI_doc_check.lean 
+
+Uses openAI's API to check for spelling mistakes etc. in doc strings. 
+
+This code needs `https://github.com/jstoobysmith/Lean_llm_fork` to be installed. 
+
+It also needs the enviroment variable `OPENAI_API_KEY` defined using e.g. 
+```
+export OPENAI_API_KEY=<Your-openAI-key>
+```
+
+Run on a specific file using 
+```
+lake exe openAI_doc_check <module_name>
+```
+where `<module_name>` is e.g. `HepLean.SpaceTime.Basic`. 
+
+Run on a random file using 
+```
+lake exe openAI_doc_check random
+```
+
 ## lint-all.sh 
 
 Performs all linting checks on HepLean. 

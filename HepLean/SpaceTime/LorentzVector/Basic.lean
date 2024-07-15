@@ -22,7 +22,7 @@ variable (d : ℕ)
 /-- The type of Lorentz Vectors in `d`-space dimensions. -/
 def LorentzVector : Type := (Fin 1 ⊕ Fin d) → ℝ
 
-/-- An instance of a additive commutative monoid on `LorentzVector`. -/
+/-- An instance of an additive commutative monoid on `LorentzVector`. -/
 instance : AddCommMonoid (LorentzVector d) := Pi.addCommMonoid
 
 /-- An instance of a module on `LorentzVector`. -/

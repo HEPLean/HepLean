@@ -667,7 +667,7 @@ lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n)) =
   simp only [Fintype.card_sum, Fintype.card_fin, mul_eq]
   omega
 
-/-- The basis formed out of our basisa vectors. -/
+/-- The basis formed out of our `basisa` vectors. -/
 noncomputable def basisaAsBasis :
     Basis (Fin (succ n) ⊕ Fin n) ℚ (PureU1 (2 * succ n)).LinSols :=
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card

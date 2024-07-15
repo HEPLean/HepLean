@@ -18,13 +18,13 @@ From this we define
 
 -/
 
-/-- The type of of a group action on a system of charges is defined as a representation on
+/-- The type of a group action on a system of charges is defined as a representation on
 the vector spaces of charges under which the anomaly equations are invariant.
 -/
 structure ACCSystemGroupAction (χ : ACCSystem) where
   /-- The underlying type of the group. -/
   group : Type
-  /-- An instance given group the structure of a group. -/
+  /-- An instance given the `group` component the structure of a `Group`. -/
   groupInst : Group group
   /-- The representation of group acting on the vector space of charges. -/
   rep : Representation ℚ group χ.Charges
@@ -79,8 +79,7 @@ lemma rep_linSolRep_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : 
     (S : χ.LinSols) : χ.linSolsIncl (G.linSolRep g S) =
     G.rep g (χ.linSolsIncl S) := rfl
 
-/-- An instance given the structure to define a multiplicative action of `G.group` on `quadSols`.
- -/
+/-- A multiplicative action of `G.group` on `quadSols`. -/
 instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     MulAction G.group χ.QuadSols where
   smul f S := ⟨G.linSolRep f S.1, by
@@ -112,8 +111,7 @@ instance solAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) : MulAction G.
   smul g S := ⟨G.quadSolAction.toFun S.1 g, by
    simp only [MulAction.toFun_apply]
    change χ.cubicACC (G.rep g S.val) = 0
-   rw [G.cubicInvariant, S.cubicSol]
-  ⟩
+   rw [G.cubicInvariant, S.cubicSol]⟩
   mul_smul f1 f2 S := by
     apply ACCSystem.Sols.ext
     change (G.rep.toFun (f1 * f2)) S.val = _
