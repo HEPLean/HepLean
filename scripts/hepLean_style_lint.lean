@@ -17,6 +17,11 @@ There are currently not enforced at the GitHub action level.
 
 Parts of this file are adapted from `Mathlib.Tactic.Linter.TextBased`,
   authored by Michael Rothgang.
+
+## TODO
+
+Some of the linters here can be replaced by regex.
+
 -/
 open Lean System Meta
 

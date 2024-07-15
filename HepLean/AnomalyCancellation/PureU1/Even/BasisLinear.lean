@@ -616,7 +616,7 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n) → ℚ) : Pa' f = Pa' f' ↔ f = 
     rw [← Finset.sum_add_distrib]
     simp
   have h2 : ∀ i, (f i + (- f' i)) = 0 := by
-    exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent (n))
+    exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent n)
      (fun i => f i + -f' i) h1
   have h2i := h2 i
   linarith
