@@ -41,6 +41,11 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : Fintype (RealLorentzTensor.
   | RealLorentzTensor.Colors.up => instFintypeSum (Fin 1) (Fin d)
   | RealLorentzTensor.Colors.down => instFintypeSum (Fin 1) (Fin d)
 
+instance (d : ℕ) (μ : RealLorentzTensor.Colors) : DecidableEq (RealLorentzTensor.ColorsIndex d μ) :=
+  match μ with
+  | RealLorentzTensor.Colors.up => instDecidableEqSum
+  | RealLorentzTensor.Colors.down => instDecidableEqSum
+
 /-- An `IndexValue` is a set of actual values an index can take. e.g. for a
   3-tensor (0, 1, 2). -/
 @[simp]
