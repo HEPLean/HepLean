@@ -139,4 +139,17 @@ instance lorentzAction : MulAction (LorentzGroup d) (RealLorentzTensor d X) wher
 @[simps!]
 instance : MulAction (LorentzGroup d) (Marked d X n) := lorentzAction
 
+/-- The action on an empty Lorentz tensor is trivial. -/
+lemma lorentzAction_on_isEmpty [IsEmpty X] (Λ : LorentzGroup d) (T : RealLorentzTensor d X) :
+    Λ • T = T := by
+  refine ext' rfl ?_
+  funext i
+  erw [lorentzAction_smul_coord]
+  simp only [Finset.univ_unique, Finset.univ_eq_empty, Finset.prod_empty, one_mul,
+    Finset.sum_singleton]
+  simp only [IndexValue, Unique.eq_default]
+
+/-! TODO: Show that the Lorentz action commutes with multiplication. -/
+/-! TODO: Show that the Lorentz action commutes with contraction. -/
+/-! TODO: Show that the Lorentz action commutes with rising and lowering indices. -/
 end RealLorentzTensor

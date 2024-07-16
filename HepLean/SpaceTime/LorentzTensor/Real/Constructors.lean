@@ -270,13 +270,8 @@ open Matrix
 
 /-- The action of the Lorentz group on `ofReal v` is trivial. -/
 @[simp]
-lemma lorentzAction_ofReal (r : ℝ) : Λ • ofReal d r = ofReal d r := by
-  refine ext' rfl ?_
-  funext i
-  erw [lorentzAction_smul_coord]
-  simp only [Finset.univ_unique, Finset.univ_eq_empty, Finset.prod_empty, one_mul,
-    Finset.sum_singleton, IndexValue]
-  rfl
+lemma lorentzAction_ofReal (r : ℝ) : Λ • ofReal d r = ofReal d r :=
+  lorentzAction_on_isEmpty Λ (ofReal d r)
 
 /-- The action of the Lorentz group on `ofVecUp v` is by vector multiplication. -/
 @[simp]
