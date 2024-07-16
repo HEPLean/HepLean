@@ -17,6 +17,11 @@ There are currently not enforced at the GitHub action level.
 
 Parts of this file are adapted from `Mathlib.Tactic.Linter.TextBased`,
   authored by Michael Rothgang.
+
+## TODO
+
+Some of the linters here can be replaced by regex.
+
 -/
 open Lean System Meta
 
@@ -78,7 +83,8 @@ def hepLeanLintFile (path : FilePath) : IO Bool := do
   let allOutput := (Array.map (fun lint ↦
     (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
     #[doubleEmptyLineLinter, doubleSpaceLinter, substringLinter ".-/", substringLinter " )",
-    substringLinter "( ", substringLinter "=by", substringLinter "  def "]
+    substringLinter "( ", substringLinter "=by", substringLinter "  def ",
+    substringLinter "/-- We "]
   let errors := allOutput.flatten
   printErrors errors
   return errors.size > 0

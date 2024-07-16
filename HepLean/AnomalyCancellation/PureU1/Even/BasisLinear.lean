@@ -616,7 +616,7 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n) → ℚ) : Pa' f = Pa' f' ↔ f = 
     rw [← Finset.sum_add_distrib]
     simp
   have h2 : ∀ i, (f i + (- f' i)) = 0 := by
-    exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent (n))
+    exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent n)
      (fun i => f i + -f' i) h1
   have h2i := h2 i
   linarith
@@ -667,7 +667,7 @@ lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n)) =
   simp only [Fintype.card_sum, Fintype.card_fin, mul_eq]
   omega
 
-/-- The basis formed out of our basisa vectors. -/
+/-- The basis formed out of our `basisa` vectors. -/
 noncomputable def basisaAsBasis :
     Basis (Fin (succ n) ⊕ Fin n) ℚ (PureU1 (2 * succ n)).LinSols :=
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card

@@ -52,7 +52,7 @@ instance : AddCommGroup F.HalfEdgeMomenta := Pi.addCommGroup
 
 instance : Module ℝ F.HalfEdgeMomenta := Pi.module _ _ _
 
-/-- An auxillary function used to define the Euclidean inner product on `F.HalfEdgeMomenta`. -/
+/-- An auxiliary function used to define the Euclidean inner product on `F.HalfEdgeMomenta`. -/
 def euclidInnerAux (x : F.HalfEdgeMomenta) : F.HalfEdgeMomenta →ₗ[ℝ] ℝ where
   toFun y := ∑ i, (x i) * (y i)
   map_add' z y :=
@@ -77,7 +77,7 @@ def euclidInner : F.HalfEdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta →ₗ[ℝ] �
     simp only [euclidInnerAux_symm, LinearMapClass.map_smul, smul_eq_mul, RingHom.id_apply,
       LinearMap.smul_apply]
 
-/-- The type which assocaites to each ege a `1`-dimensional vector space.
+/-- The type which associates to each edge a `1`-dimensional vector space.
  Corresponding to that spanned by its total outflowing momentum. -/
 def EdgeMomenta : Type := F.𝓔 → ℝ
 

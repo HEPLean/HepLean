@@ -37,11 +37,11 @@ def LineInPlaneProp : ℚ × ℚ × ℚ → Prop := fun s =>
   s.1 = s.2.1 ∨ s.1 = - s.2.1 ∨ 2 * s.2.2 + s.1 + s.2.1 = 0
 
 /-- The proposition on a `LinSol` to satisfy the `linInPlane` condition. -/
-def LineInPlaneCond (S : (PureU1 (n)).LinSols) : Prop :=
-  ∀ (i1 i2 i3 : Fin (n)) (_ : i1 ≠ i2) (_ : i2 ≠ i3) (_ : i1 ≠ i3),
+def LineInPlaneCond (S : (PureU1 n).LinSols) : Prop :=
+  ∀ (i1 i2 i3 : Fin n) (_ : i1 ≠ i2) (_ : i2 ≠ i3) (_ : i1 ≠ i3),
   LineInPlaneProp (S.val i1, (S.val i2, S.val i3))
 
-lemma lineInPlaneCond_perm {S : (PureU1 (n)).LinSols} (hS : LineInPlaneCond S)
+lemma lineInPlaneCond_perm {S : (PureU1 n).LinSols} (hS : LineInPlaneCond S)
     (M : (FamilyPermutations n).group) :
     LineInPlaneCond ((FamilyPermutations n).linSolRep M S) := by
   intro i1 i2 i3 h1 h2 h3

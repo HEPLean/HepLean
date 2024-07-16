@@ -136,7 +136,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
   rw [boundary_castSucc hS hk, boundary_succ hS hk]
   ring
 
-/-- We say a `S ∈ charges` has a boundary if there exists a `k ∈ Fin n` which is a boundary. -/
+/-- A `S ∈ charges` has a boundary if there exists a `k ∈ Fin n` which is a boundary. -/
 @[simp]
 def HasBoundary (S : (PureU1 n.succ).Charges) : Prop :=
   ∃ (k : Fin n), Boundary S k
