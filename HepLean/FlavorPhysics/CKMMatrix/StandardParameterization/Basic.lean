@@ -96,7 +96,7 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     rw [sin_sq, sin_sq]
     ring
 
-/-- A CKM Matrix from four reals `θ₁₂`, `θ₁₃`, `θ₂₃`,  and `δ₁₃`. This is the standard
+/-- A CKM Matrix from four reals `θ₁₂`, `θ₁₃`, `θ₂₃`, and `δ₁₃`. This is the standard
   parameterization of CKM matrices. -/
 def standParam (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : CKMMatrix :=
   ⟨standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃, by

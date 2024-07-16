@@ -28,7 +28,7 @@ variable {μ : Colors}
 /-- Monoid homomorphism from the Lorentz group to matrices indexed by `ColorsIndex d μ` for a
   color `μ`.
 
-  Thought of as the representation of the Lorentz group for that color index. -/
+  This can be thought of as the representation of the Lorentz group for that color index. -/
 def colorMatrix (μ : Colors) : LorentzGroup d →* Matrix (ColorsIndex d μ) (ColorsIndex d μ) ℝ where
   toFun Λ := match μ with
     | .up => fun i j => Λ.1 i j
@@ -56,21 +56,23 @@ def colorMatrix (μ : Colors) : LorentzGroup d →* Matrix (ColorsIndex d μ) (C
           Matrix.transpose_mul, Matrix.transpose_apply]
         rfl
 
-/-- A real number which occurs in the definition of -/
+/-- A real number occuring in the action of the Lorentz group on Lorentz tensors. -/
 @[simp]
 def prodColorMatrixOnIndexValue (i j : IndexValue d c) : ℝ :=
   ∏ x, colorMatrix (c x) Λ (i x) (j x)
 
+/-- `prodColorMatrixOnIndexValue` evaluated at `1` on the diagonal returns `1`. -/
 lemma one_prodColorMatrixOnIndexValue_on_diag (i : IndexValue d c) :
-  prodColorMatrixOnIndexValue c 1 i i = 1 := by
+    prodColorMatrixOnIndexValue c 1 i i = 1 := by
   simp only [prodColorMatrixOnIndexValue]
   rw [Finset.prod_eq_one]
   intro x _
   simp only [colorMatrix, MonoidHom.map_one, Matrix.one_apply]
   rfl
 
+/-- `prodColorMatrixOnIndexValue` evaluated at `1` off the diagonal returns `0`. -/
 lemma one_prodColorMatrixOnIndexValue_off_diag {i j : IndexValue d c} (hij : j ≠ i) :
-  prodColorMatrixOnIndexValue c 1 i j = 0 := by
+    prodColorMatrixOnIndexValue c 1 i j = 0 := by
   simp only [prodColorMatrixOnIndexValue]
   obtain ⟨x, hijx⟩ := Function.ne_iff.mp hij
   rw [@Finset.prod_eq_zero _ _ _ _ _ x]
@@ -82,8 +84,8 @@ lemma mul_prodColorMatrixOnIndexValue (i j : IndexValue d c) :
     prodColorMatrixOnIndexValue c (Λ * Λ') i j =
     ∑ (k : IndexValue d c),
     ∏ x, (colorMatrix (c x) Λ (i x) (k x)) * (colorMatrix (c x) Λ' (k x) (j x)) := by
-  have h1 :  ∑ (k : IndexValue d c), ∏ x,
-      (colorMatrix (c x) Λ (i x) (k x)) * (colorMatrix (c x) Λ' (k x) (j x))  =
+  have h1 : ∑ (k : IndexValue d c), ∏ x,
+      (colorMatrix (c x) Λ (i x) (k x)) * (colorMatrix (c x) Λ' (k x) (j x)) =
       ∏ x, ∑ y, (colorMatrix (c x) Λ (i x) y) * (colorMatrix (c x) Λ' y (j x)) := by
     rw [Finset.prod_sum]
     simp only [Finset.prod_attach_univ, Finset.sum_univ_pi]
@@ -95,8 +97,9 @@ lemma mul_prodColorMatrixOnIndexValue (i j : IndexValue d c) :
   simp only [prodColorMatrixOnIndexValue, map_mul]
   exact Finset.prod_congr rfl (fun x _ => rfl)
 
-/-- Action of the Lorentz group on the set of Real Lorentz Tensors indexed by `X`. -/
-def lorentzAction : MulAction (LorentzGroup d) (RealLorentzTensor d X) where
+/-- Action of the Lorentz group on `X`-indexed Real Lorentz Tensors. -/
+@[simps!]
+instance lorentzAction : MulAction (LorentzGroup d) (RealLorentzTensor d X) where
   smul Λ T := {color := T.color,
                 coord := fun i => ∑ j, prodColorMatrixOnIndexValue T.color Λ i j * T.coord j}
   one_smul T := by
@@ -133,20 +136,7 @@ def lorentzAction : MulAction (LorentzGroup d) (RealLorentzTensor d X) where
     rw [Finset.prod_mul_distrib]
     rfl
 
-/-!
-
-## The Lorentz action on constructors
-
--/
-
-
-
-
-
-
-
-
-
-
+@[simps!]
+instance : MulAction (LorentzGroup d) (Marked d X n) := lorentzAction
 
 end RealLorentzTensor

@@ -70,7 +70,9 @@ import HepLean.SpaceTime.LorentzGroup.Orthochronous
 import HepLean.SpaceTime.LorentzGroup.Proper
 import HepLean.SpaceTime.LorentzGroup.Restricted
 import HepLean.SpaceTime.LorentzGroup.Rotations
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.SpaceTime.LorentzTensor.Real.Basic
+import HepLean.SpaceTime.LorentzTensor.Real.Constructors
+import HepLean.SpaceTime.LorentzTensor.Real.LorentzAction
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic
 import HepLean.SpaceTime.LorentzVector.NormOne

@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Logic.Function.CompTypeclasses
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.Normed.Field.Basic
-import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
 
 # Real Lorentz Tensors
@@ -423,141 +422,6 @@ def contr {X : Type} (T : Marked d X 2)
 
 /-!
 
-# Tensors from reals, vectors and matrices
-
-Note that that these definitions are not equivariant with respect to an
-action of the Lorentz group. They are provided for constructive purposes.
-
--/
-
-/-- A 0-tensor from a real number. -/
-def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d Empty where
-  color := fun _ => Colors.up
-  coord := fun _ => r
-
-/-- A marked 1-tensor with a single up index constructed from a vector.
-
-  Note: This is not the same as rising indices on `ofVecDown`. -/
-def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
-    Marked d Empty 1 where
-  color := fun _ => Colors.up
-  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
-
-/-- A marked 1-tensor with a single down index constructed from a vector.
-
-  Note: This is not the same as lowering indices on `ofVecUp`. -/
-def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
-    Marked d Empty 1 where
-  color := fun _ => Colors.down
-  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
-
-/-- A tensor with two up indices constructed from a matrix.
-
-Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
-def ofMatUpUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d Empty 2 where
-  color := fun _ => Colors.up
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
-
-/-- A tensor with two down indices constructed from a matrix.
-
-Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
-def ofMatDownDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d Empty 2 where
-  color := fun _ => Colors.down
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
-
-/-- A marked 2-tensor with the first index up and the second index down.
-
-Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
-@[simps!]
-def ofMatUpDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d Empty 2 where
-  color := fun i => match i with
-  | Sum.inr ⟨0, PUnit.unit⟩ => Colors.up
-  | Sum.inr ⟨1, PUnit.unit⟩ => Colors.down
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
-
-/-- A marked 2-tensor with the first index down and the second index up.
-
-Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
-def ofMatDownUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    Marked d Empty 2 where
-  color := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => Colors.down
-    | Sum.inr ⟨1, PUnit.unit⟩ => Colors.up
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
-
-/-- Contracting the indices of `ofMatUpDown` returns the trace of the matrix. -/
-lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    contr (ofMatUpDown M) (by rfl) = ofReal d M.trace := by
-  refine ext' ?_ ?_
-  · funext i
-    exact Empty.elim i
-  · funext i
-    simp only [Fin.isValue, contr, IndexValue, Equiv.cast_apply, trace, diag_apply, ofReal,
-      Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
-    apply Finset.sum_congr rfl
-    intro x _
-    rfl
-
-/-- Contracting the indices of `ofMatDownUp` returns the trace of the matrix. -/
-lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    contr (ofMatDownUp M) (by rfl) = ofReal d M.trace := by
-  refine ext' ?_ ?_
-  · funext i
-    exact Empty.elim i
-  · funext i
-    rfl
-
-/-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
-@[simp]
-lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
-    (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext' ?_ ?_
-  · funext i
-    exact Empty.elim i
-  · funext i
-    rfl
-
-/-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
-@[simp]
-lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (Equiv.equivEmpty (Empty ⊕ Empty))
-    (mul (ofVecDown v₁) (ofVecUp v₂) rfl) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext' ?_ ?_
-  · funext i
-    exact Empty.elim i
-  · funext i
-    rfl
-
-lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
-    (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
-    (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
-  refine ext' ?_ ?_
-  · funext i
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
-    fin_cases i
-    rfl
-  · funext i
-    rfl
-
-lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
-    (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
-    (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
-  refine ext' ?_ ?_
-  · funext i
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
-    fin_cases i
-    rfl
-  · funext i
-    rfl
-
-/-!
-
 ## Rising and lowering indices
 
 Rising or lowering an index corresponds to changing the color of that index.
@@ -565,14 +429,6 @@ Rising or lowering an index corresponds to changing the color of that index.
 -/
 
 /-! TODO: Define the rising and lowering of indices using contraction with the metric. -/
-
-/-!
-
-## Action of the Lorentz group
-
--/
-
-/-! TODO: Define the action of the Lorentz group on the sets of Tensors. -/
 
 /-!
 
