@@ -21,7 +21,7 @@ open SMνCharges
 open SMνACCs
 open BigOperators
 
-/-- A proposition which is true if for a given `n` a plane of charges of dimension `n` exists
+/-- A proposition which is true if for a given `n`, a plane of charges of dimension `n` exists
 in which each point is a solution. -/
 def ExistsPlane (n : ℕ) : Prop := ∃ (B : Fin n → (PlusU1 3).Charges),
    LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i)
