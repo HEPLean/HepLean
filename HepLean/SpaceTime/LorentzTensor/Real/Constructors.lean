@@ -38,7 +38,7 @@ def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d Empty where
 def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
     Marked d Empty 1 where
   color := fun _ => Colors.up
-  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
+  coord := fun i => v <| i <| Sum.inr <| 0
 
 /-- A marked 1-tensor with a single down index constructed from a vector.
 
@@ -46,7 +46,7 @@ def ofVecUp {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
 def ofVecDown {d : ℕ} (v : Fin 1 ⊕ Fin d → ℝ) :
     Marked d Empty 1 where
   color := fun _ => Colors.down
-  coord := fun i => v <| i <| Sum.inr <| ⟨0, PUnit.unit⟩
+  coord := fun i => v <| i <| Sum.inr <| 0
 
 /-- A tensor with two up indices constructed from a matrix.
 
@@ -54,7 +54,7 @@ Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatUpUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Marked d Empty 2 where
   color := fun _ => Colors.up
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+  coord := fun i => m (i (Sum.inr 0)) (i (Sum.inr 1))
 
 /-- A tensor with two down indices constructed from a matrix.
 
@@ -62,7 +62,7 @@ Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatDownDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Marked d Empty 2 where
   color := fun _ => Colors.down
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+  coord := fun i => m (i (Sum.inr 0)) (i (Sum.inr 1))
 
 /-- A marked 2-tensor with the first index up and the second index down.
 
@@ -71,9 +71,9 @@ Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatUpDown {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Marked d Empty 2 where
   color := fun i => match i with
-  | Sum.inr ⟨0, PUnit.unit⟩ => Colors.up
-  | Sum.inr ⟨1, PUnit.unit⟩ => Colors.down
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+  | Sum.inr 0 => Colors.up
+  | Sum.inr 1 => Colors.down
+  coord := fun i => m (i (Sum.inr 0)) (i (Sum.inr 1))
 
 /-- A marked 2-tensor with the first index down and the second index up.
 
@@ -81,9 +81,9 @@ Note: This is not the same as rising or lowering indices on other `ofMat...`. -/
 def ofMatDownUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Marked d Empty 2 where
   color := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => Colors.down
-    | Sum.inr ⟨1, PUnit.unit⟩ => Colors.up
-  coord := fun i => m (i (Sum.inr ⟨0, PUnit.unit⟩)) (i (Sum.inr ⟨1, PUnit.unit⟩))
+    | Sum.inr 0 => Colors.down
+    | Sum.inr 1 => Colors.up
+  coord := fun i => m (i (Sum.inr 0)) (i (Sum.inr 1))
 
 /-!
 
@@ -94,85 +94,85 @@ def ofMatDownUp {d : ℕ} (m : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
 /-- Index values for `ofVecUp v` are equivalent to elements of `Fin 1 ⊕ Fin d`. -/
 def ofVecUpIndexValue (v : Fin 1 ⊕ Fin d → ℝ) :
     IndexValue d (ofVecUp v).color ≃ (Fin 1 ⊕ Fin d) where
-  toFun i := i (Sum.inr ⟨0, PUnit.unit⟩)
+  toFun i := i (Sum.inr 0)
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x
+    | Sum.inr 0 => x
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
   right_inv x := rfl
 
 /-- Index values for `ofVecDown v` are equivalent to elements of `Fin 1 ⊕ Fin d`. -/
 def ofVecDownIndexValue (v : Fin 1 ⊕ Fin d → ℝ) :
     IndexValue d (ofVecDown v).color ≃ (Fin 1 ⊕ Fin d) where
-  toFun i := i (Sum.inr ⟨0, PUnit.unit⟩)
+  toFun i := i (Sum.inr 0)
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x
+    | Sum.inr 0 => x
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
   right_inv x := rfl
 
 /-- Index values for `ofMatUpUp v` are equivalent to elements of
   `(Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)`. -/
 def ofMatUpUpIndexValue (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     IndexValue d (ofMatUpUp M).color ≃ (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) where
-  toFun i := (i (Sum.inr ⟨0, PUnit.unit⟩), i (Sum.inr ⟨1, PUnit.unit⟩))
+  toFun i := (i (Sum.inr 0), i (Sum.inr 1))
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x.1
-    | Sum.inr ⟨1, PUnit.unit⟩ => x.2
+    | Sum.inr 0 => x.1
+    | Sum.inr 1 => x.2
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
-    | Sum.inr ⟨1, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
+    | Sum.inr 1 => rfl
   right_inv x := rfl
 
 /-- Index values for `ofMatDownDown v` are equivalent to elements of
   `(Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)`. -/
 def ofMatDownDownIndexValue (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     IndexValue d (ofMatDownDown M).color ≃ (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) where
-  toFun i := (i (Sum.inr ⟨0, PUnit.unit⟩), i (Sum.inr ⟨1, PUnit.unit⟩))
+  toFun i := (i (Sum.inr 0), i (Sum.inr 1))
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x.1
-    | Sum.inr ⟨1, PUnit.unit⟩ => x.2
+    | Sum.inr 0 => x.1
+    | Sum.inr 1 => x.2
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
-    | Sum.inr ⟨1, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
+    | Sum.inr 1 => rfl
   right_inv x := rfl
 
 /-- Index values for `ofMatUpDown v` are equivalent to elements of
   `(Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)`. -/
 def ofMatUpDownIndexValue (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     IndexValue d (ofMatUpDown M).color ≃ (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) where
-  toFun i := (i (Sum.inr ⟨0, PUnit.unit⟩), i (Sum.inr ⟨1, PUnit.unit⟩))
+  toFun i := (i (Sum.inr 0), i (Sum.inr 1))
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x.1
-    | Sum.inr ⟨1, PUnit.unit⟩ => x.2
+    | Sum.inr 0 => x.1
+    | Sum.inr 1 => x.2
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
-    | Sum.inr ⟨1, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
+    | Sum.inr 1 => rfl
   right_inv x := rfl
 
 /-- Index values for `ofMatDownUp v` are equivalent to elements of
   `(Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)`. -/
 def ofMatDownUpIndexValue (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     IndexValue d (ofMatDownUp M).color ≃ (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) where
-  toFun i := (i (Sum.inr ⟨0, PUnit.unit⟩), i (Sum.inr ⟨1, PUnit.unit⟩))
+  toFun i := (i (Sum.inr 0), i (Sum.inr 1))
   invFun x := fun i => match i with
-    | Sum.inr ⟨0, PUnit.unit⟩ => x.1
-    | Sum.inr ⟨1, PUnit.unit⟩ => x.2
+    | Sum.inr 0 => x.1
+    | Sum.inr 1 => x.2
   left_inv i := by
     funext y
     match y with
-    | Sum.inr ⟨0, PUnit.unit⟩ => rfl
-    | Sum.inr ⟨1, PUnit.unit⟩ => rfl
+    | Sum.inr 0 => rfl
+    | Sum.inr 1 => rfl
   right_inv x := rfl
 
 /-!
@@ -235,7 +235,7 @@ lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
+    congrSet ((Equiv.sumEmpty (Empty ⊕ Fin 1) Empty))
     (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
   refine ext' ?_ ?_
   · funext i
@@ -247,7 +247,7 @@ lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) 
 
 lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((Equiv.sumEmpty (Empty ⊕ PUnit.{1}) Empty).trans equivPUnitToSigma)
+    congrSet (Equiv.sumEmpty (Empty ⊕ Fin 1) Empty)
     (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
   refine ext' ?_ ?_
   · funext i
@@ -326,7 +326,6 @@ lemma lorentzAction_ofMatUpUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [← Equiv.prod_comp (Equiv.sigmaPUnit (Fin 2)).symm]
   rw [Fin.prod_univ_two]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
@@ -346,7 +345,6 @@ lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [← Equiv.prod_comp (Equiv.sigmaPUnit (Fin 2)).symm]
   rw [Fin.prod_univ_two]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
@@ -366,7 +364,6 @@ lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [← Equiv.prod_comp (Equiv.sigmaPUnit (Fin 2)).symm]
   rw [Fin.prod_univ_two]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
@@ -387,7 +384,6 @@ lemma lorentzAction_ofMatDownUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [← Equiv.prod_comp (Equiv.sigmaPUnit (Fin 2)).symm]
   rw [Fin.prod_univ_two]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]

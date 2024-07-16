@@ -62,6 +62,10 @@ namespace RealLorentzTensor
 open Matrix
 universe u1
 variable {d : ℕ} {X Y Z : Type}
+variable (c : X → Colors)
+
+
+
 
 /-!
 
@@ -144,6 +148,11 @@ lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
 
 -/
 
+instance [Fintype X] [DecidableEq X] : Fintype (IndexValue d c) := Pi.fintype
+
+instance [Fintype X] [DecidableEq X] : DecidableEq (IndexValue d c) :=
+  Fintype.decidablePiFintype
+
 /-- An equivalence of Index values from an equality of color maps. -/
 def castIndexValue {X : Type} {T S : X → Colors} (h : T = S) :
     IndexValue d T ≃ IndexValue d S where
@@ -196,9 +205,18 @@ lemma ext' {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color)
 
 /-- An equivalence between `X → Fin 1 ⊕ Fin d` and `Y → Fin 1 ⊕ Fin d` given an isomorphism
   between `X` and `Y`. -/
+@[simps!]
 def congrSetIndexValue (d : ℕ) (f : X ≃ Y) (i : X → Colors) :
     IndexValue d i ≃ IndexValue d (i ∘ f.symm) :=
   Equiv.piCongrLeft' _ f
+
+@[simp]
+lemma castColorsIndex_comp_congrSetIndexValue (c : X → Colors) (j : IndexValue d c) (f : X ≃ Y)
+    (h1 : (c <| f.symm <| f <| x) = c x) : (castColorsIndex h1 <| congrSetIndexValue d f c j <| f x)
+    = j x := by
+  rw [congrSetIndexValue_apply]
+  refine cast_eq_iff_heq.mpr ?_
+  rw [Equiv.symm_apply_apply]
 
 /-- Given an equivalence of indexing sets, a map on Lorentz tensors. -/
 @[simps!]
@@ -301,60 +319,103 @@ To define contraction and multiplication of Lorentz tensors we need to mark indi
 
 /-- A `RealLorentzTensor` with `n` marked indices. -/
 def Marked (d : ℕ) (X : Type) (n : ℕ) : Type :=
-  RealLorentzTensor d (X ⊕ Σ _ : Fin n, PUnit)
+  RealLorentzTensor d (X ⊕ Fin n)
 
 namespace Marked
 
 variable {n m : ℕ}
 
+
 /-- The marked point. -/
-def markedPoint (X : Type) (i : Fin n) : (X ⊕ Σ _ : Fin n, PUnit) :=
-  Sum.inr ⟨i, PUnit.unit⟩
+def markedPoint (X : Type) (i : Fin n) : (X ⊕ Fin n) :=
+  Sum.inr i
 
 /-- The colors of unmarked indices. -/
 def unmarkedColor (T : Marked d X n) : X → Colors :=
   T.color ∘ Sum.inl
 
 /-- The colors of marked indices. -/
-def markedColor (T : Marked d X n) : (Σ _ : Fin n, PUnit) → Colors :=
+def markedColor (T : Marked d X n) : Fin n → Colors :=
   T.color ∘ Sum.inr
 
 /-- The index values restricted to unmarked indices. -/
 def UnmarkedIndexValue (T : Marked d X n) : Type :=
   IndexValue d T.unmarkedColor
 
+instance [Fintype X] [DecidableEq X]  (T : Marked d X n)  : Fintype T.UnmarkedIndexValue :=
+  Pi.fintype
+
 /-- The index values restricted to marked indices. -/
 def MarkedIndexValue (T : Marked d X n) : Type :=
   IndexValue d T.markedColor
+
+instance [Fintype X] [DecidableEq X]  (T : Marked d X n)  : Fintype T.MarkedIndexValue :=
+  Pi.fintype
 
 lemma sumElimIndexColor_of_marked (T : Marked d X n) :
     sumElimIndexColor T.unmarkedColor T.markedColor = T.color := by
   ext1 x
   cases' x <;> rfl
 
+def toUnmarkedIndexValue {T : Marked d X n} (i : IndexValue d T.color) : UnmarkedIndexValue T :=
+  inlIndexValue <| castIndexValue T.sumElimIndexColor_of_marked.symm <| i
+
+def toMarkedIndexValue {T : Marked d X n} (i : IndexValue d T.color) : MarkedIndexValue T :=
+  inrIndexValue <| castIndexValue T.sumElimIndexColor_of_marked.symm <| i
+
+def splitIndexValue {T : Marked d X n} :
+    IndexValue d T.color ≃ UnmarkedIndexValue T × MarkedIndexValue T where
+  toFun i := ⟨toUnmarkedIndexValue i, toMarkedIndexValue i⟩
+  invFun p := castIndexValue T.sumElimIndexColor_of_marked $
+      sumElimIndexValue  p.1 p.2
+  left_inv i := by
+    simp_all only [IndexValue]
+    ext1 x
+    cases x with
+    | inl _ => rfl
+    | inr _ => rfl
+  right_inv p := by
+    simp_all only [IndexValue]
+    obtain ⟨fst, snd⟩ := p
+    simp_all only [Prod.mk.injEq]
+    apply And.intro rfl rfl
+
+ @[simp]
+lemma splitIndexValue_sum {T : Marked d X n} [Fintype X] [DecidableEq X]
+    (P : T.UnmarkedIndexValue × T.MarkedIndexValue → ℝ) :
+    ∑ i, P (splitIndexValue i) = ∑ j, ∑ k, P (j, k) := by
+  rw [Equiv.sum_comp splitIndexValue, Fintype.sum_prod_type]
+
 /-- Contruction of marked index values for the case of 1 marked index. -/
-def oneMarkedIndexValue (T : Marked d X 1) (x : ColorsIndex d (T.color (markedPoint X 0))) :
-    T.MarkedIndexValue := fun i => match i with
-  | ⟨0, PUnit.unit⟩ => x
+def oneMarkedIndexValue {T : Marked d X 1} :
+    ColorsIndex d (T.color (markedPoint X 0)) ≃ T.MarkedIndexValue where
+  toFun x := fun i => match i with
+    | 0 => x
+  invFun i := i 0
+  left_inv x := rfl
+  right_inv i := by
+    funext x
+    fin_cases x
+    rfl
 
 /-- Contruction of marked index values for the case of 2 marked index. -/
 def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPoint X 0)))
     (y : ColorsIndex d <| T.color <| markedPoint X 1) :
     T.MarkedIndexValue := fun i =>
   match i with
-  | ⟨0, PUnit.unit⟩ => x
-  | ⟨1, PUnit.unit⟩ => y
+  | 0 => x
+  | 1 => y
+
 
 /-- An equivalence of types used to turn the first marked index into an unmarked index. -/
-def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Σ _ : Fin n.succ, PUnit) ≃
-    (X ⊕ PUnit) ⊕ Σ _ : Fin n, PUnit :=
-  trans (Equiv.sumCongr (Equiv.refl _) $ (Equiv.sigmaPUnit (Fin n.succ)).trans
-  (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm).trans
-  (Equiv.sumCongr finOneEquiv (Equiv.sigmaPUnit (Fin n)).symm)))
+def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃
+    (X ⊕ Fin 1) ⊕ Fin n :=
+  trans (Equiv.sumCongr (Equiv.refl _) $
+    (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm)))
   (Equiv.sumAssoc _ _ _).symm
 
 /-- Unmark the first marked index of a marked thensor. -/
-def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ PUnit) n :=
+def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ Fin 1) n :=
   congrSet (unmarkFirstSet X n)
 
 end Marked
@@ -371,18 +432,16 @@ is dual to the others. The contraction is done via
 `φ^μ ψ_μ = φ^0 ψ_0 + φ^1 ψ_1 + ...`. -/
 @[simps!]
 def mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
-    (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (S.markedColor ⟨0, PUnit.unit⟩)) :
+    (h : T.markedColor 0 = τ (S.markedColor 0)) :
     RealLorentzTensor d (X ⊕ Y) where
   color := sumElimIndexColor T.unmarkedColor S.unmarkedColor
   coord := fun i => ∑ x,
-    T.coord (castIndexValue T.sumElimIndexColor_of_marked $
-      sumElimIndexValue (inlIndexValue i) (T.oneMarkedIndexValue x)) *
-    S.coord (castIndexValue S.sumElimIndexColor_of_marked $
-      sumElimIndexValue (inrIndexValue i) (S.oneMarkedIndexValue $ congrColorsDual h x))
+    T.coord (splitIndexValue.symm (inlIndexValue i, oneMarkedIndexValue x)) *
+    S.coord (splitIndexValue.symm (inrIndexValue i, oneMarkedIndexValue $ congrColorsDual h x))
 
 /-- Multiplication is well behaved with regard to swapping tensors. -/
 lemma sumComm_mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
-    (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (S.markedColor ⟨0, PUnit.unit⟩)) :
+    (h : T.markedColor 0 = τ (S.markedColor 0)) :
     sumComm (mul T S h) = mul S T (color_eq_dual_symm h) := by
   refine ext' (sumElimIndexColor_symm S.unmarkedColor T.unmarkedColor).symm ?_
   change (mul T S h).coord ∘
@@ -408,13 +467,11 @@ lemma sumComm_mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
 -/
 
 /-- The contraction of the marked indices in a tensor with two marked indices. -/
-def contr {X : Type} (T : Marked d X 2)
-    (h : T.markedColor ⟨0, PUnit.unit⟩ = τ (T.markedColor ⟨1, PUnit.unit⟩)) :
+def contr {X : Type} (T : Marked d X 2) (h : T.markedColor 0 = τ (T.markedColor 1)) :
     RealLorentzTensor d X where
   color := T.unmarkedColor
   coord := fun i =>
-    ∑ x, T.coord (castIndexValue T.sumElimIndexColor_of_marked $
-      sumElimIndexValue i $ T.twoMarkedIndexValue x $ congrColorsDual h x)
+    ∑ x, T.coord (splitIndexValue.symm (i, T.twoMarkedIndexValue x $ congrColorsDual h x))
 
 /-! TODO: Following the ethos of modular operads, prove properties of contraction. -/
 
