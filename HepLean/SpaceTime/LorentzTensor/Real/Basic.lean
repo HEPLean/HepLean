@@ -49,7 +49,6 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : DecidableEq (RealLorentzTen
 
 /-- An `IndexValue` is a set of actual values an index can take. e.g. for a
   3-tensor (0, 1, 2). -/
-@[simp]
 def RealLorentzTensor.IndexValue {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
     Type 0 := (x : X) → RealLorentzTensor.ColorsIndex d (c x)
 
@@ -91,7 +90,7 @@ def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 /-- An equivalence of `ColorsIndex` types given an equality of a colors. -/
 def colorsIndexCast {d : ℕ} {μ₁ μ₂ : RealLorentzTensor.Colors} (h : μ₁ = μ₂) :
     ColorsIndex d μ₁ ≃ ColorsIndex d μ₂ :=
-  Equiv.cast (by rw [h])
+  Equiv.cast (congrArg (ColorsIndex d) h)
 
 /-- An equivalence of `ColorsIndex` between that of a color and that of its dual. -/
 def colorsIndexDualCastSelf {d : ℕ} {μ : RealLorentzTensor.Colors}:
@@ -127,7 +126,7 @@ lemma colorsIndexDualCast_symm {μ ν : Colors} (h : μ = τ ν) :
 
 instance [Fintype X] [DecidableEq X] : Fintype (IndexValue d c) := Pi.fintype
 
-instance [Fintype X] [DecidableEq X] : DecidableEq (IndexValue d c) :=
+instance [Fintype X] : DecidableEq (IndexValue d c) :=
   Fintype.decidablePiFintype
 
 /-!
@@ -136,6 +135,7 @@ instance [Fintype X] [DecidableEq X] : DecidableEq (IndexValue d c) :=
 
 -/
 
+/-- An isomorphism of the type of index values given an isomorphism of sets. -/
 @[simps!]
 def indexValueIso (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors} (h : i = j ∘ f) :
     IndexValue d i ≃ IndexValue d j :=
@@ -155,12 +155,12 @@ lemma indexValueIso_trans (d : ℕ) (f : X ≃ Y) (g : Y ≃ Z) {i : X → Color
   have h1 : ((indexValueIso d f h).trans (indexValueIso d g h')).symm =
       (indexValueIso d (f.trans g) (by rw [h, h', Function.comp.assoc]; rfl)).symm := by
     subst h' h
-    ext x : 2
-    rfl
+    exact Equiv.coe_inj.mp rfl
   simpa only [Equiv.symm_symm] using congrArg (fun e => e.symm) h1
 
 lemma indexValueIso_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
-    (indexValueIso d f h).symm = indexValueIso d f.symm (by rw [h, Function.comp.assoc]; simp) := by
+    (indexValueIso d f h).symm =
+    indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr (id (Eq.symm h))) := by
   ext i : 1
   rw [← Equiv.symm_apply_eq]
   funext y
@@ -170,9 +170,10 @@ lemma indexValueIso_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
   rw [Equiv.apply_symm_apply]
 
 lemma indexValueIso_eq_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
-    indexValueIso d f h = (indexValueIso d f.symm (by rw [h, Function.comp.assoc]; simp)).symm := by
+    indexValueIso d f h =
+    (indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr (id (Eq.symm h)))).symm := by
   rw [indexValueIso_symm]
-  congr
+  rfl
 
 @[simp]
 lemma indexValueIso_refl (d : ℕ) (i : X → Colors) :
@@ -256,10 +257,9 @@ lemma mapIso_trans (f : X ≃ Y) (g : Y ≃ Z) :
   apply congrArg
   rw [← indexValueIso_trans]
   rfl
-  simp only [Function.comp.assoc, Equiv.symm_comp_self, CompTriple.comp_eq]
+  exact (Equiv.comp_symm_eq f (T.color ∘ ⇑f.symm) T.color).mp rfl
 
-lemma mapIso_symm (f : X ≃ Y) : (mapIso d f).symm = mapIso d f.symm := by
-  rfl
+lemma mapIso_symm (f : X ≃ Y) : (mapIso d f).symm = mapIso d f.symm := rfl
 
 lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 
@@ -268,7 +268,7 @@ lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 ## Sums
 
 -/
-
+/-- An equivalence splitting elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
 def indexValueSumEquiv {X Y : Type} {TX : X → Colors} {TY : Y → Colors} :
     IndexValue d (Sum.elim TX TY) ≃ IndexValue d TX × IndexValue d TY where
   toFun i := (fun x => i (Sum.inl x), fun x => i (Sum.inr x))
@@ -330,10 +330,10 @@ instance [Fintype X] (T : Marked d X n) : DecidableEq T.UnmarkedIndexValue :=
 def MarkedIndexValue (T : Marked d X n) : Type :=
   IndexValue d T.markedColor
 
-instance [Fintype X] [DecidableEq X] (T : Marked d X n) : Fintype T.MarkedIndexValue :=
+instance (T : Marked d X n) : Fintype T.MarkedIndexValue :=
   Pi.fintype
 
-instance [Fintype X] (T : Marked d X n) : DecidableEq T.MarkedIndexValue :=
+instance (T : Marked d X n) : DecidableEq T.MarkedIndexValue :=
   Fintype.decidablePiFintype
 
 lemma color_eq_elim (T : Marked d X n) :
@@ -341,6 +341,7 @@ lemma color_eq_elim (T : Marked d X n) :
   ext1 x
   cases' x <;> rfl
 
+/-- An equivalence splitting elements of `IndexValue d T.color` into their two components. -/
 def splitIndexValue {T : Marked d X n} :
     IndexValue d T.color ≃ T.UnmarkedIndexValue × T.MarkedIndexValue :=
   (indexValueIso d (Equiv.refl _) T.color_eq_elim).trans

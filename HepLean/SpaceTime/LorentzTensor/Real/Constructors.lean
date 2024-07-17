@@ -187,24 +187,16 @@ open Marked
 /-- Contracting the indices of `ofMatUpDown` returns the trace of the matrix. -/
 lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     contr (ofMatUpDown M) (by rfl) = ofReal d M.trace := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     exact Empty.elim i
-  · funext i
-    simp only [Fin.isValue, contr, IndexValue, Equiv.cast_apply, trace, diag_apply, ofReal,
-      Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
-    apply Finset.sum_congr rfl
-    intro x _
-    rfl
 
 /-- Contracting the indices of `ofMatDownUp` returns the trace of the matrix. -/
 lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     contr (ofMatDownUp M) (by rfl) = ofReal d M.trace := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     exact Empty.elim i
-  · funext i
-    rfl
 
 /-!
 
@@ -217,45 +209,37 @@ lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
     (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     exact Empty.elim i
-  · funext i
-    rfl
 
 /-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
 @[simp]
 lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d (Equiv.equivEmpty (Empty ⊕ Empty))
     (mul (ofVecDown v₁) (ofVecUp v₂) rfl) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     exact Empty.elim i
-  · funext i
-    rfl
 
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d ((Equiv.sumEmpty (Empty ⊕ Fin 1) Empty))
     (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
     fin_cases i
-    rfl
-  · funext i
     rfl
 
 lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d (Equiv.sumEmpty (Empty ⊕ Fin 1) Empty)
     (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
-  refine ext ?_ ?_
+  refine ext ?_ rfl
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
     fin_cases i
-    rfl
-  · funext i
     rfl
 
 /-!
@@ -290,7 +274,7 @@ lemma lorentzAction_ofVecUp (v : Fin 1 ⊕ Fin d → ℝ) :
   intro i
   simp_all only [Finset.mem_univ, Fin.isValue, Equiv.coe_fn_mk]
   intro j _
-  erw [toTensorRepMat_apply, Finset.prod_singleton]
+  simp_all only [Finset.mem_univ, Fin.isValue, Finset.prod_singleton, indexValueIso_refl]
   rfl
 
 /-- The action of the Lorentz group on `ofVecDown v` is
@@ -310,7 +294,7 @@ lemma lorentzAction_ofVecDown (v : Fin 1 ⊕ Fin d → ℝ) :
   intro i
   simp_all only [Finset.mem_univ, Fin.isValue, Equiv.coe_fn_mk]
   intro j _
-  erw [toTensorRepMat_apply, Finset.prod_singleton]
+  simp_all only [Finset.mem_univ, Fin.isValue, Finset.prod_singleton, indexValueIso_refl]
   rfl
 
 @[simp]
@@ -327,12 +311,8 @@ lemma lorentzAction_ofMatUpUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [toTensorRepMat_apply]
-  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
-    Fin.isValue, one_mul, indexValueIso_refl, IndexValue]
-  simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
-  rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
-  congr
+  simp only [Fin.prod_univ_two, Fin.isValue, indexValueIso_refl, IndexValue]
+  exact mul_right_comm _ _ _
 
 @[simp]
 lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
@@ -348,12 +328,8 @@ lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [toTensorRepMat_apply]
-  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
-    Fin.isValue, one_mul, lorentzGroupIsGroup_inv, indexValueIso_refl, IndexValue]
-  simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
-  rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
-  congr
+  simp only [Fin.prod_univ_two, Fin.isValue, indexValueIso_refl, IndexValue]
+  exact mul_right_comm _ _ _
 
 @[simp]
 lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
@@ -369,12 +345,8 @@ lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [toTensorRepMat_apply]
-  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
-    Fin.isValue, one_mul, indexValueIso_refl, IndexValue, lorentzGroupIsGroup_inv]
-  simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
-  rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
-  congr
+  simp only [Fin.prod_univ_two, Fin.isValue, indexValueIso_refl, IndexValue]
+  exact mul_right_comm _ _ _
 
 @[simp]
 lemma lorentzAction_ofMatDownUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
@@ -391,12 +363,8 @@ lemma lorentzAction_ofMatDownUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  erw [toTensorRepMat_apply]
-  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
-    Fin.isValue, one_mul, lorentzGroupIsGroup_inv, indexValueIso_refl, IndexValue]
-  simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
-  rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
-  congr
+  simp only [Fin.prod_univ_two, Fin.isValue, indexValueIso_refl, IndexValue]
+  exact mul_right_comm _ _ _
 
 end lorentzAction
 

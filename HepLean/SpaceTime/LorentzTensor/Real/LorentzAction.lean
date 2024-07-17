@@ -84,6 +84,7 @@ lemma colorMatrix_transpose {μ : Colors} (Λ : LorentzGroup d) :
 
 -/
 
+/-- The matrix representation of the Lorentz group given a color of index. -/
 @[simps!]
 def toTensorRepMat {c : X → Colors} :
     LorentzGroup d →* Matrix (IndexValue d c) (IndexValue d c) ℝ where
@@ -109,40 +110,33 @@ def toTensorRepMat {c : X → Colors} :
         ∏ x, ∑ y, (colorMatrix (c x) Λ (i x) y) * (colorMatrix (c x) Λ' y (j x)) := by
       rw [Finset.prod_sum]
       simp only [Finset.prod_attach_univ, Finset.sum_univ_pi]
-      apply Finset.sum_congr
-      simp only [IndexValue, Fintype.piFinset_univ]
-      intro x _
       rfl
     rw [h1]
     simp only [map_mul]
-    exact Finset.prod_congr rfl (fun x _ => rfl)
+    rfl
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [Finset.prod_mul_distrib]
 
 lemma toTensorRepMat_mul' (i j : IndexValue d c) :
     toTensorRepMat (Λ * Λ') i j = ∑ (k : IndexValue d c),
     ∏ x, colorMatrix (c x) Λ (i x) (k x) * colorMatrix (c x) Λ' (k x) (j x) := by
-  simp [Matrix.mul_apply]
+  simp [Matrix.mul_apply, IndexValue]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [Finset.prod_mul_distrib]
   rfl
 
-@[simp]
 lemma toTensorRepMat_of_indexValueSumEquiv {cX : X → Colors} {cY : Y → Colors}
     (i j : IndexValue d (Sum.elim cX cY)) :
     toTensorRepMat Λ i j = toTensorRepMat Λ (indexValueSumEquiv i).1 (indexValueSumEquiv j).1 *
-    toTensorRepMat Λ (indexValueSumEquiv i).2 (indexValueSumEquiv j).2 := by
-  simp only [toTensorRepMat_apply]
-  rw [Fintype.prod_sum_type]
-  rfl
+    toTensorRepMat Λ (indexValueSumEquiv i).2 (indexValueSumEquiv j).2 :=
+  Fintype.prod_sum_type fun x => (colorMatrix (Sum.elim cX cY x)) Λ (i x) (j x)
 
 lemma toTensorRepMat_of_indexValueSumEquiv' {cX : X → Colors} {cY : Y → Colors}
     (i j : IndexValue d cX) (k l : IndexValue d cY) :
     toTensorRepMat Λ i j * toTensorRepMat Λ k l =
-    toTensorRepMat Λ (indexValueSumEquiv.symm (i, k)) (indexValueSumEquiv.symm (j, l)) := by
-  simp only [toTensorRepMat_apply]
-  rw [Fintype.prod_sum_type]
-  rfl
+    toTensorRepMat Λ (indexValueSumEquiv.symm (i, k)) (indexValueSumEquiv.symm (j, l)) :=
+  (Fintype.prod_sum_type fun x => (colorMatrix (Sum.elim cX cY x)) Λ
+    (indexValueSumEquiv.symm (i, k) x) (indexValueSumEquiv.symm (j, l) x)).symm
 
 /-!
 
@@ -153,10 +147,9 @@ lemma toTensorRepMat_of_indexValueSumEquiv' {cX : X → Colors} {cY : Y → Colo
 lemma toTensorRepMat_of_splitIndexValue' (T : Marked d X n)
     (i j : T.UnmarkedIndexValue) (k l : T.MarkedIndexValue) :
     toTensorRepMat Λ i j * toTensorRepMat Λ k l =
-    toTensorRepMat Λ (splitIndexValue.symm (i, k)) (splitIndexValue.symm (j, l)) := by
-  simp only [toTensorRepMat_apply]
-  rw [Fintype.prod_sum_type]
-  rfl
+    toTensorRepMat Λ (splitIndexValue.symm (i, k)) (splitIndexValue.symm (j, l)) :=
+  (Fintype.prod_sum_type fun x =>
+  (colorMatrix (T.color x)) Λ (splitIndexValue.symm (i, k) x) (splitIndexValue.symm (j, l) x)).symm
 
 lemma toTensorRepMat_oneMarkedIndexValue_dual (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) (x : ColorsIndex d (T.markedColor 0))
@@ -201,7 +194,7 @@ lemma toTensorRepMat_one_coord_sum (T : Marked d X n) (i : T.UnmarkedIndexValue)
   simp only [IndexValue, map_one, Matrix.one_apply_eq, one_mul]
   exact Finset.mem_univ k
   intro j _ hjk
-  simp [hjk]
+  simp [hjk, IndexValue]
   exact Or.inl (Matrix.one_apply_ne' hjk)
 
 /-!
@@ -264,10 +257,8 @@ lemma lorentzAction_on_isEmpty [IsEmpty X] (Λ : LorentzGroup d) (T : RealLorent
   erw [lorentzAction_smul_coord]
   simp only [Finset.univ_unique, Finset.univ_eq_empty, Finset.prod_empty, one_mul,
     Finset.sum_singleton, toTensorRepMat_apply]
-  erw [toTensorRepMat_apply]
-  simp only [IndexValue, toTensorRepMat, Unique.eq_default]
-  rw [@mul_left_eq_self₀]
-  exact Or.inl rfl
+  simp only [IndexValue, Unique.eq_default, Finset.univ_unique, Finset.sum_const,
+    Finset.card_singleton, one_smul]
 
 /-- The Lorentz action commutes with `mapIso`. -/
 lemma lorentzAction_mapIso (f : X ≃ Y) (Λ : LorentzGroup d) (T : RealLorentzTensor d X) :
@@ -277,7 +268,7 @@ lemma lorentzAction_mapIso (f : X ≃ Y) (Λ : LorentzGroup d) (T : RealLorentzT
   rw [mapIso_apply_coord]
   rw [lorentzAction_smul_coord', lorentzAction_smul_coord']
   let is : IndexValue d T.color ≃ IndexValue d ((mapIso d f) T).color :=
-    indexValueIso d f (by funext x; simp)
+    indexValueIso d f ((Equiv.comp_symm_eq f ((mapIso d f) T).color T.color).mp rfl)
   rw [← Equiv.sum_comp is]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [mapIso_apply_coord]
@@ -299,8 +290,7 @@ lemma lorentzAction_mapIso (f : X ≃ Y) (Λ : LorentzGroup d) (T : RealLorentzT
     congr
     exact Equiv.symm_apply_apply f x
   · apply congrArg
-    funext a
-    simp only [IndexValue, mapIso_apply_color, Equiv.symm_apply_apply, is]
+    exact (Equiv.apply_eq_iff_eq_symm_apply (indexValueIso d f (mapIso.proof_1 d f T))).mp rfl
 
 /-!
 
@@ -395,7 +385,10 @@ def unmarkedLorentzAction : MulAction (LorentzGroup d) (Marked d X n) where
     rw [Finset.prod_mul_distrib]
     rfl
 
+/-- Notation for `markedLorentzAction.smul`. -/
 scoped[RealLorentzTensor] infixr:73 " •ₘ " => markedLorentzAction.smul
+
+/-- Notation for `unmarkedLorentzAction.smul`. -/
 scoped[RealLorentzTensor] infixr:73 " •ᵤₘ " => unmarkedLorentzAction.smul
 
 /-- Acting on unmarked and then marked indices is equivalent to acting on all indices. -/

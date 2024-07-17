@@ -72,15 +72,10 @@ lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃
     rw [mapIso_apply_coord, mapIso_apply_coord]
     refine Mathlib.Tactic.Ring.mul_congr ?_ ?_ rfl
     · apply congrArg
-      ext1 r
-      cases r with
-      | inl val => rfl
-      | inr val_1 => rfl
+      simp only [IndexValue]
+      exact (Equiv.symm_apply_eq splitIndexValue).mpr rfl
     · apply congrArg
-      ext1 r
-      cases r with
-      | inl val => rfl
-      | inr val_1 => rfl
+      exact (Equiv.symm_apply_eq splitIndexValue).mpr rfl
 
 /-!
 
