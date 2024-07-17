@@ -167,12 +167,13 @@ lemma toTensorRepMat_oneMarkedIndexValue_dual (T : Marked d X 1) (S : Marked d Y
       (oneMarkedIndexValue x) := by
   rw [toTensorRepMat_apply, toTensorRepMat_apply]
   erw [Finset.prod_singleton, Finset.prod_singleton]
-  simp
+  simp only [Fin.zero_eta, Fin.isValue, lorentzGroupIsGroup_inv]
   rw [colorMatrix_cast h, colorMatrix_dual_cast]
   rw [Matrix.reindex_apply, Matrix.reindex_apply]
-  simp
+  simp only [Fin.isValue, lorentzGroupIsGroup_inv, minkowskiMetric.dual_dual, Subtype.coe_eta,
+    Equiv.symm_symm, Matrix.submatrix_apply]
   rw [colorMatrix_transpose]
-  simp
+  simp only [Fin.isValue, Matrix.transpose_apply]
   apply congrArg
   simp only [Fin.isValue, oneMarkedIndexValue, colorsIndexDualCast, Equiv.coe_fn_symm_mk,
     Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.coe_fn_mk, Equiv.apply_symm_apply,
@@ -276,7 +277,7 @@ lemma lorentzAction_mapIso (f : X ≃ Y) (Λ : LorentzGroup d) (T : RealLorentzT
   rw [mapIso_apply_coord]
   rw [lorentzAction_smul_coord', lorentzAction_smul_coord']
   let is : IndexValue d T.color ≃ IndexValue d ((mapIso d f) T).color :=
-    indexValueIso d f (by funext x ; simp)
+    indexValueIso d f (by funext x; simp)
   rw [← Equiv.sum_comp is]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [mapIso_apply_coord]

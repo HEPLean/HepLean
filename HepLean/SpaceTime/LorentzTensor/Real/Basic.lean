@@ -5,9 +5,9 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Logic.Function.CompTypeclasses
 import Mathlib.Data.Real.Basic
-import Mathlib.Analysis.Normed.Field.Basic
-import Mathlib.CategoryTheory.Core
-import Mathlib.CategoryTheory.Types
+import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Logic.Equiv.Fin
+import Mathlib.Tactic.FinCases
 /-!
 
 # Real Lorentz Tensors
@@ -61,10 +61,9 @@ structure RealLorentzTensor (d : ℕ) (X : Type) where
   coord : RealLorentzTensor.IndexValue d color → ℝ
 
 namespace RealLorentzTensor
-open Matrix CategoryTheory
+open Matrix
 universe u1
-variable {d : ℕ} {X Y Z : Type}
-variable (c : X → Colors)
+variable {d : ℕ} {X Y Z : Type} (c : X → Colors)
 
 /-!
 
@@ -144,7 +143,7 @@ def indexValueIso (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors} 
   Equiv.piCongrLeft (fun y => RealLorentzTensor.ColorsIndex d (j y)) f
 
 lemma indexValueIso_symm_apply' (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors}
-      (h : i = j ∘ f) (y : IndexValue d j) (x : X) :
+    (h : i = j ∘ f) (y : IndexValue d j) (x : X) :
     (indexValueIso d f h).symm y x = (colorsIndexCast (congrFun h x)).symm (y (f x)) := by
   rfl
 
@@ -324,7 +323,7 @@ def UnmarkedIndexValue (T : Marked d X n) : Type :=
 instance [Fintype X] [DecidableEq X] (T : Marked d X n) : Fintype T.UnmarkedIndexValue :=
   Pi.fintype
 
-instance [Fintype X] [DecidableEq X] (T : Marked d X n) : DecidableEq T.UnmarkedIndexValue :=
+instance [Fintype X] (T : Marked d X n) : DecidableEq T.UnmarkedIndexValue :=
   Fintype.decidablePiFintype
 
 /-- The index values restricted to marked indices. -/
@@ -334,7 +333,7 @@ def MarkedIndexValue (T : Marked d X n) : Type :=
 instance [Fintype X] [DecidableEq X] (T : Marked d X n) : Fintype T.MarkedIndexValue :=
   Pi.fintype
 
-instance [Fintype X] [DecidableEq X] (T : Marked d X n) : DecidableEq T.MarkedIndexValue :=
+instance [Fintype X] (T : Marked d X n) : DecidableEq T.MarkedIndexValue :=
   Fintype.decidablePiFintype
 
 lemma color_eq_elim (T : Marked d X n) :
