@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.Real.Basic
 import HepLean.SpaceTime.LorentzTensor.Real.LorentzAction
+import HepLean.SpaceTime.LorentzTensor.Real.Multiplication
 /-!
 
 # Constructors for real Lorentz tensors
@@ -186,7 +187,7 @@ open Marked
 /-- Contracting the indices of `ofMatUpDown` returns the trace of the matrix. -/
 lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     contr (ofMatUpDown M) (by rfl) = ofReal d M.trace := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
     exact Empty.elim i
   · funext i
@@ -199,7 +200,7 @@ lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 /-- Contracting the indices of `ofMatDownUp` returns the trace of the matrix. -/
 lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     contr (ofMatDownUp M) (by rfl) = ofReal d M.trace := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
     exact Empty.elim i
   · funext i
@@ -214,9 +215,9 @@ lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 /-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
 @[simp]
 lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
+    mapIso d (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
     (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
     exact Empty.elim i
   · funext i
@@ -225,9 +226,9 @@ lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 /-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
 @[simp]
 lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (Equiv.equivEmpty (Empty ⊕ Empty))
+    mapIso d (Equiv.equivEmpty (Empty ⊕ Empty))
     (mul (ofVecDown v₁) (ofVecUp v₂) rfl) = ofReal d (v₁ ⬝ᵥ v₂) := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
     exact Empty.elim i
   · funext i
@@ -235,11 +236,11 @@ lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet ((Equiv.sumEmpty (Empty ⊕ Fin 1) Empty))
+    mapIso d ((Equiv.sumEmpty (Empty ⊕ Fin 1) Empty))
     (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
     fin_cases i
     rfl
   · funext i
@@ -247,11 +248,11 @@ lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) 
 
 lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
-    congrSet (Equiv.sumEmpty (Empty ⊕ Fin 1) Empty)
+    mapIso d (Equiv.sumEmpty (Empty ⊕ Fin 1) Empty)
     (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
-  refine ext' ?_ ?_
+  refine ext ?_ ?_
   · funext i
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, congrSet_apply_color, mul_color, Equiv.symm_symm]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
     fin_cases i
     rfl
   · funext i
@@ -277,7 +278,7 @@ lemma lorentzAction_ofReal (r : ℝ) : Λ • ofReal d r = ofReal d r :=
 @[simp]
 lemma lorentzAction_ofVecUp (v : Fin 1 ⊕ Fin d → ℝ) :
     Λ • ofVecUp v = ofVecUp (Λ *ᵥ v) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   simp only [ofVecUp, IndexValue, Fin.isValue, Fintype.prod_sum_type, Finset.univ_eq_empty,
@@ -289,7 +290,7 @@ lemma lorentzAction_ofVecUp (v : Fin 1 ⊕ Fin d → ℝ) :
   intro i
   simp_all only [Finset.mem_univ, Fin.isValue, Equiv.coe_fn_mk]
   intro j _
-  erw [Finset.prod_singleton]
+  erw [toTensorRepMat_apply, Finset.prod_singleton]
   rfl
 
 /-- The action of the Lorentz group on `ofVecDown v` is
@@ -297,7 +298,7 @@ lemma lorentzAction_ofVecUp (v : Fin 1 ⊕ Fin d → ℝ) :
 @[simp]
 lemma lorentzAction_ofVecDown (v : Fin 1 ⊕ Fin d → ℝ) :
     Λ • ofVecDown v = ofVecDown ((LorentzGroup.transpose Λ⁻¹) *ᵥ v) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   simp only [ofVecDown, IndexValue, Fin.isValue, Fintype.prod_sum_type, Finset.univ_eq_empty,
@@ -309,13 +310,13 @@ lemma lorentzAction_ofVecDown (v : Fin 1 ⊕ Fin d → ℝ) :
   intro i
   simp_all only [Finset.mem_univ, Fin.isValue, Equiv.coe_fn_mk]
   intro j _
-  erw [Finset.prod_singleton]
+  erw [toTensorRepMat_apply, Finset.prod_singleton]
   rfl
 
 @[simp]
 lemma lorentzAction_ofMatUpUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Λ • ofMatUpUp M = ofMatUpUp (Λ.1 * M * (LorentzGroup.transpose Λ).1) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   erw [← Equiv.sum_comp (ofMatUpUpIndexValue M).symm]
@@ -326,7 +327,9 @@ lemma lorentzAction_ofMatUpUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  rw [Fin.prod_univ_two]
+  erw [toTensorRepMat_apply]
+  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
+    Fin.isValue, one_mul, indexValueIso_refl, IndexValue]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
   congr
@@ -334,7 +337,7 @@ lemma lorentzAction_ofMatUpUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
 @[simp]
 lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Λ • ofMatDownDown M = ofMatDownDown ((LorentzGroup.transpose Λ⁻¹).1 * M * (Λ⁻¹).1) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   erw [← Equiv.sum_comp (ofMatDownDownIndexValue M).symm]
@@ -345,7 +348,9 @@ lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  rw [Fin.prod_univ_two]
+  erw [toTensorRepMat_apply]
+  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
+    Fin.isValue, one_mul, lorentzGroupIsGroup_inv, indexValueIso_refl, IndexValue]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
   congr
@@ -353,7 +358,7 @@ lemma lorentzAction_ofMatDownDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d
 @[simp]
 lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Λ • ofMatUpDown M = ofMatUpDown (Λ.1 * M * (Λ⁻¹).1) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   erw [← Equiv.sum_comp (ofMatUpDownIndexValue M).symm]
@@ -364,7 +369,9 @@ lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  rw [Fin.prod_univ_two]
+  erw [toTensorRepMat_apply]
+  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
+    Fin.isValue, one_mul, indexValueIso_refl, IndexValue, lorentzGroupIsGroup_inv]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
   congr
@@ -373,7 +380,7 @@ lemma lorentzAction_ofMatUpDown (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
 lemma lorentzAction_ofMatDownUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
     Λ • ofMatDownUp M =
     ofMatDownUp ((LorentzGroup.transpose Λ⁻¹).1 * M * (LorentzGroup.transpose Λ).1) := by
-  refine ext' rfl ?_
+  refine ext rfl ?_
   funext i
   erw [lorentzAction_smul_coord]
   erw [← Equiv.sum_comp (ofMatDownUpIndexValue M).symm]
@@ -384,7 +391,9 @@ lemma lorentzAction_ofMatDownUp (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) 
   refine Finset.sum_congr rfl (fun x _ => ?_)
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl (fun y _ => ?_)
-  rw [Fin.prod_univ_two]
+  erw [toTensorRepMat_apply]
+  simp only [Fintype.prod_sum_type, Finset.univ_eq_empty, Finset.prod_empty, Fin.prod_univ_two,
+    Fin.isValue, one_mul, lorentzGroupIsGroup_inv, indexValueIso_refl, IndexValue]
   simp only [colorMatrix, Fin.isValue, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [mul_assoc, mul_comm _ (M _ _), ← mul_assoc]
   congr
