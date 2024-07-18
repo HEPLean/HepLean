@@ -74,6 +74,7 @@ import HepLean.SpaceTime.LorentzTensor.Real.Basic
 import HepLean.SpaceTime.LorentzTensor.Real.Constructors
 import HepLean.SpaceTime.LorentzTensor.Real.LorentzAction
 import HepLean.SpaceTime.LorentzTensor.Real.Multiplication
+import HepLean.SpaceTime.LorentzTensor.Real.MultiplicationUnit
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic
 import HepLean.SpaceTime.LorentzVector.NormOne

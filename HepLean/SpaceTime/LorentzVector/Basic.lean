@@ -15,6 +15,7 @@ In this file we define a Lorentz vector (in 4d, this is more often called a 4-ve
 
 One of the most important example of a Lorentz vector is SpaceTime.
 -/
+/-! TODO: Define action of the Lorentz group. -/
 
 /- The number of space dimensions . -/
 variable (d : ℕ)
@@ -37,9 +38,7 @@ instance : TopologicalSpace (LorentzVector d) :=
 
 namespace LorentzVector
 
-variable {d : ℕ}
-
-variable (v : LorentzVector d)
+variable {d : ℕ} (v : LorentzVector d)
 
 /-- The space components. -/
 @[simp]
@@ -103,10 +102,8 @@ def spaceReflectionLin : LorentzVector d →ₗ[ℝ] LorentzVector d where
 @[simp]
 def spaceReflection : LorentzVector d := spaceReflectionLin v
 
-lemma spaceReflection_space : v.spaceReflection.space = - v.space := by
-  rfl
+lemma spaceReflection_space : v.spaceReflection.space = - v.space := rfl
 
-lemma spaceReflection_time : v.spaceReflection.time = v.time := by
-  rfl
+lemma spaceReflection_time : v.spaceReflection.time = v.time := rfl
 
 end LorentzVector

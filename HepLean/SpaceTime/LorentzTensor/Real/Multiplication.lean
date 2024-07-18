@@ -15,7 +15,6 @@ marked index. This is equivalent to contracting two Lorentz tensors.
 We prove various results about this multiplication.
 
 -/
-/-! TODO: Add unit to the multiplication. -/
 /-! TODO: Generalize to contracting any marked index of a marked tensor. -/
 /-! TODO: Set up a good notation for the multiplication. -/
 
@@ -39,6 +38,54 @@ def mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2,
       oneMarkedIndexValue $ colorsIndexDualCast h x))
 
+/-!
+
+## Expressions for multiplication
+
+-/
+/-! TODO: Where appropriate write these expresions in terms of `indexValueDualIso`. -/
+lemma mul_colorsIndex_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+    (h : T.markedColor 0 = τ (S.markedColor 0)) :
+    (mul T S h).coord = fun i => ∑ x,
+    T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
+    oneMarkedIndexValue $ colorsIndexDualCast (color_eq_dual_symm h) x)) *
+    S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, oneMarkedIndexValue x)) := by
+  funext i
+  rw [← Equiv.sum_comp (colorsIndexDualCast h)]
+  apply Finset.sum_congr rfl (fun x _ => ?_)
+  congr
+  rw [← colorsIndexDualCast_symm]
+  exact (Equiv.apply_eq_iff_eq_symm_apply (colorsIndexDualCast h)).mp rfl
+
+lemma mul_indexValue_left {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+    (h : T.markedColor 0 = τ (S.markedColor 0)) :
+    (mul T S h).coord = fun i => ∑ j,
+    T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1, j)) *
+    S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2,
+    (oneMarkedIndexValue $ (colorsIndexDualCast h) $ oneMarkedIndexValue.symm j))) := by
+  funext i
+  rw [← Equiv.sum_comp (oneMarkedIndexValue)]
+  rfl
+
+lemma mul_indexValue_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+    (h : T.markedColor 0 = τ (S.markedColor 0)) :
+    (mul T S h).coord = fun i => ∑ j,
+    T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
+    oneMarkedIndexValue $ (colorsIndexDualCast h).symm $ oneMarkedIndexValue.symm j)) *
+    S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, j)) := by
+  funext i
+  rw [mul_colorsIndex_right]
+  rw [← Equiv.sum_comp (oneMarkedIndexValue)]
+  apply Finset.sum_congr rfl (fun x _ => ?_)
+  congr
+  exact Eq.symm (colorsIndexDualCast_symm h)
+
+/-!
+
+## Properties of multiplication
+
+-/
+
 /-- Multiplication is well behaved with regard to swapping tensors. -/
 lemma mul_symm {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
@@ -49,14 +96,12 @@ lemma mul_symm {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     | inl _ => rfl
     | inr _ => rfl
   · funext i
-    rw [mapIso_apply_coord, mul_coord, mul_coord]
-    erw [← Equiv.sum_comp (colorsIndexDualCast h).symm]
+    rw [mul_colorsIndex_right]
     refine Fintype.sum_congr _ _ (fun x => ?_)
     rw [mul_comm]
-    congr
-    · exact Equiv.apply_symm_apply (colorsIndexDualCast h) x
-    · exact colorsIndexDualCast_symm h
+    rfl
 
+/-- Multiplication commutes with `mapIso`. -/
 lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃ W)
     (g : Y ≃ Z) (h : T.markedColor 0 = τ (S.markedColor 0)) :
     mapIso d (Equiv.sumCongr f g) (mul T S h) = mul (mapIso d (Equiv.sumCongr f (Equiv.refl _)) T)
