@@ -8,6 +8,7 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Logic.Equiv.Fin
 import Mathlib.Tactic.FinCases
+import Mathlib.Logic.Equiv.Fintype
 /-!
 
 # Real Lorentz Tensors
@@ -386,15 +387,159 @@ def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPo
   | 1 => y
 
 /-- An equivalence of types used to turn the first marked index into an unmarked index. -/
-def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃
-    (X ⊕ Fin 1) ⊕ Fin n :=
-  trans (Equiv.sumCongr (Equiv.refl _) $
+def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃ (X ⊕ Fin 1) ⊕ Fin n :=
+  trans (Equiv.sumCongr (Equiv.refl _)
     (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm)))
   (Equiv.sumAssoc _ _ _).symm
 
 /-- Unmark the first marked index of a marked thensor. -/
 def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ Fin 1) n :=
   mapIso d (unmarkFirstSet X n)
+
+@[simps!]
+def notInImage {n m : ℕ} (f : Fin m ↪ Fin (n + m)) :
+    Fin n ≃ {x // x ∈ (Finset.image (⇑f) Finset.univ)ᶜ} :=
+  (Finset.orderIsoOfFin (Finset.image f Finset.univ)ᶜ (by rw [Finset.card_compl,
+    Finset.card_image_of_injective _ (Function.Embedding.injective f)]; simp)).toEquiv
+
+@[simps!]
+def splitMarkedIndices {n m : ℕ} (f : Fin m ↪ Fin (n + m)) : Fin (n + m) ≃ Fin n ⊕ Fin m :=
+  (Equiv.Set.sumCompl (Set.range ⇑f)).symm.trans <|
+  (Equiv.sumComm _ _).trans <|
+  Equiv.sumCongr ((Equiv.subtypeEquivRight (by simp)).trans (notInImage f).symm) <|
+  (Function.Embedding.toEquivRange f).symm
+
+@[simps!]
+def oneEmbed {n : ℕ} (i : Fin n.succ) : Fin 1 ↪ Fin n.succ :=
+  ⟨fun _ => i, fun x y => by fin_cases x; fin_cases y; simp⟩
+
+@[simps!]
+def splitMarkedIndicesOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin n ⊕ Fin 1 :=
+  splitMarkedIndices (oneEmbed i)
+
+lemma splitMarkedIndicesOne_self {n : ℕ} (i : Fin n.succ) :
+    splitMarkedIndicesOne i i = Sum.inr 0 := by
+  rw [splitMarkedIndicesOne, splitMarkedIndices]
+  have h1 : (Equiv.Set.sumCompl (Set.range (oneEmbed i))).symm i =
+      Sum.inl ⟨i, by simp⟩ := by
+    rw  [Equiv.Set.sumCompl_symm_apply_of_mem]
+  simp
+  rw [h1]
+  change Sum.inr ((⇑(oneEmbed i).toEquivRange.symm) (⟨(oneEmbed i) 0, _⟩)) = Sum.inr 0
+  congr
+  rw [Function.Embedding.toEquivRange_symm_apply_self]
+
+lemma notInImage_oneEmbed {n : ℕ} (i : Fin n.succ) :
+    (notInImage (oneEmbed i)).toFun = fun x => ⟨i.succAbove x, by simpa using Fin.succAbove_ne i x⟩ := by
+  symm
+  simp [notInImage]
+  funext x
+  apply Subtype.ext
+  rw [Finset.coe_orderIsoOfFin_apply]
+  symm
+  apply congrFun
+  symm
+  apply Finset.orderEmbOfFin_unique
+  intro x
+  simp
+  exact Fin.succAbove_ne i x
+  exact Fin.strictMono_succAbove i
+
+lemma splitMarkedIndicesOne_not_self {n : ℕ} {i j : Fin n.succ.succ} (hij : i ≠ j) :
+    splitMarkedIndicesOne i j = Sum.inl ((Fin.predAbove 0 i).predAbove j) := by
+  rw [splitMarkedIndicesOne, splitMarkedIndices]
+  have h1 : (Equiv.Set.sumCompl (Set.range (oneEmbed i))).symm j =
+      Sum.inr ⟨j, by simp [hij]⟩ := by
+    rw [Equiv.Set.sumCompl_symm_apply_of_not_mem]
+  simp
+  rw [h1]
+  change Sum.inl ((⇑(notInImage (oneEmbed i)).symm ∘ ⇑(Equiv.subtypeEquivRight _))
+    ⟨j, _⟩) = _
+  apply congrArg
+  simp
+  rw [Equiv.symm_apply_eq]
+  change _ = (notInImage (oneEmbed i)).toFun ((Fin.predAbove 0 i).predAbove j)
+  rw [notInImage_oneEmbed]
+  simp
+  apply Subtype.ext
+  simp
+  simp [Fin.succAbove, Fin.predAbove, Fin.lt_def]
+  split <;> split <;> simp <;> split <;> apply Fin.ext_iff.mpr
+    <;> rename_i _ h2 h3 h4 <;> simp at h1 h2 h3 h4  <;> omega
+
+
+@[simps!]
+def markSelectedIndex (i : Fin n.succ) : Marked d X n.succ ≃ Marked d (X ⊕ Fin n) 1 :=
+  mapIso d ((Equiv.sumCongr (Equiv.refl X) (splitMarkedIndicesOne i)).trans
+    (Equiv.sumAssoc _ _ _).symm)
+
+lemma markSelectedIndex_markedColor (T : Marked d X n.succ) (i : Fin n.succ) :
+    (markSelectedIndex i T).markedColor 0 = T.markedColor i := rfl
+
+/-! TODO: Simplify prove and move. -/
+lemma succAbove_predAbove_predAbove (i p : Fin n.succ.succ) (hip : i ≠ p) :
+     i.succAbove ((Fin.predAbove 0 i).predAbove p) = p := by
+  simp [Fin.succAbove, Fin.predAbove, Fin.lt_def]
+  split <;> split <;> simp   <;> rw [Fin.ext_iff] <;> simp
+  intro h
+  all_goals
+    rename_i h1 h2
+    simp at h1 h2
+    omega
+
+@[simps!]
+def equivDropPoint  (e : Fin n.succ ≃ Fin m.succ) {i : Fin n.succ} {j : Fin m.succ} (he : e i = j) :
+    Fin n ≃ Fin m :=
+  (notInImage (oneEmbed i)).trans <|
+  (Equiv.subtypeEquivOfSubtype' e).trans  <|
+  (Equiv.subtypeEquivRight (fun x => by simp [oneEmbed, Equiv.symm_apply_eq, he])).trans <|
+  (notInImage (oneEmbed j)).symm
+
+
+lemma markSelectedIndex_mapIso (f : X ≃ Y) (e : Fin n.succ.succ ≃ Fin m.succ.succ) (i : Fin n.succ.succ)
+    (j : Fin m.succ.succ) (he : e i = j) (T : Marked d X n.succ.succ) :
+    mapIso d (Equiv.sumCongr (Equiv.sumCongr f (equivDropPoint e he)) (Equiv.refl (Fin 1)))
+    (markSelectedIndex i T) = markSelectedIndex j (mapIso d (Equiv.sumCongr f e) T) := by
+  rw [markSelectedIndex, markSelectedIndex]
+  erw [← Equiv.trans_apply, ← Equiv.trans_apply]
+  rw [mapIso_trans, mapIso_trans]
+  apply congrFun
+  apply congrArg
+  apply congrArg
+  apply Equiv.ext
+  intro x
+  match x with
+  | Sum.inl x => rfl
+  | Sum.inr x =>
+    simp only [Nat.succ_eq_add_one, Equiv.trans_apply, Equiv.coe_refl,
+       Fin.isValue]
+    change  ((f.sumCongr (equivDropPoint e he)).sumCongr (Equiv.refl (Fin 1)))
+      ((Equiv.sumAssoc X (Fin n.succ) (Fin 1)).symm (Sum.inr ((splitMarkedIndicesOne i) x)))  =
+      (Equiv.sumAssoc Y (Fin m.succ) (Fin 1)).symm (Sum.inr ((splitMarkedIndicesOne j) (e x)))
+    by_cases h : x = i
+    subst h
+    rw [he]
+    rw [splitMarkedIndicesOne_self, splitMarkedIndicesOne_self]
+    simp
+    subst he
+    rw [splitMarkedIndicesOne_not_self (fun a => h a.symm), splitMarkedIndicesOne_not_self]
+    simp [equivDropPoint]
+    rw [Equiv.symm_apply_eq]
+    change _ =
+      (notInImage (oneEmbed (e i))).toFun ((Fin.predAbove 0 (e i)).predAbove (e x))
+    rw [notInImage_oneEmbed]
+    simp
+    apply Subtype.ext
+    simp
+    change (e.subtypeEquivOfSubtype'
+      ((notInImage (oneEmbed i)).toFun ((Fin.predAbove 0 i).predAbove x))).1 = _
+    rw [notInImage_oneEmbed]
+    rw [Equiv.subtypeEquivOfSubtype', Equiv.subtypeEquivOfSubtype]
+    simp
+    rw [succAbove_predAbove_predAbove, succAbove_predAbove_predAbove]
+    exact e.apply_eq_iff_eq.mp.mt (fun a => h a.symm)
+    exact fun a => h a.symm
+    exact e.apply_eq_iff_eq.mp.mt (fun a => h a.symm)
 
 end Marked
 

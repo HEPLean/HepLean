@@ -18,6 +18,43 @@ We will derive properties of these constructors.
 -/
 
 namespace RealLorentzTensor
+/-!
+
+# Tensors from and to the reals
+
+An important point that we shall see here is that there is a well defined map
+to the real numbers, i.e. which is invariant under transformations of mapIso.
+
+-/
+
+/-- An equivalence from Real tensors on an empty set to `ℝ`. -/
+@[simps!]
+def toReal (d : ℕ) {X : Type} (h : IsEmpty X) : RealLorentzTensor d X ≃ ℝ where
+  toFun := fun T => T.coord (IsEmpty.elim h)
+  invFun := fun r => {
+    color := fun x => IsEmpty.elim h x,
+    coord := fun _ => r}
+  left_inv T := by
+    refine ext ?_ ?_
+    funext x
+    exact IsEmpty.elim h x
+    funext a
+    change T.coord (IsEmpty.elim h) = _
+    apply congrArg
+    funext x
+    exact IsEmpty.elim h x
+  right_inv x := rfl
+
+/-- The real number obtained from a tensor is invariant under `mapIso`. -/
+lemma toReal_mapIso (d : ℕ) {X Y : Type} (h : IsEmpty X) (f : X ≃ Y) :
+    (mapIso d f).trans (toReal d (Equiv.isEmpty f.symm)) = toReal d h := by
+  apply Equiv.ext
+  intro x
+  simp
+  apply congrArg
+  funext x
+  exact IsEmpty.elim h x
+
 
 /-!
 
@@ -27,11 +64,6 @@ Note that that these definitions are not equivariant with respect to an
 action of the Lorentz group. They are provided for constructive purposes.
 
 -/
-
-/-- A 0-tensor from a real number. -/
-def ofReal (d : ℕ) (r : ℝ) : RealLorentzTensor d Empty where
-  color := fun _ => Colors.up
-  coord := fun _ => r
 
 /-- A marked 1-tensor with a single up index constructed from a vector.
 
@@ -186,14 +218,14 @@ open Marked
 
 /-- Contracting the indices of `ofMatUpDown` returns the trace of the matrix. -/
 lemma contr_ofMatUpDown_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    contr (ofMatUpDown M) (by rfl) = ofReal d M.trace := by
+    contr (ofMatUpDown M) (by rfl) = (toReal d instIsEmptyEmpty).symm M.trace := by
   refine ext ?_ rfl
   · funext i
     exact Empty.elim i
 
 /-- Contracting the indices of `ofMatDownUp` returns the trace of the matrix. -/
 lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :
-    contr (ofMatDownUp M) (by rfl) = ofReal d M.trace := by
+    contr (ofMatDownUp M) (by rfl) = (toReal d instIsEmptyEmpty).symm M.trace := by
   refine ext ?_ rfl
   · funext i
     exact Empty.elim i
@@ -207,20 +239,18 @@ lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 /-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
 @[simp]
 lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    mapIso d (@Equiv.equivEmpty (Empty ⊕ Empty) instIsEmptySum)
-    (mul (ofVecUp v₁) (ofVecDown v₂) (by rfl)) = ofReal d (v₁ ⬝ᵥ v₂) := by
+    mul (ofVecUp v₁) (ofVecDown v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
   refine ext ?_ rfl
   · funext i
-    exact Empty.elim i
+    exact IsEmpty.elim instIsEmptySum i
 
 /-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
 @[simp]
 lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    mapIso d (Equiv.equivEmpty (Empty ⊕ Empty))
-    (mul (ofVecDown v₁) (ofVecUp v₂) rfl) = ofReal d (v₁ ⬝ᵥ v₂) := by
+    mul (ofVecDown v₁) (ofVecUp v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
   refine ext ?_ rfl
   · funext i
-    exact Empty.elim i
+    exact IsEmpty.elim instIsEmptySum i
 
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
@@ -255,8 +285,8 @@ open Matrix
 
 /-- The action of the Lorentz group on `ofReal v` is trivial. -/
 @[simp]
-lemma lorentzAction_ofReal (r : ℝ) : Λ • ofReal d r = ofReal d r :=
-  lorentzAction_on_isEmpty Λ (ofReal d r)
+lemma lorentzAction_toReal (h : IsEmpty X) (r : ℝ) : Λ • (toReal d h).symm r = (toReal d h).symm r :=
+  lorentzAction_on_isEmpty Λ  ((toReal d h).symm r)
 
 /-- The action of the Lorentz group on `ofVecUp v` is by vector multiplication. -/
 @[simp]

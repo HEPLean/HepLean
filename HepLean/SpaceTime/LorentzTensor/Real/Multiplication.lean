@@ -231,4 +231,85 @@ lemma mul_lorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   simp only [← marked_unmarked_action_eq_action]
   rw [mul_markedLorentzAction, mul_unmarkedLorentzAction]
 
+/-!
+
+## Multiplication on selected indices
+
+-/
+
+variable {n m : ℕ}
+
+def mulSSetEquiv : (X ⊕ Fin n) ⊕ Y ⊕ Fin m ≃ (X ⊕ Y) ⊕ (Fin (n + m)) :=
+  (Equiv.sumAssoc _ _ _).trans <|
+  (Equiv.sumCongr (Equiv.refl _ ) (Equiv.sumAssoc _ _ _).symm).trans <|
+  (Equiv.sumCongr (Equiv.refl _ ) (Equiv.sumCongr (Equiv.sumComm _ _) (Equiv.refl _)).symm).trans <|
+  (Equiv.sumAssoc _ _ _).symm.trans <|
+  (Equiv.sumCongr (Equiv.sumAssoc _ _ _) (Equiv.refl _ )).symm.trans <|
+  (Equiv.sumAssoc _ _ _).trans <|
+  Equiv.sumCongr (Equiv.refl _) finSumFinEquiv
+
+@[simps!]
+def mulS (T : Marked d X n.succ) (S : Marked d Y m.succ) (i : Fin n.succ) (j : Fin m.succ)
+    (h : T.markedColor i = τ (S.markedColor j)) : Marked d (X ⊕ Y) (n + m) :=
+  mapIso d mulSSetEquiv (mul (markSelectedIndex i T) (markSelectedIndex j S) h)
+
+
+/-- Given a marked index of `T` and returns a marked index of `mulS T S _ _ _`. -/
+def mulSInl {n m : ℕ} {i j : Fin n.succ.succ} (h : j ≠ i) : Fin (n.succ + m) :=
+  finSumFinEquiv <|
+  Sum.inl <|
+  (notInImage (oneEmbed i)).symm <|
+  ⟨j, by simp [oneEmbed, h]⟩
+
+/-- Given a marked index of `S` and returns a marked index of `mulS S T _ _ _`. -/
+def mulSInr {n m : ℕ} {i j : Fin m.succ.succ} (h : j ≠ i) : Fin (n + m.succ) :=
+  finSumFinEquiv <|
+  Sum.inr <|
+  (notInImage (oneEmbed i)).symm <|
+  ⟨j, by simp [oneEmbed, h]⟩
+
+lemma mulSInl_mulSSetEquiv {n m : ℕ} {i j : Fin n.succ.succ} (h : j ≠ i) :
+    (@mulSSetEquiv X Y n.succ m).symm (Sum.inr (mulSInl h)) =
+    Sum.inl (Sum.inr ((notInImage (oneEmbed i)).symm  ⟨j, by simp [oneEmbed, h]⟩)) := by
+  rw [Equiv.symm_apply_eq]
+  rfl
+
+lemma mulSInr_mulSSetEquiv {n m : ℕ} {i j : Fin m.succ.succ} (h : j ≠ i) :
+    (@mulSSetEquiv X Y n m.succ).symm (Sum.inr (mulSInr h)) =
+    Sum.inr (Sum.inr ((notInImage (oneEmbed i)).symm  ⟨j, by simp [oneEmbed, h]⟩)) := by
+  rw [Equiv.symm_apply_eq]
+  rfl
+/-
+@[simp]
+lemma mulSInl_color {n m : ℕ}
+    (T : Marked d X n.succ.succ) (S : Marked d Y m.succ) (a b : Fin n.succ.succ) (c : Fin m.succ)
+    (h : T.markedColor a = τ (S.markedColor c)) (hab : b ≠ a):
+    (mulS T S a c h).markedColor (mulSInl hab) = T.markedColor b := by
+  rw [markedColor]
+  simp [mulS_color]
+  rw [mulSInl_mulSSetEquiv]
+  simp  [unmarkedColor, markSelectedIndex, Nat.succ_eq_add_one, Fintype.univ_ofSubsingleton,
+    Fin.zero_eta, Fin.isValue, notInImage, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv,
+    Sum.elim_inl, Function.comp_apply, mapIso_apply_color, Equiv.symm_trans_apply,
+    Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.symm_symm, Equiv.sumAssoc_apply_inl_inr,
+    Equiv.sumCongr_apply, Equiv.coe_refl, Sum.map_inr, splitMarkedIndicesOne_symm_apply,
+    Sum.map_inl, OrderIso.symm_symm, OrderIso.apply_symm_apply, Equiv.coe_fn_symm_mk, Sum.swap_inl,
+    Equiv.Set.sumCompl_apply_inr, markedColor]
+
+@[simp]
+lemma mulSInr_color {n m : ℕ}
+    (T : Marked d X n.succ) (S : Marked d Y m.succ.succ) (c : Fin n.succ) (a b : Fin m.succ.succ)
+    (h : T.markedColor c = τ (S.markedColor a)) (hab : b ≠ a) :
+    (mulS T S c a h).markedColor (mulSInr hab) = S.markedColor b := by
+  rw [markedColor]
+  simp [mulS_color]
+  rw [mulSInr_mulSSetEquiv]
+  simp only [unmarkedColor, markSelectedIndex, Nat.succ_eq_add_one, Fintype.univ_ofSubsingleton,
+    Fin.zero_eta, Fin.isValue, notInImage, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv,
+    Sum.elim_inr, Function.comp_apply, mapIso_apply_color, Equiv.symm_trans_apply,
+    Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.symm_symm, Equiv.sumAssoc_apply_inl_inr,
+    Equiv.sumCongr_apply, Equiv.coe_refl, Sum.map_inr, splitMarkedIndicesOne_symm_apply,
+    Sum.map_inl, OrderIso.symm_symm, OrderIso.apply_symm_apply, Equiv.coe_fn_symm_mk, Sum.swap_inl,
+    Equiv.Set.sumCompl_apply_inr, markedColor]
+-/
 end RealLorentzTensor
