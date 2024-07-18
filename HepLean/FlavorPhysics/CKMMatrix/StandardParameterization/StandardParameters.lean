@@ -250,7 +250,7 @@ lemma C₂₃_of_Vub_neq_one {V : Quotient CKMMatrixSetoid} (ha : VubAbs V ≠ 1
   simp only [VcbAbs, Fin.isValue, VtbAbs, add_sub_cancel_left]
   rw [Real.sqrt_div (sq_nonneg (VAbs 2 2 V))]
   rw [Real.sqrt_sq (VAbs_ge_zero 2 2 V)]
-  rw [VcbAbs_sq_add_VtbAbs_sq, ← VudAbs_sq_add_VusAbs_sq ]
+  rw [VcbAbs_sq_add_VtbAbs_sq, ← VudAbs_sq_add_VusAbs_sq]
   exact VAbsub_neq_zero_Vud_Vus_neq_zero ha
   exact (Left.add_nonneg (sq_nonneg (VAbs 0 0 V)) (sq_nonneg (VAbs 0 1 V)))
 
@@ -506,7 +506,7 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
     simp [VAbs, hb]
   have h1 : ofReal (√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) *
     ↑√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2)) = ofReal (VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) := by
-    rw [Real.mul_self_sqrt ]
+    rw [Real.mul_self_sqrt]
     apply add_nonneg (sq_nonneg _) (sq_nonneg _)
   simp at h1
   have hx := Vabs_sq_add_neq_zero hb

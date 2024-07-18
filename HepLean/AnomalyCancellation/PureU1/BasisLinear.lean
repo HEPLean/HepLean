@@ -60,7 +60,7 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
     simp at i
     match i with
     | 0 =>
-    simp only [ Fin.isValue, PureU1_linearACCs, accGrav,
+    simp only [Fin.isValue, PureU1_linearACCs, accGrav,
       LinearMap.coe_mk, AddHom.coe_mk, Fin.coe_eq_castSucc]
     rw [Fin.sum_univ_castSucc]
     rw [Finset.sum_eq_single j]

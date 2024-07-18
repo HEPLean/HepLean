@@ -84,7 +84,9 @@ def hepLeanLintFile (path : FilePath) : IO Bool := do
     (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
     #[doubleEmptyLineLinter, doubleSpaceLinter, substringLinter ".-/", substringLinter " )",
     substringLinter "( ", substringLinter "=by", substringLinter "  def ",
-    substringLinter "/-- We "]
+    substringLinter "/-- We ", substringLinter "[ ", substringLinter " ]", substringLinter " ,"
+    , substringLinter "by exact ",
+     substringLinter "⟨ ", substringLinter " ⟩"]
   let errors := allOutput.flatten
   printErrors errors
   return errors.size > 0

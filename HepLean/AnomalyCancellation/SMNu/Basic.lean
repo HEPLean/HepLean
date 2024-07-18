@@ -164,7 +164,7 @@ def accSU3 : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [ Pi.add_apply, mul_add]
+    simp [Pi.add_apply, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by

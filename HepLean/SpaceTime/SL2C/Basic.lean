@@ -102,7 +102,7 @@ lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) 
 /-- Given an element `M ∈ SL(2, ℂ)` the corresponding element of the Lorentz group. -/
 @[simps!]
 def toLorentzGroupElem (M : SL(2, ℂ)) : LorentzGroup 3 :=
-  ⟨LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (repLorentzVector M) ,
+  ⟨LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (repLorentzVector M),
    by simp [repLorentzVector, iff_det_selfAdjoint]⟩
 
 /-- The group homomorphism from ` SL(2, ℂ)` to the Lorentz group `𝓛`. -/

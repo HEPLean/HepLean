@@ -160,7 +160,7 @@ variable {v w : NormOneLorentzVector d}
 lemma metric_reflect_mem_mem (h : v ∈ FuturePointing d) (hw : w ∈ FuturePointing d) :
     0 ≤ ⟪v.1, w.1.spaceReflection⟫ₘ := by
   apply le_trans (time_abs_sub_space_norm v w)
-  rw [abs_time ⟨v, h⟩, abs_time ⟨w, hw⟩ , sub_eq_add_neg, right_spaceReflection]
+  rw [abs_time ⟨v, h⟩, abs_time ⟨w, hw⟩, sub_eq_add_neg, right_spaceReflection]
   apply (add_le_add_iff_left _).mpr
   rw [neg_le]
   apply le_trans (neg_le_abs _ : _ ≤ |⟪(v.1).space, (w.1).space⟫_ℝ|) ?_
@@ -223,7 +223,7 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
       apply Finset.sum_congr rfl
       intro i _
       ring
-      exact Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _) ⟩,
+      exact Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _)⟩,
     by
       simp only [space, Function.comp_apply, mem_iff_time_nonneg, time, Real.sqrt_pos]
       exact Real.sqrt_nonneg _⟩

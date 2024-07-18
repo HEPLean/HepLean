@@ -116,7 +116,7 @@ lemma cubic_zero_E'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
 def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
   toFun S := S.asLinear
   invFun S := ⟨SMCharges.Q S.val (0 : Fin 1), (SMCharges.U S.val (0 : Fin 1) -
-     SMCharges.D S.val (0 : Fin 1))/2 ,
+     SMCharges.D S.val (0 : Fin 1))/2,
      SMCharges.E S.val (0 : Fin 1)⟩
   left_inv S := by
     apply linearParameters.ext

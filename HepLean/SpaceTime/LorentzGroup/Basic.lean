@@ -224,7 +224,7 @@ lemma toGL_embedding : Embedding (@toGL d).toFun where
   induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) ?_).symm
     intro s
-    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s ]
+    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s]
     rw [isOpen_induced_iff, isOpen_induced_iff]
     exact exists_exists_and_eq_and
 
