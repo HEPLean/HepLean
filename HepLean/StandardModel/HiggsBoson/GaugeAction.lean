@@ -94,11 +94,11 @@ lemma rep_apply (g : GaugeGroup) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2
 /-- Given a Higgs vector, a rotation matrix which puts the first component of the
 vector to zero, and the second component to a real -/
 def rotateMatrix (φ : HiggsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ![![φ 1 /‖φ‖ , - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖ , conj (φ 1) / ‖φ‖] ]
+  ![![φ 1 /‖φ‖, - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖, conj (φ 1) / ‖φ‖]]
 
 lemma rotateMatrix_star (φ : HiggsVec) :
     star φ.rotateMatrix =
-    ![![conj (φ 1) /‖φ‖ , φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖ , φ 1 / ‖φ‖] ] := by
+    ![![conj (φ 1) /‖φ‖, φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖, φ 1 / ‖φ‖]] := by
   simp_rw [star, rotateMatrix, conjTranspose]
   ext i j
   fin_cases i <;> fin_cases j <;> simp [conj_ofReal]

@@ -80,7 +80,7 @@ lemma anomalyFree_param {S : (PureU1 (2 * n.succ)).Sols}
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠ 0`.
 In this case our parameterization above will be able to recover this point. -/
 def GenericCase (S : (PureU1 (2 * n.succ)).Sols) : Prop :=
-  ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) ,
+  ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f),
   accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0
 
 lemma genericCase_exists (S : (PureU1 (2 * n.succ)).Sols)
@@ -95,7 +95,7 @@ lemma genericCase_exists (S : (PureU1 (2 * n.succ)).Sols)
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) = 0`. -/
 def SpecialCase (S : (PureU1 (2 * n.succ)).Sols) : Prop :=
-  ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) ,
+  ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f),
   accCubeTriLinSymm (P g) (P g) (P! f) = 0
 
 lemma specialCase_exists (S : (PureU1 (2 * n.succ)).Sols)

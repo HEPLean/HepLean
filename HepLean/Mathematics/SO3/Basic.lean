@@ -121,7 +121,7 @@ lemma toGL_embedding : Embedding toGL.toFun where
   induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) ?_).symm
     intro s
-    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s ]
+    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s]
     rw [isOpen_induced_iff, isOpen_induced_iff]
     apply Iff.intro ?_ ?_
     · intro h
@@ -208,7 +208,7 @@ lemma exists_stationary_vec (A : SO(3)) :
   rw [inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
   field_simp
   ring
-  rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1 ]
+  rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1]
   simp
 
 lemma exists_basis_preserved (A : SO(3)) :

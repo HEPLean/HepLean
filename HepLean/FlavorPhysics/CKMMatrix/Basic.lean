@@ -67,7 +67,7 @@ lemma phaseShift_coe_matrix (a b c : ℝ) : ↑(phaseShift a b c) = phaseShiftMa
 
 /-- The equivalence relation between CKM matrices. -/
 def PhaseShiftRelation (U V : unitaryGroup (Fin 3) ℂ) : Prop :=
-  ∃ a b c e f g , U = phaseShift a b c * V * phaseShift e f g
+  ∃ a b c e f g, U = phaseShift a b c * V * phaseShift e f g
 
 lemma phaseShiftRelation_refl (U : unitaryGroup (Fin 3) ℂ) : PhaseShiftRelation U U := by
   use 0, 0, 0, 0, 0, 0

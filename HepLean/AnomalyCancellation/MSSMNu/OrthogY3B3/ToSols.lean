@@ -105,7 +105,7 @@ lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : InQuadSolProp T ↔ 
   intro h
   rw [quadCoeff] at h
   rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
     not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
   apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
   simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
@@ -124,7 +124,7 @@ lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
   simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
   intro h
   rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [Fin.isValue, Fin.reduceFinMk , mul_eq_zero,
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero,
     OfNat.ofNat_ne_zero, or_self, false_or] at h
   rw [h.2.1, h.2.2]
   simp
@@ -159,7 +159,7 @@ lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
   intro h
   rw [cubicCoeff] at h
   rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [ Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
     not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
   apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
   simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
@@ -232,7 +232,7 @@ lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
 
 /-- Given an `R` perpendicular to `Y₃` and `B₃`, an element of `Sols`. This map is
 not surjective. -/
-def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, _ , _) =>
+def toSolNS : MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a, _, _) =>
   a • AnomalyFreeMk'' (toSolNSQuad R) (toSolNSQuad_cube R)
 
 /-- A map from `Sols` to `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ` which on elements of
@@ -268,7 +268,7 @@ def inLineEqToSol : InLineEq × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, c�
 
 /-- On elements of `inLineEqSol` a right-inverse to `inLineEqSol`. -/
 def inLineEqProj (T : InLineEqSol) : InLineEq × ℚ × ℚ × ℚ :=
-  (⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
+  (⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1⟩,
   (quadCoeff T.val)⁻¹ * quadBiLin B₃.val T.val.val,
   (quadCoeff T.val)⁻¹ * (- quadBiLin Y₃.val T.val.val),
   (quadCoeff T.val)⁻¹ * (
@@ -319,7 +319,7 @@ lemma inQuadToSol_smul (R : InQuad) (c₁ c₂ c₃ d : ℚ) :
 
 /-- On elements of `inQuadSol` a right-inverse to `inQuadToSol`. -/
 def inQuadProj (T : InQuadSol) : InQuad × ℚ × ℚ × ℚ :=
-  (⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
+  (⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1⟩,
     (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1⟩,
   (cubicCoeff T.val)⁻¹ * (cubeTriLin T.val.val T.val.val B₃.val),
   (cubicCoeff T.val)⁻¹ * (- cubeTriLin T.val.val T.val.val Y₃.val),
@@ -368,7 +368,7 @@ lemma inQuadCubeToSol_smul (R : InQuadCube) (c₁ c₂ c₃ d : ℚ) :
 
 /-- On elements of `inQuadCubeSol` a right-inverse to `inQuadCubeToSol`. -/
 def inQuadCubeProj (T : InQuadCubeSol) : InQuadCube × ℚ × ℚ × ℚ :=
-  (⟨⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1 ⟩,
+  (⟨⟨⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1⟩,
     (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1⟩,
     (inCubeSolProp_iff_proj_inCubeProp T.val).mp T.prop.2.2⟩,
   (dot Y₃.val B₃.val)⁻¹ * (dot Y₃.val T.val.val - dot B₃.val T.val.val),

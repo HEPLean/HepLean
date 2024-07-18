@@ -658,7 +658,7 @@ noncomputable def basisaAsBasis :
   basisOfLinearIndependentOfCardEqFinrank (@basisa_linear_independent n) basisa_card
 
 lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
-    ∃ (g f : Fin n.succ → ℚ) , S.val = P g + P! f := by
+    ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f := by
   have h := (mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
   obtain ⟨f, hf⟩ := h
   simp [basisaAsBasis] at hf

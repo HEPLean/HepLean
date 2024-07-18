@@ -37,11 +37,11 @@ open VectorLikeOddPlane
 /-- A property on `LinSols`, satisfied if every point on the line between the two planes
 in the basis through that point is in the cubic. -/
 def LineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
-  ∀ (g f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ) ,
+  ∀ (g f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ),
   accCube (2 * n + 1) (a • P g + b • P! f) = 0
 
 lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
-    ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) (a b : ℚ) ,
+    ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) (a b : ℚ),
     3 * a * b * (a * accCubeTriLinSymm (P g) (P g) (P! f)
     + b * accCubeTriLinSymm (P! f) (P! f) (P g)) = 0 := by
   intro g f hS a b
@@ -85,7 +85,7 @@ lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
 
 lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) :
-    ∀ (j : Fin n.succ) (g f : Fin n.succ → ℚ) (_ : S.val = Pa g f) ,
+    ∀ (j : Fin n.succ) (g f : Fin n.succ → ℚ) (_ : S.val = Pa g f),
       (S.val (δ!₂ j) - S.val (δ!₁ j))
       * accCubeTriLinSymm (P g) (P g) (basis!AsCharges j) = 0 := by
   intro j g f h

@@ -47,7 +47,7 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one, head_cons, star_sub,
     star_neg, ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const]
   simp [conj_ofReal]
-  rw [exp_neg ]
+  rw [exp_neg]
   fin_cases i <;> simp
   · ring_nf
     field_simp
@@ -182,7 +182,7 @@ lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ 
     (h2 : 0 ≤ Real.cos θ₁₃) (h3 : 0 ≤ Real.sin θ₂₃) (h4 : 0 ≤ Real.cos θ₁₂) :
     mulExpδ₁₃ ⟦standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃⟧ =
     sin θ₁₂ * cos θ₁₃ ^ 2 * sin θ₂₃ * sin θ₁₃ * cos θ₁₂ * cos θ₂₃ * cexp (I * δ₁₃) := by
-  rw [mulExpδ₁₃, VusVubVcdSq_eq _ _ _ _ h1 h2 h3 h4 ]
+  rw [mulExpδ₁₃, VusVubVcdSq_eq _ _ _ _ h1 h2 h3 h4]
   simp only [jarlskogℂ, standParam, standParamAsMatrix, neg_mul,
     Quotient.lift_mk, jarlskogℂCKM, Fin.isValue, cons_val', cons_val_one, head_cons,
     empty_val', cons_val_fin_one, cons_val_zero, cons_val_two, tail_cons, _root_.map_mul, ←

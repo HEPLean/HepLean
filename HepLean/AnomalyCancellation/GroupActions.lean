@@ -44,8 +44,7 @@ def linSolMap {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group) :
     χ.LinSols →ₗ[ℚ] χ.LinSols where
   toFun S := ⟨G.rep g S.val, by
    intro i
-   rw [G.linearInvariant, S.linearSol]
-   ⟩
+   rw [G.linearInvariant, S.linearSol]⟩
   map_add' S T := by
     apply ACCSystemLinear.LinSols.ext
     exact (G.rep g).map_add' _ _
@@ -85,8 +84,7 @@ instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
   smul f S := ⟨G.linSolRep f S.1, by
    intro i
    simp only [linSolRep_apply_apply_val]
-   rw [G.quadInvariant, S.quadSol]
-  ⟩
+   rw [G.quadInvariant, S.quadSol]⟩
   mul_smul f1 f2 S := by
     apply ACCSystemQuad.QuadSols.ext
     change (G.rep.toFun (f1 * f2)) S.val = _

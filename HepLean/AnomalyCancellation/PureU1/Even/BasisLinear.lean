@@ -702,7 +702,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
     (pairSwap (δ!₁ j) (δ!₂ j))) S = S') (g : Fin n.succ → ℚ) (f : Fin n → ℚ)
      (h : S.val = P g + P! f):
     ∃
-    (g' : Fin n.succ → ℚ) (f' : Fin n → ℚ) ,
+    (g' : Fin n.succ → ℚ) (f' : Fin n → ℚ),
      S'.val = P g' + P! f' ∧ P! f' = P! f +
     (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∧ g' = g := by
   let X := P! f + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j
