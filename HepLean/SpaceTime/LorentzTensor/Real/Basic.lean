@@ -182,6 +182,18 @@ lemma indexValueIso_refl (d : ℕ) (i : X → Colors) :
 
 /-!
 
+## Dual isomorphism for index values
+
+-/
+
+/-- The isomorphism between the index values of a color map and its dual. -/
+@[simps!]
+def indexValueDualIso (d : ℕ) {i j : X → Colors} (h : i = τ ∘ j) :
+    IndexValue d i ≃ IndexValue d j :=
+  (Equiv.piCongrRight (fun μ => colorsIndexDualCast (congrFun h μ)))
+
+/-!
+
 ## Extensionality
 
 -/

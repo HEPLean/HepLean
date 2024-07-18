@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.SpaceTime.MinkowskiMetric
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 /-!
-# Spacetime as a self-adjoint matrix
+# Lorentz vector as a self-adjoint matrix
 
 There is a linear equivalence between the vector space of space-time points
 and the vector space of 2×2-complex self-adjoint matrices.
