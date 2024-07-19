@@ -147,7 +147,7 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
     calc
       det (A.1 - 1) = det (A.1 - A.1 * A.1ᵀ) := by simp [A.2.2]
       _ = det A.1 * det (1 - A.1ᵀ) := by rw [← det_mul, mul_sub, mul_one]
-      _ = det (1 - A.1ᵀ):= by simp [A.2.1]
+      _ = det (1 - A.1ᵀ) := by simp [A.2.1]
       _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
       _ = det (1 - A.1) := by simp
       _ = det (- (A.1 - 1)) := by simp

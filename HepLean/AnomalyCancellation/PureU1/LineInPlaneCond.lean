@@ -89,7 +89,7 @@ lemma lineInPlaneCond_eq_last {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
     intro a
     linarith
   have ht : S.val ((Fin.last n.succ.succ.succ).succ) =
-   - S.val ((Fin.last n.succ.succ.succ).castSucc) := by
+    - S.val ((Fin.last n.succ.succ.succ).castSucc) := by
     rw [← mul_right_inj' hx]
     simp [Nat.succ_eq_add_one]
     simp at h

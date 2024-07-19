@@ -213,7 +213,7 @@ lemma familyUniversal_cubeTriLin (S : (SMνCharges 1).Charges) (T R : (SMνCharg
 lemma familyUniversal_cubeTriLin' (S T : (SMνCharges 1).Charges) (R : (SMνCharges n).Charges) :
     cubeTriLin (familyUniversal n S) (familyUniversal n T) R =
       6 * S (0 : Fin 6) * T (0 : Fin 6) * ∑ i, Q R i +
-       3 * S (1 : Fin 6) * T (1 : Fin 6) * ∑ i, U R i
+      3 * S (1 : Fin 6) * T (1 : Fin 6) * ∑ i, U R i
       + 3 * S (2 : Fin 6) * T (2 : Fin 6) * ∑ i, D R i +
       2 * S (3 : Fin 6) * T (3 : Fin 6) * ∑ i, L R i +
       S (4 : Fin 6) * T (4 : Fin 6) * ∑ i, E R i + S (5 : Fin 6) * T (5 : Fin 6) * ∑ i, N R i := by

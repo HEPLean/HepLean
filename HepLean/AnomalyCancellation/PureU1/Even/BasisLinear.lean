@@ -550,7 +550,7 @@ def Pa' (f : (Fin n.succ) ⊕ (Fin n) → ℚ) : (PureU1 (2 * n.succ)).LinSols :
     ∑ i, f i • basisa i
 
 lemma Pa'_P'_P!' (f : (Fin n.succ) ⊕ (Fin n) → ℚ) :
-    Pa' f = P' (f ∘ Sum.inl) + P!' (f ∘ Sum.inr):= by
+    Pa' f = P' (f ∘ Sum.inl) + P!' (f ∘ Sum.inr) := by
   exact Fintype.sum_sum_type _
 
 lemma P'_val (f : Fin n.succ → ℚ) : (P' f).val = P f := by
@@ -617,7 +617,7 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n) → ℚ) : Pa' f = Pa' f' ↔ f = 
     simp
   have h2 : ∀ i, (f i + (- f' i)) = 0 := by
     exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent n)
-     (fun i => f i + -f' i) h1
+      (fun i => f i + -f' i) h1
   have h2i := h2 i
   linarith
   intro h
@@ -685,9 +685,9 @@ lemma span_basis (S : (PureU1 (2 * n.succ)).LinSols) :
   rfl
 
 lemma P!_in_span (f : Fin n → ℚ) : P! f ∈ Submodule.span ℚ (Set.range basis!AsCharges) := by
-     rw [(mem_span_range_iff_exists_fun ℚ)]
-     use f
-     rfl
+  rw [(mem_span_range_iff_exists_fun ℚ)]
+  use f
+  rfl
 
 lemma smul_basis!AsCharges_in_span (S : (PureU1 (2 * n.succ)).LinSols) (j : Fin n) :
     (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∈
@@ -700,11 +700,9 @@ lemma smul_basis!AsCharges_in_span (S : (PureU1 (2 * n.succ)).LinSols) (j : Fin 
 lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n.succ)).linSolRep
     (pairSwap (δ!₁ j) (δ!₂ j))) S = S') (g : Fin n.succ → ℚ) (f : Fin n → ℚ)
-     (h : S.val = P g + P! f):
-    ∃
-    (g' : Fin n.succ → ℚ) (f' : Fin n → ℚ),
-     S'.val = P g' + P! f' ∧ P! f' = P! f +
-    (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∧ g' = g := by
+    (h : S.val = P g + P! f) : ∃ (g' : Fin n.succ → ℚ) (f' : Fin n → ℚ),
+      S'.val = P g' + P! f' ∧ P! f' = P! f +
+      (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∧ g' = g := by
   let X := P! f + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j
   have hX : X ∈ Submodule.span ℚ (Set.range (basis!AsCharges)) := by
     apply Submodule.add_mem
@@ -723,10 +721,8 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
   exact hS
 
 lemma vectorLikeEven_in_span (S : (PureU1 (2 * n.succ)).LinSols)
-    (hS : VectorLikeEven S.val) :
-   ∃ (M : (FamilyPermutations (2 * n.succ)).group),
-    (FamilyPermutations (2 * n.succ)).linSolRep M S
-    ∈ Submodule.span ℚ (Set.range basis) := by
+    (hS : VectorLikeEven S.val) : ∃ (M : (FamilyPermutations (2 * n.succ)).group),
+      (FamilyPermutations (2 * n.succ)).linSolRep M S ∈ Submodule.span ℚ (Set.range basis) := by
   use (Tuple.sort S.val).symm
   change sortAFL S ∈ Submodule.span ℚ (Set.range basis)
   rw [mem_span_range_iff_exists_fun ℚ]

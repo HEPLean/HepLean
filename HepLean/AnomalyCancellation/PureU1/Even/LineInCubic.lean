@@ -49,23 +49,23 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n.succ)).LinSols} (h : LineInCubic S)
   change accCubeTriLinSymm.toCubic (a • P g + b • P! f) = 0 at h1
   simp only [TriLinearSymm.toCubic_add] at h1
   simp only [HomogeneousCubic.map_smul,
-   accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂, accCubeTriLinSymm.map_smul₃] at h1
+    accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂, accCubeTriLinSymm.map_smul₃] at h1
   erw [P_accCube, P!_accCube] at h1
   rw [← h1]
   ring
 
 /--
- This lemma states that for a given `S` of type `(PureU1 (2 * n.succ)).AnomalyFreeLinear` and
- a proof `h` that the line through `S` lies on a cubic curve,
- for any functions `g : Fin n.succ → ℚ` and `f : Fin n → ℚ`, if `S.val = P g + P! f`,
- then `accCubeTriLinSymm.toFun (P g, P g, P! f) = 0`.
+This lemma states that for a given `S` of type `(PureU1 (2 * n.succ)).AnomalyFreeLinear` and
+a proof `h` that the line through `S` lies on a cubic curve,
+for any functions `g : Fin n.succ → ℚ` and `f : Fin n → ℚ`, if `S.val = P g + P! f`,
+then `accCubeTriLinSymm.toFun (P g, P g, P! f) = 0`.
 -/
 lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n.succ)).LinSols} (h : LineInCubic S) :
     ∀ (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f),
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
-   (lineInCubic_expand h g f hS 1 2) / 6
+    (lineInCubic_expand h g f hS 1 2) / 6
 
 /-- A `LinSol` satisfies `LineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n.succ)).LinSols) : Prop :=

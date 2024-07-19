@@ -55,8 +55,7 @@ lemma innerProd_left_zero (φ : HiggsField) : ⟪0, φ⟫_H = 0 := by
 lemma innerProd_right_zero (φ : HiggsField) : ⟪φ, 0⟫_H = 0 := by
   funext x
   simp [innerProd]
-example (x : ℝ): RCLike.ofReal x = ofReal' x := by
-  rfl
+
 lemma innerProd_expand (φ1 φ2 : HiggsField) :
     ⟪φ1, φ2⟫_H = fun x => equivRealProdCLM.symm (((φ1 x 0).re * (φ2 x 0).re
     + (φ1 x 1).re * (φ2 x 1).re+ (φ1 x 0).im * (φ2 x 0).im + (φ1 x 1).im * (φ2 x 1).im),

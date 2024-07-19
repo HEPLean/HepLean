@@ -96,7 +96,7 @@ lemma is_zero (h0 : S (0 : Fin n.succ) = 0) : S = 0 := by
 
 /-- A boundary of `S : (PureU1 n.succ).charges` (assumed sorted, constAbs and non-zero)
 is defined as a element of `k ∈ Fin n` such that `S k.castSucc` and `S k.succ` are different signs.
- -/
+-/
 @[simp]
 def Boundary (S : (PureU1 n.succ).Charges) (k : Fin n) : Prop := S k.castSucc < 0 ∧ 0 < S k.succ
 

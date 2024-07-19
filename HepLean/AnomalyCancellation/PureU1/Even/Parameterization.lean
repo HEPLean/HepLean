@@ -49,15 +49,15 @@ lemma parameterizationAsLinear_val (g : Fin n.succ → ℚ) (f : Fin n → ℚ) 
   change a • (_ • (P' g).val + _ • (P!' f).val) = _
   rw [P'_val, P!'_val]
 
-lemma parameterizationCharge_cube (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (a : ℚ):
+lemma parameterizationCharge_cube (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (a : ℚ) :
     accCube (2* n.succ) (parameterizationAsLinear g f a).val = 0 := by
   change accCubeTriLinSymm.toCubic _ = 0
   rw [parameterizationAsLinear_val, HomogeneousCubic.map_smul,
     TriLinearSymm.toCubic_add, HomogeneousCubic.map_smul, HomogeneousCubic.map_smul]
   erw [P_accCube, P!_accCube]
   rw [accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-   accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-   accCubeTriLinSymm.map_smul₃]
+    accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
+    accCubeTriLinSymm.map_smul₃]
   ring
 
 /-- The construction of a `Sol` from a `Fin n.succ → ℚ`, a `Fin n → ℚ` and a `ℚ`. -/
@@ -112,7 +112,7 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ)).Sols) :
     GenericCase S ∨ SpecialCase S := by
   obtain ⟨g, f, h⟩ := span_basis S.1.1
   have h1 : accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0 ∨
-     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
+    accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
     exact ne_or_eq _ _
   cases h1 <;> rename_i h1
   exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
@@ -142,8 +142,8 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
   erw [P_accCube, P!_accCube]
   have h := h g f hS
   rw [accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-   accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-   accCubeTriLinSymm.map_smul₃]
+    accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
+    accCubeTriLinSymm.map_smul₃]
   rw [h]
   rw [anomalyFree_param _ _ hS] at h
   simp at h

@@ -34,7 +34,7 @@ we can define a representation a representation of `SL(2, ℂ)` on spacetime.
 -/
 
 /-- Given an element `M ∈ SL(2, ℂ)` the linear map from `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` to
- itself defined by `A ↦ M * A * Mᴴ`. -/
+  itself defined by `A ↦ M * A * Mᴴ`. -/
 @[simps!]
 def toLinearMapSelfAdjointMatrix (M : SL(2, ℂ)) :
     selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) →ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
@@ -51,7 +51,7 @@ def toLinearMapSelfAdjointMatrix (M : SL(2, ℂ)) :
       RingHom.id_apply]
 
 /-- The representation of `SL(2, ℂ)` on `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` given by
-   `M A ↦ M * A * Mᴴ`. -/
+  `M A ↦ M * A * Mᴴ`. -/
 @[simps!]
 def repSelfAdjointMatrix : Representation ℝ SL(2, ℂ) $ selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
   toFun := toLinearMapSelfAdjointMatrix
@@ -103,7 +103,7 @@ lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) 
 @[simps!]
 def toLorentzGroupElem (M : SL(2, ℂ)) : LorentzGroup 3 :=
   ⟨LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (repLorentzVector M),
-   by simp [repLorentzVector, iff_det_selfAdjoint]⟩
+    by simp [repLorentzVector, iff_det_selfAdjoint]⟩
 
 /-- The group homomorphism from ` SL(2, ℂ)` to the Lorentz group `𝓛`. -/
 @[simps!]

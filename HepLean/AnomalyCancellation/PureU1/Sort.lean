@@ -24,7 +24,7 @@ variable {n : ℕ}
 /-- A charge is sorted if for all `i ≤ j`, then `S i ≤ S j`. -/
 @[simp]
 def Sorted {n : ℕ} (S : (PureU1 n).Charges) : Prop :=
-   ∀ i j (_ : i ≤ j), S i ≤ S j
+  ∀ i j (_ : i ≤ j), S i ≤ S j
 
 /-- Given a charge assignment `S`, the corresponding sorted charge assignment. -/
 @[simp]

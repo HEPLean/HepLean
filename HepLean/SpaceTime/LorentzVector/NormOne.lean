@@ -277,9 +277,9 @@ lemma metric_continuous (u : LorentzVector d) :
       (continuous_apply (Sum.inl 0))
       (Continuous.comp' continuous_subtype_val continuous_subtype_val)
   · refine Continuous.comp' continuous_neg $ Continuous.inner
-     (Continuous.comp' (Pi.continuous_precomp Sum.inr) continuous_const)
-     (Continuous.comp' (Pi.continuous_precomp Sum.inr) (Continuous.comp'
-      continuous_subtype_val continuous_subtype_val))
+      (Continuous.comp' (Pi.continuous_precomp Sum.inr) continuous_const)
+      (Continuous.comp' (Pi.continuous_precomp Sum.inr) (Continuous.comp'
+        continuous_subtype_val continuous_subtype_val))
 
 end FuturePointing
 

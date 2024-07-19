@@ -260,7 +260,7 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
 
 lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
     quadBiLin S T = ∑ i, Q S i * Q T i - 2 * ∑ i, U S i * U T i +
-       ∑ i, D S i * D T i - ∑ i, L S i * L T i + ∑ i, E S i * E T i := by
+        ∑ i, D S i * D T i - ∑ i, L S i * L T i + ∑ i, E S i * E T i := by
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
   simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]

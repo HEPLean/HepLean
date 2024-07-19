@@ -100,8 +100,8 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
   parameterization of CKM matrices. -/
 def standParam (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : CKMMatrix :=
   ⟨standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃, by
-   rw [mem_unitaryGroup_iff']
-   exact standParamAsMatrix_unitary θ₁₂ θ₁₃ θ₂₃ δ₁₃⟩
+    rw [mem_unitaryGroup_iff']
+    exact standParamAsMatrix_unitary θ₁₂ θ₁₃ θ₂₃ δ₁₃⟩
 
 namespace standParam
 lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
@@ -158,7 +158,7 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
     VusVubVcdSq ⟦standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃⟧ =
     Real.sin θ₁₂ ^ 2 * Real.cos θ₁₃ ^ 2 * Real.sin θ₁₃ ^ 2 * Real.sin θ₂₃ ^ 2 := by
   simp only [VusVubVcdSq, VusAbs, VAbs, VAbs', Fin.isValue, standParam, standParamAsMatrix,
-     neg_mul, Quotient.lift_mk, cons_val', cons_val_one, head_cons,
+      neg_mul, Quotient.lift_mk, cons_val', cons_val_one, head_cons,
     empty_val', cons_val_fin_one, cons_val_zero, _root_.map_mul, VubAbs, cons_val_two, tail_cons,
     VcbAbs, VudAbs, Complex.abs_ofReal]
   by_cases hx : Real.cos θ₁₃ ≠ 0

@@ -48,7 +48,7 @@ lemma planeY₃B₃_eq (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (h : a = a' �
 
 lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R.val ≠ 0)
     (h : (planeY₃B₃ R a b c).val = (planeY₃B₃ R a' b' c').val) :
-     a = a' ∧ b = b' ∧ c = c' := by
+    a = a' ∧ b = b' ∧ c = c' := by
   rw [planeY₃B₃_val, planeY₃B₃_val] at h
   have h1 := congrArg (fun S => dot Y₃.val S) h
   have h2 := congrArg (fun S => dot B₃.val S) h

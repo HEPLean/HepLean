@@ -24,7 +24,7 @@ open BigOperators
 /-- A proposition which is true if for a given `n`, a plane of charges of dimension `n` exists
 in which each point is a solution. -/
 def ExistsPlane (n : ℕ) : Prop := ∃ (B : Fin n → (PlusU1 3).Charges),
-   LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i)
+    LinearIndependent ℚ B ∧ ∀ (f : Fin n → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i)
 
 lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
     ∃ (B : Fin 11 ⊕ Fin n → (PlusU1 3).Charges), LinearIndependent ℚ B := by
@@ -38,7 +38,7 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
   rw [@add_eq_zero_iff_eq_neg] at hg
   rw [← @Finset.sum_neg_distrib] at hg
   have h1 : ∑ x : Fin n, -(g (Sum.inr x) • Y (Sum.inr x)) =
-      ∑ x : Fin n, (-g (Sum.inr x)) • Y (Sum.inr x):= by
+      ∑ x : Fin n, (-g (Sum.inr x)) • Y (Sum.inr x) := by
     apply Finset.sum_congr
     simp only
     intro i _

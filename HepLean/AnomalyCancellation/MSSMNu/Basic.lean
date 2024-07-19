@@ -56,7 +56,7 @@ def toSplitSMPlusH : MSSMCharges.Charges ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ)
 /-- An equivalence between `(Fin 18 → ℚ)` and `(Fin 6 → Fin 3 → ℚ)`. -/
 @[simps!]
 def toSpeciesMaps' : (Fin 18 → ℚ) ≃ (Fin 6 → Fin 3 → ℚ) :=
-   ((Equiv.curry _ _ _).symm.trans
+  ((Equiv.curry _ _ _).symm.trans
     ((@finProdFinEquiv 6 3).arrowCongr (Equiv.refl ℚ))).symm
 
 /-- An equivalence between `MSSMCharges.charges` and `(Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ))`.
@@ -367,7 +367,7 @@ lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
   rw [add_comm (2 * Hd S * Hd R * Hd L + 2 * Hu S * Hu R * Hu L) _]
   rw [add_assoc]
   rw [← add_assoc _ _ (2 * Hd S * Hd R * Hd L + 2 * Hu S * Hu R * Hu L +
-   (2 * Hd T * Hd R * Hd L + 2 * Hu T * Hu R * Hu L))]
+    (2 * Hd T * Hd R * Hd L + 2 * Hu T * Hu R * Hu L))]
   congr 1
   rw [← Finset.sum_add_distrib]
   apply Fintype.sum_congr

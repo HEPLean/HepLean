@@ -26,7 +26,7 @@ This will relation should be made explicit in the future.
 /-! TODO: Generalize to maps into Lorentz tensors. -/
 
 /-- The possible `colors` of an index for a RealLorentzTensor.
- There are two possiblities, `up` and `down`. -/
+  There are two possiblities, `up` and `down`. -/
 inductive RealLorentzTensor.Colors where
   | up : RealLorentzTensor.Colors
   | down : RealLorentzTensor.Colors
@@ -359,7 +359,7 @@ def splitIndexValue {T : Marked d X n} :
   (indexValueIso d (Equiv.refl _) T.color_eq_elim).trans
   indexValueSumEquiv
 
- @[simp]
+@[simp]
 lemma splitIndexValue_sum {T : Marked d X n} [Fintype X] [DecidableEq X]
     (P : T.UnmarkedIndexValue × T.MarkedIndexValue → ℝ) :
     ∑ i, P (splitIndexValue i) = ∑ j, ∑ k, P (j, k) := by

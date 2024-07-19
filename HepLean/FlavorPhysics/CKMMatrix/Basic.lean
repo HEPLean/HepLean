@@ -293,47 +293,47 @@ def VAbs (i j : Fin 3) : Quotient CKMMatrixSetoid → ℝ :=
   Quotient.lift (fun V => VAbs' V i j) (VAbs'_equiv i j)
 
 /-- The absolute value of the `ud`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VudAbs := VAbs 0 0
 
 /-- The absolute value of the `us`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VusAbs := VAbs 0 1
 
 /-- The absolute value of the `ub`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VubAbs := VAbs 0 2
 
 /-- The absolute value of the `cd`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VcdAbs := VAbs 1 0
 
 /-- The absolute value of the `cs`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VcsAbs := VAbs 1 1
 
 /-- The absolute value of the `cb`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VcbAbs := VAbs 1 2
 
 /-- The absolute value of the `td`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VtdAbs := VAbs 2 0
 
 /-- The absolute value of the `ts`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VtsAbs := VAbs 2 1
 
 /-- The absolute value of the `tb`th element of a representative of an equivalence class of
- CKM matrices. -/
+  CKM matrices. -/
 @[simp]
 abbrev VtbAbs := VAbs 2 2
 
@@ -372,7 +372,7 @@ def Rcdcb (V : CKMMatrix) : ℂ := [V]cd / [V]cb
 /-- The ratio of the `cd` and `cb` elements of a CKM matrix. -/
 scoped[CKMMatrix] notation (name := cd_cb_ratio) "[" V "]cd|cb" => Rcdcb V
 
-lemma Rcdcb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cd = Rcdcb V * [V]cb := by
+lemma Rcdcb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0) : [V]cd = Rcdcb V * [V]cb := by
   rw [Rcdcb]
   exact (div_mul_cancel₀ (V.1 1 0) h).symm
 
@@ -382,7 +382,7 @@ def Rcscb (V : CKMMatrix) : ℂ := [V]cs / [V]cb
 /-- The ratio of the `cs` and `cb` elements of a CKM matrix. -/
 scoped[CKMMatrix] notation (name := cs_cb_ratio) "[" V "]cs|cb" => Rcscb V
 
-lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0): [V]cs = Rcscb V * [V]cb := by
+lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0) : [V]cs = Rcscb V * [V]cb := by
   rw [Rcscb]
   exact (div_mul_cancel₀ [V]cs h).symm
 

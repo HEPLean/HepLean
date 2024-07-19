@@ -116,8 +116,8 @@ lemma cubic_zero_E'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
 def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
   toFun S := S.asLinear
   invFun S := ⟨SMCharges.Q S.val (0 : Fin 1), (SMCharges.U S.val (0 : Fin 1) -
-     SMCharges.D S.val (0 : Fin 1))/2,
-     SMCharges.E S.val (0 : Fin 1)⟩
+      SMCharges.D S.val (0 : Fin 1))/2,
+      SMCharges.E S.val (0 : Fin 1)⟩
   left_inv S := by
     apply linearParameters.ext
     rfl
@@ -134,7 +134,7 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
     intro i
     rw [asLinear_val]
     funext j
-    have hj : j = (0 : Fin 1):= by
+    have hj : j = (0 : Fin 1) := by
       simp only [Fin.isValue]
       ext
       simp
@@ -284,7 +284,7 @@ lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection 
     (FLTThree : FermatLastTheoremWith ℚ 3) :
     S.v = 0 ∨ S.w = 0 := by
   rw [S.cubic] at h
-  have h1 : (-1)^3 = (-1 : ℚ):= by rfl
+  have h1 : (-1)^3 = (-1 : ℚ) := by rfl
   rw [← h1] at h
   by_contra hn
   simp [not_or] at hn

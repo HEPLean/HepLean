@@ -86,7 +86,7 @@ lemma add_quad (S : (PlusU1 n).QuadSols) (a b : ℚ) :
 def addQuad (S : (PlusU1 n).QuadSols) (a b : ℚ) : (PlusU1 n).QuadSols :=
   linearToQuad (a • S.1 + b • (BL n).1.1) (add_quad S a b)
 
-lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ): addQuad S a 0 = a • S := by
+lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ) : addQuad S a 0 = a • S := by
   simp [addQuad, linearToQuad]
   rfl
 

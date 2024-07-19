@@ -92,7 +92,7 @@ def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
 def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
   obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
-     (P.toVertex ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
+      (P.toVertex ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
   map {f g} F := Over.homMk ((P.toVertex ⋙ preimageType' v).map F)
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
 
@@ -101,7 +101,7 @@ def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
 def preimageEdge {𝓔 𝓥 : Type} (v : 𝓔) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
   obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
-     (P.toEdge ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
+      (P.toEdge ⋙ preimageType' v).obj f ⟶ P.HalfEdgeLabel)
   map {f g} F := Over.homMk ((P.toEdge ⋙ preimageType' v).map F)
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
 
@@ -173,11 +173,11 @@ instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : �
   | isFalse h => isFalse h
 
 instance preimageVertexDecidable {𝓔 𝓥 : Type} (v : 𝓥)
-   (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
+    (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageVertex v).obj F).left := Subtype.instDecidableEq
 
 instance preimageEdgeDecidable {𝓔 𝓥 : Type} (v : 𝓔)
-   (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
+    (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageEdge v).obj F).left := Subtype.instDecidableEq
 
 instance preimageVertexFintype {𝓔 𝓥 : Type} [DecidableEq 𝓥]
@@ -378,7 +378,7 @@ instance CondDecidable [IsFinitePreFeynmanRule P] {𝓔 𝓥 𝓱𝓔 : Type} (�
 /-- Making a Feynman diagram from maps of edges, vertices and half-edges. -/
 def mk' {𝓔 𝓥 𝓱𝓔 : Type} (𝓔𝓞 : 𝓔 → P.EdgeLabel) (𝓥𝓞 : 𝓥 → P.VertexLabel)
     (𝓱𝓔To𝓔𝓥 : 𝓱𝓔 → P.HalfEdgeLabel × 𝓔 × 𝓥)
-    (C : Cond 𝓔𝓞 𝓥𝓞 𝓱𝓔To𝓔𝓥): FeynmanDiagram P where
+    (C : Cond 𝓔𝓞 𝓥𝓞 𝓱𝓔To𝓔𝓥) : FeynmanDiagram P where
   𝓔𝓞 := Over.mk 𝓔𝓞
   𝓥𝓞 := Over.mk 𝓥𝓞
   𝓱𝓔To𝓔𝓥 := Over.mk 𝓱𝓔To𝓔𝓥
@@ -674,7 +674,7 @@ instance [IsFinitePreFeynmanRule P] [IsFiniteDiagram F] : Fintype F.SymmetryType
   Fintype.ofEquiv _ F.symmetryTypeEquiv.symm
 
 /-- The symmetry factor can be defined as the cardinal of the symmetry type.
- In general this is not a finite number. -/
+  In general this is not a finite number. -/
 @[simp]
 def cardSymmetryFactor : Cardinal := Cardinal.mk (F.SymmetryType)
 
@@ -705,7 +705,7 @@ A feynman diagram is connected if its simple graph is connected.
 -/
 
 /-- A relation on the vertices of Feynman diagrams. The proposition is true if the two
- vertices are not equal and are connected by a single edge. -/
+  vertices are not equal and are connected by a single edge. -/
 @[simp]
 def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
   x ≠ y ∧
