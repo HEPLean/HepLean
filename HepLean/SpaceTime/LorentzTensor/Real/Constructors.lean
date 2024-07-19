@@ -50,11 +50,10 @@ lemma toReal_mapIso (d : ℕ) {X Y : Type} (h : IsEmpty X) (f : X ≃ Y) :
     (mapIso d f).trans (toReal d (Equiv.isEmpty f.symm)) = toReal d h := by
   apply Equiv.ext
   intro x
-  simp
+  simp only [Equiv.trans_apply, toReal_apply, mapIso_apply_color, mapIso_apply_coord]
   apply congrArg
   funext x
   exact IsEmpty.elim h x
-
 
 /-!
 
@@ -285,8 +284,9 @@ open Matrix
 
 /-- The action of the Lorentz group on `ofReal v` is trivial. -/
 @[simp]
-lemma lorentzAction_toReal (h : IsEmpty X) (r : ℝ) : Λ • (toReal d h).symm r = (toReal d h).symm r :=
-  lorentzAction_on_isEmpty Λ  ((toReal d h).symm r)
+lemma lorentzAction_toReal (h : IsEmpty X) (r : ℝ) :
+    Λ • (toReal d h).symm r = (toReal d h).symm r :=
+  lorentzAction_on_isEmpty Λ ((toReal d h).symm r)
 
 /-- The action of the Lorentz group on `ofVecUp v` is by vector multiplication. -/
 @[simp]
