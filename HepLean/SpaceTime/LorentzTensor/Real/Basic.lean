@@ -8,6 +8,7 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Logic.Equiv.Fin
 import Mathlib.Tactic.FinCases
+import Mathlib.Logic.Equiv.Fintype
 /-!
 
 # Real Lorentz Tensors
@@ -26,7 +27,7 @@ This will relation should be made explicit in the future.
 /-! TODO: Generalize to maps into Lorentz tensors. -/
 
 /-- The possible `colors` of an index for a RealLorentzTensor.
- There are two possiblities, `up` and `down`. -/
+ There are two possibilities, `up` and `down`. -/
 inductive RealLorentzTensor.Colors where
   | up : RealLorentzTensor.Colors
   | down : RealLorentzTensor.Colors
@@ -87,7 +88,7 @@ lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
 /-- The color associated with an element of `x ∈ X` for a tensor `T`. -/
 def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 
-/-- An equivalence of `ColorsIndex` types given an equality of a colors. -/
+/-- An equivalence of `ColorsIndex` types given an equality of colors. -/
 def colorsIndexCast {d : ℕ} {μ₁ μ₂ : RealLorentzTensor.Colors} (h : μ₁ = μ₂) :
     ColorsIndex d μ₁ ≃ ColorsIndex d μ₂ :=
   Equiv.cast (congrArg (ColorsIndex d) h)
@@ -165,7 +166,7 @@ lemma indexValueIso_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
   rw [← Equiv.symm_apply_eq]
   funext y
   rw [indexValueIso_symm_apply', indexValueIso_symm_apply']
-  simp [colorsIndexCast]
+  simp only [Function.comp_apply, colorsIndexCast, Equiv.cast_symm, Equiv.cast_apply, cast_cast]
   apply cast_eq_iff_heq.mpr
   rw [Equiv.apply_symm_apply]
 
@@ -280,7 +281,8 @@ lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 ## Sums
 
 -/
-/-- An equivalence splitting elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
+
+/-- An equivalence that splits elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
 def indexValueSumEquiv {X Y : Type} {TX : X → Colors} {TY : Y → Colors} :
     IndexValue d (Sum.elim TX TY) ≃ IndexValue d TX × IndexValue d TY where
   toFun i := (fun x => i (Sum.inl x), fun x => i (Sum.inr x))
@@ -365,7 +367,7 @@ lemma splitIndexValue_sum {T : Marked d X n} [Fintype X] [DecidableEq X]
     ∑ i, P (splitIndexValue i) = ∑ j, ∑ k, P (j, k) := by
   rw [Equiv.sum_comp splitIndexValue, Fintype.sum_prod_type]
 
-/-- Contruction of marked index values for the case of 1 marked index. -/
+/-- Construction of marked index values for the case of 1 marked index. -/
 def oneMarkedIndexValue {T : Marked d X 1} :
     ColorsIndex d (T.color (markedPoint X 0)) ≃ T.MarkedIndexValue where
   toFun x := fun i => match i with
@@ -377,7 +379,7 @@ def oneMarkedIndexValue {T : Marked d X 1} :
     fin_cases x
     rfl
 
-/-- Contruction of marked index values for the case of 2 marked index. -/
+/-- Construction of marked index values for the case of 2 marked index. -/
 def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPoint X 0)))
     (y : ColorsIndex d <| T.color <| markedPoint X 1) :
     T.MarkedIndexValue := fun i =>
@@ -386,15 +388,235 @@ def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPo
   | 1 => y
 
 /-- An equivalence of types used to turn the first marked index into an unmarked index. -/
-def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃
-    (X ⊕ Fin 1) ⊕ Fin n :=
-  trans (Equiv.sumCongr (Equiv.refl _) $
+def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃ (X ⊕ Fin 1) ⊕ Fin n :=
+  trans (Equiv.sumCongr (Equiv.refl _)
     (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm)))
   (Equiv.sumAssoc _ _ _).symm
 
-/-- Unmark the first marked index of a marked thensor. -/
+/-- Unmark the first marked index of a marked tensor. -/
 def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ Fin 1) n :=
   mapIso d (unmarkFirstSet X n)
+
+/-!
+
+## Marking elements.
+
+-/
+section markingElements
+
+variable [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+
+/-- Splits a type based on an embedding from `Fin n` into elements not in the image of the
+  embedding, and elements in the image. -/
+def markEmbeddingSet {n : ℕ} (f : Fin n ↪ X) :
+    X ≃ {x // x ∈ (Finset.image f Finset.univ)ᶜ} ⊕ Fin n :=
+  (Equiv.Set.sumCompl (Set.range ⇑f)).symm.trans <|
+  (Equiv.sumComm _ _).trans <|
+  Equiv.sumCongr ((Equiv.subtypeEquivRight (by simp))) <|
+  (Function.Embedding.toEquivRange f).symm
+
+lemma markEmbeddingSet_on_mem {n : ℕ} (f : Fin n ↪ X) (x : X)
+    (hx : x ∈ Finset.image f Finset.univ) : markEmbeddingSet f x =
+    Sum.inr (f.toEquivRange.symm ⟨x, by simpa using hx⟩) := by
+  rw [markEmbeddingSet]
+  simp only [Equiv.trans_apply, Equiv.sumComm_apply, Equiv.sumCongr_apply]
+  rw [Equiv.Set.sumCompl_symm_apply_of_mem]
+  rfl
+
+lemma markEmbeddingSet_on_not_mem {n : ℕ} (f : Fin n ↪ X) (x : X)
+    (hx : ¬ x ∈ (Finset.image f Finset.univ)) : markEmbeddingSet f x =
+    Sum.inl ⟨x, by simpa using hx⟩ := by
+  rw [markEmbeddingSet]
+  simp only [Equiv.trans_apply, Equiv.sumComm_apply, Equiv.sumCongr_apply]
+  rw [Equiv.Set.sumCompl_symm_apply_of_not_mem]
+  rfl
+  simpa using hx
+
+/-- Marks the indices of tensor in the image of an embedding. -/
+@[simps!]
+def markEmbedding {n : ℕ} (f : Fin n ↪ X) :
+    RealLorentzTensor d X ≃ Marked d {x // x ∈ (Finset.image f Finset.univ)ᶜ} n :=
+  mapIso d (markEmbeddingSet f)
+
+lemma markEmbeddingSet_on_mem_indexValue_apply {n : ℕ} (f : Fin n ↪ X) (T : RealLorentzTensor d X)
+    (i : IndexValue d (markEmbedding f T).color) (x : X) (hx : x ∈ (Finset.image f Finset.univ)) :
+    i (markEmbeddingSet f x) = colorsIndexCast (congrArg ((markEmbedding f) T).color
+    (markEmbeddingSet_on_mem f x hx).symm)
+    (i (Sum.inr (f.toEquivRange.symm ⟨x, by simpa using hx⟩))) := by
+  simp [colorsIndexCast]
+  symm
+  apply cast_eq_iff_heq.mpr
+  rw [markEmbeddingSet_on_mem f x hx]
+
+lemma markEmbeddingSet_on_not_mem_indexValue_apply {n : ℕ}
+    (f : Fin n ↪ X) (T : RealLorentzTensor d X) (i : IndexValue d (markEmbedding f T).color)
+    (x : X) (hx : ¬ x ∈ (Finset.image f Finset.univ)) :
+    i (markEmbeddingSet f x) = colorsIndexCast (congrArg ((markEmbedding f) T).color
+    (markEmbeddingSet_on_not_mem f x hx).symm) (i (Sum.inl ⟨x, by simpa using hx⟩)) := by
+  simp [colorsIndexCast]
+  symm
+  apply cast_eq_iff_heq.mpr
+  rw [markEmbeddingSet_on_not_mem f x hx]
+
+/-- An equivalence between the IndexValues for a tensor `T` and the corresponding
+  tensor with indices maked by an embedding. -/
+@[simps!]
+def markEmbeddingIndexValue {n : ℕ} (f : Fin n ↪ X) (T : RealLorentzTensor d X) :
+    IndexValue d T.color ≃ IndexValue d (markEmbedding f T).color :=
+  indexValueIso d (markEmbeddingSet f) (
+    (Equiv.comp_symm_eq (markEmbeddingSet f) ((markEmbedding f) T).color T.color).mp rfl)
+
+lemma markEmbeddingIndexValue_apply_symm_on_mem {n : ℕ}
+    (f : Fin n.succ ↪ X) (T : RealLorentzTensor d X) (i : IndexValue d (markEmbedding f T).color)
+    (x : X) (hx : x ∈ (Finset.image f Finset.univ)) :
+    (markEmbeddingIndexValue f T).symm i x = (colorsIndexCast ((congrFun ((Equiv.comp_symm_eq
+    (markEmbeddingSet f) ((markEmbedding f) T).color T.color).mp rfl) x).trans
+    (congrArg ((markEmbedding f) T).color (markEmbeddingSet_on_mem f x hx)))).symm
+    (i (Sum.inr (f.toEquivRange.symm ⟨x, by simpa using hx⟩))) := by
+  rw [markEmbeddingIndexValue, indexValueIso_symm_apply']
+  rw [markEmbeddingSet_on_mem_indexValue_apply f T i x hx]
+  simp [colorsIndexCast]
+
+lemma markEmbeddingIndexValue_apply_symm_on_not_mem {n : ℕ} (f : Fin n.succ ↪ X)
+    (T : RealLorentzTensor d X) (i : IndexValue d (markEmbedding f T).color) (x : X)
+    (hx : ¬ x ∈ (Finset.image f Finset.univ)) : (markEmbeddingIndexValue f T).symm i x =
+    (colorsIndexCast ((congrFun ((Equiv.comp_symm_eq
+      (markEmbeddingSet f) ((markEmbedding f) T).color T.color).mp rfl) x).trans
+      ((congrArg ((markEmbedding f) T).color (markEmbeddingSet_on_not_mem f x hx))))).symm
+     (i (Sum.inl ⟨x, by simpa using hx⟩)) := by
+  rw [markEmbeddingIndexValue, indexValueIso_symm_apply']
+  rw [markEmbeddingSet_on_not_mem_indexValue_apply f T i x hx]
+  simp only [Nat.succ_eq_add_one, Function.comp_apply, markEmbedding_apply_color, colorsIndexCast,
+    Equiv.cast_symm, id_eq, eq_mp_eq_cast, eq_mpr_eq_cast, Equiv.cast_apply, cast_cast, cast_eq,
+    Equiv.cast_refl, Equiv.refl_symm]
+  rfl
+
+/-- Given an equivalence of types, an embedding `f` to an embedding `g`, the equivalence
+  taking the complement of the image of `f` to the complement of the image of `g`. -/
+@[simps!]
+def equivEmbedCompl (e : X ≃ Y) {f : Fin n ↪ X} {g : Fin n ↪ Y} (he : f.trans e = g) :
+    {x // x ∈ (Finset.image f Finset.univ)ᶜ} ≃ {y // y ∈ (Finset.image g Finset.univ)ᶜ} :=
+  (Equiv.subtypeEquivOfSubtype' e).trans <|
+  (Equiv.subtypeEquivRight (fun x => by simp [← he, Equiv.eq_symm_apply]))
+
+lemma markEmbedding_mapIso_right (e : X ≃ Y) (f : Fin n ↪ X) (g : Fin n ↪ Y) (he : f.trans e = g)
+    (T : RealLorentzTensor d X) : markEmbedding g (mapIso d e T) =
+    mapIso d (Equiv.sumCongr (equivEmbedCompl e he) (Equiv.refl (Fin n))) (markEmbedding f T) := by
+  rw [markEmbedding, markEmbedding]
+  erw [← Equiv.trans_apply, ← Equiv.trans_apply]
+  rw [mapIso_trans, mapIso_trans]
+  apply congrFun
+  repeat apply congrArg
+  refine Equiv.ext (fun x => ?_)
+  simp only [Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
+  by_cases hx : x ∈ Finset.image f Finset.univ
+  · rw [markEmbeddingSet_on_mem f x hx, markEmbeddingSet_on_mem g (e x) (by simpa [← he] using hx)]
+    subst he
+    simp only [Sum.map_inr, id_eq, Sum.inr.injEq, Equiv.symm_apply_eq,
+      Function.Embedding.toEquivRange_apply, Function.Embedding.trans_apply, Equiv.coe_toEmbedding,
+      Subtype.mk.injEq, EmbeddingLike.apply_eq_iff_eq]
+    change x = f.toEquivRange _
+    rw [Equiv.apply_symm_apply]
+  · rw [markEmbeddingSet_on_not_mem f x hx,
+      markEmbeddingSet_on_not_mem g (e x) (by simpa [← he] using hx)]
+    subst he
+    rfl
+
+lemma markEmbedding_mapIso_left {n m : ℕ} (e : Fin n ≃ Fin m) (f : Fin n ↪ X) (g : Fin m ↪ X)
+    (he : e.symm.toEmbedding.trans f = g) (T : RealLorentzTensor d X) :
+    markEmbedding g T = mapIso d (Equiv.sumCongr (Equiv.subtypeEquivRight (fun x => by
+     simpa [← he] using Equiv.forall_congr_left e)) e) (markEmbedding f T) := by
+  rw [markEmbedding, markEmbedding]
+  erw [← Equiv.trans_apply]
+  rw [mapIso_trans]
+  apply congrFun
+  repeat apply congrArg
+  refine Equiv.ext (fun x => ?_)
+  simp only [Equiv.trans_apply, Equiv.sumCongr_apply]
+  by_cases hx : x ∈ Finset.image f Finset.univ
+  · rw [markEmbeddingSet_on_mem f x hx, markEmbeddingSet_on_mem g x (by
+      simp [← he, hx]
+      obtain ⟨y, _, hy2⟩ := Finset.mem_image.mp hx
+      use e y
+      simpa using hy2)]
+    subst he
+    simp [Equiv.symm_apply_eq]
+    change x = f.toEquivRange _
+    rw [Equiv.apply_symm_apply]
+  · rw [markEmbeddingSet_on_not_mem f x hx, markEmbeddingSet_on_not_mem g x (by
+      simpa [← he, hx] using fun x => not_exists.mp (Finset.mem_image.mpr.mt hx) (e.symm x))]
+    subst he
+    rfl
+
+/-!
+
+## Marking a single element
+
+-/
+
+/-- An embedding from `Fin 1` into `X` given an element `x ∈ X`. -/
+@[simps!]
+def embedSingleton (x : X) : Fin 1 ↪ X :=
+  ⟨![x], fun x y => by fin_cases x; fin_cases y; simp⟩
+
+lemma embedSingleton_toEquivRange_symm (x : X) :
+    (embedSingleton x).toEquivRange.symm ⟨x, by simp⟩ = 0 := by
+  exact Fin.fin_one_eq_zero _
+
+/-- Equivalence, taking a tensor to a tensor with a single marked index. -/
+@[simps!]
+def markSingle (x : X) : RealLorentzTensor d X ≃ Marked d {x' // x' ≠ x} 1 :=
+  (markEmbedding (embedSingleton x)).trans
+  (mapIso d (Equiv.sumCongr (Equiv.subtypeEquivRight (fun x => by simp)) (Equiv.refl _)))
+
+/-- Equivalence between index values of a tensor and the corresponding tensor with a single
+  marked index. -/
+@[simps!]
+def markSingleIndexValue (T : RealLorentzTensor d X) (x : X) :
+    IndexValue d T.color ≃ IndexValue d (markSingle x T).color :=
+  (markEmbeddingIndexValue (embedSingleton x) T).trans <|
+  indexValueIso d (Equiv.sumCongr (Equiv.subtypeEquivRight (fun x => by simp)) (Equiv.refl _))
+   (by funext x_1; simp)
+
+/-- Given an equivalence of types, taking `x` to `y` the corresponding equivalence of
+  subtypes of elements not equal to `x` and not equal to `y` respectively. -/
+@[simps!]
+def equivSingleCompl (e : X ≃ Y) {x : X} {y : Y} (he : e x = y) :
+    {x' // x' ≠ x} ≃ {y' // y' ≠ y} :=
+  (Equiv.subtypeEquivOfSubtype' e).trans <|
+  Equiv.subtypeEquivRight (fun a => by simp [Equiv.symm_apply_eq, he])
+
+lemma markSingle_mapIso (e : X ≃ Y) (x : X) (y : Y) (he : e x = y)
+    (T : RealLorentzTensor d X) : markSingle y (mapIso d e T) =
+    mapIso d (Equiv.sumCongr (equivSingleCompl e he) (Equiv.refl _)) (markSingle x T) := by
+  rw [markSingle, Equiv.trans_apply]
+  rw [markEmbedding_mapIso_right e (embedSingleton x) (embedSingleton y)
+    (Function.Embedding.ext_iff.mp (fun a => by simpa using he)), markSingle, markEmbedding]
+  erw [← Equiv.trans_apply, ← Equiv.trans_apply, ← Equiv.trans_apply]
+  rw [mapIso_trans, mapIso_trans, mapIso_trans, mapIso_trans]
+  apply congrFun
+  repeat apply congrArg
+  refine Equiv.ext fun x => ?_
+  simp only [ne_eq, Fintype.univ_ofSubsingleton, Fin.zero_eta, Fin.isValue, Equiv.sumCongr_trans,
+    Equiv.trans_refl, Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.coe_trans, Equiv.coe_refl,
+    Sum.map_map, CompTriple.comp_eq]
+  subst he
+  rfl
+
+/-!
+
+## Marking two elements
+
+-/
+
+/-- An embedding from `Fin 2` given two inequivalent elements. -/
+@[simps!]
+def embedDoubleton (x y : X) (h : x ≠ y) : Fin 2 ↪ X :=
+  ⟨![x, y], fun a b => by
+    fin_cases a <;> fin_cases b <;> simp [h]
+    exact h.symm⟩
+
+end markingElements
 
 end Marked
 
