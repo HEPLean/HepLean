@@ -460,8 +460,7 @@ lemma mulS_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : Re
   rw [Finset.sum_congr rfl (fun x _ => Finset.sum_mul _ _ _)]
   rw [Finset.sum_congr rfl (fun x _ => Finset.mul_sum _ _ _)]
   rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl (fun a _ => ?_)
-  refine Finset.sum_congr rfl (fun b _ => ?_)
+  refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   rw [mul_assoc]
   refine Mathlib.Tactic.Ring.mul_congr rfl (Mathlib.Tactic.Ring.mul_congr ?_ rfl rfl) rfl
   apply congrArg
@@ -476,7 +475,8 @@ lemma mulS_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : Re
     · rw [mulSFstArg_on_not_mem, mulSSndArg_on_not_mem, mulSSndArg_on_not_mem,
         mulSFstArg_on_not_mem]
       rw [mulSAssocIndexValue, indexValueIso_eq_symm, indexValueIso_symm_apply']
-      simp [colorsIndexCast, Equiv.refl_apply]
+      simp only [ne_eq, Function.comp_apply, Equiv.symm_symm_apply, mulS_color, Sum.elim_inr,
+        colorsIndexCast, Equiv.cast_refl, Equiv.refl_symm]
       erw [Equiv.refl_apply]
       rfl
       exact hcy'
