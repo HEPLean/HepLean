@@ -543,7 +543,7 @@ def Cond {F G : FeynmanDiagram P} (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → 
 
 lemma cond_satisfied {F G : FeynmanDiagram P} (f : Hom F G) :
     Cond f.𝓔 f.𝓥 f.𝓱𝓔 :=
-  ⟨fun x => congrFun f.𝓔𝓞.w x, fun x => congrFun f.𝓥𝓞.w x, fun x => congrFun f.𝓱𝓔To𝓔𝓥.w x ⟩
+  ⟨fun x => congrFun f.𝓔𝓞.w x, fun x => congrFun f.𝓥𝓞.w x, fun x => congrFun f.𝓱𝓔To𝓔𝓥.w x⟩
 
 lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.𝓥 ≃ G.𝓥) (𝓱𝓔 : F.𝓱𝓔 ≃ G.𝓱𝓔)
     (h : Cond 𝓔 𝓥 𝓱𝓔) : Cond 𝓔.symm 𝓥.symm 𝓱𝓔.symm := by

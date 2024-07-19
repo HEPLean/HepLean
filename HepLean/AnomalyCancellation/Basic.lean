@@ -183,12 +183,11 @@ lemma QuadSols.ext {χ : ACCSystemQuad} {S T : χ.QuadSols} (h : S.val = T.val) 
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `QuadSols`. -/
 instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols where
-  smul a S := ⟨a • S.toLinSols , by
+  smul a S := ⟨a • S.toLinSols, by
     intro i
     erw [(χ.quadraticACCs i).map_smul]
     rw [S.quadSol i]
-    simp only [mul_zero]
-    ⟩
+    simp only [mul_zero]⟩
   mul_smul a b S := by
     apply QuadSols.ext
     exact mul_smul _ _ _

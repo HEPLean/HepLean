@@ -42,7 +42,7 @@ def toSMPlusH : MSSMCharges.Charges ≃ (Fin 18 ⊕ Fin 2 → ℚ) :=
 /-- An equivalence between `Fin 18 ⊕ Fin 2 → ℚ` and `(Fin 18 → ℚ) × (Fin 2 → ℚ)`. -/
 @[simps!]
 def splitSMPlusH : (Fin 18 ⊕ Fin 2 → ℚ) ≃ (Fin 18 → ℚ) × (Fin 2 → ℚ) where
-  toFun f := (f ∘ Sum.inl , f ∘ Sum.inr)
+  toFun f := (f ∘ Sum.inl, f ∘ Sum.inr)
   invFun f := Sum.elim f.1 f.2
   left_inv f := Sum.elim_comp_inl_inr f
   right_inv _ := rfl
@@ -473,8 +473,7 @@ def AnomalyFreeMk (S : MSSMACC.Charges) (hg : accGrav S = 0)
     intro i
     simp at i
     match i with
-    | 0 => exact hquad
-    ⟩ , by exact hcube ⟩
+    | 0 => exact hquad⟩, hcube⟩
 
 lemma AnomalyFreeMk_val (S : MSSMACC.Charges) (hg : accGrav S = 0)
     (hsu2 : accSU2 S = 0) (hsu3 : accSU3 S = 0) (hyy : accYY S = 0)
@@ -490,8 +489,7 @@ def AnomalyFreeQuadMk' (S : MSSMACC.LinSols) (hquad : accQuad S.val = 0) :
     intro i
     simp at i
     match i with
-    | 0 => exact hquad
-    ⟩
+    | 0 => exact hquad⟩
 
 /-- A `Sol` from a `LinSol` satisfying the quadratic and cubic ACCs. -/
 @[simp]
@@ -501,13 +499,12 @@ def AnomalyFreeMk' (S : MSSMACC.LinSols) (hquad : accQuad S.val = 0)
     intro i
     simp at i
     match i with
-    | 0 => exact hquad
-    ⟩ , by exact hcube ⟩
+    | 0 => exact hquad⟩, hcube⟩
 
 /-- A `Sol` from a `QuadSol` satisfying the cubic ACCs. -/
 @[simp]
 def AnomalyFreeMk'' (S : MSSMACC.QuadSols) (hcube : accCube S.val = 0) : MSSMACC.Sols :=
-  ⟨S , by exact hcube ⟩
+  ⟨S, hcube⟩
 
 lemma AnomalyFreeMk''_val (S : MSSMACC.QuadSols)
     (hcube : accCube S.val = 0) :

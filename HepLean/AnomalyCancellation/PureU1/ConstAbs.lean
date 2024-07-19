@@ -148,7 +148,7 @@ lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.suc
   induction i
   rfl
   rename_i i hii
-  have hnott := hnot ⟨i, by {simp at hi; linarith} ⟩
+  have hnott := hnot ⟨i, by {simp at hi; linarith}⟩
   have hii := hii (by omega)
   erw [← hii] at hnott
   exact (val_le_zero hS (hnott h0)).symm

@@ -166,7 +166,7 @@ lemma mul_markedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
     T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1, j))
     * S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, k))
   apply Finset.sum_congr rfl (fun x _ => ?_)
-  rw [Finset.sum_mul_sum ]
+  rw [Finset.sum_mul_sum]
   apply Finset.sum_congr rfl (fun j _ => ?_)
   apply Finset.sum_congr rfl (fun k _ => ?_)
   ring
