@@ -141,7 +141,6 @@ lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃
     rw [mapIso_apply_coord, mapIso_apply_coord]
     refine Mathlib.Tactic.Ring.mul_congr ?_ ?_ rfl
     · apply congrArg
-      simp only [IndexValue]
       exact (Equiv.symm_apply_eq splitIndexValue).mpr rfl
     · apply congrArg
       exact (Equiv.symm_apply_eq splitIndexValue).mpr rfl
@@ -212,40 +211,38 @@ lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
       T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))*
        toTensorRepMat Λ (indexValueSumEquiv i).2 k *
       S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
-  apply Finset.sum_congr rfl (fun x _ => ?_)
-  rw [Finset.sum_mul_sum ]
-  apply Finset.sum_congr rfl (fun j _ => ?_)
-  apply Finset.sum_congr rfl (fun k _ => ?_)
-  ring
+  · apply Finset.sum_congr rfl (fun x _ => ?_)
+    rw [Finset.sum_mul_sum ]
+    apply Finset.sum_congr rfl (fun j _ => ?_)
+    apply Finset.sum_congr rfl (fun k _ => ?_)
+    ring
   rw [Finset.sum_comm]
   trans ∑ j, ∑ k, ∑ x, (toTensorRepMat Λ (indexValueSumEquiv i).1 j *
       T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))*
        toTensorRepMat Λ (indexValueSumEquiv i).2 k *
       S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
-  apply Finset.sum_congr rfl (fun j _ => ?_)
-  rw [Finset.sum_comm]
+  · exact Finset.sum_congr rfl (fun j _ => Finset.sum_comm)
   trans ∑ j, ∑ k,
     ((toTensorRepMat Λ (indexValueSumEquiv i).1 j) * toTensorRepMat Λ (indexValueSumEquiv i).2 k)
     * ∑ x, (T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))
     * S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
-  apply Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl (fun x _ => ?_)
-  ring
+  · apply Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl (fun x _ => ?_)
+    ring
   trans ∑ j, ∑ k, toTensorRepMat Λ i (indexValueSumEquiv.symm (j, k)) *
     ∑ x, (T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))
       * S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
   apply Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
-  rw [toTensorRepMat_of_indexValueSumEquiv']
-  congr
-  simp only [IndexValue, Finset.mem_univ, Prod.mk.eta, Equiv.symm_apply_apply, mul_color]
+  · rw [toTensorRepMat_of_indexValueSumEquiv']
+    congr
+    simp only [IndexValue, Finset.mem_univ, Prod.mk.eta, Equiv.symm_apply_apply, mul_color]
   trans ∑ p, toTensorRepMat Λ i p *
     ∑ x, (T.coord (splitIndexValue.symm ((indexValueSumEquiv p).1, oneMarkedIndexValue x)))
     * S.coord (splitIndexValue.symm ((indexValueSumEquiv p).2,
       oneMarkedIndexValue $ colorsIndexDualCast h x))
-  erw [← Equiv.sum_comp indexValueSumEquiv.symm]
-  rw [Fintype.sum_prod_type]
-  rfl
+  · erw [← Equiv.sum_comp indexValueSumEquiv.symm]
+    exact Eq.symm Fintype.sum_prod_type
   rfl
 
 /-- The Lorentz action commutes with multiplication. -/
@@ -403,7 +400,7 @@ def mulSSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
       (Equiv.subtypeEquivRight (fun a => by
         obtain ⟨a, p⟩ := a; simp only [ne_eq, Sum.inl.injEq, Subtype.mk.injEq])).trans
       (Equiv.subtypeSubtypeEquivSubtypeInter _ _)) <|
-  Equiv.subtypeUnivEquiv (fun a => by simp)
+  Equiv.subtypeUnivEquiv (fun a => Sum.inr_ne_inl)
 
 /-- An equivalence of types associated with multiplying two consecutive indices with the
 second index appearing on the right. -/
@@ -411,7 +408,7 @@ def mulSSplitRight {y y' : Y} (hy : y ≠ y') (z : Z) :
     {yz // yz ≠ (Sum.inr ⟨y', hy.symm⟩ : {z' // z' ≠ z} ⊕ {y'' // y'' ≠ y})} ≃
     {z' // z' ≠ z} ⊕ {y'' // y'' ≠ y' ∧ y'' ≠ y} :=
    Equiv.subtypeSum.trans <|
-  Equiv.sumCongr (Equiv.subtypeUnivEquiv (fun a => by simp)) <|
+  Equiv.sumCongr (Equiv.subtypeUnivEquiv (fun a => Sum.inl_ne_inr)) <|
   (Equiv.subtypeEquivRight (fun a => by
     obtain ⟨a, p⟩ := a; simp only [ne_eq, Sum.inr.injEq, Subtype.mk.injEq])).trans <|
   ((Equiv.subtypeSubtypeEquivSubtypeInter _ _).trans
@@ -449,12 +446,7 @@ lemma mulS_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : Re
     (x : X) (y y' : Y) (hy : y ≠ y') (z : Z) (h : T.color x = τ (S.color y))
     (h' : S.color y' = τ (U.color z)) : mulS (mulS T S x y h) U (Sum.inr ⟨y', hy.symm⟩) z h' =
     mapIso d (mulSAssocIso x hy z) (mulS T (mulS S U y' z h') x (Sum.inl ⟨y, hy⟩) h) := by
-  apply ext ?_ ?_
-  · funext a
-    match a with
-    | .inl ⟨.inl _, _⟩ => rfl
-    | .inl ⟨.inr _, _⟩ => rfl
-    | .inr _ => rfl
+  apply ext (mulS_assoc_color _ _ _) ?_
   funext i
   trans ∑ a, (∑ b, T.coord (mulSFstArg (mulSFstArg i a) b) *
     S.coord (mulSSndArg (mulSFstArg i a) b h)) * U.coord (mulSSndArg i a h')
