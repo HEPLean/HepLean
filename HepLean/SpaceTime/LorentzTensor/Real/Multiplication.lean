@@ -265,7 +265,7 @@ variable {n m : ℕ} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   {X' Y' Z : Type} [Fintype X'] [DecidableEq X'] [Fintype Y'] [DecidableEq Y']
   [Fintype Z] [DecidableEq Z]
 
-/-- The multiplication of two real Lorentz Tensors along provided indices. -/
+/-- The multiplication of two real Lorentz Tensors along specified indices. -/
 @[simps!]
 def mulS (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (x : X) (y : Y)
     (h : T.color x = τ (S.color y)) : RealLorentzTensor d ({x' // x' ≠ x} ⊕ {y' // y' ≠ y}) :=
@@ -393,7 +393,7 @@ lemma mulS_symm (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
     mapIso d (Equiv.sumComm _ _) (mulS T S x y h) = mulS S T y x (color_eq_dual_symm h) := by
   rw [mulS, mulS, mul_symm]
 
-/-- An equivalence of types assocaited with multipying two consecutive indices,
+/-- An equivalence of types associated with multiplying two consecutive indices,
 with the second index appearing on the left. -/
 def mulSSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
     {yz // yz ≠ (Sum.inl ⟨y, hy⟩ : {y'' // y'' ≠ y'} ⊕ {z' // z' ≠ z})} ≃
@@ -405,7 +405,7 @@ def mulSSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
       (Equiv.subtypeSubtypeEquivSubtypeInter _ _)) <|
   Equiv.subtypeUnivEquiv (fun a => by simp)
 
-/-- An equivalence of types assocaited with multipying two consecutive indices with the
+/-- An equivalence of types associated with multiplying two consecutive indices with the
 second index appearing on the right. -/
 def mulSSplitRight {y y' : Y} (hy : y ≠ y') (z : Z) :
     {yz // yz ≠ (Sum.inr ⟨y', hy.symm⟩ : {z' // z' ≠ z} ⊕ {y'' // y'' ≠ y})} ≃

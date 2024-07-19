@@ -27,7 +27,7 @@ This will relation should be made explicit in the future.
 /-! TODO: Generalize to maps into Lorentz tensors. -/
 
 /-- The possible `colors` of an index for a RealLorentzTensor.
- There are two possiblities, `up` and `down`. -/
+ There are two possibilities, `up` and `down`. -/
 inductive RealLorentzTensor.Colors where
   | up : RealLorentzTensor.Colors
   | down : RealLorentzTensor.Colors
@@ -88,7 +88,7 @@ lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
 /-- The color associated with an element of `x ∈ X` for a tensor `T`. -/
 def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 
-/-- An equivalence of `ColorsIndex` types given an equality of a colors. -/
+/-- An equivalence of `ColorsIndex` types given an equality of colors. -/
 def colorsIndexCast {d : ℕ} {μ₁ μ₂ : RealLorentzTensor.Colors} (h : μ₁ = μ₂) :
     ColorsIndex d μ₁ ≃ ColorsIndex d μ₂ :=
   Equiv.cast (congrArg (ColorsIndex d) h)
@@ -281,7 +281,7 @@ lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 ## Sums
 
 -/
-/-- An equivalence splitting elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
+/-- An equivalence that splits elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
 def indexValueSumEquiv {X Y : Type} {TX : X → Colors} {TY : Y → Colors} :
     IndexValue d (Sum.elim TX TY) ≃ IndexValue d TX × IndexValue d TY where
   toFun i := (fun x => i (Sum.inl x), fun x => i (Sum.inr x))
@@ -366,7 +366,7 @@ lemma splitIndexValue_sum {T : Marked d X n} [Fintype X] [DecidableEq X]
     ∑ i, P (splitIndexValue i) = ∑ j, ∑ k, P (j, k) := by
   rw [Equiv.sum_comp splitIndexValue, Fintype.sum_prod_type]
 
-/-- Contruction of marked index values for the case of 1 marked index. -/
+/-- Construction of marked index values for the case of 1 marked index. -/
 def oneMarkedIndexValue {T : Marked d X 1} :
     ColorsIndex d (T.color (markedPoint X 0)) ≃ T.MarkedIndexValue where
   toFun x := fun i => match i with
@@ -378,7 +378,7 @@ def oneMarkedIndexValue {T : Marked d X 1} :
     fin_cases x
     rfl
 
-/-- Contruction of marked index values for the case of 2 marked index. -/
+/-- Construction of marked index values for the case of 2 marked index. -/
 def twoMarkedIndexValue (T : Marked d X 2) (x : ColorsIndex d (T.color (markedPoint X 0)))
     (y : ColorsIndex d <| T.color <| markedPoint X 1) :
     T.MarkedIndexValue := fun i =>
@@ -392,7 +392,7 @@ def unmarkFirstSet (X : Type) (n : ℕ) : (X ⊕ Fin n.succ) ≃ (X ⊕ Fin 1) �
     (((Fin.castOrderIso (Nat.succ_eq_one_add n)).toEquiv.trans finSumFinEquiv.symm)))
   (Equiv.sumAssoc _ _ _).symm
 
-/-- Unmark the first marked index of a marked thensor. -/
+/-- Unmark the first marked index of a marked tensor. -/
 def unmarkFirst {X : Type} : Marked d X n.succ ≃ Marked d (X ⊕ Fin 1) n :=
   mapIso d (unmarkFirstSet X n)
 
@@ -431,7 +431,7 @@ lemma markEmbeddingSet_on_not_mem {n : ℕ} (f : Fin n ↪ X) (x : X)
   rfl
   simpa using hx
 
-/-- Marks the indicies of tensor in the image of an embedding. -/
+/-- Marks the indices of tensor in the image of an embedding. -/
 @[simps!]
 def markEmbedding {n : ℕ} (f : Fin n ↪ X) :
     RealLorentzTensor d X ≃ Marked d {x // x ∈ (Finset.image f Finset.univ)ᶜ} n :=
@@ -458,7 +458,7 @@ lemma markEmbeddingSet_on_not_mem_indexValue_apply {n : ℕ}
   rw [markEmbeddingSet_on_not_mem f x hx]
 
 /-- An equivalence between the IndexValues for a tensor `T` and the corresponding
-  tensor with indicies maked by an embedding. -/
+  tensor with indices maked by an embedding. -/
 @[simps!]
 def markEmbeddingIndexValue {n : ℕ} (f : Fin n ↪ X) (T : RealLorentzTensor d X) :
     IndexValue d T.color ≃ IndexValue d (markEmbedding f T).color :=
@@ -568,7 +568,7 @@ def markSingle (x : X) : RealLorentzTensor d X ≃ Marked d {x' // x' ≠ x} 1 :
   (markEmbedding (embedSingleton x)).trans
   (mapIso d (Equiv.sumCongr (Equiv.subtypeEquivRight (fun x => by simp)) (Equiv.refl _)))
 
-/-- Equivalence between index values of a tensor and the corrsponding tensor with a single
+/-- Equivalence between index values of a tensor and the corresponding tensor with a single
   marked index. -/
 @[simps!]
 def markSingleIndexValue (T : RealLorentzTensor d X) (x : X) :
