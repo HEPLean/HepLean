@@ -281,6 +281,7 @@ lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 ## Sums
 
 -/
+
 /-- An equivalence that splits elements of `IndexValue d (Sum.elim TX TY)` into two components. -/
 def indexValueSumEquiv {X Y : Type} {TX : X → Colors} {TY : Y → Colors} :
     IndexValue d (Sum.elim TX TY) ≃ IndexValue d TX × IndexValue d TY where
