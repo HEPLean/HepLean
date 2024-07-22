@@ -209,7 +209,7 @@ lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
       S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x)) = _
   trans ∑ x, ∑ j, ∑ k, (toTensorRepMat Λ (indexValueSumEquiv i).1 j *
       T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))*
-       toTensorRepMat Λ (indexValueSumEquiv i).2 k *
+      toTensorRepMat Λ (indexValueSumEquiv i).2 k *
       S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
   · apply Finset.sum_congr rfl (fun x _ => ?_)
     rw [Finset.sum_mul_sum ]
@@ -219,7 +219,7 @@ lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   rw [Finset.sum_comm]
   trans ∑ j, ∑ k, ∑ x, (toTensorRepMat Λ (indexValueSumEquiv i).1 j *
       T.coord (splitIndexValue.symm (j, oneMarkedIndexValue x)))*
-       toTensorRepMat Λ (indexValueSumEquiv i).2 k *
+      toTensorRepMat Λ (indexValueSumEquiv i).2 k *
       S.coord (splitIndexValue.symm (k, oneMarkedIndexValue $ colorsIndexDualCast h x))
   · exact Finset.sum_congr rfl (fun j _ => Finset.sum_comm)
   trans ∑ j, ∑ k,

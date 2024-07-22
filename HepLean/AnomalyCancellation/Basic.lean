@@ -234,7 +234,7 @@ lemma Sols.ext {χ : ACCSystem} {S T : χ.Sols} (h : S.val = T.val) :
 
 /-- A charge `S` is a solution if it extends to a solution. -/
 def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
- ∃ (sol : χ.Sols), sol.val = S
+  ∃ (sol : χ.Sols), sol.val = S
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `Sols`. -/
 instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where

@@ -165,7 +165,7 @@ def FstRowThdColRealCond (U : CKMMatrix) : Prop := [U]ud = VudAbs ⟦U⟧ ∧ [U
   there is no phase difference between the `t`th-row and
 the cross product of the conjugates of the `u`th and `c`th rows, and the `cd`th and `cs`th
 elements are real and related in a set way.
- -/
+-/
 def ubOnePhaseCond (U : CKMMatrix) : Prop :=
     [U]ud = 0 ∧ [U]us = 0 ∧ [U]cb = 0 ∧ [U]ub = 1 ∧ [U]t = conj [U]u ×₃ conj [U]c
     ∧ [U]cd = - VcdAbs ⟦U⟧ ∧ [U]cs = √(1 - VcdAbs ⟦U⟧ ^ 2)

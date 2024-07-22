@@ -63,7 +63,7 @@ lemma not_orthochronous_iff_le_zero :
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
 def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ,
-   Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
+    Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
 def stepFunction : ℝ → ℝ := fun t =>
@@ -72,7 +72,7 @@ def stepFunction : ℝ → ℝ := fun t =>
 
 lemma stepFunction_continuous : Continuous stepFunction := by
   apply Continuous.if ?_ continuous_const (Continuous.if ?_ continuous_const continuous_id)
-   <;> intro a ha
+    <;> intro a ha
   rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
   rw [ha]
   simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
@@ -157,7 +157,7 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
   map_mul' Λ Λ' := by
     simp only
     by_cases h : IsOrthochronous Λ
-     <;> by_cases h' : IsOrthochronous Λ'
+      <;> by_cases h' : IsOrthochronous Λ'
     rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',
       orthchroMap_IsOrthochronous (mul_othchron_of_othchron_othchron h h')]
     rfl

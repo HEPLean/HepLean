@@ -70,7 +70,7 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Cha
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
   rw [repCharges_toSpecies]
   exact Fintype.sum_equiv (f⁻¹ j) (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S ∘ ⇑(f⁻¹ j)) x)
-   (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
+    (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
 
 lemma accGrav_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accGrav (repCharges f S) = accGrav S :=

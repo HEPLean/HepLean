@@ -31,8 +31,8 @@ def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
   toFun S := ∑ i : Fin n, S i
   map_add' S T := Finset.sum_add_distrib
   map_smul' a S := by
-   simp [HSMul.hSMul, SMul.smul]
-   rw [← Finset.mul_sum]
+    simp [HSMul.hSMul, SMul.smul]
+    rw [← Finset.mul_sum]
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
 @[simps!]
@@ -95,7 +95,7 @@ def PureU1 (n : ℕ) : ACCSystem where
   cubicACC := PureU1.accCube n
 
 /-- An equivalence of vector spaces of charges when the number of fermions is equal. -/
-def pureU1EqCharges {n m : ℕ} (h : n = m):
+def pureU1EqCharges {n m : ℕ} (h : n = m) :
     (PureU1 n).Charges ≃ₗ[ℚ] (PureU1 m).Charges where
   toFun f := f ∘ Fin.cast h.symm
   invFun f := f ∘ Fin.cast h

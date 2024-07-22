@@ -145,7 +145,7 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
     smul_eq_mul, LinearMap.neg_apply]
   field_simp
   rw [u.1.2, v.1.2, minkowskiMetric.symm v.1.1 u, minkowskiMetric.symm u y,
-     minkowskiMetric.symm v y]
+      minkowskiMetric.symm v y]
   ring
 
 /-- A generalised boost as an element of the Lorentz Group. -/

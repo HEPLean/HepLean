@@ -310,8 +310,8 @@ lemma Prop_two (P : ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply] at h1
   simp at h1
   change P
-   (S.val ((permTwo hij hab).toFun a),
-   S.val ((permTwo hij hab).toFun b)) at h1
+    (S.val ((permTwo hij hab).toFun a),
+    S.val ((permTwo hij hab).toFun b)) at h1
   erw [permTwo_fst,permTwo_snd] at h1
   exact h1
 
@@ -325,11 +325,11 @@ lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
   intro i j k hij hjk hik
   have h1 := h (permThree hij hjk hik hab hbc hac).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply,
-   FamilyPermutations_anomalyFreeLinear_apply] at h1
+    FamilyPermutations_anomalyFreeLinear_apply] at h1
   simp at h1
   change P
-   (S.val ((permThree hij hjk hik hab hbc hac).toFun a),
-   S.val ((permThree hij hjk hik hab hbc hac).toFun b),
+    (S.val ((permThree hij hjk hik hab hbc hac).toFun a),
+    S.val ((permThree hij hjk hik hab hbc hac).toFun b),
     S.val ((permThree hij hjk hik hab hbc hac).toFun c)) at h1
   erw [permThree_fst,permThree_snd, permThree_thd] at h1
   exact h1

@@ -32,7 +32,7 @@ noncomputable def repU1Map (g : unitary ℂ) : unitaryGroup (Fin 2) ℂ :=
     simp only [one_pow, one_smul]⟩
 
 /-- The 2d representation of U(1) with charge 3 as a homomorphism
- from U(1) to `unitaryGroup (Fin 2) ℂ`. -/
+  from U(1) to `unitaryGroup (Fin 2) ℂ`. -/
 @[simps!]
 noncomputable def repU1 : unitary ℂ →* unitaryGroup (Fin 2) ℂ where
   toFun g := repU1Map g

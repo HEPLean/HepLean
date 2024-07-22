@@ -43,8 +43,8 @@ instance {χ : ACCSystem} (G : ACCSystemGroupAction χ) : Group G.group := G.gro
 def linSolMap {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group) :
     χ.LinSols →ₗ[ℚ] χ.LinSols where
   toFun S := ⟨G.rep g S.val, by
-   intro i
-   rw [G.linearInvariant, S.linearSol]⟩
+    intro i
+    rw [G.linearInvariant, S.linearSol]⟩
   map_add' S T := by
     apply ACCSystemLinear.LinSols.ext
     exact (G.rep g).map_add' _ _
@@ -82,9 +82,9 @@ lemma rep_linSolRep_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : 
 instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     MulAction G.group χ.QuadSols where
   smul f S := ⟨G.linSolRep f S.1, by
-   intro i
-   simp only [linSolRep_apply_apply_val]
-   rw [G.quadInvariant, S.quadSol]⟩
+    intro i
+    simp only [linSolRep_apply_apply_val]
+    rw [G.quadInvariant, S.quadSol]⟩
   mul_smul f1 f2 S := by
     apply ACCSystemQuad.QuadSols.ext
     change (G.rep.toFun (f1 * f2)) S.val = _
@@ -107,9 +107,9 @@ lemma rep_quadSolAction_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (
 /-- The group action acting on solutions to the anomaly cancellation conditions. -/
 instance solAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) : MulAction G.group χ.Sols where
   smul g S := ⟨G.quadSolAction.toFun S.1 g, by
-   simp only [MulAction.toFun_apply]
-   change χ.cubicACC (G.rep g S.val) = 0
-   rw [G.cubicInvariant, S.cubicSol]⟩
+    simp only [MulAction.toFun_apply]
+    change χ.cubicACC (G.rep g S.val) = 0
+    rw [G.cubicInvariant, S.cubicSol]⟩
   mul_smul f1 f2 S := by
     apply ACCSystem.Sols.ext
     change (G.rep.toFun (f1 * f2)) S.val = _

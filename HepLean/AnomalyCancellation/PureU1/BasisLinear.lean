@@ -24,14 +24,11 @@ namespace BasisLinear
 last position. -/
 @[simp]
 def asCharges (j : Fin n) : (PureU1 n.succ).Charges :=
- (fun i =>
-  if i = j.castSucc then
-    1
-  else
-    if i = Fin.last n then
-      - 1
-    else
-      0)
+  (fun i =>
+    if i = j.castSucc then 1
+    else if i = Fin.last n then
+        - 1
+      else 0)
 
 lemma asCharges_eq_castSucc (j : Fin n) :
     asCharges j (Fin.castSucc j) = 1 := by
@@ -123,7 +120,7 @@ def asBasis : Basis (Fin n) ℚ ((PureU1 n.succ).LinSols) where
   repr := coordinateMap
 
 instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
-   Module.Finite.of_basis asBasis
+  Module.Finite.of_basis asBasis
 
 lemma finrank_AnomalyFreeLinear :
     FiniteDimensional.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by

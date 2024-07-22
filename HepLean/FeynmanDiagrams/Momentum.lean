@@ -45,7 +45,7 @@ We define the direct sum of the edge and vertex momentum spaces.
 -/
 
 /-- The type which assocaites to each half-edge a `1`-dimensional vector space.
- Corresponding to that spanned by its momentum. -/
+  Corresponding to that spanned by its momentum. -/
 def HalfEdgeMomenta : Type := F.𝓱𝓔 → ℝ
 
 instance : AddCommGroup F.HalfEdgeMomenta := Pi.addCommGroup
@@ -78,7 +78,7 @@ def euclidInner : F.HalfEdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta →ₗ[ℝ] �
       LinearMap.smul_apply]
 
 /-- The type which associates to each edge a `1`-dimensional vector space.
- Corresponding to that spanned by its total outflowing momentum. -/
+  Corresponding to that spanned by its total outflowing momentum. -/
 def EdgeMomenta : Type := F.𝓔 → ℝ
 
 instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
@@ -86,7 +86,7 @@ instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
 instance : Module ℝ F.EdgeMomenta := Pi.module _ _ _
 
 /-- The type which assocaites to each ege a `1`-dimensional vector space.
- Corresponding to that spanned by its total inflowing momentum. -/
+  Corresponding to that spanned by its total inflowing momentum. -/
 def VertexMomenta : Type := F.𝓥 → ℝ
 
 instance : AddCommGroup F.VertexMomenta := Pi.addCommGroup
@@ -125,7 +125,7 @@ We define various maps into `F.HalfEdgeMomenta`.
 In particular, we define a map from `F.EdgeVertexMomenta` to `F.HalfEdgeMomenta`. This
 map represents the space orthogonal (with respect to the standard Euclidean inner product)
 to the allowed momenta of half-edges (up-to an offset determined by the
- external momenta).
+external momenta).
 
 The number of loops of a diagram is defined as the number of half-edges minus
 the rank of this matrix.
@@ -147,7 +147,7 @@ def vertexToHalfEdgeMomenta : F.VertexMomenta →ₗ[ℝ] F.HalfEdgeMomenta wher
   map_smul' _ _ := rfl
 
 /-- The linear map from `F.EdgeVertexMomenta` to `F.HalfEdgeMomenta` induced by
-   `F.edgeToHalfEdgeMomenta` and `F.vertexToHalfEdgeMomenta`. -/
+  `F.edgeToHalfEdgeMomenta` and `F.vertexToHalfEdgeMomenta`. -/
 def edgeVertexToHalfEdgeMomenta : F.EdgeVertexMomenta →ₗ[ℝ] F.HalfEdgeMomenta :=
   DirectSum.toModule ℝ (Fin 2) F.HalfEdgeMomenta
     (fun i => match i with | 0 => F.edgeToHalfEdgeMomenta | 1 => F.vertexToHalfEdgeMomenta)
@@ -163,7 +163,7 @@ allowed momenta.
 -/
 
 /-- The submodule of `F.HalfEdgeMomenta` corresponding to the range of
- `F.edgeVertexToHalfEdgeMomenta`. -/
+  `F.edgeVertexToHalfEdgeMomenta`. -/
 def orthogHalfEdgeMomenta : Submodule ℝ F.HalfEdgeMomenta :=
   LinearMap.range F.edgeVertexToHalfEdgeMomenta
 

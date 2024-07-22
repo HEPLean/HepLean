@@ -43,7 +43,7 @@ instance (R : MSSMACC.AnomalyFreePerp) : Decidable (LineEqProp R) := by
   apply And.decidable
 
 /-- A condition on `Sols` which we will show in `linEqPropSol_iff_proj_linEqProp` that is equivalent
- to the condition that the `proj` of the solution satisfies `lineEqProp`. -/
+  to the condition that the `proj` of the solution satisfies `lineEqProp`. -/
 def LineEqPropSol (R : MSSMACC.Sols) : Prop :=
   cubeTriLin R.val R.val Y₃.val * quadBiLin B₃.val R.val -
   cubeTriLin R.val R.val B₃.val * quadBiLin Y₃.val R.val = 0
@@ -338,8 +338,7 @@ lemma inQuadToSol_proj (T : InQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
   have h1 : (cubeTriLin T.val.val T.val.val Y₃.val ^ 2 * dot Y₃.val B₃.val ^ 3 * 3 +
-      dot Y₃.val B₃.val ^ 3 * cubeTriLin T.val.val T.val.val B₃.val ^ 2
-       * 3) = cubicCoeff T.val := by
+      dot Y₃.val B₃.val ^ 3 * cubeTriLin T.val.val T.val.val B₃.val ^ 2* 3) = cubicCoeff T.val := by
     rw [cubicCoeff]
     ring
   rw [h1]
@@ -360,7 +359,7 @@ def inQuadCubeToSol : InQuadCube × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R
     simp)
 
 lemma inQuadCubeToSol_smul (R : InQuadCube) (c₁ c₂ c₃ d : ℚ) :
-    inQuadCubeToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadCubeToSol (R, c₁, c₂, c₃):= by
+    inQuadCubeToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadCubeToSol (R, c₁, c₂, c₃) := by
   apply ACCSystem.Sols.ext
   change (planeY₃B₃ _ _ _ _).val = _
   rw [planeY₃B₃_smul]

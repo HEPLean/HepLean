@@ -328,7 +328,7 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
   · simp [h, LieAlgebra.Orthogonal.indefiniteDiagonal, minkowskiMatrix]
     exact fun a => False.elim (h (id (Eq.symm a)))
 
-lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d):
+lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
     Λ ν μ = η ν ν * ⟪e ν, Λ *ᵥ e μ⟫ₘ := by
   rw [on_basis_mulVec, ← mul_assoc]
   have h1 : η ν ν * η ν ν = 1 := by

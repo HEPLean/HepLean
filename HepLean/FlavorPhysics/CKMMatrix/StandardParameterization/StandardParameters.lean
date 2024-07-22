@@ -142,17 +142,17 @@ lemma S₂₃_eq_ℂsin_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.sin (�
   (ofReal_sin _).symm.trans (congrArg ofReal (S₂₃_eq_sin_θ₂₃ V))
 
 lemma complexAbs_sin_θ₁₂ (V : Quotient CKMMatrixSetoid) :
-    Complex.abs (Complex.sin (θ₁₂ V)) = sin (θ₁₂ V):= by
+    Complex.abs (Complex.sin (θ₁₂ V)) = sin (θ₁₂ V) := by
   rw [S₁₂_eq_ℂsin_θ₁₂, Complex.abs_ofReal, ofReal_inj, abs_eq_self]
   exact S₁₂_nonneg _
 
 lemma complexAbs_sin_θ₁₃ (V : Quotient CKMMatrixSetoid) :
-    Complex.abs (Complex.sin (θ₁₃ V)) = sin (θ₁₃ V):= by
+    Complex.abs (Complex.sin (θ₁₃ V)) = sin (θ₁₃ V) := by
   rw [S₁₃_eq_ℂsin_θ₁₃, Complex.abs_ofReal, ofReal_inj, abs_eq_self]
   exact S₁₃_nonneg _
 
 lemma complexAbs_sin_θ₂₃ (V : Quotient CKMMatrixSetoid) :
-    Complex.abs (Complex.sin (θ₂₃ V)) = sin (θ₂₃ V):= by
+    Complex.abs (Complex.sin (θ₂₃ V)) = sin (θ₂₃ V) := by
   rw [S₂₃_eq_ℂsin_θ₂₃, Complex.abs_ofReal, ofReal_inj, abs_eq_self]
   exact S₂₃_nonneg _
 
@@ -185,19 +185,19 @@ lemma C₂₃_eq_ℂcos_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.cos (�
   simp [C₂₃]
 
 lemma complexAbs_cos_θ₁₂ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₁₂ V)) =
-    cos (θ₁₂ V):= by
+    cos (θ₁₂ V) := by
   rw [C₁₂_eq_ℂcos_θ₁₂, Complex.abs_ofReal]
   simp only [ofReal_inj, abs_eq_self]
   exact Real.cos_arcsin_nonneg _
 
 lemma complexAbs_cos_θ₁₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₁₃ V)) =
-    cos (θ₁₃ V):= by
+    cos (θ₁₃ V) := by
   rw [C₁₃_eq_ℂcos_θ₁₃, Complex.abs_ofReal]
   simp only [ofReal_inj, abs_eq_self]
   exact Real.cos_arcsin_nonneg _
 
 lemma complexAbs_cos_θ₂₃ (V : Quotient CKMMatrixSetoid) : Complex.abs (Complex.cos (θ₂₃ V)) =
-    cos (θ₂₃ V):= by
+    cos (θ₂₃ V) := by
   rw [C₂₃_eq_ℂcos_θ₂₃, Complex.abs_ofReal]
   simp only [ofReal_inj, abs_eq_self]
   exact Real.cos_arcsin_nonneg _
@@ -349,10 +349,10 @@ lemma mulExpδ₁₃_on_param_δ₁₃ (V : CKMMatrix) (δ₁₃ : ℝ) :
 
 lemma mulExpδ₁₃_on_param_eq_zero_iff (V : CKMMatrix) (δ₁₃ : ℝ) :
     mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃⟧ = 0 ↔
-     VudAbs ⟦V⟧ = 0 ∨ VubAbs ⟦V⟧ = 0 ∨ VusAbs ⟦V⟧ = 0 ∨ VcbAbs ⟦V⟧ = 0 ∨ VtbAbs ⟦V⟧ = 0 := by
+      VudAbs ⟦V⟧ = 0 ∨ VubAbs ⟦V⟧ = 0 ∨ VusAbs ⟦V⟧ = 0 ∨ VcbAbs ⟦V⟧ = 0 ∨ VtbAbs ⟦V⟧ = 0 := by
   rw [VudAbs_eq_C₁₂_mul_C₁₃, VubAbs_eq_S₁₃, VusAbs_eq_S₁₂_mul_C₁₃, VcbAbs_eq_S₂₃_mul_C₁₃,
-   VtbAbs_eq_C₂₃_mul_C₁₃, ← ofReal_inj,
-  ← ofReal_inj, ← ofReal_inj, ← ofReal_inj, ← ofReal_inj]
+    VtbAbs_eq_C₂₃_mul_C₁₃, ← ofReal_inj,
+    ← ofReal_inj, ← ofReal_inj, ← ofReal_inj, ← ofReal_inj]
   simp only [ofReal_mul]
   rw [← S₁₃_eq_ℂsin_θ₁₃, ← S₁₂_eq_ℂsin_θ₁₂, ← S₂₃_eq_ℂsin_θ₂₃,
   ← C₁₃_eq_ℂcos_θ₁₃, ← C₂₃_eq_ℂcos_θ₂₃,← C₁₂_eq_ℂcos_θ₁₂]

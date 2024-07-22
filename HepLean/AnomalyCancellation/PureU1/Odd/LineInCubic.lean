@@ -49,7 +49,7 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) 
   change accCubeTriLinSymm.toCubic (a • P g + b • P! f) = 0 at h1
   simp only [TriLinearSymm.toCubic_add] at h1
   simp only [HomogeneousCubic.map_smul,
-   accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂, accCubeTriLinSymm.map_smul₃] at h1
+    accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂, accCubeTriLinSymm.map_smul₃] at h1
   erw [P_accCube, P!_accCube] at h1
   rw [← h1]
   ring
@@ -59,7 +59,7 @@ lemma line_in_cubic_P_P_P! {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
   intro g f hS
   linear_combination 2 / 3 * (lineInCubic_expand h g f hS 1 1) -
-     (lineInCubic_expand h g f hS 1 2) / 6
+      (lineInCubic_expand h g f hS 1 2) / 6
 
 /-- A `LinSol` satisfies `lineInCubicPerm` if all its permutations satisfy `lineInCubic`. -/
 def LineInCubicPerm (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
@@ -119,8 +119,8 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   have h2 := Pa_δa₂ f g 0
   rw [← hS] at h1 h2 h4
   simp at h2
-  have h5 : f 1 = S.val (δa₂ 0) + S.val δa₁ + S.val (δa₄ 0):= by
-     linear_combination -(1 * h1) - 1 * h4 - 1 * h2
+  have h5 : f 1 = S.val (δa₂ 0) + S.val δa₁ + S.val (δa₄ 0) := by
+    linear_combination -(1 * h1) - 1 * h4 - 1 * h2
   rw [h5]
   rw [δa₄_δ!₂]
   have h0 : (δa₂ (0 : Fin n.succ)) = δ!₁ 0 := by

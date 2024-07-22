@@ -109,8 +109,8 @@ lemma quad_self_proj (T : MSSMACC.Sols) :
 
 lemma quad_proj (T : MSSMACC.Sols) :
     quadBiLin (proj T.1.1).val (proj T.1.1).val = 2 * dot Y₃.val B₃.val *
-     ((dot B₃.val T.val - dot Y₃.val T.val) * quadBiLin Y₃.val T.val +
-   (dot Y₃.val T.val - 2 * dot B₃.val T.val) * quadBiLin B₃.val T.val) := by
+    ((dot B₃.val T.val - dot Y₃.val T.val) * quadBiLin Y₃.val T.val +
+    (dot Y₃.val T.val - 2 * dot B₃.val T.val) * quadBiLin B₃.val T.val) := by
   nth_rewrite 1 [proj_val]
   repeat rw [quadBiLin.map_add₁]
   repeat rw [quadBiLin.map_smul₁]
@@ -151,7 +151,7 @@ lemma cube_proj_proj_B₃ (T : MSSMACC.LinSols) :
   rw [cubeTriLin.map_add₂, cubeTriLin.map_smul₁, cubeTriLin.map_smul₂]
   rw [cubeTriLin.swap₁, cubeTriLin.swap₂, doublePoint_Y₃_B₃]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.swap₁, cubeTriLin.swap₂,
-   cubeTriLin.swap₁, doublePoint_B₃_B₃]
+    cubeTriLin.swap₁, doublePoint_B₃_B₃]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂]
   ring
 

@@ -535,7 +535,7 @@ def Pa' (f : (Fin n) ⊕ (Fin n) → ℚ) : (PureU1 (2 * n + 1)).LinSols :=
     ∑ i, f i • basisa i
 
 lemma Pa'_P'_P!' (f : (Fin n) ⊕ (Fin n) → ℚ) :
-    Pa' f = P' (f ∘ Sum.inl) + P!' (f ∘ Sum.inr):= by
+    Pa' f = P' (f ∘ Sum.inl) + P!' (f ∘ Sum.inr) := by
   exact Fintype.sum_sum_type _
 
 lemma P'_val (f : Fin n → ℚ) : (P' f).val = P f := by
@@ -602,7 +602,7 @@ lemma Pa'_eq (f f' : (Fin n.succ) ⊕ (Fin n.succ) → ℚ) : Pa' f = Pa' f' ↔
     simp
   have h2 : ∀ i, (f i + (- f' i)) = 0 := by
     exact Fintype.linearIndependent_iff.mp (@basisa_linear_independent n)
-     (fun i => f i + -f' i) h1
+      (fun i => f i + -f' i) h1
   have h2i := h2 i
   linarith
   intro h
@@ -671,15 +671,15 @@ lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
 
 lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     (hS : ((FamilyPermutations (2 * n.succ + 1)).linSolRep
-    (pairSwap (δ!₁ j) (δ!₂ j))) S = S') (g f : Fin n.succ → ℚ) (hS1 : S.val = P g + P! f):
+    (pairSwap (δ!₁ j) (δ!₂ j))) S = S') (g f : Fin n.succ → ℚ) (hS1 : S.val = P g + P! f) :
     ∃ (g' f' : Fin n.succ → ℚ),
-     S'.val = P g' + P! f' ∧ P! f' = P! f +
+    S'.val = P g' + P! f' ∧ P! f' = P! f +
     (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∧ g' = g := by
   let X := P! f + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j
   have hf : P! f ∈ Submodule.span ℚ (Set.range basis!AsCharges) := by
-     rw [(mem_span_range_iff_exists_fun ℚ)]
-     use f
-     rfl
+    rw [(mem_span_range_iff_exists_fun ℚ)]
+    use f
+    rfl
   have hP : (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∈
       Submodule.span ℚ (Set.range basis!AsCharges) := by
     apply Submodule.smul_mem

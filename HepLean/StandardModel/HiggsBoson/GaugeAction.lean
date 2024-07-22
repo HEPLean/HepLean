@@ -76,7 +76,7 @@ def unitToLinear : unitary (HiggsVec →L[ℂ] HiggsVec) →* HiggsVec →ₗ[�
 /-- The representation of the gauge group acting on `higgsVec`. -/
 @[simps!]
 def rep : Representation ℂ GaugeGroup HiggsVec :=
-   unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
+  unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
 
 lemma higgsRepUnitary_mul (g : GaugeGroup) (φ : HiggsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
@@ -138,7 +138,7 @@ lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     rep (rotateGuageGroup hφ) φ = ![0, ofReal ‖φ‖] := by
   rw [rep_apply]
   simp only [rotateGuageGroup, rotateMatrix, one_pow, one_smul,
-     Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe]
+    Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe]
   ext i
   fin_cases i
   · simp only [mulVec, Fin.zero_eta, Fin.isValue, cons_val', empty_val', cons_val_fin_one,
