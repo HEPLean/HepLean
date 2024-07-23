@@ -119,7 +119,7 @@ lemma mulUnit_coord_off_diag (μ : Colors) (i: (mulUnit d μ).UnmarkedIndexValue
     exact hb (id (Eq.symm h1))
 
 lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
-    mul T (mulUnit d μ) (h.trans (mulUnit_dual_markedColor μ).symm) = T := by
+    multMarked T (mulUnit d μ) (h.trans (mulUnit_dual_markedColor μ).symm) = T := by
   refine ext ?_ ?_
   · funext a
     match a with
@@ -128,7 +128,7 @@ lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) 
       simp only [Fin.isValue, mul_color, Sum.elim_inr, mulUnit_unmarkedColor]
       exact h.symm
   funext i
-  rw [mul_indexValue_right]
+  rw [mulMarked_indexValue_right]
   change ∑ j,
     T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1, _)) *
     (mulUnit d μ).coord (splitIndexValue.symm ((indexValueSumEquiv i).2, j)) = _
@@ -160,9 +160,9 @@ lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) 
   exact mulUnit_coord_off_diag μ (indexValueSumEquiv i).2 b hab
 
 lemma mulUnit_left (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
-    mul (mulUnit d μ) T ((mulUnit_markedColor μ).trans (congrArg τ h.symm)) =
+    multMarked (mulUnit d μ) T ((mulUnit_markedColor μ).trans (congrArg τ h.symm)) =
     mapIso d (Equiv.sumComm X (Fin 1)) T := by
-  rw [← mul_symm, mulUnit_right]
+  rw [← mult_symmd_symm, mulUnit_right]
   exact h
 
 lemma mulUnit_lorentzAction (μ : Colors) (Λ : LorentzGroup d) :

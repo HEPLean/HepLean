@@ -24,11 +24,61 @@ variable {d : ℕ} {X Y : Type} [Fintype X] [DecidableEq X] [Fintype Y] [Decidab
 
 open Marked
 
+section mulMarkedFiber
+
+variable {cX : X → Colors} {cY : Y → Colors} {fX : Fin 1 → Colors} {fY : Fin 1 → Colors}
+
+/-- The index value appearing in the multiplication of Marked tensors on the left. -/
+def mulMarkedFiberFstArg  (i : IndexValue d (Sum.elim cX cY)) (x : ColorsIndex d (fX 0)) :
+    IndexValue d (Sum.elim cX fX) :=
+  indexValueSumEquiv.symm ((indexValueSumEquiv i).1, indexValueFinOne x)
+
+/-- The index value appearing in the multiplication of Marked tensors on the right. -/
+def mulMarkedFiberSndArg (i : IndexValue d (Sum.elim cX cY)) (x : ColorsIndex d (fX 0))
+    (h : fX 0 = τ (fY 0)) : IndexValue d (Sum.elim cY fY) :=
+  indexValueSumEquiv.symm ((indexValueSumEquiv i).2, indexValueFinOne $ colorsIndexDualCast h x)
+
+def mulMarkedFiber (h : fX 0 = τ (fY 0)) : ColorFiber d (Sum.elim cX fX) →ₗ[ℝ]
+      ColorFiber d (Sum.elim cY fY) →ₗ[ℝ] ColorFiber d (Sum.elim cX cY) where
+  toFun T := {
+    toFun := fun S i => ∑ x, T (mulMarkedFiberFstArg i x) * S (mulMarkedFiberSndArg i x h),
+    map_add' := fun F S => by
+      funext i
+      trans ∑ x , (T (mulMarkedFiberFstArg i x) * F (mulMarkedFiberSndArg i x h) +
+        T (mulMarkedFiberFstArg i x) * S (mulMarkedFiberSndArg i x h))
+      exact Finset.sum_congr rfl (fun x _ => mul_add _ _ _ )
+      exact Finset.sum_add_distrib,
+    map_smul' := fun r S => by
+      funext i
+      trans ∑ x , r * (T (mulMarkedFiberFstArg i x) * S (mulMarkedFiberSndArg i x h))
+      refine Finset.sum_congr rfl (fun x _ => ?_)
+      ring_nf
+      rw [mul_assoc]
+      rfl
+      rw [← Finset.mul_sum]
+      rfl}
+  map_add' := fun T S => by
+    ext F
+    funext i
+    trans ∑ x , (T (mulMarkedFiberFstArg i x) * F (mulMarkedFiberSndArg i x h) +
+        S (mulMarkedFiberFstArg i x) * F (mulMarkedFiberSndArg i x h))
+    exact Finset.sum_congr rfl (fun x _ => add_mul _ _ _)
+    exact Finset.sum_add_distrib
+  map_smul' := fun r T => by
+    ext S
+    funext i
+    trans ∑ x , r * (T (mulMarkedFiberFstArg i x) * S (mulMarkedFiberSndArg i x h))
+    refine Finset.sum_congr rfl (fun x _ => mul_assoc _ _ _)
+    rw [← Finset.mul_sum]
+    rfl
+
+end mulMarkedFiber
+
 /-- The contraction of the marked indices of two tensors each with one marked index, which
 is dual to the others. The contraction is done via
 `φ^μ ψ_μ = φ^0 ψ_0 + φ^1 ψ_1 + ...`. -/
 @[simps!]
-def mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+def mulMarked {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
     RealLorentzTensor d (X ⊕ Y) where
   color := Sum.elim T.unmarkedColor S.unmarkedColor
@@ -38,25 +88,25 @@ def mul {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
       oneMarkedIndexValue $ colorsIndexDualCast h x))
 
 /-- The index value appearing in the multiplication of Marked tensors on the left. -/
-def mulFstArg {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
+def mulMarkedFstArg {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
     (i : IndexValue d (Sum.elim T.unmarkedColor S.unmarkedColor))
     (x : ColorsIndex d (T.color (markedPoint X 0))) : IndexValue d T.color :=
   splitIndexValue.symm ((indexValueSumEquiv i).1, oneMarkedIndexValue x)
 
-lemma mulFstArg_inr {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
+lemma mulMarkedFstArg_inr {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
     (i : IndexValue d (Sum.elim T.unmarkedColor S.unmarkedColor))
     (x : ColorsIndex d (T.color (markedPoint X 0))) :
-    mulFstArg i x (Sum.inr 0) = x := by
+    mulMarkedFstArg i x (Sum.inr 0) = x := by
   rfl
 
-lemma mulFstArg_inl {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
+lemma mulMarkedFstArg_inl {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
     (i : IndexValue d (Sum.elim T.unmarkedColor S.unmarkedColor))
     (x : ColorsIndex d (T.color (markedPoint X 0))) (c : X):
-    mulFstArg i x (Sum.inl c) = i (Sum.inl c) := by
+    mulMarkedFstArg i x (Sum.inl c) = i (Sum.inl c) := by
   rfl
 
 /-- The index value appearing in the multiplication of Marked tensors on the right. -/
-def mulSndArg {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
+def mulMarkedSndArg {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
     (i : IndexValue d (Sum.elim T.unmarkedColor S.unmarkedColor))
     (x : ColorsIndex d (T.color (markedPoint X 0))) (h : T.markedColor 0 = τ (S.markedColor 0)) :
     IndexValue d S.color :=
@@ -68,9 +118,9 @@ def mulSndArg {X Y : Type} {T : Marked d X 1} {S : Marked d Y 1}
 
 -/
 /-! TODO: Where appropriate write these expresions in terms of `indexValueDualIso`. -/
-lemma mul_colorsIndex_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_colorsIndex_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
-    (mul T S h).coord = fun i => ∑ x,
+    (mulMarked T S h).coord = fun i => ∑ x,
     T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
     oneMarkedIndexValue $ colorsIndexDualCast (color_eq_dual_symm h) x)) *
     S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, oneMarkedIndexValue x)) := by
@@ -81,9 +131,9 @@ lemma mul_colorsIndex_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
   rw [← colorsIndexDualCast_symm]
   exact (Equiv.apply_eq_iff_eq_symm_apply (colorsIndexDualCast h)).mp rfl
 
-lemma mul_indexValue_left {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_indexValue_left {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
-    (mul T S h).coord = fun i => ∑ j,
+    (mulMarked T S h).coord = fun i => ∑ j,
     T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1, j)) *
     S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2,
     (oneMarkedIndexValue $ (colorsIndexDualCast h) $ oneMarkedIndexValue.symm j))) := by
@@ -91,14 +141,14 @@ lemma mul_indexValue_left {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
   rw [← Equiv.sum_comp (oneMarkedIndexValue)]
   rfl
 
-lemma mul_indexValue_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_indexValue_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
-    (mul T S h).coord = fun i => ∑ j,
+    (mulMarked T S h).coord = fun i => ∑ j,
     T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
     oneMarkedIndexValue $ (colorsIndexDualCast h).symm $ oneMarkedIndexValue.symm j)) *
     S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, j)) := by
   funext i
-  rw [mul_colorsIndex_right]
+  rw [mulMarked_colorsIndex_right]
   rw [← Equiv.sum_comp (oneMarkedIndexValue)]
   apply Finset.sum_congr rfl (fun x _ => ?_)
   congr
@@ -111,24 +161,24 @@ lemma mul_indexValue_right {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
 -/
 
 /-- Multiplication is well behaved with regard to swapping tensors. -/
-lemma mul_symm {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_symm {X Y : Type} (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 0)) :
-    mapIso d (Equiv.sumComm X Y) (mul T S h) = mul S T (color_eq_dual_symm h) := by
+    mapIso d (Equiv.sumComm X Y) (mulMarked T S h) = mulMarked S T (color_eq_dual_symm h) := by
   refine ext ?_ ?_
   · funext a
     cases a with
     | inl _ => rfl
     | inr _ => rfl
   · funext i
-    rw [mul_colorsIndex_right]
+    rw [mulMarked_colorsIndex_right]
     refine Fintype.sum_congr _ _ (fun x => ?_)
     rw [mul_comm]
     rfl
 
 /-- Multiplication commutes with `mapIso`. -/
-lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃ W)
+lemma mulMarked_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃ W)
     (g : Y ≃ Z) (h : T.markedColor 0 = τ (S.markedColor 0)) :
-    mapIso d (Equiv.sumCongr f g) (mul T S h) = mul (mapIso d (Equiv.sumCongr f (Equiv.refl _)) T)
+    mapIso d (Equiv.sumCongr f g) (mulMarked T S h) = mulMarked (mapIso d (Equiv.sumCongr f (Equiv.refl _)) T)
     (mapIso d (Equiv.sumCongr g (Equiv.refl _)) S) h := by
   refine ext ?_ ?_
   · funext a
@@ -136,7 +186,7 @@ lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃
     | inl _ => rfl
     | inr _ => rfl
   · funext i
-    rw [mapIso_apply_coord, mul_coord, mul_coord]
+    rw [mapIso_apply_coord, mapIsoFiber_apply, mapIsoFiber_apply, mulMarked_coord, mulMarked_coord]
     refine Fintype.sum_congr _ _ (fun x => ?_)
     rw [mapIso_apply_coord, mapIso_apply_coord]
     refine Mathlib.Tactic.Ring.mul_congr ?_ ?_ rfl
@@ -152,9 +202,9 @@ lemma mul_mapIso {X Y Z : Type} (T : Marked d X 1) (S : Marked d Y 1) (f : X ≃
 -/
 
 /-- The marked Lorentz Action leaves multiplication invariant. -/
-lemma mul_markedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_markedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 1)) :
-    mul (Λ •ₘ T) (Λ •ₘ S) h = mul T S h := by
+    mulMarked (Λ •ₘ T) (Λ •ₘ S) h = mulMarked T S h := by
   refine ext rfl ?_
   funext i
   change ∑ x, (∑ j, toTensorRepMat Λ (oneMarkedIndexValue x) j *
@@ -186,8 +236,7 @@ lemma mul_markedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   erw [toTensorRepMap_sum_dual]
   rfl
   rw [Finset.sum_comm]
-  trans ∑ k,
-    T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
+  trans ∑ k, T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1,
     (oneMarkedIndexValue $ (colorsIndexDualCast h).symm $ oneMarkedIndexValue.symm k)))*
     S.coord (splitIndexValue.symm ((indexValueSumEquiv i).2, k))
   apply Finset.sum_congr rfl (fun k _ => ?_)
@@ -198,9 +247,9 @@ lemma mul_markedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   rfl
 
 /-- The unmarked Lorentz Action commutes with multiplication. -/
-lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 1)) :
-    mul (Λ •ᵤₘ T) (Λ •ᵤₘ S) h = Λ • mul T S h := by
+    mulMarked (Λ •ᵤₘ T) (Λ •ᵤₘ S) h = Λ • mulMarked T S h := by
   refine ext rfl ?_
   funext i
   change ∑ x, (∑ j, toTensorRepMat Λ (indexValueSumEquiv i).1 j *
@@ -236,7 +285,7 @@ lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   apply Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
   · rw [toTensorRepMat_of_indexValueSumEquiv']
     congr
-    simp only [IndexValue, Finset.mem_univ, Prod.mk.eta, Equiv.symm_apply_apply, mul_color]
+    simp only [IndexValue, Finset.mem_univ, Prod.mk.eta, Equiv.symm_apply_apply, mulMarked_color]
   trans ∑ p, toTensorRepMat Λ i p *
     ∑ x, (T.coord (splitIndexValue.symm ((indexValueSumEquiv p).1, oneMarkedIndexValue x)))
     * S.coord (splitIndexValue.symm ((indexValueSumEquiv p).2,
@@ -246,11 +295,11 @@ lemma mul_unmarkedLorentzAction (T : Marked d X 1) (S : Marked d Y 1)
   rfl
 
 /-- The Lorentz action commutes with multiplication. -/
-lemma mul_lorentzAction (T : Marked d X 1) (S : Marked d Y 1)
+lemma mulMarked_lorentzAction (T : Marked d X 1) (S : Marked d Y 1)
     (h : T.markedColor 0 = τ (S.markedColor 1)) :
-    mul (Λ • T) (Λ • S) h = Λ • mul T S h := by
+    mulMarked (Λ • T) (Λ • S) h = Λ • mulMarked T S h := by
   simp only [← marked_unmarked_action_eq_action]
-  rw [mul_markedLorentzAction, mul_unmarkedLorentzAction]
+  rw [mulMarked_markedLorentzAction, mulMarked_unmarkedLorentzAction]
 
 /-!
 
@@ -264,28 +313,28 @@ variable {n m : ℕ} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
 
 /-- The multiplication of two real Lorentz Tensors along specified indices. -/
 @[simps!]
-def mulS (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (x : X) (y : Y)
+def mult (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (x : X) (y : Y)
     (h : T.color x = τ (S.color y)) : RealLorentzTensor d ({x' // x' ≠ x} ⊕ {y' // y' ≠ y}) :=
-  mul (markSingle x T) (markSingle y S) h
+  mulMarked (markSingle x T) (markSingle y S) h
 
 /-- The first index value appearing in the multiplication of two Lorentz tensors. -/
-def mulSFstArg {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+def multFstArg {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0))) :
-    IndexValue d T.color := (markSingleIndexValue T x).symm (mulFstArg i a)
+    IndexValue d T.color := (markSingleIndexValue T x).symm (mulMarkedFstArg i a)
 
-lemma mulSFstArg_ext {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multFstArg_ext {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     {i j : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor)}
     {a b : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0))}
-    (hij : i = j) (hab : a = b) : mulSFstArg i a = mulSFstArg j b := by
+    (hij : i = j) (hab : a = b) : multFstArg i a = multFstArg j b := by
   subst hij; subst hab
   rfl
 
-lemma mulSFstArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multFstArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0))) :
-    mulSFstArg i a x = a := by
-  rw [mulSFstArg, markSingleIndexValue]
+    multFstArg i a x = a := by
+  rw [multFstArg, markSingleIndexValue]
   simp only [ne_eq, Fintype.univ_ofSubsingleton, Fin.zero_eta, Fin.isValue, Equiv.symm_trans_apply,
      Sum.map_inr, id_eq]
   erw [markEmbeddingIndexValue_apply_symm_on_mem]
@@ -300,11 +349,11 @@ lemma mulSFstArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} 
   rw [embedSingleton_toEquivRange_symm]
   rfl
 
-lemma mulSFstArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multFstArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0)))
-    (c : X) (hc : c ≠ x) : mulSFstArg i a c = i (Sum.inl ⟨c, hc⟩) := by
-  rw [mulSFstArg, markSingleIndexValue]
+    (c : X) (hc : c ≠ x) : multFstArg i a c = i (Sum.inl ⟨c, hc⟩) := by
+  rw [multFstArg, markSingleIndexValue]
   simp only [ne_eq, Fintype.univ_ofSubsingleton, Fin.zero_eta, Fin.isValue, Equiv.symm_trans_apply,
      Sum.map_inr, id_eq]
   erw [markEmbeddingIndexValue_apply_symm_on_not_mem]
@@ -313,17 +362,17 @@ lemma mulSFstArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d
   rfl
 
 /-- The second index value appearing in the multiplication of two Lorentz tensors. -/
-def mulSSndArg {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+def multSndArg {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0)))
     (h : T.color x = τ (S.color y)) : IndexValue d S.color :=
-  (markSingleIndexValue S y).symm (mulSndArg i a h)
+  (markSingleIndexValue S y).symm (mulMarkedSndArg i a h)
 
-lemma mulSSndArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multSndArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0)))
-    (h : T.color x = τ (S.color y)) : mulSSndArg i a h y = colorsIndexDualCast h a := by
-  rw [mulSSndArg, markSingleIndexValue]
+    (h : T.color x = τ (S.color y)) : multSndArg i a h y = colorsIndexDualCast h a := by
+  rw [multSndArg, markSingleIndexValue]
   simp only [ne_eq, Fintype.univ_ofSubsingleton, Fin.zero_eta, Fin.isValue, Equiv.symm_trans_apply,
      Sum.map_inr, id_eq]
   erw [markEmbeddingIndexValue_apply_symm_on_mem]
@@ -338,12 +387,12 @@ lemma mulSSndArg_on_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} 
   rw [embedSingleton_toEquivRange_symm]
   rfl
 
-lemma mulSSndArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multSndArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor))
     (a : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0)))
     (h : T.color x = τ (S.color y)) (c : Y) (hc : c ≠ y) :
-    mulSSndArg i a h c = i (Sum.inr ⟨c, hc⟩) := by
-  rw [mulSSndArg, markSingleIndexValue]
+    multSndArg i a h c = i (Sum.inr ⟨c, hc⟩) := by
+  rw [multSndArg, markSingleIndexValue]
   simp only [ne_eq, Fintype.univ_ofSubsingleton, Fin.zero_eta, Fin.isValue, Equiv.symm_trans_apply,
      Sum.map_inr, id_eq]
   erw [markEmbeddingIndexValue_apply_symm_on_not_mem]
@@ -351,48 +400,48 @@ lemma mulSSndArg_on_not_mem {T : RealLorentzTensor d X} {S : RealLorentzTensor d
   simpa using hc
   rfl
 
-lemma mulSSndArg_ext {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
+lemma multSndArg_ext {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y} {x : X} {y : Y}
     {i j : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor)}
     {a b : ColorsIndex d ((markSingle x T).color (markedPoint {x' // x' ≠ x} 0))}
     (h : T.color x = τ (S.color y)) (hij : i = j) (hab : a = b) :
-    mulSSndArg i a h = mulSSndArg j b h := by
+    multSndArg i a h = multSndArg j b h := by
   subst hij
   subst hab
   rfl
 
-lemma mulS_coord_arg (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (x : X) (y : Y)
+lemma mult_coord_arg (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (x : X) (y : Y)
     (h : T.color x = τ (S.color y))
     (i : IndexValue d (Sum.elim (markSingle x T).unmarkedColor (markSingle y S).unmarkedColor)) :
-  (mulS T S x y h).coord i = ∑ a, T.coord (mulSFstArg i a) * S.coord (mulSSndArg i a h) := by
+  (mult T S x y h).coord i = ∑ a, T.coord (multFstArg i a) * S.coord (multSndArg i a h) := by
   rfl
 
-lemma mulS_mapIso (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
+lemma mult_mapIso (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
     (eX : X ≃ X') (eY : Y ≃ Y') (x : X) (y : Y) (x' : X') (y' : Y') (hx : eX x = x')
     (hy : eY y = y') (h : T.color x = τ (S.color y)) :
-    mulS (mapIso d eX T) (mapIso d eY S) x' y' (by subst hx hy; simpa using h) =
+    mult (mapIso d eX T) (mapIso d eY S) x' y' (by subst hx hy; simpa using h) =
     mapIso d (Equiv.sumCongr (equivSingleCompl eX hx) (equivSingleCompl eY hy))
-      (mulS T S x y h) := by
-  rw [mulS, mulS, mul_mapIso]
+      (mult T S x y h) := by
+  rw [mult, mult, mulMarked_mapIso]
   congr 1 <;> rw [markSingle_mapIso]
 
-lemma mulS_lorentzAction (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
+lemma mult_lorentzAction (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
     (x : X) (y : Y) (h : T.color x = τ (S.color y)) (Λ : LorentzGroup d) :
-    mulS (Λ • T) (Λ • S) x y h = Λ • mulS T S x y h := by
-  rw [mulS, mulS, ← mul_lorentzAction]
+    mult (Λ • T) (Λ • S) x y h = Λ • mult T S x y h := by
+  rw [mult, mult, ← mulMarked_lorentzAction]
   congr 1
   all_goals
     rw [markSingle, markEmbedding, Equiv.trans_apply]
     erw [lorentzAction_mapIso, lorentzAction_mapIso]
     rfl
 
-lemma mulS_symm (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
+lemma mult_symm (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y)
     (x : X) (y : Y) (h : T.color x = τ (S.color y)) :
-    mapIso d (Equiv.sumComm _ _) (mulS T S x y h) = mulS S T y x (color_eq_dual_symm h) := by
-  rw [mulS, mulS, mul_symm]
+    mapIso d (Equiv.sumComm _ _) (mult T S x y h) = mult S T y x (color_eq_dual_symm h) := by
+  rw [mult, mult, mulMarked_symm]
 
 /-- An equivalence of types associated with multiplying two consecutive indices,
 with the second index appearing on the left. -/
-def mulSSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
+def multSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
     {yz // yz ≠ (Sum.inl ⟨y, hy⟩ : {y'' // y'' ≠ y'} ⊕ {z' // z' ≠ z})} ≃
     {y'' // y'' ≠ y' ∧ y'' ≠ y} ⊕ {z' // z' ≠ z} :=
   Equiv.subtypeSum.trans <|
@@ -404,7 +453,7 @@ def mulSSplitLeft {y y' : Y} (hy : y ≠ y') (z : Z) :
 
 /-- An equivalence of types associated with multiplying two consecutive indices with the
 second index appearing on the right. -/
-def mulSSplitRight {y y' : Y} (hy : y ≠ y') (z : Z) :
+def multSplitRight {y y' : Y} (hy : y ≠ y') (z : Z) :
     {yz // yz ≠ (Sum.inr ⟨y', hy.symm⟩ : {z' // z' ≠ z} ⊕ {y'' // y'' ≠ y})} ≃
     {z' // z' ≠ z} ⊕ {y'' // y'' ≠ y' ∧ y'' ≠ y} :=
    Equiv.subtypeSum.trans <|
@@ -415,18 +464,18 @@ def mulSSplitRight {y y' : Y} (hy : y ≠ y') (z : Z) :
     (Equiv.subtypeEquivRight (fun y'' => And.comm)))
 
 /-- An equivalence of types associated with the associativity property of multiplication. -/
-def mulSAssocIso (x : X) {y y' : Y} (hy : y ≠ y') (z : Z) :
+def multAssocIso (x : X) {y y' : Y} (hy : y ≠ y') (z : Z) :
     {x' // x' ≠ x} ⊕ {yz // yz ≠ (Sum.inl ⟨y, hy⟩ : {y'' // y'' ≠ y'} ⊕ {z' // z' ≠ z})}
     ≃ {xy // xy ≠ (Sum.inr ⟨y', hy.symm⟩ : {x' // x' ≠ x} ⊕ {y'' // y'' ≠ y})} ⊕ {z' // z' ≠ z} :=
-  (Equiv.sumCongr (Equiv.refl _) (mulSSplitLeft hy z)).trans <|
+  (Equiv.sumCongr (Equiv.refl _) (multSplitLeft hy z)).trans <|
   (Equiv.sumAssoc _ _ _).symm.trans <|
-  (Equiv.sumCongr (mulSSplitRight hy x).symm (Equiv.refl _))
+  (Equiv.sumCongr (multSplitRight hy x).symm (Equiv.refl _))
 
-lemma mulS_assoc_color {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y}
+lemma mult_assoc_color {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y}
     {U : RealLorentzTensor d Z} {x : X} {y y' : Y} (hy : y ≠ y') {z : Z}
     (h : T.color x = τ (S.color y))
-    (h' : S.color y' = τ (U.color z)) : (mulS (mulS T S x y h) U (Sum.inr ⟨y', hy.symm⟩) z h').color
-    = (mapIso d (mulSAssocIso x hy z) (mulS T (mulS S U y' z h') x (Sum.inl ⟨y, hy⟩) h)).color := by
+    (h' : S.color y' = τ (U.color z)) : (mult (mult T S x y h) U (Sum.inr ⟨y', hy.symm⟩) z h').color
+    = (mapIso d (multAssocIso x hy z) (mult T (mult S U y' z h') x (Sum.inl ⟨y, hy⟩) h)).color := by
   funext a
   match a with
   | .inl ⟨.inl _, _⟩ => rfl
@@ -434,28 +483,28 @@ lemma mulS_assoc_color {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y}
   | .inr _ => rfl
 
 /-- An equivalence of index values associated with the associativity property of multiplication. -/
-def mulSAssocIndexValue {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y}
+def multAssocIndexValue {T : RealLorentzTensor d X} {S : RealLorentzTensor d Y}
     {U : RealLorentzTensor d Z} {x : X} {y y' : Y} (hy : y ≠ y') {z : Z}
     (h : T.color x = τ (S.color y)) (h' : S.color y' = τ (U.color z)) :
-    IndexValue d ((T.mulS S x y h).mulS U (Sum.inr ⟨y', hy.symm⟩) z h').color ≃
-    IndexValue d (T.mulS (S.mulS U y' z h') x (Sum.inl ⟨y, hy⟩) h).color :=
-  indexValueIso d (mulSAssocIso x hy z).symm (mulS_assoc_color hy h h')
+    IndexValue d ((T.mult S x y h).mult U (Sum.inr ⟨y', hy.symm⟩) z h').color ≃
+    IndexValue d (T.mult (S.mult U y' z h') x (Sum.inl ⟨y, hy⟩) h).color :=
+  indexValueIso d (multAssocIso x hy z).symm (mult_assoc_color hy h h')
 
 /-- Multiplication of indices is associative, up to a `mapIso` equivalence. -/
-lemma mulS_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : RealLorentzTensor d Z)
+lemma mult_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : RealLorentzTensor d Z)
     (x : X) (y y' : Y) (hy : y ≠ y') (z : Z) (h : T.color x = τ (S.color y))
-    (h' : S.color y' = τ (U.color z)) : mulS (mulS T S x y h) U (Sum.inr ⟨y', hy.symm⟩) z h' =
-    mapIso d (mulSAssocIso x hy z) (mulS T (mulS S U y' z h') x (Sum.inl ⟨y, hy⟩) h) := by
-  apply ext (mulS_assoc_color _ _ _) ?_
+    (h' : S.color y' = τ (U.color z)) : mult (mult T S x y h) U (Sum.inr ⟨y', hy.symm⟩) z h' =
+    mapIso d (multAssocIso x hy z) (mult T (mult S U y' z h') x (Sum.inl ⟨y, hy⟩) h) := by
+  apply ext (mult_assoc_color _ _ _) ?_
   funext i
-  trans ∑ a, (∑ b, T.coord (mulSFstArg (mulSFstArg i a) b) *
-    S.coord (mulSSndArg (mulSFstArg i a) b h)) * U.coord (mulSSndArg i a h')
+  trans ∑ a, (∑ b, T.coord (multFstArg (multFstArg i a) b) *
+    S.coord (multSndArg (multFstArg i a) b h)) * U.coord (multSndArg i a h')
   rfl
-  trans ∑ a, T.coord (mulSFstArg (mulSAssocIndexValue hy h h' i) a) *
-    (∑ b, S.coord (mulSFstArg (mulSSndArg (mulSAssocIndexValue hy h h' i) a h) b) *
-    U.coord (mulSSndArg (mulSSndArg (mulSAssocIndexValue hy h h' i) a h) b h'))
+  trans ∑ a, T.coord (multFstArg (multAssocIndexValue hy h h' i) a) *
+    (∑ b, S.coord (multFstArg (multSndArg (multAssocIndexValue hy h h' i) a h) b) *
+    U.coord (multSndArg (multSndArg (multAssocIndexValue hy h h' i) a h) b h'))
   swap
-  rw [mapIso_apply_coord, mulS_coord_arg, indexValueIso_symm]
+  rw [mapIso_apply_coord, mapIsoFiber_apply, mapIsoFiber_apply, mult_coord_arg, indexValueIso_symm]
   rfl
   rw [Finset.sum_congr rfl (fun x _ => Finset.sum_mul _ _ _)]
   rw [Finset.sum_congr rfl (fun x _ => Finset.mul_sum _ _ _)]
@@ -467,15 +516,15 @@ lemma mulS_assoc (T : RealLorentzTensor d X) (S : RealLorentzTensor d Y) (U : Re
   funext c
   by_cases hcy : c = y
   · subst hcy
-    rw [mulSSndArg_on_mem, mulSFstArg_on_not_mem, mulSSndArg_on_mem]
+    rw [multSndArg_on_mem, multFstArg_on_not_mem, multSndArg_on_mem]
     rfl
   · by_cases hcy' : c = y'
     · subst hcy'
-      rw [mulSFstArg_on_mem, mulSSndArg_on_not_mem, mulSFstArg_on_mem]
-    · rw [mulSFstArg_on_not_mem, mulSSndArg_on_not_mem, mulSSndArg_on_not_mem,
-        mulSFstArg_on_not_mem]
-      rw [mulSAssocIndexValue, indexValueIso_eq_symm, indexValueIso_symm_apply']
-      simp only [ne_eq, Function.comp_apply, Equiv.symm_symm_apply, mulS_color, Sum.elim_inr,
+      rw [multFstArg_on_mem, multSndArg_on_not_mem, multFstArg_on_mem]
+    · rw [multFstArg_on_not_mem, multSndArg_on_not_mem, multSndArg_on_not_mem,
+        multFstArg_on_not_mem]
+      rw [multAssocIndexValue, indexValueIso_eq_symm, indexValueIso_symm_apply']
+      simp only [ne_eq, Function.comp_apply, Equiv.symm_symm_apply, mult_color, Sum.elim_inr,
         colorsIndexCast, Equiv.cast_refl, Equiv.refl_symm]
       erw [Equiv.refl_apply]
       rfl

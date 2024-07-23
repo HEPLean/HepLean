@@ -9,6 +9,9 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Logic.Equiv.Fin
 import Mathlib.Tactic.FinCases
 import Mathlib.Logic.Equiv.Fintype
+import Mathlib.Algebra.Module.Pi
+import Mathlib.Algebra.Module.Equiv
+import Mathlib.Algebra.Module.LinearMap.Basic
 /-!
 
 # Real Lorentz Tensors
@@ -53,12 +56,24 @@ instance (d : ℕ) (μ : RealLorentzTensor.Colors) : DecidableEq (RealLorentzTen
 def RealLorentzTensor.IndexValue {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
     Type 0 := (x : X) → RealLorentzTensor.ColorsIndex d (c x)
 
+def RealLorentzTensor.ColorFiber {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) : Type :=
+    RealLorentzTensor.IndexValue d c → ℝ
+
+instance {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
+  AddCommMonoid (RealLorentzTensor.ColorFiber d c) := Pi.addCommMonoid
+
+instance {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
+  Module ℝ (RealLorentzTensor.ColorFiber d c) := Pi.module _ _ _
+
+instance {X : Type} (d : ℕ) (c : X → RealLorentzTensor.Colors) :
+  AddCommGroup (RealLorentzTensor.ColorFiber d c) := Pi.addCommGroup
+
 /-- A Lorentz Tensor defined by its coordinate map. -/
 structure RealLorentzTensor (d : ℕ) (X : Type) where
   /-- The color associated to each index of the tensor. -/
   color : X → RealLorentzTensor.Colors
   /-- The coordinate map for the tensor. -/
-  coord : RealLorentzTensor.IndexValue d color → ℝ
+  coord : RealLorentzTensor.ColorFiber d color
 
 namespace RealLorentzTensor
 open Matrix
@@ -85,6 +100,9 @@ lemma τ_involutive : Function.Involutive τ := by
 lemma color_eq_dual_symm {μ ν : Colors} (h : μ = τ ν) : ν = τ μ :=
   (Function.Involutive.eq_iff τ_involutive).mp h.symm
 
+lemma color_comp_τ_symm {c1 c2 : X → Colors} (h : c1 = τ ∘ c2) : c2 = τ ∘ c1 :=
+  funext (fun x => color_eq_dual_symm (congrFun h x))
+
 /-- The color associated with an element of `x ∈ X` for a tensor `T`. -/
 def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 
@@ -92,6 +110,11 @@ def ch {X : Type} (x : X) (T : RealLorentzTensor d X) : Colors := T.color x
 def colorsIndexCast {d : ℕ} {μ₁ μ₂ : RealLorentzTensor.Colors} (h : μ₁ = μ₂) :
     ColorsIndex d μ₁ ≃ ColorsIndex d μ₂ :=
   Equiv.cast (congrArg (ColorsIndex d) h)
+
+@[simp]
+lemma colorsIndexCast_symm {d : ℕ} {μ₁ μ₂ : RealLorentzTensor.Colors} (h : μ₁ = μ₂) :
+    (@colorsIndexCast d _ _ h).symm = colorsIndexCast h.symm := by
+  rfl
 
 /-- An equivalence of `ColorsIndex` between that of a color and that of its dual. -/
 def colorsIndexDualCastSelf {d : ℕ} {μ : RealLorentzTensor.Colors}:
@@ -112,12 +135,38 @@ def colorsIndexDualCast {μ ν : Colors} (h : μ = τ ν) :
     ColorsIndex d μ ≃ ColorsIndex d ν :=
   (colorsIndexCast h).trans colorsIndexDualCastSelf.symm
 
+@[simp]
 lemma colorsIndexDualCast_symm {μ ν : Colors} (h : μ = τ ν) :
     (colorsIndexDualCast h).symm =
     @colorsIndexDualCast d _ _ ((Function.Involutive.eq_iff τ_involutive).mp h.symm) := by
   match μ, ν with
   | Colors.up, Colors.down => rfl
   | Colors.down, Colors.up => rfl
+
+@[simp]
+lemma colorsIndexDualCast_trans {μ ν ξ : Colors} (h : μ = τ ν) (h' : ν = τ ξ) :
+    (@colorsIndexDualCast d _ _ h).trans (colorsIndexDualCast h') =
+    colorsIndexCast (by rw [h, h', τ_involutive]) := by
+  match μ, ν, ξ with
+  | Colors.up, Colors.down, Colors.up => rfl
+  | Colors.down, Colors.up, Colors.down => rfl
+
+@[simp]
+lemma colorsIndexDualCast_trans_colorsIndexCast {μ ν ξ : Colors} (h : μ = τ ν) (h' : ν = ξ) :
+    (@colorsIndexDualCast d _ _ h).trans (colorsIndexCast h') =
+    colorsIndexDualCast (by rw [h, h']) := by
+  match μ, ν, ξ with
+  | Colors.down, Colors.up, Colors.up => rfl
+  | Colors.up, Colors.down, Colors.down => rfl
+
+@[simp]
+lemma colorsIndexCast_trans_colorsIndexDualCast {μ ν ξ : Colors} (h : μ = ν) (h' : ν = τ ξ) :
+    (colorsIndexCast h).trans (@colorsIndexDualCast d _ _ h')  =
+    colorsIndexDualCast (by rw [h, h']) := by
+  match μ, ν, ξ with
+  | Colors.up, Colors.up, Colors.down => rfl
+  | Colors.down, Colors.down, Colors.up => rfl
+
 
 /-!
 
@@ -137,12 +186,12 @@ instance [Fintype X] : DecidableEq (IndexValue d c) :=
 -/
 
 /-- An isomorphism of the type of index values given an isomorphism of sets. -/
-@[simps!]
 def indexValueIso (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors} (h : i = j ∘ f) :
     IndexValue d i ≃ IndexValue d j :=
   (Equiv.piCongrRight (fun μ => colorsIndexCast (congrFun h μ))).trans $
   Equiv.piCongrLeft (fun y => RealLorentzTensor.ColorsIndex d (j y)) f
 
+@[simp]
 lemma indexValueIso_symm_apply' (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors}
     (h : i = j ∘ f) (y : IndexValue d j) (x : X) :
     (indexValueIso d f h).symm y x = (colorsIndexCast (congrFun h x)).symm (y (f x)) := by
@@ -159,9 +208,10 @@ lemma indexValueIso_trans (d : ℕ) (f : X ≃ Y) (g : Y ≃ Z) {i : X → Color
     exact Equiv.coe_inj.mp rfl
   simpa only [Equiv.symm_symm] using congrArg (fun e => e.symm) h1
 
+@[simp]
 lemma indexValueIso_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
     (indexValueIso d f h).symm =
-    indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr (id (Eq.symm h))) := by
+    indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr h.symm) := by
   ext i : 1
   rw [← Equiv.symm_apply_eq]
   funext y
@@ -172,7 +222,7 @@ lemma indexValueIso_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
 
 lemma indexValueIso_eq_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
     indexValueIso d f h =
-    (indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr (id (Eq.symm h)))).symm := by
+    (indexValueIso d f.symm ((Equiv.eq_comp_symm f j i).mpr h.symm)).symm := by
   rw [indexValueIso_symm]
   rfl
 
@@ -188,10 +238,161 @@ lemma indexValueIso_refl (d : ℕ) (i : X → Colors) :
 -/
 
 /-- The isomorphism between the index values of a color map and its dual. -/
+def indexValueDualIso (d : ℕ) {i : X → Colors} {j : Y → Colors} (e : X ≃ Y)
+    (h : i = τ ∘ j ∘ e) : IndexValue d i ≃ IndexValue d j :=
+  (Equiv.piCongrRight (fun μ => colorsIndexDualCast (congrFun h μ))).trans $
+  Equiv.piCongrLeft (fun y => ColorsIndex d (j y)) e
+
+lemma indexValueDualIso_symm_apply' (d : ℕ) {i : X → Colors} {j : Y → Colors} (e : X ≃ Y)
+    (h : i = τ ∘ j ∘ e) (y : IndexValue d j) (x : X) :
+    (indexValueDualIso d e h).symm y x = (colorsIndexDualCast (congrFun h x)).symm (y (e x)) := by
+  rfl
+
+lemma indexValueDualIso_cond_symm {i : X → Colors} {j : Y → Colors} {e : X ≃ Y}
+    (h : i = τ ∘ j ∘ e) : j = τ ∘ i ∘ e.symm := by
+  subst h
+  simp only [Function.comp.assoc, Equiv.self_comp_symm, CompTriple.comp_eq]
+  rw [← Function.comp.assoc]
+  funext a
+  simp only [τ_involutive, Function.Involutive.comp_self, Function.comp_apply, id_eq]
+
+@[simp]
+lemma indexValueDualIso_symm {d : ℕ} {i : X → Colors} {j : Y → Colors} (e : X ≃ Y)
+    (h : i = τ ∘ j ∘ e) : (indexValueDualIso d e h).symm =
+    indexValueDualIso d e.symm (indexValueDualIso_cond_symm h) := by
+  ext i : 1
+  rw [← Equiv.symm_apply_eq]
+  funext a
+  rw [indexValueDualIso_symm_apply', indexValueDualIso_symm_apply']
+  erw [← Equiv.trans_apply, colorsIndexDualCast_symm, colorsIndexDualCast_symm,
+    colorsIndexDualCast_trans]
+  simp only [Function.comp_apply, colorsIndexCast, Equiv.cast_apply]
+  apply cast_eq_iff_heq.mpr
+  rw [Equiv.apply_symm_apply]
+
+lemma indexValueDualIso_eq_symm {d : ℕ} {i : X → Colors} {j : Y → Colors} (e : X ≃ Y)
+    (h : i = τ ∘ j ∘ e) :
+    indexValueDualIso d e h = (indexValueDualIso d e.symm (indexValueDualIso_cond_symm h)).symm := by
+  rw [indexValueDualIso_symm]
+  simp
+
+lemma indexValueDualIso_cond_trans {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    {e : X ≃ Y} {f : Y ≃ Z} (h : i = τ ∘ j ∘ e) (h' : j = τ ∘ k ∘ f) :
+    i = k ∘ (e.trans f) := by
+  rw [h, h']
+  funext a
+  simp only [Function.comp_apply, Equiv.coe_trans]
+  rw [τ_involutive]
+
+@[simp]
+lemma indexValueDualIso_trans {d : ℕ} {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    (e : X ≃ Y) (f : Y ≃ Z) (h : i = τ ∘ j ∘ e) (h' : j = τ ∘ k ∘ f) :
+    (indexValueDualIso d e h).trans (indexValueDualIso d f h') =
+    indexValueIso d (e.trans f) (indexValueDualIso_cond_trans h h') := by
+  ext i
+  rw [Equiv.trans_apply]
+  rw [← Equiv.eq_symm_apply, ← Equiv.eq_symm_apply, indexValueIso_eq_symm]
+  funext a
+  rw [indexValueDualIso_symm_apply', indexValueDualIso_symm_apply',
+    indexValueIso_symm_apply']
+  erw [← Equiv.trans_apply]
+  rw [colorsIndexDualCast_symm, colorsIndexDualCast_symm, colorsIndexDualCast_trans]
+  simp only [Function.comp_apply, colorsIndexCast, Equiv.symm_trans_apply, Equiv.cast_symm,
+    Equiv.cast_apply, cast_cast]
+  symm
+  apply cast_eq_iff_heq.mpr
+  rw [Equiv.symm_apply_apply, Equiv.symm_apply_apply]
+
+lemma indexValueDualIso_cond_trans_indexValueIso {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    {e : X ≃ Y} {f : Y ≃ Z} (h : i = τ ∘ j ∘ e) (h' : j = k ∘ f)  :
+    i = τ ∘ k ∘ (e.trans f) := by
+  rw [h, h']
+  funext a
+  simp only [Function.comp_apply, Equiv.coe_trans]
+
+@[simp]
+lemma indexValueDualIso_trans_indexValueIso {d : ℕ} {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    (e : X ≃ Y) (f : Y ≃ Z) (h : i = τ ∘ j ∘ e) (h' : j = k ∘ f) :
+    (indexValueDualIso d e h).trans (indexValueIso d f h') =
+    indexValueDualIso d (e.trans f) (indexValueDualIso_cond_trans_indexValueIso h h') := by
+  ext i
+  rw [Equiv.trans_apply, ← Equiv.eq_symm_apply]
+  funext a
+  rw [ indexValueDualIso_eq_symm, indexValueDualIso_symm_apply',
+    indexValueIso_symm_apply',indexValueDualIso_eq_symm, indexValueDualIso_symm_apply']
+  rw [Equiv.symm_apply_eq]
+  erw [← Equiv.trans_apply, ← Equiv.trans_apply]
+  simp only [Function.comp_apply, Equiv.symm_trans_apply, colorsIndexDualCast_symm,
+    colorsIndexCast_symm, colorsIndexCast_trans_colorsIndexDualCast, colorsIndexDualCast_trans]
+  simp only [colorsIndexCast, Equiv.cast_apply]
+  symm
+  apply cast_eq_iff_heq.mpr
+  rw [Equiv.symm_apply_apply]
+
+lemma indexValueIso_trans_indexValueDualIso_cond {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    {e : X ≃ Y} {f : Y ≃ Z} (h : i = j ∘ e) (h' : j = τ ∘ k ∘ f)   :
+    i = τ ∘ k ∘ (e.trans f) := by
+  rw [h, h']
+  funext a
+  simp only [Function.comp_apply, Equiv.coe_trans]
+
+@[simp]
+lemma indexValueIso_trans_indexValueDualIso {d : ℕ} {i : X → Colors} {j : Y → Colors} {k : Z → Colors}
+    (e : X ≃ Y) (f : Y ≃ Z) (h : i = j ∘ e) (h' : j = τ ∘ k ∘ f) :
+    (indexValueIso d e h).trans (indexValueDualIso d f h') =
+    indexValueDualIso d (e.trans f) (indexValueIso_trans_indexValueDualIso_cond h h') := by
+  ext i
+  rw [Equiv.trans_apply, ← Equiv.eq_symm_apply, ← Equiv.eq_symm_apply]
+  funext a
+  rw [indexValueIso_symm_apply', indexValueDualIso_symm_apply',
+    indexValueDualIso_eq_symm, indexValueDualIso_symm_apply']
+  erw [← Equiv.trans_apply, ← Equiv.trans_apply]
+  simp only [Function.comp_apply, Equiv.symm_trans_apply, colorsIndexDualCast_symm,
+    colorsIndexCast_symm, colorsIndexDualCast_trans_colorsIndexCast, colorsIndexDualCast_trans]
+  simp only [colorsIndexCast, Equiv.cast_apply]
+  symm
+  apply cast_eq_iff_heq.mpr
+  rw [Equiv.symm_apply_apply, Equiv.symm_apply_apply]
+
+
+
+/-!
+
+## Mapping isomorphisms on fibers
+
+-/
+
 @[simps!]
-def indexValueDualIso (d : ℕ) {i j : X → Colors} (h : i = τ ∘ j) :
-    IndexValue d i ≃ IndexValue d j :=
-  (Equiv.piCongrRight (fun μ => colorsIndexDualCast (congrFun h μ)))
+def mapIsoFiber (d : ℕ) (f : X ≃ Y) {i : X → Colors} {j : Y → Colors} (h : i = j ∘ f) :
+    ColorFiber d i ≃ₗ[ℝ] ColorFiber d j where
+  toFun F := F ∘ (indexValueIso d f h).symm
+  invFun F := F ∘ indexValueIso d f h
+  map_add' F G := by rfl
+  map_smul' a F := by rfl
+  left_inv F := by
+    funext x
+    simp only [Function.comp_apply]
+    exact congrArg _  $ Equiv.symm_apply_apply (indexValueIso d f h) x
+  right_inv F := by
+    funext x
+    simp only [Function.comp_apply]
+    exact congrArg _  $ Equiv.apply_symm_apply (indexValueIso d f h) x
+
+@[simp]
+lemma mapIsoFiber_trans (d : ℕ) (f : X ≃ Y) (g : Y ≃ Z) {i : X → Colors}
+    {j : Y → Colors} {k : Z → Colors} (h : i = j ∘ f) (h' : j = k ∘ g) :
+    (mapIsoFiber d f h).trans (mapIsoFiber d g h') =
+    mapIsoFiber d (f.trans g) (by rw [h, h', Function.comp.assoc]; rfl)  := by
+  refine LinearEquiv.toEquiv_inj.mp (Equiv.ext (fun x => (funext (fun a => ?_))))
+  simp only [LinearEquiv.coe_toEquiv, LinearEquiv.trans_apply, mapIsoFiber_apply,
+    indexValueIso_symm, ← Equiv.trans_apply, indexValueIso_trans]
+  rfl
+
+lemma mapIsoFiber_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
+    (mapIsoFiber d f h).symm = mapIsoFiber d f.symm ((Equiv.eq_comp_symm f j i).mpr h.symm) := by
+  refine LinearEquiv.toEquiv_inj.mp (Equiv.ext (fun x => (funext (fun a => ?_))))
+  simp only [LinearEquiv.coe_toEquiv, mapIsoFiber_symm_apply, mapIsoFiber_apply, indexValueIso_symm,
+    Equiv.symm_symm]
 
 /-!
 
@@ -200,62 +401,40 @@ def indexValueDualIso (d : ℕ) {i j : X → Colors} (h : i = τ ∘ j) :
 -/
 
 lemma ext {T₁ T₂ : RealLorentzTensor d X} (h : T₁.color = T₂.color)
-    (h' : T₁.coord = fun i => T₂.coord (indexValueIso d (Equiv.refl X) h i)) :
-      T₁ = T₂ := by
+    (h' : T₁.coord = mapIsoFiber d (Equiv.refl X) h.symm T₂.coord) : T₁ = T₂ := by
   cases T₁
   cases T₂
   simp_all only [IndexValue, mk.injEq]
   apply And.intro h
   simp only at h
   subst h
-  simp only [Equiv.cast_refl, Equiv.coe_refl, CompTriple.comp_eq] at h'
   rfl
 
 /-!
 
-## Mapping isomorphisms.
+## Mapping isomorphisms
 
 -/
 
 /-- An equivalence of Tensors given an equivalence of underlying sets. -/
 @[simps!]
 def mapIso (d : ℕ) (f : X ≃ Y) : RealLorentzTensor d X ≃ RealLorentzTensor d Y where
-  toFun T := {
-    color := T.color ∘ f.symm,
-    coord := T.coord ∘ (indexValueIso d f (by simp : T.color = T.color ∘ f.symm ∘ f)).symm}
-  invFun T := {
-    color := T.color ∘ f,
-    coord := T.coord ∘ (indexValueIso d f.symm (by simp : T.color = T.color ∘ f ∘ f.symm)).symm}
+  toFun T := ⟨T.color ∘ f.symm, mapIsoFiber d f (by funext x; simp) T.coord⟩
+  invFun T := ⟨T.color ∘ f, (mapIsoFiber d f (by funext x; simp)).symm T.coord⟩
   left_inv T := by
     refine ext ?_ ?_
     · simp [Function.comp.assoc]
-    · funext i
-      simp only [IndexValue, Function.comp_apply, Function.comp_id]
-      apply congrArg
-      funext x
-      erw [indexValueIso_symm_apply', indexValueIso_symm_apply', indexValueIso_eq_symm,
-        indexValueIso_symm_apply']
-      rw [← Equiv.apply_eq_iff_eq_symm_apply]
-      simp only [Equiv.refl_symm, Equiv.coe_refl, Function.comp_apply, id_eq, colorsIndexCast,
-        Equiv.cast_symm, Equiv.cast_apply, cast_cast, Equiv.refl_apply]
-      apply cast_eq_iff_heq.mpr
+    · simp only [Function.comp_apply, ← LinearEquiv.trans_apply, mapIsoFiber_symm,
+        mapIsoFiber_trans]
       congr
-      exact Equiv.symm_apply_apply f x
+      exact Equiv.self_trans_symm f
   right_inv T := by
     refine ext ?_ ?_
     · simp [Function.comp.assoc]
-    · funext i
-      simp only [IndexValue, Function.comp_apply, Function.comp_id]
-      apply congrArg
-      funext x
-      erw [indexValueIso_symm_apply', indexValueIso_symm_apply', indexValueIso_eq_symm,
-        indexValueIso_symm_apply']
-      rw [← Equiv.apply_eq_iff_eq_symm_apply]
-      simp only [Equiv.refl_symm, Equiv.coe_refl, Function.comp_apply, id_eq, colorsIndexCast,
-        Equiv.cast_symm, Equiv.cast_apply, cast_cast, Equiv.refl_apply]
-      apply cast_eq_iff_heq.mpr
+    · simp only [Function.comp_apply, ← LinearEquiv.trans_apply, mapIsoFiber_symm,
+        mapIsoFiber_trans]
       congr
-      exact Equiv.apply_symm_apply f x
+      exact Equiv.symm_trans_self f
 
 @[simp]
 lemma mapIso_trans (f : X ≃ Y) (g : Y ≃ Z) :
@@ -263,16 +442,17 @@ lemma mapIso_trans (f : X ≃ Y) (g : Y ≃ Z) :
   refine Equiv.coe_inj.mp ?_
   funext T
   refine ext rfl ?_
-  simp only [Equiv.trans_apply, IndexValue, mapIso_apply_color, Equiv.symm_trans_apply,
-    indexValueIso_refl, Equiv.refl_apply, mapIso_apply_coord]
-  funext i
-  rw [mapIso_apply_coord, mapIso_apply_coord]
-  apply congrArg
-  rw [← indexValueIso_trans]
+  simp
+  erw [← LinearEquiv.trans_apply, ← LinearEquiv.trans_apply, mapIsoFiber_trans, mapIsoFiber_trans]
   rfl
-  exact (Equiv.comp_symm_eq f (T.color ∘ ⇑f.symm) T.color).mp rfl
 
-lemma mapIso_symm (f : X ≃ Y) : (mapIso d f).symm = mapIso d f.symm := rfl
+lemma mapIso_symm (f : X ≃ Y) : (mapIso d f).symm = mapIso d f.symm := by
+  refine Equiv.coe_inj.mp ?_
+  funext T
+  refine ext rfl ?_
+  erw [← LinearEquiv.trans_apply]
+  rw [mapIso_symm_apply_coord, mapIsoFiber_trans, mapIsoFiber_symm]
+  rfl
 
 lemma mapIso_refl : mapIso d (Equiv.refl X) = Equiv.refl _ := rfl
 
@@ -302,6 +482,16 @@ def indexValueSumComm {X Y : Type} (Tc : X → Colors) (Sc : Y → Colors) :
     IndexValue d (Sum.elim Tc Sc) ≃ IndexValue d (Sum.elim Sc Tc) :=
   indexValueIso d (Equiv.sumComm X Y) (by aesop)
 
+def indexValueFinOne {c : Fin 1 → Colors} :
+    ColorsIndex d (c 0) ≃ IndexValue d c where
+  toFun x := fun i => match i with
+    | 0 => x
+  invFun i := i 0
+  left_inv x := rfl
+  right_inv i := by
+    funext x
+    fin_cases x
+    rfl
 /-!
 
 ## Marked Lorentz tensors

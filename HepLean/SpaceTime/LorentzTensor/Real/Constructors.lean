@@ -238,7 +238,7 @@ lemma contr_ofMatDownUp_eq_trace {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 
 /-- Multiplying `ofVecUp` with `ofVecDown` gives the dot product. -/
 @[simp]
 lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    mul (ofVecUp v₁) (ofVecDown v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
+    multMarked (ofVecUp v₁) (ofVecDown v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
   refine ext ?_ rfl
   · funext i
     exact IsEmpty.elim instIsEmptySum i
@@ -246,7 +246,7 @@ lemma mul_ofVecUp_ofVecDown_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 /-- Multiplying `ofVecDown` with `ofVecUp` gives the dot product. -/
 @[simp]
 lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d → ℝ) :
-    mul (ofVecDown v₁) (ofVecUp v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
+    multMarked (ofVecDown v₁) (ofVecUp v₂) rfl = (toReal d instIsEmptySum).symm (v₁ ⬝ᵥ v₂) := by
   refine ext ?_ rfl
   · funext i
     exact IsEmpty.elim instIsEmptySum i
@@ -254,7 +254,7 @@ lemma mul_ofVecDown_ofVecUp_eq_dot_prod {d : ℕ} (v₁ v₂ : Fin 1 ⊕ Fin d �
 lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d ((Equiv.sumEmpty (Empty ⊕ Fin 1) Empty))
-    (mul (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
+    (multMarked (unmarkFirst $ ofMatUpDown M) (ofVecUp v) rfl) = ofVecUp (M *ᵥ v) := by
   refine ext ?_ rfl
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
@@ -264,7 +264,7 @@ lemma mul_ofMatUpDown_ofVecUp_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) 
 lemma mul_ofMatDownUp_ofVecDown_eq_mulVec {d : ℕ} (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
     (v : Fin 1 ⊕ Fin d → ℝ) :
     mapIso d (Equiv.sumEmpty (Empty ⊕ Fin 1) Empty)
-    (mul (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
+    (multMarked (unmarkFirst $ ofMatDownUp M) (ofVecDown v) rfl) = ofVecDown (M *ᵥ v) := by
   refine ext ?_ rfl
   · funext i
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mapIso_apply_color, mul_color, Equiv.symm_symm]
