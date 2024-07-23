@@ -51,6 +51,10 @@ def colorMatrix (μ : Colors) : LorentzGroup d →* Matrix (ColorsIndex d μ) (C
           Matrix.transpose_mul, Matrix.transpose_apply]
         rfl
 
+lemma colorMatrix_ext  {μ : Colors} {a b c d : ColorsIndex d μ} (hab : a = b) (hcd : c = d) :
+    (colorMatrix μ) Λ  a c = (colorMatrix  μ) Λ b d := by
+    rw [hab, hcd]
+
 lemma colorMatrix_cast {μ ν : Colors} (h : μ = ν) (Λ : LorentzGroup d) :
     colorMatrix ν Λ =
     Matrix.reindex (colorsIndexCast h) (colorsIndexCast h) (colorMatrix μ Λ) := by
@@ -150,41 +154,34 @@ lemma toTensorRepMat_of_indexValueSumEquiv' {cX : X → Colors} {cY : Y → Colo
 
 -/
 
-lemma toTensorRepMat_oneMarkedIndexValue_inv {f1 f2 : X → Colors} (hc : f1 = τ ∘ f2)
-    (i : IndexValue d f1) (k : IndexValue d f2) :
-    toTensorRepMat Λ ((indexValueDualIso d (Equiv.refl _) hc) i) k =
-      toTensorRepMat Λ⁻¹ (indexValueDualIso d (Equiv.refl _) (color_comp_τ_symm hc) k) i := by
-  rw [toTensorRepMat_apply, toTensorRepMat_apply]
+lemma toTensorRepMat_indexValueDualIso_left {f1 : X → Colors} {f2 : Y → Colors}
+    (e : X ≃ Y) (hc : f1 = τ ∘ f2 ∘ e) (i : IndexValue d f1) (j : IndexValue d f2) :
+    toTensorRepMat Λ (indexValueDualIso d e hc i) j =
+    toTensorRepMat Λ⁻¹ (indexValueDualIso d e.symm (indexValueDualIso_cond_symm hc) j) i := by
+  rw [toTensorRepMat_apply, toTensorRepMat_apply, ← Equiv.prod_comp e]
   apply Finset.prod_congr rfl (fun x _ => ?_)
-  rw [colorMatrix_cast (congrFun hc x)]
-  erw [colorMatrix_dual_cast]
-  rw [Matrix.reindex_apply, Matrix.reindex_apply]
+  erw [colorMatrix_dual_cast Λ (congrFun hc x)]
+  rw [Matrix.reindex_apply, colorMatrix_transpose]
+  simp only [Function.comp_apply, colorsIndexDualCast_symm,
+    Matrix.submatrix_apply, Matrix.transpose_apply]
+  rw [indexValueDualIso_eq_symm, indexValueDualIso_symm_apply',
+    indexValueDualIso_eq_symm, indexValueDualIso_symm_apply']
+  rw [← Equiv.trans_apply, colorsIndexDualCast_symm, colorsIndexDualCast_trans]
+  apply colorMatrix_ext
   simp
-  rw [colorMatrix_transpose]
-  simp
-  apply congrArg
-  simp
-  have colorsIndexDualCast_colorsIndexCast (μ1 μ2 : Colors) (h : μ1 = τ μ2) (x : ColorsIndex d μ2) :
-    colorsIndexDualCastSelf.symm ((colorsIndexCast h)
-    ((colorsIndexDualCast (color_eq_dual_symm h)) x))= x := by
-    match μ1, μ2 with
-    | .up, .up => rfl
-    | .down, .down => rfl
-    | .up, .down => rfl
-    | .down, .up => rfl
-  rw [colorsIndexDualCast_colorsIndexCast]
+  simp [colorsIndexCast]
+  apply cast_eq_iff_heq.mpr
+  rw [Equiv.symm_apply_apply]
 
-
-lemma toTensorRepMat_indexValueDualIso {f1 f2 : X → Colors} (hc : f1 = τ ∘ f2)
-    (j : IndexValue d f1) (k : IndexValue d f2) :
-    (∑ i : IndexValue d f1, toTensorRepMat Λ ((indexValueDualIso d (Equiv.refl _) hc) i) k * toTensorRepMat Λ i j) =
-    toTensorRepMat 1 (indexValueDualIso d (Equiv.refl _) (color_comp_τ_symm hc) k) j := by
-  trans ∑ i, toTensorRepMat Λ⁻¹ (indexValueDualIso d (Equiv.refl _) (color_comp_τ_symm hc) k) i
+lemma toTensorRepMat_indexValueDualIso_sum {f1 : X → Colors} {f2 : Y → Colors}
+    (e : X ≃ Y) (hc : f1 = τ ∘ f2 ∘ e) (j : IndexValue d f1) (k : IndexValue d f2) :
+    (∑ i : IndexValue d f1, toTensorRepMat Λ ((indexValueDualIso d e hc) i) k * toTensorRepMat Λ i j) =
+    toTensorRepMat 1 (indexValueDualIso d e.symm (indexValueDualIso_cond_symm hc) k) j := by
+  trans ∑ i, toTensorRepMat Λ⁻¹ (indexValueDualIso d e.symm (indexValueDualIso_cond_symm hc) k) i
     * toTensorRepMat Λ i j
   apply Finset.sum_congr rfl (fun i _ => ?_)
-  rw [toTensorRepMat_oneMarkedIndexValue_inv]
+  rw [toTensorRepMat_indexValueDualIso_left]
   rw [← Matrix.mul_apply, ← toTensorRepMat.map_mul, inv_mul_self Λ]
-
 
 lemma toTensorRepMat_one_coord_sum' {f1 : X → Colors}
       (T : ColorFiber d f1) (k : IndexValue d f1) :
@@ -203,41 +200,6 @@ lemma toTensorRepMat_of_splitIndexValue' (T : Marked d X n)
   (Fintype.prod_sum_type fun x =>
   (colorMatrix (T.color x)) Λ (splitIndexValue.symm (i, k) x) (splitIndexValue.symm (j, l) x)).symm
 
-lemma toTensorRepMat_oneMarkedIndexValue_dual (T : Marked d X 1) (S : Marked d Y 1)
-    (h : T.markedColor 0 = τ (S.markedColor 0)) (x : ColorsIndex d (T.markedColor 0))
-    (k : S.MarkedIndexValue) :
-    toTensorRepMat Λ (oneMarkedIndexValue $ colorsIndexDualCast h x) k =
-    toTensorRepMat Λ⁻¹ (oneMarkedIndexValue
-      $ (colorsIndexDualCast h).symm $ oneMarkedIndexValue.symm k)
-      (oneMarkedIndexValue x) := by
-  rw [toTensorRepMat_apply, toTensorRepMat_apply]
-  erw [Finset.prod_singleton, Finset.prod_singleton]
-  simp only [Fin.zero_eta, Fin.isValue, lorentzGroupIsGroup_inv]
-  rw [colorMatrix_cast h, colorMatrix_dual_cast]
-  rw [Matrix.reindex_apply, Matrix.reindex_apply]
-  simp only [Fin.isValue, lorentzGroupIsGroup_inv, minkowskiMetric.dual_dual, Subtype.coe_eta,
-    Equiv.symm_symm, Matrix.submatrix_apply]
-  rw [colorMatrix_transpose]
-  simp only [Fin.isValue, Matrix.transpose_apply]
-  apply congrArg
-  simp only [Fin.isValue, oneMarkedIndexValue, colorsIndexDualCast, Equiv.coe_fn_symm_mk,
-    Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.coe_fn_mk, Equiv.apply_symm_apply,
-    Equiv.symm_apply_apply]
-
-lemma toTensorRepMap_sum_dual (T : Marked d X 1) (S : Marked d Y 1)
-    (h : T.markedColor 0 = τ (S.markedColor 0)) (j : T.MarkedIndexValue) (k : S.MarkedIndexValue) :
-    ∑ x, toTensorRepMat Λ (oneMarkedIndexValue $ colorsIndexDualCast h x) k
-    * toTensorRepMat Λ (oneMarkedIndexValue x) j =
-    toTensorRepMat 1
-    (oneMarkedIndexValue $ (colorsIndexDualCast h).symm $ oneMarkedIndexValue.symm k) j := by
-  trans ∑ x, toTensorRepMat Λ⁻¹ (oneMarkedIndexValue$ (colorsIndexDualCast h).symm $
-    oneMarkedIndexValue.symm k) (oneMarkedIndexValue x) * toTensorRepMat Λ (oneMarkedIndexValue x) j
-  apply Finset.sum_congr rfl (fun x _ => ?_)
-  rw [toTensorRepMat_oneMarkedIndexValue_dual]
-  rw [← Equiv.sum_comp oneMarkedIndexValue.symm]
-  change ∑ i, toTensorRepMat Λ⁻¹ (oneMarkedIndexValue $ (colorsIndexDualCast h).symm $
-    oneMarkedIndexValue.symm k) i * toTensorRepMat Λ i j = _
-  rw [← Matrix.mul_apply, ← toTensorRepMat.map_mul, inv_mul_self Λ]
 
 lemma toTensorRepMat_one_coord_sum (T : Marked d X n) (i : T.UnmarkedIndexValue)
     (k : T.MarkedIndexValue) : T.coord (splitIndexValue.symm (i, k)) = ∑ j, toTensorRepMat 1 k j *
@@ -298,6 +260,35 @@ def lorentzActionFiber {c : X → Colors} :
       rw [← mul_assoc, Finset.prod_mul_distrib]
       rfl
 
+/-- The Lorentz action commutes with `mapIso`. -/
+lemma lorentzActionFiber_mapIsoFiber (e : X ≃ Y) {f1 : X → Colors}
+    {f2 : Y → Colors} (h : f1 = f2 ∘ e) (Λ : LorentzGroup d)
+    (T : ColorFiber d f1) : mapIsoFiber d e h (lorentzActionFiber Λ T) =
+    lorentzActionFiber Λ (mapIsoFiber d e h T) := by
+  funext i
+  rw [mapIsoFiber_apply, lorentzActionFiber_apply_apply, lorentzActionFiber_apply_apply]
+  rw [← Equiv.sum_comp (indexValueIso d e h)]
+  refine Finset.sum_congr rfl (fun j _ => Mathlib.Tactic.Ring.mul_congr ?_ ?_ rfl)
+  · rw [← Equiv.prod_comp e]
+    apply Finset.prod_congr rfl (fun x _ => ?_)
+    erw [colorMatrix_cast (congrFun h x)]
+    rw [Matrix.reindex_apply]
+    simp
+    apply colorMatrix_ext
+    rw [indexValueIso_eq_symm, indexValueIso_symm_apply']
+    erw [← Equiv.eq_symm_apply]
+    simp only [Function.comp_apply, Equiv.symm_symm_apply, colorsIndexCast, Equiv.cast_symm,
+      Equiv.cast_apply, cast_cast, cast_eq]
+    rw [indexValueIso_eq_symm, indexValueIso_symm_apply']
+    simp [colorsIndexCast]
+    symm
+    refine cast_eq_iff_heq.mpr ?_
+    rw [Equiv.symm_apply_apply]
+  · rw [mapIsoFiber_apply]
+    apply congrArg
+    rw [← Equiv.trans_apply]
+    simp
+
 /-- Action of the Lorentz group on `X`-indexed Real Lorentz Tensors. -/
 @[simps!]
 instance lorentzAction : MulAction (LorentzGroup d) (RealLorentzTensor d X) where
@@ -335,36 +326,40 @@ lemma lorentzAction_on_isEmpty [IsEmpty X] (Λ : LorentzGroup d) (T : RealLorent
 
 /-- The Lorentz action commutes with `mapIso`. -/
 lemma lorentzAction_mapIso (f : X ≃ Y) (Λ : LorentzGroup d) (T : RealLorentzTensor d X) :
-    mapIso d f (Λ • T) = Λ • (mapIso d f T) := by
-  refine ext rfl ?_
-  funext i
-  rw [mapIso_apply_coord, mapIsoFiber_apply, mapIsoFiber_apply]
-  rw [lorentzAction_smul_coord', lorentzAction_smul_coord']
-  let is : IndexValue d T.color ≃ IndexValue d ((mapIso d f) T).color :=
-    indexValueIso d f ((Equiv.comp_symm_eq f ((mapIso d f) T).color T.color).mp rfl)
-  rw [← Equiv.sum_comp is]
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [mapIso_apply_coord]
-  refine Mathlib.Tactic.Ring.mul_congr ?_ ?_ rfl
-  · simp only [IndexValue, toTensorRepMat, MonoidHom.coe_mk, OneHom.coe_mk, mapIso_apply_color,
-    indexValueIso_refl]
-    rw [← Equiv.prod_comp f]
-    apply Finset.prod_congr rfl (fun x _ => ?_)
-    have h1 : (T.color (f.symm (f x))) = T.color x := by
-      simp only [Equiv.symm_apply_apply]
-    rw [colorMatrix_cast h1]
-    apply congrArg
-    simp only [is]
-    erw [indexValueIso_eq_symm, indexValueIso_symm_apply']
-    simp only [colorsIndexCast, Function.comp_apply, mapIso_apply_color, Equiv.cast_refl,
-      Equiv.refl_symm, Equiv.refl_apply, Equiv.cast_apply]
-    symm
-    refine cast_eq_iff_heq.mpr ?_
-    congr
-    exact Equiv.symm_apply_apply f x
-  · apply congrArg
-    exact (Equiv.apply_eq_iff_eq_symm_apply (indexValueIso d f (mapIso.proof_1 d f T))).mp rfl
+    mapIso d f (Λ • T) = Λ • (mapIso d f T) :=
+  ext rfl (lorentzActionFiber_mapIsoFiber  f _ Λ T.coord)
 
+section
+variable {d : ℕ} {X Y Y' X'  : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype X'] [DecidableEq X']
+  (cX : X → Colors) (cY : Y → Colors)
+
+lemma lorentzActionFiber_basis (Λ : LorentzGroup d)  (i : IndexValue d cX) :
+    lorentzActionFiber Λ (basisColorFiber cX i) =
+    ∑ j, toTensorRepMat Λ j i • basisColorFiber cX j := by
+  funext k
+  simp only [lorentzActionFiber, MonoidHom.coe_mk, OneHom.coe_mk,
+    LinearMap.coe_mk, AddHom.coe_mk]
+  rw [Finset.sum_apply]
+  rw [Finset.sum_eq_single_of_mem i, Finset.sum_eq_single_of_mem k]
+  change _ = toTensorRepMat Λ k i * (Pi.basisFun ℝ (IndexValue d cX)) k k
+  rw [basisColorFiber]
+  erw [Pi.basisFun_apply, Pi.basisFun_apply]
+  simp
+  exact Finset.mem_univ k
+  intro b _ hbk
+  change toTensorRepMat Λ b i • (basisColorFiber cX) b k = 0
+  erw [basisColorFiber, Pi.basisFun_apply]
+  simp [hbk]
+  exact Finset.mem_univ i
+  intro b hb hbk
+  erw [basisColorFiber, Pi.basisFun_apply]
+  simp [hbk]
+  intro a
+  subst a
+  simp_all only [Finset.mem_univ, ne_eq, not_true_eq_false]
+
+end
 /-!
 
 ## The Lorentz action on marked tensors.

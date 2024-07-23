@@ -12,6 +12,8 @@ import Mathlib.Logic.Equiv.Fintype
 import Mathlib.Algebra.Module.Pi
 import Mathlib.Algebra.Module.Equiv
 import Mathlib.Algebra.Module.LinearMap.Basic
+import Mathlib.LinearAlgebra.TensorProduct.Basic
+import Mathlib.LinearAlgebra.TensorProduct.Basis
 /-!
 
 # Real Lorentz Tensors
@@ -230,6 +232,8 @@ lemma indexValueIso_eq_symm (d : ℕ) (f : X ≃ Y) (h : i = j ∘ f) :
 lemma indexValueIso_refl (d : ℕ) (i : X → Colors) :
     indexValueIso d (Equiv.refl X) (rfl : i = i) = Equiv.refl _ := by
   rfl
+
+
 
 /-!
 
@@ -810,6 +814,47 @@ end markingElements
 
 end Marked
 
+noncomputable section basis
+
+open TensorProduct
+open Set LinearMap Submodule
+
+variable {d : ℕ} {X Y Y' X'  : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype X'] [DecidableEq X']
+  (cX : X → Colors) (cY : Y → Colors)
+
+def basisColorFiber : Basis (IndexValue d cX) ℝ (ColorFiber d cX) := Pi.basisFun _ _
+
+@[simp]
+def basisProd :
+    Basis (IndexValue d cX × IndexValue d cY) ℝ (ColorFiber d cX ⊗[ℝ] ColorFiber d cY) :=
+  (Basis.tensorProduct (basisColorFiber cX) (basisColorFiber cY))
+
+lemma mapIsoFiber_basis {cX : X → Colors} {cY : Y → Colors} (e : X ≃ Y) (h : cX = cY ∘ e)
+    (i : IndexValue d cX) : (mapIsoFiber d e h) (basisColorFiber cX i)
+    = basisColorFiber cY (indexValueIso d e h i) := by
+  funext a
+  rw [mapIsoFiber_apply]
+  by_cases ha : a = ((indexValueIso d e h) i)
+  · subst ha
+    nth_rewrite 2 [indexValueIso_eq_symm]
+    rw [Equiv.apply_symm_apply]
+    simp only [basisColorFiber]
+    erw [Pi.basisFun_apply, Pi.basisFun_apply]
+    simp only [stdBasis_same]
+  · simp only [basisColorFiber]
+    erw [Pi.basisFun_apply, Pi.basisFun_apply]
+    simp
+    rw [if_neg, if_neg]
+    exact fun a_1 => ha (_root_.id (Eq.symm a_1))
+    rw [← Equiv.symm_apply_eq, indexValueIso_symm]
+    exact fun a_1 => ha (_root_.id (Eq.symm a_1))
+
+
+
+
+
+end basis
 /-!
 
 ## Contraction of indices
