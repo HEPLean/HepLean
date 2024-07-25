@@ -27,7 +27,7 @@ The main results of this file are:
 namespace RealLorentzTensor
 
 variable {d : ℕ} {X Y : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
-  (T : RealLorentzTensor d X) (c : X → Colors) (Λ Λ' : LorentzGroup d) {μ : Colors}
+  (T : RealLorentzTensor d X) (c : X → Color) (Λ Λ' : LorentzGroup d) {μ : Color}
 
 open Marked
 
@@ -38,7 +38,7 @@ open Marked
 -/
 
 /-- The unit for the multiplication of Lorentz tensors. -/
-def mulUnit (d : ℕ) (μ : Colors) : Marked d (Fin 1) 1 :=
+def mulUnit (d : ℕ) (μ : Color) : Marked d (Fin 1) 1 :=
   match μ with
   | .up => mapIso d ((Equiv.emptySum Empty (Fin (1 + 1))).trans finSumFinEquiv.symm)
     (ofMatUpDown 1)
@@ -54,23 +54,23 @@ lemma mulUnit_down_coord : (mulUnit d Colors.down).coord = fun i =>
   rfl
 
 @[simp]
-lemma mulUnit_markedColor (μ : Colors) : (mulUnit d μ).markedColor 0 = τ μ := by
+lemma mulUnit_markedColor (μ : Color) : (mulUnit d μ).markedColor 0 = τ μ := by
   cases μ
   case up => rfl
   case down => rfl
 
-lemma mulUnit_dual_markedColor (μ : Colors) : τ ((mulUnit d μ).markedColor 0) = μ := by
+lemma mulUnit_dual_markedColor (μ : Color) : τ ((mulUnit d μ).markedColor 0) = μ := by
   cases μ
   case up => rfl
   case down => rfl
 
 @[simp]
-lemma mulUnit_unmarkedColor (μ : Colors) : (mulUnit d μ).unmarkedColor 0 = μ := by
+lemma mulUnit_unmarkedColor (μ : Color) : (mulUnit d μ).unmarkedColor 0 = μ := by
   cases μ
   case up => rfl
   case down => rfl
 
-lemma mulUnit_unmarkedColor_eq_dual_marked (μ : Colors) :
+lemma mulUnit_unmarkedColor_eq_dual_marked (μ : Color) :
     (mulUnit d μ).unmarkedColor = τ ∘ (mulUnit d μ).markedColor := by
   funext x
   fin_cases x
@@ -78,7 +78,7 @@ lemma mulUnit_unmarkedColor_eq_dual_marked (μ : Colors) :
     mulUnit_markedColor]
   exact color_eq_dual_symm rfl
 
-lemma mulUnit_coord_diag (μ : Colors) (i : (mulUnit d μ).UnmarkedIndexValue) :
+lemma mulUnit_coord_diag (μ : Color) (i : (mulUnit d μ).UnmarkedIndexValue) :
     (mulUnit d μ).coord (splitIndexValue.symm (i,
     indexValueDualIso d (mulUnit_unmarkedColor_eq_dual_marked μ) i)) = 1 := by
   cases μ
@@ -92,7 +92,7 @@ lemma mulUnit_coord_diag (μ : Colors) (i : (mulUnit d μ).UnmarkedIndexValue) :
     rfl
     next h => exact False.elim (h rfl)
 
-lemma mulUnit_coord_off_diag (μ : Colors) (i: (mulUnit d μ).UnmarkedIndexValue)
+lemma mulUnit_coord_off_diag (μ : Color) (i: (mulUnit d μ).UnmarkedIndexValue)
     (b : (mulUnit d μ).MarkedIndexValue)
     (hb : b ≠ indexValueDualIso d (mulUnit_unmarkedColor_eq_dual_marked μ) i) :
     (mulUnit d μ).coord (splitIndexValue.symm (i, b)) = 0 := by
@@ -118,7 +118,7 @@ lemma mulUnit_coord_off_diag (μ : Colors) (i: (mulUnit d μ).UnmarkedIndexValue
       exact h
     exact hb (id (Eq.symm h1))
 
-lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
+lemma mulUnit_right (μ : Color) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
     multMarked T (mulUnit d μ) (h.trans (mulUnit_dual_markedColor μ).symm) = T := by
   refine ext ?_ ?_
   · funext a
@@ -130,9 +130,9 @@ lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) 
   funext i
   rw [mulMarked_indexValue_right]
   change ∑ j,
-    T.coord (splitIndexValue.symm ((indexValueSumEquiv i).1, _)) *
-    (mulUnit d μ).coord (splitIndexValue.symm ((indexValueSumEquiv i).2, j)) = _
-  let y := indexValueDualIso d (mulUnit_unmarkedColor_eq_dual_marked μ) (indexValueSumEquiv i).2
+    T.coord (splitIndexValue.symm ((indexValueTensorator i).1, _)) *
+    (mulUnit d μ).coord (splitIndexValue.symm ((indexValueTensorator i).2, j)) = _
+  let y := indexValueDualIso d (mulUnit_unmarkedColor_eq_dual_marked μ) (indexValueTensorator i).2
   erw [Finset.sum_eq_single_of_mem y]
   rw [mulUnit_coord_diag]
   simp only [Fin.isValue, mul_one]
@@ -140,14 +140,14 @@ lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) 
   funext a
   match a with
   | .inl a =>
-    change (indexValueSumEquiv i).1 a = _
+    change (indexValueTensorator i).1 a = _
     rfl
   | .inr 0 =>
     change oneMarkedIndexValue
-      ((colorsIndexDualCast (Eq.trans h (Eq.symm (mulUnit_dual_markedColor μ)))).symm
+      ((colorIndexDualCast (Eq.trans h (Eq.symm (mulUnit_dual_markedColor μ)))).symm
       (oneMarkedIndexValue.symm y)) 0 = _
     rw [indexValueIso_eq_symm, indexValueIso_symm_apply']
-    simp only [Fin.isValue, oneMarkedIndexValue, colorsIndexDualCast, colorsIndexCast,
+    simp only [Fin.isValue, oneMarkedIndexValue, colorIndexDualCast, colorIndexCast,
       Equiv.coe_fn_symm_mk, indexValueDualIso_apply, Equiv.trans_apply, Equiv.cast_apply,
       Equiv.symm_trans_apply, Equiv.cast_symm, Equiv.symm_symm, Equiv.apply_symm_apply, cast_cast,
       Equiv.coe_fn_mk, Equiv.refl_symm, Equiv.coe_refl, Function.comp_apply, id_eq, mul_color,
@@ -157,15 +157,15 @@ lemma mulUnit_right (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) 
   intro b _ hab
   rw [mul_eq_zero]
   apply Or.inr
-  exact mulUnit_coord_off_diag μ (indexValueSumEquiv i).2 b hab
+  exact mulUnit_coord_off_diag μ (indexValueTensorator i).2 b hab
 
-lemma mulUnit_left (μ : Colors) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
+lemma mulUnit_left (μ : Color) (T : Marked d X 1) (h : T.markedColor 0 = μ) :
     multMarked (mulUnit d μ) T ((mulUnit_markedColor μ).trans (congrArg τ h.symm)) =
     mapIso d (Equiv.sumComm X (Fin 1)) T := by
   rw [← mult_symmd_symm, mulUnit_right]
   exact h
 
-lemma mulUnit_lorentzAction (μ : Colors) (Λ : LorentzGroup d) :
+lemma mulUnit_lorentzAction (μ : Color) (Λ : LorentzGroup d) :
     Λ • mulUnit d μ = mulUnit d μ := by
   match μ with
   | Colors.up =>

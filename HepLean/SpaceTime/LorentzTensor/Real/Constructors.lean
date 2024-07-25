@@ -29,7 +29,7 @@ to the real numbers, i.e. which is invariant under transformations of mapIso.
 
 /-- An equivalence from Real tensors on an empty set to `ℝ`. -/
 @[simps!]
-def toReal (d : ℕ) {X : Type} (h : IsEmpty X) : RealLorentzTensor d X ≃ ℝ where
+def toReal (d : ℕ) {X : Type} (h : IsEmpty X) (f : X → Color) : RealLorentzTensor d f ≃ ℝ where
   toFun := fun T => T.coord (IsEmpty.elim h)
   invFun := fun r => {
     color := fun x => IsEmpty.elim h x,
