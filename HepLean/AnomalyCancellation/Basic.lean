@@ -43,8 +43,8 @@ instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges
   Pi.addCommMonoid
 
 /--
-  An instance to provide the necessary operations and properties for `charges` to form a module over
-  the field `ℚ`.
+  An instance to provide the necessary operations and properties for `charges` to form a module
+  over the field `ℚ`.
 -/
 @[simps!]
 instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.Charges :=
@@ -89,13 +89,15 @@ lemma LinSols.ext {χ : ACCSystemLinear} {S T : χ.LinSols} (h : S.val = T.val) 
 @[simps!]
 instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
     AddCommMonoid χ.LinSols where
-  add S T := ⟨S.val + T.val, fun _ ↦ by simp [(χ.linearACCs _).map_add, S.linearSol _, T.linearSol _]⟩
+  add S T := ⟨S.val + T.val, fun _ ↦ by simp [(χ.linearACCs _).map_add, S.linearSol _,
+    T.linearSol _]⟩
   add_comm S T := LinSols.ext (χ.chargesAddCommMonoid.add_comm _ _)
   add_assoc S T L := LinSols.ext (χ.chargesAddCommMonoid.add_assoc _ _ _)
   zero := ⟨χ.chargesAddCommMonoid.zero, fun _ ↦ (χ.linearACCs _).map_zero⟩
   zero_add S := LinSols.ext (χ.chargesAddCommMonoid.zero_add _)
   add_zero S := LinSols.ext (χ.chargesAddCommMonoid.add_zero _)
-  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [nsmul_eq_smul_cast ℚ, (χ.linearACCs _).map_smul, S.linearSol _]⟩
+  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [nsmul_eq_smul_cast ℚ, (χ.linearACCs _).map_smul,
+    S.linearSol _]⟩
   nsmul_zero n := rfl
   nsmul_succ n S := LinSols.ext (χ.chargesAddCommMonoid.nsmul_succ _ _)
 
@@ -148,7 +150,8 @@ lemma QuadSols.ext {χ : ACCSystemQuad} {S T : χ.QuadSols} (h : S.val = T.val) 
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `QuadSols`. -/
 instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols where
-  smul a S := ⟨a • S.toLinSols, fun _ ↦ by erw [(χ.quadraticACCs _).map_smul, S.quadSol _, mul_zero]⟩
+  smul a S := ⟨a • S.toLinSols, fun _ ↦ by erw [(χ.quadraticACCs _).map_smul, S.quadSol _,
+    mul_zero]⟩
   mul_smul a b S := QuadSols.ext (mul_smul _ _ _)
   one_smul S := QuadSols.ext (one_smul _ _)
 
