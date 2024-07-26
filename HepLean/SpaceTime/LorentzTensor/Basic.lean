@@ -125,9 +125,9 @@ lemma mapIso_trans (e : X ≃ Y) (e' : Y ≃ Z) (h : cX = cY ∘ e) (h' : cY = c
   intro x
   simp only [mapIso, LinearMap.compMultilinearMap_apply, LinearEquiv.coe_coe,
     LinearEquiv.trans_apply, PiTensorProduct.reindex_tprod, Equiv.symm_trans_apply]
-  change (PiTensorProduct.congr fun y => 𝓣.colorModuleCast (_))
+  change (PiTensorProduct.congr fun y => 𝓣.colorModuleCast _)
     ((PiTensorProduct.reindex R (fun x => 𝓣.ColorModule (cY x)) e')
-    ((PiTensorProduct.congr fun y => 𝓣.colorModuleCast (_)) _)) =
+    ((PiTensorProduct.congr fun y => 𝓣.colorModuleCast _) _)) =
     (PiTensorProduct.congr fun y => 𝓣.colorModuleCast _)
     ((PiTensorProduct.reindex R (fun x => 𝓣.ColorModule (cX x)) (e.trans e')) _)
   rw [PiTensorProduct.congr_tprod, PiTensorProduct.reindex_tprod,
@@ -354,7 +354,7 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) :
     apply MultilinearMap.ext
     intro p
     simp [tensorator, tensoratorSymm, domCoprod]
-    change (PiTensorProduct.lift (_)) ((PiTensorProduct.tprod R) _) =
+    change (PiTensorProduct.lift _) ((PiTensorProduct.tprod R) _) =
       LinearMap.id ((PiTensorProduct.tprod R) p)
     rw [PiTensorProduct.lift.tprod]
     simp [elimPureTensorMulLin, elimPureTensor]
@@ -546,8 +546,8 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : c = cY ∘ e) :
   rw [mapIso_tprod]
   simp only [Equiv.symm_symm_apply, Function.comp_apply]
   rw [PiTensorProduct.map₂_tprod_tprod]
-  change (PiTensorProduct.reindex R (_) e.symm)
-    (((PiTensorProduct.map₂ _)
+  change PiTensorProduct.reindex R _ e.symm
+    ((PiTensorProduct.map₂ _
         ((PiTensorProduct.tprod R) fun i => (𝓣.colorModuleCast _) (fx (e.symm i))))
       ((PiTensorProduct.tprod R) fy)) = _
   rw [PiTensorProduct.map₂_tprod_tprod]

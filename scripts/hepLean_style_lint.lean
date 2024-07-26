@@ -98,7 +98,7 @@ def hepLeanLintFile (path : FilePath) : IO (Array HepLeanErrorContext) := do
     substringLinter "( ", substringLinter "=by", substringLinter "  def ",
     substringLinter "/-- We ", substringLinter "[ ", substringLinter " ]", substringLinter " ,"
     , substringLinter "by exact ",
-     substringLinter "⟨ ", substringLinter " ⟩",  substringLinter "):"]
+     substringLinter "⟨ ", substringLinter " ⟩",  substringLinter "):",  substringLinter "(_)"]
   let errors := allOutput.flatten
   return errors
 
