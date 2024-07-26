@@ -46,7 +46,6 @@ def coeForℤ₂ : C(({-1, 1} : Set ℝ), ℤ₂) where
   toFun x := if x = ⟨1, Set.mem_insert_of_mem (-1) rfl⟩
     then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
   continuous_toFun := by
-    haveI : DiscreteTopology ({-1, 1} : Set ℝ) := discrete_of_t1_of_finite
     exact continuous_of_discreteTopology
 
 /-- The continuous map taking a Lorentz matrix to its determinant. -/

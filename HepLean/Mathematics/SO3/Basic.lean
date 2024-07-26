@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.UnitaryGroup
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup
+import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 import Mathlib.Data.Complex.Exponential
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
