@@ -592,7 +592,7 @@ lemma contrAll_mapIso_right_cond {e : X ≃ Y} {e' : Z ≃ Y}
 @[simp]
 lemma contrAll_mapIso_right_tmul (e : X ≃ Y) (e' : Z ≃ Y)
     (h : c = 𝓣.τ ∘ cY ∘ e) (h' : cZ = cY ∘ e') (x : 𝓣.Tensor c) (z : 𝓣.Tensor cZ) :
-    𝓣.contrAll e h (x ⊗ₜ[R] (𝓣.mapIso e' h' z)) =
+    𝓣.contrAll e h (x ⊗ₜ[R] 𝓣.mapIso e' h' z) =
     𝓣.contrAll (e.trans e'.symm) (𝓣.contrAll_mapIso_right_cond h h') (x ⊗ₜ[R] z) := by
   rw [contrAll, contrAll]
   simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, congr_tmul,
@@ -617,7 +617,7 @@ lemma contrAll_mapIso_left_cond {e : X ≃ Y} {e' : Z ≃ X}
 @[simp]
 lemma contrAll_mapIso_left_tmul {e : X ≃ Y} {e' : Z ≃ X}
     (h : c = 𝓣.τ ∘ cY ∘ e) (h' : cZ = c ∘ e') (x : 𝓣.Tensor cZ) (y : 𝓣.Tensor cY) :
-    𝓣.contrAll e h ((𝓣.mapIso e' h' x) ⊗ₜ[R] y) =
+    𝓣.contrAll e h (𝓣.mapIso e' h' x ⊗ₜ[R] y) =
     𝓣.contrAll (e'.trans e) (𝓣.contrAll_mapIso_left_cond h h') (x ⊗ₜ[R] y) := by
   rw [contrAll, contrAll]
   simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, congr_tmul,
@@ -690,8 +690,8 @@ def rep : Representation R G (𝓣.Tensor cX) where
 local infixl:78 " • " => 𝓣.rep
 
 lemma repColorModule_colorModuleCast_apply (h : μ = ν) (g : G) (x : 𝓣.ColorModule μ) :
-    (𝓣.repColorModule ν g) ((𝓣.colorModuleCast h) x) =
-    (𝓣.colorModuleCast h) ((𝓣.repColorModule μ g) x) := by
+    (𝓣.repColorModule ν g) (𝓣.colorModuleCast h x) =
+    (𝓣.colorModuleCast h) (𝓣.repColorModule μ g x) := by
   subst h
   simp [colorModuleCast]
 
@@ -733,7 +733,7 @@ lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tenso
 @[simp]
 lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
     g • (PiTensorProduct.tprod R f) = PiTensorProduct.tprod R (fun x =>
-      𝓣.repColorModule (cX x) g (f x)) := by
+    𝓣.repColorModule (cX x) g (f x)) := by
   simp [rep]
   change (PiTensorProduct.map _) ((PiTensorProduct.tprod R) f) = _
   rw [PiTensorProduct.map_tprod]
