@@ -22,7 +22,7 @@ HepLean has the potential to benefit the high energy physics community in four w
 - Make it easier to check papers and results for mathematical correctness. 
 - Create new avenues through which high energy physics can be taught. 
 
-HepLean is a connection between high energy physics (both formal and pheno), 
+HepLean is a connection between high energy physics (both formal and phenomenological), 
 computer science, and mathematics.
 # How to get involved? 
 
@@ -39,8 +39,8 @@ to HepLean.
 definitions added.  
 - <b>Add a new area</b>: We want HepLean to expand into a new areas of high energy physics. 
 If you have expertise in any area and would like to see it digitalised, either get in touch or 
-make a relavent pull-request on GitHub. 
-- <b>Develop new tactics</b>: A benifit of Lean is the ability to automate proofs. This 
+make a relevant pull-request on GitHub. 
+- <b>Develop new tactics</b>: A benefit of Lean is the ability to automate proofs. This 
 is often done through proof tactics. The development of such tactics specific to high-energy physics 
 will make it easier for the high-energy physics to use and adapt to Lean. 
 - <b>Coding aspects</b>: Improvements to GitHub workflows, and other structural aspects of this
