@@ -43,8 +43,8 @@ instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges
   Pi.addCommMonoid
 
 /--
-  An instance to provide the necessary operations and properties for `charges` to form a module over
-  the field `ℚ`.
+  An instance to provide the necessary operations and properties for `charges` to form a module
+  over the field `ℚ`.
 -/
 @[simps!]
 instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.Charges :=
@@ -89,62 +89,29 @@ lemma LinSols.ext {χ : ACCSystemLinear} {S T : χ.LinSols} (h : S.val = T.val) 
 @[simps!]
 instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
     AddCommMonoid χ.LinSols where
-  add S T := ⟨S.val + T.val, by
-    intro i
-    rw [(χ.linearACCs i).map_add, S.linearSol i, T.linearSol i]
-    rfl⟩
-  add_comm S T := by
-    apply LinSols.ext
-    exact χ.chargesAddCommMonoid.add_comm _ _
-  add_assoc S T L := by
-    apply LinSols.ext
-    exact χ.chargesAddCommMonoid.add_assoc _ _ _
-  zero := ⟨χ.chargesAddCommMonoid.zero, by
-    intro i
-    erw [(χ.linearACCs i).map_zero]⟩
-  zero_add S := by
-    apply LinSols.ext
-    exact χ.chargesAddCommMonoid.zero_add _
-  add_zero S := by
-    apply LinSols.ext
-    exact χ.chargesAddCommMonoid.add_zero _
-  nsmul n S := ⟨n • S.val, by
-    intro i
-    rw [nsmul_eq_smul_cast ℚ]
-    erw [(χ.linearACCs i).map_smul, S.linearSol i]
-    simp⟩
-  nsmul_zero n := by
-    rfl
-  nsmul_succ n S := by
-    apply LinSols.ext
-    exact χ.chargesAddCommMonoid.nsmul_succ _ _
+  add S T := ⟨S.val + T.val, fun _ ↦ by simp [(χ.linearACCs _).map_add, S.linearSol _,
+    T.linearSol _]⟩
+  add_comm S T := LinSols.ext (χ.chargesAddCommMonoid.add_comm _ _)
+  add_assoc S T L := LinSols.ext (χ.chargesAddCommMonoid.add_assoc _ _ _)
+  zero := ⟨χ.chargesAddCommMonoid.zero, fun _ ↦ (χ.linearACCs _).map_zero⟩
+  zero_add S := LinSols.ext (χ.chargesAddCommMonoid.zero_add _)
+  add_zero S := LinSols.ext (χ.chargesAddCommMonoid.add_zero _)
+  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [nsmul_eq_smul_cast ℚ, (χ.linearACCs _).map_smul,
+    S.linearSol _]⟩
+  nsmul_zero n := rfl
+  nsmul_succ n S := LinSols.ext (χ.chargesAddCommMonoid.nsmul_succ _ _)
 
 /-- An instance providing the operations and properties for `LinSols` to form a
   module over `ℚ`. -/
 @[simps!]
 instance linSolsModule (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
-  smul a S := ⟨a • S.val, by
-    intro i
-    rw [(χ.linearACCs i).map_smul, S.linearSol i]
-    simp⟩
-  one_smul one_smul := by
-    apply LinSols.ext
-    exact χ.chargesModule.one_smul _
-  mul_smul a b S := by
-    apply LinSols.ext
-    exact χ.chargesModule.mul_smul _ _ _
-  smul_zero a := by
-    apply LinSols.ext
-    exact χ.chargesModule.smul_zero _
-  zero_smul S := by
-    apply LinSols.ext
-    exact χ.chargesModule.zero_smul _
-  smul_add a S T := by
-    apply LinSols.ext
-    exact χ.chargesModule.smul_add _ _ _
-  add_smul a b T:= by
-    apply LinSols.ext
-    exact χ.chargesModule.add_smul _ _ _
+  smul a S := ⟨a • S.val, fun _ ↦ by simp [(χ.linearACCs _).map_smul, S.linearSol _]⟩
+  one_smul one_smul := LinSols.ext (χ.chargesModule.one_smul _)
+  mul_smul a b S := LinSols.ext (χ.chargesModule.mul_smul _ _ _)
+  smul_zero a := LinSols.ext (χ.chargesModule.smul_zero _)
+  zero_smul S := LinSols.ext (χ.chargesModule.zero_smul _)
+  smul_add a S T := LinSols.ext (χ.chargesModule.smul_add _ _ _)
+  add_smul a b T:= LinSols.ext (χ.chargesModule.add_smul _ _ _)
 
 /-- An instance providing the operations and properties for `LinSols` to form an
   additive commutative group. -/
@@ -183,17 +150,10 @@ lemma QuadSols.ext {χ : ACCSystemQuad} {S T : χ.QuadSols} (h : S.val = T.val) 
 
 /-- An instance giving the properties and structures to define an action of `ℚ` on `QuadSols`. -/
 instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols where
-  smul a S := ⟨a • S.toLinSols, by
-    intro i
-    erw [(χ.quadraticACCs i).map_smul]
-    rw [S.quadSol i]
-    simp only [mul_zero]⟩
-  mul_smul a b S := by
-    apply QuadSols.ext
-    exact mul_smul _ _ _
-  one_smul S := by
-    apply QuadSols.ext
-    exact one_smul _ _
+  smul a S := ⟨a • S.toLinSols, fun _ ↦ by erw [(χ.quadraticACCs _).map_smul, S.quadSol _,
+    mul_zero]⟩
+  mul_smul a b S := QuadSols.ext (mul_smul _ _ _)
+  one_smul S := QuadSols.ext (one_smul _ _)
 
 /-- The inclusion of quadratic solutions into linear solutions. -/
 def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols where
@@ -239,15 +199,10 @@ def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
 /-- An instance giving the properties and structures to define an action of `ℚ` on `Sols`. -/
 instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
   smul a S := ⟨a • S.toQuadSols, by
-    erw [(χ.cubicACC).map_smul]
-    rw [S.cubicSol]
+    erw [(χ.cubicACC).map_smul, S.cubicSol]
     simp⟩
-  mul_smul a b S := by
-    apply Sols.ext
-    exact mul_smul _ _ _
-  one_smul S := by
-    apply Sols.ext
-    exact one_smul _ _
+  mul_smul a b S := Sols.ext (mul_smul _ _ _)
+  one_smul S := Sols.ext (one_smul _ _)
 
 /-- The inclusion of `Sols` into `QuadSols`. -/
 def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols where
@@ -275,9 +230,7 @@ structure Hom (χ η : ACCSystem) where
 def Hom.comp {χ η ε : ACCSystem} (g : Hom η ε) (f : Hom χ η) : Hom χ ε where
   charges := LinearMap.comp g.charges f.charges
   anomalyFree := g.anomalyFree ∘ f.anomalyFree
-  commute := by
-    simp only [LinearMap.coe_comp]
-    rw [Function.comp.assoc]
-    rw [f.commute, ← Function.comp.assoc, g.commute, Function.comp.assoc]
+  commute := by rw [LinearMap.coe_comp, Function.comp.assoc, f.commute,
+    ← Function.comp.assoc, g.commute, Function.comp.assoc]
 
 end ACCSystem
