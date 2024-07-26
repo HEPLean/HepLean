@@ -40,28 +40,30 @@ structure PreTensorStructure (R : Type) [CommSemiring R] where
   /-- The allowed colors of indices.
     For example for a real Lorentz tensor these are `{up, down}`. -/
   Color : Type
+  /-- To each color we associate a module. -/
   ColorModule : Color → Type
+  /-- A map taking every color to it dual color. -/
   τ : Color → Color
   τ_involutive : Function.Involutive τ
   colorModule_addCommMonoid : ∀ μ, AddCommMonoid (ColorModule μ)
   colorModule_module : ∀ μ, Module R (ColorModule μ)
+  /-- The contraction of a vector with a vector wiwth dual color. -/
   contrDual : ∀ μ, ColorModule μ ⊗[R] ColorModule (τ μ) →ₗ[R] R
 
 namespace PreTensorStructure
 
-
 variable (𝓣 : PreTensorStructure R)
 
 variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
-  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z]  [Fintype W] [DecidableEq W]
-  {c c₂ : X → 𝓣.Color}  {d : Y → 𝓣.Color} {b : Z → 𝓣.Color}
-  {bw : W → 𝓣.Color} {d' : Y' → 𝓣.Color}  {μ ν: 𝓣.Color}
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
+  {c c₂ : X → 𝓣.Color} {d : Y → 𝓣.Color} {b : Z → 𝓣.Color}
+  {bw : W → 𝓣.Color} {d' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
 
 instance : AddCommMonoid (𝓣.ColorModule μ) := 𝓣.colorModule_addCommMonoid μ
 
 instance : Module R (𝓣.ColorModule μ) := 𝓣.colorModule_module μ
 
-def Tensor (c : X → 𝓣.Color): Type := ⨂[R] x, 𝓣.ColorModule (c x)
+def Tensor (c : X → 𝓣.Color) : Type := ⨂[R] x, 𝓣.ColorModule (c x)
 
 instance : AddCommMonoid (𝓣.Tensor c) :=
   PiTensorProduct.instAddCommMonoid fun i => 𝓣.ColorModule (c i)
@@ -153,7 +155,7 @@ lemma mapIso_symm (e : X ≃ Y) (h : c = d ∘ e) :
   apply PiTensorProduct.ext
   apply MultilinearMap.ext
   intro x
-  simp  [mapIso, LinearMap.compMultilinearMap_apply, LinearEquiv.coe_coe,
+  simp [mapIso, LinearMap.compMultilinearMap_apply, LinearEquiv.coe_coe,
     LinearEquiv.symm_apply_apply, PiTensorProduct.reindex_tprod]
   change (PiTensorProduct.reindex R (fun x => 𝓣.ColorModule (c x)) e).symm
     ((PiTensorProduct.congr fun y => 𝓣.colorModuleCast _).symm ((PiTensorProduct.tprod R) x)) =
@@ -243,14 +245,13 @@ lemma elimPureTensor_update_left (p : 𝓣.PureTensor c) (q : 𝓣.PureTensor d)
     rfl
   | Sum.inr y => rfl
 
-
 def inlPureTensor (p : 𝓣.PureTensor (Sum.elim c d)) : 𝓣.PureTensor c := fun xy => p (Sum.inl xy)
 
 def inrPureTensor (p : 𝓣.PureTensor (Sum.elim c d)) : 𝓣.PureTensor d := fun xy => p (Sum.inr xy)
 
 @[simp]
 lemma inlPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim c d)) (x : X)
-    (v1  : 𝓣.ColorModule (Sum.elim c d (Sum.inl x)))  :
+    (v1 : 𝓣.ColorModule (Sum.elim c d (Sum.inl x))) :
     𝓣.inlPureTensor (Function.update f (Sum.inl x) v1) =Function.update (𝓣.inlPureTensor f) x v1 := by
   funext y
   simp [inlPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
@@ -262,14 +263,14 @@ lemma inlPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Su
 
 @[simp]
 lemma inrPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim c d)) (x : X)
-    (v1  : 𝓣.ColorModule (Sum.elim c d (Sum.inl x)))  :
+    (v1 : 𝓣.ColorModule (Sum.elim c d (Sum.inl x))) :
     𝓣.inrPureTensor (Function.update f (Sum.inl x) v1) = (𝓣.inrPureTensor f) := by
   funext x
   simp [inrPureTensor, Function.update]
 
 @[simp]
 lemma inrPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim c d)) (y : Y)
-    (v1  : 𝓣.ColorModule (Sum.elim c d (Sum.inr y)))  :
+    (v1 : 𝓣.ColorModule (Sum.elim c d (Sum.inr y))) :
     𝓣.inrPureTensor (Function.update f (Sum.inr y) v1) =Function.update (𝓣.inrPureTensor f) y v1 := by
   funext y
   simp [inrPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
@@ -281,7 +282,7 @@ lemma inrPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (S
 
 @[simp]
 lemma inlPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim c d)) (y : Y)
-    (v1  : 𝓣.ColorModule (Sum.elim c d (Sum.inr y)))  :
+    (v1 : 𝓣.ColorModule (Sum.elim c d (Sum.inr y))) :
     𝓣.inlPureTensor (Function.update f (Sum.inr y) v1) = (𝓣.inlPureTensor f) := by
   funext x
   simp [inlPureTensor, Function.update]
@@ -345,7 +346,7 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) : 𝓣.Tensor 
       LinearMap.id ((PiTensorProduct.tprod R) p)
     rw [PiTensorProduct.lift.tprod]
     simp [elimPureTensorMulLin, elimPureTensor]
-    change (PiTensorProduct.tprod R)  _ = _
+    change (PiTensorProduct.tprod R) _ = _
     apply congrArg
     funext x
     match x with
@@ -354,7 +355,7 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) : 𝓣.Tensor 
   (by
     apply tensorProd_piTensorProd_ext
     intro p q
-    simp [tensorator,  tensoratorSymm]
+    simp [tensorator, tensoratorSymm]
     change (PiTensorProduct.lift 𝓣.domCoprod) ((PiTensorProduct.lift (𝓣.elimPureTensorMulLin p)) ((PiTensorProduct.tprod R) q)) =_
     rw [PiTensorProduct.lift.tprod]
     simp [elimPureTensorMulLin]
@@ -381,9 +382,9 @@ lemma tensoratorEquiv_mapIso_cond {e : X ≃ Y} {e' : Z ≃ Y} {e'' : W ≃ X}
 @[simp]
 lemma tensoratorEquiv_mapIso (e : X ≃ Y) (e' : Z ≃ Y) (e'' : W ≃ X)
     (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e') (h'' : bW = c ∘ e'') :
-   (TensorProduct.congr (𝓣.mapIso e'' h'') (𝓣.mapIso e' h')) ≪≫ₗ (𝓣.tensoratorEquiv c d)
+    (TensorProduct.congr (𝓣.mapIso e'' h'') (𝓣.mapIso e' h')) ≪≫ₗ (𝓣.tensoratorEquiv c d)
     = (𝓣.tensoratorEquiv bW b)
-    ≪≫ₗ (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'' )) := by
+    ≪≫ₗ (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'')) := by
   apply LinearEquiv.toLinearMap_inj.mp
   apply tensorProd_piTensorProd_ext
   intro p q
@@ -399,7 +400,7 @@ lemma tensoratorEquiv_mapIso_apply (e : X ≃ Y) (e' : Z ≃ Y) (e'' : W ≃ X)
     (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e') (h'' : bW = c ∘ e'')
     (x : 𝓣.Tensor bW ⊗[R] 𝓣.Tensor b) :
     (𝓣.tensoratorEquiv c d) ((TensorProduct.congr (𝓣.mapIso e'' h'') (𝓣.mapIso e' h')) x) =
-    (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'' )) ((𝓣.tensoratorEquiv bW b) x) := by
+    (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'')) ((𝓣.tensoratorEquiv bW b) x) := by
   trans ((TensorProduct.congr (𝓣.mapIso e'' h'') (𝓣.mapIso e' h')) ≪≫ₗ (𝓣.tensoratorEquiv c d)) x
   rfl
   rw [tensoratorEquiv_mapIso]
@@ -409,9 +410,9 @@ lemma tensoratorEquiv_mapIso_apply (e : X ≃ Y) (e' : Z ≃ Y) (e'' : W ≃ X)
 
 lemma tensoratorEquiv_mapIso_tmul (e : X ≃ Y) (e' : Z ≃ Y) (e'' : W ≃ X)
     (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e') (h'' : bW = c ∘ e'')
-    (x : 𝓣.Tensor bW) (y :  𝓣.Tensor b) :
+    (x : 𝓣.Tensor bW) (y : 𝓣.Tensor b) :
     (𝓣.tensoratorEquiv c d) ((𝓣.mapIso e'' h'' x) ⊗ₜ[R] (𝓣.mapIso e' h' y)) =
-    (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'' )) ((𝓣.tensoratorEquiv bW b) (x ⊗ₜ y)) := by
+    (𝓣.mapIso (Equiv.sumCongr e'' e') (𝓣.tensoratorEquiv_mapIso_cond h h' h'')) ((𝓣.tensoratorEquiv bW b) (x ⊗ₜ y)) := by
   rw [← tensoratorEquiv_mapIso_apply]
   rfl
   exact e
@@ -430,14 +431,14 @@ def decompEmbedSet (f : Y ↪ X) :
   Equiv.sumCongr ((Equiv.subtypeEquivRight (by simp))) <|
   (Function.Embedding.toEquivRange f).symm
 
-def decompEmbedColorLeft (c : X → 𝓣.Color)  (f : Y ↪ X) : {x // x ∈ (Finset.image f Finset.univ)ᶜ} → 𝓣.Color :=
+def decompEmbedColorLeft (c : X → 𝓣.Color) (f : Y ↪ X) : {x // x ∈ (Finset.image f Finset.univ)ᶜ} → 𝓣.Color :=
   (c ∘ (decompEmbedSet f).symm) ∘ Sum.inl
 
-def decompEmbedColorRight  (c : X → 𝓣.Color)  (f : Y ↪ X) : Y → 𝓣.Color :=
+def decompEmbedColorRight (c : X → 𝓣.Color) (f : Y ↪ X) : Y → 𝓣.Color :=
   (c ∘ (decompEmbedSet f).symm) ∘ Sum.inr
 
-lemma decompEmbed_cond  (c : X → 𝓣.Color)  (f : Y ↪ X) : c =
-    (Sum.elim (𝓣.decompEmbedColorLeft c f) (𝓣.decompEmbedColorRight c f)) ∘ decompEmbedSet f  := by
+lemma decompEmbed_cond (c : X → 𝓣.Color) (f : Y ↪ X) : c =
+    (Sum.elim (𝓣.decompEmbedColorLeft c f) (𝓣.decompEmbedColorRight c f)) ∘ decompEmbedSet f := by
   simpa [decompEmbedColorLeft, decompEmbedColorRight] using (Equiv.comp_symm_eq _ _ _).mp rfl
 
 /-- Decomposes a tensor into a tensor product based on an embedding. -/
@@ -445,7 +446,6 @@ def decompEmbed (f : Y ↪ X) :
     𝓣.Tensor c ≃ₗ[R] 𝓣.Tensor (𝓣.decompEmbedColorLeft c f) ⊗[R] 𝓣.Tensor (c ∘ f) :=
   (𝓣.mapIso (decompEmbedSet f) (𝓣.decompEmbed_cond c f)) ≪≫ₗ
   (𝓣.tensoratorEquiv (𝓣.decompEmbedColorLeft c f) (𝓣.decompEmbedColorRight c f)).symm
-
 
 /-!
 
@@ -457,7 +457,7 @@ def pairProd : 𝓣.Tensor c ⊗[R] 𝓣.Tensor c₂ →ₗ[R]
     ⨂[R] x, 𝓣.ColorModule (c x) ⊗[R] 𝓣.ColorModule (c₂ x) :=
   TensorProduct.lift (
     PiTensorProduct.map₂ (fun x =>
-      TensorProduct.mk R (𝓣.ColorModule (c x)) (𝓣.ColorModule (c₂ x)) ))
+      TensorProduct.mk R (𝓣.ColorModule (c x)) (𝓣.ColorModule (c₂ x))))
 
 lemma mkPiAlgebra_equiv (e : X ≃ Y) :
     (PiTensorProduct.lift (MultilinearMap.mkPiAlgebra R X R)) =
@@ -476,7 +476,7 @@ def contrAll' : 𝓣.Tensor c ⊗[R] 𝓣.Tensor (𝓣.τ ∘ c) →ₗ[R] R :=
   (𝓣.pairProd)
 
 lemma contrAll'_mapIso_cond {e : X ≃ Y} (h : c = d ∘ e) :
-   𝓣.τ ∘ d = (𝓣.τ ∘ c) ∘ ⇑e.symm := by
+    𝓣.τ ∘ d = (𝓣.τ ∘ c) ∘ ⇑e.symm := by
   subst h
   ext1 x
   simp
@@ -485,7 +485,7 @@ lemma contrAll'_mapIso_cond {e : X ≃ Y} (h : c = d ∘ e) :
 lemma contrAll'_mapIso (e : X ≃ Y) (h : c = d ∘ e) :
   𝓣.contrAll' ∘ₗ
     (TensorProduct.congr (𝓣.mapIso e h) (LinearEquiv.refl R _)).toLinearMap =
-  𝓣.contrAll' ∘ₗ  (TensorProduct.congr (LinearEquiv.refl R _)
+  𝓣.contrAll' ∘ₗ (TensorProduct.congr (LinearEquiv.refl R _)
     (𝓣.mapIso e.symm (𝓣.contrAll'_mapIso_cond h))).toLinearMap := by
   apply TensorProduct.ext'
   refine fun x ↦
@@ -537,7 +537,7 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : c = d ∘ e) :
 @[simp]
 lemma contrAll'_mapIso_tmul (e : X ≃ Y) (h : c = d ∘ e) (x : 𝓣.Tensor c) (y : 𝓣.Tensor (𝓣.τ ∘ d)) :
   𝓣.contrAll' ((𝓣.mapIso e h) x ⊗ₜ[R] y) = 𝓣.contrAll' (x ⊗ₜ[R] (𝓣.mapIso e.symm (𝓣.contrAll'_mapIso_cond h) y)) := by
-  change  (𝓣.contrAll' ∘ₗ
+  change (𝓣.contrAll' ∘ₗ
     (TensorProduct.congr (𝓣.mapIso e h) (LinearEquiv.refl R _)).toLinearMap) (x ⊗ₜ[R] y) = _
   rw [contrAll'_mapIso]
   rfl
@@ -562,7 +562,7 @@ lemma contrAll_mapIso_right_cond {e : X ≃ Y} {e' : Z ≃ Y}
 
 @[simp]
 lemma contrAll_mapIso_right_tmul (e : X ≃ Y) (e' : Z ≃ Y)
-    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e')  (x : 𝓣.Tensor c) (z : 𝓣.Tensor b) :
+    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e') (x : 𝓣.Tensor c) (z : 𝓣.Tensor b) :
     𝓣.contrAll e h (x ⊗ₜ[R] (𝓣.mapIso e' h' z)) =
     𝓣.contrAll (e.trans e'.symm) (𝓣.contrAll_mapIso_right_cond h h') (x ⊗ₜ[R] z) := by
   rw [contrAll, contrAll]
@@ -572,7 +572,7 @@ lemma contrAll_mapIso_right_tmul (e : X ≃ Y) (e' : Z ≃ Y)
 
 @[simp]
 lemma contrAll_comp_mapIso_right (e : X ≃ Y) (e' : Z ≃ Y)
-    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e')  : 𝓣.contrAll e h ∘ₗ
+    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = d ∘ e') : 𝓣.contrAll e h ∘ₗ
     (TensorProduct.congr (LinearEquiv.refl R (𝓣.Tensor c)) (𝓣.mapIso e' h')).toLinearMap
     = 𝓣.contrAll (e.trans e'.symm) (𝓣.contrAll_mapIso_right_cond h h') := by
   apply TensorProduct.ext'
@@ -587,7 +587,7 @@ lemma contrAll_mapIso_left_cond {e : X ≃ Y} {e' : Z ≃ X}
 
 @[simp]
 lemma contrAll_mapIso_left_tmul {e : X ≃ Y} {e' : Z ≃ X}
-    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = c ∘ e') (x :  𝓣.Tensor b) (y : 𝓣.Tensor d) :
+    (h : c = 𝓣.τ ∘ d ∘ e) (h' : b = c ∘ e') (x : 𝓣.Tensor b) (y : 𝓣.Tensor d) :
     𝓣.contrAll e h ((𝓣.mapIso e' h' x) ⊗ₜ[R] y) =
     𝓣.contrAll (e'.trans e) (𝓣.contrAll_mapIso_left_cond h h') (x ⊗ₜ[R] y) := by
   rw [contrAll, contrAll]
@@ -609,7 +609,7 @@ end PreTensorStructure
 
 structure TensorStructure (R : Type) [CommSemiring R] extends PreTensorStructure R where
   contrDual_symm : ∀ μ,
-    (contrDual μ) ∘ₗ (TensorProduct.comm R (ColorModule (τ μ)) (ColorModule μ)).toLinearMap  =
+    (contrDual μ) ∘ₗ (TensorProduct.comm R (ColorModule (τ μ)) (ColorModule μ)).toLinearMap =
     (contrDual (τ μ)) ∘ₗ (TensorProduct.congr (LinearEquiv.refl _ _)
     (toPreTensorStructure.colorModuleCast (by rw[toPreTensorStructure.τ_involutive]))).toLinearMap
 
@@ -621,8 +621,7 @@ variable (𝓣 : TensorStructure R)
 
 variable {d : ℕ} {X Y Y' Z : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z]
-  {c c₂ : X → 𝓣.Color}  {d : Y → 𝓣.Color} {b : Z → 𝓣.Color}  {d' : Y' → 𝓣.Color}  {μ ν: 𝓣.Color}
-
+  {c c₂ : X → 𝓣.Color} {d : Y → 𝓣.Color} {b : Z → 𝓣.Color} {d' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
 
 end TensorStructure
 
@@ -642,8 +641,7 @@ variable (𝓣 : GroupTensorStructure R G)
 
 variable {d : ℕ} {X Y Y' Z : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z]
-  {c c₂ : X → 𝓣.Color}  {d : Y → 𝓣.Color} {b : Z → 𝓣.Color}  {d' : Y' → 𝓣.Color}  {μ ν: 𝓣.Color}
-
+  {c c₂ : X → 𝓣.Color} {d : Y → 𝓣.Color} {b : Z → 𝓣.Color} {d' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
 
 def rep : Representation R G (𝓣.Tensor c) where
   toFun g := PiTensorProduct.map (fun x => 𝓣.repColorModule (c x) g)
@@ -663,11 +661,10 @@ lemma repColorModule_colorModuleCast_apply (h : μ = ν) (g : G) (x : 𝓣.Color
 @[simp]
 lemma repColorModule_colorModuleCast (h : μ = ν) (g : G) :
     (𝓣.repColorModule ν g) ∘ₗ (𝓣.colorModuleCast h).toLinearMap =
-    (𝓣.colorModuleCast h).toLinearMap  ∘ₗ (𝓣.repColorModule μ g) := by
+    (𝓣.colorModuleCast h).toLinearMap ∘ₗ (𝓣.repColorModule μ g) := by
   apply LinearMap.ext
   intro x
   simp [repColorModule_colorModuleCast_apply]
-
 
 @[simp]
 lemma rep_mapIso (e : X ≃ Y) (h : c = d ∘ e) (g : G) :
@@ -710,7 +707,7 @@ lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (c i)) :
 -/
 
 lemma rep_tensoratorEquiv (g : G) :
-    (𝓣.tensoratorEquiv c d) ∘ₗ (TensorProduct.map (𝓣.rep g)  (𝓣.rep g)) = 𝓣.rep g ∘ₗ
+    (𝓣.tensoratorEquiv c d) ∘ₗ (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) = 𝓣.rep g ∘ₗ
     (𝓣.tensoratorEquiv c d).toLinearMap := by
   apply tensorProd_piTensorProd_ext
   intro p q
@@ -732,7 +729,6 @@ lemma rep_tensoratorEquiv_tmul (g : G) (x : 𝓣.Tensor c) (y : 𝓣.Tensor d) :
     (𝓣.tensoratorEquiv c d) ((g • x) ⊗ₜ[R] (g • y)) = g • ((𝓣.tensoratorEquiv c d) (x ⊗ₜ[R] y)) := by
   nth_rewrite 1 [← rep_tensoratorEquiv_apply]
   rfl
-
 
 /-!
 
@@ -759,7 +755,7 @@ lemma contrAll_rep {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (
   simp [contrAll']
   apply congrArg
   simp [pairProd]
-  change (PiTensorProduct.map _) ((PiTensorProduct.map₂ _ _) _)  =
+  change (PiTensorProduct.map _) ((PiTensorProduct.map₂ _ _) _) =
     (PiTensorProduct.map _) ((PiTensorProduct.map₂ _ _) _)
   rw [PiTensorProduct.map₂_tprod_tprod, PiTensorProduct.map₂_tprod_tprod, PiTensorProduct.map_tprod,
   PiTensorProduct.map_tprod]
@@ -785,6 +781,5 @@ lemma contrAll_rep_tmul {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃
   rfl
 
 end GroupTensorStructure
-
 
 end
