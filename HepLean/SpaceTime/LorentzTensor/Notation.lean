@@ -17,6 +17,8 @@ Some examples:
 - `ψᵘ¹ᵘ²φᵤ₁` should correspond to the contraction of the first index of `ψ` and the
   only index of `φ`.
 - `ψᵘ¹ᵘ² = ψᵘ²ᵘ¹` should define the symmetry of `ψ` under the exchange of its indices.
+- `θᵤ₂(ψᵘ¹ᵘ²φᵤ₁) = (θᵤ₂ψᵘ¹ᵘ²)φᵤ₁` should correspond to an associativity properity of
+  contraction.
 
 It should also be possible to define this generically for any `LorentzTensorStructure`.
 
