@@ -155,6 +155,16 @@ lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= by
 def transpose (Λ : LorentzGroup d) : LorentzGroup d :=
   ⟨Λ.1ᵀ, mem_iff_transpose.mp Λ.2⟩
 
+@[simp]
+lemma transpose_one : @transpose d 1 = 1 := by
+  apply Subtype.eq
+  exact Matrix.transpose_one
+
+@[simp]
+lemma transpose_mul : transpose (Λ * Λ') = transpose Λ' * transpose Λ := by
+  apply Subtype.eq
+  exact Matrix.transpose_mul Λ.1 Λ'.1
+
 /-!
 
 ## Lorentz group as a topological group

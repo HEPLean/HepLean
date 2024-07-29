@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.RisingLowering
+import HepLean.SpaceTime.LorentzTensor.Contractions
 import Mathlib.RepresentationTheory.Basic
 /-!
 
@@ -20,7 +20,7 @@ variable {R : Type} [CommSemiring R]
 /-! TODO: Add preservation of the unit, and the metric. -/
 /-- A `DualizeTensorStructure` with a group action. -/
 structure LorentzTensorStructure (R : Type) [CommSemiring R]
-    (G : Type) [Group G] extends DualizeTensorStructure R where
+    (G : Type) [Group G] extends TensorStructure R where
   /-- For each color `μ` a representation of `G` on `ColorModule μ`. -/
   repColorModule : (μ : Color) → Representation R G (ColorModule μ)
   /-- The contraction of a vector with its dual is invariant under the group action. -/

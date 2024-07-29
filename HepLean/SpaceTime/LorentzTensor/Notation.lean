@@ -22,4 +22,9 @@ Some examples:
 
 It should also be possible to define this generically for any `LorentzTensorStructure`.
 
+Further we plan to make easy to define tensors with indices. E.g. `(ψ : Tenᵘ¹ᵘ²ᵤ₃)`
+  should correspond to a (real Lorentz) tensors with 3 indices, two upper and one lower.
+  For `(ψ : Tenᵘ¹ᵘ²ᵤ₃)`, if one writes e.g. `ψᵤ₁ᵘ²ᵤ₃`, this should correspond to a
+  lowering of the first index of `ψ`.
+
 -/

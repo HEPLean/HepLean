@@ -14,13 +14,17 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 In this file we define a Lorentz vector (in 4d, this is more often called a 4-vector).
 
 One of the most important example of a Lorentz vector is SpaceTime.
+
+We will define the group action of the Lorentz group on Lorentz vectors in
+`HepLean.SpaceTime.LorentzVector.LorentzAction` in such a way that `LorentzVector`
+corresponds to contravariant Lorentz tensors.
+
 -/
-/-! TODO: Define action of the Lorentz group. -/
 
 /- The number of space dimensions . -/
 variable (d : ℕ)
 
-/-- The type of Lorentz Vectors in `d`-space dimensions. -/
+/-- The type of (contravariant) Lorentz Vectors in `d`-space dimensions. -/
 def LorentzVector : Type := (Fin 1 ⊕ Fin d) → ℝ
 
 /-- An instance of an additive commutative monoid on `LorentzVector`. -/
@@ -65,6 +69,28 @@ lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 els
   rw [stdBasis]
   erw [Pi.basisFun_apply]
   exact LinearMap.stdBasis_apply' ℝ μ ν
+
+lemma decomp_stdBasis (v : LorentzVector d) : ∑ i, v i • e i = v := by
+  funext ν
+  rw [Finset.sum_apply]
+  rw [Finset.sum_eq_single_of_mem ν]
+  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+  erw [Pi.basisFun_apply]
+  simp only [LinearMap.stdBasis_same, mul_one]
+  exact Finset.mem_univ ν
+  intros b _ hbi
+  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+  erw [Pi.basisFun_apply]
+  simp [LinearMap.stdBasis_apply]
+  exact Or.inr hbi
+
+@[simp]
+lemma decomp_stdBasis' (v : LorentzVector d) :
+    v (Sum.inl 0) • e (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • e (Sum.inr a₂)  = v := by
+  trans ∑ i, v i • e i
+  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+    Finset.sum_singleton]
+  exact decomp_stdBasis v
 
 /-- The standard unit time vector. -/
 noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)
