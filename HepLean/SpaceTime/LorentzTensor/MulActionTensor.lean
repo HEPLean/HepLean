@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.Contraction
+import HepLean.SpaceTime.LorentzTensor.Basic
 import Mathlib.RepresentationTheory.Basic
 /-!
 
@@ -124,10 +124,10 @@ lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
 
 @[simp]
 lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tensor cX) :
-    g • (𝓣.mapIso e h x) = (𝓣.mapIso e h) (g • x) := by
+    (𝓣.mapIso e h) (g • x) = g • (𝓣.mapIso e h x)  := by
   trans ((𝓣.rep g) ∘ₗ (𝓣.mapIso e h).toLinearMap) x
-  rfl
   simp
+  rfl
 
 @[simp]
 lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
@@ -170,54 +170,37 @@ lemma rep_tensoratorEquiv_tmul (g : G) (x : 𝓣.Tensor cX) (y : 𝓣.Tensor cY)
   nth_rewrite 1 [← rep_tensoratorEquiv_apply]
   rfl
 
-/-!
-
-## Group acting on contraction
-
--/
+lemma rep_tensoratorEquiv_symm (g : G) :
+    (𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g  = (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ∘ₗ
+    (𝓣.tensoratorEquiv cX cY).symm.toLinearMap := by
+  rw [LinearEquiv.eq_comp_toLinearMap_symm, LinearMap.comp_assoc,
+    LinearEquiv.toLinearMap_symm_comp_eq]
+  exact Eq.symm (rep_tensoratorEquiv 𝓣 g)
 
 @[simp]
-lemma contrAll_rep {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e) (g : G) :
-    𝓣.contrAll e h ∘ₗ (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) = 𝓣.contrAll e h := by
-  apply TensorProduct.ext'
-  refine fun x ↦ PiTensorProduct.induction_on' x ?_ (by
-      intro a b hx hy y
-      simp [map_add, add_tmul, hx, hy])
-  intro rx fx
-  refine fun y ↦ PiTensorProduct.induction_on' y ?_ (by
-      intro a b hx hy
-      simp at hx hy
-      simp [map_add, tmul_add, hx, hy])
-  intro ry fy
-  simp [contrAll, TensorProduct.smul_tmul]
-  apply congrArg
-  apply congrArg
-  simp [contrAll']
-  apply congrArg
-  simp [pairProd]
-  change (PiTensorProduct.map _) ((PiTensorProduct.map₂ _ _) _) =
-    (PiTensorProduct.map _) ((PiTensorProduct.map₂ _ _) _)
-  rw [PiTensorProduct.map₂_tprod_tprod, PiTensorProduct.map₂_tprod_tprod, PiTensorProduct.map_tprod,
-  PiTensorProduct.map_tprod]
-  simp only [mk_apply]
-  apply congrArg
-  funext x
-  rw [← repColorModule_colorModuleCast_apply]
-  nth_rewrite 2 [← contrDual_inv (c x) g]
+lemma rep_tensoratorEquiv_symm_apply (g : G) (x : 𝓣.Tensor (Sum.elim cX cY)) :
+    (𝓣.tensoratorEquiv cX cY).symm ((𝓣.rep g) x) =
+    (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ((𝓣.tensoratorEquiv cX cY).symm x) := by
+  trans ((𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g) x
+  rfl
+  rw [rep_tensoratorEquiv_symm]
   rfl
 
 @[simp]
-lemma contrAll_rep_apply {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e)
-    (g : G) (x : 𝓣.Tensor c ⊗ 𝓣.Tensor d) :
-    𝓣.contrAll e h (TensorProduct.map (𝓣.rep g) (𝓣.rep g) x) = 𝓣.contrAll e h x := by
-  change (𝓣.contrAll e h ∘ₗ (TensorProduct.map (𝓣.rep g) (𝓣.rep g))) x = _
-  rw [contrAll_rep]
+lemma rep_lid  (g : G)  : TensorProduct.lid R (𝓣.Tensor cX) ∘ₗ
+    (TensorProduct.map (LinearMap.id) (𝓣.rep g)) = (𝓣.rep g) ∘ₗ
+    (TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap  := by
+  apply TensorProduct.ext'
+  intro r y
+  simp
 
 @[simp]
-lemma contrAll_rep_tmul {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e)
-    (g : G) (x : 𝓣.Tensor c) (y : 𝓣.Tensor d) :
-    𝓣.contrAll e h ((g • x) ⊗ₜ[R] (g • y)) = 𝓣.contrAll e h (x ⊗ₜ[R] y) := by
-  nth_rewrite 2 [← @contrAll_rep_apply R _ G]
+lemma rep_lid_apply (g : G) (x : R ⊗[R] 𝓣.Tensor cX) :
+    (TensorProduct.lid R (𝓣.Tensor cX)) ((TensorProduct.map (LinearMap.id) (𝓣.rep g)) x) =
+    (𝓣.rep g) ((TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap x) := by
+  trans ((TensorProduct.lid R (𝓣.Tensor cX)) ∘ₗ (TensorProduct.map (LinearMap.id) (𝓣.rep g))) x
+  rfl
+  rw [rep_lid]
   rfl
 
 end TensorStructure

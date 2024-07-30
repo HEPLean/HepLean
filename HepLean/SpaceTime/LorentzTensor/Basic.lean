@@ -34,21 +34,57 @@ open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
+namespace TensorStructure
+
 /-- An auxillary function to contract the vector space `V1` and `V2` in `V1 ⊗[R] V2 ⊗[R] V3`. -/
-def contrDualLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+def contrLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
     [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
     V1 ⊗[R] V2 ⊗[R] V3 →ₗ[R] V3 :=
   (TensorProduct.lid R _).toLinearMap ∘ₗ
   TensorProduct.map (f) (LinearEquiv.refl R V3).toLinearMap
   ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
 
+def contrRightAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+    [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
+    (V3 ⊗[R] V1) ⊗[R] V2 →ₗ[R] V3 :=
+  (TensorProduct.rid R _).toLinearMap ∘ₗ
+  TensorProduct.map (LinearEquiv.refl R V3).toLinearMap f ∘ₗ
+  (TensorProduct.assoc R _ _ _).toLinearMap
+
+
 /-- An auxillary function to contract the vector space `V1` and `V2` in
   `V4 ⊗[R] V1 ⊗[R] V2 ⊗[R] V3`. -/
-def contrDualMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+def contrMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
     [AddCommMonoid V4] [Module R V1] [Module R V2] [Module R V3] [Module R V4]
     (f : V1 ⊗[R] V2 →ₗ[R] R) : (V4 ⊗[R] V1) ⊗[R] (V2 ⊗[R] V3) →ₗ[R] V4 ⊗[R] V3 :=
-  (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrDualLeftAux f)) ∘ₗ
+  (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrLeftAux f)) ∘ₗ
   (TensorProduct.assoc R _ _ _).toLinearMap
+
+lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+    [AddCommMonoid V4] [AddCommMonoid V5] [Module R V1] [Module R V2] [Module R V3] [Module R V2] [Module R V4]
+    [Module R V5]
+    (f : V2 ⊗[R] V3 →ₗ[R] R) (g : V4 ⊗[R] V5 →ₗ[R] R) :
+    (contrRightAux f ∘ₗ TensorProduct.map (LinearMap.id : V1 ⊗[R] V2 →ₗ[R] V1 ⊗[R] V2)
+      (contrRightAux g)) =
+    (contrRightAux g) ∘ₗ TensorProduct.map (contrMidAux f) LinearMap.id
+    ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap := by
+  apply TensorProduct.ext'
+  intro x y
+  refine  TensorProduct.induction_on x (by simp) ?_ (fun x z h1 h2 =>
+    by simp [add_tmul, LinearMap.map_add, h1, h2])
+  intro x1 x2
+  refine  TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
+    by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
+  intro y x5
+  refine  TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
+    by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
+  intro x3 x4
+  simp [contrRightAux, contrMidAux, contrLeftAux]
+  erw [TensorProduct.map_tmul]
+  simp only [LinearMapClass.map_smul, LinearMap.id_coe, id_eq, mk_apply, rid_tmul]
+
+
+end TensorStructure
 
 /-- An initial structure specifying a tensor system (e.g. a system in which you can
   define real Lorentz tensors or Einstein notation convention). -/
@@ -72,18 +108,14 @@ structure TensorStructure (R : Type) [CommSemiring R] where
   contrDual_symm : ∀ μ x y, (contrDual μ) (x ⊗ₜ[R] y) =
     (contrDual (τ μ)) (y ⊗ₜ[R] (Equiv.cast (congrArg ColorModule (τ_involutive μ).symm) x))
   /-- The unit of the contraction. -/
-  unit : (μ : Color) → ColorModule μ ⊗[R] ColorModule (τ μ)
+  unit : (μ : Color) → ColorModule (τ μ) ⊗[R] ColorModule μ
   /-- The unit is a right identity. -/
-  unit_lid : ∀ μ (x : ColorModule μ),
-    TensorProduct.rid R _
-    (TensorProduct.map (LinearEquiv.refl R (ColorModule μ)).toLinearMap
-    (contrDual μ ∘ₗ (TensorProduct.comm R _ _).toLinearMap)
-    ((TensorProduct.assoc R _ _ _) (unit μ ⊗ₜ[R] x))) = x
+  unit_rid : ∀ μ (x : ColorModule μ), TensorStructure.contrLeftAux (contrDual μ) (x ⊗ₜ[R] unit μ) = x
   /-- The metric for a given color. -/
   metric : (μ : Color) → ColorModule μ ⊗[R] ColorModule μ
   /-- The metric contracted with its dual is the unit. -/
-  metric_dual : ∀ (μ : Color), (contrDualMidAux (contrDual μ)
-    (metric μ ⊗ₜ[R] metric (τ μ))) = unit μ
+  metric_dual : ∀ (μ : Color), (TensorStructure.contrMidAux (contrDual μ)
+    (metric μ ⊗ₜ[R] metric (τ μ))) = TensorProduct.comm _ _ _ (unit μ)
 
 namespace TensorStructure
 
@@ -92,7 +124,7 @@ variable (𝓣 : TensorStructure R)
 variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
   {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
-  {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
+  {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν η : 𝓣.Color}
 
 instance : AddCommMonoid (𝓣.ColorModule μ) := 𝓣.colorModule_addCommMonoid μ
 
@@ -107,6 +139,16 @@ instance : AddCommMonoid (𝓣.Tensor cX) :=
 
 instance : Module R (𝓣.Tensor cX) := PiTensorProduct.instModule
 
+/-!
+
+## Color
+
+Recall the `color` of an index describes the type of the index.
+
+For example, in a real Lorentz tensor the colors are `{up, down}`.
+
+-/
+
 /-- Equivalence of `ColorModule` given an equality of colors. -/
 def colorModuleCast (h : μ = ν) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModule ν where
   toFun := Equiv.cast (congrArg 𝓣.ColorModule h)
@@ -119,6 +161,45 @@ def colorModuleCast (h : μ = ν) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModu
     rfl
   left_inv x := Equiv.symm_apply_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
   right_inv x := Equiv.apply_symm_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
+
+/-- A relation on colors which is true if the two colors are equal or are duals. -/
+def colorRel (μ ν : 𝓣.Color) : Prop := μ = ν ∨ μ = 𝓣.τ ν
+
+/-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
+def colorEquivRel : Equivalence 𝓣.colorRel where
+  refl := by
+    intro x
+    left
+    rfl
+  symm := by
+    intro x y h
+    rcases h with h | h
+    · left
+      exact h.symm
+    · right
+      subst h
+      exact (𝓣.τ_involutive y).symm
+  trans := by
+    intro x y z hxy hyz
+    rcases hxy with hxy | hxy <;>
+      rcases hyz with hyz | hyz <;>
+      subst hxy hyz
+    · left
+      rfl
+    · right
+      rfl
+    · right
+      rfl
+    · left
+      exact 𝓣.τ_involutive z
+
+/-- The structure of a setoid on colors, two colors are related if they are equal,
+  or dual. -/
+instance colorSetoid : Setoid 𝓣.Color := ⟨𝓣.colorRel, 𝓣.colorEquivRel⟩
+
+/-- A map taking a color to its equivalence class in `colorSetoid`. -/
+def colorQuot (μ : 𝓣.Color) : Quotient 𝓣.colorSetoid :=
+  Quotient.mk 𝓣.colorSetoid μ
 
 lemma tensorProd_piTensorProd_ext {M : Type} [AddCommMonoid M] [Module R M]
     {f g : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY →ₗ[R] M}
@@ -476,6 +557,54 @@ lemma tensoratorEquiv_mapIso_tmul (e : X ≃ Y) (e' : Z ≃ Y) (e'' : W ≃ X)
   rfl
   exact e
   exact h
+
+/-!
+
+## contrDual properties
+
+-/
+
+lemma contrDual_cast (h : μ = ν) (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ)) :
+    𝓣.contrDual μ (x ⊗ₜ[R] y) = 𝓣.contrDual ν (𝓣.colorModuleCast h x ⊗ₜ[R]
+      𝓣.colorModuleCast (congrArg 𝓣.τ h) y) := by
+  subst h
+  rfl
+
+/-- `𝓣.contrDual (𝓣.τ μ)` in terms of `𝓣.contrDual μ`. -/
+@[simp]
+lemma contrDual_symm' (μ : 𝓣.Color) (x : 𝓣.ColorModule (𝓣.τ μ))
+    (y : 𝓣.ColorModule (𝓣.τ (𝓣.τ μ))) : 𝓣.contrDual (𝓣.τ μ) (x ⊗ₜ[R] y) =
+    (𝓣.contrDual μ) ((𝓣.colorModuleCast (𝓣.τ_involutive μ) y) ⊗ₜ[R] x) := by
+  rw [𝓣.contrDual_symm, 𝓣.contrDual_cast (𝓣.τ_involutive μ)]
+  congr
+  simp [colorModuleCast]
+
+lemma contrDual_symm_contrRightAux (h : ν = η):
+    (𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ) =
+    contrRightAux (𝓣.contrDual (𝓣.τ (𝓣.τ μ))) ∘ₗ
+    (TensorProduct.congr (TensorProduct.congr (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm))
+    (𝓣.colorModuleCast ((𝓣.τ_involutive (𝓣.τ μ)).symm))).toLinearMap := by
+  apply TensorProduct.ext'
+  intro x y
+  refine  TensorProduct.induction_on x (by simp) ?_ ?_
+  · intro x z
+    simp [contrRightAux]
+    congr
+    simp [colorModuleCast]
+    simp [colorModuleCast]
+  · intro x z h1 h2
+    simp [add_tmul, LinearMap.map_add, h1, h2]
+
+lemma contrDual_symm_contrRightAux_apply_tmul (h : ν = η)
+    (m : 𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule μ) (x : 𝓣.ColorModule (𝓣.τ μ)) :
+    𝓣.colorModuleCast h (contrRightAux (𝓣.contrDual μ) (m ⊗ₜ[R] x)) =
+    contrRightAux (𝓣.contrDual (𝓣.τ (𝓣.τ μ)))
+      ((TensorProduct.congr (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) (m)) ⊗ₜ
+      (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)).symm x)) := by
+  trans ((𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ)) (m ⊗ₜ[R] x)
+  rfl
+  rw [contrDual_symm_contrRightAux]
+  rfl
 
 /-!
 
