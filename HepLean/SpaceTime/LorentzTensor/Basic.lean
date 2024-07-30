@@ -34,6 +34,22 @@ open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
+/-- An auxillary function to contract the vector space `V1` and `V2` in  `V1 ⊗[R] V2 ⊗[R] V3`. -/
+def contrDualLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+    [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
+    V1 ⊗[R] V2 ⊗[R] V3 →ₗ[R] V3 :=
+  (TensorProduct.lid R _).toLinearMap ∘ₗ
+  TensorProduct.map (f) (LinearEquiv.refl R V3).toLinearMap
+  ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
+
+/-- An auxillary function to contract the vector space `V1` and `V2` in
+  `V4 ⊗[R] V1 ⊗[R] V2 ⊗[R] V3`. -/
+def contrDualMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
+    [AddCommMonoid V4] [Module R V1] [Module R V2] [Module R V3] [Module R V4]
+    (f : V1 ⊗[R] V2 →ₗ[R] R) : (V4 ⊗[R] V1) ⊗[R] (V2 ⊗[R] V3) →ₗ[R] V4 ⊗[R] V3 :=
+  (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrDualLeftAux f)) ∘ₗ
+  (TensorProduct.assoc R _ _ _).toLinearMap
+
 /-- An initial structure specifying a tensor system (e.g. a system in which you can
   define real Lorentz tensors or Einstein notation convention). -/
 structure TensorStructure (R : Type) [CommSemiring R] where
@@ -56,12 +72,18 @@ structure TensorStructure (R : Type) [CommSemiring R] where
   contrDual_symm : ∀ μ x y, (contrDual μ) (x ⊗ₜ[R] y) =
     (contrDual (τ μ)) (y ⊗ₜ[R] (Equiv.cast (congrArg ColorModule (τ_involutive μ).symm) x))
   /-- The unit of the contraction. -/
-  unit : (μ : Color) → ColorModule (τ μ) ⊗[R] ColorModule μ
+  unit : (μ : Color) → ColorModule μ ⊗[R] ColorModule (τ μ)
   /-- The unit is a right identity. -/
-  unit_rid : ∀ μ (x : ColorModule μ),
-    TensorProduct.lid R _
-    (TensorProduct.map (contrDual μ) (LinearEquiv.refl R (ColorModule μ)).toLinearMap
-    ((TensorProduct.assoc R _ _ _).symm (x ⊗ₜ[R] unit μ))) = x
+  unit_lid : ∀ μ (x : ColorModule μ),
+    TensorProduct.rid R _
+    (TensorProduct.map (LinearEquiv.refl R (ColorModule μ)).toLinearMap
+    (contrDual μ ∘ₗ (TensorProduct.comm R _ _).toLinearMap)
+    ((TensorProduct.assoc R _ _ _) (unit μ ⊗ₜ[R] x))) = x
+  /-- The metric for a given color. -/
+  metric : (μ : Color) → ColorModule μ ⊗[R] ColorModule μ
+  /-- The metric contracted with its dual is the unit. -/
+  metric_dual : ∀ (μ : Color), (contrDualMidAux (contrDual μ)
+    (metric μ ⊗ₜ[R] metric (τ μ))) = unit μ
 
 namespace TensorStructure
 

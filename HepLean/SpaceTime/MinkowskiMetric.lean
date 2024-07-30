@@ -62,6 +62,12 @@ lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
+@[simp]
+lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 1 := by
+  match μ with
+  | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+
 lemma as_block : @minkowskiMatrix d = (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ)) := by
   rw [minkowskiMatrix]
@@ -116,7 +122,7 @@ variable {d : ℕ}
 variable (v w : LorentzVector d)
 
 /-- Notation for `minkowskiMetric`. -/
-scoped[minkowskiMetric] notation "⟪" v "," w "⟫ₘ" => minkowskiMetric v w
+scoped[minkowskiMetric] notation:102 "⟪" v "," w "⟫ₘ" => minkowskiMetric v w
 /-!
 
 # Equalitites involving the Minkowski metric

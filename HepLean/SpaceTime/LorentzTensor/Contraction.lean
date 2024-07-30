@@ -8,6 +8,27 @@ import HepLean.SpaceTime.LorentzTensor.Basic
 
 # Contraction of indices
 
+We define a number of ways to contract indices of tensors:
+
+- `contrDualLeft`: Contracts vectors on the left as:
+  `𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η →ₗ[R] 𝓣.ColorModule η`
+
+- `contrDualMid`: Contracts vectors in the middle as:
+  `(𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule ν) ⊗[R] (𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η) →ₗ[R]`
+  `𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule η`
+
+- `contrAll'`: Contracts all indices of manifestly tensors with manifestly dual colors as:
+  `𝓣.Tensor cX ⊗[R] 𝓣.Tensor (𝓣.τ ∘ cX) →ₗ[R] R`
+
+- `contrAll`: Contracts all indices of tensors with dual colors as:
+  `𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY →ₗ[R] R`
+
+- `contrAllLeft`: Contracts all indices of tensors on the left as:
+  `𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY ⊗[R] 𝓣.Tensor cZ →ₗ[R] 𝓣.Tensor cZ`
+
+- `contrElim`: Contracting indices of tensors indexed by `Sum.elim _ _` as:
+  `𝓣.Tensor (Sum.elim cW cX) ⊗[R] 𝓣.Tensor (Sum.elim cY cZ) →ₗ[R] 𝓣.Tensor (Sum.elim cW cZ)`
+
 -/
 noncomputable section
 
@@ -24,22 +45,25 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
   {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
 
+/-!
+
+# Contractions of vectors
+
+-/
+
 /-- The contraction of a vector in `𝓣.ColorModule ν` with a vector in
   `𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η` to form a vector in `𝓣.ColorModule η`. -/
-def contrOneTwo {ν η : 𝓣.Color} :
+def contrDualLeft {ν η : 𝓣.Color} :
     𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η →ₗ[R] 𝓣.ColorModule η :=
-  (TensorProduct.lid R _).toLinearMap ∘ₗ
-  TensorProduct.map (𝓣.contrDual ν) (LinearEquiv.refl R (𝓣.ColorModule η)).toLinearMap
-  ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
+  contrDualLeftAux (𝓣.contrDual ν)
 
 /-- The contraction of a vector in `𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule ν` with a vector in
   `𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η` to form a vector in
   `𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule η`. -/
-def contrTwoTwo {μ ν η : 𝓣.Color} :
+def contrDualMid {μ ν η : 𝓣.Color} :
     (𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule ν) ⊗[R] (𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η) →ₗ[R]
       𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule η :=
-  (TensorProduct.map (LinearEquiv.refl R _).toLinearMap (𝓣.contrOneTwo)) ∘ₗ
-  (TensorProduct.assoc R _ _ _).toLinearMap
+  contrDualMidAux (𝓣.contrDual ν)
 
 /-- A linear map taking tensors mapped with the same index set to the product of paired tensors. -/
 def pairProd : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cX2 →ₗ[R]
@@ -135,8 +159,7 @@ lemma contrAll'_mapIso_tmul (e : X ≃ Y) (h : c = cY ∘ e) (x : 𝓣.Tensor c)
   rfl
 
 /-- The contraction of all the indices of two tensors with dual colors. -/
-def contrAll {c : X → 𝓣.Color} {d : Y → 𝓣.Color}
-    (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e) : 𝓣.Tensor c ⊗[R] 𝓣.Tensor d →ₗ[R] R :=
+def contrAll (e : X ≃ Y) (h : cX = 𝓣.τ ∘ cY ∘ e) : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY →ₗ[R] R :=
   𝓣.contrAll' ∘ₗ (TensorProduct.congr (LinearEquiv.refl _ _)
     (𝓣.mapIso e.symm (by funext a; simpa [h] using (𝓣.τ_involutive _).symm))).toLinearMap
 
@@ -197,5 +220,32 @@ lemma contrAll_mapIso_left {e : X ≃ Y} {e' : Z ≃ X}
   apply TensorProduct.ext'
   intro x y
   exact 𝓣.contrAll_mapIso_left_tmul h h' x y
+
+/-- The linear map from `𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY ⊗[R] 𝓣.Tensor cZ` to
+  `𝓣.Tensor cZ` obtained by contracting all indices in `𝓣.Tensor cX` and `𝓣.Tensor cY`,
+  given a proof that this is possible. -/
+def contrAllLeft (e : X ≃ Y) (h : cX = 𝓣.τ ∘ cY ∘ e) :
+    𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY ⊗[R] 𝓣.Tensor cZ →ₗ[R] 𝓣.Tensor cZ :=
+  (TensorProduct.lid R _).toLinearMap ∘ₗ
+  TensorProduct.map (𝓣.contrAll e h) (LinearEquiv.refl R (𝓣.Tensor cZ)).toLinearMap
+  ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
+
+/-- The linear map from `(𝓣.Tensor cW ⊗[R] 𝓣.Tensor cX) ⊗[R] (𝓣.Tensor cY ⊗[R] 𝓣.Tensor cZ)`
+  to `𝓣.Tensor cW ⊗[R] 𝓣.Tensor cZ` obtained by contracting all indices of the tensors
+  in the middle. -/
+def contrAllMid (e : X ≃ Y) (h : cX = 𝓣.τ ∘ cY ∘ e) :
+    (𝓣.Tensor cW ⊗[R] 𝓣.Tensor cX) ⊗[R] (𝓣.Tensor cY ⊗[R] 𝓣.Tensor cZ) →ₗ[R]
+    𝓣.Tensor cW ⊗[R] 𝓣.Tensor cZ :=
+  (TensorProduct.map (LinearEquiv.refl R _).toLinearMap (𝓣.contrAllLeft e h)) ∘ₗ
+  (TensorProduct.assoc R _ _ _).toLinearMap
+
+/-- The linear map from `𝓣.Tensor (Sum.elim cW cX) ⊗[R] 𝓣.Tensor (Sum.elim cY cZ)`
+  to `𝓣.Tensor (Sum.elim cW cZ)` formed by contracting the indices specified by
+  `cX` and `cY`, which are assumed to be dual. -/
+def contrElim (e : X ≃ Y) (h : cX = 𝓣.τ ∘ cY ∘ e) :
+    𝓣.Tensor (Sum.elim cW cX) ⊗[R] 𝓣.Tensor (Sum.elim cY cZ) →ₗ[R] 𝓣.Tensor (Sum.elim cW cZ) :=
+    (𝓣.tensoratorEquiv cW cZ).toLinearMap ∘ₗ 𝓣.contrAllMid e h ∘ₗ
+    (TensorProduct.congr (𝓣.tensoratorEquiv cW cX).symm
+      (𝓣.tensoratorEquiv cY cZ).symm).toLinearMap
 
 end TensorStructure
