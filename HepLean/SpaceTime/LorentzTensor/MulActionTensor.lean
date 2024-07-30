@@ -87,7 +87,7 @@ def rep : Representation R G (𝓣.Tensor cX) where
     simp_all only [_root_.map_mul]
     exact PiTensorProduct.map_mul _ _
 
-local infixl:78 " • " => 𝓣.rep
+local infixl:101 " • " => 𝓣.rep
 
 lemma repColorModule_colorModuleCast_apply (h : μ = ν) (g : G) (x : 𝓣.ColorModule μ) :
     (repColorModule ν g) (𝓣.colorModuleCast h x) =
