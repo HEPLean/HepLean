@@ -27,4 +27,7 @@ Further we plan to make easy to define tensors with indices. E.g. `(ψ : Tenᵘ�
   For `(ψ : Tenᵘ¹ᵘ²ᵤ₃)`, if one writes e.g. `ψᵤ₁ᵘ²ᵤ₃`, this should correspond to a
   lowering of the first index of `ψ`.
 
+Further, it will be nice if we can have implicit contractions of indices
+  e.g. in Weyl fermions.
+
 -/

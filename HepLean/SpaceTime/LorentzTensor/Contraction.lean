@@ -347,7 +347,7 @@ lemma contr_equivariant (e : (C ⊕ C) ⊕ P ≃ X)
   simp only [contrAll_rep, LinearMap.comp_id, LinearMap.id_comp]
   have h1 {M N A B : Type} [AddCommMonoid M] [AddCommMonoid N]
       [AddCommMonoid A] [AddCommMonoid B] [Module R M] [Module R N] [Module R A] [Module R B]
-      (f : M →ₗ[R] N) (g : A →ₗ[R] B)  : TensorProduct.map f g
+      (f : M →ₗ[R] N) (g : A →ₗ[R] B) : TensorProduct.map f g
       = TensorProduct.map (LinearMap.id) g ∘ₗ TensorProduct.map f (LinearMap.id) :=
     ext rfl
   rw [h1]

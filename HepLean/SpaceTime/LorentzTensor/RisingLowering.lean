@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.Basic
-import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 /-!
 
 # Rising and Lowering of indices
@@ -32,10 +31,6 @@ variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype 
   {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
 
-variable {G H : Type} [Group G] [Group H] [MulActionTensor G 𝓣]
-local infixl:101 " • " => 𝓣.rep
-open MulActionTensor
-
 /-!
 
 ## Properties of the unit
@@ -45,10 +40,10 @@ open MulActionTensor
 /-! TODO: Move -/
 
 lemma unit_lhs_eq (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ) ⊗[R] 𝓣.ColorModule μ) :
-    contrLeftAux (𝓣.contrDual μ) (x ⊗ₜ[R] y)  =
+    contrLeftAux (𝓣.contrDual μ) (x ⊗ₜ[R] y) =
     (contrRightAux (𝓣.contrDual (𝓣.τ μ))) ((TensorProduct.comm R _ _) y
     ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) x) := by
-  refine  TensorProduct.induction_on y (by simp) ?_ (fun z1 z2 h1 h2 => ?_)
+  refine TensorProduct.induction_on y (by simp) ?_ (fun z1 z2 h1 h2 => ?_)
   intro x1 x2
   simp only [contrRightAux, LinearEquiv.refl_toLinearMap, comm_tmul, colorModuleCast,
     Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp, LinearEquiv.coe_coe,
@@ -58,10 +53,9 @@ lemma unit_lhs_eq (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ) �
   simp [LinearMap.map_add, add_tmul]
   rw [← h1, ← h2, tmul_add, LinearMap.map_add]
 
-
 @[simp]
 lemma unit_lid : (contrRightAux (𝓣.contrDual (𝓣.τ μ))) ((TensorProduct.comm R _ _) (𝓣.unit μ)
-    ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) x)  = x := by
+    ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) x) = x := by
   have h1 := 𝓣.unit_rid μ x
   rw [← unit_lhs_eq]
   exact h1
@@ -80,18 +74,17 @@ lemma metric_cast (h : μ = ν) :
   erw [congr_refl_refl]
   simp only [LinearEquiv.refl_apply]
 
-
-
 @[simp]
-lemma metric_contrRight_unit (μ : 𝓣.Color) (x : 𝓣.ColorModule μ ) :
-    (contrRightAux (𝓣.contrDual μ)) (𝓣.metric μ  ⊗ₜ[R]
+lemma metric_contrRight_unit (μ : 𝓣.Color) (x : 𝓣.ColorModule μ) :
+    (contrRightAux (𝓣.contrDual μ)) (𝓣.metric μ ⊗ₜ[R]
     ((contrRightAux (𝓣.contrDual (𝓣.τ μ)))
       (𝓣.metric (𝓣.τ μ) ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm x)))) = x := by
   change (contrRightAux (𝓣.contrDual μ) ∘ₗ TensorProduct.map (LinearMap.id)
       (contrRightAux (𝓣.contrDual (𝓣.τ μ)))) (𝓣.metric μ
       ⊗ₜ[R] 𝓣.metric (𝓣.τ μ) ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm x)) = _
   rw [contrRightAux_comp]
-  simp
+  simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul,
+    map_tmul, LinearMap.id_coe, id_eq]
   rw [𝓣.metric_dual]
   simp only [unit_lid]
 
@@ -101,13 +94,19 @@ lemma metric_contrRight_unit (μ : 𝓣.Color) (x : 𝓣.ColorModule μ ) :
 
 -/
 
-def dualizeSymm  (μ : 𝓣.Color) : 𝓣.ColorModule (𝓣.τ μ) →ₗ[R] 𝓣.ColorModule μ :=
-  contrRightAux (𝓣.contrDual μ)  ∘ₗ
+/-- Takes a vector with index with dual color to a vector with index the underlying color.
+  Obtained by contraction with the metric. -/
+def dualizeSymm (μ : 𝓣.Color) : 𝓣.ColorModule (𝓣.τ μ) →ₗ[R] 𝓣.ColorModule μ :=
+  contrRightAux (𝓣.contrDual μ) ∘ₗ
     TensorProduct.lTensorHomToHomLTensor R _ _ _ (𝓣.metric μ ⊗ₜ[R] LinearMap.id)
 
-def dualizeFun  (μ : 𝓣.Color) : 𝓣.ColorModule μ →ₗ[R] 𝓣.ColorModule (𝓣.τ μ) :=
+/-- Takes a vector to a vector with the dual color index.
+  Obtained by contraction with the metric. -/
+def dualizeFun (μ : 𝓣.Color) : 𝓣.ColorModule μ →ₗ[R] 𝓣.ColorModule (𝓣.τ μ) :=
   𝓣.dualizeSymm (𝓣.τ μ) ∘ₗ (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm).toLinearMap
 
+/-- Equivalence between the module with a color `μ` and the module with color
+  `𝓣.τ μ` obtained by contraction with the metric. -/
 def dualizeModule (μ : 𝓣.Color) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModule (𝓣.τ μ) := by
   refine LinearEquiv.ofLinear (𝓣.dualizeFun μ) (𝓣.dualizeSymm μ) ?_ ?_
   · apply LinearMap.ext
@@ -121,6 +120,7 @@ def dualizeModule (μ : 𝓣.Color) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorMo
       Function.comp_apply, lTensorHomToHomLTensor_apply, LinearMap.id_coe, id_eq,
       metric_contrRight_unit]
 
+/-- Dualizes the color of all indicies of a tensor by contraction with the metric. -/
 def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
   refine LinearEquiv.ofLinear
     (PiTensorProduct.map (fun x => (𝓣.dualizeModule (cX x)).toLinearMap))
@@ -132,7 +132,8 @@ def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
       simp [map_add, add_tmul, hx]
       simp_all only [Function.comp_apply, LinearMap.coe_comp, LinearMap.id_coe, id_eq])
     intro rx fx
-    simp
+    simp only [Function.comp_apply, PiTensorProduct.tprodCoeff_eq_smul_tprod,
+      LinearMapClass.map_smul, LinearMap.coe_comp, LinearMap.id_coe, id_eq]
     apply congrArg
     change (PiTensorProduct.map _)
       ((PiTensorProduct.map _) ((PiTensorProduct.tprod R) fx)) = _
@@ -158,6 +159,8 @@ lemma dualize_cond' (e : C ⊕ P ≃ X) :
 
 /-! TODO: Show that `dualize` is equivariant with respect to the group action. -/
 
+/-- Given an equivalence `C ⊕ P ≃ X` dualizes those indices of a tensor which correspond to
+  `C` whilst leaving the indices `P` invariant. -/
 def dualize (e : C ⊕ P ≃ X) : 𝓣.Tensor cX ≃ₗ[R]
     𝓣.Tensor (Sum.elim (𝓣.τ ∘ cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm) :=
   𝓣.mapIso e.symm (𝓣.dualize_cond e) ≪≫ₗ

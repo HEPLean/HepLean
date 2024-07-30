@@ -124,7 +124,7 @@ lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
 
 @[simp]
 lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tensor cX) :
-    (𝓣.mapIso e h) (g • x) = g • (𝓣.mapIso e h x)  := by
+    (𝓣.mapIso e h) (g • x) = g • (𝓣.mapIso e h x) := by
   trans ((𝓣.rep g) ∘ₗ (𝓣.mapIso e h).toLinearMap) x
   simp
   rfl
@@ -171,7 +171,7 @@ lemma rep_tensoratorEquiv_tmul (g : G) (x : 𝓣.Tensor cX) (y : 𝓣.Tensor cY)
   rfl
 
 lemma rep_tensoratorEquiv_symm (g : G) :
-    (𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g  = (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ∘ₗ
+    (𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g = (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ∘ₗ
     (𝓣.tensoratorEquiv cX cY).symm.toLinearMap := by
   rw [LinearEquiv.eq_comp_toLinearMap_symm, LinearMap.comp_assoc,
     LinearEquiv.toLinearMap_symm_comp_eq]
@@ -187,9 +187,9 @@ lemma rep_tensoratorEquiv_symm_apply (g : G) (x : 𝓣.Tensor (Sum.elim cX cY)) 
   rfl
 
 @[simp]
-lemma rep_lid  (g : G)  : TensorProduct.lid R (𝓣.Tensor cX) ∘ₗ
+lemma rep_lid (g : G) : TensorProduct.lid R (𝓣.Tensor cX) ∘ₗ
     (TensorProduct.map (LinearMap.id) (𝓣.rep g)) = (𝓣.rep g) ∘ₗ
-    (TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap  := by
+    (TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap := by
   apply TensorProduct.ext'
   intro r y
   simp

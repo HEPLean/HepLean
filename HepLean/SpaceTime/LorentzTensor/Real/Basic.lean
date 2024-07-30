@@ -75,10 +75,10 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     match μ with
     | .up => LorentzVector.unitUp
     | .down => LorentzVector.unitDown
-  unit_lid μ :=
+  unit_rid μ :=
     match μ with
-    | .up => LorentzVector.unitUp_lid
-    | .down => LorentzVector.unitDown_lid
+    | .up => LorentzVector.unitUp_rid
+    | .down => LorentzVector.unitDown_rid
   metric μ :=
     match μ with
     | realTensor.ColorType.up => asProdLorentzVector

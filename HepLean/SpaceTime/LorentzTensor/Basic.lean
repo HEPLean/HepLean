@@ -44,13 +44,13 @@ def contrLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCom
   TensorProduct.map (f) (LinearEquiv.refl R V3).toLinearMap
   ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
 
+/-- An auxillary function to contract the vector space `V1` and `V2` in `(V3 ⊗[R] V1) ⊗[R] V2`. -/
 def contrRightAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
     [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
     (V3 ⊗[R] V1) ⊗[R] V2 →ₗ[R] V3 :=
   (TensorProduct.rid R _).toLinearMap ∘ₗ
   TensorProduct.map (LinearEquiv.refl R V3).toLinearMap f ∘ₗ
   (TensorProduct.assoc R _ _ _).toLinearMap
-
 
 /-- An auxillary function to contract the vector space `V1` and `V2` in
   `V4 ⊗[R] V1 ⊗[R] V2 ⊗[R] V3`. -/
@@ -60,29 +60,27 @@ def contrMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddC
   (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrLeftAux f)) ∘ₗ
   (TensorProduct.assoc R _ _ _).toLinearMap
 
-lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
-    [AddCommMonoid V4] [AddCommMonoid V5] [Module R V1] [Module R V2] [Module R V3] [Module R V2] [Module R V4]
-    [Module R V5]
-    (f : V2 ⊗[R] V3 →ₗ[R] R) (g : V4 ⊗[R] V5 →ₗ[R] R) :
+lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMonoid V2]
+    [AddCommMonoid V3] [AddCommMonoid V4] [AddCommMonoid V5] [Module R V1] [Module R V3]
+    [Module R V2] [Module R V4] [Module R V5] (f : V2 ⊗[R] V3 →ₗ[R] R) (g : V4 ⊗[R] V5 →ₗ[R] R) :
     (contrRightAux f ∘ₗ TensorProduct.map (LinearMap.id : V1 ⊗[R] V2 →ₗ[R] V1 ⊗[R] V2)
       (contrRightAux g)) =
     (contrRightAux g) ∘ₗ TensorProduct.map (contrMidAux f) LinearMap.id
     ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap := by
   apply TensorProduct.ext'
   intro x y
-  refine  TensorProduct.induction_on x (by simp) ?_ (fun x z h1 h2 =>
+  refine TensorProduct.induction_on x (by simp) ?_ (fun x z h1 h2 =>
     by simp [add_tmul, LinearMap.map_add, h1, h2])
   intro x1 x2
-  refine  TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
+  refine TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
     by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
   intro y x5
-  refine  TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
+  refine TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
     by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
   intro x3 x4
   simp [contrRightAux, contrMidAux, contrLeftAux]
   erw [TensorProduct.map_tmul]
   simp only [LinearMapClass.map_smul, LinearMap.id_coe, id_eq, mk_apply, rid_tmul]
-
 
 end TensorStructure
 
@@ -110,7 +108,8 @@ structure TensorStructure (R : Type) [CommSemiring R] where
   /-- The unit of the contraction. -/
   unit : (μ : Color) → ColorModule (τ μ) ⊗[R] ColorModule μ
   /-- The unit is a right identity. -/
-  unit_rid : ∀ μ (x : ColorModule μ), TensorStructure.contrLeftAux (contrDual μ) (x ⊗ₜ[R] unit μ) = x
+  unit_rid : ∀ μ (x : ColorModule μ),
+    TensorStructure.contrLeftAux (contrDual μ) (x ⊗ₜ[R] unit μ) = x
   /-- The metric for a given color. -/
   metric : (μ : Color) → ColorModule μ ⊗[R] ColorModule μ
   /-- The metric contracted with its dual is the unit. -/
@@ -166,7 +165,7 @@ def colorModuleCast (h : μ = ν) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModu
 def colorRel (μ ν : 𝓣.Color) : Prop := μ = ν ∨ μ = 𝓣.τ ν
 
 /-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
-def colorEquivRel : Equivalence 𝓣.colorRel where
+lemma colorRel_equivalence : Equivalence 𝓣.colorRel where
   refl := by
     intro x
     left
@@ -195,7 +194,7 @@ def colorEquivRel : Equivalence 𝓣.colorRel where
 
 /-- The structure of a setoid on colors, two colors are related if they are equal,
   or dual. -/
-instance colorSetoid : Setoid 𝓣.Color := ⟨𝓣.colorRel, 𝓣.colorEquivRel⟩
+instance colorSetoid : Setoid 𝓣.Color := ⟨𝓣.colorRel, 𝓣.colorRel_equivalence⟩
 
 /-- A map taking a color to its equivalence class in `colorSetoid`. -/
 def colorQuot (μ : 𝓣.Color) : Quotient 𝓣.colorSetoid :=
@@ -579,14 +578,15 @@ lemma contrDual_symm' (μ : 𝓣.Color) (x : 𝓣.ColorModule (𝓣.τ μ))
   congr
   simp [colorModuleCast]
 
-lemma contrDual_symm_contrRightAux (h : ν = η):
+lemma contrDual_symm_contrRightAux (h : ν = η) :
     (𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ) =
     contrRightAux (𝓣.contrDual (𝓣.τ (𝓣.τ μ))) ∘ₗ
-    (TensorProduct.congr (TensorProduct.congr (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm))
+    (TensorProduct.congr (
+      TensorProduct.congr (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm))
     (𝓣.colorModuleCast ((𝓣.τ_involutive (𝓣.τ μ)).symm))).toLinearMap := by
   apply TensorProduct.ext'
   intro x y
-  refine  TensorProduct.induction_on x (by simp) ?_ ?_
+  refine TensorProduct.induction_on x (by simp) ?_ ?_
   · intro x z
     simp [contrRightAux]
     congr
@@ -598,9 +598,9 @@ lemma contrDual_symm_contrRightAux (h : ν = η):
 lemma contrDual_symm_contrRightAux_apply_tmul (h : ν = η)
     (m : 𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule μ) (x : 𝓣.ColorModule (𝓣.τ μ)) :
     𝓣.colorModuleCast h (contrRightAux (𝓣.contrDual μ) (m ⊗ₜ[R] x)) =
-    contrRightAux (𝓣.contrDual (𝓣.τ (𝓣.τ μ)))
-      ((TensorProduct.congr (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) (m)) ⊗ₜ
-      (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)).symm x)) := by
+    contrRightAux (𝓣.contrDual (𝓣.τ (𝓣.τ μ))) ((TensorProduct.congr
+    (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) (m)) ⊗ₜ
+    (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)).symm x)) := by
   trans ((𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ)) (m ⊗ₜ[R] x)
   rfl
   rw [contrDual_symm_contrRightAux]
