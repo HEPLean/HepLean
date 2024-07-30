@@ -34,7 +34,7 @@ open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
-/-- An auxillary function to contract the vector space `V1` and `V2` in  `V1 ⊗[R] V2 ⊗[R] V3`. -/
+/-- An auxillary function to contract the vector space `V1` and `V2` in `V1 ⊗[R] V2 ⊗[R] V3`. -/
 def contrDualLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
     [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
     V1 ⊗[R] V2 ⊗[R] V3 →ₗ[R] V3 :=
