@@ -35,10 +35,13 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
   {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
+/-- Casting a tensor defined on `Fin n` to `Fin m` where `n = m`. -/
 @[simp]
 def finCast (h : n = m) (hc : cn = cm ∘ Fin.castOrderIso h) : 𝓣.Tensor cn ≃ₗ[R] 𝓣.Tensor cm :=
   𝓣.mapIso (Fin.castOrderIso h) hc
 
+/-- An equivalence between `𝓣.Tensor cn ⊗[R] 𝓣.Tensor cm` indexed by `Fin n` and `Fin m`,
+  and `𝓣.Tensor (Sum.elim cn cm ∘ finSumFinEquiv.symm)` indexed by `Fin (n + m)`. -/
 @[simp]
 def finSumEquiv : 𝓣.Tensor cn ⊗[R] 𝓣.Tensor cm ≃ₗ[R]
     𝓣.Tensor (Sum.elim cn cm ∘ finSumFinEquiv.symm) :=

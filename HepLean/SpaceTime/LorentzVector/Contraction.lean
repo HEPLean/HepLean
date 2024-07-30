@@ -27,6 +27,8 @@ namespace LorentzVector
 open Matrix
 variable {d : ℕ} (v : LorentzVector d)
 
+/-- The bi-linear map defining the contraction of a contravariant Lorentz vector
+  and a covariant Lorentz vector. -/
 def contrUpDownBi : LorentzVector d →ₗ[ℝ] CovariantLorentzVector d →ₗ[ℝ] ℝ where
   toFun v := {
     toFun := fun w => ∑ i, v i * w i,
@@ -57,6 +59,8 @@ def contrUpDownBi : LorentzVector d →ₗ[ℝ] CovariantLorentzVector d →ₗ[
     simp only [RingHom.id, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk, id_eq]
     ring
 
+/-- The linear map defining the contraction of a contravariant Lorentz vector
+  and a covariant Lorentz vector. -/
 def contrUpDown : LorentzVector d ⊗[ℝ] CovariantLorentzVector d →ₗ[ℝ] ℝ :=
   TensorProduct.lift contrUpDownBi
 
@@ -93,6 +97,8 @@ lemma contrUpDown_stdBasis_right (x : CovariantLorentzVector d) (i : Fin 1 ⊕ F
   simp only [LinearMap.stdBasis_apply', ite_eq_right_iff, one_ne_zero, imp_false]
   exact Or.intro_left (x b = 0) (id (Ne.symm hbi))
 
+/-- The linear map defining the contraction of a covariant Lorentz vector
+  and a contravariant Lorentz vector. -/
 def contrDownUp : CovariantLorentzVector d ⊗[ℝ] LorentzVector d →ₗ[ℝ] ℝ :=
   contrUpDown ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap
 
@@ -107,6 +113,8 @@ lemma contrDownUp_tmul_eq_dotProduct {x : CovariantLorentzVector d} {y : Lorentz
 
 -/
 
+/-- The unit of the contraction of contravariant Lorentz vector and a
+  covariant Lorentz vector. -/
 def unitUp : LorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
   ∑ i, LorentzVector.stdBasis i ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis i
 
@@ -122,6 +130,8 @@ lemma unitUp_lid (x : LorentzVector d) :
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, comm_tmul,
     contrUpDown_stdBasis_left, rid_tmul, decomp_stdBasis']
 
+/-- The unit of the contraction of covariant Lorentz vector and a
+  contravariant Lorentz vector. -/
 def unitDown : CovariantLorentzVector d ⊗[ℝ] LorentzVector d :=
   ∑ i, CovariantLorentzVector.stdBasis i ⊗ₜ[ℝ] LorentzVector.stdBasis i
 
@@ -168,9 +178,11 @@ open LorentzVector
 open scoped minkowskiMatrix
 variable {d : ℕ}
 
+/-- The metric tensor as an element of `LorentzVector d ⊗[ℝ] LorentzVector d`. -/
 def asProdLorentzVector : LorentzVector d ⊗[ℝ] LorentzVector d :=
   ∑ μ, η μ μ • (LorentzVector.stdBasis μ ⊗ₜ[ℝ] LorentzVector.stdBasis μ)
 
+/-- The metric tensor as an element of `CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d`. -/
 def asProdCovariantLorentzVector : CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
   ∑ μ, η μ μ • (CovariantLorentzVector.stdBasis μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ)
 

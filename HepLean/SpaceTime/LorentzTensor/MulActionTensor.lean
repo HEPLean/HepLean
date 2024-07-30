@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.Contractions
+import HepLean.SpaceTime.LorentzTensor.Contraction
 import Mathlib.RepresentationTheory.Basic
 /-!
 
@@ -19,6 +19,8 @@ variable {R : Type} [CommSemiring R]
 
 /-! TODO: Add preservation of the unit, and the metric. -/
 
+/-- A multiplicative action on a tensor structure (e.g. the action of the Lorentz
+  group on real Lorentz tensors). -/
 class MulActionTensor (G : Type) [Monoid G] (𝓣 : TensorStructure R) where
   /-- For each color `μ` a representation of `G` on `ColorModule μ`. -/
   repColorModule : (μ : 𝓣.Color) → Representation R G (𝓣.ColorModule μ)
@@ -42,12 +44,14 @@ variable {d : ℕ} {X Y Y' Z : Type} [Fintype X] [DecidableEq X] [Fintype Y] [De
 
 -/
 
+/-- The `MulActionTensor` defined by restriction along a group homomorphism. -/
 def compHom (f : H →* G) : MulActionTensor H 𝓣 where
   repColorModule μ := MonoidHom.comp (repColorModule μ) f
   contrDual_inv μ h := by
     simp only [MonoidHom.coe_comp, Function.comp_apply]
     rw [contrDual_inv]
 
+/-- The trivial `MulActionTensor` defined via trivial representations. -/
 def trivial : MulActionTensor G 𝓣 where
   repColorModule μ := Representation.trivial R
   contrDual_inv μ g := by

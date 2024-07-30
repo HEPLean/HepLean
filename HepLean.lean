@@ -23,7 +23,7 @@ import HepLean.AnomalyCancellation.PureU1.Odd.BasisLinear
 import HepLean.AnomalyCancellation.PureU1.Odd.LineInCubic
 import HepLean.AnomalyCancellation.PureU1.Odd.Parameterization
 import HepLean.AnomalyCancellation.PureU1.Permutations
-import HepLean.AnomalyCancellation.PureU1.Sort
+import HepLean.AnomalyCancellation.PureU1.Sorts
 import HepLean.AnomalyCancellation.PureU1.VectorLike
 import HepLean.AnomalyCancellation.SM.Basic
 import HepLean.AnomalyCancellation.SM.FamilyMaps
@@ -71,7 +71,7 @@ import HepLean.SpaceTime.LorentzGroup.Proper
 import HepLean.SpaceTime.LorentzGroup.Restricted
 import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzTensor.Basic
-import HepLean.SpaceTime.LorentzTensor.Contractions
+import HepLean.SpaceTime.LorentzTensor.Contraction
 import HepLean.SpaceTime.LorentzTensor.Fin
 import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 import HepLean.SpaceTime.LorentzTensor.Notation

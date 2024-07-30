@@ -51,24 +51,11 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
 
 -/
 
-def contrDualLeftAux {V1 V2 V3 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
-    [Module R V1] [Module R V2] [Module R V3] (f : V1 ⊗[R] V2 →ₗ[R] R) :
-    V1 ⊗[R] V2 ⊗[R] V3 →ₗ[R] V3 :=
-  (TensorProduct.lid R _).toLinearMap ∘ₗ
-  TensorProduct.map (f) (LinearEquiv.refl R V3).toLinearMap
-  ∘ₗ (TensorProduct.assoc R _ _ _).symm.toLinearMap
-
 /-- The contraction of a vector in `𝓣.ColorModule ν` with a vector in
   `𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η` to form a vector in `𝓣.ColorModule η`. -/
 def contrDualLeft {ν η : 𝓣.Color} :
     𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η →ₗ[R] 𝓣.ColorModule η :=
   contrDualLeftAux (𝓣.contrDual ν)
-
-def contrDualMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [AddCommMonoid V3]
-    [AddCommMonoid V4] [Module R V1] [Module R V2] [Module R V3] [Module R V4] (f : V1 ⊗[R] V2 →ₗ[R] R) :
-    (V4 ⊗[R] V1) ⊗[R] (V2 ⊗[R] V3) →ₗ[R] V4 ⊗[R] V3 :=
-  (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrDualLeftAux f)) ∘ₗ
-  (TensorProduct.assoc R _ _ _).toLinearMap
 
 /-- The contraction of a vector in `𝓣.ColorModule μ ⊗[R] 𝓣.ColorModule ν` with a vector in
   `𝓣.ColorModule (𝓣.τ ν) ⊗[R] 𝓣.ColorModule η` to form a vector in
