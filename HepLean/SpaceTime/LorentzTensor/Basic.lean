@@ -46,6 +46,7 @@ def contrDualMidAux {V1 V2 V3 V4 : Type} [AddCommMonoid V1] [AddCommMonoid V2] [
     (V4 ⊗[R] V1) ⊗[R] (V2 ⊗[R] V3) →ₗ[R] V4 ⊗[R] V3 :=
   (TensorProduct.map (LinearEquiv.refl R V4).toLinearMap (contrDualLeftAux f)) ∘ₗ
   (TensorProduct.assoc R _ _ _).toLinearMap
+
 /-- An initial structure specifying a tensor system (e.g. a system in which you can
   define real Lorentz tensors or Einstein notation convention). -/
 structure TensorStructure (R : Type) [CommSemiring R] where
@@ -72,9 +73,9 @@ structure TensorStructure (R : Type) [CommSemiring R] where
   /-- The unit is a right identity. -/
   unit_lid : ∀ μ (x : ColorModule μ),
     TensorProduct.rid R _
-    (TensorProduct.map  (LinearEquiv.refl R (ColorModule μ)).toLinearMap
-    (contrDual μ ∘ₗ (TensorProduct.comm R _ _).toLinearMap )
-    ((TensorProduct.assoc R _ _ _) (unit μ ⊗ₜ[R] x ))) = x
+    (TensorProduct.map (LinearEquiv.refl R (ColorModule μ)).toLinearMap
+    (contrDual μ ∘ₗ (TensorProduct.comm R _ _).toLinearMap)
+    ((TensorProduct.assoc R _ _ _) (unit μ ⊗ₜ[R] x))) = x
   /-- The metric for a given color. -/
   metric : (μ : Color) → ColorModule μ ⊗[R] ColorModule μ
   /-- The metric contracted with its dual is the unit. -/

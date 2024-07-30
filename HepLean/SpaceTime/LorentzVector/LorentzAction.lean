@@ -25,6 +25,10 @@ def rep : Representation ℝ (LorentzGroup d) (LorentzVector d) where
   map_mul' x y := by
     simp only [lorentzGroupIsGroup_mul_coe, map_mul]
 
+open Matrix in
+@[simp]
+lemma rep_apply (g : LorentzGroup d) : rep g v = g *ᵥ v := rfl
+
 end LorentzVector
 
 end

@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Contraction
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.SpaceTime.LorentzVector.LorentzAction
+import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 /-!
 
 # Real Lorentz tensors
@@ -84,5 +85,16 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
       match μ with
       | realTensor.ColorType.up => asProdLorentzVector_contr_asCovariantProdLorentzVector
       | realTensor.ColorType.down => asProdCovariantLorentzVector_contr_asProdLorentzVector
+
+/-- The action of the Lorentz group on real Lorentz tensors. -/
+instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where
+  repColorModule μ :=
+    match μ with
+    | .up => LorentzVector.rep
+    | .down => CovariantLorentzVector.rep
+  contrDual_inv μ _ :=
+    match μ with
+    | .up => TensorProduct.ext' (fun _ _ => LorentzVector.contrUpDown_invariant_lorentzAction)
+    | .down => TensorProduct.ext' (fun _ _ => LorentzVector.contrDownUp_invariant_lorentzAction)
 
 end

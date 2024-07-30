@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzVector.Basic
+import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.Covariant
 import HepLean.SpaceTime.LorentzTensor.Basic
 /-!
@@ -24,8 +24,8 @@ open TensorProduct
 
 namespace LorentzVector
 
+open Matrix
 variable {d : ℕ} (v : LorentzVector d)
-
 
 def contrUpDownBi : LorentzVector d →ₗ[ℝ] CovariantLorentzVector d →ₗ[ℝ] ℝ where
   toFun v := {
@@ -60,6 +60,10 @@ def contrUpDownBi : LorentzVector d →ₗ[ℝ] CovariantLorentzVector d →ₗ[
 def contrUpDown : LorentzVector d ⊗[ℝ] CovariantLorentzVector d →ₗ[ℝ] ℝ :=
   TensorProduct.lift contrUpDownBi
 
+lemma contrUpDown_tmul_eq_dotProduct {x : LorentzVector d} {y : CovariantLorentzVector d} :
+    contrUpDown (x ⊗ₜ[ℝ] y) = x ⬝ᵥ y := by
+  rfl
+
 @[simp]
 lemma contrUpDown_stdBasis_left (x : LorentzVector d) (i : Fin 1 ⊕ Fin d) :
     contrUpDown (x ⊗ₜ[ℝ] (CovariantLorentzVector.stdBasis i)) = x i := by
@@ -92,16 +96,26 @@ lemma contrUpDown_stdBasis_right (x : CovariantLorentzVector d) (i : Fin 1 ⊕ F
 def contrDownUp : CovariantLorentzVector d ⊗[ℝ] LorentzVector d →ₗ[ℝ] ℝ :=
   contrUpDown ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap
 
+lemma contrDownUp_tmul_eq_dotProduct {x : CovariantLorentzVector d} {y : LorentzVector d} :
+    contrDownUp (x ⊗ₜ[ℝ] y) = x ⬝ᵥ y := by
+  rw [dotProduct_comm x y]
+  rfl
+
+/-!
+
+## The unit of the contraction
+
+-/
 
 def unitUp : LorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
   ∑ i, LorentzVector.stdBasis i ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis i
 
 lemma unitUp_lid (x : LorentzVector d) :
     TensorProduct.rid ℝ _
-    (TensorProduct.map  (LinearEquiv.refl ℝ (_)).toLinearMap
-    (contrUpDown ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap )
-    ((TensorProduct.assoc ℝ _ _ _) (unitUp ⊗ₜ[ℝ] x )))  = x := by
-  simp only  [LinearEquiv.refl_toLinearMap, unitUp]
+    (TensorProduct.map (LinearEquiv.refl ℝ _).toLinearMap
+    (contrUpDown ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap)
+    ((TensorProduct.assoc ℝ _ _ _) (unitUp ⊗ₜ[ℝ] x))) = x := by
+  simp only [LinearEquiv.refl_toLinearMap, unitUp]
   rw [sum_tmul]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, map_add, assoc_tmul, map_sum, map_tmul, LinearMap.id_coe, id_eq,
@@ -113,8 +127,8 @@ def unitDown : CovariantLorentzVector d ⊗[ℝ] LorentzVector d :=
 
 lemma unitDown_lid (x : CovariantLorentzVector d) :
     TensorProduct.rid ℝ _
-    (TensorProduct.map  (LinearEquiv.refl ℝ (_)).toLinearMap
-    (contrDownUp ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap )
+    (TensorProduct.map (LinearEquiv.refl ℝ _).toLinearMap
+    (contrDownUp ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap)
     ((TensorProduct.assoc ℝ _ _ _) (unitDown ⊗ₜ[ℝ] x))) = x := by
   simp only [LinearEquiv.refl_toLinearMap, unitDown]
   rw [sum_tmul]
@@ -123,6 +137,29 @@ lemma unitDown_lid (x : CovariantLorentzVector d) :
     id_eq, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, comm_tmul,
     contrUpDown_stdBasis_right, rid_tmul, CovariantLorentzVector.decomp_stdBasis']
 
+/-!
+
+# Contractions and the Lorentz actions
+
+-/
+open Matrix
+
+@[simp]
+lemma contrUpDown_invariant_lorentzAction : @contrUpDown d ((LorentzVector.rep g) x ⊗ₜ[ℝ]
+    (CovariantLorentzVector.rep g) y) = contrUpDown (x ⊗ₜ[ℝ] y) := by
+  rw [contrUpDown_tmul_eq_dotProduct, contrUpDown_tmul_eq_dotProduct]
+  simp only [rep_apply, CovariantLorentzVector.rep_apply]
+  rw [Matrix.dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
+  simp only [LorentzGroup.subtype_inv_mul, one_mulVec]
+
+@[simp]
+lemma contrDownUp_invariant_lorentzAction : @contrDownUp d ((CovariantLorentzVector.rep g) x ⊗ₜ[ℝ]
+    (LorentzVector.rep g) y) = contrDownUp (x ⊗ₜ[ℝ] y) := by
+  rw [contrDownUp_tmul_eq_dotProduct, contrDownUp_tmul_eq_dotProduct]
+  rw [dotProduct_comm, dotProduct_comm x y]
+  simp only [rep_apply, CovariantLorentzVector.rep_apply]
+  rw [Matrix.dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
+  simp only [LorentzGroup.subtype_inv_mul, one_mulVec]
 
 end LorentzVector
 
@@ -132,7 +169,7 @@ open scoped minkowskiMatrix
 variable {d : ℕ}
 
 def asProdLorentzVector : LorentzVector d ⊗[ℝ] LorentzVector d :=
-  ∑ μ,  η μ μ  • (LorentzVector.stdBasis μ ⊗ₜ[ℝ] LorentzVector.stdBasis μ)
+  ∑ μ, η μ μ • (LorentzVector.stdBasis μ ⊗ₜ[ℝ] LorentzVector.stdBasis μ)
 
 def asProdCovariantLorentzVector : CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
   ∑ μ, η μ μ • (CovariantLorentzVector.stdBasis μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ)
@@ -173,16 +210,15 @@ lemma asProdLorentzVector_contr_asCovariantProdLorentzVector :
   refine Finset.sum_congr rfl (fun μ _ => ?_)
   rw [← tmul_smul, TensorProduct.assoc_tmul]
   simp only [map_tmul, LinearMap.id_coe, id_eq, contrLeft_asProdCovariantLorentzVector]
-  rw [tmul_sum, Finset.sum_eq_single_of_mem μ]
-  rw [tmul_smul]
-  change (η μ μ * (η μ μ * e μ μ)) •  e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ = _
+  rw [tmul_sum, Finset.sum_eq_single_of_mem μ, tmul_smul]
+  change (η μ μ * (η μ μ * e μ μ)) • e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ = _
   rw [LorentzVector.stdBasis]
   erw [Pi.basisFun_apply]
-  simp
+  simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
   exact Finset.mem_univ μ
   intro ν _ hμν
   rw [tmul_smul]
-  change  (η ν ν * (η μ μ * e μ ν)) • (e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis ν) = _
+  change (η ν ν * (η μ μ * e μ ν)) • (e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis ν) = _
   rw [LorentzVector.stdBasis]
   erw [Pi.basisFun_apply]
   simp only [LinearMap.stdBasis_apply', mul_ite, mul_one, mul_zero, ite_smul, zero_smul,
@@ -197,15 +233,12 @@ lemma asProdCovariantLorentzVector_contr_asProdLorentzVector :
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply]
   rw [sum_tmul, map_sum, map_sum, unitDown]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
-  rw [smul_tmul,]
-  rw [TensorProduct.assoc_tmul]
+  rw [smul_tmul, TensorProduct.assoc_tmul]
   simp only [tmul_smul, LinearMapClass.map_smul, map_tmul, LinearMap.id_coe, id_eq,
     contrLeft_asProdLorentzVector]
-  rw [tmul_sum, Finset.sum_eq_single_of_mem μ]
-  rw [tmul_smul, smul_smul]
-  rw [LorentzVector.stdBasis]
+  rw [tmul_sum, Finset.sum_eq_single_of_mem μ, tmul_smul, smul_smul, LorentzVector.stdBasis]
   erw [Pi.basisFun_apply]
-  simp
+  simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
   exact Finset.mem_univ μ
   intro ν _ hμν
   rw [tmul_smul]
@@ -216,6 +249,5 @@ lemma asProdCovariantLorentzVector_contr_asProdLorentzVector :
   exact fun a => False.elim (hμν (id (Eq.symm a)))
 
 end minkowskiMatrix
-
 
 end

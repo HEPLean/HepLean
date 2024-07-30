@@ -61,7 +61,7 @@ lemma decomp_stdBasis (v : CovariantLorentzVector d) : ∑ i, v i • stdBasis i
 
 @[simp]
 lemma decomp_stdBasis' (v : CovariantLorentzVector d) :
-    v (Sum.inl 0) • stdBasis (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • stdBasis (Sum.inr a₂)  = v := by
+    v (Sum.inl 0) • stdBasis (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • stdBasis (Sum.inr a₂) = v := by
   trans ∑ i, v i • stdBasis i
   simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
     Finset.sum_singleton]
@@ -81,6 +81,17 @@ def rep : Representation ℝ (LorentzGroup d) (CovariantLorentzVector d) where
   map_mul' x y := by
     simp only [mul_inv_rev, lorentzGroupIsGroup_inv, LorentzGroup.transpose_mul,
       lorentzGroupIsGroup_mul_coe, map_mul]
+
+open Matrix in
+@[simp]
+lemma rep_apply (g : LorentzGroup d) : rep g v = (g.1⁻¹)ᵀ *ᵥ v := by
+  trans (LorentzGroup.transpose g⁻¹) *ᵥ v
+  rfl
+  apply congrFun
+  apply congrArg
+  simp only [LorentzGroup.transpose, lorentzGroupIsGroup_inv, transpose_inj]
+  rw [← LorentzGroup.coe_inv]
+  rfl
 
 end CovariantLorentzVector
 

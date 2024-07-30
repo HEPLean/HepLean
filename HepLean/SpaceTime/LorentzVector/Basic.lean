@@ -86,7 +86,7 @@ lemma decomp_stdBasis (v : LorentzVector d) : ∑ i, v i • e i = v := by
 
 @[simp]
 lemma decomp_stdBasis' (v : LorentzVector d) :
-    v (Sum.inl 0) • e (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • e (Sum.inr a₂)  = v := by
+    v (Sum.inl 0) • e (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • e (Sum.inr a₂) = v := by
   trans ∑ i, v i • e i
   simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
     Finset.sum_singleton]

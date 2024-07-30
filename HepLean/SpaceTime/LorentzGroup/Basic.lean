@@ -151,6 +151,22 @@ lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= by
   refine (inv_eq_left_inv ?h).symm
   exact mem_iff_dual_mul_self.mp Λ.2
 
+@[simp]
+lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
+  trans Subtype.val (Λ⁻¹ * Λ)
+  rw [← coe_inv]
+  simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+  rw [inv_mul_self Λ]
+  simp only [lorentzGroupIsGroup_one_coe]
+
+@[simp]
+lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
+  trans Subtype.val (Λ * Λ⁻¹)
+  rw [← coe_inv]
+  simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+  rw [mul_inv_self Λ]
+  simp only [lorentzGroupIsGroup_one_coe]
+
 /-- The transpose of a matrix in the Lorentz group is an element of the Lorentz group. -/
 def transpose (Λ : LorentzGroup d) : LorentzGroup d :=
   ⟨Λ.1ᵀ, mem_iff_transpose.mp Λ.2⟩

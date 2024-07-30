@@ -68,10 +68,17 @@ def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
     IO Bool := do
   let names : HashSet Name := HashSet.ofArray (modData.imports.map (·.module))
   let mut warned := false
-  for req in reqImports do
-    if !names.contains req then
-      IO.print s!"File {req} is not imported. \n"
-      warned := true
+  let nameArray := reqImports.filterMap (
+    fun req => if !names.contains req then
+      some req
+    else
+      none)
+  if nameArray.size ≠ 0  then
+    let nameArraySort := nameArray.qsort (·.toString < ·.toString)
+    IO.print s!"Files are not imported add the following to the `HepLean` file: \n"
+    for name in nameArraySort do
+      IO.print s!"import {name}\n"
+    warned := true
   pure warned
 
 def main (_ : List String) : IO UInt32 := do

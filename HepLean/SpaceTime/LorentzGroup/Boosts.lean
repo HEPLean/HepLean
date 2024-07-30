@@ -118,7 +118,7 @@ lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
   simp only [toMatrix_apply]
   refine Continuous.comp' (continuous_mul_left (η i i)) ?hf
   refine Continuous.sub ?_ ?_
-  refine Continuous.comp' (continuous_add_left ⟪e i, e j⟫ₘ) ?_
+  refine Continuous.comp' (continuous_add_left (minkowskiMetric (e i) (e j))) ?_
   refine Continuous.comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
   exact FuturePointing.metric_continuous _
   refine Continuous.mul ?_ ?_

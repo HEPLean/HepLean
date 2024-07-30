@@ -73,11 +73,14 @@ import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.Contractions
 import HepLean.SpaceTime.LorentzTensor.Fin
-import HepLean.SpaceTime.LorentzTensor.LorentzTensorStruct
+import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 import HepLean.SpaceTime.LorentzTensor.Notation
-import HepLean.SpaceTime.LorentzTensor.RisingLowering
+import HepLean.SpaceTime.LorentzTensor.Real.Basic
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic
+import HepLean.SpaceTime.LorentzVector.Contraction
+import HepLean.SpaceTime.LorentzVector.Covariant
+import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
