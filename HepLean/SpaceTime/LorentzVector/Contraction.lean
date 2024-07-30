@@ -115,37 +115,32 @@ lemma contrDownUp_tmul_eq_dotProduct {x : CovariantLorentzVector d} {y : Lorentz
 
 /-- The unit of the contraction of contravariant Lorentz vector and a
   covariant Lorentz vector. -/
-def unitUp : LorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
-  ∑ i, LorentzVector.stdBasis i ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis i
+def unitUp : CovariantLorentzVector d ⊗[ℝ] LorentzVector d :=
+  ∑ i, CovariantLorentzVector.stdBasis i ⊗ₜ[ℝ] LorentzVector.stdBasis i
 
-lemma unitUp_lid (x : LorentzVector d) :
-    TensorProduct.rid ℝ _
-    (TensorProduct.map (LinearEquiv.refl ℝ _).toLinearMap
-    (contrUpDown ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap)
-    ((TensorProduct.assoc ℝ _ _ _) (unitUp ⊗ₜ[ℝ] x))) = x := by
-  simp only [LinearEquiv.refl_toLinearMap, unitUp]
-  rw [sum_tmul]
-  simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
-    Finset.sum_singleton, map_add, assoc_tmul, map_sum, map_tmul, LinearMap.id_coe, id_eq,
-    LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, comm_tmul,
-    contrUpDown_stdBasis_left, rid_tmul, decomp_stdBasis']
+lemma unitUp_rid (x : LorentzVector d) :
+    TensorStructure.contrLeftAux contrUpDown (x ⊗ₜ[ℝ] unitUp) = x := by
+  simp only [unitUp, LinearEquiv.refl_toLinearMap]
+  rw [tmul_sum]
+  simp only [TensorStructure.contrLeftAux, LinearEquiv.refl_toLinearMap, Fintype.sum_sum_type,
+    Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, map_add,
+    LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul, map_tmul,
+    contrUpDown_stdBasis_left, LinearMap.id_coe, id_eq, lid_tmul, map_sum, decomp_stdBasis']
 
 /-- The unit of the contraction of covariant Lorentz vector and a
   contravariant Lorentz vector. -/
-def unitDown : CovariantLorentzVector d ⊗[ℝ] LorentzVector d :=
-  ∑ i, CovariantLorentzVector.stdBasis i ⊗ₜ[ℝ] LorentzVector.stdBasis i
+def unitDown : LorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
+  ∑ i, LorentzVector.stdBasis i ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis i
 
-lemma unitDown_lid (x : CovariantLorentzVector d) :
-    TensorProduct.rid ℝ _
-    (TensorProduct.map (LinearEquiv.refl ℝ _).toLinearMap
-    (contrDownUp ∘ₗ (TensorProduct.comm ℝ _ _).toLinearMap)
-    ((TensorProduct.assoc ℝ _ _ _) (unitDown ⊗ₜ[ℝ] x))) = x := by
-  simp only [LinearEquiv.refl_toLinearMap, unitDown]
-  rw [sum_tmul]
-  simp only [contrDownUp, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
-    Fin.isValue, Finset.sum_singleton, map_add, assoc_tmul, map_sum, map_tmul, LinearMap.id_coe,
-    id_eq, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, comm_tmul,
-    contrUpDown_stdBasis_right, rid_tmul, CovariantLorentzVector.decomp_stdBasis']
+lemma unitDown_rid (x : CovariantLorentzVector d) :
+    TensorStructure.contrLeftAux contrDownUp (x ⊗ₜ[ℝ] unitDown) = x := by
+  simp only [unitDown, LinearEquiv.refl_toLinearMap]
+  rw [tmul_sum]
+  simp only [TensorStructure.contrLeftAux, contrDownUp, LinearEquiv.refl_toLinearMap,
+    Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, map_add, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
+    assoc_symm_tmul, map_tmul, comm_tmul, contrUpDown_stdBasis_right, LinearMap.id_coe, id_eq,
+    lid_tmul, map_sum, CovariantLorentzVector.decomp_stdBasis']
 
 /-!
 
@@ -175,6 +170,7 @@ end LorentzVector
 
 namespace minkowskiMatrix
 open LorentzVector
+open TensorStructure
 open scoped minkowskiMatrix
 variable {d : ℕ}
 
@@ -188,37 +184,39 @@ def asProdCovariantLorentzVector : CovariantLorentzVector d ⊗[ℝ] CovariantLo
 
 @[simp]
 lemma contrLeft_asProdLorentzVector (x : CovariantLorentzVector d) :
-    contrDualLeftAux contrDownUp (x ⊗ₜ[ℝ] asProdLorentzVector) =
+    contrLeftAux contrDownUp (x ⊗ₜ[ℝ] asProdLorentzVector) =
     ∑ μ, ((η μ μ * x μ) • LorentzVector.stdBasis μ) := by
   simp only [asProdLorentzVector]
   rw [tmul_sum]
   rw [map_sum]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
-  simp only [contrDualLeftAux, contrDownUp, LinearEquiv.refl_toLinearMap, tmul_smul, map_smul,
+  simp only [contrLeftAux, contrDownUp, LinearEquiv.refl_toLinearMap, tmul_smul, map_smul,
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul, map_tmul,
     comm_tmul, contrUpDown_stdBasis_right, LinearMap.id_coe, id_eq, lid_tmul]
   exact smul_smul (η μ μ) (x μ) (e μ)
 
 @[simp]
 lemma contrLeft_asProdCovariantLorentzVector (x : LorentzVector d) :
-    contrDualLeftAux contrUpDown (x ⊗ₜ[ℝ] asProdCovariantLorentzVector) =
+    contrLeftAux contrUpDown (x ⊗ₜ[ℝ] asProdCovariantLorentzVector) =
     ∑ μ, ((η μ μ * x μ) • CovariantLorentzVector.stdBasis μ) := by
   simp only [asProdCovariantLorentzVector]
   rw [tmul_sum]
   rw [map_sum]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
-  simp only [contrDualLeftAux, LinearEquiv.refl_toLinearMap, tmul_smul, LinearMapClass.map_smul,
+  simp only [contrLeftAux, LinearEquiv.refl_toLinearMap, tmul_smul, LinearMapClass.map_smul,
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul, map_tmul,
     contrUpDown_stdBasis_left, LinearMap.id_coe, id_eq, lid_tmul]
   exact smul_smul (η μ μ) (x μ) (CovariantLorentzVector.stdBasis μ)
 
 @[simp]
 lemma asProdLorentzVector_contr_asCovariantProdLorentzVector :
-    (contrDualMidAux (contrUpDown) (asProdLorentzVector ⊗ₜ[ℝ] asProdCovariantLorentzVector))
-    = @unitUp d := by
-  simp only [contrDualMidAux, LinearEquiv.refl_toLinearMap, asProdLorentzVector, LinearMap.coe_comp,
+    (contrMidAux (contrUpDown) (asProdLorentzVector ⊗ₜ[ℝ] asProdCovariantLorentzVector))
+    = TensorProduct.comm ℝ _ _ (@unitUp d) := by
+  simp only [contrMidAux, LinearEquiv.refl_toLinearMap, asProdLorentzVector, LinearMap.coe_comp,
     LinearEquiv.coe_coe, Function.comp_apply]
   rw [sum_tmul, map_sum, map_sum, unitUp]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, map_add, comm_tmul, map_sum]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
   rw [← tmul_smul, TensorProduct.assoc_tmul]
   simp only [map_tmul, LinearMap.id_coe, id_eq, contrLeft_asProdCovariantLorentzVector]
@@ -239,11 +237,13 @@ lemma asProdLorentzVector_contr_asCovariantProdLorentzVector :
 
 @[simp]
 lemma asProdCovariantLorentzVector_contr_asProdLorentzVector :
-    (contrDualMidAux (contrDownUp) (asProdCovariantLorentzVector ⊗ₜ[ℝ] asProdLorentzVector))
-    = @unitDown d := by
-  simp only [contrDualMidAux, LinearEquiv.refl_toLinearMap, asProdCovariantLorentzVector,
+    (contrMidAux (contrDownUp) (asProdCovariantLorentzVector ⊗ₜ[ℝ] asProdLorentzVector))
+    = TensorProduct.comm ℝ _ _ (@unitDown d) := by
+  simp only [contrMidAux, LinearEquiv.refl_toLinearMap, asProdCovariantLorentzVector,
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply]
   rw [sum_tmul, map_sum, map_sum, unitDown]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, map_add, comm_tmul, map_sum]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
   rw [smul_tmul, TensorProduct.assoc_tmul]
   simp only [tmul_smul, LinearMapClass.map_smul, map_tmul, LinearMap.id_coe, id_eq,

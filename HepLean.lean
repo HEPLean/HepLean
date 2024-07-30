@@ -76,6 +76,7 @@ import HepLean.SpaceTime.LorentzTensor.Fin
 import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 import HepLean.SpaceTime.LorentzTensor.Notation
 import HepLean.SpaceTime.LorentzTensor.Real.Basic
+import HepLean.SpaceTime.LorentzTensor.RisingLowering
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic
 import HepLean.SpaceTime.LorentzVector.Contraction
