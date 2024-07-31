@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 /-!
 
 # Rising and Lowering of indices
@@ -30,6 +30,9 @@ variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype 
   [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P]
   {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
+
+variable {G H : Type} [Group G] [Group H] [MulActionTensor G 𝓣]
+local infixl:101 " • " => 𝓣.rep
 
 /-!
 
@@ -120,6 +123,27 @@ def dualizeModule (μ : 𝓣.Color) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorMo
       Function.comp_apply, lTensorHomToHomLTensor_apply, LinearMap.id_coe, id_eq,
       metric_contrRight_unit]
 
+@[simp]
+lemma dualizeModule_equivariant (g : G) :
+    (𝓣.dualizeModule μ) ∘ₗ ((MulActionTensor.repColorModule μ) g) =
+    (MulActionTensor.repColorModule (𝓣.τ μ) g) ∘ₗ (𝓣.dualizeModule μ) := by
+  apply LinearMap.ext
+  intro x
+  simp only [dualizeModule, dualizeFun, dualizeSymm, LinearEquiv.ofLinear_toLinearMap,
+    LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, colorModuleCast_equivariant_apply,
+    lTensorHomToHomLTensor_apply, LinearMap.id_coe, id_eq]
+  nth_rewrite 1 [← MulActionTensor.metric_inv (𝓣.τ μ) g]
+  simp
+
+@[simp]
+lemma dualizeModule_equivariant_apply (g : G) (x : 𝓣.ColorModule μ) :
+    (𝓣.dualizeModule μ) ((MulActionTensor.repColorModule μ) g x) =
+    (MulActionTensor.repColorModule (𝓣.τ μ) g) (𝓣.dualizeModule μ x) := by
+  trans ((𝓣.dualizeModule μ) ∘ₗ ((MulActionTensor.repColorModule μ) g)) x
+  rfl
+  rw [dualizeModule_equivariant]
+  rfl
+
 /-- Dualizes the color of all indicies of a tensor by contraction with the metric. -/
 def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
   refine LinearEquiv.ofLinear
@@ -140,6 +164,24 @@ def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
     rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod]
     apply congrArg
     simp
+
+@[simp]
+lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@rep R _ G _ 𝓣 _ X cX g)
+    = 𝓣.rep g ∘ₗ (𝓣.dualizeAll.toLinearMap) := by
+  apply LinearMap.ext
+  intro x
+  simp [dualizeAll]
+  refine PiTensorProduct.induction_on' x ?_ (by
+      intro a b hx a
+      simp [map_add, add_tmul, hx]
+      simp_all only [Function.comp_apply, LinearMap.coe_comp, LinearMap.id_coe, id_eq])
+  intro rx fx
+  simp
+  apply congrArg
+  change (PiTensorProduct.map _) ((PiTensorProduct.tprod R) _) =
+    (𝓣.rep g) ((PiTensorProduct.map _) ((PiTensorProduct.tprod R) fx))
+  rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod]
+  simp
 
 lemma dualize_cond (e : C ⊕ P ≃ X) :
     cX = Sum.elim (cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm := by
@@ -168,6 +210,24 @@ def dualize (e : C ⊕ P ≃ X) : 𝓣.Tensor cX ≃ₗ[R]
   TensorProduct.congr 𝓣.dualizeAll (LinearEquiv.refl _ _) ≪≫ₗ
   (𝓣.tensoratorEquiv _ _) ≪≫ₗ
   𝓣.mapIso e (𝓣.dualize_cond' e)
+
+/-- Dualizing indices is equivariant with respect to the group action. This is the
+  applied version of this statement. -/
+@[simp]
+lemma dualize_equivariant_apply (e : C ⊕ P ≃ X) (g : G) (x : 𝓣.Tensor cX) :
+    𝓣.dualize e (g • x) = g • (𝓣.dualize e x) := by
+  simp only [dualize, TensorProduct.congr, LinearEquiv.refl_toLinearMap, LinearEquiv.refl_symm,
+    LinearEquiv.trans_apply, rep_mapIso_apply, rep_tensoratorEquiv_symm_apply,
+    LinearEquiv.ofLinear_apply]
+  rw [← LinearMap.comp_apply (TensorProduct.map _ _), ← TensorProduct.map_comp]
+  simp only [dualizeAll_equivariant, LinearMap.id_comp]
+  have h1 {M N A B C : Type} [AddCommMonoid M] [AddCommMonoid N] [AddCommMonoid A]
+      [AddCommMonoid B] [AddCommMonoid C] [Module R M] [Module R N] [Module R A] [Module R B]
+      [Module R C] (f : M →ₗ[R] N) (g : A →ₗ[R] B) (h : B →ₗ[R] C) : TensorProduct.map (h ∘ₗ g) f
+      = TensorProduct.map h f ∘ₗ TensorProduct.map g (LinearMap.id) :=
+    ext rfl
+  rw [h1, LinearMap.coe_comp, Function.comp_apply]
+  simp only [tensoratorEquiv_equivariant_apply, rep_mapIso_apply]
 
 end TensorStructure
 
