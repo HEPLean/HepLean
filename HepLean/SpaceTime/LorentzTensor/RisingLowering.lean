@@ -176,7 +176,7 @@ lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@re
       simp [map_add, add_tmul, hx]
       simp_all only [Function.comp_apply, LinearMap.coe_comp, LinearMap.id_coe, id_eq])
   intro rx fx
-  simp
+  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, rep_tprod]
   apply congrArg
   change (PiTensorProduct.map _) ((PiTensorProduct.tprod R) _) =
     (𝓣.rep g) ((PiTensorProduct.map _) ((PiTensorProduct.tprod R) fx))

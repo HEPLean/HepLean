@@ -94,6 +94,16 @@ lemma rep_apply (g : LorentzGroup d) : rep g v = (g.1⁻¹)ᵀ *ᵥ v := by
   rw [← LorentzGroup.coe_inv]
   rfl
 
+lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
+    rep g (stdBasis μ) = ∑ ν, g⁻¹.1 μ ν • stdBasis ν := by
+  simp only [rep_apply, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, decomp_stdBasis']
+  funext ν
+  simp [LorentzVector.stdBasis, Pi.basisFun_apply]
+  erw [Pi.basisFun_apply, Matrix.mulVec_stdBasis]
+  rw [← LorentzGroup.coe_inv]
+  simp
+
 end CovariantLorentzVector
 
 end

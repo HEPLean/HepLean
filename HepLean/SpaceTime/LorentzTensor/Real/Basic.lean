@@ -81,12 +81,12 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     | .down => LorentzVector.unitDown_rid
   metric μ :=
     match μ with
-    | realTensor.ColorType.up => asProdLorentzVector
-    | realTensor.ColorType.down => asProdCovariantLorentzVector
+    | realTensor.ColorType.up => asTenProd
+    | realTensor.ColorType.down => asCoTenProd
   metric_dual μ :=
     match μ with
-    | realTensor.ColorType.up => asProdLorentzVector_contr_asCovariantProdLorentzVector
-    | realTensor.ColorType.down => asProdCovariantLorentzVector_contr_asProdLorentzVector
+    | realTensor.ColorType.up => asTenProd_contr_asCoTenProd
+    | realTensor.ColorType.down => asCoTenProd_contr_asTenProd
 
 /-- The action of the Lorentz group on real Lorentz tensors. -/
 instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where
@@ -98,5 +98,8 @@ instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where
     match μ with
     | .up => TensorProduct.ext' (fun _ _ => LorentzVector.contrUpDown_invariant_lorentzAction)
     | .down => TensorProduct.ext' (fun _ _ => LorentzVector.contrDownUp_invariant_lorentzAction)
-
+  metric_inv μ g :=
+    match μ with
+    | .up => asTenProd_invariant g
+    | .down => asCoTenProd_invariant g
 end
