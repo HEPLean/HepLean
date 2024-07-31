@@ -287,9 +287,9 @@ lemma contrAll_rep {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (
   simp only [mk_apply]
   apply congrArg
   funext x
-  rw [← repColorModule_colorModuleCast_apply]
+  rw [← colorModuleCast_equivariant_apply]
   nth_rewrite 2 [← contrDual_inv (c x) g]
-  rfl
+  simp
 
 @[simp]
 lemma contrAll_rep_apply {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e)

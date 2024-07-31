@@ -28,6 +28,14 @@ def rep : Representation ℝ (LorentzGroup d) (LorentzVector d) where
 open Matrix in
 lemma rep_apply (g : LorentzGroup d) : rep g v = g *ᵥ v := rfl
 
+lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
+    rep g (stdBasis μ) = ∑ ν, g.1.transpose μ ν • stdBasis ν := by
+  simp only [rep_apply, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, decomp_stdBasis']
+  funext ν
+  simp [LorentzVector.stdBasis, Pi.basisFun_apply]
+  erw [Pi.basisFun_apply, Matrix.mulVec_stdBasis]
+
 end LorentzVector
 
 end

@@ -79,6 +79,12 @@ lemma as_block : @minkowskiMatrix d = (
   rw [← diagonal_neg]
   rfl
 
+@[simp]
+lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := by
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  apply diagonal_apply_ne
+  exact h
+
 end minkowskiMatrix
 
 /-!
