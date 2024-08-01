@@ -11,7 +11,6 @@ import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 # Real Lorentz tensors
 
 -/
-noncomputable section
 
 open TensorProduct
 open minkowskiMatrix
@@ -29,7 +28,43 @@ inductive ColorType
   | up
   | down
 
+/-- An equivalence between `ColorType ≃ Fin 1 ⊕ Fin 1`. -/
+def colorTypEquivFin1Fin1 : ColorType ≃ Fin 1 ⊕ Fin 1 where
+  toFun
+    | ColorType.up => Sum.inl ⟨0, Nat.zero_lt_one⟩
+    | ColorType.down => Sum.inr ⟨0, Nat.zero_lt_one⟩
+  invFun
+    | Sum.inl _ => ColorType.up
+    | Sum.inr _ => ColorType.down
+  left_inv := by
+    intro x
+    cases x
+    simp only
+    simp only
+  right_inv := by
+    intro x
+    cases x
+    simp only [Fin.zero_eta, Fin.isValue, Sum.inl.injEq]
+    rename_i f
+    exact (Fin.fin_one_eq_zero f).symm
+    simp only [Fin.zero_eta, Fin.isValue, Sum.inr.injEq]
+    rename_i f
+    exact (Fin.fin_one_eq_zero f).symm
+
+instance : DecidableEq realTensor.ColorType :=
+  Equiv.decidableEq colorTypEquivFin1Fin1
+
+instance : Fintype realTensor.ColorType where
+  elems := {realTensor.ColorType.up, realTensor.ColorType.down}
+  complete := by
+    intro x
+    cases x
+    simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
+    simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
+
 end realTensor
+
+noncomputable section
 
 open realTensor
 
@@ -87,6 +122,10 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     match μ with
     | realTensor.ColorType.up => asTenProd_contr_asCoTenProd
     | realTensor.ColorType.down => asCoTenProd_contr_asTenProd
+
+instance : Fintype (realLorentzTensor d).Color := realTensor.instFintypeColorType
+
+instance : DecidableEq (realLorentzTensor d).Color := realTensor.instDecidableEqColorType
 
 /-- The action of the Lorentz group on real Lorentz tensors. -/
 instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where
