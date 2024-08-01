@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.SpaceTime.LorentzTensor.Real.Basic
 import Init.NotationExtra
 /-!
 
@@ -67,5 +67,8 @@ def takeWhileFnFst (p1 : Char → Bool) (p : Char → Bool) : ParserFn := takeWh
 def indexParser : ParserFn :=  (takeWhileFnFst (IsIndexSpecifier 𝓣) IsIndexId)
 
 def indexParserMany : ParserFn := Lean.Parser.many1Fn (indexParser 𝓣)
+
+def singleTensorElab : Lean.Elab.Term.TermElab := fun stx expectedType => do
+  return mkNatLit 0
 
 end IndexNotation
