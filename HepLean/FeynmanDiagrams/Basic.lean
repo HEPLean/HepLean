@@ -14,7 +14,7 @@ import Mathlib.CategoryTheory.Limits.Shapes.Terminal
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Perm
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Connectivity
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.WalkCounting
 import Mathlib.SetTheory.Cardinal.Basic
 /-!
 # Feynman diagrams

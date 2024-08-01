@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.LinearMaps
 import Mathlib.Algebra.Module.Basic
-import Mathlib.LinearAlgebra.FiniteDimensional
+import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 /-!
 # Basic set up for anomaly cancellation conditions
 
@@ -96,7 +96,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
   zero := ⟨χ.chargesAddCommMonoid.zero, fun _ ↦ (χ.linearACCs _).map_zero⟩
   zero_add S := LinSols.ext (χ.chargesAddCommMonoid.zero_add _)
   add_zero S := LinSols.ext (χ.chargesAddCommMonoid.add_zero _)
-  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [nsmul_eq_smul_cast ℚ, (χ.linearACCs _).map_smul,
+  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [Nat.cast_smul_eq_nsmul ℚ, (χ.linearACCs _).map_smul,
     S.linearSol _]⟩
   nsmul_zero n := rfl
   nsmul_succ n S := LinSols.ext (χ.chargesAddCommMonoid.nsmul_succ _ _)
