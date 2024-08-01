@@ -189,7 +189,6 @@ lemma conj_Vtb_cross_product {V : CKMMatrix} {τ : ℝ}
   simp only [← exp_conj, _root_.map_mul, conj_ofReal, conj_I, mul_neg, Fin.isValue, neg_mul]
   field_simp
   ring_nf
-  simp
 
 end crossProduct
 
@@ -199,8 +198,6 @@ lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
     [V]cs * (normSq [V]ud + normSq [V]us) + [V]cb * conj [V]ub * [V]us := by
   rw [conj_Vtb_cross_product hτ]
   simp [exp_neg]
-  have h1 := exp_ne_zero (τ * I)
-  field_simp
   have h2 : ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]ud = [V]cs
       * [V]ud * conj [V]ud - [V]us * ([V]cd * conj [V]ud) := by
     ring
@@ -215,8 +212,6 @@ lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
     - ([V]cd * (normSq [V]ud + normSq [V]us) + [V]cb * conj ([V]ub) * [V]ud) := by
   rw [conj_Vtb_cross_product hτ]
   simp [exp_neg]
-  have h1 := exp_ne_zero (τ * I)
-  field_simp
   have h2 : ([V]cs * [V]ud - [V]us * [V]cd) * conj [V]us = ([V]cs
       * conj [V]us) * [V]ud - [V]us * [V]cd * conj [V]us := by
     ring

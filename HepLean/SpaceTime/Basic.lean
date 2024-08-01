@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.SmoothManifoldWithCorners
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.LinearAlgebra.Matrix.DotProduct
 /-!
 # Space time
 
