@@ -49,26 +49,7 @@ class IndexNotation (X : Type) where
     This takes every color of index to its notation character. -/
   notaEquiv : X ≃ charList
 
-/-
-instance : IndexNotation realTensor.ColorType where
-  charList := {'ᵘ', 'ᵤ'}
-  notaEquiv :=
-    {toFun := fun x =>
-        match x with
-        | .up => ⟨'ᵘ', by decide⟩
-        | .down => ⟨'ᵤ', by decide⟩,
-      invFun := fun x =>
-        match x with
-        | ⟨'ᵘ', _⟩ => .up
-        | ⟨'ᵤ', _⟩ => .down
-        | _ => .up,
-      left_inv := by
-        intro x
-        fin_cases x <;> rfl,
-      right_inv := by
-        intro x
-        fin_cases x <;> rfl}
--/
+
 namespace IndexNotation
 
 variable (X : Type) [IndexNotation X]
@@ -389,13 +370,64 @@ def idMap (s : IndexString X) : Fin s.numIndices → Nat :=
   fun i => (s.toIndexList.get i).id
 
 end IndexString
-/-
-def testIndex : Index realTensor.ColorType := ⟨"ᵘ¹", by decide⟩
 
-def testIndexString : IndexString realTensor.ColorType := ⟨"ᵘ⁰ᵤ₂₆₀ᵘ³", by rfl⟩
 
-#eval testIndexString.toIndexList.map Index.id
--/
 end IndexNotation
 
+instance : IndexNotation realTensor.ColorType where
+  charList := {'ᵘ', 'ᵤ'}
+  notaEquiv :=
+    {toFun := fun x =>
+        match x with
+        | .up => ⟨'ᵘ', by decide⟩
+        | .down => ⟨'ᵤ', by decide⟩,
+      invFun := fun x =>
+        match x with
+        | ⟨'ᵘ', _⟩ => .up
+        | ⟨'ᵤ', _⟩ => .down
+        | _ => .up,
+      left_inv := by
+        intro x
+        fin_cases x <;> rfl,
+      right_inv := by
+        intro x
+        fin_cases x <;> rfl}
+
+
+instance (d : ℕ) : IndexNotation (realLorentzTensor d).Color :=
+  instIndexNotationColorType
+
+namespace TensorStructure
+
+variable {n m : ℕ}
+
+variable {R : Type} [CommSemiring R] (𝓣 : TensorStructure R)
+
+variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
+  {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
+  {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
+  {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
+
+variable [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
+
 open IndexNotation
+
+def AllowedIndexString (s : IndexString 𝓣.Color) : Prop :=
+  ∀ i j, s.idMap i = s.idMap j → (i = j ∨ s.colorMap i = 𝓣.τ (s.colorMap j))
+
+instance (s : IndexString 𝓣.Color) : Decidable (𝓣.AllowedIndexString s) :=
+  Nat.decidableForallFin fun i =>
+    ∀ (j : Fin s.numIndices), s.idMap i = s.idMap j → i = j ∨ s.colorMap i = 𝓣.τ (s.colorMap j)
+
+def testIndex : Index (realLorentzTensor d).Color  := ⟨"ᵘ¹", by
+  change listCharIndex realTensor.ColorType _ ∧ _
+  decide⟩
+
+def testIndexString : IndexString (realLorentzTensor 2).Color := ⟨"ᵘ⁰ᵤ₂₆₀ᵘ³", by
+  change listCharIndexStringBool realTensor.ColorType _ = _
+  rfl⟩
+
+#eval (realLorentzTensor 2).AllowedIndexString testIndexString
+
+end TensorStructure
