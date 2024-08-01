@@ -359,8 +359,7 @@ lemma mulExpδ₁₃_on_param_eq_zero_iff (V : CKMMatrix) (δ₁₃ : ℝ) :
   rw [mulExpδ₁₃_on_param_δ₁₃]
   simp only [mul_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
     ofReal_zero]
-  have h1 := exp_ne_zero (I * δ₁₃)
-  simp_all
+  simp only [exp_ne_zero, or_false]
   aesop
 
 lemma mulExpδ₁₃_on_param_abs (V : CKMMatrix) (δ₁₃ : ℝ) :

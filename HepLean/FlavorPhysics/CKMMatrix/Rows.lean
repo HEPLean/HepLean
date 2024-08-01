@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.LinearAlgebra.CrossProduct
+import Mathlib.LinearAlgebra.FiniteDimensional
 /-!
 # Rows for the CKM Matrix
 
