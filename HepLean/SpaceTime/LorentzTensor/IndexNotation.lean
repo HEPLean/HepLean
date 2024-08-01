@@ -119,11 +119,10 @@ def listCharIndex (l : List Char) : Prop :=
       listCharIndexTail sfst l.tail
 
 lemma listCharIndex_iff (l : List Char) : listCharIndex X l
-  ↔ (if h : l = [] then True else
+    ↔ (if h : l = [] then True else
     let sfst := l.head h
     if ¬ isNotationChar X sfst then False
-    else
-      listCharIndexTail sfst l.tail) := by
+    else listCharIndexTail sfst l.tail) := by
   rw [listCharIndex]
 
 instance : Decidable (listCharIndex X l) :=
@@ -137,16 +136,15 @@ lemma dropWhile_isIndexSpecifier_length_lt (l : List Char) (hl : l ≠ []) :
     (List.dropWhile (fun c => !isNotationChar X c) l.tail).length < l.length := by
   let ld := l.tail.dropWhile (fun c => ¬ isNotationChar X c)
   let lt := l.tail.takeWhile (fun c => ¬ isNotationChar X c)
-  simp
+  simp only [gt_iff_lt]
   rename_i _ inst_1 _ _
   have h2 : lt ++ ld = l.tail := by
     exact List.takeWhile_append_dropWhile _ _
   have h3 := congrArg List.length h2
   rw [List.length_append] at h3
   have h4 : l.length ≠ 0 := by
-    simp_all only [Bool.not_eq_true, Bool.not_eq_false, Bool.decide_eq_false, ne_eq, List.takeWhile_eq_nil_iff,
-      List.length_tail, tsub_pos_iff_lt, zero_add, List.nthLe_tail, Bool.not_eq_true', not_forall,
-      List.takeWhile_append_dropWhile, List.length_eq_zero, not_false_eq_true, lt, ld]
+    simp_all only [ne_eq, Bool.not_eq_true, Bool.decide_eq_false, List.takeWhile_append_dropWhile,
+      List.length_tail, List.length_eq_zero, not_false_eq_true]
   have h5 : l.tail.length < l.length := by
     rw [List.length_tail]
     omega
@@ -185,7 +183,7 @@ decreasing_by
   simpa [ld, InvImage] using dropWhile_isIndexSpecifier_length_lt X l h
 
 lemma listCharIndexString_iff (l : List Char) : listCharIndexString X l
-  ↔ (if h : l = [] then True else
+    ↔ (if h : l = [] then True else
     let sfst := l.head h
     if ¬ isNotationChar X sfst then False
     else
@@ -227,7 +225,8 @@ def listCharIndexStringHeadIndexTail (l : List Char) : List Char :=
 
 /-- The tail of the first index in a list of characters corresponds to an index string
   is the tail of a list of characters corresponding to an index specified by the head. -/
-lemma listCharIndexStringHeadIndexTail_listCharIndexTail (l : List Char) (h : listCharIndexString X l) (hl : l ≠ []) :
+lemma listCharIndexStringHeadIndexTail_listCharIndexTail (l : List Char)
+    (h : listCharIndexString X l) (hl : l ≠ []) :
     listCharIndexTail (l.head hl) (listCharIndexStringHeadIndexTail X l) := by
   by_contra
   have h1 := listCharIndexString_head_isIndexSpecifier X l h hl
@@ -239,6 +238,8 @@ lemma listCharIndexStringHeadIndexTail_listCharIndexTail (l : List Char) (h : li
   simp [listCharIndexStringHeadIndexTail] at x
   simp_all only [Bool.false_eq_true]
 
+/-- The first list of characters which form a index, from a list of characters
+  which form a string of indices. -/
 def listCharIndexStringHeadIndex (l : List Char) : List Char :=
   if h : l = [] then []
   else l.head h :: listCharIndexStringHeadIndexTail X l
@@ -258,7 +259,8 @@ lemma listCharIndexStringHeadIndex_listCharIndex (l : List Char) (h : listCharIn
     exact listCharIndexString_head_isIndexSpecifier X l h h1
     exact listCharIndexStringHeadIndexTail_listCharIndexTail X l h h1
 
-lemma listCharIndexStringDropHeadIndex_listCharIndexString (l : List Char) (h : listCharIndexString X l) :
+lemma listCharIndexStringDropHeadIndex_listCharIndexString (l : List Char)
+    (h : listCharIndexString X l) :
     listCharIndexString X (listCharIndexStringDropHeadIndex X l) := by
   by_cases h1 : l = []
   · subst h1

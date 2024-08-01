@@ -28,6 +28,7 @@ inductive ColorType
   | up
   | down
 
+/-- An equivalence between `ColorType ≃ Fin 1 ⊕ Fin 1`. -/
 def colorTypEquivFin1Fin1 : ColorType ≃ Fin 1 ⊕ Fin 1 where
   toFun
     | ColorType.up => Sum.inl ⟨0, Nat.zero_lt_one⟩
@@ -38,15 +39,15 @@ def colorTypEquivFin1Fin1 : ColorType ≃ Fin 1 ⊕ Fin 1 where
   left_inv := by
     intro x
     cases x
-    simp
-    simp
+    simp only
+    simp only
   right_inv := by
     intro x
     cases x
-    simp
+    simp only [Fin.zero_eta, Fin.isValue, Sum.inl.injEq]
     rename_i f
     exact (Fin.fin_one_eq_zero f).symm
-    simp
+    simp only [Fin.zero_eta, Fin.isValue, Sum.inr.injEq]
     rename_i f
     exact (Fin.fin_one_eq_zero f).symm
 
@@ -58,8 +59,8 @@ instance : Fintype realTensor.ColorType where
   complete := by
     intro x
     cases x
-    simp
-    simp
+    simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
+    simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
 
 end realTensor
 
