@@ -69,6 +69,7 @@ noncomputable section
 
 open realTensorColor
 
+/-- The color structure for real lorentz tensors. -/
 def realTensorColor : TensorColor where
   Color := ColorType
   τ μ :=
@@ -108,12 +109,12 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     match μ with
     | .up => by
       intro x y
-      simp only [realTensorColor, LorentzVector.contrDownUp, Equiv.cast_refl, Equiv.refl_apply, LinearMap.coe_comp,
-        LinearEquiv.coe_coe, Function.comp_apply, comm_tmul]
+      simp only [realTensorColor, LorentzVector.contrDownUp, Equiv.cast_refl, Equiv.refl_apply,
+        LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, comm_tmul]
     | .down => by
       intro x y
-      simp only [realTensorColor, LorentzVector.contrDownUp, LinearMap.coe_comp, LinearEquiv.coe_coe,
-        Function.comp_apply, comm_tmul, Equiv.cast_refl, Equiv.refl_apply]
+      simp only [realTensorColor, LorentzVector.contrDownUp, LinearMap.coe_comp,
+        LinearEquiv.coe_coe, Function.comp_apply, comm_tmul, Equiv.cast_refl, Equiv.refl_apply]
   unit μ :=
     match μ with
     | .up => LorentzVector.unitUp

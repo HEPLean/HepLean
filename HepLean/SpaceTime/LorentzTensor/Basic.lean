@@ -28,12 +28,11 @@ under which contraction and rising and lowering etc, are invariant.
 
 -/
 
-
-
 open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
+/-- The index color data associated with a tensor structure. -/
 structure TensorColor where
   /-- The allowed colors of indices.
     For example for a real Lorentz tensor these are `{up, down}`. -/
@@ -208,7 +207,6 @@ def colorModuleCast (h : μ = ν) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModu
     rfl
   left_inv x := Equiv.symm_apply_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
   right_inv x := Equiv.apply_symm_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
-
 
 lemma tensorProd_piTensorProd_ext {M : Type} [AddCommMonoid M] [Module R M]
     {f g : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY →ₗ[R] M}
