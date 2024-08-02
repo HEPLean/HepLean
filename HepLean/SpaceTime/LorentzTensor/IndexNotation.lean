@@ -788,34 +788,8 @@ section noncomputable
 
 def smul (r : R) : TensorIndex 𝓣 cn := ⟨r • T.tensor, T.index, T.nat_eq, T.quot_eq⟩
 
-def prod (T : TensorIndex 𝓣 cn) (S : TensorIndex 𝓣 cm) (h : 𝓣.IndexListColorProp (T.index ++ S.index)) :
-    TensorIndex 𝓣 (Sum.elim cn cm ∘ finSumFinEquiv.symm) where
-  tensor := 𝓣.mapIso finSumFinEquiv ((Equiv.comp_symm_eq finSumFinEquiv _ _).mp rfl)
-      ((𝓣.tensoratorEquiv _ _) (T.tensor ⊗ₜ[R] S.tensor))
-  index := 𝓣.joinIndexListColor T.index S.index h
-  nat_eq := 𝓣.joinIndexListColor_len h T.nat_eq S.nat_eq
-  quot_eq := by
-    rw [← Function.comp.assoc, ← Function.comp.assoc]
-    rw [Equiv.eq_comp_symm]
-    funext a
-    match a with
-    | Sum.inl a =>
-      simp
-
-      sorry
-    | Sum.inr a =>
-      sorry
-
 end
 
 end TensorIndex
 
-
 end TensorStructure
-/-
-def testIndex : Index realTensorColor.Color := ⟨"ᵘ¹", by decide⟩
-
-def testIndexString : IndexString realTensorColor.Color := ⟨"ᵘ⁰ᵤ₀ᵘ⁰", by rfl⟩
-
-#eval realTensorColor.AllowedIndexString testIndexString.toIndexList
--/
