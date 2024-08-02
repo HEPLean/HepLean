@@ -28,12 +28,68 @@ under which contraction and rising and lowering etc, are invariant.
 
 -/
 
-noncomputable section
-
 open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
+/-- The index color data associated with a tensor structure. -/
+structure TensorColor where
+  /-- The allowed colors of indices.
+    For example for a real Lorentz tensor these are `{up, down}`. -/
+  Color : Type
+  /-- A map taking every color to its dual color. -/
+  τ : Color → Color
+  /-- The map `τ` is an involution. -/
+  τ_involutive : Function.Involutive τ
+
+namespace TensorColor
+
+variable (𝓒 : TensorColor)
+variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
+
+/-- A relation on colors which is true if the two colors are equal or are duals. -/
+def colorRel (μ ν : 𝓒.Color) : Prop := μ = ν ∨ μ = 𝓒.τ ν
+
+/-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
+lemma colorRel_equivalence : Equivalence 𝓒.colorRel where
+  refl := by
+    intro x
+    left
+    rfl
+  symm := by
+    intro x y h
+    rcases h with h | h
+    · left
+      exact h.symm
+    · right
+      subst h
+      exact (𝓒.τ_involutive y).symm
+  trans := by
+    intro x y z hxy hyz
+    rcases hxy with hxy | hxy <;>
+      rcases hyz with hyz | hyz <;>
+      subst hxy hyz
+    · left
+      rfl
+    · right
+      rfl
+    · right
+      rfl
+    · left
+      exact 𝓒.τ_involutive z
+
+/-- The structure of a setoid on colors, two colors are related if they are equal,
+  or dual. -/
+instance colorSetoid : Setoid 𝓒.Color := ⟨𝓒.colorRel, 𝓒.colorRel_equivalence⟩
+
+/-- A map taking a color to its equivalence class in `colorSetoid`. -/
+def colorQuot (μ : 𝓒.Color) : Quotient 𝓒.colorSetoid :=
+  Quotient.mk 𝓒.colorSetoid μ
+
+end TensorColor
+
+noncomputable section
 namespace TensorStructure
 
 /-- An auxillary function to contract the vector space `V1` and `V2` in `V1 ⊗[R] V2 ⊗[R] V3`. -/
@@ -86,16 +142,9 @@ end TensorStructure
 
 /-- An initial structure specifying a tensor system (e.g. a system in which you can
   define real Lorentz tensors or Einstein notation convention). -/
-structure TensorStructure (R : Type) [CommSemiring R] where
-  /-- The allowed colors of indices.
-    For example for a real Lorentz tensor these are `{up, down}`. -/
-  Color : Type
+structure TensorStructure (R : Type) [CommSemiring R] extends TensorColor where
   /-- To each color we associate a module. -/
   ColorModule : Color → Type
-  /-- A map taking every color to its dual color. -/
-  τ : Color → Color
-  /-- The map `τ` is an involution. -/
-  τ_involutive : Function.Involutive τ
   /-- Each `ColorModule` has the structure of an additive commutative monoid. -/
   colorModule_addCommMonoid : ∀ μ, AddCommMonoid (ColorModule μ)
   /-- Each `ColorModule` has the structure of a module over `R`. -/
@@ -160,45 +209,6 @@ def colorModuleCast (h : μ = ν) : 𝓣.ColorModule μ ≃ₗ[R] 𝓣.ColorModu
     rfl
   left_inv x := Equiv.symm_apply_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
   right_inv x := Equiv.apply_symm_apply (Equiv.cast (congrArg 𝓣.ColorModule h)) x
-
-/-- A relation on colors which is true if the two colors are equal or are duals. -/
-def colorRel (μ ν : 𝓣.Color) : Prop := μ = ν ∨ μ = 𝓣.τ ν
-
-/-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
-lemma colorRel_equivalence : Equivalence 𝓣.colorRel where
-  refl := by
-    intro x
-    left
-    rfl
-  symm := by
-    intro x y h
-    rcases h with h | h
-    · left
-      exact h.symm
-    · right
-      subst h
-      exact (𝓣.τ_involutive y).symm
-  trans := by
-    intro x y z hxy hyz
-    rcases hxy with hxy | hxy <;>
-      rcases hyz with hyz | hyz <;>
-      subst hxy hyz
-    · left
-      rfl
-    · right
-      rfl
-    · right
-      rfl
-    · left
-      exact 𝓣.τ_involutive z
-
-/-- The structure of a setoid on colors, two colors are related if they are equal,
-  or dual. -/
-instance colorSetoid : Setoid 𝓣.Color := ⟨𝓣.colorRel, 𝓣.colorRel_equivalence⟩
-
-/-- A map taking a color to its equivalence class in `colorSetoid`. -/
-def colorQuot (μ : 𝓣.Color) : Quotient 𝓣.colorSetoid :=
-  Quotient.mk 𝓣.colorSetoid μ
 
 lemma tensorProd_piTensorProd_ext {M : Type} [AddCommMonoid M] [Module R M]
     {f g : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY →ₗ[R] M}
