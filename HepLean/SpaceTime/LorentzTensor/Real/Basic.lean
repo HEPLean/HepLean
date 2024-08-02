@@ -14,7 +14,8 @@ import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 
 open TensorProduct
 open minkowskiMatrix
-namespace realTensor
+
+namespace realTensorColor
 
 variable {d : ℕ}
 /-!
@@ -51,31 +52,25 @@ def colorTypEquivFin1Fin1 : ColorType ≃ Fin 1 ⊕ Fin 1 where
     rename_i f
     exact (Fin.fin_one_eq_zero f).symm
 
-instance : DecidableEq realTensor.ColorType :=
+instance : DecidableEq ColorType :=
   Equiv.decidableEq colorTypEquivFin1Fin1
 
-instance : Fintype realTensor.ColorType where
-  elems := {realTensor.ColorType.up, realTensor.ColorType.down}
+instance : Fintype ColorType where
+  elems := {ColorType.up, ColorType.down}
   complete := by
     intro x
     cases x
     simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
     simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
 
-end realTensor
+end realTensorColor
 
 noncomputable section
 
-open realTensor
+open realTensorColor
 
-/-! TODO: Set up the notation `𝓛𝓣ℝ` or similar. -/
-/-- The `LorentzTensorStructure` associated with real Lorentz tensors. -/
-def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
+def realTensorColor : TensorColor where
   Color := ColorType
-  ColorModule μ :=
-    match μ with
-    | .up => LorentzVector d
-    | .down => CovariantLorentzVector d
   τ μ :=
     match μ with
     | .up => .down
@@ -84,6 +79,19 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     match μ with
     | .up => rfl
     | .down => rfl
+
+instance : Fintype realTensorColor.Color := realTensorColor.instFintypeColorType
+
+instance : DecidableEq realTensorColor.Color := realTensorColor.instDecidableEqColorType
+
+/-! TODO: Set up the notation `𝓛𝓣ℝ` or similar. -/
+/-- The `LorentzTensorStructure` associated with real Lorentz tensors. -/
+def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
+  toTensorColor := realTensorColor
+  ColorModule μ :=
+    match μ with
+    | .up => LorentzVector d
+    | .down => CovariantLorentzVector d
   colorModule_addCommMonoid μ :=
     match μ with
     | .up => instAddCommMonoidLorentzVector d
@@ -100,11 +108,11 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     match μ with
     | .up => by
       intro x y
-      simp only [LorentzVector.contrDownUp, Equiv.cast_refl, Equiv.refl_apply, LinearMap.coe_comp,
+      simp only [realTensorColor, LorentzVector.contrDownUp, Equiv.cast_refl, Equiv.refl_apply, LinearMap.coe_comp,
         LinearEquiv.coe_coe, Function.comp_apply, comm_tmul]
     | .down => by
       intro x y
-      simp only [LorentzVector.contrDownUp, LinearMap.coe_comp, LinearEquiv.coe_coe,
+      simp only [realTensorColor, LorentzVector.contrDownUp, LinearMap.coe_comp, LinearEquiv.coe_coe,
         Function.comp_apply, comm_tmul, Equiv.cast_refl, Equiv.refl_apply]
   unit μ :=
     match μ with
@@ -116,16 +124,12 @@ def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
     | .down => LorentzVector.unitDown_rid
   metric μ :=
     match μ with
-    | realTensor.ColorType.up => asTenProd
-    | realTensor.ColorType.down => asCoTenProd
+    | realTensorColor.ColorType.up => asTenProd
+    | realTensorColor.ColorType.down => asCoTenProd
   metric_dual μ :=
     match μ with
-    | realTensor.ColorType.up => asTenProd_contr_asCoTenProd
-    | realTensor.ColorType.down => asCoTenProd_contr_asTenProd
-
-instance : Fintype (realLorentzTensor d).Color := realTensor.instFintypeColorType
-
-instance : DecidableEq (realLorentzTensor d).Color := realTensor.instDecidableEqColorType
+    | realTensorColor.ColorType.up => asTenProd_contr_asCoTenProd
+    | realTensorColor.ColorType.down => asCoTenProd_contr_asTenProd
 
 /-- The action of the Lorentz group on real Lorentz tensors. -/
 instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where

@@ -337,6 +337,61 @@ def id (s : Index X) : Nat := s.tailNat.foldl (fun a b => 10 * a + b) 0
 
 end Index
 
+def IndexList : Type := List (Index X)
+
+namespace IndexList
+
+variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+
+variable (l : IndexList X)
+/-- The number of indices in an index list. -/
+def numIndices : Nat := l.length
+
+/-- The map of from `Fin s.numIndices` into colors associated to an index list. -/
+def colorMap : Fin l.numIndices → X :=
+  fun i => (l.get i).toColor
+
+/-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
+def idMap : Fin l.numIndices → Nat :=
+  fun i => (l.get i).id
+
+def toPosSet (l : IndexList X) : Set (Fin l.numIndices × Index X) :=
+  {(i, l.get i) | i : Fin l.numIndices}
+
+def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.numIndices where
+  toFun := fun x => x.1.1
+  invFun := fun x => ⟨(x, l.get x), by simp [toPosSet]⟩
+  left_inv x := by
+    have hx := x.prop
+    simp [toPosSet] at hx
+    simp
+    obtain ⟨i, hi⟩ := hx
+    have hi2 : i = x.1.1 := by
+      obtain ⟨val, property⟩ := x
+      obtain ⟨fst, snd⟩ := val
+      simp_all only [Prod.mk.injEq]
+    subst hi2
+    simp_all only [Subtype.coe_eta]
+  right_inv := by
+    intro x
+    rfl
+
+lemma toPosSet_is_finite (l : IndexList X) : l.toPosSet.Finite :=
+  Finite.intro l.toPosSetEquiv
+
+instance : Fintype l.toPosSet where
+  elems := Finset.map l.toPosSetEquiv.symm.toEmbedding Finset.univ
+  complete := by
+    intro x
+    simp_all only [Finset.mem_map_equiv, Equiv.symm_symm, Finset.mem_univ]
+
+def toPosFinset (l : IndexList X) : Finset (Fin l.numIndices × Index X) :=
+  l.toPosSet.toFinset
+
+
+end IndexList
+
+
 /-- A string of indices to be associated with a tensor.
   E.g. `ᵘ⁰ᵤ₂₆₀ᵘ³`. -/
 def IndexString : Type := {s : String // listCharIndexStringBool X s.toList = true}
@@ -354,27 +409,16 @@ lemma listCharIndexString (s : IndexString X) : listCharIndexString X s.toCharLi
   exact s.prop
 
 /-- The indices associated to an index string. -/
-def toIndexList (s : IndexString X) : List (Index X) :=
+def toIndexList (s : IndexString X) : IndexList X :=
   (listCharIndexStringTolistCharIndex X s.toCharList (listCharIndexString s)).map
   fun x => Index.ofCharList x.1 x.2
-
-/-- The number of indices in an index string. -/
-def numIndices (s : IndexString X) : Nat := s.toIndexList.length
-
-/-- The map of from `Fin s.numIndices` into colors associated to an index string. -/
-def colorMap (s : IndexString X) : Fin s.numIndices → X :=
-  fun i => (s.toIndexList.get i).toColor
-
-/-- The map of from `Fin s.numIndices` into the natural numbers associated to an index string. -/
-def idMap (s : IndexString X) : Fin s.numIndices → Nat :=
-  fun i => (s.toIndexList.get i).id
 
 end IndexString
 
 
 end IndexNotation
 
-instance : IndexNotation realTensor.ColorType where
+instance : IndexNotation realTensorColor.Color where
   charList := {'ᵘ', 'ᵤ'}
   notaEquiv :=
     {toFun := fun x =>
@@ -394,10 +438,7 @@ instance : IndexNotation realTensor.ColorType where
         fin_cases x <;> rfl}
 
 
-instance (d : ℕ) : IndexNotation (realLorentzTensor d).Color :=
-  instIndexNotationColorType
-
-namespace TensorStructure
+namespace TensorColor
 
 variable {n m : ℕ}
 
@@ -409,25 +450,199 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
   {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
-variable [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
+variable (𝓒 : TensorColor)
+variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 
 open IndexNotation
 
-def AllowedIndexString (s : IndexString 𝓣.Color) : Prop :=
-  ∀ i j, s.idMap i = s.idMap j → (i = j ∨ s.colorMap i = 𝓣.τ (s.colorMap j))
+/-- The proposition on an `i :  Fin s.length` such the corresponding element of
+  `s` does not contract with any other element (i.e. share an index). -/
+def NoContr (s : IndexList 𝓒.Color) (i : Fin s.length) : Prop :=
+  ∀ j, i ≠ j → s.idMap i ≠ s.idMap j
 
-instance (s : IndexString 𝓣.Color) : Decidable (𝓣.AllowedIndexString s) :=
-  Nat.decidableForallFin fun i =>
-    ∀ (j : Fin s.numIndices), s.idMap i = s.idMap j → i = j ∨ s.colorMap i = 𝓣.τ (s.colorMap j)
+instance (i : Fin s.length) : Decidable (NoContr 𝓒 s i) :=
+  Fintype.decidableForallFintype
 
-def testIndex : Index (realLorentzTensor d).Color  := ⟨"ᵘ¹", by
-  change listCharIndex realTensor.ColorType _ ∧ _
-  decide⟩
+/-- The finset of indices of `s` corresponding to elements which do not contract. -/
+def noContrFinset (s : IndexList 𝓒.Color) : Finset (Fin s.length) :=
+  Finset.univ.filter (𝓒.NoContr s)
 
-def testIndexString : IndexString (realLorentzTensor 2).Color := ⟨"ᵘ⁰ᵤ₂₆₀ᵘ³", by
-  change listCharIndexStringBool realTensor.ColorType _ = _
-  rfl⟩
+/-- An eqiuvalence between the subtype of indices of `s` which do not contract and
+  `Fin _`.  -/
+def noContrSubtypeEquiv (s : IndexList 𝓒.Color) :
+    {i : Fin s.length // NoContr 𝓒 s i} ≃ Fin (𝓒.noContrFinset s).card :=
+  (Equiv.subtypeEquivRight (by
+    intro x
+    simp only [noContrFinset, Finset.mem_filter, Finset.mem_univ, true_and])).trans
+  (Finset.orderIsoOfFin (𝓒.noContrFinset s) (by rfl)).toEquiv.symm
 
-#eval (realLorentzTensor 2).AllowedIndexString testIndexString
+/-- The subtype of indices `s` which do contract. -/
+def contrSubtype (s : IndexList 𝓒.Color) : Type :=
+  {i : Fin s.length // ¬ NoContr 𝓒 s i}
 
-end TensorStructure
+instance (s : IndexList 𝓒.Color) : Fintype (𝓒.contrSubtype s) :=
+  Subtype.fintype fun x => ¬𝓒.NoContr s x
+
+instance (s : IndexList 𝓒.Color) : DecidableEq (𝓒.contrSubtype s) :=
+  Subtype.instDecidableEq
+
+/-- Given a `i :  𝓒.contrSubtype s` the proposition on a `j` in `Fin s.length` for
+  it to be an index of `s` contracting with `i`. -/
+def getDualProp {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) (j : Fin s.length) : Prop :=
+   i.1 ≠ j ∧ s.idMap i.1 = s.idMap j
+
+instance {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) (j : Fin s.length) :
+    Decidable (𝓒.getDualProp i j) :=
+  instDecidableAnd
+
+/-- Given a `i :  𝓒.contrSubtype s` the index of `s` contracting with `i`. -/
+def getDualFin {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) : Fin s.length :=
+  (Fin.find (𝓒.getDualProp i)).get (by simpa [NoContr, Fin.isSome_find_iff] using i.prop)
+
+lemma some_getDualFin_eq_find {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) :
+    Fin.find (𝓒.getDualProp i) = some (getDualFin 𝓒 i) := by
+  simp [getDualFin]
+
+lemma getDualFin_not_NoContr {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) :
+    ¬ NoContr 𝓒 s (getDualFin 𝓒 i) := by
+  have h := 𝓒.some_getDualFin_eq_find i
+  rw [Fin.find_eq_some_iff] at h
+  simp [NoContr]
+  exact ⟨i.1, And.intro (fun a => h.1.1 a.symm) h.1.2.symm⟩
+
+/-- The dual index of an element of `𝓒.contrSubtype s`, that is the index
+  contracting with it. -/
+def getDual {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) : 𝓒.contrSubtype s :=
+  ⟨getDualFin 𝓒 i, getDualFin_not_NoContr 𝓒 i⟩
+
+lemma getDual_id {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) :
+    s.idMap i.1 = s.idMap (getDual 𝓒 i).1 := by
+  simp [getDual]
+  have h1 := 𝓒.some_getDualFin_eq_find i
+  rw [Fin.find_eq_some_iff] at h1
+  simp only [getDualProp, ne_eq, and_imp] at h1
+  exact h1.1.2
+
+lemma getDual_neq_self {s : IndexList 𝓒.Color} (i : 𝓒.contrSubtype s) :
+    i ≠ 𝓒.getDual i := by
+  have h1 := 𝓒.some_getDualFin_eq_find i
+  rw [Fin.find_eq_some_iff] at h1
+  exact ne_of_apply_ne Subtype.val h1.1.1
+
+/-- An index list is allowed if every contracting index has exactly one dual,
+  and the color of the dual is dual to the color of the index. -/
+def AllowedIndexString (s : IndexList 𝓒.Color) : Prop :=
+  (∀ (i j : 𝓒.contrSubtype s), 𝓒.getDualProp i j.1 → j = 𝓒.getDual i) ∧
+  (∀ (i : 𝓒.contrSubtype s), s.colorMap i.1 = 𝓒.τ (s.colorMap (𝓒.getDual i).1))
+
+@[simp]
+lemma getDual_getDual {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s) (i : 𝓒.contrSubtype s) :
+    getDual 𝓒 (getDual 𝓒 i) = i := by
+  refine (h.1 (getDual 𝓒 i) i ?_).symm
+  simp [getDualProp]
+  apply And.intro
+  exact Subtype.coe_ne_coe.mpr (getDual_neq_self 𝓒 i).symm
+  exact (getDual_id 𝓒 i).symm
+
+/-- The set of contracting ordered pairs of indices. -/
+def contrPairSet (s : IndexList 𝓒.Color) : Set (𝓒.contrSubtype s × 𝓒.contrSubtype s) :=
+  {p | p.1.1 < p.2.1 ∧ s.idMap p.1.1 = s.idMap p.2.1}
+
+lemma getDual_lt_self_mem_contrPairSet {s : IndexList 𝓒.Color} {i : 𝓒.contrSubtype s}
+    (h : (getDual 𝓒 i).1 < i.1) : (getDual 𝓒 i, i) ∈ 𝓒.contrPairSet s :=
+  And.intro h (𝓒.getDual_id i).symm
+
+lemma getDual_not_lt_self_mem_contrPairSet {s : IndexList 𝓒.Color} {i : 𝓒.contrSubtype s}
+    (h : ¬ (getDual 𝓒 i).1 < i.1) : (i, getDual 𝓒 i) ∈ 𝓒.contrPairSet s := by
+  apply And.intro
+  have h1 := 𝓒.getDual_neq_self i
+  simp
+  simp at h
+  exact lt_of_le_of_ne h h1
+  simp
+  exact getDual_id 𝓒 i
+
+lemma contrPairSet_fst_eq_dual_snd {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)
+    (x :  𝓒.contrPairSet s) : x.1.1 = getDual 𝓒 x.1.2 :=
+  (h.1 (x.1.2) x.1.1 (And.intro (Fin.ne_of_gt x.2.1) x.2.2.symm))
+
+lemma contrPairSet_snd_eq_dual_fst {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)
+    (x :  𝓒.contrPairSet s) : x.1.2 = getDual 𝓒 x.1.1 := by
+  rw [contrPairSet_fst_eq_dual_snd, getDual_getDual]
+  exact h
+  exact h
+
+lemma contrPairSet_dual_snd_lt_self {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)
+    (x :  𝓒.contrPairSet s) : (getDual 𝓒 x.1.2).1 < x.1.2.1 := by
+  rw [← 𝓒.contrPairSet_fst_eq_dual_snd h]
+  exact x.2.1
+
+/-- An equivalence between two coppies of `𝓒.contrPairSet s` and `𝓒.contrSubtype s`.
+  This equivalence exists due to the ordering on pairs in `𝓒.contrPairSet s`. -/
+def contrPairEquiv {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s) :
+    𝓒.contrPairSet s ⊕ 𝓒.contrPairSet s ≃ 𝓒.contrSubtype s where
+  toFun x :=
+    match x with
+    | Sum.inl p => p.1.2
+    | Sum.inr p => p.1.1
+  invFun x :=
+    if h : (𝓒.getDual x).1 < x.1 then
+      Sum.inl ⟨(𝓒.getDual x, x), 𝓒.getDual_lt_self_mem_contrPairSet h⟩
+    else
+      Sum.inr ⟨(x, 𝓒.getDual x), 𝓒.getDual_not_lt_self_mem_contrPairSet h⟩
+  left_inv x := by
+    match x with
+    | Sum.inl x =>
+      simp only [Subtype.coe_lt_coe]
+      rw [dif_pos]
+      simp [← 𝓒.contrPairSet_fst_eq_dual_snd h]
+      exact 𝓒.contrPairSet_dual_snd_lt_self h _
+    | Sum.inr x =>
+      simp only [Subtype.coe_lt_coe]
+      rw [dif_neg]
+      simp only [← 𝓒.contrPairSet_snd_eq_dual_fst h, Prod.mk.eta, Subtype.coe_eta]
+      rw [← 𝓒.contrPairSet_snd_eq_dual_fst h]
+      have h1 := x.2.1
+      simp only [not_lt, ge_iff_le]
+      exact le_of_lt h1
+  right_inv x := by
+    by_cases h1 : (getDual 𝓒 x).1 < x.1
+    simp only [h1, ↓reduceDIte]
+    simp only [h1, ↓reduceDIte]
+
+@[simp]
+lemma contrPairEquiv_apply_inr {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)
+    (x : 𝓒.contrPairSet s) : 𝓒.contrPairEquiv h (Sum.inr x) = x.1.1 := by
+  simp [contrPairEquiv]
+
+@[simp]
+lemma contrPairEquiv_apply_inl {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)
+    (x : 𝓒.contrPairSet s) : 𝓒.contrPairEquiv h (Sum.inl x) = x.1.2 := by
+  simp [contrPairEquiv]
+
+/-- An equivalence between `Fin s.length` and
+  `(𝓒.contrPairSet s ⊕ 𝓒.contrPairSet s) ⊕ Fin (𝓒.noContrFinset s).card`, which
+  can be used for contractions. -/
+def splitContr {s : IndexList 𝓒.Color} (h : 𝓒.AllowedIndexString s)  :
+    Fin s.length ≃ (𝓒.contrPairSet s ⊕ 𝓒.contrPairSet s) ⊕ Fin (𝓒.noContrFinset s).card :=
+  (Equiv.sumCompl (𝓒.NoContr s)).symm.trans <|
+  (Equiv.sumComm { i // 𝓒.NoContr s i} { i // ¬ 𝓒.NoContr s i}).trans <|
+  Equiv.sumCongr (𝓒.contrPairEquiv h).symm (𝓒.noContrSubtypeEquiv s)
+
+lemma splitContr_map {s : IndexList 𝓒.Color} (hs : 𝓒.AllowedIndexString s) :
+    s.colorMap ∘ (𝓒.splitContr hs).symm ∘ Sum.inl ∘ Sum.inl =
+    𝓒.τ ∘ s.colorMap ∘ (𝓒.splitContr hs).symm ∘ Sum.inl ∘ Sum.inr := by
+  funext x
+  simp [splitContr, contrPairEquiv_apply_inr]
+  erw [contrPairEquiv_apply_inr, contrPairEquiv_apply_inl]
+  rw [contrPairSet_fst_eq_dual_snd _ hs]
+  exact hs.2 _
+
+end TensorColor
+/-
+def testIndex : Index realTensorColor.Color  := ⟨"ᵘ¹", by decide⟩
+
+def testIndexString : IndexString realTensorColor.Color := ⟨"ᵘ⁰ᵤ₀ᵘ⁰", by rfl⟩
+
+#eval realTensorColor.AllowedIndexString testIndexString.toIndexList
+-/
