@@ -45,6 +45,8 @@ structure TensorColor where
 namespace TensorColor
 
 variable (𝓒 : TensorColor)
+variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
 
 /-- A relation on colors which is true if the two colors are equal or are duals. -/
 def colorRel (μ ν : 𝓒.Color) : Prop := μ = ν ∨ μ = 𝓒.τ ν
