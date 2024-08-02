@@ -3,7 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.Real.Basic
+import Mathlib.Data.Set.Finite
+import Mathlib.Data.Finset.Sort
 /-!
 
 # Index notation for a type
@@ -342,7 +343,7 @@ lemma getDual_neq_self (i : l.contrSubtype) : i ≠ l.getDual i := by
   indices. -/
 def HasNoContr : Prop := ∀ i, l.NoContr i
 
-instance (h : l.HasNoContr) : IsEmpty l.contrSubtype := by
+lemma hasNoContr_is_empty (h : l.HasNoContr) : IsEmpty l.contrSubtype := by
   rw [_root_.isEmpty_iff]
   intro a
   exact h a.1 a.1 (fun _ => a.2 (h a.1)) rfl

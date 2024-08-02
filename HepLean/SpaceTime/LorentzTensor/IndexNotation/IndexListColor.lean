@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
+import HepLean.SpaceTime.LorentzTensor.Basic
 /-!
 
 # Index lists with color conditions
@@ -42,7 +43,7 @@ instance : Coe (IndexListColor 𝓒) (IndexList 𝓒.Color) := ⟨fun x => x.val
 lemma indexListColorProp_of_hasNoContr {s : IndexList 𝓒.Color} (h : s.HasNoContr) :
     IndexListColorProp 𝓒 s := by
   simp [IndexListColorProp]
-  haveI : IsEmpty (s.contrSubtype) := s.instIsEmptyContrSubtypeOfHasNoContr h
+  haveI : IsEmpty (s.contrSubtype) := s.hasNoContr_is_empty h
   simp
 
 /-!
@@ -163,6 +164,8 @@ def rel (s1 s2 : IndexListColor 𝓒) : Prop :=
 
 -/
 
+/-- Appending two `IndexListColor` whose correpsonding appended index list
+  satisfies `IndexListColorProp`. -/
 def append (s1 s2 : IndexListColor 𝓒) (h : IndexListColorProp 𝓒 (s1.1 ++ s2.1)) :
     IndexListColor 𝓒 := ⟨s1.1 ++ s2.1, h⟩
 

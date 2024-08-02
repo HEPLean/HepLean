@@ -24,21 +24,22 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
 
 variable [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 
+/-- The structure an tensor with a index specification e.g. `ᵘ¹ᵤ₂`. -/
 structure TensorIndex (cn : Fin n → 𝓣.Color) where
+  /-- The underlying tensor. -/
   tensor : 𝓣.Tensor cn
+  /-- The list of indices. -/
   index : IndexListColor 𝓣.toTensorColor
+  /-- The number of indices matches the number of vector spaces in the tensor. -/
   nat_eq : n = index.1.length
+  /-- The equivalence classes of colors of the tensor and the index list agree. -/
   quot_eq : 𝓣.colorQuot ∘ index.1.colorMap ∘ Fin.cast nat_eq = 𝓣.colorQuot ∘ cn
 
 namespace TensorIndex
 
 variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color} (T : TensorIndex 𝓣 cn)
-section noncomputable
 
-def smul (r : R) : TensorIndex 𝓣 cn := ⟨r • T.tensor, T.index, T.nat_eq, T.quot_eq⟩
-
-end
 
 end TensorIndex
 
