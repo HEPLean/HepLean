@@ -343,10 +343,19 @@ lemma getDual_neq_self (i : l.contrSubtype) : i ≠ l.getDual i := by
   indices. -/
 def HasNoContr : Prop := ∀ i, l.NoContr i
 
-lemma hasNoContr_is_empty (h : l.HasNoContr) : IsEmpty l.contrSubtype := by
+lemma contrSubtype_is_empty_of_hasNoContr (h : l.HasNoContr) : IsEmpty l.contrSubtype := by
   rw [_root_.isEmpty_iff]
   intro a
   exact h a.1 a.1 (fun _ => a.2 (h a.1)) rfl
+
+lemma hasNoContr_id_inj (h : l.HasNoContr) : Function.Injective l.idMap := fun i j => by
+  simpa using (h i j).mt
+
+lemma hasNoContr_color_eq_of_id_eq (h : l.HasNoContr) (i j : Fin l.length) :
+    l.idMap i = l.idMap j → l.colorMap i = l.colorMap j := by
+  intro h1
+  apply l.hasNoContr_id_inj h at h1
+  rw [h1]
 
 /-!
 
@@ -378,6 +387,34 @@ lemma contrIndexList_hasNoContr : HasNoContr l.contrIndexList := by
   simp only [Fin.coe_cast, ne_eq]
   exact Fin.val_ne_of_ne h
 
+/-- Contracting indices on a index list that has no contractions does nothing. -/
+@[simp]
+lemma contrIndexList_of_hasNoContr (h : HasNoContr l) : l.contrIndexList = l := by
+  simp only [contrIndexList, List.get_eq_getElem]
+  have hn : (@Finset.univ (Fin (List.length l)) (Fin.fintype (List.length l))).card =
+      (Finset.filter l.NoContr Finset.univ).card := by
+    rw [Finset.filter_true_of_mem (fun a _ => h a)]
+  have hx : (Finset.filter l.NoContr Finset.univ).card = (List.length l) := by
+    rw [← hn]
+    exact Finset.card_fin (List.length l)
+  apply List.ext_get
+  simpa [fromFinMap, noContrFinset] using hx
+  intro n h1 h2
+  simp only [noContrFinset, noContrSubtypeEquiv, OrderIso.toEquiv_symm, Equiv.symm_trans_apply,
+    RelIso.coe_fn_toEquiv, Equiv.subtypeEquivRight_symm_apply_coe, fromFinMap, List.get_eq_getElem,
+    OrderIso.symm_symm, Finset.coe_orderIsoOfFin_apply, List.getElem_map, Fin.getElem_list,
+    Fin.cast_mk]
+  simp only [Finset.filter_true_of_mem (fun a _ => h a)]
+  congr
+  rw [(Finset.orderEmbOfFin_unique' _
+    (fun x => Finset.mem_univ ((Fin.castOrderIso hx).toOrderEmbedding x))).symm]
+  rfl
+
+/-- Applying contrIndexlist is equivalent to applying it once. -/
+@[simp]
+lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrIndexList :=
+  l.contrIndexList.contrIndexList_of_hasNoContr (l.contrIndexList_hasNoContr)
+
 /-!
 
 ## Pairs of contracting indices
@@ -387,6 +424,11 @@ lemma contrIndexList_hasNoContr : HasNoContr l.contrIndexList := by
 /-- The set of contracting ordered pairs of indices. -/
 def contrPairSet : Set (l.contrSubtype × l.contrSubtype) :=
   {p | p.1.1 < p.2.1 ∧ l.idMap p.1.1 = l.idMap p.2.1}
+
+instance : DecidablePred fun x => x ∈ l.contrPairSet := fun _ =>
+  And.decidable
+
+instance : Fintype l.contrPairSet := setFintype _
 
 lemma getDual_lt_self_mem_contrPairSet {i : l.contrSubtype}
     (h : (l.getDual i).1 < i.1) : (l.getDual i, i) ∈ l.contrPairSet :=

@@ -232,3 +232,77 @@ lemma dualize_equivariant_apply (e : C ⊕ P ≃ X) (g : G) (x : 𝓣.Tensor cX)
 end TensorStructure
 
 end
+namespace TensorColor
+
+variable {𝓒 : TensorColor} [DecidableEq 𝓒.Color] [Fintype 𝓒.Color]
+
+variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
+  [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P]
+
+/-!
+
+## Dual maps
+
+-/
+
+/-- Two color maps are said to be dual if their quotents are dual. -/
+def DualMap (c₁ : X → 𝓒.Color) (c₂ : X → 𝓒.Color) : Prop :=
+  𝓒.colorQuot ∘ c₁ = 𝓒.colorQuot ∘ c₂
+
+namespace DualMap
+
+variable {c₁ c₂ c₃ : X → 𝓒.Color}
+
+lemma refl : DualMap c₁ c₁ := by
+  simp [DualMap]
+
+lemma symm (h : DualMap c₁ c₂) : DualMap c₂ c₁ := by
+  rw [DualMap] at h ⊢
+  exact h.symm
+
+lemma trans (h : DualMap c₁ c₂) (h' : DualMap c₂ c₃) : DualMap c₁ c₃ := by
+  rw [DualMap] at h h' ⊢
+  exact h.trans h'
+
+/-- The splitting of `X` given two color maps based on the equality of the color. -/
+def split (c₁ c₂ : X → 𝓒.Color) : { x // c₁ x ≠ c₂ x} ⊕ { x // c₁ x = c₂ x} ≃ X :=
+  ((Equiv.Set.sumCompl {x | c₁ x = c₂ x}).symm.trans (Equiv.sumComm _ _)).symm
+
+lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
+    𝓒.τ (c₁ x) = c₂ x := by
+  rw [DualMap] at h
+  have h1 := congrFun h x
+  simp [colorQuot, HasEquiv.Equiv, Setoid.r, colorRel] at h1
+  simp_all only [ne_eq, false_or]
+  exact 𝓒.τ_involutive (c₂ x)
+
+@[simp]
+lemma split_dual (h : DualMap c₁ c₂) :
+    Sum.elim (𝓒.τ ∘ c₁ ∘ (split c₁ c₂) ∘ Sum.inl) (c₁ ∘ (split c₁ c₂) ∘ Sum.inr)
+    ∘ (split c₁ c₂).symm = c₂ := by
+  rw [Equiv.comp_symm_eq]
+  funext x
+  match x with
+  | Sum.inl x =>
+    exact h.dual_eq_of_neq x.2
+  | Sum.inr x =>
+    exact x.2
+
+@[simp]
+lemma split_dual' (h : DualMap c₁ c₂) :
+    Sum.elim (𝓒.τ ∘ c₂ ∘ (split c₁ c₂) ∘ Sum.inl) (c₂ ∘ (split c₁ c₂) ∘ Sum.inr) ∘
+    (split c₁ c₂).symm = c₁ := by
+  rw [Equiv.comp_symm_eq]
+  funext x
+  match x with
+  | Sum.inl x =>
+    change 𝓒.τ (c₂ x) = c₁ x
+    rw [← h.dual_eq_of_neq x.2]
+    exact (𝓒.τ_involutive (c₁ x))
+  | Sum.inr x =>
+    exact x.2.symm
+
+end DualMap
+
+end TensorColor
