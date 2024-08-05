@@ -43,7 +43,7 @@ instance : Coe (IndexListColor 𝓒) (IndexList 𝓒.Color) := ⟨fun x => x.val
 lemma indexListColorProp_of_hasNoContr {s : IndexList 𝓒.Color} (h : s.HasNoContr) :
     IndexListColorProp 𝓒 s := by
   simp [IndexListColorProp]
-  haveI : IsEmpty (s.contrSubtype) := s.hasNoContr_is_empty h
+  haveI : IsEmpty (s.contrSubtype) := s.contrSubtype_is_empty_of_hasNoContr h
   simp
 
 /-!
@@ -73,7 +73,7 @@ lemma contrPairSet_dual_snd_lt_self (x : l.1.contrPairSet) :
   rw [← l.contrPairSet_fst_eq_dual_snd]
   exact x.2.1
 
-/-- An equivalence between two coppies of `𝓒.contrPairSet s` and `𝓒.contrSubtype s`.
+/-- An equivalence between two coppies of `l.1.contrPairSet` and `l.1.contrSubtype`.
   This equivalence exists due to the ordering on pairs in `𝓒.contrPairSet s`. -/
 def contrPairEquiv : l.1.contrPairSet ⊕ l.1.contrPairSet ≃ l.1.contrSubtype where
   toFun x :=
@@ -141,20 +141,123 @@ lemma splitContr_map :
 def contr : IndexListColor 𝓒 :=
   ⟨l.1.contrIndexList, indexListColorProp_of_hasNoContr l.1.contrIndexList_hasNoContr⟩
 
+/-- Contracting twice is equivalent to contracting once. -/
+@[simp]
+lemma contr_contr : l.contr.contr = l.contr := by
+  apply Subtype.ext
+  exact l.1.contrIndexList_contrIndexList
+
+@[simp]
+lemma contr_numIndices : l.contr.1.numIndices = l.1.noContrFinset.card :=
+  l.1.contrIndexList_numIndices
+
+lemma contr_colorMap :
+    l.1.colorMap ∘ l.splitContr.symm ∘ Sum.inr = l.contr.1.colorMap ∘
+    (Fin.castOrderIso l.contr_numIndices.symm).toEquiv.toFun := by
+  funext x
+  simp only [Function.comp_apply, colorMap, List.get_eq_getElem, contr, contrIndexList, fromFinMap,
+    Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast,
+    List.getElem_map, Fin.getElem_list, Fin.cast_mk, Fin.eta]
+  rfl
+
+/-! TODO: Prove applying contr twice equals applying it once. -/
 /-!
 
-## Equivalence relation on IndexListColor
+## Equivalence relation on IndexListColor due to permutation
 
 -/
 
 /-- Two index lists are related if there contracted lists have the same id's for indices,
   and the color of indices with the same id sit are the same.
   This will allow us to add and compare tensors. -/
-def rel (s1 s2 : IndexListColor 𝓒) : Prop :=
+def PermContr (s1 s2 : IndexListColor 𝓒) : Prop :=
   List.Perm (s1.contr.1.map Index.id) (s2.contr.1.map Index.id)
-  ∧ ∀ (l1 : s1.contr.1.toPosFinset)
-      (l2 : s2.contr.1.toPosFinset),
-      l1.1.2.id = l2.1.2.id → l1.1.2.toColor = l2.1.2.toColor
+  ∧ ∀ (i : Fin s1.contr.1.length) (j : Fin s2.contr.1.length),
+      s1.contr.1.idMap i = s2.contr.1.idMap j →
+      s1.contr.1.colorMap i = s2.contr.1.colorMap j
+
+lemma PermContr.refl : Reflexive (@PermContr 𝓒 _) := by
+  intro l
+  simp only [PermContr, List.Perm.refl, true_and]
+  have h1 : l.contr.1.HasNoContr := l.1.contrIndexList_hasNoContr
+  exact fun i j a => hasNoContr_color_eq_of_id_eq (↑l.contr) h1 i j a
+
+lemma PermContr.symm : Symmetric (@PermContr 𝓒 _) :=
+  fun _ _ h => And.intro (List.Perm.symm h.1) fun i j hij => (h.2 j i hij.symm).symm
+
+/-- Given an index in `s1` the index in `s2` related by `PermContr` with the same id. -/
+def PermContr.get {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) (i : Fin s1.contr.1.length) :
+    Fin s2.contr.1.length :=
+  (Fin.find (fun j => s1.contr.1.idMap i = s2.contr.1.idMap j)).get (by
+    rw [Fin.isSome_find_iff]
+    have h2 : s1.contr.1.idMap i ∈ (List.map Index.id s2.contr.1) := by
+      rw [← List.Perm.mem_iff h.1]
+      simp only [List.mem_map]
+      use s1.contr.1.get i
+      simp_all only [true_and, List.get_eq_getElem]
+      apply And.intro
+      · exact List.getElem_mem (s1.contr.1) (↑i) i.isLt
+      · rfl
+    simp only [List.mem_map] at h2
+    obtain ⟨j, hj1, hj2⟩ := h2
+    obtain ⟨j', hj'⟩ := List.mem_iff_get.mp hj1
+    use j'
+    rw [← hj2]
+    simp [idMap, hj']
+    change _ = (s2.contr.1.get j').id
+    rw [hj'])
+
+lemma PermContr.some_get_eq_find {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
+    (i : Fin s1.contr.1.length) :
+    Fin.find (fun j => s1.contr.1.idMap i = s2.contr.1.idMap j) = some (h.get i) := by
+  simp [PermContr.get]
+
+lemma PermContr.get_id {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
+    (i : Fin s1.contr.1.length) :
+    s2.contr.1.idMap (h.get i) = s1.contr.1.idMap i := by
+  have h1 := h.some_get_eq_find i
+  rw [Fin.find_eq_some_iff] at h1
+  exact h1.1.symm
+
+lemma PermContr.get_unique {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
+    {i : Fin s1.contr.1.length} {j : Fin s2.contr.1.length}
+    (hij : s1.contr.1.idMap i = s2.contr.1.idMap j) :
+    j = h.get i := by
+  by_contra hn
+  refine (?_ : ¬ s2.contr.1.NoContr j) (s2.1.contrIndexList_hasNoContr j)
+  simp [NoContr]
+  use PermContr.get h i
+  apply And.intro hn
+  rw [← hij, PermContr.get_id]
+
+@[simp]
+lemma PermContr.get_symm_apply_get_apply {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
+    (i : Fin s1.contr.1.length) : h.symm.get (h.get i) = i :=
+  (h.symm.get_unique (h.get_id i)).symm
+
+lemma PermContr.get_apply_get_symm_apply {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
+    (i : Fin s2.contr.1.length) : h.get (h.symm.get i) = i :=
+  (h.get_unique (h.symm.get_id i)).symm
+
+/-- Equivalence of indexing types for two `IndexListColor` related by `PermContr`. -/
+def PermContr.toEquiv {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) :
+    Fin s1.contr.1.length ≃ Fin s2.contr.1.length where
+  toFun := h.get
+  invFun := h.symm.get
+  left_inv x := by
+    simp
+  right_inv x := by
+    simp
+
+lemma PermContr.toEquiv_symm {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) :
+    h.toEquiv.symm = h.symm.toEquiv := by
+  rfl
+
+lemma PermContr.toEquiv_colorMap {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) :
+    s2.contr.1.colorMap = s1.contr.1.colorMap ∘ h.toEquiv.symm := by
+  funext x
+  refine (h.2 _ _ ?_).symm
+  simp [← h.get_id, toEquiv]
 
 /-! TODO: Show that `rel` is indeed an equivalence relation. -/
 
@@ -166,16 +269,28 @@ def rel (s1 s2 : IndexListColor 𝓒) : Prop :=
 
 /-- Appending two `IndexListColor` whose correpsonding appended index list
   satisfies `IndexListColorProp`. -/
-def append (s1 s2 : IndexListColor 𝓒) (h : IndexListColorProp 𝓒 (s1.1 ++ s2.1)) :
+def prod (s1 s2 : IndexListColor 𝓒) (h : IndexListColorProp 𝓒 (s1.1 ++ s2.1)) :
     IndexListColor 𝓒 := ⟨s1.1 ++ s2.1, h⟩
 
-@[simp]
-lemma append_length {s1 s2 : IndexListColor 𝓒} (h : IndexListColorProp 𝓒 (s1.1 ++ s2.1))
-    (h1 : n = s1.1.length) (h2 : m = s2.1.length) :
-    n + m = (append s1 s2 h).1.length := by
-  erw [List.length_append]
-  simp only [h1, h2]
+lemma prod_numIndices {s1 s2 : IndexListColor 𝓒} :
+    (s1.1 ++ s2.1).numIndices = s1.1.numIndices + s2.1.numIndices :=
+  List.length_append s1.1 s2.1
 
+lemma prod_colorMap {s1 s2 : IndexListColor 𝓒} (h : IndexListColorProp 𝓒 (s1.1 ++ s2.1)) :
+    Sum.elim s1.1.colorMap s2.1.colorMap =
+    (s1.prod s2 h).1.colorMap ∘ ((Fin.castOrderIso prod_numIndices).toEquiv.trans
+    finSumFinEquiv.symm).symm := by
+  funext x
+  match x with
+  | Sum.inl x =>
+    simp [prod, colorMap, fromFinMap]
+    rw [List.getElem_append_left]
+  | Sum.inr x =>
+    simp [prod, colorMap, fromFinMap]
+    rw [List.getElem_append_right]
+    simp [numIndices]
+    simp [numIndices]
+    simp [numIndices]
 end IndexListColor
 
 end IndexNotation
