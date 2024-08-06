@@ -58,15 +58,28 @@ lemma ext (T₁ T₂ : 𝓣.TensorIndex) (hi : T₁.index = T₂.index)
   subst hi
   simp_all
 
+lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.index = T₂.index := by
+  cases h
+  rfl
+lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.tensor =
+   𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
+    (index_eq_colorMap_eq (index_eq_of_eq h)) T₂.tensor := by
+  have hi := index_eq_of_eq h
+  cases T₁
+  cases T₂
+  simp at hi
+  subst hi
+  simpa using h
+
 /-- The construction of a `TensorIndex` from a tensor, a IndexListColor, and a condition
   on the dual maps. -/
 def mkDualMap (T : 𝓣.Tensor cn) (l : IndexListColor 𝓣.toTensorColor) (hn : n = l.1.length)
-    (hd : DualMap l.1.colorMap (cn ∘ Fin.cast hn.symm)) :
+    (hd : ColorMap.DualMap l.1.colorMap (cn ∘ Fin.cast hn.symm)) :
     𝓣.TensorIndex where
   index := l
   tensor :=
-      𝓣.mapIso (Equiv.refl _) (DualMap.split_dual' (by simp [hd])) <|
-      𝓣.dualize (DualMap.split l.1.colorMap (cn ∘ Fin.cast hn.symm)) <|
+      𝓣.mapIso (Equiv.refl _) (ColorMap.DualMap.split_dual' (by simp [hd])) <|
+      𝓣.dualize (ColorMap.DualMap.split l.1.colorMap (cn ∘ Fin.cast hn.symm)) <|
       (𝓣.mapIso (Fin.castOrderIso hn).toEquiv rfl T : 𝓣.Tensor (cn ∘ Fin.cast hn.symm))
 
 /-!
@@ -83,7 +96,41 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
       T.index.contr_colorMap <|
       𝓣.contr (T.index.splitContr).symm T.index.splitContr_map T.tensor
 
-/-! TODO: Show that contracting twice is the same as contracting once. -/
+/-- Applying contr to a tensor whose indices has no contracts does not do anything. -/
+@[simp]
+lemma contr_of_hasNoContr (T : 𝓣.TensorIndex) (h : T.index.1.HasNoContr) :
+    T.contr = T := by
+  refine ext _ _ ?_ ?_
+  exact Subtype.eq (T.index.1.contrIndexList_of_hasNoContr h)
+  simp only [contr]
+  have h1 : IsEmpty T.index.1.contrPairSet := T.index.1.contrPairSet_isEmpty_of_hasNoContr h
+  cases T
+  rename_i i T
+  simp only
+  refine PiTensorProduct.induction_on' T ?_ (by
+    intro a b hx hy
+    simp [map_add, add_mul, hx, hy])
+  intro r f
+  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, mapIso_tprod, id_eq,
+    eq_mpr_eq_cast, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv]
+  apply congrArg
+  erw [TensorStructure.contr_tprod_isEmpty]
+  erw [mapIso_tprod]
+  apply congrArg
+  funext l
+  rw [← LinearEquiv.symm_apply_eq]
+  simp only [colorModuleCast, Equiv.cast_symm, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv,
+    Function.comp_apply, LinearEquiv.coe_mk, Equiv.cast_apply, LinearEquiv.coe_symm_mk, cast_cast]
+  apply cast_eq_iff_heq.mpr
+  rw [splitContr_symm_apply_of_hasNoContr _ h]
+  rfl
+
+@[simp]
+lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
+  T.contr.contr_of_hasNoContr T.index.1.contrIndexList_hasNoContr
+
+@[simp]
+lemma contr_index (T : 𝓣.TensorIndex) : T.contr.index = T.index.contr := rfl
 
 /-!
 
@@ -187,7 +234,7 @@ lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T
   exact h2.2 h2.1
 
 /-- Rel forms an equivalence relation. -/
-lemma equivalence : Equivalence (@Rel _ _ 𝓣 _) where
+lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _) where
   refl := Rel.refl
   symm := Rel.symm
   trans := Rel.trans
@@ -197,6 +244,29 @@ lemma to_eq {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) :
     T₁.contr.tensor = 𝓣.mapIso h.1.toEquiv.symm h.1.toEquiv_colorMap T₂.contr.tensor := h.2 h.1
 
 end Rel
+
+/-- The structure of a Setoid on `𝓣.TensorIndex` induced by `Rel`. -/
+instance asSetoid : Setoid 𝓣.TensorIndex := ⟨Rel, Rel.isEquivalence⟩
+
+/-- A tensor index is equivalent to its contraction. -/
+lemma self_equiv_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
+  apply And.intro
+  simp only [PermContr, contr_index, IndexListColor.contr_contr, List.Perm.refl, true_and]
+  rw [IndexListColor.contr_contr]
+  exact T.index.contr.1.hasNoContr_color_eq_of_id_eq T.index.1.contrIndexList_hasNoContr
+  intro h
+  rw [tensor_eq_of_eq T.contr_contr]
+  simp only [contr_index, mapIso_mapIso]
+  trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
+  simp only [contr_index, mapIso_refl, LinearEquiv.refl_apply]
+  congr
+  apply Equiv.ext
+  intro x
+  rw [PermContr.toEquiv_contr_eq T.index.contr_contr.symm]
+  rfl
+
+/-! TODO: Show that the product is well defined with respect to Rel. -/
+/-! TODO : Show that addition is well defined with respect to Rel. -/
 
 end TensorIndex
 end

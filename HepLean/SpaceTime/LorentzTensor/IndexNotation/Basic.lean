@@ -193,6 +193,11 @@ def colorMap : Fin l.numIndices → X :=
 def idMap : Fin l.numIndices → Nat :=
   fun i => (l.get i).id
 
+lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.numIndices) :
+    l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
+  subst h
+  rfl
+
 /-- Given a list of indices a subset of `Fin l.numIndices × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
 def toPosSet (l : IndexList X) : Set (Fin l.numIndices × Index X) :=
@@ -366,6 +371,15 @@ lemma hasNoContr_color_eq_of_id_eq (h : l.HasNoContr) (i j : Fin l.length) :
   apply l.hasNoContr_id_inj h at h1
   rw [h1]
 
+@[simp]
+lemma hasNoContr_noContrFinset_card (h : l.HasNoContr) :
+    l.noContrFinset.card = List.length l := by
+  simp only [noContrFinset]
+  rw [Finset.filter_true_of_mem]
+  simp
+  intro x _
+  exact h x
+
 /-!
 
 ## The contracted index list
@@ -438,6 +452,12 @@ instance : DecidablePred fun x => x ∈ l.contrPairSet := fun _ =>
   And.decidable
 
 instance : Fintype l.contrPairSet := setFintype _
+
+lemma contrPairSet_isEmpty_of_hasNoContr (h : l.HasNoContr) :
+    IsEmpty l.contrPairSet := by
+  simp only [contrPairSet, Subtype.coe_lt_coe, Set.coe_setOf, isEmpty_subtype, not_and, Prod.forall]
+  refine fun a b h' =>  h a.1 b.1 (Fin.ne_of_lt h')
+
 
 lemma getDual_lt_self_mem_contrPairSet {i : l.contrSubtype}
     (h : (l.getDual i).1 < i.1) : (l.getDual i, i) ∈ l.contrPairSet :=

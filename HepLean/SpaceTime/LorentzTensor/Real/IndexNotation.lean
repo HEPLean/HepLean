@@ -77,13 +77,13 @@ noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
     (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)).length)
     (hc : IndexListColor.colorPropBool  (IndexString.toIndexList ⟨s, hs⟩))
-    (hd : TensorColor.DualMap.boolFin
+    (hd : TensorColor.ColorMap.DualMap.boolFin
     (IndexString.toIndexList ⟨s, hs⟩).colorMap (cn ∘ Fin.cast hn.symm)) :
     (realLorentzTensor d).TensorIndex :=
   TensorStructure.TensorIndex.mkDualMap T
     ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)),
       IndexListColor.colorPropBool_indexListColorProp hc⟩ hn
-      (TensorColor.DualMap.boolFin_DualMap hd)
+      (TensorColor.ColorMap.DualMap.boolFin_DualMap hd)
 
 /-- A tactics used to prove `colorPropBool` for real Lorentz tensors. -/
 macro "prodTactic" : tactic =>
