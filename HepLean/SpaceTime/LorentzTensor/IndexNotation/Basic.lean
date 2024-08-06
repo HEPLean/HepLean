@@ -376,7 +376,7 @@ lemma hasNoContr_noContrFinset_card (h : l.HasNoContr) :
     l.noContrFinset.card = List.length l := by
   simp only [noContrFinset]
   rw [Finset.filter_true_of_mem]
-  simp
+  simp only [Finset.card_univ, Fintype.card_fin]
   intro x _
   exact h x
 
@@ -456,8 +456,7 @@ instance : Fintype l.contrPairSet := setFintype _
 lemma contrPairSet_isEmpty_of_hasNoContr (h : l.HasNoContr) :
     IsEmpty l.contrPairSet := by
   simp only [contrPairSet, Subtype.coe_lt_coe, Set.coe_setOf, isEmpty_subtype, not_and, Prod.forall]
-  refine fun a b h' =>  h a.1 b.1 (Fin.ne_of_lt h')
-
+  refine fun a b h' => h a.1 b.1 (Fin.ne_of_lt h')
 
 lemma getDual_lt_self_mem_contrPairSet {i : l.contrSubtype}
     (h : (l.getDual i).1 < i.1) : (l.getDual i, i) ∈ l.contrPairSet :=

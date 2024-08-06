@@ -56,7 +56,7 @@ lemma indexListColorProp_of_hasNoContr {s : IndexList 𝓒.Color} (h : s.HasNoCo
 -/
 
 /-- The bool which is true if ever index appears at most once in the first element of entries of
-   `l.contrPairList`. I.e. If every element contracts with at most one other element. -/
+  `l.contrPairList`. I.e. If every element contracts with at most one other element. -/
 def colorPropFstBool (l : IndexList 𝓒.Color) : Bool :=
   let l' := List.product l.contrPairList l.contrPairList
   let l'' := l'.filterMap fun (i, j) => if i.1 = j.1 ∧ i.2 ≠ j.2 then some i else none
@@ -197,12 +197,10 @@ lemma splitContr_symm_apply_of_hasNoContr (h : l.1.HasNoContr) (x : Fin (l.1.noC
   simp [splitContr, noContrSubtypeEquiv, noContrFinset]
   trans (Finset.univ.orderEmbOfFin (by rw [l.1.hasNoContr_noContrFinset_card h]; simp)) x
   congr
-  rw [Finset.filter_true_of_mem (fun x _ => h x )]
+  rw [Finset.filter_true_of_mem (fun x _ => h x)]
   rw [@Finset.orderEmbOfFin_apply]
   simp only [List.get_eq_getElem, Fin.sort_univ, List.getElem_finRange]
   rfl
-
-
 
 /-!
 
@@ -388,7 +386,7 @@ lemma of_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
     PermContr s1 s2 := by
   simp [PermContr]
   rw [hc]
-  simp
+  simp only [List.Perm.refl, true_and]
   refine hasNoContr_color_eq_of_id_eq s2.contr.1 (s2.1.contrIndexList_hasNoContr)
 
 lemma toEquiv_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :

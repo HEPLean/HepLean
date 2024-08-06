@@ -105,11 +105,15 @@ variable {𝓒 : TensorColor} [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 
 variable (cX : ColorMap 𝓒 X) (cY : ColorMap 𝓒 Y) (cZ : ColorMap 𝓒 Z)
 
+/-- A relation, given an equivalence of types, between ColorMap which is true
+  if related by composition of the equivalence. -/
 def MapIso (e : X ≃ Y) (cX : ColorMap 𝓒 X) (cY : ColorMap 𝓒 Y) : Prop := cX = cY ∘ e
 
+/-- The sum of two color maps, formed by `Sum.elim`. -/
 def sum (cX : ColorMap 𝓒 X) (cY : ColorMap 𝓒 Y) : ColorMap 𝓒 (Sum X Y) :=
   Sum.elim cX cY
 
+/-- The dual of a color map, formed by composition with `𝓒.τ`. -/
 def dual (cX : ColorMap 𝓒 X) : ColorMap 𝓒 X := 𝓒.τ ∘ cX
 
 namespace MapIso
@@ -127,7 +131,7 @@ lemma trans (h : cX.MapIso e cY) (h' : cY.MapIso e' cZ) :
   subst h h'
   simp
 
-lemma sum  {eX : X ≃ X'} {eY : Y ≃ Y'} (hX : cX.MapIso eX cX') (hY : cY.MapIso eY cY') :
+lemma sum {eX : X ≃ X'} {eY : Y ≃ Y'} (hX : cX.MapIso eX cX') (hY : cY.MapIso eY cY') :
     (cX.sum cY).MapIso (eX.sumCongr eY) (cX'.sum cY') := by
   funext x
   subst hX hY
@@ -136,7 +140,7 @@ lemma sum  {eX : X ≃ X'} {eY : Y ≃ Y'} (hX : cX.MapIso eX cX') (hY : cY.MapI
   | Sum.inr x => rfl
 
 lemma dual {e : X ≃ Y} (h : cX.MapIso e cY) :
-   cX.dual.MapIso e  cY.dual  := by
+    cX.dual.MapIso e cY.dual := by
   subst h
   rfl
 
@@ -569,9 +573,10 @@ lemma tensoratorEquiv_tmul_tprod (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor c
 @[simp]
 lemma tensoratorEquiv_symm_tprod (f : 𝓣.PureTensor (Sum.elim cX cY)) :
     (𝓣.tensoratorEquiv cX cY).symm ((PiTensorProduct.tprod R) f) =
-    (PiTensorProduct.tprod R) (𝓣.inlPureTensor f) ⊗ₜ[R] (PiTensorProduct.tprod R) (𝓣.inrPureTensor f) := by
+    (PiTensorProduct.tprod R) (𝓣.inlPureTensor f) ⊗ₜ[R]
+    (PiTensorProduct.tprod R) (𝓣.inrPureTensor f) := by
   simp [tensoratorEquiv, tensorator]
-  change (PiTensorProduct.lift 𝓣.domCoprod) ((PiTensorProduct.tprod R) f) =  _
+  change (PiTensorProduct.lift 𝓣.domCoprod) ((PiTensorProduct.tprod R) f) = _
   simp [domCoprod]
 
 @[simp]
@@ -669,11 +674,12 @@ lemma contrDual_symm_contrRightAux_apply_tmul (h : ν = η)
 
 -/
 
+/-- The equivalence between `𝓣.Tensor cX` and `R` when the indexing set `X` is empty. -/
 def isEmptyEquiv [IsEmpty X] : 𝓣.Tensor cX ≃ₗ[R] R :=
   PiTensorProduct.isEmptyEquiv X
 
 @[simp]
-def isEmptyEquiv_tprod [IsEmpty X] (f : 𝓣.PureTensor cX) :
+lemma isEmptyEquiv_tprod [IsEmpty X] (f : 𝓣.PureTensor cX) :
     𝓣.isEmptyEquiv (PiTensorProduct.tprod R f) = 1 := by
   simp only [isEmptyEquiv]
   erw [PiTensorProduct.isEmptyEquiv_apply_tprod]

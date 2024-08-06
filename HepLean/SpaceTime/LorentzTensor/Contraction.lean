@@ -54,6 +54,8 @@ variable {𝓒 : TensorColor} [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 
 variable (cX : ColorMap 𝓒 X) (cY : ColorMap 𝓒 Y) (cZ : ColorMap 𝓒 Z)
 
+/-- Given an equivalence `e` of types the condition that the color map `cX` is the dual to `cY`
+  up to this equivalence. -/
 def ContrAll (e : X ≃ Y) (cX : ColorMap 𝓒 X) (cY : ColorMap 𝓒 Y) : Prop :=
   cX = 𝓒.τ ∘ cY ∘ e
 
@@ -73,7 +75,7 @@ lemma symm (h : cX.ContrAll e cY) : cY.ContrAll e.symm cX := by
   exact (𝓒.τ_involutive (cY x)).symm
 
 lemma trans_mapIso {e : X ≃ Y} {e' : Z ≃ Y}
-    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cY) : cX.ContrAll (e.trans e'.symm) cZ  := by
+    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cY) : cX.ContrAll (e.trans e'.symm) cZ := by
   subst h h'
   funext x
   simp only [Function.comp_apply, Equiv.coe_trans, Equiv.apply_symm_apply]
@@ -86,21 +88,30 @@ lemma mapIso_trans {e : X ≃ Y} {e' : Z ≃ X}
 
 end ContrAll
 
+/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the restriction of a color map `cX` on  to `P`. -/
 def contr (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : ColorMap 𝓒 P :=
   cX ∘ e ∘ Sum.inr
 
+/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the restriction of a color map `cX` on `X`
+  to the first `C`. -/
 def contrLeft (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : ColorMap 𝓒 C :=
   cX ∘ e ∘ Sum.inl ∘ Sum.inl
 
+/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the restriction of a color map `cX` on `X`
+  to the second `C`. -/
 def contrRight (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : ColorMap 𝓒 C :=
   cX ∘ e ∘ Sum.inl ∘ Sum.inr
 
+/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the condition on `cX` so that we contract
+  the `C`'s under this equivalence. -/
 def ContrCond (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : Prop :=
     cX ∘ e ∘ Sum.inl ∘ Sum.inl = 𝓒.τ ∘ cX ∘ e ∘ Sum.inl ∘ Sum.inr
 
 namespace ContrCond
 
-variable {e : (C ⊕ C) ⊕ P ≃ X} {e' : Y ≃ Z} {cX : ColorMap 𝓒 X} {cY : ColorMap 𝓒 Y} {cZ : ColorMap 𝓒 Z}
+variable {e : (C ⊕ C) ⊕ P ≃ X} {e' : Y ≃ Z} {cX : ColorMap 𝓒 X} {cY : ColorMap 𝓒 Y}
+  {cZ : ColorMap 𝓒 Z}
+
 variable {cX' : ColorMap 𝓒 X'} {cY' : ColorMap 𝓒 Y'}
 
 lemma to_contrAll (h : cX.ContrCond e) :
@@ -189,7 +200,7 @@ lemma contrAll'_tmul_tprod_tprod (fx : (i : X) → 𝓣.ColorModule (cX i))
     MultilinearMap.mkPiAlgebra_apply]
 
 @[simp]
-lemma contrAll'_isEmpty_tmul [IsEmpty X] (x :  𝓣.Tensor cX) (y : 𝓣.Tensor (𝓣.τ ∘ cX)) :
+lemma contrAll'_isEmpty_tmul [IsEmpty X] (x : 𝓣.Tensor cX) (y : 𝓣.Tensor (𝓣.τ ∘ cX)) :
     𝓣.contrAll' (x ⊗ₜ y) = 𝓣.isEmptyEquiv x * 𝓣.isEmptyEquiv y := by
   refine PiTensorProduct.induction_on' x ?_ (by
     intro a b hx hy
@@ -210,7 +221,6 @@ lemma contrAll'_isEmpty_tmul [IsEmpty X] (x :  𝓣.Tensor cX) (y : 𝓣.Tensor 
   simp only [Function.comp_apply, PiTensorProduct.map_tprod, PiTensorProduct.lift.tprod,
     MultilinearMap.mkPiAlgebra_apply, Finset.univ_eq_empty, Finset.prod_empty]
   erw [isEmptyEquiv_tprod]
-
 
 @[simp]
 lemma contrAll'_mapIso (e : X ≃ Y) (h : cX.MapIso e cY) :
@@ -235,13 +245,13 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : cX.MapIso e cY) :
     LinearEquiv.refl_apply, smul_eq_mul, smul_tmul]
   apply congrArg
   apply congrArg
-  erw [contrAll'_tmul_tprod_tprod ]
+  erw [contrAll'_tmul_tprod_tprod]
   erw [TensorProduct.congr_tmul]
   simp only [PiTensorProduct.lift.tprod, LinearEquiv.refl_apply]
   erw [mapIso_tprod]
   erw [contrAll'_tmul_tprod_tprod]
   rw [mkPiAlgebra_equiv e]
-  simp only [ Equiv.symm_symm_apply, LinearMap.coe_comp,
+  simp only [Equiv.symm_symm_apply, LinearMap.coe_comp,
     LinearEquiv.coe_coe, Function.comp_apply, PiTensorProduct.reindex_tprod,
     PiTensorProduct.lift.tprod]
   apply congrArg
@@ -278,17 +288,16 @@ lemma contrAll_tmul (e : X ≃ Y) (h : cX.ContrAll e cY) (x : 𝓣.Tensor cX) (y
 
 @[simp]
 lemma contrAll_mapIso_right_tmul (e : X ≃ Y) (e' : Z ≃ Y)
-    (h : c.ContrAll e  cY ) (h' : cZ.MapIso e' cY) (x : 𝓣.Tensor c) (z : 𝓣.Tensor cZ) :
+    (h : c.ContrAll e cY) (h' : cZ.MapIso e' cY) (x : 𝓣.Tensor c) (z : 𝓣.Tensor cZ) :
     𝓣.contrAll e h (x ⊗ₜ[R] 𝓣.mapIso e' h' z) =
     𝓣.contrAll (e.trans e'.symm) (h.trans_mapIso h') (x ⊗ₜ[R] z) := by
-  simp only [contrAll_tmul, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, congr_tmul,
-    LinearEquiv.refl_apply, mapIso_mapIso]
+  simp only [contrAll_tmul, mapIso_mapIso]
   apply congrArg
   rfl
 
 @[simp]
 lemma contrAll_comp_mapIso_right (e : X ≃ Y) (e' : Z ≃ Y)
-    (h : c.ContrAll e  cY ) (h' : cZ.MapIso e' cY) : 𝓣.contrAll e h ∘ₗ
+    (h : c.ContrAll e cY) (h' : cZ.MapIso e' cY) : 𝓣.contrAll e h ∘ₗ
     (TensorProduct.congr (LinearEquiv.refl R (𝓣.Tensor c)) (𝓣.mapIso e' h')).toLinearMap
     = 𝓣.contrAll (e.trans e'.symm) (h.trans_mapIso h') := by
   apply TensorProduct.ext'
@@ -297,16 +306,15 @@ lemma contrAll_comp_mapIso_right (e : X ≃ Y) (e' : Z ≃ Y)
 
 @[simp]
 lemma contrAll_mapIso_left_tmul {e : X ≃ Y} {e' : Z ≃ X}
-    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cX ) (x : 𝓣.Tensor cZ) (y : 𝓣.Tensor cY) :
+    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cX) (x : 𝓣.Tensor cZ) (y : 𝓣.Tensor cY) :
     𝓣.contrAll e h (𝓣.mapIso e' h' x ⊗ₜ[R] y) =
     𝓣.contrAll (e'.trans e) (h.mapIso_trans h') (x ⊗ₜ[R] y) := by
-  simp only [contrAll_tmul, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, congr_tmul,
-    LinearEquiv.refl_apply, contrAll'_mapIso_tmul, mapIso_mapIso]
+  simp only [contrAll_tmul, contrAll'_mapIso_tmul, mapIso_mapIso]
   rfl
 
 @[simp]
 lemma contrAll_mapIso_left {e : X ≃ Y} {e' : Z ≃ X}
-    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cX ) :
+    (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cX) :
     𝓣.contrAll e h ∘ₗ
     (TensorProduct.congr (𝓣.mapIso e' h') (LinearEquiv.refl R (𝓣.Tensor cY))).toLinearMap
     = 𝓣.contrAll (e'.trans e) (h.mapIso_trans h') := by
@@ -375,7 +383,6 @@ lemma contrAll_rep (e : X ≃ Y) (h : cX.ContrAll e cY) (g : G) :
   nth_rewrite 2 [← contrDual_inv (cX x) g]
   rfl
 
-
 @[simp]
 lemma contrAll_rep_apply {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃ Y) (h : c = 𝓣.τ ∘ d ∘ e)
     (g : G) (x : 𝓣.Tensor c ⊗ 𝓣.Tensor d) :
@@ -397,7 +404,7 @@ lemma contrAll_rep_tmul {c : X → 𝓣.Color} {d : Y → 𝓣.Color} (e : X ≃
 -/
 
 lemma contr_cond (e : (C ⊕ C) ⊕ P ≃ X) :
-    cX.MapIso e.symm (Sum.elim (Sum.elim (cX.contrLeft e) (cX.contrRight e)) (cX.contr e)):= by
+    cX.MapIso e.symm (Sum.elim (Sum.elim (cX.contrLeft e) (cX.contrRight e)) (cX.contr e)) := by
   rw [TensorColor.ColorMap.MapIso, Equiv.eq_comp_symm]
   funext x
   match x with

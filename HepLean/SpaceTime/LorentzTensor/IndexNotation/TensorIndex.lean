@@ -62,7 +62,7 @@ lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.ind
   cases h
   rfl
 lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.tensor =
-   𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
+    𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
     (index_eq_colorMap_eq (index_eq_of_eq h)) T₂.tensor := by
   have hi := index_eq_of_eq h
   cases T₁

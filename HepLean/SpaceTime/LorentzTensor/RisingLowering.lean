@@ -19,7 +19,6 @@ noncomputable section
 
 open TensorProduct
 
-
 namespace TensorColor
 
 variable {𝓒 : TensorColor} [DecidableEq 𝓒.Color] [Fintype 𝓒.Color]
@@ -38,6 +37,8 @@ namespace ColorMap
 
 variable (cX : 𝓒.ColorMap X)
 
+/-- Given an equivalence `C ⊕ P ≃ X` the color map obtained by `cX` by dualising
+  all indices in `C`.  -/
 def partDual (e : C ⊕ P ≃ X) : 𝓒.ColorMap X :=
   (Sum.elim (𝓒.τ ∘ cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm)
 
@@ -116,7 +117,6 @@ end DualMap
 
 end ColorMap
 end TensorColor
-
 
 variable {R : Type} [CommSemiring R]
 
