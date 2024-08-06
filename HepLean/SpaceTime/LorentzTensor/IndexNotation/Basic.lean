@@ -107,6 +107,8 @@ instance : Decidable (listCharIndex X l) :=
   e.g. `ᵘ¹²` or `ᵤ₄₃` etc. -/
 def Index : Type := {s : String // listCharIndex X s.toList ∧ s.toList ≠ []}
 
+instance : DecidableEq (Index X) := Subtype.instDecidableEq
+
 namespace Index
 
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
@@ -295,19 +297,19 @@ instance : DecidableEq l.contrSubtype :=
 
 /-- Given a `i : l.contrSubtype` the proposition on a `j` in `Fin s.length` for
   it to be an index of `s` contracting with `i`. -/
-def getDualProp (i : l.contrSubtype) (j : Fin l.length) : Prop :=
-    i.1 ≠ j ∧ l.idMap i.1 = l.idMap j
+def getDualProp (i j : Fin l.length) : Prop :=
+    i ≠ j ∧ l.idMap i = l.idMap j
 
-instance (i : l.contrSubtype) (j : Fin l.length) :
+instance (i j : Fin l.length) :
     Decidable (l.getDualProp i j) :=
   instDecidableAnd
 
 /-- Given a `i : l.contrSubtype` the index of `s` contracting with `i`. -/
 def getDualFin (i : l.contrSubtype) : Fin l.length :=
-  (Fin.find (l.getDualProp i)).get (by simpa [NoContr, Fin.isSome_find_iff] using i.prop)
+  (Fin.find (l.getDualProp i.1)).get (by simpa [NoContr, Fin.isSome_find_iff] using i.prop)
 
 lemma some_getDualFin_eq_find (i : l.contrSubtype) :
-    Fin.find (l.getDualProp i) = some (l.getDualFin i) := by
+    Fin.find (l.getDualProp i.1) = some (l.getDualFin i) := by
   simp [getDualFin]
 
 lemma getDualFin_not_NoContr (i : l.contrSubtype) : ¬ l.NoContr (l.getDualFin i) := by
@@ -332,6 +334,13 @@ lemma getDual_neq_self (i : l.contrSubtype) : i ≠ l.getDual i := by
   have h1 := l.some_getDualFin_eq_find i
   rw [Fin.find_eq_some_iff] at h1
   exact ne_of_apply_ne Subtype.val h1.1.1
+
+lemma getDual_getDualProp (i : l.contrSubtype) : l.getDualProp i.1 (l.getDual i).1 := by
+  simp [getDual]
+  have h1 := l.some_getDualFin_eq_find i
+  rw [Fin.find_eq_some_iff] at h1
+  simp only [getDualProp, ne_eq, and_imp] at h1
+  exact h1.1
 
 /-!
 
@@ -443,6 +452,11 @@ lemma getDual_not_lt_self_mem_contrPairSet {i : l.contrSubtype}
   exact lt_of_le_of_ne h h1
   simp only
   exact l.getDual_id i
+
+/-- The list of elements of `l` which contract together. -/
+def contrPairList : List (Fin l.length × Fin l.length) :=
+  (List.product (Fin.list l.length) (Fin.list l.length)).filterMap fun (i, j) => if
+  l.getDualProp i j then some (i, j) else none
 
 end IndexList
 

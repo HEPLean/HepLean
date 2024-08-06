@@ -253,6 +253,24 @@ def DualMap (c₁ : X → 𝓒.Color) (c₂ : X → 𝓒.Color) : Prop :=
 namespace DualMap
 
 variable {c₁ c₂ c₃ : X → 𝓒.Color}
+variable {n : ℕ}
+
+/-- The bool which if `𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)` is true for all `i`. -/
+def boolFin (c₁ c₂ : Fin n → 𝓒.Color) : Bool :=
+  (Fin.list n).all fun i => if 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i) then true else false
+
+lemma boolFin_DualMap {c₁ c₂ : Fin n → 𝓒.Color} (h : boolFin c₁ c₂ = true) :
+    DualMap c₁ c₂ := by
+  simp [boolFin] at h
+  simp [DualMap]
+  funext x
+  have h2 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
+    have h1' : (Fin.list n)[m] = m := by
+      erw [Fin.getElem_list]
+      rfl
+    rw [← h1']
+    apply List.getElem_mem
+  exact h x (h2 _)
 
 lemma refl : DualMap c₁ c₁ := by
   simp [DualMap]

@@ -44,12 +44,15 @@ structure TensorColor where
 
 namespace TensorColor
 
-variable (𝓒 : TensorColor)
+variable (𝓒 : TensorColor) [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
 
 /-- A relation on colors which is true if the two colors are equal or are duals. -/
 def colorRel (μ ν : 𝓒.Color) : Prop := μ = ν ∨ μ = 𝓒.τ ν
+
+instance : Decidable (colorRel 𝓒 μ ν) :=
+  Or.decidable
 
 /-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
 lemma colorRel_equivalence : Equivalence 𝓒.colorRel where
@@ -87,6 +90,11 @@ instance colorSetoid : Setoid 𝓒.Color := ⟨𝓒.colorRel, 𝓒.colorRel_equi
 def colorQuot (μ : 𝓒.Color) : Quotient 𝓒.colorSetoid :=
   Quotient.mk 𝓒.colorSetoid μ
 
+instance (μ ν : 𝓒.Color) : Decidable (μ ≈ ν) :=
+  Or.decidable
+
+instance : DecidableEq (Quotient 𝓒.colorSetoid) :=
+  instDecidableEqQuotientOfDecidableEquiv
 end TensorColor
 
 noncomputable section
