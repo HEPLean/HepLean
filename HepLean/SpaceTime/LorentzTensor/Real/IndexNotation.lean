@@ -15,7 +15,6 @@ to define the index notation for real Lorentz tensors.
 
 -/
 
-
 instance : IndexNotation realTensorColor.Color where
   charList := {'ᵘ', 'ᵤ'}
   notaEquiv :=
@@ -76,29 +75,29 @@ noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (T : (realLorentzTensor d).Tensor cn) (s : String)
     (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
     (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)).length)
-    (hc : IndexListColor.colorPropBool  (IndexString.toIndexList ⟨s, hs⟩))
-    (hd : TensorColor.DualMap.boolFin
+    (hc : IndexListColor.colorPropBool (IndexString.toIndexList ⟨s, hs⟩))
+    (hd : TensorColor.ColorMap.DualMap.boolFin
     (IndexString.toIndexList ⟨s, hs⟩).colorMap (cn ∘ Fin.cast hn.symm)) :
     (realLorentzTensor d).TensorIndex :=
   TensorStructure.TensorIndex.mkDualMap T
     ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)),
       IndexListColor.colorPropBool_indexListColorProp hc⟩ hn
-      (TensorColor.DualMap.boolFin_DualMap hd)
+      (TensorColor.ColorMap.DualMap.boolFin_DualMap hd)
 
 /-- A tactics used to prove `colorPropBool` for real Lorentz tensors. -/
 macro "prodTactic" : tactic =>
     `(tactic| {
-     change @IndexListColor.colorPropBool realTensorColor _ _ _
-     simp only [toTensorColor_eq, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
-      String.toList, ↓Char.isValue, Equiv.coe_refl, Function.comp_apply, id_eq, ne_eq,
-      Function.comp_id, RelIso.coe_fn_toEquiv, prod_index, IndexListColor.prod]
-     rfl})
+      change @IndexListColor.colorPropBool realTensorColor _ _ _
+      simp only [toTensorColor_eq, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
+        String.toList, ↓Char.isValue, Equiv.coe_refl, Function.comp_apply, id_eq, ne_eq,
+        Function.comp_id, RelIso.coe_fn_toEquiv, prod_index, IndexListColor.prod]
+      rfl})
 
 /-- A tactic used to prove `boolFin` for real Lornetz tensors. -/
 macro "dualMapTactic" : tactic =>
     `(tactic| {
-     simp only [String.toList, ↓Char.isValue, toTensorColor_eq]
-     rfl})
+      simp only [String.toList, ↓Char.isValue, toTensorColor_eq]
+      rfl})
 
 /-- Notation for the construction of a tensor index from a tensor and a string.
   Conditions are checked automatically. -/
@@ -110,10 +109,10 @@ notation:10 T "⊗ᵀ" S:11 => TensorIndex.prod T S (IndexListColor.colorPropBoo
 
 /-- An example showing the allowed constructions. -/
 example (T : (realLorentzTensor d).Tensor ![ColorType.up, ColorType.down]) : True := by
-  let _ :=  T|"ᵤ₁ᵤ₂"
+  let _ := T|"ᵤ₁ᵤ₂"
   let _ := T|"ᵘ³ᵤ₄"
   let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄"
-  let _ :=  T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ¹ᵘ²" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
+  let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ¹ᵘ²" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
   exact trivial
 
 end realLorentzTensor

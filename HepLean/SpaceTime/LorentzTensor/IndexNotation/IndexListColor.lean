@@ -56,7 +56,7 @@ lemma indexListColorProp_of_hasNoContr {s : IndexList 𝓒.Color} (h : s.HasNoCo
 -/
 
 /-- The bool which is true if ever index appears at most once in the first element of entries of
-   `l.contrPairList`. I.e. If every element contracts with at most one other element. -/
+  `l.contrPairList`. I.e. If every element contracts with at most one other element. -/
 def colorPropFstBool (l : IndexList 𝓒.Color) : Bool :=
   let l' := List.product l.contrPairList l.contrPairList
   let l'' := l'.filterMap fun (i, j) => if i.1 = j.1 ∧ i.2 ≠ j.2 then some i else none
@@ -191,6 +191,16 @@ lemma splitContr_map :
   erw [contrPairEquiv_apply_inr, contrPairEquiv_apply_inl]
   rw [contrPairSet_fst_eq_dual_snd _ _]
   exact l.prop.2 _
+
+lemma splitContr_symm_apply_of_hasNoContr (h : l.1.HasNoContr) (x : Fin (l.1.noContrFinset).card) :
+    l.splitContr.symm (Sum.inr x) = Fin.castOrderIso (l.1.hasNoContr_noContrFinset_card h) x := by
+  simp [splitContr, noContrSubtypeEquiv, noContrFinset]
+  trans (Finset.univ.orderEmbOfFin (by rw [l.1.hasNoContr_noContrFinset_card h]; simp)) x
+  congr
+  rw [Finset.filter_true_of_mem (fun x _ => h x)]
+  rw [@Finset.orderEmbOfFin_apply]
+  simp only [List.get_eq_getElem, Fin.sort_univ, List.getElem_finRange]
+  rfl
 
 /-!
 
@@ -371,6 +381,31 @@ lemma toEquiv_trans {s1 s2 s3 : IndexListColor 𝓒} (h1 : PermContr s1 s2) (h2 
   intro x
   simp [toEquiv]
   rw [← get_trans]
+
+lemma of_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
+    PermContr s1 s2 := by
+  simp [PermContr]
+  rw [hc]
+  simp only [List.Perm.refl, true_and]
+  refine hasNoContr_color_eq_of_id_eq s2.contr.1 (s2.1.contrIndexList_hasNoContr)
+
+lemma toEquiv_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
+    (of_contr_eq hc).toEquiv = (Fin.castOrderIso (by rw [hc])).toEquiv := by
+  apply Equiv.ext
+  intro x
+  simp [toEquiv, of_contr_eq, hc, get]
+  have h1 : (Fin.find fun j => (s1.contr).1.idMap x = (s2.contr).1.idMap j) =
+      some ((Fin.castOrderIso (by rw [hc]; rfl)).toEquiv x) := by
+    rw [Fin.find_eq_some_iff]
+    apply And.intro
+    rw [idMap_cast (congrArg Subtype.val hc)]
+    rfl
+    intro j hj
+    rw [idMap_cast (congrArg Subtype.val hc)] at hj
+    have h2 := s2.contr.1.hasNoContr_id_inj (s2.1.contrIndexList_hasNoContr) hj
+    subst h2
+    rfl
+  simp only [h1, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Option.get_some]
 
 end PermContr
 

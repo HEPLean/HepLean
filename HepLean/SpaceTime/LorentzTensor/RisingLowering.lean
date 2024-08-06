@@ -19,6 +19,105 @@ noncomputable section
 
 open TensorProduct
 
+namespace TensorColor
+
+variable {𝓒 : TensorColor} [DecidableEq 𝓒.Color] [Fintype 𝓒.Color]
+
+variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
+  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
+  [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P]
+
+/-!
+
+## Dual maps
+
+-/
+
+namespace ColorMap
+
+variable (cX : 𝓒.ColorMap X)
+
+/-- Given an equivalence `C ⊕ P ≃ X` the color map obtained by `cX` by dualising
+  all indices in `C`.  -/
+def partDual (e : C ⊕ P ≃ X) : 𝓒.ColorMap X :=
+  (Sum.elim (𝓒.τ ∘ cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm)
+
+/-- Two color maps are said to be dual if their quotents are dual. -/
+def DualMap (c₁ c₂ : 𝓒.ColorMap X) : Prop :=
+  𝓒.colorQuot ∘ c₁ = 𝓒.colorQuot ∘ c₂
+
+namespace DualMap
+
+variable {c₁ c₂ c₃ : 𝓒.ColorMap X}
+variable {n : ℕ}
+
+/-- The bool which if `𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)` is true for all `i`. -/
+def boolFin (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
+  (Fin.list n).all fun i => if 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i) then true else false
+
+lemma boolFin_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin c₁ c₂ = true) :
+    DualMap c₁ c₂ := by
+  simp [boolFin] at h
+  simp [DualMap]
+  funext x
+  have h2 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
+    have h1' : (Fin.list n)[m] = m := by
+      erw [Fin.getElem_list]
+      rfl
+    rw [← h1']
+    apply List.getElem_mem
+  exact h x (h2 _)
+
+lemma refl : DualMap c₁ c₁ := by
+  simp [DualMap]
+
+lemma symm (h : DualMap c₁ c₂) : DualMap c₂ c₁ := by
+  rw [DualMap] at h ⊢
+  exact h.symm
+
+lemma trans (h : DualMap c₁ c₂) (h' : DualMap c₂ c₃) : DualMap c₁ c₃ := by
+  rw [DualMap] at h h' ⊢
+  exact h.trans h'
+
+/-- The splitting of `X` given two color maps based on the equality of the color. -/
+def split (c₁ c₂ : 𝓒.ColorMap X) : { x // c₁ x ≠ c₂ x} ⊕ { x // c₁ x = c₂ x} ≃ X :=
+  ((Equiv.Set.sumCompl {x | c₁ x = c₂ x}).symm.trans (Equiv.sumComm _ _)).symm
+
+lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
+    𝓒.τ (c₁ x) = c₂ x := by
+  rw [DualMap] at h
+  have h1 := congrFun h x
+  simp [colorQuot, HasEquiv.Equiv, Setoid.r, colorRel] at h1
+  simp_all only [ne_eq, false_or]
+  exact 𝓒.τ_involutive (c₂ x)
+
+@[simp]
+lemma split_dual (h : DualMap c₁ c₂) : c₁.partDual (split c₁ c₂) = c₂ := by
+  rw [partDual, Equiv.comp_symm_eq]
+  funext x
+  match x with
+  | Sum.inl x =>
+    exact h.dual_eq_of_neq x.2
+  | Sum.inr x =>
+    exact x.2
+
+@[simp]
+lemma split_dual' (h : DualMap c₁ c₂) : c₂.partDual (split c₁ c₂) = c₁ := by
+  rw [partDual, Equiv.comp_symm_eq]
+  funext x
+  match x with
+  | Sum.inl x =>
+    change 𝓒.τ (c₂ x) = c₁ x
+    rw [← h.dual_eq_of_neq x.2]
+    exact (𝓒.τ_involutive (c₁ x))
+  | Sum.inr x =>
+    exact x.2.symm
+
+end DualMap
+
+end ColorMap
+end TensorColor
+
 variable {R : Type} [CommSemiring R]
 
 namespace TensorStructure
@@ -28,8 +127,8 @@ variable (𝓣 : TensorStructure R)
 variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
   [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
   [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P]
-  {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
-  {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν: 𝓣.Color}
+  {cX cX2 : 𝓣.ColorMap X} {cY : 𝓣.ColorMap Y} {cZ : 𝓣.ColorMap Z}
+  {cW : 𝓣.ColorMap W} {cY' : 𝓣.ColorMap Y'} {μ ν: 𝓣.Color}
 
 variable {G H : Type} [Group G] [Group H] [MulActionTensor G 𝓣]
 local infixl:101 " • " => 𝓣.rep
@@ -199,12 +298,9 @@ lemma dualize_cond' (e : C ⊕ P ≃ X) :
   | Sum.inl x => simp
   | Sum.inr x => simp
 
-/-! TODO: Show that `dualize` is equivariant with respect to the group action. -/
-
 /-- Given an equivalence `C ⊕ P ≃ X` dualizes those indices of a tensor which correspond to
   `C` whilst leaving the indices `P` invariant. -/
-def dualize (e : C ⊕ P ≃ X) : 𝓣.Tensor cX ≃ₗ[R]
-    𝓣.Tensor (Sum.elim (𝓣.τ ∘ cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm) :=
+def dualize (e : C ⊕ P ≃ X) : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (cX.partDual e) :=
   𝓣.mapIso e.symm (𝓣.dualize_cond e) ≪≫ₗ
   (𝓣.tensoratorEquiv _ _).symm ≪≫ₗ
   TensorProduct.congr 𝓣.dualizeAll (LinearEquiv.refl _ _) ≪≫ₗ
@@ -232,95 +328,3 @@ lemma dualize_equivariant_apply (e : C ⊕ P ≃ X) (g : G) (x : 𝓣.Tensor cX)
 end TensorStructure
 
 end
-namespace TensorColor
-
-variable {𝓒 : TensorColor} [DecidableEq 𝓒.Color] [Fintype 𝓒.Color]
-
-variable {d : ℕ} {X Y Y' Z W C P : Type} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
-  [Fintype Y'] [DecidableEq Y'] [Fintype Z] [DecidableEq Z] [Fintype W] [DecidableEq W]
-  [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P]
-
-/-!
-
-## Dual maps
-
--/
-
-/-- Two color maps are said to be dual if their quotents are dual. -/
-def DualMap (c₁ : X → 𝓒.Color) (c₂ : X → 𝓒.Color) : Prop :=
-  𝓒.colorQuot ∘ c₁ = 𝓒.colorQuot ∘ c₂
-
-namespace DualMap
-
-variable {c₁ c₂ c₃ : X → 𝓒.Color}
-variable {n : ℕ}
-
-/-- The bool which if `𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)` is true for all `i`. -/
-def boolFin (c₁ c₂ : Fin n → 𝓒.Color) : Bool :=
-  (Fin.list n).all fun i => if 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i) then true else false
-
-lemma boolFin_DualMap {c₁ c₂ : Fin n → 𝓒.Color} (h : boolFin c₁ c₂ = true) :
-    DualMap c₁ c₂ := by
-  simp [boolFin] at h
-  simp [DualMap]
-  funext x
-  have h2 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
-    have h1' : (Fin.list n)[m] = m := by
-      erw [Fin.getElem_list]
-      rfl
-    rw [← h1']
-    apply List.getElem_mem
-  exact h x (h2 _)
-
-lemma refl : DualMap c₁ c₁ := by
-  simp [DualMap]
-
-lemma symm (h : DualMap c₁ c₂) : DualMap c₂ c₁ := by
-  rw [DualMap] at h ⊢
-  exact h.symm
-
-lemma trans (h : DualMap c₁ c₂) (h' : DualMap c₂ c₃) : DualMap c₁ c₃ := by
-  rw [DualMap] at h h' ⊢
-  exact h.trans h'
-
-/-- The splitting of `X` given two color maps based on the equality of the color. -/
-def split (c₁ c₂ : X → 𝓒.Color) : { x // c₁ x ≠ c₂ x} ⊕ { x // c₁ x = c₂ x} ≃ X :=
-  ((Equiv.Set.sumCompl {x | c₁ x = c₂ x}).symm.trans (Equiv.sumComm _ _)).symm
-
-lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
-    𝓒.τ (c₁ x) = c₂ x := by
-  rw [DualMap] at h
-  have h1 := congrFun h x
-  simp [colorQuot, HasEquiv.Equiv, Setoid.r, colorRel] at h1
-  simp_all only [ne_eq, false_or]
-  exact 𝓒.τ_involutive (c₂ x)
-
-@[simp]
-lemma split_dual (h : DualMap c₁ c₂) :
-    Sum.elim (𝓒.τ ∘ c₁ ∘ (split c₁ c₂) ∘ Sum.inl) (c₁ ∘ (split c₁ c₂) ∘ Sum.inr)
-    ∘ (split c₁ c₂).symm = c₂ := by
-  rw [Equiv.comp_symm_eq]
-  funext x
-  match x with
-  | Sum.inl x =>
-    exact h.dual_eq_of_neq x.2
-  | Sum.inr x =>
-    exact x.2
-
-@[simp]
-lemma split_dual' (h : DualMap c₁ c₂) :
-    Sum.elim (𝓒.τ ∘ c₂ ∘ (split c₁ c₂) ∘ Sum.inl) (c₂ ∘ (split c₁ c₂) ∘ Sum.inr) ∘
-    (split c₁ c₂).symm = c₁ := by
-  rw [Equiv.comp_symm_eq]
-  funext x
-  match x with
-  | Sum.inl x =>
-    change 𝓒.τ (c₂ x) = c₁ x
-    rw [← h.dual_eq_of_neq x.2]
-    exact (𝓒.τ_involutive (c₁ x))
-  | Sum.inr x =>
-    exact x.2.symm
-
-end DualMap
-
-end TensorColor
