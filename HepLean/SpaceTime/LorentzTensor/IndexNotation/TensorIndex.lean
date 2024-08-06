@@ -36,7 +36,7 @@ structure TensorIndex where
   tensor : 𝓣.Tensor index.1.colorMap
 
 namespace TensorIndex
-open TensorColor
+open TensorColor IndexListColor
 variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
@@ -69,6 +69,12 @@ def mkDualMap (T : 𝓣.Tensor cn) (l : IndexListColor 𝓣.toTensorColor) (hn :
       𝓣.dualize (DualMap.split l.1.colorMap (cn ∘ Fin.cast hn.symm)) <|
       (𝓣.mapIso (Fin.castOrderIso hn).toEquiv rfl T : 𝓣.Tensor (cn ∘ Fin.cast hn.symm))
 
+/-!
+
+## The contraction of indices
+
+-/
+
 /-- The contraction of indices in a `TensorIndex`. -/
 def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
   index := T.index.contr
@@ -76,6 +82,14 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
       𝓣.mapIso (Fin.castOrderIso T.index.contr_numIndices.symm).toEquiv
       T.index.contr_colorMap <|
       𝓣.contr (T.index.splitContr).symm T.index.splitContr_map T.tensor
+
+/-! TODO: Show that contracting twice is the same as contracting once. -/
+
+/-!
+
+## Product of `TensorIndex` allowed
+
+-/
 
 /-- The tensor product of two `TensorIndex`. -/
 def prod (T₁ T₂ : 𝓣.TensorIndex)
@@ -87,10 +101,27 @@ def prod (T₁ T₂ : 𝓣.TensorIndex)
       (IndexListColor.prod_colorMap h) <|
       𝓣.tensoratorEquiv _ _ (T₁.tensor ⊗ₜ[R] T₂.tensor)
 
+@[simp]
+lemma prod_index (T₁ T₂ : 𝓣.TensorIndex)
+    (h : IndexListColorProp 𝓣.toTensorColor (T₁.index.1 ++ T₂.index.1)) :
+    (prod T₁ T₂ h).index = T₁.index.prod T₂.index h := rfl
+
+/-!
+
+## Scalar multiplication of
+
+-/
+
 /-- The scalar multiplication of a `TensorIndex` by an element of `R`. -/
 def smul (r : R) (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
   index := T.index
   tensor := r • T.tensor
+
+/-!
+
+## Addition of allowed `TensorIndex`
+
+-/
 
 /-- The addition of two `TensorIndex` given the condition that, after contraction,
   their index lists are the same. -/
@@ -103,11 +134,69 @@ def add (T₁ T₂ : 𝓣.TensorIndex) (h : IndexListColor.PermContr T₁.index 
       𝓣.mapIso h.toEquiv.symm h.toEquiv_colorMap T₂.contr.tensor
     T1 + T2
 
-/-- An (equivalence) relation on two `TensorIndex` given that after contraction,
-  the two underlying tensors are the equal. -/
+/-!
+
+## Equivalence relation on `TensorIndex`
+
+-/
+
+/-- An (equivalence) relation on two `TensorIndex`.
+  The point in this equivalence relation is that certain things (like the
+  permutation of indices, the contraction of indices, or rising or lowering indices) can be placed
+  in the indices or moved to the tensor itself. These two descriptions are equivalent. -/
 def Rel (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
   T₁.index.PermContr T₂.index ∧ ∀ (h : T₁.index.PermContr T₂.index),
   T₁.contr.tensor = 𝓣.mapIso h.toEquiv.symm h.toEquiv_colorMap T₂.contr.tensor
+
+namespace Rel
+
+/-- Rel is reflexive. -/
+lemma refl (T : 𝓣.TensorIndex) : Rel T T := by
+  apply And.intro
+  exact IndexListColor.PermContr.refl T.index
+  intro h
+  simp [PermContr.toEquiv_refl']
+
+/-- Rel is symmetric. -/
+lemma symm {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) : Rel T₂ T₁ := by
+  apply And.intro h.1.symm
+  intro h'
+  rw [← mapIso_symm]
+  symm
+  erw [LinearEquiv.symm_apply_eq]
+  rw [h.2]
+  apply congrFun
+  congr
+  exact h'.symm
+
+/-- Rel is transitive. -/
+lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T₂ T₃) : Rel T₁ T₃ := by
+  apply And.intro (h1.1.trans h2.1)
+  intro h
+  change _ = (𝓣.mapIso (h1.1.trans h2.1).toEquiv.symm _) T₃.contr.tensor
+  trans (𝓣.mapIso ((h1.1).toEquiv.trans (h2.1).toEquiv).symm (by
+    rw [← PermContr.toEquiv_trans]
+    exact proof_2 T₁ T₃ h)) T₃.contr.tensor
+  swap
+  congr
+  rw [← PermContr.toEquiv_trans]
+  erw [← mapIso_trans]
+  simp only [LinearEquiv.trans_apply]
+  apply (h1.2 h1.1).trans
+  apply congrArg
+  exact h2.2 h2.1
+
+/-- Rel forms an equivalence relation. -/
+lemma equivalence : Equivalence (@Rel _ _ 𝓣 _) where
+  refl := Rel.refl
+  symm := Rel.symm
+  trans := Rel.trans
+
+/-- The equality of tensors corresponding to related tensor indices. -/
+lemma to_eq {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) :
+    T₁.contr.tensor = 𝓣.mapIso h.1.toEquiv.symm h.1.toEquiv_colorMap T₂.contr.tensor := h.2 h.1
+
+end Rel
 
 end TensorIndex
 end

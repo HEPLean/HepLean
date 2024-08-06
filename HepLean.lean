@@ -79,6 +79,7 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexString
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.TensorIndex
 import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 import HepLean.SpaceTime.LorentzTensor.Real.Basic
+import HepLean.SpaceTime.LorentzTensor.Real.IndexNotation
 import HepLean.SpaceTime.LorentzTensor.RisingLowering
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic

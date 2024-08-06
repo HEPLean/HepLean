@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.TensorIndex
 /-!
 
 # Strings of indices
@@ -242,3 +242,33 @@ def toIndexList (s : IndexString X) : IndexList X :=
 end IndexString
 
 end IndexNotation
+namespace TensorStructure
+
+/-!
+
+## Making a tensor index from an index string
+
+-/
+
+namespace TensorIndex
+variable {R : Type} [CommSemiring R] (𝓣 : TensorStructure R)
+variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
+variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
+
+open IndexNotation IndexListColor
+
+/-- The construction of a tensor index from a tensor and a string satisfing conditions which are
+  easy to check automatically. -/
+noncomputable def fromIndexString (T : 𝓣.Tensor cn) (s : String)
+    (hs : listCharIndexStringBool 𝓣.toTensorColor.Color s.toList = true)
+    (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)).length)
+    (hc : IndexListColorProp 𝓣.toTensorColor (
+      IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)))
+    (hd : TensorColor.DualMap (IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)).colorMap
+    (cn ∘ Fin.cast hn.symm)) : 𝓣.TensorIndex :=
+  TensorStructure.TensorIndex.mkDualMap T
+    ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)), hc⟩ hn hd
+
+end TensorIndex
+
+end TensorStructure
