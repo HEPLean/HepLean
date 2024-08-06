@@ -11,7 +11,7 @@ rev = "v4.11.0-rc1"
 [[require]]
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
-rev = "v4.10.0"
+rev = "v4.11.0-rc1"
 
 [[lean_lib]]
 name = "HepLean"
