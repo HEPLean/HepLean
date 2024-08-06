@@ -53,7 +53,8 @@ instance : IndexNotation (realLorentzTensor d).Color := instIndexNotationColorRe
 instance : DecidableEq (realLorentzTensor d).Color := instDecidableEqColorRealTensorColor
 
 @[simp]
-lemma indexNotation_eq_color : @realLorentzTensor.instIndexNotationColor d = instIndexNotationColorRealTensorColor := by
+lemma indexNotation_eq_color : @realLorentzTensor.instIndexNotationColor d =
+    instIndexNotationColorRealTensorColor := by
   rfl
 
 @[simp]
@@ -76,7 +77,8 @@ noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
     (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)).length)
     (hc : IndexListColor.colorPropBool  (IndexString.toIndexList ⟨s, hs⟩))
-    (hd : TensorColor.DualMap.boolFin (IndexString.toIndexList ⟨s, hs⟩).colorMap (cn ∘ Fin.cast hn.symm)) :
+    (hd : TensorColor.DualMap.boolFin
+    (IndexString.toIndexList ⟨s, hs⟩).colorMap (cn ∘ Fin.cast hn.symm)) :
     (realLorentzTensor d).TensorIndex :=
   TensorStructure.TensorIndex.mkDualMap T
     ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)),
