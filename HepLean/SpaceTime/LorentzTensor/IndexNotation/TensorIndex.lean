@@ -278,6 +278,12 @@ lemma smul_equiv {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ ≈ T₂) (r : R) : r 
 
 -/
 
+/-- The condition on tensors with indices for their addition to exists.
+  This condition states that the the indices of one tensor are exact permutations of indices
+  of another after contraction. This includes the id of the index and the color.
+
+  This condition is general enough to allow addition of e.g. `ψᵤ₁ᵤ₂ + φᵤ₂ᵤ₁`, but
+  will NOT allow e.g. `ψᵤ₁ᵤ₂ + φᵘ²ᵤ₁`. -/
 def AddCond (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
   T₁.index.PermContr T₂.index
 
@@ -304,6 +310,7 @@ lemma rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' 
 lemma rel_right {T₁ T₂ T₂' : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' : T₂ ≈ T₂') :
     AddCond T₁ T₂' := h.trans h'.1
 
+/-- The equivalence between indices after contraction given a `AddCond`. -/
 @[simp]
 def toEquiv {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) :
     Fin T₁.contr.index.1.length ≃ Fin T₂.contr.index.1.length := h.to_PermContr.toEquiv
@@ -321,6 +328,7 @@ def add (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
   index := T₂.index.contr
   tensor := (𝓣.mapIso h.toEquiv h.toEquiv_colorMap T₁.contr.tensor) + T₂.contr.tensor
 
+/-- Notation for addition of tensor indices. -/
 notation:71 T₁ "+["h"]" T₂:72 => add T₁ T₂ h
 
 namespace AddCond
@@ -342,11 +350,11 @@ lemma of_add_right {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} 
     AddCond T₁ T₂ := h.of_add_right'.trans h'.symm
 
 lemma of_add_left {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂}
-    (h : AddCond  (T₁ +[h'] T₂) T₃) : AddCond T₂ T₃ :=
+    (h : AddCond (T₁ +[h'] T₂) T₃) : AddCond T₂ T₃ :=
   (of_add_right' h.symm).symm
 
 lemma of_add_left' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂}
-    (h : AddCond  (T₁ +[h'] T₂) T₃) : AddCond T₁ T₃ :=
+    (h : AddCond (T₁ +[h'] T₂) T₃) : AddCond T₁ T₃ :=
   (of_add_right h.symm).symm
 
 lemma add_left_of_add_right {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃}
@@ -358,7 +366,7 @@ lemma add_right_of_add_left {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T�
     (h : AddCond (T₁ +[h'] T₂) T₃) : AddCond T₁ (T₂ +[of_add_left h] T₃) :=
   (add_left (of_add_left h) (of_add_left' h).symm).symm
 
-lemma add_comm {T₁ T₂  : 𝓣.TensorIndex} (h : AddCond T₁ T₂) :
+lemma add_comm {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) :
     AddCond (T₁ +[h] T₂) (T₂ +[h.symm] T₁) := by
   apply add_right
   apply add_left
@@ -368,7 +376,7 @@ end AddCond
 
 @[simp]
 lemma add_index (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
-  (add T₁ T₂ h).index = T₂.index.contr := rfl
+    (add T₁ T₂ h).index = T₂.index.contr := rfl
 
 @[simp]
 lemma add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
@@ -377,7 +385,7 @@ lemma add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
 
 /-- Scalar multiplication commutes with addition. -/
 lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
-    r • (T₁ +[h] T₂) = r • T₁ +[h] r • T₂  := by
+    r • (T₁ +[h] T₂) = r • T₁ +[h] r • T₂ := by
   refine ext _ _ rfl ?_
   simp [add]
   rw [tensor_eq_of_eq (smul_contr r T₁), tensor_eq_of_eq (smul_contr r T₂)]
@@ -391,39 +399,20 @@ lemma add_hasNoContr (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
 @[simp]
 lemma contr_add (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).contr = T₁ +[h] T₂ :=
-  contr_of_hasNoContr  (T₁ +[h] T₂) (add_hasNoContr T₁ T₂ h)
+  contr_of_hasNoContr (T₁ +[h] T₂) (add_hasNoContr T₁ T₂ h)
 
 @[simp]
 lemma contr_add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).contr.tensor =
     𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq (contr_add T₁ T₂ h)])).toEquiv
-    (index_eq_colorMap_eq (index_eq_of_eq (contr_add T₁ T₂ h)))  (T₁ +[h] T₂).tensor :=
+    (index_eq_colorMap_eq (index_eq_of_eq (contr_add T₁ T₂ h))) (T₁ +[h] T₂).tensor :=
   tensor_eq_of_eq (contr_add T₁ T₂ h)
-
-open AddCond in
-lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h : AddCond T₁ (T₂ +[h'] T₃)) :
-    T₁ +[h] (T₂ +[h'] T₃) = T₁ +[h'.of_add_right h] T₂ +[h'.add_left_of_add_right h] T₃ := by
-  refine ext _ _ ?_ ?_
-  simp
-  simp only [add_index, add_tensor, contr_index, toEquiv, contr_add_tensor, map_add, mapIso_mapIso]
-  rw [_root_.add_assoc]
-  congr
-  rw [← PermContr.toEquiv_contr_eq, ← PermContr.toEquiv_contr_eq]
-  rw [PermContr.toEquiv_trans, PermContr.toEquiv_trans, PermContr.toEquiv_trans]
-  simp only [IndexListColor.contr_contr]
-  simp only [IndexListColor.contr_contr]
-  rw [← PermContr.toEquiv_contr_eq, PermContr.toEquiv_trans]
-  simp only [IndexListColor.contr_contr]
-
-open AddCond in
-lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h : AddCond (T₁ +[h'] T₂) T₃) :
-    T₁ +[h'] T₂ +[h] T₃ = T₁ +[h'.add_right_of_add_left h] (T₂ +[h'.of_add_left h] T₃) := by
-  rw [add_assoc']
 
 lemma add_comm {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) : T₁ +[h] T₂ ≈ T₂ +[h.symm] T₁ := by
   apply And.intro h.add_comm
   intro h
-  simp
+  simp only [contr_index, add_index, contr_add_tensor, add_tensor, AddCond.toEquiv, map_add,
+    mapIso_mapIso]
   rw [_root_.add_comm]
   congr 1
   all_goals
@@ -440,22 +429,43 @@ lemma add_rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) 
     T₁ +[h] T₂ ≈ T₁' +[h.rel_left h'] T₂ := by
   apply And.intro (PermContr.refl _)
   intro h
-  simp
+  simp only [contr_index, add_index, contr_add_tensor, add_tensor, toEquiv, map_add, mapIso_mapIso,
+    PermContr.toEquiv_refl, Equiv.refl_symm, mapIso_refl, LinearEquiv.refl_apply]
   congr 1
   rw [h'.to_eq]
-  simp
+  simp only [mapIso_mapIso]
   congr 1
   congr 1
   rw [PermContr.toEquiv_symm, ← PermContr.toEquiv_contr_eq, PermContr.toEquiv_trans,
     PermContr.toEquiv_trans, PermContr.toEquiv_trans]
   simp only [IndexListColor.contr_contr]
 
-/-! TODO: Show that contr add equals add. -/
-/-! TODO: Show that add is associative. -/
+open AddCond in
+lemma add_rel_right {T₁ T₂ T₂' : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' : T₂ ≈ T₂') :
+    T₁ +[h] T₂ ≈ T₁ +[h.rel_right h'] T₂' :=
+  (add_comm _).trans ((add_rel_left _ h').trans (add_comm _))
 
+open AddCond in
+lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h : AddCond T₁ (T₂ +[h'] T₃)) :
+    T₁ +[h] (T₂ +[h'] T₃) = T₁ +[h'.of_add_right h] T₂ +[h'.add_left_of_add_right h] T₃ := by
+  refine ext _ _ ?_ ?_
+  simp only [add_index, IndexListColor.contr_contr]
+  simp only [add_index, add_tensor, contr_index, toEquiv, contr_add_tensor, map_add, mapIso_mapIso]
+  rw [_root_.add_assoc]
+  congr
+  rw [← PermContr.toEquiv_contr_eq, ← PermContr.toEquiv_contr_eq]
+  rw [PermContr.toEquiv_trans, PermContr.toEquiv_trans, PermContr.toEquiv_trans]
+  simp only [IndexListColor.contr_contr]
+  simp only [IndexListColor.contr_contr]
+  rw [← PermContr.toEquiv_contr_eq, PermContr.toEquiv_trans]
+  simp only [IndexListColor.contr_contr]
+
+open AddCond in
+lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h : AddCond (T₁ +[h'] T₂) T₃) :
+    T₁ +[h'] T₂ +[h] T₃ = T₁ +[h'.add_right_of_add_left h] (T₂ +[h'.of_add_left h] T₃) := by
+  rw [add_assoc']
 
 /-! TODO: Show that the product is well defined with respect to Rel. -/
-/-! TODO : Show that addition is well defined with respect to Rel. -/
 
 end TensorIndex
 end
