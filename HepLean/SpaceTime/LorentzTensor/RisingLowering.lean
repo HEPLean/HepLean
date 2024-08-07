@@ -38,7 +38,7 @@ namespace ColorMap
 variable (cX : 𝓒.ColorMap X)
 
 /-- Given an equivalence `C ⊕ P ≃ X` the color map obtained by `cX` by dualising
-  all indices in `C`.  -/
+  all indices in `C`. -/
 def partDual (e : C ⊕ P ≃ X) : 𝓒.ColorMap X :=
   (Sum.elim (𝓒.τ ∘ cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm)
 

@@ -375,8 +375,15 @@ lemma toEquiv_colorMap {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) :
   refine (h.2 _ _ ?_).symm
   simp [← h.get_id, toEquiv]
 
+lemma toEquiv_colorMap' {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2) :
+    s1.contr.1.colorMap = s2.contr.1.colorMap ∘ h.toEquiv := by
+  rw [toEquiv_colorMap h]
+  funext x
+  simp
+
+@[simp]
 lemma toEquiv_trans {s1 s2 s3 : IndexListColor 𝓒} (h1 : PermContr s1 s2) (h2 : PermContr s2 s3) :
-    (h1.trans h2).toEquiv = h1.toEquiv.trans h2.toEquiv := by
+    h1.toEquiv.trans h2.toEquiv = (h1.trans h2).toEquiv := by
   apply Equiv.ext
   intro x
   simp [toEquiv]
@@ -388,6 +395,15 @@ lemma of_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
   rw [hc]
   simp only [List.Perm.refl, true_and]
   refine hasNoContr_color_eq_of_id_eq s2.contr.1 (s2.1.contrIndexList_hasNoContr)
+
+lemma of_contr {s1 s2 : IndexListColor 𝓒} (hc : PermContr s1.contr s2.contr) :
+    PermContr s1 s2 := by
+  apply And.intro
+  simpa using hc.1
+  have h2 := hc.2
+  simp at h2
+  rw [contr_contr, contr_contr] at h2
+  exact h2
 
 lemma toEquiv_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
     (of_contr_eq hc).toEquiv = (Fin.castOrderIso (by rw [hc])).toEquiv := by

@@ -88,7 +88,7 @@ lemma mapIso_trans {e : X ≃ Y} {e' : Z ≃ X}
 
 end ContrAll
 
-/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the restriction of a color map `cX` on  to `P`. -/
+/-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the restriction of a color map `cX` on to `P`. -/
 def contr (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : ColorMap 𝓒 P :=
   cX ∘ e ∘ Sum.inr
 
@@ -103,7 +103,7 @@ def contrRight (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : ColorMap �
   cX ∘ e ∘ Sum.inl ∘ Sum.inr
 
 /-- Given an equivalence `(C ⊕ C) ⊕ P ≃ X` the condition on `cX` so that we contract
-  the `C`'s under this equivalence. -/
+  the indices of the `C`'s under this equivalence. -/
 def ContrCond (e : (C ⊕ C) ⊕ P ≃ X) (cX : ColorMap 𝓒 X) : Prop :=
     cX ∘ e ∘ Sum.inl ∘ Sum.inl = 𝓒.τ ∘ cX ∘ e ∘ Sum.inl ∘ Sum.inr
 
