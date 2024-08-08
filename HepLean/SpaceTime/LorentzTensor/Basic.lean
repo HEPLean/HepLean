@@ -32,7 +32,8 @@ open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
-/-- The index color data associated with a tensor structure. -/
+/-- The index color data associated with a tensor structure.
+    This corresponds to a type with an involution. -/
 structure TensorColor where
   /-- The allowed colors of indices.
     For example for a real Lorentz tensor these are `{up, down}`. -/

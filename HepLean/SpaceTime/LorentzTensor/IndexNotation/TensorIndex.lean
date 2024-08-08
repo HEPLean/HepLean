@@ -13,6 +13,9 @@ import HepLean.SpaceTime.LorentzTensor.Contraction
 
 -/
 
+/-! TODO: Introduce a way to change an index from e.g. `ᵘ¹` to `ᵘ²`.
+  Would be nice to have a tactic that did this automatically. -/
+
 namespace TensorStructure
 noncomputable section
 
@@ -103,7 +106,7 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
 lemma contr_of_hasNoContr (T : 𝓣.TensorIndex) (h : T.index.1.HasNoContr) :
     T.contr = T := by
   refine ext _ _ ?_ ?_
-  exact Subtype.eq (T.index.1.contrIndexList_of_hasNoContr h)
+  exact Subtype.eq (T.index.1.contr_of_hasNoContr h)
   simp only [contr]
   have h1 : IsEmpty T.index.1.contrPairSet := T.index.1.contrPairSet_isEmpty_of_hasNoContr h
   cases T
@@ -129,31 +132,11 @@ lemma contr_of_hasNoContr (T : 𝓣.TensorIndex) (h : T.index.1.HasNoContr) :
 
 @[simp]
 lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
-  T.contr.contr_of_hasNoContr T.index.1.contrIndexList_hasNoContr
+  T.contr.contr_of_hasNoContr T.index.1.contr_hasNoContr
 
 @[simp]
 lemma contr_index (T : 𝓣.TensorIndex) : T.contr.index = T.index.contr := rfl
 
-/-!
-
-## Product of `TensorIndex` allowed
-
--/
-
-/-- The tensor product of two `TensorIndex`. -/
-def prod (T₁ T₂ : 𝓣.TensorIndex)
-    (h : IndexListColorProp 𝓣.toTensorColor (T₁.index.1 ++ T₂.index.1)) : 𝓣.TensorIndex where
-  index := T₁.index.prod T₂.index h
-  tensor :=
-      𝓣.mapIso ((Fin.castOrderIso (IndexListColor.prod_numIndices)).toEquiv.trans
-        (finSumFinEquiv.symm)).symm
-      (IndexListColor.prod_colorMap h) <|
-      𝓣.tensoratorEquiv _ _ (T₁.tensor ⊗ₜ[R] T₂.tensor)
-
-@[simp]
-lemma prod_index (T₁ T₂ : 𝓣.TensorIndex)
-    (h : IndexListColorProp 𝓣.toTensorColor (T₁.index.1 ++ T₂.index.1)) :
-    (prod T₁ T₂ h).index = T₁.index.prod T₂.index h := rfl
 
 /-!
 
@@ -251,7 +234,7 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   apply And.intro
   simp only [PermContr, contr_index, IndexListColor.contr_contr, List.Perm.refl, true_and]
   rw [IndexListColor.contr_contr]
-  exact T.index.contr.1.hasNoContr_color_eq_of_id_eq T.index.1.contrIndexList_hasNoContr
+  exact T.index.contr.1.hasNoContr_color_eq_of_id_eq T.index.1.contr_hasNoContr
   intro h
   rw [tensor_eq_of_eq T.contr_contr]
   simp only [contr_index, mapIso_mapIso]
@@ -394,7 +377,7 @@ lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
 
 lemma add_hasNoContr (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).index.1.HasNoContr := by
-  simpa using T₂.index.1.contrIndexList_hasNoContr
+  simpa using T₂.index.1.contr_hasNoContr
 
 @[simp]
 lemma contr_add (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
@@ -466,6 +449,50 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
   rw [add_assoc']
 
 /-! TODO: Show that the product is well defined with respect to Rel. -/
+
+/-!
+
+## Product of `TensorIndex` allowed
+
+-/
+
+/-- The condition on two tensors with indices determining if it possible to
+  take their product.
+
+  This condition says that the indices of the two tensors can contract nicely,
+  after the contraction of indivdual indices has taken place. Note that
+  it is required to take the contraction of indivdual tensors before taking the product
+  to ensure that the product is well-defined under the `Rel` equivalence relation.
+
+  For example, indices with the same id have dual colors, and no more then two indices
+  have the same id (after contraction). For example, the product of `ψᵘ¹ᵤ₂ᵘ²` could be taken with
+  `φᵤ₁ᵤ₃ᵘ³` or `φᵤ₄ᵤ₃ᵘ³` or `φᵤ₁ᵤ₂ᵘ²` or `φᵤ₂ᵤ₁ᵘ¹`
+  (since contraction is done before taking the product)
+   but not with `φᵤ₁ᵤ₃ᵘ³` or `φᵤ₁ᵤ₂ᵘ²` or  `φᵤ₃ᵤ₂ᵘ²`. -/
+def ProdCond (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
+  IndexListColorProp 𝓣.toTensorColor (T₁.contr.index.1 ++ T₂.contr.index.1)
+
+namespace ProdCond
+
+lemma to_indexListColorProp {T₁ T₂ : 𝓣.TensorIndex} (h : ProdCond T₁ T₂) :
+    IndexListColorProp 𝓣.toTensorColor (T₁.contr.index.1 ++ T₂.contr.index.1) := h
+
+end ProdCond
+
+/-- The tensor product of two `TensorIndex`. -/
+def prod (T₁ T₂ : 𝓣.TensorIndex)
+    (h : ProdCond T₁ T₂) : 𝓣.TensorIndex where
+  index := T₁.contr.index.prod T₂.contr.index h.to_indexListColorProp
+  tensor :=
+      𝓣.mapIso ((Fin.castOrderIso (IndexListColor.prod_numIndices)).toEquiv.trans
+        (finSumFinEquiv.symm)).symm
+      (IndexListColor.prod_colorMap h) <|
+      𝓣.tensoratorEquiv _ _ (T₁.contr.tensor ⊗ₜ[R] T₂.contr.tensor)
+
+@[simp]
+lemma prod_index (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
+    (prod T₁ T₂ h).index = T₁.contr.index.prod T₂.contr.index h.to_indexListColorProp := rfl
+
 
 end TensorIndex
 end

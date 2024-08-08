@@ -26,7 +26,7 @@ variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color
 /-- An index list is allowed if every contracting index has exactly one dual,
   and the color of the dual is dual to the color of the index. -/
 def IndexListColorProp (l : IndexList 𝓒.Color) : Prop :=
-  (∀ (i j : l.contrSubtype), l.getDualProp i.1 j.1 → j = l.getDual i) ∧
+  (∀ (i j : l.contrSubtype), l.AreDual i.1 j.1 → j = l.getDual i) ∧
   (∀ (i : l.contrSubtype), l.colorMap i.1 = 𝓒.τ (l.colorMap (l.getDual i).1))
 
 instance : DecidablePred (IndexListColorProp 𝓒) := fun _ => And.decidable
@@ -63,7 +63,7 @@ def colorPropFstBool (l : IndexList 𝓒.Color) : Bool :=
   List.isEmpty l''
 
 lemma colorPropFstBool_indexListColorProp_fst (l : IndexList 𝓒.Color) (hl : colorPropFstBool l) :
-    ∀ (i j : l.contrSubtype), l.getDualProp i.1 j.1 → j = l.getDual i := by
+    ∀ (i j : l.contrSubtype), l.AreDual i.1 j.1 → j = l.getDual i := by
   simp [colorPropFstBool] at hl
   rw [List.filterMap_eq_nil] at hl
   simp at hl
@@ -118,7 +118,7 @@ lemma colorPropBool_indexListColorProp {l : IndexList 𝓒.Color} (hl : colorPro
 lemma getDual_getDual (i : l.1.contrSubtype) :
     l.1.getDual (l.1.getDual i) = i := by
   refine (l.prop.1 (l.1.getDual i) i ?_).symm
-  simp [getDualProp]
+  simp [AreDual]
   apply And.intro
   exact Subtype.coe_ne_coe.mpr (l.1.getDual_neq_self i).symm
   exact (l.1.getDual_id i).symm
@@ -210,23 +210,23 @@ lemma splitContr_symm_apply_of_hasNoContr (h : l.1.HasNoContr) (x : Fin (l.1.noC
 
 /-- The contracted index list as a `IndexListColor`. -/
 def contr : IndexListColor 𝓒 :=
-  ⟨l.1.contrIndexList, indexListColorProp_of_hasNoContr l.1.contrIndexList_hasNoContr⟩
+  ⟨l.1.contr, indexListColorProp_of_hasNoContr l.1.contr_hasNoContr⟩
 
 /-- Contracting twice is equivalent to contracting once. -/
 @[simp]
 lemma contr_contr : l.contr.contr = l.contr := by
   apply Subtype.ext
-  exact l.1.contrIndexList_contrIndexList
+  exact l.1.contr_contr
 
 @[simp]
 lemma contr_numIndices : l.contr.1.numIndices = l.1.noContrFinset.card :=
-  l.1.contrIndexList_numIndices
+  l.1.contr_numIndices
 
 lemma contr_colorMap :
     l.1.colorMap ∘ l.splitContr.symm ∘ Sum.inr = l.contr.1.colorMap ∘
     (Fin.castOrderIso l.contr_numIndices.symm).toEquiv.toFun := by
   funext x
-  simp only [Function.comp_apply, colorMap, List.get_eq_getElem, contr, contrIndexList, fromFinMap,
+  simp only [Function.comp_apply, colorMap, List.get_eq_getElem, contr, IndexList.contr, fromFinMap,
     Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast,
     List.getElem_map, Fin.getElem_list, Fin.cast_mk, Fin.eta]
   rfl
@@ -252,7 +252,7 @@ namespace PermContr
 lemma refl : Reflexive (@PermContr 𝓒 _) := by
   intro l
   simp only [PermContr, List.Perm.refl, true_and]
-  have h1 : l.contr.1.HasNoContr := l.1.contrIndexList_hasNoContr
+  have h1 : l.contr.1.HasNoContr := l.1.contr_hasNoContr
   exact fun i j a => hasNoContr_color_eq_of_id_eq (↑l.contr) h1 i j a
 
 lemma symm : Symmetric (@PermContr 𝓒 _) :=
@@ -297,7 +297,7 @@ lemma get_unique {s1 s2 : IndexListColor 𝓒} (h : PermContr s1 s2)
     (hij : s1.contr.1.idMap i = s2.contr.1.idMap j) :
     j = h.get i := by
   by_contra hn
-  refine (?_ : ¬ s2.contr.1.NoContr j) (s2.1.contrIndexList_hasNoContr j)
+  refine (?_ : ¬ s2.contr.1.NoContr j) (s2.1.contr_hasNoContr j)
   simp [NoContr]
   use PermContr.get h i
   apply And.intro hn
@@ -351,7 +351,7 @@ lemma toEquiv_refl' {s : IndexListColor 𝓒} (h : PermContr s s) :
   simp [toEquiv, get]
   have h1 : Fin.find fun j => s.contr.1.idMap x = s.contr.1.idMap j = some x := by
     rw [Fin.find_eq_some_iff]
-    have h2 := s.1.contrIndexList_hasNoContr x
+    have h2 := s.1.contr_hasNoContr x
     simp only [true_and]
     intro j hj
     by_cases hjx : j = x
@@ -394,7 +394,7 @@ lemma of_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) :
   simp [PermContr]
   rw [hc]
   simp only [List.Perm.refl, true_and]
-  refine hasNoContr_color_eq_of_id_eq s2.contr.1 (s2.1.contrIndexList_hasNoContr)
+  refine hasNoContr_color_eq_of_id_eq s2.contr.1 (s2.1.contr_hasNoContr)
 
 lemma of_contr {s1 s2 : IndexListColor 𝓒} (hc : PermContr s1.contr s2.contr) :
     PermContr s1 s2 := by
@@ -418,7 +418,7 @@ lemma toEquiv_contr_eq {s1 s2 : IndexListColor 𝓒} (hc : s1.contr = s2.contr) 
     rfl
     intro j hj
     rw [idMap_cast (congrArg Subtype.val hc)] at hj
-    have h2 := s2.contr.1.hasNoContr_id_inj (s2.1.contrIndexList_hasNoContr) hj
+    have h2 := s2.contr.1.hasNoContr_id_inj (s2.1.contr_hasNoContr) hj
     subst h2
     rfl
   simp only [h1, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Option.get_some]
