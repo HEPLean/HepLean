@@ -191,10 +191,10 @@ def colorMap : Fin l.numIndices → X :=
   fun i => (l.get i).toColor
 
 /-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
-def idMap : Fin l.numIndices → Nat :=
+def idMap : Fin l.length → Nat :=
   fun i => (l.get i).id
 
-lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.numIndices) :
+lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
     l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
   subst h
   rfl
@@ -248,47 +248,6 @@ lemma fromFinMap_numIndices {n : ℕ} (f : Fin n → Index X) :
     (fromFinMap f).numIndices = n := by
   simp [fromFinMap, numIndices]
 
-
-/-!
-
-## Appending index lists.
-
--/
-instance : HAppend (IndexList X) (IndexList X) (IndexList X) :=
-    @instHAppendOfAppend (List (Index X)) List.instAppend
-
-def appendEquiv {l l2 : IndexList X} : Fin l.length ⊕ Fin l2.length ≃ Fin (l ++ l2).length :=
-  finSumFinEquiv.trans (Fin.castOrderIso (List.length_append _ _).symm).toEquiv
-
-@[simp]
-lemma idMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
-    (l ++ l2).idMap (appendEquiv (Sum.inl i)) = l.idMap i := by
-  simp [appendEquiv, idMap]
-  rw [List.getElem_append_left]
-
-@[simp]
-lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
-    (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
-  simp [appendEquiv, idMap]
-  rw [List.getElem_append_right]
-  simp
-  omega
-  omega
-
-@[simp]
-lemma colorMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
-    (l ++ l2).colorMap (appendEquiv (Sum.inl i)) = l.colorMap i := by
-  simp [appendEquiv, colorMap]
-  rw [List.getElem_append_left]
-
-@[simp]
-lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
-    (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
-  simp [appendEquiv, colorMap]
-  rw [List.getElem_append_right]
-  simp
-  omega
-  omega
 
 end IndexList
 
