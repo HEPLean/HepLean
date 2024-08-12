@@ -198,13 +198,17 @@ lemma contr_contr : l.contr.contr = l.contr :=
 # Relations on IndexListColor
 
 -/
-
+/-
+  l.getDual? ∘ Option.guard l.HasDualInSelf =
+  l.getDual?
+-/
 def Relabel (l1 l2 : IndexListColor 𝓒) : Prop :=
   l1.length = l2.length ∧
   ∀ (h : l1.length = l2.length),
-    Option.map (Fin.cast h) ∘ l1.getDual? = l2.getDual? ∘ Fin.cast h ∧
+    l1.getDual? = Option.map (Fin.cast h.symm) ∘ l2.getDual? ∘ Fin.cast h ∧
     l1.1.colorMap = l2.1.colorMap ∘ Fin.cast h
 
+/-! TODO: Rewrite in terms of HasSingDualInOther. -/
 def PermAfterContr (l1 l2 : IndexListColor 𝓒) : Prop :=
   List.Perm (l1.contr.1.map Index.id) (l2.contr.1.map Index.id)
   ∧ ∀ (i : Fin l1.contr.1.length) (j : Fin l2.contr.1.length),
@@ -212,7 +216,7 @@ def PermAfterContr (l1 l2 : IndexListColor 𝓒) : Prop :=
       l1.contr.1.colorMap i = l2.contr.1.colorMap j
 
 def AppendHasSingColorDualsInSelf (l1 l2 : IndexListColor 𝓒) : Prop :=
-   (l1.contr.1 ++ l2.contr.1).HasSingColorDualsInSelf
+  (l1.contr.1 ++ l2.contr.1).HasSingColorDualsInSelf
 
 
 end IndexListColor

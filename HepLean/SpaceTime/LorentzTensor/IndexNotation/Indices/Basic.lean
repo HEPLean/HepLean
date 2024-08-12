@@ -175,7 +175,8 @@ end Index
 -/
 
 /-- The type of lists of indices. -/
-def IndexList : Type := List (Index X)
+structure IndexList where
+  val : List (Index X)
 
 namespace IndexList
 
@@ -184,15 +185,20 @@ variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l : IndexList X)
 
 /-- The number of indices in an index list. -/
-def numIndices : Nat := l.length
+def length : ℕ := l.val.length
+
+lemma ext (h : l.val = l2.val) : l = l2 := by
+  cases l
+  cases l2
+  simp_all
 
 /-- The map of from `Fin s.numIndices` into colors associated to an index list. -/
-def colorMap : Fin l.numIndices → X :=
-  fun i => (l.get i).toColor
+def colorMap : Fin l.length → X :=
+  fun i => (l.val.get i).toColor
 
 /-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
 def idMap : Fin l.length → Nat :=
-  fun i => (l.get i).id
+  fun i => (l.val.get i).id
 
 lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
     l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
@@ -201,13 +207,13 @@ lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
 
 /-- Given a list of indices a subset of `Fin l.numIndices × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
-def toPosSet (l : IndexList X) : Set (Fin l.numIndices × Index X) :=
-  {(i, l.get i) | i : Fin l.numIndices}
+def toPosSet (l : IndexList X) : Set (Fin l.length × Index X) :=
+  {(i, l.val.get i) | i : Fin l.length}
 
 /-- Equivalence between `toPosSet` and `Fin l.numIndices`. -/
-def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.numIndices where
+def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.length where
   toFun := fun x => x.1.1
-  invFun := fun x => ⟨(x, l.get x), by simp [toPosSet]⟩
+  invFun := fun x => ⟨(x, l.val.get x), by simp [toPosSet]⟩
   left_inv x := by
     have hx := x.prop
     simp [toPosSet] at hx
@@ -232,21 +238,21 @@ instance : Fintype l.toPosSet where
     intro x
     simp_all only [Finset.mem_map_equiv, Equiv.symm_symm, Finset.mem_univ]
 
-/-- Given a list of indices a finite set of `Fin l.numIndices × Index X`
+/-- Given a list of indices a finite set of `Fin l.length × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
-def toPosFinset (l : IndexList X) : Finset (Fin l.numIndices × Index X) :=
+def toPosFinset (l : IndexList X) : Finset (Fin l.length × Index X) :=
   l.toPosSet.toFinset
 
 
 /-- The construction of a list of indices from a map
   from `Fin n` to `Index X`. -/
-def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X :=
-  (Fin.list n).map f
+def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X where
+  val := (Fin.list n).map f
 
 @[simp]
 lemma fromFinMap_numIndices {n : ℕ} (f : Fin n → Index X) :
-    (fromFinMap f).numIndices = n := by
-  simp [fromFinMap, numIndices]
+    (fromFinMap f).length = n := by
+  simp [fromFinMap, length]
 
 
 end IndexList

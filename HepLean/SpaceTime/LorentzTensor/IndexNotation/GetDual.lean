@@ -33,6 +33,9 @@ def getDualInOther? (i : Fin l.length) : Option (Fin l2.length) :=
 def withDual : Finset (Fin l.length) :=
   Finset.filter (fun i => (l.getDual? i).isSome) Finset.univ
 
+def getDual (i : l.withDual) : Fin l.length :=
+  (l.getDual? i).get (by simpa [withDual] using i.2)
+
 def withoutDual : Finset (Fin l.length) :=
   Finset.filter (fun i => (l.getDual? i).isNone) Finset.univ
 
@@ -95,11 +98,15 @@ def InverDual : Prop :=
 
 namespace InverDual
 
+variable {l : IndexList X} (h : l.InverDual) (i : Fin l.length)
+
+
 end InverDual
 
-def InvertDualOther : Prop :=
+def InverDualOther : Prop :=
   ∀ i, (l.getDualInOther? l2 i).bind (l2.getDualInOther? l) = some i
   ∧ ∀ i, (l2.getDualInOther? l i).bind (l.getDualInOther? l2) = some i
+
 
 section Color
 

@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Basic
 import HepLean.SpaceTime.LorentzTensor.Basic
 /-!
 
@@ -32,13 +32,6 @@ def AreDualInSelf (i j : Fin l.length) : Prop :=
 instance (i j : Fin l.length) : Decidable (l.AreDualInSelf i j) :=
   instDecidableAnd
 
-def AreDualInOther  (i : Fin l.length) (j : Fin l2.length) :
-    Prop := l.idMap i = l2.idMap j
-
-instance {l : IndexList X} {l2 : IndexList X}  (i : Fin l.length) (j : Fin l2.length) :
-    Decidable (l.AreDualInOther l2 i j) := (l.idMap i).decEq (l2.idMap j)
-
-
 namespace AreDualInSelf
 
 variable {l l2 : IndexList X} {i j : Fin l.length}
@@ -54,16 +47,6 @@ lemma self_false (i : Fin l.length) : ¬ l.AreDualInSelf i i := by
 
 end AreDualInSelf
 
-namespace AreDualInOther
-
-variable {l l2 : IndexList X} {i : Fin l.length} {j : Fin l2.length}
-
-@[symm]
-lemma symm  (h : l.AreDualInOther l2 i j) : l2.AreDualInOther l j i := by
-  rw [AreDualInOther] at h ⊢
-  exact h.symm
-
-end AreDualInOther
 
 /-!
 
@@ -75,24 +58,6 @@ end AreDualInOther
    outputs the first such dual, otherwise outputs `none`. -/
 def getDual? (i : Fin l.length) : Option (Fin l.length) :=
   Fin.find (fun j => l.AreDualInSelf i j)
-
-/-- Given an `i`, if a dual exists in the other list,
-   outputs the first such dual, otherwise outputs `none`. -/
-def getDualInOther? (i : Fin l.length) : Option (Fin l2.length) :=
-  Fin.find (fun j => l.AreDualInOther l2 i j)
-
-/-!
-
-## With dual self.
-
--/
-
-def withDual : Finset (Fin l.length) :=
-  Finset.filter (fun i => (l.getDual? i).isSome) Finset.univ
-
-lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j := by
-  simp [withDual, Finset.mem_filter, Finset.mem_univ, getDual?]
-  rw [Fin.isSome_find_iff]
 
 lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
     l.getDual? j = i ∨ l.getDual? i = j ∨ l.getDual? j = l.getDual? i := by
@@ -135,6 +100,26 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
         simp_all [AreDualInSelf]
       exact hk.2 k' hik''
 
+@[simp]
+lemma getDual?_neq_self (i : Fin l.length) : ¬ l.getDual? i = some i := by
+  intro h
+  simp [getDual?] at h
+  rw [Fin.find_eq_some_iff] at h
+  simp [AreDualInSelf] at h
+
+
+/-!
+
+## Indices which have duals.
+
+-/
+
+def withDual : Finset (Fin l.length) :=
+  Finset.filter (fun i => (l.getDual? i).isSome) Finset.univ
+
+lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j := by
+  simp [withDual, Finset.mem_filter, Finset.mem_univ, getDual?]
+  rw [Fin.isSome_find_iff]
 
 def getDual! (i : l.withDual) : Fin l.length :=
   (l.getDual? i).get (by simpa [withDual] using i.2)
@@ -146,7 +131,7 @@ lemma getDual?_eq_none_on_not_mem (i : Fin l.length) (h : i ∉ l.withDual) :
     l.getDual? i = none := by
   simpa [withDual, getDual?, Fin.find_eq_none_iff]  using h
 
-lemma some_dual!_eq_gual? (i : l.withDual) : some (l.getDual! i) = l.getDual? i := by
+lemma some_dual!_eq_getDual? (i : l.withDual) : some (l.getDual! i) = l.getDual? i := by
   rw [getDual?_eq_some_getDual!]
 
 lemma areDualInSelf_getDual! (i : l.withDual) : l.AreDualInSelf i (l.getDual! i) := by
@@ -170,387 +155,133 @@ lemma getDual_id (i : l.withDual) :
     l.idMap (l.getDual i) = l.idMap i := by
   simp [getDual]
 
-/-!
-
-## With dual other.
-
--/
-
-def withDualInOther : Finset (Fin l.length) :=
-  Finset.filter (fun i => (l.getDualInOther? l2 i).isSome) Finset.univ
-
-lemma mem_withInDualOther_iff_exists :
-    i ∈ l.withDualInOther l2 ↔ ∃ (j : Fin l2.length), l.AreDualInOther l2 i j := by
-  simp [withDualInOther, Finset.mem_filter, Finset.mem_univ, getDualInOther?]
-  rw [Fin.isSome_find_iff]
-
-def getDualInOther! (i : l.withDualInOther l2) : Fin l2.length :=
-  (l.getDualInOther? l2 i).get (by simpa [withDualInOther] using i.2)
-
-
-lemma getDualInOther?_eq_some_getDualInOther! (i : l.withDualInOther l2) :
-    l.getDualInOther? l2 i = some (l.getDualInOther! l2 i) := by
-  simp [getDualInOther!]
-
-lemma getDualInOther?_eq_none_on_not_mem (i : Fin l.length) (h : i ∉ l.withDualInOther l2) :
-    l.getDualInOther? l2 i = none := by
-  simpa [getDualInOther?, Fin.find_eq_none_iff, mem_withInDualOther_iff_exists]  using h
-
-
-lemma areDualInOther_getDualInOther! (i : l.withDualInOther l2) :
-    l.AreDualInOther l2 i (l.getDualInOther! l2 i) := by
-  have h := l.getDualInOther?_eq_some_getDualInOther! l2 i
-  rw [getDualInOther?, Fin.find_eq_some_iff] at h
-  exact h.1
-
 @[simp]
-lemma getDualInOther!_id (i : l.withDualInOther l2) :
-    l2.idMap (l.getDualInOther! l2 i) = l.idMap i := by
-  simpa using (l.areDualInOther_getDualInOther! l2 i).symm
-
-lemma getDualInOther_mem_withDualInOther (i : l.withDualInOther l2) :
-    l.getDualInOther! l2 i ∈ l2.withDualInOther l :=
-  (l2.mem_withInDualOther_iff_exists l).mpr ⟨i, (areDualInOther_getDualInOther! l l2 i).symm⟩
-
-def getDualInOther (i : l.withDualInOther l2) : l2.withDualInOther l :=
-  ⟨l.getDualInOther! l2 i, l.getDualInOther_mem_withDualInOther l2 i⟩
-
-@[simp]
-lemma getDualInOther_id (i : l.withDualInOther l2) :
-    l2.idMap (l.getDualInOther l2 i) = l.idMap i := by
-  simp [getDualInOther]
-
-lemma getDualInOther_coe (i : l.withDualInOther l2) :
-    (l.getDualInOther l2 i).1 = l.getDualInOther! l2 i := by
-  rfl
-
-
-/-!
-
-## Has single dual in self.
-
--/
-
-
-def withUniqueDual : Finset (Fin l.length) :=
-  Finset.filter (fun i => i ∈ l.withDual ∧
-    ∀ j, l.AreDualInSelf i j → j = l.getDual? i) Finset.univ
-
-lemma mem_withDual_of_withUniqueDual (i : l.withUniqueDual) :
-    i.1 ∈ l.withDual := by
-  have hi := i.2
-  simp [withUniqueDual, Finset.mem_filter, Finset.mem_univ] at hi
-  exact hi.1
-
-def fromWithUnique (i : l.withUniqueDual) : l.withDual :=
-  ⟨i.1, l.mem_withDual_of_withUniqueDual i⟩
-
-instance : Coe l.withUniqueDual l.withDual where
-  coe i := ⟨i.1, l.mem_withDual_of_withUniqueDual i⟩
-
-@[simp]
-lemma fromWithUnique_coe (i : l.withUniqueDual) : (l.fromWithUnique i).1 = i.1 := by
-  rfl
-
-lemma all_dual_eq_getDual_of_withUniqueDual (i : l.withUniqueDual) :
-    ∀ j, l.AreDualInSelf i j → j = l.getDual! i := by
-  have hi := i.2
-  simp [withUniqueDual] at hi
-  intro j hj
-  simpa [getDual!, fromWithUnique] using (Option.get_of_mem _ (hi.2 j hj ).symm).symm
-
-lemma eq_of_areDualInSelf_withUniqueDual {j k : Fin l.length} (i : l.withUniqueDual)
-    (hj : l.AreDualInSelf i j) (hk : l.AreDualInSelf i k) :
-    j = k := by
-  have hj' := all_dual_eq_getDual_of_withUniqueDual l i j hj
-  have hk' := all_dual_eq_getDual_of_withUniqueDual l i k hk
-  rw [hj', hk']
-
-lemma eq_getDual_of_withUniqueDual_iff (i : l.withUniqueDual) (j : Fin l.length) :
-    l.AreDualInSelf i j ↔ j = l.getDual! i := by
-  apply Iff.intro
-  intro h
-  exact (l.all_dual_eq_getDual_of_withUniqueDual i) j h
-  intro h
-  subst h
-  exact areDualInSelf_getDual! l i
-
-@[simp]
-lemma getDual!_getDual_of_withUniqueDual (i : l.withUniqueDual) :
-    l.getDual! (l.getDual i) = i := by
-  by_contra hn
-  have h' : l.AreDualInSelf i (l.getDual! (l.getDual i)) := by
-    simp [AreDualInSelf, hn]
-    simp_all [AreDualInSelf, getDual, fromWithUnique]
-    exact fun a => hn (id (Eq.symm a))
-  rw [eq_getDual_of_withUniqueDual_iff] at h'
-  have hx := l.areDualInSelf_getDual! (l.getDual i)
-  simp_all [getDual]
-
-@[simp]
-lemma getDual_getDual_of_withUniqueDual (i : l.withUniqueDual) :
-    l.getDual (l.getDual i) = l.fromWithUnique i :=
-  SetCoe.ext (getDual!_getDual_of_withUniqueDual l i)
-
-@[simp]
-lemma getDual?_getDual!_of_withUniqueDual (i : l.withUniqueDual) :
-    l.getDual? (l.getDual! i) = some i := by
-  change l.getDual? (l.getDual i) = some i
+lemma some_getDual_eq_getDual? (i : l.withDual) : some (l.getDual i).1 = l.getDual? i := by
   rw [getDual?_eq_some_getDual!]
   simp
-
-@[simp]
-lemma getDual?_getDual?_of_withUniqueDualInOther (i : l.withUniqueDual) :
-    (l.getDual? i).bind l.getDual? = some i := by
-  rw [getDual?_eq_some_getDual! l i]
-  simp
-
-
-lemma getDual_of_withUniqueDual_mem (i : l.withUniqueDual) :
-    l.getDual! i ∈ l.withUniqueDual := by
-  simp [withUniqueDual]
-  apply And.intro (getDual_mem_withDual l ⟨↑i, mem_withDual_of_withUniqueDual l i⟩)
-  intro j hj
-  have h1 : i = j := by
-    by_contra hn
-    have h' : l.AreDualInSelf i j := by
-      simp [AreDualInSelf, hn]
-      simp_all [AreDualInSelf, getDual, fromWithUnique]
-    rw [eq_getDual_of_withUniqueDual_iff] at h'
-    subst h'
-    simp_all [getDual]
-  subst h1
   rfl
 
-def getDualEquiv : l.withUniqueDual ≃ l.withUniqueDual where
-  toFun x := ⟨l.getDual x, l.getDual_of_withUniqueDual_mem x⟩
-  invFun x := ⟨l.getDual x, l.getDual_of_withUniqueDual_mem x⟩
-  left_inv x := SetCoe.ext (by
-    simp only [Subtype.coe_eta, getDual_getDual_of_withUniqueDual]
-    rfl)
-  right_inv x := SetCoe.ext (by
-    simp only [Subtype.coe_eta, getDual_getDual_of_withUniqueDual]
-    rfl)
-
-@[simp]
-lemma getDualEquiv_involutive : Function.Involutive l.getDualEquiv := by
-  intro x
-  simp [getDualEquiv, fromWithUnique]
-
 
 /-!
 
-## Has single in other.
+## Indices which do not have duals.
 
 -/
 
-def withUniqueDualInOther : Finset (Fin l.length) :=
-  Finset.filter (fun i => i ∉ l.withDual ∧ i ∈ l.withDualInOther l2
-     ∧ (∀ j, l.AreDualInOther l2 i j → j = l.getDualInOther? l2 i)) Finset.univ
+def withoutDual : Finset (Fin l.length) :=
+  Finset.filter (fun i => (l.getDual? i).isNone) Finset.univ
 
-lemma not_mem_withDual_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    i.1 ∉ l.withDual := by
-  have hi := i.2
-  simp only [withUniqueDualInOther, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_attach,
-    true_and] at hi
-  exact hi.2.1
-
-lemma mem_withDualInOther_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    i.1 ∈ l.withDualInOther l2 := by
-  have hi := i.2
-  simp only [withUniqueDualInOther, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_attach,
-    true_and] at hi
-  exact hi.2.2.1
-
-def fromWithUniqueDualInOther (i : l.withUniqueDualInOther l2) : l.withDualInOther l2 :=
-  ⟨i.1, l.mem_withDualInOther_of_withUniqueDualInOther l2 i⟩
-
-instance : Coe (l.withUniqueDualInOther l2) (l.withDualInOther l2) where
-  coe i := ⟨i.1, l.mem_withDualInOther_of_withUniqueDualInOther l2 i⟩
-
-lemma all_dual_eq_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    ∀ j, l.AreDualInOther l2 i j → j = l.getDualInOther! l2 i := by
-  have hi := i.2
-  simp only [withUniqueDualInOther, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_attach,
-    true_and] at hi
-  intro j hj
-  refine (Option.get_of_mem _ (hi.2.2.2 j hj).symm).symm
-
-lemma eq_getDualInOther_of_withUniqueDual_iff (i : l.withUniqueDualInOther l2) (j : Fin l2.length) :
-    l.AreDualInOther l2 i j ↔ j = l.getDualInOther! l2 i := by
-  apply Iff.intro
-  intro h
-  exact l.all_dual_eq_of_withUniqueDualInOther l2 i j h
-  intro h
-  subst h
-  exact areDualInOther_getDualInOther! l l2 i
-
-@[simp]
-lemma getDualInOther!_getDualInOther_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    l2.getDualInOther! l (l.getDualInOther l2 i) = i := by
+lemma withDual_disjoint_withoutDual : Disjoint l.withDual l.withoutDual := by
+  rw [Finset.disjoint_iff_ne]
+  intro a ha b hb
   by_contra hn
-  refine (l.not_mem_withDual_of_withUniqueDualInOther l2 i)
-    (l.mem_withDual_iff_exists.mpr ⟨(l2.getDualInOther! l (l.getDualInOther l2 i)), ?_⟩ )
-  simp [AreDualInSelf, hn]
-  exact (fun a => hn (id (Eq.symm a)))
+  subst hn
+  simp_all only [withDual, Finset.mem_filter, Finset.mem_univ, true_and, withoutDual,
+    Option.isNone_iff_eq_none, Option.isSome_none, Bool.false_eq_true]
+
+lemma not_mem_withDual_of_mem_withoutDual (i : Fin l.length) (h : i ∈ l.withoutDual) :
+    i ∉ l.withDual := by
+  have h1 := l.withDual_disjoint_withoutDual
+  exact Finset.disjoint_right.mp h1 h
+
+lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ := by
+  rw [Finset.eq_univ_iff_forall]
+  intro i
+  by_cases h : (l.getDual? i).isSome
+  · simp [withDual, Finset.mem_filter, Finset.mem_univ, h]
+  · simp at h
+    simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
+
+def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual  :=
+  (Finset.orderIsoOfFin l.withoutDual (by rfl)).toEquiv
+
+def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
+  (Equiv.sumCongr (Equiv.refl _) l.withoutDualEquiv).trans <|
+  (Equiv.Finset.union _ _ l.withDual_disjoint_withoutDual).trans <|
+  Equiv.subtypeUnivEquiv (by simp [withDual_union_withoutDual])
+
+/-!
+
+## The contraction list
+
+-/
+
+def contrIndexList : IndexList X where
+  val := (Fin.list l.withoutDual.card).map (fun i => l.val.get (l.withoutDualEquiv i).1)
 
 @[simp]
-lemma getDualInOther_getDualInOther_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    l2.getDualInOther l (l.getDualInOther l2 i) = i :=
-  SetCoe.ext (getDualInOther!_getDualInOther_of_withUniqueDualInOther l l2 i)
+lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
+  simp [contrIndexList, withoutDual, length]
 
 @[simp]
-lemma getDualInOther?_getDualInOther!_of_withUniqueDualInOther (i : l.withUniqueDualInOther l2) :
-    l2.getDualInOther? l (l.getDualInOther! l2 i) = some i := by
-  change l2.getDualInOther? l (l.getDualInOther l2 i) = some i
-  rw [getDualInOther?_eq_some_getDualInOther!]
-  simp
+lemma contrIndexList_idMap (i : Fin l.contrIndexList.length) : l.contrIndexList.idMap i
+    = l.idMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
+  simp [contrIndexList, idMap]
+  rfl
 
-lemma getDualInOther_of_withUniqueDualInOther_not_mem_of_withDual (i : l.withUniqueDualInOther l2) :
-    (l.getDualInOther l2 i).1 ∉ l2.withDual  := by
+@[simp]
+lemma contrIndexList_colorMap (i : Fin l.contrIndexList.length) : l.contrIndexList.colorMap i
+    = l.colorMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
+  simp [contrIndexList, colorMap]
+  rfl
+
+@[simp]
+lemma contrIndexList_areDualInSelf (i j : Fin l.contrIndexList.length) :
+    l.contrIndexList.AreDualInSelf i j ↔
+    l.AreDualInSelf (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1
+      (l.withoutDualEquiv (Fin.cast l.contrIndexList_length j)).1 := by
+  simp [AreDualInSelf]
+  intro _
+  trans ¬ (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)) =
+    (l.withoutDualEquiv (Fin.cast l.contrIndexList_length j))
+  rw [l.withoutDualEquiv.apply_eq_iff_eq]
+  simp [Fin.ext_iff]
+  exact Iff.symm Subtype.coe_ne_coe
+
+@[simp]
+lemma contrIndexList_getDual? (i : Fin l.contrIndexList.length) :
+    l.contrIndexList.getDual? i = none := by
+  rw [getDual?_eq_none_on_not_mem]
   rw [mem_withDual_iff_exists]
   simp
-  intro j
-  simp [AreDualInSelf]
-  intro hj
-  by_contra hn
-  have hn' : l.AreDualInOther l2 i j  := by
-    simp [AreDualInOther, hn, hj]
-  rw [eq_getDualInOther_of_withUniqueDual_iff] at hn'
-  simp_all
-  simp only [getDualInOther_coe, not_true_eq_false] at hj
+  have h1 := (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).2
+  have h1' := Finset.disjoint_right.mp l.withDual_disjoint_withoutDual h1
+  rw [mem_withDual_iff_exists] at h1'
+  simp at h1'
+  exact fun x => h1' ↑(l.withoutDualEquiv (Fin.cast (contrIndexList_length l) x))
 
-lemma getDualInOther_of_withUniqueDualInOther_mem (i : l.withUniqueDualInOther l2) :
-    (l.getDualInOther l2 i).1 ∈ l2.withUniqueDualInOther l := by
-  simp only [withUniqueDualInOther, Finset.mem_filter, Finset.mem_univ, true_and]
-  apply And.intro (l.getDualInOther_of_withUniqueDualInOther_not_mem_of_withDual l2 i)
-  apply And.intro
-  exact Finset.coe_mem
-    (l.getDualInOther l2 ⟨↑i, mem_withDualInOther_of_withUniqueDualInOther l l2 i⟩)
-  intro j hj
-  by_contra hn
-  have h' : l.AreDualInSelf i j := by
-    simp [AreDualInSelf, hn]
-    simp_all [AreDualInOther, getDual]
-    simp [getDualInOther_coe] at hn
-    exact fun a => hn (id (Eq.symm a))
-  have hi := l.not_mem_withDual_of_withUniqueDualInOther l2 i
-  rw [mem_withDual_iff_exists] at hi
-  simp_all
+@[simp]
+lemma contrIndexList_withDual : l.contrIndexList.withDual = ∅ := by
+  rw [Finset.eq_empty_iff_forall_not_mem]
+  intro x
+  simp [withDual]
 
-def getDualInOtherEquiv : l.withUniqueDualInOther l2 ≃ l2.withUniqueDualInOther l where
-  toFun x := ⟨l.getDualInOther l2 x, l.getDualInOther_of_withUniqueDualInOther_mem l2 x⟩
-  invFun x := ⟨l2.getDualInOther l x, l2.getDualInOther_of_withUniqueDualInOther_mem l x⟩
-  left_inv x := SetCoe.ext (by simp)
-  right_inv x := SetCoe.ext (by simp)
+@[simp]
+lemma contrIndexList_of_withDual_empty (h : l.withDual = ∅) : l.contrIndexList = l := by
+  have h1 := l.withDual_union_withoutDual
+  rw [h , Finset.empty_union] at h1
+  apply ext
+  rw [@List.ext_get_iff]
+  change l.contrIndexList.length = l.length  ∧ _
+  rw [contrIndexList_length, h1]
+  simp
+  intro n h1' h2
+  simp [contrIndexList]
+  congr
+  simp [withoutDualEquiv]
+  simp [h1]
+  rw [(Finset.orderEmbOfFin_unique' _
+    (fun x => Finset.mem_univ ((Fin.castOrderIso _).toOrderEmbedding x))).symm]
+  simp
+  rw [h1]
+  exact Finset.card_fin l.length
 
-/-!
+lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrIndexList := by
+  simp
 
-## Equality of withUnqiueDual and withDual
+end IndexList
 
--/
-
-lemma withUnqiueDual_eq_withDual_iff_unique_forall :
-    l.withUniqueDual = l.withDual ↔
-    ∀ (i : l.withDual) j, l.AreDualInSelf i j → j = l.getDual? i := by
-  apply Iff.intro
-  · intro h i j hj
-    rw [@Finset.ext_iff] at h
-    simp [withUniqueDual] at h
-    exact h i i.2 j hj
-  · intro h
-    apply Finset.ext
-    intro i
-    apply Iff.intro
-    · intro hi
-      simp [withUniqueDual] at hi
-      exact hi.1
-    · intro hi
-      simp [withUniqueDual]
-      apply And.intro hi
-      intro j hj
-      exact h ⟨i, hi⟩ j hj
-
-
-lemma withUnqiueDual_eq_withDual_iff :
-    l.withUniqueDual = l.withDual ↔
-    ∀ i, (l.getDual? i).bind l.getDual? = Option.guard (fun i => i ∈ l.withDual) i := by
-  apply Iff.intro
-  · intro h i
-    by_cases hi : i ∈ l.withDual
-    · have hii : i ∈ l.withUniqueDual := by
-        simp_all only
-      change (l.getDual? i).bind l.getDual?  = _
-      rw [getDual?_getDual?_of_withUniqueDualInOther l ⟨i, hii⟩]
-      simp
-      symm
-      rw [Option.guard_eq_some]
-      exact ⟨rfl, hi⟩
-    · rw [getDual?_eq_none_on_not_mem l i hi]
-      simp
-      symm
-      simpa only [Option.guard, ite_eq_right_iff, imp_false] using hi
-  · intro h
-    rw [withUnqiueDual_eq_withDual_iff_unique_forall]
-    intro i j hj
-    rcases l.getDual?_of_areDualInSelf hj with hi | hi | hi
-    · have hj' := h j
-      rw [hi] at hj'
-      simp at hj'
-      rw [hj']
-      symm
-      rw [Option.guard_eq_some]
-      exact ⟨rfl, l.mem_withDual_iff_exists.mpr ⟨i, hj.symm⟩⟩
-    · exact hi.symm
-    · have hj' := h j
-      rw [hi] at hj'
-      rw [h i] at hj'
-      have hi : Option.guard (fun i => i ∈ l.withDual) ↑i = some i := by
-         apply Option.guard_eq_some.mpr
-         simp
-      rw [hi] at hj'
-      simp at hj'
-      have hj'' := Option.guard_eq_some.mp hj'.symm
-      have hj''' := hj''.1
-      rw [hj'''] at hj
-      simp at hj
-
-lemma withUnqiueDual_eq_withDual_iff_list_apply :
-    l.withUniqueDual = l.withDual ↔
-    (Fin.list l.length).map (fun i => (l.getDual? i).bind l.getDual?) =
-    (Fin.list l.length).map (fun i => Option.guard (fun i => i ∈ l.withDual) i) := by
-  rw [withUnqiueDual_eq_withDual_iff]
-  apply Iff.intro
-  intro h
-  apply congrFun
-  apply congrArg
-  exact (Set.eqOn_univ (fun i => (l.getDual? i).bind l.getDual?) fun i =>
-    Option.guard (fun i => i ∈ l.withDual) i).mp fun ⦃x⦄ _ => h x
-  intro h
-  intro i
-  simp only [List.map_inj_left] at h
-  have h1 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
-      have h1' : (Fin.list n)[m] = m := Fin.getElem_list _ _
-      exact h1' ▸ List.getElem_mem _ _ _
-  exact h i (h1 i)
-
-def withUnqiueDualEqWithDualBool : Bool :=
-  if (Fin.list l.length).map (fun i => (l.getDual? i).bind l.getDual?) =
-    (Fin.list l.length).map (fun i => Option.guard (fun i => i ∈ l.withDual) i) then
-    true
-  else
-    false
-
-lemma withUnqiueDual_eq_withDual_iff_list_apply_bool :
-    l.withUniqueDual = l.withDual ↔ l.withUnqiueDualEqWithDualBool := by
-  rw [withUnqiueDual_eq_withDual_iff_list_apply]
-  apply Iff.intro
-  intro h
-  simp [withUnqiueDualEqWithDualBool, h]
-  intro h
-  simpa [withUnqiueDualEqWithDualBool] using h
-
-
+end IndexNotation
 
 /-
 
@@ -1386,6 +1117,3 @@ end HasSingColorDualsInSelf
 end Color
 
 -/
-end IndexList
-
-end IndexNotation
