@@ -254,6 +254,104 @@ lemma fromFinMap_numIndices {n : ℕ} (f : Fin n → Index X) :
     (fromFinMap f).length = n := by
   simp [fromFinMap, length]
 
+/-!
+
+## Appending index lists.
+
+-/
+
+section append
+
+variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+variable (l l2 l3 : IndexList X)
+
+instance : HAppend (IndexList X) (IndexList X) (IndexList X) where
+  hAppend := fun l l2 => {val := l.val ++ l2.val}
+
+lemma append_assoc : l ++ l2 ++ l3 = l ++ (l2 ++ l3) := by
+  apply ext
+  change l.val ++ l2.val ++ l3.val = l.val ++ (l2.val ++ l3.val)
+  exact List.append_assoc l.val l2.val l3.val
+
+def appendEquiv {l l2 : IndexList X} : Fin l.length ⊕ Fin l2.length ≃ Fin (l ++ l2).length :=
+  finSumFinEquiv.trans (Fin.castOrderIso (List.length_append _ _).symm).toEquiv
+
+def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
+  toFun := appendEquiv ∘ Sum.inl
+  inj' := by
+    intro i j h
+    simp [Function.comp] at h
+    exact h
+
+def appendInr : Fin l2.length ↪ Fin (l ++ l2).length where
+  toFun := appendEquiv ∘ Sum.inr
+  inj' := by
+    intro i j h
+    simp [Function.comp] at h
+    exact h
+
+@[simp]
+lemma appendInl_appendEquiv :
+    (l.appendInl l2).trans appendEquiv.symm.toEmbedding =
+    {toFun := Sum.inl, inj' := Sum.inl_injective} := by
+  ext i
+  simp [appendInl]
+
+@[simp]
+lemma appendInr_appendEquiv :
+    (l.appendInr l2).trans appendEquiv.symm.toEmbedding =
+    {toFun := Sum.inr, inj' := Sum.inr_injective} := by
+  ext i
+  simp [appendInr]
+
+@[simp]
+lemma append_val {l l2 : IndexList X} : (l ++ l2).val = l.val ++ l2.val := by
+  rfl
+
+@[simp]
+lemma idMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
+    (l ++ l2).idMap (appendEquiv (Sum.inl i)) = l.idMap i := by
+  simp [appendEquiv, idMap]
+  rw [List.getElem_append_left]
+  rfl
+
+@[simp]
+lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
+    (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
+  simp [appendEquiv, idMap, IndexList.length]
+  rw [List.getElem_append_right]
+  simp
+  omega
+  omega
+
+@[simp]
+lemma colorMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
+    (l ++ l2).colorMap (appendEquiv (Sum.inl i)) = l.colorMap i := by
+  simp [appendEquiv, colorMap, IndexList.length]
+  rw [List.getElem_append_left]
+
+@[simp]
+lemma colorMap_append_inl' :
+    (l ++ l2).colorMap ∘ appendEquiv ∘ Sum.inl = l.colorMap := by
+  funext i
+  simp
+
+@[simp]
+lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
+    (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
+  simp [appendEquiv, colorMap, IndexList.length]
+  rw [List.getElem_append_right]
+  simp
+  omega
+  omega
+
+@[simp]
+lemma colorMap_append_inr' :
+    (l ++ l2).colorMap ∘ appendEquiv ∘ Sum.inr = l2.colorMap := by
+  funext i
+  simp
+
+end append
 
 end IndexList
 

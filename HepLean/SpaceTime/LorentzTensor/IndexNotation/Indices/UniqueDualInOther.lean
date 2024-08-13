@@ -45,6 +45,14 @@ lemma mem_withDualInOther_of_withUniqueDualInOther (i : l.withUniqueDualInOther 
     true_and] at hi
   exact hi.2.2.1
 
+@[simp]
+lemma mem_withUniqueDualInOther_isSome (i : Fin l.length) (hi : i ∈ l.withUniqueDualInOther l2) :
+    (l.getDualInOther? l2 i).isSome := by
+  simp only [withUniqueDualInOther, Finset.mem_filter, Finset.mem_univ, true_and] at hi
+  have hi2 := hi.2.1
+  simpa using hi2
+
+
 def fromWithUniqueDualInOther (i : l.withUniqueDualInOther l2) : l.withDualInOther l2 :=
   ⟨i.1, l.mem_withDualInOther_of_withUniqueDualInOther l2 i⟩
 

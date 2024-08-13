@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexListColor
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Color
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.RisingLowering
 import HepLean.SpaceTime.LorentzTensor.Contraction
@@ -32,43 +32,54 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
 variable [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 
 /-- The structure an tensor with a index specification e.g. `ᵘ¹ᵤ₂`. -/
-structure TensorIndex where
-  /-- The list of indices. -/
-  index : IndexListColor 𝓣.toTensorColor
+structure TensorIndex extends ColorIndexList 𝓣.toTensorColor where
   /-- The underlying tensor. -/
-  tensor : 𝓣.Tensor index.1.colorMap
+  tensor : 𝓣.Tensor toIndexList.colorMap
 
 namespace TensorIndex
-open TensorColor IndexListColor
+
+open TensorColor ColorIndexList
+
 variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
-lemma index_eq_colorMap_eq {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.index = T₂.index) :
-    (T₂.index).1.colorMap = (T₁.index).1.colorMap ∘ (Fin.castOrderIso (by rw [hi])).toEquiv := by
-  funext i
-  congr 1
-  rw [hi]
-  simp only [RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply]
-  exact
-    (Fin.heq_ext_iff (congrArg IndexList.numIndices (congrArg Subtype.val (id (Eq.symm hi))))).mpr
-      rfl
-
-lemma ext (T₁ T₂ : 𝓣.TensorIndex) (hi : T₁.index = T₂.index)
-    (h : T₁.tensor = 𝓣.mapIso (Fin.castOrderIso (by rw [hi])).toEquiv
-    (index_eq_colorMap_eq hi) T₂.tensor) : T₁ = T₂ := by
+lemma colormap_mapIso {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toColorIndexList) :
+    ColorMap.MapIso (Fin.castOrderIso (by simp [IndexList.length, hi])).toEquiv
+    T₁.colorMap T₂.colorMap := by
   cases T₁; cases T₂
+  simp [ColorMap.MapIso]
+  simp at hi
+  rename_i a b c d
+  cases a
+  cases c
+  rename_i a1 a2 a3 a4 a5 a6
+  cases a1
+  cases a4
+  simp_all
+  simp at hi
+  subst hi
+  rfl
+
+lemma ext {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toColorIndexList)
+    (h : T₁.tensor = 𝓣.mapIso (Fin.castOrderIso (by simp [IndexList.length, hi])).toEquiv
+    (colormap_mapIso hi.symm) T₂.tensor) : T₁ = T₂ := by
+  cases T₁; cases T₂
+  simp at h
+  simp_all
   simp at hi
   subst hi
   simp_all
 
-lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.index = T₂.index := by
+
+lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
+    T₁.toColorIndexList = T₂.toColorIndexList := by
   cases h
   rfl
 
 @[simp]
 lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.tensor =
     𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
-    (index_eq_colorMap_eq (index_eq_of_eq h)) T₂.tensor := by
+    (colormap_mapIso (index_eq_of_eq h).symm) T₂.tensor := by
   have hi := index_eq_of_eq h
   cases T₁
   cases T₂
@@ -78,10 +89,10 @@ lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.te
 
 /-- The construction of a `TensorIndex` from a tensor, a IndexListColor, and a condition
   on the dual maps. -/
-def mkDualMap (T : 𝓣.Tensor cn) (l : IndexListColor 𝓣.toTensorColor) (hn : n = l.1.length)
+def mkDualMap (T : 𝓣.Tensor cn) (l : ColorIndexList 𝓣.toTensorColor) (hn : n = l.1.length)
     (hd : ColorMap.DualMap l.1.colorMap (cn ∘ Fin.cast hn.symm)) :
     𝓣.TensorIndex where
-  index := l
+  toColorIndexList := l
   tensor :=
       𝓣.mapIso (Equiv.refl _) (ColorMap.DualMap.split_dual' (by simp [hd])) <|
       𝓣.dualize (ColorMap.DualMap.split l.1.colorMap (cn ∘ Fin.cast hn.symm)) <|

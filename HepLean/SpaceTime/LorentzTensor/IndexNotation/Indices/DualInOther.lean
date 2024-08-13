@@ -41,7 +41,6 @@ def getDualInOther? (i : Fin l.length) : Option (Fin l2.length) :=
   Fin.find (fun j => l.AreDualInOther l2 i j)
 
 
-
 /-!
 
 ## With dual other.
@@ -50,6 +49,11 @@ def getDualInOther? (i : Fin l.length) : Option (Fin l2.length) :=
 
 def withDualInOther : Finset (Fin l.length) :=
   Finset.filter (fun i => (l.getDualInOther? l2 i).isSome) Finset.univ
+
+@[simp]
+lemma mem_withInDualOther_iff_isSome (i : Fin l.length) :
+    i ∈ l.withDualInOther l2 ↔ (l.getDualInOther? l2 i).isSome := by
+  simp only [withDualInOther, getDualInOther?, Finset.mem_filter, Finset.mem_univ, true_and]
 
 lemma mem_withInDualOther_iff_exists :
     i ∈ l.withDualInOther l2 ↔ ∃ (j : Fin l2.length), l.AreDualInOther l2 i j := by

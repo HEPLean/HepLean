@@ -31,11 +31,23 @@ def withUniqueDual : Finset (Fin l.length) :=
   Finset.filter (fun i => i ∈ l.withDual ∧
     ∀ j, l.AreDualInSelf i j → j = l.getDual? i) Finset.univ
 
+@[simp]
+lemma mem_withDual_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    i ∈ l.withDual := by
+  simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+    true_and] at h
+  simpa using h.1
+
+@[simp]
+lemma mem_withUniqueDual_isSome (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    (l.getDual? i).isSome := by
+  simpa using mem_withDual_of_mem_withUniqueDual l i h
+
 lemma mem_withDual_of_withUniqueDual (i : l.withUniqueDual) :
     i.1 ∈ l.withDual := by
   have hi := i.2
-  simp [withUniqueDual, Finset.mem_filter, Finset.mem_univ] at hi
-  exact hi.1
+  simp only [withUniqueDual, Finset.mem_filter, Finset.mem_univ] at hi
+  exact hi.2.1
 
 def fromWithUnique (i : l.withUniqueDual) : l.withDual :=
   ⟨i.1, l.mem_withDual_of_withUniqueDual i⟩
@@ -61,6 +73,100 @@ lemma eq_of_areDualInSelf_withUniqueDual {j k : Fin l.length} (i : l.withUniqueD
   have hk' := all_dual_eq_getDual_of_withUniqueDual l i k hk
   rw [hj', hk']
 
+/-!
+
+## Properties of getDual?
+
+-/
+
+lemma all_dual_eq_getDual?_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    ∀ j, l.AreDualInSelf i j → j = l.getDual? i := by
+  simp [withUniqueDual] at h
+  exact fun j hj => h.2 j hj
+
+lemma some_eq_getDual?_of_withUniqueDual_iff (i j : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    l.AreDualInSelf i j ↔ some j = l.getDual? i := by
+  apply Iff.intro
+  intro h'
+  exact all_dual_eq_getDual?_of_mem_withUniqueDual l i h j h'
+  intro h'
+  have hj : j = (l.getDual? i).get (mem_withUniqueDual_isSome l i h) :=
+    Eq.symm (Option.get_of_mem (mem_withUniqueDual_isSome l i h) (id (Eq.symm h')))
+  subst hj
+  exact (getDual?_get_areDualInSelf l i (mem_withUniqueDual_isSome l i h)).symm
+
+@[simp]
+lemma eq_getDual?_get_of_withUniqueDual_iff (i j : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    l.AreDualInSelf i j ↔ j = (l.getDual? i).get (mem_withUniqueDual_isSome l i h) := by
+  rw [l.some_eq_getDual?_of_withUniqueDual_iff i j h]
+  refine Iff.intro (fun h' => ?_) (fun h' => ?_)
+  exact Eq.symm (Option.get_of_mem (mem_withUniqueDual_isSome l i h) (id (Eq.symm h')))
+  simp [h']
+
+@[simp]
+lemma getDual?_get_getDual?_get_of_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    (l.getDual? ((l.getDual? i).get (mem_withUniqueDual_isSome l i h))).get
+      (l.getDual?_getDual?_get_isSome i (mem_withUniqueDual_isSome l i h)) = i := by
+  by_contra hn
+  have h' : l.AreDualInSelf i  ((l.getDual? ((l.getDual? i).get (mem_withUniqueDual_isSome l i h))).get (
+      getDual?_getDual?_get_isSome l i (mem_withUniqueDual_isSome l i h))) := by
+    simp [AreDualInSelf, hn]
+    exact fun a => hn (id (Eq.symm a))
+  simp [h] at h'
+
+@[simp]
+lemma getDual?_getDual?_get_of_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    l.getDual? ((l.getDual? i).get (mem_withUniqueDual_isSome l i h)) = some i := by
+  nth_rewrite 3 [← l.getDual?_get_getDual?_get_of_withUniqueDual i h]
+  simp
+
+@[simp]
+lemma getDual?_getDual?_of_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    (l.getDual? i).bind l.getDual? = some i := by
+  have h1 : (l.getDual? i) = some ((l.getDual? i).get (mem_withUniqueDual_isSome l i h)) := by simp
+  nth_rewrite 1 [h1]
+  rw [Option.some_bind']
+  simp [h]
+
+@[simp]
+lemma getDual?_get_of_mem_withUnique_mem (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    (l.getDual? i).get (l.mem_withUniqueDual_isSome i h) ∈ l.withUniqueDual := by
+  simp [withUniqueDual, h]
+  intro j hj
+  have h1 : i = j := by
+    by_contra hn
+    have h' : l.AreDualInSelf i j := by
+      simp [AreDualInSelf, hn]
+      simp_all [AreDualInSelf, getDual, fromWithUnique]
+    simp [h] at h'
+    subst h'
+    simp_all [getDual]
+  subst h1
+  exact Eq.symm (getDual?_getDual?_get_of_withUniqueDual l i h)
+
+/-!
+
+## The equivalence defined by getDual?
+
+-/
+
+def getDualEquiv : l.withUniqueDual ≃ l.withUniqueDual where
+  toFun x := ⟨(l.getDual? x).get (l.mem_withUniqueDual_isSome x.1 x.2), by simp⟩
+  invFun x := ⟨(l.getDual? x).get (l.mem_withUniqueDual_isSome x.1 x.2), by simp⟩
+  left_inv x := SetCoe.ext (by simp)
+  right_inv x := SetCoe.ext (by simp)
+
+@[simp]
+lemma getDualEquiv_involutive : Function.Involutive l.getDualEquiv := by
+  intro x
+  simp [getDualEquiv, fromWithUnique]
+
+
+/-!
+
+## Properties of getDual! etc.
+
+-/
 lemma eq_getDual_of_withUniqueDual_iff (i : l.withUniqueDual) (j : Fin l.length) :
     l.AreDualInSelf i j ↔ j = l.getDual! i := by
   apply Iff.intro
@@ -101,45 +207,6 @@ lemma getDual?_getDual_of_withUniqueDual (i : l.withUniqueDual) :
   rw [getDual?_eq_some_getDual!]
   simp
 
-@[simp]
-lemma getDual?_getDual?_of_withUniqueDualInOther (i : l.withUniqueDual) :
-    (l.getDual? i).bind l.getDual? = some i := by
-  rw [getDual?_eq_some_getDual! l i]
-  simp
-
-
-lemma getDual_of_withUniqueDual_mem (i : l.withUniqueDual) :
-    l.getDual! i ∈ l.withUniqueDual := by
-  simp [withUniqueDual]
-  apply And.intro (getDual_mem_withDual l ⟨↑i, mem_withDual_of_withUniqueDual l i⟩)
-  intro j hj
-  have h1 : i = j := by
-    by_contra hn
-    have h' : l.AreDualInSelf i j := by
-      simp [AreDualInSelf, hn]
-      simp_all [AreDualInSelf, getDual, fromWithUnique]
-    rw [eq_getDual_of_withUniqueDual_iff] at h'
-    subst h'
-    simp_all [getDual]
-  subst h1
-  rfl
-
-def getDualEquiv : l.withUniqueDual ≃ l.withUniqueDual where
-  toFun x := ⟨l.getDual x, l.getDual_of_withUniqueDual_mem x⟩
-  invFun x := ⟨l.getDual x, l.getDual_of_withUniqueDual_mem x⟩
-  left_inv x := SetCoe.ext (by
-    simp only [Subtype.coe_eta, getDual_getDual_of_withUniqueDual]
-    rfl)
-  right_inv x := SetCoe.ext (by
-    simp only [Subtype.coe_eta, getDual_getDual_of_withUniqueDual]
-    rfl)
-
-@[simp]
-lemma getDualEquiv_involutive : Function.Involutive l.getDualEquiv := by
-  intro x
-  simp [getDualEquiv, fromWithUnique]
-
-
 /-!
 
 ## Equality of withUnqiueDual and withDual
@@ -153,17 +220,19 @@ lemma withUnqiueDual_eq_withDual_iff_unique_forall :
   · intro h i j hj
     rw [@Finset.ext_iff] at h
     simp [withUniqueDual] at h
-    exact h i i.2 j hj
+    refine h i ?_ j hj
+    simp
   · intro h
     apply Finset.ext
     intro i
     apply Iff.intro
     · intro hi
       simp [withUniqueDual] at hi
-      exact hi.1
+      simpa using hi.1
     · intro hi
       simp [withUniqueDual]
-      apply And.intro hi
+      apply And.intro
+      simpa using hi
       intro j hj
       exact h ⟨i, hi⟩ j hj
 
@@ -176,15 +245,14 @@ lemma withUnqiueDual_eq_withDual_iff :
     · have hii : i ∈ l.withUniqueDual := by
         simp_all only
       change (l.getDual? i).bind l.getDual?  = _
-      rw [getDual?_getDual?_of_withUniqueDualInOther l ⟨i, hii⟩]
-      simp
+      simp [hii]
       symm
       rw [Option.guard_eq_some]
-      exact ⟨rfl, hi⟩
+      exact ⟨rfl, by simpa using hi⟩
     · rw [getDual?_eq_none_on_not_mem l i hi]
       simp
       symm
-      simpa only [Option.guard, ite_eq_right_iff, imp_false] using hi
+      simpa [Option.guard, ite_eq_right_iff, imp_false] using hi
   · intro h
     rw [withUnqiueDual_eq_withDual_iff_unique_forall]
     intro i j hj
@@ -194,8 +262,8 @@ lemma withUnqiueDual_eq_withDual_iff :
       simp at hj'
       rw [hj']
       symm
-      rw [Option.guard_eq_some]
-      exact ⟨rfl, l.mem_withDual_iff_exists.mpr ⟨i, hj.symm⟩⟩
+      rw [Option.guard_eq_some, hi]
+      exact ⟨rfl, rfl⟩
     · exact hi.symm
     · have hj' := h j
       rw [hi] at hj'
