@@ -236,8 +236,11 @@ lemma listCharIndexString (s : IndexString X) : listCharIndexString X s.toCharLi
 
 /-- The indices associated to an index string. -/
 def toIndexList (s : IndexString X) : IndexList X :=
-  (listCharIndexStringTolistCharIndex X s.toCharList (listCharIndexString s)).map
-  fun x => Index.ofCharList x.1 x.2
+  {val := (listCharIndexStringTolistCharIndex X s.toCharList (listCharIndexString s)).map
+    fun x => Index.ofCharList x.1 x.2}
+
+def toIndexList' (s : String) (hs : listCharIndexStringBool X s.toList = true) : IndexList X :=
+  toIndexList ⟨s, hs⟩
 
 end IndexString
 
@@ -255,20 +258,18 @@ variable {R : Type} [CommSemiring R] (𝓣 : TensorStructure R)
 variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
 variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
-open IndexNotation IndexListColor
+open IndexNotation ColorIndexList IndexString
 
 /-- The construction of a tensor index from a tensor and a string satisfing conditions which are
   easy to check automatically. -/
 noncomputable def fromIndexString (T : 𝓣.Tensor cn) (s : String)
     (hs : listCharIndexStringBool 𝓣.toTensorColor.Color s.toList = true)
-    (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)).length)
-    (hc : IndexListColorProp 𝓣.toTensorColor (
-      IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)))
-    (hd : TensorColor.ColorMap.DualMap
-      (IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)).colorMap
+    (hn : n = (toIndexList' s hs).length)
+    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hC : IndexList.ColorCond (toIndexList' s hs))
+    (hd : TensorColor.ColorMap.DualMap  (toIndexList' s hs).colorMap
       (cn ∘ Fin.cast hn.symm)) : 𝓣.TensorIndex :=
-  TensorStructure.TensorIndex.mkDualMap T
-    ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString 𝓣.Color)), hc⟩ hn hd
+  TensorStructure.TensorIndex.mkDualMap T ⟨(toIndexList' s hs), hD, hC⟩ hn hd
 
 end TensorIndex
 

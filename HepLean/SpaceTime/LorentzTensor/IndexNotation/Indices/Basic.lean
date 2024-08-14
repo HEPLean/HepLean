@@ -268,6 +268,11 @@ variable (l l2 l3 : IndexList X)
 instance : HAppend (IndexList X) (IndexList X) (IndexList X) where
   hAppend := fun l l2 => {val := l.val ++ l2.val}
 
+@[simp]
+lemma append_length : (l ++ l2).length = l.length + l2.length := by
+  simp [IndexList.length]
+  exact List.length_append l.val l2.val
+
 lemma append_assoc : l ++ l2 ++ l3 = l ++ (l2 ++ l3) := by
   apply ext
   change l.val ++ l2.val ++ l3.val = l.val ++ (l2.val ++ l3.val)
@@ -350,6 +355,15 @@ lemma colorMap_append_inr' :
     (l ++ l2).colorMap ∘ appendEquiv ∘ Sum.inr = l2.colorMap := by
   funext i
   simp
+
+lemma colorMap_sumELim (l1 l2 : IndexList X) :
+    Sum.elim l1.colorMap l2.colorMap =
+    (l1 ++ l2).colorMap ∘ appendEquiv := by
+  funext x
+  match x with
+  | Sum.inl i => simp
+  | Sum.inr i => simp
+
 
 end append
 

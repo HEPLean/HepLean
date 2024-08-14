@@ -126,6 +126,9 @@ lemma symm (h : cX.MapIso e cY) : cY.MapIso e.symm cX := by
   rw [MapIso] at h
   exact (Equiv.eq_comp_symm e cY cX).mpr h.symm
 
+lemma symm' : cX.MapIso e cY ↔ cY.MapIso e.symm cX := by
+  refine ⟨symm, symm⟩
+
 lemma trans (h : cX.MapIso e cY) (h' : cY.MapIso e' cZ) :
     cX.MapIso (e.trans e') cZ:= by
   funext a
