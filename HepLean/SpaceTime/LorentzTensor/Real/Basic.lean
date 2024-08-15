@@ -86,7 +86,7 @@ instance : Fintype realTensorColor.Color := realTensorColor.instFintypeColorType
 instance : DecidableEq realTensorColor.Color := realTensorColor.instDecidableEqColorType
 
 /-! TODO: Set up the notation `𝓛𝓣ℝ` or similar. -/
-/-- The `LorentzTensorStructure` associated with real Lorentz tensors. -/
+/-- The `TensorStructure` associated with real Lorentz tensors. -/
 def realLorentzTensor (d : ℕ) : TensorStructure ℝ where
   toTensorColor := realTensorColor
   ColorModule μ :=
@@ -146,4 +146,5 @@ instance : MulActionTensor (LorentzGroup d) (realLorentzTensor d) where
     match μ with
     | .up => asTenProd_invariant g
     | .down => asCoTenProd_invariant g
+
 end

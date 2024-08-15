@@ -72,6 +72,7 @@ import HepLean.SpaceTime.LorentzGroup.Restricted
 import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.Contraction
+import HepLean.SpaceTime.LorentzTensor.EinsteinNotation.Basic
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.AreDual
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
