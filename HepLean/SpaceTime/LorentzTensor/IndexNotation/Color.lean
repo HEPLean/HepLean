@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Dual
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Dual
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
 import HepLean.SpaceTime.LorentzTensor.Contraction
@@ -505,13 +505,17 @@ lemma appendCond_of_eq (h1 : l.withUniqueDual = l.withDual)
   simp_all
   exact ColorCond.iff_bool.mpr h5
 
-def bool (l l2 : ColorIndexList 𝓒) : Bool :=
-  if ¬  (l.toIndexList ++ l2.toIndexList).withUniqueDual = (l.toIndexList ++ l2.toIndexList).withDual then
+def bool (l l2 : IndexList 𝓒.Color) : Bool :=
+  if ¬  (l ++ l2).withUniqueDual = (l ++ l2).withDual then
     false
   else
-    ColorCond.bool (l.toIndexList ++ l2.toIndexList)
+    ColorCond.bool (l ++ l2)
 
-lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l l2 := by
+lemma bool_iff (l l2 : IndexList 𝓒.Color) :
+    bool l l2 ↔ (l ++ l2).withUniqueDual = (l ++ l2).withDual  ∧ ColorCond.bool (l ++ l2) := by
+  simp [bool]
+
+lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndexList l2.toIndexList := by
   rw [AppendCond]
   simp [bool]
   rw [ColorCond.iff_bool]

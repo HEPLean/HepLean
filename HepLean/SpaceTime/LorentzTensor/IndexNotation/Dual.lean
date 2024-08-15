@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Basic
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
 import HepLean.SpaceTime.LorentzTensor.Basic
 /-!
 
@@ -2088,7 +2088,6 @@ lemma withUniqueDualInOther_eq_univ_contr_refl :
     simp at hj
   simpa using h1
 
-set_option maxHeartbeats 0
 lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Finset.univ)
     (h' : l2.withUniqueDualInOther l3 = Finset.univ) :
     l.withUniqueDualInOther l3 = Finset.univ := by

@@ -3,8 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Color
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Indices.Relations
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Relations
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.RisingLowering
 import HepLean.SpaceTime.LorentzTensor.Contraction
@@ -484,7 +484,7 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
 
 
 def ProdCond (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
-  T₁.AppendCond T₂
+  AppendCond T₁.toColorIndexList T₂.toColorIndexList
 
 namespace ProdCond
 
@@ -503,6 +503,11 @@ def prod (T₁ T₂ : 𝓣.TensorIndex)
 @[simp]
 lemma prod_toColorIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
     (prod T₁ T₂ h).toColorIndexList = T₁.toColorIndexList ++[h] T₂.toColorIndexList := rfl
+
+@[simp]
+lemma prod_toIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
+    (prod T₁ T₂ h).toIndexList = T₁.toIndexList ++ T₂.toIndexList := rfl
+
 
 end TensorIndex
 end

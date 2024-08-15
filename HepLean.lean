@@ -73,8 +73,10 @@ import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.Contraction
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexListColor
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Dual
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexString
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Relations
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.TensorIndex
 import HepLean.SpaceTime.LorentzTensor.MulActionTensor
 import HepLean.SpaceTime.LorentzTensor.Real.Basic
