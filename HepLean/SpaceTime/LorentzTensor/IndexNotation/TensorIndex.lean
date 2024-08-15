@@ -497,6 +497,8 @@ lemma to_AppendCond (h : ProdCond T₁ T₂) :
 @[symm]
 lemma symm (h : ProdCond T₁ T₂) : ProdCond T₂ T₁ := h.to_AppendCond.symm
 
+/-! TODO: Prove properties regarding the interaction of `ProdCond` and `Rel`. -/
+
 end ProdCond
 
 /-- The tensor product of two `TensorIndex`. -/
