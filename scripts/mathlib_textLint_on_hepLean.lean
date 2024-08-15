@@ -21,15 +21,16 @@ open Cli
 
 /-- Implementation of the `lint_style` command line program. -/
 def lintStyleCli (args : Cli.Parsed) : IO UInt32 := do
-  let errorStyle := match (args.hasFlag "github", args.hasFlag "update") with
-    | (true, _) => ErrorFormat.github
-    | (false, true) => ErrorFormat.exceptionsFile
-    | (false, false) => ErrorFormat.humanReadable
-  let mut numberErrorFiles : UInt32 := 0
+  let mode : OutputSetting := match (args.hasFlag "update", args.hasFlag "github") with
+    | (true, _) => OutputSetting.update
+    | (false, true) => OutputSetting.print ErrorFormat.github
+    | (false, false) => OutputSetting.print ErrorFormat.humanReadable
+  let mut allModules := #[]
   for s in ["HepLean.lean"] do
-    let n ← lintAllFiles (System.mkFilePath [s]) errorStyle
-    numberErrorFiles := numberErrorFiles + n
-  return numberErrorFiles
+    allModules := allModules.append ((← IO.FS.lines s).filter (!·.containsSubstr "Batteries")
+      |>.map (·.stripPrefix "import "))
+  let numberErrorFiles ← lintModules allModules mode
+  return min numberErrorFiles 125
 
 /-- Setting up command line options and help text for `lake exe lint_style`. -/
 -- so far, no help options or so: perhaps that is fine?

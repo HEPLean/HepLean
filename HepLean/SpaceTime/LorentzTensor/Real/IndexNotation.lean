@@ -57,6 +57,11 @@ lemma indexNotation_eq_color : @realLorentzTensor.instIndexNotationColor d =
   rfl
 
 @[simp]
+lemma decidableEq_eq_color : @realLorentzTensor.instDecidableEqColor d =
+    instDecidableEqColorRealTensorColor := by
+  rfl
+
+@[simp]
 lemma realLorentzTensor_color : (realLorentzTensor d).Color = realTensorColor.Color := by
   rfl
 
@@ -74,24 +79,15 @@ open TensorStructure TensorIndex
 noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (T : (realLorentzTensor d).Tensor cn) (s : String)
     (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
-    (hn : n = (IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)).length)
-    (hc : IndexListColor.colorPropBool (IndexString.toIndexList ⟨s, hs⟩))
+    (hn : n = (toIndexList' s hs).length)
+    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hC : IndexList.ColorCond.bool (toIndexList' s hs))
     (hd : TensorColor.ColorMap.DualMap.boolFin
-    (IndexString.toIndexList ⟨s, hs⟩).colorMap (cn ∘ Fin.cast hn.symm)) :
+      (toIndexList' s hs).colorMap (cn ∘ Fin.cast hn.symm)) :
     (realLorentzTensor d).TensorIndex :=
-  TensorStructure.TensorIndex.mkDualMap T
-    ⟨(IndexString.toIndexList (⟨s, hs⟩ : IndexString realTensorColor.Color)),
-      IndexListColor.colorPropBool_indexListColorProp hc⟩ hn
+  TensorStructure.TensorIndex.mkDualMap T ⟨(toIndexList' s hs), hD,
+      IndexList.ColorCond.iff_bool.mpr hC⟩ hn
       (TensorColor.ColorMap.DualMap.boolFin_DualMap hd)
-
-/-- A tactics used to prove `colorPropBool` for real Lorentz tensors. -/
-macro "prodTactic" : tactic =>
-    `(tactic| {
-      change @IndexListColor.colorPropBool realTensorColor _ _ _
-      simp only [toTensorColor_eq, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
-        String.toList, ↓Char.isValue, Equiv.coe_refl, Function.comp_apply, id_eq, ne_eq,
-        Function.comp_id, RelIso.coe_fn_toEquiv, prod_index, IndexListColor.prod]
-      rfl})
 
 /-- A tactic used to prove `boolFin` for real Lornetz tensors. -/
 macro "dualMapTactic" : tactic =>
@@ -101,17 +97,25 @@ macro "dualMapTactic" : tactic =>
 
 /-- Notation for the construction of a tensor index from a tensor and a string.
   Conditions are checked automatically. -/
-notation:20 T "|" S:21 => fromIndexStringColor T S (by rfl) (by rfl) (by rfl) (by dualMapTactic)
+notation:20 T "|" S:21 => fromIndexStringColor T S
+  (by rfl) (by rfl) (by rfl) (by rfl) (by dualMapTactic)
 
-/-- Notation for the product of two tensor indices. Conditions are checked automatically. -/
-notation:10 T "⊗ᵀ" S:11 => TensorIndex.prod T S (IndexListColor.colorPropBool_indexListColorProp
-  (by prodTactic))
+/-- A tactics used to prove `colorPropBool` for real Lorentz tensors. -/
+macro "prodTactic" : tactic =>
+    `(tactic| {
+    apply (ColorIndexList.AppendCond.iff_bool _ _).mpr
+    change @ColorIndexList.AppendCond.bool realTensorColor
+      instIndexNotationColorRealTensorColor instDecidableEqColorRealTensorColor _ _
+    simp only [prod_toIndexList, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
+      toTensorColor_eq, decidableEq_eq_color]
+    rfl})
+
+/-- The product of Real Lorentz tensors. Conditions on indices are checked automatically. -/
+notation:10 T "⊗ᵀ" S:11 => TensorIndex.prod T S (by prodTactic)
 
 /-- An example showing the allowed constructions. -/
 example (T : (realLorentzTensor d).Tensor ![ColorType.up, ColorType.down]) : True := by
-  let _ := T|"ᵤ₁ᵤ₂"
-  let _ := T|"ᵘ³ᵤ₄"
-  let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄"
+  let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
   let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ¹ᵘ²" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
   exact trivial
 

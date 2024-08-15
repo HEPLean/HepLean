@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 
-Taken from Mathlib4. 
+Taken from Mathlib4.
 
 Lint a file or files from mathlib for style.
 
@@ -30,7 +30,7 @@ exceptions by redirecting the output to ``style-exceptions.txt``. Use:
 
     $ ./scripts/update-style-exceptions.sh
 
-to perform this update. 
+to perform this update.
 """
 
 # TODO: This is adapted from the linter for mathlib3. It should be rewritten in Lean.
@@ -354,7 +354,8 @@ def output_message(path, line_nr, code, msg):
     if len(exceptions) == 0:
         # we are generating a new exceptions file
         # filename first, then line so that we can call "sort" on the output
-        print(f"{path} : line {line_nr} : {code} : {msg}")
+        #print(f"{path} : line {line_nr} : {code} : {msg}")
+        print(f"{path}:{line_nr} : {code} : {msg}")
     else:
         if code.startswith("ERR"):
             msg_type = "error"

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Set.Finite
-import Mathlib.Data.Finset.Sort
+import Mathlib.Logic.Equiv.Fin
 /-!
 
 # Index notation for a type
@@ -174,7 +174,9 @@ end Index
 -/
 
 /-- The type of lists of indices. -/
-def IndexList : Type := List (Index X)
+structure IndexList where
+  /-- The list of index values. For example `['ᵘ¹','ᵘ²','ᵤ₁']`. -/
+  val : List (Index X)
 
 namespace IndexList
 
@@ -183,30 +185,35 @@ variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l : IndexList X)
 
 /-- The number of indices in an index list. -/
-def numIndices : Nat := l.length
+def length : ℕ := l.val.length
+
+lemma ext (h : l.val = l2.val) : l = l2 := by
+  cases l
+  cases l2
+  simp_all
 
 /-- The map of from `Fin s.numIndices` into colors associated to an index list. -/
-def colorMap : Fin l.numIndices → X :=
-  fun i => (l.get i).toColor
+def colorMap : Fin l.length → X :=
+  fun i => (l.val.get i).toColor
 
 /-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
-def idMap : Fin l.numIndices → Nat :=
-  fun i => (l.get i).id
+def idMap : Fin l.length → Nat :=
+  fun i => (l.val.get i).id
 
-lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.numIndices) :
+lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
     l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
   subst h
   rfl
 
 /-- Given a list of indices a subset of `Fin l.numIndices × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
-def toPosSet (l : IndexList X) : Set (Fin l.numIndices × Index X) :=
-  {(i, l.get i) | i : Fin l.numIndices}
+def toPosSet (l : IndexList X) : Set (Fin l.length × Index X) :=
+  {(i, l.val.get i) | i : Fin l.length}
 
 /-- Equivalence between `toPosSet` and `Fin l.numIndices`. -/
-def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.numIndices where
+def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.length where
   toFun := fun x => x.1.1
-  invFun := fun x => ⟨(x, l.get x), by simp [toPosSet]⟩
+  invFun := fun x => ⟨(x, l.val.get x), by simp [toPosSet]⟩
   left_inv x := by
     have hx := x.prop
     simp [toPosSet] at hx
@@ -231,251 +238,136 @@ instance : Fintype l.toPosSet where
     intro x
     simp_all only [Finset.mem_map_equiv, Equiv.symm_symm, Finset.mem_univ]
 
-/-- Given a list of indices a finite set of `Fin l.numIndices × Index X`
+/-- Given a list of indices a finite set of `Fin l.length × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
-def toPosFinset (l : IndexList X) : Finset (Fin l.numIndices × Index X) :=
+def toPosFinset (l : IndexList X) : Finset (Fin l.length × Index X) :=
   l.toPosSet.toFinset
-
-instance : HAppend (IndexList X) (IndexList X) (IndexList X) :=
-    @instHAppendOfAppend (List (Index X)) List.instAppend
 
 /-- The construction of a list of indices from a map
   from `Fin n` to `Index X`. -/
-def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X :=
-  (Fin.list n).map f
+def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X where
+  val := (Fin.list n).map f
 
 @[simp]
 lemma fromFinMap_numIndices {n : ℕ} (f : Fin n → Index X) :
-    (fromFinMap f).numIndices = n := by
-  simp [fromFinMap, numIndices]
+    (fromFinMap f).length = n := by
+  simp [fromFinMap, length]
 
 /-!
 
-## Contracted and non-contracting indices
+## Appending index lists.
 
 -/
 
-/-- The proposition on a element (or really index of element) of a index list
-  `s` which is ture iff does not share an id with any other element.
-  This tells us that it should not be contracted with any other element. -/
-def NoContr (i : Fin l.length) : Prop :=
-  ∀ j, i ≠ j → l.idMap i ≠ l.idMap j
+section append
 
-instance (i : Fin l.length) : Decidable (l.NoContr i) :=
-  Fintype.decidableForallFintype
+variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+variable (l l2 l3 : IndexList X)
 
-/-- The finset of indices of an index list corresponding to elements which do not contract. -/
-def noContrFinset : Finset (Fin l.length) :=
-  Finset.univ.filter l.NoContr
-
-/-- An eqiuvalence between the subtype of indices of a index list `l` which do not contract and
-  `Fin l.noContrFinset.card`. -/
-def noContrSubtypeEquiv : {i : Fin l.length // l.NoContr i} ≃ Fin l.noContrFinset.card :=
-  (Equiv.subtypeEquivRight (fun x => by simp [noContrFinset])).trans
-  (Finset.orderIsoOfFin l.noContrFinset rfl).toEquiv.symm
+instance : HAppend (IndexList X) (IndexList X) (IndexList X) where
+  hAppend := fun l l2 => {val := l.val ++ l2.val}
 
 @[simp]
-lemma idMap_noContrSubtypeEquiv_neq (i j : Fin l.noContrFinset.card) (h : i ≠ j) :
-    l.idMap (l.noContrSubtypeEquiv.symm i).1 ≠ l.idMap (l.noContrSubtypeEquiv.symm j).1 := by
-  have hi := ((l.noContrSubtypeEquiv).symm i).2
-  simp [NoContr] at hi
-  have hj := hi ((l.noContrSubtypeEquiv).symm j)
-  apply hj
-  rw [@SetCoe.ext_iff]
-  erw [Equiv.apply_eq_iff_eq]
-  exact h
+lemma append_length : (l ++ l2).length = l.length + l2.length := by
+  simp [IndexList.length]
+  exact List.length_append l.val l2.val
 
-/-- The subtype of indices `l` which do contract. -/
-def contrSubtype : Type := {i : Fin l.length // ¬ l.NoContr i}
+lemma append_assoc : l ++ l2 ++ l3 = l ++ (l2 ++ l3) := by
+  apply ext
+  change l.val ++ l2.val ++ l3.val = l.val ++ (l2.val ++ l3.val)
+  exact List.append_assoc l.val l2.val l3.val
 
-instance : Fintype l.contrSubtype :=
-  Subtype.fintype fun x => ¬ l.NoContr x
+/-- An equivalence between the sum of the types of indices of `l` an `l2` and the type
+  of indices of the joined index list `l ++ l2`. -/
+def appendEquiv {l l2 : IndexList X} : Fin l.length ⊕ Fin l2.length ≃ Fin (l ++ l2).length :=
+  finSumFinEquiv.trans (Fin.castOrderIso (List.length_append _ _).symm).toEquiv
 
-instance : DecidableEq l.contrSubtype :=
-  Subtype.instDecidableEq
+/-- The inclusion of the indices of `l` into the indices of `l ++ l2`. -/
+def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
+  toFun := appendEquiv ∘ Sum.inl
+  inj' := by
+    intro i j h
+    simp [Function.comp] at h
+    exact h
 
-/-!
-
-## Getting the index which contracts with a given index
-
--/
-
-/-- Given a `i : l.contrSubtype` the proposition on a `j` in `Fin s.length` for
-  it to be an index of `s` contracting with `i`. -/
-def getDualProp (i j : Fin l.length) : Prop :=
-    i ≠ j ∧ l.idMap i = l.idMap j
-
-instance (i j : Fin l.length) :
-    Decidable (l.getDualProp i j) :=
-  instDecidableAnd
-
-/-- Given a `i : l.contrSubtype` the index of `s` contracting with `i`. -/
-def getDualFin (i : l.contrSubtype) : Fin l.length :=
-  (Fin.find (l.getDualProp i.1)).get (by simpa [NoContr, Fin.isSome_find_iff] using i.prop)
-
-lemma some_getDualFin_eq_find (i : l.contrSubtype) :
-    Fin.find (l.getDualProp i.1) = some (l.getDualFin i) := by
-  simp [getDualFin]
-
-lemma getDualFin_not_NoContr (i : l.contrSubtype) : ¬ l.NoContr (l.getDualFin i) := by
-  have h := l.some_getDualFin_eq_find i
-  rw [Fin.find_eq_some_iff] at h
-  simp [NoContr]
-  exact ⟨i.1, And.intro (fun a => h.1.1 a.symm) h.1.2.symm⟩
-
-/-- The dual index of an element of `𝓒.contrSubtype s`, that is the index
-  contracting with it. -/
-def getDual (i : l.contrSubtype) : l.contrSubtype :=
-  ⟨l.getDualFin i, l.getDualFin_not_NoContr i⟩
-
-lemma getDual_id (i : l.contrSubtype) : l.idMap i.1 = l.idMap (l.getDual i).1 := by
-  simp [getDual]
-  have h1 := l.some_getDualFin_eq_find i
-  rw [Fin.find_eq_some_iff] at h1
-  simp only [getDualProp, ne_eq, and_imp] at h1
-  exact h1.1.2
-
-lemma getDual_neq_self (i : l.contrSubtype) : i ≠ l.getDual i := by
-  have h1 := l.some_getDualFin_eq_find i
-  rw [Fin.find_eq_some_iff] at h1
-  exact ne_of_apply_ne Subtype.val h1.1.1
-
-lemma getDual_getDualProp (i : l.contrSubtype) : l.getDualProp i.1 (l.getDual i).1 := by
-  simp [getDual]
-  have h1 := l.some_getDualFin_eq_find i
-  rw [Fin.find_eq_some_iff] at h1
-  simp only [getDualProp, ne_eq, and_imp] at h1
-  exact h1.1
-
-/-!
-
-## Index lists with no contracting indices
-
--/
-
-/-- The proposition on a `IndexList` for it to have no contracting
-  indices. -/
-def HasNoContr : Prop := ∀ i, l.NoContr i
-
-lemma contrSubtype_is_empty_of_hasNoContr (h : l.HasNoContr) : IsEmpty l.contrSubtype := by
-  rw [_root_.isEmpty_iff]
-  intro a
-  exact h a.1 a.1 (fun _ => a.2 (h a.1)) rfl
-
-lemma hasNoContr_id_inj (h : l.HasNoContr) : Function.Injective l.idMap := fun i j => by
-  simpa using (h i j).mt
-
-lemma hasNoContr_color_eq_of_id_eq (h : l.HasNoContr) (i j : Fin l.length) :
-    l.idMap i = l.idMap j → l.colorMap i = l.colorMap j := by
-  intro h1
-  apply l.hasNoContr_id_inj h at h1
-  rw [h1]
+/-- The inclusion of the indices of `l2` into the indices of `l ++ l2`. -/
+def appendInr : Fin l2.length ↪ Fin (l ++ l2).length where
+  toFun := appendEquiv ∘ Sum.inr
+  inj' := by
+    intro i j h
+    simp [Function.comp] at h
+    exact h
 
 @[simp]
-lemma hasNoContr_noContrFinset_card (h : l.HasNoContr) :
-    l.noContrFinset.card = List.length l := by
-  simp only [noContrFinset]
-  rw [Finset.filter_true_of_mem]
-  simp only [Finset.card_univ, Fintype.card_fin]
-  intro x _
-  exact h x
-
-/-!
-
-## The contracted index list
-
--/
-
-/-- The index list of those indices of `l` which do not contract. -/
-def contrIndexList : IndexList X :=
-  IndexList.fromFinMap (fun i => l.get (l.noContrSubtypeEquiv.symm i))
+lemma appendInl_appendEquiv :
+    (l.appendInl l2).trans appendEquiv.symm.toEmbedding =
+    {toFun := Sum.inl, inj' := Sum.inl_injective} := by
+  ext i
+  simp [appendInl]
 
 @[simp]
-lemma contrIndexList_numIndices : l.contrIndexList.numIndices = l.noContrFinset.card := by
-  simp [contrIndexList]
+lemma appendInr_appendEquiv :
+    (l.appendInr l2).trans appendEquiv.symm.toEmbedding =
+    {toFun := Sum.inr, inj' := Sum.inr_injective} := by
+  ext i
+  simp [appendInr]
 
 @[simp]
-lemma contrIndexList_idMap_apply (i : Fin l.contrIndexList.numIndices) :
-    l.contrIndexList.idMap i =
-    l.idMap (l.noContrSubtypeEquiv.symm (Fin.cast (by simp) i)).1 := by
-  simp [contrIndexList, IndexList.fromFinMap, IndexList.idMap]
+lemma append_val {l l2 : IndexList X} : (l ++ l2).val = l.val ++ l2.val := by
   rfl
 
-lemma contrIndexList_hasNoContr : HasNoContr l.contrIndexList := by
-  intro i
-  simp [NoContr]
-  intro j h
-  refine l.idMap_noContrSubtypeEquiv_neq _ _ ?_
-  rw [@Fin.ne_iff_vne]
-  simp only [Fin.coe_cast, ne_eq]
-  exact Fin.val_ne_of_ne h
-
-/-- Contracting indices on a index list that has no contractions does nothing. -/
 @[simp]
-lemma contrIndexList_of_hasNoContr (h : HasNoContr l) : l.contrIndexList = l := by
-  simp only [contrIndexList, List.get_eq_getElem]
-  have hn : (@Finset.univ (Fin (List.length l)) (Fin.fintype (List.length l))).card =
-      (Finset.filter l.NoContr Finset.univ).card := by
-    rw [Finset.filter_true_of_mem (fun a _ => h a)]
-  have hx : (Finset.filter l.NoContr Finset.univ).card = (List.length l) := by
-    rw [← hn]
-    exact Finset.card_fin (List.length l)
-  apply List.ext_get
-  simpa [fromFinMap, noContrFinset] using hx
-  intro n h1 h2
-  simp only [noContrFinset, noContrSubtypeEquiv, OrderIso.toEquiv_symm, Equiv.symm_trans_apply,
-    RelIso.coe_fn_toEquiv, Equiv.subtypeEquivRight_symm_apply_coe, fromFinMap, List.get_eq_getElem,
-    OrderIso.symm_symm, Finset.coe_orderIsoOfFin_apply, List.getElem_map, Fin.getElem_list,
-    Fin.cast_mk]
-  simp only [Finset.filter_true_of_mem (fun a _ => h a)]
-  congr
-  rw [(Finset.orderEmbOfFin_unique' _
-    (fun x => Finset.mem_univ ((Fin.castOrderIso hx).toOrderEmbedding x))).symm]
+lemma idMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
+    (l ++ l2).idMap (appendEquiv (Sum.inl i)) = l.idMap i := by
+  simp [appendEquiv, idMap]
+  rw [List.getElem_append_left]
   rfl
 
-/-- Applying contrIndexlist is equivalent to applying it once. -/
 @[simp]
-lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrIndexList :=
-  l.contrIndexList.contrIndexList_of_hasNoContr (l.contrIndexList_hasNoContr)
+lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
+    (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
+  simp [appendEquiv, idMap, IndexList.length]
+  rw [List.getElem_append_right]
+  simp only [Nat.add_sub_cancel_left]
+  omega
+  omega
 
-/-!
+@[simp]
+lemma colorMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
+    (l ++ l2).colorMap (appendEquiv (Sum.inl i)) = l.colorMap i := by
+  simp [appendEquiv, colorMap, IndexList.length]
+  rw [List.getElem_append_left]
 
-## Pairs of contracting indices
+@[simp]
+lemma colorMap_append_inl' :
+    (l ++ l2).colorMap ∘ appendEquiv ∘ Sum.inl = l.colorMap := by
+  funext i
+  simp
 
--/
+@[simp]
+lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
+    (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
+  simp [appendEquiv, colorMap, IndexList.length]
+  rw [List.getElem_append_right]
+  simp only [Nat.add_sub_cancel_left]
+  omega
+  omega
 
-/-- The set of contracting ordered pairs of indices. -/
-def contrPairSet : Set (l.contrSubtype × l.contrSubtype) :=
-  {p | p.1.1 < p.2.1 ∧ l.idMap p.1.1 = l.idMap p.2.1}
+@[simp]
+lemma colorMap_append_inr' :
+    (l ++ l2).colorMap ∘ appendEquiv ∘ Sum.inr = l2.colorMap := by
+  funext i
+  simp
 
-instance : DecidablePred fun x => x ∈ l.contrPairSet := fun _ =>
-  And.decidable
+lemma colorMap_sumELim (l1 l2 : IndexList X) :
+    Sum.elim l1.colorMap l2.colorMap =
+    (l1 ++ l2).colorMap ∘ appendEquiv := by
+  funext x
+  match x with
+  | Sum.inl i => simp
+  | Sum.inr i => simp
 
-instance : Fintype l.contrPairSet := setFintype _
-
-lemma contrPairSet_isEmpty_of_hasNoContr (h : l.HasNoContr) :
-    IsEmpty l.contrPairSet := by
-  simp only [contrPairSet, Subtype.coe_lt_coe, Set.coe_setOf, isEmpty_subtype, not_and, Prod.forall]
-  refine fun a b h' => h a.1 b.1 (Fin.ne_of_lt h')
-
-lemma getDual_lt_self_mem_contrPairSet {i : l.contrSubtype}
-    (h : (l.getDual i).1 < i.1) : (l.getDual i, i) ∈ l.contrPairSet :=
-  And.intro h (l.getDual_id i).symm
-
-lemma getDual_not_lt_self_mem_contrPairSet {i : l.contrSubtype}
-    (h : ¬ (l.getDual i).1 < i.1) : (i, l.getDual i) ∈ l.contrPairSet := by
-  apply And.intro
-  have h1 := l.getDual_neq_self i
-  simp only [Subtype.coe_lt_coe, gt_iff_lt]
-  simp at h
-  exact lt_of_le_of_ne h h1
-  simp only
-  exact l.getDual_id i
-
-/-- The list of elements of `l` which contract together. -/
-def contrPairList : List (Fin l.length × Fin l.length) :=
-  (List.product (Fin.list l.length) (Fin.list l.length)).filterMap fun (i, j) => if
-  l.getDualProp i j then some (i, j) else none
+end append
 
 end IndexList
 

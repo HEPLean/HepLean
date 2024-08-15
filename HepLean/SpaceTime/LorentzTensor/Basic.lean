@@ -32,7 +32,8 @@ open TensorProduct
 
 variable {R : Type} [CommSemiring R]
 
-/-- The index color data associated with a tensor structure. -/
+/-- The index color data associated with a tensor structure.
+    This corresponds to a type with an involution. -/
 structure TensorColor where
   /-- The allowed colors of indices.
     For example for a real Lorentz tensor these are `{up, down}`. -/
@@ -124,6 +125,9 @@ variable {cX' : ColorMap 𝓒 X'} {cY' : ColorMap 𝓒 Y'}
 lemma symm (h : cX.MapIso e cY) : cY.MapIso e.symm cX := by
   rw [MapIso] at h
   exact (Equiv.eq_comp_symm e cY cX).mpr h.symm
+
+lemma symm' : cX.MapIso e cY ↔ cY.MapIso e.symm cX := by
+  refine ⟨symm, symm⟩
 
 lemma trans (h : cX.MapIso e cY) (h' : cY.MapIso e' cZ) :
     cX.MapIso (e.trans e') cZ:= by
