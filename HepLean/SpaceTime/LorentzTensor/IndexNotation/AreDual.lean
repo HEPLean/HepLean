@@ -8,6 +8,15 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
 
 # Indices which are dual in an index list
 
+Given an list of indices we say two indices are dual if they have the same id.
+
+For example the `0`, `2` and `3` index in `l₁ := ['ᵘ¹', 'ᵘ²', 'ᵤ₁', 'ᵘ¹']` are pairwise dual to
+  one another. The `1` (`'ᵘ²'`) index is not dual to any other index in the list.
+
+We also define the notion of dual indices in different lists. For example,
+  the `1` index in `l₁` is dual to the `1` and the `4` indices in
+  `l₂ := ['ᵘ³', 'ᵘ²', 'ᵘ⁴', 'ᵤ₂']`.
+
 -/
 
 namespace IndexNotation

@@ -8,7 +8,25 @@ import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 /-!
 
-# Contraction of Dual indices
+# Contraction of an index list.
+
+In this file we define the contraction of an index list `l` to be the index list formed by
+by the subset of indices of `l` which do not have a dual in `l`.
+
+For example, the contraction of the index list `['ᵘ¹', 'ᵘ²', 'ᵤ₁', 'ᵘ¹']` is the index list
+`['ᵘ²']`.
+
+We also define the following finite sets
+- `l.withoutDual` the finite set of indices of `l` which do not have a dual in `l`.
+- `l.withUniqueDualLT` the finite set of those indices of `l` which have a unique dual, and
+  for which that dual is greater-then (determined by the ordering on `Fin`) then the index itself.
+- `l.withUniqueDualGT` the finite set of those indices of `l` which have a unique dual, and
+  for which that dual is less-then (determined by the ordering on `Fin`) then the index itself.
+
+We define an equivalence `l.withUniqueDualLT ⊕ l.withUniqueDualLT ≃ l.withUniqueDual`.
+
+We prove properties related to when `l.withUniqueDualInOther l2 = Finset.univ` for two
+index lists `l` and `l2`.
 
 -/
 

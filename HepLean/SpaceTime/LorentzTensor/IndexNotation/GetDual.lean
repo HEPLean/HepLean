@@ -7,10 +7,25 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.AreDual
 import Mathlib.Algebra.Order.Ring.Nat
 /-!
 
-# Get dual index
+# Getting dual index
 
-We define the functions `getDual?` and `getDualInOther?` which return the
-  first dual index in an `IndexList`.
+Using the option-monad we define two functions:
+- For a list of indices `l₁` the function `getDual?` takes in an index `i` in `l₁` and retruns
+  the the first index in `l₁` dual to `i`. If no such index exists, it returns `none`.
+- For two lists of indices `l₁` and `l₂` the function `getDualInOther?` takes in an index `i`
+  in `l₁` and returns the first index in `l₂` dual to `i`. If no such index exists,
+  it returns `none`.
+
+For example, given the lists `l₁ := ['ᵘ¹', 'ᵘ²', 'ᵤ₁', 'ᵘ¹']`, we have
+- `getDual? 0 = some 2`, `getDual? 1 = none`, `getDual? 2 = some 0`, `getDual? 3 = some 0`.
+
+Given the lists `l₁ := ['ᵘ¹', 'ᵘ²', 'ᵤ₁', 'ᵘ¹']` and `l₂ := ['ᵘ³', 'ᵘ²', 'ᵘ⁴', 'ᵤ₂']`, we have
+- `l₁.getDualInOther? l₂ 0 = none`, `l₁.getDualInOther? l₂ 1 = some 1`,
+  `l₁.getDualInOther? l₂ 2 = none`, `l₁.getDualInOther? l₂ 3 = none`.
+
+We prove some basic properties of `getDual?` and `getDualInOther?`. In particular,
+we prove lemmas related to how `getDual?` and `getDualInOther?` behave when we appending
+two index lists.
 
 -/
 
