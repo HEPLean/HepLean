@@ -9,6 +9,11 @@ import Mathlib.Algebra.Order.Ring.Nat
 
 # withDuals equal to withUniqueDuals
 
+In a permissible list of indices every index which has a dual has a unique dual.
+This corresponds to the condition that `l.withDual = l.withUniqueDual`.
+
+We prove lemmas relating to this condition.
+
 -/
 
 namespace IndexNotation

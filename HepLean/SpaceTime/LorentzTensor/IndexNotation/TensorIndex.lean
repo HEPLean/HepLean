@@ -477,7 +477,7 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
 
 /-!
 
-## Product of `TensorIndex` allowed
+## Product of `TensorIndex` when allowed
 
 -/
 
@@ -489,14 +489,20 @@ def ProdCond (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
 
 namespace ProdCond
 
-lemma to_AppendCond {T₁ T₂ : 𝓣.TensorIndex} (h : ProdCond T₁ T₂) :
+variable {T₁ T₁' T₂ T₂' : 𝓣.TensorIndex}
+
+lemma to_AppendCond (h : ProdCond T₁ T₂) :
     T₁.AppendCond T₂ := h
+
+@[symm]
+lemma symm (h : ProdCond T₁ T₂) : ProdCond T₂ T₁ := h.to_AppendCond.symm
+
+/-! TODO: Prove properties regarding the interaction of `ProdCond` and `Rel`. -/
 
 end ProdCond
 
 /-- The tensor product of two `TensorIndex`. -/
-def prod (T₁ T₂ : 𝓣.TensorIndex)
-    (h : ProdCond T₁ T₂) : 𝓣.TensorIndex where
+def prod (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) : 𝓣.TensorIndex where
   toColorIndexList := T₁ ++[h] T₂
   tensor := 𝓣.mapIso IndexList.appendEquiv (T₁.colorMap_sumELim T₂) <|
       𝓣.tensoratorEquiv _ _ (T₁.tensor ⊗ₜ[R] T₂.tensor)

@@ -7,9 +7,22 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.GetDual
 import Mathlib.Algebra.Order.Ring.Nat
 /-!
 
-# With dual
+# Indices with duals.
 
-We define the finite sets of indices in an index list which have a dual
+In this file we define the following finite sets:
+
+- Given an index list `l₁`, the finite set, `l₁.withDual`, of (positions in) `l₁`
+  corresponding to those indices which have a dual in `l₁`. This is equivalent to those indices
+  of `l₁` for which `getDual?` is `some`.
+- Given two index lists `l₁` and `l₂`, the finite set, `l₁.withDualInOther l₂` of (positions in)
+  `l₁` corresponding to those indices which have a dual in `l₂`. This is equivalent to those indices
+  of `l₁` for which `l₁.getDualInOther? l₂` is `some`.
+
+For example for `l₁ := ['ᵘ¹', 'ᵘ²', 'ᵤ₁', 'ᵘ¹']` and `l₂ := ['ᵘ³', 'ᵘ²', 'ᵘ⁴', 'ᵤ₂']` we have
+`l₁.withDual = {0, 2, 3}` and `l₁.withDualInOther l₂ = {1}`.
+
+We prove some properties of these finite sets. In particular, we prove properties
+related to how they interact with appending two index lists.
 
 -/
 

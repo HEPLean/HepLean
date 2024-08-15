@@ -10,11 +10,17 @@ import Init.Data.List.Lemmas
 import HepLean.SpaceTime.LorentzTensor.Contraction
 /-!
 
-# Index lists with color conditions
+# Index lists and color
 
-Here we consider `IndexListColor` which is a subtype of all lists of indices
-on those where the elements to be contracted have consistent colors with respect to
-a Tensor Color structure.
+In this file we look at the interaction of index lists with color.
+
+The main definiton of this file is `ColorIndexList`. This type defines the
+permissible index lists which can be used for a tensor. These are lists of indices for which
+every index with a dual has a unique dual, and the color of that dual (when it exists) is dual
+to the color of the index.
+
+We also define `AppendCond`, which is a condition on two `ColorIndexList`s which allows them to be
+appended to form a new `ColorIndexList`.
 
 -/
 
