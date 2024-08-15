@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Set.Finite
-import Mathlib.Data.Finset.Sort
 import Mathlib.Logic.Equiv.Fin
 /-!
 
@@ -176,6 +175,7 @@ end Index
 
 /-- The type of lists of indices. -/
 structure IndexList where
+  /-- The list of index values. For example `['ᵘ¹','ᵘ²','ᵤ₁']`. -/
   val : List (Index X)
 
 namespace IndexList
@@ -278,9 +278,12 @@ lemma append_assoc : l ++ l2 ++ l3 = l ++ (l2 ++ l3) := by
   change l.val ++ l2.val ++ l3.val = l.val ++ (l2.val ++ l3.val)
   exact List.append_assoc l.val l2.val l3.val
 
+/-- An equivalence between the sum of the types of indices of `l` an `l2` and the type
+  of indices of the joined index list `l ++ l2`. -/
 def appendEquiv {l l2 : IndexList X} : Fin l.length ⊕ Fin l2.length ≃ Fin (l ++ l2).length :=
   finSumFinEquiv.trans (Fin.castOrderIso (List.length_append _ _).symm).toEquiv
 
+/-- The inclusion of the indices of `l` into the indices of `l ++ l2`. -/
 def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
   toFun := appendEquiv ∘ Sum.inl
   inj' := by
@@ -288,6 +291,7 @@ def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
     simp [Function.comp] at h
     exact h
 
+/-- The inclusion of the indices of `l2` into the indices of `l ++ l2`. -/
 def appendInr : Fin l2.length ↪ Fin (l ++ l2).length where
   toFun := appendEquiv ∘ Sum.inr
   inj' := by
@@ -325,7 +329,7 @@ lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
   simp [appendEquiv, idMap, IndexList.length]
   rw [List.getElem_append_right]
-  simp
+  simp only [Nat.add_sub_cancel_left]
   omega
   omega
 
@@ -346,7 +350,7 @@ lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
   simp [appendEquiv, colorMap, IndexList.length]
   rw [List.getElem_append_right]
-  simp
+  simp only [Nat.add_sub_cancel_left]
   omega
   omega
 

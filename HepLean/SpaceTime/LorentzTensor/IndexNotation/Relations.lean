@@ -31,6 +31,11 @@ open IndexList TensorColor
 
 -/
 
+/-- Two `ColorIndexList` are said to be reindexes of one another if they:
+  (1) have the same length and (2) every corresponding index has the same color,
+    and duals which correspond.
+
+  Note: This does not allow for reordrings of indices. -/
 def Reindexing : Prop := l.length = l'.length ∧
   ∀ (h : l.length = l'.length), l.colorMap = l'.colorMap ∘ Fin.cast h ∧
     Option.map (Fin.cast h) ∘ l.getDual? = l'.getDual? ∘ Fin.cast h
@@ -44,6 +49,10 @@ To prevent choice problems, this has to be done after contraction.
 
 -/
 
+/-- Two `ColorIndexList` are said to be related by contracted permutations, `ContrPerm`,
+  if and only if: 1) Their contractions are the same length.
+    2) Every index in the contracted list of one has a unqiue dual in the contracted
+      list of the other and that dual has a the same color. -/
 def ContrPerm : Prop :=
   l.contr.length = l'.contr.length ∧
   l.contr.withUniqueDualInOther l'.contr = Finset.univ ∧
@@ -76,7 +85,7 @@ lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   apply And.intro (h1.1.trans h2.1)
   apply And.intro (l.contr.withUniqueDualInOther_eq_univ_trans l2.contr l3.contr h1.2.1 h2.2.1)
   funext i
-  simp
+  simp only [Function.comp_apply]
   have h1' := congrFun h1.2.2 ⟨i, by simp [h1.2.1]⟩
   simp at h1'
   rw [← h1']
@@ -91,15 +100,14 @@ lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   rw [h2.2.1]
   simp
 
-@[simp]
 lemma symm_trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) :
     (h1.trans h2).symm = h2.symm.trans h1.symm := by
-  rfl
+  simp only
 
 @[simp]
 lemma contr_self : ContrPerm l l.contr := by
   rw [ContrPerm]
-  simp
+  simp only [contr_contr, true_and]
   have h1 := @refl _ _ l
   apply And.intro h1.2.1
   erw [contr_contr]
@@ -112,6 +120,9 @@ lemma self_contr : ContrPerm l.contr l := by
 
 end ContrPerm
 
+/-- Given two `ColorIndexList` related by contracted permutations, the equivalence between
+  the indices of the corresponding contracted index lists. This equivalence is the
+  permutation between the contracted indices. -/
 def contrPermEquiv {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
     Fin l.contr.length ≃ Fin l'.contr.length :=
   (Equiv.subtypeUnivEquiv (by simp [h.2])).symm.trans <|
@@ -144,7 +155,7 @@ lemma contrPermEquiv_refl : contrPermEquiv (@ContrPerm.refl 𝓒 _ l) = Equiv.re
 
 @[simp]
 lemma contrPermEquiv_symm {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
-     (contrPermEquiv h).symm = contrPermEquiv h.symm := by
+    (contrPermEquiv h).symm = contrPermEquiv h.symm := by
   simp only [contrPermEquiv]
   rfl
 

@@ -131,8 +131,8 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
       intro a b hx hy
       simp [map_add, add_mul, hx, hy])
     intro r f
-    simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, mapIso_tprod, id_eq,
-      eq_mpr_eq_cast, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv]
+    simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, mapIso_tprod,
+      id_eq, eq_mpr_eq_cast, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv]
     apply congrArg
     have hEm :  IsEmpty { x // x ∈ i.withUniqueDualLT } := by
       rw [Finset.isEmpty_coe_sort]
@@ -161,10 +161,12 @@ lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
   T.contr.contr_of_withDual_empty  (by simp [contr, ColorIndexList.contr])
 
 @[simp]
-lemma contr_toColorIndexList (T : 𝓣.TensorIndex) : T.contr.toColorIndexList = T.toColorIndexList.contr := rfl
+lemma contr_toColorIndexList (T : 𝓣.TensorIndex) :
+    T.contr.toColorIndexList = T.toColorIndexList.contr := rfl
 
-@[simp]
-lemma contr_toIndexList (T : 𝓣.TensorIndex) : T.contr.toIndexList = T.toIndexList.contrIndexList := rfl
+lemma contr_toIndexList (T : 𝓣.TensorIndex) :
+    T.contr.toIndexList = T.toIndexList.contrIndexList := by
+  rfl
 /-!
 
 ## Scalar multiplication of
@@ -210,7 +212,7 @@ namespace Rel
 /-- Rel is reflexive. -/
 lemma refl (T : 𝓣.TensorIndex) : Rel T T := by
   apply And.intro
-  simp
+  simp only [ContrPerm.refl]
   simp
 
 /-- Rel is symmetric. -/
@@ -231,7 +233,7 @@ lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T
   intro h
   change _ = (𝓣.mapIso (contrPermEquiv (h1.1.trans h2.1)).symm _) T₃.contr.tensor
   trans (𝓣.mapIso ((contrPermEquiv h1.1).trans (contrPermEquiv h2.1)).symm (by
-    simp
+    simp only [contrPermEquiv_trans, contrPermEquiv_symm, contr_toColorIndexList]
     have h1 := contrPermEquiv_colorMap_iso (ContrPerm.symm (ContrPerm.trans h1.left h2.left))
     rw [← ColorMap.MapIso.symm'] at h1
     exact h1)) T₃.contr.tensor
@@ -252,7 +254,8 @@ lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _) where
 
 /-- The equality of tensors corresponding to related tensor indices. -/
 lemma to_eq {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) :
-    T₁.contr.tensor = 𝓣.mapIso (contrPermEquiv h.1).symm (contrPermEquiv_colorMap_iso h.1) T₂.contr.tensor := h.2 h.1
+    T₁.contr.tensor = 𝓣.mapIso (contrPermEquiv h.1).symm
+    (contrPermEquiv_colorMap_iso h.1) T₂.contr.tensor := h.2 h.1
 
 end Rel
 
@@ -262,7 +265,7 @@ instance asSetoid : Setoid 𝓣.TensorIndex := ⟨Rel, Rel.isEquivalence⟩
 /-- A tensor index is equivalent to its contraction. -/
 lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   apply And.intro
-  simp
+  simp only [contr_toColorIndexList, ContrPerm.contr_self]
   intro h
   rw [tensor_eq_of_eq T.contr_contr]
   simp only [contr_toColorIndexList, colorMap', contrPermEquiv_self_contr, OrderIso.toEquiv_symm,
@@ -390,7 +393,7 @@ lemma add_toColorIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂
 @[simp]
 lemma add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (add T₁ T₂ h).tensor =
-   (𝓣.mapIso (addCondEquiv h) (addCondEquiv_colorMap h) T₁.contr.tensor) + T₂.contr.tensor := by rfl
+    (𝓣.mapIso (addCondEquiv h) (addCondEquiv_colorMap h) T₁.contr.tensor) + T₂.contr.tensor := by rfl
 
 /-- Scalar multiplication commutes with addition. -/
 lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
@@ -483,6 +486,9 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
 -/
 
 
+/-- The condition on two `TensorIndex` which is true if and only if their `ColorIndexList`s
+  are related by the condition `AppendCond`. That is, they can be appended to form a
+  `ColorIndexList`. -/
 def ProdCond (T₁ T₂ : 𝓣.TensorIndex) : Prop :=
   AppendCond T₁.toColorIndexList T₂.toColorIndexList
 

@@ -239,6 +239,7 @@ def toIndexList (s : IndexString X) : IndexList X :=
   {val := (listCharIndexStringTolistCharIndex X s.toCharList (listCharIndexString s)).map
     fun x => Index.ofCharList x.1 x.2}
 
+/-- The formation of an index list from a string `s` statisfying `listCharIndexStringBool`. -/
 def toIndexList' (s : String) (hs : listCharIndexStringBool X s.toList = true) : IndexList X :=
   toIndexList ⟨s, hs⟩
 
