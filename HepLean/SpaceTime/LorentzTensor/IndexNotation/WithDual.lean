@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.GetDual
 import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Data.Finset.Sort
 /-!
 
 # With dual

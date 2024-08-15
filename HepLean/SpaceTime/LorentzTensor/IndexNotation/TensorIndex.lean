@@ -119,10 +119,10 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
 lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     T.contr = T := by
   refine ext ?_ ?_
-  · simp [contr, ColorIndexList.contr]
+  · simp only [contr, ColorIndexList.contr]
     have hx := T.contrIndexList_of_withDual_empty h
     apply ColorIndexList.ext
-    simp [hx]
+    simp only [hx]
   · simp only [contr]
     cases T
     rename_i i T
@@ -142,7 +142,7 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
         exact Finset.mem_of_mem_filter x hx
       rw [i.unique_duals] at h
       rw [h] at hx'
-      simp_all
+      simp_all only [Finset.not_mem_empty]
     erw [TensorStructure.contr_tprod_isEmpty]
     erw [mapIso_tprod]
     simp only [Equiv.refl_symm, Equiv.refl_apply, colorMap', mapIso_tprod, id_eq,
@@ -393,13 +393,14 @@ lemma add_toColorIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂
 @[simp]
 lemma add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (add T₁ T₂ h).tensor =
-    (𝓣.mapIso (addCondEquiv h) (addCondEquiv_colorMap h) T₁.contr.tensor) + T₂.contr.tensor := by rfl
+    (𝓣.mapIso (addCondEquiv h) (addCondEquiv_colorMap h) T₁.contr.tensor) + T₂.contr.tensor := rfl
 
 /-- Scalar multiplication commutes with addition. -/
 lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     r • (T₁ +[h] T₂) = r • T₁ +[h] r • T₂ := by
   refine ext rfl ?_
-  simp [add]
+  simp only [add, contr_toColorIndexList, addCondEquiv, smul_index, smul_tensor, _root_.smul_add,
+    Fin.castOrderIso_refl, OrderIso.refl_toEquiv, mapIso_refl, map_add, LinearEquiv.refl_apply]
   rw [tensor_eq_of_eq (smul_contr r T₁), tensor_eq_of_eq (smul_contr r T₂)]
   simp only [smul_index, contr_toColorIndexList, Fin.castOrderIso_refl, OrderIso.refl_toEquiv,
     mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply]

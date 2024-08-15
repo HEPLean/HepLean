@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.OnlyUniqueDuals
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 /-!
@@ -106,7 +106,7 @@ lemma contrIndexList_areDualInSelf (i j : Fin l.contrIndexList.length) :
 lemma contrIndexList_getDual? (i : Fin l.contrIndexList.length) :
     l.contrIndexList.getDual? i = none := by
   rw [← Option.not_isSome_iff_eq_none, ← mem_withDual_iff_isSome, mem_withDual_iff_exists]
-  simp [contrIndexList_areDualInSelf]
+  simp only [contrIndexList_areDualInSelf, not_exists]
   have h1 := (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).2
   have h1' := Finset.disjoint_right.mp l.withDual_disjoint_withoutDual h1
   rw [mem_withDual_iff_exists] at h1'
@@ -254,7 +254,7 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
     simp only [withUniqueDualGT, Finset.mem_filter, Finset.coe_mem, true_and]
     simp only [getDualEquiv, Equiv.coe_fn_mk, Option.some_get, Finset.coe_mem,
       getDual?_getDual?_get_of_withUniqueDual]
-    simp [withUniqueDualLT] at hi
+    simp only [withUniqueDualLT, Finset.mem_filter] at hi
     apply option_not_lt
     simpa [withUniqueDualLTToWithUniqueDual] using hi.2
     exact Ne.symm (getDual?_neq_self l i)⟩
@@ -263,7 +263,7 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
     simp only [withUniqueDualLT, Finset.mem_filter, Finset.coe_mem, true_and, gt_iff_lt]
     simp only [getDualEquiv, Equiv.coe_fn_symm_mk, Option.some_get, Finset.coe_mem,
       getDual?_getDual?_get_of_withUniqueDual]
-    simp [withUniqueDualGT] at hi
+    simp only [withUniqueDualGT, Finset.mem_filter] at hi
     apply lt_option_of_not
     simpa [withUniqueDualLTToWithUniqueDual] using hi.2
     exact (getDual?_neq_self l i)⟩
@@ -278,7 +278,8 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
 def withUniqueLTGTEquiv : l.withUniqueDualLT ⊕ l.withUniqueDualLT ≃ l.withUniqueDual := by
   apply (Equiv.sumCongr (Equiv.refl _ ) l.withUniqueDualLTEquivGT).trans
   apply (Equiv.Finset.union _ _ l.withUniqueDualLT_disjoint_withUniqueDualGT).trans
-  apply (Equiv.subtypeEquivRight (by simp [l.withUniqueDualLT_union_withUniqueDualGT]))
+  apply (Equiv.subtypeEquivRight (by simp only [l.withUniqueDualLT_union_withUniqueDualGT,
+    implies_true]))
 
 
 
@@ -327,7 +328,8 @@ lemma withUniqueDualInOther_eq_univ_symm (hl : l.length = l2.length)
   have hS'Eq : S' =  (l2.withUniqueDualInOther l) := by
     rw [@Finset.ext_iff]
     intro a
-    simp [S']
+    simp only [S']
+    simp
   rw [hS'Eq] at hsCardUn
   exact (Finset.card_eq_iff_eq_univ (l2.withUniqueDualInOther l)).mp hsCardUn
 
@@ -374,11 +376,11 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
   apply And.intro
   · rw [@getDualInOther?_isSome_iff_exists]
     use (l2.getDualInOther? l3 ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1
-    simp [AreDualInOther]
+    simp only [AreDualInOther, getDualInOther?_id]
   intro j hj
   have hj' : j = (l2.getDualInOther? l3 ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1  := by
     rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-    simpa [AreDualInOther] using hj
+    simpa only [AreDualInOther, getDualInOther?_id] using hj
     rw [h']
     exact Finset.mem_univ ((l.getDualInOther? l2 i).get hi.right.left)
   have hs : (l.getDualInOther? l3 i).isSome := by
@@ -387,7 +389,7 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
   have hs' : (l.getDualInOther? l3 i).get hs = (l2.getDualInOther? l3
       ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1 := by
     rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-    simp [AreDualInOther]
+    simp only [AreDualInOther, getDualInOther?_id]
     rw [h']
     exact Finset.mem_univ ((l.getDualInOther? l2 i).get hi.right.left)
   rw [← hj'] at hs'

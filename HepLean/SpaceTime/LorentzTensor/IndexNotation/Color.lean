@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.OnlyUniqueDuals
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
 import HepLean.SpaceTime.LorentzTensor.Contraction
@@ -69,7 +70,7 @@ lemma iff_withDual :
 lemma iff_on_isSome : l.ColorCond ↔ ∀ (i : Fin l.length) (h : (l.getDual? i).isSome), 𝓒.τ
     (l.colorMap ((l.getDual? i).get h)) = l.colorMap i := by
   rw [iff_withDual]
-  simp
+  simp only [Subtype.forall, mem_withDual_iff_isSome]
 
 lemma assoc (h : ColorCond (l ++ l2 ++ l3)) :
     ColorCond (l ++ (l2 ++ l3)) := by
@@ -79,7 +80,9 @@ lemma assoc (h : ColorCond (l ++ l2 ++ l3)) :
 lemma inl (h : ColorCond (l ++ l2)) : ColorCond l := by
   rw [iff_withDual] at h ⊢
   intro i
-  simpa using h ⟨appendEquiv (Sum.inl i), by simp_all⟩
+  simpa only [withDual_isSome, getDual?_append_inl_of_getDual?_isSome, Option.get_some,
+    colorMap_append_inl] using h ⟨appendEquiv (Sum.inl i), by simp only [mem_withDual_iff_isSome,
+      withDual_isSome, getDual?_append_inl_of_getDual?_isSome, Option.isSome_some]⟩
 
 lemma symm (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (l ++ l2)) :
     ColorCond (l2 ++ l) := by
@@ -97,7 +100,7 @@ lemma symm (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (
       Option.isSome_some, mem_withInDualOther_iff_isSome, Bool.not_eq_true, Option.not_isSome,
       Option.isNone_iff_eq_none, true_iff, Option.get_some, colorMap_append_inl]
       have hk'' := h (appendEquiv (Sum.inr k))
-      simp at hk''
+      simp only [getDual?_isSome_append_inr_iff, colorMap_append_inr] at hk''
       simp_all only [getDual?_append_inl_of_getDual?_isSome, Option.isSome_some, Option.isSome_none,
         Bool.false_eq_true, or_false, Option.isNone_none,
         getDual?_inr_getDualInOther?_isNone_getDual?_isSome, Option.get_some, colorMap_append_inr,
@@ -117,16 +120,25 @@ lemma symm (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (
   | Sum.inr k =>
     have hn := l2.append_inr_not_mem_withDual_of_withDualInOther l k hj
     by_cases hk' : (l.getDual? k).isSome
-    · simp_all
+    · simp_all only [mem_withDual_iff_isSome, mem_withInDualOther_iff_isSome, Bool.not_eq_true,
+        Option.not_isSome, Option.isNone_iff_eq_none, true_iff, Option.isNone_none,
+        getDual?_inr_getDualInOther?_isNone_getDual?_isSome, Option.get_some, colorMap_append_inr]
       have hk'' := h (appendEquiv (Sum.inl k))
-      simp at hk''
-      simp_all
-    · simp_all
+      simp only [getDual?_isSome_append_inl_iff, colorMap_append_inl] at hk''
+      simp_all only [Option.isNone_none, getDual?_inr_getDualInOther?_isNone_getDual?_isSome,
+        Option.isSome_some, Option.isSome_none, Bool.false_eq_true, or_false,
+        getDual?_append_inl_of_getDual?_isSome, Option.get_some, colorMap_append_inl, true_implies]
+    · simp_all only [mem_withDual_iff_isSome, Bool.false_eq_true, mem_withInDualOther_iff_isSome,
+      Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none, false_iff,
+      colorMap_append_inr]
       have hn' : (l.getDualInOther? l2 k).isSome := by
-        simp_all
+        exact Option.ne_none_iff_isSome.mp hn
       have hk'' := h (appendEquiv (Sum.inl k))
-      simp at hk''
-      simp_all
+      simp only [getDual?_isSome_append_inl_iff, colorMap_append_inl] at hk''
+      simp_all only [Option.isSome_none, Bool.false_eq_true, or_true, Option.isNone_none,
+        getDual?_inl_of_getDual?_isNone_getDualInOther?_isSome, Option.get_some,
+        colorMap_append_inr, true_implies, getDual?_append_inr_getDualInOther?_isSome,
+        colorMap_append_inl]
 
 lemma inr  (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (l ++ l2)) :
     ColorCond l2 := inl (symm hu h)
@@ -185,7 +197,8 @@ lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
         simp only [getDualInOther?_append_of_inl, colorMap_append_inl]
         have hL := triple_right hu' hC
         rw [iff_on_isSome] at hL
-        have hL' := hL (appendEquiv (Sum.inl k')) (by simp [hn])
+        have hL' := hL (appendEquiv (Sum.inl k')) (by simp only [getDual?_isSome_append_inl_iff, hn,
+          or_true])
         simp_all only [Option.isNone_none, getDualInOther?_append_of_inl,
           getDual?_inl_of_getDual?_isNone_getDualInOther?_isSome, Option.isSome_some,
           getDual?_eq_none_append_inl_iff, Option.get_some, colorMap_append_inr,
@@ -195,7 +208,8 @@ lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
         simp only [getDualInOther?_append_of_inr, colorMap_append_inr]
         have hR := triple_drop_mid hu' hC
         rw [iff_on_isSome] at hR
-        have hR' := hR (appendEquiv (Sum.inl k')) (by simp [hn])
+        have hR' := hR (appendEquiv (Sum.inl k')) (by simp only [getDual?_isSome_append_inl_iff, hn,
+          or_true])
         simp_all only [Option.isNone_none, getDualInOther?_append_of_inr,
           getDual?_inl_of_getDual?_isNone_getDualInOther?_isSome, Option.isSome_some,
           getDual?_eq_none_append_inr_iff, Option.get_some, colorMap_append_inr,
@@ -226,9 +240,12 @@ lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
         simp_all only [getDualInOther?_of_append_of_isSome, Option.isSome_some,
           getDual?_append_inr_getDualInOther?_isSome, Option.get_some, colorMap_append_inl,
           colorMap_append_inr]
-      · simp_all
+      · simp_all only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none,
+          true_implies]
         rw [← @Option.not_isSome_iff_eq_none, not_not] at hn
-        simp_all
+        simp_all only [getDualInOther?_of_append_of_isNone_isSome, Option.isSome_some,
+          getDual?_append_inr_getDualInOther?_isSome, Option.get_some, colorMap_append_inl,
+          colorMap_append_inr]
         have hR := triple_drop_mid hu' hC
         rw [iff_on_isSome] at hR
         have hR' := hR (appendEquiv (Sum.inr k)) (by simp [hn])
@@ -246,7 +263,8 @@ def bool (l : IndexList 𝓒.Color) : Bool :=
 
 lemma iff_bool : l.ColorCond ↔ bool l := by
   rw [iff_withDual, bool]
-  simp
+  simp only [Subtype.forall, mem_withDual_iff_isSome, Bool.if_false_right, Bool.and_true,
+    decide_eq_true_eq]
 
 end ColorCond
 
@@ -385,7 +403,8 @@ lemma contr_areDualInSelf (i j : Fin l.contr.length) :
 def contrEquiv : (l.withUniqueDualLT ⊕ l.withUniqueDualLT) ⊕ Fin l.contr.length ≃ Fin l.length :=
   (Equiv.sumCongr (l.withUniqueLTGTEquiv) (Equiv.refl _)).trans <|
   (Equiv.sumCongr (Equiv.subtypeEquivRight (by
-  simp [l.unique_duals])) (Fin.castOrderIso l.contrIndexList_length).toEquiv).trans <|
+  simp only [l.unique_duals, implies_true]))
+    (Fin.castOrderIso l.contrIndexList_length).toEquiv).trans <|
   l.dualEquiv
 
 lemma contrEquiv_inl_inl_isSome (i : l.withUniqueDualLT) :
@@ -393,7 +412,7 @@ lemma contrEquiv_inl_inl_isSome (i : l.withUniqueDualLT) :
   change (l.getDual? i).isSome
   have h1 : i.1 ∈ l.withUniqueDual := by
     have hi2 := i.2
-    simp [withUniqueDualLT] at hi2
+    simp only [withUniqueDualLT, Finset.mem_filter] at hi2
     exact hi2.1
   exact mem_withUniqueDual_isSome l.toIndexList (↑i) h1
 
@@ -503,7 +522,7 @@ lemma assoc (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
 lemma swap (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
     AppendCond (l2 ++[h.symm] l) l3:= by
   apply And.intro
-  · simp
+  · simp only [append_toIndexList]
     rw [← append_withDual_eq_withUniqueDual_swap]
     simpa using h'.1
   · exact ColorCond.swap h'.1 h'.2

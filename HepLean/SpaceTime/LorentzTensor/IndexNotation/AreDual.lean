@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
-import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Data.Finset.Sort
 /-!
 
 # Indices which are dual in an index list

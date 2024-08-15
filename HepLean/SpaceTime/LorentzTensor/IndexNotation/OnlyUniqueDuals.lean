@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
 import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Data.Finset.Sort
 /-!
 
 # withDuals equal to withUniqueDuals
@@ -32,7 +31,8 @@ lemma withUnqiueDual_eq_withDual_iff_unique_forall :
   apply Iff.intro
   · intro h i j hj
     rw [@Finset.ext_iff] at h
-    simp [withUniqueDual] at h
+    simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+      true_and, and_iff_left_iff_imp] at h
     refine h i ?_ j hj
     exact withDual_isSome l i
   · intro h
@@ -41,7 +41,8 @@ lemma withUnqiueDual_eq_withDual_iff_unique_forall :
     apply Iff.intro
     · exact fun hi => mem_withDual_of_mem_withUniqueDual l i hi
     · intro hi
-      simp [withUniqueDual]
+      simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+        true_and]
       apply And.intro
       exact (mem_withDual_iff_isSome l i).mp hi
       intro j hj
@@ -116,9 +117,10 @@ lemma withUnqiueDual_eq_withDual_iff_list_apply_bool :
   rw [withUnqiueDual_eq_withDual_iff_list_apply]
   apply Iff.intro
   intro h
-  simp [withUnqiueDualEqWithDualBool, h]
+  simp only [withUnqiueDualEqWithDualBool, h, mem_withDual_iff_isSome, ↓reduceIte]
   intro h
-  simpa [withUnqiueDualEqWithDualBool] using h
+  simpa only [mem_withDual_iff_isSome, List.map_inj_left, withUnqiueDualEqWithDualBool,
+    Bool.if_false_right, Bool.and_true, decide_eq_true_eq] using h
 
 @[simp]
 lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
@@ -146,10 +148,12 @@ lemma withUniqueDualInOther_eq_withDualInOther_append_of_symm'
   match k with
   | Sum.inl k =>
     rw [mem_append_withUniqueDualInOther_symm]
-    simpa using h (appendEquiv (Sum.inr k))
+    simpa only [mem_withInDualOther_iff_isSome, getDualInOther?_append_of_inl,
+      getDualInOther?_append_of_inr] using h (appendEquiv (Sum.inr k))
   | Sum.inr k =>
     rw [← mem_append_withUniqueDualInOther_symm]
-    simpa using h (appendEquiv (Sum.inl k))
+    simpa only [mem_withInDualOther_iff_isSome, getDualInOther?_append_of_inr,
+      getDualInOther?_append_of_inl] using h (appendEquiv (Sum.inl k))
 
 lemma withUniqueDualInOther_eq_withDualInOther_append_of_symm :
     (l ++ l2).withUniqueDualInOther l3 = (l ++ l2).withDualInOther l3 ↔
@@ -228,10 +232,11 @@ lemma append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl
   rw [Finset.ext_iff]
   intro i
   refine Iff.intro (fun h' => ?_) (fun h' => ?_)
-  · simp [h']
+  · simp only [mem_withInDualOther_iff_isSome, h', mem_withUniqueDualInOther_isSome]
   · have hn : appendEquiv (Sum.inl i) ∈ (l ++ l2).withUniqueDual := by
       rw [h]
-      simp_all
+      simp_all only [mem_withInDualOther_iff_isSome, mem_withDual_iff_isSome,
+        getDual?_isSome_append_inl_iff, or_true, mem_withUniqueDual_isSome]
     refine l.mem_withUniqueDualInOther_of_inl_withDualInOther l2 i hn ?_
     exact (mem_withInDualOther_iff_isSome l l2 i).mp h'
 
