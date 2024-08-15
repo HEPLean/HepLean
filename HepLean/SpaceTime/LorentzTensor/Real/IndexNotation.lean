@@ -85,10 +85,9 @@ noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (hd : TensorColor.ColorMap.DualMap.boolFin
       (toIndexList' s hs).colorMap (cn ∘ Fin.cast hn.symm)) :
     (realLorentzTensor d).TensorIndex :=
-  TensorStructure.TensorIndex.mkDualMap  T ⟨(toIndexList' s hs), hD,
+  TensorStructure.TensorIndex.mkDualMap T ⟨(toIndexList' s hs), hD,
       IndexList.ColorCond.iff_bool.mpr hC⟩ hn
       (TensorColor.ColorMap.DualMap.boolFin_DualMap hd)
-
 
 /-- A tactic used to prove `boolFin` for real Lornetz tensors. -/
 macro "dualMapTactic" : tactic =>
@@ -114,10 +113,9 @@ macro "prodTactic" : tactic =>
 /-- The product of Real Lorentz tensors. Conditions on indices are checked automatically. -/
 notation:10 T "⊗ᵀ" S:11 => TensorIndex.prod T S (by prodTactic)
 
-
 /-- An example showing the allowed constructions. -/
 example (T : (realLorentzTensor d).Tensor ![ColorType.up, ColorType.down]) : True := by
-  let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄"  ⊗ᵀ T|"ᵘ⁴ᵤ₃"
+  let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
   let _ := T|"ᵤ₁ᵤ₂" ⊗ᵀ T|"ᵘ³ᵤ₄" ⊗ᵀ T|"ᵘ¹ᵘ²" ⊗ᵀ T|"ᵘ⁴ᵤ₃"
   exact trivial
 

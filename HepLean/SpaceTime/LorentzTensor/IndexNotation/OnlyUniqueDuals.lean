@@ -18,7 +18,6 @@ namespace IndexList
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 l3 : IndexList X)
 
-
 /-!
 
 ## withDual equal to withUniqueDual
@@ -56,7 +55,7 @@ lemma withUnqiueDual_eq_withDual_iff :
     by_cases hi : i ∈ l.withDual
     · have hii : i ∈ l.withUniqueDual := by
         simp_all only
-      change (l.getDual? i).bind l.getDual?  = _
+      change (l.getDual? i).bind l.getDual? = _
       simp [hii]
       symm
       rw [Option.guard_eq_some]
@@ -79,8 +78,8 @@ lemma withUnqiueDual_eq_withDual_iff :
       rw [hi] at hj'
       rw [h i] at hj'
       have hi : Option.guard (fun i => i ∈ l.withDual) ↑i = some i := by
-         apply Option.guard_eq_some.mpr
-         simp
+        apply Option.guard_eq_some.mpr
+        simp
       rw [hi] at hj'
       simp at hj'
       have hj'' := Option.guard_eq_some.mp hj'.symm
@@ -129,7 +128,7 @@ lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
   intro x
   by_contra hx
   have x' : l.withDual := ⟨x, l.mem_withDual_of_withUniqueDual ⟨x, hx⟩⟩
-  have hx'  := x'.2
+  have hx' := x'.2
   simp [h] at hx'
 
 /-!
@@ -140,7 +139,7 @@ lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
 
 lemma withUniqueDualInOther_eq_withDualInOther_append_of_symm'
     (h : (l ++ l2).withUniqueDualInOther l3 = (l ++ l2).withDualInOther l3) :
-    (l2 ++ l).withUniqueDualInOther l3 = (l2 ++ l).withDualInOther l3  := by
+    (l2 ++ l).withUniqueDualInOther l3 = (l2 ++ l).withDualInOther l3 := by
   rw [Finset.ext_iff] at h ⊢
   intro j
   obtain ⟨k, hk⟩ := appendEquiv.surjective j
@@ -179,20 +178,18 @@ lemma withUniqueDualInOther_eq_withDualInOther_of_append_symm :
   exact l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l2 l3
   exact l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l3 l2
 
-
 /-!
 
 ## withDual equal to withUniqueDual append conditions
 
 -/
 
-
 lemma append_withDual_eq_withUniqueDual_iff :
     (l ++ l2).withUniqueDual = (l ++ l2).withDual ↔
     ((l.withUniqueDual ∩ (l.withDualInOther l2)ᶜ) ∪ l.withUniqueDualInOther l2)
     = l.withDual ∪ l.withDualInOther l2
     ∧ (l2.withUniqueDual ∩ (l2.withDualInOther l)ᶜ) ∪ l2.withUniqueDualInOther l
-    =  l2.withDual ∪ l2.withDualInOther l := by
+    = l2.withDual ∪ l2.withDualInOther l := by
   rw [append_withUniqueDual_disjSum, withDual_append_eq_disjSum]
   simp only [Equiv.finsetCongr_apply, Finset.map_inj]
   have h (s s' : Finset (Fin l.length)) (t t' : Finset (Fin l2.length)) :
@@ -227,7 +224,7 @@ lemma append_withDual_eq_withUniqueDual_inr (h : (l ++ l2).withUniqueDual = (l +
 
 @[simp]
 lemma append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl
-    (h :  (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
+    (h : (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
     l.withUniqueDualInOther l2 = l.withDualInOther l2 := by
   rw [Finset.ext_iff]
   intro i
@@ -242,7 +239,7 @@ lemma append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl
 
 @[simp]
 lemma append_withDual_eq_withUniqueDual_withUniqueDualInOther_inr
-    (h :  (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
+    (h : (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
     l2.withUniqueDualInOther l = l2.withDualInOther l := by
   rw [append_withDual_eq_withUniqueDual_symm] at h
   exact append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl l2 l h
@@ -291,7 +288,6 @@ lemma append_withDual_eq_withUniqueDual_swap :
   rw [append_withDual_eq_withUniqueDual_symm]
   rw [withUniqueDualInOther_eq_withDualInOther_of_append_symm]
   rw [withUniqueDualInOther_eq_withDualInOther_append_of_symm]
-
 
 end IndexList
 

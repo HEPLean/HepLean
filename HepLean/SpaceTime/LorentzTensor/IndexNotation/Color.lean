@@ -20,7 +20,6 @@ a Tensor Color structure.
 
 namespace IndexNotation
 
-
 namespace IndexList
 
 variable {𝓒 : TensorColor}
@@ -55,7 +54,7 @@ lemma iff_withDual :
     · have h'' : (Option.guard (fun i => (l.getDual? i).isSome = true) ↑i) = i := by
         apply Option.guard_eq_some.mpr
         simp only [true_and]
-        exact  hi
+        exact hi
       simp only [Function.comp_apply, h'', Option.map_some']
       rw [show l.getDual? ↑i = some ((l.getDual? i).get hi) by simp]
       rw [Option.map_some']
@@ -140,10 +139,10 @@ lemma symm (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (
         colorMap_append_inr, true_implies, getDual?_append_inr_getDualInOther?_isSome,
         colorMap_append_inl]
 
-lemma inr  (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (l ++ l2)) :
+lemma inr (hu : (l ++ l2).withUniqueDual = (l ++ l2).withDual) (h : ColorCond (l ++ l2)) :
     ColorCond l2 := inl (symm hu h)
 
-lemma triple_right  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
+lemma triple_right (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
     (h : ColorCond (l ++ l2 ++ l3)) : ColorCond (l2 ++ l3) := by
   have h1 := assoc h
   rw [append_assoc] at hu
@@ -158,8 +157,7 @@ lemma triple_drop_mid (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).wit
   rw [append_withDual_eq_withUniqueDual_symm, append_assoc] at hu
   exact append_withDual_eq_withUniqueDual_inr _ _ hu
 
-
-lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
+lemma swap (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
     (h : ColorCond (l ++ l2 ++ l3)) :
     ColorCond (l2 ++ l ++ l3) := by
   have hC := h
@@ -222,7 +220,7 @@ lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
     simp only [mem_withDual_iff_isSome, mem_withInDualOther_iff_isSome,
       getDualInOther?_isSome_of_append_iff, not_or, Bool.not_eq_true, Option.not_isSome,
       Option.isNone_iff_eq_none] at hn
-    by_cases hk' :  (l3.getDual? k).isSome
+    by_cases hk' : (l3.getDual? k).isSome
     · simp_all only [mem_withDual_iff_isSome, true_iff, Option.isNone_iff_eq_none,
       getDualInOther?_eq_none_of_append_iff, and_self,
       getDual?_inr_getDualInOther?_isNone_getDual?_isSome, Option.get_some, colorMap_append_inr]
@@ -256,8 +254,8 @@ lemma swap  (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
 /-- A bool which is true for an index list if and only if every index and its' dual, when it exists,
   have dual colors. -/
 def bool (l : IndexList 𝓒.Color) : Bool :=
-  if (∀ (i : l.withDual),  𝓒.τ
-     (l.colorMap ((l.getDual? i).get (l.withDual_isSome i))) = l.colorMap i) then
+  if (∀ (i : l.withDual), 𝓒.τ
+      (l.colorMap ((l.getDual? i).get (l.withDual_isSome i))) = l.colorMap i) then
     true
   else false
 
@@ -268,10 +266,7 @@ lemma iff_bool : l.ColorCond ↔ bool l := by
 
 end ColorCond
 
-
-
 end IndexList
-
 
 variable (𝓒 : TensorColor)
 variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
@@ -284,7 +279,7 @@ variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color
   `['ᵘ¹', 'ᵤ₁', 'ᵤ₁']` cannot. -/
 structure ColorIndexList (𝓒 : TensorColor) [IndexNotation 𝓒.Color] extends IndexList 𝓒.Color where
   /-- The condition that for index with a dual, that dual is the unique other index with
-  an identical `id`.  -/
+  an identical `id`. -/
   unique_duals : toIndexList.withDual = toIndexList.withUniqueDual
   /-- The condition that for an index with a dual, that dual has dual color to the index. -/
   dual_color : IndexList.ColorCond toIndexList
@@ -305,7 +300,7 @@ def empty : ColorIndexList 𝓒 where
   dual_color := rfl
 
 /-- The colorMap of a `ColorIndexList` as a `𝓒.ColorMap`.
-   This is to be compared with `colorMap` which is a map `Fin l.length → 𝓒.Color`. -/
+    This is to be compared with `colorMap` which is a map `Fin l.length → 𝓒.Color`. -/
 def colorMap' : 𝓒.ColorMap (Fin l.length) :=
   l.colorMap
 
@@ -317,21 +312,19 @@ lemma ext {l l' : ColorIndexList 𝓒} (h : l.val = l'.val) : l = l' := by
   apply IndexList.ext
   exact h
 
-
 /-! TODO: `orderEmbOfFin_univ` should be replaced with a mathlib lemma if possible. -/
-lemma orderEmbOfFin_univ (n m : ℕ) (h : n = m):
+lemma orderEmbOfFin_univ (n m : ℕ) (h : n = m) :
     Finset.orderEmbOfFin (Finset.univ : Finset (Fin n)) (by simp [h]: Finset.univ.card = m) =
     (Fin.castOrderIso h.symm).toOrderEmbedding := by
   symm
   have h1 : (Fin.castOrderIso h.symm).toFun =
-      ( Finset.orderEmbOfFin (Finset.univ : Finset (Fin n))
+      (Finset.orderEmbOfFin (Finset.univ : Finset (Fin n))
       (by simp [h]: Finset.univ.card = m)).toFun := by
     apply Finset.orderEmbOfFin_unique
     intro x
     exact Finset.mem_univ ((Fin.castOrderIso (Eq.symm h)).toFun x)
     exact fun ⦃a b⦄ a => a
   exact Eq.symm (Fin.orderEmbedding_eq (congrArg Set.range (id (Eq.symm h1))))
-
 
 /-!
 
@@ -388,7 +381,6 @@ lemma contr_areDualInSelf (i j : Fin l.contr.length) :
     l.contr.AreDualInSelf i j ↔ False := by
   simp [contr]
 
-
 /-!
 
 ## Contract equiv
@@ -397,7 +389,7 @@ lemma contr_areDualInSelf (i j : Fin l.contr.length) :
 
 /-- An equivalence splitting the indices of `l` into
   a sum type of those indices and their duals (with choice determined by the ordering on `Fin`),
-  and  those indices without duals.
+  and those indices without duals.
 
   This equivalence is used to contract the indices of tensors. -/
 def contrEquiv : (l.withUniqueDualLT ⊕ l.withUniqueDualLT) ⊕ Fin l.contr.length ≃ Fin l.length :=
@@ -464,7 +456,7 @@ lemma contrEquiv_on_withDual_empty (i : Fin l.contr.length) (h : l.withDual = �
 
 -/
 
-/-- The condition on the `ColorIndexList`s  `l` and `l2` so that on appending they form
+/-- The condition on the `ColorIndexList`s `l` and `l2` so that on appending they form
   a `ColorIndexList`. -/
 def AppendCond : Prop :=
   (l.toIndexList ++ l2.toIndexList).withUniqueDual = (l.toIndexList ++ l2.toIndexList).withDual
@@ -541,13 +533,13 @@ lemma appendCond_of_eq (h1 : l.withUniqueDual = l.withDual)
 /-- A boolean which is true for two index lists `l` and `l2` if on appending
   they can form a `ColorIndexList`. -/
 def bool (l l2 : IndexList 𝓒.Color) : Bool :=
-  if ¬  (l ++ l2).withUniqueDual = (l ++ l2).withDual then
+  if ¬ (l ++ l2).withUniqueDual = (l ++ l2).withDual then
     false
   else
     ColorCond.bool (l ++ l2)
 
 lemma bool_iff (l l2 : IndexList 𝓒.Color) :
-    bool l l2 ↔ (l ++ l2).withUniqueDual = (l ++ l2).withDual  ∧ ColorCond.bool (l ++ l2) := by
+    bool l l2 ↔ (l ++ l2).withUniqueDual = (l ++ l2).withDual ∧ ColorCond.bool (l ++ l2) := by
   simp [bool]
 
 lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndexList l2.toIndexList := by
@@ -557,7 +549,6 @@ lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndex
   simp
 
 end AppendCond
-
 
 end ColorIndexList
 

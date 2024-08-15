@@ -18,7 +18,6 @@ a Tensor Color structure.
 
 namespace IndexNotation
 
-
 namespace ColorIndexList
 
 variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
@@ -59,10 +58,9 @@ def ContrPerm : Prop :=
   l'.contr.colorMap' ∘ Subtype.val ∘ (l.contr.getDualInOtherEquiv l'.contr)
   = l.contr.colorMap' ∘ Subtype.val
 
-namespace  ContrPerm
+namespace ContrPerm
 
 variable {l l' l2 l3 : ColorIndexList 𝓒}
-
 
 @[symm]
 lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
@@ -148,7 +146,6 @@ lemma contrPermEquiv_colorMap_iso' {l l' : ColorIndexList 𝓒} (h : ContrPerm l
   rw [ColorMap.MapIso.symm']
   exact contrPermEquiv_colorMap_iso h
 
-
 @[simp]
 lemma contrPermEquiv_refl : contrPermEquiv (@ContrPerm.refl 𝓒 _ l) = Equiv.refl _ := by
   simp [contrPermEquiv, ContrPerm.refl]
@@ -185,7 +182,7 @@ lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
   symm
   rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
   simp only [AreDualInOther, contr_contr_idMap, Fin.cast_trans, Fin.cast_eq_self]
-  have h1 :  ContrPerm l l.contr := by simp
+  have h1 : ContrPerm l l.contr := by simp
   rw [h1.2.1]
   simp
 

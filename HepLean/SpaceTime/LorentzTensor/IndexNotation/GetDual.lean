@@ -16,12 +16,10 @@ We define the functions `getDual?` and `getDualInOther?` which return the
 
 namespace IndexNotation
 
-
 namespace IndexList
 
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 : IndexList X)
-
 
 /-!
 
@@ -30,16 +28,14 @@ variable (l l2 : IndexList X)
 -/
 
 /-- Given an `i`, if a dual exists in the same list,
-   outputs the first such dual, otherwise outputs `none`. -/
+    outputs the first such dual, otherwise outputs `none`. -/
 def getDual? (i : Fin l.length) : Option (Fin l.length) :=
   Fin.find (fun j => l.AreDualInSelf i j)
 
-
 /-- Given an `i`, if a dual exists in the other list,
-   outputs the first such dual, otherwise outputs `none`. -/
+    outputs the first such dual, otherwise outputs `none`. -/
 def getDualInOther? (i : Fin l.length) : Option (Fin l2.length) :=
   Fin.find (fun j => l.AreDualInOther l2 i j)
-
 
 /-!
 
@@ -65,7 +61,7 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
     intro k' hk'
     by_cases hik' : i = k'
     · exact Fin.ge_of_eq (id (Eq.symm hik'))
-    · have hik'' :  l.AreDualInSelf i k' := by
+    · have hik'' : l.AreDualInSelf i k' := by
         simp [AreDualInSelf, hik']
         simp_all [AreDualInSelf]
       have hk'' := hk.2 k' hik''
@@ -86,7 +82,7 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
       by_cases hik' : i = k'
       subst hik'
       exact Lean.Omega.Fin.le_of_not_lt hik
-      have hik'' :  l.AreDualInSelf i k' := by
+      have hik'' : l.AreDualInSelf i k' := by
         simp [AreDualInSelf, hik']
         simp_all [AreDualInSelf]
       exact hk.2 k' hik''
@@ -124,7 +120,7 @@ lemma getDual?_get_areDualInSelf (i : Fin l.length) (h : (l.getDual? i).isSome) 
 
 @[simp]
 lemma getDual?_areDualInSelf_get (i : Fin l.length) (h : (l.getDual? i).isSome) :
-    l.AreDualInSelf i ((l.getDual? i).get h):=
+    l.AreDualInSelf i ((l.getDual? i).get h) :=
   AreDualInSelf.symm (getDual?_get_areDualInSelf l i h)
 
 @[simp]
@@ -206,7 +202,7 @@ lemma getDual?_isSome_append_inl_iff (i : Fin l.length) :
 @[simp]
 lemma getDual?_isSome_append_inr_iff (i : Fin l2.length) :
     ((l ++ l2).getDual? (appendEquiv (Sum.inr i))).isSome ↔
-    (l2.getDual? i).isSome ∨ (l2.getDualInOther? l i).isSome  := by
+    (l2.getDual? i).isSome ∨ (l2.getDualInOther? l i).isSome := by
   rw [getDual?_isSome_iff_exists, getDual?_isSome_iff_exists, getDualInOther?_isSome_iff_exists]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · obtain ⟨j, hj⟩ := h
@@ -245,7 +241,7 @@ lemma getDual?_eq_none_append_inl_iff (i : Fin l.length) :
     exact h1 h
 
 @[simp]
-lemma getDual?_eq_none_append_inr_iff  (i : Fin l2.length) :
+lemma getDual?_eq_none_append_inr_iff (i : Fin l2.length) :
     (l ++ l2).getDual? (appendEquiv (Sum.inr i)) = none ↔
     (l2.getDual? i = none ∧ l2.getDualInOther? l i = none) := by
   apply Iff.intro
@@ -290,7 +286,7 @@ lemma getDual?_append_inl_of_getDual?_isSome (i : Fin l.length) (h : (l.getDual?
 lemma getDual?_inl_of_getDual?_isNone_getDualInOther?_isSome (i : Fin l.length)
     (hi : (l.getDual? i).isNone) (h : (l.getDualInOther? l2 i).isSome) :
     (l ++ l2).getDual? (appendEquiv (Sum.inl i)) = some
-    (appendEquiv (Sum.inr ((l.getDualInOther? l2 i).get h)))  := by
+    (appendEquiv (Sum.inr ((l.getDualInOther? l2 i).get h))) := by
   rw [getDual?, Fin.find_eq_some_iff, AreDualInSelf.append_inl_inr]
   apply And.intro (getDualInOther?_areDualInOther_get l l2 i h)
   intro j hj

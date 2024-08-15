@@ -74,7 +74,6 @@ lemma ext {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toCo
   subst hi
   simp_all
 
-
 lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
     T₁.toColorIndexList = T₂.toColorIndexList := by
   cases h
@@ -134,7 +133,7 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, mapIso_tprod,
       id_eq, eq_mpr_eq_cast, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv]
     apply congrArg
-    have hEm :  IsEmpty { x // x ∈ i.withUniqueDualLT } := by
+    have hEm : IsEmpty { x // x ∈ i.withUniqueDualLT } := by
       rw [Finset.isEmpty_coe_sort]
       rw [Finset.eq_empty_iff_forall_not_mem]
       intro x hx
@@ -158,7 +157,7 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
 
 @[simp]
 lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
-  T.contr.contr_of_withDual_empty  (by simp [contr, ColorIndexList.contr])
+  T.contr.contr_of_withDual_empty (by simp [contr, ColorIndexList.contr])
 
 @[simp]
 lemma contr_toColorIndexList (T : 𝓣.TensorIndex) :
@@ -196,8 +195,6 @@ lemma smul_contr (r : R) (T : 𝓣.TensorIndex) : (r • T).contr = r • T.cont
 ## Equivalence relation on `TensorIndex`
 
 -/
-
-
 
 /-- An (equivalence) relation on two `TensorIndex`.
   The point in this equivalence relation is that certain things (like the
@@ -320,9 +317,7 @@ lemma rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' 
 lemma rel_right {T₁ T₂ T₂' : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' : T₂ ≈ T₂') :
     AddCond T₁ T₂' := h.trans h'.1
 
-
 end AddCond
-
 
 /-- The equivalence between indices after contraction given a `AddCond`. -/
 @[simp]
@@ -405,7 +400,7 @@ lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
   simp only [smul_index, contr_toColorIndexList, Fin.castOrderIso_refl, OrderIso.refl_toEquiv,
     mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply]
 
-lemma add_withDual_empty  (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
+lemma add_withDual_empty (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).withDual = ∅ := by
   simp [contr]
   change T₂.toColorIndexList.contr.withDual = ∅
@@ -463,7 +458,7 @@ lemma add_rel_right {T₁ T₂ T₂' : 𝓣.TensorIndex} (h : AddCond T₁ T₂)
 open AddCond in
 lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h : AddCond T₁ (T₂ +[h'] T₃)) :
     T₁ +[h] (T₂ +[h'] T₃) = T₁ +[h'.of_add_right h] T₂ +[h'.add_left_of_add_right h] T₃ := by
-  refine ext  ?_ ?_
+  refine ext ?_ ?_
   simp only [add_toColorIndexList, ColorIndexList.contr_contr]
   simp only [add_toColorIndexList, add_tensor, contr_toColorIndexList, addCondEquiv,
     contr_add_tensor, map_add, mapIso_mapIso]
@@ -485,7 +480,6 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
 ## Product of `TensorIndex` allowed
 
 -/
-
 
 /-- The condition on two `TensorIndex` which is true if and only if their `ColorIndexList`s
   are related by the condition `AppendCond`. That is, they can be appended to form a
@@ -514,7 +508,6 @@ lemma prod_toColorIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T�
 @[simp]
 lemma prod_toIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
     (prod T₁ T₂ h).toIndexList = T₁.toIndexList ++ T₂.toIndexList := rfl
-
 
 end TensorIndex
 end

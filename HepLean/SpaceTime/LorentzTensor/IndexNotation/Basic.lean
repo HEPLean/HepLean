@@ -243,7 +243,6 @@ instance : Fintype l.toPosSet where
 def toPosFinset (l : IndexList X) : Finset (Fin l.length × Index X) :=
   l.toPosSet.toFinset
 
-
 /-- The construction of a list of indices from a map
   from `Fin n` to `Index X`. -/
 def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X where
@@ -367,7 +366,6 @@ lemma colorMap_sumELim (l1 l2 : IndexList X) :
   match x with
   | Sum.inl i => simp
   | Sum.inr i => simp
-
 
 end append
 

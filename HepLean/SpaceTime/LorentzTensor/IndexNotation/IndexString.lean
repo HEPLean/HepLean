@@ -268,7 +268,7 @@ noncomputable def fromIndexString (T : 𝓣.Tensor cn) (s : String)
     (hn : n = (toIndexList' s hs).length)
     (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
     (hC : IndexList.ColorCond (toIndexList' s hs))
-    (hd : TensorColor.ColorMap.DualMap  (toIndexList' s hs).colorMap
+    (hd : TensorColor.ColorMap.DualMap (toIndexList' s hs).colorMap
       (cn ∘ Fin.cast hn.symm)) : 𝓣.TensorIndex :=
   TensorStructure.TensorIndex.mkDualMap T ⟨(toIndexList' s hs), hD, hC⟩ hn hd
 

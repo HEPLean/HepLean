@@ -14,7 +14,6 @@ import Mathlib.Data.Finset.Sort
 
 namespace IndexNotation
 
-
 namespace IndexList
 
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
@@ -53,10 +52,10 @@ lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ :=
 
 /-- An equivalence from `Fin l.withoutDual.card` to `l.withoutDual` determined by
   the order on `l.withoutDual` inherted from `Fin`. -/
-def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual  :=
+def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual :=
   (Finset.orderIsoOfFin l.withoutDual (by rfl)).toEquiv
 
-/-- An equivalence splitting the indices of an  index list `l` into those indices
+/-- An equivalence splitting the indices of an index list `l` into those indices
   which have a dual in `l` and those which do not have a dual in `l`. -/
 def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
   (Equiv.sumCongr (Equiv.refl _) l.withoutDualEquiv).trans <|
@@ -131,10 +130,10 @@ lemma contrIndexList_areDualInSelf_false (i j : Fin l.contrIndexList.length) :
 @[simp]
 lemma contrIndexList_of_withDual_empty (h : l.withDual = ∅) : l.contrIndexList = l := by
   have h1 := l.withDual_union_withoutDual
-  rw [h , Finset.empty_union] at h1
+  rw [h, Finset.empty_union] at h1
   apply ext
   rw [@List.ext_get_iff]
-  change l.contrIndexList.length = l.length  ∧ _
+  change l.contrIndexList.length = l.length ∧ _
   rw [contrIndexList_length, h1]
   simp only [Finset.card_univ, Fintype.card_fin, List.get_eq_getElem, true_and]
   intro n h1' h2
@@ -152,7 +151,7 @@ lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrI
   simp
 
 @[simp]
-lemma contrIndexList_getDualInOther?_self  (i : Fin l.contrIndexList.length) :
+lemma contrIndexList_getDualInOther?_self (i : Fin l.contrIndexList.length) :
     l.contrIndexList.getDualInOther? l.contrIndexList i = some i := by
   simp [getDualInOther?]
   rw [@Fin.find_eq_some_iff]
@@ -160,13 +159,12 @@ lemma contrIndexList_getDualInOther?_self  (i : Fin l.contrIndexList.length) :
   intro j hj
   have h1 : i = j := by
     by_contra hn
-    have h :  l.contrIndexList.AreDualInSelf i j := by
+    have h : l.contrIndexList.AreDualInSelf i j := by
       simp only [AreDualInSelf]
       simp [hj]
       exact hn
     exact (contrIndexList_areDualInSelf_false l i j).mp h
   exact Fin.ge_of_eq (id (Eq.symm h1))
-
 
 /-!
 
@@ -231,7 +229,7 @@ lemma option_not_lt (i j : Option (Fin l.length)) : i < j → i ≠ j → ¬ j <
     exact Fin.lt_asymm h
 
 /-! TODO: Replace with a mathlib lemma. -/
-lemma lt_option_of_not (i j : Option (Fin l.length)) : ¬ j < i → i ≠ j →  i < j  := by
+lemma lt_option_of_not (i j : Option (Fin l.length)) : ¬ j < i → i ≠ j → i < j := by
   match i, j with
   | none, none =>
     exact fun a b => a (a (a (b rfl)))
@@ -243,7 +241,7 @@ lemma lt_option_of_not (i j : Option (Fin l.length)) : ¬ j < i → i ≠ j → 
     intro h h'
     simp_all
     change ¬ j < i at h
-    change  i < j
+    change i < j
     omega
 
 /-- The equivalence between `l.withUniqueDualLT` and `l.withUniqueDualGT` obtained by
@@ -273,15 +271,13 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
     withUniqueDualLTToWithUniqueDual])
 
 /-- An equivalence from `l.withUniqueDualLT ⊕ l.withUniqueDualLT` to `l.withUniqueDual`.
-  The first  `l.withUniqueDualLT` are taken to themselves, whilst the second copy are
+  The first `l.withUniqueDualLT` are taken to themselves, whilst the second copy are
   taken to their dual. -/
 def withUniqueLTGTEquiv : l.withUniqueDualLT ⊕ l.withUniqueDualLT ≃ l.withUniqueDual := by
-  apply (Equiv.sumCongr (Equiv.refl _ ) l.withUniqueDualLTEquivGT).trans
+  apply (Equiv.sumCongr (Equiv.refl _) l.withUniqueDualLTEquivGT).trans
   apply (Equiv.Finset.union _ _ l.withUniqueDualLT_disjoint_withUniqueDualGT).trans
   apply (Equiv.subtypeEquivRight (by simp only [l.withUniqueDualLT_union_withUniqueDualGT,
     implies_true]))
-
-
 
 /-!
 
@@ -292,7 +288,7 @@ def withUniqueLTGTEquiv : l.withUniqueDualLT ⊕ l.withUniqueDualLT ≃ l.withUn
 /-! TODO: There is probably a better place for this section. -/
 
 lemma withUniqueDualInOther_eq_univ_fst_withDual_empty
-    (h : l.withUniqueDualInOther l2 = Finset.univ)  : l.withDual = ∅ := by
+    (h : l.withUniqueDualInOther l2 = Finset.univ) : l.withDual = ∅ := by
   rw [@Finset.eq_empty_iff_forall_not_mem]
   intro x
   have hx : x ∈ l.withUniqueDualInOther l2 := by
@@ -316,7 +312,7 @@ lemma withUniqueDualInOther_eq_univ_symm (hl : l.length = l2.length)
   let S' : Finset (Fin l2.length) :=
       Finset.map ⟨Subtype.val, Subtype.val_injective⟩
       (Equiv.finsetCongr
-      (l.getDualInOtherEquiv l2) Finset.univ )
+      (l.getDualInOtherEquiv l2) Finset.univ)
   have hSCard : S'.card = l2.length := by
     rw [Finset.card_map]
     simp only [Finset.univ_eq_attach, Equiv.finsetCongr_apply, Finset.card_map, Finset.card_attach]
@@ -325,7 +321,7 @@ lemma withUniqueDualInOther_eq_univ_symm (hl : l.length = l2.length)
   have hsCardUn : S'.card = (@Finset.univ (Fin l2.length)).card := by
     rw [hSCard]
     exact Eq.symm (Finset.card_fin l2.length)
-  have hS'Eq : S' =  (l2.withUniqueDualInOther l) := by
+  have hS'Eq : S' = (l2.withUniqueDualInOther l) := by
     rw [@Finset.ext_iff]
     intro a
     simp only [S']
@@ -378,7 +374,7 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
     use (l2.getDualInOther? l3 ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1
     simp only [AreDualInOther, getDualInOther?_id]
   intro j hj
-  have hj' : j = (l2.getDualInOther? l3 ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1  := by
+  have hj' : j = (l2.getDualInOther? l3 ((l.getDualInOther? l2 i).get hi.2.1)).get hi2.2.1 := by
     rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
     simpa only [AreDualInOther, getDualInOther?_id] using hj
     rw [h']

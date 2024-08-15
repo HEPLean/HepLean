@@ -13,9 +13,7 @@ We define the finite sets of indices in an index list which have a dual
 
 -/
 
-
 namespace IndexNotation
-
 
 namespace IndexList
 
@@ -65,7 +63,6 @@ lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j 
 
 -/
 
-
 @[simp]
 lemma mem_withInDualOther_iff_isSome (i : Fin l.length) :
     i ∈ l.withDualInOther l2 ↔ (l.getDualInOther? l2 i).isSome := by
@@ -113,7 +110,6 @@ lemma append_withDualInOther_eq :
     simp
   | Sum.inr k =>
     simp
-
 
 lemma withDualInOther_append_eq : l.withDualInOther (l2 ++ l3) =
     l.withDualInOther l2 ∪ l.withDualInOther l3 := by
