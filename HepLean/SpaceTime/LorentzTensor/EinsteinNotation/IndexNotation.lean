@@ -59,7 +59,8 @@ lemma toTensorColor_eq : (einsteinTensor R n).toTensorColor = einsteinTensorColo
 /-- The construction of a tensor index from a tensor and a string satisfying conditions
   which can be automatically checked. This is a modified version of
   `TensorStructure.TensorIndex.mkDualMap` specific to real Lorentz tensors. -/
-noncomputable def fromIndexStringColor {R : Type} [CommSemiring R]  {cn : Fin n → einsteinTensorColor.Color}
+noncomputable def fromIndexStringColor {R : Type} [CommSemiring R]
+    {cn : Fin n → einsteinTensorColor.Color}
     (T : (einsteinTensor R m).Tensor cn) (s : String)
     (hs : listCharIsIndexString einsteinTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
@@ -73,7 +74,8 @@ noncomputable def fromIndexStringColor {R : Type} [CommSemiring R]  {cn : Fin n 
       (TensorColor.ColorMap.DualMap.boolFin'_DualMap hd)
 
 @[simp]
-lemma fromIndexStringColor_indexList {R : Type} [CommSemiring R] {cn : Fin n → einsteinTensorColor.Color}
+lemma fromIndexStringColor_indexList {R : Type} [CommSemiring R]
+    {cn : Fin n → einsteinTensorColor.Color}
     (T : (einsteinTensor R m).Tensor cn) (s : String)
     (hs : listCharIsIndexString einsteinTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)

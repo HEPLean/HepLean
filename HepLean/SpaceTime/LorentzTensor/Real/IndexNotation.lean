@@ -76,7 +76,7 @@ lemma toTensorColor_eq : (realLorentzTensor d).toTensorColor = realTensorColor :
   `TensorStructure.TensorIndex.mkDualMap` specific to real Lorentz tensors. -/
 noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (T : (realLorentzTensor d).Tensor cn) (s : String)
-    (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
+    (hs : listCharIsIndexString realTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
     (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
     (hC : IndexList.ColorCond.bool (toIndexList' s hs))

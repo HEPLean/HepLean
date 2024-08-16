@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.StdBasis
 import HepLean.SpaceTime.LorentzTensor.Basic
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
 import Mathlib.LinearAlgebra.DirectSum.Finsupp
 import Mathlib.LinearAlgebra.Finsupp
 /-!
@@ -29,7 +28,6 @@ def einsteinTensorColor : TensorColor where
 instance : Fintype einsteinTensorColor.Color := Unit.fintype
 
 instance : DecidableEq einsteinTensorColor.Color := instDecidableEqPUnit
-
 
 variable {R : Type} [CommSemiring R]
 
@@ -98,7 +96,7 @@ def toVec : (einsteinTensor R n).Tensor ![Unit.unit] ≃ₗ[R] Fin n → R :=
 /-- A matrix from an Einstein tensor with two indices. -/
 def toMatrix : (einsteinTensor R n).Tensor ![Unit.unit, Unit.unit] ≃ₗ[R] Matrix (Fin n) (Fin n) R :=
   ((einsteinTensor R n).mapIso ((Fin.castOrderIso
-    (by rfl :  (Nat.succ 0).succ = Nat.succ 0 + Nat.succ 0)).toEquiv.trans
+    (by rfl : (Nat.succ 0).succ = Nat.succ 0 + Nat.succ 0)).toEquiv.trans
       finSumFinEquiv.symm) (by funext x; fin_cases x; rfl; rfl)).trans <|
   ((einsteinTensor R n).tensoratorEquiv ![0] ![0]).symm.trans <|
   (TensorProduct.congr ((PiTensorProduct.subsingletonEquiv 0))

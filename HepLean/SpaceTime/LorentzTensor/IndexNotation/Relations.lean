@@ -62,13 +62,6 @@ namespace ContrPerm
 
 variable {l l' l2 l3 : ColorIndexList 𝓒}
 
-lemma of_perm (h : l.contr.val.Perm l'.contr.val) : l.ContrPerm l' := by
-  apply And.intro
-  exact List.Perm.length_eq h
-  apply And.intro
-  sorry
-  sorry
-
 @[symm]
 lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
   rw [ContrPerm] at h ⊢

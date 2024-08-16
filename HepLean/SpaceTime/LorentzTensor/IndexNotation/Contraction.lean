@@ -69,7 +69,7 @@ lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ :=
   · simp at h
     simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
 
-lemma mem_withoutDual_iff_count  :
+lemma mem_withoutDual_iff_count :
     fun i => i ∈ l.withoutDual =
     (fun (i : Index X) => l.val.countP (fun j => i.id = j.id) = 1) ∘ l.val.get := by
   funext x
@@ -90,18 +90,18 @@ lemma mem_withoutDual_iff_count  :
       subst hi hj
       simp at h1
       subst hi
-      exact h5 (by exact fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
       subst hj
-      exact h4 (by exact fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
-      exact h5 (by exact fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
-    rw [List.duplicate_iff_two_le_count]   at h1
+      exact h4 (fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
+      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+    rw [List.duplicate_iff_two_le_count] at h1
     simp at h1
     by_cases hx : List.count l.val[↑x] l.val = 0
     rw [@List.count_eq_zero] at hx
-    have hl :  l.val[↑x] ∈ l.val := by
-      simp
+    have hl : l.val[↑x] ∈ l.val := by
+      simp only [Fin.getElem_fin]
       exact List.getElem_mem l.val (↑x) (Fin.val_lt_of_le x (le_refl l.length))
-    exact False.elim (h x (fun a => hx hl) rfl)
+    exact False.elim (h x (fun _ => hx hl) rfl)
     have hln : List.count l.val[↑x] l.val = 1 := by
       rw [@Nat.lt_succ] at h1
       rw [@Nat.le_one_iff_eq_zero_or_eq_one] at h1
@@ -114,14 +114,14 @@ lemma mem_withoutDual_iff_count  :
     have h2 := List.indexOf_lt_length.mpr hxt
     have h3 : xt = l.val.get ⟨xid, h2⟩ := by
       exact Eq.symm (List.indexOf_get h2)
-    simp
-    by_cases hxtx : ⟨xid, h2⟩  = x
+    simp only [decide_eq_true_eq, Fin.getElem_fin, beq_iff_eq]
+    by_cases hxtx : ⟨xid, h2⟩ = x
     rw [h3, hxtx]
-    simp
+    simp only [List.get_eq_getElem]
     apply Iff.intro
     intro h'
-    have hn := h  ⟨xid, h2⟩ (by exact fun a => hxtx (id (Eq.symm a)) ) (by rw [h3] at h'; exact h')
-    exact False.elim (h x (fun a => hn) rfl)
+    have hn := h ⟨xid, h2⟩ (fun a => hxtx (id (Eq.symm a))) (by rw [h3] at h'; exact h')
+    exact False.elim (h x (fun _ => hn) rfl)
     intro h'
     rw [h']
   · intro h
@@ -207,7 +207,7 @@ def contrIndexList : IndexList X where
 /-! TODO: Prove that `contrIndexList'` and `contrIndexList` are equivalent. -/
 /-- An alternative form of the contracted index list. -/
 def contrIndexList' : IndexList X where
-  val :=  l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1)
+  val := l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1)
 
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
@@ -529,16 +529,13 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
   exact Eq.symm (Option.eq_some_of_isSome hs)
 
 lemma withUniqueDualInOther_eq_univ_iff_forall :
-      l.withUniqueDualInOther l2 = Finset.univ ↔
-      ∀ (x : Fin l.length),
-      l.getDual? x = none ∧
-      (l.getDualInOther? l2 x).isSome = true ∧
-        ∀ (j : Fin l2.length), l.AreDualInOther l2 x j → some j = l.getDualInOther? l2 x := by
+    l.withUniqueDualInOther l2 = Finset.univ ↔
+    ∀ (x : Fin l.length), l.getDual? x = none ∧ (l.getDualInOther? l2 x).isSome = true ∧
+    ∀ (j : Fin l2.length), l.AreDualInOther l2 x j → some j = l.getDualInOther? l2 x := by
   rw [Finset.eq_univ_iff_forall]
   simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
     Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.mem_filter, Finset.mem_univ,
     true_and]
-
 
 end IndexList
 

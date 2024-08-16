@@ -480,7 +480,6 @@ lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h
       contrPermEquiv_trans, contrPermEquiv_trans]
     rfl
 
-
 open AddCond in
 lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h : AddCond (T₁ +[h'] T₂) T₃) :
     T₁ +[h'] T₂ +[h] T₃ = T₁ +[h'.add_right_of_add_left h] (T₂ +[h'.of_add_left h] T₃) := by

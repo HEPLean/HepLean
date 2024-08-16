@@ -192,6 +192,7 @@ lemma ext (h : l.val = l2.val) : l = l2 := by
   cases l2
   simp_all
 
+/-- The index list constructed by prepending an index to the list. -/
 def cons (i : Index X) : IndexList X := {val := i :: l.val}
 
 @[simp]
@@ -202,9 +203,9 @@ lemma cons_val (i : Index X) : (l.cons i).val = i :: l.val := by
 lemma cons_length (i : Index X) : (l.cons i).length = l.length + 1 := by
   rfl
 
-def induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
+lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
   (h_cons : ∀ (x : Index X) (xs : IndexList X), P xs → P (xs.cons x)) (l : IndexList X) : P l := by
-  cases' l  with val
+  cases' l with val
   induction val with
   | nil => exact h_nil
   | cons x xs ih =>

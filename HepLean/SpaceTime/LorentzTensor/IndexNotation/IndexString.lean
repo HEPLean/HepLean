@@ -22,19 +22,22 @@ namespace IndexNotation
 
 variable (X : Type) [IndexNotation X] [Fintype X] [DecidableEq X]
 
-
 /-!
 
 ## The definition of an index string
 
 -/
 
+/-- Takes in a list of characters and splits it into a list of characters at those characters
+  which are notation characters e.g. `'ᵘ'`. -/
 def stringToPreIndexList (l : List Char) : List (List Char) :=
   let indexHeads := l.filter (fun c => isNotationChar X c)
   let indexTails := l.splitOnP (fun c => isNotationChar X c)
   let l' := List.zip indexHeads indexTails.tail
   l'.map fun x => x.1 :: x.2
 
+/-- A bool which is true given a list of characters if and only if everl element
+  of the corresponding `stringToPreIndexList` correspondings to an index. -/
 def listCharIsIndexString (l : List Char) : Bool :=
   (stringToPreIndexList X l).all fun l => (listCharIndex X l && l ≠ [])
 
@@ -55,6 +58,7 @@ variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 def toCharList (s : IndexString X) : List Char := s.val.toList
 
 /-! TODO: Move. -/
+/-- Takes a list of characters to the correpsonding index if it exists else to `none`. -/
 def charListToOptionIndex (l : List Char) : Option (Index X) :=
   if h : listCharIndex X l && l ≠ [] then
     some (Index.ofCharList l (by simpa using h))
@@ -65,8 +69,6 @@ def charListToOptionIndex (l : List Char) : Option (Index X) :=
 def toIndexList (s : IndexString X) : IndexList X :=
   {val :=
     (stringToPreIndexList X s.toCharList).filterMap fun l => charListToOptionIndex l}
-
-
 
 /-- The formation of an index list from a string `s` statisfying `listCharIndexStringBool`. -/
 def toIndexList' (s : String) (hs : listCharIsIndexString X s.toList = true) : IndexList X :=
