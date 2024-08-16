@@ -45,6 +45,8 @@ instance : IndexNotation realTensorColor.Color where
 namespace realLorentzTensor
 
 open realTensorColor
+open IndexNotation IndexString
+open TensorStructure TensorIndex
 
 variable {d : ℕ}
 
@@ -68,10 +70,6 @@ lemma realLorentzTensor_color : (realLorentzTensor d).Color = realTensorColor.Co
 @[simp]
 lemma toTensorColor_eq : (realLorentzTensor d).toTensorColor = realTensorColor := by
   rfl
-
-open IndexNotation IndexString
-
-open TensorStructure TensorIndex
 
 /-- The construction of a tensor index from a tensor and a string satisfying conditions
   which can be automatically checked. This is a modified version of

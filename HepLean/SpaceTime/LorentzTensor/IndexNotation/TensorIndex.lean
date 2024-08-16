@@ -269,6 +269,9 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
     Fin.symm_castOrderIso, mapIso_mapIso]
   trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
   simp only [contr_toColorIndexList, mapIso_refl, LinearEquiv.refl_apply]
+  apply congrFun
+  apply congrArg
+  apply congrArg
   rfl
 
 lemma smul_equiv {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ ≈ T₂) (r : R) : r • T₁ ≈ r • T₂ := by
@@ -424,15 +427,15 @@ lemma add_comm {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) : T₁ +[h
   simp only [contr_toColorIndexList, add_toColorIndexList, contr_add_tensor, add_tensor,
     addCondEquiv, map_add, mapIso_mapIso, colorMap', contrPermEquiv_symm]
   rw [_root_.add_comm]
-  congr 1
+  apply Mathlib.Tactic.LinearCombination.add_pf
   · apply congrFun
     apply congrArg
-    congr 1
+    apply mapIso_ext
     rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr, contrPermEquiv_trans,
       contrPermEquiv_trans]
   · apply congrFun
     apply congrArg
-    congr 1
+    apply mapIso_ext
     rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr, contrPermEquiv_trans,
       contrPermEquiv_trans]
 
@@ -442,7 +445,7 @@ lemma add_rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) 
   apply And.intro ContrPerm.refl
   intro h
   simp only [contr_add_tensor, add_tensor, map_add]
-  congr 1
+  apply Mathlib.Tactic.LinearCombination.add_pf
   rw [h'.to_eq]
   simp only [contr_toColorIndexList, add_toColorIndexList, colorMap', addCondEquiv,
     contrPermEquiv_symm, mapIso_mapIso, contrPermEquiv_trans, contrPermEquiv_refl, Equiv.refl_symm,
@@ -463,10 +466,20 @@ lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h
   simp only [add_toColorIndexList, add_tensor, contr_toColorIndexList, addCondEquiv,
     contr_add_tensor, map_add, mapIso_mapIso]
   rw [_root_.add_assoc]
-  congr
-  rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr]
-  rw [contrPermEquiv_trans, contrPermEquiv_trans, contrPermEquiv_trans]
-  erw [← contrPermEquiv_self_contr, contrPermEquiv_trans]
+  apply Mathlib.Tactic.LinearCombination.add_pf
+  · apply congrFun
+    apply congrArg
+    apply mapIso_ext
+    rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr]
+    rw [contrPermEquiv_trans, contrPermEquiv_trans, contrPermEquiv_trans]
+  · apply Mathlib.Tactic.LinearCombination.add_pf
+    apply congrFun
+    apply congrArg
+    apply mapIso_ext
+    rw [← contrPermEquiv_self_contr, contrPermEquiv_trans, ← contrPermEquiv_self_contr,
+      contrPermEquiv_trans, contrPermEquiv_trans]
+    rfl
+
 
 open AddCond in
 lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h : AddCond (T₁ +[h'] T₂) T₃) :

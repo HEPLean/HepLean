@@ -89,8 +89,10 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
 /-- The index list formed from `l` by selecting only those indices in `l` which
   do not have a dual. -/
 def contrIndexList : IndexList X where
-  val := (Fin.list l.withoutDual.card).map (fun i => l.val.get (l.withoutDualEquiv i).1)
+  val := List.ofFn (fun i => l.val.get (l.withoutDualEquiv i).1)
 
+def contrIndexList' : IndexList X where
+  val :=  l.val.filter (fun i => ¬ (l.val.any (fun j => i ≠ j ∧ i.id = j.id)))
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
   simp [contrIndexList, withoutDual, length]
@@ -409,6 +411,18 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
   rw [← hj'] at hs'
   rw [← hs']
   exact Eq.symm (Option.eq_some_of_isSome hs)
+
+lemma withUniqueDualInOther_eq_univ_iff_forall :
+      l.withUniqueDualInOther l2 = Finset.univ ↔
+      ∀ (x : Fin l.length),
+      l.getDual? x = none ∧
+      (l.getDualInOther? l2 x).isSome = true ∧
+        ∀ (j : Fin l2.length), l.AreDualInOther l2 x j → some j = l.getDualInOther? l2 x := by
+  rw [Finset.eq_univ_iff_forall]
+  simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
+    Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+    true_and]
+
 
 end IndexList
 
