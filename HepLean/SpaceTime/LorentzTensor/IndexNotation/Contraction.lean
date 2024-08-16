@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
+import Mathlib.Tactic.FinCases
 /-!
 
 # Contraction of an index list.
@@ -68,6 +69,118 @@ lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ :=
   · simp at h
     simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
 
+lemma mem_withoutDual_iff_count  :
+    fun i => i ∈ l.withoutDual =
+    (fun (i : Index X) => l.val.countP (fun j => i.id = j.id) = 1) ∘ l.val.get := by
+  funext x
+  simp [withoutDual, getDual?]
+  rw [Fin.find_eq_none_iff]
+  simp [AreDualInSelf]
+  apply Iff.intro
+  · intro h
+    have h1 : ¬ l.val.Duplicate l.val[↑x] := by
+      by_contra hn
+      rw [List.duplicate_iff_exists_distinct_get] at hn
+      obtain ⟨i, j, h1, h2, h3⟩ := hn
+      have h4 := h i
+      have h5 := h j
+      simp [idMap] at h4 h5
+      by_cases hi : i = x
+        <;> by_cases hj : j = x
+      subst hi hj
+      simp at h1
+      subst hi
+      exact h5 (by exact fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      subst hj
+      exact h4 (by exact fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
+      exact h5 (by exact fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+    rw [List.duplicate_iff_two_le_count]   at h1
+    simp at h1
+    by_cases hx : List.count l.val[↑x] l.val = 0
+    rw [@List.count_eq_zero] at hx
+    have hl :  l.val[↑x] ∈ l.val := by
+      simp
+      exact List.getElem_mem l.val (↑x) (Fin.val_lt_of_le x (le_refl l.length))
+    exact False.elim (h x (fun a => hx hl) rfl)
+    have hln : List.count l.val[↑x] l.val = 1 := by
+      rw [@Nat.lt_succ] at h1
+      rw [@Nat.le_one_iff_eq_zero_or_eq_one] at h1
+      simp at hx
+      simpa [hx] using h1
+    rw [← hln, List.count]
+    refine (List.countP_congr ?_)
+    intro xt hxt
+    let xid := l.val.indexOf xt
+    have h2 := List.indexOf_lt_length.mpr hxt
+    have h3 : xt = l.val.get ⟨xid, h2⟩ := by
+      exact Eq.symm (List.indexOf_get h2)
+    simp
+    by_cases hxtx : ⟨xid, h2⟩  = x
+    rw [h3, hxtx]
+    simp
+    apply Iff.intro
+    intro h'
+    have hn := h  ⟨xid, h2⟩ (by exact fun a => hxtx (id (Eq.symm a)) ) (by rw [h3] at h'; exact h')
+    exact False.elim (h x (fun a => hn) rfl)
+    intro h'
+    rw [h']
+  · intro h
+    intro i hxi
+    by_contra hn
+    by_cases hxs : x < i
+    let ls := [l.val[x], l.val[i]]
+    have hsub : ls.Sublist l.val := by
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      let fs : Fin ls.length ↪o Fin l.val.length := {
+        toFun := ![x, i],
+        inj' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxi]
+          exact fun a => hxi (id (Eq.symm a)),
+        map_rel_iff' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxs]
+          omega}
+      use fs
+      intro a
+      fin_cases a <;> rfl
+    have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
+    simp only [Fin.getElem_fin, decide_True, List.countP_cons_of_pos, h, add_le_iff_nonpos_left,
+      nonpos_iff_eq_zero, ls] at h1
+    rw [@List.countP_eq_zero] at h1
+    simp at h1
+    exact h1 hn
+    have hxs' : i < x := by omega
+    let ls := [l.val[i], l.val[x]]
+    have hsub : ls.Sublist l.val := by
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      let fs : Fin ls.length ↪o Fin l.val.length := {
+        toFun := ![i, x],
+        inj' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxi]
+          exact fun a => hxi (id (Eq.symm a)),
+        map_rel_iff' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxs']
+          omega}
+      use fs
+      intro a
+      fin_cases a <;> rfl
+    have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
+    simp [h, ls, hn,] at h1
+    rw [List.countP_cons_of_pos] at h1
+    simp at h1
+    simp [idMap] at hn
+    simp [hn]
 /-- An equivalence from `Fin l.withoutDual.card` to `l.withoutDual` determined by
   the order on `l.withoutDual` inherted from `Fin`. -/
 def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual :=
@@ -89,10 +202,13 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
 /-- The index list formed from `l` by selecting only those indices in `l` which
   do not have a dual. -/
 def contrIndexList : IndexList X where
-  val := List.ofFn (fun i => l.val.get (l.withoutDualEquiv i).1)
+  val := List.ofFn (l.val.get ∘ Subtype.val ∘ l.withoutDualEquiv)
 
+/-! TODO: Prove that `contrIndexList'` and `contrIndexList` are equivalent. -/
+/-- An alternative form of the contracted index list. -/
 def contrIndexList' : IndexList X where
-  val :=  l.val.filter (fun i => ¬ (l.val.any (fun j => i ≠ j ∧ i.id = j.id)))
+  val :=  l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1)
+
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
   simp [contrIndexList, withoutDual, length]
