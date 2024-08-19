@@ -17,9 +17,18 @@ open einsteinTensorColor
 open IndexNotation IndexString
 open TensorStructure TensorIndex
 
-variable {R : Type} [CommSemiring R] {n m : ℕ}/-
-lemma swap_eq_transpose (T : (einsteinTensor R n).Tensor ![Unit.unit, Unit.unit]) :
+
+variable {R : Type} [CommSemiring R] {n m : ℕ}
+/-lemma swap_eq_transpose (T : (einsteinTensor R n).Tensor ![Unit.unit, Unit.unit]) :
      (T|"ᵢ₁ᵢ₂") ≈ ((toMatrix.symm (toMatrix T).transpose)|"ᵢ₂ᵢ₁") := by
-  sorry-/
+  apply And.intro
+  · apply And.intro
+    simp only [toTensorColor_eq, indexNotation_eq_color, ColorIndexList.contr, fromIndexStringColor,
+      mkDualMap, decidableEq_eq_color]
+    decide
+    simp only [toTensorColor_eq, indexNotation_eq_color, ColorIndexList.contr, fromIndexStringColor,
+      mkDualMap, decidableEq_eq_color, ColorIndexList.colorMap']
+    decide
+  intro h -/
 
 end einsteinTensor

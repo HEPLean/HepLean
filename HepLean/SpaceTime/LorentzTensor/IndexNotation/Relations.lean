@@ -116,6 +116,12 @@ lemma self_contr : ContrPerm l.contr l := by
   symm
   simp
 
+lemma length_of_no_contr (h : l.ContrPerm l') (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) :
+    l.length = l'.length := by
+  simp only [ContrPerm] at h
+  rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h
+  exact h.1
+
 end ContrPerm
 
 /-- Given two `ColorIndexList` related by contracted permutations, the equivalence between

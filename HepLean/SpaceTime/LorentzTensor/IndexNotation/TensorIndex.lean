@@ -79,10 +79,17 @@ lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
   cases h
   rfl
 
+/-- Given an equality of `TensorIndex`, the isomorphism taking one underlying
+  tensor to the other. -/
 @[simp]
-lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) : T₁.tensor =
-    𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
-    (colormap_mapIso (index_eq_of_eq h).symm) T₂.tensor := by
+def tensorIso {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
+    𝓣.Tensor T₂.colorMap' ≃ₗ[R] 𝓣.Tensor T₁.colorMap' :=
+  𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
+    (colormap_mapIso (index_eq_of_eq h).symm)
+
+@[simp]
+lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
+    T₁.tensor = tensorIso h T₂.tensor := by
   have hi := index_eq_of_eq h
   cases T₁
   cases T₂
@@ -112,6 +119,12 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
   toColorIndexList := T.toColorIndexList.contr
   tensor := 𝓣.mapIso (Equiv.refl _) T.contrEquiv_colorMapIso <|
       𝓣.contr T.toColorIndexList.contrEquiv T.contrEquiv_contrCond T.tensor
+
+@[simp]
+lemma contr_tensor (T : 𝓣.TensorIndex) :
+    T.contr.tensor = ((𝓣.mapIso (Equiv.refl _) T.contrEquiv_colorMapIso <|
+      𝓣.contr T.toColorIndexList.contrEquiv T.contrEquiv_contrCond T.tensor)) := by
+  rfl
 
 /-- Applying contr to a tensor whose indices has no contracts does not do anything. -/
 @[simp]
@@ -266,7 +279,7 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   intro h
   rw [tensor_eq_of_eq T.contr_contr]
   simp only [contr_toColorIndexList, colorMap', contrPermEquiv_self_contr, OrderIso.toEquiv_symm,
-    Fin.symm_castOrderIso, mapIso_mapIso]
+    Fin.symm_castOrderIso, mapIso_mapIso, tensorIso]
   trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
   simp only [contr_toColorIndexList, mapIso_refl, LinearEquiv.refl_apply]
   apply congrFun
@@ -279,7 +292,7 @@ lemma smul_equiv {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ ≈ T₂) (r : R) : r 
   intro h1
   rw [tensor_eq_of_eq (smul_contr r T₁), tensor_eq_of_eq (smul_contr r T₂)]
   simp only [contr_toColorIndexList, smul_index, Fin.castOrderIso_refl, OrderIso.refl_toEquiv,
-    mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply, contrPermEquiv_symm]
+    mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply, contrPermEquiv_symm, tensorIso]
   apply congrArg
   exact h.2 h1
 
@@ -398,23 +411,23 @@ lemma smul_add (r : R) (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     r • (T₁ +[h] T₂) = r • T₁ +[h] r • T₂ := by
   refine ext rfl ?_
   simp only [add, contr_toColorIndexList, addCondEquiv, smul_index, smul_tensor, _root_.smul_add,
-    Fin.castOrderIso_refl, OrderIso.refl_toEquiv, mapIso_refl, map_add, LinearEquiv.refl_apply]
+    Fin.castOrderIso_refl, OrderIso.refl_toEquiv, mapIso_refl, map_add, LinearEquiv.refl_apply,
+    tensorIso]
   rw [tensor_eq_of_eq (smul_contr r T₁), tensor_eq_of_eq (smul_contr r T₂)]
   simp only [smul_index, contr_toColorIndexList, Fin.castOrderIso_refl, OrderIso.refl_toEquiv,
-    mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply]
+    mapIso_refl, smul_tensor, map_smul, LinearEquiv.refl_apply, tensorIso]
 
 lemma add_withDual_empty (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).withDual = ∅ := by
-  simp [contr]
+  simp only [add_toColorIndexList]
   change T₂.toColorIndexList.contr.withDual = ∅
-  simp [ColorIndexList.contr]
+  simp only [ColorIndexList.contr, IndexList.contrIndexList_withDual]
 
 @[simp]
 lemma contr_add (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).contr = T₁ +[h] T₂ :=
   contr_of_withDual_empty (T₁ +[h] T₂) (add_withDual_empty T₁ T₂ h)
 
-@[simp]
 lemma contr_add_tensor (T₁ T₂ : 𝓣.TensorIndex) (h : AddCond T₁ T₂) :
     (T₁ +[h] T₂).contr.tensor =
     𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq (contr_add T₁ T₂ h)])).toEquiv
