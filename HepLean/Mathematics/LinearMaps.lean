@@ -84,8 +84,7 @@ lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a *
   erw [f.map_smul a S]
   rfl
 
-lemma swap (f : BiLinearSymm V) (S T : V) : f S T = f T S :=
-  f.swap' S T
+lemma swap (f : BiLinearSymm V) (S T : V) : f S T = f T S := f.swap' S T
 
 lemma map_smul₂ (f : BiLinearSymm V) (a : ℚ) (S : V) (T : V) : f S (a • T) = a * f S T := by
   rw [f.swap, f.map_smul₁, f.swap]
@@ -115,11 +114,7 @@ lemma map_sum₁ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
   rfl
 
 lemma map_sum₂ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
-    f T (∑ i, S i) = ∑ i, f T (S i) := by
-  rw [swap, map_sum₁]
-  apply Fintype.sum_congr
-  intro i
-  rw [swap]
+    f T (∑ i, S i) = ∑ i, f T (S i) := map_sum (f T) S Finset.univ
 
 /-- The homogenous quadratic equation obtainable from a bilinear function. -/
 @[simps!]
@@ -275,11 +270,7 @@ lemma map_sum₂ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : 
   rw [swap₁]
 
 lemma map_sum₃ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
-    f T L (∑ i, S i) = ∑ i, f T L (S i) := by
-  rw [swap₃, map_sum₁]
-  apply Fintype.sum_congr
-  intro i
-  rw [swap₃]
+    f T L (∑ i, S i) = ∑ i, f T L (S i) := map_sum ((f T) L) S Finset.univ
 
 lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
     (T : Fin n2 → V) (L : Fin n3 → V) :
