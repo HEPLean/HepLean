@@ -132,7 +132,6 @@ end ContrPerm
 
 open ContrPerm
 
-
 /-- Given two `ColorIndexList` related by contracted permutations, the equivalence between
   the indices of the corresponding contracted index lists. This equivalence is the
   permutation between the contracted indices. -/
@@ -208,6 +207,9 @@ lemma contrPermEquiv_contr_self {l : ColorIndexList 𝓒} :
   rw [← contrPermEquiv_symm, contrPermEquiv_self_contr]
   simp
 
+/-- Given two `ColorIndexList` related by permutations and without duals, the equivalence between
+  the indices of the corresponding index lists. This equivalence is the
+  permutation between the indices. -/
 def permEquiv {l l' : ColorIndexList 𝓒} (h : ContrPerm l l')
     (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) : Fin l.length ≃ Fin l'.length :=
   (Equiv.subtypeUnivEquiv (mem_withUniqueDualInOther_of_no_contr h h1 h2)).symm.trans <|

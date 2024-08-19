@@ -168,7 +168,6 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     let hl := i.contrEquiv_on_withDual_empty l h
     exact let_value_heq f hl
 
-@[simp]
 lemma contr_tensor_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     T.contr.tensor = tensorIso (contr_of_withDual_empty T h) T.tensor := by
   exact tensor_eq_of_eq (contr_of_withDual_empty T h)

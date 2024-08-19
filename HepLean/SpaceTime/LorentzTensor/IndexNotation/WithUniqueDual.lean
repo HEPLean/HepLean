@@ -845,22 +845,27 @@ lemma getDualEquiv_involutive : Function.Involutive l.getDualEquiv := by
 
 -/
 
-def withUniqueDualCastLeft (h : l = l3) : l.withUniqueDualInOther l2 ≃ l3.withUniqueDualInOther l2 where
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of the left index list. -/
+def withUniqueDualCastLeft (h : l = l3) :
+    l.withUniqueDualInOther l2 ≃ l3.withUniqueDualInOther l2 where
   toFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h; exact x.prop⟩
-  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h; exact x.prop ⟩
+  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h; exact x.prop⟩
   left_inv x := SetCoe.ext rfl
   right_inv x := SetCoe.ext rfl
 
-def withUniqueDualCastRight (h : l2 = l3) : l.withUniqueDualInOther l2 ≃ l.withUniqueDualInOther l3 where
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of the right index list. -/
+def withUniqueDualCastRight (h : l2 = l3) :
+    l.withUniqueDualInOther l2 ≃ l.withUniqueDualInOther l3 where
   toFun x := ⟨x.1, by subst h; exact x.prop⟩
-  invFun x := ⟨x.1, by subst h; exact x.prop ⟩
+  invFun x := ⟨x.1, by subst h; exact x.prop⟩
   left_inv x := SetCoe.ext rfl
   right_inv x := SetCoe.ext rfl
 
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of both index lists. -/
 def withUniqueDualCast {l1 l2 l1' l2' : IndexList X} (h : l1 = l1') (h2 : l2 = l2') :
     l1.withUniqueDualInOther l2 ≃ l1'.withUniqueDualInOther l2' where
   toFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h h2; exact x.prop⟩
-  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h h2; exact x.prop ⟩
+  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h h2; exact x.prop⟩
   left_inv x := SetCoe.ext rfl
   right_inv x := SetCoe.ext rfl
 
