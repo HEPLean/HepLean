@@ -168,6 +168,10 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     let hl := i.contrEquiv_on_withDual_empty l h
     exact let_value_heq f hl
 
+lemma contr_tensor_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
+    T.contr.tensor = tensorIso (contr_of_withDual_empty T h) T.tensor := by
+  exact tensor_eq_of_eq (contr_of_withDual_empty T h)
+
 @[simp]
 lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
   T.contr.contr_of_withDual_empty (by simp [contr, ColorIndexList.contr])
@@ -266,6 +270,25 @@ lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _) where
 lemma to_eq {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) :
     T₁.contr.tensor = 𝓣.mapIso (contrPermEquiv h.1).symm
     (contrPermEquiv_colorMap_iso h.1) T₂.contr.tensor := h.2 h.1
+
+lemma of_withDual_empty {T₁ T₂ : 𝓣.TensorIndex} (h : T₁.ContrPerm T₂)
+    (h1 : T₁.withDual = ∅) (h2 : T₂.withDual = ∅)
+    (hT : T₁.tensor =
+    𝓣.mapIso (permEquiv h h1 h2).symm (permEquiv_colorMap_iso h h1 h2) T₂.tensor) : Rel T₁ T₂ := by
+  apply And.intro h
+  intro h'
+  rw [contr_tensor_of_withDual_empty T₁ h1, contr_tensor_of_withDual_empty T₂ h2, hT]
+  simp only [contr_toColorIndexList, tensorIso, mapIso_mapIso, contrPermEquiv_symm]
+  apply congrFun
+  apply congrArg
+  apply mapIso_ext
+  ext i
+  simp [permEquiv, contrPermEquiv]
+  have hn := congrArg (fun x => x.toIndexList) (contr_of_withDual_empty T₁ h1)
+  have hn2 := congrArg (fun x => x.toIndexList) (contr_of_withDual_empty T₂ h2)
+  simp only [contr_toColorIndexList] at hn hn2
+  rw [IndexList.getDualInOtherEquiv_cast hn2 hn]
+  rfl
 
 end Rel
 
