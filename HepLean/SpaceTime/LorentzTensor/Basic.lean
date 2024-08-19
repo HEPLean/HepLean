@@ -308,6 +308,10 @@ def mapIso {c : 𝓣.ColorMap X} {d : 𝓣.ColorMap Y} (e : X ≃ Y) (h : c.MapI
   (PiTensorProduct.reindex R _ e) ≪≫ₗ
   (PiTensorProduct.congr (fun y => 𝓣.colorModuleCast (by rw [h]; simp)))
 
+lemma mapIso_ext {c : 𝓣.ColorMap X} {d : 𝓣.ColorMap Y} (e e' : X ≃ Y) (h : c.MapIso e d)
+    (h' : c.MapIso e' d) (he : e = e') : 𝓣.mapIso e h = 𝓣.mapIso e' h' := by
+  simp [he]
+
 @[simp]
 lemma mapIso_trans (e : X ≃ Y) (e' : Y ≃ Z) (h : cX.MapIso e cY) (h' : cY.MapIso e' cZ) :
     (𝓣.mapIso e h ≪≫ₗ 𝓣.mapIso e' h') = 𝓣.mapIso (e.trans e') (h.trans h') := by

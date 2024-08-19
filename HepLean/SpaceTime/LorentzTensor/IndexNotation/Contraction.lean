@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
+import Mathlib.Tactic.FinCases
 /-!
 
 # Contraction of an index list.
@@ -68,10 +69,173 @@ lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ :=
   · simp at h
     simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
 
+lemma mem_withoutDual_iff_count :
+    (fun i => (i ∈ l.withoutDual : Bool)) =
+    (fun (i : Index X) => (l.val.countP (fun j => i.id = j.id) = 1 : Bool)) ∘ l.val.get := by
+  funext x
+  simp [withoutDual, getDual?]
+  rw [Fin.find_eq_none_iff]
+  simp [AreDualInSelf]
+  apply Iff.intro
+  · intro h
+    have h1 : ¬ l.val.Duplicate l.val[↑x] := by
+      by_contra hn
+      rw [List.duplicate_iff_exists_distinct_get] at hn
+      obtain ⟨i, j, h1, h2, h3⟩ := hn
+      have h4 := h i
+      have h5 := h j
+      simp [idMap] at h4 h5
+      by_cases hi : i = x
+        <;> by_cases hj : j = x
+      subst hi hj
+      simp at h1
+      subst hi
+      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      subst hj
+      exact h4 (fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
+      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+    rw [List.duplicate_iff_two_le_count] at h1
+    simp at h1
+    by_cases hx : List.count l.val[↑x] l.val = 0
+    rw [@List.count_eq_zero] at hx
+    have hl : l.val[↑x] ∈ l.val := by
+      simp only [Fin.getElem_fin]
+      exact List.getElem_mem l.val (↑x) (Fin.val_lt_of_le x (le_refl l.length))
+    exact False.elim (h x (fun _ => hx hl) rfl)
+    have hln : List.count l.val[↑x] l.val = 1 := by
+      rw [@Nat.lt_succ] at h1
+      rw [@Nat.le_one_iff_eq_zero_or_eq_one] at h1
+      simp at hx
+      simpa [hx] using h1
+    rw [← hln, List.count]
+    refine (List.countP_congr ?_)
+    intro xt hxt
+    let xid := l.val.indexOf xt
+    have h2 := List.indexOf_lt_length.mpr hxt
+    have h3 : xt = l.val.get ⟨xid, h2⟩ := by
+      exact Eq.symm (List.indexOf_get h2)
+    simp only [decide_eq_true_eq, Fin.getElem_fin, beq_iff_eq]
+    by_cases hxtx : ⟨xid, h2⟩ = x
+    rw [h3, hxtx]
+    simp only [List.get_eq_getElem]
+    apply Iff.intro
+    intro h'
+    have hn := h ⟨xid, h2⟩ (fun a => hxtx (id (Eq.symm a))) (by rw [h3] at h'; exact h')
+    exact False.elim (h x (fun _ => hn) rfl)
+    intro h'
+    rw [h']
+  · intro h
+    intro i hxi
+    by_contra hn
+    by_cases hxs : x < i
+    let ls := [l.val[x], l.val[i]]
+    have hsub : ls.Sublist l.val := by
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      let fs : Fin ls.length ↪o Fin l.val.length := {
+        toFun := ![x, i],
+        inj' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxi]
+          exact fun a => hxi (id (Eq.symm a)),
+        map_rel_iff' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxs]
+          omega}
+      use fs
+      intro a
+      fin_cases a <;> rfl
+    have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
+    simp only [Fin.getElem_fin, decide_True, List.countP_cons_of_pos, h, add_le_iff_nonpos_left,
+      nonpos_iff_eq_zero, ls] at h1
+    rw [@List.countP_eq_zero] at h1
+    simp at h1
+    exact h1 hn
+    have hxs' : i < x := by omega
+    let ls := [l.val[i], l.val[x]]
+    have hsub : ls.Sublist l.val := by
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      let fs : Fin ls.length ↪o Fin l.val.length := {
+        toFun := ![i, x],
+        inj' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxi]
+          exact fun a => hxi (id (Eq.symm a)),
+        map_rel_iff' := by
+          intro a b
+          fin_cases a <;>
+          fin_cases b
+          <;> simp [hxs']
+          omega}
+      use fs
+      intro a
+      fin_cases a <;> rfl
+    have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
+    simp [h, ls, hn,] at h1
+    rw [List.countP_cons_of_pos] at h1
+    simp at h1
+    simp [idMap] at hn
+    simp [hn]
+
 /-- An equivalence from `Fin l.withoutDual.card` to `l.withoutDual` determined by
   the order on `l.withoutDual` inherted from `Fin`. -/
 def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual :=
   (Finset.orderIsoOfFin l.withoutDual (by rfl)).toEquiv
+
+lemma list_ofFn_withoutDualEquiv_eq_sort :
+    List.ofFn (Subtype.val ∘ l.withoutDualEquiv) = l.withoutDual.sort (fun i j => i ≤ j) := by
+  rw [@List.ext_get_iff]
+  apply And.intro
+  simp only [List.length_ofFn, Finset.length_sort]
+  intro n h1 h2
+  simp only [List.get_eq_getElem, List.getElem_ofFn, Function.comp_apply]
+  rfl
+
+lemma withoutDual_sort_eq_filter : l.withoutDual.sort (fun i j => i ≤ j) =
+    (List.finRange l.length).filter (fun i => i ∈ l.withoutDual) := by
+  have h1 {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [DecidablePred p] :
+      List.filter p (Finset.sort (fun i j => i ≤ j) s) =
+      Finset.sort (fun i j => i ≤ j) (Finset.filter p s) := by
+    simp [Finset.filter, Finset.sort]
+    have : ∀ (m : Multiset (Fin n)), List.filter p (Multiset.sort (fun i j => i ≤ j) m) =
+        Multiset.sort (fun i j => i ≤ j) (Multiset.filter p m) := by
+      apply Quot.ind
+      intro m
+      simp [List.mergeSort]
+      have h1 : List.Sorted (fun i j => i ≤ j) (List.filter (fun b => decide (p b))
+          (List.mergeSort (fun i j => i ≤ j) m)) := by
+        simp [List.Sorted]
+        rw [List.pairwise_filter]
+        rw [@List.pairwise_iff_get]
+        intro i j h1 _ _
+        have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
+          exact List.sorted_mergeSort (fun i j => i ≤ j) m
+        simp [List.Sorted] at hs
+        rw [List.pairwise_iff_get] at hs
+        exact hs i j h1
+      have hp1 : (List.mergeSort (fun i j => i ≤ j) m).Perm m := by
+        exact List.perm_mergeSort (fun i j => i ≤ j) m
+      have hp2 : (List.filter (fun b => decide (p b)) ((List.mergeSort (fun i j => i ≤ j) m))).Perm
+          (List.filter (fun b => decide (p b)) m) := by
+        exact List.Perm.filter (fun b => decide (p b)) hp1
+      have hp3 : (List.filter (fun b => decide (p b)) m).Perm
+        (List.mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)) := by
+        exact List.Perm.symm (List.perm_mergeSort (fun i j => i ≤ j)
+        (List.filter (fun b => decide (p b)) m))
+      have hp4 := hp2.trans hp3
+      refine List.eq_of_perm_of_sorted hp4 h1 ?_
+      exact List.sorted_mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
+    exact this s.val
+  rw [withoutDual]
+  rw [← h1]
+  simp only [Option.isNone_iff_eq_none, Finset.mem_filter, Finset.mem_univ, true_and]
+  apply congrArg
+  exact Fin.sort_univ l.length
 
 /-- An equivalence splitting the indices of an index list `l` into those indices
   which have a dual in `l` and those which do not have a dual in `l`. -/
@@ -89,22 +253,44 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
 /-- The index list formed from `l` by selecting only those indices in `l` which
   do not have a dual. -/
 def contrIndexList : IndexList X where
-  val := (Fin.list l.withoutDual.card).map (fun i => l.val.get (l.withoutDualEquiv i).1)
+  val := l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1)
+
+/-- An alternative form of the contracted index list. -/
+@[simp]
+def contrIndexList' : IndexList X where
+  val := List.ofFn (l.val.get ∘ Subtype.val ∘ l.withoutDualEquiv)
+
+lemma contrIndexList_eq_contrIndexList' : l.contrIndexList = l.contrIndexList' := by
+  apply ext
+  simp only [contrIndexList']
+  trans List.map l.val.get (List.ofFn (Subtype.val ∘ ⇑l.withoutDualEquiv))
+  swap
+  simp only [List.map_ofFn]
+  rw [list_ofFn_withoutDualEquiv_eq_sort, withoutDual_sort_eq_filter]
+  simp [contrIndexList]
+  let f1 : Index X → Bool := fun (i : Index X) => l.val.countP (fun j => i.id = j.id) = 1
+  let f2 : (Fin l.length) → Bool := fun i => i ∈ l.withoutDual
+  change List.filter f1 l.val = List.map l.val.get (List.filter f2 (List.finRange l.length))
+  have hf : f2 = f1 ∘ l.val.get := mem_withoutDual_iff_count l
+  rw [hf]
+  rw [← List.filter_map]
+  apply congrArg
+  simp [length]
 
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
-  simp [contrIndexList, withoutDual, length]
+  simp [contrIndexList_eq_contrIndexList', withoutDual, length]
 
 @[simp]
 lemma contrIndexList_idMap (i : Fin l.contrIndexList.length) : l.contrIndexList.idMap i
     = l.idMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
-  simp [contrIndexList, idMap]
+  simp [contrIndexList_eq_contrIndexList', idMap]
   rfl
 
 @[simp]
 lemma contrIndexList_colorMap (i : Fin l.contrIndexList.length) : l.contrIndexList.colorMap i
     = l.colorMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
-  simp [contrIndexList, colorMap]
+  simp [contrIndexList_eq_contrIndexList', colorMap]
   rfl
 
 lemma contrIndexList_areDualInSelf (i j : Fin l.contrIndexList.length) :
@@ -155,7 +341,7 @@ lemma contrIndexList_of_withDual_empty (h : l.withDual = ∅) : l.contrIndexList
   rw [contrIndexList_length, h1]
   simp only [Finset.card_univ, Fintype.card_fin, List.get_eq_getElem, true_and]
   intro n h1' h2
-  simp [contrIndexList]
+  simp [contrIndexList_eq_contrIndexList']
   congr
   simp [withoutDualEquiv]
   simp [h1]
@@ -409,6 +595,15 @@ lemma withUniqueDualInOther_eq_univ_trans (h : l.withUniqueDualInOther l2 = Fins
   rw [← hj'] at hs'
   rw [← hs']
   exact Eq.symm (Option.eq_some_of_isSome hs)
+
+lemma withUniqueDualInOther_eq_univ_iff_forall :
+    l.withUniqueDualInOther l2 = Finset.univ ↔
+    ∀ (x : Fin l.length), l.getDual? x = none ∧ (l.getDualInOther? l2 x).isSome = true ∧
+    ∀ (j : Fin l2.length), l.AreDualInOther l2 x j → some j = l.getDualInOther? l2 x := by
+  rw [Finset.eq_univ_iff_forall]
+  simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
+    Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+    true_and]
 
 end IndexList
 

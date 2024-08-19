@@ -45,6 +45,8 @@ instance : IndexNotation realTensorColor.Color where
 namespace realLorentzTensor
 
 open realTensorColor
+open IndexNotation IndexString
+open TensorStructure TensorIndex
 
 variable {d : ℕ}
 
@@ -69,16 +71,12 @@ lemma realLorentzTensor_color : (realLorentzTensor d).Color = realTensorColor.Co
 lemma toTensorColor_eq : (realLorentzTensor d).toTensorColor = realTensorColor := by
   rfl
 
-open IndexNotation IndexString
-
-open TensorStructure TensorIndex
-
 /-- The construction of a tensor index from a tensor and a string satisfying conditions
   which can be automatically checked. This is a modified version of
   `TensorStructure.TensorIndex.mkDualMap` specific to real Lorentz tensors. -/
 noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (T : (realLorentzTensor d).Tensor cn) (s : String)
-    (hs : listCharIndexStringBool realTensorColor.Color s.toList = true)
+    (hs : listCharIsIndexString realTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
     (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
     (hC : IndexList.ColorCond.bool (toIndexList' s hs))

@@ -68,6 +68,17 @@ lemma boolFin_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin c₁ c₂
     apply List.getElem_mem
   exact h x (h2 _)
 
+/-- The bool which is ture if `𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)` is true for all `i`. -/
+def boolFin' (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
+  ∀ (i : Fin n), 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)
+
+lemma boolFin'_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin' c₁ c₂ = true) :
+    DualMap c₁ c₂ := by
+  simp [boolFin'] at h
+  simp [DualMap]
+  funext x
+  exact h x
+
 lemma refl : DualMap c₁ c₁ := by
   simp [DualMap]
 

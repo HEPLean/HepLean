@@ -357,14 +357,32 @@ lemma contr_contr : l.contr.contr = l.contr := by
 @[simp]
 lemma contr_contr_idMap (i : Fin l.contr.contr.length) :
     l.contr.contr.idMap i = l.contr.idMap (Fin.cast (by simp) i) := by
-  simp [contr]
+  simp only [contr, contrIndexList_idMap, Fin.cast_trans]
   apply congrArg
-  simp [withoutDualEquiv]
+  simp only [withoutDualEquiv, RelIso.coe_fn_toEquiv, Finset.coe_orderIsoOfFin_apply,
+    EmbeddingLike.apply_eq_iff_eq]
   have h1 : l.contrIndexList.withoutDual = Finset.univ := by
     have hx := l.contrIndexList.withDual_union_withoutDual
     have hx2 := l.contrIndexList_withDual
     simp_all
-  simp [h1]
+  simp only [h1]
+  rw [orderEmbOfFin_univ]
+  rfl
+  rw [h1]
+  simp
+
+@[simp]
+lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
+    l.contr.contr.colorMap i = l.contr.colorMap (Fin.cast (by simp) i) := by
+  simp only [contr, contrIndexList_colorMap, Fin.cast_trans]
+  apply congrArg
+  simp only [withoutDualEquiv, RelIso.coe_fn_toEquiv, Finset.coe_orderIsoOfFin_apply,
+    EmbeddingLike.apply_eq_iff_eq]
+  have h1 : l.contrIndexList.withoutDual = Finset.univ := by
+    have hx := l.contrIndexList.withDual_union_withoutDual
+    have hx2 := l.contrIndexList_withDual
+    simp_all
+  simp only [h1]
   rw [orderEmbOfFin_univ]
   rfl
   rw [h1]

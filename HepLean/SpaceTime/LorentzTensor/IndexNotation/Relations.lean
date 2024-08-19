@@ -85,16 +85,16 @@ lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   funext i
   simp only [Function.comp_apply]
   have h1' := congrFun h1.2.2 ⟨i, by simp [h1.2.1]⟩
-  simp at h1'
+  simp only [Function.comp_apply] at h1'
   rw [← h1']
   have h2' := congrFun h2.2.2 ⟨
     ↑((l.contr.getDualInOtherEquiv l2.contr.toIndexList) ⟨↑i, by simp [h1.2.1]⟩), by simp [h2.2.1]⟩
-  simp at h2'
+  simp only [Function.comp_apply] at h2'
   rw [← h2']
   apply congrArg
   simp only [getDualInOtherEquiv, Equiv.coe_fn_mk]
   rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-  simp [AreDualInOther]
+  simp only [AreDualInOther, getDualInOther?_id]
   rw [h2.2.1]
   simp
 
@@ -108,13 +108,19 @@ lemma contr_self : ContrPerm l l.contr := by
   simp only [contr_contr, true_and]
   have h1 := @refl _ _ l
   apply And.intro h1.2.1
-  erw [contr_contr]
-  exact h1.2.2
+  rw [show l.contr.contr = l.contr by simp]
+  simp only [getDualInOtherEquiv_self_refl, Equiv.coe_refl, CompTriple.comp_eq]
 
 @[simp]
 lemma self_contr : ContrPerm l.contr l := by
   symm
   simp
+
+lemma length_of_no_contr (h : l.ContrPerm l') (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) :
+    l.length = l'.length := by
+  simp only [ContrPerm] at h
+  rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h
+  exact h.1
 
 end ContrPerm
 

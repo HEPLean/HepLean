@@ -5,7 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.StdBasis
 import HepLean.SpaceTime.LorentzTensor.Basic
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
+import Mathlib.LinearAlgebra.DirectSum.Finsupp
+import Mathlib.LinearAlgebra.Finsupp
 /-!
 
 # Einstein notation for real tensors
@@ -29,7 +30,6 @@ instance : Fintype einsteinTensorColor.Color := Unit.fintype
 instance : DecidableEq einsteinTensorColor.Color := instDecidableEqPUnit
 
 variable {R : Type} [CommSemiring R]
-
 
 /-- The `TensorStructure` associated with `n`-dimensional tensors. -/
 noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorStructure R where
@@ -76,14 +76,37 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
       simp only [tmul_zero]
       exact id (Ne.symm hi)
 
-instance : IndexNotation einsteinTensorColor.Color where
-  charList := {'ᵢ'}
-  notaEquiv :=
-    ⟨fun _ => ⟨'ᵢ', Finset.mem_singleton.mpr rfl⟩,
-    fun _ => Unit.unit,
-    fun _ => rfl,
-    by
-      intro c
-      have hc2 := c.2
-      simp only [↓Char.isValue, Finset.mem_singleton] at hc2
-      exact SetCoe.ext (id (Eq.symm hc2))⟩
+namespace einsteinTensor
+
+open TensorStructure
+
+noncomputable section
+
+instance : OfNat einsteinTensorColor.Color 0 := ⟨PUnit.unit⟩
+instance : OfNat (einsteinTensor R n).Color 0 := ⟨PUnit.unit⟩
+
+@[simp]
+lemma ofNat_inst_eq : @einsteinTensor.instOfNatColorOfNatNat R _ n =
+    einsteinTensor.instOfNatColorEinsteinTensorColorOfNatNat := rfl
+
+/-- A vector from an Einstein tensor with one index. -/
+def toVec : (einsteinTensor R n).Tensor ![Unit.unit] ≃ₗ[R] Fin n → R :=
+  PiTensorProduct.subsingletonEquiv 0
+
+/-- A matrix from an Einstein tensor with two indices. -/
+def toMatrix : (einsteinTensor R n).Tensor ![Unit.unit, Unit.unit] ≃ₗ[R] Matrix (Fin n) (Fin n) R :=
+  ((einsteinTensor R n).mapIso ((Fin.castOrderIso
+    (by rfl : (Nat.succ 0).succ = Nat.succ 0 + Nat.succ 0)).toEquiv.trans
+      finSumFinEquiv.symm) (by funext x; fin_cases x; rfl; rfl)).trans <|
+  ((einsteinTensor R n).tensoratorEquiv ![0] ![0]).symm.trans <|
+  (TensorProduct.congr ((PiTensorProduct.subsingletonEquiv 0))
+    ((PiTensorProduct.subsingletonEquiv 0))).trans <|
+  (TensorProduct.congr (Finsupp.linearEquivFunOnFinite R R (Fin n)).symm
+    (Finsupp.linearEquivFunOnFinite R R (Fin n)).symm).trans <|
+  (finsuppTensorFinsupp' R (Fin n) (Fin n)).trans <|
+  (Finsupp.linearEquivFunOnFinite R R (Fin n × Fin n)).trans <|
+  (LinearEquiv.curry R (Fin n) (Fin n))
+
+end
+
+end einsteinTensor
