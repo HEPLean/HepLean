@@ -10,7 +10,6 @@ import HepLean.SpaceTime.LorentzTensor.EinsteinNotation.Basic
 
 # Index notation for Einstein tensors
 
-
 -/
 
 instance : IndexNotation einsteinTensorColor.Color where
@@ -36,14 +35,13 @@ variable {R : Type} [CommSemiring R] {n m : ℕ}
 instance : IndexNotation (einsteinTensor R n).Color := instIndexNotationColorEinsteinTensorColor
 instance : DecidableEq (einsteinTensor R n).Color := instDecidableEqColorEinsteinTensorColor
 
-
 @[simp]
 lemma indexNotation_eq_color : @einsteinTensor.instIndexNotationColor R _ n =
     instIndexNotationColorEinsteinTensorColor := by
   rfl
 
 @[simp]
-lemma decidableEq_eq_color : @einsteinTensor.instDecidableEqColor R _ n  =
+lemma decidableEq_eq_color : @einsteinTensor.instDecidableEqColor R _ n =
     instDecidableEqColorEinsteinTensorColor := by
   rfl
 
@@ -54,7 +52,6 @@ lemma einsteinTensor_color : (einsteinTensor R n).Color = einsteinTensorColor.Co
 @[simp]
 lemma toTensorColor_eq : (einsteinTensor R n).toTensorColor = einsteinTensorColor := by
   rfl
-
 
 /-- The construction of a tensor index from a tensor and a string satisfying conditions
   which can be automatically checked. This is a modified version of
@@ -86,13 +83,11 @@ lemma fromIndexStringColor_indexList {R : Type} [CommSemiring R]
     (fromIndexStringColor T s hs hn hD hC hd).toIndexList = toIndexList' s hs := by
   rfl
 
-
 /-- A tactic used to prove `boolFin` for real Lornetz tensors. -/
 macro "dualMapTactic" : tactic =>
     `(tactic| {
     simp only [toTensorColor_eq]
     decide })
-
 
 /-- Notation for the construction of a tensor index from a tensor and a string.
   Conditions are checked automatically. -/
@@ -118,8 +113,6 @@ lemma mem_fin_list (n : ℕ) (i : Fin n) : i ∈ Fin.list n := by
 
 instance (n : ℕ) (i : Fin n) : Decidable (i ∈ Fin.list n) :=
   isTrue (mem_fin_list n i)
-
-
 
 /-- The product of Real Lorentz tensors. Conditions on indices are checked automatically. -/
 notation:10 T "⊗ᵀ" S:11 => TensorIndex.prod T S (by prodTactic)
