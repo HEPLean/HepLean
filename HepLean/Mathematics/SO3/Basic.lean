@@ -26,20 +26,12 @@ instance SO3Group : Group SO3 where
       simp only [det_mul, A.2.1, B.2.1, mul_one],
     by
       simp [A.2.2, B.2.2, ← Matrix.mul_assoc, Matrix.mul_assoc]⟩
-  mul_assoc A B C := by
-    apply Subtype.eq
-    exact Matrix.mul_assoc A.1 B.1 C.1
-  one := ⟨1, by simp, by simp⟩
-  one_mul A := by
-    apply Subtype.eq
-    exact Matrix.one_mul A.1
-  mul_one A := by
-    apply Subtype.eq
-    exact Matrix.mul_one A.1
+  mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
+  one := ⟨1, det_one, by rw [transpose_one, mul_one]⟩
+  one_mul A := Subtype.eq (Matrix.one_mul A.1)
+  mul_one A := Subtype.eq (Matrix.mul_one A.1)
   inv A := ⟨A.1ᵀ, by simp [A.2], by simp [mul_eq_one_comm.mpr A.2.2]⟩
-  mul_left_inv A := by
-    apply Subtype.eq
-    exact mul_eq_one_comm.mpr A.2.2
+  mul_left_inv A := Subtype.eq (mul_eq_one_comm.mpr A.2.2)
 
 /-- Notation for the group `SO3`. -/
 scoped[GroupTheory] notation (name := SO3_notation) "SO(3)" => SO3
@@ -49,9 +41,8 @@ instance : TopologicalSpace SO3 := instTopologicalSpaceSubtype
 
 namespace SO3
 
-lemma coe_inv (A : SO3) : (A⁻¹).1 = A.1⁻¹:= by
-  refine (inv_eq_left_inv ?h).symm
-  exact mul_eq_one_comm.mpr A.2.2
+lemma coe_inv (A : SO3) : (A⁻¹).1 = A.1⁻¹:=
+  (inv_eq_left_inv (mul_eq_one_comm.mpr A.2.2)).symm
 
 /-- The inclusion of `SO(3)` into `GL (Fin 3) ℝ`. -/
 def toGL : SO(3) →* GL (Fin 3) ℝ where
@@ -65,13 +56,11 @@ def toGL : SO(3) →* GL (Fin 3) ℝ where
     rfl
 
 lemma subtype_val_eq_toGL : (Subtype.val : SO3 → Matrix (Fin 3) (Fin 3) ℝ) =
-    Units.val ∘ toGL.toFun := by
-  ext A
+    Units.val ∘ toGL.toFun :=
   rfl
 
 lemma toGL_injective : Function.Injective toGL := by
-  intro A B h
-  apply Subtype.eq
+  refine fun A B h ↦ Subtype.eq ?_
   rw [@Units.ext_iff] at h
   simpa using h
 
@@ -94,26 +83,19 @@ lemma toProd_injective : Function.Injective toProd := by
   intro A B h
   rw [toProd_eq_transpose, toProd_eq_transpose] at h
   rw [@Prod.mk.inj_iff] at h
-  apply Subtype.eq
-  exact h.1
+  exact Subtype.eq h.1
 
-lemma toProd_continuous : Continuous toProd := by
-  change Continuous (fun A => (A.1, ⟨A.1ᵀ⟩))
-  refine continuous_prod_mk.mpr (And.intro ?_ ?_)
-  exact continuous_iff_le_induced.mpr fun U a => a
-  refine Continuous.comp' ?_ ?_
-  exact MulOpposite.continuous_op
-  refine Continuous.matrix_transpose ?_
-  exact continuous_iff_le_induced.mpr fun U a => a
+lemma toProd_continuous : Continuous toProd :=
+  continuous_prod_mk.mpr ⟨continuous_iff_le_induced.mpr fun _ a ↦ a,
+    Continuous.comp' (MulOpposite.continuous_op)
+      (Continuous.matrix_transpose (continuous_iff_le_induced.mpr fun _ a ↦ a))⟩
 
 /-- The embedding of `SO(3)` into the monoid of matrices times the opposite of
   the monoid of matrices. -/
 lemma toProd_embedding : Embedding toProd where
   inj := toProd_injective
-  induced := by
-    refine (inducing_iff ⇑toProd).mp ?_
-    refine inducing_of_inducing_compose toProd_continuous continuous_fst ?hgf
-    exact (inducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl
+  induced := (inducing_iff ⇑toProd).mp (inducing_of_inducing_compose toProd_continuous
+    continuous_fst ((inducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
 
 /-- The embedding of `SO(3)` into `GL (Fin 3) ℝ`. -/
 lemma toGL_embedding : Embedding toGL.toFun where
