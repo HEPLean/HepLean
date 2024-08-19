@@ -70,7 +70,7 @@ lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
   rw [← Function.comp.assoc, ← h.2.2, Function.comp.assoc, Function.comp.assoc]
   rw [show (l.contr.getDualInOtherEquiv l'.contr) =
     (l'.contr.getDualInOtherEquiv l.contr).symm from rfl]
-  simp
+  simp only [Equiv.symm_comp_self, CompTriple.comp_eq]
 
 @[simp]
 lemma refl : ContrPerm l l := by
@@ -122,7 +122,16 @@ lemma length_of_no_contr (h : l.ContrPerm l') (h1 : l.withDual = ∅) (h2 : l'.w
   rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h
   exact h.1
 
+lemma mem_withUniqueDualInOther_of_no_contr (h : l.ContrPerm l') (h1 : l.withDual = ∅)
+    (h2 : l'.withDual = ∅) : ∀ (x : Fin l.length), x ∈ l.withUniqueDualInOther l'.toIndexList := by
+  simp only [ContrPerm] at h
+  rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h
+  simp [h.2.1]
+
 end ContrPerm
+
+open ContrPerm
+
 
 /-- Given two `ColorIndexList` related by contracted permutations, the equivalence between
   the indices of the corresponding contracted index lists. This equivalence is the
@@ -198,6 +207,29 @@ lemma contrPermEquiv_contr_self {l : ColorIndexList 𝓒} :
     (Fin.castOrderIso (by simp)).toEquiv := by
   rw [← contrPermEquiv_symm, contrPermEquiv_self_contr]
   simp
+
+def permEquiv {l l' : ColorIndexList 𝓒} (h : ContrPerm l l')
+    (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) : Fin l.length ≃ Fin l'.length :=
+  (Equiv.subtypeUnivEquiv (mem_withUniqueDualInOther_of_no_contr h h1 h2)).symm.trans <|
+  (l.getDualInOtherEquiv l'.toIndexList).trans <|
+  Equiv.subtypeUnivEquiv (mem_withUniqueDualInOther_of_no_contr h.symm h2 h1)
+
+lemma permEquiv_colorMap_iso {l l' : ColorIndexList 𝓒} (h : ContrPerm l l')
+    (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) :
+    ColorMap.MapIso (permEquiv h h1 h2).symm l'.colorMap' l.colorMap' := by
+  simp [ColorMap.MapIso]
+  funext i
+  simp [contrPermEquiv, getDualInOtherEquiv]
+  have h' := h.symm
+  simp only [ContrPerm] at h'
+  rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h'
+  have hi : i ∈ (l'.withUniqueDualInOther l.toIndexList) := by
+    rw [h'.2.1]
+    exact Finset.mem_univ i
+  have hn := congrFun h'.2.2 ⟨i, hi⟩
+  simp at hn
+  rw [← hn]
+  rfl
 
 end ColorIndexList
 
