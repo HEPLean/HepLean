@@ -255,6 +255,15 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
 def contrIndexList : IndexList X where
   val := l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1)
 
+@[simp]
+lemma contrIndexList_empty : (⟨[]⟩ : IndexList X).contrIndexList = { val := [] } := by
+  apply ext
+  simp [contrIndexList]
+
+lemma contrIndexList_val : l.contrIndexList.val =
+    l.val.filter (fun i => l.val.countP (fun j => i.id = j.id) = 1) := by
+  rfl
+
 /-- An alternative form of the contracted index list. -/
 @[simp]
 def contrIndexList' : IndexList X where
@@ -369,6 +378,98 @@ lemma contrIndexList_getDualInOther?_self (i : Fin l.contrIndexList.length) :
       exact hn
     exact (contrIndexList_areDualInSelf_false l i j).mp h
   exact Fin.ge_of_eq (id (Eq.symm h1))
+
+lemma mem_contrIndexList_count {I : Index X} (h : I ∈ l.contrIndexList.val) :
+    l.val.countP (fun J => I.id = J.id) = 1 := by
+  simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at h
+  exact h.2
+
+lemma mem_contrIndexList_filter {I : Index X} (h : I ∈ l.contrIndexList.val) :
+    l.val.filter (fun J => I.id = J.id) = [I] := by
+  have h1 : (l.val.filter (fun J => I.id = J.id)).length = 1 := by
+    rw [← List.countP_eq_length_filter]
+    exact l.mem_contrIndexList_count h
+  have h2 : I ∈ l.val.filter (fun J => I.id = J.id) := by
+    simp only [List.mem_filter, decide_True, and_true]
+    simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at h
+    exact h.1
+  rw [List.length_eq_one] at h1
+  obtain ⟨J, hJ⟩ := h1
+  rw [hJ] at h2
+  simp at h2
+  subst h2
+  exact hJ
+
+lemma cons_contrIndexList_of_countP_eq_zero {I : Index X}
+    (h : l.val.countP (fun J => I.id = J.id) = 0) :
+    (l.cons I).contrIndexList = l.contrIndexList.cons I := by
+  apply ext
+  simp [contrIndexList]
+  rw [List.filter_cons_of_pos]
+  · apply congrArg
+    apply List.filter_congr
+    intro J hJ
+    simp only [decide_eq_decide]
+    rw [List.countP_eq_zero] at h
+    simp only [decide_eq_true_eq] at h
+    rw [List.countP_cons_of_neg]
+    simp only [decide_eq_true_eq]
+    exact fun a => h J hJ (id (Eq.symm a))
+  · simp only [decide_True, List.countP_cons_of_pos, add_left_eq_self, decide_eq_true_eq]
+    exact h
+
+lemma cons_contrIndexList_of_countP_neq_zero {I : Index X}
+    (h : l.val.countP (fun J => I.id = J.id) ≠ 0) :
+    (l.cons I).contrIndexList.val = l.contrIndexList.val.filter (fun J => ¬ I.id = J.id) := by
+  simp only [contrIndexList, cons_val, decide_not, List.filter_filter, Bool.not_eq_true',
+    decide_eq_false_iff_not, decide_eq_true_eq, Bool.decide_and]
+  rw [List.filter_cons_of_neg]
+  · apply List.filter_congr
+    intro J hJ
+    by_cases hI : I.id = J.id
+    · simp only [hI, decide_True, List.countP_cons_of_pos, add_left_eq_self, Bool.not_true,
+      Bool.false_and, decide_eq_false_iff_not]
+      rw [hI] at h
+      simp only [h, not_false_eq_true]
+    · simp only [hI, decide_False, Bool.not_false, Bool.true_and, decide_eq_decide]
+      rw [List.countP_cons_of_neg]
+      simp only [decide_eq_true_eq]
+      exact fun a => hI (id (Eq.symm a))
+  · simp only [decide_True, List.countP_cons_of_pos, add_left_eq_self, decide_eq_true_eq]
+    exact h
+
+lemma mem_contrIndexList_count_contrIndexList {I : Index X} (h : I ∈ l.contrIndexList.val) :
+    l.contrIndexList.val.countP (fun J => I.id = J.id) = 1 := by
+  trans (l.val.filter (fun J => I.id = J.id)).countP
+    (fun i => l.val.countP (fun j => i.id = j.id) = 1)
+  · rw [contrIndexList]
+    simp only
+    rw [List.countP_filter, List.countP_filter]
+    simp only [decide_eq_true_eq, Bool.decide_and]
+    congr
+    funext a
+    rw [Bool.and_comm]
+  · rw [l.mem_contrIndexList_filter h, List.countP_cons_of_pos]
+    rfl
+    simp only [decide_eq_true_eq]
+    exact mem_contrIndexList_count l h
+
+lemma countP_contrIndexList_zero_of_countP (I : Index X)
+    (h : List.countP (fun J => I.id = J.id) l.val = 0) :
+    l.contrIndexList.val.countP (fun J => I.id = J.id) = 0 := by
+  trans (l.val.filter (fun J => I.id = J.id)).countP
+    (fun i => l.val.countP (fun j => i.id = j.id) = 1)
+  · rw [contrIndexList]
+    simp only
+    rw [List.countP_filter, List.countP_filter]
+    simp only [decide_eq_true_eq, Bool.decide_and]
+    congr
+    funext a
+    rw [Bool.and_comm]
+  · rw [List.countP_eq_length_filter] at h
+    rw [List.length_eq_zero] at h
+    rw [h]
+    simp only [List.countP_nil]
 
 /-!
 

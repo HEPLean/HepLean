@@ -31,8 +31,6 @@ We define a number of ways to contract indices of tensors:
 
 -/
 
-/-! TODO: Define contraction based on an equivalence `(C ⊗ C) ⊗ P ≃ X` satisfying ... . -/
-
 noncomputable section
 
 open TensorProduct

@@ -9,6 +9,8 @@ import HepLean.SpaceTime.LorentzTensor.EinsteinNotation.IndexNotation
 
 # Lemmas regarding Einstein tensors
 
+This file is currently a stub.
+
 -/
 namespace einsteinTensor
 

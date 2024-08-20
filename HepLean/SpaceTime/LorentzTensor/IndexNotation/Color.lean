@@ -299,6 +299,8 @@ open IndexList TensorColor
 
 instance : Coe (ColorIndexList 𝓒) (IndexList 𝓒.Color) := ⟨fun l => l.toIndexList⟩
 
+/-! TODO: Define an induction principal on `ColorIndexList`. -/
+
 /-- The `ColorIndexList` whose underlying list of indices is empty. -/
 def empty : ColorIndexList 𝓒 where
   val := ∅
@@ -481,7 +483,10 @@ lemma contrEquiv_on_withDual_empty (i : Fin l.contr.length) (h : l.withDual = �
 -/
 
 /-- The condition on the `ColorIndexList`s `l` and `l2` so that on appending they form
-  a `ColorIndexList`. -/
+  a `ColorIndexList`.
+
+  Note: `AppendCond` does not form an equivalence relation as it is not reflexive or
+  transitive. -/
 def AppendCond : Prop :=
   (l.toIndexList ++ l2.toIndexList).withUniqueDual = (l.toIndexList ++ l2.toIndexList).withDual
   ∧ ColorCond (l.toIndexList ++ l2.toIndexList)
@@ -506,6 +511,7 @@ namespace AppendCond
 
 variable {l l2 l3 : ColorIndexList 𝓒}
 
+@[symm]
 lemma symm (h : AppendCond l l2) : AppendCond l2 l := by
   apply And.intro _ (h.2.symm h.1)
   rw [append_withDual_eq_withUniqueDual_symm]
@@ -543,7 +549,10 @@ lemma swap (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
     simpa using h'.1
   · exact ColorCond.swap h'.1 h'.2
 
-lemma appendCond_of_eq (h1 : l.withUniqueDual = l.withDual)
+/-! TODO: Show that `AppendCond l l2` implies `AppendCond l.contr l2.contr`. -/
+/-! TODO: Show that `(l1.contr ++[h.contr] l2.contr).contr = (l1 ++[h] l2)` -/
+
+lemma of_eq (h1 : l.withUniqueDual = l.withDual)
     (h2 : l2.withUniqueDual = l2.withDual)
     (h3 : l.withUniqueDualInOther l2 = l.withDualInOther l2)
     (h4 : l2.withUniqueDualInOther l = l2.withDualInOther l)
