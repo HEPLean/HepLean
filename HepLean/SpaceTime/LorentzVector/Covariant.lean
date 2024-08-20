@@ -47,26 +47,25 @@ noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (CovariantLorentzVect
 
 lemma decomp_stdBasis (v : CovariantLorentzVector d) : ∑ i, v i • stdBasis i = v := by
   funext ν
-  rw [Finset.sum_apply]
-  rw [Finset.sum_eq_single_of_mem ν]
-  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, mul_one]
-  exact Finset.mem_univ ν
-  intros b _ hbi
-  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply]
-  simp [LinearMap.stdBasis_apply]
-  exact Or.inr hbi
+  rw [Finset.sum_apply, Finset.sum_eq_single_of_mem ν]
+  · simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, mul_one]
+  · exact Finset.mem_univ ν
+  · intros b _ hbi
+    simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+    erw [Pi.basisFun_apply]
+    simp [LinearMap.stdBasis_apply]
+    exact Or.inr hbi
 
 @[simp]
 lemma decomp_stdBasis' (v : CovariantLorentzVector d) :
     v (Sum.inl 0) • stdBasis (Sum.inl 0)
     + ∑ a₂ : Fin d, v (Sum.inr a₂) • stdBasis (Sum.inr a₂) = v := by
   trans ∑ i, v i • stdBasis i
-  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+  · simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
     Finset.sum_singleton]
-  exact decomp_stdBasis v
+  · exact decomp_stdBasis v
 
 /-!
 
@@ -87,12 +86,12 @@ open Matrix in
 
 lemma rep_apply (g : LorentzGroup d) : rep g v = (g.1⁻¹)ᵀ *ᵥ v := by
   trans (LorentzGroup.transpose g⁻¹) *ᵥ v
-  rfl
-  apply congrFun
-  apply congrArg
-  simp only [LorentzGroup.transpose, lorentzGroupIsGroup_inv, transpose_inj]
-  rw [← LorentzGroup.coe_inv]
-  rfl
+  · rfl
+  · apply congrFun
+    apply congrArg
+    simp only [LorentzGroup.transpose, lorentzGroupIsGroup_inv, transpose_inj]
+    rw [← LorentzGroup.coe_inv]
+    rfl
 
 lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
     rep g (stdBasis μ) = ∑ ν, g⁻¹.1 μ ν • stdBasis ν := by

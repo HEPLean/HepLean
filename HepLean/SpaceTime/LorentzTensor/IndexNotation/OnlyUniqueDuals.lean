@@ -32,25 +32,17 @@ variable (l l2 l3 : IndexList X)
 lemma withUnqiueDual_eq_withDual_iff_unique_forall :
     l.withUniqueDual = l.withDual ↔
     ∀ (i : l.withDual) j, l.AreDualInSelf i j → j = l.getDual? i := by
-  apply Iff.intro
-  · intro h i j hj
-    rw [@Finset.ext_iff] at h
+  refine Iff.intro (fun h i j hj => ?_) (fun h => ?_)
+  · rw [@Finset.ext_iff] at h
     simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
       true_and, and_iff_left_iff_imp] at h
     refine h i ?_ j hj
     exact withDual_isSome l i
-  · intro h
-    apply Finset.ext
-    intro i
-    apply Iff.intro
-    · exact fun hi => mem_withDual_of_mem_withUniqueDual l i hi
-    · intro hi
-      simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+  · refine Finset.ext (fun i => ?_)
+    refine Iff.intro (fun hi => mem_withDual_of_mem_withUniqueDual l i hi) (fun hi => ?_)
+    · simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
         true_and]
-      apply And.intro
-      exact (mem_withDual_iff_isSome l i).mp hi
-      intro j hj
-      exact h ⟨i, hi⟩ j hj
+      exact And.intro ((mem_withDual_iff_isSome l i).mp hi) (fun j hj => h ⟨i, hi⟩ j hj)
 
 lemma withUnqiueDual_eq_withDual_iff :
     l.withUniqueDual = l.withDual ↔
@@ -97,10 +89,7 @@ lemma withUnqiueDual_eq_withDual_iff_list_apply :
     (Fin.list l.length).map (fun i => (l.getDual? i).bind l.getDual?) =
     (Fin.list l.length).map (fun i => Option.guard (fun i => i ∈ l.withDual) i) := by
   rw [withUnqiueDual_eq_withDual_iff]
-  apply Iff.intro
-  exact fun h => List.map_eq_map_iff.mpr fun a _ => h a
-  intro h
-  intro i
+  refine Iff.intro (fun h => List.map_eq_map_iff.mpr fun a _ => h a) (fun h i => ?_)
   simp only [List.map_inj_left] at h
   have h1 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
       have h1' : (Fin.list n)[m] = m := Fin.getElem_list _ _
@@ -119,12 +108,10 @@ def withUnqiueDualEqWithDualBool : Bool :=
 lemma withUnqiueDual_eq_withDual_iff_list_apply_bool :
     l.withUniqueDual = l.withDual ↔ l.withUnqiueDualEqWithDualBool := by
   rw [withUnqiueDual_eq_withDual_iff_list_apply]
-  apply Iff.intro
-  intro h
-  simp only [withUnqiueDualEqWithDualBool, h, mem_withDual_iff_isSome, ↓reduceIte]
-  intro h
-  simpa only [mem_withDual_iff_isSome, List.map_inj_left, withUnqiueDualEqWithDualBool,
-    Bool.if_false_right, Bool.and_true, decide_eq_true_eq] using h
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · simp only [withUnqiueDualEqWithDualBool, h, mem_withDual_iff_isSome, ↓reduceIte]
+  · simpa only [mem_withDual_iff_isSome, List.map_inj_left, withUnqiueDualEqWithDualBool,
+      Bool.if_false_right, Bool.and_true, decide_eq_true_eq] using h
 
 @[simp]
 lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
@@ -161,10 +148,10 @@ lemma withUniqueDualInOther_eq_withDualInOther_append_of_symm'
 
 lemma withUniqueDualInOther_eq_withDualInOther_append_of_symm :
     (l ++ l2).withUniqueDualInOther l3 = (l ++ l2).withDualInOther l3 ↔
-    (l2 ++ l).withUniqueDualInOther l3 = (l2 ++ l).withDualInOther l3 := by
-  apply Iff.intro
-  exact l.withUniqueDualInOther_eq_withDualInOther_append_of_symm' l2 l3
-  exact l2.withUniqueDualInOther_eq_withDualInOther_append_of_symm' l l3
+    (l2 ++ l).withUniqueDualInOther l3 = (l2 ++ l).withDualInOther l3 :=
+  Iff.intro
+    (l.withUniqueDualInOther_eq_withDualInOther_append_of_symm' l2 l3)
+    (l2.withUniqueDualInOther_eq_withDualInOther_append_of_symm' l l3)
 
 lemma withUniqueDualInOther_eq_withDualInOther_of_append_symm'
     (h : l.withUniqueDualInOther (l2 ++ l3) = l.withDualInOther (l2 ++ l3)) :
@@ -178,10 +165,10 @@ lemma withUniqueDualInOther_eq_withDualInOther_of_append_symm'
 
 lemma withUniqueDualInOther_eq_withDualInOther_of_append_symm :
     l.withUniqueDualInOther (l2 ++ l3) = l.withDualInOther (l2 ++ l3) ↔
-    l.withUniqueDualInOther (l3 ++ l2) = l.withDualInOther (l3 ++ l2) := by
-  apply Iff.intro
-  exact l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l2 l3
-  exact l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l3 l2
+    l.withUniqueDualInOther (l3 ++ l2) = l.withDualInOther (l3 ++ l2) :=
+  Iff.intro
+    (l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l2 l3)
+    (l.withUniqueDualInOther_eq_withDualInOther_of_append_symm' l3 l2)
 
 /-!
 
@@ -255,35 +242,31 @@ lemma append_withDual_eq_withUniqueDual_iff' :
     ∧ l.withUniqueDualInOther l2 = l.withDualInOther l2 ∧
     l2.withUniqueDualInOther l = l2.withDualInOther l := by
   apply Iff.intro
-  intro h
-  exact ⟨append_withDual_eq_withUniqueDual_inl l l2 h, append_withDual_eq_withUniqueDual_inr l l2 h,
-    append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl l l2 h,
-    append_withDual_eq_withUniqueDual_withUniqueDualInOther_inr l l2 h⟩
-  intro h
-  rw [append_withDual_eq_withUniqueDual_iff]
-  rw [h.1, h.2.1, h.2.2.1, h.2.2.2]
-  have h1 : l.withDual ∩ (l.withDualInOther l2)ᶜ = l.withDual := by
-    rw [Finset.inter_eq_left]
-    rw [Finset.subset_iff]
-    rw [← h.1, ← h.2.2.1]
-    intro i hi
-    simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
-      Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.compl_filter, not_and,
-      not_forall, Classical.not_imp, Finset.mem_filter, Finset.mem_univ, true_and]
-    intro hn
-    simp_all
-  have h2 : l2.withDual ∩ (l2.withDualInOther l)ᶜ = l2.withDual := by
-    rw [Finset.inter_eq_left]
-    rw [Finset.subset_iff]
-    rw [← h.2.1, ← h.2.2.2]
-    intro i hi
-    simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
-      Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.compl_filter, not_and,
-      not_forall, Classical.not_imp, Finset.mem_filter, Finset.mem_univ, true_and]
-    intro hn
-    simp_all
-  exact ⟨congrFun (congrArg Union.union h1) (l.withDualInOther l2),
-    congrFun (congrArg Union.union h2) (l2.withDualInOther l)⟩
+  · intro h
+    exact ⟨append_withDual_eq_withUniqueDual_inl l l2 h, append_withDual_eq_withUniqueDual_inr l l2 h,
+      append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl l l2 h,
+      append_withDual_eq_withUniqueDual_withUniqueDualInOther_inr l l2 h⟩
+  · intro h
+    rw [append_withDual_eq_withUniqueDual_iff]
+    rw [h.1, h.2.1, h.2.2.1, h.2.2.2]
+    have h1 : l.withDual ∩ (l.withDualInOther l2)ᶜ = l.withDual := by
+      rw [Finset.inter_eq_left, Finset.subset_iff, ← h.1, ← h.2.2.1]
+      intro i hi
+      simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true,
+        Option.not_isSome, Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome,
+        Finset.compl_filter, not_and, not_forall, Finset.mem_filter, Finset.mem_univ, true_and]
+      intro hn
+      simp_all
+    have h2 : l2.withDual ∩ (l2.withDualInOther l)ᶜ = l2.withDual := by
+      rw [Finset.inter_eq_left, Finset.subset_iff, ← h.2.1, ← h.2.2.2]
+      intro i hi
+      simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true,
+        Option.not_isSome, Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome,
+        Finset.compl_filter, not_and, not_forall, Finset.mem_filter, Finset.mem_univ, true_and]
+      intro hn
+      simp_all
+    exact ⟨congrFun (congrArg Union.union h1) (l.withDualInOther l2),
+      congrFun (congrArg Union.union h2) (l2.withDualInOther l)⟩
 
 lemma append_withDual_eq_withUniqueDual_swap :
     (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual

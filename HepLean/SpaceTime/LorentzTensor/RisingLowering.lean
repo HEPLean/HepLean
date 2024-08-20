@@ -151,20 +151,19 @@ local infixl:101 " • " => 𝓣.rep
 -/
 
 /-! TODO: Move -/
-
 lemma unit_lhs_eq (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ) ⊗[R] 𝓣.ColorModule μ) :
     contrLeftAux (𝓣.contrDual μ) (x ⊗ₜ[R] y) =
     (contrRightAux (𝓣.contrDual (𝓣.τ μ))) ((TensorProduct.comm R _ _) y
     ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) x) := by
   refine TensorProduct.induction_on y (by simp) ?_ (fun z1 z2 h1 h2 => ?_)
-  intro x1 x2
-  simp only [contrRightAux, LinearEquiv.refl_toLinearMap, comm_tmul, colorModuleCast,
-    Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp, LinearEquiv.coe_coe,
-    Function.comp_apply, assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, contrDual_symm', cast_cast,
-    cast_eq, rid_tmul]
-  rfl
-  simp [LinearMap.map_add, add_tmul]
-  rw [← h1, ← h2, tmul_add, LinearMap.map_add]
+  · intro x1 x2
+    simp only [contrRightAux, LinearEquiv.refl_toLinearMap, comm_tmul, colorModuleCast,
+      Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp, LinearEquiv.coe_coe,
+      Function.comp_apply, assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, contrDual_symm', cast_cast,
+      cast_eq, rid_tmul]
+    rfl
+  · simp only [map_add, add_tmul]
+    rw [← h1, ← h2, tmul_add, LinearMap.map_add]
 
 @[simp]
 lemma unit_lid : (contrRightAux (𝓣.contrDual (𝓣.τ μ))) ((TensorProduct.comm R _ _) (𝓣.unit μ)
@@ -250,9 +249,9 @@ lemma dualizeModule_equivariant_apply (g : G) (x : 𝓣.ColorModule μ) :
     (𝓣.dualizeModule μ) ((MulActionTensor.repColorModule μ) g x) =
     (MulActionTensor.repColorModule (𝓣.τ μ) g) (𝓣.dualizeModule μ x) := by
   trans ((𝓣.dualizeModule μ) ∘ₗ ((MulActionTensor.repColorModule μ) g)) x
-  rfl
-  rw [dualizeModule_equivariant]
-  rfl
+  · rfl
+  · rw [dualizeModule_equivariant]
+    rfl
 
 /-- Dualizes the color of all indicies of a tensor by contraction with the metric. -/
 def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by

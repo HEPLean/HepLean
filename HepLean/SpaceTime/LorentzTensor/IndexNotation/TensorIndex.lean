@@ -202,20 +202,21 @@ namespace Rel
 /-- Rel is reflexive. -/
 lemma refl (T : 𝓣.TensorIndex) : Rel T T := by
   apply And.intro
-  simp only [ContrPerm.refl]
-  simp
+  · simp only [ContrPerm.refl]
+  · simp only [ContrPerm.refl, contr_toColorIndexList, contr_tensor, contrPermEquiv_refl,
+    Equiv.refl_symm, mapIso_refl, LinearEquiv.refl_apply, imp_self]
 
 /-- Rel is symmetric. -/
 lemma symm {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) : Rel T₂ T₁ := by
   apply And.intro h.1.symm
   intro h'
   rw [← mapIso_symm]
-  symm
-  erw [LinearEquiv.symm_apply_eq]
-  rw [h.2]
-  apply congrFun
-  congr
-  exact h'.symm
+  · symm
+    erw [LinearEquiv.symm_apply_eq]
+    rw [h.2]
+    · apply congrFun
+      congr
+    exact h'.symm
 
 /-- Rel is transitive. -/
 lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T₂ T₃) : Rel T₁ T₃ := by
@@ -227,14 +228,13 @@ lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T
     have h1 := contrPermEquiv_colorMap_iso (ContrPerm.symm (ContrPerm.trans h1.left h2.left))
     rw [← ColorMap.MapIso.symm'] at h1
     exact h1)) T₃.contr.tensor
-  swap
-  congr 1
-  simp only [contrPermEquiv_trans, contrPermEquiv_symm]
-  erw [← mapIso_trans]
-  simp only [LinearEquiv.trans_apply]
-  apply (h1.2 h1.1).trans
-  apply congrArg
-  exact h2.2 h2.1
+  · erw [← mapIso_trans]
+    · simp only [LinearEquiv.trans_apply]
+      apply (h1.2 h1.1).trans
+      · apply congrArg
+        exact h2.2 h2.1
+  · congr 1
+    simp only [contrPermEquiv_trans, contrPermEquiv_symm]
 
 /-- Rel forms an equivalence relation. -/
 lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _) where
@@ -274,17 +274,17 @@ instance asSetoid : Setoid 𝓣.TensorIndex := ⟨Rel, Rel.isEquivalence⟩
 /-- A tensor index is equivalent to its contraction. -/
 lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   apply And.intro
-  simp only [contr_toColorIndexList, ContrPerm.contr_self]
-  intro h
-  rw [tensor_eq_of_eq T.contr_contr]
-  simp only [contr_toColorIndexList, colorMap', contrPermEquiv_self_contr, OrderIso.toEquiv_symm,
-    Fin.symm_castOrderIso, mapIso_mapIso, tensorIso]
-  trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
-  simp only [contr_toColorIndexList, mapIso_refl, LinearEquiv.refl_apply]
-  apply congrFun
-  apply congrArg
-  apply congrArg
-  rfl
+  · simp only [contr_toColorIndexList, ContrPerm.contr_self]
+  · intro h
+    rw [tensor_eq_of_eq T.contr_contr]
+    simp only [contr_toColorIndexList, colorMap', contrPermEquiv_self_contr, OrderIso.toEquiv_symm,
+      Fin.symm_castOrderIso, mapIso_mapIso, tensorIso]
+    trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
+    · simp only [contr_toColorIndexList, mapIso_refl, LinearEquiv.refl_apply]
+    · apply congrFun
+      apply congrArg
+      apply congrArg
+      rfl
 
 /-!
 
@@ -482,12 +482,12 @@ lemma add_rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) 
   intro h
   simp only [contr_add_tensor, add_tensor, map_add]
   apply Mathlib.Tactic.LinearCombination.add_pf
-  rw [h'.to_eq]
-  simp only [contr_toColorIndexList, add_toColorIndexList, colorMap', addCondEquiv,
-    contrPermEquiv_symm, mapIso_mapIso, contrPermEquiv_trans, contrPermEquiv_refl, Equiv.refl_symm,
-    mapIso_refl, LinearEquiv.refl_apply]
-  simp only [contr_toColorIndexList, add_toColorIndexList, colorMap', contrPermEquiv_refl,
-    Equiv.refl_symm, mapIso_refl, LinearEquiv.refl_apply]
+  · rw [h'.to_eq]
+    simp only [contr_toColorIndexList, add_toColorIndexList, colorMap', addCondEquiv,
+      contrPermEquiv_symm, mapIso_mapIso, contrPermEquiv_trans, contrPermEquiv_refl,
+      Equiv.refl_symm, mapIso_refl, LinearEquiv.refl_apply]
+  · simp only [contr_toColorIndexList, add_toColorIndexList, colorMap', contrPermEquiv_refl,
+      Equiv.refl_symm, mapIso_refl, LinearEquiv.refl_apply]
 
 open AddCond in
 lemma add_rel_right {T₁ T₂ T₂' : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' : T₂ ≈ T₂') :
@@ -498,23 +498,22 @@ open AddCond in
 lemma add_assoc' {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₂ T₃} (h : AddCond T₁ (T₂ +[h'] T₃)) :
     T₁ +[h] (T₂ +[h'] T₃) = T₁ +[h'.of_add_right h] T₂ +[h'.add_left_of_add_right h] T₃ := by
   refine ext ?_ ?_
-  simp only [add_toColorIndexList, ColorIndexList.contr_contr]
-  simp only [add_toColorIndexList, add_tensor, contr_toColorIndexList, addCondEquiv,
-    contr_add_tensor, map_add, mapIso_mapIso]
-  rw [_root_.add_assoc]
-  apply Mathlib.Tactic.LinearCombination.add_pf
-  · apply congrFun
-    apply congrArg
-    apply mapIso_ext
-    rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr]
-    rw [contrPermEquiv_trans, contrPermEquiv_trans, contrPermEquiv_trans]
-  · apply Mathlib.Tactic.LinearCombination.add_pf
-    apply congrFun
-    apply congrArg
-    apply mapIso_ext
-    rw [← contrPermEquiv_self_contr, contrPermEquiv_trans, ← contrPermEquiv_self_contr,
-      contrPermEquiv_trans, contrPermEquiv_trans]
-    rfl
+  · simp only [add_toColorIndexList, ColorIndexList.contr_contr]
+  · simp only [add_toColorIndexList, add_tensor, contr_toColorIndexList, addCondEquiv,
+      contr_add_tensor, map_add, mapIso_mapIso]
+    rw [_root_.add_assoc]
+    apply Mathlib.Tactic.LinearCombination.add_pf
+    · apply congrFun
+      apply congrArg
+      apply mapIso_ext
+      rw [← contrPermEquiv_self_contr, ← contrPermEquiv_self_contr]
+      rw [contrPermEquiv_trans, contrPermEquiv_trans, contrPermEquiv_trans]
+    · apply Mathlib.Tactic.LinearCombination.add_pf _ rfl
+      apply congrFun
+      apply congrArg
+      apply mapIso_ext
+      rw [← contrPermEquiv_self_contr, contrPermEquiv_trans, ← contrPermEquiv_self_contr,
+        contrPermEquiv_trans, contrPermEquiv_trans]
 
 open AddCond in
 lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h : AddCond (T₁ +[h'] T₂) T₃) :

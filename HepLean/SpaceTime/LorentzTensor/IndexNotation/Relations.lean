@@ -164,9 +164,9 @@ lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   apply congrArg
   simp only [getDualInOtherEquiv, Equiv.coe_fn_mk]
   rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-  simp only [AreDualInOther, getDualInOther?_id]
-  rw [h2.2.1]
-  simp
+  · simp only [AreDualInOther, getDualInOther?_id]
+  · rw [h2.2.1]
+    simp
 
 /-- `ContrPerm` forms an equivalence relation. -/
 lemma equivalence : Equivalence (@ContrPerm 𝓒 _) where
@@ -262,9 +262,9 @@ lemma contrPermEquiv_trans {l l2 l3 : ColorIndexList 𝓒}
     Equiv.coe_fn_mk, Equiv.subtypeUnivEquiv_apply]
   apply congrArg
   rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-  simp [AreDualInOther]
-  rw [(h1.trans h2).2.1]
-  simp
+  · simp [AreDualInOther]
+  · rw [(h1.trans h2).2.1]
+    simp
 
 @[simp]
 lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
@@ -277,10 +277,10 @@ lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
     Fin.coe_cast]
   symm
   rw [← eq_getDualInOther?_get_of_withUniqueDualInOther_iff]
-  simp only [AreDualInOther, contr_contr_idMap, Fin.cast_trans, Fin.cast_eq_self]
-  have h1 : ContrPerm l l.contr := by simp
-  rw [h1.2.1]
-  simp
+  · simp only [AreDualInOther, contr_contr_idMap, Fin.cast_trans, Fin.cast_eq_self]
+  · have h1 : ContrPerm l l.contr := by simp
+    rw [h1.2.1]
+    simp
 
 @[simp]
 lemma contrPermEquiv_contr_self {l : ColorIndexList 𝓒} :
