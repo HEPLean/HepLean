@@ -49,17 +49,14 @@ def genBoostAux₂ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] Lorent
   map_add' x y := by
     simp only
     rw [← add_smul]
-    apply congrFun
-    apply congrArg
+    apply congrFun (congrArg _ _)
     field_simp
-    apply congrFun
-    apply congrArg
+    apply congrFun (congrArg _ _)
     ring
   map_smul' c x := by
     simp only
-    rw [map_smul]
-    rw [show (c • minkowskiMetric x) (↑u + ↑v) = c * minkowskiMetric x (u+v) from rfl]
-    rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
+    rw [map_smul, show (c • minkowskiMetric x) (↑u + ↑v) = c * minkowskiMetric x (u+v) from rfl,
+      mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
 
 /-- An generalised boost. This is a Lorentz transformation which takes the four velocity `u`
@@ -76,18 +73,12 @@ namespace genBoost
 lemma self (u : FuturePointing d) : genBoost u u = LinearMap.id := by
   ext x
   simp [genBoost]
-  rw [add_assoc]
-  rw [@add_right_eq_self]
-  rw [@add_eq_zero_iff_eq_neg]
-  rw [genBoostAux₁, genBoostAux₂]
+  rw [add_assoc, add_right_eq_self, add_eq_zero_iff_eq_neg, genBoostAux₁, genBoostAux₂]
   simp only [LinearMap.coe_mk, AddHom.coe_mk, map_add, smul_add, neg_smul, neg_add_rev, neg_neg]
   rw [← add_smul]
-  apply congr
-  apply congrArg
-  repeat rw [u.1.2]
-  field_simp
+  apply congrFun (congrArg _ _)
+  rw [u.1.2]
   ring
-  rfl
 
 /-- A generalised boost as a matrix. -/
 def toMatrix (u v : FuturePointing d) : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ :=
@@ -106,8 +97,6 @@ lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
   simp only [genBoost, genBoostAux₁, genBoostAux₂, map_add, smul_add, neg_smul, LinearMap.add_apply,
     LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, basis_left, map_smul, smul_eq_mul, map_neg,
     mul_eq_mul_left_iff]
-  have h1 := FuturePointing.one_add_metric_non_zero u v
-  field_simp
   ring_nf
   simp
 
@@ -116,23 +105,23 @@ lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
   refine continuous_matrix ?_
   intro i j
   simp only [toMatrix_apply]
-  refine Continuous.comp' (continuous_mul_left (η i i)) ?hf
+  refine (continuous_mul_left (η i i)).comp' ?_
   refine Continuous.sub ?_ ?_
-  refine Continuous.comp' (continuous_add_left (minkowskiMetric (e i) (e j))) ?_
-  refine Continuous.comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
+  refine .comp' (continuous_add_left (minkowskiMetric (e i) (e j))) ?_
+  refine .comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
   exact FuturePointing.metric_continuous _
-  refine Continuous.mul ?_ ?_
-  refine Continuous.mul ?_ ?_
+  refine .mul ?_ ?_
+  refine .mul ?_ ?_
   simp only [(minkowskiMetric _).map_add]
-  refine Continuous.comp' ?_ ?_
+  refine .comp' ?_ ?_
   exact continuous_add_left ((minkowskiMetric (stdBasis i)) ↑u)
   exact FuturePointing.metric_continuous _
   simp only [(minkowskiMetric _).map_add]
-  refine Continuous.comp' ?_ ?_
+  refine .comp' ?_ ?_
   exact continuous_add_left _
   exact FuturePointing.metric_continuous _
-  refine Continuous.inv₀ ?_ ?_
-  refine Continuous.comp' (continuous_add_left 1) ?_
+  refine .inv₀ ?_ ?_
+  refine .comp' (continuous_add_left 1) ?_
   exact FuturePointing.metric_continuous _
   exact fun x => FuturePointing.one_add_metric_non_zero u x
 

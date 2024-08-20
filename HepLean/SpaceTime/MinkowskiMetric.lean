@@ -82,8 +82,7 @@ lemma as_block : @minkowskiMatrix d = (
 @[simp]
 lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  apply diagonal_apply_ne
-  exact h
+  exact diagonal_apply_ne _ h
 
 end minkowskiMatrix
 
@@ -220,7 +219,7 @@ lemma ge_abs_inner_product : v.time * w.time - ‖⟪v.space, w.space⟫_ℝ‖ 
   exact Real.le_norm_self ⟪v.space, w.space⟫_ℝ
 
 lemma ge_sub_norm : v.time * w.time - ‖v.space‖ * ‖w.space‖ ≤ ⟪v, w⟫ₘ := by
-  apply le_trans ?_ (ge_abs_inner_product v w)
+  apply le_trans _ (ge_abs_inner_product v w)
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm v.space w.space
 
@@ -285,11 +284,9 @@ lemma matrix_apply_eq_iff_sub : ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ �
   rw [← sub_eq_zero, ← LinearMap.map_sub, sub_mulVec]
 
 lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
-  refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · intro w v
-    rw [h w]
+  refine Iff.intro (fun h ↦ fun w v ↦ ?_) (fun h ↦ fun v ↦ ?_)
+  · rw [h w]
   · simp only [matrix_apply_eq_iff_sub] at h
-    intro v
     refine sub_eq_zero.1 ?_
     have h1 := h v
     rw [nondegenerate] at h1
@@ -299,10 +296,9 @@ lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪
 lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
   rw [← matrix_eq_iff_eq_forall']
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · rw [h]
-    simp
+  · exact fun _ => congrFun (congrArg mulVec h) _
   · rw [← (LinearMap.toMatrix stdBasis stdBasis).toEquiv.symm.apply_eq_iff_eq]
-    ext1 x
+    ext x
     simp only [LinearEquiv.coe_toEquiv_symm, LinearMap.toMatrix_symm, EquivLike.coe_coe,
       toLin_apply, h, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
       Finset.sum_singleton]

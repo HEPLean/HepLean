@@ -48,8 +48,8 @@ namespace HiggsVec
 casting vectors. -/
 def toFin2ℂ : HiggsVec →L[ℝ] (Fin 2 → ℂ) where
   toFun x := x
-  map_add' x y := by simp
-  map_smul' a x := by simp
+  map_add' x y := rfl
+  map_smul' a x := rfl
 
 /-- The map `toFin2ℂ` is smooth. -/
 lemma smooth_toFin2ℂ : Smooth 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) toFin2ℂ :=
@@ -106,11 +106,6 @@ lemma toHiggsVec_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ
   intro x0
   have h1 := φ.contMDiff x0
   rw [Bundle.contMDiffAt_section] at h1
-  have h2 :
-    (fun x => ((trivializationAt HiggsVec (Bundle.Trivial SpaceTime HiggsVec) x0)
-    { proj := x, snd := φ x }).2) = φ := by
-    rfl
-  simp only [h2] at h1
   exact h1
 
 lemma toField_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
@@ -149,9 +144,7 @@ lemma apply_im_smooth (φ : HiggsField) (i : Fin 2) :
 /-- A Higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
 def IsConst (Φ : HiggsField) : Prop := ∀ x y, Φ x = Φ y
 
-lemma isConst_of_higgsVec (φ : HiggsVec) : φ.toField.IsConst := by
-  intro x _
-  simp [HiggsVec.toField]
+lemma isConst_of_higgsVec (φ : HiggsVec) : φ.toField.IsConst := fun _ => congrFun rfl
 
 lemma isConst_iff_of_higgsVec (Φ : HiggsField) : Φ.IsConst ↔ ∃ (φ : HiggsVec), Φ = φ.toField :=
   Iff.intro (fun h ↦ ⟨Φ 0, by ext x y; rw [← h x 0]; rfl⟩) (fun ⟨φ, hφ⟩ x y ↦ by subst hφ; rfl)
