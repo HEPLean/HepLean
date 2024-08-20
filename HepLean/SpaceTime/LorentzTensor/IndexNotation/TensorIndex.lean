@@ -286,7 +286,6 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   apply congrArg
   rfl
 
-
 /-!
 
 ## Scalar multiplication of
@@ -344,7 +343,7 @@ lemma symm {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) : AddCond T₂
   rw [AddCond] at h
   exact h.symm
 
-lemma refl (T : 𝓣.TensorIndex) : AddCond T T := ContrPerm.refl
+lemma refl (T : 𝓣.TensorIndex) : AddCond T T := ContrPerm.refl T.toColorIndexList
 
 lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : AddCond T₁ T₂) (h2 : AddCond T₂ T₃) :
     AddCond T₁ T₃ := by
@@ -479,7 +478,7 @@ lemma add_comm {T₁ T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) : T₁ +[h
 open AddCond in
 lemma add_rel_left {T₁ T₁' T₂ : 𝓣.TensorIndex} (h : AddCond T₁ T₂) (h' : T₁ ≈ T₁') :
     T₁ +[h] T₂ ≈ T₁' +[h.rel_left h'] T₂ := by
-  apply And.intro ContrPerm.refl
+  apply And.intro (ContrPerm.refl _)
   intro h
   simp only [contr_add_tensor, add_tensor, map_add]
   apply Mathlib.Tactic.LinearCombination.add_pf

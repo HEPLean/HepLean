@@ -390,8 +390,8 @@ lemma mem_contrIndexList_filter {I : Index X} (h : I ∈ l.contrIndexList.val) :
     rw [← List.countP_eq_length_filter]
     exact l.mem_contrIndexList_count h
   have h2 : I ∈ l.val.filter (fun J => I.id = J.id) := by
-    simp
-    simp [contrIndexList] at h
+    simp only [List.mem_filter, decide_True, and_true]
+    simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at h
     exact h.1
   rw [List.length_eq_one] at h1
   obtain ⟨J, hJ⟩ := h1
@@ -433,7 +433,7 @@ lemma cons_contrIndexList_of_countP_neq_zero {I : Index X}
       simp only [h, not_false_eq_true]
     · simp only [hI, decide_False, Bool.not_false, Bool.true_and, decide_eq_decide]
       rw [List.countP_cons_of_neg]
-      simp
+      simp only [decide_eq_true_eq]
       exact fun a => hI (id (Eq.symm a))
   · simp only [decide_True, List.countP_cons_of_pos, add_left_eq_self, decide_eq_true_eq]
     exact h
@@ -460,7 +460,7 @@ lemma countP_contrIndexList_zero_of_countP (I : Index X)
   trans (l.val.filter (fun J => I.id = J.id)).countP
     (fun i => l.val.countP (fun j => i.id = j.id) = 1)
   · rw [contrIndexList]
-    simp
+    simp only
     rw [List.countP_filter, List.countP_filter]
     simp only [decide_eq_true_eq, Bool.decide_and]
     congr

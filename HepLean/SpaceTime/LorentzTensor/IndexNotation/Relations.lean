@@ -39,7 +39,7 @@ open IndexList TensorColor
 -/
 def Reindexing : Prop := l.length = l'.length ∧
   ∀ (h : l.length = l'.length), l.colorMap = l'.colorMap ∘ Fin.cast h ∧
-    l.getDual? = Option.map (Fin.cast h.symm) ∘  l'.getDual? ∘ Fin.cast h
+    l.getDual? = Option.map (Fin.cast h.symm) ∘ l'.getDual? ∘ Fin.cast h
 
 namespace Reindexing
 
@@ -58,7 +58,7 @@ lemma symm (h : Reindexing l l') : Reindexing l' l := by
   · rw [h2.2]
     funext a
     simp only [Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self, Option.map_map]
-    have h1 (h : l.length = l'.length) : Fin.cast h ∘  Fin.cast h.symm = id := by
+    have h1 (h : l.length = l'.length) : Fin.cast h ∘ Fin.cast h.symm = id := by
       funext a
       simp only [Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self, id_eq]
     rw [h1]
