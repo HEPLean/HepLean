@@ -299,6 +299,8 @@ open IndexList TensorColor
 
 instance : Coe (ColorIndexList 𝓒) (IndexList 𝓒.Color) := ⟨fun l => l.toIndexList⟩
 
+/-! TODO: Define an induction principal on `ColorIndexList`. -/
+
 /-- The `ColorIndexList` whose underlying list of indices is empty. -/
 def empty : ColorIndexList 𝓒 where
   val := ∅
@@ -548,6 +550,7 @@ lemma swap (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
   · exact ColorCond.swap h'.1 h'.2
 
 /-! TODO: Show that `AppendCond l l2` implies `AppendCond l.contr l2.contr`. -/
+/-! TODO: Show that `(l1.contr ++[h.contr] l2.contr).contr = (l1 ++[h] l2)` -/
 
 lemma of_eq (h1 : l.withUniqueDual = l.withDual)
     (h2 : l2.withUniqueDual = l2.withDual)
