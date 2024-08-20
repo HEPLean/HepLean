@@ -114,8 +114,8 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
       accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
     exact ne_or_eq _ _
   cases h1 <;> rename_i h1
-  exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
-  exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
+  · exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
+  · exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
 theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
     ∃ g f a, S = parameterization g f a := by
@@ -127,11 +127,11 @@ theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
   change S.val = _ • (_ • P g + _• P! f)
   rw [anomalyFree_param _ _ hS]
   rw [neg_neg, ← smul_add, smul_smul, inv_mul_cancel, one_smul]
-  exact hS
-  have h := h g f hS
-  rw [anomalyFree_param _ _ hS] at h
-  simp at h
-  exact h
+  · exact hS
+  · have h := h g f hS
+    rw [anomalyFree_param _ _ hS] at h
+    simp at h
+    exact h
 
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
     (h : SpecialCase S) :

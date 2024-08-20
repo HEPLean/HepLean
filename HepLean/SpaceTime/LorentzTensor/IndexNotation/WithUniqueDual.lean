@@ -115,9 +115,7 @@ lemma all_dual_eq_getDual?_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l
 
 lemma some_eq_getDual?_of_withUniqueDual_iff (i j : Fin l.length) (h : i ∈ l.withUniqueDual) :
     l.AreDualInSelf i j ↔ some j = l.getDual? i := by
-  apply Iff.intro
-  exact fun h' => all_dual_eq_getDual?_of_mem_withUniqueDual l i h j h'
-  intro h'
+  refine Iff.intro (fun h' => all_dual_eq_getDual?_of_mem_withUniqueDual l i h j h') (fun h' => ?_)
   have hj : j = (l.getDual? i).get (mem_withUniqueDual_isSome l i h) :=
     Eq.symm (Option.get_of_mem (mem_withUniqueDual_isSome l i h) (id (Eq.symm h')))
   subst hj
@@ -128,8 +126,8 @@ lemma eq_getDual?_get_of_withUniqueDual_iff (i j : Fin l.length) (h : i ∈ l.wi
     l.AreDualInSelf i j ↔ j = (l.getDual? i).get (mem_withUniqueDual_isSome l i h) := by
   rw [l.some_eq_getDual?_of_withUniqueDual_iff i j h]
   refine Iff.intro (fun h' => ?_) (fun h' => ?_)
-  exact Eq.symm (Option.get_of_mem (mem_withUniqueDual_isSome l i h) (id (Eq.symm h')))
-  simp [h']
+  · exact Eq.symm (Option.get_of_mem (mem_withUniqueDual_isSome l i h) (id (Eq.symm h')))
+  · simp [h']
 
 lemma eq_of_areDualInSelf_withUniqueDual {j k : Fin l.length} (i : l.withUniqueDual)
     (hj : l.AreDualInSelf i j) (hk : l.AreDualInSelf i k) : j = k := by
@@ -198,9 +196,7 @@ lemma all_dual_eq_of_withUniqueDualInOther (i : Fin l.length)
 lemma some_eq_getDualInOther?_of_withUniqueDualInOther_iff (i : Fin l.length) (j : Fin l2.length)
     (h : i ∈ l.withUniqueDualInOther l2) :
     l.AreDualInOther l2 i j ↔ some j = l.getDualInOther? l2 i := by
-  apply Iff.intro
-  exact fun h' => l.all_dual_eq_of_withUniqueDualInOther l2 i h j h'
-  intro h'
+  refine Iff.intro (fun h' => l.all_dual_eq_of_withUniqueDualInOther l2 i h j h') (fun h' => ?_)
   have hj : j = (l.getDualInOther? l2 i).get (mem_withUniqueDualInOther_isSome l l2 i h) :=
     Eq.symm (Option.get_of_mem (mem_withUniqueDualInOther_isSome l l2 i h) (id (Eq.symm h')))
   subst hj
@@ -213,8 +209,8 @@ lemma eq_getDualInOther?_get_of_withUniqueDualInOther_iff (i : Fin l.length) (j 
       (mem_withUniqueDualInOther_isSome l l2 i h) := by
   rw [l.some_eq_getDualInOther?_of_withUniqueDualInOther_iff l2 i j h]
   refine Iff.intro (fun h' => ?_) (fun h' => ?_)
-  exact Eq.symm (Option.get_of_mem (mem_withUniqueDualInOther_isSome l l2 i h) (id (Eq.symm h')))
-  simp [h']
+  · exact (Option.get_of_mem (mem_withUniqueDualInOther_isSome l l2 i h) (id (Eq.symm h'))).symm
+  · simp [h']
 
 @[simp, nolint simpNF]
 lemma getDualInOther?_get_getDualInOther?_get_of_withUniqueDualInOther
@@ -284,8 +280,7 @@ lemma getDualInOther?_get_of_mem_withUniqueInOther_mem (i : Fin l.length)
   simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
     Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, Finset.mem_filter, Finset.mem_univ,
     getDualInOther?_getDualInOther?_get_isSome, true_and]
-  apply And.intro
-  exact getDual?_of_getDualInOther?_of_mem_withUniqueInOther_eq_none l l2 i h
+  apply And.intro (getDual?_of_getDualInOther?_of_mem_withUniqueInOther_eq_none l l2 i h)
   intro j hj
   simp only [h, getDualInOther?_getDualInOther?_get_of_withUniqueDualInOther, Option.some.injEq]
   by_contra hn
