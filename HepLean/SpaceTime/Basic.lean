@@ -27,7 +27,6 @@ instance : Module ℝ SpaceTime := Pi.module _ _ _
 instance euclideanNormedAddCommGroup : NormedAddCommGroup SpaceTime := Pi.normedAddCommGroup
 
 instance euclideanNormedSpace : NormedSpace ℝ SpaceTime := Pi.normedSpace
-
 namespace SpaceTime
 
 open Manifold
@@ -56,23 +55,19 @@ lemma stdBasis_not_eq {μ ν : Fin 4} (h : μ ≠ ν) : stdBasis μ ν = 0 := by
 
 lemma stdBasis_0 : stdBasis 0 = ![1, 0, 0, 0] := by
   funext i
-  fin_cases i
-    <;> simp [stdBasis_apply]
+  fin_cases i <;> simp [stdBasis_apply]
 
 lemma stdBasis_1 : stdBasis 1 = ![0, 1, 0, 0] := by
   funext i
-  fin_cases i
-    <;> simp [stdBasis_apply]
+  fin_cases i <;> simp [stdBasis_apply]
 
 lemma stdBasis_2 : stdBasis 2 = ![0, 0, 1, 0] := by
   funext i
-  fin_cases i
-    <;> simp [stdBasis_apply]
+  fin_cases i <;> simp [stdBasis_apply]
 
 lemma stdBasis_3 : stdBasis 3 = ![0, 0, 0, 1] := by
   funext i
-  fin_cases i
-    <;> simp [stdBasis_apply]
+  fin_cases i <;> simp [stdBasis_apply]
 
 lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     (Λ *ᵥ stdBasis μ) ν = Λ ν μ := by
