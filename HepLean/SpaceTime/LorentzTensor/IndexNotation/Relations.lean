@@ -30,14 +30,77 @@ open IndexList TensorColor
 
 -/
 
-/-- Two `ColorIndexList` are said to be reindexes of one another if they:
-  (1) have the same length and (2) every corresponding index has the same color,
-    and duals which correspond.
+/--
+  Two `ColorIndexList` are said to be reindexes of one another if they:
+    1. have the same length.
+    2. every corresponding index has the same color, and duals which correspond.
 
-  Note: This does not allow for reordrings of indices. -/
+  Note: This does not allow for reordrings of indices.
+-/
 def Reindexing : Prop := l.length = l'.length ∧
   ∀ (h : l.length = l'.length), l.colorMap = l'.colorMap ∘ Fin.cast h ∧
-    Option.map (Fin.cast h) ∘ l.getDual? = l'.getDual? ∘ Fin.cast h
+    l.getDual? = Option.map (Fin.cast h.symm) ∘  l'.getDual? ∘ Fin.cast h
+
+namespace Reindexing
+
+variable {l l' l2 l3 : ColorIndexList 𝓒}
+
+/-- The relation `Reindexing` is symmetric. -/
+@[symm]
+lemma symm (h : Reindexing l l') : Reindexing l' l := by
+  apply And.intro h.1.symm
+  intro h'
+  have h2 := h.2 h.1
+  apply And.intro
+  · rw [h2.1]
+    funext a
+    simp only [Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self]
+  · rw [h2.2]
+    funext a
+    simp only [Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self, Option.map_map]
+    have h1 (h : l.length = l'.length) : Fin.cast h ∘  Fin.cast h.symm = id := by
+      funext a
+      simp only [Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self, id_eq]
+    rw [h1]
+    simp only [Option.map_id', id_eq]
+
+/-- The relation `Reindexing` is reflexive. -/
+@[simp]
+lemma refl (l : ColorIndexList 𝓒) : Reindexing l l := by
+  apply And.intro rfl
+  intro h
+  apply And.intro
+  · funext a
+    rfl
+  · funext a
+    simp only [Fin.cast_refl, Option.map_id', CompTriple.comp_eq, Function.comp_apply, id_eq]
+
+/-- The relation `Reindexing` is transitive. -/
+@[trans]
+lemma trans (h1 : Reindexing l l2) (h2 : Reindexing l2 l3) : Reindexing l l3 := by
+  apply And.intro (h1.1.trans h2.1)
+  intro h'
+  have h1' := h1.2 h1.1
+  have h2' := h2.2 h2.1
+  apply And.intro
+  · simp only [h1'.1, h2'.1]
+    funext a
+    rfl
+  · simp only [h1'.2, h2'.2]
+    funext a
+    simp only [Function.comp_apply, Fin.cast_trans, Option.map_map]
+    apply congrFun
+    apply congrArg
+    funext a
+    rfl
+
+/-- `Reindexing` forms an equivalence relation. -/
+lemma equivalence : Equivalence (@Reindexing 𝓒 _) where
+  refl := refl
+  symm := symm
+  trans := trans
+
+end Reindexing
 
 /-!
 
@@ -48,10 +111,14 @@ To prevent choice problems, this has to be done after contraction.
 
 -/
 
-/-- Two `ColorIndexList` are said to be related by contracted permutations, `ContrPerm`,
-  if and only if: 1) Their contractions are the same length.
+/--
+  Two `ColorIndexList`s are said to be related by contracted permutations, `ContrPerm`,
+  if and only if:
+
+    1) Their contractions are the same length.
     2) Every index in the contracted list of one has a unqiue dual in the contracted
-      list of the other and that dual has a the same color. -/
+      list of the other and that dual has a the same color.
+-/
 def ContrPerm : Prop :=
   l.contr.length = l'.contr.length ∧
   l.contr.withUniqueDualInOther l'.contr = Finset.univ ∧
@@ -62,6 +129,7 @@ namespace ContrPerm
 
 variable {l l' l2 l3 : ColorIndexList 𝓒}
 
+/-- The relation `ContrPerm` is symmetric. -/
 @[symm]
 lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
   rw [ContrPerm] at h ⊢
@@ -72,12 +140,14 @@ lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
     (l'.contr.getDualInOtherEquiv l.contr).symm from rfl]
   simp only [Equiv.symm_comp_self, CompTriple.comp_eq]
 
+/-- The relation `ContrPerm` is reflexive. -/
 @[simp]
-lemma refl : ContrPerm l l := by
+lemma refl (l : ColorIndexList 𝓒) : ContrPerm l l := by
   apply And.intro rfl
   apply And.intro l.withUniqueDualInOther_eq_univ_contr_refl
   simp only [getDualInOtherEquiv_self_refl, Equiv.coe_refl, CompTriple.comp_eq]
 
+/-- The relation `ContrPerm` is transitive. -/
 @[trans]
 lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   apply And.intro (h1.1.trans h2.1)
@@ -97,6 +167,12 @@ lemma trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) : ContrPerm l l3 := by
   simp only [AreDualInOther, getDualInOther?_id]
   rw [h2.2.1]
   simp
+
+/-- `ContrPerm` forms an equivalence relation. -/
+lemma equivalence : Equivalence (@ContrPerm 𝓒 _) where
+  refl := refl
+  symm := symm
+  trans := trans
 
 lemma symm_trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) :
     (h1.trans h2).symm = h2.symm.trans h1.symm := by
@@ -129,6 +205,12 @@ lemma mem_withUniqueDualInOther_of_no_contr (h : l.ContrPerm l') (h1 : l.withDua
   simp [h.2.1]
 
 end ContrPerm
+
+/-!
+
+## Equivalences from `ContrPerm`
+
+-/
 
 open ContrPerm
 

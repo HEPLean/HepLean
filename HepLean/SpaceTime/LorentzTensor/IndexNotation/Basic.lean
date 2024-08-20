@@ -287,6 +287,10 @@ instance : HAppend (IndexList X) (IndexList X) (IndexList X) where
   hAppend := fun l l2 => {val := l.val ++ l2.val}
 
 @[simp]
+lemma cons_append (i : Index X) : (l.cons i) ++ l2 = (l ++ l2).cons i := by
+  rfl
+
+@[simp]
 lemma append_length : (l ++ l2).length = l.length + l2.length := by
   simp [IndexList.length]
   exact List.length_append l.val l2.val

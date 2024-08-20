@@ -181,31 +181,7 @@ lemma contr_toColorIndexList (T : 𝓣.TensorIndex) :
     T.contr.toColorIndexList = T.toColorIndexList.contr := rfl
 
 lemma contr_toIndexList (T : 𝓣.TensorIndex) :
-    T.contr.toIndexList = T.toIndexList.contrIndexList := by
-  rfl
-/-!
-
-## Scalar multiplication of
-
--/
-
-/-- The scalar multiplication of a `TensorIndex` by an element of `R`. -/
-instance : SMul R 𝓣.TensorIndex where
-  smul := fun r T => {
-    toColorIndexList := T.toColorIndexList
-    tensor := r • T.tensor}
-
-@[simp]
-lemma smul_index (r : R) (T : 𝓣.TensorIndex) : (r • T).toColorIndexList = T.toColorIndexList := rfl
-
-@[simp]
-lemma smul_tensor (r : R) (T : 𝓣.TensorIndex) : (r • T).tensor = r • T.tensor := rfl
-
-@[simp]
-lemma smul_contr (r : R) (T : 𝓣.TensorIndex) : (r • T).contr = r • T.contr := by
-  refine ext rfl ?_
-  simp only [contr, smul_index, smul_tensor, LinearMapClass.map_smul, Fin.castOrderIso_refl,
-    OrderIso.refl_toEquiv, mapIso_refl, LinearEquiv.refl_apply]
+    T.contr.toIndexList = T.toIndexList.contrIndexList := rfl
 
 /-!
 
@@ -310,7 +286,32 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
   apply congrArg
   rfl
 
-lemma smul_equiv {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ ≈ T₂) (r : R) : r • T₁ ≈ r • T₂ := by
+
+/-!
+
+## Scalar multiplication of
+
+-/
+
+/-- The scalar multiplication of a `TensorIndex` by an element of `R`. -/
+instance : SMul R 𝓣.TensorIndex where
+  smul := fun r T => {
+    toColorIndexList := T.toColorIndexList
+    tensor := r • T.tensor}
+
+@[simp]
+lemma smul_index (r : R) (T : 𝓣.TensorIndex) : (r • T).toColorIndexList = T.toColorIndexList := rfl
+
+@[simp]
+lemma smul_tensor (r : R) (T : 𝓣.TensorIndex) : (r • T).tensor = r • T.tensor := rfl
+
+@[simp]
+lemma smul_contr (r : R) (T : 𝓣.TensorIndex) : (r • T).contr = r • T.contr := by
+  refine ext rfl ?_
+  simp only [contr, smul_index, smul_tensor, LinearMapClass.map_smul, Fin.castOrderIso_refl,
+    OrderIso.refl_toEquiv, mapIso_refl, LinearEquiv.refl_apply]
+
+lemma smul_rel {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ ≈ T₂) (r : R) : r • T₁ ≈ r • T₂ := by
   apply And.intro h.1
   intro h1
   rw [tensor_eq_of_eq (smul_contr r T₁), tensor_eq_of_eq (smul_contr r T₂)]
@@ -521,13 +522,13 @@ lemma add_assoc {T₁ T₂ T₃ : 𝓣.TensorIndex} {h' : AddCond T₁ T₂} (h 
     T₁ +[h'] T₂ +[h] T₃ = T₁ +[h'.add_right_of_add_left h] (T₂ +[h'.of_add_left h] T₃) := by
   rw [add_assoc']
 
-/-! TODO: Show that the product is well defined with respect to Rel. -/
-
 /-!
 
 ## Product of `TensorIndex` when allowed
 
 -/
+
+/-! TODO: Show that the product is well defined with respect to Rel. -/
 
 /-- The condition on two `TensorIndex` which is true if and only if their `ColorIndexList`s
   are related by the condition `AppendCond`. That is, they can be appended to form a
@@ -549,7 +550,9 @@ lemma symm (h : ProdCond T₁ T₂) : ProdCond T₂ T₁ := h.to_AppendCond.symm
 
 end ProdCond
 
-/-- The tensor product of two `TensorIndex`. -/
+/-- The tensor product of two `TensorIndex`.
+
+  Note: By defualt contraction is NOT done before taking the products. -/
 def prod (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) : 𝓣.TensorIndex where
   toColorIndexList := T₁ ++[h] T₂
   tensor := 𝓣.mapIso IndexList.appendEquiv (T₁.colorMap_sumELim T₂) <|
