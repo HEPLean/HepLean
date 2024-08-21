@@ -37,7 +37,6 @@ lemma constAbs_perm (S : (PureU1 n).Charges) (M :(FamilyPermutations n).group) :
   simp at h2
   exact h2
 
-
 lemma constAbs_sort {S : (PureU1 n).Charges} (CA : ConstAbs S) : ConstAbs (sort S) := by
   rw [sort]
   exact (constAbs_perm S _).mpr CA

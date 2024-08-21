@@ -153,7 +153,7 @@ lemma special_case_lineInCubic_perm {S : (PureU1 (2 * n.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ)).group),
     SpecialCase ((FamilyPermutations (2 * n.succ)).solAction.toFun S M)) :
     LineInCubicPerm S.1.1 :=
-  fun M =>  special_case_lineInCubic (h M)
+  fun M => special_case_lineInCubic (h M)
 
 theorem special_case {S : (PureU1 (2 * n.succ.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ.succ)).group),

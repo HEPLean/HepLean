@@ -152,7 +152,7 @@ lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   · simp [Fin.ext_iff, δ!₂, δ!₁]
   · simp [Fin.ext_iff, δ!₂, δ!₃]
   · simp [Fin.ext_iff, δ!₁, δ!₃]
-  · exact fun M =>  lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
+  · exact fun M => lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 
 lemma lineInCubicPerm_constAbs {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : ConstAbs S.val :=

@@ -60,7 +60,7 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
 
 lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
-  refine Iff.intro (fun h => ?_)  (fun h => ?_)
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
   · simp [detContinuous] at h
     cases' det_eq_one_or_neg_one Λ with h1 h1
       <;> cases' det_eq_one_or_neg_one Λ' with h2 h2

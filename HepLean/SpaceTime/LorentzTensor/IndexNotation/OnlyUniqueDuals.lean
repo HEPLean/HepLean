@@ -243,7 +243,8 @@ lemma append_withDual_eq_withUniqueDual_iff' :
     l2.withUniqueDualInOther l = l2.withDualInOther l := by
   apply Iff.intro
   · intro h
-    exact ⟨append_withDual_eq_withUniqueDual_inl l l2 h, append_withDual_eq_withUniqueDual_inr l l2 h,
+    exact ⟨append_withDual_eq_withUniqueDual_inl l l2 h,
+      append_withDual_eq_withUniqueDual_inr l l2 h,
       append_withDual_eq_withUniqueDual_withUniqueDualInOther_inl l l2 h,
       append_withDual_eq_withUniqueDual_withUniqueDualInOther_inr l l2 h⟩
   · intro h

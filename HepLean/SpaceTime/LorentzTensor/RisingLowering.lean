@@ -158,9 +158,9 @@ lemma unit_lhs_eq (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ) �
   refine TensorProduct.induction_on y (by simp) ?_ (fun z1 z2 h1 h2 => ?_)
   · intro x1 x2
     simp only [contrRightAux, LinearEquiv.refl_toLinearMap, comm_tmul, colorModuleCast,
-      Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp, LinearEquiv.coe_coe,
-      Function.comp_apply, assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, contrDual_symm', cast_cast,
-      cast_eq, rid_tmul]
+      Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp,
+      LinearEquiv.coe_coe, Function.comp_apply, assoc_tmul, map_tmul, LinearMap.id_coe, id_eq,
+      contrDual_symm', cast_cast, cast_eq, rid_tmul]
     rfl
   · simp only [map_add, add_tmul]
     rw [← h1, ← h2, tmul_add, LinearMap.map_add]

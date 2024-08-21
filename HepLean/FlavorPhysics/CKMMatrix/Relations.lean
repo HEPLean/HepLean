@@ -81,7 +81,7 @@ lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
       zero_pow, add_zero, zero_add, sq_eq_one_iff, false_or, neg_eq_self_iff, one_ne_zero]
     have h1 := Complex.abs.nonneg [V]ub
     rw [h2] at h1
-    refine (?_ :  ¬ 0 ≤ (-1 : ℝ) ) h1
+    refine (?_ : ¬ 0 ≤ (-1 : ℝ)) h1
     simp
 
 lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :

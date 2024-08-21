@@ -632,7 +632,8 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
   have hSV := (Quotient.eq.mpr (hδ₃))
   by_cases h : Invariant.mulExpδ₁₃ ⟦standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃'⟧ ≠ 0
   · have h2 := eq_exp_of_phases (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃'
-      (δ₁₃ ⟦V⟧) (by rw [← mulExpδ₁₃_on_param_neq_zero_arg V δ₁₃' h, ← hSV, δ₁₃, Invariant.mulExpδ₁₃])
+      (δ₁₃ ⟦V⟧) (by rw [← mulExpδ₁₃_on_param_neq_zero_arg V δ₁₃' h,
+        ← hSV, δ₁₃, Invariant.mulExpδ₁₃])
     rw [h2] at hδ₃
     exact hδ₃
   · simp at h
