@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
 import Mathlib.Algebra.Order.Ring.Nat
+import Mathlib.Data.Finset.Sort
 /-!
 
 # withDuals equal to withUniqueDuals
@@ -122,6 +123,78 @@ lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
   have x' : l.withDual := ⟨x, l.mem_withDual_of_withUniqueDual ⟨x, hx⟩⟩
   have hx' := x'.2
   simp [h] at hx'
+
+
+lemma withUniqueDual_eq_withDual_iff_sort_eq :
+    l.withUniqueDual = l.withDual ↔
+    l.withUniqueDual.sort (fun i j => i ≤ j) = l.withDual.sort (fun i j => i ≤ j) := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [h]
+  · have h1 := congrArg Multiset.ofList h
+    rw [Finset.sort_eq, Finset.sort_eq] at h1
+    exact Eq.symm ((fun {α} {s t} => Finset.val_inj.mp) (id (Eq.symm h1)))
+
+/-!
+
+# withUniqueDual equal to withDual and count conditions.
+
+-/
+
+lemma withUniqueDual_eq_withDual_iff_countP :
+    l.withUniqueDual = l.withDual ↔
+    ∀ i, l.val.countP (fun J => (l.val.get i).id = J.id) ≤ 2 := by
+  refine Iff.intro (fun h i => ?_) (fun h => ?_)
+  · by_cases hi : i ∈ l.withDual
+    · rw [← h] at hi
+      rw [mem_withUniqueDual_iff_countP] at hi
+      rw [hi]
+    · rw [mem_withDual_iff_countP] at hi
+      simp at hi
+      exact Nat.le_succ_of_le hi
+  · refine Finset.ext (fun i => ?_)
+    rw [mem_withUniqueDual_iff_countP, mem_withDual_iff_countP]
+    have hi := h i
+    omega
+
+lemma withUniqueDual_eq_withDual_iff_countP_mem_le_two :
+    l.withUniqueDual = l.withDual ↔
+    ∀ I (_ : I ∈ l.val), l.val.countP (fun J => I.id = J.id) ≤ 2 := by
+  rw [withUniqueDual_eq_withDual_iff_countP]
+  refine Iff.intro (fun h I hI => ?_) (fun h i => ?_)
+  · let i := l.val.indexOf I
+    have hi : i < l.length := List.indexOf_lt_length.mpr hI
+    have hIi : I = l.val.get ⟨i, hi⟩ := (List.indexOf_get hi).symm
+    rw [hIi]
+    exact h ⟨i, hi⟩
+  · exact h (l.val.get i) (List.getElem_mem l.val (↑i) i.isLt)
+
+lemma withUniqueDual_eq_withDual_iff_all_countP_le_two :
+    l.withUniqueDual = l.withDual ↔
+    l.val.all (fun I => l.val.countP (fun J => I.id = J.id) ≤ 2) := by
+  rw [withUniqueDual_eq_withDual_iff_countP_mem_le_two]
+  simp only [List.all_eq_true, decide_eq_true_eq]
+
+/-!
+
+## Relationship with cons
+
+-/
+
+lemma withUniqueDual_eq_withDual_cons_iff (I : Index X) (hl : l.withUniqueDual = l.withDual) :
+    (l.cons I).withUniqueDual = (l.cons I).withDual
+    ↔ l.val.countP (fun J => I.id = J.id) ≤ 1 := by
+  rw [withUniqueDual_eq_withDual_iff_all_countP_le_two]
+  simp
+  intro h I' hI'
+  by_cases hII' : I'.id = I.id
+  · rw [List.countP_cons_of_pos]
+    · rw [hII']
+      omega
+    · simpa using hII'
+  · rw [List.countP_cons_of_neg]
+    · rw [withUniqueDual_eq_withDual_iff_countP_mem_le_two] at hl
+      exact hl I' hI'
+    · simpa using hII'
 
 /-!
 

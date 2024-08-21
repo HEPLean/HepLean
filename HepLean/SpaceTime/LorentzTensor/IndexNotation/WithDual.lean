@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.GetDual
 import Mathlib.Algebra.Order.Ring.Nat
+import Mathlib.Tactic.FinCases
 /-!
 
 # Indices with duals.
@@ -69,6 +70,98 @@ lemma not_mem_withDual_iff_isNone (i : Fin l.length) :
 lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j := by
   simp [withDual, Finset.mem_filter, Finset.mem_univ, getDual?]
   exact Fin.isSome_find_iff
+
+/-!
+
+## Relationship between membership of withDual and countP on id.
+
+-/
+
+lemma countP_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) :
+    1 < l.val.countP (fun J => (l.val.get i).id = J.id) := by
+  rw [mem_withDual_iff_exists] at h
+  obtain ⟨j, hj⟩ := h
+  simp [AreDualInSelf, idMap] at hj
+  by_contra hn
+  have hn' := l.countP_id_neq_zero i
+  have hl : 2 ≤ l.val.countP (fun J => (l.val.get i).id = J.id) := by
+    by_cases hij : i < j
+    · have hsub : List.Sublist [l.val.get i, l.val.get j] l.val := by
+        rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+        refine ⟨⟨⟨![i, j], ?_⟩, ?_⟩, ?_⟩
+        · refine List.nodup_ofFn.mp ?_
+          simpa using Fin.ne_of_lt hij
+        · intro a b
+          fin_cases a, b
+            <;> simp [hij]
+          exact Fin.le_of_lt hij
+        · intro a
+          fin_cases a <;> rfl
+      simpa [hj.2] using List.Sublist.countP_le
+        (fun (j : Index X) => decide (l.val[i].id = j.id)) hsub
+    · have hij' : j < i := by omega
+      have hsub : List.Sublist [l.val.get j, l.val.get i] l.val := by
+        rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+        refine ⟨⟨⟨![j, i], ?_⟩, ?_⟩, ?_⟩
+        · refine List.nodup_ofFn.mp ?_
+          simpa using Fin.ne_of_lt hij'
+        · intro a b
+          fin_cases a, b
+            <;> simp [hij']
+          exact Fin.le_of_lt hij'
+        · intro a
+          fin_cases a <;> rfl
+      simpa [hj.2] using List.Sublist.countP_le
+        (fun (j : Index X) => decide (l.val[i].id = j.id)) hsub
+  omega
+
+lemma countP_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
+    l.val.countP (fun J => (l.val.get i).id = J.id) = 1 := by
+  rw [mem_withDual_iff_exists] at h
+  simp [AreDualInSelf] at h
+  have h1 : ¬ l.val.Duplicate (l.val.get i) := by
+      by_contra hn
+      rw [List.duplicate_iff_exists_distinct_get] at hn
+      obtain ⟨k, j, h1, h2, h3⟩ := hn
+      by_cases hi : k = i
+        <;> by_cases hj : j = i
+      · subst hi hj
+        simp at h1
+      · subst hi
+        exact h j (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      · subst hj
+        exact h k (fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
+      · exact h j (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+  rw [List.duplicate_iff_two_le_count] at h1
+  simp at h1
+  by_cases hx : List.count l.val[i] l.val = 0
+  · rw [List.count_eq_zero] at hx
+    refine False.elim (h i (fun _ => hx ?_) rfl)
+    exact List.getElem_mem l.val (↑i) (Fin.val_lt_of_le i (le_refl l.length))
+  · have hln : List.count l.val[i] l.val = 1 := by
+      rw [Nat.lt_succ, Nat.le_one_iff_eq_zero_or_eq_one] at h1
+      simp at hx
+      simpa [hx] using h1
+    rw [← hln, List.count]
+    refine (List.countP_congr (fun xt hxt => ?_))
+    let xid := l.val.indexOf xt
+    have h2 := List.indexOf_lt_length.mpr hxt
+    simp only [decide_eq_true_eq, Fin.getElem_fin, beq_iff_eq]
+    by_cases hxtx : ⟨xid, h2⟩ = i
+    · rw [(List.indexOf_get h2).symm, hxtx]
+      simp only [List.get_eq_getElem]
+    · refine Iff.intro (fun h' => False.elim (h i (fun _ => ?_) rfl)) (fun h' => ?_)
+      · exact h ⟨xid, h2⟩ (fun a => hxtx (id (Eq.symm a))) (by
+          rw [(List.indexOf_get h2).symm] at h'; exact h')
+      · rw [h']
+        rfl
+
+lemma mem_withDual_iff_countP (i : Fin l.length) :
+    i ∈ l.withDual ↔ 1 < l.val.countP (fun J => (l.val.get i).id = J.id) := by
+  refine Iff.intro (fun h => countP_of_mem_withDual l i h) (fun h => ?_)
+  by_contra hn
+  have hn' := countP_of_not_mem_withDual l i hn
+  omega
 
 /-!
 
