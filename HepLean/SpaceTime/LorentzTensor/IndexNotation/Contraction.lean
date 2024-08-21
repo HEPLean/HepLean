@@ -87,21 +87,21 @@ lemma mem_withoutDual_iff_count :
       simp [idMap] at h4 h5
       by_cases hi : i = x
         <;> by_cases hj : j = x
-      subst hi hj
-      simp at h1
-      subst hi
-      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
-      subst hj
-      exact h4 (fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
-      exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      · subst hi hj
+        simp at h1
+      · subst hi
+        exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
+      · subst hj
+        exact h4 (fun a => hi (id (Eq.symm a))) (congrArg Index.id h2)
+      · exact h5 (fun a => hj (id (Eq.symm a))) (congrArg Index.id h3)
     rw [List.duplicate_iff_two_le_count] at h1
     simp at h1
     by_cases hx : List.count l.val[↑x] l.val = 0
-    rw [@List.count_eq_zero] at hx
-    have hl : l.val[↑x] ∈ l.val := by
-      simp only [Fin.getElem_fin]
-      exact List.getElem_mem l.val (↑x) (Fin.val_lt_of_le x (le_refl l.length))
-    exact False.elim (h x (fun _ => hx hl) rfl)
+    · rw [List.count_eq_zero] at hx
+      have hl : l.val[↑x] ∈ l.val := by
+        simp only [Fin.getElem_fin]
+        exact List.getElem_mem l.val (↑x) (Fin.val_lt_of_le x (le_refl l.length))
+      exact False.elim (h x (fun _ => hx hl) rfl)
     have hln : List.count l.val[↑x] l.val = 1 := by
       rw [@Nat.lt_succ] at h1
       rw [@Nat.le_one_iff_eq_zero_or_eq_one] at h1
@@ -116,44 +116,41 @@ lemma mem_withoutDual_iff_count :
       exact Eq.symm (List.indexOf_get h2)
     simp only [decide_eq_true_eq, Fin.getElem_fin, beq_iff_eq]
     by_cases hxtx : ⟨xid, h2⟩ = x
-    rw [h3, hxtx]
-    simp only [List.get_eq_getElem]
-    apply Iff.intro
-    intro h'
-    have hn := h ⟨xid, h2⟩ (fun a => hxtx (id (Eq.symm a))) (by rw [h3] at h'; exact h')
-    exact False.elim (h x (fun _ => hn) rfl)
-    intro h'
-    rw [h']
+    · rw [h3, hxtx]
+      simp only [List.get_eq_getElem]
+    refine Iff.intro (fun h' => False.elim (h x (fun _ => ?_) rfl)) (fun h' => ?_)
+    · exact h ⟨xid, h2⟩ (fun a => hxtx (id (Eq.symm a))) (by rw [h3] at h'; exact h')
+    · rw [h']
   · intro h
     intro i hxi
     by_contra hn
     by_cases hxs : x < i
-    let ls := [l.val[x], l.val[i]]
-    have hsub : ls.Sublist l.val := by
-      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
-      let fs : Fin ls.length ↪o Fin l.val.length := {
-        toFun := ![x, i],
-        inj' := by
-          intro a b
-          fin_cases a <;>
-          fin_cases b
-          <;> simp [hxi]
-          exact fun a => hxi (id (Eq.symm a)),
-        map_rel_iff' := by
-          intro a b
-          fin_cases a <;>
-          fin_cases b
-          <;> simp [hxs]
-          omega}
-      use fs
-      intro a
-      fin_cases a <;> rfl
-    have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
-    simp only [Fin.getElem_fin, decide_True, List.countP_cons_of_pos, h, add_le_iff_nonpos_left,
-      nonpos_iff_eq_zero, ls] at h1
-    rw [@List.countP_eq_zero] at h1
-    simp at h1
-    exact h1 hn
+    · let ls := [l.val[x], l.val[i]]
+      have hsub : ls.Sublist l.val := by
+        rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+        let fs : Fin ls.length ↪o Fin l.val.length := {
+          toFun := ![x, i],
+          inj' := by
+            intro a b
+            fin_cases a <;>
+            fin_cases b
+            <;> simp [hxi]
+            exact fun a => hxi (id (Eq.symm a)),
+          map_rel_iff' := by
+            intro a b
+            fin_cases a <;>
+            fin_cases b
+            <;> simp [hxs]
+            omega}
+        use fs
+        intro a
+        fin_cases a <;> rfl
+      have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
+      simp only [Fin.getElem_fin, decide_True, List.countP_cons_of_pos, h, add_le_iff_nonpos_left,
+        nonpos_iff_eq_zero, ls] at h1
+      rw [@List.countP_eq_zero] at h1
+      simp at h1
+      exact h1 hn
     have hxs' : i < x := by omega
     let ls := [l.val[i], l.val[x]]
     have hsub : ls.Sublist l.val := by
@@ -178,7 +175,7 @@ lemma mem_withoutDual_iff_count :
     have h1 := List.Sublist.countP_le (fun (j : Index X) => decide (l.val[↑x].id = j.id)) hsub
     simp [h, ls, hn,] at h1
     rw [List.countP_cons_of_pos] at h1
-    simp at h1
+    · simp at h1
     simp [idMap] at hn
     simp [hn]
 
@@ -190,11 +187,10 @@ def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual :=
 lemma list_ofFn_withoutDualEquiv_eq_sort :
     List.ofFn (Subtype.val ∘ l.withoutDualEquiv) = l.withoutDual.sort (fun i j => i ≤ j) := by
   rw [@List.ext_get_iff]
-  apply And.intro
-  simp only [List.length_ofFn, Finset.length_sort]
-  intro n h1 h2
-  simp only [List.get_eq_getElem, List.getElem_ofFn, Function.comp_apply]
-  rfl
+  refine And.intro ?_ (fun n h1 h2 => ?_)
+  · simp only [List.length_ofFn, Finset.length_sort]
+  · simp only [List.get_eq_getElem, List.getElem_ofFn, Function.comp_apply]
+    rfl
 
 lemma withoutDual_sort_eq_filter : l.withoutDual.sort (fun i j => i ≤ j) =
     (List.finRange l.length).filter (fun i => i ∈ l.withoutDual) := by
@@ -273,18 +269,16 @@ lemma contrIndexList_eq_contrIndexList' : l.contrIndexList = l.contrIndexList' :
   apply ext
   simp only [contrIndexList']
   trans List.map l.val.get (List.ofFn (Subtype.val ∘ ⇑l.withoutDualEquiv))
-  swap
-  simp only [List.map_ofFn]
-  rw [list_ofFn_withoutDualEquiv_eq_sort, withoutDual_sort_eq_filter]
-  simp [contrIndexList]
-  let f1 : Index X → Bool := fun (i : Index X) => l.val.countP (fun j => i.id = j.id) = 1
-  let f2 : (Fin l.length) → Bool := fun i => i ∈ l.withoutDual
-  change List.filter f1 l.val = List.map l.val.get (List.filter f2 (List.finRange l.length))
-  have hf : f2 = f1 ∘ l.val.get := mem_withoutDual_iff_count l
-  rw [hf]
-  rw [← List.filter_map]
-  apply congrArg
-  simp [length]
+  · rw [list_ofFn_withoutDualEquiv_eq_sort, withoutDual_sort_eq_filter]
+    simp only [contrIndexList]
+    let f1 : Index X → Bool := fun (i : Index X) => l.val.countP (fun j => i.id = j.id) = 1
+    let f2 : (Fin l.length) → Bool := fun i => i ∈ l.withoutDual
+    change List.filter f1 l.val = List.map l.val.get (List.filter f2 (List.finRange l.length))
+    have hf : f2 = f1 ∘ l.val.get := mem_withoutDual_iff_count l
+    rw [hf, ← List.filter_map]
+    apply congrArg
+    simp [length]
+  · simp only [List.map_ofFn]
 
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
@@ -310,9 +304,9 @@ lemma contrIndexList_areDualInSelf (i j : Fin l.contrIndexList.length) :
   intro _
   trans ¬ (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)) =
     (l.withoutDualEquiv (Fin.cast l.contrIndexList_length j))
-  rw [l.withoutDualEquiv.apply_eq_iff_eq]
-  simp [Fin.ext_iff]
-  exact Iff.symm Subtype.coe_ne_coe
+  · rw [l.withoutDualEquiv.apply_eq_iff_eq]
+    simp [Fin.ext_iff]
+  · exact Iff.symm Subtype.coe_ne_coe
 
 @[simp]
 lemma contrIndexList_getDual? (i : Fin l.contrIndexList.length) :
@@ -356,9 +350,9 @@ lemma contrIndexList_of_withDual_empty (h : l.withDual = ∅) : l.contrIndexList
   simp [h1]
   rw [(Finset.orderEmbOfFin_unique' _
     (fun x => Finset.mem_univ ((Fin.castOrderIso _).toOrderEmbedding x))).symm]
-  refine Eq.symm (Nat.add_zero n)
-  rw [h1]
-  exact Finset.card_fin l.length
+  · exact Eq.symm (Nat.add_zero n)
+  · rw [h1]
+    exact Finset.card_fin l.length
 
 lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrIndexList := by
   simp
@@ -450,9 +444,9 @@ lemma mem_contrIndexList_count_contrIndexList {I : Index X} (h : I ∈ l.contrIn
     funext a
     rw [Bool.and_comm]
   · rw [l.mem_contrIndexList_filter h, List.countP_cons_of_pos]
-    rfl
-    simp only [decide_eq_true_eq]
-    exact mem_contrIndexList_count l h
+    · rfl
+    · simp only [decide_eq_true_eq]
+      exact mem_contrIndexList_count l h
 
 lemma countP_contrIndexList_zero_of_countP (I : Index X)
     (h : List.countP (fun J => I.id = J.id) l.val = 0) :
@@ -559,8 +553,8 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
       getDual?_getDual?_get_of_withUniqueDual]
     simp only [withUniqueDualLT, Finset.mem_filter] at hi
     apply option_not_lt
-    simpa [withUniqueDualLTToWithUniqueDual] using hi.2
-    exact Ne.symm (getDual?_neq_self l i)⟩
+    · simpa [withUniqueDualLTToWithUniqueDual] using hi.2
+    · exact Ne.symm (getDual?_neq_self l i)⟩
   invFun i := ⟨l.getDualEquiv.symm i, by
     have hi := i.2
     simp only [withUniqueDualLT, Finset.mem_filter, Finset.coe_mem, true_and, gt_iff_lt]
@@ -568,8 +562,8 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
       getDual?_getDual?_get_of_withUniqueDual]
     simp only [withUniqueDualGT, Finset.mem_filter] at hi
     apply lt_option_of_not
-    simpa [withUniqueDualLTToWithUniqueDual] using hi.2
-    exact (getDual?_neq_self l i)⟩
+    · simpa [withUniqueDualLTToWithUniqueDual] using hi.2
+    · exact (getDual?_neq_self l i)⟩
   left_inv x := SetCoe.ext (by simp [withUniqueDualGTToWithUniqueDual,
     withUniqueDualLTToWithUniqueDual])
   right_inv x := SetCoe.ext (by simp [withUniqueDualGTToWithUniqueDual,

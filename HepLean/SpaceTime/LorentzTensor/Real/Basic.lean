@@ -40,17 +40,11 @@ def colorTypEquivFin1Fin1 : ColorType ≃ Fin 1 ⊕ Fin 1 where
   left_inv := by
     intro x
     cases x
-    simp only
-    simp only
+      <;> simp only
   right_inv := by
     intro x
-    cases x
-    simp only [Fin.zero_eta, Fin.isValue, Sum.inl.injEq]
-    rename_i f
-    exact (Fin.fin_one_eq_zero f).symm
-    simp only [Fin.zero_eta, Fin.isValue, Sum.inr.injEq]
-    rename_i f
-    exact (Fin.fin_one_eq_zero f).symm
+    cases' x with f f
+      <;> simpa [Fin.zero_eta, Fin.isValue, Sum.inl.injEq] using (Fin.fin_one_eq_zero f).symm
 
 instance : DecidableEq ColorType :=
   Equiv.decidableEq colorTypEquivFin1Fin1
@@ -60,8 +54,8 @@ instance : Fintype ColorType where
   complete := by
     intro x
     cases x
-    simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
-    simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
+    · simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
+    · simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
 
 end realTensorColor
 

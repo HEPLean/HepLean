@@ -74,23 +74,23 @@ lemma decomp_stdBasis (v : LorentzVector d) : ∑ i, v i • e i = v := by
   funext ν
   rw [Finset.sum_apply]
   rw [Finset.sum_eq_single_of_mem ν]
-  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, mul_one]
-  exact Finset.mem_univ ν
-  intros b _ hbi
-  simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply]
-  simp [LinearMap.stdBasis_apply]
-  exact Or.inr hbi
+  · simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, mul_one]
+  · exact Finset.mem_univ ν
+  · intros b _ hbi
+    simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+    erw [Pi.basisFun_apply]
+    simp [LinearMap.stdBasis_apply]
+    exact Or.inr hbi
 
 @[simp]
 lemma decomp_stdBasis' (v : LorentzVector d) :
     v (Sum.inl 0) • e (Sum.inl 0) + ∑ a₂ : Fin d, v (Sum.inr a₂) • e (Sum.inr a₂) = v := by
   trans ∑ i, v i • e i
-  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
-    Finset.sum_singleton]
-  exact decomp_stdBasis v
+  · simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+      Finset.sum_singleton]
+  · exact decomp_stdBasis v
 
 /-- The standard unit time vector. -/
 noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)

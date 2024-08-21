@@ -58,8 +58,8 @@ lemma time_nonpos_iff : v.1.time ≤ 0 ↔ v.1.time ≤ - 1 := by
   apply Iff.intro
   · intro h
     cases' time_le_minus_one_or_ge_one v with h1 h1
-    exact h1
-    linarith
+    · exact h1
+    · linarith
   · intro h
     linarith
 
@@ -67,8 +67,8 @@ lemma time_nonneg_iff : 0 ≤ v.1.time ↔ 1 ≤ v.1.time := by
   apply Iff.intro
   · intro h
     cases' time_le_minus_one_or_ge_one v with h1 h1
-    linarith
-    exact h1
+    · linarith
+    · exact h1
   · intro h
     linarith
 
@@ -81,8 +81,8 @@ lemma time_abs_sub_space_norm :
     0 ≤ |v.1.time| * |w.1.time| - ‖v.1.space‖ * ‖w.1.space‖ := by
   apply sub_nonneg.mpr
   apply mul_le_mul (norm_space_leq_abs_time v) (norm_space_leq_abs_time w) ?_ ?_
-  exact norm_nonneg w.1.space
-  exact abs_nonneg (v.1 _)
+  · exact norm_nonneg w.1.space
+  · exact abs_nonneg (v.1 _)
 
 /-!
 
@@ -112,10 +112,10 @@ lemma mem_iff_time_nonneg : v ∈ FuturePointing d ↔ 0 ≤ v.1.time := by
 
 lemma not_mem_iff : v ∉ FuturePointing d ↔ v.1.time ≤ 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  exact le_of_not_lt ((mem_iff v).mp.mt h)
-  have h1 := (mem_iff v).mp.mt
-  simp at h1
-  exact h1 h
+  · exact le_of_not_lt ((mem_iff v).mp.mt h)
+  · have h1 := (mem_iff v).mp.mt
+    simp at h1
+    exact h1 h
 
 lemma not_mem_iff_neg : v ∉ FuturePointing d ↔ neg v ∈ FuturePointing d := by
   rw [not_mem_iff, mem_iff_time_nonneg]
@@ -217,13 +217,13 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
       simp only [time, space, Function.comp_apply, PiLp.inner_apply, RCLike.inner_apply, map_mul,
         conj_trivial]
       rw [Real.mul_self_sqrt, ← @real_inner_self_eq_norm_sq, @PiLp.inner_apply]
-      simp only [Function.comp_apply, RCLike.inner_apply, conj_trivial]
-      refine Eq.symm (eq_sub_of_add_eq (congrArg (HAdd.hAdd 1) ?_))
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
-      exact Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _)⟩,
+      · simp only [Function.comp_apply, RCLike.inner_apply, conj_trivial]
+        refine Eq.symm (eq_sub_of_add_eq (congrArg (HAdd.hAdd 1) ?_))
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i _
+        ring
+      · exact Right.add_nonneg (zero_le_one' ℝ) $ mul_nonneg (sq_nonneg _) (sq_nonneg _)⟩,
     by
       simp only [space, Function.comp_apply, mem_iff_time_nonneg, time, Real.sqrt_pos]
       exact Real.sqrt_nonneg _⟩

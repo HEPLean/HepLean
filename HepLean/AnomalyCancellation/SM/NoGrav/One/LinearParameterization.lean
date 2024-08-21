@@ -107,10 +107,10 @@ lemma cubic_zero_E'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
   rw [h1] at hc
   simp at hc
   cases' hc with hc hc
-  have h2 := (add_eq_zero_iff' (by nlinarith) (sq_nonneg S.Y)).mp hc
-  simp at h2
-  exact h2.1
-  exact hc
+  · have h2 := (add_eq_zero_iff' (by nlinarith) (sq_nonneg S.Y)).mp hc
+    simp at h2
+    exact h2.1
+  · exact hc
 
 /-- The bijection between the type of linear parameters and `(SMNoGrav 1).LinSols`. -/
 def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
@@ -120,13 +120,13 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
       SMCharges.E S.val (0 : Fin 1)⟩
   left_inv S := by
     apply linearParameters.ext
-    rfl
-    simp only [Fin.isValue]
-    repeat erw [speciesVal]
-    simp only [asCharges, neg_add_rev]
-    ring
-    simp only [toSpecies_apply]
-    rfl
+    · rfl
+    · simp only [Fin.isValue]
+      repeat erw [speciesVal]
+      simp only [asCharges, neg_add_rev]
+      ring
+    · simp only [toSpecies_apply]
+      rfl
   right_inv S := by
     simp only [Fin.isValue, toSpecies_apply]
     apply ACCSystemLinear.LinSols.ext
@@ -239,25 +239,25 @@ def bijectionLinearParameters :
     have hvw := S.hvw
     have hQ := S.hx
     apply linearParametersQENeqZero.ext
-    rfl
-    field_simp
-    ring
-    simp only [tolinearParametersQNeqZero_w, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
-      toLinearParameters_coe_E']
-    field_simp
-    ring
+    · rfl
+    · field_simp
+      ring
+    · simp only [tolinearParametersQNeqZero_w, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
+        toLinearParameters_coe_E']
+      field_simp
+      ring
   right_inv S := by
     apply Subtype.ext
     have hQ := S.2.1
     have hE := S.2.2
     apply linearParameters.ext
-    rfl
-    field_simp
-    ring_nf
-    field_simp [hQ, hE]
-    field_simp
-    ring_nf
-    field_simp [hQ, hE]
+    · rfl
+    · field_simp
+      ring_nf
+      field_simp [hQ, hE]
+    · field_simp
+      ring_nf
+      field_simp [hQ, hE]
 
 /-- The bijection between `linearParametersQENeqZero` and `LinSols` with `Q` and `E` non-zero. -/
 def bijection : linearParametersQENeqZero ≃
@@ -332,23 +332,21 @@ lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val 
     (S.v = -1 ∧ S.w = 0) ∨ (S.v = 0 ∧ S.w = -1) := by
   have h' := cubic_v_or_w_zero S h FLTThree
   cases' h' with hx hx
-  simp [hx]
-  exact cubic_v_zero S h hx
-  simp [hx]
-  exact cube_w_zero S h hx
+  · simp [hx]
+    exact cubic_v_zero S h hx
+  · simp [hx]
+    exact cube_w_zero S h hx
 
 lemma grav (S : linearParametersQENeqZero) : accGrav (bijection S).1.val = 0 ↔ S.v + S.w = -1 := by
   erw [linearParameters.grav]
   have hvw := S.hvw
   have hQ := S.hx
   field_simp
-  apply Iff.intro
-  intro h
-  apply (mul_right_inj' hQ).mp
-  linear_combination -1 * h / 6
-  intro h
-  rw [h]
-  exact Eq.symm (mul_neg_one (6 * S.x))
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · apply (mul_right_inj' hQ).mp
+    linear_combination -1 * h / 6
+  · rw [h]
+    exact Eq.symm (mul_neg_one (6 * S.x))
 
 lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
     (FLTThree : FermatLastTheoremWith ℚ 3) :
@@ -356,10 +354,10 @@ lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1
   rw [grav]
   have h' := cube_w_v S h FLTThree
   cases' h' with h h
-  rw [h.1, h.2]
-  exact Rat.add_zero (-1)
-  rw [h.1, h.2]
-  exact Rat.zero_add (-1)
+  · rw [h.1, h.2]
+    exact Rat.add_zero (-1)
+  · rw [h.1, h.2]
+    exact Rat.zero_add (-1)
 
 end linearParametersQENeqZero
 

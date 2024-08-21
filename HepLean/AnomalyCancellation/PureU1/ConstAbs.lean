@@ -32,13 +32,10 @@ lemma constAbs_perm (S : (PureU1 n).Charges) (M :(FamilyPermutations n).group) :
     ConstAbs ((FamilyPermutations n).rep M S) ↔ ConstAbs S := by
   simp only [ConstAbs, PureU1_numberCharges, FamilyPermutations, PermGroup, permCharges,
     MonoidHom.coe_mk, OneHom.coe_mk, chargeMap_apply]
-  apply Iff.intro
-  intro h i j
+  refine Iff.intro (fun h i j => ?_) (fun h i j => h (M.invFun i) (M.invFun j))
   have h2 := h (M.toFun i) (M.toFun j)
   simp at h2
   exact h2
-  intro h i j
-  exact h (M.invFun i) (M.invFun j)
 
 lemma constAbs_sort {S : (PureU1 n).Charges} (CA : ConstAbs S) : ConstAbs (sort S) := by
   rw [sort]
@@ -58,8 +55,8 @@ lemma lt_eq {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := b
   have ht := hS.1 i k
   rw [sq_eq_sq_iff_eq_or_eq_neg] at ht
   cases ht <;> rename_i h
-  exact h
-  linarith
+  · exact h
+  · linarith
 
 lemma val_le_zero {i : Fin n.succ} (hi : S i ≤ 0) : S i = S (0 : Fin n.succ) := by
   symm
@@ -71,8 +68,8 @@ lemma gt_eq {k i: Fin n.succ} (hk : 0 ≤ S k) (hik : k ≤ i) : S i = S k := by
   have ht := hS.1 i k
   rw [sq_eq_sq_iff_eq_or_eq_neg] at ht
   cases ht <;> rename_i h
-  exact h
-  linarith
+  · exact h
+  · linarith
 
 lemma zero_gt (h0 : 0 ≤ S (0 : Fin n.succ)) (i : Fin n.succ) : S (0 : Fin n.succ) = S i := by
   symm
@@ -83,9 +80,9 @@ lemma opposite_signs_eq_neg {i j : Fin n.succ} (hi : S i ≤ 0) (hj : 0 ≤ S j)
   have hSS := hS.1 i j
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hSS
   cases' hSS with h h
-  simp_all
-  linarith
-  exact h
+  · simp_all
+    linarith
+  · exact h
 
 lemma is_zero (h0 : S (0 : Fin n.succ) = 0) : S = 0 := by
   funext i
@@ -115,10 +112,10 @@ lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
     ∑ i : Fin (k.succ.val + (n.succ - k.succ.val)), S (Fin.cast (boundary_split k) i) := by
   simp [accGrav]
   erw [Finset.sum_equiv (Fin.castOrderIso (boundary_split k)).toEquiv]
-  intro i
-  simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
-  intro i
-  simp
+  · intro i
+    simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
+  · intro i
+    simp
 
 lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
     accGrav n.succ S = (2 * ↑↑k + 1 - ↑n) * S (0 : Fin n.succ) := by
@@ -146,19 +143,19 @@ lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.suc
   intro ⟨i, hi⟩
   simp at hnot
   induction i
-  rfl
-  rename_i i hii
-  have hnott := hnot ⟨i, by {simp at hi; linarith}⟩
-  have hii := hii (by omega)
-  erw [← hii] at hnott
-  exact (val_le_zero hS (hnott h0)).symm
+  · rfl
+  · rename_i i hii
+    have hnott := hnot ⟨i, by {simp at hi; linarith}⟩
+    have hii := hii (by omega)
+    erw [← hii] at hnott
+    exact (val_le_zero hS (hnott h0)).symm
 
 lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
     S (0 : Fin n.succ) = S i := by
   by_cases hi : S (0 : Fin n.succ) < 0
-  exact not_hasBoundary_zero_le hS hnot hi i
-  simp at hi
-  exact zero_gt hS hi i
+  · exact not_hasBoundary_zero_le hS hnot hi i
+  · simp at hi
+    exact zero_gt hS hi i
 
 lemma not_hasBoundary_grav (hnot : ¬ (HasBoundary S)) :
     accGrav n.succ S = n.succ * S (0 : Fin n.succ) := by
@@ -171,8 +168,8 @@ lemma AFL_hasBoundary (h : A.val (0 : Fin n.succ) ≠ 0) : HasBoundary A.val := 
   erw [pureU1_linear A] at h0
   simp at h0
   cases' h0
-  linarith
-  simp_all
+  · linarith
+  · simp_all
 
 lemma AFL_odd_noBoundary {A : (PureU1 (2 * n + 1)).LinSols} (h : ConstAbsSorted A.val)
     (hA : A.val (0 : Fin (2*n +1)) ≠ 0) : ¬ HasBoundary A.val := by
@@ -224,9 +221,9 @@ lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.v
     A.val (Fin.cast (split_equal n.succ) (Fin.castAdd n.succ i))
     = A.val (0 : Fin (2*n.succ)) := by
   by_cases hA : A.val (0 : Fin (2*n.succ)) = 0
-  rw [is_zero h hA]
-  rfl
-  exact AFL_even_below' h hA i
+  · rw [is_zero h hA]
+    rfl
+  · exact AFL_even_below' h hA i
 
 lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.val)
     (hA : A.val (0 : Fin (2*n.succ)) ≠ 0) (i : Fin n.succ) :
@@ -245,9 +242,9 @@ lemma AFL_even_above (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.v
     A.val (Fin.cast (split_equal n.succ) (Fin.natAdd n.succ i)) =
     - A.val (0 : Fin (2 * n.succ)) := by
   by_cases hA : A.val (0 : Fin (2 * n.succ)) = 0
-  rw [is_zero h hA]
-  rfl
-  exact AFL_even_above' h hA i
+  · rw [is_zero h hA]
+    rfl
+  · exact AFL_even_above' h hA i
 
 end charges
 

@@ -45,14 +45,10 @@ def toSpecies (i : Fin 6) : (SMνCharges n).Charges →ₗ[ℚ] (SMνSpecies n).
 
 lemma charges_eq_toSpecies_eq (S T : (SMνCharges n).Charges) :
     S = T ↔ ∀ i, toSpecies i S = toSpecies i T := by
-  apply Iff.intro
-  intro h
-  rw [h]
-  simp only [forall_const]
-  intro h
-  apply toSpeciesEquiv.injective
-  funext i
-  exact h i
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · exact fun i => congrArg (⇑(toSpecies i)) h
+  · apply toSpeciesEquiv.injective
+    exact funext (fun i => h i)
 
 lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : Fin 6 → Fin n → ℚ) :
     (toSpecies i) (toSpeciesEquiv.symm f) = f i := by

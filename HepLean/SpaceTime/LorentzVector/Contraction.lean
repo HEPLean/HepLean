@@ -73,29 +73,29 @@ lemma contrUpDown_stdBasis_left (x : LorentzVector d) (i : Fin 1 ⊕ Fin d) :
     contrUpDown (x ⊗ₜ[ℝ] (CovariantLorentzVector.stdBasis i)) = x i := by
   simp only [contrUpDown, contrUpDownBi, lift.tmul, LinearMap.coe_mk, AddHom.coe_mk]
   rw [Finset.sum_eq_single_of_mem i]
-  simp only [CovariantLorentzVector.stdBasis]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, mul_one]
-  exact Finset.mem_univ i
-  intro b _ hbi
-  simp only [CovariantLorentzVector.stdBasis, mul_eq_zero]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_apply', ite_eq_right_iff, one_ne_zero, imp_false]
-  exact Or.inr hbi.symm
+  · simp only [CovariantLorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, mul_one]
+  · exact Finset.mem_univ i
+  · intro b _ hbi
+    simp only [CovariantLorentzVector.stdBasis, mul_eq_zero]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_apply', ite_eq_right_iff, one_ne_zero, imp_false]
+    exact Or.inr hbi.symm
 
 @[simp]
 lemma contrUpDown_stdBasis_right (x : CovariantLorentzVector d) (i : Fin 1 ⊕ Fin d) :
     contrUpDown (e i ⊗ₜ[ℝ] x) = x i := by
   simp only [contrUpDown, contrUpDownBi, lift.tmul, LinearMap.coe_mk, AddHom.coe_mk]
   rw [Finset.sum_eq_single_of_mem i]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, one_mul]
-  exact Finset.mem_univ i
-  intro b _ hbi
-  simp only [CovariantLorentzVector.stdBasis, mul_eq_zero]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_apply', ite_eq_right_iff, one_ne_zero, imp_false]
-  exact Or.intro_left (x b = 0) (id (Ne.symm hbi))
+  · erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, one_mul]
+  · exact Finset.mem_univ i
+  · intro b _ hbi
+    simp only [CovariantLorentzVector.stdBasis, mul_eq_zero]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_apply', ite_eq_right_iff, one_ne_zero, imp_false]
+    exact Or.intro_left (x b = 0) (id (Ne.symm hbi))
 
 /-- The linear map defining the contraction of a covariant Lorentz vector
   and a contravariant Lorentz vector. -/
@@ -183,11 +183,11 @@ lemma asTenProd_diag :
   simp only [asTenProd]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
   rw [Finset.sum_eq_single μ]
-  intro ν _ hμν
-  rw [minkowskiMatrix.off_diag_zero hμν.symm]
-  simp only [zero_smul]
-  intro a
-  simp_all only
+  · intro ν _ hμν
+    rw [minkowskiMatrix.off_diag_zero hμν.symm]
+    simp only [zero_smul]
+  · intro a
+    simp_all only
 
 /-- The metric tensor as an element of `CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d`. -/
 def asCoTenProd : CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d :=
@@ -199,11 +199,11 @@ lemma asCoTenProd_diag :
   simp only [asCoTenProd]
   refine Finset.sum_congr rfl (fun μ _ => ?_)
   rw [Finset.sum_eq_single μ]
-  intro ν _ hμν
-  rw [minkowskiMatrix.off_diag_zero hμν.symm]
-  simp only [zero_smul]
-  intro a
-  simp_all only
+  · intro ν _ hμν
+    rw [minkowskiMatrix.off_diag_zero hμν.symm]
+    simp only [zero_smul]
+  · intro a
+    simp_all only
 
 @[simp]
 lemma contrLeft_asTenProd (x : CovariantLorentzVector d) :
@@ -244,19 +244,19 @@ lemma asTenProd_contr_asCoTenProd :
   rw [← tmul_smul, TensorProduct.assoc_tmul]
   simp only [map_tmul, LinearMap.id_coe, id_eq, contrLeft_asCoTenProd]
   rw [tmul_sum, Finset.sum_eq_single_of_mem μ, tmul_smul]
-  change (η μ μ * (η μ μ * e μ μ)) • e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ = _
-  rw [LorentzVector.stdBasis]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
-  exact Finset.mem_univ μ
-  intro ν _ hμν
-  rw [tmul_smul]
-  change (η ν ν * (η μ μ * e μ ν)) • (e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis ν) = _
-  rw [LorentzVector.stdBasis]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_apply', mul_ite, mul_one, mul_zero, ite_smul, zero_smul,
-    ite_eq_right_iff, smul_eq_zero, mul_eq_zero]
-  exact fun a => False.elim (hμν (id (Eq.symm a)))
+  · change (η μ μ * (η μ μ * e μ μ)) • e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis μ = _
+    rw [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
+  · exact Finset.mem_univ μ
+  · intro ν _ hμν
+    rw [tmul_smul]
+    change (η ν ν * (η μ μ * e μ ν)) • (e μ ⊗ₜ[ℝ] CovariantLorentzVector.stdBasis ν) = _
+    rw [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_apply', mul_ite, mul_one, mul_zero, ite_smul, zero_smul,
+      ite_eq_right_iff, smul_eq_zero, mul_eq_zero]
+    exact fun a => False.elim (hμν (id (Eq.symm a)))
 
 @[simp]
 lemma asCoTenProd_contr_asTenProd :
@@ -272,16 +272,16 @@ lemma asCoTenProd_contr_asTenProd :
   simp only [tmul_smul, LinearMapClass.map_smul, map_tmul, LinearMap.id_coe, id_eq,
     contrLeft_asTenProd]
   rw [tmul_sum, Finset.sum_eq_single_of_mem μ, tmul_smul, smul_smul, LorentzVector.stdBasis]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
-  exact Finset.mem_univ μ
-  intro ν _ hμν
-  rw [tmul_smul]
-  rw [LorentzVector.stdBasis]
-  erw [Pi.basisFun_apply]
-  simp only [LinearMap.stdBasis_apply', mul_ite, mul_one, mul_zero, ite_smul, zero_smul,
-    ite_eq_right_iff, smul_eq_zero, mul_eq_zero]
-  exact fun a => False.elim (hμν (id (Eq.symm a)))
+  · erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_same, mul_one, η_apply_mul_η_apply_diag, one_smul]
+  · exact Finset.mem_univ μ
+  · intro ν _ hμν
+    rw [tmul_smul]
+    rw [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp only [LinearMap.stdBasis_apply', mul_ite, mul_one, mul_zero, ite_smul, zero_smul,
+      ite_eq_right_iff, smul_eq_zero, mul_eq_zero]
+    exact fun a => False.elim (hμν (id (Eq.symm a)))
 
 lemma asTenProd_invariant (g : LorentzGroup d) :
     TensorProduct.map (LorentzVector.rep g) (LorentzVector.rep g) asTenProd = asTenProd := by
@@ -289,8 +289,8 @@ lemma asTenProd_invariant (g : LorentzGroup d) :
     Matrix.transpose_apply]
   trans ∑ μ : Fin 1 ⊕ Fin d, ∑ ν : Fin 1 ⊕ Fin d, ∑ φ : Fin 1 ⊕ Fin d,
       η μ ν • (g.1 φ μ • e φ) ⊗ₜ[ℝ] ∑ ρ : Fin 1 ⊕ Fin d, g.1 ρ ν • e ρ
-  refine Finset.sum_congr rfl (fun μ _ => Finset.sum_congr rfl (fun ν _ => ?_))
-  rw [sum_tmul, Finset.smul_sum]
+  · refine Finset.sum_congr rfl (fun μ _ => Finset.sum_congr rfl (fun ν _ => ?_))
+    rw [sum_tmul, Finset.smul_sum]
   trans ∑ μ : Fin 1 ⊕ Fin d, ∑ ν : Fin 1 ⊕ Fin d, ∑ φ : Fin 1 ⊕ Fin d, ∑ ρ : Fin 1 ⊕ Fin d,
       (η μ ν • (g.1 φ μ • e φ) ⊗ₜ[ℝ] (g.1 ρ ν • e ρ))
   · refine Finset.sum_congr rfl (fun μ _ => Finset.sum_congr rfl (fun ν _ =>

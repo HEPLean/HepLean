@@ -181,13 +181,13 @@ lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
 lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).Charges) :
     cubeTriLin (B i) (B j) S = 0 := by
   fin_cases i
-  exact B₀_Bi_cubic h S
-  exact B₁_Bi_cubic h S
-  exact B₂_Bi_cubic h S
-  exact B₃_Bi_cubic h S
-  exact B₄_Bi_cubic h S
-  exact B₅_Bi_cubic h S
-  exact B₆_Bi_cubic h S
+  · exact B₀_Bi_cubic h S
+  · exact B₁_Bi_cubic h S
+  · exact B₂_Bi_cubic h S
+  · exact B₃_Bi_cubic h S
+  · exact B₄_Bi_cubic h S
+  · exact B₅_Bi_cubic h S
+  · exact B₆_Bi_cubic h S
 
 lemma B₀_B₀_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 0) (B 0) (B i) = 0 := by
@@ -241,21 +241,21 @@ lemma B₆_B₆_Bi_cubic {i : Fin 7} :
 lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
     cubeTriLin (B i) (B i) (B j) = 0 := by
   fin_cases i
-  exact B₀_B₀_Bi_cubic
-  exact B₁_B₁_Bi_cubic
-  exact B₂_B₂_Bi_cubic
-  exact B₃_B₃_Bi_cubic
-  exact B₄_B₄_Bi_cubic
-  exact B₅_B₅_Bi_cubic
-  exact B₆_B₆_Bi_cubic
+  · exact B₀_B₀_Bi_cubic
+  · exact B₁_B₁_Bi_cubic
+  · exact B₂_B₂_Bi_cubic
+  · exact B₃_B₃_Bi_cubic
+  · exact B₄_B₄_Bi_cubic
+  · exact B₅_B₅_Bi_cubic
+  · exact B₆_B₆_Bi_cubic
 
 lemma Bi_Bj_Bk_cubic (i j k : Fin 7) :
     cubeTriLin (B i) (B j) (B k) = 0 := by
   by_cases hij : i ≠ j
-  exact Bi_Bj_ne_cubic hij (B k)
-  simp at hij
-  rw [hij]
-  exact Bi_Bi_Bj_cubic j k
+  · exact Bi_Bj_ne_cubic hij (B k)
+  · simp at hij
+    rw [hij]
+    exact Bi_Bi_Bj_cubic j k
 
 theorem B_in_accCube (f : Fin 7 → ℚ) : accCube (∑ i, f i • B i) = 0 := by
   change cubeTriLin _ _ _ = 0
@@ -329,11 +329,8 @@ theorem basis_linear_independent : LinearIndependent ℚ B := by
 end PlaneSeven
 
 theorem seven_dim_plane_exists : ∃ (B : Fin 7 → (SM 3).Charges),
-    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).IsSolution (∑ i, f i • B i) := by
-  use PlaneSeven.B
-  apply And.intro
-  exact PlaneSeven.basis_linear_independent
-  exact PlaneSeven.B_sum_is_sol
+    LinearIndependent ℚ B ∧ ∀ (f : Fin 7 → ℚ), (SM 3).IsSolution (∑ i, f i • B i) :=
+  ⟨PlaneSeven.B, And.intro PlaneSeven.basis_linear_independent PlaneSeven.B_sum_is_sol⟩
 
 end SM
 end SMRHN

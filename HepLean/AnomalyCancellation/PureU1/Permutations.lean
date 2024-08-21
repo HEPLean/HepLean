@@ -149,19 +149,23 @@ lemma pairSwap_other {n : ℕ} (i j k : Fin n) (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).toFun k = k := by
   simp [pairSwap]
   split
-  simp_all
-  split
-  simp_all
-  rfl
+  · rename_i h
+    exact False.elim (hik (id (Eq.symm h)))
+  · split
+    · rename_i h
+      exact False.elim (hjk (id (Eq.symm h)))
+    · rfl
 
 lemma pairSwap_inv_other {n : ℕ} {i j k : Fin n} (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).invFun k = k := by
   simp [pairSwap]
   split
-  simp_all
-  split
-  simp_all
-  rfl
+  · rename_i h
+    exact False.elim (hik (id (Eq.symm h)))
+  · split
+    · rename_i h
+      exact False.elim (hjk (id (Eq.symm h)))
+    · rfl
 
 /-- A permutation of fermions which takes one ordered subset into another. -/
 noncomputable def permOfInjection (f g : Fin m ↪ Fin n) : (FamilyPermutations n).group :=

@@ -107,23 +107,22 @@ lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
   simp only [toMatrix_apply]
   refine (continuous_mul_left (η i i)).comp' ?_
   refine Continuous.sub ?_ ?_
-  refine .comp' (continuous_add_left (minkowskiMetric (e i) (e j))) ?_
-  refine .comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
-  exact FuturePointing.metric_continuous _
+  · refine .comp' (continuous_add_left (minkowskiMetric (e i) (e j))) ?_
+    refine .comp' (continuous_mul_left (2 * ⟪e j, u⟫ₘ)) ?_
+    exact FuturePointing.metric_continuous _
   refine .mul ?_ ?_
-  refine .mul ?_ ?_
-  simp only [(minkowskiMetric _).map_add]
-  refine .comp' ?_ ?_
-  exact continuous_add_left ((minkowskiMetric (stdBasis i)) ↑u)
-  exact FuturePointing.metric_continuous _
-  simp only [(minkowskiMetric _).map_add]
-  refine .comp' ?_ ?_
-  exact continuous_add_left _
-  exact FuturePointing.metric_continuous _
-  refine .inv₀ ?_ ?_
-  refine .comp' (continuous_add_left 1) ?_
-  exact FuturePointing.metric_continuous _
-  exact fun x => FuturePointing.one_add_metric_non_zero u x
+  · refine .mul ?_ ?_
+    · simp only [(minkowskiMetric _).map_add]
+      refine .comp' ?_ ?_
+      · exact continuous_add_left ((minkowskiMetric (stdBasis i)) ↑u)
+      · exact FuturePointing.metric_continuous _
+    · simp only [(minkowskiMetric _).map_add]
+      refine .comp' ?_ ?_
+      · exact continuous_add_left _
+      · exact FuturePointing.metric_continuous _
+  · refine .inv₀ ?_ ?_
+    · refine .comp' (continuous_add_left 1) (FuturePointing.metric_continuous _)
+    exact fun x => FuturePointing.one_add_metric_non_zero u x
 
 lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ LorentzGroup d:= by
   intro x y

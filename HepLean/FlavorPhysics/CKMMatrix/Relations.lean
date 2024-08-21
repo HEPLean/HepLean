@@ -70,22 +70,19 @@ lemma VudAbs_sq_add_VusAbs_sq : VudAbs V ^ 2 + VusAbs V ^2 = 1 - VubAbs V ^2 := 
 lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
     [V]ud ≠ 0 ∨ [V]us ≠ 0 ↔ abs [V]ub ≠ 1 := by
   have h2 := V.fst_row_normalized_abs
-  apply Iff.intro
-  intro h
-  intro h1
-  rw [h1] at h2
-  simp at h2
-  rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
-  simp_all
-  intro h
-  by_contra hn
-  rw [not_or] at hn
-  simp at hn
-  simp_all
-  have h1 := Complex.abs.nonneg [V]ub
-  rw [h2] at h1
-  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
-  exact h2 h1
+  refine Iff.intro (fun h h1 => ?_) (fun h => ?_)
+  · rw [h1] at h2
+    simp at h2
+    rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
+    simp_all
+  · by_contra hn
+    rw [not_or] at hn
+    simp_all only [ne_eq, Decidable.not_not, map_zero, OfNat.ofNat_ne_zero, not_false_eq_true,
+      zero_pow, add_zero, zero_add, sq_eq_one_iff, false_or, neg_eq_self_iff, one_ne_zero]
+    have h1 := Complex.abs.nonneg [V]ub
+    rw [h2] at h1
+    refine (?_ : ¬ 0 ≤ (-1 : ℝ)) h1
+    simp
 
 lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0) :
     normSq [V]ud + normSq [V]us ≠ 0 := by
@@ -97,11 +94,11 @@ lemma normSq_Vud_plus_normSq_Vus_neq_zero_ℝ {V : CKMMatrix} (hb : [V]ud ≠ 0 
     linear_combination -(1 * hn)
   simp at h2
   cases' h2 with h2 h2
-  exact hb h2
-  have h3 := Complex.abs.nonneg [V]ub
-  rw [h2] at h3
-  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
-  exact h2 h3
+  · exact hb h2
+  · have h3 := Complex.abs.nonneg [V]ub
+    rw [h2] at h3
+    have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
+    exact h2 h3
 
 lemma VAbsub_neq_zero_Vud_Vus_neq_zero {V : Quotient CKMMatrixSetoid}
     (hV : VAbs 0 2 V ≠ 1) :(VudAbs V ^ 2 + VusAbs V ^ 2) ≠ 0 := by
@@ -250,12 +247,12 @@ lemma VAbs_ge_zero (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : 0 ≤ VAbs i j
 lemma VAbs_leq_one (i j : Fin 3) (V : Quotient CKMMatrixSetoid) : VAbs i j V ≤ 1 := by
   have h := VAbs_sum_sq_row_eq_one V i
   fin_cases j
-  change VAbs i 0 V ≤ 1
-  nlinarith
-  change VAbs i 1 V ≤ 1
-  nlinarith
-  change VAbs i 2 V ≤ 1
-  nlinarith
+  · change VAbs i 0 V ≤ 1
+    nlinarith
+  · change VAbs i 1 V ≤ 1
+    nlinarith
+  · change VAbs i 2 V ≤ 1
+    nlinarith
 
 end individual
 
@@ -302,19 +299,19 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
   have h1 := snd_row_normalized_abs V
   symm
   rw [Real.sqrt_eq_iff_sq_eq]
-  simp [not_or] at ha
-  rw [cb_eq_zero_of_ud_us_zero ha] at h1
-  simp at h1
-  simp [VAbs]
-  linear_combination h1
-  simp only [VcdAbs, Fin.isValue, sub_nonneg, sq_le_one_iff_abs_le_one]
-  rw [@abs_le]
-  have h1 := VAbs_leq_one 1 0 ⟦V⟧
-  have h0 := VAbs_ge_zero 1 0 ⟦V⟧
-  simp_all
-  have hn : -1 ≤ (0 : ℝ) := by simp
-  exact hn.trans h0
-  exact VAbs_ge_zero _ _ ⟦V⟧
+  · simp [not_or] at ha
+    rw [cb_eq_zero_of_ud_us_zero ha] at h1
+    simp at h1
+    simp [VAbs]
+    linear_combination h1
+  · simp only [VcdAbs, Fin.isValue, sub_nonneg, sq_le_one_iff_abs_le_one]
+    rw [@abs_le]
+    have h1 := VAbs_leq_one 1 0 ⟦V⟧
+    have h0 := VAbs_ge_zero 1 0 ⟦V⟧
+    simp_all
+    have hn : -1 ≤ (0 : ℝ) := by simp
+    exact hn.trans h0
+  · exact VAbs_ge_zero _ _ ⟦V⟧
 
 lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
     VcbAbs V ^ 2 + VtbAbs V ^ 2 = 1 - VubAbs V ^2 := by
@@ -323,24 +320,22 @@ lemma VcbAbs_sq_add_VtbAbs_sq (V : Quotient CKMMatrixSetoid) :
 lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
     [V]cb ≠ 0 ∨ [V]tb ≠ 0 ↔ abs [V]ub ≠ 1 := by
   have h2 := V.thd_col_normalized_abs
-  apply Iff.intro
-  intro h
-  intro h1
-  rw [h1] at h2
-  simp at h2
-  have h2 : Complex.abs (V.1 1 2) ^ 2 + Complex.abs (V.1 2 2) ^ 2 = 0 := by
-    linear_combination h2
-  rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
-  simp_all
-  intro h
-  by_contra hn
-  rw [not_or] at hn
-  simp at hn
-  simp_all
-  have h1 := Complex.abs.nonneg [V]ub
-  rw [h2] at h1
-  have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
-  exact h2 h1
+  refine Iff.intro (fun h h1 => ?_) (fun h => ?_)
+  · rw [h1] at h2
+    simp at h2
+    have h2 : Complex.abs (V.1 1 2) ^ 2 + Complex.abs (V.1 2 2) ^ 2 = 0 := by
+      linear_combination h2
+    rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
+    simp_all
+  · by_contra hn
+    rw [not_or] at hn
+    simp at hn
+    simp_all only [map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
+      sq_eq_one_iff, false_or, neg_eq_self_iff, one_ne_zero]
+    have h1 := Complex.abs.nonneg [V]ub
+    rw [h2] at h1
+    have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp
+    exact h2 h1
 
 lemma VAbs_fst_col_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3}
     (hV : VAbs 0 i V = 1) : VAbs 1 i V = 0 := by

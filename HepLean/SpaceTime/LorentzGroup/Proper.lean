@@ -27,9 +27,8 @@ variable {d : ℕ}
 
 /-- The determinant of a member of the Lorentz group is `1` or `-1`. -/
 lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
-  have h1 := (congrArg det ((mem_iff_self_mul_dual).mp Λ.2))
-  simp [det_mul, det_dual] at h1
-  exact mul_self_eq_one_iff.mp h1
+  refine mul_self_eq_one_iff.mp ?_
+  simpa only [det_mul, det_dual, det_one] using congrArg det ((mem_iff_self_mul_dual).mp Λ.2)
 
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
@@ -44,9 +43,8 @@ instance : TopologicalGroup ℤ₂ := TopologicalGroup.mk
 @[simps!]
 def coeForℤ₂ : C(({-1, 1} : Set ℝ), ℤ₂) where
   toFun x := if x = ⟨1, Set.mem_insert_of_mem (-1) rfl⟩
-    then (Additive.toMul 0) else (Additive.toMul (1 : ZMod 2))
-  continuous_toFun := by
-    exact continuous_of_discreteTopology
+    then Additive.toMul 0 else Additive.toMul (1 : ZMod 2)
+  continuous_toFun := continuous_of_discreteTopology
 
 /-- The continuous map taking a Lorentz matrix to its determinant. -/
 def detContinuous : C(𝓛 d, ℤ₂) :=
@@ -54,25 +52,24 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
     toFun := fun Λ => ⟨Λ.1.det, Or.symm (LorentzGroup.det_eq_one_or_neg_one _)⟩,
     continuous_toFun := by
       refine Continuous.subtype_mk ?_ _
-      apply Continuous.matrix_det $
+      exact Continuous.matrix_det $
         Continuous.comp' (continuous_iff_le_induced.mpr fun U a => a) continuous_id'
       }
 
 lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
-  apply Iff.intro
-  intro h
-  simp [detContinuous] at h
-  cases' det_eq_one_or_neg_one Λ with h1 h1
-    <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
-    <;> simp_all [h1, h2, h]
-  rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
-  · change (0 : Fin 2) = (1 : Fin 2) at h
-    simp only [Fin.isValue, zero_ne_one] at h
-  · change (1 : Fin 2) = (0 : Fin 2) at h
-    simp only [Fin.isValue, one_ne_zero] at h
-  · intro h
-    simp [detContinuous, h]
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
+    Subtype.mk.injEq] at h
+    cases' det_eq_one_or_neg_one Λ with h1 h1
+      <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
+      <;> simp_all [h1, h2, h]
+    · rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
+      · change (0 : Fin 2) = (1 : Fin 2) at h
+        simp only [Fin.isValue, zero_ne_one] at h
+    · change (1 : Fin 2) = (0 : Fin 2) at h
+      simp only [Fin.isValue, one_ne_zero] at h
+  · simp [detContinuous, h]
 
 /-- The representation taking a Lorentz matrix to its determinant. -/
 @[simps!]
@@ -80,12 +77,11 @@ def detRep : 𝓛 d →* ℤ₂ where
   toFun Λ := detContinuous Λ
   map_one' := by
     simp [detContinuous, lorentzGroupIsGroup]
-  map_mul' := by
-    intro Λ1 Λ2
+  map_mul' Λ1 Λ2 := by
     simp only [Submonoid.coe_mul, Subgroup.coe_toSubmonoid, Units.val_mul, det_mul, toMul_zero,
       mul_ite, mul_one, ite_mul, one_mul]
-    cases' (det_eq_one_or_neg_one Λ1) with h1 h1
-      <;> cases' (det_eq_one_or_neg_one Λ2) with h2 h2
+    cases' det_eq_one_or_neg_one Λ1 with h1 h1
+      <;> cases' det_eq_one_or_neg_one Λ2 with h2 h2
       <;> simp [h1, h2, detContinuous]
     rfl
 
@@ -102,7 +98,8 @@ lemma det_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connecte
 
 lemma detRep_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     detRep Λ = detRep Λ' := by
-  simp [detRep_apply, detRep_apply, detContinuous]
+  simp only [detRep_apply, detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
+    coeForℤ₂_apply, Subtype.mk.injEq]
   rw [det_on_connected_component h]
 
 lemma det_of_joined {Λ Λ' : LorentzGroup d} (h : Joined Λ Λ') : Λ.1.det = Λ'.1.det :=
@@ -117,8 +114,8 @@ instance : DecidablePred (@IsProper d) := by
   apply Real.decidableEq
 
 lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
-  rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep)]
-  rw [detRep_apply, detRep_apply, detContinuous_eq_iff_det_eq]
+  rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep), detRep_apply, detRep_apply,
+    detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 
 lemma id_IsProper : @IsProper d 1 := by

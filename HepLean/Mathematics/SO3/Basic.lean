@@ -176,22 +176,22 @@ lemma exists_stationary_vec (A : SO(3)) :
   have hvn : ‖v‖ ≠ 0 := norm_ne_zero_iff.mpr hv.2
   use (1/‖v‖) • v
   apply And.intro
-  rw [@orthonormal_iff_ite]
-  intro v1 v2
-  have hv1 := v1.2
-  have hv2 := v2.2
-  simp_all only [one_div, Set.mem_singleton_iff]
-  have hveq : v1 = v2 := by
-    rw [@Subtype.ext_iff]
-    simp_all only
-  subst hveq
-  simp only [Set.restrict_apply, PiLp.smul_apply, smul_eq_mul,
-    _root_.map_mul, map_inv₀, conj_trivial, ↓reduceIte]
-  rw [inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
-  field_simp
-  ring
-  rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1]
-  simp
+  · rw [@orthonormal_iff_ite]
+    intro v1 v2
+    have hv1 := v1.2
+    have hv2 := v2.2
+    simp_all only [one_div, Set.mem_singleton_iff]
+    have hveq : v1 = v2 := by
+      rw [@Subtype.ext_iff]
+      simp_all only
+    subst hveq
+    simp only [Set.restrict_apply, PiLp.smul_apply, smul_eq_mul,
+      _root_.map_mul, map_inv₀, conj_trivial, ↓reduceIte]
+    rw [inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
+    field_simp
+    ring
+  · rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1]
+    simp
 
 lemma exists_basis_preserved (A : SO(3)) :
     ∃ (b : OrthonormalBasis (Fin 3) ℝ (EuclideanSpace ℝ (Fin 3))), A.toEnd (b 0) = b 0 := by

@@ -66,11 +66,11 @@ lemma mem_iff_norm : Λ ∈ LorentzGroup d ↔
 lemma mem_iff_on_right : Λ ∈ LorentzGroup d ↔
     ∀ (x y : LorentzVector d), ⟪x, (dual Λ * Λ) *ᵥ y⟫ₘ = ⟪x, y⟫ₘ := by
   refine Iff.intro (fun h x y ↦ ?_) (fun h x y ↦ ?_)
-  have h1 := h x y
-  rw [← dual_mulVec_right, mulVec_mulVec] at h1
-  exact h1
-  rw [← dual_mulVec_right, mulVec_mulVec]
-  exact h x y
+  · have h1 := h x y
+    rw [← dual_mulVec_right, mulVec_mulVec] at h1
+    exact h1
+  · rw [← dual_mulVec_right, mulVec_mulVec]
+    exact h x y
 
 lemma mem_iff_dual_mul_self : Λ ∈ LorentzGroup d ↔ dual Λ * Λ = 1 := by
   rw [mem_iff_on_right, matrix_eq_id_iff]
@@ -96,9 +96,9 @@ lemma mem_iff_transpose : Λ ∈ LorentzGroup d ↔ Λᵀ ∈ LorentzGroup d := 
 lemma mem_mul (hΛ : Λ ∈ LorentzGroup d) (hΛ' : Λ' ∈ LorentzGroup d) : Λ * Λ' ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self, dual_mul]
   trans dual Λ' * (dual Λ * Λ) * Λ'
-  noncomm_ring
-  rw [(mem_iff_dual_mul_self).mp hΛ]
-  simp [(mem_iff_dual_mul_self).mp hΛ']
+  · noncomm_ring
+  · rw [(mem_iff_dual_mul_self).mp hΛ]
+    simp [(mem_iff_dual_mul_self).mp hΛ']
 
 lemma one_mem : 1 ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self]
@@ -140,18 +140,18 @@ lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= (inv_eq_left_inv (mem_iff_dual_mul_sel
 @[simp]
 lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   trans Subtype.val (Λ⁻¹ * Λ)
-  rw [← coe_inv]
-  simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
-  rw [inv_mul_self Λ]
-  simp only [lorentzGroupIsGroup_one_coe]
+  · rw [← coe_inv]
+    simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+  · rw [inv_mul_self Λ]
+    simp only [lorentzGroupIsGroup_one_coe]
 
 @[simp]
 lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
   trans Subtype.val (Λ * Λ⁻¹)
-  rw [← coe_inv]
-  simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
-  rw [mul_inv_self Λ]
-  simp only [lorentzGroupIsGroup_one_coe]
+  · rw [← coe_inv]
+    simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+  · rw [mul_inv_self Λ]
+    simp only [lorentzGroupIsGroup_one_coe]
 
 @[simp]
 lemma mul_minkowskiMatrix_mul_transpose :

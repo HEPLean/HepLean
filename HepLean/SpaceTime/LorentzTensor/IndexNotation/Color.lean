@@ -158,10 +158,10 @@ lemma triple_drop_mid (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).wit
     (h : ColorCond (l ++ l2 ++ l3)) : ColorCond (l ++ l3) := by
   rw [append_assoc] at hu
   refine ((((assoc h).symm hu).assoc).inr ?_).symm ?_
-  rw [append_withDual_eq_withUniqueDual_symm, append_assoc] at hu
-  exact hu
-  rw [append_withDual_eq_withUniqueDual_symm, append_assoc] at hu
-  exact append_withDual_eq_withUniqueDual_inr _ _ hu
+  · rw [append_withDual_eq_withUniqueDual_symm, append_assoc] at hu
+    exact hu
+  · rw [append_withDual_eq_withUniqueDual_symm, append_assoc] at hu
+    exact append_withDual_eq_withUniqueDual_inr _ _ hu
 
 lemma swap (hu : (l ++ l2 ++ l3).withUniqueDual = (l ++ l2 ++ l3).withDual)
     (h : ColorCond (l ++ l2 ++ l3)) :
@@ -369,9 +369,9 @@ lemma contr_contr_idMap (i : Fin l.contr.contr.length) :
     simp_all
   simp only [h1]
   rw [orderEmbOfFin_univ]
-  rfl
-  rw [h1]
-  simp
+  · rfl
+  · rw [h1]
+    simp
 
 @[simp]
 lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
@@ -386,9 +386,9 @@ lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
     simp_all
   simp only [h1]
   rw [orderEmbOfFin_univ]
-  rfl
-  rw [h1]
-  simp
+  · rfl
+  · rw [h1]
+    simp
 
 @[simp]
 lemma contr_of_withDual_empty (h : l.withDual = ∅) :
@@ -472,9 +472,9 @@ lemma contrEquiv_on_withDual_empty (i : Fin l.contr.length) (h : l.withDual = �
     simp_all
   simp [h]
   rw [orderEmbOfFin_univ]
-  rfl
-  rw [h]
-  simp
+  · rfl
+  · rw [h]
+    simp
 
 /-!
 

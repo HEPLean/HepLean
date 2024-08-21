@@ -67,15 +67,13 @@ lemma lineEqPropSol_iff_lineEqCoeff_zero (T : MSSMACC.Sols) :
 lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
     LineEqPropSol R ↔ LineEqProp (proj R.1.1) := by
   rw [lineEqPropSol_iff_lineEqCoeff_zero, lineEqCoeff, LineEqProp]
-  apply Iff.intro
-  intro h
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp at h
-  rw [α₁_proj, α₂_proj, h]
-  simp only [neg_zero, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
-  intro h
-  rw [h.2.2]
-  simp
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+    simp only [mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at h
+    rw [α₁_proj, α₂_proj, h]
+    simp only [neg_zero, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
+  · rw [h.2.2]
+    simp
 
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the quadratic surface. -/
@@ -97,37 +95,31 @@ def quadCoeff (T : MSSMACC.Sols) : ℚ :=
     (quadBiLin Y₃.val T.val ^ 2 + quadBiLin B₃.val T.val ^ 2)
 
 lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : InQuadSolProp T ↔ quadCoeff T = 0 := by
-  apply Iff.intro
-  intro h
-  rw [quadCoeff, h.1, h.2]
-  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-    zero_pow, add_zero, mul_zero]
-  intro h
-  rw [quadCoeff] at h
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
-    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
-  apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
-  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
-    not_false_eq_true, pow_eq_zero_iff] at h
-  exact h
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [quadCoeff, h.1, h.2]
+    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+      zero_pow, add_zero, mul_zero]
+  · rw [quadCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+      not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+    apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, pow_eq_zero_iff] at h
+    exact h
 
 /-- The conditions `inQuadSolProp R` and `inQuadProp (proj R.1.1)` are equivalent. This is to be
 expected since both `R` and `proj R.1.1` define the same plane with `Y₃` and `B₃`. -/
 lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
     InQuadSolProp R ↔ InQuadProp (proj R.1.1) := by
-  rw [InQuadSolProp, InQuadProp]
-  rw [quad_proj, quad_Y₃_proj, quad_B₃_proj]
-  apply Iff.intro
-  intro h
-  rw [h.1, h.2]
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
-  intro h
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero,
-    OfNat.ofNat_ne_zero, or_self, false_or] at h
-  rw [h.2.1, h.2.2]
-  simp
+  rw [InQuadSolProp, InQuadProp, quad_proj, quad_Y₃_proj, quad_B₃_proj]
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [h.1, h.2]
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
+  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero,
+      OfNat.ofNat_ne_zero, or_self, false_or] at h
+    rw [h.2.1, h.2.2]
+    simp
 
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the cubic surface. -/
@@ -151,35 +143,30 @@ def cubicCoeff (T : MSSMACC.Sols) : ℚ :=
 
 lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
     InCubeSolProp T ↔ cubicCoeff T = 0 := by
-  apply Iff.intro
-  intro h
-  rw [cubicCoeff, h.1, h.2]
-  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-    zero_pow, add_zero, mul_zero]
-  intro h
-  rw [cubicCoeff] at h
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
-    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
-  apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
-  simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
-    not_false_eq_true, pow_eq_zero_iff] at h
-  exact h.symm
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [cubicCoeff, h.1, h.2]
+    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+      zero_pow, add_zero, mul_zero]
+  · rw [cubicCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+      not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+    apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, pow_eq_zero_iff] at h
+    exact h.symm
 
 lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
     InCubeSolProp R ↔ InCubeProp (proj R.1.1) := by
   rw [InCubeSolProp, InCubeProp]
   rw [cube_proj, cube_proj_proj_Y₃, cube_proj_proj_B₃]
-  apply Iff.intro
-  intro h
-  rw [h.1, h.2]
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
-  intro h
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h
-  simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
-    not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
-  rw [h.2.1, h.2.2]
-  simp
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [h.1, h.2]
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
+  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+    simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
+      not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
+    rw [h.2.1, h.2.2]
+    simp
 
 /-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the condition
 `lineEqProp`. -/
@@ -384,9 +371,9 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   ring_nf
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel]
-  simp only [one_smul]
-  rw [show dot Y₃.val B₃.val = 108 by rfl]
-  simp
+  · simp only [one_smul]
+  · rw [show dot Y₃.val B₃.val = 108 by rfl]
+    simp
 
 /-- A solution from an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ`. We will
 show that this map is a surjection. -/
@@ -443,15 +430,15 @@ lemma toSol_inQuadCube (T : InQuadCubeSol) : ∃ X, toSol X = T.val := by
 theorem toSol_surjective : Function.Surjective toSol := by
   intro T
   by_cases h₁ : ¬ LineEqPropSol T
-  exact toSol_toSolNSProj ⟨T, h₁⟩
-  simp at h₁
-  by_cases h₂ : ¬ InQuadSolProp T
-  exact toSol_inLineEq ⟨T, And.intro h₁ h₂⟩
-  simp at h₂
-  by_cases h₃ : ¬ InCubeSolProp T
-  exact toSol_inQuad ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
-  simp at h₃
-  exact toSol_inQuadCube ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
+  · exact toSol_toSolNSProj ⟨T, h₁⟩
+  · simp at h₁
+    by_cases h₂ : ¬ InQuadSolProp T
+    · exact toSol_inLineEq ⟨T, And.intro h₁ h₂⟩
+    · simp at h₂
+      by_cases h₃ : ¬ InCubeSolProp T
+      · exact toSol_inQuad ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
+      · simp at h₃
+        exact toSol_inQuadCube ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
 
 end AnomalyFreePerp
 

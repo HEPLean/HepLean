@@ -38,16 +38,16 @@ lemma asCharges_ne_castSucc {k j : Fin n} (h : k ≠ j) :
     asCharges k (Fin.castSucc j) = 0 := by
   simp [asCharges]
   split
-  rename_i h1
-  exact False.elim (h (id (Eq.symm h1)))
-  split
-  rename_i h1 h2
-  rw [Fin.ext_iff] at h1 h2
-  simp at h1 h2
-  have hj : j.val < n := by
-    exact j.prop
-  simp_all
-  rfl
+  · rename_i h1
+    exact False.elim (h (id (Eq.symm h1)))
+  · split
+    · rename_i h1 h2
+      rw [Fin.ext_iff] at h1 h2
+      simp at h1 h2
+      have hj : j.val < n := by
+        exact j.prop
+      simp_all
+    · rfl
 
 /-- The basis elements as `LinSols`. -/
 @[simps!]
@@ -61,16 +61,16 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
       LinearMap.coe_mk, AddHom.coe_mk, Fin.coe_eq_castSucc]
     rw [Fin.sum_univ_castSucc]
     rw [Finset.sum_eq_single j]
-    simp only [asCharges, PureU1_numberCharges, ↓reduceIte]
-    have hn : ¬ (Fin.last n = Fin.castSucc j) := Fin.ne_of_gt j.prop
-    split
-    rename_i ht
-    exact (hn ht).elim
-    rfl
-    intro k _ hkj
-    exact asCharges_ne_castSucc hkj.symm
-    intro hk
-    simp at hk⟩
+    · simp only [asCharges, PureU1_numberCharges, ↓reduceIte]
+      have hn : ¬ (Fin.last n = Fin.castSucc j) := Fin.ne_of_gt j.prop
+      split
+      · rename_i ht
+        exact (hn ht).elim
+      · rfl
+    · intro k _ hkj
+      exact asCharges_ne_castSucc hkj.symm
+    · intro hk
+      simp at hk⟩
 
 lemma sum_of_vectors {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) :=
@@ -94,11 +94,11 @@ def coordinateMap : (PureU1 n.succ).LinSols ≃ₗ[ℚ] Fin n →₀ ℚ where
       asLinSols_val, Equiv.toFun_as_coe,
       Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
     rw [Finset.sum_eq_single j]
-    simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
-    intro k _ hkj
-    rw [asCharges_ne_castSucc hkj]
-    exact Rat.mul_zero (S.val k.castSucc)
-    simp
+    · simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
+    · intro k _ hkj
+      rw [asCharges_ne_castSucc hkj]
+      exact Rat.mul_zero (S.val k.castSucc)
+    · simp
   right_inv f := by
     simp only [PureU1_numberCharges, Equiv.invFun_as_coe]
     ext
@@ -109,11 +109,11 @@ def coordinateMap : (PureU1 n.succ).LinSols ≃ₗ[ℚ] Fin n →₀ ℚ where
       asLinSols_val, Equiv.toFun_as_coe,
       Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
     rw [Finset.sum_eq_single j]
-    simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
-    intro k _ hkj
-    rw [asCharges_ne_castSucc hkj]
-    exact Rat.mul_zero (f k)
-    simp
+    · simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
+    · intro k _ hkj
+      rw [asCharges_ne_castSucc hkj]
+      exact Rat.mul_zero (f k)
+    · simp
 
 /-- The basis of `LinSols`. -/
 noncomputable

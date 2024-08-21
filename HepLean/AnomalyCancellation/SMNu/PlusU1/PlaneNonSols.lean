@@ -82,10 +82,10 @@ lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
     quadBiLin (B i) (∑ k, f k • B k) = f i * quadBiLin (B i) (B i) := by
   rw [quadBiLin.map_sum₂]
   rw [Fintype.sum_eq_single i]
-  rw [quadBiLin.map_smul₂]
-  intro k hij
-  rw [quadBiLin.map_smul₂, Bi_Bj_quad hij.symm]
-  simp
+  · rw [quadBiLin.map_smul₂]
+  · intro k hij
+    rw [quadBiLin.map_smul₂, Bi_Bj_quad hij.symm]
+    simp
 
 /-- The coefficents of the quadratic equation in our basis. -/
 @[simp]
@@ -110,14 +110,14 @@ lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSol
   have hQ := quadSol S.1
   rw [hS, on_accQuad] at hQ
   rw [Fintype.sum_eq_zero_iff_of_nonneg] at hQ
-  exact congrFun hQ k
-  intro i
-  simp only [Pi.zero_apply, quadCoeff]
-  rw [mul_nonneg_iff]
-  apply Or.inl
-  apply And.intro
-  fin_cases i <;> rfl
-  exact sq_nonneg (f i)
+  · exact congrFun hQ k
+  · intro i
+    simp only [Pi.zero_apply, quadCoeff]
+    rw [mul_nonneg_iff]
+    apply Or.inl
+    apply And.intro
+    fin_cases i <;> rfl
+    exact sq_nonneg (f i)
 
 lemma isSolution_f0 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) : f 0 = 0 := by
   simpa using (isSolution_quadCoeff_f_sq_zero f hS 0)
@@ -218,17 +218,17 @@ lemma isSolution_f10 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f 
 lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11) : f k = 0 := by
   fin_cases k
-  exact isSolution_f0 f hS
-  exact isSolution_f1 f hS
-  exact isSolution_f2 f hS
-  exact isSolution_f3 f hS
-  exact isSolution_f4 f hS
-  exact isSolution_f5 f hS
-  exact isSolution_f6 f hS
-  exact isSolution_f7 f hS
-  exact isSolution_f8 f hS
-  exact isSolution_f9 f hS
-  exact isSolution_f10 f hS
+  · exact isSolution_f0 f hS
+  · exact isSolution_f1 f hS
+  · exact isSolution_f2 f hS
+  · exact isSolution_f3 f hS
+  · exact isSolution_f4 f hS
+  · exact isSolution_f5 f hS
+  · exact isSolution_f6 f hS
+  · exact isSolution_f7 f hS
+  · exact isSolution_f8 f hS
+  · exact isSolution_f9 f hS
+  · exact isSolution_f10 f hS
 
 lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = 0 := by
@@ -254,8 +254,8 @@ theorem eleven_dim_plane_of_no_sols_exists : ∃ (B : Fin 11 → (PlusU1 3).Char
     ∀ (f : Fin 11 → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i) → ∑ i, f i • B i = 0 := by
   use ElevenPlane.B
   apply And.intro
-  exact ElevenPlane.basis_linear_independent
-  exact ElevenPlane.isSolution_only_if_zero
+  · exact ElevenPlane.basis_linear_independent
+  · exact ElevenPlane.isSolution_only_if_zero
 
 end PlusU1
 end SMRHN

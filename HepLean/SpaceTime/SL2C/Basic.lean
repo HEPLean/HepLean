@@ -91,13 +91,9 @@ lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) 
     toLin LorentzVector.stdBasis LorentzVector.stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
     = det x.1 := by
   rw [LorentzGroup.mem_iff_norm]
-  apply Iff.intro
-  intro h x
-  have h1 := congrArg ofReal $ h (toSelfAdjointMatrix.symm x)
-  simpa [← det_eq_ηLin] using h1
-  intro h x
-  have h1 := h (toSelfAdjointMatrix x)
-  simpa [det_eq_ηLin] using h1
+  refine Iff.intro (fun h x => ?_) (fun h x => ?_)
+  · simpa [← det_eq_ηLin] using congrArg ofReal $ h (toSelfAdjointMatrix.symm x)
+  · simpa [det_eq_ηLin] using h (toSelfAdjointMatrix x)
 
 /-- Given an element `M ∈ SL(2, ℂ)` the corresponding element of the Lorentz group. -/
 @[simps!]

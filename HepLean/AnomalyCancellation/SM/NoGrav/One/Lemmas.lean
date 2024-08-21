@@ -31,11 +31,7 @@ lemma E_zero_iff_Q_zero {S : (SMNoGrav 1).Sols} : Q S.val (0 : Fin 1) = 0 ↔
   have hS' := congrArg (fun S => S.val) (linearParameters.bijection.right_inv S.1.1)
   change S'.asCharges = S.val at hS'
   rw [← hS'] at hC
-  apply Iff.intro
-  intro hQ
-  exact S'.cubic_zero_Q'_zero hC hQ
-  intro hE
-  exact S'.cubic_zero_E'_zero hC hE
+  exact Iff.intro (fun hQ => S'.cubic_zero_Q'_zero hC hQ) (fun hE => S'.cubic_zero_E'_zero hC hE)
 
 lemma accGrav_Q_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) = 0) :
     accGrav S.val = 0 := by
@@ -60,16 +56,15 @@ lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0
   have hS' := congrArg (fun S => S.val.val)
     (linearParametersQENeqZero.bijection.right_inv ⟨S.1.1, And.intro hQ hE⟩)
   change _ = S.val at hS'
-  rw [← hS'] at hC
-  rw [← hS']
+  rw [← hS'] at hC ⊢
   exact S'.grav_of_cubic hC FLTThree
 
 /-- Any solution to the ACCs without gravity satisfies the gravitational ACC. -/
 theorem accGravSatisfied {S : (SMNoGrav 1).Sols} (FLTThree : FermatLastTheoremWith ℚ 3) :
     accGrav S.val = 0 := by
   by_cases hQ : Q S.val (0 : Fin 1)= 0
-  exact accGrav_Q_zero hQ
-  exact accGrav_Q_neq_zero hQ FLTThree
+  · exact accGrav_Q_zero hQ
+  · exact accGrav_Q_neq_zero hQ FLTThree
 
 end One
 end SMNoGrav

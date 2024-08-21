@@ -351,9 +351,9 @@ lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
   simp [appendEquiv, idMap, IndexList.length]
   rw [List.getElem_append_right]
-  simp only [Nat.add_sub_cancel_left]
-  omega
-  omega
+  · simp only [Nat.add_sub_cancel_left]
+  · omega
+  · omega
 
 @[simp]
 lemma colorMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
@@ -372,9 +372,9 @@ lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
   simp [appendEquiv, colorMap, IndexList.length]
   rw [List.getElem_append_right]
-  simp only [Nat.add_sub_cancel_left]
-  omega
-  omega
+  · simp only [Nat.add_sub_cancel_left]
+  · omega
+  · omega
 
 @[simp]
 lemma colorMap_append_inr' :

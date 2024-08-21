@@ -108,19 +108,17 @@ def Hu : MSSMCharges.Charges →ₗ[ℚ] ℚ where
 
 lemma charges_eq_toSpecies_eq (S T : MSSMCharges.Charges) :
     S = T ↔ (∀ i, toSMSpecies i S = toSMSpecies i T) ∧ Hd S = Hd T ∧ Hu S = Hu T := by
-  apply Iff.intro
-  intro h
-  rw [h]
-  simp only [forall_const, Hd_apply, Fin.reduceFinMk, Fin.isValue, Hu_apply, and_self]
-  intro h
-  apply toSpecies.injective
-  apply Prod.ext
-  funext i
-  exact h.1 i
-  funext i
-  match i with
-  | 0 => exact h.2.1
-  | 1 => exact h.2.2
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [h]
+    simp only [forall_const, Hd_apply, Fin.reduceFinMk, Fin.isValue, Hu_apply, and_self]
+  · apply toSpecies.injective
+    apply Prod.ext
+    · funext i
+      exact h.1 i
+    · funext i
+      match i with
+      | 0 => exact h.2.1
+      | 1 => exact h.2.2
 
 lemma Hd_toSpecies_inv (f : (Fin 6 → Fin 3 → ℚ) × (Fin 2 → ℚ)) :
     Hd (toSpecies.symm f) = f.2 0 := by
@@ -278,14 +276,14 @@ def quadBiLin : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂ (
     simp only
     rw [mul_add]
     congr 1
-    rw [Finset.mul_sum]
-    apply Fintype.sum_congr
-    intro i
-    repeat erw [map_smul]
-    simp only [HSMul.hSMul, SMul.smul, toSMSpecies_apply, Fin.isValue, neg_mul, one_mul]
-    ring
-    simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, neg_mul, Hu_apply]
-    ring)
+    · rw [Finset.mul_sum]
+      apply Fintype.sum_congr
+      intro i
+      repeat erw [map_smul]
+      simp only [HSMul.hSMul, SMul.smul, toSMSpecies_apply, Fin.isValue, neg_mul, one_mul]
+      ring
+    · simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, neg_mul, Hu_apply]
+      ring)
   (by
     intro S T R
     simp only
@@ -294,24 +292,24 @@ def quadBiLin : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂ (
     rw [add_assoc]
     rw [← add_assoc _ _ (-Hd S * Hd R + Hu S * Hu R + (-Hd T * Hd R + Hu T * Hu R))]
     congr 1
-    rw [← Finset.sum_add_distrib]
-    apply Fintype.sum_congr
-    intro i
-    repeat erw [map_add]
-    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSMSpecies_apply, Fin.isValue, neg_mul,
-      one_mul]
-    ring
-    rw [Hd.map_add, Hu.map_add]
-    ring)
+    · rw [← Finset.sum_add_distrib]
+      apply Fintype.sum_congr
+      intro i
+      repeat erw [map_add]
+      simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSMSpecies_apply, Fin.isValue, neg_mul,
+        one_mul]
+      ring
+    · rw [Hd.map_add, Hu.map_add]
+      ring)
   (by
     intro S L
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, neg_mul, one_mul,
       Hd_apply, Fin.reduceFinMk, Hu_apply]
     congr 1
-    rw [Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue]
-    ring
-    ring)
+    · rw [Fin.sum_univ_three, Fin.sum_univ_three]
+      simp only [Fin.isValue]
+      ring
+    · ring)
 
 /-- The quadratic ACC. -/
 @[simp]
@@ -351,14 +349,14 @@ lemma cubeTriLinToFun_map_smul₁ (a : ℚ) (S T R : MSSMCharges.Charges) :
   simp only [cubeTriLinToFun]
   rw [mul_add]
   congr 1
-  rw [Finset.mul_sum]
-  apply Fintype.sum_congr
-  intro i
-  repeat erw [map_smul]
-  simp only [HSMul.hSMul, SMul.smul, toSMSpecies_apply, Fin.isValue]
-  ring
-  simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, Hu_apply]
-  ring
+  · rw [Finset.mul_sum]
+    apply Fintype.sum_congr
+    intro i
+    repeat erw [map_smul]
+    simp only [HSMul.hSMul, SMul.smul, toSMSpecies_apply, Fin.isValue]
+    ring
+  · simp only [map_smul, Hd_apply, Fin.reduceFinMk, Fin.isValue, smul_eq_mul, Hu_apply]
+    ring
 
 lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
     cubeTriLinToFun (S + T, R, L) = cubeTriLinToFun (S, R, L) + cubeTriLinToFun (T, R, L) := by
@@ -369,34 +367,34 @@ lemma cubeTriLinToFun_map_add₁ (S T R L : MSSMCharges.Charges) :
   rw [← add_assoc _ _ (2 * Hd S * Hd R * Hd L + 2 * Hu S * Hu R * Hu L +
     (2 * Hd T * Hd R * Hd L + 2 * Hu T * Hu R * Hu L))]
   congr 1
-  rw [← Finset.sum_add_distrib]
-  apply Fintype.sum_congr
-  intro i
-  repeat erw [map_add]
-  simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSMSpecies_apply, Fin.isValue]
-  ring
-  rw [Hd.map_add, Hu.map_add]
-  ring
+  · rw [← Finset.sum_add_distrib]
+    apply Fintype.sum_congr
+    intro i
+    repeat erw [map_add]
+    simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSMSpecies_apply, Fin.isValue]
+    ring
+  · rw [Hd.map_add, Hu.map_add]
+    ring
 
 lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (S, T, R) = cubeTriLinToFun (T, S, R) := by
   simp only [cubeTriLinToFun, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply,
     Fin.reduceFinMk, Hu_apply]
   congr 1
-  rw [Fin.sum_univ_three, Fin.sum_univ_three]
-  simp only [Fin.isValue]
-  ring
-  ring
+  · rw [Fin.sum_univ_three, Fin.sum_univ_three]
+    simp only [Fin.isValue]
+    ring
+  · ring
 
 lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.Charges) :
     cubeTriLinToFun (S, T, R) = cubeTriLinToFun (S, R, T) := by
   simp only [cubeTriLinToFun, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply,
     Fin.reduceFinMk, Hu_apply]
   congr 1
-  rw [Fin.sum_univ_three, Fin.sum_univ_three]
-  simp only [Fin.isValue]
-  ring
-  ring
+  · rw [Fin.sum_univ_three, Fin.sum_univ_three]
+    simp only [Fin.isValue]
+    ring
+  · ring
 
 /-- The symmetric trilinear form used to define the cubic ACC. -/
 @[simps!]

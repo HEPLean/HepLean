@@ -77,9 +77,8 @@ lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
   rw [accCubeTriLinSymm]
   simp only [PureU1Charges_numberCharges, TriLinearSymm.mk₃_toFun_apply_apply]
   apply Finset.sum_congr
-  simp only
-  ring_nf
-  simp
+  · rfl
+  · exact fun x _ => Eq.symm (pow_three' (S x))
 
 end PureU1
 
@@ -130,42 +129,40 @@ lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
   apply ACCSystemLinear.LinSols.ext
   funext i
   by_cases hi : i ≠ Fin.last n
-  have hiCast : ∃ j : Fin n, j.castSucc = i := by
-    exact Fin.exists_castSucc_eq.mpr hi
-  obtain ⟨j, hj⟩ := hiCast
-  rw [← hj]
-  exact h j
-  simp at hi
-  rw [hi]
-  rw [pureU1_last, pureU1_last]
-  simp only [neg_inj]
-  apply Finset.sum_congr
-  simp only
-  intro j _
-  exact h j
+  · have hiCast : ∃ j : Fin n, j.castSucc = i := by
+      exact Fin.exists_castSucc_eq.mpr hi
+    obtain ⟨j, hj⟩ := hiCast
+    rw [← hj]
+    exact h j
+  · simp at hi
+    rw [hi, pureU1_last, pureU1_last]
+    simp only [neg_inj]
+    apply Finset.sum_congr
+    · simp only
+    · exact fun j _ => h j
 
 namespace PureU1
 
 lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
     (∑ i : Fin k, (f i)) j = ∑ i : Fin k, (f i) j := by
   induction k
-  simp
-  rfl
-  rename_i k hl
-  rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  have hlt := hl (f ∘ Fin.castSucc)
-  erw [← hlt]
-  simp
+  · simp only [univ_eq_empty, sum_empty]
+    rfl
+  · rename_i k hl
+    rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
+    have hlt := hl (f ∘ Fin.castSucc)
+    erw [← hlt]
+    simp
 
 lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by
   induction k
-  simp
-  rfl
-  rename_i k hl
-  rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  have hlt := hl (f ∘ Fin.castSucc)
-  erw [← hlt]
-  simp
+  · simp only [univ_eq_empty, sum_empty, ACCSystemLinear.linSolsAddCommMonoid_zero_val]
+    rfl
+  · rename_i k hl
+    rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
+    have hlt := hl (f ∘ Fin.castSucc)
+    erw [← hlt]
+    simp
 
 end PureU1

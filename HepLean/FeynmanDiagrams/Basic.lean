@@ -217,14 +217,14 @@ def External {P : PreFeynmanRule} (v : P.VertexLabel) : Prop :=
 lemma external_iff_exists_bijection {P : PreFeynmanRule} (v : P.VertexLabel) :
     External v ↔ ∃ (κ : (P.vertexLabelMap v).left → Fin 1), Function.Bijective κ := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  obtain ⟨κ, κm1, h1, h2⟩ := h
-  let f : (P.vertexLabelMap v).left ≅ (Fin 1) := ⟨κ, κm1, h1, h2⟩
-  exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f⟩
-  obtain ⟨κ, h1⟩ := h
-  let f : (P.vertexLabelMap v).left ⟶ (Fin 1) := κ
-  have ft : IsIso f := (isIso_iff_bijective κ).mpr h1
-  obtain ⟨fm, hf1, hf2⟩ := ft
-  exact ⟨f, fm, hf1, hf2⟩
+  · obtain ⟨κ, κm1, h1, h2⟩ := h
+    let f : (P.vertexLabelMap v).left ≅ (Fin 1) := ⟨κ, κm1, h1, h2⟩
+    exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f⟩
+  · obtain ⟨κ, h1⟩ := h
+    let f : (P.vertexLabelMap v).left ⟶ (Fin 1) := κ
+    have ft : IsIso f := (isIso_iff_bijective κ).mpr h1
+    obtain ⟨fm, hf1, hf2⟩ := ft
+    exact ⟨f, fm, hf1, hf2⟩
 
 instance externalDecidable [IsFinitePreFeynmanRule P] (v : P.VertexLabel) :
     Decidable (External v) :=
@@ -258,14 +258,14 @@ lemma diagramVertexProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × �
     Function.Bijective κ
     ∧ ((P.preimageVertex v).obj F).hom ∘ κ = (P.vertexLabelMap (f v)).hom := by
   refine Iff.intro (fun h v => ?_) (fun h v => ?_)
-  obtain ⟨κ, κm1, h1, h2⟩ := h v
-  let f := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
-  refine ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f, κ.w⟩
-  obtain ⟨κ, h1, h2⟩ := h v
-  let f : (P.vertexLabelMap (f v)) ⟶ ((P.preimageVertex v).obj F) := Over.homMk κ h2
-  have ft : IsIso ((Over.forget P.HalfEdgeLabel).map f) := (isIso_iff_bijective κ).mpr h1
-  obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
-  exact ⟨f, fm, hf1, hf2⟩
+  · obtain ⟨κ, κm1, h1, h2⟩ := h v
+    let f := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
+    exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f, κ.w⟩
+  · obtain ⟨κ, h1, h2⟩ := h v
+    let f : (P.vertexLabelMap (f v)) ⟶ ((P.preimageVertex v).obj F) := Over.homMk κ h2
+    have ft : IsIso ((Over.forget P.HalfEdgeLabel).map f) := (isIso_iff_bijective κ).mpr h1
+    obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
+    exact ⟨f, fm, hf1, hf2⟩
 
 lemma diagramEdgeProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     (f : 𝓔 ⟶ P.EdgeLabel) : P.DiagramEdgeProp F f ↔
@@ -273,14 +273,14 @@ lemma diagramEdgeProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 
     Function.Bijective κ
     ∧ ((P.preimageEdge v).obj F).hom ∘ κ = (P.edgeLabelMap (f v)).hom := by
   refine Iff.intro (fun h v => ?_) (fun h v => ?_)
-  obtain ⟨κ, κm1, h1, h2⟩ := h v
-  let f := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
-  refine ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f, κ.w⟩
-  obtain ⟨κ, h1, h2⟩ := h v
-  let f : (P.edgeLabelMap (f v)) ⟶ ((P.preimageEdge v).obj F) := Over.homMk κ h2
-  have ft : IsIso ((Over.forget P.HalfEdgeLabel).map f) := (isIso_iff_bijective κ).mpr h1
-  obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
-  exact ⟨f, fm, hf1, hf2⟩
+  · obtain ⟨κ, κm1, h1, h2⟩ := h v
+    let f := (Over.forget P.HalfEdgeLabel).mapIso ⟨κ, κm1, h1, h2⟩
+    exact ⟨f.hom, (isIso_iff_bijective f.hom).mp $ Iso.isIso_hom f, κ.w⟩
+  · obtain ⟨κ, h1, h2⟩ := h v
+    let f : (P.edgeLabelMap (f v)) ⟶ ((P.preimageEdge v).obj F) := Over.homMk κ h2
+    have ft : IsIso ((Over.forget P.HalfEdgeLabel).map f) := (isIso_iff_bijective κ).mpr h1
+    obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
+    exact ⟨f, fm, hf1, hf2⟩
 
 instance diagramVertexPropDecidable
     [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓥] [DecidableEq 𝓥]
@@ -547,13 +547,12 @@ lemma cond_satisfied {F G : FeynmanDiagram P} (f : Hom F G) :
 
 lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.𝓥 ≃ G.𝓥) (𝓱𝓔 : F.𝓱𝓔 ≃ G.𝓱𝓔)
     (h : Cond 𝓔 𝓥 𝓱𝓔) : Cond 𝓔.symm 𝓥.symm 𝓱𝓔.symm := by
-  refine ⟨?_, ?_, ?_⟩
-  simpa using fun x => (h.1 (𝓔.symm x)).symm
-  simpa using fun x => (h.2.1 (𝓥.symm x)).symm
-  intro x
-  have h1 := h.2.2 (𝓱𝓔.symm x)
-  simp at h1
-  exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
+  refine ⟨?_, ?_, fun x => ?_⟩
+  · simpa using fun x => (h.1 (𝓔.symm x)).symm
+  · simpa using fun x => (h.2.1 (𝓥.symm x)).symm
+  · have h1 := h.2.2 (𝓱𝓔.symm x)
+    simp only [Functor.const_obj_obj, Equiv.apply_symm_apply] at h1
+    exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
 
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) : Decidable (∀ x, G.𝓔𝓞.hom (𝓔 x) = F.𝓔𝓞.hom x) :=

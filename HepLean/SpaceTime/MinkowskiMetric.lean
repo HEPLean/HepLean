@@ -243,15 +243,15 @@ lemma dual_id : @dual d 1 = 1 := by
 lemma dual_mul : dual (Λ * Λ') = dual Λ' * dual Λ := by
   simp only [dual, transpose_mul]
   trans η * Λ'ᵀ * (η * η) * Λᵀ * η
-  noncomm_ring [minkowskiMatrix.sq]
-  noncomm_ring
+  · noncomm_ring [minkowskiMatrix.sq]
+  · noncomm_ring
 
 @[simp]
 lemma dual_dual : dual (dual Λ) = Λ := by
   simp only [dual, transpose_mul, transpose_transpose, eq_transpose]
   trans (η * η) * Λ * (η * η)
-  noncomm_ring
-  noncomm_ring [minkowskiMatrix.sq]
+  · noncomm_ring
+  · noncomm_ring [minkowskiMatrix.sq]
 
 @[simp]
 lemma dual_eta : @dual d η = η := by

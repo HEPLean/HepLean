@@ -416,10 +416,10 @@ lemma elimPureTensor_update_right (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor 
     change Function.update q y r x = _
     simp only [Function.update, Sum.inr.injEq, Sum.elim_inr]
     split_ifs
-    rename_i h
-    subst h
-    simp_all only
-    rfl
+    · rename_i h
+      subst h
+      simp_all only
+    · rfl
 
 @[simp]
 lemma elimPureTensor_update_left (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor cY)
@@ -431,10 +431,10 @@ lemma elimPureTensor_update_left (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor c
     change (Function.update p x r) y = _
     simp only [Function.update, Sum.inl.injEq, Sum.elim_inl]
     split_ifs
-    rename_i h
-    subst h
-    simp_all only
-    rfl
+    · rename_i h
+      subst h
+      simp_all only
+    · rfl
   | Sum.inr y => rfl
 
 /-- The projection of a pure tensor in `𝓣.PureTensor (Sum.elim cX cY)` onto a pure tensor in
@@ -614,9 +614,9 @@ lemma tensoratorEquiv_mapIso_apply (e' : Z ≃ Y) (e'' : W ≃ X)
     ((𝓣.tensoratorEquiv cW cZ) x) := by
   trans ((TensorProduct.congr (𝓣.mapIso e'' h'') (𝓣.mapIso e' h')) ≪≫ₗ
     (𝓣.tensoratorEquiv cX cY)) x
-  rfl
-  rw [tensoratorEquiv_mapIso]
-  rfl
+  · rfl
+  · rw [tensoratorEquiv_mapIso]
+    rfl
 
 lemma tensoratorEquiv_mapIso_tmul (e' : Z ≃ Y) (e'' : W ≃ X)
     (h' : cZ.MapIso e' cY) (h'' : cW.MapIso e'' cX)
@@ -660,8 +660,8 @@ lemma contrDual_symm_contrRightAux (h : ν = η) :
   · intro x z
     simp [contrRightAux]
     congr
-    simp [colorModuleCast]
-    simp [colorModuleCast]
+    · simp [colorModuleCast]
+    · simp [colorModuleCast]
   · intro x z h1 h2
     simp [add_tmul, LinearMap.map_add, h1, h2]
 
@@ -672,9 +672,9 @@ lemma contrDual_symm_contrRightAux_apply_tmul (h : ν = η)
     (𝓣.colorModuleCast h) (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) (m)) ⊗ₜ
     (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)).symm x)) := by
   trans ((𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ)) (m ⊗ₜ[R] x)
-  rfl
-  rw [contrDual_symm_contrRightAux]
-  rfl
+  · rfl
+  · rw [contrDual_symm_contrRightAux]
+    rfl
 
 /-!
 
