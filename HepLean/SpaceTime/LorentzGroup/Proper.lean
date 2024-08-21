@@ -80,8 +80,8 @@ def detRep : 𝓛 d →* ℤ₂ where
   map_mul' Λ1 Λ2 := by
     simp only [Submonoid.coe_mul, Subgroup.coe_toSubmonoid, Units.val_mul, det_mul, toMul_zero,
       mul_ite, mul_one, ite_mul, one_mul]
-    cases' (det_eq_one_or_neg_one Λ1) with h1 h1
-      <;> cases' (det_eq_one_or_neg_one Λ2) with h2 h2
+    cases' det_eq_one_or_neg_one Λ1 with h1 h1
+      <;> cases' det_eq_one_or_neg_one Λ2 with h2 h2
       <;> simp [h1, h2, detContinuous]
     rfl
 
