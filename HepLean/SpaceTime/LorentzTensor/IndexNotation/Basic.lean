@@ -405,46 +405,45 @@ lemma countP_id_neq_zero (i : Fin l.length) :
   rw [List.countP_eq_length_filter]
   by_contra hn
   rw [List.length_eq_zero] at hn
-  have hm : l.val.get i ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l.val  := by
+  have hm : l.val.get i ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l.val := by
     simpa using List.getElem_mem l.val i.1 i.isLt
   rw [hn] at hm
   simp at hm
 
-
 /-! TODO: Replace with Mathlib lemma. -/
-lemma filter_sort_comm  {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [DecidablePred p] :
-      List.filter p (Finset.sort (fun i j => i ≤ j) s) =
-      Finset.sort (fun i j => i ≤ j) (Finset.filter p s) := by
-    simp [Finset.filter, Finset.sort]
-    have : ∀ (m : Multiset (Fin n)), List.filter p (Multiset.sort (fun i j => i ≤ j) m) =
-        Multiset.sort (fun i j => i ≤ j) (Multiset.filter p m) := by
-      apply Quot.ind
-      intro m
-      simp [List.mergeSort]
-      have h1 : List.Sorted (fun i j => i ≤ j) (List.filter (fun b => decide (p b))
-          (List.mergeSort (fun i j => i ≤ j) m)) := by
-        simp [List.Sorted]
-        rw [List.pairwise_filter]
-        rw [@List.pairwise_iff_get]
-        intro i j h1 _ _
-        have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
-          exact List.sorted_mergeSort (fun i j => i ≤ j) m
-        simp [List.Sorted] at hs
-        rw [List.pairwise_iff_get] at hs
-        exact hs i j h1
-      have hp1 : (List.mergeSort (fun i j => i ≤ j) m).Perm m := by
-        exact List.perm_mergeSort (fun i j => i ≤ j) m
-      have hp2 : (List.filter (fun b => decide (p b)) ((List.mergeSort (fun i j => i ≤ j) m))).Perm
-          (List.filter (fun b => decide (p b)) m) := by
-        exact List.Perm.filter (fun b => decide (p b)) hp1
-      have hp3 : (List.filter (fun b => decide (p b)) m).Perm
-        (List.mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)) := by
-        exact List.Perm.symm (List.perm_mergeSort (fun i j => i ≤ j)
-        (List.filter (fun b => decide (p b)) m))
-      have hp4 := hp2.trans hp3
-      refine List.eq_of_perm_of_sorted hp4 h1 ?_
-      exact List.sorted_mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
-    exact this s.val
+lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [DecidablePred p] :
+    List.filter p (Finset.sort (fun i j => i ≤ j) s) =
+    Finset.sort (fun i j => i ≤ j) (Finset.filter p s) := by
+  simp [Finset.filter, Finset.sort]
+  have : ∀ (m : Multiset (Fin n)), List.filter p (Multiset.sort (fun i j => i ≤ j) m) =
+      Multiset.sort (fun i j => i ≤ j) (Multiset.filter p m) := by
+    apply Quot.ind
+    intro m
+    simp [List.mergeSort]
+    have h1 : List.Sorted (fun i j => i ≤ j) (List.filter (fun b => decide (p b))
+        (List.mergeSort (fun i j => i ≤ j) m)) := by
+      simp [List.Sorted]
+      rw [List.pairwise_filter]
+      rw [@List.pairwise_iff_get]
+      intro i j h1 _ _
+      have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
+        exact List.sorted_mergeSort (fun i j => i ≤ j) m
+      simp [List.Sorted] at hs
+      rw [List.pairwise_iff_get] at hs
+      exact hs i j h1
+    have hp1 : (List.mergeSort (fun i j => i ≤ j) m).Perm m := by
+      exact List.perm_mergeSort (fun i j => i ≤ j) m
+    have hp2 : (List.filter (fun b => decide (p b)) ((List.mergeSort (fun i j => i ≤ j) m))).Perm
+        (List.filter (fun b => decide (p b)) m) := by
+      exact List.Perm.filter (fun b => decide (p b)) hp1
+    have hp3 : (List.filter (fun b => decide (p b)) m).Perm
+      (List.mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)) := by
+      exact List.Perm.symm (List.perm_mergeSort (fun i j => i ≤ j)
+      (List.filter (fun b => decide (p b)) m))
+    have hp4 := hp2.trans hp3
+    refine List.eq_of_perm_of_sorted hp4 h1 ?_
+    exact List.sorted_mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
+  exact this s.val
 
 lemma filter_id_eq_sort (i : Fin l.length) : l.val.filter (fun J => (l.val.get i).id = J.id) =
     List.map l.val.get (Finset.sort (fun i j => i ≤ j)

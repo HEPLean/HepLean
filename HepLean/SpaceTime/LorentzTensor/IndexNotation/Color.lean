@@ -332,7 +332,7 @@ lemma orderEmbOfFin_univ (n m : ℕ) (h : n = m) :
 
 -/
 
-/-! TODO: Define `cons` for  `ColorIndexList`. Will need conditions unlike for `IndexList`. -/
+/-! TODO: Define `cons` for `ColorIndexList`. Will need conditions unlike for `IndexList`. -/
 
 /-!
 

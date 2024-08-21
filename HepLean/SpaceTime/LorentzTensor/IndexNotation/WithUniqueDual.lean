@@ -921,7 +921,7 @@ lemma finset_filter_id_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUn
     Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ =
     {i, (l.getDual? i).get (l.mem_withUniqueDual_isSome i h)} := by
   refine Finset.ext (fun j => ?_)
-  simp
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert, Finset.mem_singleton]
   rw [← propext (eq_getDual?_get_of_withUniqueDual_iff l i j h)]
   simp only [AreDualInSelf, ne_eq]
   refine Iff.intro (fun h => ?_) (fun h=> ?_)
@@ -959,10 +959,11 @@ lemma mem__withUniqueDual_iff_finset_filter (i : Fin l.length) (h : i ∈ l.with
 
 /-! TODO: Move -/
 lemma card_finset_self_dual (i : Fin l.length) (h : i ∈ l.withDual) :
-   ({i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)} : Finset (Fin l.length)).card = 2 := by
+    ({i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)} :
+    Finset (Fin l.length)).card = 2 := by
   rw [Finset.card_eq_two]
   use i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)
-  simp
+  simp only [ne_eq, and_true]
   have h1 : l.AreDualInSelf i ((l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)) := by
     simp
   exact h1.1

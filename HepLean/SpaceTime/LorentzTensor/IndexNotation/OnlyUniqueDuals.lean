@@ -124,7 +124,6 @@ lemma withUnqiueDual_eq_withDual_of_empty (h : l.withDual = ∅) :
   have hx' := x'.2
   simp [h] at hx'
 
-
 lemma withUniqueDual_eq_withDual_iff_sort_eq :
     l.withUniqueDual = l.withDual ↔
     l.withUniqueDual.sort (fun i j => i ≤ j) = l.withDual.sort (fun i j => i ≤ j) := by
@@ -184,7 +183,8 @@ lemma withUniqueDual_eq_withDual_cons_iff (I : Index X) (hl : l.withUniqueDual =
     (l.cons I).withUniqueDual = (l.cons I).withDual
     ↔ l.val.countP (fun J => I.id = J.id) ≤ 1 := by
   rw [withUniqueDual_eq_withDual_iff_all_countP_le_two]
-  simp
+  simp only [cons_val, List.all_cons, decide_True, List.countP_cons_of_pos, Nat.reduceLeDiff,
+    Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true, and_iff_left_iff_imp]
   intro h I' hI'
   by_cases hII' : I'.id = I.id
   · rw [List.countP_cons_of_pos]
