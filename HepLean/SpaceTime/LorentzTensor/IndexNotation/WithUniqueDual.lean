@@ -911,6 +911,91 @@ lemma getDualInOtherEquiv_cast {l1 l2 l1' l2' : IndexList X} (h : l1 = l1') (h2 
   subst h h2
   rfl
 
+/-!
+
+## Membership of withUniqueDual and countP on id
+
+-/
+
+lemma finset_filter_id_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ =
+    {i, (l.getDual? i).get (l.mem_withUniqueDual_isSome i h)} := by
+  refine Finset.ext (fun j => ?_)
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert, Finset.mem_singleton]
+  rw [← propext (eq_getDual?_get_of_withUniqueDual_iff l i j h)]
+  simp only [AreDualInSelf, ne_eq]
+  refine Iff.intro (fun h => ?_) (fun h=> ?_)
+  · simp_all only [and_true]
+    exact Or.symm (Decidable.not_or_of_imp fun h => h.symm)
+  · cases h with
+    | inl h =>
+      subst h
+      simp_all only
+    | inr h => simp_all only
+
+lemma mem_withUniqueDual_of_finset_filter (i : Fin l.length) (h : i ∈ l.withDual)
+    (hf : Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ =
+    {i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)}) :
+    i ∈ l.withUniqueDual := by
+  simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ, true_and]
+  apply And.intro
+  · simpa using h
+  · intro j hj
+    simp only [AreDualInSelf, ne_eq] at hj
+    have hj' : j ∈ Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ := by
+      simpa using hj.2
+    rw [hf] at hj'
+    simp at hj'
+    rcases hj' with hj' | hj'
+    · simp_all
+    · rw [hj']
+      simp
+
+lemma mem__withUniqueDual_iff_finset_filter (i : Fin l.length) (h : i ∈ l.withDual) :
+    i ∈ l.withUniqueDual ↔ Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ =
+    {i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)} :=
+  Iff.intro (fun h' => finset_filter_id_mem_withUniqueDual l i h')
+    (fun h' => mem_withUniqueDual_of_finset_filter l i h h')
+
+/-! TODO: Move -/
+lemma card_finset_self_dual (i : Fin l.length) (h : i ∈ l.withDual) :
+    ({i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)} :
+    Finset (Fin l.length)).card = 2 := by
+  rw [Finset.card_eq_two]
+  use i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)
+  simp only [ne_eq, and_true]
+  have h1 : l.AreDualInSelf i ((l.getDual? i).get ((mem_withDual_iff_isSome l i).mp h)) := by
+    simp
+  exact h1.1
+
+lemma countP_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
+    l.val.countP (fun J => (l.val.get i).id = J.id) = 2 := by
+  rw [List.countP_eq_length_filter, filter_id_eq_sort]
+  simp only [List.length_map, Finset.length_sort]
+  erw [l.finset_filter_id_mem_withUniqueDual i h]
+  refine l.card_finset_self_dual i (mem_withDual_of_mem_withUniqueDual l i h)
+
+lemma mem_withUniqueDual_of_countP (i : Fin l.length)
+    (h : l.val.countP (fun J => (l.val.get i).id = J.id) = 2) : i ∈ l.withUniqueDual := by
+  have hw : i ∈ l.withDual := by
+    rw [mem_withDual_iff_countP, h]
+    exact Nat.one_lt_two
+  rw [l.mem__withUniqueDual_iff_finset_filter i hw]
+  rw [List.countP_eq_length_filter, filter_id_eq_sort] at h
+  simp at h
+  have hsub : {i, (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp hw)} ⊆
+      Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ := by
+    rw [Finset.insert_subset_iff]
+    simp
+  refine ((Finset.subset_iff_eq_of_card_le ?_).mp hsub).symm
+  erw [h]
+  rw [l.card_finset_self_dual i hw]
+
+lemma mem_withUniqueDual_iff_countP (i : Fin l.length) :
+    i ∈ l.withUniqueDual ↔ l.val.countP (fun J => (l.val.get i).id = J.id) = 2 :=
+  Iff.intro (fun h => l.countP_of_mem_withUniqueDual i h)
+    (fun h => l.mem_withUniqueDual_of_countP i h)
+
 end IndexList
 
 end IndexNotation

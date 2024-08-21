@@ -299,14 +299,6 @@ open IndexList TensorColor
 
 instance : Coe (ColorIndexList 𝓒) (IndexList 𝓒.Color) := ⟨fun l => l.toIndexList⟩
 
-/-! TODO: Define an induction principal on `ColorIndexList`. -/
-
-/-- The `ColorIndexList` whose underlying list of indices is empty. -/
-def empty : ColorIndexList 𝓒 where
-  val := ∅
-  unique_duals := rfl
-  dual_color := rfl
-
 /-- The colorMap of a `ColorIndexList` as a `𝓒.ColorMap`.
     This is to be compared with `colorMap` which is a map `Fin l.length → 𝓒.Color`. -/
 def colorMap' : 𝓒.ColorMap (Fin l.length) :=
@@ -333,6 +325,28 @@ lemma orderEmbOfFin_univ (n m : ℕ) (h : n = m) :
     exact Finset.mem_univ ((Fin.castOrderIso (Eq.symm h)).toFun x)
     exact fun ⦃a b⦄ a => a
   exact Eq.symm (Fin.orderEmbedding_eq (congrArg Set.range (id (Eq.symm h1))))
+
+/-!
+
+## Cons for `ColorIndexList`
+
+-/
+
+/-! TODO: Define `cons` for `ColorIndexList`. Will need conditions unlike for `IndexList`. -/
+
+/-!
+
+## Induction for `ColorIndexList`
+
+-/
+
+/-! TODO: Define an induction principal on `ColorIndexList`. -/
+
+/-- The `ColorIndexList` whose underlying list of indices is empty. -/
+def empty : ColorIndexList 𝓒 where
+  val := ∅
+  unique_duals := rfl
+  dual_color := rfl
 
 /-!
 
