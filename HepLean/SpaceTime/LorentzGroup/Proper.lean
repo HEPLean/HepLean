@@ -60,19 +60,17 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
 
 lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
-  apply Iff.intro
-  intro h
-  simp [detContinuous] at h
-  cases' det_eq_one_or_neg_one Λ with h1 h1
-    <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
-    <;> simp_all [h1, h2, h]
-  rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
-  · change (0 : Fin 2) = (1 : Fin 2) at h
-    simp only [Fin.isValue, zero_ne_one] at h
-  · change (1 : Fin 2) = (0 : Fin 2) at h
-    simp only [Fin.isValue, one_ne_zero] at h
-  · intro h
-    simp [detContinuous, h]
+  refine Iff.intro (fun h => ?_)  (fun h => ?_)
+  · simp [detContinuous] at h
+    cases' det_eq_one_or_neg_one Λ with h1 h1
+      <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
+      <;> simp_all [h1, h2, h]
+    · rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
+      · change (0 : Fin 2) = (1 : Fin 2) at h
+        simp only [Fin.isValue, zero_ne_one] at h
+    · change (1 : Fin 2) = (0 : Fin 2) at h
+      simp only [Fin.isValue, one_ne_zero] at h
+  · simp [detContinuous, h]
 
 /-- The representation taking a Lorentz matrix to its determinant. -/
 @[simps!]

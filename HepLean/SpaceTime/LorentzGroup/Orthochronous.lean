@@ -56,10 +56,10 @@ lemma not_orthochronous_iff_le_neg_one :
 lemma not_orthochronous_iff_le_zero :
     ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  rw [not_orthochronous_iff_le_neg_one] at h
-  linarith
-  rw [IsOrthochronous_iff_ge_one]
-  linarith
+  · rw [not_orthochronous_iff_le_neg_one] at h
+    linarith
+  · rw [IsOrthochronous_iff_ge_one]
+    linarith
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
 def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ,
@@ -73,13 +73,13 @@ def stepFunction : ℝ → ℝ := fun t =>
 lemma stepFunction_continuous : Continuous stepFunction := by
   apply Continuous.if ?_ continuous_const (Continuous.if ?_ continuous_const continuous_id)
     <;> intro a ha
-  rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
-  rw [ha]
-  simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
-  have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
-  exact Eq.symm (if_neg h1)
-  rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha
-  exact id (Eq.symm ha)
+  · rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
+    rw [ha]
+    simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
+    have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
+    exact Eq.symm (if_neg h1)
+  · rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha
+    exact id (Eq.symm ha)
 
 /-- The continuous map from `lorentzGroup` to `ℝ` wh
 taking Orthochronous elements to `1` and non-orthochronous to `-1`. -/
@@ -102,8 +102,8 @@ lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrt
 lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
     orthchroMapReal Λ = -1 ∨ orthchroMapReal Λ = 1 := by
   by_cases h : IsOrthochronous Λ
-  apply Or.inr $ orthchroMapReal_on_IsOrthochronous h
-  apply Or.inl $ orthchroMapReal_on_not_IsOrthochronous h
+  · exact Or.inr $ orthchroMapReal_on_IsOrthochronous h
+  · exact Or.inl $ orthchroMapReal_on_not_IsOrthochronous h
 
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
@@ -158,18 +158,18 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
     simp only
     by_cases h : IsOrthochronous Λ
       <;> by_cases h' : IsOrthochronous Λ'
-    rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',
-      orthchroMap_IsOrthochronous (mul_othchron_of_othchron_othchron h h')]
-    rfl
-    rw [orthchroMap_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
-      orthchroMap_not_IsOrthochronous (mul_not_othchron_of_othchron_not_othchron h h')]
-    rfl
-    rw [orthchroMap_not_IsOrthochronous h, orthchroMap_IsOrthochronous h',
-      orthchroMap_not_IsOrthochronous (mul_not_othchron_of_not_othchron_othchron h h')]
-    rfl
-    rw [orthchroMap_not_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
-      orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
-    rfl
+    · rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',
+        orthchroMap_IsOrthochronous (mul_othchron_of_othchron_othchron h h')]
+      rfl
+    · rw [orthchroMap_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
+        orthchroMap_not_IsOrthochronous (mul_not_othchron_of_othchron_not_othchron h h')]
+      rfl
+    · rw [orthchroMap_not_IsOrthochronous h, orthchroMap_IsOrthochronous h',
+        orthchroMap_not_IsOrthochronous (mul_not_othchron_of_not_othchron_othchron h h')]
+      rfl
+    · rw [orthchroMap_not_IsOrthochronous h, orthchroMap_not_IsOrthochronous h',
+        orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
+      rfl
 
 end LorentzGroup
 

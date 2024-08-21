@@ -72,9 +72,7 @@ lemma anomalyFree_param {S : (PureU1 (2 * n.succ)).Sols}
   have hC := S.cubicSol
   rw [hS] at hC
   change (accCube (2 * n.succ)) (P g + P! f) = 0 at hC
-  erw [TriLinearSymm.toCubic_add] at hC
-  erw [P_accCube] at hC
-  erw [P!_accCube] at hC
+  erw [TriLinearSymm.toCubic_add, P_accCube, P!_accCube] at hC
   linear_combination hC / 3
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠ 0`.
@@ -114,9 +112,9 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ)).Sols) :
   have h1 : accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0 ∨
     accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
     exact ne_or_eq _ _
-  cases h1 <;> rename_i h1
-  exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
-  exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
+  rcases h1 with h1 | h1
+  · exact Or.inl (genericCase_exists S ⟨g, f, h, h1⟩)
+  · exact Or.inr (specialCase_exists S ⟨g, f, h, h1⟩)
 
 theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : GenericCase S) :
     ∃ g f a, S = parameterization g f a := by
@@ -128,11 +126,11 @@ theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : GenericCase S) :
   change S.val = _ • (_ • P g + _• P! f)
   rw [anomalyFree_param _ _ hS]
   rw [neg_neg, ← smul_add, smul_smul, inv_mul_cancel, one_smul]
-  exact hS
-  have h := h g f hS
-  rw [anomalyFree_param _ _ hS] at h
-  simp at h
-  exact h
+  · exact hS
+  · have h := h g f hS
+    rw [anomalyFree_param _ _ hS] at h
+    simp at h
+    exact h
 
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
     (h : SpecialCase S) : LineInCubic S.1.1 := by
@@ -154,9 +152,8 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
 lemma special_case_lineInCubic_perm {S : (PureU1 (2 * n.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ)).group),
     SpecialCase ((FamilyPermutations (2 * n.succ)).solAction.toFun S M)) :
-    LineInCubicPerm S.1.1 := by
-  intro M
-  exact special_case_lineInCubic (h M)
+    LineInCubicPerm S.1.1 :=
+  fun M =>  special_case_lineInCubic (h M)
 
 theorem special_case {S : (PureU1 (2 * n.succ.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ.succ)).group),

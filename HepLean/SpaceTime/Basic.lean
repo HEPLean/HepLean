@@ -72,10 +72,10 @@ lemma stdBasis_3 : stdBasis 3 = ![0, 0, 0, 1] := by
 lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     (Λ *ᵥ stdBasis μ) ν = Λ ν μ := by
   rw [mulVec, dotProduct, Fintype.sum_eq_single μ, stdBasis_apply]
-  simp only [↓reduceIte, mul_one]
-  intro x h
-  rw [stdBasis_apply, if_neg (Ne.symm h)]
-  exact CommMonoidWithZero.mul_zero (Λ ν x)
+  · simp only [↓reduceIte, mul_one]
+  · intro x h
+    rw [stdBasis_apply, if_neg (Ne.symm h)]
+    exact CommMonoidWithZero.mul_zero (Λ ν x)
 
 lemma explicit (x : SpaceTime) : x = ![x 0, x 1, x 2, x 3] := by
   funext i

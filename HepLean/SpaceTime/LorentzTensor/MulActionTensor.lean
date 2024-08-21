@@ -93,8 +93,8 @@ lemma contrDual_equivariant_tmul (g : G) (x : 𝓣.ColorModule μ) (y : 𝓣.Col
     𝓣.contrDual μ (x ⊗ₜ[R] y) := by
   trans (𝓣.contrDual μ ∘ₗ
       TensorProduct.map (repColorModule μ g) (repColorModule (𝓣.τ μ) g)) (x ⊗ₜ[R] y)
-  rfl
-  rw [contrDual_inv]
+  · rfl
+  · rw [contrDual_inv]
 
 @[simp]
 lemma colorModuleCast_equivariant_apply (h : μ = ν) (g : G) (x : 𝓣.ColorModule μ) :
@@ -163,8 +163,8 @@ lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
 lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tensor cX) :
     (𝓣.mapIso e h) (g • x) = g • (𝓣.mapIso e h x) := by
   trans ((𝓣.rep g) ∘ₗ (𝓣.mapIso e h).toLinearMap) x
-  simp
-  rfl
+  · simp
+  · rfl
 
 @[simp]
 lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
@@ -198,9 +198,9 @@ lemma tensoratorEquiv_equivariant_apply (g : G) (x : 𝓣.Tensor cX ⊗[R] 𝓣.
     (𝓣.tensoratorEquiv cX cY) ((TensorProduct.map (𝓣.rep g) (𝓣.rep g)) x)
     = (𝓣.rep g) ((𝓣.tensoratorEquiv cX cY) x) := by
   trans ((𝓣.tensoratorEquiv cX cY) ∘ₗ (TensorProduct.map (𝓣.rep g) (𝓣.rep g))) x
-  rfl
-  rw [tensoratorEquiv_equivariant]
-  rfl
+  · rfl
+  · rw [tensoratorEquiv_equivariant]
+    rfl
 
 lemma rep_tensoratorEquiv_tmul (g : G) (x : 𝓣.Tensor cX) (y : 𝓣.Tensor cY) :
     (𝓣.tensoratorEquiv cX cY) ((g • x) ⊗ₜ[R] (g • y)) =
@@ -220,9 +220,9 @@ lemma rep_tensoratorEquiv_symm_apply (g : G) (x : 𝓣.Tensor (Sum.elim cX cY)) 
     (𝓣.tensoratorEquiv cX cY).symm ((𝓣.rep g) x) =
     (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ((𝓣.tensoratorEquiv cX cY).symm x) := by
   trans ((𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g) x
-  rfl
-  rw [rep_tensoratorEquiv_symm]
-  rfl
+  · rfl
+  · rw [rep_tensoratorEquiv_symm]
+    rfl
 
 @[simp]
 lemma rep_lid (g : G) : TensorProduct.lid R (𝓣.Tensor cX) ∘ₗ
@@ -237,9 +237,9 @@ lemma rep_lid_apply (g : G) (x : R ⊗[R] 𝓣.Tensor cX) :
     (TensorProduct.lid R (𝓣.Tensor cX)) ((TensorProduct.map (LinearMap.id) (𝓣.rep g)) x) =
     (𝓣.rep g) ((TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap x) := by
   trans ((TensorProduct.lid R (𝓣.Tensor cX)) ∘ₗ (TensorProduct.map (LinearMap.id) (𝓣.rep g))) x
-  rfl
-  rw [rep_lid]
-  rfl
+  · rfl
+  · rw [rep_lid]
+    rfl
 
 end TensorStructure
 

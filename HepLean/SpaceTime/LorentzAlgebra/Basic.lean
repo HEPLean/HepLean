@@ -47,22 +47,24 @@ lemma mem_iff' (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
   rw [mem_iff]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · trans -η * (Aᵀ * η)
-    rw [h]
-    trans (η * η) * A
-    rw [minkowskiMatrix.sq]
-    all_goals noncomm_ring
+    · rw [h]
+      trans (η * η) * A
+      · rw [minkowskiMatrix.sq]
+        noncomm_ring
+      · noncomm_ring
+    · noncomm_ring
   · nth_rewrite 2 [h]
     trans (η * η) * Aᵀ * η
-    rw [minkowskiMatrix.sq]
-    all_goals noncomm_ring
+    · rw [minkowskiMatrix.sq]
+      noncomm_ring
+    · noncomm_ring
 
 lemma diag_comp (Λ : lorentzAlgebra) (μ : Fin 1 ⊕ Fin 3) : Λ.1 μ μ = 0 := by
   have h := congrArg (fun M ↦ M μ μ) $ mem_iff.mp Λ.2
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
     transpose_apply, diagonal_neg, diagonal_mul, neg_mul] at h
-  rcases μ with μ | μ
-  simpa using h
-  simpa using h
+  rcases μ with μ | μ <;>
+    simpa using h
 
 lemma time_comps (Λ : lorentzAlgebra) (i : Fin 3) :
     Λ.1 (Sum.inr i) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inr i) := by

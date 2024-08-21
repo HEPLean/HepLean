@@ -484,17 +484,19 @@ lemma withUniqueDual_iff_not_withUniqueDualInOther_of_inl_withUniqueDualInOther
     (i : Fin l.length) (h : appendEquiv (Sum.inl i) ∈ (l ++ l2).withUniqueDual) :
     i ∈ l.withUniqueDual ↔ ¬ i ∈ l.withUniqueDualInOther l2 := by
   by_cases h' : (l.getDual? i).isSome
-  have hn : i ∈ l.withUniqueDual := mem_withUniqueDual_of_inl l l2 i h h'
-  simp_all only [mem_withUniqueDual_isSome, not_mem_withDualInOther_of_inl_mem_withUniqueDual,
-    not_false_eq_true]
-  have hn := l.append_inl_not_mem_withDual_of_withDualInOther l2 i h
-  simp_all only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none,
-    mem_withDual_iff_isSome, Option.isSome_none, Bool.false_eq_true, mem_withInDualOther_iff_isSome,
-    false_iff]
-  simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ, true_and]
-  simp_all only [Option.isSome_none, Bool.false_eq_true, imp_false, false_and, false_iff,
-    Decidable.not_not]
-  exact mem_withUniqueDualInOther_of_inl_withDualInOther l l2 i h (Option.ne_none_iff_isSome.mp hn)
+  · have hn : i ∈ l.withUniqueDual := mem_withUniqueDual_of_inl l l2 i h h'
+    simp_all only [mem_withUniqueDual_isSome, not_mem_withDualInOther_of_inl_mem_withUniqueDual,
+      not_false_eq_true]
+  · have hn := l.append_inl_not_mem_withDual_of_withDualInOther l2 i h
+    simp_all only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none,
+      mem_withDual_iff_isSome, Option.isSome_none, Bool.false_eq_true,
+      mem_withInDualOther_iff_isSome, false_iff]
+    simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
+      true_and]
+    simp_all only [Option.isSome_none, Bool.false_eq_true, imp_false, false_and, false_iff,
+      Decidable.not_not]
+    exact mem_withUniqueDualInOther_of_inl_withDualInOther l l2 i h
+      (Option.ne_none_iff_isSome.mp hn)
 
 lemma append_inl_mem_withUniqueDual_of_withUniqueDual (i : Fin l.length)
     (h : i ∈ l.withUniqueDual) (hn : i ∉ l.withDualInOther l2) :
@@ -502,35 +504,34 @@ lemma append_inl_mem_withUniqueDual_of_withUniqueDual (i : Fin l.length)
   simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
     getDual?_isSome_append_inl_iff, true_and]
   apply And.intro
-  simp_all
-  intro j hj
-  obtain ⟨k, hk⟩ := appendEquiv.surjective j
-  subst hk
-  match k with
-  | Sum.inl k => simp_all
-  | Sum.inr k =>
-    simp at hj
-    refine False.elim (hn ?_)
-    exact (l.mem_withInDualOther_iff_exists _).mpr ⟨k, hj⟩
+  · simp_all
+  · intro j hj
+    obtain ⟨k, hk⟩ := appendEquiv.surjective j
+    subst hk
+    match k with
+    | Sum.inl k => simp_all
+    | Sum.inr k =>
+      simp at hj
+      refine False.elim (hn ?_)
+      exact (l.mem_withInDualOther_iff_exists _).mpr ⟨k, hj⟩
 
 lemma append_inl_mem_of_withUniqueDualInOther (i : Fin l.length)
     (ho : i ∈ l.withUniqueDualInOther l2) :
     appendEquiv (Sum.inl i) ∈ (l ++ l2).withUniqueDual := by
   simp only [withUniqueDual, mem_withDual_iff_isSome, Finset.mem_filter, Finset.mem_univ,
     getDual?_isSome_append_inl_iff, true_and]
-  apply And.intro
-  simp_all only [mem_withUniqueDualInOther_isSome, or_true]
-  intro j hj
-  obtain ⟨k, hk⟩ := appendEquiv.surjective j
-  subst hk
-  have hs := l.not_mem_withDual_of_withUniqueDualInOther l2 ⟨i, ho⟩
-  match k with
-  | Sum.inl k =>
-    refine False.elim (hs ?_)
-    simp at hj
-    exact (l.mem_withDual_iff_exists).mpr ⟨k, hj⟩
-  | Sum.inr k =>
-    simp_all
+  refine And.intro ?_ (fun j hj => ?_)
+  · simp_all only [mem_withUniqueDualInOther_isSome, or_true]
+  · obtain ⟨k, hk⟩ := appendEquiv.surjective j
+    subst hk
+    have hs := l.not_mem_withDual_of_withUniqueDualInOther l2 ⟨i, ho⟩
+    match k with
+    | Sum.inl k =>
+      refine False.elim (hs ?_)
+      simp at hj
+      exact (l.mem_withDual_iff_exists).mpr ⟨k, hj⟩
+    | Sum.inr k =>
+      simp_all
 
 @[simp]
 lemma append_inl_mem_withUniqueDual_iff (i : Fin l.length) :
@@ -581,10 +582,10 @@ lemma append_withUniqueDual : (l ++ l2).withUniqueDual =
       use k
       simp only [appendInl, Function.Embedding.coeFn_mk, Function.comp_apply, and_true]
       by_cases hk : k ∈ l.withUniqueDualInOther l2
-      exact Or.inr hk
-      have hk' := h.mpr hk
-      simp_all only [not_false_eq_true, and_self, mem_withInDualOther_iff_isSome, Bool.not_eq_true,
-        Option.not_isSome, Option.isNone_iff_eq_none, or_false]
+      · exact Or.inr hk
+      · have hk' := h.mpr hk
+        simp_all only [not_false_eq_true, and_self, mem_withInDualOther_iff_isSome,
+          Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none, or_false]
     · intro h
       simp only [Finset.mem_map, Finset.mem_union, Finset.mem_inter, Finset.mem_compl,
         mem_withInDualOther_iff_isSome, Bool.not_eq_true, Option.not_isSome,
@@ -619,10 +620,10 @@ lemma append_withUniqueDual : (l ++ l2).withUniqueDual =
       use k
       simp only [appendInr, Function.Embedding.coeFn_mk, Function.comp_apply, and_true]
       by_cases hk : k ∈ l2.withUniqueDualInOther l
-      exact Or.inr hk
-      have hk' := h.mpr hk
-      simp_all only [not_false_eq_true, and_self, mem_withInDualOther_iff_isSome, Bool.not_eq_true,
-        Option.not_isSome, Option.isNone_iff_eq_none, or_false]
+      · exact Or.inr hk
+      · have hk' := h.mpr hk
+        simp_all only [not_false_eq_true, and_self, mem_withInDualOther_iff_isSome,
+          Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none, or_false]
     · intro h
       simp only [Finset.mem_map, Finset.mem_union, Finset.mem_inter, Finset.mem_compl,
         mem_withInDualOther_iff_isSome, Bool.not_eq_true, Option.not_isSome,
@@ -730,11 +731,11 @@ lemma withUniqueDualInOther_append_isSome_fst_iff_not_isSome_snd (i : Fin l.leng
     (h1 : i ∈ l.withUniqueDualInOther (l2 ++ l3)) :
     (l.getDualInOther? l2 i).isSome ↔ (l.getDualInOther? l3 i) = none := by
   by_cases hs : (l.getDualInOther? l2 i).isSome
-  simp only [hs, true_iff]
-  exact l.withUniqueDualInOther_append_not_isSome_snd_of_isSome_fst l2 l3 i h1 hs
-  simp only [hs, Bool.false_eq_true, false_iff]
-  rw [← @Option.not_isSome_iff_eq_none, not_not]
-  exact withUniqueDualInOther_append_isSome_snd_of_not_isSome_fst l l2 l3 i h1 hs
+  · simp only [hs, true_iff]
+    exact l.withUniqueDualInOther_append_not_isSome_snd_of_isSome_fst l2 l3 i h1 hs
+  · simp only [hs, Bool.false_eq_true, false_iff]
+    rw [← @Option.not_isSome_iff_eq_none, not_not]
+    exact withUniqueDualInOther_append_isSome_snd_of_not_isSome_fst l l2 l3 i h1 hs
 
 lemma getDualInOther?_append_symm_of_withUniqueDual_of_inl (i : Fin l.length)
     (k : Fin l2.length) (h : i ∈ l.withUniqueDualInOther (l2 ++ l3)) :

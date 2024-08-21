@@ -68,16 +68,16 @@ def speciesEmbed (m n : ℕ) :
     funext i
     simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add]
     by_cases hi : i.val < m
-    erw [dif_pos hi, dif_pos hi, dif_pos hi]
-    erw [dif_neg hi, dif_neg hi, dif_neg hi]
-    rfl
+    · erw [dif_pos hi, dif_pos hi, dif_pos hi]
+    · erw [dif_neg hi, dif_neg hi, dif_neg hi]
+      rfl
   map_smul' a S := by
     funext i
     simp [HSMul.hSMul]
     by_cases hi : i.val < m
-    erw [dif_pos hi, dif_pos hi]
-    erw [dif_neg hi, dif_neg hi]
-    simp
+    · erw [dif_pos hi, dif_pos hi]
+    · erw [dif_neg hi, dif_neg hi]
+      simp
 
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
 other charges zero. -/

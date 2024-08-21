@@ -68,16 +68,16 @@ def speciesEmbed (m n : ℕ) :
     funext i
     simp only [SMνSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add]
     by_cases hi : i.val < m
-    erw [dif_pos hi, dif_pos hi, dif_pos hi]
-    erw [dif_neg hi, dif_neg hi, dif_neg hi]
-    rfl
+    · erw [dif_pos hi, dif_pos hi, dif_pos hi]
+    · erw [dif_neg hi, dif_neg hi, dif_neg hi]
+      rfl
   map_smul' a S := by
     funext i
     simp [HSMul.hSMul]
     by_cases hi : i.val < m
-    erw [dif_pos hi, dif_pos hi]
-    erw [dif_neg hi, dif_neg hi]
-    exact Eq.symm (Rat.mul_zero a)
+    · erw [dif_pos hi, dif_pos hi]
+    · erw [dif_neg hi, dif_neg hi]
+      exact Eq.symm (Rat.mul_zero a)
 
 /-- The embedding of the `m`-family charges onto the `n`-family charges, with all
 other charges zero. -/
@@ -114,9 +114,9 @@ lemma sum_familyUniversal {n : ℕ} (m : ℕ) (S : (SMνCharges 1).Charges) (j :
     simp
   erw [h1]
   apply Finset.sum_congr
-  simp only
-  intro i _
-  erw [toSpecies_familyUniversal]
+  · simp only
+  · intro i _
+    erw [toSpecies_familyUniversal]
 
 lemma sum_familyUniversal_one {n : ℕ} (S : (SMνCharges 1).Charges) (j : Fin 6) :
     ∑ i, toSpecies j (familyUniversal n S) i = n * (toSpecies j S ⟨0, by simp⟩) := by
@@ -129,10 +129,10 @@ lemma sum_familyUniversal_two {n : ℕ} (S : (SMνCharges 1).Charges)
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.zero_eta, Fin.isValue]
   rw [Finset.mul_sum]
   apply Finset.sum_congr
-  simp only
-  intro i _
-  erw [toSpecies_familyUniversal]
-  rfl
+  · simp only
+  · intro i _
+    erw [toSpecies_familyUniversal]
+    rfl
 
 lemma sum_familyUniversal_three {n : ℕ} (S : (SMνCharges 1).Charges)
     (T L : (SMνCharges n).Charges) (j : Fin 6) :
@@ -141,11 +141,11 @@ lemma sum_familyUniversal_three {n : ℕ} (S : (SMνCharges 1).Charges)
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.zero_eta, Fin.isValue]
   rw [Finset.mul_sum]
   apply Finset.sum_congr
-  simp only
-  intro i _
-  erw [toSpecies_familyUniversal]
-  simp only [SMνSpecies_numberCharges, Fin.zero_eta, Fin.isValue, toSpecies_apply]
-  ring
+  · simp only
+  · intro i _
+    erw [toSpecies_familyUniversal]
+    simp only [SMνSpecies_numberCharges, Fin.zero_eta, Fin.isValue, toSpecies_apply]
+    ring
 
 lemma familyUniversal_accGrav (S : (SMνCharges 1).Charges) :
     accGrav (familyUniversal n S) = n * (accGrav S) := by

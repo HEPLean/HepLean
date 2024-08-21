@@ -95,12 +95,12 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
         exact Fin.ne_of_gt hjk
       intro k' hk'
       by_cases hik' : i = k'
-      subst hik'
-      exact Lean.Omega.Fin.le_of_not_lt hik
-      have hik'' : l.AreDualInSelf i k' := by
-        simp [AreDualInSelf, hik']
-        simp_all [AreDualInSelf]
-      exact hk.2 k' hik''
+      · subst hik'
+        exact Lean.Omega.Fin.le_of_not_lt hik
+      · have hik'' : l.AreDualInSelf i k' := by
+          simp [AreDualInSelf, hik']
+          simp_all [AreDualInSelf]
+        exact hk.2 k' hik''
 
 @[simp]
 lemma getDual?_neq_self (i : Fin l.length) : ¬ l.getDual? i = some i := by
@@ -343,8 +343,7 @@ lemma getDual?_append_inr_getDualInOther?_isSome (i : Fin l2.length)
     (l ++ l2).getDual? (appendEquiv (Sum.inr i)) =
     some (appendEquiv (Sum.inl ((l2.getDualInOther? l i).get h))) := by
   rw [getDual?, Fin.find_eq_some_iff, AreDualInSelf.append_inr_inl]
-  apply And.intro
-  exact getDualInOther?_areDualInOther_get l2 l i h
+  apply And.intro (getDualInOther?_areDualInOther_get l2 l i h)
   intro j hj
   obtain ⟨k, hk⟩ := appendEquiv.surjective j
   subst hk
@@ -373,8 +372,7 @@ lemma getDual?_inr_getDualInOther?_isNone_getDual?_isSome (i : Fin l2.length)
     (l ++ l2).getDual? (appendEquiv (Sum.inr i)) = some
     (appendEquiv (Sum.inr ((l2.getDual? i).get hi))) := by
   rw [getDual?, Fin.find_eq_some_iff, AreDualInSelf.append_inr_inr]
-  apply And.intro
-  exact getDual?_areDualInSelf_get l2 i hi
+  apply And.intro (getDual?_areDualInSelf_get l2 i hi)
   intro j hj
   obtain ⟨k, hk⟩ := appendEquiv.surjective j
   subst hk
@@ -467,8 +465,7 @@ lemma getDualInOther?_of_append_of_isSome (i : Fin l.length)
     (hi : (l.getDualInOther? l2 i).isSome) : l.getDualInOther? (l2 ++ l3) i =
     some (appendEquiv (Sum.inl ((l.getDualInOther? l2 i).get hi))) := by
   rw [getDualInOther?, Fin.find_eq_some_iff, AreDualInOther.of_append_inl]
-  apply And.intro
-  exact getDualInOther?_areDualInOther_get l l2 i hi
+  apply And.intro (getDualInOther?_areDualInOther_get l l2 i hi)
   intro j hj
   obtain ⟨k, hk⟩ := appendEquiv.surjective j
   subst hk
@@ -497,8 +494,7 @@ lemma getDualInOther?_of_append_of_isNone_isSome (i : Fin l.length)
     l.getDualInOther? (l2 ++ l3) i =
     some (appendEquiv (Sum.inr ((l.getDualInOther? l3 i).get h2))) := by
   rw [getDualInOther?, Fin.find_eq_some_iff, AreDualInOther.of_append_inr]
-  apply And.intro
-  exact getDualInOther?_areDualInOther_get l l3 i h2
+  apply And.intro (getDualInOther?_areDualInOther_get l l3 i h2)
   intro j hj
   obtain ⟨k, hk⟩ := appendEquiv.surjective j
   subst hk

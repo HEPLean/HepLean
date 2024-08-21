@@ -40,8 +40,8 @@ lemma phaseShiftMatrix_star (a b c : ℝ) :
   funext i j
   fin_cases i <;> fin_cases j <;>
   simp [← exp_conj, conj_ofReal]
-  rfl
-  rfl
+  · rfl
+  · rfl
 
 lemma phaseShiftMatrix_mul (a b c d e f : ℝ) :
     phaseShiftMatrix a b c * phaseShiftMatrix d e f = phaseShiftMatrix (a + d) (b + e) (c + f) := by

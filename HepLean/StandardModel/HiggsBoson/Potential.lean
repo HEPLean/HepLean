@@ -115,24 +115,24 @@ lemma eq_zero_at (φ : HiggsField) (x : SpaceTime)
     linear_combination h1
   simp at h2
   cases' h2 with h2 h2
-  simp_all
-  apply Or.inr
-  field_simp at h2 ⊢
-  ring_nf
-  linear_combination h2
+  · simp_all
+  · apply Or.inr
+    field_simp at h2 ⊢
+    ring_nf
+    linear_combination h2
 
 lemma eq_zero_at_of_μSq_nonpos {μ2 : ℝ} (hμ2 : μ2 ≤ 0)
     (φ : HiggsField) (x : SpaceTime) (hV : potential μ2 𝓵 φ x = 0) : φ x = 0 := by
   cases' (eq_zero_at μ2 h𝓵 φ x hV) with h1 h1
-  exact h1
-  by_cases hμSqZ : μ2 = 0
-  simpa [hμSqZ] using h1
-  refine ((?_ : ¬ 0 ≤ μ2 / 𝓵) (?_)).elim
-  · simp_all [div_nonneg_iff]
-    intro h
-    exact lt_imp_lt_of_le_imp_le (fun _ => h) (lt_of_le_of_ne hμ2 hμSqZ)
-  · rw [← h1]
-    exact normSq_nonneg φ x
+  · exact h1
+  · by_cases hμSqZ : μ2 = 0
+    · simpa [hμSqZ] using h1
+    · refine ((?_ : ¬ 0 ≤ μ2 / 𝓵) (?_)).elim
+      · simp_all [div_nonneg_iff]
+        intro h
+        exact lt_imp_lt_of_le_imp_le (fun _ => h) (lt_of_le_of_ne hμ2 hμSqZ)
+      · rw [← h1]
+        exact normSq_nonneg φ x
 
 lemma bounded_below (φ : HiggsField) (x : SpaceTime) :
     - μ2 ^ 2 / (4 * 𝓵) ≤ potential μ2 𝓵 φ x := by
@@ -176,8 +176,8 @@ lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
   have h1 := as_quad μ2 𝓵 φ x
   rw [quadratic_eq_zero_iff_of_discrim_eq_zero _
     (discrim_eq_zero_of_eq_bound μ2 h𝓵 φ x hV)] at h1
-  simp_rw [h1, neg_neg]
-  exact ne_of_gt h𝓵
+  · simp_rw [h1, neg_neg]
+  · exact ne_of_gt h𝓵
 
 lemma eq_bound_iff (φ : HiggsField) (x : SpaceTime) :
     potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵) ↔ ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) :=

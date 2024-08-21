@@ -135,26 +135,22 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ)).LinSols}
   rw [P_P_P!_accCube' g f hfg] at h1
   simp at h1
   cases h1 <;> rename_i h1
-  apply Or.inl
-  linear_combination h1
-  cases h1 <;> rename_i h1
-  apply Or.inr
-  apply Or.inl
-  linear_combination -(1 * h1)
-  apply Or.inr
-  apply Or.inr
-  exact h1
+  · apply Or.inl
+    linear_combination h1
+  · cases h1 <;> rename_i h1
+    · refine Or.inr (Or.inl ?_)
+      linear_combination -(1 * h1)
+    · exact Or.inr (Or.inr h1)
 
 lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ)).LinSols}
     (LIC : LineInCubicPerm S) : LineInPlaneCond S := by
   refine @Prop_three (2 * n.succ.succ) LineInPlaneProp S (δ!₂ (Fin.last n)) (δ!₁ (Fin.last n))
     δ!₄ ?_ ?_ ?_ ?_
-  simp [Fin.ext_iff, δ!₂, δ!₁]
-  simp [Fin.ext_iff, δ!₂, δ!₄]
-  simp [Fin.ext_iff, δ!₁, δ!₄]
-  omega
-  intro M
-  exact lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
+  · simp [Fin.ext_iff, δ!₂, δ!₁]
+  · simp [Fin.ext_iff, δ!₂, δ!₄]
+  · simp [Fin.ext_iff, δ!₁, δ!₄]
+    omega
+  · exact fun M => lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 
 lemma lineInCubicPerm_constAbs {S : (PureU1 (2 * n.succ.succ)).Sols}
     (LIC : LineInCubicPerm S.1.1) : ConstAbs S.val :=

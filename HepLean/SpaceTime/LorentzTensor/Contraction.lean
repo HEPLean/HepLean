@@ -257,12 +257,12 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : cX.MapIso e cY) :
   rw [𝓣.contrDual_cast (congrFun h.symm y)]
   apply congrArg
   congr 1
-  simp [colorModuleCast]
-  symm
-  apply cast_eq_iff_heq.mpr
-  simp [colorModuleCast, Equiv.apply_symm_apply]
-  rw [Equiv.apply_symm_apply]
-  exact HEq.symm (cast_heq _ _)
+  · simp [colorModuleCast]
+  · symm
+    apply cast_eq_iff_heq.mpr
+    simp [colorModuleCast, Equiv.apply_symm_apply]
+    rw [Equiv.apply_symm_apply]
+    exact HEq.symm (cast_heq _ _)
 
 @[simp]
 lemma contrAll'_mapIso_tmul (e : X ≃ Y) (h : cX.MapIso e cY) (x : 𝓣.Tensor cX)

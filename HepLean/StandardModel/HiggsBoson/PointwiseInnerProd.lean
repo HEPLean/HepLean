@@ -139,12 +139,12 @@ lemma normSq_zero (φ : HiggsField) (x : SpaceTime) : φ.normSq x = 0 ↔ φ x =
 lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
   rw [normSq_expand]
   refine Smooth.add ?_ ?_
-  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
-  exact ((φ.apply_re_smooth 0).smul (φ.apply_re_smooth 0)).add $
-    (φ.apply_im_smooth 0).smul (φ.apply_im_smooth 0)
-  simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
-  exact ((φ.apply_re_smooth 1).smul (φ.apply_re_smooth 1)).add $
-    (φ.apply_im_smooth 1).smul (φ.apply_im_smooth 1)
+  · simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
+    exact ((φ.apply_re_smooth 0).smul (φ.apply_re_smooth 0)).add $
+      (φ.apply_im_smooth 0).smul (φ.apply_im_smooth 0)
+  · simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
+    exact ((φ.apply_re_smooth 1).smul (φ.apply_re_smooth 1)).add $
+      (φ.apply_im_smooth 1).smul (φ.apply_im_smooth 1)
 
 end HiggsField
 

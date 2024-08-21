@@ -101,9 +101,7 @@ def quadSolToSolInv {n : ℕ} : (PlusU1 n).Sols → (PlusU1 n).QuadSols × ℚ �
 lemma quadSolToSolInv_1 (S : (PlusU1 n).Sols) :
     (quadSolToSolInv S).1 = S.1 := by
   simp [quadSolToSolInv]
-  split
-  rfl
-  rfl
+  split <;> rfl
 
 lemma quadSolToSolInv_α₁_α₂_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0) :
     α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0 := by
@@ -133,10 +131,10 @@ lemma quadSolToSolInv_generic (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
 lemma quadSolToSolInv_rightInverse : Function.RightInverse (@quadSolToSolInv n) quadSolToSol := by
   intro S
   by_cases h : α₁ S.1 = 0
-  rw [quadSolToSol, dif_pos (quadSolToSolInv_α₁_α₂_zero S h)]
-  exact quadSolToSolInv_special S h
-  rw [quadSolToSol, dif_neg (quadSolToSolInv_α₁_α₂_neq_zero S h)]
-  exact quadSolToSolInv_generic S h
+  · rw [quadSolToSol, dif_pos (quadSolToSolInv_α₁_α₂_zero S h)]
+    exact quadSolToSolInv_special S h
+  · rw [quadSolToSol, dif_neg (quadSolToSolInv_α₁_α₂_neq_zero S h)]
+    exact quadSolToSolInv_generic S h
 
 theorem quadSolToSol_surjective : Function.Surjective (@quadSolToSol n) :=
   Function.RightInverse.surjective quadSolToSolInv_rightInverse

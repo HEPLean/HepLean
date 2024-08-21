@@ -110,9 +110,9 @@ theorem linesInPlane_constAbs {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
     (hS : LineInPlaneCond S) : ConstAbs S.val := by
   intro i j
   by_cases hij : i ≠ j
-  exact linesInPlane_eq_sq hS i j hij
-  simp at hij
-  rw [hij]
+  · exact linesInPlane_eq_sq hS i j hij
+  · simp at hij
+    rw [hij]
 
 lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
     ConstAbsProp (S.val (0 : Fin 4), S.val (1 : Fin 4)) := by
@@ -131,29 +131,29 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
   have h1 : S.val (2 : Fin 4) = S.val (3 : Fin 4) := by
     linear_combination l012 / 2 + -1 * l013 / 2
   by_cases h2 : S.val (0 : Fin 4) = S.val (2 : Fin 4)
-  simp_all
-  have h3 : S.val (1 : Fin 4) = - 3 * S.val (2 : Fin 4) := by
-    linear_combination l012 + 3 * h1
-  rw [← h1, h3] at hcube
-  have h4 : S.val (2 : Fin 4) ^ 3 = 0 := by
-    linear_combination -1 * hcube / 24
-  simp at h4
-  simp_all
-  by_cases h3 : S.val (0 : Fin 4) = - S.val (2 : Fin 4)
-  simp_all
-  have h4 : S.val (1 : Fin 4) = - S.val (2 : Fin 4) := by
-    linear_combination l012 + h1
-  simp_all
-  simp_all
-  have h4 : S.val (0 : Fin 4) = - 3 * S.val (3 : Fin 4) := by
-    linear_combination l023
-  have h5 : S.val (1 : Fin 4) = S.val (3 : Fin 4) := by
-    linear_combination l013 - 1 * h4
-  rw [h4, h5] at hcube
-  have h6 : S.val (3 : Fin 4) ^ 3 = 0 := by
-    linear_combination -1 * hcube / 24
-  simp at h6
-  simp_all
+  · simp_all
+    have h3 : S.val (1 : Fin 4) = - 3 * S.val (2 : Fin 4) := by
+      linear_combination l012 + 3 * h1
+    rw [← h1, h3] at hcube
+    have h4 : S.val (2 : Fin 4) ^ 3 = 0 := by
+      linear_combination -1 * hcube / 24
+    simp at h4
+    simp_all
+  · by_cases h3 : S.val (0 : Fin 4) = - S.val (2 : Fin 4)
+    · simp_all
+      have h4 : S.val (1 : Fin 4) = - S.val (2 : Fin 4) := by
+        linear_combination l012 + h1
+      simp_all
+    · simp_all
+      have h4 : S.val (0 : Fin 4) = - 3 * S.val (3 : Fin 4) := by
+        linear_combination l023
+      have h5 : S.val (1 : Fin 4) = S.val (3 : Fin 4) := by
+        linear_combination l013 - 1 * h4
+      rw [h4, h5] at hcube
+      have h6 : S.val (3 : Fin 4) ^ 3 = 0 := by
+        linear_combination -1 * hcube / 24
+      simp at h6
+      simp_all
 
 lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
     (hS : LineInPlaneCond S.1.1) : ∀ (i j : Fin 4) (_ : i ≠ j),
@@ -169,14 +169,14 @@ lemma linesInPlane_constAbs_four (S : (PureU1 4).Sols)
     (hS : LineInPlaneCond S.1.1) : ConstAbs S.val := by
   intro i j
   by_cases hij : i ≠ j
-  exact linesInPlane_eq_sq_four hS i j hij
-  simp at hij
-  rw [hij]
+  · exact linesInPlane_eq_sq_four hS i j hij
+  · simp at hij
+    rw [hij]
 
 theorem linesInPlane_constAbs_AF (S : (PureU1 (n.succ.succ.succ.succ)).Sols)
     (hS : LineInPlaneCond S.1.1) : ConstAbs S.val := by
   induction n
-  exact linesInPlane_constAbs_four S hS
-  exact linesInPlane_constAbs hS
+  · exact linesInPlane_constAbs_four S hS
+  · exact linesInPlane_constAbs hS
 
 end PureU1

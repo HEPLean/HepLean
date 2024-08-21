@@ -238,25 +238,25 @@ lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
     exact phaseShiftApply.equiv _ _ _ _ _ _ _
   use U
   apply And.intro
-  exact phaseShiftApply.equiv _ _ _ _ _ _ _
-  apply And.intro
-  rw [hUV]
-  apply shift_ud_phase_zero _ _ _ _ _ _ _
-  ring
-  apply And.intro
-  rw [hUV]
-  apply shift_us_phase_zero
-  ring
-  apply And.intro
-  rw [hUV]
-  apply shift_cb_phase_zero
-  ring
-  apply And.intro
-  rw [hUV]
-  apply shift_tb_phase_zero
-  ring
-  apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
-  ring
+  · exact phaseShiftApply.equiv _ _ _ _ _ _ _
+  · apply And.intro
+    · rw [hUV]
+      apply shift_ud_phase_zero _ _ _ _ _ _ _
+      ring
+    · apply And.intro
+      · rw [hUV]
+        apply shift_us_phase_zero
+        ring
+      · apply And.intro
+        · rw [hUV]
+          apply shift_cb_phase_zero
+          ring
+        · apply And.intro
+          · rw [hUV]
+            apply shift_tb_phase_zero
+            ring
+          · apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
+            ring
 
 lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0))
     (hV : FstRowThdColRealCond V) :
@@ -269,51 +269,51 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
     symm
     exact phaseShiftApply.equiv _ _ _ _ _ _ _
   apply And.intro
-  exact phaseShiftApply.equiv _ _ _ _ _ _ _
-  apply And.intro
-  · simp [not_or] at hb
-    have h1 : VudAbs ⟦U⟧ = 0 := by
-      rw [hUV]
-      simp [VAbs, hb]
-    simp [VAbs] at h1
-    exact h1
-  apply And.intro
-  · simp [not_or] at hb
-    have h1 : VusAbs ⟦U⟧ = 0 := by
-      rw [hUV]
-      simp [VAbs, hb]
-    simp [VAbs] at h1
-    exact h1
-  apply And.intro
-  · simp [not_or] at hb
-    have h3 := cb_eq_zero_of_ud_us_zero hb
-    have h1 : VcbAbs ⟦U⟧ = 0 := by
-      rw [hUV]
-      simp [VAbs, h3]
-    simp [VAbs] at h1
-    exact h1
-  apply And.intro
-  · have hU1 : [U]ub = VubAbs ⟦V⟧ := by
-      apply shift_ub_phase_zero _ _ _ _ _ _ _
+  · exact phaseShiftApply.equiv _ _ _ _ _ _ _
+  · apply And.intro
+    · simp [not_or] at hb
+      have h1 : VudAbs ⟦U⟧ = 0 := by
+        rw [hUV]
+        simp [VAbs, hb]
+      simp [VAbs] at h1
+      exact h1
+    apply And.intro
+    · simp [not_or] at hb
+      have h1 : VusAbs ⟦U⟧ = 0 := by
+        rw [hUV]
+        simp [VAbs, hb]
+      simp [VAbs] at h1
+      exact h1
+    apply And.intro
+    · simp [not_or] at hb
+      have h3 := cb_eq_zero_of_ud_us_zero hb
+      have h1 : VcbAbs ⟦U⟧ = 0 := by
+        rw [hUV]
+        simp [VAbs, h3]
+      simp [VAbs] at h1
+      exact h1
+    apply And.intro
+    · have hU1 : [U]ub = VubAbs ⟦V⟧ := by
+        apply shift_ub_phase_zero _ _ _ _ _ _ _
+        ring
+      rw [hU1]
+      have h1:= (ud_us_neq_zero_iff_ub_neq_one V).mpr.mt hb
+      simpa using h1
+    apply And.intro
+    · have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
+        simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
+        exact hV.2.2.2.2
+      apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
       ring
-    rw [hU1]
-    have h1:= (ud_us_neq_zero_iff_ub_neq_one V).mpr.mt hb
-    simpa using h1
-  apply And.intro
-  · have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
-      simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
-      exact hV.2.2.2.2
-    apply shift_cross_product_phase_zero _ _ _ _ _ _ hτ.symm
-    ring
-  apply And.intro
-  · rw [hUV]
-    apply shift_cd_phase_pi _ _ _ _ _ _ _
-    ring
-  have hcs : [U]cs = VcsAbs ⟦U⟧ := by
-    rw [hUV]
-    apply shift_cs_phase_zero _ _ _ _ _ _ _
-    ring
-  rw [hcs, hUV, cs_of_ud_us_zero hb]
+    apply And.intro
+    · rw [hUV]
+      apply shift_cd_phase_pi _ _ _ _ _ _ _
+      ring
+    have hcs : [U]cs = VcsAbs ⟦U⟧ := by
+      rw [hUV]
+      apply shift_cs_phase_zero _ _ _ _ _ _ _
+      ring
+    rw [hcs, hUV, cs_of_ud_us_zero hb]
 
 lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠ 0)
     (hV : FstRowThdColRealCond V) :

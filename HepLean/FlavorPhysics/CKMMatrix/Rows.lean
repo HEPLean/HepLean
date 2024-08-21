@@ -217,26 +217,25 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     uRow_normalized, Fin.isValue, mul_one, mul_conj, ← Complex.sq_abs] at h2
   simp at h2
   cases' h2 with h2 h2
-  swap
-  have hx : Complex.abs (g 0) = -1 := by
-    simp [← ofReal_inj, Fin.isValue, ofReal_neg, ofReal_one, h2]
-  have h3 := Complex.abs.nonneg (g 0)
-  simp_all
-  have h4 : (0 : ℝ) < 1 := by norm_num
-  · exact False.elim (lt_iff_not_le.mp h4 h3)
-  have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
-    rw [← hg, smul_smul, inv_mul_cancel, one_smul]
-    by_contra hn
-    simp [hn] at h2
-  have hg2 : Complex.abs (g 0)⁻¹ = 1 := by
-    simp [@map_inv₀, h2]
-  have hg22 : ∃ (τ : ℝ), (g 0)⁻¹ = Complex.exp (τ * I) := by
-    rw [← abs_mul_exp_arg_mul_I (g 0)⁻¹, hg2]
-    use arg (g 0)⁻¹
-    simp
-  obtain ⟨τ, hτ⟩ := hg22
-  use τ
-  rw [hx, hτ]
+  · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
+      rw [← hg, smul_smul, inv_mul_cancel, one_smul]
+      by_contra hn
+      simp [hn] at h2
+    have hg2 : Complex.abs (g 0)⁻¹ = 1 := by
+      simp [@map_inv₀, h2]
+    have hg22 : ∃ (τ : ℝ), (g 0)⁻¹ = Complex.exp (τ * I) := by
+      rw [← abs_mul_exp_arg_mul_I (g 0)⁻¹, hg2]
+      use arg (g 0)⁻¹
+      simp
+    obtain ⟨τ, hτ⟩ := hg22
+    use τ
+    rw [hx, hτ]
+  · have hx : Complex.abs (g 0) = -1 := by
+      simp [← ofReal_inj, Fin.isValue, ofReal_neg, ofReal_one, h2]
+    have h3 := Complex.abs.nonneg (g 0)
+    simp_all only [ofReal_neg, ofReal_one, Left.nonneg_neg_iff]
+    have h4 : (0 : ℝ) < 1 := by norm_num
+    exact False.elim (lt_iff_not_le.mp h4 h3)
 
 lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     ∃ (τ : ℝ), [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
@@ -264,37 +263,37 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     ofReal_eq_one] at h2
   cases' h2 with h2 h2
   swap
-  have hx : Complex.abs (g 2) = -1 := by
-    simp [h2, ← ofReal_inj, Fin.isValue, ofReal_neg, ofReal_one]
-  have h3 := Complex.abs.nonneg (g 2)
-  simp_all
-  have h4 : (0 : ℝ) < 1 := by norm_num
-  exact False.elim (lt_iff_not_le.mp h4 h3)
-  have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by
-    rw [← hg, @smul_smul, inv_mul_cancel, one_smul]
-    by_contra hn
-    simp [hn] at h2
-  have hg2 : Complex.abs (g 2)⁻¹ = 1 := by
-    simp [@map_inv₀, h2]
-  have hg22 : ∃ (τ : ℝ), (g 2)⁻¹ = Complex.exp (τ * I) := by
-    rw [← abs_mul_exp_arg_mul_I (g 2)⁻¹]
-    use arg (g 2)⁻¹
-    simp [hg2]
-  obtain ⟨τ, hτ⟩ := hg22
-  use τ
-  rw [hx, hτ]
+  · have hx : Complex.abs (g 2) = -1 := by
+      simp [h2, ← ofReal_inj, Fin.isValue, ofReal_neg, ofReal_one]
+    have h3 := Complex.abs.nonneg (g 2)
+    simp_all
+    have h4 : (0 : ℝ) < 1 := by norm_num
+    exact False.elim (lt_iff_not_le.mp h4 h3)
+  · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by
+      rw [← hg, @smul_smul, inv_mul_cancel, one_smul]
+      by_contra hn
+      simp [hn] at h2
+    have hg2 : Complex.abs (g 2)⁻¹ = 1 := by
+      simp [@map_inv₀, h2]
+    have hg22 : ∃ (τ : ℝ), (g 2)⁻¹ = Complex.exp (τ * I) := by
+      rw [← abs_mul_exp_arg_mul_I (g 2)⁻¹]
+      use arg (g 2)⁻¹
+      simp [hg2]
+    obtain ⟨τ, hτ⟩ := hg22
+    use τ
+    rw [hx, hτ]
 
 lemma ext_Rows {U V : CKMMatrix} (hu : [U]u = [V]u) (hc : [U]c = [V]c) (ht : [U]t = [V]t) :
     U = V := by
   apply CKMMatrix_ext
   funext i j
   fin_cases i
-  have h1 := congrFun hu j
-  fin_cases j <;> simpa using h1
-  have h1 := congrFun hc j
-  fin_cases j <;> simpa using h1
-  have h1 := congrFun ht j
-  fin_cases j <;> simpa using h1
+  · have h1 := congrFun hu j
+    fin_cases j <;> simpa using h1
+  · have h1 := congrFun hc j
+    fin_cases j <;> simpa using h1
+  · have h1 := congrFun ht j
+    fin_cases j <;> simpa using h1
 
 end CKMMatrix
 
@@ -332,9 +331,11 @@ lemma uRow_mul (V : CKMMatrix) (a b c : ℝ) :
   simp only [Pi.smul_apply, smul_eq_mul]
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 0 _ = _
-  simp [ud, uRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.zero_eta, cons_val_zero]
-  simp [us, uRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.mk_one, cons_val_one, head_cons]
-  simp [ub, uRow]
+  · simp only [Fin.isValue, ud, ofReal_zero, zero_mul, add_zero, uRow, Fin.zero_eta, cons_val_zero]
+  · simp only [Fin.isValue, us, ofReal_zero, zero_mul, add_zero, uRow, Fin.mk_one, cons_val_one,
+    head_cons]
+  · simp only [Fin.isValue, ub, ofReal_zero, zero_mul, add_zero, uRow, Fin.reduceFinMk,
+    cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 
 lemma cRow_mul (V : CKMMatrix) (a b c : ℝ) :
     [phaseShiftApply V a b c 0 0 0]c = cexp (b * I) • [V]c := by
@@ -342,9 +343,11 @@ lemma cRow_mul (V : CKMMatrix) (a b c : ℝ) :
   simp only [Pi.smul_apply, smul_eq_mul]
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 1 _ = _
-  simp [cd, cRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.zero_eta, cons_val_zero]
-  simp [cs, cRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.mk_one, cons_val_one, head_cons]
-  simp [cb, cRow]
+  · simp only [Fin.isValue, cd, ofReal_zero, zero_mul, add_zero, cRow, Fin.zero_eta, cons_val_zero]
+  · simp only [Fin.isValue, cs, ofReal_zero, zero_mul, add_zero, cRow, Fin.mk_one, cons_val_one,
+    head_cons]
+  · simp only [Fin.isValue, cb, ofReal_zero, zero_mul, add_zero, cRow, Fin.reduceFinMk,
+    cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 
 lemma tRow_mul (V : CKMMatrix) (a b c : ℝ) :
     [phaseShiftApply V a b c 0 0 0]t = cexp (c * I) • [V]t := by
@@ -352,9 +355,11 @@ lemma tRow_mul (V : CKMMatrix) (a b c : ℝ) :
   simp only [Pi.smul_apply, smul_eq_mul]
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 2 _ = _
-  simp [td, tRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.zero_eta, cons_val_zero]
-  simp [ts, tRow, ofReal_zero, zero_mul, add_zero, Fin.isValue, Fin.mk_one, cons_val_one, head_cons]
-  simp [tb, tRow]
+  · simp only [Fin.isValue, td, ofReal_zero, zero_mul, add_zero, tRow, Fin.zero_eta, cons_val_zero]
+  · simp only [Fin.isValue, ts, ofReal_zero, zero_mul, add_zero, tRow, Fin.mk_one, cons_val_one,
+    head_cons]
+  · simp only [Fin.isValue, tb, ofReal_zero, zero_mul, add_zero, tRow, Fin.reduceFinMk,
+    cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 
 end phaseShiftApply
 

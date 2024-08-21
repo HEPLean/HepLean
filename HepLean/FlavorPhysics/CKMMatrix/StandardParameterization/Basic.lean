@@ -43,58 +43,60 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
   rw [mul_apply]
   have h1 := exp_ne_zero (I * ↑δ₁₃)
   fin_cases j <;> rw [Fin.sum_univ_three]
-  simp only [Fin.zero_eta, Fin.isValue, conjTranspose_apply, cons_val', cons_val_zero, empty_val',
-    cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one, head_cons, star_sub,
-    star_neg, ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const]
-  simp [conj_ofReal]
-  rw [exp_neg]
-  fin_cases i <;> simp
-  · ring_nf
-    field_simp
-    rw [sin_sq, sin_sq, sin_sq]
-    ring
-  · ring_nf
-    field_simp
-    rw [sin_sq, sin_sq]
-    ring
-  · ring_nf
-    field_simp
-    rw [sin_sq]
-    ring
-  simp only [Fin.mk_one, Fin.isValue, conjTranspose_apply, cons_val', cons_val_one, head_cons,
+  · simp only [Fin.zero_eta, Fin.isValue, conjTranspose_apply, cons_val', cons_val_zero,
+    empty_val', cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one, head_cons,
+    star_sub, star_neg, ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons,
+    head_fin_const]
+    simp [conj_ofReal]
+    rw [exp_neg]
+    fin_cases i <;> simp
+    · ring_nf
+      field_simp
+      rw [sin_sq, sin_sq, sin_sq]
+      ring
+    · ring_nf
+      field_simp
+      rw [sin_sq, sin_sq]
+      ring
+    · ring_nf
+      field_simp
+      rw [sin_sq]
+      ring
+  · simp only [Fin.mk_one, Fin.isValue, conjTranspose_apply, cons_val', cons_val_one, head_cons,
     empty_val', cons_val_fin_one, cons_val_zero, star_mul', RCLike.star_def, conj_ofReal, star_sub,
     ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const, star_neg]
-  simp [conj_ofReal]
-  rw [exp_neg]
-  fin_cases i <;> simp
-  · ring_nf
-    field_simp
-    rw [sin_sq, sin_sq]
-    ring
-  · ring_nf
-    field_simp
-    rw [sin_sq, sin_sq, sin_sq]
-    ring
-  · ring_nf
-    field_simp
-    rw [sin_sq]
-    ring
-  simp only [Fin.reduceFinMk, Fin.isValue, conjTranspose_apply, cons_val', cons_val_two, tail_cons,
-    head_cons, empty_val', cons_val_fin_one, cons_val_zero, star_mul', RCLike.star_def, conj_ofReal,
-    ← exp_conj, map_neg, _root_.map_mul, conj_I, neg_mul, neg_neg, cons_val_one, head_fin_const]
-  simp [conj_ofReal]
-  rw [exp_neg]
-  fin_cases i <;> simp
-  · ring_nf
-    rw [sin_sq]
-    ring
-  · ring_nf
-    rw [sin_sq]
-    ring
-  · ring_nf
-    field_simp
-    rw [sin_sq, sin_sq]
-    ring
+    simp [conj_ofReal]
+    rw [exp_neg]
+    fin_cases i <;> simp
+    · ring_nf
+      field_simp
+      rw [sin_sq, sin_sq]
+      ring
+    · ring_nf
+      field_simp
+      rw [sin_sq, sin_sq, sin_sq]
+      ring
+    · ring_nf
+      field_simp
+      rw [sin_sq]
+      ring
+  · simp only [Fin.reduceFinMk, Fin.isValue, conjTranspose_apply, cons_val', cons_val_two,
+    tail_cons, head_cons, empty_val', cons_val_fin_one, cons_val_zero, star_mul', RCLike.star_def,
+    conj_ofReal, ← exp_conj, map_neg, _root_.map_mul, conj_I, neg_mul, neg_neg, cons_val_one,
+    head_fin_const]
+    simp only [ofReal_sin, ofReal_cos]
+    rw [exp_neg]
+    fin_cases i <;> simp
+    · ring_nf
+      rw [sin_sq]
+      ring
+    · ring_nf
+      rw [sin_sq]
+      ring
+    · ring_nf
+      field_simp
+      rw [sin_sq, sin_sq]
+      ring
 
 /-- A CKM Matrix from four reals `θ₁₂`, `θ₁₃`, `θ₂₃`, and `δ₁₃`. This is the standard
   parameterization of CKM matrices. -/

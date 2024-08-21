@@ -105,9 +105,7 @@ def toQuadInv : (PlusU1 n).QuadSols → (PlusU1 n).LinSols × ℚ × ℚ := fun 
 lemma toQuadInv_fst (S : (PlusU1 n).QuadSols) :
     (toQuadInv C S).1 = S.1 := by
   rw [toQuadInv]
-  split
-  rfl
-  rfl
+  split <;> rfl
 
 lemma toQuadInv_α₁_α₂ (S : (PlusU1 n).QuadSols) :
     α₁ C S.1 = 0 ↔ α₁ C (toQuadInv C S).1 = 0 ∧ α₂ (toQuadInv C S).1 = 0 := by
@@ -131,10 +129,10 @@ lemma toQuadInv_generic (S : (PlusU1 n).QuadSols) (h : α₁ C S.1 ≠ 0) :
 lemma toQuad_rightInverse : Function.RightInverse (@toQuadInv n C) (toQuad C) := by
   intro S
   by_cases h : α₁ C S.1 = 0
-  rw [toQuad, dif_pos ((toQuadInv_α₁_α₂ C S).mp h)]
-  exact toQuadInv_special C S h
-  rw [toQuad, dif_neg ((toQuadInv_α₁_α₂ C S).mpr.mt h)]
-  exact toQuadInv_generic C S h
+  · rw [toQuad, dif_pos ((toQuadInv_α₁_α₂ C S).mp h)]
+    exact toQuadInv_special C S h
+  · rw [toQuad, dif_neg ((toQuadInv_α₁_α₂ C S).mpr.mt h)]
+    exact toQuadInv_generic C S h
 
 theorem toQuad_surjective : Function.Surjective (toQuad C) :=
   Function.RightInverse.surjective (toQuad_rightInverse C)
