@@ -1002,7 +1002,6 @@ lemma getDual?_isSome_of_countP_two {i : Fin l.length}
   rw [← l.mem_withUniqueDual_iff_countP] at h
   exact mem_withUniqueDual_isSome l i h
 
-
 section cons
 /-!
 

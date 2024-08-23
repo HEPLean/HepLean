@@ -128,7 +128,6 @@ lemma countP_eq_one_append_mem_right_self_eq_one {I : Index X} (hI : I ∈ l2.va
     simp at hmem
   omega
 
-
 lemma countP_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2.val)
     (h : (l ++ l2).val.countP (fun J => I.id = J.id) = 1) :
     l.val.countP (fun J => I.id = J.id) = 0 := by
