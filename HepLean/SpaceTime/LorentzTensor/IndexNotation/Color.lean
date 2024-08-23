@@ -211,20 +211,19 @@ lemma iff_countP_isSome (hl : l.withUniqueDual = l.withDual) :
     · exact hi1.symm
 
 lemma iff_countP (hl : l.withUniqueDual = l.withDual) :
-    l.ColorCond ↔ ∀ (i : Fin l.length), (l.val.filter (fun J => (l.val.get i).id = J.id)).length = 2
+    l.ColorCond ↔ ∀ (i : Fin l.length), l.countId  (l.val.get i) = 2
       → countPCond l (l.val.get i) := by
   rw [iff_countP_isSome hl]
   refine Iff.intro (fun h i hi => ?_) (fun h i hi => ?_)
-  · rw [← List.countP_eq_length_filter] at hi
-    rw [← mem_withUniqueDual_iff_countId_eq_two] at hi
+  · rw [← mem_withUniqueDual_iff_countId_eq_two] at hi
     exact h i (mem_withUniqueDual_isSome l i hi)
   · rw [← @mem_withDual_iff_isSome, ← hl] at hi
-    rw [mem_withUniqueDual_iff_countP, List.countP_eq_length_filter] at hi
+    rw [mem_withUniqueDual_iff_countId_eq_two] at hi
     exact h i hi
 
 lemma iff_countP_mem (hl : l.withUniqueDual = l.withDual) :
     l.ColorCond ↔ ∀ (I : Index 𝓒.Color) (_ : I ∈ l.val),
-    (l.val.filter (fun J => I.id = J.id)).length = 2 → countPCond l I := by
+    l.countId I = 2 → countPCond l I := by
   rw [iff_countP hl]
   refine Iff.intro (fun h I hI hi => ?_) (fun h i hi => ?_)
   · let i := l.val.indexOf I
@@ -237,13 +236,13 @@ lemma iff_countP_mem (hl : l.withUniqueDual = l.withDual) :
 /-- The lemma `ColorCond` written totally in terms of lists. -/
 lemma iff_countP_all (hl : l.withUniqueDual = l.withDual) :
     l.ColorCond ↔ l.val.all (fun I =>
-      ((l.val.filter (fun J => I.id = J.id)).length = 2 → countPCond l I)) := by
+      (l.countId I = 2 → countPCond l I)) := by
   rw [iff_countP_mem hl]
   simp only [List.all_eq_true, decide_eq_true_eq]
 
 @[simp]
-lemma consDual_color {I : Index 𝓒.Color} (hI : l.val.countP (fun J => I.id = J.id) = 1)
-    (hI2 : (l.val.countP (fun J => I.id = J.id) =
+lemma consDual_color {I : Index 𝓒.Color} (hI : l.countId I = 1)
+    (hI2 : (l.countId I =
     l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor)))) :
     (l.consDual hI).toColor = 𝓒.τ I.toColor := by
   have h1 : l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor))
@@ -254,7 +253,7 @@ lemma consDual_color {I : Index 𝓒.Color} (hI : l.val.countP (fun J => I.id = 
     funext J
     simp only [Bool.decide_and, decide_eq_true_eq]
     exact Bool.and_comm (decide (I.id = J.id)) (decide (I.toColor = 𝓒.τ J.toColor))
-  rw [h1, List.countP_eq_length_filter] at hI2
+  rw [h1, countId, List.countP_eq_length_filter] at hI2
   rw [l.consDual_filter hI] at hI2
   symm at hI2
   rw [List.countP_eq_length] at hI2
@@ -271,49 +270,53 @@ lemma of_cons (I : Index 𝓒.Color) (h : (l.cons I).ColorCond)
     simp [hI'mem]
   have hI'' := h I' hI''mem
   by_cases hI'id : I'.id ≠ I.id
-  · rw [cons_val, List.filter_cons_of_neg, countPCond_cons_neg] at hI''
-    · exact hI'' hi
+  · rw [countId_eq_length_filter, cons_val, List.filter_cons_of_neg, countPCond_cons_neg] at hI''
+    · rw [countId_eq_length_filter] at hi
+      exact hI'' hi
     · exact id (Ne.symm hI'id)
     · simpa using hI'id
   · simp at hI'id
+    rw [countId_eq_length_filter] at hi
     rw [hI'id] at hi
     rw [propext (withUniqueDual_eq_withDual_cons_iff l I hl')] at hl
-    rw [List.countP_eq_length_filter, hi] at hl
+    rw [countId_eq_length_filter, hi] at hl
     simp at hl
 
 lemma countP_of_cons (I : Index 𝓒.Color) (h : (l.cons I).ColorCond)
     (hl : (l.cons I).withUniqueDual = (l.cons I).withDual) :
-    l.val.countP (fun J => I.id = J.id) =
+    l.countId I =
     l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor)) := by
   have h1 := (l.withUniqueDual_eq_withDual_cons_iff I
           (l.withUniqueDual_eq_withDual_of_cons hl)).mp hl
   rw [List.countP_eq_length_filter]
   trans (l.val.filter (fun J => I.id = J.id)).countP (fun J => I.toColor = 𝓒.τ (J.toColor))
-  · by_cases hc : List.countP (fun J => (I.id = J.id)) l.val = 1
+  · by_cases hc : l.countId I = 1
     · rw [l.consDual_filter hc]
       simp [List.countP, List.countP.go]
       rw [iff_withDual] at h
       have h' := h ⟨⟨0, by simp⟩, (by
-        rw [mem_withDual_iff_countP]
-        simp [hc])⟩
+        rw [mem_withDual_iff_countId_gt_one]
+        simp_all [countId])⟩
       change 𝓒.τ (l.consDual hc).toColor = _ at h'
       rw [h']
-      simp [colorMap]
-    · have hc' : List.countP (fun J => (I.id = J.id)) l.val = 0 := by
+      simpa [colorMap] using hc
+    · have hc' : l.countId I = 0 := by
         omega
-      rw [List.countP_eq_length_filter, List.length_eq_zero] at hc'
+      rw [countId_eq_length_filter, List.length_eq_zero] at hc'
       simp [hc']
+      omega
   · rw [List.countP_filter]
+    simp only [decide_eq_true_eq, Bool.decide_and]
+    rw [← List.countP_eq_length_filter]
     apply congrFun
     apply congrArg
     funext J
-    simp only [decide_eq_true_eq, Bool.decide_and]
     exact Bool.and_comm (decide (I.toColor = 𝓒.τ J.toColor)) (decide (I.id = J.id))
 
 lemma cons_of_countP (h : l.ColorCond) (I : Index 𝓒.Color) (hl : l.withUniqueDual = l.withDual)
-    (hI1 : l.val.countP (fun J => I.id = J.id) ≤ 1)
-    (hI2 : (l.val.countP (fun J => I.id = J.id) =
-    l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor)))) :
+    (hI1 : l.countId I ≤ 1)
+    (hI2 : l.countId I =
+    l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor))) :
     (l.cons I).ColorCond := by
   rw [iff_countP_mem]
   · intro I' hI'
@@ -324,16 +327,17 @@ lemma cons_of_countP (h : l.ColorCond) (I : Index 𝓒.Color) (hl : l.withUnique
         · exact False.elim (hI'' hI')
         · exact hI'
       by_cases hI'id : I'.id ≠ I.id
-      · rw [cons_val]
+      · rw [countId_eq_length_filter, cons_val]
         rw [List.filter_cons_of_neg]
         · rw [iff_countP_mem] at h
           rw [countPCond_cons_neg l I I' hI'id.symm]
-          · exact h I' hI'mem
+          · rw [← countId_eq_length_filter]
+            exact h I' hI'mem
           · exact hl
         · simpa using hI'id
       · simp at hI'id
         intro hI
-        rw [hI'id] at hI
+        rw [countId_eq_length_filter, hI'id] at hI
         simp at hI
         rw [← List.countP_eq_length_filter] at hI
         have hI'dual : I' = l.consDual hI := by
@@ -347,9 +351,8 @@ lemma cons_of_countP (h : l.ColorCond) (I : Index 𝓒.Color) (hl : l.withUnique
     · simp at hI''
       symm at hI''
       subst hI''
-      simp only [cons_val, decide_True, List.filter_cons_of_pos, List.length_cons, Nat.reduceEqDiff]
       intro hIf
-      rw [← List.countP_eq_length_filter] at hIf
+      simp at hIf
       rw [countPCond]
       simp only [Bool.decide_or, cons_val, decide_True, List.filter_cons_of_pos, Bool.true_or,
         List.countP_cons_of_pos, List.length_cons, add_left_inj]
@@ -370,8 +373,8 @@ lemma cons_iff (I : Index 𝓒.Color) :
     (l.cons I).withUniqueDual = (l.cons I).withDual ∧
     (l.cons I).ColorCond ↔
     l.withUniqueDual = l.withDual ∧ l.ColorCond ∧
-    l.val.countP (fun J => I.id = J.id) ≤ 1 ∧
-    (l.val.countP (fun J => I.id = J.id) =
+    l.countId I ≤ 1 ∧
+    (l.countId I =
     l.val.countP (fun J => I.id = J.id ∧ I.toColor = 𝓒.τ (J.toColor))) := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · apply And.intro

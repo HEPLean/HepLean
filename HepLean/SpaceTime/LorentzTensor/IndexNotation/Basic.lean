@@ -436,7 +436,6 @@ lemma countId_index_neq_zero (i : Fin l.length) : l.countId (l.val.get i) ≠ 0 
   rw [hn] at hm
   simp at hm
 
-
 lemma countId_append_symm (I : Index X) : (l ++ l2).countId I = (l2 ++ l).countId I := by
   simp
   omega
@@ -466,6 +465,11 @@ lemma countId_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2
     rw [hn] at hmem
     simp at hmem
   omega
+
+@[simp]
+lemma countId_cons_eq_two {I : Index X} :
+    (l.cons I).countId I = 2 ↔ l.countId I = 1 := by
+  simp [countId]
 
 /-!
 
