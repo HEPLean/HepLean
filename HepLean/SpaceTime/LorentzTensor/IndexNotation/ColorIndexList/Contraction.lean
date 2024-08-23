@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Basic
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
+import HepLean.SpaceTime.LorentzTensor.Contraction
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
 /-!
@@ -103,15 +105,15 @@ lemma contr_countP_eq_zero_of_countP (I : Index 𝓒.Color)
 
 lemma contr_countP (I : Index 𝓒.Color) :
     l.contr.val.countP (fun J => I.id = J.id) =
-    (l.val.filter (fun J => I.id = J.id)).countP (fun i => l.val.countP (fun j => i.id = j.id) = 1) := by
+    (l.val.filter (fun J => I.id = J.id)).countP
+    (fun i => l.val.countP (fun j => i.id = j.id) = 1) := by
   simp [contr, contrIndexList]
   rw [List.countP_filter, List.countP_filter]
   congr
   funext J
-  simp
-  exact
-    Bool.and_comm (decide (I.id = J.id))
-      (decide (List.countP (fun j => decide (J.id = j.id)) l.val = 1))
+  simp only [decide_eq_true_eq, Bool.decide_and]
+  exact Bool.and_comm (decide (I.id = J.id))
+    (decide (List.countP (fun j => decide (J.id = j.id)) l.val = 1))
 
 lemma contr_cons_dual (I : Index 𝓒.Color) (hI1 : l.val.countP (fun J => I.id = J.id) ≤ 1) :
     l.contr.val.countP (fun J => I.id = J.id) ≤ 1 := by

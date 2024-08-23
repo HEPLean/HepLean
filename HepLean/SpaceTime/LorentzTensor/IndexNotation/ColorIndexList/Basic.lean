@@ -7,7 +7,6 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.OnlyUniqueDuals
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
-import HepLean.SpaceTime.LorentzTensor.Contraction
 /-!
 
 # Index lists and color

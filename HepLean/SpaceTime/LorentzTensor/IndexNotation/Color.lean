@@ -3,11 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.OnlyUniqueDuals
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
-import HepLean.SpaceTime.LorentzTensor.Contraction
 /-!
 
 # Index lists and color
