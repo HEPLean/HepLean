@@ -110,6 +110,41 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
 
 /-!
 
+## Some lemmas involvoing countP = 1
+
+-/
+
+lemma countP_eq_one_append_mem_right_self_eq_one {I : Index X} (hI : I ∈ l2.val)
+    (h : (l ++ l2).val.countP (fun J => I.id = J.id) = 1) :
+    l2.val.countP (fun J => I.id = J.id) = 1 := by
+  simp at h
+  have hmem : I ∈ l2.val.filter (fun J => I.id = J.id) := by
+    simp [List.mem_filter, decide_True, and_true, hI]
+  have h1 : l2.val.countP (fun J => I.id = J.id) ≠ 0 := by
+    rw [List.countP_eq_length_filter]
+    by_contra hn
+    rw [@List.length_eq_zero] at hn
+    rw [hn] at hmem
+    simp at hmem
+  omega
+
+
+lemma countP_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2.val)
+    (h : (l ++ l2).val.countP (fun J => I.id = J.id) = 1) :
+    l.val.countP (fun J => I.id = J.id) = 0 := by
+  simp at h
+  have hmem : I ∈ l2.val.filter (fun J => I.id = J.id) := by
+    simp [List.mem_filter, decide_True, and_true, hI]
+  have h1 : l2.val.countP (fun J => I.id = J.id) ≠ 0 := by
+    rw [List.countP_eq_length_filter]
+    by_contra hn
+    rw [@List.length_eq_zero] at hn
+    rw [hn] at hmem
+    simp at hmem
+  omega
+
+/-!
+
 ## The contraction list
 
 -/

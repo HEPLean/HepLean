@@ -996,6 +996,26 @@ lemma mem_withUniqueDual_iff_countP (i : Fin l.length) :
   Iff.intro (fun h => l.countP_of_mem_withUniqueDual i h)
     (fun h => l.mem_withUniqueDual_of_countP i h)
 
+lemma getDual?_isSome_of_countP_two {i : Fin l.length}
+    (h : l.val.countP (fun J => (l.val.get i).id = J.id) = 2) :
+    (l.getDual? i).isSome := by
+  rw [← l.mem_withUniqueDual_iff_countP] at h
+  exact mem_withUniqueDual_isSome l i h
+
+
+section cons
+/-!
+
+## Cons and withUniqueDual
+-/
+
+lemma zero_mem_withUniqueDual_of_cons_iff (I : Index X) :
+    ⟨0, by simp⟩ ∈ (l.cons I).withUniqueDual ↔ l.val.countP (fun J => I.id = J.id) = 1 := by
+  rw [mem_withUniqueDual_iff_countP]
+  simp
+
+end cons
+
 end IndexList
 
 end IndexNotation
