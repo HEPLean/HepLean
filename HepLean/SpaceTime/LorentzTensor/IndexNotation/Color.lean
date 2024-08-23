@@ -76,8 +76,8 @@ lemma color_quot_filter_of_countP_two (hl : l.withUniqueDual = l.withDual) (i : 
     (l.colorMap i = l.colorMap ((l.getDual? i).get hi) ∨
     l.colorMap i = 𝓒.τ (l.colorMap ((l.getDual? i).get hi))) := by
   have hi1 := hi
-  rw [← mem_withDual_iff_isSome, ← hl, mem_withUniqueDual_iff_countP] at hi1
-  rcases l.filter_id_of_countP_two hi1 with hf | hf
+  rw [← mem_withDual_iff_isSome, ← hl, mem_withUniqueDual_iff_countId_eq_two] at hi1
+  rcases l.filter_id_of_countId_eq_two hi1 with hf | hf
   all_goals
     erw [hf]
     simp [List.countP, List.countP.go]
@@ -103,8 +103,8 @@ lemma color_dual_eq_self_filter_of_countP_two (hl : l.withUniqueDual = l.withDua
     ↔ l.colorMap i = 𝓒.τ (l.colorMap ((l.getDual? i).get hi))
     ∨ (l.colorMap i) = 𝓒.τ (l.colorMap i) := by
   have hi1 := hi
-  rw [← mem_withDual_iff_isSome, ← hl, mem_withUniqueDual_iff_countP] at hi1
-  rcases l.filter_id_of_countP_two hi1 with hf | hf
+  rw [← mem_withDual_iff_isSome, ← hl, mem_withUniqueDual_iff_countId_eq_two] at hi1
+  rcases l.filter_id_of_countId_eq_two hi1 with hf | hf
   all_goals
     erw [hf]
     simp [List.countP, List.countP.go]
@@ -216,7 +216,7 @@ lemma iff_countP (hl : l.withUniqueDual = l.withDual) :
   rw [iff_countP_isSome hl]
   refine Iff.intro (fun h i hi => ?_) (fun h i hi => ?_)
   · rw [← List.countP_eq_length_filter] at hi
-    rw [← @mem_withUniqueDual_iff_countP] at hi
+    rw [← mem_withUniqueDual_iff_countId_eq_two] at hi
     exact h i (mem_withUniqueDual_isSome l i hi)
   · rw [← @mem_withDual_iff_isSome, ← hl] at hi
     rw [mem_withUniqueDual_iff_countP, List.countP_eq_length_filter] at hi

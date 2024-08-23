@@ -77,13 +77,14 @@ lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j 
 
 -/
 
-lemma countP_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) :
-    1 < l.val.countP (fun J => (l.val.get i).id = J.id) := by
+lemma countId_gt_zero_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) :
+    1 < l.countId (l.val.get i) := by
+  rw [countId]
   rw [mem_withDual_iff_exists] at h
   obtain ⟨j, hj⟩ := h
   simp [AreDualInSelf, idMap] at hj
   by_contra hn
-  have hn' := l.countP_id_neq_zero i
+  have hn' := l.countId_index_neq_zero i
   have hl : 2 ≤ l.val.countP (fun J => (l.val.get i).id = J.id) := by
     by_cases hij : i < j
     · have hsub : List.Sublist [l.val.get i, l.val.get j] l.val := by
@@ -115,8 +116,9 @@ lemma countP_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) :
         (fun (j : Index X) => decide (l.val[i].id = j.id)) hsub
   omega
 
-lemma countP_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
-    l.val.countP (fun J => (l.val.get i).id = J.id) = 1 := by
+lemma countId_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
+    l.countId (l.val.get i) = 1 := by
+  rw [countId]
   rw [mem_withDual_iff_exists] at h
   simp [AreDualInSelf] at h
   have h1 : ¬ l.val.Duplicate (l.val.get i) := by
@@ -156,11 +158,11 @@ lemma countP_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
       · rw [h']
         rfl
 
-lemma mem_withDual_iff_countP (i : Fin l.length) :
-    i ∈ l.withDual ↔ 1 < l.val.countP (fun J => (l.val.get i).id = J.id) := by
-  refine Iff.intro (fun h => countP_of_mem_withDual l i h) (fun h => ?_)
+lemma mem_withDual_iff_countId_gt_one (i : Fin l.length) :
+    i ∈ l.withDual ↔ 1 < l.countId (l.val.get i) := by
+  refine Iff.intro (fun h => countId_gt_zero_of_mem_withDual l i h) (fun h => ?_)
   by_contra hn
-  have hn' := countP_of_not_mem_withDual l i hn
+  have hn' := countId_of_not_mem_withDual l i hn
   omega
 
 /-!

@@ -100,6 +100,7 @@ lemma equivalence : Equivalence (@Reindexing 𝓒 _) where
   symm := symm
   trans := trans
 
+/-! TODO: Prove that `Reindexing l l2` implies `Reindexing l.contr l2.contr`. -/
 end Reindexing
 
 /-!
