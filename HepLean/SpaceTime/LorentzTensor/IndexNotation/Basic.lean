@@ -205,6 +205,21 @@ lemma cons_val (i : Index X) : (l.cons i).val = i :: l.val := by
 lemma cons_length (i : Index X) : (l.cons i).length = l.length + 1 := by
   rfl
 
+/-- The tail of an index list. That is, the index list with the first index dropped. -/
+def tail : IndexList X := {val := l.val.tail}
+
+@[simp]
+lemma tail_val : l.tail.val = l.val.tail := by
+  rfl
+
+/-- The first index in a non-empty index list. -/
+def head (h : l ≠ {val := ∅}) : Index X := l.val.head (by cases' l; simpa using h)
+
+lemma head_cons_tail (h : l ≠ {val := ∅}) : l = (l.tail.cons (l.head h)) := by
+  apply ext
+  simp only [cons_val, tail_val]
+  simp only [head, List.head_cons_tail]
+
 lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
   (h_cons : ∀ (x : Index X) (xs : IndexList X), P xs → P (xs.cons x)) (l : IndexList X) : P l := by
   cases' l with val
