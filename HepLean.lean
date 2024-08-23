@@ -79,11 +79,14 @@ import HepLean.SpaceTime.LorentzTensor.EinsteinNotation.RisingLowering
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.AreDual
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Append
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Basic
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Contraction
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Relations
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.GetDual
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexString
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.OnlyUniqueDuals
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Relations
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.TensorIndex
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithDual
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual

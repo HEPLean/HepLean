@@ -170,9 +170,15 @@ lemma withUniqueDual_eq_withDual_filter_id_fin (h : l.withUniqueDual = l.withDua
       omega
 
 section filterID
+
 lemma filter_id_of_countP_zero {i : Fin l.length}
     (h1 : l.val.countP (fun J => (l.val.get i).id = J.id) = 0) :
     l.val.filter (fun J => (l.val.get i).id = J.id) = [] := by
+  rw [List.countP_eq_length_filter, List.length_eq_zero] at h1
+  exact h1
+
+lemma filter_of_countP_zero {I : Index X} (h1 : l.val.countP (fun J => I.id = J.id) = 0) :
+    l.val.filter (fun J => I.id = J.id) = [] := by
   rw [List.countP_eq_length_filter, List.length_eq_zero] at h1
   exact h1
 
