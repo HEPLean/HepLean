@@ -11,7 +11,9 @@ import Init.Data.List.Lemmas
 
 # Appending two ColorIndexLists
 
-We define the contraction of ColorIndexLists.
+We define conditional appending of `ColorIndexList`'s.
+
+It is conditional on `AppendCond` being true, which we define.
 
 -/
 

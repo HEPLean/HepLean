@@ -997,8 +997,7 @@ lemma mem_withUniqueDual_iff_countId_eq_two (i : Fin l.length) :
     (fun h => l.mem_withUniqueDual_of_countId_eq_two i h)
 
 lemma getDual?_isSome_of_countId_eq_two {i : Fin l.length}
-    (h : l.countId (l.val.get i) = 2) :
-    (l.getDual? i).isSome := by
+    (h : l.countId (l.val.get i) = 2) : (l.getDual? i).isSome := by
   rw [← l.mem_withUniqueDual_iff_countId_eq_two] at h
   exact mem_withUniqueDual_isSome l i h
 
