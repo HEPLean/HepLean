@@ -411,13 +411,25 @@ end append
 
 /-!
 
-## countP on id
+## countId
 
 -/
 
-lemma countP_id_neq_zero (i : Fin l.length) :
-    l.val.countP (fun J => (l.val.get i).id = J.id) ≠ 0 := by
+/-- The number of times the id of an index `I` appears in a list of indices `l`. -/
+def countId (I : Index X) : ℕ :=
+  l.val.countP (fun J => I.id = J.id)
+
+@[simp]
+lemma countId_append (I : Index X) : (l ++ l2).countId I = l.countId I + l2.countId I := by
+  simp [countId]
+
+lemma countId_eq_length_filter (I : Index X) :
+    l.countId I = (l.val.filter (fun J => I.id = J.id)).length := by
+  simp [countId]
   rw [List.countP_eq_length_filter]
+
+lemma countId_index_neq_zero (i : Fin l.length) : l.countId (l.val.get i) ≠ 0 := by
+  rw [countId_eq_length_filter]
   by_contra hn
   rw [List.length_eq_zero] at hn
   have hm : l.val.get i ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l.val := by
@@ -425,6 +437,46 @@ lemma countP_id_neq_zero (i : Fin l.length) :
   rw [hn] at hm
   simp at hm
 
+lemma countId_append_symm (I : Index X) : (l ++ l2).countId I = (l2 ++ l).countId I := by
+  simp only [countId_append]
+  omega
+
+lemma countId_eq_one_append_mem_right_self_eq_one {I : Index X} (hI : I ∈ l2.val)
+    (h : (l ++ l2).countId I = 1) : l2.countId I = 1 := by
+  simp at h
+  have hmem : I ∈ l2.val.filter (fun J => I.id = J.id) := by
+    simp [List.mem_filter, decide_True, and_true, hI]
+  have h1 : l2.countId I ≠ 0 := by
+    rw [countId_eq_length_filter]
+    by_contra hn
+    rw [@List.length_eq_zero] at hn
+    rw [hn] at hmem
+    simp at hmem
+  omega
+
+lemma countId_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2.val)
+    (h : (l ++ l2).countId I = 1) : l.countId I = 0 := by
+  simp at h
+  have hmem : I ∈ l2.val.filter (fun J => I.id = J.id) := by
+    simp [List.mem_filter, decide_True, and_true, hI]
+  have h1 : l2.countId I ≠ 0 := by
+    rw [countId_eq_length_filter]
+    by_contra hn
+    rw [@List.length_eq_zero] at hn
+    rw [hn] at hmem
+    simp at hmem
+  omega
+
+@[simp]
+lemma countId_cons_eq_two {I : Index X} :
+    (l.cons I).countId I = 2 ↔ l.countId I = 1 := by
+  simp [countId]
+
+/-!
+
+## Filter id
+
+-/
 /-! TODO: Replace with Mathlib lemma. -/
 lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [DecidablePred p] :
     List.filter p (Finset.sort (fun i j => i ≤ j) s) =
