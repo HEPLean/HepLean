@@ -415,6 +415,7 @@ end append
 
 -/
 
+/-- The number of times the id of an index `I` appears in a list of indices `l`. -/
 def countId (I : Index X) : ℕ :=
   l.val.countP (fun J => I.id = J.id)
 

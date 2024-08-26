@@ -211,7 +211,7 @@ lemma iff_countP_isSome (hl : l.withUniqueDual = l.withDual) :
     · exact hi1.symm
 
 lemma iff_countP (hl : l.withUniqueDual = l.withDual) :
-    l.ColorCond ↔ ∀ (i : Fin l.length), l.countId  (l.val.get i) = 2
+    l.ColorCond ↔ ∀ (i : Fin l.length), l.countId (l.val.get i) = 2
       → countPCond l (l.val.get i) := by
   rw [iff_countP_isSome hl]
   refine Iff.intro (fun h i hi => ?_) (fun h i hi => ?_)
