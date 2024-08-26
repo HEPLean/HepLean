@@ -168,7 +168,6 @@ lemma withUniqueDual_eq_withDual_iff_countId_leq_two' :
     rw [hI']
     exact h ⟨List.indexOf I' l.val, hi⟩
 
-
 lemma withUniqueDual_eq_withDual_countId_cases (h : l.withUniqueDual = l.withDual)
     (i : Fin l.length) : l.countId (l.val.get i) = 0 ∨
     l.countId (l.val.get i) = 1 ∨ l.countId (l.val.get i) = 2 := by
@@ -596,7 +595,7 @@ lemma append_withDual_eq_withUniqueDual_swap :
   rw [withUniqueDualInOther_eq_withDualInOther_append_of_symm]
 
 lemma append_withDual_eq_withUniqueDual_contr_left
-    (h1 : (l ++ l2).withUniqueDual = (l ++ l2).withDual):
+    (h1 : (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
       (l.contrIndexList ++ l2).withUniqueDual = (l.contrIndexList ++ l2).withDual := by
     rw [withUniqueDual_eq_withDual_iff_all_countId_le_two] at h1 ⊢
     simp only [append_val, countId_append, List.all_append, Bool.and_eq_true, List.all_eq_true,

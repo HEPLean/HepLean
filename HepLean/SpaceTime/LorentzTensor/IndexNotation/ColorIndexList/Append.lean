@@ -112,8 +112,8 @@ lemma contr_left (h : AppendCond l l2) : AppendCond l.contr l2 := by
         apply ColorCond.countColorCond_of_filter_eq (l.toIndexList ++ l2.toIndexList) _ _
         · have h2 := h.2
           rw [ColorCond.iff_countColorCond_all] at h2
-          · simp only [append_val, countId_append, List.all_append, Bool.and_eq_true, List.all_eq_true,
-              decide_eq_true_eq] at h2
+          · simp only [append_val, countId_append, List.all_append, Bool.and_eq_true,
+            List.all_eq_true, decide_eq_true_eq] at h2
             have hn := h2.1 I (List.mem_of_mem_filter hI)
             have hc : l.countId I + l2.countId I = 2 := by
               rw [contr, countId_contrIndexList_eq_one_iff_countId_eq_one] at hIC1
@@ -138,8 +138,8 @@ lemma contr_left (h : AppendCond l l2) : AppendCond l.contr l2 := by
             apply ColorCond.countColorCond_of_filter_eq (l.toIndexList ++ l2.toIndexList) _ _
             · have h2 := h.2
               rw [ColorCond.iff_countColorCond_all] at h2
-              · simp only [append_val, countId_append, List.all_append, Bool.and_eq_true, List.all_eq_true,
-                  decide_eq_true_eq] at h2
+              · simp only [append_val, countId_append, List.all_append, Bool.and_eq_true,
+                List.all_eq_true, decide_eq_true_eq] at h2
                 refine h2.2 I hI1 ?_
                 rw [contr, countId_contrIndexList_eq_one_iff_countId_eq_one] at hIC1
                 omega
@@ -152,7 +152,7 @@ lemma contr_left (h : AppendCond l l2) : AppendCond l.contr l2 := by
               rw [filter_id_of_countId_eq_one_mem l.contr hI' hIC1]
               simp [contr, contrIndexList] at hI'
               exact filter_id_of_countId_eq_one_mem l hI'.1 hI'.2
-          · have hICt : l2.countId I = 2  := by
+          · have hICt : l2.countId I = 2 := by
               omega
             apply ColorCond.countColorCond_of_filter_eq l2 _ _
             · have hl2C := l2.dual_color
@@ -207,7 +207,7 @@ lemma countId_contr_fst_eq_zero_mem_snd (h : AppendCond l l2) {I : Index 𝓒.Co
     rw [withUniqueDual_eq_withDual_iff_countId_leq_two'] at h1
     have h1I := h1 I
     simp at h1I
-    have h2 :  l2.countId I ≠ 0 := countId_mem l2.toIndexList I hI
+    have h2 : l2.countId I ≠ 0 := countId_mem l2.toIndexList I hI
     omega
   · simp [h']
 
