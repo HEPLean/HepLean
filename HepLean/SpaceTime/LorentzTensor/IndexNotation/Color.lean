@@ -185,8 +185,7 @@ lemma color_eq_of_countColorCond_cons_pos (l : IndexList 𝓒.Color) (I I' : Ind
   have h2 := hl1 I (by simp; exact hI.symm)
   simp at h2
   rcases h2 with h2 | h2
-  · rw [h2]
-    simp
+  · simp [h2]
   · rw [h2]
     apply Or.inr (𝓒.τ_involutive _).symm
 
@@ -217,8 +216,7 @@ lemma iff_countColorCond (hl : l.withUniqueDual = l.withDual) :
   refine Iff.intro (fun h i hi => ?_) (fun h i hi => ?_)
   · rw [← mem_withUniqueDual_iff_countId_eq_two] at hi
     exact h i (mem_withUniqueDual_isSome l i hi)
-  · rw [← @mem_withDual_iff_isSome, ← hl] at hi
-    rw [mem_withUniqueDual_iff_countId_eq_two] at hi
+  · rw [← mem_withDual_iff_isSome, ← hl, mem_withUniqueDual_iff_countId_eq_two] at hi
     exact h i hi
 
 lemma iff_countColorCond_mem (hl : l.withUniqueDual = l.withDual) :
@@ -253,11 +251,10 @@ lemma consDual_color {I : Index 𝓒.Color} (hI : l.countId I = 1)
     funext J
     simp only [Bool.decide_and, decide_eq_true_eq]
     exact Bool.and_comm (decide (I.id = J.id)) (decide (I.toColor = 𝓒.τ J.toColor))
-  rw [h1, countId, List.countP_eq_length_filter] at hI2
-  rw [l.consDual_filter hI] at hI2
+  rw [h1, countId, List.countP_eq_length_filter, l.consDual_filter hI] at hI2
   symm at hI2
   rw [List.countP_eq_length] at hI2
-  simp at hI2
+  simp only [List.mem_singleton, decide_eq_true_eq, forall_eq] at hI2
   rw [hI2, 𝓒.τ_involutive]
 
 lemma of_cons (I : Index 𝓒.Color) (h : (l.cons I).ColorCond)
@@ -270,16 +267,15 @@ lemma of_cons (I : Index 𝓒.Color) (h : (l.cons I).ColorCond)
     simp [hI'mem]
   have hI'' := h I' hI''mem
   by_cases hI'id : I'.id ≠ I.id
-  · rw [countId_eq_length_filter, cons_val, List.filter_cons_of_neg, countColorCond_cons_neg] at hI''
+  · rw [countId_eq_length_filter, cons_val, List.filter_cons_of_neg,
+      countColorCond_cons_neg] at hI''
     · rw [countId_eq_length_filter] at hi
       exact hI'' hi
     · exact id (Ne.symm hI'id)
     · simpa using hI'id
   · simp at hI'id
-    rw [countId_eq_length_filter] at hi
-    rw [hI'id] at hi
-    rw [propext (withUniqueDual_eq_withDual_cons_iff l I hl')] at hl
-    rw [countId_eq_length_filter, hi] at hl
+    rw [countId_eq_length_filter, hI'id] at hi
+    rw [propext (withUniqueDual_eq_withDual_cons_iff l I hl'), countId_eq_length_filter, hi] at hl
     simp at hl
 
 lemma countId_of_cons (I : Index 𝓒.Color) (h : (l.cons I).ColorCond)
