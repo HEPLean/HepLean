@@ -9,15 +9,13 @@ import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
 /-!
 
-# Index lists and color
+# Color index lists
 
-The main definiton of this file is `ColorIndexList`. This type defines the
-permissible index lists which can be used for a tensor. These are lists of indices for which
-every index with a dual has a unique dual, and the color of that dual (when it exists) is dual
-to the color of the index.
+A color index list is defined as a list of indices with two constraints. The first is that
+if an index has a dual, that dual is unique. The second is that if an index has a dual, the
+color of that dual is dual to the color of the index.
 
-We also define `AppendCond`, which is a condition on two `ColorIndexList`s which allows them to be
-appended to form a new `ColorIndexList`.
+The indices of a tensor are required to be of this type.
 
 -/
 
@@ -198,6 +196,16 @@ decreasing_by {
       exact False.elim (hn hv)
     exact h1
 }
+
+/-!
+
+## CountId for `ColorIndexList`
+
+-/
+
+lemma countId_le_two (l : ColorIndexList 𝓒) (I : Index 𝓒.Color) :
+    l.countId I ≤ 2 :=
+  (withUniqueDual_eq_withDual_iff_countId_leq_two' l.toIndexList).mp l.unique_duals.symm I
 
 end ColorIndexList
 end IndexNotation

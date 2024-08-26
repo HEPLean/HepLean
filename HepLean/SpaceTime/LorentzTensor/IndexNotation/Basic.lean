@@ -472,6 +472,21 @@ lemma countId_cons_eq_two {I : Index X} :
     (l.cons I).countId I = 2 ↔ l.countId I = 1 := by
   simp [countId]
 
+lemma countId_congr {I J : Index X} (h : I.id = J.id) : l.countId I = l.countId J := by
+  simp [countId, h]
+
+lemma countId_neq_zero_mem (I : Index X) (h : l.countId I ≠ 0) :
+    ∃ I', I' ∈ l.val ∧ I.id = I'.id := by
+  rw [countId_eq_length_filter] at h
+  have h' := List.isEmpty_iff_length_eq_zero.mp.mt h
+  simp only at h'
+  have h'' := eq_false_of_ne_true h'
+  rw [List.isEmpty_false_iff_exists_mem] at h''
+  obtain ⟨I', hI'⟩ := h''
+  simp only [List.mem_filter, decide_eq_true_eq] at hI'
+  exact ⟨I', hI'⟩
+
+
 /-!
 
 ## Filter id
