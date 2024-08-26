@@ -199,9 +199,54 @@ lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndex
   rw [ColorCond.iff_bool]
   simp
 
+lemma countId_contr_fst_eq_zero_mem_snd (h : AppendCond l l2) {I : Index 𝓒.Color}
+    (hI : I ∈ l2.val) : l.contr.countId I = 0 ↔ l.countId I = 0 := by
+  rw [countId_contr_eq_zero_iff]
+  refine Iff.intro (fun h' => ?_) (fun h' => ?_)
+  · have h1 := h.1
+    rw [withUniqueDual_eq_withDual_iff_countId_leq_two'] at h1
+    have h1I := h1 I
+    simp at h1I
+    have h2 :  l2.countId I ≠ 0 := countId_mem l2.toIndexList I hI
+    omega
+  · simp [h']
+
+lemma countId_contr_snd_eq_zero_mem_fst (h : AppendCond l l2) {I : Index 𝓒.Color}
+    (hI : I ∈ l.val) : l2.contr.countId I = 0 ↔ l2.countId I = 0 := by
+  exact countId_contr_fst_eq_zero_mem_snd h.symm hI
+
 end AppendCond
 
-/-! TODO: Show that `(l1.contr ++[h.contr] l2.contr).contr = (l1 ++[h] l2)` -/
+lemma append_contr_left (h : AppendCond l l2) :
+    (l.contr ++[h.contr_left] l2).contr = (l ++[h] l2).contr := by
+  apply ext
+  simp only [contr, append_toIndexList]
+  rw [contrIndexList_append_eq_filter, contrIndexList_append_eq_filter,
+    contrIndexList_contrIndexList]
+  apply congrArg
+  apply List.filter_congr
+  intro I hI
+  simp only [decide_eq_decide]
+  simp [contrIndexList] at hI
+  exact AppendCond.countId_contr_fst_eq_zero_mem_snd h hI.1
+
+lemma append_contr_right (h : AppendCond l l2) :
+    (l ++[h.contr_right] l2.contr).contr = (l ++[h] l2).contr := by
+  apply ext
+  simp [contr]
+  rw [contrIndexList_append_eq_filter, contrIndexList_append_eq_filter,
+    contrIndexList_contrIndexList]
+  apply congrFun
+  apply congrArg
+  apply List.filter_congr
+  intro I hI
+  simp only [decide_eq_decide]
+  simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at hI
+  exact AppendCond.countId_contr_snd_eq_zero_mem_fst h hI.1
+
+lemma append_contr (h : AppendCond l l2) :
+    (l.contr ++[h.contr] l2.contr).contr = (l ++[h] l2).contr := by
+  rw [append_contr_left, append_contr_right]
 
 end ColorIndexList
 end IndexNotation

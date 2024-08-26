@@ -486,6 +486,14 @@ lemma countId_neq_zero_mem (I : Index X) (h : l.countId I ≠ 0) :
   simp only [List.mem_filter, decide_eq_true_eq] at hI'
   exact ⟨I', hI'⟩
 
+lemma countId_mem (I : Index X) (hI : I ∈ l.val ) : l.countId I ≠ 0 := by
+  rw [countId_eq_length_filter]
+  by_contra hn
+  rw [List.length_eq_zero] at hn
+  have hIme : I ∈ List.filter (fun J => decide (I.id = J.id)) l.val := by
+    simp [hI]
+  rw [hn] at hIme
+  simp at hIme
 
 /-!
 

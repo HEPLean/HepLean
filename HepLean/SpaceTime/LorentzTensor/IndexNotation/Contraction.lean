@@ -367,6 +367,31 @@ lemma countId_contrIndexList_le_countId (I : Index X) :
 
 /-!
 
+## Append
+
+-/
+
+lemma contrIndexList_append_eq_filter : (l ++ l2).contrIndexList.val =
+    l.contrIndexList.val.filter (fun I => l2.countId I = 0) ++
+    l2.contrIndexList.val.filter (fun I => l.countId I = 0) := by
+  simp [contrIndexList]
+  congr 1
+  · apply List.filter_congr
+    intro I hI
+    have hIz : l.countId I ≠ 0 := countId_mem l I hI
+    have hx : l.countId I + l2.countId I = 1 ↔ (l2.countId I = 0 ∧ l.countId I = 1) := by
+      omega
+    simp only [hx, Bool.decide_and]
+  · apply List.filter_congr
+    intro I hI
+    have hIz : l2.countId I ≠ 0 := countId_mem l2 I hI
+    have hx : l.countId I + l2.countId I = 1 ↔ (l2.countId I = 1 ∧ l.countId I = 0) := by
+      omega
+    simp only [hx, Bool.decide_and]
+    exact Bool.and_comm (decide (l2.countId I = 1)) (decide (l.countId I = 0))
+
+/-!
+
 ## Splitting withUniqueDual
 
 -/
