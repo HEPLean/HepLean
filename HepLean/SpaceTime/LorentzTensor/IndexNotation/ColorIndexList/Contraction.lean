@@ -97,17 +97,16 @@ lemma contr_areDualInSelf (i j : Fin l.contr.length) :
     l.contr.AreDualInSelf i j ↔ False := by
   simp [contr]
 
-lemma contr_countP_eq_zero_of_countP (I : Index 𝓒.Color)
-    (h : l.val.countP (fun J => I.id = J.id) = 0) :
-    l.contr.val.countP (fun J => I.id = J.id) = 0 := by
+lemma contr_countId_eq_zero_of_countId_zero (I : Index 𝓒.Color)
+    (h : l.countId I = 0) : l.contr.countId I = 0 := by
   simp [contr]
-  exact countP_contrIndexList_zero_of_countP l.toIndexList I h
+  exact countId_contrIndexList_zero_of_countId l.toIndexList I h
 
-lemma contr_countP (I : Index 𝓒.Color) :
-    l.contr.val.countP (fun J => I.id = J.id) =
+lemma contr_countId_eq_filter (I : Index 𝓒.Color) :
+    l.contr.countId I =
     (l.val.filter (fun J => I.id = J.id)).countP
     (fun i => l.val.countP (fun j => i.id = j.id) = 1) := by
-  simp [contr, contrIndexList]
+  simp [contr, contrIndexList, countId]
   rw [List.countP_filter, List.countP_filter]
   congr
   funext J
@@ -115,18 +114,17 @@ lemma contr_countP (I : Index 𝓒.Color) :
   exact Bool.and_comm (decide (I.id = J.id))
     (decide (List.countP (fun j => decide (J.id = j.id)) l.val = 1))
 
-lemma contr_cons_dual (I : Index 𝓒.Color) (hI1 : l.val.countP (fun J => I.id = J.id) ≤ 1) :
-    l.contr.val.countP (fun J => I.id = J.id) ≤ 1 := by
-  rw [contr_countP]
-  by_cases hI1 : l.val.countP (fun J => I.id = J.id) = 0
-  · rw [filter_of_countP_zero]
-    · simp
-    · exact hI1
-  · have hI1 : l.val.countP (fun J => I.id = J.id) = 1 := by
+lemma countId_contr_le_one_of_countId (I : Index 𝓒.Color) (hI1 : l.countId I ≤ 1) :
+    l.contr.countId I ≤ 1 := by
+  rw [contr_countId_eq_filter]
+  by_cases hI1 : l.countId I = 0
+  · rw [l.filter_id_of_countId_eq_zero' hI1]
+    simp
+  · have hI1 : l.countId I = 1 := by
       omega
-    rw [consDual_filter]
-    · simp_all
-    · exact hI1
+    rw [l.consDual_filter hI1]
+    apply (List.countP_le_length _).trans
+    rfl
 
 /-!
 

@@ -173,6 +173,11 @@ lemma filter_id_of_countId_eq_zero {i : Fin l.length} (h1 : l.countId (l.val.get
   rw [countId_eq_length_filter, List.length_eq_zero] at h1
   exact h1
 
+lemma filter_id_of_countId_eq_zero' {I : Index X} (h1 : l.countId I = 0) :
+    l.val.filter (fun J => I.id = J.id) = [] := by
+  rw [countId_eq_length_filter, List.length_eq_zero] at h1
+  exact h1
+
 lemma filter_id_of_countId_eq_one {i : Fin l.length} (h1 : l.countId (l.val.get i) = 1) :
     l.val.filter (fun J => (l.val.get i).id = J.id) = [l.val.get i] := by
   rw [countId_eq_length_filter, List.length_eq_one] at h1
