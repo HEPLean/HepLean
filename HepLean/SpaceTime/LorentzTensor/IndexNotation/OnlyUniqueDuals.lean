@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.WithUniqueDual
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 /-!
@@ -154,6 +154,20 @@ lemma withUniqueDual_eq_withDual_iff_countId_leq_two :
     have hi := h i
     omega
 
+lemma withUniqueDual_eq_withDual_iff_countId_leq_two' :
+    l.withUniqueDual = l.withDual ↔ ∀ I, l.countId I ≤ 2 := by
+  rw [withUniqueDual_eq_withDual_iff_countId_leq_two]
+  refine Iff.intro (fun h I => ?_) (fun h i => h (l.val.get i))
+  by_cases hI : l.countId I = 0
+  · rw [hI]
+    exact Nat.zero_le 2
+  · obtain ⟨I', hI1', hI2'⟩ := countId_neq_zero_mem l I hI
+    rw [countId_congr _ hI2']
+    have hi : List.indexOf I' l.val < l.length := List.indexOf_lt_length.mpr hI1'
+    have hI' : I' = l.val.get ⟨List.indexOf I' l.val, hi⟩ := (List.indexOf_get hi).symm
+    rw [hI']
+    exact h ⟨List.indexOf I' l.val, hi⟩
+
 lemma withUniqueDual_eq_withDual_countId_cases (h : l.withUniqueDual = l.withDual)
     (i : Fin l.length) : l.countId (l.val.get i) = 0 ∨
     l.countId (l.val.get i) = 1 ∨ l.countId (l.val.get i) = 2 := by
@@ -168,6 +182,7 @@ lemma withUniqueDual_eq_withDual_countId_cases (h : l.withUniqueDual = l.withDua
 
 section filterID
 
+/-! TODO: Move this section. -/
 lemma filter_id_of_countId_eq_zero {i : Fin l.length} (h1 : l.countId (l.val.get i) = 0) :
     l.val.filter (fun J => (l.val.get i).id = J.id) = [] := by
   rw [countId_eq_length_filter, List.length_eq_zero] at h1
@@ -189,6 +204,19 @@ lemma filter_id_of_countId_eq_one {i : Fin l.length} (h1 : l.countId (l.val.get 
   simp only [List.get_eq_getElem, List.mem_singleton] at hme
   erw [hJ]
   simp only [List.get_eq_getElem, List.cons.injEq, and_true]
+  exact id (Eq.symm hme)
+
+lemma filter_id_of_countId_eq_one_mem {I : Index X} (hI : I ∈ l.val) (h : l.countId I = 1) :
+    l.val.filter (fun J => I.id = J.id) = [I] := by
+  rw [countId_eq_length_filter, List.length_eq_one] at h
+  obtain ⟨J, hJ⟩ := h
+  have hme : I ∈ List.filter (fun J => decide (I.id = J.id)) l.val := by
+    simp only [List.mem_filter, decide_True, and_true]
+    exact hI
+  rw [hJ] at hme
+  simp only [List.mem_singleton] at hme
+  erw [hJ]
+  simp only [List.cons.injEq, and_true]
   exact id (Eq.symm hme)
 
 lemma filter_id_of_countId_eq_two {i : Fin l.length}
@@ -565,6 +593,25 @@ lemma append_withDual_eq_withUniqueDual_swap :
   rw [append_withDual_eq_withUniqueDual_symm]
   rw [withUniqueDualInOther_eq_withDualInOther_of_append_symm]
   rw [withUniqueDualInOther_eq_withDualInOther_append_of_symm]
+
+lemma append_withDual_eq_withUniqueDual_contr_left
+    (h1 : (l ++ l2).withUniqueDual = (l ++ l2).withDual) :
+      (l.contrIndexList ++ l2).withUniqueDual = (l.contrIndexList ++ l2).withDual := by
+    rw [withUniqueDual_eq_withDual_iff_all_countId_le_two] at h1 ⊢
+    simp only [append_val, countId_append, List.all_append, Bool.and_eq_true, List.all_eq_true,
+      decide_eq_true_eq]
+    simp at h1
+    apply And.intro
+    · intro I hI
+      have hIl := h1.1 I (List.mem_of_mem_filter hI)
+      have ht : l.contrIndexList.countId I ≤ l.countId I :=
+        countId_contrIndexList_le_countId l I
+      omega
+    · intro I hI
+      have hIl2 := h1.2 I hI
+      have ht : l.contrIndexList.countId I ≤ l.countId I :=
+        countId_contrIndexList_le_countId l I
+      omega
 
 end IndexList
 

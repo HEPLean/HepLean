@@ -126,6 +126,21 @@ lemma countId_contr_le_one_of_countId (I : Index 𝓒.Color) (hI1 : l.countId I 
     apply (List.countP_le_length _).trans
     rfl
 
+lemma countId_contr_eq_zero_iff (I : Index 𝓒.Color) :
+    l.contr.countId I = 0 ↔ l.countId I = 0 ∨ l.countId I = 2 := by
+  by_cases hI : l.contr.countId I = 1
+  · have hI' := hI
+    erw [countId_contrIndexList_eq_one_iff_countId_eq_one] at hI'
+    omega
+  · have hI' := hI
+    erw [countId_contrIndexList_eq_one_iff_countId_eq_one] at hI'
+    have hI2 := l.countId_le_two I
+    have hI3 := l.countId_contrIndexList_le_one I
+    have hI3 : l.contr.countId I = 0 := by
+      simp_all only [contr]
+      omega
+    omega
+
 /-!
 
 ## Contract equiv

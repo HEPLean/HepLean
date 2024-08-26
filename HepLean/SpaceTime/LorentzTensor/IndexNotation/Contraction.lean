@@ -319,8 +319,7 @@ lemma mem_contrIndexList_countId_contrIndexList {I : Index X} (h : I ∈ l.contr
       exact mem_contrIndexList_countId l h
 
 lemma countId_contrIndexList_zero_of_countId (I : Index X)
-    (h : l.countId I = 0) :
-    l.contrIndexList.countId I = 0 := by
+    (h : l.countId I = 0) : l.contrIndexList.countId I = 0 := by
   trans (l.val.filter (fun J => I.id = J.id)).countP
     (fun i => l.val.countP (fun j => i.id = j.id) = 1)
   · rw [contrIndexList]
@@ -333,6 +332,63 @@ lemma countId_contrIndexList_zero_of_countId (I : Index X)
   · rw [countId_eq_length_filter, List.length_eq_zero] at h
     rw [h]
     simp only [List.countP_nil]
+
+lemma countId_contrIndexList_le_one (I : Index X) :
+    l.contrIndexList.countId I ≤ 1 := by
+  by_cases h : l.contrIndexList.countId I = 0
+  · simp [h]
+  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I h
+    rw [countId_congr l.contrIndexList hI2, mem_contrIndexList_countId_contrIndexList l hI1]
+
+lemma countId_contrIndexList_eq_one_iff_countId_eq_one (I : Index X) :
+    l.contrIndexList.countId I = 1 ↔ l.countId I = 1 := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I (by omega)
+    simp [contrIndexList] at hI1
+    rw [countId_congr l hI2]
+    exact hI1.2
+  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l I (by omega)
+    rw [countId_congr l hI2] at h
+    rw [countId_congr _ hI2]
+    refine mem_contrIndexList_countId_contrIndexList l ?_
+    simp [contrIndexList]
+    exact ⟨hI1, h⟩
+
+lemma countId_contrIndexList_le_countId (I : Index X) :
+    l.contrIndexList.countId I ≤ l.countId I := by
+  by_cases h : l.contrIndexList.countId I = 0
+  · exact StrictMono.minimal_preimage_bot (fun ⦃a b⦄ a => a) h (l.countId I)
+  · have ho : l.contrIndexList.countId I = 1 := by
+      have h1 := l.countId_contrIndexList_le_one I
+      omega
+    rw [ho]
+    rw [countId_contrIndexList_eq_one_iff_countId_eq_one] at ho
+    rw [ho]
+
+/-!
+
+## Append
+
+-/
+
+lemma contrIndexList_append_eq_filter : (l ++ l2).contrIndexList.val =
+    l.contrIndexList.val.filter (fun I => l2.countId I = 0) ++
+    l2.contrIndexList.val.filter (fun I => l.countId I = 0) := by
+  simp [contrIndexList]
+  congr 1
+  · apply List.filter_congr
+    intro I hI
+    have hIz : l.countId I ≠ 0 := countId_mem l I hI
+    have hx : l.countId I + l2.countId I = 1 ↔ (l2.countId I = 0 ∧ l.countId I = 1) := by
+      omega
+    simp only [hx, Bool.decide_and]
+  · apply List.filter_congr
+    intro I hI
+    have hIz : l2.countId I ≠ 0 := countId_mem l2 I hI
+    have hx : l.countId I + l2.countId I = 1 ↔ (l2.countId I = 1 ∧ l.countId I = 0) := by
+      omega
+    simp only [hx, Bool.decide_and]
+    exact Bool.and_comm (decide (l2.countId I = 1)) (decide (l.countId I = 0))
 
 /-!
 

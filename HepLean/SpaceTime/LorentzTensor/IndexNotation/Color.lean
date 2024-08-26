@@ -177,6 +177,12 @@ lemma countColorCond_cons_neg (l : IndexList 𝓒.Color) (I I' : Index 𝓒.Colo
     exact id (Ne.symm hid)
   rw [countColorCond, countColorCond, h1]
 
+lemma countColorCond_of_filter_eq (l l2 : IndexList 𝓒.Color) {I : Index 𝓒.Color}
+    (hf : l.val.filter (fun J => I.id = J.id) = l2.val.filter (fun J => I.id = J.id))
+    (h1 : countColorCond l I) : countColorCond l2 I := by
+  rw [countColorCond, ← hf]
+  exact h1
+
 lemma color_eq_of_countColorCond_cons_pos (l : IndexList 𝓒.Color) (I I' : Index 𝓒.Color)
     (hl : countColorCond (l.cons I) I') (hI : I.id = I'.id) : I.toColor = I'.toColor ∨
     I.toColor = 𝓒.τ I'.toColor := by
