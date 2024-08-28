@@ -61,7 +61,7 @@ noncomputable def fromIndexStringColor {R : Type} [CommSemiring R]
     (T : (einsteinTensor R m).Tensor cn) (s : String)
     (hs : listCharIsIndexString einsteinTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
-    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hD : (toIndexList' s hs).OnlyUniqueDuals)
     (hC : IndexList.ColorCond.bool (toIndexList' s hs))
     (hd : TensorColor.ColorMap.DualMap.boolFin'
       (toIndexList' s hs).colorMap (cn ∘ Fin.cast hn.symm)) :
@@ -76,7 +76,7 @@ lemma fromIndexStringColor_indexList {R : Type} [CommSemiring R]
     (T : (einsteinTensor R m).Tensor cn) (s : String)
     (hs : listCharIsIndexString einsteinTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
-    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hD : (toIndexList' s hs).OnlyUniqueDuals)
     (hC : IndexList.ColorCond.bool (toIndexList' s hs))
     (hd : TensorColor.ColorMap.DualMap.boolFin'
       (toIndexList' s hs).colorMap (cn ∘ Fin.cast hn.symm)) :
@@ -93,7 +93,7 @@ macro "dualMapTactic" : tactic =>
   Conditions are checked automatically. -/
 notation:20 T "|" S:21 => fromIndexStringColor T S
   (by decide)
-  (by decide) (by decide)
+  (by decide) (by rfl)
   (by decide)
   (by dualMapTactic)
 
@@ -102,7 +102,7 @@ macro "prodTactic" : tactic =>
     `(tactic| {
     apply (ColorIndexList.AppendCond.iff_bool _ _).mpr
     change @ColorIndexList.AppendCond.bool einsteinTensorColor
-      instIndexNotationColorEinsteinTensorColor instDecidableEqColorEinsteinTensorColor _ _
+       instDecidableEqColorEinsteinTensorColor _ _
     simp only [prod_toIndexList, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
       toTensorColor_eq, decidableEq_eq_color]
     decide})

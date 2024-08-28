@@ -93,7 +93,6 @@ lemma contr_refl : l.contrIndexList.Subperm l.contrIndexList := by
 
 end Subperm
 
-
 end IndexList
 
 end IndexNotation

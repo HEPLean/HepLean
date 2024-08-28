@@ -198,5 +198,6 @@ def tailNat (s : IndexRep X) : List ℕ := s.tail.map charToNat
 /-- The id of an index, as a natural number. -/
 def id (s : IndexRep X) : ℕ := s.tailNat.foldl (fun a b => 10 * a + b) 0
 
+def toIndex (s : IndexRep X) : Index X := (s.toColor, s.id)
 end IndexRep
 end IndexNotation

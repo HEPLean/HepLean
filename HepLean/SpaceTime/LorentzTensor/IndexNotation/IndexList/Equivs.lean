@@ -151,6 +151,47 @@ lemma getDualInOtherEquiv_self_refl : l.getDualInOtherEquiv l = Equiv.refl _ := 
 lemma getDualInOtherEquiv_symm : (l.getDualInOtherEquiv l2).symm = l2.getDualInOtherEquiv l := by
   rfl
 
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of the left index list. -/
+def withUniqueDualCastLeft (h : l = l3) :
+    l.withUniqueDualInOther l2 ≃ l3.withUniqueDualInOther l2 where
+  toFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h; exact x.prop⟩
+  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h; exact x.prop⟩
+  left_inv x := SetCoe.ext rfl
+  right_inv x := SetCoe.ext rfl
+
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of the right index list. -/
+def withUniqueDualCastRight (h : l2 = l3) :
+    l.withUniqueDualInOther l2 ≃ l.withUniqueDualInOther l3 where
+  toFun x := ⟨x.1, by subst h; exact x.prop⟩
+  invFun x := ⟨x.1, by subst h; exact x.prop⟩
+  left_inv x := SetCoe.ext rfl
+  right_inv x := SetCoe.ext rfl
+
+/-- An equivalence casting `withUniqueDualInOther` based on an equality of both index lists. -/
+def withUniqueDualCast {l1 l2 l1' l2' : IndexList X} (h : l1 = l1') (h2 : l2 = l2') :
+    l1.withUniqueDualInOther l2 ≃ l1'.withUniqueDualInOther l2' where
+  toFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h h2; exact x.prop⟩
+  invFun x := ⟨Fin.cast (by rw [h]) x.1, by subst h h2; exact x.prop⟩
+  left_inv x := SetCoe.ext rfl
+  right_inv x := SetCoe.ext rfl
+
+lemma getDualInOtherEquiv_cast_left (h : l = l3) :
+    l.getDualInOtherEquiv l2 = ((withUniqueDualCastLeft l l2 l3 h).trans
+    (l3.getDualInOtherEquiv l2)).trans (withUniqueDualCastRight l2 l l3 h).symm := by
+  subst h
+  rfl
+
+lemma getDualInOtherEquiv_cast_right (h : l2 = l3) :
+    l.getDualInOtherEquiv l2 = ((withUniqueDualCastRight l l2 l3 h).trans
+    (l.getDualInOtherEquiv l3)).trans (withUniqueDualCastLeft l2 l l3 h).symm := by
+  subst h
+  rfl
+
+lemma getDualInOtherEquiv_cast {l1 l2 l1' l2' : IndexList X} (h : l1 = l1') (h2 : l2 = l2') :
+    l1.getDualInOtherEquiv l2 = ((withUniqueDualCast h h2).trans
+    (l1'.getDualInOtherEquiv l2')).trans (withUniqueDualCast h2 h).symm := by
+  subst h h2
+  rfl
 
 /-!
 
