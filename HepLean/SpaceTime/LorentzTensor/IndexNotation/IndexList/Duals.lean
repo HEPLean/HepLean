@@ -19,7 +19,6 @@ We also define the notion of dual indices in different lists. For example,
 
 -/
 
-
 namespace IndexNotation
 
 namespace IndexList

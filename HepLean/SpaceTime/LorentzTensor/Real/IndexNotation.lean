@@ -103,7 +103,7 @@ macro "prodTactic" : tactic =>
     `(tactic| {
     apply (ColorIndexList.AppendCond.iff_bool _ _).mpr
     change @ColorIndexList.AppendCond.bool realTensorColor
-       instDecidableEqColorRealTensorColor _ _
+      instDecidableEqColorRealTensorColor _ _
     simp only [prod_toIndexList, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
       toTensorColor_eq, decidableEq_eq_color]
     rfl})

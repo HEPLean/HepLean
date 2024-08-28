@@ -44,7 +44,6 @@ def dualEquiv : l.withDual ⊕ Fin l.withoutDual.card ≃ Fin l.length :=
   (Equiv.Finset.union _ _ l.withDual_disjoint_withoutDual).trans <|
   Equiv.subtypeUnivEquiv (by simp [withDual_union_withoutDual])
 
-
 /-!
 
 ## getDualEquiv
@@ -59,7 +58,7 @@ def getDualEquiv : l.withUniqueDual ≃ l.withUniqueDual where
   invFun x := ⟨(l.getDual? x).get (l.mem_withUniqueDual_isSome x.1 x.2), by
     rw [mem_withUniqueDual_iff_countId_eq_two]
     simpa using l.countId_eq_two_of_mem_withUniqueDual x.1 x.2⟩
-  left_inv x := SetCoe.ext <|  by
+  left_inv x := SetCoe.ext <| by
     let d := (l.getDual? x).get (l.mem_withUniqueDual_isSome x.1 x.2)
     have h1 : l.countId (l.val.get d) = 2 := by
       simpa [d] using l.countId_eq_two_of_mem_withUniqueDual x.1 x.2
@@ -90,7 +89,7 @@ def getDualEquiv : l.withUniqueDual ≃ l.withUniqueDual where
 
 @[simp]
 lemma getDual?_getDualEquiv (i : l.withUniqueDual) : l.getDual? (l.getDualEquiv i) = i := by
-  have h1  := (Equiv.apply_symm_apply l.getDualEquiv i).symm
+  have h1 := (Equiv.apply_symm_apply l.getDualEquiv i).symm
   nth_rewrite 2 [h1]
   nth_rewrite 2 [getDualEquiv]
   simp
@@ -105,7 +104,7 @@ def getDualInOtherEquiv : l.withUniqueDualInOther l2 ≃ l2.withUniqueDualInOthe
   invFun x := ⟨(l2.getDualInOther? l x).get (l2.mem_withUniqueDualInOther_isSome l x.1 x.2), by
     rw [mem_withUniqueDualInOther_iff_countId_eq_one]
     simpa using And.comm.mpr (l2.countId_eq_one_of_mem_withUniqueDualInOther l x.1 x.2)⟩
-  left_inv x := SetCoe.ext <|  by
+  left_inv x := SetCoe.ext <| by
     let d := (l.getDualInOther? l2 x).get (l.mem_withUniqueDualInOther_isSome l2 x.1 x.2)
     have h1 : l.countId (l2.val.get d) = 1 := by
       simpa [d] using (l.countId_eq_one_of_mem_withUniqueDualInOther l2 x.1 x.2).1
@@ -144,9 +143,8 @@ lemma getDualInOtherEquiv_self_refl : l.getDualInOtherEquiv l = Equiv.refl _ := 
   have hx2 := x.2
   simp [withUniqueDualInOther] at hx2
   apply Option.some_injective
-  rw [hx2.2 x.1 (by simp [ AreDualInOther]) ]
+  rw [hx2.2 x.1 (by simp [AreDualInOther])]
   simp
-
 
 @[simp]
 lemma getDualInOtherEquiv_symm : (l.getDualInOtherEquiv l2).symm = l2.getDualInOtherEquiv l := by

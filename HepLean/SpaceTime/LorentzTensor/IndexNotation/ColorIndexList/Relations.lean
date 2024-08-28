@@ -123,7 +123,7 @@ To prevent choice problems, this has to be done after contraction.
 -/
 def ContrPerm : Prop :=
   l.contr.length = l'.contr.length ∧
-  IndexList.Subperm l.contr l'.contr.toIndexList  ∧
+  IndexList.Subperm l.contr l'.contr.toIndexList ∧
   l'.contr.colorMap' ∘ Subtype.val ∘ (l.contr.getDualInOtherEquiv l'.contr)
   = l.contr.colorMap' ∘ Subtype.val
 
@@ -163,7 +163,7 @@ lemma mem_snd_of_mem_snd (h : l.ContrPerm l2) {I : Index 𝓒.Color} (hI : I ∈
 
 lemma countSelf_eq_one_snd_of_countSelf_eq_one_fst (h : l.ContrPerm l2) {I : Index 𝓒.Color}
     (h1 : l.contr.countSelf I = 1) : l2.contr.countSelf I = 1 := by
-  refine countSelf_eq_one_of_countId_eq_one l2.contr I ?_ (mem_snd_of_mem_snd h ?_ )
+  refine countSelf_eq_one_of_countId_eq_one l2.contr I ?_ (mem_snd_of_mem_snd h ?_)
   · have h2 := h.2.1
     rw [Subperm.iff_countId] at h2
     refine (h2 I).2 ?_
@@ -183,7 +183,7 @@ lemma getDualInOtherEquiv_eq_of_countSelf
   have h1' : (l.contr.val.get i) ∈ l2.contr.val := by
     rw [← countSelf_neq_zero, h2]
     simp
-  rw [← List.mem_singleton, ← filter_id_of_countId_eq_one_mem l2.contr.toIndexList h1' h1 ]
+  rw [← List.mem_singleton, ← filter_id_of_countId_eq_one_mem l2.contr.toIndexList h1' h1]
   simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
   apply And.intro (List.getElem_mem _ _ _)
   simp [getDualInOtherEquiv]
@@ -213,7 +213,7 @@ lemma colorMap_eq_of_countSelf (hn : IndexList.Subperm l.contr l2.contr.toIndexL
       exact List.getElem_mem l.contr.val (↑↑a) a.1.isLt
 
 lemma iff_count_fin : l.ContrPerm l2 ↔
-    l.contr.length = l2.contr.length  ∧ IndexList.Subperm l.contr l2.contr.toIndexList ∧
+    l.contr.length = l2.contr.length ∧ IndexList.Subperm l.contr l2.contr.toIndexList ∧
     ∀ i, l.contr.countSelf (l.contr.val.get i) = 1 →
     l2.contr.countSelf (l.contr.val.get i) = 1 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
@@ -224,7 +224,7 @@ lemma iff_count_fin : l.ContrPerm l2 ↔
 
 lemma iff_count' : l.ContrPerm l2 ↔
     l.contr.length = l2.contr.length ∧ IndexList.Subperm l.contr l2.contr.toIndexList ∧
-    ∀ I, l.contr.countSelf I = 1 → l2.contr.countSelf I = 1  := by
+    ∀ I, l.contr.countSelf I = 1 → l2.contr.countSelf I = 1 := by
   rw [iff_count_fin]
   simp_all only [List.get_eq_getElem, and_congr_right_iff]
   intro _ _
@@ -240,7 +240,7 @@ lemma iff_count' : l.ContrPerm l2 ↔
   · intro a_2 i a_3
     simp_all only
 
-lemma iff_count :  l.ContrPerm l2 ↔ l.contr.length = l2.contr.length ∧
+lemma iff_count : l.ContrPerm l2 ↔ l.contr.length = l2.contr.length ∧
     ∀ I, l.contr.countSelf I = 1 → l2.contr.countSelf I = 1 := by
   rw [iff_count']
   refine Iff.intro (fun h => And.intro h.1 h.2.2) (fun h => And.intro h.1 (And.intro ?_ h.2))
@@ -281,7 +281,7 @@ lemma iff_countSelf : l.ContrPerm l2 ↔ ∀ I, l.contr.countSelf I = l2.contr.c
         intro I
         rw [← countSelf_count, ← countSelf_count]
         exact h I
-      exact List.Perm.length_eq  h1
+      exact List.Perm.length_eq h1
     · intro I
       rw [h I]
       simp
@@ -295,8 +295,8 @@ lemma contr_perm (h : l.ContrPerm l2) : l.contr.val.Perm l2.contr.val := by
 /-- The relation `ContrPerm` is reflexive. -/
 @[simp]
 lemma refl (l : ColorIndexList 𝓒) : ContrPerm l l := by
- rw [iff_countSelf]
- exact fun I => rfl
+  rw [iff_countSelf]
+  exact fun I => rfl
 
 /-- The relation `ContrPerm` is transitive. -/
 @[trans]
@@ -398,7 +398,7 @@ lemma contrPermEquiv_trans {l l2 l3 : ColorIndexList 𝓒}
   apply congrArg
   have h1' : l.contr.countSelf (l.contr.val.get x) = 1 := by simp [contr]
   rw [iff_countSelf.mp h1, iff_countSelf.mp h2] at h1'
-  have h3 : l3.contr.countId  (l.contr.val.get x) = 1 := by
+  have h3 : l3.contr.countId (l.contr.val.get x) = 1 := by
     have h' := countSelf_le_countId l3.contr.toIndexList (l.contr.val.get x)
     have h'' := countId_contr_le_one l3 (l.contr.val.get x)
     omega
@@ -410,7 +410,6 @@ lemma contrPermEquiv_trans {l l2 l3 : ColorIndexList 𝓒}
   · symm
     rw [← List.mem_singleton, ← ha]
     simp [AreDualInOther]
-
 
 @[simp]
 lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
@@ -424,7 +423,7 @@ lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
   symm
   have h1' : l.contr.countSelf (l.contr.val.get x) = 1 := by simp [contr]
   rw [iff_countSelf.mp contr_self] at h1'
-  have h3 : l.contr.contr.countId  (l.contr.val.get x) = 1 := by
+  have h3 : l.contr.contr.countId (l.contr.val.get x) = 1 := by
     have h' := countSelf_le_countId l.contr.contr.toIndexList (l.contr.val.get x)
     have h'' := countId_contr_le_one l.contr (l.contr.val.get x)
     omega

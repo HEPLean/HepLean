@@ -63,7 +63,6 @@ lemma iff_countId_leq_two :
     have hi := h i
     omega
 
-
 lemma iff_countId_leq_two' : l.OnlyUniqueDuals ↔ ∀ I, l.countId I ≤ 2 := by
   rw [iff_countId_leq_two]
   refine Iff.intro (fun h I => ?_) (fun h i => h (l.val.get i))
@@ -163,14 +162,13 @@ lemma countId_of_OnlyUniqueDuals (h : l.OnlyUniqueDuals) (I : Index X) :
   exact h I
 
 lemma countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals
-    (h : (l ++ l2).OnlyUniqueDuals) (I : Index X) (h' : (l.contrIndexList ++ l2).countId I = 2 ) :
+    (h : (l ++ l2).OnlyUniqueDuals) (I : Index X) (h' : (l.contrIndexList ++ l2).countId I = 2) :
     (l ++ l2).countId I = 2 := by
   simp only [countId_append]
   have h1 := countId_contrIndexList_le_countId l I
-  have h3 :=  countId_of_OnlyUniqueDuals _ h I
+  have h3 := countId_of_OnlyUniqueDuals _ h I
   simp at h3 h'
   omega
-
 
 end IndexList
 

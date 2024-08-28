@@ -21,7 +21,7 @@ namespace IndexList
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 l3 : IndexList X)
 
-/-- We say a IndexList `l` is a subpermutation of `l2` there are no duals in `l`, and
+/-- An IndexList `l` is a subpermutation of `l2` if there are no duals in `l`, and
   every element of `l` has a unique dual in `l2`. -/
 def Subperm : Prop := l.withUniqueDualInOther l2 = Finset.univ
 
@@ -69,7 +69,7 @@ lemma fst_eq_contrIndexList (h : l.Subperm l2) : l.contrIndexList = l := by
   apply ext
   simp [contrIndexList]
   intro I hI
-  have h' : l.countId I ≠ 0 := by exact countId_mem l I hI
+  have h' := countId_mem l I hI
   have hI' := h I
   omega
 

@@ -127,7 +127,7 @@ lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndex
 lemma countId_contr_fst_eq_zero_mem_snd (h : AppendCond l l2) {I : Index 𝓒.Color}
     (hI : I ∈ l2.val) : l.contr.countId I = 0 ↔ l.countId I = 0 := by
   rw [countId_contr_eq_zero_iff]
-  have h1  := countId_mem l2.toIndexList I hI
+  have h1 := countId_mem l2.toIndexList I hI
   have h1I := h.1
   rw [OnlyUniqueDuals.iff_countId_leq_two'] at h1I
   have h1I' := h1I I

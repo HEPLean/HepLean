@@ -8,9 +8,7 @@ import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Duals
 
 # Counting ids
 
-
 -/
-
 
 namespace IndexNotation
 
@@ -18,7 +16,6 @@ namespace IndexList
 
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 l3 : IndexList X)
-
 
 /-!
 
@@ -112,7 +109,7 @@ lemma countId_mem (I : Index X) (hI : I ∈ l.val) : l.countId I ≠ 0 := by
   simp at hIme
 
 lemma countId_get_other (i : Fin l.length) : l2.countId (l.val.get i) =
-    (List.finRange l2.length).countP (fun j => l.AreDualInOther l2 i j)  := by
+    (List.finRange l2.length).countP (fun j => l.AreDualInOther l2 i j) := by
   rw [countId_eq_length_filter]
   rw [List.countP_eq_length_filter]
   have hl2 : l2.val = List.map l2.val.get (List.finRange l2.length) := by
@@ -158,7 +155,7 @@ lemma countId_get (i : Fin l.length) : l.countId (l.val.get i) =
     ((List.finRange l.length).filter (fun j => l.AreDualInOther l i j))
   have h2 : List.countP (fun j => i = j)
       (List.filter (fun j => l.AreDualInOther l i j) (List.finRange l.length)) =
-     List.countP (fun j => l.AreDualInOther l i j)
+      List.countP (fun j => l.AreDualInOther l i j)
       (List.filter (fun j => i = j) (List.finRange l.length)) := by
     rw [List.countP_filter, List.countP_filter]
     refine List.countP_congr (fun j _ => ?_)
@@ -189,7 +186,6 @@ lemma countId_gt_zero_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) 
   rw [hn] at hjmem
   simp at hjmem
 
-
 lemma countId_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
     l.countId (l.val.get i) = 1 := by
   rw [countId_get]
@@ -215,7 +211,7 @@ lemma countId_neq_zero_of_mem_withDualInOther (i : Fin l.length) (h : i ∈ l.wi
   by_contra hn
   rw [List.length_eq_zero] at hn
   obtain ⟨j, hj⟩ := h
-  have hjmem : l2.val.get j ∈  List.filter (fun J => decide ((l.val.get i).id = J.id)) l2.val := by
+  have hjmem : l2.val.get j ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l2.val := by
     simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
     apply And.intro
     · exact List.getElem_mem l2.val (↑j) j.isLt
@@ -231,7 +227,7 @@ lemma countId_of_not_mem_withDualInOther (i : Fin l.length) (h : i ∉ l.withDua
   have hx := eq_false_of_ne_true hn
   rw [List.isEmpty_false_iff_exists_mem] at hx
   obtain ⟨j, hj⟩ := hx
-  have hjmem : j ∈ l2.val :=  List.mem_of_mem_filter hj
+  have hjmem : j ∈ l2.val := List.mem_of_mem_filter hj
   have hj' : l2.val.indexOf j < l2.length := List.indexOf_lt_length.mpr hjmem
   rw [mem_withInDualOther_iff_exists] at h
   simp at h
@@ -263,8 +259,8 @@ lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withU
     l.countId (l.val.get i) = 2 := by
   rw [countId_get]
   simp only [Nat.reduceEqDiff]
-  let i' :=  (l.getDual? i).get (mem_withUniqueDual_isSome l i h)
-  have h1 :  [i'] = (List.finRange l.length).filter (fun j => (l.AreDualInSelf i j)) := by
+  let i' := (l.getDual? i).get (mem_withUniqueDual_isSome l i h)
+  have h1 : [i'] = (List.finRange l.length).filter (fun j => (l.AreDualInSelf i j)) := by
     trans List.filter (fun j => (l.AreDualInSelf i j)) [i']
     · simp [List.filter, i']
     trans List.filter (fun j => (l.AreDualInSelf i j))
@@ -307,7 +303,7 @@ lemma mem_withUniqueDual_of_countId_eq_two (i : Fin l.length)
   rw [ha] at hj
   simp at hj
   subst hj
-  have ht : (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp hw)  ∈
+  have ht : (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp hw) ∈
     (List.finRange l.length).filter (fun j => decide (l.AreDualInSelf i j)) := by
       simp
   rw [ha] at ht
@@ -323,8 +319,8 @@ lemma mem_withUniqueDual_iff_countId_eq_two (i : Fin l.length) :
 lemma countId_eq_one_of_mem_withUniqueDualInOther (i : Fin l.length)
     (h : i ∈ l.withUniqueDualInOther l2) :
     l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1 := by
-  let i' :=  (l.getDualInOther? l2 i).get (mem_withUniqueDualInOther_isSome l l2 i h)
-  have h1 :  [i'] = (List.finRange l2.length).filter (fun j => (l.AreDualInOther l2 i j)) := by
+  let i' := (l.getDualInOther? l2 i).get (mem_withUniqueDualInOther_isSome l l2 i h)
+  have h1 : [i'] = (List.finRange l2.length).filter (fun j => (l.AreDualInOther l2 i j)) := by
     trans List.filter (fun j => (l.AreDualInOther l2 i j)) [i']
     · simp [List.filter, i']
     trans List.filter (fun j => (l.AreDualInOther l2 i j))
@@ -378,7 +374,7 @@ lemma mem_withUniqueDualInOther_of_countId_eq_one (i : Fin l.length)
       rw [ha] at hj
       simp at hj
       subst hj
-      have ht : (l.getDualInOther? l2 i).get ((mem_withInDualOther_iff_isSome l l2 i).mp hw)  ∈
+      have ht : (l.getDualInOther? l2 i).get ((mem_withInDualOther_iff_isSome l l2 i).mp hw) ∈
         (List.finRange l2.length).filter (fun j => decide (l.AreDualInOther l2 i j)) := by
           simp
       rw [ha] at ht
@@ -431,7 +427,6 @@ lemma getDual?_isSome_of_countId_eq_two {i : Fin l.length}
 ## Filters
 
 -/
-
 
 lemma filter_id_of_countId_eq_zero {i : Fin l.length} (h1 : l.countId (l.val.get i) = 0) :
     l.val.filter (fun J => (l.val.get i).id = J.id) = [] := by

@@ -83,8 +83,8 @@ lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
 
 lemma countColorQuot_eq_filter_color_countP (I : Index 𝓒.Color) :
     l.countColorQuot I =
-    (l.val.filter (fun J =>  I.toColor = J.toColor ∨ I.toColor = 𝓒.τ (J.toColor))).countP
-    (fun J =>  I.id = J.id) := by
+    (l.val.filter (fun J => I.toColor = J.toColor ∨ I.toColor = 𝓒.τ (J.toColor))).countP
+    (fun J => I.id = J.id) := by
   rw [countColorQuot_eq_filter_id_countP]
   rw [List.countP_filter, List.countP_filter]
   apply List.countP_congr
@@ -450,7 +450,6 @@ lemma iff_countColorCond_mem (hl : l.OnlyUniqueDuals) :
     exact h ⟨i, hi'⟩ hi
   · exact h (l.val.get i) (List.getElem_mem l.val (↑i) i.isLt) hi
 
-
 lemma mem_iff_dual_mem (hl : l.OnlyUniqueDuals) (hc : l.ColorCond) (I : Index 𝓒.Color)
     (hId : l.countId I = 2) : I ∈ l.val ↔ I.dual ∈ l.val := by
   rw [iff_countColorCond_mem hl] at hc
@@ -547,7 +546,7 @@ lemma contrIndexList_left (hl : (l ++ l2).OnlyUniqueDuals) (h1 : (l ++ l2).Color
   intro I hI1 hI2
   simp only [countSelf_append, ne_eq] at hI1
   have hc := countSelf_contrIndexList_le_countSelf l I
-  have h2 := (countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals l l2 hl I hI2 )
+  have h2 := (countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals l l2 hl I hI2)
   have hI1' := h1 I (by simp_all; omega) h2
   have hIdEq : l.contrIndexList.countId I = l.countId I := by
     simp at h2 hI2
