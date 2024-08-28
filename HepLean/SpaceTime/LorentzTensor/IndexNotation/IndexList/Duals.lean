@@ -74,6 +74,23 @@ def withUniqueDual : Finset (Fin l.length) :=
   Finset.filter (fun i => i ∈ l.withDual ∧
     ∀ j, l.AreDualInSelf i j → j = l.getDual? i) Finset.univ
 
+instance (i j : Option (Fin l.length)) : Decidable (i < j) :=
+  match i, j with
+  | none, none => isFalse (fun a => a)
+  | none, some _ => isTrue (by trivial)
+  | some _, none => isFalse (fun a => a)
+  | some i, some j => Fin.decLt i j
+
+/-- The finite set of those indices of `l` which have a unique dual, and for which
+  that dual is greater-then (determined by the ordering on `Fin`) then the index itself. -/
+def withUniqueDualLT : Finset (Fin l.length) :=
+  Finset.filter (fun i => i < l.getDual? i) l.withUniqueDual
+
+/-- The finite set of those indices of `l` which have a unique dual, and for which
+  that dual is less-then (determined by the ordering on `Fin`) then the index itself. -/
+def withUniqueDualGT : Finset (Fin l.length) :=
+  Finset.filter (fun i => ¬ i < l.getDual? i) l.withUniqueDual
+
 /-- The finite set of indices of an index list which have a unique dual in another, provided, index
   list. -/
 def withUniqueDualInOther : Finset (Fin l.length) :=
@@ -160,6 +177,33 @@ lemma not_mem_withDual_of_mem_withoutDual (i : Fin l.length) (h : i ∈ l.withou
     i ∉ l.withDual := by
   have h1 := l.withDual_disjoint_withoutDual
   exact Finset.disjoint_right.mp h1 h
+
+lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ := by
+  rw [Finset.eq_univ_iff_forall]
+  intro i
+  by_cases h : (l.getDual? i).isSome
+  · simp [withDual, Finset.mem_filter, Finset.mem_univ, h]
+  · simp at h
+    simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
+
+lemma mem_withUniqueDual_of_mem_withUniqueDualLt (i : Fin l.length) (h : i ∈ l.withUniqueDualLT) :
+    i ∈ l.withUniqueDual := by
+  simp only [withUniqueDualLT, Finset.mem_filter, Finset.mem_univ, true_and] at h
+  exact h.1
+
+lemma mem_withUniqueDual_of_mem_withUniqueDualGt (i : Fin l.length) (h : i ∈ l.withUniqueDualGT) :
+    i ∈ l.withUniqueDual := by
+  simp only [withUniqueDualGT, Finset.mem_filter, Finset.mem_univ, true_and] at h
+  exact h.1
+
+lemma withUniqueDualLT_disjoint_withUniqueDualGT :
+    Disjoint l.withUniqueDualLT l.withUniqueDualGT := by
+  rw [Finset.disjoint_iff_inter_eq_empty]
+  exact @Finset.filter_inter_filter_neg_eq (Fin l.length) _ _ _ _ _
+
+lemma withUniqueDualLT_union_withUniqueDualGT :
+    l.withUniqueDualLT ∪ l.withUniqueDualGT = l.withUniqueDual :=
+  Finset.filter_union_filter_neg_eq _ _
 /-!
 ## Are dual properties
 -/
@@ -238,6 +282,7 @@ lemma of_append_inr (i : Fin l.length) (j : Fin l3.length) :
   simp [AreDualInOther]
 
 end AreDualInOther
+
 /-!
 
 ## Basic properties of getDual?

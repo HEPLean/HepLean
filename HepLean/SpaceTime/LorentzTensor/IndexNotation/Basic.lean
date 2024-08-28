@@ -101,27 +101,58 @@ instance : Decidable (listCharIndex X l) :=
 
 /-!
 
+## The definition of an index
+
+-/
+
+def Index : Type := X × ℕ
+
+instance : DecidableEq (Index X) := instDecidableEqProd
+
+namespace Index
+
+variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+
+/-- The color associated to an index. -/
+def toColor (I : Index X) : X := I.1
+
+def id (I : Index X) : ℕ := I.2
+
+lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColor ∧ I.id = J.id := by
+  refine Iff.intro ?_ ?_
+  · intro h
+    simp [h]
+  · intro h
+    cases I
+    cases J
+    simp [toColor, id] at h
+    simp [h]
+
+end Index
+
+/-!
+
 ## The definition of an index and its properties
 
 -/
 
 /-- An index is a non-empty string satisfying the condtion `listCharIndex`,
   e.g. `ᵘ¹²` or `ᵤ₄₃` etc. -/
-def Index : Type := {s : String // listCharIndex X s.toList ∧ s.toList ≠ []}
+def IndexRep : Type := {s : String // listCharIndex X s.toList ∧ s.toList ≠ []}
 
-instance : DecidableEq (Index X) := Subtype.instDecidableEq
+instance : DecidableEq (IndexRep X) := Subtype.instDecidableEq
 
-namespace Index
+namespace IndexRep
 
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 
 /-- Creats an index from a non-empty list of characters satisfying `listCharIndex`. -/
-def ofCharList (l : List Char) (h : listCharIndex X l ∧ l ≠ []) : Index X := ⟨l.asString, h⟩
+def ofCharList (l : List Char) (h : listCharIndex X l ∧ l ≠ []) : IndexRep X := ⟨l.asString, h⟩
 
-instance : ToString (Index X) := ⟨fun i => i.val⟩
+instance : ToString (IndexRep X) := ⟨fun i => i.val⟩
 
 /-- Gets the first character in an index e.g. `ᵘ` as an element of `charList X`. -/
-def head (s : Index X) : charList X :=
+def head (s : IndexRep X) : charList X :=
   ⟨s.val.toList.head (s.prop.2), by
     have h := s.prop.1
     have h2 := s.prop.2
@@ -130,7 +161,7 @@ def head (s : Index X) : charList X :=
     simpa [isNotationChar] using h.1⟩
 
 /-- The color associated to an index. -/
-def toColor (s : Index X) : X := (IndexNotation.notaEquiv).invFun s.head
+def toColor (s : IndexRep X) : X := (IndexNotation.notaEquiv).invFun s.head
 
 /-- A map from super and subscript numerical characters to the natural numbers,
   returning `0` on all other characters. -/
@@ -159,14 +190,13 @@ def charToNat (c : Char) : Nat :=
   | _ => 0
 
 /-- The numerical characters associated with an index. -/
-def tail (s : Index X) : List Char := s.val.toList.tail
+def tail (s : IndexRep X) : List Char := s.val.toList.tail
 
 /-- The natural numbers assocaited with an index. -/
-def tailNat (s : Index X) : List Nat := s.tail.map charToNat
+def tailNat (s : IndexRep X) : List ℕ := s.tail.map charToNat
 
 /-- The id of an index, as a natural number. -/
-def id (s : Index X) : Nat := s.tailNat.foldl (fun a b => 10 * a + b) 0
+def id (s : IndexRep X) : ℕ := s.tailNat.foldl (fun a b => 10 * a + b) 0
 
-end Index
-
+end IndexRep
 end IndexNotation

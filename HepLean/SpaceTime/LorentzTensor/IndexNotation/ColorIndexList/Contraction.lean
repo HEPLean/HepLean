@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Basic
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Contraction
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Contraction
 import HepLean.SpaceTime.LorentzTensor.Contraction
 import HepLean.SpaceTime.LorentzTensor.Basic
 import Init.Data.List.Lemmas
@@ -36,7 +36,7 @@ open IndexList TensorColor
 def contr : ColorIndexList 𝓒 where
   toIndexList := l.toIndexList.contrIndexList
   unique_duals := by
-    simp
+    simp [OnlyUniqueDuals]
   dual_color := by
     funext i
     simp [Option.guard]
@@ -114,17 +114,9 @@ lemma contr_countId_eq_filter (I : Index 𝓒.Color) :
   exact Bool.and_comm (decide (I.id = J.id))
     (decide (List.countP (fun j => decide (J.id = j.id)) l.val = 1))
 
-lemma countId_contr_le_one_of_countId (I : Index 𝓒.Color) (hI1 : l.countId I ≤ 1) :
+lemma countId_contr_le_one (I : Index 𝓒.Color) :
     l.contr.countId I ≤ 1 := by
-  rw [contr_countId_eq_filter]
-  by_cases hI1 : l.countId I = 0
-  · rw [l.filter_id_of_countId_eq_zero' hI1]
-    simp
-  · have hI1 : l.countId I = 1 := by
-      omega
-    rw [l.consDual_filter hI1]
-    apply (List.countP_le_length _).trans
-    rfl
+  exact l.countId_contrIndexList_le_one I
 
 lemma countId_contr_eq_zero_iff (I : Index 𝓒.Color) :
     l.contr.countId I = 0 ↔ l.countId I = 0 ∨ l.countId I = 2 := by
@@ -155,7 +147,8 @@ lemma countId_contr_eq_zero_iff (I : Index 𝓒.Color) :
 def contrEquiv : (l.withUniqueDualLT ⊕ l.withUniqueDualLT) ⊕ Fin l.contr.length ≃ Fin l.length :=
   (Equiv.sumCongr (l.withUniqueLTGTEquiv) (Equiv.refl _)).trans <|
   (Equiv.sumCongr (Equiv.subtypeEquivRight (by
-  simp only [l.unique_duals, implies_true]))
+  rw [l.unique_duals]
+  simp only [mem_withDual_iff_isSome, implies_true]))
     (Fin.castOrderIso l.contrIndexList_length).toEquiv).trans <|
   l.dualEquiv
 

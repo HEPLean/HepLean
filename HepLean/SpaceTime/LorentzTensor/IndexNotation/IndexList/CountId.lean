@@ -168,10 +168,6 @@ lemma countId_get (i : Fin l.length) : l.countId (l.val.get i) =
   simp
   simp [List.countP, List.countP.go, AreDualInOther]
 
-
-
-
-
 /-!
 
 ## Duals and countId
@@ -323,16 +319,220 @@ lemma mem_withUniqueDual_iff_countId_eq_two (i : Fin l.length) :
   Iff.intro (fun h => l.countId_eq_two_of_mem_withUniqueDual i h)
     (fun h => l.mem_withUniqueDual_of_countId_eq_two i h)
 
+lemma countId_eq_one_of_mem_withUniqueDualInOther (i : Fin l.length)
+    (h : i ∈ l.withUniqueDualInOther l2) :
+    l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1 := by
+  let i' :=  (l.getDualInOther? l2 i).get (mem_withUniqueDualInOther_isSome l l2 i h)
+  have h1 :  [i'] = (List.finRange l2.length).filter (fun j => (l.AreDualInOther l2 i j)) := by
+    trans List.filter (fun j => (l.AreDualInOther l2 i j)) [i']
+    · simp [List.filter, i']
+    trans List.filter (fun j => (l.AreDualInOther l2 i j))
+      ((List.finRange l2.length).filter (fun j => j = i'))
+    · apply congrArg
+      rw [← filter_finRange l2 i']
+      apply List.filter_congr (fun j _ => ?_)
+      simpa using eq_comm
+    trans List.filter (fun j => j = i')
+      ((List.finRange l2.length).filter (fun j => (l.AreDualInOther l2 i j)))
+    · simp
+      apply List.filter_congr (fun j _ => ?_)
+      exact Bool.and_comm (decide (l.AreDualInOther l2 i j)) (decide (j = i'))
+    · simp
+      refine List.filter_congr (fun j _ => ?_)
+      simp [withUniqueDualInOther] at h
+      simp
+      intro hj
+      have hj' := h.2.2 j hj
+      apply Option.some_injective
+      rw [hj']
+      simp [i']
+  apply And.intro
+  · simp only [withUniqueDualInOther, Finset.mem_filter, Finset.mem_univ, true_and] at h
+    rw [mem_withDual_iff_countId_gt_one] at h
+    have h2 := countId_index_neq_zero l i
+    omega
+  · rw [countId_get_other, List.countP_eq_length_filter, ← h1]
+    simp
+
+lemma mem_withUniqueDualInOther_of_countId_eq_one (i : Fin l.length)
+    (h : l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1) :
+    i ∈ l.withUniqueDualInOther l2 := by
+  have hw : i ∈ l.withDualInOther l2 := by
+    rw [mem_withDualInOther_iff_countId_neq_zero, h.2]
+    exact Nat.one_ne_zero
+  simp only [withUniqueDualInOther, Finset.mem_filter, Finset.mem_univ, true_and]
+  apply And.intro
+  · rw [mem_withDual_iff_countId_gt_one]
+    omega
+  · apply And.intro
+    · rw [mem_withDualInOther_iff_countId_neq_zero]
+      omega
+    · intro j hj
+      have h2 := h.2
+      rw [countId_get_other l l2, List.countP_eq_length_filter, List.length_eq_one] at h2
+      obtain ⟨a, ha⟩ := h2
+      have hj : j ∈ List.filter (fun j => decide (l.AreDualInOther l2 i j))
+          (List.finRange l2.length) := by
+        simpa using hj
+      rw [ha] at hj
+      simp at hj
+      subst hj
+      have ht : (l.getDualInOther? l2 i).get ((mem_withInDualOther_iff_isSome l l2 i).mp hw)  ∈
+        (List.finRange l2.length).filter (fun j => decide (l.AreDualInOther l2 i j)) := by
+          simp
+      rw [ha] at ht
+      simp at ht
+      subst ht
+      simp
+
 lemma mem_withUniqueDualInOther_iff_countId_eq_one (i : Fin l.length) :
-    i ∈ l.withUniqueDualInOther l2 ↔ l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1 := by
-  simp only [withUniqueDualInOther, Finset.mem_filter, Finset.mem_univ, true_and,
-    List.get_eq_getElem]
-  rw [mem_withDual_iff_countId_gt_one]
-  rw [mem_withDualInOther_iff_countId_neq_zero]
-  have hneq : l.countId (l.val.get i) ≠ 0 := by exact countId_index_neq_zero l i
+    i ∈ l.withUniqueDualInOther l2 ↔ l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1 :=
+  Iff.intro (fun h => l.countId_eq_one_of_mem_withUniqueDualInOther l2 i h)
+    (fun h => l.mem_withUniqueDualInOther_of_countId_eq_one l2 i h)
+
+/-!
+
+## getDual? and countId
+
+-/
+
+@[simp]
+lemma getDual?_countId (i : Fin l.length) (h : (l.getDual? i).isSome) :
+    l.countId (l.val[Fin.val ((l.getDual? i).get h)]) = l.countId (l.val.get i) := by
+  apply countId_congr
+  change l.idMap ((l.getDual? i).get h) = _
+  simp
+  rfl
+
+@[simp]
+lemma getDualInOther?_countId_right (i : Fin l.length) (h : (l.getDualInOther? l2 i).isSome) :
+    l2.countId (l2.val[Fin.val ((l.getDualInOther? l2 i).get h)]) = l2.countId (l.val.get i) := by
+  apply countId_congr
+  change l2.idMap ((l.getDualInOther? l2 i).get h) = _
+  simp
+  rfl
+
+@[simp]
+lemma getDualInOther?_countId_left (i : Fin l.length) (h : (l.getDualInOther? l2 i).isSome) :
+    l.countId (l2.val[Fin.val ((l.getDualInOther? l2 i).get h)]) = l.countId (l.val.get i) := by
+  apply countId_congr
+  change l2.idMap ((l.getDualInOther? l2 i).get h) = _
+  simp
+  rfl
+
+lemma getDual?_isSome_of_countId_eq_two {i : Fin l.length}
+    (h : l.countId (l.val.get i) = 2) : (l.getDual? i).isSome := by
+  rw [← l.mem_withUniqueDual_iff_countId_eq_two] at h
+  exact mem_withUniqueDual_isSome l i h
+
+/-!
+
+## Filters
+
+-/
 
 
+lemma filter_id_of_countId_eq_zero {i : Fin l.length} (h1 : l.countId (l.val.get i) = 0) :
+    l.val.filter (fun J => (l.val.get i).id = J.id) = [] := by
+  rw [countId_eq_length_filter, List.length_eq_zero] at h1
+  exact h1
 
+lemma filter_id_of_countId_eq_zero' {I : Index X} (h1 : l.countId I = 0) :
+    l.val.filter (fun J => I.id = J.id) = [] := by
+  rw [countId_eq_length_filter, List.length_eq_zero] at h1
+  exact h1
+
+lemma filter_id_of_countId_eq_one {i : Fin l.length} (h1 : l.countId (l.val.get i) = 1) :
+    l.val.filter (fun J => (l.val.get i).id = J.id) = [l.val.get i] := by
+  rw [countId_eq_length_filter, List.length_eq_one] at h1
+  obtain ⟨J, hJ⟩ := h1
+  have hme : (l.val.get i) ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l.val := by
+    simp only [List.get_eq_getElem, List.mem_filter, decide_True, and_true]
+    exact List.getElem_mem l.val (↑i) i.isLt
+  rw [hJ] at hme
+  simp only [List.get_eq_getElem, List.mem_singleton] at hme
+  erw [hJ]
+  simp only [List.get_eq_getElem, List.cons.injEq, and_true]
+  exact id (Eq.symm hme)
+
+lemma filter_id_of_countId_eq_one_mem {I : Index X} (hI : I ∈ l.val) (h : l.countId I = 1) :
+    l.val.filter (fun J => I.id = J.id) = [I] := by
+  rw [countId_eq_length_filter, List.length_eq_one] at h
+  obtain ⟨J, hJ⟩ := h
+  have hme : I ∈ List.filter (fun J => decide (I.id = J.id)) l.val := by
+    simp only [List.mem_filter, decide_True, and_true]
+    exact hI
+  rw [hJ] at hme
+  simp only [List.mem_singleton] at hme
+  erw [hJ]
+  simp only [List.cons.injEq, and_true]
+  exact id (Eq.symm hme)
+
+lemma filter_id_of_countId_eq_two {i : Fin l.length}
+    (h : l.countId (l.val.get i) = 2) :
+    l.val.filter (fun J => (l.val.get i).id = J.id) =
+    [l.val.get i, l.val.get ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))] ∨
+    l.val.filter (fun J => (l.val.get i).id = J.id) =
+    [l.val.get ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)), l.val.get i] := by
+  have hc := h
+  rw [countId_eq_length_filter] at hc
+  by_cases hi : i < ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))
+  · refine Or.inl (List.Sublist.eq_of_length ?_ ?_).symm
+    · have h1 : [l.val.get i, l.val.get
+          ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))].filter
+            (fun J => (l.val.get i).id = J.id) = [l.val.get i, l.val.get
+          ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))] := by
+        simp only [List.get_eq_getElem, decide_True, List.filter_cons_of_pos, List.cons.injEq,
+          List.filter_eq_self, List.mem_singleton, decide_eq_true_eq, forall_eq, true_and]
+        change l.idMap i = l.idMap ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))
+        simp
+      rw [← h1]
+      refine List.Sublist.filter (fun (J : Index X) => ((l.val.get i).id = J.id)) ?_
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      refine ⟨⟨⟨![i, (l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)],
+          List.nodup_ofFn.mp ?_⟩, ?_⟩, ?_⟩
+      · simpa using Fin.ne_of_lt hi
+      · intro a b
+        fin_cases a, b
+          <;> simp [hi]
+        exact Fin.le_of_lt hi
+      · intro a
+        fin_cases a <;> rfl
+    · rw [hc]
+      simp
+  · have hi' : ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)) < i := by
+      have h1 := l.getDual?_get_areDualInSelf i (getDual?_isSome_of_countId_eq_two l h)
+      simp only [AreDualInSelf] at h1
+      have h2 := h1.1
+      omega
+    refine Or.inr (List.Sublist.eq_of_length ?_ ?_).symm
+    · have h1 : [l.val.get ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)),
+        l.val.get i].filter (fun J => (l.val.get i).id = J.id) = [l.val.get
+        ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)), l.val.get i,] := by
+        simp only [List.get_eq_getElem, List.filter_eq_self, List.mem_cons, List.mem_singleton,
+          decide_eq_true_eq, forall_eq_or_imp, forall_eq, and_true]
+        apply And.intro
+        · change l.idMap i = l.idMap ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))
+          simp
+        · simp only [List.not_mem_nil, false_implies, implies_true, and_self]
+      rw [← h1]
+      refine List.Sublist.filter (fun (J : Index X) => ((l.val.get i).id = J.id)) ?_
+      rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+      refine ⟨⟨⟨![(l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h), i], ?_⟩, ?_⟩, ?_⟩
+      · refine List.nodup_ofFn.mp ?_
+        simp only [List.get_eq_getElem, List.length_singleton, Nat.succ_eq_add_one, Nat.reduceAdd,
+          List.length_nil, List.ofFn_succ, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_succ,
+          Matrix.cons_val_fin_one, List.ofFn_zero, List.nodup_cons, List.mem_singleton,
+          List.not_mem_nil, not_false_eq_true, List.nodup_nil, and_self, and_true]
+        exact Fin.ne_of_lt hi'
+      · intro a b
+        fin_cases a, b
+          <;> simp [hi']
+        exact Fin.le_of_lt hi'
+      · intro a
+        fin_cases a <;> rfl
+    · rw [hc]
+      simp
 
 end IndexList
 

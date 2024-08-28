@@ -80,10 +80,6 @@ lemma mem_withoutDual_iff_countId_eq_one (i : Fin l.length) :
     rw [mem_withDual_iff_countId_gt_one] at h
     omega
 
-/-- An equivalence from `Fin l.withoutDual.card` to `l.withoutDual` determined by
-  the order on `l.withoutDual` inherted from `Fin`. -/
-def withoutDualEquiv : Fin l.withoutDual.card ≃ l.withoutDual :=
-  (Finset.orderIsoOfFin l.withoutDual (by rfl)).toEquiv
 
 lemma list_ofFn_withoutDualEquiv_eq_sort :
     List.ofFn (Subtype.val ∘ l.withoutDualEquiv) = l.withoutDual.sort (fun i j => i ≤ j) := by
