@@ -78,7 +78,7 @@ noncomputable def fromIndexStringColor {cn : Fin n → realTensorColor.Color}
     (T : (realLorentzTensor d).Tensor cn) (s : String)
     (hs : listCharIsIndexString realTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
-    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hD : (toIndexList' s hs).OnlyUniqueDuals)
     (hC : IndexList.ColorCond.bool (toIndexList' s hs))
     (hd : TensorColor.ColorMap.DualMap.boolFin
       (toIndexList' s hs).colorMap (cn ∘ Fin.cast hn.symm)) :
@@ -103,7 +103,7 @@ macro "prodTactic" : tactic =>
     `(tactic| {
     apply (ColorIndexList.AppendCond.iff_bool _ _).mpr
     change @ColorIndexList.AppendCond.bool realTensorColor
-      instIndexNotationColorRealTensorColor instDecidableEqColorRealTensorColor _ _
+      instDecidableEqColorRealTensorColor _ _
     simp only [prod_toIndexList, indexNotation_eq_color, fromIndexStringColor, mkDualMap,
       toTensorColor_eq, decidableEq_eq_color]
     rfl})

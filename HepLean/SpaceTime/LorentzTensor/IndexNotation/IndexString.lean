@@ -61,7 +61,7 @@ def toCharList (s : IndexString X) : List Char := s.val.toList
 /-- Takes a list of characters to the correpsonding index if it exists else to `none`. -/
 def charListToOptionIndex (l : List Char) : Option (Index X) :=
   if h : listCharIndex X l && l ≠ [] then
-    some (Index.ofCharList l (by simpa using h))
+    some (IndexRep.ofCharList l (by simpa using h)).toIndex
   else
     none
 
@@ -97,7 +97,7 @@ open IndexNotation ColorIndexList IndexString
 noncomputable def fromIndexString (T : 𝓣.Tensor cn) (s : String)
     (hs : listCharIsIndexString 𝓣.toTensorColor.Color s.toList = true)
     (hn : n = (toIndexList' s hs).length)
-    (hD : (toIndexList' s hs).withDual = (toIndexList' s hs).withUniqueDual)
+    (hD : IndexList.OnlyUniqueDuals (toIndexList' s hs))
     (hC : IndexList.ColorCond (toIndexList' s hs))
     (hd : TensorColor.ColorMap.DualMap (toIndexList' s hs).colorMap
       (cn ∘ Fin.cast hn.symm)) : 𝓣.TensorIndex :=

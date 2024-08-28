@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Color
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Color
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Relations
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Append
 import HepLean.SpaceTime.LorentzTensor.Basic
@@ -153,7 +153,7 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
       intro x hx
       have hx' : x ∈ i.withUniqueDual := by
         exact Finset.mem_of_mem_filter x hx
-      rw [i.unique_duals] at h
+      rw [← i.unique_duals] at h
       rw [h] at hx'
       simp_all only [Finset.not_mem_empty]
     erw [TensorStructure.contr_tprod_isEmpty]
@@ -238,7 +238,7 @@ lemma trans {T₁ T₂ T₃ : 𝓣.TensorIndex} (h1 : Rel T₁ T₂) (h2 : Rel T
     simp only [contrPermEquiv_trans, contrPermEquiv_symm]
 
 /-- Rel forms an equivalence relation. -/
-lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _) where
+lemma isEquivalence : Equivalence (@Rel _ _ 𝓣 _ _) where
   refl := Rel.refl
   symm := Rel.symm
   trans := Rel.trans
