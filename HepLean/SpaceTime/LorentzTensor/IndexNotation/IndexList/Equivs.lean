@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.CountId
-import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic.FinCases
 /-!
@@ -97,6 +96,8 @@ lemma getDual?_getDualEquiv (i : l.withUniqueDual) : l.getDual? (l.getDualEquiv 
   simp
   rfl
 
+/-- An equivalence from `l.withUniqueDualInOther l2 ` to
+  `l2.withUniqueDualInOther l` obtained by taking the dual index. -/
 def getDualInOtherEquiv : l.withUniqueDualInOther l2 ≃ l2.withUniqueDualInOther l where
   toFun x := ⟨(l.getDualInOther? l2 x).get (l.mem_withUniqueDualInOther_isSome l2 x.1 x.2), by
     rw [mem_withUniqueDualInOther_iff_countId_eq_one]
@@ -139,7 +140,7 @@ lemma getDualInOtherEquiv_self_refl : l.getDualInOtherEquiv l = Equiv.refl _ := 
   intro x
   simp [getDualInOtherEquiv]
   apply Subtype.eq
-  simp
+  simp only
   have hx2 := x.2
   simp [withUniqueDualInOther] at hx2
   apply Option.some_injective

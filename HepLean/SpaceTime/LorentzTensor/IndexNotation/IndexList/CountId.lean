@@ -124,13 +124,14 @@ lemma countId_get_other (i : Fin l.length) : l2.countId (l.val.get i) =
   simp [AreDualInOther, idMap]
 
 /-! TODO: Replace with mathlib lemma. -/
-lemma filter_finRange (i : Fin l.length) : List.filter (fun j => i = j) (List.finRange l.length) = [i] := by
+lemma filter_finRange (i : Fin l.length) :
+    List.filter (fun j => i = j) (List.finRange l.length) = [i] := by
   have h3 : (List.filter (fun j => i = j) (List.finRange l.length)).length = 1 := by
     rw [← List.countP_eq_length_filter]
     trans List.count i (List.finRange l.length)
     · simp [List.count]
       apply List.countP_congr (fun j _ => ?_)
-      simp
+      simp only [decide_eq_true_eq, beq_iff_eq]
       exact eq_comm
     · exact List.nodup_iff_count_eq_one.mp (List.nodup_finRange l.length) _ (List.mem_finRange i)
   have h4 : i ∈ List.filter (fun j => i = j) (List.finRange l.length) := by
@@ -153,7 +154,8 @@ lemma countId_get (i : Fin l.length) : l.countId (l.val.get i) =
     intro j _
     simp [AreDualInSelf, AreDualInOther]
   rw [h1]
-  have h1 := List.length_eq_countP_add_countP (fun j => i = j) ((List.finRange l.length).filter (fun j => l.AreDualInOther l i j))
+  have h1 := List.length_eq_countP_add_countP (fun j => i = j)
+    ((List.finRange l.length).filter (fun j => l.AreDualInOther l i j))
   have h2 : List.countP (fun j => i = j)
       (List.filter (fun j => l.AreDualInOther l i j) (List.finRange l.length)) =
      List.countP (fun j => l.AreDualInOther l i j)
@@ -165,7 +167,7 @@ lemma countId_get (i : Fin l.length) : l.countId (l.val.get i) =
   rw [ha] at h2
   rw [h2] at h1
   rw [List.countP_eq_length_filter, h1, add_comm]
-  simp
+  simp only [decide_eq_true_eq, decide_not, add_right_inj]
   simp [List.countP, List.countP.go, AreDualInOther]
 
 /-!
@@ -214,7 +216,7 @@ lemma countId_neq_zero_of_mem_withDualInOther (i : Fin l.length) (h : i ∈ l.wi
   rw [List.length_eq_zero] at hn
   obtain ⟨j, hj⟩ := h
   have hjmem : l2.val.get j ∈  List.filter (fun J => decide ((l.val.get i).id = J.id)) l2.val := by
-    simp
+    simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
     apply And.intro
     · exact List.getElem_mem l2.val (↑j) j.isLt
     · simpa [AreDualInOther] using hj
@@ -231,7 +233,6 @@ lemma countId_of_not_mem_withDualInOther (i : Fin l.length) (h : i ∉ l.withDua
   obtain ⟨j, hj⟩ := hx
   have hjmem : j ∈ l2.val :=  List.mem_of_mem_filter hj
   have hj' : l2.val.indexOf j < l2.length := List.indexOf_lt_length.mpr hjmem
-  have hjid : l2.val.get ⟨l2.val.indexOf j, hj'⟩ = j := List.indexOf_get hj'
   rw [mem_withInDualOther_iff_exists] at h
   simp at h
   have hj' := h ⟨l2.val.indexOf j, hj'⟩
@@ -261,7 +262,7 @@ lemma mem_withoutDual_iff_countId_eq_one (i : Fin l.length) :
 lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :
     l.countId (l.val.get i) = 2 := by
   rw [countId_get]
-  simp
+  simp only [Nat.reduceEqDiff]
   let i' :=  (l.getDual? i).get (mem_withUniqueDual_isSome l i h)
   have h1 :  [i'] = (List.finRange l.length).filter (fun j => (l.AreDualInSelf i j)) := by
     trans List.filter (fun j => (l.AreDualInSelf i j)) [i']
@@ -279,7 +280,7 @@ lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withU
       exact Bool.and_comm (decide (l.AreDualInSelf i j)) (decide (j = i'))
     · simp
       refine List.filter_congr (fun j _ => ?_)
-      simp
+      simp only [Bool.and_iff_right_iff_imp, decide_eq_true_eq]
       simp [withUniqueDual] at h
       intro hj
       have hj' := h.2 j hj
@@ -340,7 +341,7 @@ lemma countId_eq_one_of_mem_withUniqueDualInOther (i : Fin l.length)
     · simp
       refine List.filter_congr (fun j _ => ?_)
       simp [withUniqueDualInOther] at h
-      simp
+      simp only [Bool.and_iff_right_iff_imp, decide_eq_true_eq]
       intro hj
       have hj' := h.2.2 j hj
       apply Option.some_injective

@@ -25,6 +25,8 @@ namespace IndexList
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 l3 : IndexList X)
 
+/-- The conditon on an index list which is true if and only if for every index with a dual,
+  that dual is unique. -/
 def OnlyUniqueDuals : Prop := l.withUniqueDual = l.withDual
 
 namespace OnlyUniqueDuals
@@ -100,7 +102,7 @@ lemma symm' (h : (l ++ l2).OnlyUniqueDuals) : (l2 ++ l).OnlyUniqueDuals := by
   intro I
   have hI := h I
   simp at hI
-  simp
+  simp only [countId_append, ge_iff_le]
   omega
 
 lemma symm : (l ++ l2).OnlyUniqueDuals ↔ (l2 ++ l).OnlyUniqueDuals := by
@@ -111,7 +113,7 @@ lemma swap (h : (l ++ l2 ++ l3).OnlyUniqueDuals) : (l2 ++ l ++ l3).OnlyUniqueDua
   intro I
   have hI := h I
   simp at hI
-  simp
+  simp only [countId_append, ge_iff_le]
   omega
 
 /-!
@@ -161,13 +163,12 @@ lemma countId_of_OnlyUniqueDuals (h : l.OnlyUniqueDuals) (I : Index X) :
   exact h I
 
 lemma countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals
-     (h : (l ++ l2).OnlyUniqueDuals) (I : Index X) (h' : (l.contrIndexList ++ l2).countId I = 2 ) :
+    (h : (l ++ l2).OnlyUniqueDuals) (I : Index X) (h' : (l.contrIndexList ++ l2).countId I = 2 ) :
     (l ++ l2).countId I = 2 := by
-  simp
+  simp only [countId_append]
   have h1 := countId_contrIndexList_le_countId l I
   have h3 :=  countId_of_OnlyUniqueDuals _ h I
-  have h4 := countId_of_OnlyUniqueDuals _ h.contrIndexList_left I
-  simp at h3 h4 h'
+  simp at h3 h'
   omega
 
 

@@ -184,7 +184,7 @@ lemma getDualInOtherEquiv_eq_of_countSelf
     rw [← countSelf_neq_zero, h2]
     simp
   rw [← List.mem_singleton, ← filter_id_of_countId_eq_one_mem l2.contr.toIndexList h1' h1 ]
-  simp
+  simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
   apply And.intro (List.getElem_mem _ _ _)
   simp [getDualInOtherEquiv]
   change _ = l2.contr.idMap (l.contr.getDualInOtherEquiv l2.contr ⟨i, by
@@ -194,7 +194,8 @@ lemma getDualInOtherEquiv_eq_of_countSelf
   rfl
 
 lemma colorMap_eq_of_countSelf (hn : IndexList.Subperm l.contr l2.contr.toIndexList)
-    (h2 : ∀ i, l.contr.countSelf (l.contr.val.get i) = 1 → l2.contr.countSelf (l.contr.val.get i) = 1) :
+    (h2 : ∀ i, l.contr.countSelf (l.contr.val.get i) = 1
+    → l2.contr.countSelf (l.contr.val.get i) = 1) :
     l2.contr.colorMap' ∘ Subtype.val ∘ (l.contr.getDualInOtherEquiv l2.contr)
     = l.contr.colorMap' ∘ Subtype.val := by
   funext a

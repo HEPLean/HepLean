@@ -49,6 +49,7 @@ variable {𝓒 : TensorColor}
 variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 variable (l l2 l3 : IndexList 𝓒.Color)
 
+/-- The number of times `I` or its dual appears in an `IndexList`. -/
 def countColorQuot (I : Index 𝓒.Color) : ℕ := l.val.countP (fun J => I = J ∨ I.dual = J)
 
 lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
@@ -81,7 +82,8 @@ lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
       simp
 
 lemma countColorQuot_eq_filter_color_countP (I : Index 𝓒.Color) :
-    l.countColorQuot I = (l.val.filter (fun J =>  I.toColor = J.toColor ∨ I.toColor = 𝓒.τ (J.toColor))).countP
+    l.countColorQuot I =
+    (l.val.filter (fun J =>  I.toColor = J.toColor ∨ I.toColor = 𝓒.τ (J.toColor))).countP
     (fun J =>  I.id = J.id) := by
   rw [countColorQuot_eq_filter_id_countP]
   rw [List.countP_filter, List.countP_filter]
@@ -154,6 +156,7 @@ lemma countColorQuot_contrIndexList_eq_of_countId_eq
     l.filter_id_contrIndexList_eq_of_countId_contrIndexList I h1,
     countColorQuot_eq_filter_id_countP]
 
+/-- The number of times an index `I` appears in an index list. -/
 def countSelf (I : Index 𝓒.Color) : ℕ := l.val.countP (fun J => I = J)
 
 lemma countSelf_eq_filter_id_countP : l.countSelf I =
@@ -165,7 +168,7 @@ lemma countSelf_eq_filter_id_countP : l.countSelf I =
   simp [Index.eq_iff_color_eq_and_id_eq]
 
 lemma countSelf_eq_filter_color_countP :
-  l.countSelf I =
+    l.countSelf I =
     (l.val.filter (fun J => I.toColor = J.toColor)).countP (fun J => I.id = J.id) := by
   simp [countSelf]
   rw [List.countP_filter]
@@ -182,7 +185,7 @@ lemma countSelf_count (I : Index 𝓒.Color) : l.countSelf I = l.val.count I := 
   rw [countSelf, List.count]
   apply List.countP_congr
   intro I' _
-  simp
+  simp only [decide_eq_true_eq, beq_iff_eq]
   exact eq_comm
 
 lemma countSelf_eq_zero (I : Index 𝓒.Color) : l.countSelf I = 0 ↔ I ∉ l.val := by
@@ -246,6 +249,7 @@ lemma countSelf_contrIndexList_get (i : Fin l.contrIndexList.length) :
     exact List.getElem_mem l.contrIndexList.val (↑i) _
   · exact List.getElem_mem l.contrIndexList.val (↑i) _
 
+/-- The number of times the dual of an index `I` appears in an index list. -/
 def countDual (I : Index 𝓒.Color) : ℕ := l.val.countP (fun J => I.dual = J)
 
 lemma countDual_eq_countSelf_Dual (I : Index 𝓒.Color) : l.countDual I = l.countSelf I.dual := by
@@ -398,10 +402,10 @@ abbrev countColorCond (l : IndexList 𝓒.Color) (I : Index 𝓒.Color) : Prop :
 lemma countColorCond_of_filter_eq (l l2 : IndexList 𝓒.Color) {I : Index 𝓒.Color}
     (hf : l.val.filter (fun J => I.id = J.id) = l2.val.filter (fun J => I.id = J.id))
     (h1 : countColorCond l I) : countColorCond l2 I := by
-  rw [countColorCond, countColorQuot_eq_filter_id_countP, countId_eq_length_filter, countSelf_eq_filter_id_countP,
-    countDual_eq_filter_id_countP, ← hf]
-  rw [countColorCond, countColorQuot_eq_filter_id_countP, countId_eq_length_filter, countSelf_eq_filter_id_countP,
-    countDual_eq_filter_id_countP] at h1
+  rw [countColorCond, countColorQuot_eq_filter_id_countP, countId_eq_length_filter,
+    countSelf_eq_filter_id_countP, countDual_eq_filter_id_countP, ← hf]
+  rw [countColorCond, countColorQuot_eq_filter_id_countP, countId_eq_length_filter,
+    countSelf_eq_filter_id_countP, countDual_eq_filter_id_countP] at h1
   exact h1
 
 lemma iff_countColorCond_isSome (hl : l.OnlyUniqueDuals) : l.ColorCond ↔
@@ -548,7 +552,8 @@ lemma contrIndexList_left (hl : (l ++ l2).OnlyUniqueDuals) (h1 : (l ++ l2).Color
   have hIdEq : l.contrIndexList.countId I = l.countId I := by
     simp at h2 hI2
     omega
-  simp
+  simp only [countColorCond, countColorQuot_append, countId_append, countSelf_append,
+    countDual_append]
   rw [l.countColorQuot_contrIndexList_eq_of_countId_eq hIdEq,
     l.countSelf_contrIndexList_eq_of_countId_eq hIdEq,
     l.countDual_contrIndexList_eq_of_countId_eq hIdEq, hIdEq]

@@ -3,9 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Set.Finite
-import Mathlib.Logic.Equiv.Fin
-import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic.FinCases
 /-!
 
@@ -105,6 +102,8 @@ instance : Decidable (listCharIndex X l) :=
 
 -/
 
+/-- An index for `X` is an pair of an element of `X` (the color of the index) and a natural
+  number (the id of the index). -/
 def Index : Type := X × ℕ
 
 instance : DecidableEq (Index X) := instDecidableEqProd
@@ -116,6 +115,7 @@ variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 /-- The color associated to an index. -/
 def toColor (I : Index X) : X := I.1
 
+/-- The natural number representating the id of an index. -/
 def id (I : Index X) : ℕ := I.2
 
 lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColor ∧ I.id = J.id := by
@@ -136,7 +136,7 @@ end Index
 
 -/
 
-/-- An index is a non-empty string satisfying the condtion `listCharIndex`,
+/-- An index rep is a non-empty string satisfying the condtion `listCharIndex`,
   e.g. `ᵘ¹²` or `ᵤ₄₃` etc. -/
 def IndexRep : Type := {s : String // listCharIndex X s.toList ∧ s.toList ≠ []}
 
@@ -198,6 +198,8 @@ def tailNat (s : IndexRep X) : List ℕ := s.tail.map charToNat
 /-- The id of an index, as a natural number. -/
 def id (s : IndexRep X) : ℕ := s.tailNat.foldl (fun a b => 10 * a + b) 0
 
+/-- The index associated with a `IndexRep`. -/
 def toIndex (s : IndexRep X) : Index X := (s.toColor, s.id)
+
 end IndexRep
 end IndexNotation

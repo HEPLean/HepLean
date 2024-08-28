@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.CountId
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Contraction
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Color
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic.FinCases
@@ -22,6 +21,8 @@ namespace IndexList
 variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
 variable (l l2 l3 : IndexList X)
 
+/-- We say a IndexList `l` is a subpermutation of `l2` there are no duals in `l`, and
+  every element of `l` has a unique dual in `l2`. -/
 def Subperm : Prop := l.withUniqueDualInOther l2 = Finset.univ
 
 namespace Subperm
@@ -88,7 +89,7 @@ lemma symm (h : l.Subperm l2) (hl : l.length = l2.length) : l2.Subperm l := by
 lemma contr_refl : l.contrIndexList.Subperm l.contrIndexList := by
   rw [iff_countId]
   intro I
-  simp
+  simp only [imp_self, and_true]
   exact countId_contrIndexList_le_one l I
 
 end Subperm
