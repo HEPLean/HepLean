@@ -82,7 +82,7 @@ lemma δa₁_δ!₃ : @δa₁ n = δ!₃ := by
 lemma δa₂_δ₁ (j : Fin n) : δa₂ j = δ₁ j.succ := by
   rw [Fin.ext_iff]
   simp [δa₂, δ₁]
-  omega
+  exact Nat.add_comm 1 ↑j
 
 lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = δ!₁ j.castSucc := by
   rw [Fin.ext_iff]
@@ -91,7 +91,7 @@ lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = δ!₁ j.castSucc := by
 lemma δa₃_δ₃ : @δa₃ n = δ₃ := by
   rw [Fin.ext_iff]
   simp [δa₃, δ₃]
-  omega
+  exact Nat.add_comm 1 n
 
 lemma δa₃_δ!₁ : δa₃ = δ!₁ (Fin.last n) := by
   rfl
@@ -99,7 +99,7 @@ lemma δa₃_δ!₁ : δa₃ = δ!₁ (Fin.last n) := by
 lemma δa₄_δ₂ (j : Fin n.succ) : δa₄ j = δ₂ j := by
   rw [Fin.ext_iff]
   simp [δa₄, δ₂]
-  omega
+  exact Nat.add_comm 1 n
 
 lemma δa₄_δ!₂ (j : Fin n.succ) : δa₄ j = δ!₂ j := by
   rw [Fin.ext_iff]
@@ -108,15 +108,15 @@ lemma δa₄_δ!₂ (j : Fin n.succ) : δa₄ j = δ!₂ j := by
 lemma δ₂_δ!₂ (j : Fin n) : δ₂ j = δ!₂ j := by
   rw [Fin.ext_iff]
   simp [δ₂, δ!₂]
-  omega
+  exact Nat.add_comm n 1
 
 lemma sum_δ (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ₃ + ∑ i : Fin n, ((S ∘ δ₁) i + (S ∘ δ₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin (n + 1 + n), S (Fin.cast (split_odd n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd n)).symm.toEquiv]
-    intro i
-    simp only [mem_univ, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv]
-    exact fun _ _ => rfl
+    · intro i
+      simp only [mem_univ, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv]
+    · exact fun _ _ => rfl
   rw [h1]
   rw [Fin.sum_univ_add, Fin.sum_univ_add]
   simp only [univ_unique, Fin.default_eq_zero, Fin.isValue, sum_singleton, Function.comp_apply]
@@ -129,14 +129,12 @@ lemma sum_δ! (S : Fin (2 * n + 1) → ℚ) :
     ∑ i, S i = S δ!₃ + ∑ i : Fin n, ((S ∘ δ!₁) i + (S ∘ δ!₂) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin ((1+n)+n), S (Fin.cast (split_odd! n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd! n)).symm.toEquiv]
-    intro i
-    simp only [mem_univ, Fin.castOrderIso, RelIso.coe_fn_toEquiv]
-    exact fun _ _ => rfl
-  rw [h1]
-  rw [Fin.sum_univ_add, Fin.sum_univ_add]
+    · intro i
+      simp only [mem_univ, Fin.castOrderIso, RelIso.coe_fn_toEquiv]
+    · exact fun _ _ => rfl
+  rw [h1, Fin.sum_univ_add, Fin.sum_univ_add]
   simp only [univ_unique, Fin.default_eq_zero, Fin.isValue, sum_singleton, Function.comp_apply]
-  rw [add_assoc]
-  rw [Finset.sum_add_distrib]
+  rw [add_assoc, Finset.sum_add_distrib]
   rfl
 
 end theDeltas
@@ -503,13 +501,13 @@ lemma Pa_zero (f g : Fin n.succ → ℚ) (h : Pa f g = 0) :
     induction iv
     exact h₃.symm
     rename_i iv hi
-    have hivi : iv < n.succ := by omega
+    have hivi : iv < n.succ := lt_of_succ_lt hiv
     have hi2 := hi hivi
     have h1 := Pa_δa₄ f g ⟨iv, hivi⟩
     rw [h, hi2] at h1
     change 0 = _ at h1
     simp at h1
-    have h2 := Pa_δa₂ f g ⟨iv, by omega⟩
+    have h2 := Pa_δa₂ f g ⟨iv, succ_lt_succ_iff.mp hiv⟩
     simp [h, h1] at h2
     exact h2.symm
   exact hinduc i.val i.prop
@@ -643,7 +641,7 @@ lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
     FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
   simp only [Fintype.card_sum, Fintype.card_fin]
-  omega
+  exact Eq.symm (Nat.two_mul n.succ)
 
 /-- The basis formed out of our basisa vectors. -/
 noncomputable def basisaAsBasis :

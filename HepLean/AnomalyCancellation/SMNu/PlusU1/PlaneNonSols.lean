@@ -85,7 +85,7 @@ lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
   · rw [quadBiLin.map_smul₂]
   · intro k hij
     rw [quadBiLin.map_smul₂, Bi_Bj_quad hij.symm]
-    simp
+    exact Rat.mul_zero (f k)
 
 /-- The coefficents of the quadratic equation in our basis. -/
 @[simp]

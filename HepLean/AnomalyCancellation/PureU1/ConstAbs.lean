@@ -121,7 +121,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
   rw [Fin.sum_univ_add]
   have hfst (i : Fin k.succ.val) :
       S (Fin.cast (boundary_split k) (Fin.castAdd (n.succ - k.succ.val) i)) = S k.castSucc := by
-    apply lt_eq hS (le_of_lt hk.left) (by rw [Fin.le_def]; simp; omega)
+    apply lt_eq hS (le_of_lt hk.left) (Fin.is_le i)
   have hsnd (i : Fin (n.succ - k.succ.val)) :
       S (Fin.cast (boundary_split k) (Fin.natAdd (k.succ.val) i)) = S k.succ := by
     apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; exact le.intro rfl)
@@ -144,7 +144,7 @@ lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.suc
   · rfl
   · rename_i i hii
     have hnott := hnot ⟨i, succ_lt_succ_iff.mp hi⟩
-    have hii := hii (by omega)
+    have hii := hii (lt_of_succ_lt hi)
     erw [← hii] at hnott
     exact (val_le_zero hS (hnott h0)).symm
 
@@ -212,7 +212,7 @@ lemma AFL_even_below' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.
   rw [Fin.le_def]
   simp only [PureU1_numberCharges, Fin.coe_cast, Fin.coe_castAdd, mul_eq, Fin.coe_castSucc]
   rw [AFL_even_Boundary h hA hk]
-  omega
+  exact Fin.is_le i
 
 lemma AFL_even_below (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.val)
     (i : Fin n.succ) :
@@ -233,7 +233,7 @@ lemma AFL_even_above' {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted A.
   rw [Fin.le_def]
   simp only [mul_eq, Fin.val_succ, PureU1_numberCharges, Fin.coe_cast, Fin.coe_natAdd]
   rw [AFL_even_Boundary h hA hk]
-  omega
+  exact Nat.le_add_right (n + 1) ↑i
 
 lemma AFL_even_above (A : (PureU1 (2 * n.succ)).LinSols) (h : ConstAbsSorted A.val)
     (i : Fin n.succ) :
