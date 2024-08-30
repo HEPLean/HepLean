@@ -119,10 +119,9 @@ lemma bool_iff (l l2 : IndexList 𝓒.Color) :
 
 lemma iff_bool (l l2 : ColorIndexList 𝓒) : AppendCond l l2 ↔ bool l.toIndexList l2.toIndexList := by
   rw [AppendCond]
-  simp [bool]
+  simp only [bool, ite_not, Bool.if_false_right, Bool.and_eq_true, decide_eq_true_eq]
   rw [ColorCond.iff_bool]
-  simp
-  exact fun _ => Eq.to_iff rfl
+  exact Eq.to_iff rfl
 
 lemma countId_contr_fst_eq_zero_mem_snd (h : AppendCond l l2) {I : Index 𝓒.Color}
     (hI : I ∈ l2.val) : l.contr.countId I = 0 ↔ l.countId I = 0 := by
