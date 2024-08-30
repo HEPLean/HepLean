@@ -47,13 +47,8 @@ lemma coe_inv (A : SO3) : (A⁻¹).1 = A.1⁻¹:=
 /-- The inclusion of `SO(3)` into `GL (Fin 3) ℝ`. -/
 def toGL : SO(3) →* GL (Fin 3) ℝ where
   toFun A := ⟨A.1, (A⁻¹).1, A.2.2, mul_eq_one_comm.mpr A.2.2⟩
-  map_one' := by
-    simp
-    rfl
-  map_mul' x y := by
-    simp only [_root_.mul_inv_rev, coe_inv]
-    ext
-    rfl
+  map_one' := (GeneralLinearGroup.ext_iff _ 1).mpr fun _=> congrFun rfl
+  map_mul' _ _ := (GeneralLinearGroup.ext_iff _ _).mpr fun _ => congrFun rfl
 
 lemma subtype_val_eq_toGL : (Subtype.val : SO3 → Matrix (Fin 3) (Fin 3) ℝ) =
     Units.val ∘ toGL.toFun :=
@@ -70,14 +65,7 @@ lemma toGL_injective : Function.Injective toGL := by
 def toProd : SO(3) →* (Matrix (Fin 3) (Fin 3) ℝ) × (Matrix (Fin 3) (Fin 3) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
-lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := by
-  simp only [toProd, Units.embedProduct, coe_units_inv, MulOpposite.op_inv, toGL, coe_inv,
-    MonoidHom.coe_comp, MonoidHom.coe_mk, OneHom.coe_mk, Function.comp_apply, Prod.mk.injEq,
-    true_and]
-  refine MulOpposite.unop_inj.mp ?_
-  simp only [MulOpposite.unop_inv, MulOpposite.unop_op]
-  rw [← coe_inv]
-  rfl
+lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := rfl
 
 lemma toProd_injective : Function.Injective toProd := by
   intro A B h
@@ -131,7 +119,7 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
       _ = det A.1 * det (1 - A.1ᵀ) := by rw [← det_mul, mul_sub, mul_one]
       _ = det (1 - A.1ᵀ) := by simp [A.2.1]
       _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
-      _ = det (1 - A.1) := by simp
+      _ = det (1 - A.1) := rfl
       _ = det (- (A.1 - 1)) := by simp
       _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
       _ = - det (A.1 - 1) := by simp [pow_three]
@@ -145,7 +133,7 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
       _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
       _ = - det (A.1 - 1) := by simp [pow_three]
   rw [h1, det_minus_id]
-  simp only [neg_zero]
+  exact neg_zero
 
 @[simp]
 lemma one_in_spectrum (A : SO(3)) : 1 ∈ spectrum ℝ (A.1) := by

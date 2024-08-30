@@ -125,8 +125,7 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
       repeat erw [speciesVal]
       simp only [asCharges, neg_add_rev]
       ring
-    · simp only [toSpecies_apply]
-      rfl
+    · rfl
   right_inv S := by
     simp only [Fin.isValue, toSpecies_apply]
     apply ACCSystemLinear.LinSols.ext

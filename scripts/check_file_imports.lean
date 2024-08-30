@@ -83,7 +83,7 @@ def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
 
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let mods : Name :=  `HepLean
+  let mods : Name := `HepLean
   let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do

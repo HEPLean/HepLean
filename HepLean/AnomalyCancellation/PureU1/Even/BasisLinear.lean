@@ -566,9 +566,10 @@ theorem basis_linear_independent : LinearIndependent ℚ (@basis n) := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
   change P' f = 0 at h
-  have h1 : (P' f).val = 0 := by
-    simp [h]
-    rfl
+  have h1 : (P' f).val = 0 :=
+    (AddSemiconjBy.eq_zero_iff (ACCSystemLinear.LinSols.val 0)
+    (congrFun (congrArg HAdd.hAdd (congrArg ACCSystemLinear.LinSols.val (id (Eq.symm h))))
+    (ACCSystemLinear.LinSols.val 0))).mp rfl
   rw [P'_val] at h1
   exact P_zero f h1
 
@@ -576,9 +577,10 @@ theorem basis!_linear_independent : LinearIndependent ℚ (@basis! n) := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
   change P!' f = 0 at h
-  have h1 : (P!' f).val = 0 := by
-    simp [h]
-    rfl
+  have h1 : (P!' f).val = 0 :=
+    (AddSemiconjBy.eq_zero_iff (ACCSystemLinear.LinSols.val 0)
+    (congrFun (congrArg HAdd.hAdd (congrArg ACCSystemLinear.LinSols.val (id (Eq.symm h))))
+    (ACCSystemLinear.LinSols.val 0))).mp rfl
   rw [P!'_val] at h1
   exact P!_zero f h1
 
@@ -586,9 +588,10 @@ theorem basisa_linear_independent : LinearIndependent ℚ (@basisa n) := by
   apply Fintype.linearIndependent_iff.mpr
   intro f h
   change Pa' f = 0 at h
-  have h1 : (Pa' f).val = 0 := by
-    simp [h]
-    rfl
+  have h1 : (Pa' f).val = 0 :=
+    (AddSemiconjBy.eq_zero_iff (ACCSystemLinear.LinSols.val 0)
+    (congrFun (congrArg HAdd.hAdd (congrArg ACCSystemLinear.LinSols.val (id (Eq.symm h))))
+    (ACCSystemLinear.LinSols.val 0))).mp rfl
   rw [Pa'_P'_P!'] at h1
   change (P' (f ∘ Sum.inl)).val + (P!' (f ∘ Sum.inr)).val = 0 at h1
   rw [P!'_val, P'_val] at h1
@@ -728,7 +731,6 @@ lemma vectorLikeEven_in_span (S : (PureU1 (2 * n.succ)).LinSols)
       rw [ht]
       ring
     rw [h]
-    simp
     rfl
 
 end VectorLikeEvenPlane

@@ -37,13 +37,8 @@ section Charges
 def chargeMap {n : ℕ} (f : PermGroup n) :
     (PureU1 n).Charges →ₗ[ℚ] (PureU1 n).Charges where
   toFun S := S ∘ f.toFun
-  map_add' S T := by
-    funext i
-    simp
-  map_smul' a S := by
-    funext i
-    simp [HSMul.hSMul]
-    -- rw [show Rat.cast a = a from rfl]
+  map_add' _ _ := rfl
+  map_smul' _ _:= rfl
 
 open PureU1Charges in
 
@@ -51,17 +46,8 @@ open PureU1Charges in
 @[simp]
 def permCharges {n : ℕ} : Representation ℚ (PermGroup n) (PureU1 n).Charges where
   toFun f := chargeMap f⁻¹
-  map_mul' f g := by
-    simp only [PermGroup, mul_inv_rev]
-    apply LinearMap.ext
-    intro S
-    funext i
-    rfl
-  map_one' := by
-    apply LinearMap.ext
-    intro S
-    funext i
-    rfl
+  map_mul' f g := by rfl
+  map_one' := by rfl
 
 lemma accGrav_invariant {n : ℕ} (f : (PermGroup n)) (S : (PureU1 n).Charges) :
     PureU1.accGrav n (permCharges f S) = accGrav n S := by
