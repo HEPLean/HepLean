@@ -37,9 +37,7 @@ def contr : ColorIndexList 𝓒 where
   toIndexList := l.toIndexList.contrIndexList
   unique_duals := by
     simp [OnlyUniqueDuals]
-  dual_color := by
-    funext i
-    simp [Option.guard]
+  dual_color := ColorCond.contrIndexList
 
 @[simp]
 lemma contr_contr : l.contr.contr = l.contr := by
@@ -61,7 +59,7 @@ lemma contr_contr_idMap (i : Fin l.contr.contr.length) :
   rw [orderEmbOfFin_univ]
   · rfl
   · rw [h1]
-    simp
+    exact (Finset.card_fin l.contrIndexList.length).symm
 
 @[simp]
 lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
@@ -78,7 +76,7 @@ lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
   rw [orderEmbOfFin_univ]
   · rfl
   · rw [h1]
-    simp
+    exact (Finset.card_fin l.contrIndexList.length).symm
 
 @[simp]
 lemma contr_of_withDual_empty (h : l.withDual = ∅) :
@@ -148,18 +146,14 @@ def contrEquiv : (l.withUniqueDualLT ⊕ l.withUniqueDualLT) ⊕ Fin l.contr.len
   (Equiv.sumCongr (l.withUniqueLTGTEquiv) (Equiv.refl _)).trans <|
   (Equiv.sumCongr (Equiv.subtypeEquivRight (by
   rw [l.unique_duals]
-  simp only [mem_withDual_iff_isSome, implies_true]))
+  exact fun x => Eq.to_iff rfl))
     (Fin.castOrderIso l.contrIndexList_length).toEquiv).trans <|
   l.dualEquiv
 
 lemma contrEquiv_inl_inl_isSome (i : l.withUniqueDualLT) :
-    (l.getDual? (l.contrEquiv (Sum.inl (Sum.inl i)))).isSome := by
-  change (l.getDual? i).isSome
-  have h1 : i.1 ∈ l.withUniqueDual := by
-    have hi2 := i.2
-    simp only [withUniqueDualLT, Finset.mem_filter] at hi2
-    exact hi2.1
-  exact mem_withUniqueDual_isSome l.toIndexList (↑i) h1
+    (l.getDual? (l.contrEquiv (Sum.inl (Sum.inl i)))).isSome :=
+  mem_withUniqueDual_isSome l.toIndexList (↑i)
+    (mem_withUniqueDual_of_mem_withUniqueDualLt l.toIndexList (↑i) i.2)
 
 @[simp]
 lemma contrEquiv_inl_inr_eq (i : l.withUniqueDualLT) :
@@ -175,9 +169,9 @@ lemma contrEquiv_inl_inl_eq (i : l.withUniqueDualLT) :
 lemma contrEquiv_colorMapIso :
     ColorMap.MapIso (Equiv.refl (Fin l.contr.length))
     (ColorMap.contr l.contrEquiv l.colorMap) l.contr.colorMap := by
-  simp [ColorMap.MapIso, ColorMap.contr]
+  simp only [ColorMap.MapIso, ColorMap.contr, Equiv.coe_refl, CompTriple.comp_eq]
   funext i
-  simp [contr]
+  simp only [contr, Function.comp_apply, contrIndexList_colorMap]
   rfl
 
 lemma contrEquiv_contrCond : ColorMap.ContrCond l.contrEquiv l.colorMap := by
@@ -201,7 +195,7 @@ lemma contrEquiv_on_withDual_empty (i : Fin l.contr.length) (h : l.withDual = �
   rw [orderEmbOfFin_univ]
   · rfl
   · rw [h]
-    simp
+    exact (Finset.card_fin l.length).symm
 
 end ColorIndexList
 end IndexNotation

@@ -52,15 +52,13 @@ lemma getDualInOtherEquiv_eq (h : l.ContrPerm l2) (i : Fin l.contr.length) :
   · trans (l2.contr.colorMap' ∘ Subtype.val ∘ (l.contr.getDualInOtherEquiv l2.contr)) ⟨i, by
       rw [h.2.1]
       exact Finset.mem_univ i⟩
-    · simp
-      rfl
+    · rfl
     · simp only [h.2.2]
       rfl
   · trans l2.contr.idMap (l.contr.getDualInOtherEquiv l2.contr ⟨i, by
       rw [h.2.1]
       exact Finset.mem_univ i⟩).1
-    · simp
-      rfl
+    · rfl
     · simp [getDualInOtherEquiv]
       rfl
 
@@ -83,7 +81,7 @@ lemma countSelf_eq_one_snd_of_countSelf_eq_one_fst (h : l.ContrPerm l2) {I : Ind
     have h2' := countSelf_le_countId l.contr.toIndexList I
     omega
   · rw [← countSelf_neq_zero, h1]
-    simp
+    exact Nat.one_ne_zero
 
 lemma getDualInOtherEquiv_eq_of_countSelf
     (hn : IndexList.Subperm l.contr l2.contr.toIndexList) (i : Fin l.contr.length)
@@ -94,7 +92,7 @@ lemma getDualInOtherEquiv_eq_of_countSelf
       exact Finset.mem_univ i⟩).1 = l.contr.val.get i := by
   have h1' : (l.contr.val.get i) ∈ l2.contr.val := by
     rw [← countSelf_neq_zero, h2]
-    simp
+    exact Nat.one_ne_zero
   rw [← List.mem_singleton, ← filter_id_of_countId_eq_one_mem l2.contr.toIndexList h1' h1]
   simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
   apply And.intro (List.getElem_mem _ _ _)
@@ -144,13 +142,12 @@ lemma iff_count' : l.ContrPerm l2 ↔
   · intro ha I hI1
     have hI : I ∈ l.contr.val := by
       rw [← countSelf_neq_zero, hI1]
-      simp
+      exact Nat.one_ne_zero
     have hId : l.contr.val.indexOf I < l.contr.val.length := List.indexOf_lt_length.mpr hI
     have hI' : I = l.contr.val.get ⟨l.contr.val.indexOf I, hId⟩ := (List.indexOf_get hId).symm
     rw [hI'] at hI1 ⊢
     exact ha ⟨l.contr.val.indexOf I, hId⟩ hI1
-  · intro a_2 i a_3
-    simp_all only
+  · exact fun a i a_1 => a l.contr.val[↑i] a_1
 
 lemma iff_count : l.ContrPerm l2 ↔ l.contr.length = l2.contr.length ∧
     ∀ I, l.contr.countSelf I = 1 → l2.contr.countSelf I = 1 := by
@@ -160,7 +157,7 @@ lemma iff_count : l.ContrPerm l2 ↔ l.contr.length = l2.contr.length ∧
   intro I
   apply And.intro (countId_contr_le_one l I)
   intro h'
-  obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contr I (by omega)
+  obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contr I (ne_zero_of_eq_one h')
   rw [countId_congr _ hI2] at h' ⊢
   have hi := h.2 I' (countSelf_eq_one_of_countId_eq_one l.contr.toIndexList I' h' hI1)
   have h1 := countSelf_le_countId l2.contr.toIndexList I'
@@ -196,7 +193,7 @@ lemma iff_countSelf : l.ContrPerm l2 ↔ ∀ I, l.contr.countSelf I = l2.contr.c
       exact List.Perm.length_eq h1
     · intro I
       rw [h I]
-      simp
+      exact fun a => a
 
 lemma contr_perm (h : l.ContrPerm l2) : l.contr.val.Perm l2.contr.val := by
   rw [List.perm_iff_count]
@@ -206,9 +203,8 @@ lemma contr_perm (h : l.ContrPerm l2) : l.contr.val.Perm l2.contr.val := by
 
 /-- The relation `ContrPerm` is reflexive. -/
 @[simp]
-lemma refl (l : ColorIndexList 𝓒) : ContrPerm l l := by
-  rw [iff_countSelf]
-  exact fun I => rfl
+lemma refl (l : ColorIndexList 𝓒) : ContrPerm l l :=
+  iff_countSelf.mpr (congrFun rfl)
 
 /-- The relation `ContrPerm` is transitive. -/
 @[trans]
@@ -223,8 +219,7 @@ lemma equivalence : Equivalence (@ContrPerm 𝓒 _ _) where
   trans := trans
 
 lemma symm_trans (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) :
-    (h1.trans h2).symm = h2.symm.trans h1.symm := by
-  simp only
+    (h1.trans h2).symm = h2.symm.trans h1.symm := rfl
 
 @[simp]
 lemma contr_self : ContrPerm l l.contr := by
@@ -233,9 +228,7 @@ lemma contr_self : ContrPerm l l.contr := by
   simp
 
 @[simp]
-lemma self_contr : ContrPerm l.contr l := by
-  symm
-  simp
+lemma self_contr : ContrPerm l.contr l := symm contr_self
 
 lemma length_of_no_contr (h : l.ContrPerm l') (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) :
     l.length = l'.length := by
@@ -248,8 +241,7 @@ lemma mem_withUniqueDualInOther_of_no_contr (h : l.ContrPerm l') (h1 : l.withDua
   simp only [ContrPerm] at h
   rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h
   rw [h.2.1]
-  intro x
-  exact Finset.mem_univ x
+  exact fun x => Finset.mem_univ x
 
 end ContrPerm
 
@@ -279,10 +271,7 @@ lemma contrPermEquiv_colorMap_iso {l l' : ColorIndexList 𝓒} (h : ContrPerm l 
   have hi : i ∈ (l'.contr.withUniqueDualInOther l.contr.toIndexList) := by
     rw [h.symm.2.1]
     exact Finset.mem_univ i
-  have hn := congrFun h' ⟨i, hi⟩
-  simp at hn
-  rw [← hn]
-  rfl
+  exact (congrFun h' ⟨i, hi⟩).symm
 
 lemma contrPermEquiv_colorMap_iso' {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
     ColorMap.MapIso (contrPermEquiv h) l.contr.colorMap' l'.contr.colorMap' := by
@@ -296,7 +285,6 @@ lemma contrPermEquiv_refl : contrPermEquiv (ContrPerm.refl l) = Equiv.refl _ := 
 @[simp]
 lemma contrPermEquiv_symm {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
     (contrPermEquiv h).symm = contrPermEquiv h.symm := by
-  simp only [contrPermEquiv]
   rfl
 
 @[simp]
@@ -354,7 +342,7 @@ lemma contrPermEquiv_contr_self {l : ColorIndexList 𝓒} :
     contrPermEquiv (by simp : ContrPerm l.contr l) =
     (Fin.castOrderIso (by simp)).toEquiv := by
   rw [← contrPermEquiv_symm, contrPermEquiv_self_contr]
-  simp
+  rfl
 
 /-- Given two `ColorIndexList` related by permutations and without duals, the equivalence between
   the indices of the corresponding index lists. This equivalence is the
@@ -368,19 +356,12 @@ def permEquiv {l l' : ColorIndexList 𝓒} (h : ContrPerm l l')
 lemma permEquiv_colorMap_iso {l l' : ColorIndexList 𝓒} (h : ContrPerm l l')
     (h1 : l.withDual = ∅) (h2 : l'.withDual = ∅) :
     ColorMap.MapIso (permEquiv h h1 h2).symm l'.colorMap' l.colorMap' := by
-  simp [ColorMap.MapIso]
   funext i
-  simp [contrPermEquiv, getDualInOtherEquiv]
+  rw [Function.comp_apply]
   have h' := h.symm
   simp only [ContrPerm] at h'
   rw [contr_of_withDual_empty l h1, contr_of_withDual_empty l' h2] at h'
-  have hi : i ∈ (l'.withUniqueDualInOther l.toIndexList) := by
-    rw [h'.2.1]
-    exact Finset.mem_univ i
-  have hn := congrFun h'.2.2 ⟨i, hi⟩
-  simp at hn
-  rw [← hn]
-  rfl
+  exact (congrFun h'.2.2 ⟨i, _⟩).symm
 
 end ColorIndexList
 
