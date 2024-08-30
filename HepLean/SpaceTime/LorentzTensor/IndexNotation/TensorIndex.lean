@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Color
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Relations
+import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.ContrPerm
 import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Append
 import HepLean.SpaceTime.LorentzTensor.Basic
 import HepLean.SpaceTime.LorentzTensor.RisingLowering

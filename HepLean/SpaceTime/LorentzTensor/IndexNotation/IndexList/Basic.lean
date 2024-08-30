@@ -77,6 +77,11 @@ lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
 def colorMap : Fin l.length → X :=
   fun i => (l.val.get i).toColor
 
+lemma colorMap_cast {l1 l2 : IndexList X} (h : l1 = l2)  :
+    l1.colorMap  = l2.colorMap ∘ Fin.cast (congrArg length h) := by
+  subst h
+  rfl
+
 /-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
 def idMap : Fin l.length → Nat :=
   fun i => (l.val.get i).id
@@ -85,6 +90,23 @@ lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
     l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
   subst h
   rfl
+
+lemma ext_colorMap_idMap {l l2 : IndexList X} (hl : l.length = l2.length)
+    (hi : l.idMap = l2.idMap ∘ Fin.cast hl) (hc : l.colorMap = l2.colorMap ∘ Fin.cast hl) :
+    l = l2 := by
+  apply ext
+  refine List.ext_get hl ?h.h
+  intro n h1 h2
+  rw [Index.eq_iff_color_eq_and_id_eq]
+  apply And.intro
+  · trans l.colorMap ⟨n, h1⟩
+    · rfl
+    · rw [hc]
+      rfl
+  · trans l.idMap ⟨n, h1⟩
+    · rfl
+    · rw [hi]
+      simp [idMap]
 
 /-- Given a list of indices a subset of `Fin l.numIndices × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
