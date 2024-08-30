@@ -432,8 +432,6 @@ lemma getDualInOther?_getDualInOther?_get_self (i : Fin l.length) :
   apply h1.2 j
   simpa [AreDualInOther] using hj
 
-
-
 end IndexList
 
 end IndexNotation

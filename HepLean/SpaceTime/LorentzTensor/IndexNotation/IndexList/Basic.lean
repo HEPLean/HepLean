@@ -77,8 +77,8 @@ lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
 def colorMap : Fin l.length → X :=
   fun i => (l.val.get i).toColor
 
-lemma colorMap_cast {l1 l2 : IndexList X} (h : l1 = l2)  :
-    l1.colorMap  = l2.colorMap ∘ Fin.cast (congrArg length h) := by
+lemma colorMap_cast {l1 l2 : IndexList X} (h : l1 = l2) :
+    l1.colorMap = l2.colorMap ∘ Fin.cast (congrArg length h) := by
   subst h
   rfl
 
