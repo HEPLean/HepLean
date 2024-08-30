@@ -138,7 +138,7 @@ lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
     rw [hi, pureU1_last, pureU1_last]
     simp only [neg_inj]
     apply Finset.sum_congr
-    · simp only
+    · rfl
     · exact fun j _ => h j
 
 namespace PureU1
@@ -146,23 +146,21 @@ namespace PureU1
 lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
     (∑ i : Fin k, (f i)) j = ∑ i : Fin k, (f i) j := by
   induction k
-  · simp only [univ_eq_empty, sum_empty]
-    rfl
+  · rfl
   · rename_i k hl
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
     have hlt := hl (f ∘ Fin.castSucc)
     erw [← hlt]
-    simp
+    rfl
 
 lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by
   induction k
-  · simp only [univ_eq_empty, sum_empty, ACCSystemLinear.linSolsAddCommMonoid_zero_val]
-    rfl
+  · rfl
   · rename_i k hl
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
     have hlt := hl (f ∘ Fin.castSucc)
     erw [← hlt]
-    simp
+    rfl
 
 end PureU1

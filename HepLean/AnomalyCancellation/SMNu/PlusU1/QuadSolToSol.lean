@@ -106,7 +106,7 @@ lemma quadSolToSolInv_1 (S : (PlusU1 n).Sols) :
 lemma quadSolToSolInv_α₁_α₂_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0) :
     α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0 := by
   rw [quadSolToSolInv_1, α₂_AF S, h]
-  simp
+  exact Prod.mk_eq_zero.mp rfl
 
 lemma quadSolToSolInv_α₁_α₂_neq_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
     ¬ (α₁ (quadSolToSolInv S).1 = 0 ∧ α₂ (quadSolToSolInv S).1 = 0) := by

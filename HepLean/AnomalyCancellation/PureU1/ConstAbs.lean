@@ -61,7 +61,7 @@ lemma lt_eq {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := b
 lemma val_le_zero {i : Fin n.succ} (hi : S i ≤ 0) : S i = S (0 : Fin n.succ) := by
   symm
   apply lt_eq hS hi
-  simp
+  exact Fin.zero_le i
 
 lemma gt_eq {k i: Fin n.succ} (hk : 0 ≤ S k) (hik : k ≤ i) : S i = S k := by
   have hSS := hS.2 k i hik
@@ -73,8 +73,7 @@ lemma gt_eq {k i: Fin n.succ} (hk : 0 ≤ S k) (hik : k ≤ i) : S i = S k := by
 
 lemma zero_gt (h0 : 0 ≤ S (0 : Fin n.succ)) (i : Fin n.succ) : S (0 : Fin n.succ) = S i := by
   symm
-  refine gt_eq hS h0 ?_
-  simp
+  refine gt_eq hS h0 (Fin.zero_le i)
 
 lemma opposite_signs_eq_neg {i j : Fin n.succ} (hi : S i ≤ 0) (hj : 0 ≤ S j) : S i = - S j := by
   have hSS := hS.1 i j
@@ -98,7 +97,7 @@ is defined as a element of `k ∈ Fin n` such that `S k.castSucc` and `S k.succ`
 def Boundary (S : (PureU1 n.succ).Charges) (k : Fin n) : Prop := S k.castSucc < 0 ∧ 0 < S k.succ
 
 lemma boundary_castSucc {k : Fin n} (hk : Boundary S k) : S k.castSucc = S (0 : Fin n.succ) :=
-  (lt_eq hS (le_of_lt hk.left) (by simp : 0 ≤ k.castSucc)).symm
+  (lt_eq hS (le_of_lt hk.left) (Fin.zero_le k.castSucc : 0 ≤ k.castSucc)).symm
 
 lemma boundary_succ {k : Fin n} (hk : Boundary S k) : S k.succ = - S (0 : Fin n.succ) := by
   have hn := boundary_castSucc hS hk
@@ -114,8 +113,7 @@ lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
   erw [Finset.sum_equiv (Fin.castOrderIso (boundary_split k)).toEquiv]
   · intro i
     simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
-  · intro i
-    simp
+  · exact fun _ _ => rfl
 
 lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
     accGrav n.succ S = (2 * ↑↑k + 1 - ↑n) * S (0 : Fin n.succ) := by
@@ -126,7 +124,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
     apply lt_eq hS (le_of_lt hk.left) (by rw [Fin.le_def]; simp; omega)
   have hsnd (i : Fin (n.succ - k.succ.val)) :
       S (Fin.cast (boundary_split k) (Fin.natAdd (k.succ.val) i)) = S k.succ := by
-    apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; simp)
+    apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; exact le.intro rfl)
   simp only [hfst, hsnd]
   simp only [Fin.val_succ, sum_const, card_fin, nsmul_eq_mul, cast_add, cast_one,
     succ_sub_succ_eq_sub, Fin.is_le', cast_sub]
@@ -145,7 +143,7 @@ lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.suc
   induction i
   · rfl
   · rename_i i hii
-    have hnott := hnot ⟨i, by {simp at hi; linarith}⟩
+    have hnott := hnot ⟨i, succ_lt_succ_iff.mp hi⟩
     have hii := hii (by omega)
     erw [← hii] at hnott
     exact (val_le_zero hS (hnott h0)).symm
@@ -265,7 +263,7 @@ theorem boundary_value_even (S : (PureU1 (2 * n.succ)).LinSols) (hs : ConstAbs S
   have h2 := ConstAbsSorted.AFL_even_above (sortAFL S) hS
   rw [sortAFL_val] at h1 h2
   rw [h1, h2]
-  simp
+  exact (InvolutiveNeg.neg_neg (sort S.val _)).symm
 
 end ConstAbs
 

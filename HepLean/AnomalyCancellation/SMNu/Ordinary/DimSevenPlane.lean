@@ -279,7 +279,7 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
     have h : accGrav (B i) = 0 := by
       fin_cases i <;> rfl
     rw [h]
-    simp)
+    exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
       apply Fintype.sum_eq_zero
@@ -288,7 +288,7 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
       have h : accSU2 (B i) = 0 := by
         fin_cases i <;> rfl
       rw [h]
-      simp)
+      exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
       apply Fintype.sum_eq_zero
@@ -297,7 +297,7 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
       have h : accSU3 (B i) = 0 := by
         fin_cases i <;> rfl
       rw [h]
-      simp)
+      exact DistribMulAction.smul_zero (f i))
     (B_in_accCube f)
   use X
   rfl

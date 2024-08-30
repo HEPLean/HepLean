@@ -141,7 +141,7 @@ lemma sum_familyUniversal_three {n : ℕ} (S : (SMνCharges 1).Charges)
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.zero_eta, Fin.isValue]
   rw [Finset.mul_sum]
   apply Finset.sum_congr
-  · simp only
+  · rfl
   · intro i _
     erw [toSpecies_familyUniversal]
     simp only [SMνSpecies_numberCharges, Fin.zero_eta, Fin.isValue, toSpecies_apply]

@@ -56,7 +56,7 @@ lemma toSMSpecies_toSpecies_inv (i : Fin 6) (f : Fin 6 → Fin n → ℚ) :
   simp
 
 lemma toSpecies_one (S : (SMνCharges 1).Charges) (j : Fin 6) :
-    toSpecies j S ⟨0, by simp⟩ = S j := by
+    toSpecies j S ⟨0, zero_lt_succ 0⟩ = S j := by
   match j with
   | 0 => rfl
   | 1 => rfl

@@ -124,9 +124,9 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
   rw [Fin.sum_univ_four] at hLin hcube
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hn
   simp [not_or] at hn
-  have l012 := hS 0 1 2 (by simp) (by simp) (by simp)
-  have l013 := hS 0 1 3 (by simp) (by simp) (by simp)
-  have l023 := hS 0 2 3 (by simp) (by simp) (by simp)
+  have l012 := hS 0 1 2 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
+  have l013 := hS 0 1 3 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
+  have l023 := hS 0 2 3 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
   simp_all [LineInPlaneProp]
   have h1 : S.val (2 : Fin 4) = S.val (3 : Fin 4) := by
     linear_combination l012 / 2 + -1 * l013 / 2
@@ -158,7 +158,7 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
 lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
     (hS : LineInPlaneCond S.1.1) : ∀ (i j : Fin 4) (_ : i ≠ j),
     ConstAbsProp (S.val i, S.val j) := by
-  refine Prop_two ConstAbsProp (by simp : (0 : Fin 4) ≠ 1) ?_
+  refine Prop_two ConstAbsProp Fin.zero_ne_one ?_
   intro M
   let S' := (FamilyPermutations 4).solAction.toFun S M
   have hS' : LineInPlaneCond S'.1.1 :=

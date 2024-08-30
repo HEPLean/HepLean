@@ -44,7 +44,6 @@ def speciesFamilyProj {m n : ℕ} (h : n ≤ m) :
   toFun S := S ∘ Fin.castLE h
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-    --rw [show Rat.cast a = a from rfl]
 
 /-- The projection of the `m`-family charges onto the first `n`-family charges. -/
 def familyProjection {m n : ℕ} (h : n ≤ m) : (SMCharges m).Charges →ₗ[ℚ] (SMCharges n).Charges :=

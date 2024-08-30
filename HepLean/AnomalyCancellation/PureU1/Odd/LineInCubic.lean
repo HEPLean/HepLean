@@ -73,15 +73,8 @@ lemma lineInCubicPerm_self {S : (PureU1 (2 * n + 1)).LinSols} (hS : LineInCubicP
 /-- If `lineInCubicPerm S`, then `lineInCubicPerm (M S)` for all permutations `M`. -/
 lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
     (hS : LineInCubicPerm S) (M' : (FamilyPermutations (2 * n + 1)).group) :
-    LineInCubicPerm ((FamilyPermutations (2 * n + 1)).linSolRep M' S) := by
-  rw [LineInCubicPerm]
-  intro M
-  have ht : ((FamilyPermutations (2 * n + 1)).linSolRep M)
-    ((FamilyPermutations (2 * n + 1)).linSolRep M' S)
-    = (FamilyPermutations (2 * n + 1)).linSolRep (M * M') S := by
-    simp [(FamilyPermutations (2 * n.succ)).linSolRep.map_mul']
-  rw [ht]
-  exact hS (M * M')
+    LineInCubicPerm ((FamilyPermutations (2 * n + 1)).linSolRep M' S) :=
+  fun M => hS (M * M')
 
 lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) :
@@ -108,10 +101,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   rw [P_P_P!_accCube f 0]
   rw [← Pa_δa₁ f g]
   rw [← hS]
-  have ht : δ!₁ (0 : Fin n.succ.succ) = δ₁ 1 := by
-    simp [δ!₁, δ₁]
-    rw [Fin.ext_iff]
-    simp
+  have ht : δ!₁ (0 : Fin n.succ.succ) = δ₁ 1 := rfl
   nth_rewrite 1 [ht]
   rw [P_δ₁]
   have h1 := Pa_δa₁ f g
@@ -125,7 +115,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   rw [δa₄_δ!₂]
   have h0 : (δa₂ (0 : Fin n.succ)) = δ!₁ 0 := by
     rw [δa₂_δ!₁]
-    simp
+    exact ht
   rw [h0, δa₁_δ!₃]
   ring
 
@@ -149,9 +139,9 @@ lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : LineInPlaneCond S := by
   refine @Prop_three (2 * n.succ.succ + 1) LineInPlaneProp S (δ!₂ 0) (δ!₁ 0)
     δ!₃ ?_ ?_ ?_ ?_
-  · simp [Fin.ext_iff, δ!₂, δ!₁]
-  · simp [Fin.ext_iff, δ!₂, δ!₃]
-  · simp [Fin.ext_iff, δ!₁, δ!₃]
+  · exact ne_of_beq_false rfl
+  · exact ne_of_beq_false rfl
+  · exact ne_of_beq_false rfl
   · exact fun M => lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 
 lemma lineInCubicPerm_constAbs {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
