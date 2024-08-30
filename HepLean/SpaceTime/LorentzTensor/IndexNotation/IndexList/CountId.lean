@@ -42,17 +42,14 @@ lemma countId_eq_length_filter (I : Index X) :
   rw [List.countP_eq_length_filter]
 
 lemma countId_index_neq_zero (i : Fin l.length) : l.countId (l.val.get i) ≠ 0 := by
-  rw [countId_eq_length_filter]
   by_contra hn
-  rw [List.length_eq_zero] at hn
-  have hm : l.val.get i ∈ List.filter (fun J => decide ((l.val.get i).id = J.id)) l.val := by
-    simpa using List.getElem_mem l.val i.1 i.isLt
-  rw [hn] at hm
-  simp at hm
+  rw [countId_eq_length_filter, List.length_eq_zero] at hn
+  refine (List.mem_nil_iff (l.val.get i)).mp ?_
+  simpa [← hn] using List.getElem_mem l.val i.1 i.isLt
 
 lemma countId_append_symm (I : Index X) : (l ++ l2).countId I = (l2 ++ l).countId I := by
   simp only [countId_append]
-  omega
+  exact Nat.add_comm (l.countId I) (l2.countId I)
 
 lemma countId_eq_one_append_mem_right_self_eq_one {I : Index X} (hI : I ∈ l2.val)
     (h : (l ++ l2).countId I = 1) : l2.countId I = 1 := by
@@ -64,7 +61,7 @@ lemma countId_eq_one_append_mem_right_self_eq_one {I : Index X} (hI : I ∈ l2.v
     by_contra hn
     rw [@List.length_eq_zero] at hn
     rw [hn] at hmem
-    simp at hmem
+    exact (List.mem_nil_iff I).mp hmem
   omega
 
 lemma countId_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2.val)
@@ -77,7 +74,7 @@ lemma countId_eq_one_append_mem_right_other_eq_zero {I : Index X} (hI : I ∈ l2
     by_contra hn
     rw [@List.length_eq_zero] at hn
     rw [hn] at hmem
-    simp at hmem
+    exact (List.mem_nil_iff I).mp hmem
   omega
 
 @[simp]
@@ -106,7 +103,7 @@ lemma countId_mem (I : Index X) (hI : I ∈ l.val) : l.countId I ≠ 0 := by
   have hIme : I ∈ List.filter (fun J => decide (I.id = J.id)) l.val := by
     simp [hI]
   rw [hn] at hIme
-  simp at hIme
+  exact (List.mem_nil_iff I).mp hIme
 
 lemma countId_get_other (i : Fin l.length) : l2.countId (l.val.get i) =
     (List.finRange l2.length).countP (fun j => l.AreDualInOther l2 i j) := by
@@ -117,8 +114,7 @@ lemma countId_get_other (i : Fin l.length) : l2.countId (l.val.get i) =
   nth_rewrite 1 [hl2]
   rw [List.filter_map, List.length_map]
   apply congrArg
-  refine List.filter_congr (fun j _ => ?_)
-  simp [AreDualInOther, idMap]
+  refine List.filter_congr (fun j _ => rfl)
 
 /-! TODO: Replace with mathlib lemma. -/
 lemma filter_finRange (i : Fin l.length) :
@@ -184,7 +180,7 @@ lemma countId_gt_zero_of_mem_withDual (i : Fin l.length) (h : i ∈ l.withDual) 
   have hjmem : j ∈ (List.finRange l.length).filter (fun j => decide (l.AreDualInSelf i j)) := by
     simpa using hj
   rw [hn] at hjmem
-  simp at hjmem
+  exact (List.mem_nil_iff j).mp hjmem
 
 lemma countId_of_not_mem_withDual (i : Fin l.length)(h : i ∉ l.withDual) :
     l.countId (l.val.get i) = 1 := by
@@ -217,7 +213,7 @@ lemma countId_neq_zero_of_mem_withDualInOther (i : Fin l.length) (h : i ∈ l.wi
     · exact List.getElem_mem l2.val (↑j) j.isLt
     · simpa [AreDualInOther] using hj
   rw [hn] at hjmem
-  simp at hjmem
+  exact (List.mem_nil_iff (l2.val.get j)).mp hjmem
 
 lemma countId_of_not_mem_withDualInOther (i : Fin l.length) (h : i ∉ l.withDualInOther l2) :
     l2.countId (l.val.get i) = 0 := by
@@ -242,7 +238,7 @@ lemma mem_withDualInOther_iff_countId_neq_zero (i : Fin l.length) :
     (fun h => ?_)
   by_contra hn
   have hn' := countId_of_not_mem_withDualInOther l l2 i hn
-  omega
+  exact h hn'
 
 lemma mem_withoutDual_iff_countId_eq_one (i : Fin l.length) :
     i ∈ l.withoutDual ↔ l.countId (l.val.get i) = 1 := by
@@ -270,10 +266,9 @@ lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withU
       apply List.filter_congr (fun j _ => ?_)
       simpa using eq_comm
     trans List.filter (fun j => j = i')
-      ((List.finRange l.length).filter (fun j => (l.AreDualInSelf i j)))
-    · simp
-      apply List.filter_congr (fun j _ => ?_)
-      exact Bool.and_comm (decide (l.AreDualInSelf i j)) (decide (j = i'))
+      ((List.finRange l.length).filter fun j => l.AreDualInSelf i j)
+    · exact List.filter_comm (fun j => l.AreDualInSelf i j) (fun j => j = i')
+        (List.finRange l.length)
     · simp
       refine List.filter_congr (fun j _ => ?_)
       simp only [Bool.and_iff_right_iff_imp, decide_eq_true_eq]
@@ -349,7 +344,7 @@ lemma countId_eq_one_of_mem_withUniqueDualInOther (i : Fin l.length)
     have h2 := countId_index_neq_zero l i
     omega
   · rw [countId_get_other, List.countP_eq_length_filter, ← h1]
-    simp
+    rfl
 
 lemma mem_withUniqueDualInOther_of_countId_eq_one (i : Fin l.length)
     (h : l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1) :
@@ -363,7 +358,7 @@ lemma mem_withUniqueDualInOther_of_countId_eq_one (i : Fin l.length)
     omega
   · apply And.intro
     · rw [mem_withDualInOther_iff_countId_neq_zero]
-      omega
+      exact countId_neq_zero_of_mem_withDualInOther l l2 i hw
     · intro j hj
       have h2 := h.2
       rw [countId_get_other l l2, List.countP_eq_length_filter, List.length_eq_one] at h2
@@ -380,7 +375,7 @@ lemma mem_withUniqueDualInOther_of_countId_eq_one (i : Fin l.length)
       rw [ha] at ht
       simp at ht
       subst ht
-      simp
+      exact Option.some_get ((mem_withInDualOther_iff_isSome l l2 i).mp hw)
 
 lemma mem_withUniqueDualInOther_iff_countId_eq_one (i : Fin l.length) :
     i ∈ l.withUniqueDualInOther l2 ↔ l.countId (l.val.get i) = 1 ∧ l2.countId (l.val.get i) = 1 :=
@@ -448,8 +443,7 @@ lemma filter_id_of_countId_eq_one {i : Fin l.length} (h1 : l.countId (l.val.get 
   rw [hJ] at hme
   simp only [List.get_eq_getElem, List.mem_singleton] at hme
   erw [hJ]
-  simp only [List.get_eq_getElem, List.cons.injEq, and_true]
-  exact id (Eq.symm hme)
+  exact congrFun (congrArg List.cons (id (Eq.symm hme))) []
 
 lemma filter_id_of_countId_eq_one_mem {I : Index X} (hI : I ∈ l.val) (h : l.countId I = 1) :
     l.val.filter (fun J => I.id = J.id) = [I] := by
@@ -461,8 +455,7 @@ lemma filter_id_of_countId_eq_one_mem {I : Index X} (hI : I ∈ l.val) (h : l.co
   rw [hJ] at hme
   simp only [List.mem_singleton] at hme
   erw [hJ]
-  simp only [List.cons.injEq, and_true]
-  exact id (Eq.symm hme)
+  exact congrFun (congrArg List.cons (id (Eq.symm hme))) []
 
 lemma filter_id_of_countId_eq_two {i : Fin l.length}
     (h : l.countId (l.val.get i) = 2) :
@@ -481,7 +474,7 @@ lemma filter_id_of_countId_eq_two {i : Fin l.length}
         simp only [List.get_eq_getElem, decide_True, List.filter_cons_of_pos, List.cons.injEq,
           List.filter_eq_self, List.mem_singleton, decide_eq_true_eq, forall_eq, true_and]
         change l.idMap i = l.idMap ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))
-        simp
+        exact Eq.symm (getDual?_get_id l i (getDual?_isSome_of_countId_eq_two l h))
       rw [← h1]
       refine List.Sublist.filter (fun (J : Index X) => ((l.val.get i).id = J.id)) ?_
       rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
@@ -495,7 +488,7 @@ lemma filter_id_of_countId_eq_two {i : Fin l.length}
       · intro a
         fin_cases a <;> rfl
     · rw [hc]
-      simp
+      rfl
   · have hi' : ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h)) < i := by
       have h1 := l.getDual?_get_areDualInSelf i (getDual?_isSome_of_countId_eq_two l h)
       simp only [AreDualInSelf] at h1
@@ -509,8 +502,8 @@ lemma filter_id_of_countId_eq_two {i : Fin l.length}
           decide_eq_true_eq, forall_eq_or_imp, forall_eq, and_true]
         apply And.intro
         · change l.idMap i = l.idMap ((l.getDual? i).get (l.getDual?_isSome_of_countId_eq_two h))
-          simp
-        · simp only [List.not_mem_nil, false_implies, implies_true, and_self]
+          exact Eq.symm (getDual?_get_id l i (getDual?_isSome_of_countId_eq_two l h))
+        · exact And.symm (if_false_right.mp trivial)
       rw [← h1]
       refine List.Sublist.filter (fun (J : Index X) => ((l.val.get i).id = J.id)) ?_
       rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
@@ -528,7 +521,7 @@ lemma filter_id_of_countId_eq_two {i : Fin l.length}
       · intro a
         fin_cases a <;> rfl
     · rw [hc]
-      simp
+      rfl
 
 end IndexList
 

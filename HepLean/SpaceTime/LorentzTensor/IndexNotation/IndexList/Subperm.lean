@@ -52,7 +52,7 @@ lemma iff_countId : l.Subperm l2 ↔
       have hi' := h ⟨l.val.indexOf I', hi'⟩
       rw [← hIi'] at hi'
       rw [hi'.1, hi'.2]
-      simp
+      exact if_false_right.mp (congrFun rfl)
   · have hi := h (l.val.get i)
     have h1 : l.countId (l.val.get i) ≠ 0 := countId_index_neq_zero l i
     omega

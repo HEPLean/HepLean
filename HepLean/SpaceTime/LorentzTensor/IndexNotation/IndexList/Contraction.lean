@@ -46,7 +46,7 @@ def contrIndexList : IndexList X where
 @[simp]
 lemma contrIndexList_empty : (⟨[]⟩ : IndexList X).contrIndexList = { val := [] } := by
   apply ext
-  simp [contrIndexList]
+  rfl
 
 lemma contrIndexList_val : l.contrIndexList.val =
     l.val.filter (fun I => l.countId I = 1) := by
@@ -81,7 +81,7 @@ lemma contrIndexList_eq_contrIndexList' : l.contrIndexList = l.contrIndexList' :
     rw [hf, ← List.filter_map]
     apply congrArg
     simp [length]
-  · simp only [List.map_ofFn]
+  · exact List.map_ofFn (Subtype.val ∘ ⇑l.withoutDualEquiv) l.val.get
 
 @[simp]
 lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
@@ -210,7 +210,7 @@ lemma cons_contrIndexList_of_countId_neq_zero {I : Index X} (h : l.countId I ≠
     · simp only [hI, decide_True, List.countP_cons_of_pos, add_left_eq_self, Bool.not_true,
       Bool.false_and, decide_eq_false_iff_not, countId]
       rw [countId, hI] at h
-      simp only [h, not_false_eq_true]
+      exact h
     · simp only [hI, decide_False, Bool.not_false, Bool.true_and, decide_eq_decide]
       rw [List.countP_cons_of_neg]
       simp only [decide_eq_true_eq]
@@ -230,8 +230,7 @@ lemma mem_contrIndexList_filter {I : Index X} (h : I ∈ l.contrIndexList.val) :
     exact l.mem_contrIndexList_countId h
   have h2 : I ∈ l.val.filter (fun J => I.id = J.id) := by
     simp only [List.mem_filter, decide_True, and_true]
-    simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at h
-    exact h.1
+    exact List.mem_of_mem_filter h
   rw [List.length_eq_one] at h1
   obtain ⟨J, hJ⟩ := h1
   rw [hJ] at h2
@@ -268,23 +267,23 @@ lemma countId_contrIndexList_zero_of_countId (I : Index X)
     rw [Bool.and_comm]
   · rw [countId_eq_length_filter, List.length_eq_zero] at h
     rw [h]
-    simp only [List.countP_nil]
+    rfl
 
 lemma countId_contrIndexList_le_one (I : Index X) :
     l.contrIndexList.countId I ≤ 1 := by
   by_cases h : l.contrIndexList.countId I = 0
-  · simp [h]
+  · exact StrictMono.minimal_preimage_bot (fun ⦃a b⦄ a => a) h 1
   · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I h
     rw [countId_congr l.contrIndexList hI2, mem_contrIndexList_countId_contrIndexList l hI1]
 
 lemma countId_contrIndexList_eq_one_iff_countId_eq_one (I : Index X) :
     l.contrIndexList.countId I = 1 ↔ l.countId I = 1 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I (by omega)
+  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I (ne_zero_of_eq_one h)
     simp [contrIndexList] at hI1
     rw [countId_congr l hI2]
     exact hI1.2
-  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l I (by omega)
+  · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l I (ne_zero_of_eq_one h)
     rw [countId_congr l hI2] at h
     rw [countId_congr _ hI2]
     refine mem_contrIndexList_countId_contrIndexList l ?_

@@ -119,11 +119,8 @@ def toColor (I : Index X) : X := I.1
 def id (I : Index X) : ℕ := I.2
 
 lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColor ∧ I.id = J.id := by
-  refine Iff.intro ?_ ?_
-  · intro h
-    simp [h]
-  · intro h
-    cases I
+  refine Iff.intro (fun h => Prod.mk.inj_iff.mp h)  (fun h => ?_)
+  · cases I
     cases J
     simp [toColor, id] at h
     simp [h]

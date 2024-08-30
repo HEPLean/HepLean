@@ -81,8 +81,7 @@ lemma trans_mapIso {e : X ≃ Y} {e' : Z ≃ Y}
 lemma mapIso_trans {e : X ≃ Y} {e' : Z ≃ X}
     (h : cX.ContrAll e cY) (h' : cZ.MapIso e' cX) : cZ.ContrAll (e'.trans e) cY := by
   subst h h'
-  funext x
-  simp only [Function.comp_apply, Equiv.coe_trans, Equiv.apply_symm_apply]
+  rfl
 
 end ContrAll
 
@@ -257,7 +256,8 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : cX.MapIso e cY) :
   rw [𝓣.contrDual_cast (congrFun h.symm y)]
   apply congrArg
   congr 1
-  · simp [colorModuleCast]
+  · exact (LinearEquiv.eq_symm_apply
+      (𝓣.colorModuleCast (congrFun (TensorColor.ColorMap.MapIso.symm h) y))).mp rfl
   · symm
     apply cast_eq_iff_heq.mpr
     simp [colorModuleCast, Equiv.apply_symm_apply]
@@ -281,7 +281,6 @@ def contrAll (e : X ≃ Y) (h : cX.ContrAll e cY) : 𝓣.Tensor cX ⊗[R] 𝓣.T
 lemma contrAll_tmul (e : X ≃ Y) (h : cX.ContrAll e cY) (x : 𝓣.Tensor cX) (y : 𝓣.Tensor cY) :
     𝓣.contrAll e h (x ⊗ₜ[R] y) = 𝓣.contrAll' (x ⊗ₜ[R] ((𝓣.mapIso e.symm h.symm.toMapIso) y)) := by
   rw [contrAll]
-  simp only [LinearMap.coe_comp, Function.comp_apply]
   rfl
 
 @[simp]
@@ -442,7 +441,7 @@ lemma contr_tprod_isEmpty [IsEmpty C] (e : (C ⊕ C) ⊕ P ≃ X) (h : cX.ContrC
   rw [contrAll_tmul, contrAll'_isEmpty_tmul]
   simp only [isEmptyEquiv_tprod, Equiv.refl_symm, mapIso_tprod, Equiv.refl_apply, one_mul]
   erw [isEmptyEquiv_tprod]
-  simp
+  exact MulAction.one_smul ((tprod R) fun p => f (e (Sum.inr p)))
 
 /-- The contraction of indices via `contr` is equivariant. -/
 @[simp]

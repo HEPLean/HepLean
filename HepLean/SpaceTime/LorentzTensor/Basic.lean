@@ -133,7 +133,7 @@ lemma trans (h : cX.MapIso e cY) (h' : cY.MapIso e' cZ) :
     cX.MapIso (e.trans e') cZ:= by
   funext a
   subst h h'
-  simp
+  rfl
 
 lemma sum {eX : X ≃ X'} {eY : Y ≃ Y'} (hX : cX.MapIso eX cX') (hY : cY.MapIso eY cY') :
     (cX.sum cY).MapIso (eX.sumCongr eY) (cX'.sum cY') := by
@@ -201,7 +201,7 @@ lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMono
   intro x3 x4
   simp [contrRightAux, contrMidAux, contrLeftAux]
   erw [TensorProduct.map_tmul]
-  simp only [LinearMapClass.map_smul, LinearMap.id_coe, id_eq, mk_apply, rid_tmul]
+  rfl
 
 end TensorStructure
 
@@ -646,7 +646,7 @@ lemma contrDual_symm' (μ : 𝓣.Color) (x : 𝓣.ColorModule (𝓣.τ μ))
     (𝓣.contrDual μ) ((𝓣.colorModuleCast (𝓣.τ_involutive μ) y) ⊗ₜ[R] x) := by
   rw [𝓣.contrDual_symm, 𝓣.contrDual_cast (𝓣.τ_involutive μ)]
   congr
-  simp [colorModuleCast]
+  exact (LinearEquiv.eq_symm_apply (𝓣.colorModuleCast (congrArg 𝓣.τ (𝓣.τ_involutive μ)))).mp rfl
 
 lemma contrDual_symm_contrRightAux (h : ν = η) :
     (𝓣.colorModuleCast h) ∘ₗ contrRightAux (𝓣.contrDual μ) =
@@ -660,8 +660,8 @@ lemma contrDual_symm_contrRightAux (h : ν = η) :
   · intro x z
     simp [contrRightAux]
     congr
-    · simp [colorModuleCast]
-    · simp [colorModuleCast]
+    · exact (LinearEquiv.symm_apply_eq (𝓣.colorModuleCast (𝓣.τ_involutive μ))).mp rfl
+    · exact (LinearEquiv.symm_apply_eq (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)))).mp rfl
   · intro x z h1 h2
     simp [add_tmul, LinearMap.map_add, h1, h2]
 

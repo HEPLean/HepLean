@@ -56,8 +56,7 @@ def contrUpDownBi : LorentzVector d →ₗ[ℝ] CovariantLorentzVector d →ₗ[
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     simp only [HSMul.hSMul, SMul.smul]
-    simp only [RingHom.id, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk, id_eq]
-    ring
+    exact mul_assoc r (v i) (w i)
 
 /-- The linear map defining the contraction of a contravariant Lorentz vector
   and a covariant Lorentz vector. -/
@@ -185,9 +184,10 @@ lemma asTenProd_diag :
   rw [Finset.sum_eq_single μ]
   · intro ν _ hμν
     rw [minkowskiMatrix.off_diag_zero hμν.symm]
-    simp only [zero_smul]
+    exact TensorProduct.zero_smul (e μ ⊗ₜ[ℝ] e ν)
   · intro a
-    simp_all only
+    rename_i j
+    exact False.elim (a j)
 
 /-- The metric tensor as an element of `CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d`. -/
 def asCoTenProd : CovariantLorentzVector d ⊗[ℝ] CovariantLorentzVector d :=

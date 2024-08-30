@@ -106,7 +106,7 @@ lemma ext_colorMap_idMap {l l2 : IndexList X} (hl : l.length = l2.length)
   · trans l.idMap ⟨n, h1⟩
     · rfl
     · rw [hi]
-      simp [idMap]
+      rfl
 
 /-- Given a list of indices a subset of `Fin l.numIndices × Index X`
   of pairs of positions in `l` and the corresponding item in `l`. -/
@@ -330,7 +330,7 @@ lemma filter_id_eq_sort (i : Fin l.length) : l.val.filter (fun J => (l.val.get i
   rw [← filter_sort_comm]
   apply List.filter_congr
   intro x _
-  simp [idMap]
+  rfl
 
 end IndexList
 

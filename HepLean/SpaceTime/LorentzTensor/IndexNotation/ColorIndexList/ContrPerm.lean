@@ -339,7 +339,7 @@ lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
 
 @[simp]
 lemma contrPermEquiv_contr_self {l : ColorIndexList 𝓒} :
-    contrPermEquiv (by simp : ContrPerm l.contr l) =
+    contrPermEquiv (self_contr : ContrPerm l.contr l) =
     (Fin.castOrderIso (by simp)).toEquiv := by
   rw [← contrPermEquiv_symm, contrPermEquiv_self_contr]
   rfl

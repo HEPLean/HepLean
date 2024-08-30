@@ -79,8 +79,7 @@ lemma boolFin'_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin' c₁ c�
   funext x
   exact h x
 
-lemma refl : DualMap c₁ c₁ := by
-  simp [DualMap]
+lemma refl : DualMap c₁ c₁ := rfl
 
 lemma symm (h : DualMap c₁ c₂) : DualMap c₂ c₁ := by
   rw [DualMap] at h ⊢
@@ -155,7 +154,7 @@ lemma unit_lhs_eq (x : 𝓣.ColorModule μ) (y : 𝓣.ColorModule (𝓣.τ μ) �
     contrLeftAux (𝓣.contrDual μ) (x ⊗ₜ[R] y) =
     (contrRightAux (𝓣.contrDual (𝓣.τ μ))) ((TensorProduct.comm R _ _) y
     ⊗ₜ[R] (𝓣.colorModuleCast (𝓣.τ_involutive μ).symm) x) := by
-  refine TensorProduct.induction_on y (by simp) ?_ (fun z1 z2 h1 h2 => ?_)
+  refine TensorProduct.induction_on y (by rfl) ?_ (fun z1 z2 h1 h2 => ?_)
   · intro x1 x2
     simp only [contrRightAux, LinearEquiv.refl_toLinearMap, comm_tmul, colorModuleCast,
       Equiv.cast_symm, LinearEquiv.coe_mk, Equiv.cast_apply, LinearMap.coe_comp,
@@ -184,7 +183,7 @@ lemma metric_cast (h : μ = ν) :
     𝓣.metric ν := by
   subst h
   erw [congr_refl_refl]
-  simp only [LinearEquiv.refl_apply]
+  rfl
 
 @[simp]
 lemma metric_contrRight_unit (μ : 𝓣.Color) (x : 𝓣.ColorModule μ) :
@@ -198,7 +197,7 @@ lemma metric_contrRight_unit (μ : 𝓣.Color) (x : 𝓣.ColorModule μ) :
   simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul,
     map_tmul, LinearMap.id_coe, id_eq]
   rw [𝓣.metric_dual]
-  simp only [unit_lid]
+  exact unit_lid 𝓣
 
 /-!
 
@@ -242,7 +241,8 @@ lemma dualizeModule_equivariant (g : G) :
     LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, colorModuleCast_equivariant_apply,
     lTensorHomToHomLTensor_apply, LinearMap.id_coe, id_eq]
   nth_rewrite 1 [← MulActionTensor.metric_inv (𝓣.τ μ) g]
-  simp
+  exact contrRightAux_contrDual_equivariant_tmul 𝓣 g (𝓣.metric (𝓣.τ μ))
+      ((𝓣.colorModuleCast (dualizeFun.proof_3 𝓣 μ)) x)
 
 @[simp]
 lemma dualizeModule_equivariant_apply (g : G) (x : 𝓣.ColorModule μ) :

@@ -60,9 +60,7 @@ def compHom (f : H →* G) : MulActionTensor H 𝓣 where
 /-- The trivial `MulActionTensor` defined via trivial representations. -/
 def trivial : MulActionTensor G 𝓣 where
   repColorModule μ := Representation.trivial R
-  contrDual_inv μ g := by
-    simp only [Representation.trivial, MonoidHom.one_apply, TensorProduct.map_one]
-    rfl
+  contrDual_inv μ g := ext rfl
   metric_inv μ g := by
     simp only [Representation.trivial, MonoidHom.one_apply, TensorProduct.map_one]
     rfl
@@ -101,7 +99,7 @@ lemma colorModuleCast_equivariant_apply (h : μ = ν) (g : G) (x : 𝓣.ColorMod
     (𝓣.colorModuleCast h) (repColorModule μ g x) =
     (repColorModule ν g) (𝓣.colorModuleCast h x) := by
   subst h
-  simp [colorModuleCast]
+  rfl
 
 @[simp]
 lemma contrRightAux_contrDual_equivariant_tmul (g : G) (m : 𝓣.ColorModule ν ⊗[R] 𝓣.ColorModule μ)
