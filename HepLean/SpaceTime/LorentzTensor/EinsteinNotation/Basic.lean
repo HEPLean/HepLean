@@ -73,7 +73,7 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
         Fintype.total_apply, LinearMap.stdBasis_apply', smul_eq_mul, mul_ite, mul_one, mul_zero,
         Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, lid_tmul, ite_smul, one_smul, zero_smul]
       rw [if_neg (id (Ne.symm hi))]
-      simp only [tmul_zero]
+      exact tmul_zero (Fin n → R) ((LinearMap.stdBasis R (fun _ => R) x) 1)
 
 namespace einsteinTensor
 

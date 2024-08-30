@@ -101,7 +101,7 @@ lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
   simp [LorentzVector.stdBasis, Pi.basisFun_apply]
   erw [Pi.basisFun_apply, Matrix.mulVec_stdBasis]
   rw [← LorentzGroup.coe_inv]
-  simp
+  rfl
 
 end CovariantLorentzVector
 

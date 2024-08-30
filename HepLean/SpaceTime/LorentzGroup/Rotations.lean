@@ -43,13 +43,12 @@ lemma SO3ToMatrix_injective : Function.Injective SO3ToMatrix := by
 space-time rotation. -/
 def SO3ToLorentz : SO(3) →* LorentzGroup 3 where
   toFun A := ⟨SO3ToMatrix A, SO3ToMatrix_in_LorentzGroup A⟩
-  map_one' := by
-    apply Subtype.eq
-    simp only [SO3ToMatrix, Nat.reduceAdd, Matrix.reindex_apply, lorentzGroupIsGroup_one_coe]
-    erw [Matrix.fromBlocks_one]
-  map_mul' A B := by
-    apply Subtype.eq
-    simp [Matrix.fromBlocks_multiply]
+  map_one' := Subtype.eq <|
+    (minkowskiMetric.matrix_eq_iff_eq_forall _ ↑1).mpr fun w => congrFun rfl
+  map_mul' A B := Subtype.eq <| by
+    simp only [SO3ToMatrix, SO3Group_mul_coe, lorentzGroupIsGroup_mul_coe,
+      Matrix.fromBlocks_multiply, mul_one, Matrix.mul_zero, add_zero, Matrix.zero_mul,
+      Matrix.mul_one, zero_add]
 
 end LorentzGroup
 

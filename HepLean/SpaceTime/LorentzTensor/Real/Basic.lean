@@ -54,8 +54,9 @@ instance : Fintype ColorType where
   complete := by
     intro x
     cases x
-    · simp only [Finset.mem_insert, Finset.mem_singleton, or_false]
-    · simp only [Finset.mem_insert, Finset.mem_singleton, or_true]
+    · exact Finset.mem_insert_self ColorType.up {ColorType.down}
+    · apply Finset.insert_eq_self.mp
+      rfl
 
 end realTensorColor
 

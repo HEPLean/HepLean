@@ -52,12 +52,10 @@ lemma iff_countId_leq_two :
     l.OnlyUniqueDuals ↔ ∀ i, l.countId (l.val.get i) ≤ 2 := by
   refine Iff.intro (fun h i => ?_) (fun h => ?_)
   · by_cases hi : i ∈ l.withDual
-    · rw [← h] at hi
-      rw [mem_withUniqueDual_iff_countId_eq_two] at hi
+    · rw [← h, mem_withUniqueDual_iff_countId_eq_two] at hi
       rw [hi]
     · rw [mem_withDual_iff_countId_gt_one] at hi
-      simp at hi
-      exact Nat.le_succ_of_le hi
+      exact Nat.le_of_not_ge hi
   · refine Finset.ext (fun i => ?_)
     rw [mem_withUniqueDual_iff_countId_eq_two, mem_withDual_iff_countId_gt_one]
     have hi := h i
@@ -87,14 +85,14 @@ lemma inl (h : (l ++ l2).OnlyUniqueDuals) : l.OnlyUniqueDuals := by
   intro I
   have hI := h I
   simp at hI
-  omega
+  exact Nat.le_of_add_right_le hI
 
 lemma inr (h : (l ++ l2).OnlyUniqueDuals) : l2.OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
   intro I
   have hI := h I
   simp at hI
-  omega
+  exact le_of_add_le_right hI
 
 lemma symm' (h : (l ++ l2).OnlyUniqueDuals) : (l2 ++ l).OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
@@ -123,10 +121,7 @@ lemma swap (h : (l ++ l2 ++ l3).OnlyUniqueDuals) : (l2 ++ l ++ l3).OnlyUniqueDua
 
 lemma contrIndexList (h : l.OnlyUniqueDuals) : l.contrIndexList.OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
-  intro I
-  have hI := h I
-  have h1 := countId_contrIndexList_le_countId l I
-  omega
+  exact fun I => Nat.le_trans (countId_contrIndexList_le_countId l I) (h I)
 
 lemma contrIndexList_left (h1 : (l ++ l2).OnlyUniqueDuals) :
     (l.contrIndexList ++ l2).OnlyUniqueDuals := by
@@ -136,7 +131,7 @@ lemma contrIndexList_left (h1 : (l ++ l2).OnlyUniqueDuals) :
   simp only [countId_append] at hI
   simp only [countId_append, ge_iff_le]
   have h1 := countId_contrIndexList_le_countId l I
-  omega
+  exact add_le_of_add_le_right hI h1
 
 lemma contrIndexList_right (h1 : (l ++ l2).OnlyUniqueDuals) :
     (l ++ l2.contrIndexList).OnlyUniqueDuals := by

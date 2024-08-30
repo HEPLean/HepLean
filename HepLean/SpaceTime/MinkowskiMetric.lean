@@ -45,8 +45,8 @@ lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
       subst h
       simp_all only [one_apply_eq]
     · simp_all only [ne_eq, Sum.inl.injEq, not_false_eq_true, one_apply_ne]
-  · simp only [ne_eq, not_false_eq_true, diagonal_apply_ne, one_apply_ne]
-  · simp only [ne_eq, not_false_eq_true, diagonal_apply_ne, one_apply_ne]
+  · rfl
+  · rfl
   · simp only [diagonal, of_apply, Sum.inr.injEq, Sum.elim_inr, mul_neg, mul_one, neg_neg]
     split
     · rename_i h
@@ -191,7 +191,7 @@ lemma self_spaceReflection_eq_zero_iff : ⟪v, v.spaceReflection⟫ₘ = 0 ↔ v
       exact h3
     · simpa using congrFun h4 i
   · rw [h]
-    simp only [map_zero, LinearMap.zero_apply]
+    exact LinearMap.map_zero₂ minkowskiMetric (spaceReflection 0)
 /-!
 
 # Non degeneracy of the Minkowski metric
@@ -339,16 +339,7 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
 lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
     Λ ν μ = η ν ν * ⟪e ν, Λ *ᵥ e μ⟫ₘ := by
   rw [on_basis_mulVec, ← mul_assoc]
-  have h1 : η ν ν * η ν ν = 1 := by
-    simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-    rcases μ
-    · rcases ν
-      · simp_all only [Sum.elim_inl, mul_one]
-      · simp_all only [Sum.elim_inr, mul_neg, mul_one, neg_neg]
-    · rcases ν
-      · simp_all only [Sum.elim_inl, mul_one]
-      · simp_all only [Sum.elim_inr, mul_neg, mul_one, neg_neg]
-  simp [h1]
+  simp [η_apply_mul_η_apply_diag ν]
 
 end matrices
 end minkowskiMetric

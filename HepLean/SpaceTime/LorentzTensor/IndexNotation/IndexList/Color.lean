@@ -34,12 +34,10 @@ lemma dual_dual : I.dual.dual = I := by
   rfl
 
 @[simp]
-lemma dual_id : I.dual.id = I.id := by
-  simp [dual, id]
+lemma dual_id : I.dual.id = I.id := rfl
 
 @[simp]
-lemma dual_color : I.dual.toColor = 𝓒.τ I.toColor := by
-  simp [dual, toColor]
+lemma dual_color : I.dual.toColor = 𝓒.τ I.toColor := rfl
 
 end Index
 
@@ -70,7 +68,7 @@ lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
       obtain ⟨left, _⟩ := h_1
       rw [← left]
       rw [𝓒.τ_involutive]
-      simp
+      exact Or.inr rfl
   · intro a_1
     simp_all only [and_true]
     obtain ⟨left, _⟩ := a_1
@@ -79,7 +77,7 @@ lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
     | inr h_1 =>
       simp_all only
       rw [𝓒.τ_involutive]
-      simp
+      exact Or.inr rfl
 
 lemma countColorQuot_eq_filter_color_countP (I : Index 𝓒.Color) :
     l.countColorQuot I =
@@ -119,7 +117,7 @@ lemma countColorQuot_eq_countId_iff_of_isSome (hl : l.OnlyUniqueDuals) (i : Fin 
         decide (l.val[↑i].toColor = 𝓒.τ l.val[↑((l.getDual? i).get hi)].toColor)) = true := by
         simpa using h
       erw [hn']
-      simp
+      rfl
 
 lemma countColorQuot_of_countId_zero {I : Index 𝓒.Color} (h : l.countId I = 0) :
     l.countColorQuot I = 0 := by
@@ -141,7 +139,7 @@ lemma countColorQuot_contrIndexList_le_one (I : Index 𝓒.Color) :
 lemma countColorQuot_contrIndexList_eq_zero_or_one (I : Index 𝓒.Color) :
     l.contrIndexList.countColorQuot I = 0 ∨ l.contrIndexList.countColorQuot I = 1 := by
   have h1 := countColorQuot_contrIndexList_le_one l I
-  omega
+  exact Nat.le_one_iff_eq_zero_or_eq_one.mp h1
 
 lemma countColorQuot_contrIndexList_le_countColorQuot (I : Index 𝓒.Color) :
     l.contrIndexList.countColorQuot I ≤ l.countColorQuot I := by
@@ -220,8 +218,7 @@ lemma countSelf_contrIndexList_le_one (I : Index 𝓒.Color) :
 
 lemma countSelf_contrIndexList_eq_zero_or_one (I : Index 𝓒.Color) :
     l.contrIndexList.countSelf I = 0 ∨ l.contrIndexList.countSelf I = 1 := by
-  have h1 := countSelf_contrIndexList_le_one l I
-  omega
+  exact Nat.le_one_iff_eq_zero_or_eq_one.mp (countSelf_contrIndexList_le_one l I)
 
 lemma countSelf_contrIndexList_eq_zero_of_zero (I : Index 𝓒.Color) (h : l.countSelf I = 0) :
     l.contrIndexList.countSelf I = 0 := by
@@ -330,7 +327,7 @@ lemma countSelf_eq_countDual_iff_of_isSome (hl : l.OnlyUniqueDuals)
               exact (𝓒.τ_involutive _).symm
             exact hn hn''
           erw [hm'']
-          simp
+          rfl
         · exact true_iff_iff.mpr hm
       · simp [hm]
         simp [colorMap] at hm
@@ -339,12 +336,12 @@ lemma countSelf_eq_countDual_iff_of_isSome (hl : l.OnlyUniqueDuals)
         simp only [cond_false, ne_eq]
         by_cases hm'' : decide (l.val[↑i].toColor = l.val[↑((l.getDual? i).get hi)].toColor) = true
         · erw [hm'']
-          simp
+          exact Nat.add_one_ne_zero 1
         · have hm''' : decide (l.val[↑i].toColor = l.val[↑((l.getDual? i).get hi)].toColor)
               = false := by
             simpa using hm''
           erw [hm''']
-          simp
+          exact Nat.add_one_ne_zero 0
 
 /-- The condition an index and its' dual, when it exists, have dual colors. -/
 def ColorCond : Prop := Option.map l.colorMap ∘
@@ -376,10 +373,9 @@ lemma iff_withDual :
         simp only [true_and]
         exact hi
       simp only [Function.comp_apply, h'', Option.map_some']
-      rw [show l.getDual? ↑i = some ((l.getDual? i).get hi) by simp]
-      rw [Option.map_some']
+      rw [Option.eq_some_of_isSome hi, Option.map_some']
       simp only [Option.some.injEq]
-      have hii := h ⟨i, by simp [withDual, hi]⟩
+      have hii := h ⟨i, (mem_withDual_iff_isSome l i).mpr hi⟩
       simp at hii
       rw [← hii]
       exact (𝓒.τ_involutive _).symm
@@ -462,14 +458,14 @@ lemma mem_iff_dual_mem (hl : l.OnlyUniqueDuals) (hc : l.ColorCond) (I : Index �
   · have hIdd : l.countId I.dual = 2 := by
       rw [← hId]
       apply countId_congr
-      simp
+      rfl
     have hc' := (hc I.dual h hIdd).2
     simp at hc'
     rw [← countSelf_neq_zero]
     rw [← countSelf_neq_zero] at h
     rw [countDual_eq_countSelf_Dual] at hc'
     simp at hc'
-    omega
+    exact Ne.symm (ne_of_ne_of_eq (id (Ne.symm h)) hc')
 
 lemma iff_countColorCond (hl : l.OnlyUniqueDuals) :
     l.ColorCond ↔ ∀ I, l.countSelf I ≠ 0 → l.countId I = 2 → countColorCond l I := by
@@ -511,13 +507,10 @@ lemma inl (hl : (l ++ l2).OnlyUniqueDuals) (h : ColorCond (l ++ l2)) : ColorCond
   simp at hI'
   rw [l2.countColorQuot_of_countId_zero hI2', l2.countSelf_of_countId_zero hI2',
     l2.countDual_of_countId_zero hI2', hI2'] at hI'
-  simp at hI'
-  omega
+  exact hI'
 
-lemma inr (hl : (l ++ l2).OnlyUniqueDuals) (h : ColorCond (l ++ l2)) : ColorCond l2 := by
-  have hs := symm hl h
-  rw [OnlyUniqueDuals.symm] at hl
-  exact inl hl hs
+lemma inr (hl : (l ++ l2).OnlyUniqueDuals) (h : ColorCond (l ++ l2)) : ColorCond l2 :=
+  inl (OnlyUniqueDuals.symm.mp hl) (symm hl h)
 
 lemma swap (hl : (l ++ l2 ++ l3).OnlyUniqueDuals) (h : ColorCond (l ++ l2 ++ l3)) :
     ColorCond (l2 ++ l ++ l3) := by

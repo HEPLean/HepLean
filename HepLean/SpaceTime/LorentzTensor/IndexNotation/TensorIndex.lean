@@ -49,7 +49,7 @@ instance : Coe 𝓣.TensorIndex (ColorIndexList 𝓣.toTensorColor) where
   coe T := T.toColorIndexList
 
 lemma colormap_mapIso {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toColorIndexList) :
-    ColorMap.MapIso (Fin.castOrderIso (by simp [IndexList.length, hi])).toEquiv
+    ColorMap.MapIso (Fin.castOrderIso (congrArg IndexList.length (congrArg toIndexList hi))).toEquiv
     T₁.colorMap' T₂.colorMap' := by
   cases T₁; cases T₂
   simp [ColorMap.MapIso]

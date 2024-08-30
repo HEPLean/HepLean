@@ -20,8 +20,7 @@ variable {d : ℕ} (v : LorentzVector d)
 /-- The contravariant action of the Lorentz group on a Lorentz vector. -/
 def rep : Representation ℝ (LorentzGroup d) (LorentzVector d) where
   toFun g := Matrix.toLinAlgEquiv e g
-  map_one' := by
-    simp only [lorentzGroupIsGroup_one_coe, map_one]
+  map_one' := (MulEquivClass.map_eq_one_iff (Matrix.toLinAlgEquiv e)).mpr rfl
   map_mul' x y := by
     simp only [lorentzGroupIsGroup_mul_coe, map_mul]
 

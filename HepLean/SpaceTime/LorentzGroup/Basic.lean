@@ -141,17 +141,17 @@ lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= (inv_eq_left_inv (mem_iff_dual_mul_sel
 lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   trans Subtype.val (Λ⁻¹ * Λ)
   · rw [← coe_inv]
-    simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+    rfl
   · rw [inv_mul_self Λ]
-    simp only [lorentzGroupIsGroup_one_coe]
+    rfl
 
 @[simp]
 lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
   trans Subtype.val (Λ * Λ⁻¹)
   · rw [← coe_inv]
-    simp only [lorentzGroupIsGroup_inv, lorentzGroupIsGroup_mul_coe]
+    rfl
   · rw [mul_inv_self Λ]
-    simp only [lorentzGroupIsGroup_one_coe]
+    rfl
 
 @[simp]
 lemma mul_minkowskiMatrix_mul_transpose :
@@ -198,13 +198,11 @@ embedding.
 def toGL : LorentzGroup d →* GL (Fin 1 ⊕ Fin d) ℝ where
   toFun A := ⟨A.1, (A⁻¹).1, mul_eq_one_comm.mpr $ mem_iff_dual_mul_self.mp A.2,
     mem_iff_dual_mul_self.mp A.2⟩
-  map_one' := by
-    simp
-    rfl
-  map_mul' x y := by
-    simp only [lorentzGroupIsGroup, _root_.mul_inv_rev, coe_inv]
-    ext
-    rfl
+  map_one' :=
+    (GeneralLinearGroup.ext_iff _ 1).mpr fun _ => congrFun rfl
+  map_mul' _ _ :=
+    (GeneralLinearGroup.ext_iff _ _).mpr fun _ => congrFun rfl
+
 
 lemma toGL_injective : Function.Injective (@toGL d) := by
   refine fun A B h => Subtype.eq ?_

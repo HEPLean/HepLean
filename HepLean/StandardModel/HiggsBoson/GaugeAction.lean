@@ -59,7 +59,7 @@ lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
     matrixToLin g ∈ unitary (HiggsVec →L[ℂ] HiggsVec) := by
   rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul,
     mem_unitaryGroup_iff.mp g.prop, mem_unitaryGroup_iff'.mp g.prop, matrixToLin.map_one]
-  simp
+  exact Prod.mk_eq_one.mp rfl
 
 /-- The natural homomorphism from unitary `2×2` complex matrices to unitary transformations
 of `higgsVec`. -/
