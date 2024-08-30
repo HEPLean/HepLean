@@ -11,8 +11,8 @@ import HepLean.AnomalyCancellation.GroupActions
 
 We define the ACC system for the Standard Model with right-handed neutrinos and no gravitational
 anomaly.
-
 -/
+
 universe v u
 
 namespace SMRHN
@@ -29,9 +29,7 @@ def SMNoGrav (n : ℕ) : ACCSystem where
     | 0 => @accSU2 n
     | 1 => accSU3
   numberQuadratic := 0
-  quadraticACCs := by
-    intro i
-    exact Fin.elim0 i
+  quadraticACCs := fun i ↦ Fin.elim0 i
   cubicACC := accCube
 
 namespace SMNoGrav
@@ -48,8 +46,7 @@ lemma SU3Sol (S : (SMNoGrav n).LinSols) : accSU3 S.val = 0 := by
   simp at hS
   exact hS 1
 
-lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := by
-  exact S.cubicSol
+lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := S.cubicSol
 
 /-- An element of `charges` which satisfies the linear ACCs
   gives us a element of `LinSols`. -/
@@ -64,10 +61,7 @@ def chargeToLinear (S : (SMNoGrav n).Charges) (hSU2 : accSU2 S = 0) (hSU3 : accS
 
 /-- An element of `LinSols` which satisfies the quadratic ACCs
   gives us a element of `QuadSols`. -/
-def linearToQuad (S : (SMNoGrav n).LinSols) : (SMNoGrav n).QuadSols :=
-  ⟨S, by
-    intro i
-    exact Fin.elim0 i⟩
+def linearToQuad (S : (SMNoGrav n).LinSols) : (SMNoGrav n).QuadSols := ⟨S, fun i ↦ Fin.elim0 i⟩
 
 /-- An element of `QuadSols` which satisfies the quadratic ACCs
   gives us a element of `LinSols`. -/
@@ -100,13 +94,13 @@ def perm (n : ℕ) : ACCSystemGroupAction (SMNoGrav n) where
   rep := repCharges
   linearInvariant := by
     intro i
-    simp at i
+    simp only [SMNoGrav_numberLinear] at i
     match i with
     | 0 => exact accSU2_invariant
     | 1 => exact accSU3_invariant
   quadInvariant := by
     intro i
-    simp at i
+    simp only [SMNoGrav_numberQuadratic] at i
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
 
