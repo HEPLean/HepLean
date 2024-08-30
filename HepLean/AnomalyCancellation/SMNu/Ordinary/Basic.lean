@@ -14,7 +14,6 @@ We define the ACC system for the Standard Model (without hypercharge) with right
 -/
 
 universe v u
-
 namespace SMRHN
 open SMνCharges
 open SMνACCs
@@ -54,8 +53,7 @@ lemma SU3Sol (S : (SM n).LinSols) : accSU3 S.val = 0 := by
   simp at hS
   exact hS 2
 
-lemma cubeSol (S : (SM n).Sols) : accCube S.val = 0 := by
-  exact S.cubicSol
+lemma cubeSol (S : (SM n).Sols) : accCube S.val = 0 := S.cubicSol
 
 /-- An element of `charges` which satisfies the linear ACCs
   gives us a element of `LinSols`. -/
@@ -72,9 +70,7 @@ def chargeToLinear (S : (SM n).Charges) (hGrav : accGrav S = 0)
 /-- An element of `LinSols` which satisfies the quadratic ACCs
   gives us a element of `QuadSols`. -/
 def linearToQuad (S : (SM n).LinSols) : (SM n).QuadSols :=
-  ⟨S, by
-    intro i
-    exact Fin.elim0 i⟩
+  ⟨S, fun i ↦ Fin.elim0 i⟩
 
 /-- An element of `QuadSols` which satisfies the quadratic ACCs
   gives us a element of `Sols`. -/
