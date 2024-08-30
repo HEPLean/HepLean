@@ -193,20 +193,15 @@ def mk₃ (f : V × V × V→ ℚ) (map_smul : ∀ a S T L, f (a • S, T, L) = 
       rw [swap₁, map_add, swap₁, swap₁ S2 S T])
     (by
       intro L T
-      simp only
-      rw [swap₂])).toLinearMap
+      exact swap₂ S L T)).toLinearMap
   map_add' S1 S2 := by
     apply LinearMap.ext
     intro T
     apply LinearMap.ext
     intro S
-    simp [BiLinearSymm.mk₂, map_add]
-  map_smul' a S := by
-    apply LinearMap.ext
-    intro T
-    apply LinearMap.ext
-    intro L
-    simp [BiLinearSymm.mk₂, map_smul]
+    exact map_add S1 S2 T S
+  map_smul' a S :=
+    LinearMap.ext fun T => LinearMap.ext fun L => map_smul a S T L
   swap₁' := swap₁
   swap₂' := swap₂
 
@@ -248,8 +243,7 @@ lemma map_add₃ (f : TriLinearSymm V) (S T L1 L2 : V) :
 /-- Fixing the second and third input vectors, the resulting linear map. -/
 def toLinear₁ (f : TriLinearSymm V) (T L : V) : V →ₗ[ℚ] ℚ where
   toFun S := f S T L
-  map_add' S1 S2 := by
-    simp only [f.map_add₁]
+  map_add' S1 S2 := map_add₁ f S1 S2 T L
   map_smul' a S := by
     simp only [f.map_smul₁]
     rfl

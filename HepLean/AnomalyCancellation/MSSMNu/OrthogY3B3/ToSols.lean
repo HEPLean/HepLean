@@ -73,7 +73,7 @@ lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
     rw [α₁_proj, α₂_proj, h]
     simp only [neg_zero, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
   · rw [h.2.2]
-    simp
+    exact Rat.mul_zero ((dot Y₃.val) B₃.val)
 
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the quadratic surface. -/
@@ -119,7 +119,7 @@ lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero,
       OfNat.ofNat_ne_zero, or_self, false_or] at h
     rw [h.2.1, h.2.2]
-    simp
+    exact Prod.mk_eq_zero.mp rfl
 
 /-- A condition which is satisfied if the plane spanned by `R`, `Y₃` and `B₃` lies
 entirely in the cubic surface. -/
@@ -166,7 +166,7 @@ lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
     rw [h.2.1, h.2.2]
-    simp
+    exact Prod.mk_eq_zero.mp rfl
 
 /-- Those charge assignments perpendicular to `Y₃` and `B₃` which satisfy the condition
 `lineEqProp`. -/
@@ -215,7 +215,7 @@ lemma toSolNSQuad_eq_planeY₃B₃_on_α (R : MSSMACC.AnomalyFreePerp) :
   apply planeY₃B₃_eq
   rw [α₁, α₂, α₃]
   ring_nf
-  simp
+  exact ⟨trivial, trivial, trivial⟩
 
 /-- Given an `R` perpendicular to `Y₃` and `B₃`, an element of `Sols`. This map is
 not surjective. -/
@@ -243,7 +243,7 @@ lemma toSolNS_proj (T : NotInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val :=
   rw [h1]
   have h1 := (lineEqPropSol_iff_lineEqCoeff_zero T.val).mpr.mt T.prop
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h1]
-  simp
+  exact MulAction.one_smul T.1.val
 
 /-- A solution to the ACCs, given an element of `inLineEq × ℚ × ℚ × ℚ`. -/
 def inLineEqToSol : InLineEq × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, c₁, c₂, c₃) =>
@@ -286,7 +286,7 @@ lemma inLineEqToSol_proj (T : InLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
   rw [h1]
   have h2 := (inQuadSolProp_iff_quadCoeff_zero T.val).mpr.mt T.prop.2
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h2]
-  simp
+  exact MulAction.one_smul T.1.val
 
 /-- Given an element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
 def inQuadToSol : InQuad × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
@@ -331,7 +331,7 @@ lemma inQuadToSol_proj (T : InQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
   rw [h1]
   have h2 := (inCubeSolProp_iff_cubicCoeff_zero T.val).mpr.mt T.prop.2.2
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h2]
-  simp
+  exact MulAction.one_smul T.1.val
 
 /-- Given a element of `inQuadCube × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
 def inQuadCubeToSol : InQuadCube × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, b₁, b₂, b₃) =>
@@ -371,9 +371,9 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   ring_nf
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel]
-  · simp only [one_smul]
+  · exact MulAction.one_smul (T.1).val
   · rw [show dot Y₃.val B₃.val = 108 by rfl]
-    simp
+    exact Ne.symm (OfNat.zero_ne_ofNat 108)
 
 /-- A solution from an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ`. We will
 show that this map is a surjection. -/

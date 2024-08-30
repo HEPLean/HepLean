@@ -200,7 +200,7 @@ def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
 instance solsMulAction (χ : ACCSystem) : MulAction ℚ χ.Sols where
   smul a S := ⟨a • S.toQuadSols, by
     erw [(χ.cubicACC).map_smul, S.cubicSol]
-    simp⟩
+    exact Rat.mul_zero (a ^ 3)⟩
   mul_smul a b S := Sols.ext (mul_smul _ _ _)
   one_smul S := Sols.ext (one_smul _ _)
 

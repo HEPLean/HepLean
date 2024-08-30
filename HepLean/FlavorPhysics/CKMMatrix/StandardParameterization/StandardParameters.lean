@@ -489,7 +489,7 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
     (hV : FstRowThdColRealCond V) : V = standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) (- arg [V]ub) := by
   have hb' : VubAbs ⟦V⟧ ≠ 1 := by
     rw [ud_us_neq_zero_iff_ub_neq_one] at hb
-    simp [VAbs, hb]
+    exact hb
   have h1 : ofReal (√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) *
     ↑√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2)) = ofReal (VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) := by
     rw [Real.mul_self_sqrt]
@@ -552,16 +552,16 @@ lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
   have h1 : VubAbs ⟦V⟧ = 1 := by
     simp [VAbs]
     rw [hV.2.2.2.1]
-    simp
+    exact AbsoluteValue.map_one Complex.abs
   refine eq_rows V ?_ ?_ hV.2.2.2.2.1
   · funext i
     fin_cases i
     · simp [uRow, standParam, standParamAsMatrix]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.1]
-      simp only [ofReal_zero, mul_zero]
+      exact Eq.symm (mul_eq_zero_of_right (cos ↑(θ₁₂ ⟦V⟧)) rfl)
     · simp [uRow, standParam, standParamAsMatrix]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.2.1]
-      simp only [ofReal_zero, mul_zero]
+      exact Eq.symm (mul_eq_zero_of_right (sin ↑(θ₁₂ ⟦V⟧)) rfl)
     · simp [uRow, standParam, standParamAsMatrix]
       rw [S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₁₃]
       simp [VAbs]
@@ -589,7 +589,7 @@ lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
       rw [h3, S₂₃_of_Vub_eq_one h1, hV.2.2.2.2.2.2]
     · simp [cRow, standParam, standParamAsMatrix]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.2.2.1]
-      simp
+      exact Eq.symm (mul_eq_zero_of_right (sin ↑(θ₂₃ ⟦V⟧)) rfl)
 
 theorem exists_δ₁₃ (V : CKMMatrix) :
     ∃ (δ₃ : ℝ), V ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₃ := by
@@ -639,7 +639,7 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
   · simp at h
     have h1 : δ₁₃ ⟦V⟧ = 0 := by
       rw [hSV, δ₁₃, h]
-      simp
+      exact arg_zero
     rw [h1]
     rw [mulExpδ₁₃_on_param_eq_zero_iff, Vs_zero_iff_cos_sin_zero] at h
     refine phaseShiftRelation_equiv.trans hδ₃ ?_
