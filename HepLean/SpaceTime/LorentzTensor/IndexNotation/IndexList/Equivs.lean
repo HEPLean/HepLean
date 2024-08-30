@@ -240,7 +240,7 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
     apply option_not_lt
     · rw [getDual?_getDualEquiv]
       simpa only [getDualEquiv, Equiv.coe_fn_mk, Option.some_get] using hi.2
-    · simp only [ne_eq, getDual?_neq_self, not_false_eq_true]⟩
+    · exact getDual?_neq_self l _⟩
   invFun i := ⟨l.getDualEquiv.symm ⟨i, l.mem_withUniqueDual_of_mem_withUniqueDualGt i i.2⟩, by
     have hi := i.2
     simp only [withUniqueDualLT, Finset.mem_filter, Finset.coe_mem, true_and, gt_iff_lt]
@@ -249,7 +249,7 @@ def withUniqueDualLTEquivGT : l.withUniqueDualLT ≃ l.withUniqueDualGT where
     · erw [getDual?_getDualEquiv]
       simpa [getDualEquiv] using hi.2
     · symm
-      simp⟩
+      exact getDual?_neq_self l _⟩
   left_inv x := SetCoe.ext <| by
     simp
   right_inv x := SetCoe.ext <| by

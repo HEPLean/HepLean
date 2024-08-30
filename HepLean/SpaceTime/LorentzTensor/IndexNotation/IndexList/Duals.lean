@@ -418,6 +418,20 @@ lemma getDualInOther?_self_isSome (i : Fin l.length) :
   rw [@Fin.isSome_find_iff]
   exact ⟨i, rfl⟩
 
+@[simp]
+lemma getDualInOther?_getDualInOther?_get_self (i : Fin l.length) :
+    l.getDualInOther? l ((l.getDualInOther? l i).get (getDualInOther?_self_isSome l i)) =
+    some ((l.getDualInOther? l i).get (getDualInOther?_self_isSome l i)) := by
+  nth_rewrite 1 [getDualInOther?]
+  rw [Fin.find_eq_some_iff]
+  simp [AreDualInOther]
+  intro j hj
+  have h1 := Option.eq_some_of_isSome (getDualInOther?_self_isSome l i)
+  nth_rewrite 1 [getDualInOther?] at h1
+  rw [Fin.find_eq_some_iff] at h1
+  apply h1.2 j
+  simpa [AreDualInOther] using hj
+
 end IndexList
 
 end IndexNotation
