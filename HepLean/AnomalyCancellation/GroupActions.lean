@@ -45,12 +45,8 @@ def linSolMap {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : G.group) :
   toFun S := ⟨G.rep g S.val, by
     intro i
     rw [G.linearInvariant, S.linearSol]⟩
-  map_add' S T := by
-    apply ACCSystemLinear.LinSols.ext
-    exact (G.rep g).map_add' _ _
-  map_smul' a S := by
-    apply ACCSystemLinear.LinSols.ext
-    exact (G.rep g).map_smul' _ _
+  map_add' S T := ACCSystemLinear.LinSols.ext ((G.rep g).map_add' _ _)
+  map_smul' a S := ACCSystemLinear.LinSols.ext ((G.rep g).map_smul' _ _)
 
 /-- The representation acting on the vector space of solutions to the linear ACCs. -/
 @[simps!]
@@ -58,16 +54,12 @@ def linSolRep {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     Representation ℚ G.group χ.LinSols where
   toFun := G.linSolMap
   map_mul' g1 g2 := by
-    apply LinearMap.ext
-    intro S
-    apply ACCSystemLinear.LinSols.ext
+    refine LinearMap.ext fun S ↦ ACCSystemLinear.LinSols.ext ?_
     change (G.rep (g1 * g2)) S.val = _
     rw [G.rep.map_mul]
     rfl
   map_one' := by
-    apply LinearMap.ext
-    intro S
-    apply ACCSystemLinear.LinSols.ext
+    refine LinearMap.ext fun S ↦ ACCSystemLinear.LinSols.ext ?_
     change (G.rep.toFun 1) S.val = _
     rw [G.rep.map_one']
     rfl

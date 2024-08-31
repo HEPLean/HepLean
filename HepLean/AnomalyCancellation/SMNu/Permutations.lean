@@ -10,7 +10,6 @@ import Mathlib.RepresentationTheory.Basic
 # Permutations of SM charges with RHN.
 
 We define the group of permutations for the SM charges with RHN.
-
 -/
 
 universe v u
@@ -54,8 +53,7 @@ def repCharges {n : ℕ} : Representation ℚ (PermGroup n) (SMνCharges n).Char
     repeat erw [toSMSpecies_toSpecies_inv]
     rfl
   map_one' := by
-    apply LinearMap.ext
-    intro S
+    refine LinearMap.ext fun S => ?_
     rw [charges_eq_toSpecies_eq]
     intro i
     erw [toSMSpecies_toSpecies_inv]
@@ -75,32 +73,26 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMνCharges n).C
 
 lemma accGrav_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accGrav (repCharges f S) = accGrav S :=
-  accGrav_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+  accGrav_ext (by simpa using toSpecies_sum_invariant 1 f S)
 
 lemma accSU2_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accSU2 (repCharges f S) = accSU2 S :=
-  accSU2_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+  accSU2_ext (by simpa using toSpecies_sum_invariant 1 f S)
 
 lemma accSU3_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accSU3 (repCharges f S) = accSU3 S :=
-  accSU3_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+  accSU3_ext (by simpa using toSpecies_sum_invariant 1 f S)
 
 lemma accYY_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accYY (repCharges f S) = accYY S :=
-  accYY_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+  accYY_ext (by simpa using toSpecies_sum_invariant 1 f S)
 
 lemma accQuad_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accQuad (repCharges f S) = accQuad S :=
-  accQuad_ext
-    (toSpecies_sum_invariant 2 f S)
+  accQuad_ext (toSpecies_sum_invariant 2 f S)
 
 lemma accCube_invariant (f : PermGroup n) (S : (SMνCharges n).Charges) :
     accCube (repCharges f S) = accCube S :=
-  accCube_ext
-    (by simpa using toSpecies_sum_invariant 3 f S)
+  accCube_ext (by simpa using toSpecies_sum_invariant 3 f S)
 
 end SMRHN

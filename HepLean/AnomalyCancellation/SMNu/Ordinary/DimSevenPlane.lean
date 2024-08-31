@@ -12,7 +12,6 @@ We give an example of a 7 dimensional plane on which every point satisfies the A
 
 The main result of this file is `seven_dim_plane_exists` which states that there exists a
 7 dimensional plane of charges on which every point satisfies the ACCs.
-
 -/
 
 namespace SMRHN
