@@ -10,7 +10,6 @@ import HepLean.AnomalyCancellation.GroupActions
 # ACC system for SM with RHN
 
 We define the ACC system for the Standard Model with right-handed neutrinos.
-
 -/
 universe v u
 
