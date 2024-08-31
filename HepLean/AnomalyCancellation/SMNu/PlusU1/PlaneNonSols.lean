@@ -80,8 +80,7 @@ lemma Bi_Bj_quad {i j : Fin 11} (hi : i ≠ j) : quadBiLin (B i) (B j) = 0 := by
 
 lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
     quadBiLin (B i) (∑ k, f k • B k) = f i * quadBiLin (B i) (B i) := by
-  rw [quadBiLin.map_sum₂]
-  rw [Fintype.sum_eq_single i]
+  rw [quadBiLin.map_sum₂, Fintype.sum_eq_single i]
   · rw [quadBiLin.map_smul₂]
   · intro k hij
     rw [quadBiLin.map_smul₂, Bi_Bj_quad hij.symm]
@@ -99,8 +98,7 @@ lemma on_accQuad (f : Fin 11 → ℚ) :
     accQuad (∑ i, f i • B i) = ∑ i, quadCoeff i * (f i)^2 := by
   change quadBiLin _ _ = _
   rw [quadBiLin.map_sum₁]
-  apply Fintype.sum_congr
-  intro i
+  refine Fintype.sum_congr _ _ fun i ↦ ?_
   rw [quadBiLin.map_smul₁, Bi_sum_quad, quadCoeff_eq_bilinear]
   ring
 
@@ -108,14 +106,12 @@ lemma isSolution_quadCoeff_f_sq_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSol
     (k : Fin 11) : quadCoeff k * (f k)^2 = 0 := by
   obtain ⟨S, hS⟩ := hS
   have hQ := quadSol S.1
-  rw [hS, on_accQuad] at hQ
-  rw [Fintype.sum_eq_zero_iff_of_nonneg] at hQ
+  rw [hS, on_accQuad, Fintype.sum_eq_zero_iff_of_nonneg] at hQ
   · exact congrFun hQ k
   · intro i
     simp only [Pi.zero_apply, quadCoeff]
     rw [mul_nonneg_iff]
-    apply Or.inl
-    apply And.intro
+    apply Or.inl (And.intro _ _)
     fin_cases i <;> rfl
     exact sq_nonneg (f i)
 
@@ -174,39 +170,31 @@ lemma isSolution_grav (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f
   have hx := isSolution_sum_part f hS
   obtain ⟨S, hS'⟩ := hS
   have hg := gravSol S.toLinSols
-  rw [hS'] at hg
-  rw [hx] at hg
-  rw [accGrav.map_add, accGrav.map_smul, accGrav.map_smul] at hg
-  rw [show accGrav B₉ = 3 by rfl] at hg
-  rw [show accGrav B₁₀ = 1 by rfl] at hg
+  rw [hS', hx, accGrav.map_add, accGrav.map_smul, accGrav.map_smul, show accGrav B₉ = 3 by rfl,
+    show accGrav B₁₀ = 1 by rfl] at hg
   simp at hg
   linear_combination hg
 
 lemma isSolution_sum_part' (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = f 9 • B₉ + (- 3 * f 9) • B₁₀ := by
-  rw [isSolution_sum_part f hS]
-  rw [isSolution_grav f hS]
+  rw [isSolution_sum_part f hS, isSolution_grav f hS]
 
 lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 9 = 0 := by
   have hx := isSolution_sum_part' f hS
   obtain ⟨S, hS'⟩ := hS
   have hc := cubeSol S
-  rw [hS'] at hc
-  rw [hx] at hc
+  rw [hS', hx] at hc
   change cubeTriLin.toCubic _ = _ at hc
   rw [cubeTriLin.toCubic_add] at hc
   erw [accCube.map_smul] at hc
   erw [accCube.map_smul (- 3 * f 9) B₁₀] at hc
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₂,
     cubeTriLin.map_smul₃, cubeTriLin.map_smul₃] at hc
-  rw [show accCube B₉ = 9 by rfl] at hc
-  rw [show accCube B₁₀ = 1 by rfl] at hc
-  rw [show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl] at hc
-  rw [show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
+  rw [show accCube B₉ = 9 by rfl, show accCube B₁₀ = 1 by rfl, show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl,
+    show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
   simp at hc
-  have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by
-    ring
+  have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by ring
   rw [h1] at hc
   simpa using hc
 
@@ -232,30 +220,19 @@ lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i,
 
 lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     ∑ i, f i • B i = 0 := by
-  rw [isSolution_sum_part f hS]
-  rw [isSolution_grav f hS]
-  rw [isSolution_f9 f hS]
+  rw [isSolution_sum_part f hS, isSolution_grav f hS, isSolution_f9 f hS]
   simp
 
-theorem basis_linear_independent : LinearIndependent ℚ B := by
-  apply Fintype.linearIndependent_iff.mpr
-  intro f h
-  let X : (PlusU1 3).Sols := chargeToAF 0 (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
-  have hS : (PlusU1 3).IsSolution (∑ i, f i • B i) := by
-    use X
-    rw [h]
-    rfl
-  exact isSolution_f_zero f hS
+theorem basis_linear_independent : LinearIndependent ℚ B :=
+  Fintype.linearIndependent_iff.mpr fun f h ↦ isSolution_f_zero f
+    ⟨chargeToAF 0 (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl), id (Eq.symm h)⟩
 
 end ElevenPlane
 
 theorem eleven_dim_plane_of_no_sols_exists : ∃ (B : Fin 11 → (PlusU1 3).Charges),
     LinearIndependent ℚ B ∧
-    ∀ (f : Fin 11 → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i) → ∑ i, f i • B i = 0 := by
-  use ElevenPlane.B
-  apply And.intro
-  · exact ElevenPlane.basis_linear_independent
-  · exact ElevenPlane.isSolution_only_if_zero
+    ∀ (f : Fin 11 → ℚ), (PlusU1 3).IsSolution (∑ i, f i • B i) → ∑ i, f i • B i = 0 :=
+  ⟨ElevenPlane.B, ElevenPlane.basis_linear_independent, ElevenPlane.isSolution_only_if_zero⟩
 
 end PlusU1
 end SMRHN
