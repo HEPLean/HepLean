@@ -10,7 +10,6 @@ import HepLean.AnomalyCancellation.GroupActions
 # ACC system for SM with RHN (without hypercharge).
 
 We define the ACC system for the Standard Model (without hypercharge) with right-handed neutrinos.
-
 -/
 
 universe v u
@@ -29,9 +28,7 @@ def SM (n : ℕ) : ACCSystem where
     | 1 => accSU2
     | 2 => accSU3
   numberQuadratic := 0
-  quadraticACCs := by
-    intro i
-    exact Fin.elim0 i
+  quadraticACCs := fun i ↦ Fin.elim0 i
   cubicACC := accCube
 
 namespace SM
