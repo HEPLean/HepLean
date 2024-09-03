@@ -142,7 +142,7 @@ lemma as_sum :
     Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Sum.elim_inl, one_mul,
     Finset.sum_singleton, Sum.elim_inr, neg_mul, mul_neg, Finset.sum_neg_distrib, time, space,
     Function.comp_apply, minkowskiMatrix]
-  ring
+  rfl
 
 /-- The Minkowski metric expressed as a sum for a single vector. -/
 lemma as_sum_self : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 := by
@@ -151,7 +151,7 @@ lemma as_sum_self : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 := by
 
 lemma eq_time_minus_inner_prod : ⟪v, w⟫ₘ = v.time * w.time - ⟪v.space, w.space⟫_ℝ := by
   rw [as_sum, @PiLp.inner_apply]
-  noncomm_ring
+  rfl
 
 lemma self_eq_time_minus_norm : ⟪v, v⟫ₘ = v.time ^ 2 - ‖v.space‖ ^ 2 := by
   rw [← real_inner_self_eq_norm_sq, PiLp.inner_apply, as_sum]
@@ -192,6 +192,7 @@ lemma self_spaceReflection_eq_zero_iff : ⟪v, v.spaceReflection⟫ₘ = 0 ↔ v
     · simpa using congrFun h4 i
   · rw [h]
     exact LinearMap.map_zero₂ minkowskiMetric (spaceReflection 0)
+
 /-!
 
 # Non degeneracy of the Minkowski metric

@@ -200,7 +200,6 @@ lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMono
     by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
   intro x3 x4
   simp [contrRightAux, contrMidAux, contrLeftAux]
-  erw [TensorProduct.map_tmul]
   rfl
 
 end TensorStructure
@@ -433,7 +432,7 @@ lemma elimPureTensor_update_left (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor c
     split_ifs
     · rename_i h
       subst h
-      simp_all only
+      rfl
     · rfl
   | Sum.inr y => rfl
 
@@ -453,10 +452,10 @@ lemma inlPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Su
   funext y
   simp [inlPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
   split
-  next h =>
+  · rename_i h
     subst h
-    simp_all only
-  rfl
+    rfl
+  · rfl
 
 @[simp]
 lemma inrPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim cX cY)) (x : X)
@@ -473,10 +472,10 @@ lemma inrPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (S
   funext y
   simp [inrPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
   split
-  next h =>
+  · rename_i h
     subst h
-    simp_all only
-  rfl
+    rfl
+  · rfl
 
 @[simp]
 lemma inlPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim cX cY)) (y : Y)

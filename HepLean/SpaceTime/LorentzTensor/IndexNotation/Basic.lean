@@ -86,8 +86,7 @@ lemma listCharIndex_iff (l : List Char) : listCharIndex X l
     ↔ (if h : l = [] then True else
     let sfst := l.head h
     if ¬ isNotationChar X sfst then False
-    else listCharIndexTail sfst l.tail) := by
-  rw [listCharIndex]
+    else listCharIndexTail sfst l.tail) := by rfl
 
 instance : Decidable (listCharIndex X l) :=
   @decidable_of_decidable_of_iff _ _

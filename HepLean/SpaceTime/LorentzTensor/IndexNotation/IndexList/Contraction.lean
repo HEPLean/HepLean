@@ -45,7 +45,6 @@ def contrIndexList : IndexList X where
 
 @[simp]
 lemma contrIndexList_empty : (⟨[]⟩ : IndexList X).contrIndexList = { val := [] } := by
-  apply ext
   rfl
 
 lemma contrIndexList_val : l.contrIndexList.val =

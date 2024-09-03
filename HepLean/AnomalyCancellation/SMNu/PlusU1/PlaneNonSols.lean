@@ -201,7 +201,7 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i
 lemma isSolution_f10 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 10 = 0 := by
   rw [isSolution_grav f hS, isSolution_f9 f hS]
-  simp
+  rfl
 
 lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11) : f k = 0 := by

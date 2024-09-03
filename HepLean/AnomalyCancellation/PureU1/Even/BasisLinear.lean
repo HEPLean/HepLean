@@ -207,14 +207,17 @@ lemma basis_δ₂_eq_minus_δ₁ (j i : Fin n.succ) :
   simp [basisAsCharges, δ₂, δ₁]
   split <;> split
   any_goals split
+  any_goals rfl
   any_goals split
   any_goals rfl
-  all_goals rename_i h1 h2
-  all_goals rw [Fin.ext_iff] at h1 h2
-  all_goals simp_all
-  all_goals rename_i h3
-  all_goals rw [Fin.ext_iff] at h3
-  all_goals simp_all
+  all_goals
+    rename_i h1 h2
+    rw [Fin.ext_iff] at h1 h2
+    simp_all
+  all_goals
+    rename_i h3
+    rw [Fin.ext_iff] at h3
+    simp_all
   all_goals omega
 
 lemma basis!_δ!₂_eq_minus_δ!₁ (j i : Fin n) :

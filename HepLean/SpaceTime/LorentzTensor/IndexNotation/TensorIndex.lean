@@ -215,8 +215,7 @@ lemma symm {T₁ T₂ : 𝓣.TensorIndex} (h : Rel T₁ T₂) : Rel T₂ T₁ :=
   · symm
     erw [LinearEquiv.symm_apply_eq]
     rw [h.2]
-    · apply congrFun
-      congr
+    · rfl
     exact h'.symm
 
 /-- Rel is transitive. -/
@@ -282,10 +281,7 @@ lemma rel_contr (T : 𝓣.TensorIndex) : T ≈ T.contr := by
       Fin.symm_castOrderIso, mapIso_mapIso, tensorIso]
     trans 𝓣.mapIso (Equiv.refl _) (by rfl) T.contr.tensor
     · simp only [contr_toColorIndexList, mapIso_refl, LinearEquiv.refl_apply]
-    · apply congrFun
-      apply congrArg
-      apply congrArg
-      rfl
+    · rfl
 
 /-!
 

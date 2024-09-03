@@ -141,10 +141,12 @@ lemma getDualInOtherEquiv_self_refl : l.getDualInOtherEquiv l = Equiv.refl _ := 
   apply Subtype.eq
   simp only
   have hx2 := x.2
-  simp [withUniqueDualInOther] at hx2
+  simp only [withUniqueDualInOther, mem_withDual_iff_isSome, Bool.not_eq_true, Option.not_isSome,
+    Option.isNone_iff_eq_none, mem_withInDualOther_iff_isSome, getDualInOther?_self_isSome,
+    true_and, Finset.mem_filter, Finset.mem_univ] at hx2
   apply Option.some_injective
-  rw [hx2.2 x.1 (by simp [AreDualInOther])]
-  simp
+  rw [hx2.2 x.1 (by rfl)]
+  exact Option.some_get (getDualInOtherEquiv.proof_1 l l x)
 
 @[simp]
 lemma getDualInOtherEquiv_symm : (l.getDualInOtherEquiv l2).symm = l2.getDualInOtherEquiv l := by

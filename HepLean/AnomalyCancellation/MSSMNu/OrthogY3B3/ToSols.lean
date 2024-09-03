@@ -97,8 +97,7 @@ def quadCoeff (T : MSSMACC.Sols) : ℚ :=
 lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : InQuadSolProp T ↔ quadCoeff T = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [quadCoeff, h.1, h.2]
-    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-      zero_pow, add_zero, mul_zero]
+    rfl
   · rw [quadCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
@@ -145,8 +144,7 @@ lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
     InCubeSolProp T ↔ cubicCoeff T = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [cubicCoeff, h.1, h.2]
-    simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-      zero_pow, add_zero, mul_zero]
+    rfl
   · rw [cubicCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h

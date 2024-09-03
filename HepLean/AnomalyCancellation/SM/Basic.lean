@@ -107,7 +107,7 @@ lemma accGrav_ext {S T : (SMCharges n).Charges}
     AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  repeat erw [hj]
+  erw [hj, hj, hj, hj, hj]
   rfl
 
 /-- The `SU(2)` anomaly equation. -/
@@ -166,7 +166,7 @@ lemma accSU3_ext {S T : (SMCharges n).Charges}
     AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  repeat erw [hj]
+  erw [hj, hj, hj]
   rfl
 
 /-- The `Y²` anomaly equation. -/
@@ -197,7 +197,7 @@ lemma accYY_ext {S T : (SMCharges n).Charges}
     AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  repeat erw [hj]
+  erw [hj, hj, hj, hj, hj]
   rfl
 
 /-- The quadratic bilinear map. -/

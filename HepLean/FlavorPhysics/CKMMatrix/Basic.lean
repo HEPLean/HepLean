@@ -31,9 +31,15 @@ def phaseShiftMatrix (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
 
 lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   ext i j
-  fin_cases i <;> fin_cases j <;>
-  simp [Matrix.one_apply, phaseShiftMatrix]
-  rfl
+  fin_cases i <;> fin_cases j
+  any_goals rfl
+  · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.zero_eta, Fin.isValue,
+    cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const, one_apply_eq]
+  · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.mk_one, Fin.isValue,
+    cons_val', cons_val_one, head_cons, empty_val', cons_val_fin_one, one_apply_eq]
+  · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.reduceFinMk, cons_val',
+    Fin.isValue, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons, empty_val',
+    cons_val_fin_one, head_fin_const, one_apply_eq]
 
 lemma phaseShiftMatrix_star (a b c : ℝ) :
     (phaseShiftMatrix a b c)ᴴ = phaseShiftMatrix (- a) (- b) (- c) := by
@@ -96,14 +102,10 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   obtain ⟨a, b, c, e, f, g, hUV⟩ := hUV
   obtain ⟨d, i, j, k, l, m, hVW⟩ := hVW
   use (a + d), (b + i), (c + j), (e + k), (f + l), (g + m)
-  rw [Subtype.ext_iff_val]
-  rw [hUV, hVW]
+  rw [Subtype.ext_iff_val, hUV, hVW]
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
-  repeat rw [mul_assoc]
-  rw [phaseShiftMatrix_mul]
-  repeat rw [← mul_assoc]
-  rw [phaseShiftMatrix_mul]
-  rw [add_comm k e, add_comm l f, add_comm m g]
+  rw [mul_assoc, mul_assoc, phaseShiftMatrix_mul, ← mul_assoc, ← mul_assoc, phaseShiftMatrix_mul,
+    add_comm k e, add_comm l f, add_comm m g]
 
 lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
   refl := phaseShiftRelation_refl
