@@ -32,18 +32,9 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
   obtain ⟨B, hB1, hB2⟩ := eleven_dim_plane_of_no_sols_exists
   let Y := Sum.elim B E
   use Y
-  apply Fintype.linearIndependent_iff.mpr
-  intro g hg
-  rw [@Fintype.sum_sum_type] at hg
-  rw [@add_eq_zero_iff_eq_neg] at hg
-  rw [← @Finset.sum_neg_distrib] at hg
-  have h1 : ∑ x : Fin n, -(g (Sum.inr x) • Y (Sum.inr x)) =
-      ∑ x : Fin n, (-g (Sum.inr x)) • Y (Sum.inr x) := by
-    apply Finset.sum_congr
-    simp only
-    intro i _
-    simp
-  rw [h1] at hg
+  refine Fintype.linearIndependent_iff.mpr (fun g hg => ?_)
+  rw [Fintype.sum_sum_type, add_eq_zero_iff_eq_neg, ← Finset.sum_neg_distrib] at hg
+  rw [Finset.sum_congr rfl (fun i _ => (neg_smul (g (Sum.inr i)) (Y (Sum.inr i))).symm)] at hg
   have h2 : ∑ a₁ : Fin 11, g (Sum.inl a₁) • Y (Sum.inl a₁) = 0 := by
     apply hB2
     erw [hg]

@@ -113,8 +113,7 @@ lemma countId_get_other (i : Fin l.length) : l2.countId (l.val.get i) =
     simp only [length, List.finRange_map_get]
   nth_rewrite 1 [hl2]
   rw [List.filter_map, List.length_map]
-  apply congrArg
-  refine List.filter_congr (fun j _ => rfl)
+  rfl
 
 /-! TODO: Replace with mathlib lemma. -/
 lemma filter_finRange (i : Fin l.length) :
@@ -269,7 +268,7 @@ lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withU
       ((List.finRange l.length).filter fun j => l.AreDualInSelf i j)
     · exact List.filter_comm (fun j => l.AreDualInSelf i j) (fun j => j = i')
         (List.finRange l.length)
-    · simp
+    · simp only [List.filter_filter, decide_eq_true_eq, Bool.decide_and]
       refine List.filter_congr (fun j _ => ?_)
       simp only [Bool.and_iff_right_iff_imp, decide_eq_true_eq]
       simp [withUniqueDual] at h
@@ -279,7 +278,7 @@ lemma countId_eq_two_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withU
       rw [hj']
       simp [i']
   rw [List.countP_eq_length_filter, ← h1]
-  simp
+  rfl
 
 lemma mem_withUniqueDual_of_countId_eq_two (i : Fin l.length)
     (h : l.countId (l.val.get i) = 2) : i ∈ l.withUniqueDual := by

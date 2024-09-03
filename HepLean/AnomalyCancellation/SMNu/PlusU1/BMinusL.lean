@@ -66,9 +66,8 @@ lemma on_quadBiLin (S : (PlusU1 n).Charges) :
   ring
 
 lemma on_quadBiLin_AFL (S : (PlusU1 n).LinSols) : quadBiLin (BL n).val S.val = 0 := by
-  rw [on_quadBiLin]
-  rw [YYsol S, SU2Sol S, SU3Sol S]
-  simp
+  rw [on_quadBiLin, YYsol S, SU2Sol S, SU3Sol S]
+  rfl
 
 lemma add_AFL_quad (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accQuad (a • S.val + b • (BL n).val) = a ^ 2 * accQuad S.val := by
@@ -100,9 +99,8 @@ lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
 
 lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
     cubeTriLin (BL n).val (BL n).val S.val = 0 := by
-  rw [on_cubeTriLin]
-  rw [gravSol S, SU3Sol S]
-  simp
+  rw [on_cubeTriLin, gravSol S, SU3Sol S]
+  rfl
 
 lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accCube (a • S.val + b • (BL n).val) =

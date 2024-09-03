@@ -85,7 +85,7 @@ lemma figureEight_connected : Connected figureEight := by decide
 
 /-- The symmetry factor of `figureEight` is 8. We can get this from
   `#eval symmetryFactor figureEight`. -/
-lemma figureEight_symmetryFactor : symmetryFactor figureEight = 8 := by decide
+lemma figureEight_symmetryFactor : symmetryFactor figureEight = 8 := by rfl
 
 end Example
 

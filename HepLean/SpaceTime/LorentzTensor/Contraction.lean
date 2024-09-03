@@ -289,7 +289,6 @@ lemma contrAll_mapIso_right_tmul (e : X ≃ Y) (e' : Z ≃ Y)
     𝓣.contrAll e h (x ⊗ₜ[R] 𝓣.mapIso e' h' z) =
     𝓣.contrAll (e.trans e'.symm) (h.trans_mapIso h') (x ⊗ₜ[R] z) := by
   simp only [contrAll_tmul, mapIso_mapIso]
-  apply congrArg
   rfl
 
 @[simp]
@@ -429,7 +428,6 @@ lemma contr_tprod (e : (C ⊕ C) ⊕ P ≃ X) (h : cX.ContrCond e) (f : (i : X) 
     Function.comp_apply, LinearEquiv.trans_apply, mapIso_tprod, Equiv.symm_symm_apply,
     tensoratorEquiv_symm_tprod, congr_tmul, LinearEquiv.refl_apply, map_tmul, LinearMap.id_coe,
     id_eq, lid_tmul]
-  rw [contrAll_tmul]
   rfl
 
 open PiTensorProduct in

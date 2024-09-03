@@ -111,12 +111,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   simp at h2
   have h5 : f 1 = S.val (δa₂ 0) + S.val δa₁ + S.val (δa₄ 0) := by
     linear_combination -(1 * h1) - 1 * h4 - 1 * h2
-  rw [h5]
-  rw [δa₄_δ!₂]
-  have h0 : (δa₂ (0 : Fin n.succ)) = δ!₁ 0 := by
-    rw [δa₂_δ!₁]
-    exact ht
-  rw [h0, δa₁_δ!₃]
+  rw [h5, δa₄_δ!₂, show (δa₂ (0 : Fin n.succ)) = δ!₁ 0 from rfl, δa₁_δ!₃]
   ring
 
 lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}

@@ -98,9 +98,8 @@ lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
 
 lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
     cubeTriLin (Y n).val (Y n).val S.val = 0 := by
-  rw [on_cubeTriLin]
-  rw [YYsol S]
-  simp
+  rw [on_cubeTriLin, YYsol S]
+  rfl
 
 lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
     cubeTriLin (Y n).val S S = 6 * accQuad S := by
@@ -112,9 +111,7 @@ lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
 
 lemma on_cubeTriLin'_ALQ (S : (PlusU1 n).QuadSols) :
     cubeTriLin (Y n).val S.val S.val = 0 := by
-  rw [on_cubeTriLin']
-  rw [quadSol S]
-  simp
+  rw [on_cubeTriLin', quadSol S, mul_zero]
 
 lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accCube (a • S.val + b • (Y n).val) =

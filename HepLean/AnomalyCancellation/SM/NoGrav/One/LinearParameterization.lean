@@ -303,7 +303,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
     by_contra hn
     have h : s ^ 2 < 0 := by
       rw [← hn]
-      simp [discrim]
+      rfl
     nlinarith
   simp_all
   exact eq_neg_of_add_eq_zero_left h'
@@ -321,7 +321,7 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
     by_contra hn
     have h : s ^ 2 < 0 := by
       rw [← hn]
-      simp [discrim]
+      rfl
     nlinarith
   simp_all
   exact eq_neg_of_add_eq_zero_left h'

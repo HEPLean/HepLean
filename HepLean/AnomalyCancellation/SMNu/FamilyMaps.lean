@@ -113,10 +113,8 @@ lemma sum_familyUniversal {n : ℕ} (m : ℕ) (S : (SMνCharges 1).Charges) (j :
     rw [Fin.sum_const]
     simp
   erw [h1]
-  apply Finset.sum_congr
-  · simp only
-  · intro i _
-    erw [toSpecies_familyUniversal]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  erw [toSpecies_familyUniversal]
 
 lemma sum_familyUniversal_one {n : ℕ} (S : (SMνCharges 1).Charges) (j : Fin 6) :
     ∑ i, toSpecies j (familyUniversal n S) i = n * (toSpecies j S ⟨0, by simp⟩) := by
@@ -128,11 +126,9 @@ lemma sum_familyUniversal_two {n : ℕ} (S : (SMνCharges 1).Charges)
     (toSpecies j S ⟨0, by simp⟩) * ∑ i, toSpecies j T i := by
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.zero_eta, Fin.isValue]
   rw [Finset.mul_sum]
-  apply Finset.sum_congr
-  · simp only
-  · intro i _
-    erw [toSpecies_familyUniversal]
-    rfl
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  erw [toSpecies_familyUniversal]
+  rfl
 
 lemma sum_familyUniversal_three {n : ℕ} (S : (SMνCharges 1).Charges)
     (T L : (SMνCharges n).Charges) (j : Fin 6) :

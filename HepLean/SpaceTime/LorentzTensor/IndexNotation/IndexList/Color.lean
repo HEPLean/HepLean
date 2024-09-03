@@ -457,12 +457,9 @@ lemma mem_iff_dual_mem (hl : l.OnlyUniqueDuals) (hc : l.ColorCond) (I : Index �
     omega
   · have hIdd : l.countId I.dual = 2 := by
       rw [← hId]
-      apply countId_congr
       rfl
     have hc' := (hc I.dual h hIdd).2
-    simp at hc'
-    rw [← countSelf_neq_zero]
-    rw [← countSelf_neq_zero] at h
+    rw [← countSelf_neq_zero] at h ⊢
     rw [countDual_eq_countSelf_Dual] at hc'
     simp at hc'
     exact Ne.symm (ne_of_ne_of_eq (id (Ne.symm h)) hc')

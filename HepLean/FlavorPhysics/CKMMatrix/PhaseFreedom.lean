@@ -215,12 +215,12 @@ lemma ubOnePhaseCond_shift_solution {V : CKMMatrix} (h1 : a + f = - arg [V]ub)
   have hd : d = Real.pi - arg [V]cd - b := by
     linear_combination h3
   subst he hd
-  simp_all
+  simp_all only [add_sub_cancel, and_self, and_true]
   ring_nf at h2
   have hc : c = - Real.pi + arg [V]cd + arg [V]cs + arg [V]ub + b := by
     linear_combination h2
   subst hc
-  ring
+  rfl
 
 lemma fstRowThdColRealCond_holds_up_to_equiv (V : CKMMatrix) :
     ∃ (U : CKMMatrix), V ≈ U ∧ FstRowThdColRealCond U:= by
