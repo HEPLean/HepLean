@@ -19,6 +19,8 @@ The content of this file is based on the following sources (released under the A
 
 Modifications have been made to the original content of these files here.
 
+See also:
+- https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Memory.20increase.20in.20loops.2E
 -/
 open Lean Elab System
 
