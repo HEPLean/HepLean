@@ -12,7 +12,6 @@ We give an example of a 7 dimensional plane on which every point satisfies the A
 
 The main result of this file is `seven_dim_plane_exists` which states that there exists a
 7 dimensional plane of charges on which every point satisfies the ACCs.
-
 -/
 
 namespace SMRHN
@@ -253,21 +252,14 @@ lemma Bi_Bj_Bk_cubic (i j k : Fin 7) :
 theorem B_in_accCube (f : Fin 7 → ℚ) : accCube (∑ i, f i • B i) = 0 := by
   change cubeTriLin _ _ _ = 0
   rw [cubeTriLin.map_sum₁₂₃]
-  apply Fintype.sum_eq_zero
-  intro i
-  apply Fintype.sum_eq_zero
-  intro k
-  apply Fintype.sum_eq_zero
-  intro l
-  rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
-  rw [Bi_Bj_Bk_cubic]
+  apply Fintype.sum_eq_zero _ fun i ↦ Fintype.sum_eq_zero _ fun k ↦ Fintype.sum_eq_zero _ fun l ↦ ?_
+  rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃, Bi_Bj_Bk_cubic]
   simp
 
 lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) := by
   let X := chargeToAF (∑ i, f i • B i) (by
     rw [map_sum]
-    apply Fintype.sum_eq_zero
-    intro i
+    apply Fintype.sum_eq_zero _ fun i ↦ ?_
     rw [map_smul]
     have h : accGrav (B i) = 0 := by
       fin_cases i <;> rfl
@@ -275,20 +267,16 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
     exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
-      apply Fintype.sum_eq_zero
-      intro i
+      apply Fintype.sum_eq_zero _ fun i ↦ ?_
       rw [map_smul]
-      have h : accSU2 (B i) = 0 := by
-        fin_cases i <;> rfl
+      have h : accSU2 (B i) = 0 := by fin_cases i <;> rfl
       rw [h]
       exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
-      apply Fintype.sum_eq_zero
-      intro i
+      apply Fintype.sum_eq_zero _ fun i ↦ ?_
       rw [map_smul]
-      have h : accSU3 (B i) = 0 := by
-        fin_cases i <;> rfl
+      have h : accSU3 (B i) = 0 := by fin_cases i <;> rfl
       rw [h]
       exact DistribMulAction.smul_zero (f i))
     (B_in_accCube f)
@@ -296,8 +284,7 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
   rfl
 
 theorem basis_linear_independent : LinearIndependent ℚ B := by
-  apply Fintype.linearIndependent_iff.mpr
-  intro f h
+  refine Fintype.linearIndependent_iff.mpr fun f h ↦ ?_
   have h0 := congrFun h (0 : Fin 18)
   have h1 := congrFun h (3 : Fin 18)
   have h2 := congrFun h (6 : Fin 18)

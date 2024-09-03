@@ -162,12 +162,8 @@ def bijectionQEZero : {S : linearParameters // S.Q' ≠ 0 ∧ S.E' ≠ 0} ≃
     {S : (SMNoGrav 1).LinSols // Q S.val (0 : Fin 1) ≠ 0 ∧ E S.val (0 : Fin 1) ≠ 0} where
   toFun S := ⟨bijection S, S.2⟩
   invFun S := ⟨bijection.symm S, S.2⟩
-  left_inv S := by
-    apply Subtype.ext
-    exact bijection.left_inv S.1
-  right_inv S := by
-    apply Subtype.ext
-    exact bijection.right_inv S.1
+  left_inv S := Subtype.ext (bijection.left_inv S.1)
+  right_inv S := Subtype.ext (bijection.right_inv S.1)
 
 lemma grav (S : linearParameters) :
     accGrav S.asCharges = 0 ↔ S.E' = 6 * S.Q' := by

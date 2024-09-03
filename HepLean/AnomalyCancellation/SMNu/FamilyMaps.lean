@@ -8,7 +8,6 @@ import HepLean.AnomalyCancellation.SMNu.Basic
 # Family maps for the Standard Model for RHN ACCs
 
 We define the a series of maps between the charges for different numbers of families.
-
 -/
 
 universe v u
@@ -25,15 +24,12 @@ def chargesMapOfSpeciesMap {n m : ℕ} (f : (SMνSpecies n).Charges →ₗ[ℚ] 
   map_add' S T := by
     rw [charges_eq_toSpecies_eq]
     intro i
-    rw [map_add]
-    rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rw [map_add]
+    rw [map_add, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv,
+      map_add]
   map_smul' a S := by
     rw [charges_eq_toSpecies_eq]
     intro i
-    rw [map_smul]
-    rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
-    rw [map_smul]
+    rw [map_smul, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, map_smul]
     rfl
 
 lemma chargesMapOfSpeciesMap_toSpecies {n m : ℕ}
@@ -89,9 +85,9 @@ a universal manor. -/
 @[simps!]
 def speciesFamilyUniversial (n : ℕ) :
     (SMνSpecies 1).Charges →ₗ[ℚ] (SMνSpecies n).Charges where
-  toFun S _ := S ⟨0, by simp⟩
-  map_add' S T := rfl
-  map_smul' a S := rfl
+  toFun S _ := S ⟨0, Nat.zero_lt_succ 0⟩
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 /-- The embedding of the `1`-family charges into the `n`-family charges in
 a universal manor. -/

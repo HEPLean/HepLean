@@ -74,8 +74,7 @@ lemma sum_δ₁_δ₂ (S : Fin (2 * n.succ) → ℚ) :
     · intro i
       simp only [mem_univ, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv]
     · exact fun _ _=> rfl
-  rw [h1]
-  rw [Fin.sum_univ_add, Finset.sum_add_distrib]
+  rw [h1, Fin.sum_univ_add, Finset.sum_add_distrib]
   rfl
 
 lemma sum_δ₁_δ₂' (S : Fin (2 * n.succ) → ℚ) :
@@ -85,8 +84,7 @@ lemma sum_δ₁_δ₂' (S : Fin (2 * n.succ) → ℚ) :
     · intro i
       simp only [mem_univ, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv]
     · exact fun _ _ => rfl
-  rw [h1]
-  rw [Fin.sum_univ_add, Finset.sum_add_distrib]
+  rw [h1, Fin.sum_univ_add, Finset.sum_add_distrib]
   rfl
 
 lemma sum_δ!₁_δ!₂ (S : Fin (2 * n.succ) → ℚ) :

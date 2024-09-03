@@ -65,8 +65,7 @@ lemma on_quadBiLin (S : (PlusU1 n).Charges) :
   simp
 
 lemma on_quadBiLin_AFL (S : (PlusU1 n).LinSols) : quadBiLin (Y n).val S.val = 0 := by
-  rw [on_quadBiLin]
-  rw [YYsol S]
+  rw [on_quadBiLin, YYsol S]
 
 lemma add_AFL_quad (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accQuad (a • S.val + b • (Y n).val) = a ^ 2 * accQuad S.val := by
@@ -77,16 +76,14 @@ lemma add_AFL_quad (S : (PlusU1 n).LinSols) (a b : ℚ) :
 
 lemma add_quad (S : (PlusU1 n).QuadSols) (a b : ℚ) :
     accQuad (a • S.val + b • (Y n).val) = 0 := by
-  rw [add_AFL_quad, quadSol S]
-  simp
+  rw [add_AFL_quad, quadSol S]; simp
 
 /-- The `QuadSol` obtained by adding hypercharge to a `QuadSol`. -/
 def addQuad (S : (PlusU1 n).QuadSols) (a b : ℚ) : (PlusU1 n).QuadSols :=
   linearToQuad (a • S.1 + b • (Y n).1.1) (add_quad S a b)
 
 lemma addQuad_zero (S : (PlusU1 n).QuadSols) (a : ℚ) : addQuad S a 0 = a • S := by
-  simp [addQuad, linearToQuad]
-  rfl
+  simp only [addQuad, linearToQuad, zero_smul, add_zero]; rfl
 
 lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
     cubeTriLin (Y n).val (Y n).val S = 6 * accYY S := by
@@ -98,8 +95,7 @@ lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
 
 lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
     cubeTriLin (Y n).val (Y n).val S.val = 0 := by
-  rw [on_cubeTriLin, YYsol S]
-  rfl
+  rw [on_cubeTriLin, YYsol S]; simp
 
 lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
     cubeTriLin (Y n).val S S = 6 * accQuad S := by
@@ -111,7 +107,7 @@ lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
 
 lemma on_cubeTriLin'_ALQ (S : (PlusU1 n).QuadSols) :
     cubeTriLin (Y n).val S.val S.val = 0 := by
-  rw [on_cubeTriLin', quadSol S, mul_zero]
+  rw [on_cubeTriLin', quadSol S]; simp
 
 lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accCube (a • S.val + b • (Y n).val) =
@@ -125,15 +121,12 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
 
 lemma add_AFQ_cube (S : (PlusU1 n).QuadSols) (a b : ℚ) :
     accCube (a • S.val + b • (Y n).val) = a ^ 3 * accCube S.val := by
-  rw [add_AFL_cube]
-  rw [cubeTriLin.swap₃]
-  rw [on_cubeTriLin'_ALQ]
+  rw [add_AFL_cube, cubeTriLin.swap₃, on_cubeTriLin'_ALQ]
   ring
 
 lemma add_AF_cube (S : (PlusU1 n).Sols) (a b : ℚ) :
     accCube (a • S.val + b • (Y n).val) = 0 := by
-  rw [add_AFQ_cube]
-  rw [cubeSol S]
+  rw [add_AFQ_cube, cubeSol S]
   simp
 
 /-- The `Sol` obtained by adding hypercharge to a `Sol`. -/

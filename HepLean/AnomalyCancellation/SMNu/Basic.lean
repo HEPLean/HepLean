@@ -40,8 +40,8 @@ def toSpeciesEquiv : (SMνCharges n).Charges ≃ (Fin 6 → Fin n → ℚ) :=
 @[simps!]
 def toSpecies (i : Fin 6) : (SMνCharges n).Charges →ₗ[ℚ] (SMνSpecies n).Charges where
   toFun S := toSpeciesEquiv S i
-  map_add' _ _ := by rfl
-  map_smul' _ _ := by rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 lemma charges_eq_toSpecies_eq (S T : (SMνCharges n).Charges) :
     S = T ↔ ∀ i, toSpecies i S = toSpecies i T := by
@@ -194,7 +194,8 @@ def accYY : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [Pi.add_apply, mul_add]
+    simp only [SMνSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
+      Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
@@ -232,8 +233,7 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
     intro a S T
     simp only
     rw [Finset.mul_sum]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
     ring)
@@ -241,8 +241,7 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
     intro S T R
     simp only
     rw [← Finset.sum_add_distrib]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue, neg_mul,
       one_mul]
@@ -250,8 +249,7 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
   (by
     intro S T
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     ring)
 
 lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
@@ -298,8 +296,7 @@ def cubeTriLin : TriLinearSymm (SMνCharges n).Charges := TriLinearSymm.mk₃
     intro a S T R
     simp only
     rw [Finset.mul_sum]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     repeat erw [map_smul]
     simp [HSMul.hSMul, SMul.smul]
     ring)
@@ -307,22 +304,19 @@ def cubeTriLin : TriLinearSymm (SMνCharges n).Charges := TriLinearSymm.mk₃
     intro S T R L
     simp only
     rw [← Finset.sum_add_distrib]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     repeat erw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue]
     ring)
   (by
     intro S T L
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     ring)
   (by
     intro S T L
     simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue]
-    apply Fintype.sum_congr
-    intro i
+    refine Fintype.sum_congr _ _ fun i ↦ ?_
     ring)
 
 lemma cubeTriLin_decomp (S T R : (SMνCharges n).Charges) :
