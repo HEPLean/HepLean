@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.Set.Finite
 import Mathlib.Logic.Equiv.Fin
 import Mathlib.Data.Finset.Sort
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.Basic
+import HepLean.Tensors.IndexNotation.Basic
 /-!
 
 # Index lists

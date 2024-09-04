@@ -3,12 +3,12 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Color
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.ContrPerm
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Append
-import HepLean.SpaceTime.LorentzTensor.Basic
-import HepLean.SpaceTime.LorentzTensor.RisingLowering
-import HepLean.SpaceTime.LorentzTensor.Contraction
+import HepLean.Tensors.IndexNotation.IndexList.Color
+import HepLean.Tensors.IndexNotation.ColorIndexList.ContrPerm
+import HepLean.Tensors.IndexNotation.ColorIndexList.Append
+import HepLean.Tensors.Basic
+import HepLean.Tensors.RisingLowering
+import HepLean.Tensors.Contraction
 /-!
 
 # The structure of a tensor with a string of indices

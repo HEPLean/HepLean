@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Duals
+import HepLean.Tensors.IndexNotation.IndexList.Duals
 /-!
 
 # Counting ids
@@ -241,7 +241,7 @@ lemma countId_of_not_mem_withDualInOther (i : Fin l.length) (h : i ∉ l.withDua
   have hjmem : j ∈ l2.val := List.mem_of_mem_filter hj
   have hj' : l2.val.indexOf j < l2.length := List.indexOf_lt_length.mpr hjmem
   rw [mem_withInDualOther_iff_exists] at h
-  simp at h
+  simp only [not_exists] at h
   have hj' := h ⟨l2.val.indexOf j, hj'⟩
   simp only [AreDualInOther, idMap, List.get_eq_getElem, List.getElem_indexOf] at hj'
   simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq] at hj

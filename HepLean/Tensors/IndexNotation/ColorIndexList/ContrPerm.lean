@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.ColorIndexList.Contraction
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Subperm
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.Tensors.IndexNotation.ColorIndexList.Contraction
+import HepLean.Tensors.IndexNotation.IndexList.Subperm
+import HepLean.Tensors.Basic
 import Init.Data.List.Lemmas
 /-!
 

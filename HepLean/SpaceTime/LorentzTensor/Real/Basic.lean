@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Contraction
 import HepLean.SpaceTime.LorentzVector.LorentzAction
-import HepLean.SpaceTime.LorentzTensor.MulActionTensor
+import HepLean.Tensors.MulActionTensor
 /-!
 
 # Real Lorentz tensors

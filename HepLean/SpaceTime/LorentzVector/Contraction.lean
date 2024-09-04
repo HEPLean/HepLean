@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.Covariant
-import HepLean.SpaceTime.LorentzTensor.Basic
+import HepLean.Tensors.Basic
 /-!
 
 # Contractions of Lorentz vectors
