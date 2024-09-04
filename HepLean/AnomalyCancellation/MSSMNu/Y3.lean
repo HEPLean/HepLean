@@ -74,6 +74,9 @@ lemma doublePoint_Y₃_Y₃ (R : MSSMACC.LinSols) :
   simp at hLin
   have h3 := hLin 3
   simp [Fin.sum_univ_three] at h3
-  linear_combination 6 * h3
+  have h5 := congrArg (HMul.hMul 6) h3
+  ring_nf at h5
+  ring_nf
+  exact h5
 
 end MSSMACC

@@ -32,6 +32,7 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
 
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
+
 instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
 instance : DiscreteTopology ℤ₂ := by
@@ -56,34 +57,87 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
         Continuous.comp' (continuous_iff_le_induced.mpr fun U a => a) continuous_id'
       }
 
+lemma detContinuous_eq_one (Λ : LorentzGroup d) :
+    detContinuous Λ = Additive.toMul 0 ↔ Λ.1.det = 1 := by
+  simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
+    Subtype.mk.injEq, ite_eq_left_iff, toMul_eq_one]
+  simp only [toMul_zero, ite_eq_left_iff, toMul_eq_one]
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · by_contra hn
+    have h' := h hn
+    change (1 : Fin 2) = (0 : Fin 2) at h'
+    simp only [Fin.isValue, one_ne_zero] at h'
+  · intro h'
+    exact False.elim (h' h)
+
+lemma detContinuous_eq_zero (Λ : LorentzGroup d) :
+    detContinuous Λ = Additive.toMul (1 : ZMod 2) ↔ Λ.1.det = - 1 := by
+  simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
+    Subtype.mk.injEq, Nat.reduceAdd]
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · by_contra hn
+    rw [if_pos] at h
+    · change (0 : Fin 2) = (1 : Fin 2) at h
+      simp only [Fin.isValue, zero_ne_one] at h
+    · cases' det_eq_one_or_neg_one Λ with h2 h2
+      · simp_all only [ite_true]
+      · simp_all only [not_true_eq_false]
+  · rw [if_neg]
+    · rfl
+    · cases' det_eq_one_or_neg_one Λ with h2 h2
+      · rw [h]
+        linarith
+      · linarith
+
 lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
-  refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
-    Subtype.mk.injEq] at h
-    cases' det_eq_one_or_neg_one Λ with h1 h1
-      <;> cases' det_eq_one_or_neg_one Λ' with h2 h2
-      <;> simp_all [h1, h2, h]
-    · rw [← toMul_zero, @Equiv.apply_eq_iff_eq] at h
-      · change (0 : Fin 2) = (1 : Fin 2) at h
-        simp only [Fin.isValue, zero_ne_one] at h
-    · change (1 : Fin 2) = (0 : Fin 2) at h
-      simp only [Fin.isValue, one_ne_zero] at h
-  · simp [detContinuous, h]
+  cases' det_eq_one_or_neg_one Λ with h1 h1
+  · rw [h1, (detContinuous_eq_one Λ).mpr h1]
+    cases' det_eq_one_or_neg_one Λ' with h2 h2
+    · rw [h2, (detContinuous_eq_one Λ').mpr h2]
+      simp only [toMul_zero]
+    · rw [h2, (detContinuous_eq_zero Λ').mpr h2]
+      erw [Additive.toMul.apply_eq_iff_eq]
+      change (0 : Fin 2) = (1 : Fin 2)  ↔ _
+      simp only [Fin.isValue, zero_ne_one, false_iff]
+      linarith
+  · rw [h1, (detContinuous_eq_zero Λ).mpr h1]
+    cases' det_eq_one_or_neg_one Λ' with h2 h2
+    · rw [h2, (detContinuous_eq_one Λ').mpr h2]
+      erw [Additive.toMul.apply_eq_iff_eq]
+      change (1 : Fin 2) = (0 : Fin 2)  ↔ _
+      simp only [Fin.isValue, one_ne_zero, false_iff]
+      linarith
+    · rw [h2, (detContinuous_eq_zero Λ').mpr h2]
+      simp only [Nat.reduceAdd]
 
 /-- The representation taking a Lorentz matrix to its determinant. -/
 @[simps!]
 def detRep : 𝓛 d →* ℤ₂ where
   toFun Λ := detContinuous Λ
   map_one' := by
-    simp [detContinuous, lorentzGroupIsGroup]
+    simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
+      lorentzGroupIsGroup_one_coe, det_one, coeForℤ₂_apply, ↓reduceIte]
   map_mul' Λ1 Λ2 := by
     simp only [Submonoid.coe_mul, Subgroup.coe_toSubmonoid, Units.val_mul, det_mul, toMul_zero,
       mul_ite, mul_one, ite_mul, one_mul]
     cases' det_eq_one_or_neg_one Λ1 with h1 h1
-      <;> cases' det_eq_one_or_neg_one Λ2 with h2 h2
-      <;> simp [h1, h2, detContinuous]
-    rfl
+    · rw [(detContinuous_eq_one Λ1).mpr h1]
+      cases' det_eq_one_or_neg_one Λ2 with h2 h2
+      · rw [(detContinuous_eq_one Λ2).mpr h2]
+        apply (detContinuous_eq_one _).mpr
+        simp only [lorentzGroupIsGroup_mul_coe, det_mul, h1, h2, mul_one]
+      · rw [(detContinuous_eq_zero Λ2).mpr h2]
+        apply (detContinuous_eq_zero _).mpr
+        simp only [lorentzGroupIsGroup_mul_coe, det_mul, h1, h2, mul_neg, mul_one]
+    · rw [(detContinuous_eq_zero Λ1).mpr h1]
+      cases' det_eq_one_or_neg_one Λ2 with h2 h2
+      · rw [(detContinuous_eq_one Λ2).mpr h2]
+        apply (detContinuous_eq_zero _).mpr
+        simp only [lorentzGroupIsGroup_mul_coe, det_mul, h1, h2, mul_one]
+      · rw [(detContinuous_eq_zero Λ2).mpr h2]
+        apply (detContinuous_eq_one _).mpr
+        simp only [lorentzGroupIsGroup_mul_coe, det_mul, h1, h2, mul_neg, mul_one, neg_neg]
 
 lemma detRep_continuous : Continuous (@detRep d) := detContinuous.2
 

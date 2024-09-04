@@ -73,12 +73,12 @@ lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   refine Iff.intro (fun h h1 => ?_) (fun h => ?_)
   · rw [h1] at h2
     simp at h2
-    rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
+    rw [add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)] at h2
     simp_all
   · by_contra hn
     rw [not_or] at hn
     simp_all only [ne_eq, Decidable.not_not, map_zero, OfNat.ofNat_ne_zero, not_false_eq_true,
-      zero_pow, add_zero, zero_add, sq_eq_one_iff, false_or, neg_eq_self_iff, one_ne_zero]
+      zero_pow, add_zero, zero_add, sq_eq_one_iff, false_or]
     have h1 := Complex.abs.nonneg [V]ub
     rw [h2] at h1
     refine (?_ : ¬ 0 ≤ (-1 : ℝ)) h1
@@ -290,7 +290,7 @@ lemma cb_eq_zero_of_ud_us_zero {V : CKMMatrix} (h : [V]ud = 0 ∧ [V]us = 0) :
   simp [h] at h1
   rw [add_assoc] at h1
   simp at h1
-  rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h1
+  rw [add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)] at h1
   simp at h1
   exact h1.1
 
@@ -298,12 +298,12 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
     VcsAbs ⟦V⟧ = √(1 - VcdAbs ⟦V⟧ ^ 2) := by
   have h1 := snd_row_normalized_abs V
   symm
-  rw [Real.sqrt_eq_iff_sq_eq]
+  rw [Real.sqrt_eq_iff_eq_sq]
   · simp [not_or] at ha
     rw [cb_eq_zero_of_ud_us_zero ha] at h1
     simp at h1
-    simp [VAbs]
-    linear_combination h1
+    simp only [VcdAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, VcsAbs]
+    linear_combination ← h1
   · simp only [VcdAbs, Fin.isValue, sub_nonneg, sq_le_one_iff_abs_le_one]
     rw [@abs_le]
     have h1 := VAbs_leq_one 1 0 ⟦V⟧
@@ -325,13 +325,13 @@ lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
     simp at h2
     have h2 : Complex.abs (V.1 1 2) ^ 2 + Complex.abs (V.1 2 2) ^ 2 = 0 := by
       linear_combination h2
-    rw [add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)] at h2
+    rw [add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)] at h2
     simp_all
   · by_contra hn
     rw [not_or] at hn
     simp at hn
     simp_all only [map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
-      sq_eq_one_iff, false_or, neg_eq_self_iff, one_ne_zero]
+      sq_eq_one_iff, false_or, one_ne_zero]
     have h1 := Complex.abs.nonneg [V]ub
     rw [h2] at h1
     have h2 : ¬ 0 ≤ (-1 : ℝ) := by simp

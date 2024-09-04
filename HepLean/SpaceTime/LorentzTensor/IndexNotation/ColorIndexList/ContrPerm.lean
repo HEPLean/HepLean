@@ -20,7 +20,7 @@ namespace IndexNotation
 
 namespace ColorIndexList
 
-variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
+variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [DecidableEq 𝓒.Color]
 
 variable (l l' : ColorIndexList 𝓒)
 open IndexList TensorColor

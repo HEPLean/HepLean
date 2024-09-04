@@ -207,6 +207,9 @@ lemma findIdx?_on_finRange_eq_findIdx {n : ℕ} (p : Fin n → Prop) [DecidableP
 def idListFin : List (Fin l.length) := ((List.finRange l.length).filter
   (fun i => (List.finRange l.length).findIdx? (fun j => l.idMap i = l.idMap j) = i))
 
+omit [IndexNotation X] [Fintype X]
+
+omit [DecidableEq X] in
 lemma idListFin_getDualInOther? : l.idListFin =
     (List.finRange l.length).filter (fun i => l.getDualInOther? l i = i) := by
   rw [idListFin]
@@ -220,6 +223,7 @@ lemma idListFin_getDualInOther? : l.idListFin =
 /-- The list of ids keeping only the first appearance of each id. -/
 def idList : List ℕ := List.map l.idMap l.idListFin
 
+omit [DecidableEq X] in
 lemma idList_getDualInOther? : l.idList =
     List.map l.idMap ((List.finRange l.length).filter (fun i => l.getDualInOther? l i = i)) := by
   rw [idList, idListFin_getDualInOther?]
@@ -248,6 +252,7 @@ lemma idList_indexOf_mem {I J : Index X} (hI : I ∈ l.val) (hJ : J ∈ l.val) :
   rw [← lawful_beq_subsingleton instBEqOfDecidableEq instBEqNat]
   exact List.indexOf_inj (l.mem_idList_of_mem hI) (l.mem_idList_of_mem hJ)
 
+omit [DecidableEq X] in
 lemma idList_indexOf_get (i : Fin l.length) :
     l.idList.indexOf (l.idMap i) = l.idListFin.indexOf ((l.getDualInOther? l i).get
       (getDualInOther?_self_isSome l i)) := by
@@ -288,6 +293,7 @@ namespace GetDualCast
 
 variable {l l2 l3 : IndexList X}
 
+omit [DecidableEq X] in
 lemma symm (h : GetDualCast l l2) : GetDualCast l2 l := by
   apply And.intro h.1.symm
   intro h'
@@ -298,10 +304,12 @@ lemma symm (h : GetDualCast l l2) : GetDualCast l2 l := by
   rw [h1]
   simp
 
+omit [DecidableEq X] in
 lemma getDual?_isSome_iff (h : GetDualCast l l2) (i : Fin l.length) :
     (l.getDual? i).isSome ↔ (l2.getDual? (Fin.cast h.1 i)).isSome := by
   simp [h.2 h.1]
 
+omit [DecidableEq X]
 lemma getDual?_get (h : GetDualCast l l2) (i : Fin l.length) (h1 : (l.getDual? i).isSome) :
     (l.getDual? i).get h1 = Fin.cast h.1.symm ((l2.getDual? (Fin.cast h.1 i)).get
     ((getDual?_isSome_iff h i).mp h1)) := by
@@ -504,6 +512,7 @@ end GetDualCast
 def normalize : IndexList X where
   val := List.ofFn (fun i => ⟨l.colorMap i, l.idList.indexOf (l.idMap i)⟩)
 
+omit [DecidableEq X] in
 lemma normalize_eq_map :
     l.normalize.val = List.map (fun I => ⟨I.toColor, l.idList.indexOf I.id⟩) l.val := by
   have hl : l.val = List.map l.val.get (List.finRange l.length) := by
@@ -512,19 +521,23 @@ lemma normalize_eq_map :
   simp [normalize]
   exact List.ofFn_eq_map
 
+omit [DecidableEq X] in
 @[simp]
 lemma normalize_length : l.normalize.length = l.length := by
   simp [normalize, idList, length]
 
+omit [DecidableEq X] in
 @[simp]
 lemma normalize_val_length : l.normalize.val.length = l.val.length := by
   simp [normalize, idList, length]
 
+omit [DecidableEq X] in
 @[simp]
 lemma normalize_colorMap : l.normalize.colorMap = l.colorMap ∘ Fin.cast l.normalize_length := by
   funext x
   simp [colorMap, normalize, Index.toColor]
 
+omit [DecidableEq X] in
 lemma colorMap_normalize :
     l.colorMap = l.normalize.colorMap ∘ Fin.cast l.normalize_length.symm := by
   funext x
@@ -590,6 +603,7 @@ lemma normalize_filter_countId_eq_one :
   rw [normalize_countId_mem]
   exact hI
 
+omit [DecidableEq X] in
 @[simp]
 lemma normalize_idMap_apply (i : Fin l.normalize.length) :
     l.normalize.idMap i = l.idList.indexOf (l.val.get ⟨i, by simpa using i.2⟩).id := by
@@ -665,10 +679,12 @@ lemma normalize_normalize : l.normalize.normalize = l.normalize := by
 
 -/
 
+omit [DecidableEq X] in
 lemma normalize_length_eq_of_eq_length (h : l.length = l2.length) :
     l.normalize.length = l2.normalize.length := by
   rw [normalize_length, normalize_length, h]
 
+omit [DecidableEq X] in
 lemma normalize_colorMap_eq_of_eq_colorMap (h : l.length = l2.length)
     (hc : l.colorMap = l2.colorMap ∘ Fin.cast h) :
     l.normalize.colorMap = l2.normalize.colorMap ∘
@@ -697,6 +713,7 @@ namespace Reindexing
 
 variable {l l2 l3 : IndexList X}
 
+omit [DecidableEq X] in
 lemma iff_getDualCast : Reindexing l l2 ↔ GetDualCast l l2
     ∧ ∀ (h : l.length = l2.length), l.colorMap = l2.colorMap ∘ Fin.cast h := by
   refine Iff.intro (fun h => ⟨⟨h.1, fun h' => (h.2 h').2⟩, fun h' => (h.2 h').1⟩) (fun h => ?_)

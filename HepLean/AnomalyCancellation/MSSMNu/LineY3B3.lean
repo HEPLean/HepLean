@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.MSSMNu.Basic
 import HepLean.AnomalyCancellation.MSSMNu.Y3
 import HepLean.AnomalyCancellation.MSSMNu.B3
-import Mathlib.Tactic.Polyrith
+import Mathlib.Tactic.LinearCombination'
 /-!
 # The line through B₃ and Y₃
 
@@ -65,21 +65,22 @@ lemma doublePoint_Y₃_B₃ (R : MSSMACC.LinSols) :
     cubeTriLin Y₃.val B₃.val R.val = 0 := by
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
     MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
-  rw [Fin.sum_univ_three]
-  rw [B₃_val, Y₃_val]
-  rw [B₃AsCharge, Y₃AsCharge]
+  rw [Fin.sum_univ_three, B₃_val, Y₃_val, B₃AsCharge, Y₃AsCharge]
   repeat rw [toSMSpecies_toSpecies_inv]
-  rw [Hd_toSpecies_inv, Hu_toSpecies_inv]
-  rw [Hd_toSpecies_inv, Hu_toSpecies_inv]
+  rw [Hd_toSpecies_inv, Hu_toSpecies_inv, Hd_toSpecies_inv, Hu_toSpecies_inv]
   simp only [mul_one, Fin.isValue, toSMSpecies_apply, one_mul, mul_neg, neg_neg, neg_mul, zero_mul,
     add_zero, neg_zero, Hd_apply, Fin.reduceFinMk, Hu_apply]
   have hLin := R.linearSol
-  simp at hLin
+  simp only [MSSMACC_numberLinear, MSSMACC_linearACCs, Nat.reduceMul, Fin.isValue,
+    Fin.reduceFinMk] at hLin
   have h1 := hLin 1
   have h2 := hLin 2
   have h3 := hLin 3
-  simp [Fin.sum_univ_three] at h1 h2 h3
-  linear_combination -(12 * h2) + 9 * h1 + 3 * h3
+  simp only [Fin.isValue, Fin.sum_univ_three, Prod.mk_zero_zero, LinearMap.coe_mk, AddHom.coe_mk,
+    Prod.mk_one_one] at h1 h2 h3
+  linear_combination (norm := ring_nf)  -(12 * h2) + 9 * h1 + 3 * h3
+  simp only [Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one, add_add_sub_cancel, add_neg_cancel]
+
 
 lemma lineY₃B₃_doublePoint (R : MSSMACC.LinSols) (a b : ℚ) :
     cubeTriLin (lineY₃B₃ a b).val (lineY₃B₃ a b).val R.val = 0 := by

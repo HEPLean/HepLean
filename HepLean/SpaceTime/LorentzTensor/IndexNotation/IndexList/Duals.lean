@@ -101,6 +101,7 @@ def withUniqueDualInOther : Finset (Fin l.length) :=
 ## Basic properties
 
 -/
+omit [IndexNotation X] [Fintype X] [DecidableEq X]
 
 @[simp, nolint simpNF]
 lemma mem_withDual_of_mem_withUniqueDual (i : Fin l.length) (h : i ∈ l.withUniqueDual) :

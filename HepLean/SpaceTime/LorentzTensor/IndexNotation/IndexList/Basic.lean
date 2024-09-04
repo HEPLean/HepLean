@@ -34,6 +34,7 @@ variable (l : IndexList X)
 /-- The number of indices in an index list. -/
 def length : ℕ := l.val.length
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma ext (h : l.val = l2.val) : l = l2 := by
   cases l
   cases l2
@@ -42,10 +43,12 @@ lemma ext (h : l.val = l2.val) : l = l2 := by
 /-- The index list constructed by prepending an index to the list. -/
 def cons (i : Index X) : IndexList X := {val := i :: l.val}
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 @[simp]
 lemma cons_val (i : Index X) : (l.cons i).val = i :: l.val := by
   rfl
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 @[simp]
 lemma cons_length (i : Index X) : (l.cons i).length = l.length + 1 := by
   rfl
@@ -53,6 +56,7 @@ lemma cons_length (i : Index X) : (l.cons i).length = l.length + 1 := by
 /-- The tail of an index list. That is, the index list with the first index dropped. -/
 def tail : IndexList X := {val := l.val.tail}
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 @[simp]
 lemma tail_val : l.tail.val = l.val.tail := by
   rfl
@@ -60,11 +64,13 @@ lemma tail_val : l.tail.val = l.val.tail := by
 /-- The first index in a non-empty index list. -/
 def head (h : l ≠ {val := ∅}) : Index X := l.val.head (by cases' l; simpa using h)
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma head_cons_tail (h : l ≠ {val := ∅}) : l = (l.tail.cons (l.head h)) := by
   apply ext
   simp only [cons_val, tail_val]
   simp only [head, List.head_cons_tail]
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
   (h_cons : ∀ (x : Index X) (xs : IndexList X), P xs → P (xs.cons x)) (l : IndexList X) : P l := by
   cases' l with val
@@ -77,6 +83,7 @@ lemma induction {P : IndexList X → Prop } (h_nil : P {val := ∅})
 def colorMap : Fin l.length → X :=
   fun i => (l.val.get i).toColor
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma colorMap_cast {l1 l2 : IndexList X} (h : l1 = l2) :
     l1.colorMap = l2.colorMap ∘ Fin.cast (congrArg length h) := by
   subst h
@@ -85,6 +92,8 @@ lemma colorMap_cast {l1 l2 : IndexList X} (h : l1 = l2) :
 /-- The map of from `Fin s.numIndices` into the natural numbers associated to an index list. -/
 def idMap : Fin l.length → Nat :=
   fun i => (l.val.get i).id
+
+omit [IndexNotation X] [Fintype X] [DecidableEq X]
 
 lemma idMap_cast {l1 l2 : IndexList X} (h : l1 = l2) (i : Fin l1.length) :
     l1.idMap i = l2.idMap (Fin.cast (by rw [h]) i) := by
@@ -132,6 +141,7 @@ def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.length where
     intro x
     rfl
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma toPosSet_is_finite (l : IndexList X) : l.toPosSet.Finite :=
   Finite.intro l.toPosSetEquiv
 
@@ -151,6 +161,7 @@ def toPosFinset (l : IndexList X) : Finset (Fin l.length × Index X) :=
 def fromFinMap {n : ℕ} (f : Fin n → Index X) : IndexList X where
   val := (Fin.list n).map f
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 @[simp]
 lemma fromFinMap_numIndices {n : ℕ} (f : Fin n → Index X) :
     (fromFinMap f).length = n := by
@@ -170,10 +181,11 @@ variable (l l2 l3 : IndexList X)
 instance : HAppend (IndexList X) (IndexList X) (IndexList X) where
   hAppend := fun l l2 => {val := l.val ++ l2.val}
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 @[simp]
 lemma cons_append (i : Index X) : (l.cons i) ++ l2 = (l ++ l2).cons i := by
   rfl
-
+omit [IndexNotation X] [Fintype X] [DecidableEq X]
 @[simp]
 lemma append_length : (l ++ l2).length = l.length + l2.length := by
   simp [IndexList.length]
@@ -317,6 +329,7 @@ lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [Deci
     exact List.sorted_mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
   exact this s.val
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma filter_id_eq_sort (i : Fin l.length) : l.val.filter (fun J => (l.val.get i).id = J.id) =
     List.map l.val.get (Finset.sort (fun i j => i ≤ j)
       (Finset.filter (fun j => l.idMap i = l.idMap j) Finset.univ)) := by

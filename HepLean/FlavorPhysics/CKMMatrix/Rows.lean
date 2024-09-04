@@ -218,7 +218,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
   simp at h2
   cases' h2 with h2 h2
   · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
-      rw [← hg, smul_smul, inv_mul_cancel, one_smul]
+      rw [← hg, smul_smul, inv_mul_cancel₀, one_smul]
       by_contra hn
       simp [hn] at h2
     have hg2 : Complex.abs (g 0)⁻¹ = 1 := by
@@ -270,7 +270,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     have h4 : (0 : ℝ) < 1 := by norm_num
     exact False.elim (lt_iff_not_le.mp h4 h3)
   · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by
-      rw [← hg, @smul_smul, inv_mul_cancel, one_smul]
+      rw [← hg, @smul_smul, inv_mul_cancel₀, one_smul]
       by_contra hn
       simp [hn] at h2
     have hg2 : Complex.abs (g 2)⁻¹ = 1 := by

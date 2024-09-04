@@ -47,7 +47,9 @@ instance : ChartedSpace SpaceTime SpaceTime := chartedSpaceSelf SpaceTime
 def stdBasis : Basis (Fin 4) ℝ SpaceTime := Pi.basisFun ℝ (Fin 4)
 
 lemma stdBasis_apply (μ ν : Fin 4) : stdBasis μ ν = if μ = ν then 1 else 0 := by
-  erw [stdBasis, Pi.basisFun_apply, LinearMap.stdBasis_apply']
+  erw [stdBasis, Pi.basisFun_apply, Pi.single_apply]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
 lemma stdBasis_not_eq {μ ν : Fin 4} (h : μ ≠ ν) : stdBasis μ ν = 0 := by
   rw [stdBasis_apply]
