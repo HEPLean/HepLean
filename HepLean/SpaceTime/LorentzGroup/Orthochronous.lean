@@ -76,7 +76,7 @@ lemma stepFunction_continuous : Continuous stepFunction := by
     <;> intro a ha
   · rw [@Set.Iic_def, @frontier_Iic, @Set.mem_singleton_iff] at ha
     rw [ha]
-    simp [neg_lt_self_iff, zero_lt_one, ↓reduceIte]
+    simp only [le_neg_self_iff, id_eq]
     have h1 : ¬ (1 : ℝ) ≤ 0 := by simp
     exact Eq.symm (if_neg h1)
   · rw [Set.Ici_def, @frontier_Ici, @Set.mem_singleton_iff] at ha

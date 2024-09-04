@@ -58,8 +58,8 @@ def boolFin (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
 omit [Fintype 𝓒.Color] in
 lemma boolFin_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin c₁ c₂ = true) :
     DualMap c₁ c₂ := by
-  simp [boolFin] at h
-  simp [DualMap]
+  simp only [boolFin, Bool.if_false_right, Bool.and_true, List.all_eq_true, decide_eq_true_eq] at h
+  simp only [DualMap]
   funext x
   have h2 {n : ℕ} (m : Fin n) : m ∈ Fin.list n := by
     have h1' : (Fin.list n)[m] = m := by
@@ -76,8 +76,8 @@ def boolFin' (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
 omit [Fintype 𝓒.Color]
 lemma boolFin'_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin' c₁ c₂ = true) :
     DualMap c₁ c₂ := by
-  simp [boolFin'] at h
-  simp [DualMap]
+  simp only [boolFin', decide_eq_true_eq] at h
+  simp only [DualMap]
   funext x
   exact h x
 
@@ -103,7 +103,7 @@ lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
     𝓒.τ (c₁ x) = c₂ x := by
   rw [DualMap] at h
   have h1 := congrFun h x
-  simp [colorQuot, HasEquiv.Equiv, Setoid.r, colorRel] at h1
+  simp only [Function.comp_apply, colorQuot, Quotient.eq, HasEquiv.Equiv, Setoid.r, colorRel] at h1
   simp_all only [ne_eq, false_or]
   exact 𝓒.τ_involutive (c₂ x)
 
@@ -270,7 +270,7 @@ def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
     apply LinearMap.ext
     refine fun x ↦ PiTensorProduct.induction_on' x ?_ (by
       intro a b hx a
-      simp [map_add, add_tmul, hx]
+      simp only [Function.comp_apply, map_add, hx, LinearMap.id_coe, id_eq, LinearMap.coe_comp]
       simp_all only [Function.comp_apply, LinearMap.coe_comp, LinearMap.id_coe, id_eq])
     intro rx fx
     simp only [Function.comp_apply, PiTensorProduct.tprodCoeff_eq_smul_tprod,
@@ -287,10 +287,10 @@ lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@re
     = 𝓣.rep g ∘ₗ (𝓣.dualizeAll.toLinearMap) := by
   apply LinearMap.ext
   intro x
-  simp [dualizeAll]
+  simp only [dualizeAll, Function.comp_apply, LinearEquiv.ofLinear_toLinearMap, LinearMap.coe_comp]
   refine PiTensorProduct.induction_on' x ?_ (by
       intro a b hx a
-      simp [map_add, add_tmul, hx]
+      simp only [map_add, hx]
       simp_all only [Function.comp_apply, LinearMap.coe_comp, LinearMap.id_coe, id_eq])
   intro rx fx
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMapClass.map_smul, rep_tprod]

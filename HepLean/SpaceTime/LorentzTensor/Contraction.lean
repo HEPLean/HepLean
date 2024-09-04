@@ -177,7 +177,7 @@ lemma pairProd_tmul_tprod_tprod (fx : (i : X) → 𝓣.ColorModule (cX i))
     (fx2 : (i : X) → 𝓣.ColorModule (cX2 i)) :
     𝓣.pairProd (PiTensorProduct.tprod R fx ⊗ₜ[R] PiTensorProduct.tprod R fx2) =
     PiTensorProduct.tprod R (fun x => fx x ⊗ₜ[R] fx2 x) := by
-  simp [pairProd]
+  simp only [pairProd, lift.tmul]
   erw [PiTensorProduct.map₂_tprod_tprod]
   rfl
 
@@ -220,15 +220,17 @@ lemma contrAll'_isEmpty_tmul [IsEmpty X] (x : 𝓣.Tensor cX) (y : 𝓣.Tensor (
   intro rx fx
   refine PiTensorProduct.induction_on' y ?_ (by
       intro a b hx hy
-      simp at hx hy
+      simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul, isEmptyEquiv_tprod,
+        smul_eq_mul, mul_one] at hx hy
       simp [map_add, tmul_add, mul_add, hx, hy])
   intro ry fy
-  simp [smul_tmul]
+  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, Function.comp_apply, tmul_smul, smul_tmul,
+    map_smul, smul_eq_mul, isEmptyEquiv_tprod, mul_one]
   ring_nf
   rw [mul_assoc, mul_assoc]
   apply congrArg
   apply congrArg
-  simp [contrAll']
+  simp only [contrAll', LinearMap.coe_comp, Function.comp_apply]
   erw [pairProd_tmul_tprod_tprod]
   simp only [Function.comp_apply, PiTensorProduct.map_tprod, PiTensorProduct.lift.tprod,
     MultilinearMap.mkPiAlgebra_apply, Finset.univ_eq_empty, Finset.prod_empty]
@@ -278,7 +280,8 @@ lemma contrAll'_mapIso (e : X ≃ Y) (h : cX.MapIso e cY) :
       (𝓣.colorModuleCast (congrFun (TensorColor.ColorMap.MapIso.symm h) y))).mp rfl
   · symm
     apply cast_eq_iff_heq.mpr
-    simp [colorModuleCast, Equiv.apply_symm_apply]
+    simp only [Function.comp_apply, colorModuleCast, Equiv.cast_symm, LinearEquiv.coe_mk,
+      Equiv.cast_apply]
     rw [Equiv.apply_symm_apply]
     exact HEq.symm (cast_heq _ _)
 
@@ -385,7 +388,8 @@ lemma contrAll_rep (e : X ≃ Y) (h : cX.ContrAll e cY) (g : G) :
   intro rx fx
   refine fun y ↦ PiTensorProduct.induction_on' y ?_ (by
       intro a b hx hy
-      simp at hx hy
+      simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, LinearMap.coe_comp, Function.comp_apply,
+        map_tmul, map_smul, rep_tprod] at hx hy
       simp [map_add, tmul_add, hx, hy])
   intro ry fy
   simp only [contrAll_tmul, PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, smul_tmul,

@@ -33,13 +33,13 @@ instance : IndexNotation realTensorColor.Color where
     by
       intro c
       by_cases hc : c = 'ᵘ'
-      · simp [hc]
+      · simp only [↓Char.isValue, hc, ↓reduceIte]
         exact SetCoe.ext (id (Eq.symm hc))
       · have hc' : c = 'ᵤ' := by
           have hc2 := c.2
-          simp at hc2
+          simp only [↓Char.isValue, Finset.mem_insert, Finset.mem_singleton] at hc2
           simp_all
-        simp [hc']
+        simp only [↓Char.isValue, hc', Char.reduceEq, ↓reduceIte]
         exact SetCoe.ext (id (Eq.symm hc'))⟩
 
 namespace realLorentzTensor

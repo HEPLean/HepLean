@@ -81,7 +81,7 @@ lemma contr_contr_colorMap (i : Fin l.contr.contr.length) :
 @[simp]
 lemma contr_of_withDual_empty (h : l.withDual = ∅) :
     l.contr = l := by
-  simp [contr]
+  simp only [contr]
   apply ext
   simp [l.contrIndexList_of_withDual_empty h]
 
@@ -97,14 +97,14 @@ lemma contr_areDualInSelf (i j : Fin l.contr.length) :
 
 lemma contr_countId_eq_zero_of_countId_zero (I : Index 𝓒.Color)
     (h : l.countId I = 0) : l.contr.countId I = 0 := by
-  simp [contr]
+  simp only [contr]
   exact countId_contrIndexList_zero_of_countId l.toIndexList I h
 
 lemma contr_countId_eq_filter (I : Index 𝓒.Color) :
     l.contr.countId I =
     (l.val.filter (fun J => I.id = J.id)).countP
     (fun i => l.val.countP (fun j => i.id = j.id) = 1) := by
-  simp [contr, contrIndexList, countId]
+  simp only [countId, contr, contrIndexList]
   rw [List.countP_filter, List.countP_filter]
   congr
   funext J
@@ -185,13 +185,16 @@ lemma contrEquiv_contrCond : ColorMap.ContrCond l.contrEquiv l.colorMap := by
 @[simp]
 lemma contrEquiv_on_withDual_empty (i : Fin l.contr.length) (h : l.withDual = ∅) :
     l.contrEquiv (Sum.inr i) = Fin.cast (by simp [h]) i := by
-  simp [contrEquiv]
+  simp only [contrEquiv, Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.coe_refl, Sum.map_inr,
+    id_eq]
   change l.dualEquiv (Sum.inr ((Fin.castOrderIso _).toEquiv i)) = _
-  simp [dualEquiv, withoutDualEquiv]
+  simp only [dualEquiv, withoutDualEquiv, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
+    Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.coe_refl, Sum.map_inr,
+    Equiv.Finset.union_symm_inr, Finset.coe_orderIsoOfFin_apply, Equiv.subtypeUnivEquiv_apply]
   have h : l.withoutDual = Finset.univ := by
     have hx := l.withDual_union_withoutDual
     simp_all
-  simp [h]
+  simp only [h]
   rw [orderEmbOfFin_univ]
   · rfl
   · rw [h]

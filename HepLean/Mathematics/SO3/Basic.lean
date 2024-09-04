@@ -25,12 +25,13 @@ instance SO3Group : Group SO3 where
     by
       simp only [det_mul, A.2.1, B.2.1, mul_one],
     by
-      simp [A.2.2, B.2.2, ← Matrix.mul_assoc, Matrix.mul_assoc]⟩
+      simp only [transpose_mul, ← Matrix.mul_assoc, Matrix.mul_assoc, B.2.2, mul_one, A.2.2]⟩
   mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
   one := ⟨1, det_one, by rw [transpose_one, mul_one]⟩
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
   mul_one A := Subtype.eq (Matrix.mul_one A.1)
-  inv A := ⟨A.1ᵀ, by simp [A.2], by simp [mul_eq_one_comm.mpr A.2.2]⟩
+  inv A := ⟨A.1ᵀ, by simp only [det_transpose, A.2],
+    by simp only [transpose_transpose, mul_eq_one_comm.mpr A.2.2]⟩
   inv_mul_cancel A := Subtype.eq (mul_eq_one_comm.mpr A.2.2)
 
 /-- Notation for the group `SO3`. -/
@@ -99,7 +100,7 @@ lemma toGL_embedding : Embedding toGL.toFun where
       rw [isOpen_induced_iff] at hU1
       obtain ⟨V, hV1, hV2⟩ := hU1
       use V
-      simp [hV1]
+      simp only [hV1, true_and]
       rw [← hU2, ← hV2]
       rfl
     · intro h

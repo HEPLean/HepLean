@@ -158,7 +158,7 @@ lemma mul_minkowskiMatrix_mul_transpose :
     (Subtype.val Λ) * minkowskiMatrix * (Subtype.val Λ).transpose = minkowskiMatrix := by
   have h2 := Λ.prop
   rw [LorentzGroup.mem_iff_self_mul_dual] at h2
-  simp [minkowskiMetric.dual] at h2
+  simp only [dual] at h2
   refine (right_inv_eq_left_inv minkowskiMatrix.sq ?_).symm
   rw [← h2]
   noncomm_ring
@@ -168,7 +168,7 @@ lemma transpose_mul_minkowskiMatrix_mul_self :
     (Subtype.val Λ).transpose * minkowskiMatrix * (Subtype.val Λ) = minkowskiMatrix := by
   have h2 := Λ.prop
   rw [LorentzGroup.mem_iff_dual_mul_self] at h2
-  simp [minkowskiMetric.dual] at h2
+  simp only [dual] at h2
   refine right_inv_eq_left_inv ?_ minkowskiMatrix.sq
   rw [← h2]
   noncomm_ring

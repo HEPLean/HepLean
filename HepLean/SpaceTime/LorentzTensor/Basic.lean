@@ -204,7 +204,9 @@ lemma contrRightAux_comp {V1 V2 V3 V4 V5 : Type} [AddCommMonoid V1] [AddCommMono
   refine TensorProduct.induction_on y (by simp) ?_ (fun x z h1 h2 =>
     by simp [add_tmul, tmul_add, LinearMap.map_add, h1, h2])
   intro x3 x4
-  simp [contrRightAux, contrMidAux, contrLeftAux]
+  simp only [contrRightAux, LinearEquiv.refl_toLinearMap, LinearMap.coe_comp, LinearEquiv.coe_coe,
+    Function.comp_apply, map_tmul, LinearMap.id_coe, id_eq, assoc_tmul, rid_tmul, tmul_smul,
+    map_smul, contrMidAux, contrLeftAux, assoc_symm_tmul, lid_tmul]
   rfl
 
 end TensorStructure
@@ -293,7 +295,7 @@ lemma tensorProd_piTensorProd_ext {M : Type} [AddCommMonoid M] [Module R M]
   refine fun y ↦
     PiTensorProduct.induction_on' y ?_ (by
       intro a b hx hy
-      simp at hx hy
+      simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod] at hx hy
       simp [map_add, tmul_add, hx, hy])
   intro ry fy
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, LinearMapClass.map_smul]
@@ -355,8 +357,8 @@ lemma mapIso_symm (e : X ≃ Y) (h : cX.MapIso e cY) :
   apply PiTensorProduct.ext
   apply MultilinearMap.ext
   intro x
-  simp [mapIso, LinearMap.compMultilinearMap_apply, LinearEquiv.coe_coe,
-    LinearEquiv.symm_apply_apply, PiTensorProduct.reindex_tprod]
+  simp only [mapIso, LinearEquiv.trans_symm, LinearMap.compMultilinearMap_apply,
+    LinearEquiv.coe_coe, LinearEquiv.trans_apply, Equiv.symm_symm]
   change (PiTensorProduct.reindex R (fun x => 𝓣.ColorModule (cX x)) e).symm
     ((PiTensorProduct.congr fun y => 𝓣.colorModuleCast _).symm ((PiTensorProduct.tprod R) x)) =
     (PiTensorProduct.congr fun y => 𝓣.colorModuleCast _)
@@ -469,7 +471,7 @@ lemma inlPureTensor_update_left [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Su
     𝓣.inlPureTensor (Function.update f (Sum.inl x) v1) =
     Function.update (𝓣.inlPureTensor f) x v1 := by
   funext y
-  simp [inlPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
+  simp only [inlPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
   split
   · rename_i h
     subst h
@@ -491,7 +493,7 @@ lemma inrPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (S
     𝓣.inrPureTensor (Function.update f (Sum.inr y) v1) =
     Function.update (𝓣.inrPureTensor f) y v1 := by
   funext y
-  simp [inrPureTensor, Function.update, Sum.inl.injEq, Sum.elim_inl]
+  simp only [inrPureTensor, Function.update, Sum.inr.injEq, Sum.elim_inr]
   split
   · rename_i h
     subst h
@@ -570,11 +572,13 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) :
     apply PiTensorProduct.ext
     apply MultilinearMap.ext
     intro p
-    simp [tensorator, tensoratorSymm, domCoprod]
+    simp only [tensoratorSymm, tensorator, domCoprod, LinearMap.compMultilinearMap_apply,
+      LinearMap.coe_comp, Function.comp_apply, PiTensorProduct.lift.tprod, MultilinearMap.coe_mk,
+      lift.tmul, LinearMap.coe_mk, AddHom.coe_mk]
     change (PiTensorProduct.lift _) ((PiTensorProduct.tprod R) _) =
       LinearMap.id ((PiTensorProduct.tprod R) p)
     rw [PiTensorProduct.lift.tprod]
-    simp [elimPureTensorMulLin, elimPureTensor]
+    simp only [elimPureTensorMulLin, MultilinearMap.coe_mk, LinearMap.id_coe, id_eq]
     change (PiTensorProduct.tprod R) _ = _
     apply congrArg
     funext x
@@ -584,11 +588,12 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) :
   (by
     apply tensorProd_piTensorProd_ext
     intro p q
-    simp [tensorator, tensoratorSymm]
+    simp only [tensorator, tensoratorSymm, LinearMap.coe_comp, Function.comp_apply, lift.tmul,
+      LinearMap.coe_mk, AddHom.coe_mk, PiTensorProduct.lift.tprod, LinearMap.id_coe, id_eq]
     change (PiTensorProduct.lift 𝓣.domCoprod)
       ((PiTensorProduct.lift (𝓣.elimPureTensorMulLin p)) ((PiTensorProduct.tprod R) q)) =_
     rw [PiTensorProduct.lift.tprod]
-    simp [elimPureTensorMulLin]
+    simp only [elimPureTensorMulLin, MultilinearMap.coe_mk, PiTensorProduct.lift.tprod]
     rfl)
 
 omit [Fintype X] [Fintype Y] in
@@ -606,7 +611,7 @@ lemma tensoratorEquiv_symm_tprod (f : 𝓣.PureTensor (Sum.elim cX cY)) :
     (𝓣.tensoratorEquiv cX cY).symm ((PiTensorProduct.tprod R) f) =
     (PiTensorProduct.tprod R) (𝓣.inlPureTensor f) ⊗ₜ[R]
     (PiTensorProduct.tprod R) (𝓣.inrPureTensor f) := by
-  simp [tensoratorEquiv, tensorator]
+  simp only [tensoratorEquiv, tensorator, LinearEquiv.ofLinear_symm_apply]
   change (PiTensorProduct.lift 𝓣.domCoprod) ((PiTensorProduct.tprod R) f) = _
   simp [domCoprod]
 
@@ -684,7 +689,9 @@ lemma contrDual_symm_contrRightAux (h : ν = η) :
   intro x y
   refine TensorProduct.induction_on x (by simp) ?_ ?_
   · intro x z
-    simp [contrRightAux]
+    simp only [contrRightAux, LinearEquiv.refl_toLinearMap, LinearMap.coe_comp, LinearEquiv.coe_coe,
+      Function.comp_apply, assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, rid_tmul, map_smul,
+      congr_tmul, contrDual_symm']
     congr
     · exact (LinearEquiv.symm_apply_eq (𝓣.colorModuleCast (𝓣.τ_involutive μ))).mp rfl
     · exact (LinearEquiv.symm_apply_eq (𝓣.colorModuleCast (𝓣.τ_involutive (𝓣.τ μ)))).mp rfl

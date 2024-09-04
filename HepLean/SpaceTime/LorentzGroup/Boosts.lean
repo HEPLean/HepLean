@@ -72,7 +72,7 @@ namespace genBoost
 -/
 lemma self (u : FuturePointing d) : genBoost u u = LinearMap.id := by
   ext x
-  simp [genBoost]
+  simp only [genBoost, LinearMap.add_apply, LinearMap.id_coe, id_eq]
   rw [add_assoc, add_right_eq_self, add_eq_zero_iff_eq_neg, genBoostAux₁, genBoostAux₂]
   simp only [LinearMap.coe_mk, AddHom.coe_mk, map_add, smul_add, neg_smul, neg_add_rev, neg_neg]
   rw [← add_smul]
