@@ -21,7 +21,6 @@ namespace IndexNotation
 namespace Index
 
 variable {𝓒 : TensorColor}
-variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 variable (I : Index 𝓒.Color)
 
 /-- The dual of an index is the index with the same id, but opposite color. -/
@@ -44,7 +43,7 @@ end Index
 namespace IndexList
 
 variable {𝓒 : TensorColor}
-variable [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
+variable [DecidableEq 𝓒.Color]
 variable (l l2 l3 : IndexList 𝓒.Color)
 
 /-- The number of times `I` or its dual appears in an `IndexList`. -/
@@ -352,6 +351,7 @@ namespace ColorCond
 
 variable {l l2 l3 : IndexList 𝓒.Color}
 
+omit [DecidableEq 𝓒.Color] in
 lemma iff_withDual :
     l.ColorCond ↔ ∀ (i : l.withDual), 𝓒.τ
     (l.colorMap ((l.getDual? i).get (l.withDual_isSome i))) = l.colorMap i := by
@@ -382,6 +382,7 @@ lemma iff_withDual :
     · simp [Option.guard, hi]
       exact Option.not_isSome_iff_eq_none.mp hi
 
+omit [DecidableEq 𝓒.Color] in
 lemma iff_on_isSome : l.ColorCond ↔ ∀ (i : Fin l.length) (h : (l.getDual? i).isSome), 𝓒.τ
     (l.colorMap ((l.getDual? i).get h)) = l.colorMap i := by
   rw [iff_withDual]
@@ -476,6 +477,7 @@ lemma iff_countColorCond (hl : l.OnlyUniqueDuals) :
     rw [countSelf_neq_zero]
     exact hmem
 
+omit [DecidableEq 𝓒.Color] in
 lemma assoc (h : ColorCond (l ++ l2 ++ l3)) : ColorCond (l ++ (l2 ++ l3)) := by
   rw [← append_assoc]
   exact h
@@ -525,6 +527,7 @@ lemma swap (hl : (l ++ l2 ++ l3).OnlyUniqueDuals) (h : ColorCond (l ++ l2 ++ l3)
 
 -/
 
+omit [DecidableEq 𝓒.Color] in
 lemma contrIndexList : ColorCond l.contrIndexList := by
   funext i
   simp [Option.guard]

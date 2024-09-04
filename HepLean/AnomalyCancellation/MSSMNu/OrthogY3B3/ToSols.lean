@@ -101,7 +101,7 @@ lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : InQuadSolProp T ↔ 
   · rw [quadCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
-    apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+    apply (add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)).mp at h
     simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
       not_false_eq_true, pow_eq_zero_iff] at h
     exact h
@@ -148,7 +148,7 @@ lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
   · rw [cubicCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
-    apply (add_eq_zero_iff' (sq_nonneg _) (sq_nonneg _)).mp at h
+    apply (add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)).mp at h
     simp only [Fin.isValue, Fin.reduceFinMk, ne_eq, OfNat.ofNat_ne_zero,
       not_false_eq_true, pow_eq_zero_iff] at h
     exact h.symm
@@ -240,7 +240,7 @@ lemma toSolNS_proj (T : NotInLineEqSol) : toSolNS (toSolNSProj T.val) = T.val :=
     ring
   rw [h1]
   have h1 := (lineEqPropSol_iff_lineEqCoeff_zero T.val).mpr.mt T.prop
-  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h1]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀ h1]
   exact MulAction.one_smul T.1.val
 
 /-- A solution to the ACCs, given an element of `inLineEq × ℚ × ℚ × ℚ`. -/
@@ -283,7 +283,7 @@ lemma inLineEqToSol_proj (T : InLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
     ring
   rw [h1]
   have h2 := (inQuadSolProp_iff_quadCoeff_zero T.val).mpr.mt T.prop.2
-  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h2]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀ h2]
   exact MulAction.one_smul T.1.val
 
 /-- Given an element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
@@ -328,7 +328,7 @@ lemma inQuadToSol_proj (T : InQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
     ring
   rw [h1]
   have h2 := (inCubeSolProp_iff_cubicCoeff_zero T.val).mpr.mt T.prop.2.2
-  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel h2]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀ h2]
   exact MulAction.one_smul T.1.val
 
 /-- Given a element of `inQuadCube × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
@@ -368,7 +368,7 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   rw [Y₃_plus_B₃_plus_proj]
   ring_nf
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
-  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel]
+  rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀]
   · exact MulAction.one_smul (T.1).val
   · rw [show dot Y₃.val B₃.val = 108 by rfl]
     exact Ne.symm (OfNat.zero_ne_ofNat 108)

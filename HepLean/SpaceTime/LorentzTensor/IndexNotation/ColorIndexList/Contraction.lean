@@ -19,7 +19,7 @@ We define the contraction of ColorIndexLists.
 namespace IndexNotation
 namespace ColorIndexList
 
-variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
+variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color]
   (l l2 : ColorIndexList 𝓒)
 
 open IndexList TensorColor
@@ -116,7 +116,7 @@ lemma countId_contr_le_one (I : Index 𝓒.Color) :
     l.contr.countId I ≤ 1 := by
   exact l.countId_contrIndexList_le_one I
 
-lemma countId_contr_eq_zero_iff (I : Index 𝓒.Color) :
+lemma countId_contr_eq_zero_iff [DecidableEq 𝓒.Color] (I : Index 𝓒.Color) :
     l.contr.countId I = 0 ↔ l.countId I = 0 ∨ l.countId I = 2 := by
   by_cases hI : l.contr.countId I = 1
   · have hI' := hI

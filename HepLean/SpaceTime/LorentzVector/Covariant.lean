@@ -50,13 +50,13 @@ lemma decomp_stdBasis (v : CovariantLorentzVector d) : ∑ i, v i • stdBasis i
   rw [Finset.sum_apply, Finset.sum_eq_single_of_mem ν]
   · simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
     erw [Pi.basisFun_apply]
-    simp only [LinearMap.stdBasis_same, mul_one]
+    simp only [Pi.single_eq_same, mul_one]
   · exact Finset.mem_univ ν
   · intros b _ hbi
-    simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+    simp only [HSMul.hSMul, SMul.smul, stdBasis, mul_eq_zero]
     erw [Pi.basisFun_apply]
-    simp [LinearMap.stdBasis_apply]
-    exact Or.inr hbi
+    simp only [Pi.single]
+    apply Or.inr (Function.update_noteq (id (Ne.symm hbi)) 1 0)
 
 @[simp]
 lemma decomp_stdBasis' (v : CovariantLorentzVector d) :
@@ -98,8 +98,8 @@ lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
   simp only [rep_apply, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, decomp_stdBasis']
   funext ν
-  simp [LorentzVector.stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply, Matrix.mulVec_stdBasis]
+  simp only [lorentzGroupIsGroup_inv]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
   rw [← LorentzGroup.coe_inv]
   rfl
 

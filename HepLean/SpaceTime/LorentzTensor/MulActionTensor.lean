@@ -138,6 +138,7 @@ lemma repColorModule_colorModuleCast (h : μ = ν) (g : G) :
   intro x
   simp [colorModuleCast_equivariant_apply]
 
+omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] in
 @[simp]
 lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
     (𝓣.rep g) ∘ₗ (𝓣.mapIso e h).toLinearMap = (𝓣.mapIso e h).toLinearMap ∘ₗ 𝓣.rep g := by
@@ -157,6 +158,7 @@ lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
   subst h
   simp [colorModuleCast_equivariant_apply]
 
+omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] in
 @[simp]
 lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tensor cX) :
     (𝓣.mapIso e h) (g • x) = g • (𝓣.mapIso e h x) := by
@@ -164,6 +166,7 @@ lemma rep_mapIso_apply (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) (x : 𝓣.Tenso
   · simp
   · rfl
 
+omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] in
 @[simp]
 lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
     g • (PiTensorProduct.tprod R f) = PiTensorProduct.tprod R (fun x =>
@@ -178,6 +181,7 @@ lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
 
 -/
 
+omit [Fintype X] [Fintype Y] in
 lemma tensoratorEquiv_equivariant (g : G) :
     (𝓣.tensoratorEquiv cX cY) ∘ₗ (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) = 𝓣.rep g ∘ₗ
     (𝓣.tensoratorEquiv cX cY).toLinearMap := by
@@ -191,6 +195,7 @@ lemma tensoratorEquiv_equivariant (g : G) :
   | Sum.inl x => rfl
   | Sum.inr x => rfl
 
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma tensoratorEquiv_equivariant_apply (g : G) (x : 𝓣.Tensor cX ⊗[R] 𝓣.Tensor cY) :
     (𝓣.tensoratorEquiv cX cY) ((TensorProduct.map (𝓣.rep g) (𝓣.rep g)) x)
@@ -200,12 +205,14 @@ lemma tensoratorEquiv_equivariant_apply (g : G) (x : 𝓣.Tensor cX ⊗[R] 𝓣.
   · rw [tensoratorEquiv_equivariant]
     rfl
 
+omit [Fintype X] [Fintype Y] in
 lemma rep_tensoratorEquiv_tmul (g : G) (x : 𝓣.Tensor cX) (y : 𝓣.Tensor cY) :
     (𝓣.tensoratorEquiv cX cY) ((g • x) ⊗ₜ[R] (g • y)) =
     g • ((𝓣.tensoratorEquiv cX cY) (x ⊗ₜ[R] y)) := by
   nth_rewrite 1 [← tensoratorEquiv_equivariant_apply]
   rfl
 
+omit [Fintype X] [Fintype Y] in
 lemma rep_tensoratorEquiv_symm (g : G) :
     (𝓣.tensoratorEquiv cX cY).symm ∘ₗ 𝓣.rep g = (TensorProduct.map (𝓣.rep g) (𝓣.rep g)) ∘ₗ
     (𝓣.tensoratorEquiv cX cY).symm.toLinearMap := by
@@ -213,6 +220,7 @@ lemma rep_tensoratorEquiv_symm (g : G) :
     LinearEquiv.toLinearMap_symm_comp_eq]
   exact Eq.symm (tensoratorEquiv_equivariant 𝓣 g)
 
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma rep_tensoratorEquiv_symm_apply (g : G) (x : 𝓣.Tensor (Sum.elim cX cY)) :
     (𝓣.tensoratorEquiv cX cY).symm ((𝓣.rep g) x) =
@@ -222,14 +230,17 @@ lemma rep_tensoratorEquiv_symm_apply (g : G) (x : 𝓣.Tensor (Sum.elim cX cY)) 
   · rw [rep_tensoratorEquiv_symm]
     rfl
 
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma rep_lid (g : G) : TensorProduct.lid R (𝓣.Tensor cX) ∘ₗ
     (TensorProduct.map (LinearMap.id) (𝓣.rep g)) = (𝓣.rep g) ∘ₗ
     (TensorProduct.lid R (𝓣.Tensor cX)).toLinearMap := by
   apply TensorProduct.ext'
   intro r y
-  simp
+  simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, map_tmul,
+    LinearMap.id_coe, id_eq, lid_tmul, map_smul]
 
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma rep_lid_apply (g : G) (x : R ⊗[R] 𝓣.Tensor cX) :
     (TensorProduct.lid R (𝓣.Tensor cX)) ((TensorProduct.map (LinearMap.id) (𝓣.rep g)) x) =

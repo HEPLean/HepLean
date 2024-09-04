@@ -31,7 +31,7 @@ variable {d : ℕ} {X Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y] [
   {cX cX2 : X → 𝓣.Color} {cY : Y → 𝓣.Color} {cZ : Z → 𝓣.Color}
   {cW : W → 𝓣.Color} {cY' : Y' → 𝓣.Color} {μ ν η : 𝓣.Color}
 
-variable [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
+variable [IndexNotation 𝓣.Color]
 
 /-- The structure an tensor with a index specification e.g. `ᵘ¹ᵤ₂`. -/
 structure TensorIndex extends ColorIndexList 𝓣.toTensorColor where
@@ -42,12 +42,13 @@ namespace TensorIndex
 
 open TensorColor ColorIndexList
 
-variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [Fintype 𝓣.Color] [DecidableEq 𝓣.Color]
+variable {𝓣 : TensorStructure R} [IndexNotation 𝓣.Color] [DecidableEq 𝓣.Color]
 variable {n m : ℕ} {cn : Fin n → 𝓣.Color} {cm : Fin m → 𝓣.Color}
 
 instance : Coe 𝓣.TensorIndex (ColorIndexList 𝓣.toTensorColor) where
   coe T := T.toColorIndexList
 
+omit [DecidableEq 𝓣.Color] in
 lemma colormap_mapIso {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toColorIndexList) :
     ColorMap.MapIso (Fin.castOrderIso (congrArg IndexList.length (congrArg toIndexList hi))).toEquiv
     T₁.colorMap' T₂.colorMap' := by
@@ -65,6 +66,7 @@ lemma colormap_mapIso {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList
   subst hi
   rfl
 
+omit [DecidableEq 𝓣.Color] in
 lemma ext {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toColorIndexList)
     (h : T₁.tensor = 𝓣.mapIso (Fin.castOrderIso (by simp [IndexList.length, hi])).toEquiv
     (colormap_mapIso hi.symm) T₂.tensor) : T₁ = T₂ := by
@@ -75,6 +77,7 @@ lemma ext {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toCo
   subst hi
   simp_all
 
+omit [DecidableEq 𝓣.Color] in
 lemma index_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
     T₁.toColorIndexList = T₂.toColorIndexList := by
   cases h
@@ -88,6 +91,7 @@ def tensorIso {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
   𝓣.mapIso (Fin.castOrderIso (by rw [index_eq_of_eq h])).toEquiv
     (colormap_mapIso (index_eq_of_eq h).symm)
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
     T₁.tensor = tensorIso h T₂.tensor := by
@@ -121,12 +125,14 @@ def contr (T : 𝓣.TensorIndex) : 𝓣.TensorIndex where
   tensor := 𝓣.mapIso (Equiv.refl _) T.contrEquiv_colorMapIso <|
       𝓣.contr T.toColorIndexList.contrEquiv T.contrEquiv_contrCond T.tensor
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma contr_tensor (T : 𝓣.TensorIndex) :
     T.contr.tensor = ((𝓣.mapIso (Equiv.refl _) T.contrEquiv_colorMapIso <|
       𝓣.contr T.toColorIndexList.contrEquiv T.contrEquiv_contrCond T.tensor)) := by
   rfl
 
+omit [DecidableEq 𝓣.Color] in
 /-- Applying contr to a tensor whose indices has no contracts does not do anything. -/
 @[simp]
 lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
@@ -169,18 +175,22 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     let hl := i.contrEquiv_on_withDual_empty l h
     exact let_value_heq f hl
 
+omit [DecidableEq 𝓣.Color] in
 lemma contr_tensor_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
     T.contr.tensor = tensorIso (contr_of_withDual_empty T h) T.tensor := by
   exact tensor_eq_of_eq (contr_of_withDual_empty T h)
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma contr_contr (T : 𝓣.TensorIndex) : T.contr.contr = T.contr :=
   T.contr.contr_of_withDual_empty (by simp [contr, ColorIndexList.contr])
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma contr_toColorIndexList (T : 𝓣.TensorIndex) :
     T.contr.toColorIndexList = T.toColorIndexList.contr := rfl
 
+omit [DecidableEq 𝓣.Color] in
 lemma contr_toIndexList (T : 𝓣.TensorIndex) :
     T.contr.toIndexList = T.toIndexList.contrIndexList := rfl
 
@@ -295,12 +305,15 @@ instance : SMul R 𝓣.TensorIndex where
     toColorIndexList := T.toColorIndexList
     tensor := r • T.tensor}
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma smul_index (r : R) (T : 𝓣.TensorIndex) : (r • T).toColorIndexList = T.toColorIndexList := rfl
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma smul_tensor (r : R) (T : 𝓣.TensorIndex) : (r • T).tensor = r • T.tensor := rfl
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma smul_contr (r : R) (T : 𝓣.TensorIndex) : (r • T).contr = r • T.contr := by
   refine ext rfl ?_
@@ -535,6 +548,7 @@ namespace ProdCond
 
 variable {T₁ T₁' T₂ T₂' : 𝓣.TensorIndex}
 
+omit [DecidableEq 𝓣.Color] in
 lemma to_AppendCond (h : ProdCond T₁ T₂) :
     T₁.AppendCond T₂ := h
 
@@ -553,10 +567,12 @@ def prod (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) : 𝓣.TensorIn
   tensor := 𝓣.mapIso IndexList.appendEquiv (T₁.colorMap_sumELim T₂) <|
       𝓣.tensoratorEquiv _ _ (T₁.tensor ⊗ₜ[R] T₂.tensor)
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma prod_toColorIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
     (prod T₁ T₂ h).toColorIndexList = T₁.toColorIndexList ++[h] T₂.toColorIndexList := rfl
 
+omit [DecidableEq 𝓣.Color] in
 @[simp]
 lemma prod_toIndexList (T₁ T₂ : 𝓣.TensorIndex) (h : ProdCond T₁ T₂) :
     (prod T₁ T₂ h).toIndexList = T₁.toIndexList ++ T₂.toIndexList := rfl

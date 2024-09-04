@@ -63,8 +63,11 @@ lemma diag_comp (Λ : lorentzAlgebra) (μ : Fin 1 ⊕ Fin 3) : Λ.1 μ μ = 0 :=
   have h := congrArg (fun M ↦ M μ μ) $ mem_iff.mp Λ.2
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
     transpose_apply, diagonal_neg, diagonal_mul, neg_mul] at h
-  rcases μ with μ | μ <;>
-    simpa using h
+  rcases μ with μ | μ
+  · simp only [Sum.elim_inl, mul_one, one_mul] at h
+    exact eq_zero_of_neg_eq (id (Eq.symm h))
+  · simp only [Sum.elim_inr, mul_neg, mul_one, neg_mul, one_mul, neg_neg] at h
+    exact eq_zero_of_neg_eq h
 
 lemma time_comps (Λ : lorentzAlgebra) (i : Fin 3) :
     Λ.1 (Sum.inr i) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inr i) := by

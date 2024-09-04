@@ -18,7 +18,7 @@ namespace IndexNotation
 
 namespace IndexList
 
-variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+variable {X : Type} [DecidableEq X]
 variable (l l2 l3 : IndexList X)
 
 /-- An IndexList `l` is a subpermutation of `l2` if there are no duals in `l`, and

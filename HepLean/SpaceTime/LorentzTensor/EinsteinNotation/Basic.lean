@@ -37,9 +37,9 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
   ColorModule _ := Fin n → R
   colorModule_addCommMonoid _ := Pi.addCommMonoid
   colorModule_module _ := Pi.Function.module (Fin n) R R
-  contrDual _ := TensorProduct.lift (Fintype.total R R)
+  contrDual _ := TensorProduct.lift (Fintype.linearCombination R R)
   contrDual_symm a x y := by
-    simp only [lift.tmul, Fintype.total_apply, smul_eq_mul, mul_comm, Equiv.cast_refl,
+    simp only [lift.tmul, Fintype.linearCombination_apply, smul_eq_mul, mul_comm, Equiv.cast_refl,
       Equiv.refl_apply]
   unit a := ∑ i, Pi.basisFun R (Fin n) i ⊗ₜ[R] Pi.basisFun R (Fin n) i
   unit_rid a x:= by
@@ -49,12 +49,12 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
     · refine Finset.sum_congr rfl (fun i _ => ?_)
       simp only [TensorStructure.contrLeftAux, LinearEquiv.refl_toLinearMap, LinearMap.coe_comp,
         LinearEquiv.coe_coe, Function.comp_apply, assoc_symm_tmul, map_tmul, lift.tmul,
-        Fintype.total_apply, LinearMap.stdBasis_apply', smul_eq_mul, ite_mul, one_mul, zero_mul,
-        Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, LinearMap.id_coe, id_eq, lid_tmul,
+        Fintype.linearCombination_apply, Pi.single_apply, smul_eq_mul, ite_mul, one_mul, zero_mul,
+        Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, LinearMap.id_coe, id_eq, lid_tmul,
         Pi.basisFun_apply]
     · funext a
-      simp only [Pi.basisFun_apply, Finset.sum_apply, Pi.smul_apply, LinearMap.stdBasis_apply',
-        smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+      simp only [Pi.basisFun_apply, Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_eq_mul,
+        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
   metric a := ∑ i, Pi.basisFun R (Fin n) i ⊗ₜ[R] Pi.basisFun R (Fin n) i
   metric_dual a := by
     simp only [Pi.basisFun_apply, map_sum, comm_tmul]
@@ -62,18 +62,18 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [sum_tmul, map_sum, Fintype.sum_eq_single i]
     · simp only [TensorStructure.contrMidAux, LinearEquiv.refl_toLinearMap,
-        TensorStructure.contrLeftAux, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
-        assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, assoc_symm_tmul, lift.tmul,
-        Fintype.total_apply, LinearMap.stdBasis_apply', smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, lid_tmul, one_smul]
+      TensorStructure.contrLeftAux, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
+      assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, assoc_symm_tmul, lift.tmul,
+      Fintype.linearCombination_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, lid_tmul, one_smul]
     · intro x hi
       simp only [TensorStructure.contrMidAux, LinearEquiv.refl_toLinearMap,
         TensorStructure.contrLeftAux, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
         assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, assoc_symm_tmul, lift.tmul,
-        Fintype.total_apply, LinearMap.stdBasis_apply', smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, lid_tmul, ite_smul, one_smul, zero_smul]
-      rw [if_neg (id (Ne.symm hi))]
-      exact tmul_zero (Fin n → R) ((LinearMap.stdBasis R (fun _ => R) x) 1)
+        Fintype.linearCombination_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
+        Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, lid_tmul, ite_smul, one_smul, zero_smul]
+      rw [if_neg hi]
+      exact tmul_zero (Fin n → R) (Pi.single x 1)
 
 namespace einsteinTensor
 
@@ -104,7 +104,7 @@ def toMatrix : (einsteinTensor R n).Tensor ![Unit.unit, Unit.unit] ≃ₗ[R] Mat
     (Finsupp.linearEquivFunOnFinite R R (Fin n)).symm).trans <|
   (finsuppTensorFinsupp' R (Fin n) (Fin n)).trans <|
   (Finsupp.linearEquivFunOnFinite R R (Fin n × Fin n)).trans <|
-  (LinearEquiv.curry R (Fin n) (Fin n))
+  (LinearEquiv.curry R R (Fin n) (Fin n))
 
 end
 

@@ -55,6 +55,7 @@ variable {n : ℕ}
 def boolFin (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
   (Fin.list n).all fun i => if 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i) then true else false
 
+omit [Fintype 𝓒.Color] in
 lemma boolFin_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin c₁ c₂ = true) :
     DualMap c₁ c₂ := by
   simp [boolFin] at h
@@ -72,6 +73,7 @@ lemma boolFin_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin c₁ c₂
 def boolFin' (c₁ c₂ : 𝓒.ColorMap (Fin n)) : Bool :=
   ∀ (i : Fin n), 𝓒.colorQuot (c₁ i) = 𝓒.colorQuot (c₂ i)
 
+omit [Fintype 𝓒.Color]
 lemma boolFin'_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin' c₁ c₂ = true) :
     DualMap c₁ c₂ := by
   simp [boolFin'] at h
@@ -79,12 +81,15 @@ lemma boolFin'_DualMap {c₁ c₂ : 𝓒.ColorMap (Fin n)} (h : boolFin' c₁ c�
   funext x
   exact h x
 
+omit [DecidableEq 𝓒.Color] [Fintype X] [DecidableEq X] in
 lemma refl : DualMap c₁ c₁ := rfl
 
+omit [DecidableEq 𝓒.Color] [Fintype X] [DecidableEq X] in
 lemma symm (h : DualMap c₁ c₂) : DualMap c₂ c₁ := by
   rw [DualMap] at h ⊢
   exact h.symm
 
+omit [DecidableEq 𝓒.Color] [Fintype X] [DecidableEq X] in
 lemma trans (h : DualMap c₁ c₂) (h' : DualMap c₂ c₃) : DualMap c₁ c₃ := by
   rw [DualMap] at h h' ⊢
   exact h.trans h'
@@ -93,6 +98,7 @@ lemma trans (h : DualMap c₁ c₂) (h' : DualMap c₂ c₃) : DualMap c₁ c₃
 def split (c₁ c₂ : 𝓒.ColorMap X) : { x // c₁ x ≠ c₂ x} ⊕ { x // c₁ x = c₂ x} ≃ X :=
   ((Equiv.Set.sumCompl {x | c₁ x = c₂ x}).symm.trans (Equiv.sumComm _ _)).symm
 
+omit [DecidableEq 𝓒.Color] [Fintype X] [DecidableEq X] in
 lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
     𝓒.τ (c₁ x) = c₂ x := by
   rw [DualMap] at h
@@ -101,6 +107,7 @@ lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
   simp_all only [ne_eq, false_or]
   exact 𝓒.τ_involutive (c₂ x)
 
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma split_dual (h : DualMap c₁ c₂) : c₁.partDual (split c₁ c₂) = c₂ := by
   rw [partDual, Equiv.comp_symm_eq]
@@ -111,6 +118,7 @@ lemma split_dual (h : DualMap c₁ c₂) : c₁.partDual (split c₁ c₂) = c�
   | Sum.inr x =>
     exact x.2
 
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma split_dual' (h : DualMap c₁ c₂) : c₂.partDual (split c₁ c₂) = c₁ := by
   rw [partDual, Equiv.comp_symm_eq]
@@ -273,7 +281,7 @@ def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
     rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod]
     apply congrArg
     simp
-
+omit [Fintype X] [DecidableEq X]
 @[simp]
 lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@rep R _ G _ 𝓣 _ X cX g)
     = 𝓣.rep g ∘ₗ (𝓣.dualizeAll.toLinearMap) := by
@@ -292,6 +300,7 @@ lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@re
   rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod]
   simp
 
+omit [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P] in
 lemma dualize_cond (e : C ⊕ P ≃ X) :
     cX = Sum.elim (cX ∘ e ∘ Sum.inl) (cX ∘ e ∘ Sum.inr) ∘ e.symm := by
   rw [Equiv.eq_comp_symm]
@@ -300,6 +309,7 @@ lemma dualize_cond (e : C ⊕ P ≃ X) :
   | Sum.inl x => rfl
   | Sum.inr x => rfl
 
+omit [Fintype C] [DecidableEq C] [Fintype P] [DecidableEq P] in
 lemma dualize_cond' (e : C ⊕ P ≃ X) :
     Sum.elim (𝓣.τ ∘ cX ∘ ⇑e ∘ Sum.inl) (cX ∘ ⇑e ∘ Sum.inr) =
     (Sum.elim (𝓣.τ ∘ cX ∘ ⇑e ∘ Sum.inl) (cX ∘ ⇑e ∘ Sum.inr) ∘ ⇑e.symm) ∘ ⇑e := by
@@ -317,6 +327,7 @@ def dualize (e : C ⊕ P ≃ X) : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (cX.partD
   (𝓣.tensoratorEquiv _ _) ≪≫ₗ
   𝓣.mapIso e (𝓣.dualize_cond' e)
 
+omit [Fintype C] [Fintype P] in
 /-- Dualizing indices is equivariant with respect to the group action. This is the
   applied version of this statement. -/
 @[simp]

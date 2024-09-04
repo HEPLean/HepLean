@@ -38,7 +38,7 @@ structure ColorIndexList (𝓒 : TensorColor) [IndexNotation 𝓒.Color] extends
 
 namespace ColorIndexList
 
-variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
+variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color]
 
 variable (l l2 : ColorIndexList 𝓒)
 open IndexList TensorColor
@@ -95,7 +95,8 @@ def empty : ColorIndexList 𝓒 where
 
 -/
 
-lemma countId_le_two (l : ColorIndexList 𝓒) (I : Index 𝓒.Color) : l.countId I ≤ 2 :=
+lemma countId_le_two [DecidableEq 𝓒.Color] (l : ColorIndexList 𝓒) (I : Index 𝓒.Color) :
+    l.countId I ≤ 2 :=
   (OnlyUniqueDuals.iff_countId_leq_two').mp l.unique_duals I
 
 end ColorIndexList

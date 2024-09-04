@@ -74,6 +74,7 @@ lemma doublePoint_B₃_B₃ (R : MSSMACC.LinSols) : cubeTriLin B₃.val B₃.val
   have h0 := hLin 0
   have h2 := hLin 2
   simp [Fin.sum_univ_three] at h0 h2
-  linear_combination 9 * h0 - 24 * h2
+  linear_combination (norm := ring_nf) 9 * (h0) - 24 * (h2)
+  simp only [Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one, add_add_sub_cancel, add_neg_cancel]
 
 end MSSMACC

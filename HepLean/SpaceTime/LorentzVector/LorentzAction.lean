@@ -33,7 +33,8 @@ lemma rep_apply_stdBasis (g : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
     Finset.sum_singleton, decomp_stdBasis']
   funext ν
   simp [LorentzVector.stdBasis, Pi.basisFun_apply]
-  erw [Pi.basisFun_apply, Matrix.mulVec_stdBasis]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
+  rfl
 
 end LorentzVector
 

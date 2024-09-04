@@ -50,6 +50,7 @@ section charges
 variable {S : (PureU1 n.succ).Charges} {A : (PureU1 n.succ).LinSols}
 variable (hS : ConstAbsSorted S) (hA : ConstAbsSorted A.val)
 
+include hS in
 lemma lt_eq {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := by
   have hSS := hS.2 i k hik
   have ht := hS.1 i k
@@ -58,11 +59,13 @@ lemma lt_eq {k i : Fin n.succ} (hk : S k ≤ 0) (hik : i ≤ k) : S i = S k := b
   · exact h
   · linarith
 
+include hS in
 lemma val_le_zero {i : Fin n.succ} (hi : S i ≤ 0) : S i = S (0 : Fin n.succ) := by
   symm
   apply lt_eq hS hi
   exact Fin.zero_le i
 
+include hS in
 lemma gt_eq {k i: Fin n.succ} (hk : 0 ≤ S k) (hik : k ≤ i) : S i = S k := by
   have hSS := hS.2 k i hik
   have ht := hS.1 i k
@@ -71,10 +74,12 @@ lemma gt_eq {k i: Fin n.succ} (hk : 0 ≤ S k) (hik : k ≤ i) : S i = S k := by
   · exact h
   · linarith
 
+include hS in
 lemma zero_gt (h0 : 0 ≤ S (0 : Fin n.succ)) (i : Fin n.succ) : S (0 : Fin n.succ) = S i := by
   symm
   refine gt_eq hS h0 (Fin.zero_le i)
 
+include hS in
 lemma opposite_signs_eq_neg {i j : Fin n.succ} (hi : S i ≤ 0) (hj : 0 ≤ S j) : S i = - S j := by
   have hSS := hS.1 i j
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hSS
@@ -83,6 +88,7 @@ lemma opposite_signs_eq_neg {i j : Fin n.succ} (hi : S i ≤ 0) (hj : 0 ≤ S j)
     linarith
   · exact h
 
+include hS in
 lemma is_zero (h0 : S (0 : Fin n.succ) = 0) : S = 0 := by
   funext i
   have ht := hS.1 i (0 : Fin n.succ)
@@ -96,9 +102,11 @@ is defined as a element of `k ∈ Fin n` such that `S k.castSucc` and `S k.succ`
 @[simp]
 def Boundary (S : (PureU1 n.succ).Charges) (k : Fin n) : Prop := S k.castSucc < 0 ∧ 0 < S k.succ
 
+include hS in
 lemma boundary_castSucc {k : Fin n} (hk : Boundary S k) : S k.castSucc = S (0 : Fin n.succ) :=
   (lt_eq hS (le_of_lt hk.left) (Fin.zero_le k.castSucc : 0 ≤ k.castSucc)).symm
 
+include hS in
 lemma boundary_succ {k : Fin n} (hk : Boundary S k) : S k.succ = - S (0 : Fin n.succ) := by
   have hn := boundary_castSucc hS hk
   rw [opposite_signs_eq_neg hS (le_of_lt hk.left) (le_of_lt hk.right)] at hn
@@ -115,6 +123,7 @@ lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
     simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
   · exact fun _ _ => rfl
 
+include hS in
 lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
     accGrav n.succ S = (2 * ↑↑k + 1 - ↑n) * S (0 : Fin n.succ) := by
   rw [boundary_accGrav' k]
@@ -136,6 +145,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
 def HasBoundary (S : (PureU1 n.succ).Charges) : Prop :=
   ∃ (k : Fin n), Boundary S k
 
+include hS in
 lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.succ) < 0) :
     ∀ i, S (0 : Fin n.succ) = S i := by
   intro ⟨i, hi⟩
@@ -148,6 +158,7 @@ lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.suc
     erw [← hii] at hnott
     exact (val_le_zero hS (hnott h0)).symm
 
+include hS in
 lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
     S (0 : Fin n.succ) = S i := by
   by_cases hi : S (0 : Fin n.succ) < 0
@@ -155,10 +166,12 @@ lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
   · simp at hi
     exact zero_gt hS hi i
 
+include hS in
 lemma not_hasBoundary_grav (hnot : ¬ (HasBoundary S)) :
     accGrav n.succ S = n.succ * S (0 : Fin n.succ) := by
   simp [accGrav, ← not_hasBoundry_zero hS hnot]
 
+include hA in
 lemma AFL_hasBoundary (h : A.val (0 : Fin n.succ) ≠ 0) : HasBoundary A.val := by
   by_contra hn
   have h0 := not_hasBoundary_grav hA hn

@@ -107,7 +107,7 @@ lemma cubic_zero_E'_zero (S : linearParameters) (hc : accCube (S.asCharges) = 0)
   rw [h1] at hc
   simp at hc
   cases' hc with hc hc
-  · have h2 := (add_eq_zero_iff' (by nlinarith) (sq_nonneg S.Y)).mp hc
+  · have h2 := (add_eq_zero_iff_of_nonneg (by nlinarith) (sq_nonneg S.Y)).mp hc
     simp at h2
     exact h2.1
   · exact hc

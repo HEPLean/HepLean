@@ -19,7 +19,7 @@ open Matrix
 /-- The group of `3×3` real matrices with determinant 1 and `A * Aᵀ = 1`. -/
 def SO3 : Type := {A : Matrix (Fin 3) (Fin 3) ℝ // A.det = 1 ∧ A * Aᵀ = 1}
 
-@[simps mul_coe one_coe inv div]
+@[simps! mul_coe one_coe inv div]
 instance SO3Group : Group SO3 where
   mul A B := ⟨A.1 * B.1,
     by
@@ -31,7 +31,7 @@ instance SO3Group : Group SO3 where
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
   mul_one A := Subtype.eq (Matrix.mul_one A.1)
   inv A := ⟨A.1ᵀ, by simp [A.2], by simp [mul_eq_one_comm.mpr A.2.2]⟩
-  mul_left_inv A := Subtype.eq (mul_eq_one_comm.mpr A.2.2)
+  inv_mul_cancel A := Subtype.eq (mul_eq_one_comm.mpr A.2.2)
 
 /-- Notation for the group `SO3`. -/
 scoped[GroupTheory] notation (name := SO3_notation) "SO(3)" => SO3
@@ -123,7 +123,7 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
       _ = det (- (A.1 - 1)) := by simp
       _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
       _ = - det (A.1 - 1) := by simp [pow_three]
-  simpa using h1
+  exact CharZero.eq_neg_self_iff.mp h1
 
 @[simp]
 lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by

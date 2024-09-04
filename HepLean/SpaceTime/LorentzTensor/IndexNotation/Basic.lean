@@ -81,6 +81,7 @@ def listCharIndex (l : List Char) : Prop :=
     else
       listCharIndexTail sfst l.tail
 
+omit [Fintype X] [DecidableEq X] in
 /-- An auxillary rewrite lemma to prove that `listCharIndex` is decidable. -/
 lemma listCharIndex_iff (l : List Char) : listCharIndex X l
     ↔ (if h : l = [] then True else
@@ -117,8 +118,9 @@ def toColor (I : Index X) : X := I.1
 /-- The natural number representating the id of an index. -/
 def id (I : Index X) : ℕ := I.2
 
+omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColor ∧ I.id = J.id := by
-  refine Iff.intro (fun h => Prod.mk.inj_iff.mp h)  (fun h => ?_)
+  refine Iff.intro (fun h => Prod.mk.inj_iff.mp h) (fun h => ?_)
   · cases I
     cases J
     simp [toColor, id] at h

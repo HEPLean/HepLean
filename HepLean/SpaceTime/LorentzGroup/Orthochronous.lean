@@ -43,7 +43,7 @@ lemma IsOrthochronous_iff_ge_one :
   rw [IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.mem_iff,
     NormOneLorentzVector.time_pos_iff]
   simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
-  erw [Pi.basisFun_apply, mulVec_stdBasis]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
   rfl
 
 lemma not_orthochronous_iff_le_neg_one :
@@ -51,7 +51,8 @@ lemma not_orthochronous_iff_le_neg_one :
   rw [timeComp, IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.not_mem_iff,
     NormOneLorentzVector.time_nonpos_iff]
   simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
-  erw [Pi.basisFun_apply, mulVec_stdBasis]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
+  rfl
 
 lemma not_orthochronous_iff_le_zero :
     ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ 0 := by
@@ -119,8 +120,11 @@ lemma orthchroMap_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ)
 
 lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMap Λ = Additive.toMul (1 : ZMod 2) := by
-  simp [orthchroMap, orthchroMapReal_on_not_IsOrthochronous h]
-  rfl
+  simp only [orthchroMap, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
+    orthchroMapReal_on_not_IsOrthochronous h, coeForℤ₂_apply, Subtype.mk.injEq, Nat.reduceAdd]
+  rw [if_neg]
+  · rfl
+  · linarith
 
 lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by

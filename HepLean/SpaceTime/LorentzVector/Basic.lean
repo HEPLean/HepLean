@@ -66,9 +66,9 @@ noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (LorentzVector d) := 
 scoped[LorentzVector] notation "e" => stdBasis
 
 lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : e μ ν = if μ = ν then 1 else 0 := by
-  rw [stdBasis]
-  erw [Pi.basisFun_apply]
-  exact LinearMap.stdBasis_apply' ℝ μ ν
+  erw [stdBasis, Pi.basisFun_apply, Pi.single_apply]
+  refine Eq.symm (ite_congr ?h₁ (congrFun rfl) (congrFun rfl))
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
 lemma decomp_stdBasis (v : LorentzVector d) : ∑ i, v i • e i = v := by
   funext ν
@@ -76,13 +76,13 @@ lemma decomp_stdBasis (v : LorentzVector d) : ∑ i, v i • e i = v := by
   rw [Finset.sum_eq_single_of_mem ν]
   · simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
     erw [Pi.basisFun_apply]
-    simp only [LinearMap.stdBasis_same, mul_one]
+    simp only [Pi.single_eq_same, mul_one]
   · exact Finset.mem_univ ν
   · intros b _ hbi
     simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
     erw [Pi.basisFun_apply]
-    simp [LinearMap.stdBasis_apply]
-    exact Or.inr hbi
+    simp only [Pi.single]
+    apply Or.inr $ Function.update_noteq (id (Ne.symm hbi)) 1 0
 
 @[simp]
 lemma decomp_stdBasis' (v : LorentzVector d) :

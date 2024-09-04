@@ -85,6 +85,7 @@ variable {𝓵 : ℝ}
 variable (μ2 : ℝ)
 variable (h𝓵 : 0 < 𝓵)
 
+include h𝓵
 /-- The second term of the potential is non-negative. -/
 lemma snd_term_nonneg (φ : HiggsField) (x : SpaceTime) :
     0 ≤ 𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x := by
@@ -93,11 +94,13 @@ lemma snd_term_nonneg (φ : HiggsField) (x : SpaceTime) :
   simp_all only [normSq, gt_iff_lt, mul_nonneg_iff_of_pos_left, ge_iff_le, norm_nonneg, pow_nonneg,
     and_self]
 
+omit h𝓵
 lemma as_quad (μ2 𝓵 : ℝ) (φ : HiggsField) (x : SpaceTime) :
     𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- μ2) * ‖φ‖_H ^ 2 x + (- potential μ2 𝓵 φ x) = 0 := by
   simp only [normSq, neg_mul, potential, neg_add_rev, neg_neg]
   ring
 
+include h𝓵
 /-- The discriminant of the quadratic formed by the potential is non-negative. -/
 lemma discrim_nonneg (φ : HiggsField) (x : SpaceTime) :
     0 ≤ discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) := by
@@ -141,7 +144,7 @@ lemma bounded_below (φ : HiggsField) (x : SpaceTime) :
   ring_nf at h1
   rw [← neg_le_iff_add_nonneg'] at h1
   rw [show 𝓵 * potential μ2 𝓵 φ x * 4 = (4 * 𝓵) * potential μ2 𝓵 φ x by ring] at h1
-  have h2 := (div_le_iff' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
+  have h2 := (div_le_iff₀' (by simp [h𝓵] : 0 < 4 * 𝓵)).mpr h1
   ring_nf at h2 ⊢
   exact h2
 
@@ -164,12 +167,14 @@ variable (h𝓵 : 0 < 𝓵)
 
 -/
 
+include h𝓵
 lemma discrim_eq_zero_of_eq_bound (φ : HiggsField) (x : SpaceTime)
     (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) = 0 := by
   rw [discrim, hV]
   field_simp
 
+include h𝓵
 lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
     (hV : potential μ2 𝓵 φ x = - μ2 ^ 2 / (4 * 𝓵)) :
     ‖φ‖_H ^ 2 x = μ2 / (2 * 𝓵) := by

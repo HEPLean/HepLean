@@ -35,7 +35,7 @@ namespace IndexNotation
 
 namespace IndexList
 
-variable {X : Type} [IndexNotation X] [Fintype X] [DecidableEq X]
+variable {X : Type}
 variable (l l2 l3 : IndexList X)
 
 /-- The index list formed from `l` by selecting only those indices in `l` which

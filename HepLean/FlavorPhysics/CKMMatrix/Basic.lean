@@ -67,7 +67,7 @@ def phaseShift (a b c : ℝ) : unitaryGroup (Fin 3) ℂ :=
     rw [mem_unitaryGroup_iff]
     change _ * (phaseShiftMatrix a b c)ᴴ = 1
     rw [phaseShiftMatrix_star, phaseShiftMatrix_mul, ← phaseShiftMatrix_one]
-    simp only [phaseShiftMatrix, add_right_neg, ofReal_zero, mul_zero, exp_zero]⟩
+    simp only [phaseShiftMatrix, add_neg_cancel, ofReal_zero, mul_zero, exp_zero]⟩
 
 lemma phaseShift_coe_matrix (a b c : ℝ) : ↑(phaseShift a b c) = phaseShiftMatrix a b c := rfl
 
@@ -93,7 +93,7 @@ lemma phaseShiftRelation_symm {U V : unitaryGroup (Fin 3) ℂ} :
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix, ofReal_neg, mul_neg]
   rw [phaseShiftMatrix_mul]
   repeat rw [← mul_assoc]
-  simp only [phaseShiftMatrix_mul, add_left_neg, phaseShiftMatrix_one, one_mul, add_right_neg,
+  simp only [phaseShiftMatrix_mul, neg_add_cancel, phaseShiftMatrix_one, one_mul, add_neg_cancel,
     mul_one]
 
 lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :

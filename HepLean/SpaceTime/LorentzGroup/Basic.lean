@@ -116,7 +116,7 @@ end LorentzGroup
 
 -/
 
-@[simps mul_coe one_coe inv div]
+@[simps! mul_coe one_coe inv div]
 instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   mul A B := ⟨A.1 * B.1, LorentzGroup.mem_mul A.2 B.2⟩
   mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
@@ -124,7 +124,7 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
   mul_one A := Subtype.eq (Matrix.mul_one A.1)
   inv A := ⟨minkowskiMetric.dual A.1, LorentzGroup.dual_mem A.2⟩
-  mul_left_inv A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
+  inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
 /-- `LorentzGroup` has the subtype topology. -/
 instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
@@ -142,7 +142,7 @@ lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   trans Subtype.val (Λ⁻¹ * Λ)
   · rw [← coe_inv]
     rfl
-  · rw [inv_mul_self Λ]
+  · rw [inv_mul_cancel Λ]
     rfl
 
 @[simp]
@@ -150,7 +150,7 @@ lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
   trans Subtype.val (Λ * Λ⁻¹)
   · rw [← coe_inv]
     rfl
-  · rw [mul_inv_self Λ]
+  · rw [mul_inv_cancel Λ]
     rfl
 
 @[simp]
@@ -202,7 +202,6 @@ def toGL : LorentzGroup d →* GL (Fin 1 ⊕ Fin d) ℝ where
     (GeneralLinearGroup.ext_iff _ 1).mpr fun _ => congrFun rfl
   map_mul' _ _ :=
     (GeneralLinearGroup.ext_iff _ _).mpr fun _ => congrFun rfl
-
 
 lemma toGL_injective : Function.Injective (@toGL d) := by
   refine fun A B h => Subtype.eq ?_
@@ -275,7 +274,8 @@ def timeComp (Λ : LorentzGroup d) : ℝ := Λ.1 (Sum.inl 0) (Sum.inl 0)
 
 lemma timeComp_eq_toNormOneLorentzVector : timeComp Λ = (toNormOneLorentzVector Λ).1.time := by
   simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue, timeComp]
-  erw [Pi.basisFun_apply, mulVec_stdBasis]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
+  rfl
 
 lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
     ⟪toNormOneLorentzVector (transpose Λ), (toNormOneLorentzVector Λ').1.spaceReflection⟫ₘ := by
@@ -283,7 +283,7 @@ lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, toNormOneLorentzVector,
     transpose, timeVec, right_spaceReflection, time, space, PiLp.inner_apply, Function.comp_apply,
     RCLike.inner_apply, conj_trivial]
-  erw [Pi.basisFun_apply, mulVec_stdBasis]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
   simp
 
 end

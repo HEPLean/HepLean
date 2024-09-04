@@ -64,7 +64,7 @@ lemma generic_on_AF (S : (PlusU1 n).Sols) : generic S.1 = (α₁ S.1) • S := b
 
 lemma generic_on_AF_α₁_ne_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
     (α₁ S.1)⁻¹ • generic S.1 = S := by
-  rw [generic_on_AF, smul_smul, inv_mul_cancel h, one_smul]
+  rw [generic_on_AF, smul_smul, inv_mul_cancel₀ h, one_smul]
 
 /-- The construction of a `Sol` from a `QuadSol` in the case when `α₁ S = 0` and `α₂ S = 0`. -/
 def special (S : (PlusU1 n).QuadSols) (a b : ℚ) (h1 : α₁ S = 0) (h2 : α₂ S = 0) :
