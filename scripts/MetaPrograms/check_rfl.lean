@@ -11,6 +11,14 @@ import HepLean.Meta.TransverseTactics
 
 This file produces a list of places where `rfl` will complete the goal.
 
+## References
+The content of this file is based on the following sources (released under the Apache 2.0 license).
+
+- https://github.com/dwrensha/tryAtEachStep/blob/main/tryAtEachStep.lean
+- https://github.com/lean-dojo/LeanDojo/blob/main/src/lean_dojo/data_extraction/ExtractData.lean
+
+Modifications have been made to the original content of these files here.
+
 See also:
 - https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Memory.20increase.20in.20loops.2E
 -/
