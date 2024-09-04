@@ -111,3 +111,4 @@ import HepLean.Tensors.IndexNotation.IndexList.Subperm
 import HepLean.Tensors.IndexNotation.IndexString
 import HepLean.Tensors.IndexNotation.TensorIndex
 import HepLean.Tensors.MulActionTensor
+import HepLean.Tensors.RisingLowering
