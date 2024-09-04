@@ -203,7 +203,6 @@ def toGL : LorentzGroup d →* GL (Fin 1 ⊕ Fin d) ℝ where
   map_mul' _ _ :=
     (GeneralLinearGroup.ext_iff _ _).mpr fun _ => congrFun rfl
 
-
 lemma toGL_injective : Function.Injective (@toGL d) := by
   refine fun A B h => Subtype.eq ?_
   rw [@Units.ext_iff] at h

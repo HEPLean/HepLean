@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.PiTensorProduct
-import Mathlib.LinearAlgebra.DFinsupp
 /-!
 
 # Structure of Tensors
@@ -54,7 +53,7 @@ def colorRel (μ ν : 𝓒.Color) : Prop := μ = ν ∨ μ = 𝓒.τ ν
 
 instance : Decidable (colorRel 𝓒 μ ν) :=
   Or.decidable
-omit  [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
+omit [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 /-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
 lemma colorRel_equivalence : Equivalence 𝓒.colorRel where
   refl := by
@@ -421,7 +420,7 @@ def elimPureTensor (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor cY) : 𝓣.Pure
     | Sum.inl x => p x
     | Sum.inr x => q x
 
-omit [Fintype X] [Fintype Y]  in
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma elimPureTensor_update_right (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor cY)
     (y : Y) (r : 𝓣.ColorModule (cY y)) : 𝓣.elimPureTensor p (Function.update q y r) =
@@ -438,7 +437,7 @@ lemma elimPureTensor_update_right (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor 
       simp_all only
     · rfl
 
-omit [Fintype X] [Fintype Y]  in
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma elimPureTensor_update_left (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor cY)
     (x : X) (r : 𝓣.ColorModule (cX x)) : 𝓣.elimPureTensor (Function.update p x r) q =
@@ -499,7 +498,7 @@ lemma inrPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (S
     rfl
   · rfl
 
-omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]  in
+omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] in
 @[simp]
 lemma inlPureTensor_update_right [DecidableEq (X ⊕ Y)] (f : 𝓣.PureTensor (Sum.elim cX cY)) (y : Y)
     (v1 : 𝓣.ColorModule (Sum.elim cX cY (Sum.inr y))) :
@@ -592,7 +591,7 @@ def tensoratorEquiv (c : X → 𝓣.Color) (d : Y → 𝓣.Color) :
     simp [elimPureTensorMulLin]
     rfl)
 
-omit [Fintype X] [Fintype Y]  in
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma tensoratorEquiv_tmul_tprod (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor cY) :
     (𝓣.tensoratorEquiv cX cY) ((PiTensorProduct.tprod R) p ⊗ₜ[R] (PiTensorProduct.tprod R) q) =
@@ -601,7 +600,7 @@ lemma tensoratorEquiv_tmul_tprod (p : 𝓣.PureTensor cX) (q : 𝓣.PureTensor c
     lift.tmul, LinearMap.coe_mk, AddHom.coe_mk, PiTensorProduct.lift.tprod]
   exact PiTensorProduct.lift.tprod q
 
-omit [Fintype X] [Fintype Y]  in
+omit [Fintype X] [Fintype Y] in
 @[simp]
 lemma tensoratorEquiv_symm_tprod (f : 𝓣.PureTensor (Sum.elim cX cY)) :
     (𝓣.tensoratorEquiv cX cY).symm ((PiTensorProduct.tprod R) f) =
@@ -611,7 +610,7 @@ lemma tensoratorEquiv_symm_tprod (f : 𝓣.PureTensor (Sum.elim cX cY)) :
   change (PiTensorProduct.lift 𝓣.domCoprod) ((PiTensorProduct.tprod R) f) = _
   simp [domCoprod]
 
-omit [Fintype X] [Fintype Y]  [Fintype W] [Fintype Z]  in
+omit [Fintype X] [Fintype Y] [Fintype W] [Fintype Z] in
 @[simp]
 lemma tensoratorEquiv_mapIso (e' : Z ≃ Y) (e'' : W ≃ X)
     (h' : cZ.MapIso e' cY) (h'' : cW.MapIso e'' cX) :
@@ -630,7 +629,7 @@ lemma tensoratorEquiv_mapIso (e' : Z ≃ Y) (e'' : W ≃ X)
   | Sum.inl x => rfl
   | Sum.inr x => rfl
 
-omit [Fintype X] [Fintype Y]  [Fintype W] [Fintype Z]  in
+omit [Fintype X] [Fintype Y] [Fintype W] [Fintype Z] in
 @[simp]
 lemma tensoratorEquiv_mapIso_apply (e' : Z ≃ Y) (e'' : W ≃ X)
     (h' : cZ.MapIso e' cY) (h'' : cW.MapIso e'' cX)
@@ -644,7 +643,7 @@ lemma tensoratorEquiv_mapIso_apply (e' : Z ≃ Y) (e'' : W ≃ X)
   · rw [tensoratorEquiv_mapIso]
     rfl
 
-omit [Fintype X] [Fintype Y]  [Fintype W] [Fintype Z]  in
+omit [Fintype X] [Fintype Y] [Fintype W] [Fintype Z] in
 lemma tensoratorEquiv_mapIso_tmul (e' : Z ≃ Y) (e'' : W ≃ X)
     (h' : cZ.MapIso e' cY) (h'' : cW.MapIso e'' cX)
     (x : 𝓣.Tensor cW) (y : 𝓣.Tensor cZ) :

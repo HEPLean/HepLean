@@ -20,7 +20,7 @@ It is conditional on `AppendCond` being true, which we define.
 namespace IndexNotation
 namespace ColorIndexList
 
-variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color]  [DecidableEq 𝓒.Color]
+variable {𝓒 : TensorColor} [IndexNotation 𝓒.Color] [DecidableEq 𝓒.Color]
   (l l2 : ColorIndexList 𝓒)
 
 open IndexList TensorColor
@@ -50,7 +50,7 @@ def append (h : AppendCond l l2) : ColorIndexList 𝓒 where
   can be appended to form a `ColorIndexList`. -/
 scoped[IndexNotation.ColorIndexList] notation l " ++["h"] " l2 => append l l2 h
 
-omit  [DecidableEq 𝓒.Color] in
+omit [DecidableEq 𝓒.Color] in
 @[simp]
 lemma append_toIndexList (h : AppendCond l l2) :
     (l ++[h] l2).toIndexList = l.toIndexList ++ l2.toIndexList := rfl

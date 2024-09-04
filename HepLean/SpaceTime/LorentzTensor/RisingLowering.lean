@@ -107,7 +107,7 @@ lemma dual_eq_of_neq (h : DualMap c₁ c₂) {x : X} (h' : c₁ x ≠ c₂ x) :
   simp_all only [ne_eq, false_or]
   exact 𝓒.τ_involutive (c₂ x)
 
-omit  [Fintype X] [DecidableEq X] in
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma split_dual (h : DualMap c₁ c₂) : c₁.partDual (split c₁ c₂) = c₂ := by
   rw [partDual, Equiv.comp_symm_eq]
@@ -118,7 +118,7 @@ lemma split_dual (h : DualMap c₁ c₂) : c₁.partDual (split c₁ c₂) = c�
   | Sum.inr x =>
     exact x.2
 
-omit  [Fintype X] [DecidableEq X] in
+omit [Fintype X] [DecidableEq X] in
 @[simp]
 lemma split_dual' (h : DualMap c₁ c₂) : c₂.partDual (split c₁ c₂) = c₁ := by
   rw [partDual, Equiv.comp_symm_eq]
@@ -281,7 +281,7 @@ def dualizeAll : 𝓣.Tensor cX ≃ₗ[R] 𝓣.Tensor (𝓣.τ ∘ cX) := by
     rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod]
     apply congrArg
     simp
-omit  [Fintype X] [DecidableEq X]
+omit [Fintype X] [DecidableEq X]
 @[simp]
 lemma dualizeAll_equivariant (g : G) : (𝓣.dualizeAll.toLinearMap) ∘ₗ (@rep R _ G _ 𝓣 _ X cX g)
     = 𝓣.rep g ∘ₗ (𝓣.dualizeAll.toLinearMap) := by

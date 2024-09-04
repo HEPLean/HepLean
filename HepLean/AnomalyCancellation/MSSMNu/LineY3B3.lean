@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.MSSMNu.Basic
 import HepLean.AnomalyCancellation.MSSMNu.Y3
 import HepLean.AnomalyCancellation.MSSMNu.B3
-import Mathlib.Tactic.LinearCombination'
 /-!
 # The line through B₃ and Y₃
 
@@ -78,9 +77,8 @@ lemma doublePoint_Y₃_B₃ (R : MSSMACC.LinSols) :
   have h3 := hLin 3
   simp only [Fin.isValue, Fin.sum_univ_three, Prod.mk_zero_zero, LinearMap.coe_mk, AddHom.coe_mk,
     Prod.mk_one_one] at h1 h2 h3
-  linear_combination (norm := ring_nf)  -(12 * h2) + 9 * h1 + 3 * h3
+  linear_combination (norm := ring_nf) -(12 * h2) + 9 * h1 + 3 * h3
   simp only [Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one, add_add_sub_cancel, add_neg_cancel]
-
 
 lemma lineY₃B₃_doublePoint (R : MSSMACC.LinSols) (a b : ℚ) :
     cubeTriLin (lineY₃B₃ a b).val (lineY₃B₃ a b).val R.val = 0 := by

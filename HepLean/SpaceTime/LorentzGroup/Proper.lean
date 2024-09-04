@@ -32,7 +32,6 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
 
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
-
 instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
 instance : DiscreteTopology ℤ₂ := by
@@ -98,14 +97,14 @@ lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
       simp only [toMul_zero]
     · rw [h2, (detContinuous_eq_zero Λ').mpr h2]
       erw [Additive.toMul.apply_eq_iff_eq]
-      change (0 : Fin 2) = (1 : Fin 2)  ↔ _
+      change (0 : Fin 2) = (1 : Fin 2) ↔ _
       simp only [Fin.isValue, zero_ne_one, false_iff]
       linarith
   · rw [h1, (detContinuous_eq_zero Λ).mpr h1]
     cases' det_eq_one_or_neg_one Λ' with h2 h2
     · rw [h2, (detContinuous_eq_one Λ').mpr h2]
       erw [Additive.toMul.apply_eq_iff_eq]
-      change (1 : Fin 2) = (0 : Fin 2)  ↔ _
+      change (1 : Fin 2) = (0 : Fin 2) ↔ _
       simp only [Fin.isValue, one_ne_zero, false_iff]
       linarith
     · rw [h2, (detContinuous_eq_zero Λ').mpr h2]

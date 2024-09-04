@@ -67,11 +67,11 @@ noncomputable def einsteinTensor (R : Type) [CommSemiring R] (n : ℕ) : TensorS
       Fintype.linearCombination_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
       Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, lid_tmul, one_smul]
     · intro x hi
-      simp  [TensorStructure.contrMidAux, LinearEquiv.refl_toLinearMap,
+      simp only [TensorStructure.contrMidAux, LinearEquiv.refl_toLinearMap,
         TensorStructure.contrLeftAux, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
         assoc_tmul, map_tmul, LinearMap.id_coe, id_eq, assoc_symm_tmul, lift.tmul,
         Fintype.linearCombination_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, lid_tmul, ite_smul, one_smul, zero_smul]
+        Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, lid_tmul, ite_smul, one_smul, zero_smul]
       rw [if_neg hi]
       exact tmul_zero (Fin n → R) (Pi.single x 1)
 

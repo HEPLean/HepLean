@@ -120,7 +120,7 @@ def id (I : Index X) : ℕ := I.2
 
 omit [IndexNotation X] [Fintype X] [DecidableEq X] in
 lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColor ∧ I.id = J.id := by
-  refine Iff.intro (fun h => Prod.mk.inj_iff.mp h)  (fun h => ?_)
+  refine Iff.intro (fun h => Prod.mk.inj_iff.mp h) (fun h => ?_)
   · cases I
     cases J
     simp [toColor, id] at h
