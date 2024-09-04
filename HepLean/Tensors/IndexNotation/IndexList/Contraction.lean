@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexList.Equivs
+import HepLean.Tensors.IndexNotation.IndexList.Equivs
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic.FinCases

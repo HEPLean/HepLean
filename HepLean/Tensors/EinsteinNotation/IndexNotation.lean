@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.TensorIndex
-import HepLean.SpaceTime.LorentzTensor.IndexNotation.IndexString
-import HepLean.SpaceTime.LorentzTensor.EinsteinNotation.Basic
+import HepLean.Tensors.IndexNotation.TensorIndex
+import HepLean.Tensors.IndexNotation.IndexString
+import HepLean.Tensors.EinsteinNotation.Basic
 /-!
 
 # Index notation for Einstein tensors
