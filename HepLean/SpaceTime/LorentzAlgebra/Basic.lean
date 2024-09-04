@@ -99,7 +99,7 @@ instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra (LorentzVector 3) w
   smul_lie r Λ x := by
     simp [Bracket.bracket, smul_mulVec_assoc]
   lie_smul r Λ x := by
-    simp [Bracket.bracket]
+    simp only [Bracket.bracket]
     rw [mulVec_smul]
 
 end SpaceTime

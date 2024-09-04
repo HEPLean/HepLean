@@ -63,13 +63,17 @@ unsafe def processAllFiles : IO Unit := do
     ((IO.asTask $ IO.Process.run
     {cmd := "lake", args := #["exe", "free_simps", f.toString]}), f)
   tasks.toList.enum.forM fun (n, (t, path)) => do
-    println! "{n} of {tasks.toList.length}: {path}"
     let tn ← IO.wait (← t)
     match tn with
-    | .ok x => println! x
+    | .ok x =>
+      if x ≠ "" then
+      println! "{n} of {tasks.toList.length}: {path}"
+      println! x
     | .error _ => println! "Error"
 
 unsafe def main (args : List String) : IO Unit := do
   match args with
   | [path] => transverseTactics path visitTacticInfo
-  | _ => processAllFiles
+  | _ =>
+    processAllFiles
+    IO.println "Finished"

@@ -59,14 +59,23 @@ noncomputable def toSelfAdjointMatrix :
     funext i
     match i with
     | Sum.inl 0 =>
-      simp [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, toMatrix_isSelfAdjoint]
+      simp only [fromSelfAdjointMatrix', one_div, toSelfAdjointMatrix', toMatrix,
+        LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply,
+        cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons,
+        head_fin_const, add_add_sub_cancel, add_re, ofReal_re]
       ring_nf
     | Sum.inr 0 =>
       simp [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, toMatrix_isSelfAdjoint]
     | Sum.inr 1 =>
-      simp [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, toMatrix_isSelfAdjoint]
+      simp only [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, LorentzVector.time,
+        Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply, cons_val', cons_val_zero,
+        empty_val', cons_val_fin_one, cons_val_one, head_fin_const, add_im, ofReal_im, mul_im,
+        ofReal_re, I_im, mul_one, I_re, mul_zero, add_zero, zero_add]
     | Sum.inr 2 =>
-      simp [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, toMatrix_isSelfAdjoint]
+      simp only [fromSelfAdjointMatrix', one_div, toSelfAdjointMatrix', toMatrix,
+        LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply,
+        cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons,
+        head_fin_const, add_sub_sub_cancel, add_re, ofReal_re]
       ring
   right_inv x := by
     simp only [toSelfAdjointMatrix', toMatrix, LorentzVector.time, fromSelfAdjointMatrix', one_div,

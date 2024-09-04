@@ -67,7 +67,7 @@ lemma trans (h1 : l.Subperm l2) (h2 : l2.Subperm l3) : l.Subperm l3 := by
 lemma fst_eq_contrIndexList (h : l.Subperm l2) : l.contrIndexList = l := by
   rw [iff_countId] at *
   apply ext
-  simp [contrIndexList]
+  simp only [contrIndexList, List.filter_eq_self, decide_eq_true_eq]
   intro I hI
   have h' := countId_mem l I hI
   have hI' := h I

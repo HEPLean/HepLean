@@ -36,7 +36,7 @@ scoped[minkowskiMatrix] notation "η" => minkowskiMatrix
 
 @[simp]
 lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
-  simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_mul_diagonal]
   ext1 i j
   rcases i with i | i <;> rcases j with j | j
   · simp only [diagonal, of_apply, Sum.inl.injEq, Sum.elim_inl, mul_one]
@@ -70,9 +70,7 @@ lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 
 
 lemma as_block : @minkowskiMatrix d = (
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ)) := by
-  rw [minkowskiMatrix]
-  simp [LieAlgebra.Orthogonal.indefiniteDiagonal]
-  rw [← fromBlocks_diagonal]
+  rw [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, ← fromBlocks_diagonal]
   refine fromBlocks_inj.mpr ?_
   simp only [diagonal_one, true_and]
   funext i j
@@ -291,7 +289,7 @@ lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪
     refine sub_eq_zero.1 ?_
     have h1 := h v
     rw [nondegenerate] at h1
-    simp [sub_mulVec] at h1
+    simp only [sub_mulVec] at h1
     exact h1
 
 lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
@@ -334,7 +332,8 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪e μ, e ν⟫ₘ = η μ ν := by
   rw [basis_left, stdBasis_apply]
   by_cases h : μ = ν
   · simp [h]
-  · simp [h, LieAlgebra.Orthogonal.indefiniteDiagonal, minkowskiMatrix]
+  · simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq,
+    mul_ite, mul_one, mul_zero, ne_eq, h, not_false_eq_true, diagonal_apply_ne, ite_eq_right_iff]
     exact fun a => False.elim (h (id (Eq.symm a)))
 
 lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :

@@ -51,7 +51,8 @@ def permCharges {n : ℕ} : Representation ℚ (PermGroup n) (PureU1 n).Charges 
 
 lemma accGrav_invariant {n : ℕ} (f : (PermGroup n)) (S : (PureU1 n).Charges) :
     PureU1.accGrav n (permCharges f S) = accGrav n S := by
-  simp [accGrav, permCharges]
+  simp only [accGrav, PermGroup, permCharges, MonoidHom.coe_mk, OneHom.coe_mk, LinearMap.coe_mk,
+    AddHom.coe_mk, chargeMap_apply]
   apply (Equiv.Perm.sum_comp _ _ _ ?_)
   simp
 
@@ -144,7 +145,7 @@ lemma pairSwap_other {n : ℕ} (i j k : Fin n) (hik : i ≠ k) (hjk : j ≠ k) :
 
 lemma pairSwap_inv_other {n : ℕ} {i j k : Fin n} (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).invFun k = k := by
-  simp [pairSwap]
+  simp only [pairSwap, Equiv.invFun_as_coe, Equiv.coe_fn_symm_mk]
   split
   · rename_i h
     exact False.elim (hik (id (Eq.symm h)))
@@ -197,8 +198,8 @@ lemma permTwo_fst : (permTwo hij hij').toFun i' = i := by
   have ht := Equiv.extendSubtype_apply_of_mem
     ((permTwoInj hij').toEquivRange.symm.trans
     (permTwoInj hij).toEquivRange) i' (permTwoInj_fst hij')
-  simp at ht
-  simp [ht, permTwoInj_fst_apply]
+  simp only [Equiv.trans_apply, Function.Embedding.toEquivRange_apply] at ht
+  simp only [Equiv.toFun_as_coe, ht, permTwoInj_fst_apply, Fin.isValue]
   rfl
 
 lemma permTwo_snd : (permTwo hij hij').toFun j' = j := by

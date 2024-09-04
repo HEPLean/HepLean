@@ -105,7 +105,8 @@ lemma countColorQuot_eq_countId_iff_of_isSome (hl : l.OnlyUniqueDuals) (i : Fin 
   rcases l.filter_id_of_countId_eq_two hi1 with hf | hf
   all_goals
     erw [hf]
-    simp [List.countP, List.countP.go]
+    simp only [List.countP, List.countP.go, List.get_eq_getElem, true_or, decide_True,
+      Bool.decide_or, zero_add, Nat.reduceAdd, cond_true, List.length_cons, List.length_singleton]
     refine Iff.intro (fun h => ?_) (fun h => ?_)
     · by_contra hn
       have hn' : (decide (l.val[↑i].toColor = l.val[↑((l.getDual? i).get hi)].toColor) ||

@@ -114,7 +114,7 @@ lemma not_mem_iff : v ∉ FuturePointing d ↔ v.1.time ≤ 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · exact le_of_not_lt ((mem_iff v).mp.mt h)
   · have h1 := (mem_iff v).mp.mt
-    simp at h1
+    simp only [LorentzVector.time, Fin.isValue, not_lt] at h1
     exact h1 h
 
 lemma not_mem_iff_neg : v ∉ FuturePointing d ↔ neg v ∈ FuturePointing d := by
