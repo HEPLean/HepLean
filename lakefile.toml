@@ -60,6 +60,10 @@ srcDir = "scripts"
 name = "stats"
 srcDir = "scripts"
 
+[[lean_exe]]
+name = "free_simps"
+srcDir = "scripts/MetaPrograms"
+
 # -- Optional inclusion of openAI_doc_check. Needs `llm` above.
 #[[lean_exe]]
 #name = "openAI_doc_check"
