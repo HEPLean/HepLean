@@ -148,7 +148,7 @@ lemma rep_mapIso (e : X ≃ Y) (h : cX = cY ∘ e) (g : G) :
   simp only [LinearMap.compMultilinearMap_apply, LinearMap.coe_comp, LinearEquiv.coe_coe,
     Function.comp_apply]
   erw [mapIso_tprod]
-  simp [rep, colorModuleCast_equivariant_apply]
+  simp only [rep, MonoidHom.coe_mk, OneHom.coe_mk]
   change (PiTensorProduct.map fun x => (repColorModule (cY x)) g)
     ((PiTensorProduct.tprod R) fun i => (𝓣.colorModuleCast _) (x (e.symm i))) =
     (𝓣.mapIso e h) ((PiTensorProduct.map _) ((PiTensorProduct.tprod R) x))
@@ -171,7 +171,7 @@ omit [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] in
 lemma rep_tprod (g : G) (f : (i : X) → 𝓣.ColorModule (cX i)) :
     g • (PiTensorProduct.tprod R f) = PiTensorProduct.tprod R (fun x =>
     repColorModule (cX x) g (f x)) := by
-  simp [rep]
+  simp only [rep, MonoidHom.coe_mk, OneHom.coe_mk]
   change (PiTensorProduct.map _) ((PiTensorProduct.tprod R) f) = _
   rw [PiTensorProduct.map_tprod]
 

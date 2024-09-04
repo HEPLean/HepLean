@@ -69,11 +69,10 @@ lemma inr (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
     AppendCond l2 l3 := by
   apply And.intro
   · have h1 := h'.1
-    simp at h1
-    rw [append_assoc] at h1
+    rw [append_toIndexList, append_assoc] at h1
     exact OnlyUniqueDuals.inr h1
   · have h1 := h'.2
-    simp at h1
+    simp only [append_toIndexList] at h1
     rw [append_assoc] at h1
     refine ColorCond.inr ?_ h1
     rw [← append_assoc]
@@ -82,10 +81,10 @@ lemma inr (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
 lemma assoc (h : AppendCond l l2) (h' : AppendCond (l ++[h] l2) l3) :
     AppendCond l (l2 ++[h.inr h'] l3) := by
   apply And.intro
-  · simp
+  · simp only [append_toIndexList]
     rw [← append_assoc]
     simpa using h'.1
-  · simp
+  · simp only [append_toIndexList]
     rw [← append_assoc]
     exact h'.2
 
@@ -132,7 +131,7 @@ lemma countId_contr_fst_eq_zero_mem_snd (h : AppendCond l l2) {I : Index 𝓒.Co
   have h1I := h.1
   rw [OnlyUniqueDuals.iff_countId_leq_two'] at h1I
   have h1I' := h1I I
-  simp at h1I'
+  simp only [countId_append] at h1I'
   omega
 
 lemma countId_contr_snd_eq_zero_mem_fst (h : AppendCond l l2) {I : Index 𝓒.Color}
@@ -151,13 +150,13 @@ lemma append_contr_left (h : AppendCond l l2) :
   apply List.filter_congr
   intro I hI
   simp only [decide_eq_decide]
-  simp [contrIndexList] at hI
+  simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at hI
   exact AppendCond.countId_contr_fst_eq_zero_mem_snd h hI.1
 
 lemma append_contr_right (h : AppendCond l l2) :
     (l ++[h.contr_right] l2.contr).contr = (l ++[h] l2).contr := by
   apply ext
-  simp [contr]
+  simp only [contr, append_toIndexList]
   rw [contrIndexList_append_eq_filter, contrIndexList_append_eq_filter,
     contrIndexList_contrIndexList]
   apply congrFun

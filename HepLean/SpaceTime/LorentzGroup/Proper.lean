@@ -176,7 +176,7 @@ lemma id_IsProper : @IsProper d 1 := by
 
 lemma isProper_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     IsProper Λ ↔ IsProper Λ' := by
-  simp [detRep_apply, detRep_apply, detContinuous]
+  simp only [IsProper]
   rw [det_on_connected_component h]
 
 end LorentzGroup

@@ -59,7 +59,7 @@ lemma getDualInOtherEquiv_eq (h : l.ContrPerm l2) (i : Fin l.contr.length) :
       rw [h.2.1]
       exact Finset.mem_univ i⟩).1
     · rfl
-    · simp [getDualInOtherEquiv]
+    · simp only [getDualInOtherEquiv, Equiv.coe_fn_mk, getDualInOther?_id, List.get_eq_getElem]
       rfl
 
 lemma mem_snd_of_mem_snd (h : l.ContrPerm l2) {I : Index 𝓒.Color} (hI : I ∈ l.contr.val) :
@@ -96,11 +96,11 @@ lemma getDualInOtherEquiv_eq_of_countSelf
   rw [← List.mem_singleton, ← filter_id_of_countId_eq_one_mem l2.contr.toIndexList h1' h1]
   simp only [List.get_eq_getElem, List.mem_filter, decide_eq_true_eq]
   apply And.intro (List.getElem_mem _ _ _)
-  simp [getDualInOtherEquiv]
+  simp only [getDualInOtherEquiv, Equiv.coe_fn_mk]
   change _ = l2.contr.idMap (l.contr.getDualInOtherEquiv l2.contr ⟨i, by
       rw [hn]
       exact Finset.mem_univ i⟩).1
-  simp [getDualInOtherEquiv]
+  simp only [getDualInOtherEquiv, Equiv.coe_fn_mk, getDualInOther?_id]
   rfl
 
 lemma colorMap_eq_of_countSelf (hn : IndexList.Subperm l.contr l2.contr.toIndexList)
@@ -109,7 +109,7 @@ lemma colorMap_eq_of_countSelf (hn : IndexList.Subperm l.contr l2.contr.toIndexL
     l2.contr.colorMap' ∘ Subtype.val ∘ (l.contr.getDualInOtherEquiv l2.contr)
     = l.contr.colorMap' ∘ Subtype.val := by
   funext a
-  simp [colorMap', colorMap]
+  simp only [colorMap', Function.comp_apply, colorMap, List.get_eq_getElem]
   change _ = (l.contr.val.get a.1).toColor
   rw [← getDualInOtherEquiv_eq_of_countSelf hn a.1]
   · rfl
@@ -119,7 +119,7 @@ lemma colorMap_eq_of_countSelf (hn : IndexList.Subperm l.contr l2.contr.toIndexL
       (countSelf_eq_one_of_countId_eq_one l.contr.toIndexList (l.contr.val.get a.1) ?h1 ?hme)
     · rw [Subperm.iff_countId_fin] at hn
       exact (hn a.1).1
-    · simp
+    · simp only [List.get_eq_getElem]
       exact List.getElem_mem l.contr.val (↑↑a) a.1.isLt
 
 lemma iff_count_fin : l.ContrPerm l2 ↔
@@ -264,9 +264,11 @@ def contrPermEquiv {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
 
 lemma contrPermEquiv_colorMap_iso {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
     ColorMap.MapIso (contrPermEquiv h).symm l'.contr.colorMap' l.contr.colorMap' := by
-  simp [ColorMap.MapIso]
+  simp only [ColorMap.MapIso]
   funext i
-  simp [contrPermEquiv, getDualInOtherEquiv]
+  simp only [contrPermEquiv, getDualInOtherEquiv, Function.comp_apply, Equiv.symm_trans_apply,
+    Equiv.symm_symm, Equiv.subtypeUnivEquiv_symm_apply, Equiv.coe_fn_symm_mk,
+    Equiv.subtypeUnivEquiv_apply]
   have h' := h.symm.2.2
   have hi : i ∈ (l'.contr.withUniqueDualInOther l.contr.toIndexList) := by
     rw [h.symm.2.1]
@@ -291,7 +293,7 @@ lemma contrPermEquiv_symm {l l' : ColorIndexList 𝓒} (h : ContrPerm l l') :
 lemma contrPermEquiv_trans {l l2 l3 : ColorIndexList 𝓒}
     (h1 : ContrPerm l l2) (h2 : ContrPerm l2 l3) :
     (contrPermEquiv h1).trans (contrPermEquiv h2) = contrPermEquiv (h1.trans h2) := by
-  simp [contrPermEquiv]
+  simp only [contrPermEquiv]
   ext x
   simp only [getDualInOtherEquiv, Equiv.trans_apply, Equiv.subtypeUnivEquiv_symm_apply,
     Equiv.coe_fn_mk, Equiv.subtypeUnivEquiv_apply]
@@ -315,7 +317,7 @@ lemma contrPermEquiv_trans {l l2 l3 : ColorIndexList 𝓒}
 lemma contrPermEquiv_self_contr {l : ColorIndexList 𝓒} :
     contrPermEquiv (contr_self : ContrPerm l l.contr) =
     (Fin.castOrderIso (by simp)).toEquiv := by
-  simp [contrPermEquiv]
+  simp only [contrPermEquiv]
   ext1 x
   simp only [getDualInOtherEquiv, Equiv.trans_apply, Equiv.subtypeUnivEquiv_symm_apply,
     Equiv.coe_fn_mk, Equiv.subtypeUnivEquiv_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
