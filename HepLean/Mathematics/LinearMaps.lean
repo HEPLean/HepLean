@@ -131,7 +131,7 @@ lemma toHomogeneousQuad_add {V : Type} [AddCommMonoid V] [Module ℚ V]
     (τ : BiLinearSymm V) (S T : V) :
     τ.toHomogeneousQuad (S + T) = τ.toHomogeneousQuad S +
     τ.toHomogeneousQuad T + 2 * τ S T := by
-  simp [toHomogeneousQuad_apply]
+  simp only [HomogeneousQuadratic, toHomogeneousQuad_apply, map_add]
   rw [τ.map_add₁, τ.map_add₁, τ.swap T S]
   ring
 

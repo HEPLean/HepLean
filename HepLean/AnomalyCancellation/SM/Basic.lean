@@ -269,7 +269,7 @@ def cubeTriLin : TriLinearSymm (SMCharges n).Charges := TriLinearSymm.mk₃
     apply Fintype.sum_congr
     intro i
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue]
     ring)
   (by
     intro S T R L

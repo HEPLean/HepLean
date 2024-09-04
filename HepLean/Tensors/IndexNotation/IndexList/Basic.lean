@@ -212,10 +212,8 @@ def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
 /-- The inclusion of the indices of `l2` into the indices of `l ++ l2`. -/
 def appendInr : Fin l2.length ↪ Fin (l ++ l2).length where
   toFun := appendEquiv ∘ Sum.inr
-  inj' := by
-    intro i j h
-    simp [Function.comp] at h
-    exact h
+  inj' i j h := by
+    simpa only [Function.comp, EmbeddingLike.apply_eq_iff_eq, Sum.inr.injEq] using h
 
 @[simp]
 lemma appendInl_appendEquiv :
@@ -315,7 +313,7 @@ lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [Deci
       intro i j h1 _ _
       have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
         exact List.sorted_mergeSort (fun i j => i ≤ j) m
-      simp [List.Sorted] at hs
+      simp only [List.Sorted] at hs
       rw [List.pairwise_iff_get] at hs
       exact hs i j h1
     have hp1 : (List.mergeSort (fun i j => i ≤ j) m).Perm m := by

@@ -88,6 +88,7 @@ lemma left_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m�
 def IsBounded (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ) (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) : Prop :=
   ∃ c, ∀ Φ1 Φ2 x, c ≤ potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 Φ2 x
 
+/-! TODO: Show that if the potential is bounded then `0 ≤ 𝓵₁` and `0 ≤ 𝓵₂`. -/
 /-!
 
 ## Smoothness of the potential

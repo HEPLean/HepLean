@@ -37,17 +37,17 @@ variable {n : ℕ}
 
 lemma gravSol (S : (SM n).LinSols) : accGrav S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [SM_numberLinear, SM_linearACCs, Fin.isValue] at hS
   exact hS 0
 
 lemma SU2Sol (S : (SM n).LinSols) : accSU2 S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [SM_numberLinear, SM_linearACCs, Fin.isValue] at hS
   exact hS 1
 
 lemma SU3Sol (S : (SM n).LinSols) : accSU3 S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [SM_numberLinear, SM_linearACCs, Fin.isValue] at hS
   exact hS 2
 
 lemma cubeSol (S : (SM n).Sols) : accCube S.val = 0 := S.cubicSol
@@ -58,7 +58,7 @@ def chargeToLinear (S : (SM n).Charges) (hGrav : accGrav S = 0)
     (hSU2 : accSU2 S = 0) (hSU3 : accSU3 S = 0) : (SM n).LinSols :=
   ⟨S, by
     intro i
-    simp at i
+    simp only [SM_numberLinear] at i
     match i with
     | 0 => exact hGrav
     | 1 => exact hSU2
@@ -100,14 +100,14 @@ def perm (n : ℕ) : ACCSystemGroupAction (SM n) where
   rep := repCharges
   linearInvariant := by
     intro i
-    simp at i
+    simp only [SM_numberLinear] at i
     match i with
     | 0 => exact accGrav_invariant
     | 1 => exact accSU2_invariant
     | 2 => exact accSU3_invariant
   quadInvariant := by
     intro i
-    simp at i
+    simp only [SM_numberQuadratic] at i
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
 
