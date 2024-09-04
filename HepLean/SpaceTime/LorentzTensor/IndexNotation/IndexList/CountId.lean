@@ -132,7 +132,7 @@ lemma filter_finRange (i : Fin l.length) :
   have h3 : (List.filter (fun j => i = j) (List.finRange l.length)).length = 1 := by
     rw [← List.countP_eq_length_filter]
     trans List.count i (List.finRange l.length)
-    · simp [List.count]
+    · rw [List.count]
       apply List.countP_congr (fun j _ => ?_)
       simp only [decide_eq_true_eq, beq_iff_eq]
       exact eq_comm
@@ -317,7 +317,7 @@ lemma mem_withUniqueDual_of_countId_eq_two (i : Fin l.length)
   have hj : j ∈ List.filter (fun j => decide (l.AreDualInSelf i j)) (List.finRange l.length) := by
     simpa using hj
   rw [ha] at hj
-  simp at hj
+  simp only [List.mem_singleton] at hj
   subst hj
   have ht : (l.getDual? i).get ((mem_withDual_iff_isSome l i).mp hw) ∈
     (List.finRange l.length).filter (fun j => decide (l.AreDualInSelf i j)) := by

@@ -184,7 +184,7 @@ lemma findIdx?_on_finRange_eq_findIdx {n : ℕ} (p : Fin n → Prop) [DecidableP
           rw [@Fin.find_eq_some_iff] at hi ⊢
           simp_all only [Function.comp_apply, Fin.succ_pred, true_and]
           exact fun j hj => (Fin.pred_le_iff hn).mpr (hi.2 j.succ hj)
-        · simp at hs
+        · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at hs
           rw [hs]
           simp only [Nat.succ_eq_add_one, Option.map_eq_none']
           rw [@Fin.find_eq_none_iff] at hs ⊢
@@ -229,7 +229,8 @@ lemma idList_getDualInOther? : l.idList =
   rw [idList, idListFin_getDualInOther?]
 
 lemma mem_idList_of_mem {I : Index X} (hI : I ∈ l.val) : I.id ∈ l.idList := by
-  simp [idList_getDualInOther?]
+  simp only [idList_getDualInOther?, List.mem_map, List.mem_filter, List.mem_finRange,
+    decide_eq_true_eq, true_and]
   have hI : l.val.indexOf I < l.val.length := List.indexOf_lt_length.mpr hI
   have hI' : I = l.val.get ⟨l.val.indexOf I, hI⟩ := Eq.symm (List.indexOf_get hI)
   rw [hI']
@@ -257,7 +258,7 @@ lemma idList_indexOf_get (i : Fin l.length) :
     l.idList.indexOf (l.idMap i) = l.idListFin.indexOf ((l.getDualInOther? l i).get
       (getDualInOther?_self_isSome l i)) := by
   rw [idList]
-  simp [idListFin_getDualInOther?]
+  simp only [idListFin_getDualInOther?]
   rw [← indexOf_map' l.idMap (fun i => (l.getDualInOther? l i).get
       (getDualInOther?_self_isSome l i))]
   · intro i _ j
@@ -271,7 +272,7 @@ lemma idList_indexOf_get (i : Fin l.length) :
         · exact congrArg l.idMap h
         · exact getDualInOther?_id l l j (getDualInOther?_self_isSome l j)
   · intro i hi
-    simp at hi
+    simp only [List.mem_filter, List.mem_finRange, decide_eq_true_eq, true_and] at hi
     exact Option.get_of_mem (getDualInOther?_self_isSome l i) hi
   · exact fun i => Eq.symm (getDualInOther?_id l l i (getDualInOther?_self_isSome l i))
 
@@ -343,9 +344,9 @@ lemma areDualInSelf_of (h : GetDualCast l l2) (i j : Fin l.length) (hA : l.AreDu
     have h1 : ((l2.getDual? (Fin.cast h.1 j)).get ((getDual?_isSome_iff h j).mp hn))
         = ((l2.getDual? (Fin.cast h.1 i)).get ((getDual?_isSome_iff h i).mp hni)) := by
       simpa [Fin.ext_iff] using h1'
-    simp [AreDualInSelf]
+    simp only [AreDualInSelf, ne_eq]
     apply And.intro
-    · simp [AreDualInSelf] at hA
+    · simp only [AreDualInSelf, ne_eq] at hA
       simpa [Fin.ext_iff] using hA.1
     trans l2.idMap ((l2.getDual? (Fin.cast h.1 j)).get ((getDual?_isSome_iff h j).mp hn))
     · trans l2.idMap ((l2.getDual? (Fin.cast h.1 i)).get ((getDual?_isSome_iff h i).mp hni))
@@ -367,7 +368,7 @@ lemma idMap_eq_of (h : GetDualCast l l2) (i j : Fin l.length) (hm : l.idMap i = 
   by_cases h1 : i = j
   · exact congrArg l2.idMap (congrArg (Fin.cast h.left) h1)
   have h1' : l.AreDualInSelf i j := by
-    simp [AreDualInSelf]
+    simp only [AreDualInSelf, ne_eq]
     exact ⟨h1, hm⟩
   rw [h.areDualInSelf_iff] at h1'
   simpa using h1'.2
@@ -390,10 +391,10 @@ lemma iff_idMap_eq : GetDualCast l l2 ↔
   simp only [Function.comp_apply]
   by_cases h1 : (l.getDual? i).isSome
   · have h1' : (l2.getDual? (Fin.cast h.1 i)).isSome := by
-      simp [getDual?, Fin.isSome_find_iff] at h1 ⊢
+      simp only [getDual?, Fin.isSome_find_iff] at h1 ⊢
       obtain ⟨j, hj⟩ := h1
       use (Fin.cast h.1 j)
-      simp [AreDualInSelf] at hj ⊢
+      simp only [AreDualInSelf, ne_eq] at hj ⊢
       rw [← h.2]
       simpa [Fin.ext_iff] using hj
     have h2 := Option.eq_some_of_isSome h1'
@@ -402,26 +403,26 @@ lemma iff_idMap_eq : GetDualCast l l2 ↔
     rw [Fin.find_eq_some_iff] at h2 ⊢
     apply And.intro
     · apply And.intro
-      · simp [AreDualInSelf] at h2
+      · simp only [AreDualInSelf, ne_eq, getDual?_get_id, and_true, and_imp] at h2
         simpa [Fin.ext_iff] using h2.1
       · rw [h.2 h.1]
         simp
     · intro j hj
       apply h2.2 (Fin.cast h.1 j)
-      simp [AreDualInSelf] at hj ⊢
+      simp only [AreDualInSelf, ne_eq] at hj ⊢
       apply And.intro
       · simpa [Fin.ext_iff] using hj.1
       · rw [← h.2]
         simpa using hj.2
-  · simp at h1
+  · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h1
     rw [h1]
     symm
     refine Option.map_eq_none'.mpr ?_
     rw [getDual?, Fin.find_eq_none_iff] at h1 ⊢
-    simp [AreDualInSelf]
+    simp only [AreDualInSelf, ne_eq, not_and]
     intro j hij
     have h1j := h1 (Fin.cast h.1.symm j)
-    simp [AreDualInSelf] at h1j
+    simp only [AreDualInSelf, ne_eq, not_and] at h1j
     rw [h.2 h.1] at h1j
     apply h1j
     exact ne_of_apply_ne (Fin.cast h') hij
@@ -447,12 +448,12 @@ lemma getDualInOther?_get (h : GetDualCast l l2) (i : Fin l.length) :
   have h1 := Option.eq_some_of_isSome (getDualInOther?_self_isSome l2 (Fin.cast h.left i))
   erw [Fin.find_eq_some_iff] at h1
   apply And.intro
-  · simp [AreDualInOther]
+  · simp only [AreDualInOther]
     rw [idMap_eq_iff h]
     simp
   · intro j hj
     apply h1.2 (Fin.cast h.1 j)
-    simp [AreDualInOther]
+    simp only [AreDualInOther]
     exact (idMap_eq_iff h i j).mp hj
 
 lemma countId_cast (h : GetDualCast l l2) (i : Fin l.length) :
@@ -478,11 +479,12 @@ lemma idListFin_cast (h : GetDualCast l l2) :
   rw [h1]
   rw [List.filter_map]
   have h1 : Fin.cast h.1 ∘ Fin.cast h.1.symm = id := rfl
-  simp [h1]
+  simp only [List.map_map, h1, List.map_id]
   rw [idListFin_getDualInOther?]
   apply List.filter_congr
   intro i _
-  simp [getDualInOther?, Fin.find_eq_some_iff, AreDualInOther]
+  simp only [getDualInOther?, AreDualInOther, Fin.find_eq_some_iff, true_and, Function.comp_apply,
+    decide_eq_decide]
   refine Iff.intro (fun h' j hj => ?_) (fun h' j hj => ?_)
   · simpa using h' (Fin.cast h.1.symm j) (by rw [h.idMap_eq_iff]; exact hj)
   · simpa using h' (Fin.cast h.1 j) (by rw [h.symm.idMap_eq_iff]; exact hj)
@@ -518,7 +520,7 @@ lemma normalize_eq_map :
   have hl : l.val = List.map l.val.get (List.finRange l.length) := by
     simp [length]
   rw [hl]
-  simp [normalize]
+  simp only [normalize, List.map_map]
   exact List.ofFn_eq_map
 
 omit [DecidableEq X] in
@@ -548,13 +550,13 @@ lemma normalize_countId (i : Fin l.normalize.length) :
     l.normalize.countId l.normalize.val[Fin.val i] =
     l.countId (l.val.get ⟨i, by simpa using i.2⟩) := by
   rw [countId, countId]
-  simp [l.normalize_eq_map, Index.id]
+  simp only [Index.id, l.normalize_eq_map, List.getElem_map, List.countP_map, List.get_eq_getElem]
   apply List.countP_congr
   intro J hJ
   simp only [Function.comp_apply, decide_eq_true_eq]
   trans List.indexOf (l.val.get ⟨i, by simpa using i.2⟩).id l.idList = List.indexOf J.id l.idList
   · rfl
-  · simp
+  · simp only [List.get_eq_getElem]
     rw [idList_indexOf_mem]
     · rfl
     · exact List.getElem_mem l.val _ _
@@ -564,13 +566,13 @@ lemma normalize_countId (i : Fin l.normalize.length) :
 lemma normalize_countId' (i : Fin l.length) (hi : i.1 < l.normalize.length) :
     l.normalize.countId (l.normalize.val[Fin.val i]) = l.countId (l.val.get i) := by
   rw [countId, countId]
-  simp [l.normalize_eq_map, Index.id]
+  simp only [Index.id, l.normalize_eq_map, List.getElem_map, List.countP_map, List.get_eq_getElem]
   apply List.countP_congr
   intro J hJ
   simp only [Function.comp_apply, decide_eq_true_eq]
   trans List.indexOf (l.val.get i).id l.idList = List.indexOf J.id l.idList
   · rfl
-  · simp
+  · simp only [List.get_eq_getElem]
     rw [idList_indexOf_mem]
     · rfl
     · exact List.getElem_mem l.val _ _
@@ -689,7 +691,7 @@ lemma normalize_colorMap_eq_of_eq_colorMap (h : l.length = l2.length)
     (hc : l.colorMap = l2.colorMap ∘ Fin.cast h) :
     l.normalize.colorMap = l2.normalize.colorMap ∘
     Fin.cast (normalize_length_eq_of_eq_length l l2 h) := by
-  simp [hc]
+  simp only [normalize_colorMap, hc]
   rfl
 
 /-!

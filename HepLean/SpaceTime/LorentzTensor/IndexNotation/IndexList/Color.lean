@@ -28,7 +28,7 @@ def dual : Index 𝓒.Color := ⟨𝓒.τ I.toColor, I.id⟩
 
 @[simp]
 lemma dual_dual : I.dual.dual = I := by
-  simp [dual, toColor, id]
+  simp only [dual, toColor, id]
   rw [𝓒.τ_involutive]
   rfl
 
@@ -53,11 +53,12 @@ lemma countColorQuot_eq_filter_id_countP (I : Index 𝓒.Color) :
     l.countColorQuot I =
     (l.val.filter (fun J => I.id = J.id)).countP
     (fun J => I.toColor = J.toColor ∨ I.toColor = 𝓒.τ (J.toColor)) := by
-  simp [countColorQuot]
+  simp only [countColorQuot, Bool.decide_or]
   rw [List.countP_filter]
   apply List.countP_congr
   intro I' _
-  simp [Index.eq_iff_color_eq_and_id_eq]
+  simp only [Index.eq_iff_color_eq_and_id_eq, Bool.decide_and, Index.dual_color, Index.dual_id,
+    Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq, Bool.decide_or]
   apply Iff.intro
   · intro a_1
     cases a_1 with
@@ -158,7 +159,7 @@ def countSelf (I : Index 𝓒.Color) : ℕ := l.val.countP (fun J => I = J)
 
 lemma countSelf_eq_filter_id_countP : l.countSelf I =
     (l.val.filter (fun J => I.id = J.id)).countP (fun J => I.toColor = J.toColor) := by
-  simp [countSelf]
+  rw [countSelf]
   rw [List.countP_filter]
   apply List.countP_congr
   intro I' _
@@ -167,7 +168,7 @@ lemma countSelf_eq_filter_id_countP : l.countSelf I =
 lemma countSelf_eq_filter_color_countP :
     l.countSelf I =
     (l.val.filter (fun J => I.toColor = J.toColor)).countP (fun J => I.id = J.id) := by
-  simp [countSelf]
+  simp only [countSelf]
   rw [List.countP_filter]
   apply List.countP_congr
   intro I' _
@@ -253,11 +254,12 @@ lemma countDual_eq_countSelf_Dual (I : Index 𝓒.Color) : l.countDual I = l.cou
 
 lemma countDual_eq_filter_id_countP : l.countDual I =
     (l.val.filter (fun J => I.id = J.id)).countP (fun J => I.toColor = 𝓒.τ (J.toColor)) := by
-  simp [countDual]
+  simp only [countDual]
   rw [List.countP_filter]
   apply List.countP_congr
   intro I' _
-  simp [Index.eq_iff_color_eq_and_id_eq, Index.dual, Index.toColor, Index.id]
+  simp only [Index.dual, Index.toColor, Index.id, Index.eq_iff_color_eq_and_id_eq, Bool.decide_and,
+    Bool.and_eq_true, decide_eq_true_eq, and_congr_left_iff]
   intro _
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [← h]
@@ -292,9 +294,10 @@ lemma countSelf_eq_countDual_iff_of_isSome (hl : l.OnlyUniqueDuals)
   rcases l.filter_id_of_countId_eq_two hi1 with hf | hf
   all_goals
     erw [hf]
-    simp [List.countP, List.countP.go]
+    simp only [List.countP, List.countP.go, List.get_eq_getElem, decide_True, zero_add,
+      Nat.reduceAdd, cond_true]
     by_cases hn : l.colorMap i = 𝓒.τ (l.colorMap ((l.getDual? i).get hi))
-    · simp [hn]
+    · simp only [hn, true_or, iff_true]
       have hn' : decide (l.val[↑i].toColor = 𝓒.τ l.val[↑((l.getDual? i).get hi)].toColor)
         = true := by simpa [colorMap] using hn
       erw [hn']
@@ -302,34 +305,34 @@ lemma countSelf_eq_countDual_iff_of_isSome (hl : l.OnlyUniqueDuals)
       have hτ : l.colorMap ((l.getDual? i).get hi) = 𝓒.τ (l.colorMap i) := by
         rw [hn]
         exact (𝓒.τ_involutive _).symm
-      simp [colorMap] at hτ
+      simp only [colorMap, List.get_eq_getElem] at hτ
       erw [hτ]
     · have hn' : decide (l.val[↑i].toColor = 𝓒.τ l.val[↑((l.getDual? i).get hi)].toColor) =
           false := by simpa [colorMap] using hn
       erw [hn']
-      simp [hn]
+      simp only [cond_false, hn, false_or]
       by_cases hm : l.colorMap i = 𝓒.τ (l.colorMap i)
       · trans True
-        · simp
+        · simp only [iff_true]
           have hm' : decide (l.val[↑i].toColor = 𝓒.τ l.val[↑i].toColor) = true := by simpa using hm
           erw [hm']
           simp only [cond_true]
           have hm'' : decide (l.val[↑i].toColor = l.val[↑((l.getDual? i).get hi)].toColor)
               = false := by
             simp only [Fin.getElem_fin, decide_eq_false_iff_not]
-            simp [colorMap] at hm
+            simp only [colorMap, List.get_eq_getElem] at hm
             erw [hm]
             by_contra hn'
             have hn'' : l.colorMap i = 𝓒.τ (l.colorMap ((l.getDual? i).get hi)) := by
-              simp [colorMap]
+              simp only [colorMap, List.get_eq_getElem]
               rw [← hn']
               exact (𝓒.τ_involutive _).symm
             exact hn hn''
           erw [hm'']
           rfl
         · exact true_iff_iff.mpr hm
-      · simp [hm]
-        simp [colorMap] at hm
+      · simp only [hm, iff_false, ne_eq]
+        simp only [colorMap, List.get_eq_getElem] at hm
         have hm' : decide (l.val[↑i].toColor = 𝓒.τ l.val[↑i].toColor) = false := by simpa using hm
         erw [hm']
         simp only [cond_false, ne_eq]
@@ -357,13 +360,13 @@ lemma iff_withDual :
     (l.colorMap ((l.getDual? i).get (l.withDual_isSome i))) = l.colorMap i := by
   refine Iff.intro (fun h i => ?_) (fun h => ?_)
   · have h' := congrFun h i
-    simp at h'
+    simp only [Function.comp_apply] at h'
     rw [show l.getDual? i = some ((l.getDual? i).get (l.withDual_isSome i)) by simp] at h'
     have h'' : (Option.guard (fun i => (l.getDual? i).isSome = true) ↑i) = i := by
       apply Option.guard_eq_some.mpr
       simp [l.withDual_isSome i]
     rw [h'', Option.map_some', Option.map_some'] at h'
-    simp at h'
+    simp only [Function.comp_apply, Option.some.injEq] at h'
     rw [h']
     exact 𝓒.τ_involutive (l.colorMap i)
   · funext i
@@ -376,10 +379,11 @@ lemma iff_withDual :
       rw [Option.eq_some_of_isSome hi, Option.map_some']
       simp only [Option.some.injEq]
       have hii := h ⟨i, (mem_withDual_iff_isSome l i).mpr hi⟩
-      simp at hii
+      simp only at hii
       rw [← hii]
       exact (𝓒.τ_involutive _).symm
-    · simp [Option.guard, hi]
+    · simp only [Function.comp_apply, Option.guard, hi, Bool.false_eq_true, ↓reduceIte,
+      Option.map_none', Option.map_eq_none']
       exact Option.not_isSome_iff_eq_none.mp hi
 
 omit [DecidableEq 𝓒.Color] in
@@ -462,7 +466,7 @@ lemma mem_iff_dual_mem (hl : l.OnlyUniqueDuals) (hc : l.ColorCond) (I : Index �
     have hc' := (hc I.dual h hIdd).2
     rw [← countSelf_neq_zero] at h ⊢
     rw [countDual_eq_countSelf_Dual] at hc'
-    simp at hc'
+    simp only [Index.dual_dual] at hc'
     exact Ne.symm (ne_of_ne_of_eq (id (Ne.symm h)) hc')
 
 lemma iff_countColorCond (hl : l.OnlyUniqueDuals) :
@@ -498,12 +502,13 @@ lemma inl (hl : (l ++ l2).OnlyUniqueDuals) (h : ColorCond (l ++ l2)) : ColorCond
   have hI2' : l2.countId I = 0 := by
     rw [OnlyUniqueDuals.iff_countId_leq_two'] at hl
     have hlI := hl I
-    simp at hlI
+    simp only [countId_append] at hlI
     omega
   have hI' := h I (by
     simp only [countSelf_append, ne_eq, add_eq_zero, not_and, hI1, false_implies])
     (by simp_all)
-  simp at hI'
+  simp only [countColorCond, countColorQuot_append, countId_append, countSelf_append,
+    countDual_append] at hI'
   rw [l2.countColorQuot_of_countId_zero hI2', l2.countSelf_of_countId_zero hI2',
     l2.countDual_of_countId_zero hI2', hI2'] at hI'
   exact hI'
@@ -542,7 +547,7 @@ lemma contrIndexList_left (hl : (l ++ l2).OnlyUniqueDuals) (h1 : (l ++ l2).Color
   have h2 := (countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals l l2 hl I hI2)
   have hI1' := h1 I (by simp_all; omega) h2
   have hIdEq : l.contrIndexList.countId I = l.countId I := by
-    simp at h2 hI2
+    simp only [countId_append] at h2 hI2
     omega
   simp only [countColorCond, countColorQuot_append, countId_append, countSelf_append,
     countDual_append]

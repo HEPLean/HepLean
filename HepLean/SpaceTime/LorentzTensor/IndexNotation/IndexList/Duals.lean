@@ -157,12 +157,12 @@ lemma not_mem_withDual_iff_isNone (i : Fin l.length) :
     Option.isNone_iff_eq_none]
 
 lemma mem_withDual_iff_exists : i ∈ l.withDual ↔ ∃ j, l.AreDualInSelf i j := by
-  simp [withDual, Finset.mem_filter, Finset.mem_univ, getDual?]
+  simp only [withDual, getDual?, Finset.mem_filter, Finset.mem_univ, true_and]
   exact Fin.isSome_find_iff
 
 lemma mem_withInDualOther_iff_exists :
     i ∈ l.withDualInOther l2 ↔ ∃ (j : Fin l2.length), l.AreDualInOther l2 i j := by
-  simp [withDualInOther, Finset.mem_filter, Finset.mem_univ, getDualInOther?]
+  simp only [withDualInOther, getDualInOther?, Finset.mem_filter, Finset.mem_univ, true_and]
   exact Fin.isSome_find_iff
 
 lemma withDual_disjoint_withoutDual : Disjoint l.withDual l.withoutDual := by
@@ -183,7 +183,7 @@ lemma withDual_union_withoutDual : l.withDual ∪ l.withoutDual = Finset.univ :=
   intro i
   by_cases h : (l.getDual? i).isSome
   · simp [withDual, Finset.mem_filter, Finset.mem_univ, h]
-  · simp at h
+  · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h
     simp [withoutDual, Finset.mem_filter, Finset.mem_univ, h]
 
 lemma mem_withUniqueDual_of_mem_withUniqueDualLt (i : Fin l.length) (h : i ∈ l.withUniqueDualLT) :
@@ -308,7 +308,7 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
     by_cases hik' : i = k'
     · exact Fin.ge_of_eq (id (Eq.symm hik'))
     · have hik'' : l.AreDualInSelf i k' := by
-        simp [AreDualInSelf, hik']
+        simp only [AreDualInSelf, ne_eq, hik', not_false_eq_true, true_and]
         simp_all [AreDualInSelf]
       have hk'' := hk.2 k' hik''
       exact (lt_of_lt_of_le hik hk'').le
@@ -329,14 +329,14 @@ lemma getDual?_of_areDualInSelf (h : l.AreDualInSelf i j) :
       · subst hik'
         exact Lean.Omega.Fin.le_of_not_lt hik
       · have hik'' : l.AreDualInSelf i k' := by
-          simp [AreDualInSelf, hik']
-          simp_all [AreDualInSelf]
+          simp only [AreDualInSelf, ne_eq, hik', not_false_eq_true, true_and]
+          simp_all only [AreDualInSelf, ne_eq, and_imp, not_lt, not_le]
         exact hk.2 k' hik''
 
 @[simp]
 lemma getDual?_neq_self (i : Fin l.length) : ¬ l.getDual? i = some i := by
   intro h
-  simp [getDual?] at h
+  simp only [getDual?] at h
   rw [Fin.find_eq_some_iff] at h
   simp [AreDualInSelf] at h
 
@@ -356,7 +356,7 @@ lemma getDual?_get_id (i : Fin l.length) (h : (l.getDual? i).isSome) :
   have h1 : l.getDual? i = some ((l.getDual? i).get h) := Option.eq_some_of_isSome h
   nth_rewrite 1 [getDual?] at h1
   rw [Fin.find_eq_some_iff] at h1
-  simp [AreDualInSelf] at h1
+  simp only [AreDualInSelf, ne_eq, and_imp] at h1
   exact h1.1.2.symm
 
 @[simp]
@@ -392,7 +392,7 @@ lemma getDualInOther?_id (i : Fin l.length) (h : (l.getDualInOther? l2 i).isSome
     Option.eq_some_of_isSome h
   nth_rewrite 1 [getDualInOther?] at h1
   rw [Fin.find_eq_some_iff] at h1
-  simp [AreDualInOther] at h1
+  simp only [AreDualInOther] at h1
   exact h1.1.symm
 
 @[simp]
@@ -415,7 +415,7 @@ lemma getDualInOther?_getDualInOther?_get_isSome (i : Fin l.length)
 @[simp]
 lemma getDualInOther?_self_isSome (i : Fin l.length) :
     (l.getDualInOther? l i).isSome := by
-  simp [getDualInOther?]
+  simp only [getDualInOther?]
   rw [@Fin.isSome_find_iff]
   exact ⟨i, rfl⟩
 
@@ -425,7 +425,7 @@ lemma getDualInOther?_getDualInOther?_get_self (i : Fin l.length) :
     some ((l.getDualInOther? l i).get (getDualInOther?_self_isSome l i)) := by
   nth_rewrite 1 [getDualInOther?]
   rw [Fin.find_eq_some_iff]
-  simp [AreDualInOther]
+  simp only [AreDualInOther, getDualInOther?_id, true_and]
   intro j hj
   have h1 := Option.eq_some_of_isSome (getDualInOther?_self_isSome l i)
   nth_rewrite 1 [getDualInOther?] at h1

@@ -89,20 +89,22 @@ lemma contrIndexList_length : l.contrIndexList.length = l.withoutDual.card := by
 @[simp]
 lemma contrIndexList_idMap (i : Fin l.contrIndexList.length) : l.contrIndexList.idMap i
     = l.idMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
-  simp [contrIndexList_eq_contrIndexList', idMap]
+  simp only [idMap, List.get_eq_getElem, contrIndexList_eq_contrIndexList', contrIndexList',
+    List.getElem_ofFn, Function.comp_apply]
   rfl
 
 @[simp]
 lemma contrIndexList_colorMap (i : Fin l.contrIndexList.length) : l.contrIndexList.colorMap i
     = l.colorMap (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1 := by
-  simp [contrIndexList_eq_contrIndexList', colorMap]
+  simp only [colorMap, List.get_eq_getElem, contrIndexList_eq_contrIndexList', contrIndexList',
+    List.getElem_ofFn, Function.comp_apply]
   rfl
 
 lemma contrIndexList_areDualInSelf (i j : Fin l.contrIndexList.length) :
     l.contrIndexList.AreDualInSelf i j ↔
     l.AreDualInSelf (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)).1
       (l.withoutDualEquiv (Fin.cast l.contrIndexList_length j)).1 := by
-  simp [AreDualInSelf]
+  simp only [AreDualInSelf, ne_eq, contrIndexList_idMap, and_congr_left_iff]
   intro _
   trans ¬ (l.withoutDualEquiv (Fin.cast l.contrIndexList_length i)) =
     (l.withoutDualEquiv (Fin.cast l.contrIndexList_length j))
@@ -151,10 +153,11 @@ lemma contrIndexList_of_withDual_empty (h : l.withDual = ∅) : l.contrIndexList
   rw [contrIndexList_length, h1]
   simp only [Finset.card_univ, Fintype.card_fin, List.get_eq_getElem, true_and]
   intro n h1' h2
-  simp [contrIndexList_eq_contrIndexList']
+  simp only [contrIndexList_eq_contrIndexList', contrIndexList', List.getElem_ofFn,
+    Function.comp_apply, List.get_eq_getElem]
   congr
-  simp [withoutDualEquiv]
-  simp [h1]
+  simp only [withoutDualEquiv, RelIso.coe_fn_toEquiv, Finset.coe_orderIsoOfFin_apply]
+  simp only [h1]
   rw [(Finset.orderEmbOfFin_unique' _
     (fun x => Finset.mem_univ ((Fin.castOrderIso _).toOrderEmbedding x))).symm]
   · exact Eq.symm (Nat.add_zero n)
@@ -167,15 +170,15 @@ lemma contrIndexList_contrIndexList : l.contrIndexList.contrIndexList = l.contrI
 @[simp]
 lemma contrIndexList_getDualInOther?_self (i : Fin l.contrIndexList.length) :
     l.contrIndexList.getDualInOther? l.contrIndexList i = some i := by
-  simp [getDualInOther?]
+  simp only [getDualInOther?]
   rw [@Fin.find_eq_some_iff]
-  simp [AreDualInOther]
+  simp only [AreDualInOther, contrIndexList_idMap, true_and]
   intro j hj
   have h1 : i = j := by
     by_contra hn
     have h : l.contrIndexList.AreDualInSelf i j := by
       simp only [AreDualInSelf]
-      simp [hj]
+      simp only [ne_eq, contrIndexList_idMap, hj, and_true]
       exact hn
     exact (contrIndexList_areDualInSelf_false l i j).mp h
   exact Fin.ge_of_eq (id (Eq.symm h1))
@@ -184,7 +187,7 @@ lemma cons_contrIndexList_of_countId_eq_zero {I : Index X}
     (h : l.countId I = 0) :
     (l.cons I).contrIndexList = l.contrIndexList.cons I := by
   apply ext
-  simp [contrIndexList, countId]
+  simp only [contrIndexList, countId, cons_val]
   rw [List.filter_cons_of_pos]
   · apply congrArg
     apply List.filter_congr
@@ -233,7 +236,7 @@ lemma mem_contrIndexList_filter {I : Index X} (h : I ∈ l.contrIndexList.val) :
   rw [List.length_eq_one] at h1
   obtain ⟨J, hJ⟩ := h1
   rw [hJ] at h2
-  simp at h2
+  simp only [List.mem_singleton] at h2
   subst h2
   exact hJ
 
@@ -279,14 +282,14 @@ lemma countId_contrIndexList_eq_one_iff_countId_eq_one (I : Index X) :
     l.contrIndexList.countId I = 1 ↔ l.countId I = 1 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l.contrIndexList I (ne_zero_of_eq_one h)
-    simp [contrIndexList] at hI1
+    simp only [contrIndexList, List.mem_filter, decide_eq_true_eq] at hI1
     rw [countId_congr l hI2]
     exact hI1.2
   · obtain ⟨I', hI1, hI2⟩ := countId_neq_zero_mem l I (ne_zero_of_eq_one h)
     rw [countId_congr l hI2] at h
     rw [countId_congr _ hI2]
     refine mem_contrIndexList_countId_contrIndexList l ?_
-    simp [contrIndexList]
+    simp only [contrIndexList, List.mem_filter, decide_eq_true_eq]
     exact ⟨hI1, h⟩
 
 lemma countId_contrIndexList_le_countId (I : Index X) :
@@ -318,7 +321,8 @@ lemma filter_id_contrIndexList_eq_of_countId_contrIndexList (I : Index X)
 lemma contrIndexList_append_eq_filter : (l ++ l2).contrIndexList.val =
     l.contrIndexList.val.filter (fun I => l2.countId I = 0) ++
     l2.contrIndexList.val.filter (fun I => l.countId I = 0) := by
-  simp [contrIndexList]
+  simp only [contrIndexList, countId_append, append_val, List.filter_append, List.filter_filter,
+    decide_eq_true_eq, Bool.decide_and]
   congr 1
   · apply List.filter_congr
     intro I hI

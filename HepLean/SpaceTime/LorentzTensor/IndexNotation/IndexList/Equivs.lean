@@ -94,7 +94,7 @@ lemma getDual?_getDualEquiv (i : l.withUniqueDual) : l.getDual? (l.getDualEquiv 
   have h1 := (Equiv.apply_symm_apply l.getDualEquiv i).symm
   nth_rewrite 2 [h1]
   nth_rewrite 2 [getDualEquiv]
-  simp
+  simp only [Equiv.coe_fn_mk, Option.some_get]
   rfl
 
 /-- An equivalence from `l.withUniqueDualInOther l2 ` to
@@ -140,7 +140,7 @@ omit [IndexNotation X] [Fintype X] in
 lemma getDualInOtherEquiv_self_refl : l.getDualInOtherEquiv l = Equiv.refl _ := by
   apply Equiv.ext
   intro x
-  simp [getDualInOtherEquiv]
+  simp only [getDualInOtherEquiv, Equiv.coe_fn_mk, Equiv.refl_apply]
   apply Subtype.eq
   simp only
   have hx2 := x.2

@@ -238,14 +238,17 @@ lemma append_val {l l2 : IndexList X} : (l ++ l2).val = l.val ++ l2.val := by
 @[simp]
 lemma idMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
     (l ++ l2).idMap (appendEquiv (Sum.inl i)) = l.idMap i := by
-  simp [appendEquiv, idMap]
+  simp only [idMap, append_val, appendEquiv, Equiv.trans_apply, finSumFinEquiv_apply_left,
+    List.get_eq_getElem]
   rw [List.getElem_append_left]
   rfl
 
 @[simp]
 lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).idMap (appendEquiv (Sum.inr i)) = l2.idMap i := by
-  simp [appendEquiv, idMap, IndexList.length]
+  simp only [idMap, append_val, length, appendEquiv, Equiv.trans_apply, finSumFinEquiv_apply_right,
+    RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, List.get_eq_getElem, Fin.coe_cast,
+    Fin.coe_natAdd]
   rw [List.getElem_append_right]
   · simp only [Nat.add_sub_cancel_left]
   · omega

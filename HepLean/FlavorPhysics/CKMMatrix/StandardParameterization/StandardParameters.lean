@@ -474,7 +474,9 @@ lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, 0, δ₁₃, 0, 0, - δ₁₃
   have hb := exp_ne_zero (I * δ₁₃)
-  simp [standParam, standParamAsMatrix, h, phaseShift, exp_neg]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, ofReal_sin, neg_mul, exp_neg, h,
+    ofReal_zero, mul_zero, zero_mul, sub_zero, zero_sub, phaseShift, phaseShiftMatrix, exp_zero,
+    mul_one, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
     simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
@@ -494,7 +496,7 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
     ↑√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2)) = ofReal (VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) := by
     rw [Real.mul_self_sqrt]
     apply add_nonneg (sq_nonneg _) (sq_nonneg _)
-  simp at h1
+  simp only [Fin.isValue, _root_.map_mul, ofReal_eq_coe, map_add, map_pow] at h1
   have hx := Vabs_sq_add_neq_zero hb
   refine eq_rows V ?_ ?_ hV.2.2.2.2
   · funext i
@@ -504,10 +506,16 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
         cons_val_fin_one, cons_val_one, head_cons, cons_val_two, tail_cons]
       rw [hV.1, VudAbs_eq_C₁₂_mul_C₁₃ ⟦V⟧]
       simp [C₁₂, C₁₃]
-    · simp [uRow, standParam, standParamAsMatrix]
+    · simp only [uRow, Fin.isValue, Fin.mk_one, cons_val_one, head_cons, standParam,
+      standParamAsMatrix, ofReal_cos, ofReal_sin, ofReal_neg, mul_neg, neg_mul, neg_neg, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd,
+      tail_cons]
       rw [hV.2.1, VusAbs_eq_S₁₂_mul_C₁₃ ⟦V⟧, ← S₁₂_eq_sin_θ₁₂ ⟦V⟧, C₁₃]
       simp only [ofReal_mul, ofReal_sin, ofReal_cos]
-    · simp [uRow, standParam, standParamAsMatrix]
+    · simp only [uRow, Fin.isValue, Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons, head_cons, standParam, standParamAsMatrix, ofReal_cos, ofReal_sin,
+      ofReal_neg, mul_neg, neg_mul, neg_neg, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
+      cons_val_one]
       nth_rewrite 1 [← abs_mul_exp_arg_mul_I (V.1 0 2)]
       rw [show Complex.abs (V.1 0 2) = VubAbs ⟦V⟧ from rfl]
       rw [VubAbs_eq_S₁₃, ← S₁₃_eq_sin_θ₁₃ ⟦V⟧]
@@ -526,10 +534,13 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
         C₂₃_of_Vub_neq_one hb', S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₁₃]
       field_simp
       rw [h1]
-      simp [sq]
+      simp only [Fin.isValue, sq]
       field_simp
       ring_nf
-    · simp [cRow, standParam, standParamAsMatrix]
+    · simp only [cRow, Fin.isValue, Fin.mk_one, cons_val_one, head_cons, standParam,
+      standParamAsMatrix, ofReal_cos, ofReal_sin, ofReal_neg, mul_neg, neg_mul, neg_neg, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd,
+      tail_cons]
       rw [C₁₂_eq_ℂcos_θ₁₂ ⟦V⟧, C₂₃_eq_ℂcos_θ₂₃ ⟦V⟧, S₁₂_eq_ℂsin_θ₁₂ ⟦V⟧,
         S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧]
       rw [C₁₂_eq_Vud_div_sqrt hb', C₂₃_of_Vub_neq_one hb', S₁₂, S₁₃, S₂₃_of_Vub_neq_one hb']
@@ -550,26 +561,38 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
 lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
     V = standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   have h1 : VubAbs ⟦V⟧ = 1 := by
-    simp [VAbs]
+    simp only [VubAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk]
     rw [hV.2.2.2.1]
     exact AbsoluteValue.map_one Complex.abs
   refine eq_rows V ?_ ?_ hV.2.2.2.2.1
   · funext i
     fin_cases i
-    · simp [uRow, standParam, standParamAsMatrix]
+    · simp only [uRow, Fin.isValue, Fin.zero_eta, cons_val_zero, standParam, standParamAsMatrix,
+      ofReal_cos, ofReal_sin, ofReal_zero, mul_zero, exp_zero, mul_one, neg_mul, cons_val',
+      empty_val', cons_val_fin_one, cons_val_one, head_cons, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.1]
       exact Eq.symm (mul_eq_zero_of_right (cos ↑(θ₁₂ ⟦V⟧)) rfl)
-    · simp [uRow, standParam, standParamAsMatrix]
+    · simp only [uRow, Fin.isValue, Fin.mk_one, cons_val_one, head_cons, standParam,
+      standParamAsMatrix, ofReal_cos, ofReal_sin, ofReal_zero, mul_zero, exp_zero, mul_one, neg_mul,
+      cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.2.1]
       exact Eq.symm (mul_eq_zero_of_right (sin ↑(θ₁₂ ⟦V⟧)) rfl)
-    · simp [uRow, standParam, standParamAsMatrix]
+    · simp only [uRow, Fin.isValue, Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons, head_cons, standParam, standParamAsMatrix, ofReal_cos, ofReal_sin,
+      ofReal_zero, mul_zero, exp_zero, mul_one, neg_mul, cons_val', cons_val_zero, empty_val',
+      cons_val_fin_one, cons_val_one]
       rw [S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₁₃]
-      simp [VAbs]
+      simp only [Fin.isValue, VubAbs, VAbs, VAbs', Quotient.lift_mk]
       rw [hV.2.2.2.1]
       simp only [_root_.map_one, ofReal_one]
   · funext i
     fin_cases i
-    · simp [cRow, standParam, standParamAsMatrix]
+    · simp only [cRow, Fin.isValue, Fin.zero_eta, cons_val_zero, standParam, standParamAsMatrix,
+      ofReal_cos, ofReal_sin, ofReal_zero, mul_zero, exp_zero, mul_one, neg_mul, cons_val',
+      empty_val', cons_val_fin_one, cons_val_one, head_cons, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons]
       rw [S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧, S₂₃_of_Vub_eq_one h1]
       rw [S₁₂_eq_ℂsin_θ₁₂ ⟦V⟧, S₁₂_of_Vub_one h1]
       rw [C₁₂_eq_ℂcos_θ₁₂ ⟦V⟧, C₁₂_of_Vub_one h1]
@@ -585,9 +608,12 @@ lemma eq_standParam_of_ubOnePhaseCond {V : CKMMatrix} (hV : ubOnePhaseCond V) :
       simp only [Fin.isValue, ofReal_one, one_mul, ofReal_zero, mul_one, VcdAbs, zero_mul, sub_zero]
       have h3 : (Real.cos (θ₂₃ ⟦V⟧) : ℂ) = √(1 - S₂₃ ⟦V⟧ ^ 2) := by
         rw [θ₂₃, Real.cos_arcsin]
-      simp at h3
+      simp only [ofReal_cos] at h3
       rw [h3, S₂₃_of_Vub_eq_one h1, hV.2.2.2.2.2.2]
-    · simp [cRow, standParam, standParamAsMatrix]
+    · simp only [cRow, Fin.isValue, Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons, head_cons, standParam, standParamAsMatrix, ofReal_cos, ofReal_sin,
+      ofReal_zero, mul_zero, exp_zero, mul_one, neg_mul, cons_val', cons_val_zero, empty_val',
+      cons_val_fin_one, cons_val_one]
       rw [C₁₃_eq_ℂcos_θ₁₃ ⟦V⟧, C₁₃_of_Vub_eq_one h1, hV.2.2.1]
       exact Eq.symm (mul_eq_zero_of_right (sin ↑(θ₂₃ ⟦V⟧)) rfl)
 
@@ -598,12 +624,12 @@ theorem exists_δ₁₃ (V : CKMMatrix) :
   by_cases ha : [V]ud ≠ 0 ∨ [V]us ≠ 0
   · have haU : [U]ud ≠ 0 ∨ [U]us ≠ 0 := by -- should be much simplier
       by_contra hn
-      simp [not_or] at hn
+      simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hn
       have hna : VudAbs ⟦U⟧ = 0 ∧ VusAbs ⟦U⟧ =0 := by
-        simp [VAbs]
+        simp only [VudAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero, VusAbs]
         exact hn
       rw [hUV] at hna
-      simp [VAbs] at hna
+      simp only [VudAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero, VusAbs] at hna
       simp_all
     have hU' := eq_standParam_of_fstRowThdColRealCond haU hU.2
     rw [hU'] at hU
@@ -611,10 +637,10 @@ theorem exists_δ₁₃ (V : CKMMatrix) :
     rw [← hUV]
     exact hU.1
   · have haU : ¬ ([U]ud ≠ 0 ∨ [U]us ≠ 0) := by -- should be much simplier
-      simp [not_or] at ha
+      simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at ha
       have h1 : VudAbs ⟦U⟧ = 0 ∧ VusAbs ⟦U⟧ = 0 := by
         rw [hUV]
-        simp [VAbs]
+        simp only [VudAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero, VusAbs]
         exact ha
       simpa [not_or, VAbs] using h1
     have ⟨U2, hU2⟩ := ubOnePhaseCond_hold_up_to_equiv_of_ub_one haU hU.2
@@ -636,7 +662,7 @@ theorem eq_standardParameterization_δ₃ (V : CKMMatrix) :
         ← hSV, δ₁₃, Invariant.mulExpδ₁₃])
     rw [h2] at hδ₃
     exact hδ₃
-  · simp at h
+  · simp only [ne_eq, Decidable.not_not] at h
     have h1 : δ₁₃ ⟦V⟧ = 0 := by
       rw [hSV, δ₁₃, h]
       exact arg_zero
