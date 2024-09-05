@@ -146,6 +146,9 @@ lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, �
     exact ((φ.apply_re_smooth 1).smul (φ.apply_re_smooth 1)).add $
       (φ.apply_im_smooth 1).smul (φ.apply_im_smooth 1)
 
+lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) (x : SpaceTime) : (ofReal a).normSq x = a := by
+  simp only [normSq, ofReal, HiggsVec.toField_apply, ha, HiggsVec.ofReal_normSq]
+
 end HiggsField
 
 end StandardModel

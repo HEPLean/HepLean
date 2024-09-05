@@ -22,6 +22,7 @@ open HiggsField
 
 noncomputable section
 
+/-! TODO: Make the potential a structure. -/
 /-- The potential of the two Higgs doublet model. -/
 def potential (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ)
     (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) (Φ1 Φ2 : HiggsField) (x : SpaceTime) : ℝ :=
@@ -87,6 +88,40 @@ lemma left_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m�
 /-- The proposition on the coefficents for a potential to be bounded. -/
 def IsBounded (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ) (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) : Prop :=
   ∃ c, ∀ Φ1 Φ2 x, c ≤ potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 Φ2 x
+
+lemma isBounded_right_zero {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    StandardModel.HiggsField.potential.IsBounded (- m₁₁2) (𝓵₁/2) := by
+  obtain ⟨c, hc⟩ := h
+  use c
+  intro Φ x
+  have hc1 :=  hc Φ 0 x
+  rw [right_zero] at hc1
+  exact hc1
+
+lemma isBounded_left_zero {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    StandardModel.HiggsField.potential.IsBounded (- m₂₂2) (𝓵₂/2) := by
+  obtain ⟨c, hc⟩ := h
+  use c
+  intro Φ x
+  have hc1 := hc 0 Φ x
+  rw [left_zero] at hc1
+  exact hc1
+
+lemma isBounded_𝓵₁_nonneg {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    0 ≤ 𝓵₁ := by
+  have h1 := isBounded_right_zero h
+  have h2 := StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  linarith
+
+lemma isBounded_𝓵₂_nonneg {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    0 ≤ 𝓵₂ := by
+  have h1 := isBounded_left_zero h
+  have h2 := StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  linarith
 
 /-! TODO: Show that if the potential is bounded then `0 ≤ 𝓵₁` and `0 ≤ 𝓵₂`. -/
 /-!
