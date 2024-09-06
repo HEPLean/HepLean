@@ -95,7 +95,7 @@ lemma isBounded_right_zero {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : 
   obtain ⟨c, hc⟩ := h
   use c
   intro Φ x
-  have hc1 :=  hc Φ 0 x
+  have hc1 := hc Φ 0 x
   rw [right_zero] at hc1
   exact hc1
 

@@ -59,6 +59,8 @@ lemma smooth_toFin2ℂ : Smooth 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) toF
 def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
   EuclideanSpace.basisFun (Fin 2) ℂ
 
+/-- Generating a Higgs vector from a real number, such that the norm-squared of that Higgs vector
+  is the given real number. -/
 def ofReal (a : ℝ) : HiggsVec :=
   ![Real.sqrt a, 0]
 
@@ -164,6 +166,8 @@ lemma isConst_of_higgsVec (φ : HiggsVec) : φ.toField.IsConst := fun _ => congr
 lemma isConst_iff_of_higgsVec (Φ : HiggsField) : Φ.IsConst ↔ ∃ (φ : HiggsVec), Φ = φ.toField :=
   Iff.intro (fun h ↦ ⟨Φ 0, by ext x y; rw [← h x 0]; rfl⟩) (fun ⟨φ, hφ⟩ x y ↦ by subst hφ; rfl)
 
+/-- Generating a constant Higgs field from a real number, such that the norm-squared of that Higgs
+  vector is the given real number. -/
 def ofReal (a : ℝ) : HiggsField := (HiggsVec.ofReal a).toField
 
 end HiggsField

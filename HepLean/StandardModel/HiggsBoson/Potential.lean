@@ -76,7 +76,8 @@ lemma discrim_nonneg (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 ≠ 0) (φ : HiggsField)
     exact sq_nonneg (2 * 𝓵 * ‖φ‖_H ^ 2 x + - μ2)
   · exact h
 
-lemma discrim_eq_sqrt_discrim_mul_self (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
+lemma discrim_eq_sqrt_discrim_mul_self (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 ≠ 0) (φ : HiggsField)
+    (x : SpaceTime) :
     discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x) = Real.sqrt (discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x)) *
       Real.sqrt (discrim 𝓵 (- μ2) (- potential μ2 𝓵 φ x)) := by
   refine Eq.symm (Real.mul_self_sqrt ?h)
@@ -134,7 +135,7 @@ lemma discrim_ge_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (c : �
     ← (div_le_iff₀' (by linarith : 0 < - 4 * 𝓵)), le_neg]
   ring_nf
 
-example (a b c : ℝ ) (hc : c < 0) :  a ≤ b / c ↔ b ≤ c * a := by
+example (a b c : ℝ) (hc : c < 0) : a ≤ b / c ↔ b ≤ c * a := by
   exact le_div_iff_of_neg' hc
 lemma pot_le_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (φ : HiggsField) (x : SpaceTime) :
     (0 < μ2 ∧ potential μ2 𝓵 φ x ≤ 0) ∨ μ2 ≤ 0 := by
@@ -142,7 +143,7 @@ lemma pot_le_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (φ : Higg
   · simp [hμ2]
   simp [potential, hμ2]
   apply And.intro (lt_of_not_ge hμ2)
-  have h1 : 0 ≤  μ2 * ‖φ x‖ ^ 2 := by
+  have h1 : 0 ≤ μ2 * ‖φ x‖ ^ 2 := by
     refine Left.mul_nonneg ?ha ?hb
     · exact le_of_not_ge hμ2
     · exact sq_nonneg ‖φ x‖
@@ -198,7 +199,8 @@ lemma exist_sol_iff_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h𝓵 : 𝓵 < 0) (c :
         rw [← le_div_iff_of_neg']
         · exact h.2
         · linarith
-    have hdd : discrim 𝓵 (-μ2) (-c) = Real.sqrt (discrim 𝓵 (-μ2) (-c)) * Real.sqrt (discrim 𝓵 (-μ2) (-c)) := by
+    have hdd : discrim 𝓵 (-μ2) (-c) = Real.sqrt (discrim 𝓵 (-μ2) (-c))
+        * Real.sqrt (discrim 𝓵 (-μ2) (-c)) := by
       exact (Real.mul_self_sqrt hd).symm
     refine (quadratic_eq_zero_iff (ne_of_gt h𝓵).symm hdd _).mpr ?_
     simp only [neg_neg, or_true, a]
@@ -258,8 +260,6 @@ lemma isBounded_𝓵_nonneg {μ2 𝓵 : ℝ} (h : IsBounded μ2 𝓵) :
       rw [hφ] at hc2
       linarith
 
-
-
 section lowerBound
 /-!
 
@@ -309,7 +309,6 @@ variable (h𝓵 : 0 < 𝓵)
 ## Minima of potential
 
 -/
-
 
 include h𝓵
 lemma normSq_of_eq_bound (φ : HiggsField) (x : SpaceTime)
