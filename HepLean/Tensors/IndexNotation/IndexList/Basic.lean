@@ -128,7 +128,7 @@ def toPosSetEquiv (l : IndexList X) : l.toPosSet ≃ Fin l.length where
   invFun := fun x => ⟨(x, l.val.get x), by simp [toPosSet]⟩
   left_inv x := by
     have hx := x.prop
-    simp [toPosSet] at hx
+    simp only [toPosSet, List.get_eq_getElem, Set.mem_setOf_eq] at hx
     simp only [List.get_eq_getElem]
     obtain ⟨i, hi⟩ := hx
     have hi2 : i = x.1.1 := by
@@ -188,8 +188,7 @@ lemma cons_append (i : Index X) : (l.cons i) ++ l2 = (l ++ l2).cons i := by
 omit [IndexNotation X] [Fintype X] [DecidableEq X]
 @[simp]
 lemma append_length : (l ++ l2).length = l.length + l2.length := by
-  simp [IndexList.length]
-  exact List.length_append l.val l2.val
+  simpa only [length] using List.length_append l.val l2.val
 
 lemma append_assoc : l ++ l2 ++ l3 = l ++ (l2 ++ l3) := by
   apply ext
@@ -206,7 +205,7 @@ def appendInl : Fin l.length ↪ Fin (l ++ l2).length where
   toFun := appendEquiv ∘ Sum.inl
   inj' := by
     intro i j h
-    simp [Function.comp] at h
+    simp only [Function.comp, EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq] at h
     exact h
 
 /-- The inclusion of the indices of `l2` into the indices of `l ++ l2`. -/
@@ -255,7 +254,9 @@ lemma idMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
 @[simp]
 lemma colorMap_append_inl {l l2 : IndexList X} (i : Fin l.length) :
     (l ++ l2).colorMap (appendEquiv (Sum.inl i)) = l.colorMap i := by
-  simp [appendEquiv, colorMap, IndexList.length]
+  simp only [colorMap, append_val, length, appendEquiv, Equiv.trans_apply,
+    finSumFinEquiv_apply_left, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, List.get_eq_getElem,
+    Fin.coe_cast, Fin.coe_castAdd]
   rw [List.getElem_append_left]
 
 @[simp]
@@ -267,7 +268,9 @@ lemma colorMap_append_inl' :
 @[simp]
 lemma colorMap_append_inr {l l2 : IndexList X} (i : Fin l2.length) :
     (l ++ l2).colorMap (appendEquiv (Sum.inr i)) = l2.colorMap i := by
-  simp [appendEquiv, colorMap, IndexList.length]
+  simp only [colorMap, append_val, length, appendEquiv, Equiv.trans_apply,
+    finSumFinEquiv_apply_right, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, List.get_eq_getElem,
+    Fin.coe_cast, Fin.coe_natAdd]
   rw [List.getElem_append_right]
   · simp only [Nat.add_sub_cancel_left]
   · omega
@@ -299,17 +302,16 @@ end append
 lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [DecidablePred p] :
     List.filter p (Finset.sort (fun i j => i ≤ j) s) =
     Finset.sort (fun i j => i ≤ j) (Finset.filter p s) := by
-  simp [Finset.filter, Finset.sort]
+  simp only [Finset.sort, Finset.filter]
   have : ∀ (m : Multiset (Fin n)), List.filter p (Multiset.sort (fun i j => i ≤ j) m) =
       Multiset.sort (fun i j => i ≤ j) (Multiset.filter p m) := by
     apply Quot.ind
     intro m
-    simp [List.mergeSort]
+    simp only [Multiset.quot_mk_to_coe'', Multiset.coe_sort, Multiset.filter_coe]
     have h1 : List.Sorted (fun i j => i ≤ j) (List.filter (fun b => decide (p b))
         (List.mergeSort (fun i j => i ≤ j) m)) := by
-      simp [List.Sorted]
-      rw [List.pairwise_filter]
-      rw [@List.pairwise_iff_get]
+      simp only [List.Sorted]
+      rw [List.pairwise_filter, List.pairwise_iff_get]
       intro i j h1 _ _
       have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
         exact List.sorted_mergeSort (fun i j => i ≤ j) m

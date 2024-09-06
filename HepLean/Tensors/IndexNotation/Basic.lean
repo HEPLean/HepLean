@@ -123,7 +123,7 @@ lemma eq_iff_color_eq_and_id_eq (I J : Index X) : I = J ↔ I.toColor = J.toColo
   refine Iff.intro (fun h => Prod.mk.inj_iff.mp h) (fun h => ?_)
   · cases I
     cases J
-    simp [toColor, id] at h
+    simp only [toColor, id] at h
     simp [h]
 
 end Index
@@ -154,7 +154,8 @@ def head (s : IndexRep X) : charList X :=
   ⟨s.val.toList.head (s.prop.2), by
     have h := s.prop.1
     have h2 := s.prop.2
-    simp [listCharIndex] at h
+    simp only [listCharIndex, toList, Bool.not_eq_true, ne_eq, if_false_left,
+      Bool.not_eq_false] at h
     simp_all only [toList, ne_eq, Bool.not_eq_true, ↓reduceDIte]
     simpa [isNotationChar] using h.1⟩
 

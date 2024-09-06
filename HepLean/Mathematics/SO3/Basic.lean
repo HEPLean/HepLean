@@ -188,7 +188,7 @@ lemma exists_basis_preserved (A : SO(3)) :
   have h3 : FiniteDimensional.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
     simp_all only [toEnd_apply, finrank_euclideanSpace, Fintype.card_fin]
   obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
-  simp at hb
+  simp only [Fin.isValue, Set.mem_singleton_iff, forall_eq] at hb
   use b
   rw [hb, hv.2]
 

@@ -48,7 +48,7 @@ noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (CovariantLorentzVect
 lemma decomp_stdBasis (v : CovariantLorentzVector d) : ∑ i, v i • stdBasis i = v := by
   funext ν
   rw [Finset.sum_apply, Finset.sum_eq_single_of_mem ν]
-  · simp [HSMul.hSMul, SMul.smul, stdBasis, Pi.basisFun_apply]
+  · simp only [HSMul.hSMul, SMul.smul, stdBasis]
     erw [Pi.basisFun_apply]
     simp only [Pi.single_eq_same, mul_one]
   · exact Finset.mem_univ ν
