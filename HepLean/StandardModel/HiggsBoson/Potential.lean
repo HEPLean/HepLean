@@ -89,7 +89,8 @@ lemma eq_zero_at (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 ≠ 0) (φ : HiggsField) (x 
   rw [hV] at h1
   have h2 : ‖φ‖_H ^ 2 x * (𝓵 * ‖φ‖_H ^ 2 x + - μ2) = 0 := by
     linear_combination h1
-  simp at h2
+  simp only [normSq, mul_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
+    norm_eq_zero] at h2
   cases' h2 with h2 h2
   · simp_all
   · apply Or.inr
@@ -139,7 +140,7 @@ lemma pot_le_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (φ : Higg
     (0 < μ2 ∧ potential μ2 𝓵 φ x ≤ 0) ∨ μ2 ≤ 0 := by
   by_cases hμ2 : μ2 ≤ 0
   · simp [hμ2]
-  simp [potential, hμ2]
+  simp only [potential, normSq, neg_mul, neg_add_le_iff_le_add, add_zero, hμ2, or_false]
   apply And.intro (lt_of_not_ge hμ2)
   have h1 : 0 ≤ μ2 * ‖φ x‖ ^ 2 := by
     refine Left.mul_nonneg ?ha ?hb
@@ -163,7 +164,7 @@ lemma exist_sol_iff_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h𝓵 : 𝓵 < 0) (c :
     ring_nf
     let a := (μ2 - Real.sqrt (discrim 𝓵 (- μ2) (- c))) / (2 * 𝓵)
     have ha : 0 ≤ a := by
-      simp [a, discrim]
+      simp only [discrim, even_two, Even.neg_pow, mul_neg, sub_neg_eq_add, a]
       rw [div_nonneg_iff]
       refine Or.inr (And.intro ?_ ?_)
       · rw [sub_nonpos]
@@ -188,7 +189,7 @@ lemma exist_sol_iff_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h𝓵 : 𝓵 < 0) (c :
     trans 𝓵 * a * a + (- μ2) * a + (- c)
     · ring
     have hd : 0 ≤ (discrim 𝓵 (-μ2) (-c)) := by
-      simp [discrim]
+      simp only [discrim, even_two, Even.neg_pow, mul_neg, sub_neg_eq_add]
       rcases h with h | h
       · refine Left.add_nonneg (sq_nonneg μ2) ?_
         refine mul_nonneg_of_nonpos_of_nonpos ?_ h.2
@@ -216,7 +217,7 @@ def IsBounded (μ2 𝓵 : ℝ) : Prop :=
 lemma isBounded_𝓵_nonneg {μ2 𝓵 : ℝ} (h : IsBounded μ2 𝓵) :
     0 ≤ 𝓵 := by
   by_contra hl
-  simp at hl
+  rw [not_le] at hl
   obtain ⟨c, hc⟩ := h
   by_cases hμ : μ2 ≤ 0
   · by_cases hcz : c ≤ -μ2 ^ 2 / (4 * 𝓵)
@@ -229,7 +230,7 @@ lemma isBounded_𝓵_nonneg {μ2 𝓵 : ℝ} (h : IsBounded μ2 𝓵) :
       have hc2 := hc φ x
       rw [hφ] at hc2
       linarith
-    · simp at hcz
+    · rw [not_le] at hcz
       have hcm1 : ∃ φ x, potential μ2 𝓵 φ x = -μ2 ^ 2 / (4 * 𝓵) - 1 := by
         rw [propext (exist_sol_iff_of_neg_𝓵 μ2 hl _)]
         apply Or.inr
@@ -238,7 +239,7 @@ lemma isBounded_𝓵_nonneg {μ2 𝓵 : ℝ} (h : IsBounded μ2 𝓵) :
       have hc2 := hc φ x
       rw [hφ] at hc2
       linarith
-  · simp at hμ
+  · rw [not_le] at hμ
     by_cases hcz : c ≤ 0
     · have hcm1 : ∃ φ x, potential μ2 𝓵 φ x = c - 1 := by
         rw [propext (exist_sol_iff_of_neg_𝓵 μ2 hl (c - 1))]

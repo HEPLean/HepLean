@@ -53,16 +53,15 @@ lemma colormap_mapIso {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList
     ColorMap.MapIso (Fin.castOrderIso (congrArg IndexList.length (congrArg toIndexList hi))).toEquiv
     T₁.colorMap' T₂.colorMap' := by
   cases T₁; cases T₂
-  simp [ColorMap.MapIso]
-  simp at hi
+  simp only [ColorMap.MapIso, RelIso.coe_fn_toEquiv]
+  simp only at hi
   rename_i a b c d
   cases a
   cases c
   rename_i a1 a2 a3 a4 a5 a6
   cases a1
   cases a4
-  simp_all
-  simp at hi
+  simp only [ColorIndexList.mk.injEq, IndexList.mk.injEq] at hi
   subst hi
   rfl
 
@@ -71,9 +70,9 @@ lemma ext {T₁ T₂ : 𝓣.TensorIndex} (hi : T₁.toColorIndexList = T₂.toCo
     (h : T₁.tensor = 𝓣.mapIso (Fin.castOrderIso (by simp [IndexList.length, hi])).toEquiv
     (colormap_mapIso hi.symm) T₂.tensor) : T₁ = T₂ := by
   cases T₁; cases T₂
-  simp at h
+  simp only at h
   simp_all
-  simp at hi
+  simp only at hi
   subst hi
   simp_all
 
@@ -98,7 +97,7 @@ lemma tensor_eq_of_eq {T₁ T₂ : 𝓣.TensorIndex} (h : T₁ = T₂) :
   have hi := index_eq_of_eq h
   cases T₁
   cases T₂
-  simp at hi
+  simp only at hi
   subst hi
   simpa using h
 
@@ -269,7 +268,10 @@ lemma of_withDual_empty {T₁ T₂ : 𝓣.TensorIndex} (h : T₁.ContrPerm T₂)
   apply congrArg
   apply mapIso_ext
   ext i
-  simp [permEquiv, contrPermEquiv]
+  simp only [permEquiv, Equiv.trans_apply, Equiv.symm_trans_apply, Equiv.symm_symm,
+    IndexList.getDualInOtherEquiv_symm, Equiv.subtypeUnivEquiv_symm_apply,
+    Equiv.subtypeUnivEquiv_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast,
+    contrPermEquiv]
   have hn := congrArg (fun x => x.toIndexList) (contr_of_withDual_empty T₁ h1)
   have hn2 := congrArg (fun x => x.toIndexList) (contr_of_withDual_empty T₂ h2)
   simp only [contr_toColorIndexList] at hn hn2

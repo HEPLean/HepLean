@@ -158,7 +158,8 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
     ∃ (g : GaugeGroup), rep g φ = ![0, Complex.ofReal ‖φ‖] := by
   by_cases h : φ = 0
   · use ⟨1, 1, 1⟩
-    simp [h]
+    simp only [Prod.mk_one_one, _root_.map_one, h, map_zero, Nat.succ_eq_add_one, Nat.reduceAdd,
+      norm_zero]
     ext i
     fin_cases i <;> rfl
   · use rotateGuageGroup h

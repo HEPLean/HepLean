@@ -512,8 +512,14 @@ lemma filter_id_of_countId_eq_two {i : Fin l.length}
       · simpa using Fin.ne_of_lt hi
       · intro a b
         fin_cases a, b
-          <;> simp [hi]
-        exact Fin.le_of_lt hi
+        · simp [hi]
+        · simp only [List.get_eq_getElem, List.length_cons, List.length_singleton, Nat.reduceAdd,
+          List.length_nil, Fin.zero_eta, Fin.isValue, Function.Embedding.coeFn_mk,
+          Matrix.cons_val_zero, Fin.mk_one, Matrix.cons_val_one, Matrix.head_cons, Fin.zero_le,
+          iff_true]
+          exact Fin.le_of_lt hi
+        · simp [hi]
+        · simp [hi]
       · intro a
         fin_cases a <;> rfl
     · rw [hc]

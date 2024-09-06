@@ -35,22 +35,22 @@ lemma shift_ud_phase_zero (V : CKMMatrix) (h1 : u + d = - arg [V]ud) :
   rw [← abs_mul_exp_arg_mul_I [V]ud]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg (V.1 0 0)) * I + (↑u * I + ↑d * I) = ↑(arg (V.1 0 0) + (u + d)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VudAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_us_phase_zero {V : CKMMatrix} (h1 : u + s = - arg [V]us) :
     [phaseShiftApply V u c t d s b]us = VusAbs ⟦V⟧ := by
-  rw [phaseShiftApply.us]
-  rw [← abs_mul_exp_arg_mul_I [V]us]
-  rw [mul_comm, mul_assoc, ← exp_add]
+  rw [phaseShiftApply.us, ← abs_mul_exp_arg_mul_I [V]us, mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]us) * I + (↑u * I + ↑s * I) = ↑(arg [V]us + (u + s)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VusAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_ub_phase_zero {V : CKMMatrix} (h1 : u + b = - arg [V]ub) :
@@ -59,7 +59,7 @@ lemma shift_ub_phase_zero {V : CKMMatrix} (h1 : u + b = - arg [V]ub) :
   rw [← abs_mul_exp_arg_mul_I [V]ub]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]ub) * I + (↑u * I + ↑b * I) = ↑(arg [V]ub + (u + b)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
   simp

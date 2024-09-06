@@ -88,21 +88,21 @@ lemma inl (h : (l ++ l2).OnlyUniqueDuals) : l.OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
   intro I
   have hI := h I
-  simp at hI
+  rw [countId_append] at hI
   exact Nat.le_of_add_right_le hI
 
 lemma inr (h : (l ++ l2).OnlyUniqueDuals) : l2.OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
   intro I
   have hI := h I
-  simp at hI
+  rw [countId_append] at hI
   exact le_of_add_le_right hI
 
 lemma symm' (h : (l ++ l2).OnlyUniqueDuals) : (l2 ++ l).OnlyUniqueDuals := by
   rw [iff_countId_leq_two'] at h ⊢
   intro I
   have hI := h I
-  simp at hI
+  rw [countId_append] at hI
   simp only [countId_append, ge_iff_le]
   omega
 
@@ -113,7 +113,7 @@ lemma swap (h : (l ++ l2 ++ l3).OnlyUniqueDuals) : (l2 ++ l ++ l3).OnlyUniqueDua
   rw [iff_countId_leq_two'] at h ⊢
   intro I
   have hI := h I
-  simp at hI
+  simp only [countId_append] at hI
   simp only [countId_append, ge_iff_le]
   omega
 
@@ -168,7 +168,7 @@ lemma countId_eq_two_ofcontrIndexList_left_of_OnlyUniqueDuals
   simp only [countId_append]
   have h1 := countId_contrIndexList_le_countId l I
   have h3 := countId_of_OnlyUniqueDuals _ h I
-  simp at h3 h'
+  simp only [countId_append] at h3 h'
   omega
 
 end IndexList
