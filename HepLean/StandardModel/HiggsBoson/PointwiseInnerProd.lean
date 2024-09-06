@@ -135,17 +135,17 @@ lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
 
 @[simp]
 lemma normSq_apply_im_zero (φ : HiggsField) (x : SpaceTime) :
-      ((Complex.ofReal' ‖φ x‖) ^ 2).im = 0 := by
-    rw [sq]
-    simp only [Complex.ofReal_eq_coe, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-      mul_zero, zero_mul, add_zero]
+    ((Complex.ofReal' ‖φ x‖) ^ 2).im = 0 := by
+  rw [sq]
+  simp only [Complex.ofReal_eq_coe, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+    mul_zero, zero_mul, add_zero]
 
 @[simp]
 lemma normSq_apply_re_self (φ : HiggsField) (x : SpaceTime) :
-      ((Complex.ofReal' ‖φ x‖) ^ 2).re = φ.normSq x := by
-    rw [sq]
-    simp only [mul_re, ofReal_re, ofReal_im, mul_zero, sub_zero, normSq]
-    exact Eq.symm (pow_two ‖φ x‖)
+    ((Complex.ofReal' ‖φ x‖) ^ 2).re = φ.normSq x := by
+  rw [sq]
+  simp only [mul_re, ofReal_re, ofReal_im, mul_zero, sub_zero, normSq]
+  exact Eq.symm (pow_two ‖φ x‖)
 
 lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
     ‖φ x‖ = ‖φ.toHiggsVec x‖ := rfl
