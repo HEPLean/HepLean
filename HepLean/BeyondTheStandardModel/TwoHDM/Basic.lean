@@ -77,13 +77,53 @@ lemma left_zero : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m�
     StandardModel.HiggsField.potential (- m₂₂2) (𝓵₂/2) Φ2 := by
   rw [swap_fields, right_zero]
 
+/-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
+lemma neg_left : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ (- Φ1) Φ2
+    = potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ (- m₁₂2) 𝓵₅ (- 𝓵₆) (- 𝓵₇) Φ1 Φ2 := by
+  funext x
+  simp only [potential, normSq, ContMDiffSection.coe_neg, Pi.neg_apply, norm_neg,
+    innerProd_neg_left, mul_neg, innerProd_neg_right, Complex.add_re, Complex.neg_re,
+    Complex.mul_re, neg_sub, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, neg_add_rev,
+    one_div, Complex.norm_eq_abs, even_two, Even.neg_pow, Complex.inv_re, Complex.re_ofNat,
+    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
+    zero_mul, sub_zero, Complex.mul_im, add_zero, Complex.ofReal_pow, map_neg]
+
+/-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
+lemma neg_right : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 (- Φ2)
+    = potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ (- m₁₂2) 𝓵₅ (- 𝓵₆) (- 𝓵₇) Φ1 Φ2 := by
+  rw [swap_fields, neg_left, swap_fields]
+  simp only [map_neg, RingHomCompTriple.comp_apply, RingHom.id_apply]
+
+lemma left_eq_right : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 Φ1 =
+    StandardModel.HiggsField.potential (- m₁₁2 - m₂₂2 + 2 * m₁₂2.re)
+    (𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re + 2 * 𝓵₆.re + 2 * 𝓵₇.re) Φ1 := by
+  funext x
+  simp only [potential, normSq, innerProd_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
+    Complex.mul_re, normSq_apply_re_self, normSq_apply_im_zero, mul_zero, sub_zero, Complex.conj_re,
+    Complex.conj_im, one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re,
+    Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat,
+    neg_zero, zero_div, zero_mul, Complex.mul_im, add_zero, mul_neg, neg_mul, sub_neg_eq_add,
+    sub_add_add_cancel, zero_add, HiggsField.potential, neg_add_rev, neg_sub]
+  ring_nf
+  erw [show ((Complex.ofReal ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
+    erw [← Complex.ofReal_pow]; rfl]
+  ring
+
+lemma left_eq_neg_right : potential m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ Φ1 (- Φ1) =
+    StandardModel.HiggsField.potential (- m₁₁2 - m₂₂2 - 2 * m₁₂2.re)
+    (𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re - 2 * 𝓵₆.re - 2 * 𝓵₇.re) Φ1 := by
+  rw [neg_right, left_eq_right]
+  simp_all only [Complex.neg_re, mul_neg]
+  rfl
+
 /-!
 
 ## Potential bounded from below
 
 -/
 
-/-! TODO: Prove bounded properties of the 2HDM potential. -/
+/-! TODO: Prove bounded properties of the 2HDM potential.
+  See e.g. https://inspirehep.net/literature/201299. -/
 
 /-- The proposition on the coefficents for a potential to be bounded. -/
 def IsBounded (m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ) (m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ) : Prop :=
@@ -122,6 +162,32 @@ lemma isBounded_𝓵₂_nonneg {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵�
   have h1 := isBounded_left_zero h
   have h2 := StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
   linarith
+
+lemma isBounded_of_left_eq_right {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    0 ≤ 𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re + 2 * 𝓵₆.re + 2 * 𝓵₇.re := by
+  obtain ⟨c, hc⟩ := h
+  have h1 : StandardModel.HiggsField.potential.IsBounded (- m₁₁2 - m₂₂2 + 2 * m₁₂2.re)
+    (𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re + 2 * 𝓵₆.re + 2 * 𝓵₇.re) := by
+    use c
+    intro Φ x
+    have hc1 := hc Φ Φ x
+    rw [left_eq_right] at hc1
+    exact hc1
+  exact StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+
+lemma isBounded_of_left_eq_neg_right {m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ : ℝ} {m₁₂2 𝓵₅ 𝓵₆ 𝓵₇ : ℂ}
+    (h : IsBounded m₁₁2 m₂₂2 𝓵₁ 𝓵₂ 𝓵₃ 𝓵₄ m₁₂2 𝓵₅ 𝓵₆ 𝓵₇) :
+    0 ≤ 𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re - 2 * 𝓵₆.re - 2 * 𝓵₇.re := by
+  obtain ⟨c, hc⟩ := h
+  have h1 : StandardModel.HiggsField.potential.IsBounded (- m₁₁2 - m₂₂2 - 2 * m₁₂2.re)
+    (𝓵₁/2 + 𝓵₂/2 + 𝓵₃ + 𝓵₄ + 𝓵₅.re - 2 * 𝓵₆.re - 2 * 𝓵₇.re) := by
+    use c
+    intro Φ x
+    have hc1 := hc Φ (- Φ) x
+    rw [left_eq_neg_right] at hc1
+    exact hc1
+  exact StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
 
 /-! TODO: Show that if the potential is bounded then `0 ≤ 𝓵₁` and `0 ≤ 𝓵₂`. -/
 /-!
