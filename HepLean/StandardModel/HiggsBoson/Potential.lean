@@ -135,8 +135,6 @@ lemma discrim_ge_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (c : �
     ← (div_le_iff₀' (by linarith : 0 < - 4 * 𝓵)), le_neg]
   ring_nf
 
-example (a b c : ℝ) (hc : c < 0) : a ≤ b / c ↔ b ≤ c * a := by
-  exact le_div_iff_of_neg' hc
 lemma pot_le_zero_of_neg_𝓵 (μ2 : ℝ) {𝓵 : ℝ} (h : 𝓵 < 0) (φ : HiggsField) (x : SpaceTime) :
     (0 < μ2 ∧ potential μ2 𝓵 φ x ≤ 0) ∨ μ2 ≤ 0 := by
   by_cases hμ2 : μ2 ≤ 0
