@@ -35,7 +35,7 @@ open SpaceTime
 
 /-- Given two `HiggsField`, the map `SpaceTime → ℂ` obtained by taking their pointwise
   inner product. -/
-def innerProd (φ1 φ2 : HiggsField) : SpaceTime → ℂ := fun x => ⟪φ1 x, φ2 x⟫_ℂ
+def innerProd (φ1 φ2 : HiggsField) : (SpaceTime → ℂ) := fun x => ⟪φ1 x, φ2 x⟫_ℂ
 
 /-- Notation for the inner product of two Higgs fields. -/
 scoped[StandardModel.HiggsField] notation "⟪" φ1 "," φ2 "⟫_H" => innerProd φ1 φ2
@@ -45,6 +45,16 @@ scoped[StandardModel.HiggsField] notation "⟪" φ1 "," φ2 "⟫_H" => innerProd
 ## Properties of the inner product
 
 -/
+
+@[simp]
+lemma innerProd_neg_left (φ1 φ2 : HiggsField) : ⟪- φ1, φ2⟫_H = -⟪φ1, φ2⟫_H := by
+  funext x
+  simp [innerProd]
+
+@[simp]
+lemma innerProd_neg_right (φ1 φ2 : HiggsField) : ⟪φ1, - φ2⟫_H = -⟪φ1, φ2⟫_H := by
+  funext x
+  simp [innerProd]
 
 @[simp]
 lemma innerProd_left_zero (φ : HiggsField) : ⟪0, φ⟫_H = 0 := by
@@ -105,6 +115,7 @@ scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H ^ 2" => normSq φ1
 
 -/
 
+@[simp]
 lemma innerProd_self_eq_normSq (φ : HiggsField) (x : SpaceTime) :
     ⟪φ, φ⟫_H x = ‖φ‖_H ^ 2 x := by
   erw [normSq, @PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
@@ -121,6 +132,20 @@ lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
 # Properties of the norm squared
 
 -/
+
+@[simp]
+lemma normSq_apply_im_zero (φ : HiggsField) (x : SpaceTime) :
+    ((Complex.ofReal' ‖φ x‖) ^ 2).im = 0 := by
+  rw [sq]
+  simp only [Complex.ofReal_eq_coe, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+    mul_zero, zero_mul, add_zero]
+
+@[simp]
+lemma normSq_apply_re_self (φ : HiggsField) (x : SpaceTime) :
+    ((Complex.ofReal' ‖φ x‖) ^ 2).re = φ.normSq x := by
+  rw [sq]
+  simp only [mul_re, ofReal_re, ofReal_im, mul_zero, sub_zero, normSq]
+  exact Eq.symm (pow_two ‖φ x‖)
 
 lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
     ‖φ x‖ = ‖φ.toHiggsVec x‖ := rfl
@@ -145,6 +170,9 @@ lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, �
   · simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
     exact ((φ.apply_re_smooth 1).smul (φ.apply_re_smooth 1)).add $
       (φ.apply_im_smooth 1).smul (φ.apply_im_smooth 1)
+
+lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) (x : SpaceTime) : (ofReal a).normSq x = a := by
+  simp only [normSq, ofReal, HiggsVec.toField_apply, ha, HiggsVec.ofReal_normSq]
 
 end HiggsField
 
