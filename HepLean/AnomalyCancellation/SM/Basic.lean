@@ -87,13 +87,15 @@ def accGrav : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [Pi.add_apply, mul_add]
+    simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
+      Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
+      eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -117,13 +119,15 @@ def accSU2 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [Pi.add_apply, mul_add]
+    simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
+      Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
+      eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -146,13 +150,15 @@ def accSU3 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [Pi.add_apply, mul_add]
+    simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
+      Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
+      eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -177,16 +183,17 @@ def accYY : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [Pi.add_apply, mul_add]
+    simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
+      Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
+      eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
-    --rw [show Rat.cast a = a from rfl]
     ring
 
 /-- Extensionality lemma for `accYY`. -/
@@ -215,7 +222,7 @@ def quadBiLin : BiLinearSymm (SMCharges n).Charges := BiLinearSymm.mk₂
     apply Fintype.sum_congr
     intro i
     repeat erw [map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue, neg_mul, one_mul]
     ring)
   (by
     intro S1 S2 T

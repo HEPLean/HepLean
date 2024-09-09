@@ -35,7 +35,8 @@ lemma jarlskogℂCKM_equiv (V U : CKMMatrix) (h : V ≈ U) :
   rw [h]
   simp only [jarlskogℂCKM, Fin.isValue, phaseShiftApply.ub,
   phaseShiftApply.us, phaseShiftApply.cb, phaseShiftApply.cs]
-  simp [← exp_conj, conj_ofReal, exp_add, exp_neg]
+  simp only [exp_add, Fin.isValue, _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg,
+    exp_neg]
   have ha : cexp (↑a * I) ≠ 0 := exp_ne_zero _
   have hb : cexp (↑b * I) ≠ 0 := exp_ne_zero _
   have hf : cexp (↑f * I) ≠ 0 := exp_ne_zero _

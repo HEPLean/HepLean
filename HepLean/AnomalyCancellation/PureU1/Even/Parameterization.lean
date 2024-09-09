@@ -129,7 +129,7 @@ theorem generic_case {S : (PureU1 (2 * n.succ)).Sols} (h : GenericCase S) :
   · exact hS
   · have h := h g f hS
     rw [anomalyFree_param _ _ hS] at h
-    simp at h
+    simp only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, ne_eq, neg_eq_zero] at h
     exact h
 
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
@@ -141,10 +141,9 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
   have h := h g f hS
   rw [accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
     accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-    accCubeTriLinSymm.map_smul₃]
-  rw [h]
+    accCubeTriLinSymm.map_smul₃, h]
   rw [anomalyFree_param _ _ hS] at h
-  simp at h
+  simp only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, neg_eq_zero] at h
   change accCubeTriLinSymm (P! f) (P! f) (P g) = 0 at h
   erw [h]
   simp

@@ -48,7 +48,7 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
   have h3 : ∀ i, g (Sum.inl i) = 0 := hB1 (fun i => (g (Sum.inl i))) h2
   rw [h2] at hg
   have h4 : ∀ i, - g (Sum.inr i) = 0 := hE1 (fun i => (- g (Sum.inr i))) hg.symm
-  simp at h4
+  simp only [neg_eq_zero] at h4
   intro i
   match i with
   | Sum.inl i => exact h3 i
@@ -57,7 +57,7 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
 theorem plane_exists_dim_le_7 {n : ℕ} (hn : ExistsPlane n) : n ≤ 7 := by
   obtain ⟨B, hB⟩ := exists_plane_exists_basis hn
   have h1 := LinearIndependent.fintype_card_le_finrank hB
-  simp at h1
+  simp only [Fintype.card_sum, Fintype.card_fin] at h1
   rw [show FiniteDimensional.finrank ℚ (PlusU1 3).Charges = 18 from
     FiniteDimensional.finrank_fin_fun ℚ] at h1
   exact Nat.le_of_add_le_add_left h1

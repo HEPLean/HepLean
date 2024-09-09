@@ -53,7 +53,7 @@ lemma sort_zero {n : ℕ} (S : (PureU1 n).Charges) (hS : sort S = 0) : S = 0 := 
     rfl
   have hi := hj ((Tuple.sort S).invFun i)
   rw [sort_apply] at hi
-  simp at hi
+  simp only [PureU1_numberCharges, Equiv.invFun_as_coe, Equiv.apply_symm_apply] at hi
   rw [hi]
   rfl
 
