@@ -26,9 +26,7 @@ namespace PureU1
 @[simp]
 def PermGroup (n : ℕ) := Equiv.Perm (Fin n)
 
-instance {n : ℕ} : Group (PermGroup n) := by
-  simp [PermGroup]
-  infer_instance
+instance {n : ℕ} : Group (PermGroup n) := Equiv.Perm.permGroup
 
 section Charges
 
@@ -74,12 +72,12 @@ def FamilyPermutations (n : ℕ) : ACCSystemGroupAction (PureU1 n) where
   rep := permCharges
   linearInvariant := by
     intro i
-    simp at i
+    simp only [PureU1_numberLinear] at i
     match i with
     | 0 => exact accGrav_invariant
   quadInvariant := by
     intro i
-    simp at i
+    simp only [PureU1_numberQuadratic] at i
     exact Fin.elim0 i
   cubicInvariant := accCube_invariant
 
@@ -134,7 +132,7 @@ lemma pairSwap_inv_snd {n : ℕ} (i j : Fin n) : (pairSwap i j).invFun j = i := 
 
 lemma pairSwap_other {n : ℕ} (i j k : Fin n) (hik : i ≠ k) (hjk : j ≠ k) :
     (pairSwap i j).toFun k = k := by
-  simp [pairSwap]
+  simp only [pairSwap, Equiv.toFun_as_coe, Equiv.coe_fn_mk]
   split
   · rename_i h
     exact False.elim (hik (id (Eq.symm h)))
@@ -207,8 +205,8 @@ lemma permTwo_snd : (permTwo hij hij').toFun j' = j := by
   have ht := Equiv.extendSubtype_apply_of_mem
     ((permTwoInj hij').toEquivRange.symm.trans
     (permTwoInj hij).toEquivRange) j' (permTwoInj_snd hij')
-  simp at ht
-  simp [ht, permTwoInj_snd_apply]
+  simp only [Equiv.trans_apply, Function.Embedding.toEquivRange_apply] at ht
+  simp only [Equiv.toFun_as_coe, ht, permTwoInj_snd_apply, Fin.isValue]
   rfl
 
 end permTwo
@@ -266,8 +264,8 @@ lemma permThree_fst : (permThree hij hjk hik hij' hjk' hik').toFun i' = i := by
   have ht := Equiv.extendSubtype_apply_of_mem
     ((permThreeInj hij' hjk' hik').toEquivRange.symm.trans
     (permThreeInj hij hjk hik).toEquivRange) i' (permThreeInj_fst hij' hjk' hik')
-  simp at ht
-  simp [ht, permThreeInj_fst_apply]
+  simp only [Equiv.trans_apply, Function.Embedding.toEquivRange_apply] at ht
+  simp only [Equiv.toFun_as_coe, ht, permThreeInj_fst_apply, Fin.isValue]
   rfl
 
 lemma permThree_snd : (permThree hij hjk hik hij' hjk' hik').toFun j' = j := by
@@ -275,8 +273,8 @@ lemma permThree_snd : (permThree hij hjk hik hij' hjk' hik').toFun j' = j := by
   have ht := Equiv.extendSubtype_apply_of_mem
     ((permThreeInj hij' hjk' hik').toEquivRange.symm.trans
     (permThreeInj hij hjk hik).toEquivRange) j' (permThreeInj_snd hij' hjk' hik')
-  simp at ht
-  simp [ht, permThreeInj_snd_apply]
+  simp only [Equiv.trans_apply, Function.Embedding.toEquivRange_apply] at ht
+  simp only [Equiv.toFun_as_coe, ht, permThreeInj_snd_apply, Fin.isValue]
   rfl
 
 lemma permThree_thd : (permThree hij hjk hik hij' hjk' hik').toFun k' = k := by
@@ -284,8 +282,8 @@ lemma permThree_thd : (permThree hij hjk hik hij' hjk' hik').toFun k' = k := by
   have ht := Equiv.extendSubtype_apply_of_mem
     ((permThreeInj hij' hjk' hik').toEquivRange.symm.trans
     (permThreeInj hij hjk hik).toEquivRange) k' (permThreeInj_thd hij' hjk' hik')
-  simp at ht
-  simp [ht, permThreeInj_thd_apply]
+  simp only [Equiv.trans_apply, Function.Embedding.toEquivRange_apply] at ht
+  simp only [Equiv.toFun_as_coe, ht, permThreeInj_thd_apply, Fin.isValue]
   rfl
 
 end permThree
@@ -299,7 +297,7 @@ lemma Prop_two (P : ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
   intro i j hij
   have h1 := h (permTwo hij hab).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply] at h1
-  simp at h1
+  simp only [Equiv.invFun_as_coe, Equiv.symm_symm] at h1
   change P
     (S.val ((permTwo hij hab).toFun a),
     S.val ((permTwo hij hab).toFun b)) at h1
@@ -317,7 +315,7 @@ lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
   have h1 := h (permThree hij hjk hik hab hbc hac).symm
   rw [FamilyPermutations_anomalyFreeLinear_apply, FamilyPermutations_anomalyFreeLinear_apply,
     FamilyPermutations_anomalyFreeLinear_apply] at h1
-  simp at h1
+  simp only [Equiv.invFun_as_coe, Equiv.symm_symm] at h1
   change P
     (S.val ((permThree hij hjk hik hab hbc hac).toFun a),
     S.val ((permThree hij hjk hik hab hbc hac).toFun b),

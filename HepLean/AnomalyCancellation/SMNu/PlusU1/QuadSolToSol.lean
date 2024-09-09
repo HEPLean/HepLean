@@ -100,7 +100,8 @@ def quadSolToSolInv {n : ℕ} : (PlusU1 n).Sols → (PlusU1 n).QuadSols × ℚ �
 
 lemma quadSolToSolInv_1 (S : (PlusU1 n).Sols) :
     (quadSolToSolInv S).1 = S.1 := by
-  simp [quadSolToSolInv]
+  simp only [quadSolToSolInv, α₁, BL_val, SMνACCs.cubeTriLin_toFun_apply_apply, Fin.isValue,
+    neg_mul, neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
   split <;> rfl
 
 lemma quadSolToSolInv_α₁_α₂_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0) :
