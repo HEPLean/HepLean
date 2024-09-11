@@ -165,6 +165,32 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
   · use rotateGuageGroup h
     exact rotateGuageGroup_apply h
 
+theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
+    ∃ (g : GaugeGroup), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
+  obtain ⟨g, h⟩ := rotate_fst_zero_snd_real φ
+  let P : GaugeGroup := ⟨1, ⟨!![0, 1; -1, 0], by
+    rw [@mem_specialUnitaryGroup_iff]
+    apply And.intro
+    · rw [mem_unitaryGroup_iff, star_eq_conjTranspose]
+      ext i j
+      rw [Matrix.mul_apply]
+      rw [@Fin.sum_univ_two]
+      fin_cases i <;> fin_cases j
+        <;> simp
+    · simp [det_fin_two]⟩, 1⟩
+  use P * g
+  rw [rep.map_mul]
+  change rep P (rep g φ) = _
+  rw [h, rep_apply]
+  simp only [one_pow, Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe, mulVec_cons, zero_smul,
+    coe_smul, mulVec_empty, add_zero, zero_add, one_smul]
+  funext i
+  fin_cases i
+  · simp only [Fin.zero_eta, Fin.isValue, Pi.smul_apply, Function.comp_apply, cons_val_zero,
+      tail_cons, head_cons, real_smul, mul_one]
+  · simp only [Fin.mk_one, Fin.isValue, Pi.smul_apply, Function.comp_apply, cons_val_one, head_cons,
+      tail_cons, smul_zero]
+
 end HiggsVec
 
 /-! TODO: Define the global gauge action on HiggsField. -/

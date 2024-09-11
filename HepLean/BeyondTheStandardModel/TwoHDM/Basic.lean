@@ -206,6 +206,12 @@ lemma isBounded_of_left_eq_neg_right (h : P.IsBounded) :
     exact hc1
   exact StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
 
+lemma nonneg_sum_𝓵₁_to_𝓵₅_of_isBounded (h : P.IsBounded) :
+    0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re := by
+  have h1 := isBounded_of_left_eq_neg_right h
+  have h2 := isBounded_of_left_eq_right h
+  linarith
+
 end IsBounded
 
 end Potential
