@@ -79,19 +79,19 @@ lemma swap_fields : P.toFun Φ1 Φ2 =
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
 lemma right_zero : P.toFun Φ1 0 =
-    StandardModel.HiggsField.potential (- P.m₁₁2) (P.𝓵₁/2) Φ1 := by
+    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).toFun Φ1 := by
   funext x
   simp only [toFun, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
     OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, innerProd_right_zero,
     innerProd_left_zero, Complex.zero_re, sub_zero, one_div, Complex.ofReal_pow,
-    Complex.ofReal_zero, potential, neg_neg, add_right_inj, mul_eq_mul_right_iff, pow_eq_zero_iff,
-    norm_eq_zero, or_self_right]
+    Complex.ofReal_zero, neg_neg, add_right_inj, mul_eq_mul_right_iff, pow_eq_zero_iff,
+    norm_eq_zero, HiggsField.Potential.toFun, or_self_right]
   ring_nf
   simp only [true_or]
 
 /-- If `Φ₁` is zero the potential reduces to the Higgs potential on `Φ₂`. -/
 lemma left_zero : P.toFun 0 Φ2 =
-    StandardModel.HiggsField.potential (- P.m₂₂2) (P.𝓵₂/2) Φ2 := by
+    (HiggsField.Potential.mk (- P.m₂₂2) (P.𝓵₂/2)).toFun Φ2 := by
   rw [swap_fields, right_zero]
 
 /-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
@@ -114,23 +114,23 @@ lemma neg_right : P.toFun Φ1 (- Φ2)
   simp only [map_neg, RingHomCompTriple.comp_apply, RingHom.id_apply]
 
 lemma left_eq_right : P.toFun Φ1 Φ1 =
-    StandardModel.HiggsField.potential (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re) Φ1 := by
+    (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
+    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).toFun Φ1 := by
   funext x
   simp only [toFun, normSq, innerProd_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
     Complex.mul_re, normSq_apply_re_self, normSq_apply_im_zero, mul_zero, sub_zero, Complex.conj_re,
     Complex.conj_im, one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re,
     Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat,
     neg_zero, zero_div, zero_mul, Complex.mul_im, add_zero, mul_neg, neg_mul, sub_neg_eq_add,
-    sub_add_add_cancel, zero_add, potential, neg_add_rev, neg_sub]
+    sub_add_add_cancel, zero_add, HiggsField.Potential.toFun, neg_add_rev, neg_sub]
   ring_nf
   erw [show ((Complex.ofReal ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
     erw [← Complex.ofReal_pow]; rfl]
   ring
 
 lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =
-    StandardModel.HiggsField.potential (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re) Φ1 := by
+    (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
+    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re)).toFun Φ1 := by
   rw [neg_right, left_eq_right]
   simp_all only [Complex.neg_re, mul_neg]
   rfl
@@ -153,7 +153,7 @@ section IsBounded
 variable {P : Potential}
 
 lemma isBounded_right_zero (h : P.IsBounded) :
-    StandardModel.HiggsField.potential.IsBounded (- P.m₁₁2) (P.𝓵₁/2) := by
+    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).IsBounded := by
   obtain ⟨c, hc⟩ := h
   use c
   intro Φ x
@@ -162,7 +162,7 @@ lemma isBounded_right_zero (h : P.IsBounded) :
   exact hc1
 
 lemma isBounded_left_zero (h : P.IsBounded) :
-    StandardModel.HiggsField.potential.IsBounded (- P.m₂₂2) (P.𝓵₂/2) := by
+    (HiggsField.Potential.mk (- P.m₂₂2) (P.𝓵₂/2)).IsBounded := by
   obtain ⟨c, hc⟩ := h
   use c
   intro Φ x
@@ -173,38 +173,36 @@ lemma isBounded_left_zero (h : P.IsBounded) :
 lemma isBounded_𝓵₁_nonneg (h : P.IsBounded) :
     0 ≤ P.𝓵₁ := by
   have h1 := isBounded_right_zero h
-  have h2 := StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  have h2 := HiggsField.Potential.isBounded_𝓵_nonneg _ h1
+  simp only at h2
   linarith
 
 lemma isBounded_𝓵₂_nonneg (h : P.IsBounded) :
     0 ≤ P.𝓵₂ := by
   have h1 := isBounded_left_zero h
-  have h2 := StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  have h2 := HiggsField.Potential.isBounded_𝓵_nonneg _ h1
+  simp only at h2
   linarith
 
 lemma isBounded_of_left_eq_right (h : P.IsBounded) :
     0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re := by
   obtain ⟨c, hc⟩ := h
-  have h1 : StandardModel.HiggsField.potential.IsBounded (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re) := by
-    use c
-    intro Φ x
-    have hc1 := hc Φ Φ x
-    rw [left_eq_right] at hc1
-    exact hc1
-  exact StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  refine (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
+    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).isBounded_𝓵_nonneg
+    ⟨c, fun Φ x => ?_⟩
+  have hc1 := hc Φ Φ x
+  rw [left_eq_right] at hc1
+  exact hc1
 
 lemma isBounded_of_left_eq_neg_right (h : P.IsBounded) :
     0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re := by
   obtain ⟨c, hc⟩ := h
-  have h1 : StandardModel.HiggsField.potential.IsBounded (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re) := by
-    use c
-    intro Φ x
-    have hc1 := hc Φ (- Φ) x
-    rw [left_eq_neg_right] at hc1
-    exact hc1
-  exact StandardModel.HiggsField.potential.isBounded_𝓵_nonneg h1
+  refine (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
+    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re)).isBounded_𝓵_nonneg
+    ⟨c, fun Φ x => ?_⟩
+  have hc1 := hc Φ (- Φ) x
+  rw [left_eq_neg_right] at hc1
+  exact hc1
 
 lemma nonneg_sum_𝓵₁_to_𝓵₅_of_isBounded (h : P.IsBounded) :
     0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re := by
