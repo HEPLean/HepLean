@@ -32,14 +32,18 @@ open SpaceTime
 
 -/
 
+/-- The parameters of the Higgs potential. -/
 structure Potential where
+  /-- The mass-squared of the Higgs boson. -/
   μ2 : ℝ
+  /-- The quartic coupling of the Higgs boson. Usually denoted λ.-/
   𝓵 : ℝ
 
 namespace Potential
 
 variable (P : Potential)
 
+/-- The function corresponding to the Higgs potential. -/
 def toFun (φ : HiggsField) (x : SpaceTime) : ℝ :=
   - P.μ2 * ‖φ‖_H ^ 2 x + P.𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x
 
@@ -50,6 +54,7 @@ lemma toFun_smooth (φ : HiggsField) :
   exact (smooth_const.smul φ.normSq_smooth).neg.add
     ((smooth_const.smul φ.normSq_smooth).smul φ.normSq_smooth)
 
+/-- The Higgs potential formed by negating the mass squared and the quartic coupling. -/
 def neg : Potential where
   μ2 := - P.μ2
   𝓵 := - P.𝓵
@@ -113,6 +118,7 @@ lemma toFun_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
 
 -/
 
+/-- The discrimiant of the quadratic equation formed by the Higgs potential. -/
 def quadDiscrim (φ : HiggsField) (x : SpaceTime) : ℝ := discrim P.𝓵 (- P.μ2) (- P.toFun φ x)
 
 /-- The discriminant of the quadratic formed by the potential is non-negative. -/
@@ -333,7 +339,7 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
   have h1 := P.pos_𝓵_sol_exists_iff h𝓵
   simp [hμ2] at h1
   rw [isMinOn_univ_iff]
-  simp
+  simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · have h1' : P.toFun φ x ≤ 0 := by
       simpa using h HiggsField.zero 0
@@ -366,7 +372,7 @@ lemma isMinOn_iff_of_μSq_nonneg_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : 0 ≤ P.�
   have h1 := P.pos_𝓵_sol_exists_iff h𝓵
   simp [hμ2, not_lt.mpr hμ2] at h1
   rw [isMinOn_univ_iff]
-  simp
+  simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · obtain ⟨φ', x', hφ'⟩ := (h1 (- P.μ2 ^ 2 / (4 * P.𝓵))).mpr (by rfl)
     have h' := h φ' x'
@@ -393,7 +399,7 @@ theorem isMinOn_iff_field_of_𝓵_pos (h𝓵 : 0 < P.𝓵) (φ : HiggsField) (x 
 lemma isMaxOn_iff_isMinOn_neg (φ : HiggsField) (x : SpaceTime) :
     IsMaxOn (fun (φ, x) => P.toFun φ x) Set.univ (φ, x) ↔
     IsMinOn (fun (φ, x) => P.neg.toFun φ x) Set.univ (φ, x) := by
-  simp
+  simp only [toFun_neg]
   rw [isMaxOn_univ_iff, isMinOn_univ_iff]
   simp_all only [Prod.forall, neg_le_neg_iff]
 

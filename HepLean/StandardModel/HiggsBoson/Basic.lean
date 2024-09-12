@@ -170,6 +170,7 @@ lemma isConst_iff_of_higgsVec (Φ : HiggsField) : Φ.IsConst ↔ ∃ (φ : Higgs
   vector is the given real number. -/
 def ofReal (a : ℝ) : HiggsField := (HiggsVec.ofReal a).toField
 
+/-- The higgs field which is all zero. -/
 def zero : HiggsField := ofReal 0
 
 end HiggsField
