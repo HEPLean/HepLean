@@ -153,7 +153,7 @@ section IsBounded
 variable {P : Potential}
 
 lemma isBounded_right_zero (h : P.IsBounded) :
-    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).IsBounded  := by
+    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).IsBounded := by
   obtain ⟨c, hc⟩ := h
   use c
   intro Φ x

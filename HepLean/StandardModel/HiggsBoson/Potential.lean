@@ -36,7 +36,7 @@ open SpaceTime
 structure Potential where
   /-- The mass-squared of the Higgs boson. -/
   μ2 : ℝ
-  /-- The quartic coupling of the Higgs boson. Usually denoted λ.-/
+  /-- The quartic coupling of the Higgs boson. Usually denoted λ. -/
   𝓵 : ℝ
 
 namespace Potential
@@ -135,7 +135,7 @@ lemma quadDiscrim_eq_sqrt_mul_sqrt (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : Spa
   (Real.mul_self_sqrt (P.quadDiscrim_nonneg h φ x)).symm
 
 lemma quadDiscrim_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
-    P.quadDiscrim φ x = 0 ↔ P.toFun φ x = - P.μ2 ^ 2 / (4 * P.𝓵)  := by
+    P.quadDiscrim φ x = 0 ↔ P.toFun φ x = - P.μ2 ^ 2 / (4 * P.𝓵) := by
   rw [quadDiscrim, discrim]
   refine Iff.intro (fun hD => ?_) (fun hV => ?_)
   · field_simp
@@ -187,9 +187,8 @@ lemma neg_𝓵_toFun_neg (h : P.𝓵 < 0) (φ : HiggsField) (x : SpaceTime) :
     (sq_nonneg ‖φ x‖)) (sq_nonneg ‖φ x‖)
 
 lemma pos_𝓵_toFun_pos (h : 0 < P.𝓵) (φ : HiggsField) (x : SpaceTime) :
-    (P.μ2 < 0 ∧ 0 ≤ P.toFun φ x ) ∨ 0 ≤ P.μ2 := by
+    (P.μ2 < 0 ∧ 0 ≤ P.toFun φ x) ∨ 0 ≤ P.μ2 := by
   simpa using P.neg.neg_𝓵_toFun_neg (by simpa using h) φ x
-
 
 lemma neg_𝓵_sol_exists_iff (h𝓵 : P.𝓵 < 0) (c : ℝ) : (∃ φ x, P.toFun φ x = c) ↔ (0 < P.μ2 ∧ c ≤ 0) ∨
     (P.μ2 ≤ 0 ∧ c ≤ - P.μ2 ^ 2 / (4 * P.𝓵)) := by
@@ -244,7 +243,7 @@ lemma neg_𝓵_sol_exists_iff (h𝓵 : P.𝓵 < 0) (c : ℝ) : (∃ φ x, P.toFu
     refine (quadratic_eq_zero_iff (ne_of_gt h𝓵).symm hdd _).mpr ?_
     simp only [neg_neg, or_true, a]
 
-lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵 ) (c : ℝ) : (∃ φ x, P.toFun φ x = c) ↔ (P.μ2 < 0 ∧ 0 ≤ c) ∨
+lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFun φ x = c) ↔ (P.μ2 < 0 ∧ 0 ≤ c) ∨
     (0 ≤ P.μ2 ∧ - P.μ2 ^ 2 / (4 * P.𝓵) ≤ c) := by
   have h1 := P.neg.neg_𝓵_sol_exists_iff (by simpa using h𝓵) (- c)
   simp at h1
@@ -311,7 +310,7 @@ lemma isBounded_of_𝓵_pos (h : 0 < P.𝓵) : P.IsBounded := by
   have h2 := P.pos_𝓵_quadDiscrim_zero_bound h
   by_contra hn
   simp at hn
-  obtain ⟨φ, x, hx⟩ := hn  (-P.μ2 ^ 2 / (4 * P.𝓵))
+  obtain ⟨φ, x, hx⟩ := hn (-P.μ2 ^ 2 / (4 * P.𝓵))
   have h2' := h2 φ x
   linarith
 
@@ -328,10 +327,9 @@ lemma eq_zero_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
   intro h
   have h1 := div_nonpos_of_nonpos_of_nonneg hμ2 (le_of_lt h𝓵)
   rw [← h] at h1
-  have hx : 0 ≤ ‖φ‖_H ^ 2 x := by exact normSq_nonneg φ x
-  have hx' : ‖φ‖_H ^ 2 x  = 0 := by linarith
+  have hx := normSq_nonneg φ x
+  have hx' : ‖φ‖_H ^ 2 x = 0 := by linarith
   simpa using hx'
-
 
 lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤ 0) (φ : HiggsField)
     (x : SpaceTime) : IsMinOn (fun (φ, x) => P.toFun φ x) Set.univ (φ, x)
@@ -347,7 +345,7 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
       have hx := (h1 (P.toFun φ x)).mp ⟨φ, x, rfl⟩
       rcases hx with hx | hx
       · exact hx.2
-      · have hμ2' : P.μ2  = 0 := by
+      · have hμ2' : P.μ2 = 0 := by
           linarith
         simpa [hμ2'] using hx.2
     linarith
@@ -356,13 +354,13 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
     have h1' := (h1 (P.toFun φ' x')).mp ⟨φ', x', rfl⟩
     rcases h1' with h1' | h1'
     · exact h1'.2
-    · have hμ2' : P.μ2  = 0 := by
+    · have hμ2' : P.μ2 = 0 := by
         linarith
       simpa [hμ2'] using h1'.2
 
 lemma isMinOn_iff_field_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤ 0) (φ : HiggsField)
     (x : SpaceTime) : IsMinOn (fun (φ, x) => P.toFun φ x) Set.univ (φ, x)
-    ↔  φ x = 0 := by
+    ↔ φ x = 0 := by
   rw [P.isMinOn_iff_of_μSq_nonpos_𝓵_pos h𝓵 hμ2 φ x]
   exact P.eq_zero_iff_of_μSq_nonpos_𝓵_pos h𝓵 hμ2 φ x
 
