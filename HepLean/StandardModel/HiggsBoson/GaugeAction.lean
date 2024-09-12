@@ -169,12 +169,11 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
     ∃ (g : GaugeGroup), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
   obtain ⟨g, h⟩ := rotate_fst_zero_snd_real φ
   let P : GaugeGroup := ⟨1, ⟨!![0, 1; -1, 0], by
-    rw [@mem_specialUnitaryGroup_iff]
+    rw [mem_specialUnitaryGroup_iff]
     apply And.intro
     · rw [mem_unitaryGroup_iff, star_eq_conjTranspose]
       ext i j
-      rw [Matrix.mul_apply]
-      rw [@Fin.sum_univ_two]
+      rw [Matrix.mul_apply, Fin.sum_univ_two]
       fin_cases i <;> fin_cases j
         <;> simp
     · simp [det_fin_two]⟩, 1⟩
