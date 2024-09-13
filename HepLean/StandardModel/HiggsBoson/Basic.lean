@@ -11,6 +11,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.Product
+import HepLean.Meta.InformalDef
 /-!
 
 # The Higgs field
@@ -172,6 +173,11 @@ def ofReal (a : ℝ) : HiggsField := (HiggsVec.ofReal a).toField
 
 /-- The higgs field which is all zero. -/
 def zero : HiggsField := ofReal 0
+
+informal_lemma zero_is_zero_section where
+  physics := "The zero Higgs field is the zero section of the Higgs bundle."
+  math := "The HiggsField `zero` defined by `ofReal 0`
+    is the constant zero-section of the bundle `HiggsBundle`."
 
 end HiggsField
 
