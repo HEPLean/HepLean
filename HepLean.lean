@@ -61,6 +61,7 @@ import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParamete
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.SO3.Basic
 import HepLean.Meta.AllFilePaths
+import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra

@@ -191,9 +191,9 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
       tail_cons, smul_zero]
 
 informal_lemma stablity_group where
-  physics := "The Higgs boson breaks electroweak symmetry down to the electromagnetic force."
-  math := "The stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`,
-    for non-zero `‖φ‖`  is the `SU(3) x U(1)` subgroup of
+  physics :≈ "The Higgs boson breaks electroweak symmetry down to the electromagnetic force."
+  math :≈ "The stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`,
+    for non-zero `‖φ‖` is the `SU(3) x U(1)` subgroup of
     `gaugeGroup := SU(3) x SU(2) x U(1)` with the embedding given by
     `(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`."
 

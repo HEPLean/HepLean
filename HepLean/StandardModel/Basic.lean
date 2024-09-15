@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.LinearAlgebra.Matrix.ToLin
-import HepLean.Meta.InformalDef
 /-!
 # The Standard Model
 
