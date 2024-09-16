@@ -83,6 +83,7 @@ import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
+import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction

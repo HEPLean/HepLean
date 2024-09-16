@@ -120,6 +120,7 @@ macro "informal_lemma " name:ident " where " assignments:informalAssignment* : c
   unless math_def?.isSome do
     Macro.throwError "A 'math' assignments is required"
   `(
+
 /-- An informal lemma. -/
 def $name : InformalLemma := {
   name := $(Lean.quote name.getId),
@@ -129,5 +130,23 @@ def $name : InformalLemma := {
   ref := $(ref_def?.getD (← `("No references provided"))),
   dependencies := $(dep_def?.getD (← `([])))
     })
+
+def isInformal (c : ConstantInfo) : Bool :=
+  match c with
+  | ConstantInfo.defnInfo c =>
+    if c.type.isAppOf ``InformalDefinition ∨ c.type.isAppOf ``InformalLemma then true else false
+  | _ => false
+
+def isInformalLemma (c : ConstantInfo) : Bool :=
+  match c with
+  | ConstantInfo.defnInfo c =>
+    if c.type.isAppOf ``InformalLemma then true else false
+  | _ => false
+
+def isInformalDef (c : ConstantInfo) : Bool :=
+  match c with
+  | ConstantInfo.defnInfo c =>
+    if c.type.isAppOf ``InformalDefinition then true else false
+  | _ => false
 
 end Informal
