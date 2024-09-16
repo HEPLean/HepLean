@@ -171,7 +171,6 @@ unsafe def importToWebString (i : Import) : MetaM String := do
 
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  enableInitializersExecution
   let mods : Name := `HepLean
   let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
