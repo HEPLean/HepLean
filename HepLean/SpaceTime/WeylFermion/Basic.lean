@@ -18,20 +18,24 @@ import HepLean.Meta.Informal
 
 informal_definition leftHandedWeylFermion where
   math :≈ "The vector space ℂ^2 carrying the fundamental representation of SL(2,C)."
+  physics :≈ "A Weyl fermion with indices ψ_a."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
 informal_definition rightHandedWeylFermion where
   math :≈ "The vector space ℂ^2 carrying the conjguate representation of SL(2,C)."
+  physics :≈ "A Weyl fermion with indices ψ_{dot a}."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
 informal_definition altLeftHandedWeylFermion where
   math :≈ "The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)ᵀ."
+  physics :≈ "A Weyl fermion with indices ψ^a."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
 informal_definition altRightHandedWeylFermion where
   math :≈ "The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†."
+  physics :≈ "A Weyl fermion with indices ψ^{dot a}."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
 /-!
@@ -59,3 +63,23 @@ informal_lemma rightHandedWeylFermionAltEquiv_equivariant where
   math :≈ "The linear equiv rightHandedWeylFermionAltEquiv is equivariant with respect to the
     action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
   deps :≈ [`rightHandedWeylFermionAltEquiv]
+
+/-!
+
+## Contraction of Weyl fermions.
+
+-/
+
+informal_definition leftAltWeylFermionContraction where
+  math :≈ "The linear map from leftHandedWeylFermion ⊗ altLeftHandedWeylFermion to ℂ given by
+    summing over components of leftHandedWeylFermion and altLeftHandedWeylFermion in the
+    standard basis (i.e. the dot product)."
+  physics :≈ "The contraction of a left-handed Weyl fermion with a right-handed Weyl fermion.
+    In index notation this is ψ_a φ^a."
+  ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
+  deps :≈ [``leftHandedWeylFermion, ``altLeftHandedWeylFermion]
+
+informal_lemma leftAltWeylFermionContraction_invariant where
+  math :≈ "The contraction leftAltWeylFermionContraction is invariant with respect to
+    the action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
+  deps :≈ [`leftAltWeylFermionContraction]
