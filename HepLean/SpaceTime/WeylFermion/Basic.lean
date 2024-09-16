@@ -39,14 +39,15 @@ informal_definition altRightHandedWeylFermion where
 ## Equivalences between Weyl fermion vector spaces.
 
 -/
-
 informal_definition leftHandedWeylFermionAltEquiv where
   math :≈ "The linear equiv between leftHandedWeylFermion and altLeftHandedWeylFermion given
     by multiplying an element of rightHandedWeylFermion by the matrix εᵃ⁰ᵃ¹ ={{0, 1}, {-1, 0}}."
+  deps :≈ [`leftHandedWeylFermion, `altLeftHandedWeylFermion]
 
 informal_lemma leftHandedWeylFermionAltEquiv_equivariant where
   math :≈ "The linear equiv leftHandedWeylFermionAltEquiv is equivariant with respect to the
     action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
+  deps :≈ [`leftHandedWeylFermionAltEquiv]
 
 informal_definition rightHandedWeylFermionAltEquiv where
   math :≈ "The linear equiv between rightHandedWeylFermion and altRightHandedWeylFermion given
