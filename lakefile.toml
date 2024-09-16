@@ -66,6 +66,7 @@ srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
 name = "informal"
+supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
 # -- Optional inclusion of openAI_doc_check. Needs `llm` above.

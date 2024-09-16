@@ -36,6 +36,12 @@ jobs:
       - name: Build project
         run: lake -Kenv=dev build HepLean
 
+      - name: make TODO list
+        run : lake exe find_TODOs mkFile
+
+      - name: make list of informal proofs and lemmas
+        run : lake exe informal mkFile
+
       - name: Get doc cache
         uses: actions/cache@v3
         with:
@@ -57,10 +63,6 @@ jobs:
       - name: Build documentation
         run: lake -Kenv=dev build HepLean:docs
 
-      - name: make TODO list
-        run : lake exe find_TODOs mkFile
-      - name: make list of informal proofs and lemmas
-        run : lake exe informal mkFile
       - name: Copy documentation to `docs/docs`
         run: |
           mv .lake/build/doc docs/docs

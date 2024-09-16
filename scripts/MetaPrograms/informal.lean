@@ -168,7 +168,8 @@ unsafe def importToWebString (i : Import) : MetaM String := do
     pure ""
   else
     pure ("\n\n## " ++ i.module.toString ++ "\n" ++ String.intercalate "\n\n" informalPrint.toList)
-unsafe def main (args : List String) : IO Unit := do
+
+unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let mods : Name := `HepLean
   let imp : Import := {module := mods}
@@ -186,3 +187,4 @@ unsafe def main (args : List String) : IO Unit := do
     let out := String.intercalate "\n" importWebString.toList
     IO.println (s!"Informal file made.")
     IO.FS.writeFile fileOut (informalFileHeader ++ out)
+  pure 0
