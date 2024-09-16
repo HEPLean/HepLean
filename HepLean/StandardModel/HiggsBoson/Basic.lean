@@ -178,6 +178,7 @@ informal_lemma zero_is_zero_section where
   physics :≈ "The zero Higgs field is the zero section of the Higgs bundle."
   math :≈ "The HiggsField `zero` defined by `ofReal 0`
     is the constant zero-section of the bundle `HiggsBundle`."
+  deps :≈ [`StandardModel.HiggsField.zero]
 
 end HiggsField
 

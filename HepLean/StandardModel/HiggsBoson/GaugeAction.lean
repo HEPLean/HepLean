@@ -196,6 +196,7 @@ informal_lemma stablity_group where
     for non-zero `‖φ‖` is the `SU(3) x U(1)` subgroup of
     `gaugeGroup := SU(3) x SU(2) x U(1)` with the embedding given by
     `(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`."
+  deps :≈ [`StandardModel.HiggsVec, `StandardModel.HiggsVec.rep]
 
 end HiggsVec
 

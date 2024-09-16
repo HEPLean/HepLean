@@ -42,7 +42,7 @@ informal_definition altRightHandedWeylFermion where
 
 informal_definition leftHandedWeylFermionAltEquiv where
   math :≈ "The linear equiv between leftHandedWeylFermion and altLeftHandedWeylFermion given
-    by multiplying an element of rightHandedWeylFermion by the matrix εᵃ⁰ᵃ¹ ={{0, 1}, {-1, 0}}."
+    by multiplying an element of rightHandedWeylFermion by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`."
   deps :≈ [`leftHandedWeylFermion, `altLeftHandedWeylFermion]
 
 informal_lemma leftHandedWeylFermionAltEquiv_equivariant where
@@ -52,7 +52,7 @@ informal_lemma leftHandedWeylFermionAltEquiv_equivariant where
 
 informal_definition rightHandedWeylFermionAltEquiv where
   math :≈ "The linear equiv between rightHandedWeylFermion and altRightHandedWeylFermion given
-    by multiplying an element of rightHandedWeylFermion by the matrix εᵃ⁰ᵃ¹ ={{0, 1}, {-1, 0}}."
+    by multiplying an element of rightHandedWeylFermion by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`"
   deps :≈ [`rightHandedWeylFermion, `altRightHandedWeylFermion]
 
 informal_lemma rightHandedWeylFermionAltEquiv_equivariant where

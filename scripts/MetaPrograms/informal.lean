@@ -37,6 +37,13 @@ def depToString (d : Name) : MetaM String := do
   let mod ← getModule d
   pure s!"    * {d}: ./{mod.toString.replace "." "/" ++ ".lean"}:{lineNo}"
 
+def depToWebString (d : Name) : MetaM String := do
+  let lineNo ← getLineNumber d
+  let mod ← getModule d
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (mod.toString.replace "." "/") ++ ".lean"
+  pure s!"    * [{d}]({webPath}#L{lineNo})"
+
 unsafe def informalLemmaToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalLemma ←
@@ -54,6 +61,24 @@ Informal lemma: {informalLemma.name}
 - References: {informalLemma.ref}
 - Dependencies:\n{String.intercalate "\n" dep}"
 
+unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String := do
+  let lineNo ← getLineNumber c.2.name
+  let informalLemma ←
+    match c.2 with
+    | ConstantInfo.defnInfo c =>
+        Lean.Meta.evalExpr' InformalLemma ``InformalLemma c.value
+    | _ => panic! "This should not happen"
+  let dep ← informalLemma.dependencies.mapM fun d => depToWebString d
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (c.1.module.toString.replace "." "/") ++ ".lean"
+  pure s!"
+**Informal lemma**: [{informalLemma.name}]({webPath}#L{lineNo}) :=
+  *{informalLemma.math}*
+- Physics description: {informalLemma.physics}
+- Proof description: {informalLemma.proof}
+- References: {informalLemma.ref}
+- Dependencies:\n{String.intercalate "\n" dep}"
+
 unsafe def informalDefToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalDef ←
@@ -63,14 +88,80 @@ unsafe def informalDefToString (c : Import × ConstantInfo) : MetaM String := do
     | _ => panic! "This should not happen"
   let dep ← informalDef.dependencies.mapM fun d => depToString d
   pure s!"
-Informal lemma: {informalDef.name}
+Informal def: {informalDef.name}
 - ./{c.1.module.toString.replace "." "/" ++ ".lean"}:{lineNo}
 - Math description: {informalDef.math}
 - Physics description: {informalDef.physics}
 - References: {informalDef.ref}
 - Dependencies:\n{String.intercalate "\n" dep}"
 
-unsafe def main (_ : List String) : IO Unit := do
+unsafe def informalDefToWebString (c : Import × ConstantInfo) : MetaM String := do
+  let lineNo ← getLineNumber c.2.name
+  let informalDef ←
+    match c.2 with
+    | ConstantInfo.defnInfo c =>
+        Lean.Meta.evalExpr' InformalDefinition ``InformalDefinition c.value
+    | _ => panic! "This should not happen"
+  let dep ← informalDef.dependencies.mapM fun d => depToWebString d
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (c.1.module.toString.replace "." "/") ++ ".lean"
+  pure s!"
+**Informal def**: [{informalDef.name}]({webPath}#L{lineNo}) :=
+  *{informalDef.math}*
+- Physics description: {informalDef.physics}
+- References: {informalDef.ref}
+- Dependencies:\n{String.intercalate "\n" dep}"
+
+unsafe def informalToString (c : Import × ConstantInfo) : MetaM String := do
+  if Informal.isInformalLemma c.2 then
+    informalLemmaToString c
+  else if Informal.isInformalDef c.2 then
+    informalDefToString c
+  else
+    pure ""
+
+unsafe def informalToWebString (c : Import × ConstantInfo) : MetaM String := do
+  if Informal.isInformalLemma c.2 then
+    informalLemmaToWebString c
+  else if Informal.isInformalDef c.2 then
+    informalDefToWebString c
+  else
+    pure ""
+
+def informalFileHeader : String := s!"
+# Informal definitions and lemmas
+
+
+"
+
+unsafe def importToString (i : Import) : MetaM String := do
+  let constants ← getConst i
+  let constants := constants.filter (fun c => ¬ Lean.Name.isInternalDetail c.2.name)
+  let informalConst := constants.filter fun c => Informal.isInformal c.2
+  let informalConstLineNo ← informalConst.mapM fun c => getLineNumber c.2.name
+  let informalConstWithLineNo := informalConst.zip informalConstLineNo
+  let informalConstWithLineNoSort := informalConstWithLineNo.qsort (fun a b => a.2 < b.2)
+  let informalConst := informalConstWithLineNoSort.map (fun c => c.1)
+  let informalPrint ← (informalConst.mapM informalToString).run'
+  if informalPrint.isEmpty then
+    pure ""
+  else
+    pure ("\n\n" ++ i.module.toString ++ "\n" ++ String.intercalate "\n\n" informalPrint.toList)
+
+unsafe def importToWebString (i : Import) : MetaM String := do
+  let constants ← getConst i
+  let constants := constants.filter (fun c => ¬ Lean.Name.isInternalDetail c.2.name)
+  let informalConst := constants.filter fun c => Informal.isInformal c.2
+  let informalConstLineNo ← informalConst.mapM fun c => getLineNumber c.2.name
+  let informalConstWithLineNo := informalConst.zip informalConstLineNo
+  let informalConstWithLineNoSort := informalConstWithLineNo.qsort (fun a b => a.2 < b.2)
+  let informalConst := informalConstWithLineNoSort.map (fun c => c.1)
+  let informalPrint ← (informalConst.mapM informalToWebString).run'
+  if informalPrint.isEmpty then
+    pure ""
+  else
+    pure ("\n\n## " ++ i.module.toString ++ "\n" ++ String.intercalate "\n\n" informalPrint.toList)
+unsafe def main (args : List String) : IO Unit := do
   initSearchPath (← findSysroot)
   let mods : Name := `HepLean
   let imp : Import := {module := mods}
@@ -79,14 +170,12 @@ unsafe def main (_ : List String) : IO Unit := do
         throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
   let (hepLeanMod, _) ← readModuleData mFile
   let imports := hepLeanMod.imports.filter (fun c => c.module ≠ `Init)
-  let constants ← imports.mapM getConst
-  let constants := constants.flatten
-  let constants := constants.filter (fun c => ¬ Lean.Name.isInternalDetail c.2.name)
-  /- Informal lemmas. -/
-  let informalLemma := constants.filter fun c => Informal.isInformalLemma c.2
-  let informalLemmaPrint ← CoreM.withImportModules #[`HepLean] (informalLemma.mapM informalLemmaToString).run'
-  IO.println (String.intercalate "\n" informalLemmaPrint.toList)
-  /- Informal definitions-/
-  let informalDef := constants.filter fun c => Informal.isInformalDef c.2
-  let informalDefPrint ← CoreM.withImportModules #[`HepLean] (informalDef.mapM informalDefToString).run'
-  IO.println (String.intercalate "\n" informalDefPrint.toList)
+  let importString ← CoreM.withImportModules #[`HepLean] (imports.mapM importToString).run'
+  IO.println (String.intercalate "" importString.toList)
+  /- Writing out informal file. -/
+  let fileOut : System.FilePath := {toString := "./docs/Informal.md"}
+  if "mkFile" ∈ args then
+    let importWebString ← CoreM.withImportModules #[`HepLean] (imports.mapM importToWebString).run'
+    let out := String.intercalate "\n" importWebString.toList
+    IO.println (s!"Informal file made.")
+    IO.FS.writeFile fileOut (informalFileHeader ++ out)
