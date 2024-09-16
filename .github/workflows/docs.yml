@@ -1,18 +1,18 @@
-on: 
-  push: 
-    branches: 
+on:
+  push:
+    branches:
       - master
 
 name: Build and deploy documentation
 
 # borrowed from https://github.com/teorth/pfr/blob/master/.github/workflows/push.yml
-permissions: 
+permissions:
   contents: read
   pages: write
   id-token: write
 
-jobs: 
-  build_project: 
+jobs:
+  build_project:
     runs-on: ubuntu-latest
     name: Build project
     steps:
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       ##################
       # Remove this section if you don't want docs to be made
       - name: Install elan
@@ -53,13 +53,14 @@ jobs:
           key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
           restore-keys: |
             MathlibDoc-
-      
+
       - name: Build documentation
         run: lake -Kenv=dev build HepLean:docs
-      
-      - name: make TODO list 
-        run : lake exe find_TODOs mkFile 
 
+      - name: make TODO list
+        run : lake exe find_TODOs mkFile
+      - name: make list of informal proofs and lemmas
+        run : lake exe informal mkFile
       - name: Copy documentation to `docs/docs`
         run: |
           mv .lake/build/doc docs/docs
@@ -71,7 +72,7 @@ jobs:
           working-directory: docs
           ruby-version: "3.1" # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    
+
 
       - name: Bundle website
         working-directory: docs
@@ -85,6 +86,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-
-
-
