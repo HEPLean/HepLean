@@ -51,6 +51,7 @@ declare_syntax_cat informalAssignment
 /-- The syntax describing an informal assignment of `ident` to a string. -/
 syntax (name := informalAssignment) ident ":≈" str : informalAssignment
 
+/-- The syntax describing an informal assignment of `ident` to a list. -/
 syntax (name := informalAssignmentDeps) ident ":≈" "[" sepBy(term, ",") "]" : informalAssignment
 
 /-- The syntax for the command informal_definition. -/
@@ -131,18 +132,22 @@ def $name : InformalLemma := {
   dependencies := $(dep_def?.getD (← `([])))
     })
 
+/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma` or a
+  `InformalDefinition`. -/
 def isInformal (c : ConstantInfo) : Bool :=
   match c with
   | ConstantInfo.defnInfo c =>
     if c.type.isAppOf ``InformalDefinition ∨ c.type.isAppOf ``InformalLemma then true else false
   | _ => false
 
+/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma`. -/
 def isInformalLemma (c : ConstantInfo) : Bool :=
   match c with
   | ConstantInfo.defnInfo c =>
     if c.type.isAppOf ``InformalLemma then true else false
   | _ => false
 
+/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalDefinition`. -/
 def isInformalDef (c : ConstantInfo) : Bool :=
   match c with
   | ConstantInfo.defnInfo c =>
