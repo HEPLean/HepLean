@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Algebra.QuadraticDiscriminant
 import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
+import HepLean.Meta.Informal
 /-!
 # The potential of the Higgs field
 
@@ -313,6 +314,12 @@ lemma isBounded_of_𝓵_pos (h : 0 < P.𝓵) : P.IsBounded := by
   obtain ⟨φ, x, hx⟩ := hn (-P.μ2 ^ 2 / (4 * P.𝓵))
   have h2' := h2 φ x
   linarith
+
+informal_lemma isBounded_iff_of_𝓵_zero where
+  physics :≈ "When there is no quartic coupling, the potential is bounded iff the mass squared is
+    non-positive."
+  math :≈ "For `P : Potential` then P.IsBounded if and only if P.μ2 ≤ 0.
+    That is to say `- P.μ2 * ‖φ‖_H ^ 2 x` is bounded below if and only if `P.μ2 ≤ 0`."
 
 /-!
 

@@ -61,6 +61,7 @@ import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParamete
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.SO3.Basic
 import HepLean.Meta.AllFilePaths
+import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
@@ -82,6 +83,7 @@ import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
+import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction
