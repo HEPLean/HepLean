@@ -265,7 +265,8 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
     bgcolor=\"lightyellow\";
     label=\"Informal dependency graph for HepLean\";
     labelloc=\"t\";
-    labeljust=\"l\";"
+    labeljust=\"l\";
+    edge [arrowhead=vee];"
   let footer := "}"
   let nodes := String.intercalate "\n" formal_nodes.toList
   let informalLemmaNodes ← informal.mapM informalToNode
