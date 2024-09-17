@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - informal_defs
 
 name: Build and deploy documentation
 
@@ -21,6 +22,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify Graphviz Installation
+        run: dot -V
       ##################
       # Remove this section if you don't want docs to be made
       - name: Install elan
