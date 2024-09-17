@@ -103,3 +103,34 @@ informal_lemma altLeftWeylFermionContraction_invariant where
   math :≈ "The contraction altLeftWeylFermionContraction is invariant with respect to
     the action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
   deps :≈ [``altLeftWeylFermionContraction]
+
+informal_definition rightAltWeylFermionContraction where
+  math :≈ "The linear map from rightHandedWeylFermion ⊗ altRightHandedWeylFermion to ℂ given by
+    summing over components of rightHandedWeylFermion and altRightHandedWeylFermion in the
+    standard basis (i.e. the dot product)."
+  physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
+    In index notation this is ψ_{dot a} φ^{dot a}."
+  deps :≈ [``rightHandedWeylFermion, ``altRightHandedWeylFermion]
+
+informal_lemma rightAltWeylFermionContraction_invariant where
+  math :≈ "The contraction rightAltWeylFermionContraction is invariant with respect to
+    the action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
+  deps :≈ [``rightAltWeylFermionContraction]
+
+informal_definition altRightWeylFermionContraction where
+  math :≈ "The linear map from altRightHandedWeylFermion ⊗ rightHandedWeylFermion to ℂ given by
+    summing over components of altRightHandedWeylFermion and rightHandedWeylFermion in the
+    standard basis (i.e. the dot product)."
+  physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
+    In index notation this is φ^{dot a} ψ_{dot a}."
+  deps :≈ [``rightHandedWeylFermion, ``altRightHandedWeylFermion]
+
+informal_lemma rightAltWeylFermionContraction_symm_altRightWeylFermionContraction where
+  math :≈ "The linear map altRightWeylFermionContraction is rightAltWeylFermionContraction composed
+    with the braiding of the tensor product."
+  deps :≈ [``rightAltWeylFermionContraction, ``altRightWeylFermionContraction]
+
+informal_lemma altRightWeylFermionContraction_invariant where
+  math :≈ "The contraction altRightWeylFermionContraction is invariant with respect to
+    the action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
+  deps :≈ [``altRightWeylFermionContraction]
