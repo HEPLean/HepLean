@@ -32,6 +32,17 @@ def getModule (c : Name) : MetaM Name := do
   | some mod => pure mod
   | none => panic! s!"{c} is a declaration without position"
 
+def getConstInfo (n : Name) : MetaM ConstantInfo := do
+  match (← getEnv).find? n  with
+  | some c => pure c
+  | none => panic! s!"{n} is not a constant"
+
+/-- Gets the docstring from a name, if it exists, otherwise the string "No docstring."-/
+def getDocString (n : Name) : MetaM String := do
+  match ← Lean.findDocString? (← getEnv) n with
+  | some doc => pure doc
+  | none => pure "No docstring."
+
 def depToString (d : Name) : MetaM String := do
   let lineNo ← getLineNumber d
   let mod ← getModule d
@@ -194,22 +205,25 @@ def formalToNode (d : Name) : MetaM String := do
   let mod ← getModule d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (mod.toString.replace "." "/") ++ ".lean"
+  let docstring ← getDocString d
   pure s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=green,
-    href=\"{webPath}#L{lineNo}\"]"
+    href=\"{webPath}#L{lineNo}\", tooltip=\"{docstring}\"]"
 
 unsafe def informalLemmaToNode (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
+  let informalLemma ← (constantInfoToInformalLemma c.2)
   pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=orange,
-    href=\"{webPath}#L{lineNo}\"]"
+    href=\"{webPath}#L{lineNo}\", tooltip=\"{informalLemma.math}\"]"
 
 unsafe def informalDefToNode (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
+  let informalDef ← (constantInfoToInformalDefinition c.2)
   pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=orange,
-    href=\"{webPath}#L{lineNo}\"]"
+    href=\"{webPath}#L{lineNo}\", tooltip=\"{informalDef.math}\"]"
 
 unsafe def informalToNode (c : Import × ConstantInfo) : MetaM String := do
   if Informal.isInformalLemma c.2 then
