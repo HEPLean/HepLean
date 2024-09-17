@@ -22,6 +22,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
       - name: Verify Graphviz Installation
         run: dot -V
       ##################
