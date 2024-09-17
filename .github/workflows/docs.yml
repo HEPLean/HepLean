@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - master
-      - informal_defs
 
 name: Build and deploy documentation
 
