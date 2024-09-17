@@ -21,6 +21,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      - name: Verify Graphviz Installation
+        run: dot -V
       ##################
       # Remove this section if you don't want docs to be made
       - name: Install elan
@@ -40,7 +45,10 @@ jobs:
         run : lake exe find_TODOs mkFile
 
       - name: make list of informal proofs and lemmas
-        run : lake exe informal mkFile
+        run : lake exe informal mkFile mkDot
+
+      - name: Generate svg from dot
+        run : dot -Tsvg -o ./docs/graph.svg ./docs/InformalDot.dot
 
       - name: Get doc cache
         uses: actions/cache@v3
