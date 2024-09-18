@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import HepLean.SpaceTime.LorentzGroup.Basic
 import Mathlib.RepresentationTheory.Basic
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
+import HepLean.SpaceTime.LorentzGroup.Restricted
+import HepLean.Meta.Informal
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
@@ -121,6 +123,19 @@ The homomorphism `toLorentzGroup` restricts to a homomorphism to the restricted 
 In this section we will define this homomorphism.
 
 -/
+
+informal_lemma toLorentzGroup_det_one where
+  math :≈ "The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one."
+  deps :≈ [``toLorentzGroup]
+
+informal_lemma toLorentzGroup_timeComp_nonneg where
+  math :≈ "The time coponent of the image of `SL(2, ℂ)` in the Lorentz group is non-negative."
+  deps :≈ [``toLorentzGroup, ``LorentzGroup.timeComp]
+
+informal_lemma toRestrictedLorentzGroup where
+  math :≈ "The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group."
+  deps :≈ [``toLorentzGroup, ``toLorentzGroup_det_one, ``toLorentzGroup_timeComp_nonneg,
+    ``LorentzGroup.Restricted]
 
 /-! TODO: Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. -/
 end
