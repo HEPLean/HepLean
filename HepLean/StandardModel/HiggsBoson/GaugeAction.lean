@@ -32,7 +32,7 @@ open ComplexConjugate
 
 /-- The Higgs representation as a homomorphism from the gauge group to unitary `2×2`-matrices. -/
 @[simps!]
-noncomputable def higgsRepUnitary : GaugeGroup →* unitaryGroup (Fin 2) ℂ where
+noncomputable def higgsRepUnitary : GaugeGroupI →* unitaryGroup (Fin 2) ℂ where
   toFun g := repU1 g.2.2 * fundamentalSU2 g.2.1
   map_mul' := by
     intro ⟨_, a2, a3⟩ ⟨_, b2, b3⟩
@@ -75,14 +75,14 @@ def unitToLinear : unitary (HiggsVec →L[ℂ] HiggsVec) →* HiggsVec →ₗ[�
 
 /-- The representation of the gauge group acting on `higgsVec`. -/
 @[simps!]
-def rep : Representation ℂ GaugeGroup HiggsVec :=
+def rep : Representation ℂ GaugeGroupI HiggsVec :=
   unitToLinear.comp (unitaryToLin.comp higgsRepUnitary)
 
-lemma higgsRepUnitary_mul (g : GaugeGroup) (φ : HiggsVec) :
+lemma higgsRepUnitary_mul (g : GaugeGroupI) (φ : HiggsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
   simp [higgsRepUnitary_apply_coe, smul_mulVec_assoc]
 
-lemma rep_apply (g : GaugeGroup) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
+lemma rep_apply (g : GaugeGroupI) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
 /-!
@@ -131,7 +131,7 @@ lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :
 
 /-- Given a Higgs vector, an element of the gauge group which puts the first component of the
 vector to zero, and the second component to a real number. -/
-def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroup :=
+def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
@@ -155,7 +155,7 @@ lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
 
 theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
-    ∃ (g : GaugeGroup), rep g φ = ![0, Complex.ofReal ‖φ‖] := by
+    ∃ (g : GaugeGroupI), rep g φ = ![0, Complex.ofReal ‖φ‖] := by
   by_cases h : φ = 0
   · use ⟨1, 1, 1⟩
     simp only [Prod.mk_one_one, _root_.map_one, h, map_zero, Nat.succ_eq_add_one, Nat.reduceAdd,
@@ -166,9 +166,9 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
     exact rotateGuageGroup_apply h
 
 theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
-    ∃ (g : GaugeGroup), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
+    ∃ (g : GaugeGroupI), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
   obtain ⟨g, h⟩ := rotate_fst_zero_snd_real φ
-  let P : GaugeGroup := ⟨1, ⟨!![0, 1; -1, 0], by
+  let P : GaugeGroupI := ⟨1, ⟨!![0, 1; -1, 0], by
     rw [mem_specialUnitaryGroup_iff]
     apply And.intro
     · rw [mem_unitaryGroup_iff, star_eq_conjTranspose]
@@ -190,13 +190,20 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
   · simp only [Fin.mk_one, Fin.isValue, Pi.smul_apply, Function.comp_apply, cons_val_one, head_cons,
       tail_cons, smul_zero]
 
-informal_lemma stablity_group where
+informal_lemma stability_group_single where
   physics :≈ "The Higgs boson breaks electroweak symmetry down to the electromagnetic force."
   math :≈ "The stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`,
     for non-zero `‖φ‖` is the `SU(3) x U(1)` subgroup of
     `gaugeGroup := SU(3) x SU(2) x U(1)` with the embedding given by
     `(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`."
-  deps :≈ [`StandardModel.HiggsVec, `StandardModel.HiggsVec.rep]
+  deps :≈ [``StandardModel.HiggsVec, ``StandardModel.HiggsVec.rep]
+
+informal_lemma stability_group where
+  math :≈ "The subgroup of `gaugeGroup := SU(3) x SU(2) x U(1)` which preserves every `HiggsVec`
+    by the action of ``StandardModel.HiggsVec.rep is given by `SU(3) x ℤ₆` where ℤ₆
+    is the subgroup of `SU(2) x U(1)` with elements `(α^(-3) * I₂, α)` where
+    α is a sixth root of unity."
+  deps :≈ [``StandardModel.HiggsVec, ``StandardModel.HiggsVec.rep]
 
 end HiggsVec
 
