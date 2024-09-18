@@ -261,17 +261,18 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
   let informal_name := informal.map (fun c => c.2.name)
   let formal_deps := deps.filter (fun d => d ∉ informal_name)
   let formal_nodes ← formal_deps.mapM formalToNode
-  let header := "strict digraph G {
-    bgcolor=\"lightyellow\";
-    label=\"Informal dependency graph for HepLean\";
-    labelloc=\"t\";
-    labeljust=\"l\";"
-  let footer := "}"
   let nodes := String.intercalate "\n" formal_nodes.toList
   let informalLemmaNodes ← informal.mapM informalToNode
   let informalNodes := String.intercalate "\n" informalLemmaNodes.toList
   let edges ← informal.mapM informalToEdges
   let edges := String.intercalate "\n" edges.toList
+  let header := "strict digraph G {
+    bgcolor=\"lightyellow\";
+    label=\"Informal dependency graph for HepLean\";
+    labelloc=\"t\";
+    labeljust=\"l\";
+    edge [arrowhead=vee];"
+  let footer := "}"
   pure (header ++ "\n" ++ nodes ++ "\n" ++ informalNodes ++ "\n" ++ edges ++ "\n" ++ footer)
 
 end dotFile
