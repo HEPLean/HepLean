@@ -87,8 +87,8 @@ informal_lemma leftAltWeylFermionContraction_invariant where
   deps :≈ [``leftAltWeylFermionContraction]
 
 informal_definition altLeftWeylFermionContraction where
-  math :≈ "The linear map from altLeftHandedWeylFermion ⊗ leftHandedWeylFermion  to ℂ given by
-    summing over components of altLeftHandedWeylFermion and leftHandedWeylFermion  in the
+  math :≈ "The linear map from altLeftHandedWeylFermion ⊗ leftHandedWeylFermion to ℂ given by
+    summing over components of altLeftHandedWeylFermion and leftHandedWeylFermion in the
     standard basis (i.e. the dot product)."
   physics :≈ "The contraction of a left-handed Weyl fermion with a right-handed Weyl fermion.
     In index notation this is φ^a ψ_a ."
