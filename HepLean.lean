@@ -47,6 +47,7 @@ import HepLean.AnomalyCancellation.SMNu.PlusU1.PlaneNonSols
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSol
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSolToSol
 import HepLean.BeyondTheStandardModel.PatiSalam.Basic
+import HepLean.BeyondTheStandardModel.Spin10.Basic
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic
 import HepLean.FeynmanDiagrams.Basic
 import HepLean.FeynmanDiagrams.Instances.ComplexScalar

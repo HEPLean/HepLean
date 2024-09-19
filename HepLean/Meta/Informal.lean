@@ -75,8 +75,8 @@ macro "informal_definition " name:ident " where " assignments:informalAssignment
     | `(informalAssignment| ref :≈ $val:str) =>
       let some strVal := val.raw.isStrLit? | Macro.throwError "Expected string literal for ref"
       ref_def? := some (← `($(Lean.quote strVal)))
-    | `(informalAssignmentDeps| deps :≈ [ $deps,* ]) =>
-      dep_def? := some (← `([ $deps,* ]))
+    | `(informalAssignmentDeps| deps :≈ [$deps,*]) =>
+      dep_def? := some (← `([$deps,*]))
     | _ => Macro.throwError "invalid assignment syntax in informal_definition"
   unless math_def?.isSome do
     Macro.throwError "A 'math' assignments is required"
@@ -115,8 +115,8 @@ macro "informal_lemma " name:ident " where " assignments:informalAssignment* : c
     | `(informalAssignment| ref :≈ $val:str) =>
       let some strVal := val.raw.isStrLit? | Macro.throwError "Expected string literal for ref"
       ref_def? := some (← `($(Lean.quote strVal)))
-    | `(informalAssignmentDeps| deps :≈ [ $deps,* ]) =>
-      dep_def? := some (← `([ $deps,* ]))
+    | `(informalAssignmentDeps| deps :≈ [$deps,*]) =>
+      dep_def? := some (← `([$deps,*]))
     | _ => Macro.throwError "invalid assignment syntax"
   unless math_def?.isSome do
     Macro.throwError "A 'math' assignments is required"
