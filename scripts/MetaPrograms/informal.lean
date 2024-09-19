@@ -13,6 +13,9 @@ import ImportGraph.RequiredModules
 
 # Extracting information about informal definitions and lemmas
 
+To make the dot file for the dependency graph run:
+- lake exe informal mkDot
+- dot -Tsvg -o ./Docs/graph.svg ./Docs/InformalDot.dot
 -/
 
 open Lean System Meta
