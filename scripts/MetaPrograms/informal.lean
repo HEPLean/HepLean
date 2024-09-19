@@ -209,7 +209,7 @@ def formalToNode (d : Name) : MetaM String := do
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (mod.toString.replace "." "/") ++ ".lean"
   let docstring ← getDocString d
-  pure s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=green,
+  pure s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=steelblue,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{docstring}\"]"
 
 unsafe def informalLemmaToNode (c : Import × ConstantInfo) : MetaM String := do
@@ -217,7 +217,7 @@ unsafe def informalLemmaToNode (c : Import × ConstantInfo) : MetaM String := do
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalLemma ← (constantInfoToInformalLemma c.2)
-  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=orange,
+  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{informalLemma.math}\"]"
 
 unsafe def informalDefToNode (c : Import × ConstantInfo) : MetaM String := do
@@ -225,7 +225,7 @@ unsafe def informalDefToNode (c : Import × ConstantInfo) : MetaM String := do
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalDef ← (constantInfoToInformalDefinition c.2)
-  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=orange,
+  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=lightgray,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{informalDef.math}\"]"
 
 unsafe def informalToNode (c : Import × ConstantInfo) : MetaM String := do
@@ -270,8 +270,14 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
   let edges ← informal.mapM informalToEdges
   let edges := String.intercalate "\n" edges.toList
   let header := "strict digraph G {
-    bgcolor=\"lightyellow\";
-    label=\"Informal dependency graph for HepLean\";
+    graph [
+    pack=true;
+    packmode=\"array1\";
+    ];
+    node [margin=0.05;  fontsize=10;  fontname=\"Georgia\", height=0.1];
+    bgcolor=\"white\";
+    label=\"Informal dependency graph for HepLean.
+    Blue nodes are formalized, gray are to be formalized.\";
     labelloc=\"t\";
     labeljust=\"l\";
     edge [arrowhead=vee];"
