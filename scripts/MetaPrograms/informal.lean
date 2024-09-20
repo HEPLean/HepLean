@@ -274,6 +274,7 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
     pack=true;
     packmode=\"array1\";
     ];
+    tooltip = \"Informal HepLean graph\";
     node [margin=0.05;  fontsize=10;  fontname=\"Georgia\", height=0.1];
     bgcolor=\"white\";
     label=\"Informal dependency graph for HepLean.
