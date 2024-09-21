@@ -203,36 +203,55 @@ section dotFile
 -/
 
 /-- Turns a formal definition or lemma into a node of a dot graph. -/
-def formalToNode (d : Name) : MetaM String := do
+def formalToNode (nameSpaces : Array Name) (d : Name) : MetaM String := do
   let lineNo ← getLineNumber d
   let mod ← getModule d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (mod.toString.replace "." "/") ++ ".lean"
   let docstring ← getDocString d
-  pure s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=steelblue,
+  let prefixName := if nameSpaces.contains d then d else
+    d.getPrefix
+  let nodeStr := s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=steelblue,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{docstring}\"]"
+  if prefixName = Lean.Name.anonymous then
+    pure nodeStr
+  else
+    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
 
-unsafe def informalLemmaToNode (c : Import × ConstantInfo) : MetaM String := do
+unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalLemma ← (constantInfoToInformalLemma c.2)
-  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,
+  let prefixName := if nameSpaces.contains c.2.name then c.2.name else
+    c.2.name.getPrefix
+  let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{informalLemma.math}\"]"
+  if prefixName = Lean.Name.anonymous then
+    pure nodeStr
+  else
+    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
 
-unsafe def informalDefToNode (c : Import × ConstantInfo) : MetaM String := do
+unsafe def informalDefToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalDef ← (constantInfoToInformalDefinition c.2)
-  pure s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=lightgray,
+  let prefixName := if nameSpaces.contains c.2.name then c.2.name else
+    c.2.name.getPrefix
+  let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=lightgray,
     href=\"{webPath}#L{lineNo}\", tooltip=\"{informalDef.math}\"]"
+  if prefixName = Lean.Name.anonymous then
+    pure nodeStr
+  else
+    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
 
-unsafe def informalToNode (c : Import × ConstantInfo) : MetaM String := do
+
+unsafe def informalToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
   if Informal.isInformalLemma c.2 then
-    informalLemmaToNode c
+    informalLemmaToNode nameSpaces c
   else if Informal.isInformalDef c.2 then
-    informalDefToNode c
+    informalDefToNode nameSpaces c
   else
     pure ""
 
@@ -256,17 +275,32 @@ unsafe def informalToEdges (c : Import × ConstantInfo) : MetaM (String) := do
   else
     pure ""
 
+unsafe def namespaceToCluster (name : Name) : MetaM String := do
+  let nameUnder := name.toString.replace "." "_"
+  if name = Lean.Name.anonymous then
+    pure ""
+  else
+    pure ("subgraph cluster_" ++ nameUnder ++ "
+      {
+          label=\"" ++ name.toString ++ "\";
+          color=steelblue;
+              }")
+
 unsafe def mkDot (imports : Array Import) : MetaM String := do
   let informal ← imports.mapM importToInformal
   let informal := informal.flatten
   let deps ← (informal.map (fun c => c.2)).mapM informalDependencies
   let deps := deps.flatten
   let informal_name := informal.map (fun c => c.2.name)
+  let informalNameSpaces := informal.map fun c => c.2.name.getPrefix
+  let clusters ← informalNameSpaces.mapM fun c => namespaceToCluster c
+  let clusters := String.intercalate "\n" clusters.toList.eraseDups
   let formal_deps := deps.filter (fun d => d ∉ informal_name)
-  let formal_nodes ← formal_deps.mapM formalToNode
+  let formal_nodes ← formal_deps.mapM (formalToNode informalNameSpaces)
   let nodes := String.intercalate "\n" formal_nodes.toList
-  let informalLemmaNodes ← informal.mapM informalToNode
-  let informalNodes := String.intercalate "\n" informalLemmaNodes.toList
+
+  let informalNodes ← informal.mapM (informalToNode informalNameSpaces)
+  let informalNodes := String.intercalate "\n" informalNodes.toList
   let edges ← informal.mapM informalToEdges
   let edges := String.intercalate "\n" edges.toList
   let header := "strict digraph G {
@@ -283,7 +317,8 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
     labeljust=\"l\";
     edge [arrowhead=vee];"
   let footer := "}"
-  pure (header ++ "\n" ++ nodes ++ "\n" ++ informalNodes ++ "\n" ++ edges ++ "\n" ++ footer)
+  pure (header ++ "\n" ++clusters ++ "\n" ++ nodes ++ "\n" ++
+    informalNodes ++ "\n" ++ edges ++ "\n" ++ footer)
 
 end dotFile
 
