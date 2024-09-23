@@ -19,23 +19,25 @@ We define the vector spaces corresponding to different types of Weyl fermions.
 Note: We should prevent casting between these vector spaces.
 -/
 
-informal_definition leftHandedWeylFermion where
+namespace Fermion
+
+informal_definition leftHandedWeyl where
   math :≈ "The vector space ℂ^2 carrying the fundamental representation of SL(2,C)."
   physics :≈ "A Weyl fermion with indices ψ_a."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
-informal_definition rightHandedWeylFermion where
+informal_definition rightHandedWeyl where
   math :≈ "The vector space ℂ^2 carrying the conjguate representation of SL(2,C)."
   physics :≈ "A Weyl fermion with indices ψ_{dot a}."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
-informal_definition altLeftHandedWeylFermion where
+informal_definition altLeftHandedWeyl where
   math :≈ "The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)ᵀ."
   physics :≈ "A Weyl fermion with indices ψ^a."
   ref :≈ "https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf"
 
-informal_definition altRightHandedWeylFermion where
+informal_definition altRightHandedWeyl where
   math :≈ "The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†."
   physics :≈ "A Weyl fermion with indices ψ^{dot a}."
@@ -47,25 +49,25 @@ informal_definition altRightHandedWeylFermion where
 
 -/
 
-informal_definition leftHandedWeylFermionAltEquiv where
-  math :≈ "The linear equiv between leftHandedWeylFermion and altLeftHandedWeylFermion given
-    by multiplying an element of rightHandedWeylFermion by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`."
-  deps :≈ [`leftHandedWeylFermion, `altLeftHandedWeylFermion]
+informal_definition leftHandedWeylAltEquiv where
+  math :≈ "The linear equiv between leftHandedWeyl and altLeftHandedWeyl given
+    by multiplying an element of rightHandedWeyl by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`."
+  deps :≈ [``leftHandedWeyl, ``altLeftHandedWeyl]
 
-informal_lemma leftHandedWeylFermionAltEquiv_equivariant where
-  math :≈ "The linear equiv leftHandedWeylFermionAltEquiv is equivariant with respect to the
-    action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
-  deps :≈ [`leftHandedWeylFermionAltEquiv]
+informal_lemma leftHandedWeylAltEquiv_equivariant where
+  math :≈ "The linear equiv leftHandedWeylAltEquiv is equivariant with respect to the
+    action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
+  deps :≈ [``leftHandedWeylAltEquiv]
 
-informal_definition rightHandedWeylFermionAltEquiv where
-  math :≈ "The linear equiv between rightHandedWeylFermion and altRightHandedWeylFermion given
-    by multiplying an element of rightHandedWeylFermion by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`"
-  deps :≈ [`rightHandedWeylFermion, `altRightHandedWeylFermion]
+informal_definition rightHandedWeylAltEquiv where
+  math :≈ "The linear equiv between rightHandedWeyl and altRightHandedWeyl given
+    by multiplying an element of rightHandedWeyl by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`"
+  deps :≈ [``rightHandedWeyl, ``altRightHandedWeyl]
 
-informal_lemma rightHandedWeylFermionAltEquiv_equivariant where
-  math :≈ "The linear equiv rightHandedWeylFermionAltEquiv is equivariant with respect to the
-    action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
-  deps :≈ [`rightHandedWeylFermionAltEquiv]
+informal_lemma rightHandedWeylAltEquiv_equivariant where
+  math :≈ "The linear equiv rightHandedWeylAltEquiv is equivariant with respect to the
+    action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
+  deps :≈ [``rightHandedWeylAltEquiv]
 
 /-!
 
@@ -73,64 +75,66 @@ informal_lemma rightHandedWeylFermionAltEquiv_equivariant where
 
 -/
 
-informal_definition leftAltWeylFermionContraction where
-  math :≈ "The linear map from leftHandedWeylFermion ⊗ altLeftHandedWeylFermion to ℂ given by
-    summing over components of leftHandedWeylFermion and altLeftHandedWeylFermion in the
+informal_definition leftAltWeylContraction where
+  math :≈ "The linear map from leftHandedWeyl ⊗ altLeftHandedWeyl to ℂ given by
+    summing over components of leftHandedWeyl and altLeftHandedWeyl in the
     standard basis (i.e. the dot product)."
   physics :≈ "The contraction of a left-handed Weyl fermion with a right-handed Weyl fermion.
     In index notation this is ψ_a φ^a."
-  deps :≈ [``leftHandedWeylFermion, ``altLeftHandedWeylFermion]
+  deps :≈ [``leftHandedWeyl, ``altLeftHandedWeyl]
 
-informal_lemma leftAltWeylFermionContraction_invariant where
-  math :≈ "The contraction leftAltWeylFermionContraction is invariant with respect to
-    the action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
-  deps :≈ [``leftAltWeylFermionContraction]
+informal_lemma leftAltWeylContraction_invariant where
+  math :≈ "The contraction leftAltWeylContraction is invariant with respect to
+    the action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
+  deps :≈ [``leftAltWeylContraction]
 
-informal_definition altLeftWeylFermionContraction where
-  math :≈ "The linear map from altLeftHandedWeylFermion ⊗ leftHandedWeylFermion to ℂ given by
-    summing over components of altLeftHandedWeylFermion and leftHandedWeylFermion in the
+informal_definition altLeftWeylContraction where
+  math :≈ "The linear map from altLeftHandedWeyl ⊗ leftHandedWeyl to ℂ given by
+    summing over components of altLeftHandedWeyl and leftHandedWeyl in the
     standard basis (i.e. the dot product)."
   physics :≈ "The contraction of a left-handed Weyl fermion with a right-handed Weyl fermion.
     In index notation this is φ^a ψ_a ."
-  deps :≈ [``leftHandedWeylFermion, ``altLeftHandedWeylFermion]
+  deps :≈ [``leftHandedWeyl, ``altLeftHandedWeyl]
 
-informal_lemma leftAltWeylFermionContraction_symm_altLeftWeylFermionContraction where
-  math :≈ "The linear map altLeftWeylFermionContraction is leftAltWeylFermionContraction composed
+informal_lemma leftAltWeylContraction_symm_altLeftWeylContraction where
+  math :≈ "The linear map altLeftWeylContraction is leftAltWeylContraction composed
     with the braiding of the tensor product."
-  deps :≈ [``leftAltWeylFermionContraction, ``altLeftWeylFermionContraction]
+  deps :≈ [``leftAltWeylContraction, ``altLeftWeylContraction]
 
-informal_lemma altLeftWeylFermionContraction_invariant where
-  math :≈ "The contraction altLeftWeylFermionContraction is invariant with respect to
-    the action of SL(2,C) on leftHandedWeylFermion and altLeftHandedWeylFermion."
-  deps :≈ [``altLeftWeylFermionContraction]
+informal_lemma altLeftWeylContraction_invariant where
+  math :≈ "The contraction altLeftWeylContraction is invariant with respect to
+    the action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
+  deps :≈ [``altLeftWeylContraction]
 
-informal_definition rightAltWeylFermionContraction where
-  math :≈ "The linear map from rightHandedWeylFermion ⊗ altRightHandedWeylFermion to ℂ given by
-    summing over components of rightHandedWeylFermion and altRightHandedWeylFermion in the
+informal_definition rightAltWeylContraction where
+  math :≈ "The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
+    summing over components of rightHandedWeyl and altRightHandedWeyl in the
     standard basis (i.e. the dot product)."
   physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
     In index notation this is ψ_{dot a} φ^{dot a}."
-  deps :≈ [``rightHandedWeylFermion, ``altRightHandedWeylFermion]
+  deps :≈ [``rightHandedWeyl, ``altRightHandedWeyl]
 
-informal_lemma rightAltWeylFermionContraction_invariant where
-  math :≈ "The contraction rightAltWeylFermionContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
-  deps :≈ [``rightAltWeylFermionContraction]
+informal_lemma rightAltWeylContraction_invariant where
+  math :≈ "The contraction rightAltWeylContraction is invariant with respect to
+    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
+  deps :≈ [``rightAltWeylContraction]
 
-informal_definition altRightWeylFermionContraction where
-  math :≈ "The linear map from altRightHandedWeylFermion ⊗ rightHandedWeylFermion to ℂ given by
-    summing over components of altRightHandedWeylFermion and rightHandedWeylFermion in the
+informal_definition altRightWeylContraction where
+  math :≈ "The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
+    summing over components of altRightHandedWeyl and rightHandedWeyl in the
     standard basis (i.e. the dot product)."
   physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
     In index notation this is φ^{dot a} ψ_{dot a}."
-  deps :≈ [``rightHandedWeylFermion, ``altRightHandedWeylFermion]
+  deps :≈ [``rightHandedWeyl, ``altRightHandedWeyl]
 
-informal_lemma rightAltWeylFermionContraction_symm_altRightWeylFermionContraction where
-  math :≈ "The linear map altRightWeylFermionContraction is rightAltWeylFermionContraction composed
+informal_lemma rightAltWeylContraction_symm_altRightWeylContraction where
+  math :≈ "The linear map altRightWeylContraction is rightAltWeylContraction composed
     with the braiding of the tensor product."
-  deps :≈ [``rightAltWeylFermionContraction, ``altRightWeylFermionContraction]
+  deps :≈ [``rightAltWeylContraction, ``altRightWeylContraction]
 
-informal_lemma altRightWeylFermionContraction_invariant where
-  math :≈ "The contraction altRightWeylFermionContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeylFermion and altRightHandedWeylFermion."
-  deps :≈ [``altRightWeylFermionContraction]
+informal_lemma altRightWeylContraction_invariant where
+  math :≈ "The contraction altRightWeylContraction is invariant with respect to
+    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
+  deps :≈ [``altRightWeylContraction]
+
+end Fermion
