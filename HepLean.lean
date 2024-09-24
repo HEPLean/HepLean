@@ -46,6 +46,7 @@ import HepLean.AnomalyCancellation.SMNu.PlusU1.HyperCharge
 import HepLean.AnomalyCancellation.SMNu.PlusU1.PlaneNonSols
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSol
 import HepLean.AnomalyCancellation.SMNu.PlusU1.QuadSolToSol
+import HepLean.BeyondTheStandardModel.GeorgiGlashow.Basic
 import HepLean.BeyondTheStandardModel.PatiSalam.Basic
 import HepLean.BeyondTheStandardModel.Spin10.Basic
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic

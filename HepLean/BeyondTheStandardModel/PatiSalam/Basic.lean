@@ -12,7 +12,7 @@ import HepLean.Meta.Informal
 The Pati-Salam model is a petite unified theory that unifies the Standard Model gauge group into
 `SU(4) x SU(2) x SU(2)`.
 
-This file current contains informal-results about the Pati-Salam group.
+This file currently contains informal-results about the Pati-Salam group.
 
 -/
 
