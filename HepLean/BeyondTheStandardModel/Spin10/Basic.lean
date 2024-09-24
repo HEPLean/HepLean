@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.BeyondTheStandardModel.PatiSalam.Basic
+import HepLean.BeyondTheStandardModel.GeorgiGlashow.Basic
 import HepLean.Meta.Informal
 /-!
 
@@ -33,5 +34,20 @@ informal_definition inclSM where
   math :≈ "The compoisiton of ``embedPatiSalam and ``PatiSalam.inclSM."
   ref :≈ "Page 56 of https://math.ucr.edu/home/baez/guts.pdf"
   deps :≈ [``inclPatiSalam, ``PatiSalam.inclSM]
+
+informal_definition inclGeorgiGlashow where
+  physics :≈ "The inclusion of the Georgi-Glashow gauge group into Spin(10)."
+  math :≈ "The Lie group homomorphism from SU(n) → Spin(2n) dicussed on page 46 of
+    https://math.ucr.edu/home/baez/guts.pdf for n = 5."
+  deps :≈ [``GaugeGroupI, ``GeorgiGlashow.GaugeGroupI]
+
+informal_definition inclSMThruGeorgiGlashow where
+  physics :≈ "The inclusion of the Standard Model gauge group into Spin(10)."
+  math :≈ "The composition of ``inclGeorgiGlashow and ``GeorgiGlashow.inclSM."
+  deps :≈ [``inclGeorgiGlashow, ``GeorgiGlashow.inclSM]
+
+informal_lemma inclSM_eq_inclSMThruGeorgiGlashow where
+  math :≈ "The inclusion ``inclSM is equal to the inclusion ``inclSMThruGeorgiGlashow."
+  deps :≈ [``inclSM, ``inclSMThruGeorgiGlashow]
 
 end Spin10Model
