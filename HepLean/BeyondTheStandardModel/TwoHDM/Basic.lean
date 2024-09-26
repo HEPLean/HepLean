@@ -142,7 +142,8 @@ lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =
 -/
 
 /-! TODO: Prove bounded properties of the 2HDM potential.
-  See e.g. https://inspirehep.net/literature/201299. -/
+  See e.g. https://inspirehep.net/literature/201299 and
+  https://arxiv.org/pdf/hep-ph/0605184. -/
 
 /-- The proposition on the coefficents for a potential to be bounded. -/
 def IsBounded : Prop :=

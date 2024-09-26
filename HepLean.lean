@@ -50,6 +50,7 @@ import HepLean.BeyondTheStandardModel.GeorgiGlashow.Basic
 import HepLean.BeyondTheStandardModel.PatiSalam.Basic
 import HepLean.BeyondTheStandardModel.Spin10.Basic
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic
+import HepLean.BeyondTheStandardModel.TwoHDM.GaugeOrbits
 import HepLean.FeynmanDiagrams.Basic
 import HepLean.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.FeynmanDiagrams.Instances.Phi4

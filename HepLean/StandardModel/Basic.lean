@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.LinearAlgebra.Matrix.ToLin
+import HepLean.SpaceTime.Basic
 import HepLean.Meta.Informal
 /-!
 # The Standard Model
@@ -82,5 +83,27 @@ informal_definition GaugeGroup where
   ref :≈ "https://math.ucr.edu/home/baez/guts.pdf"
   deps :≈ [``GaugeGroupI, ``gaugeGroupℤ₆SubGroup, ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
     ``GaugeGroupQuot]
+
+/-!
+
+## Smoothness structure on the gauge group.
+
+-/
+
+informal_lemma gaugeGroupI_lie where
+  math :≈ "The gauge group `GaugeGroupI` is a Lie group.."
+  deps :≈ [``GaugeGroupI]
+
+informal_lemma gaugeGroup_lie where
+  math :≈ "For every q in ``GaugeGroupQuot the group ``GaugeGroup q is a Lie group."
+  deps :≈ [``GaugeGroup]
+
+informal_definition gaugeBundleI where
+  math :≈ "The trivial principal bundle over SpaceTime with structure group ``GaugeGroupI."
+  deps :≈ [``GaugeGroupI, ``SpaceTime]
+
+informal_definition gaugeTransformI where
+  math :≈ "A global section of ``gaugeBundleI."
+  deps :≈ [``gaugeBundleI]
 
 end StandardModel
