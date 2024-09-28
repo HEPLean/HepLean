@@ -212,7 +212,7 @@ def formalToNode (nameSpaces : Array Name) (d : Name) : MetaM String := do
   let prefixName := if nameSpaces.contains d then d else
     d.getPrefix
   let nodeStr := s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=steelblue,
-    href=\"{webPath}#L{lineNo}\", tooltip=\"{docstring}\"]"
+     tooltip=\"{docstring}\"]"
   if prefixName = Lean.Name.anonymous then
     pure nodeStr
   else
@@ -226,7 +226,7 @@ unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × Constant
   let prefixName := if nameSpaces.contains c.2.name then c.2.name else
     c.2.name.getPrefix
   let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,
-    href=\"{webPath}#L{lineNo}\", tooltip=\"{informalLemma.math}\"]"
+    tooltip=\"{informalLemma.math}\"]"
   if prefixName = Lean.Name.anonymous then
     pure nodeStr
   else
@@ -240,7 +240,7 @@ unsafe def informalDefToNode (nameSpaces : Array Name) (c : Import × ConstantIn
   let prefixName := if nameSpaces.contains c.2.name then c.2.name else
     c.2.name.getPrefix
   let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=lightgray,
-    href=\"{webPath}#L{lineNo}\", tooltip=\"{informalDef.math}\"]"
+    tooltip=\"{informalDef.math}\"]"
   if prefixName = Lean.Name.anonymous then
     pure nodeStr
   else
@@ -309,10 +309,8 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
     packmode=\"array1\";
     ];
     tooltip = \"Informal HepLean graph\";
-    node [margin=0.05;  fontsize=10;  fontname=\"Georgia\", height=0.1];
+    node [margin=\"0.2,0.05\";  fontsize=10;  fontname=\"Georgia\", height=0.1];
     bgcolor=\"white\";
-    label=\"Informal dependency graph for HepLean.
-    Blue nodes are formalized, gray are to be formalized.\";
     labelloc=\"t\";
     labeljust=\"l\";
     edge [arrowhead=vee];"
@@ -322,6 +320,153 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
 
 end dotFile
 
+section htmlFile
+
+/-!
+
+## Making the html file for dependency graph.
+
+-/
+
+def formalToHTML (d : Name) : MetaM String := do
+  let lineNo ← getLineNumber d
+  let mod ← getModule d
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (mod.toString.replace "." "/") ++ ".lean"
+  let docstring ← getDocString d
+  pure s!"
+<div id=\"{d}\" class=\"node-text\">
+<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{d}</a></b><br>
+<b>Docstring: </b>{docstring}
+
+</div>"
+
+unsafe def informalLemmaToHTML (c : Import × ConstantInfo) : MetaM String := do
+  let lineNo ← getLineNumber c.2.name
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (c.1.module.toString.replace "." "/") ++ ".lean"
+  let informalLemma ← (constantInfoToInformalLemma c.2)
+  pure s!"
+<div id=\"{c.2.name}\" class=\"node-text\">
+<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{c.2.name}</a></b><br>
+<b>Math description: </b>{informalLemma.math}<br>
+<b>Physics description: </b>{informalLemma.physics}<br>
+</div>"
+
+unsafe def informalDefToHTML (c : Import × ConstantInfo) : MetaM String := do
+  let lineNo ← getLineNumber c.2.name
+  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
+    (c.1.module.toString.replace "." "/") ++ ".lean"
+  let informalDef ← (constantInfoToInformalDefinition c.2)
+  pure s!"
+<div id=\"{c.2.name}\" class=\"node-text\">
+<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{c.2.name}</a></b><br>
+<b>Math description: </b>{informalDef.math}<br>
+<b>Physics description: </b>{informalDef.physics}<br>
+</div>"
+
+unsafe def informalToHTML (c : Import × ConstantInfo) : MetaM String := do
+  if Informal.isInformalLemma c.2 then
+    informalLemmaToHTML c
+  else if Informal.isInformalDef c.2 then
+    informalDefToHTML c
+  else
+    pure ""
+
+unsafe def toHTML (imports : Array Import) : MetaM String := do
+  let informal ← imports.mapM importToInformal
+  let informal := informal.flatten
+  let deps ← (informal.map (fun c => c.2)).mapM informalDependencies
+  let deps := deps.flatten
+  let informal_name := informal.map (fun c => c.2.name)
+  let formal_deps := deps.filter (fun d => d ∉ informal_name)
+  let formal_nodes ← formal_deps.mapM (formalToHTML)
+  let nodes := String.intercalate "\n" formal_nodes.toList
+  let informalNodes ← informal.mapM (informalToHTML)
+  let informalNodes := String.intercalate "\n" informalNodes.toList
+  let header := "
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Graph with Node-Specific Text Display</title>
+    <style>
+        /* Optional styling for the message display */
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        /* Optional: Hide the text content divs */
+        .node-text {
+            display: none;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include D3.js -->
+    <script src=\"https://d3js.org/d3.v5.min.js\"></script>
+    <!-- Include hpcc-js/wasm for Graphviz layout -->
+    <script src=\"https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js\"></script>
+    <!-- Include d3-graphviz for rendering Graphviz graphs -->
+    <script src=\"https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js\"></script>
+
+    <!-- Add a title to the page -->
+    <h1 style=\"text-align: center;\">Interactive Graph</h1>
+
+    <!-- Div to display the graph -->
+    <div id=\"graph\" style=\"width: 100vw; height: 75vh; border: 1px solid black\"></div>
+
+    <!-- Hidden divs containing the text to display when nodes are clicked -->
+
+    <!-- Add more divs for other nodes as needed, each with id equal to the node name -->
+    <div id=\"includedContent\"></div>
+    <!-- Div to display the message when a node is clicked -->
+    <div id=\"message\"></div>"
+  let footer := "
+  <script type=\"text/javascript\">
+        // Load the DOT file and render the graph
+        d3.text(\"InformalDot.dot\").then(function(dotSrc) {
+            var width = window.innerWidth;
+            var height = 0.75 * window.innerHeight;
+
+            // Initialize the graphviz renderer
+            var graphviz = d3.select(\"#graph\")
+                .graphviz()
+                .width(width)
+                .height(height)
+                .fit(true);
+
+            // Render the graph and attach event listeners
+            graphviz.renderDot(dotSrc).on(\"end\", function() {
+                // Attach click event to nodes
+                d3.selectAll('.node').on('click', function() {
+                    // Get the node's name from the title element
+                    var nodeName = d3.select(this).select('title').text();
+
+                    // Get the text associated with the nodeName
+                    var nodeTextElement = document.getElementById(nodeName);
+
+                    if (nodeTextElement) {
+                        var nodeText = nodeTextElement.innerHTML;
+                        // Display the text in the #message div
+                        document.getElementById('message').innerHTML = nodeText;
+                    } else {
+                        // If no element with the nodeName ID exists
+                        document.getElementById('message').innerHTML = 'No information available for node: ' + nodeName;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+"
+  pure (header ++ "\n" ++ nodes ++ "\n" ++
+    informalNodes ++  "\n" ++ footer)
+
+end htmlFile
 /-!
 
 ## Main function
@@ -351,4 +496,10 @@ unsafe def main (args : List String) : IO UInt32 := do
     let dotFile : System.FilePath := {toString := "./docs/InformalDot.dot"}
     IO.FS.writeFile dotFile dot
     IO.println (s!"Dot file made.")
+  /- Making the html file. -/
+  if "mkHTML" ∈ args then
+    let html ← CoreM.withImportModules #[`HepLean] (toHTML imports).run'
+    let htmlFile : System.FilePath := {toString := "./docs/InformalGraph.html"}
+    IO.FS.writeFile htmlFile html
+    IO.println (s!"HTML file made.")
   pure 0
