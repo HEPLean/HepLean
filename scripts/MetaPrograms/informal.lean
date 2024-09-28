@@ -388,7 +388,7 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Interactive Graph with Node-Specific Text Display</title>
+    <title>Informal dependency graph for HepLean</title>
     <style>
         /* Optional styling for the message display */
         #message {
@@ -413,7 +413,7 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
     <script src=\"https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js\"></script>
 
     <!-- Add a title to the page -->
-    <h1 style=\"text-align: center;\">Interactive Graph</h1>
+    <h1 style=\"text-align: center;\">Informal dependency graph for HepLean</h1>
 
     <!-- Div to display the graph -->
     <div id=\"graph\" style=\"width: 100vw; height: 75vh; border: 1px solid black\"></div>
