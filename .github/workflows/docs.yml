@@ -45,7 +45,7 @@ jobs:
         run : lake exe find_TODOs mkFile
 
       - name: make list of informal proofs and lemmas
-        run : lake exe informal mkFile mkDot
+        run : lake exe informal mkFile mkDot mkHTML
 
       - name: Generate svg from dot
         run : dot -Tsvg -o ./docs/graph.svg ./docs/InformalDot.dot
