@@ -414,7 +414,9 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
 
     <!-- Add a title to the page -->
     <h1 style=\"text-align: center;\">Informal dependency graph for HepLean</h1>
-
+    <p style=\"text-align: center;\">Click on a node to display the text associated with it.</p>
+    <p style=\"text-align: center;\">This graph only shows informal results (gray) and their direct formal dependencies (blue).
+    It does not show all results formalised into HepLean.</p>
     <!-- Div to display the graph -->
     <div id=\"graph\" style=\"width: 100vw; height: 75vh; border: 1px solid black\"></div>
 
