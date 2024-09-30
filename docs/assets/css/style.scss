@@ -1,14 +1,18 @@
 ---
 ---
 
+
 @import "{{ site.theme }}";
 
 .page-header {
-  background-image: linear-gradient(42deg, #59837A, #2F4456);
+  background-image: linear-gradient(0deg, #2C3E50, #2C3E50);
 }
 
+
 body {
-  background-color: #E1DEC2;
+  background-color: #fff;
+  font-family: serif;
+
 }
 
 .main-content h1,
