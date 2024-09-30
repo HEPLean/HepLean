@@ -384,7 +384,9 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
   let nodes := String.intercalate "\n" formal_nodes.toList
   let informalNodes ← informal.mapM (informalToHTML)
   let informalNodes := String.intercalate "\n" informalNodes.toList
-  let header := "
+  let header := "---
+layout: default
+---
 <!DOCTYPE html>
 <html>
 <head>
@@ -418,7 +420,7 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
     <p style=\"text-align: center;\">This graph only shows informal results (gray) and their direct formal dependencies (blue).
     It does not show all results formalised into HepLean.</p>
     <!-- Div to display the graph -->
-    <div id=\"graph\" style=\"width: 100vw; height: 75vh; border: 1px solid black\"></div>
+    <div id=\"graph\" style=\"width: 75vw; height: 75vh; border: 1px solid black\"></div>
 
     <!-- Hidden divs containing the text to display when nodes are clicked -->
 
@@ -430,7 +432,7 @@ unsafe def toHTML (imports : Array Import) : MetaM String := do
   <script type=\"text/javascript\">
         // Load the DOT file and render the graph
         d3.text(\"InformalDot.dot\").then(function(dotSrc) {
-            var width = window.innerWidth;
+            var width = 0.75 * window.innerWidth;
             var height = 0.75 * window.innerHeight;
 
             // Initialize the graphviz renderer
