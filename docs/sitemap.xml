@@ -16,10 +16,9 @@
 
    <!-- Informal dependency graph -->
    <url>
-      <loc>https://heplean.github.io/HepLean/InformalGraph.</loc>
+      <loc>https://heplean.github.io/HepLean/InformalGraph</loc>
       <changefreq>daily</changefreq>
       <priority>0.8</priority>
    </url>
-
 
 </urlset>
