@@ -2,61 +2,43 @@
 # Feel free to add content and custom Front Matter to this file.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 # To see the site locally:
-# Run 
+# Run
 # To view changes run: bundle exec jekyll serve
 #layout: home
 ---
-# Content 
 
-- [What is HepLean?](https://heplean.github.io/HepLean/#what-is-heplean)
-- [How to get involved?](https://heplean.github.io/HepLean/#how-to-get-involved)
-- [Coverage](https://heplean.github.io/HepLean/#coverage)
-
-# What is HepLean
+# What is HepLean?
 
 HepLean is an open-source project to digitalise definitions, theorems, proofs, and calculations in high energy physics using the interactive theorem prover Lean 4.
 
-HepLean has the potential to benefit the high energy physics community in four ways: 
-- Make it easier to find results. 
-- Make it easier to automate the creation of new results using e.g. machine learning methods. 
-- Make it easier to check papers and results for mathematical correctness. 
-- Create new avenues through which high energy physics can be taught. 
+HepLean has the potential to benefit the high energy physics community in four ways:
+- Make it easier to find results.
+- Make it easier to automate the creation of new results using e.g. machine learning methods.
+- Make it easier to check papers and results for mathematical correctness.
+- Create new avenues through which high energy physics can be taught.
 
-HepLean is a connection between high energy physics (both formal and phenomenological), 
+HepLean is a connection between high energy physics (both formal and phenomenological),
 computer science, and mathematics.
-# How to get involved? 
 
-There are a number of ways to get involved in HepLean. 
+# How to get involved?
 
-- <b>Improve documentation</b>: If you have never worked on Lean before but have a background 
-in high-energy physics, a good place to start contributing is to improve documentation 
-on existing code in HepLean. If you need any pointers, please get in touch. 
-- <b>Golfing and improving proofs</b>: Many of the proofs in HepLean are not as concise, 
-or as short as they could be. Golfing (making shorter) existing proofs is useful benefit 
-to HepLean. 
-- <b>Improving current areas</b>: There are a number of areas of high energy physics currently in HepLean.
- These are by no means complete, and we would love to see new lemmas, theorems and 
-definitions added.  
-- <b>Add a new area</b>: We want HepLean to expand into a new areas of high energy physics. 
-If you have expertise in any area and would like to see it digitalised, either get in touch or 
-make a relevant pull-request on GitHub. 
-- <b>Develop new tactics</b>: A benefit of Lean is the ability to automate proofs. This 
-is often done through proof tactics. The development of such tactics specific to high-energy physics 
-will make it easier for the high-energy physics to use and adapt to Lean. 
-- <b>Coding aspects</b>: Improvements to GitHub workflows, and other structural aspects of this
-project are greatly appreciated. 
+There are a number of different ways to get involved in HepLean depending on your background.
 
-# Coverage 
+## Physicists
+Physicists, who are not so familiar with Lean, can contribute by adding `informal_definition` and `informal_lemma` to HepLean. These are English written statements of results which can latter be formalised. Informal definitions and lemmas already in HepLean can be found (here)[https://heplean.github.io/HepLean/InformalGraph.html].
 
-Any area not appearing in the below table has zero coverage in HepLean. 
+Here are some tips when writing informal results:
+- For big theorems, break it down into lots of smaller lemmas.
+- Place the informal result in HepLean in the appropriate file.
+- Add dependencies to the `informal_definition` or  `informal_lemma`.
+- Write the `math` field of the informal result in sufficient detail that it can be understood by someone with little other context.
 
-| Area | Low Coverage | Medium | High | How to Help? |
-| --- | --- | --- | --- | --- |
-| [Anomaly cancellation](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html)| ✔️ | ✔️ | ✔️ | Docs, golf |
-| [CKM Matrix](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html) | ✔️ | ✔️ | ✔️ | Docs, golf |
-| [Higgs potential](https://heplean.github.io/HepLean/docs/HepLean/StandardModel/HiggsBoson/Basic.html) | ✔️ |  ✘ |  ✘ | Docs, golf, new lemmas etc. |
-| [Feynman diagrams](https://heplean.github.io/HepLean/docs/HepLean/FeynmanDiagrams/Basic.html) | ✔️ | ✘  | ✘  |  |
-| [Lorentz Group](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html) | ✔️ | ✘  | ✘  | New lemmas etc.|
-| [2HDM](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html) | ✔️ | ✘  | ✘  | New lemmas etc. |
-| All other areas |  ✘ | ✘  | ✘  | New lemmas etc.|
+Physicists can also help by improving documentation on existing results in HepLean.
 
+## Mathematicians with a Lean background
+Mathematicians and people with a Lean background can contribute in a number of ways:
+- Help by formalising `informal_definition` and `informal_lemma` which are currently in HepLean.
+- Help by golfing and refactoring code.
+
+## Computer scientists with a Lean background
+There are a number of metaprograms and infastructure projects which would improve HepLean. If you need help in this direction, please get in touch.
