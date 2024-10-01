@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic
+import HepLean.StandardModel.HiggsBoson.GaugeAction
 import Mathlib.LinearAlgebra.Matrix.PosDef
 /-!
 
@@ -22,38 +23,48 @@ open HiggsField
 noncomputable section
 
 /-- For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
-  defined by ((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂)). -/
+  defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. -/
 def prodMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![⟪Φ1, Φ1⟫_H x, ⟪Φ2, Φ1⟫_H x; ⟪Φ1, Φ2⟫_H x, ⟪Φ2, Φ2⟫_H x]
 
+/-- The 2 x 2 complex matrices made up of components of the two Higgs fields. -/
+def fieldCompMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![Φ1 x 0, Φ1 x 1; Φ2 x 0, Φ2 x 1]
+
+/-- The matrix `prodMatrix Φ1 Φ2 x` is equal to the square of `fieldCompMatrix Φ1 Φ2 x`. -/
+lemma prodMatrix_eq_fieldCompMatrix_sq (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
+    prodMatrix Φ1 Φ2 x = fieldCompMatrix Φ1 Φ2 x * (fieldCompMatrix Φ1 Φ2 x).conjTranspose := by
+  rw [fieldCompMatrix]
+  trans !![Φ1 x 0, Φ1 x 1; Φ2 x 0, Φ2 x 1] *
+    !![conj (Φ1 x 0), conj (Φ2 x 0); conj (Φ1 x 1), conj (Φ2 x 1)]
+  · rw [Matrix.mul_fin_two, prodMatrix, innerProd_expand', innerProd_expand', innerProd_expand',
+      innerProd_expand']
+    funext i j
+    fin_cases i <;> fin_cases j <;> ring_nf
+  · funext i j
+    fin_cases i <;> fin_cases j <;> rfl
+
+local instance : PartialOrder ℂ := Complex.partialOrder
+
+/-- The matrix `prodMatrix` is positive semi-definite. -/
+lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
+    (prodMatrix Φ1 Φ2 x).PosSemidef := by
+  rw [Matrix.posSemidef_iff_eq_transpose_mul_self]
+  use (fieldCompMatrix Φ1 Φ2 x).conjTranspose
+  simpa using prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x
+
 /-- The matrix `prodMatrix` is hermitian. -/
 lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
-    (prodMatrix Φ1 Φ2 x).IsHermitian := by
-  rw [Matrix.IsHermitian]
-  ext i j
-  fin_cases i <;> fin_cases j
-  · simp [prodMatrix]
-  · simp only [prodMatrix, innerProd, PiLp.inner_apply, RCLike.inner_apply, Fin.sum_univ_two,
-    Fin.isValue, Fin.zero_eta, Fin.mk_one, Matrix.conjTranspose_apply, Matrix.of_apply,
-    Matrix.cons_val', Matrix.cons_val_zero, Matrix.empty_val', Matrix.cons_val_fin_one,
-    Matrix.cons_val_one, Matrix.head_fin_const, star_add, star_mul', RCLike.star_def,
-    RingHomCompTriple.comp_apply, RingHom.id_apply, Matrix.head_cons]
-    ring
-  · simp only [prodMatrix, innerProd, PiLp.inner_apply, RCLike.inner_apply, Fin.sum_univ_two,
-    Fin.isValue, Fin.mk_one, Fin.zero_eta, Matrix.conjTranspose_apply, Matrix.of_apply,
-    Matrix.cons_val', Matrix.cons_val_one, Matrix.head_cons, Matrix.empty_val',
-    Matrix.cons_val_fin_one, Matrix.cons_val_zero, star_add, star_mul', RCLike.star_def,
-    RingHomCompTriple.comp_apply, RingHom.id_apply, Matrix.head_fin_const]
-    ring
-  · simp [prodMatrix]
-
-informal_lemma prodMatrix_positive_semidefinite where
-  math :≈ "For all x in ``SpaceTime, ``prodMatrix at `x` is positive semidefinite."
-  deps :≈ [``prodMatrix, ``SpaceTime]
+    (prodMatrix Φ1 Φ2 x).IsHermitian := (prodMatrix_posSemiDef Φ1 Φ2 x).isHermitian
 
 informal_lemma prodMatrix_smooth where
   math :≈ "The map ``prodMatrix is a smooth function on spacetime."
   deps :≈ [``prodMatrix]
+
+informal_lemma prodMatrix_invariant where
+  math :≈ "The map ``prodMatrix is invariant under the simultanous action of ``gaugeAction
+   on the two Higgs fields."
+  deps :≈ [``prodMatrix, ``gaugeAction]
 
 end
 end TwoHDM
