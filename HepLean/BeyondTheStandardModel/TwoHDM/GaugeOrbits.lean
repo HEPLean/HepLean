@@ -44,6 +44,7 @@ lemma prodMatrix_eq_fieldCompMatrix_sq (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
   · funext i j
     fin_cases i <;> fin_cases j <;> rfl
 
+/-- An instance of `PartialOrder` on `ℂ` defined through `Complex.partialOrder`. -/
 local instance : PartialOrder ℂ := Complex.partialOrder
 
 /-- The matrix `prodMatrix` is positive semi-definite. -/
