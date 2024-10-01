@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction
 import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.Matrix
 /-!
 
 # Gauge orbits for the 2HDM
@@ -19,6 +21,10 @@ namespace TwoHDM
 open StandardModel
 open ComplexConjugate
 open HiggsField
+open Manifold
+open Matrix
+open Complex
+open SpaceTime
 
 noncomputable section
 
@@ -47,6 +53,15 @@ lemma prodMatrix_eq_fieldCompMatrix_sq (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
 /-- An instance of `PartialOrder` on `ℂ` defined through `Complex.partialOrder`. -/
 local instance : PartialOrder ℂ := Complex.partialOrder
 
+/-- An instance of `NormedAddCommGroup` on `Matrix (Fin 2) (Fin 2) ℂ` defined through
+  `Matrix.normedAddCommGroup`. -/
+local instance : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
+  Matrix.normedAddCommGroup
+
+/-- An instance of `NormedSpace` on `Matrix (Fin 2) (Fin 2) ℂ` defined through
+  `Matrix.normedSpace`. -/
+local instance : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Matrix.normedSpace
+
 /-- The matrix `prodMatrix` is positive semi-definite. -/
 lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
     (prodMatrix Φ1 Φ2 x).PosSemidef := by
@@ -58,14 +73,29 @@ lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
 lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
     (prodMatrix Φ1 Φ2 x).IsHermitian := (prodMatrix_posSemiDef Φ1 Φ2 x).isHermitian
 
-informal_lemma prodMatrix_smooth where
-  math :≈ "The map ``prodMatrix is a smooth function on spacetime."
-  deps :≈ [``prodMatrix]
+/-- The map `prodMatrix` is a smooth function on spacetime. -/
+lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
+    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ,  Matrix (Fin 2) (Fin 2) ℂ) (prodMatrix Φ1 Φ2) := by
+  rw [show 𝓘(ℝ,  Matrix (Fin 2) (Fin 2) ℂ) = modelWithCornersSelf ℝ (Fin 2 → Fin 2 → ℂ) from rfl,
+    smooth_pi_space]
+  intro i
+  rw [smooth_pi_space]
+  intro j
+  fin_cases i <;> fin_cases j <;>
+    simpa only [prodMatrix, Fin.zero_eta, Fin.isValue, of_apply, cons_val', cons_val_zero,
+      empty_val', cons_val_fin_one] using smooth_innerProd _ _
 
 informal_lemma prodMatrix_invariant where
   math :≈ "The map ``prodMatrix is invariant under the simultanous action of ``gaugeAction
    on the two Higgs fields."
   deps :≈ [``prodMatrix, ``gaugeAction]
+
+informal_lemma prodMatrix_to_higgsField where
+  math :≈ "Given any smooth map ``f from spacetime to 2 x 2 complex matrices landing on positive
+    semi-definite matrices, there exist smooth Higgs fields ``Φ1 and ``Φ2 such that
+    ``f is equal to ``prodMatrix Φ1 Φ2."
+  deps :≈ [``prodMatrix, ``HiggsField, ``prodMatrix_smooth]
+  ref :≈ "https://arxiv.org/pdf/hep-ph/0605184"
 
 end
 end TwoHDM
