@@ -26,6 +26,23 @@ open SpaceTime
 
 noncomputable section
 
+
+/-!
+
+## Some basic properties about SL(2, ℂ)
+
+Possibly to be moved to mathlib at some point.
+-/
+
+lemma inverse_coe (M : SL(2, ℂ)) : M.1⁻¹ = (M⁻¹).1 := by
+  apply Matrix.inv_inj
+  simp
+  have h1 : IsUnit M.1.det := by
+    simp
+  rw [Matrix.inv_adjugate M.1 h1]
+  · simp
+  · simp
+
 /-!
 
 ## Representation of SL(2, ℂ) on spacetime
