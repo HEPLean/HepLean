@@ -26,6 +26,7 @@ open Matrix
 open Complex
 open ComplexConjugate
 open SpaceTime
+open InnerProductSpace
 
 /-!
 

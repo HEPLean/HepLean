@@ -39,8 +39,7 @@ namespace AnomalyFreePerp
 and for the cube line to sit in the quad. -/
 def LineEqProp (R : MSSMACC.AnomalyFreePerp) : Prop := α₁ R = 0 ∧ α₂ R = 0 ∧ α₃ R = 0
 
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (LineEqProp R) := by
-  apply And.decidable
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (LineEqProp R) := instDecidableAnd
 
 /-- A condition on `Sols` which we will show in `linEqPropSol_iff_proj_linEqProp` that is equivalent
   to the condition that the `proj` of the solution satisfies `lineEqProp`. -/
@@ -80,8 +79,7 @@ entirely in the quadratic surface. -/
 def InQuadProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
     quadBiLin R.val R.val = 0 ∧ quadBiLin Y₃.val R.val = 0 ∧ quadBiLin B₃.val R.val = 0
 
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InQuadProp R) := by
-  apply And.decidable
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InQuadProp R) := instDecidableAnd
 
 /-- A condition which is satisfied if the plane spanned by the solutions `R`, `Y₃` and `B₃`
 lies entirely in the quadratic surface. -/
@@ -126,8 +124,7 @@ def InCubeProp (R : MSSMACC.AnomalyFreePerp) : Prop :=
     cubeTriLin R.val R.val R.val = 0 ∧ cubeTriLin R.val R.val B₃.val = 0 ∧
     cubeTriLin R.val R.val Y₃.val = 0
 
-instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InCubeProp R) := by
-  apply And.decidable
+instance (R : MSSMACC.AnomalyFreePerp) : Decidable (InCubeProp R) := instDecidableAnd
 
 /-- A condition which is satisfied if the plane spanned by the solutions `R`, `Y₃` and `B₃`
 lies entirely in the cubic surface. -/

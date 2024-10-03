@@ -170,7 +170,7 @@ lemma symm (h : ContrPerm l l') : ContrPerm l' l := by
   rw [ContrPerm] at h ⊢
   apply And.intro h.1.symm
   apply And.intro (Subperm.symm h.2.1 h.1)
-  rw [← Function.comp.assoc, ← h.2.2, Function.comp.assoc, Function.comp.assoc]
+  rw [← Function.comp_assoc, ← h.2.2, Function.comp_assoc, Function.comp_assoc]
   rw [show (l.contr.getDualInOtherEquiv l'.contr) =
     (l'.contr.getDualInOtherEquiv l.contr).symm from rfl]
   simp only [Equiv.symm_comp_self, CompTriple.comp_eq]

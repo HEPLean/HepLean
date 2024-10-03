@@ -97,7 +97,8 @@ noncomputable abbrev timeVec : (LorentzVector d) := e (Sum.inl 0)
 
 lemma timeVec_space : (@timeVec d).space = 0 := by
   funext i
-  simp only [space, Function.comp_apply, stdBasis_apply, Fin.isValue, ↓reduceIte, PiLp.zero_apply]
+  simp only [space, Function.comp_apply, stdBasis_apply, Fin.isValue, reduceCtorEq, ↓reduceIte,
+    PiLp.zero_apply]
 
 lemma timeVec_time: (@timeVec d).time = 1 := by
   simp only [time, Fin.isValue, stdBasis_apply, ↓reduceIte]

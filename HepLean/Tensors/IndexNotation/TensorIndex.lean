@@ -172,7 +172,7 @@ lemma contr_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :
       Function.comp_apply, LinearEquiv.coe_mk, Equiv.cast_apply, LinearEquiv.coe_symm_mk, cast_cast]
     apply cast_eq_iff_heq.mpr
     let hl := i.contrEquiv_on_withDual_empty l h
-    exact let_value_heq f hl
+    exact congr_arg_heq f hl
 
 omit [DecidableEq 𝓣.Color] in
 lemma contr_tensor_of_withDual_empty (T : 𝓣.TensorIndex) (h : T.withDual = ∅) :

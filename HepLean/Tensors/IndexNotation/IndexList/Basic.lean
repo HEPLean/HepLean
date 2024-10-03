@@ -309,27 +309,27 @@ lemma filter_sort_comm {n : ℕ} (s : Finset (Fin n)) (p : Fin n → Prop) [Deci
     intro m
     simp only [Multiset.quot_mk_to_coe'', Multiset.coe_sort, Multiset.filter_coe]
     have h1 : List.Sorted (fun i j => i ≤ j) (List.filter (fun b => decide (p b))
-        (List.mergeSort (fun i j => i ≤ j) m)) := by
+        (List.mergeSort' (fun i j => i ≤ j) m)) := by
       simp only [List.Sorted]
       rw [List.pairwise_filter, List.pairwise_iff_get]
       intro i j h1 _ _
-      have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort (fun i j => i ≤ j) m) := by
-        exact List.sorted_mergeSort (fun i j => i ≤ j) m
+      have hs : List.Sorted (fun i j => i ≤ j) (List.mergeSort' (fun i j => i ≤ j) m) := by
+        exact List.sorted_mergeSort' (fun i j => i ≤ j) m
       simp only [List.Sorted] at hs
       rw [List.pairwise_iff_get] at hs
       exact hs i j h1
-    have hp1 : (List.mergeSort (fun i j => i ≤ j) m).Perm m := by
-      exact List.perm_mergeSort (fun i j => i ≤ j) m
-    have hp2 : (List.filter (fun b => decide (p b)) ((List.mergeSort (fun i j => i ≤ j) m))).Perm
+    have hp1 : (List.mergeSort' (fun i j => i ≤ j) m).Perm m := by
+      exact List.perm_mergeSort' (fun i j => i ≤ j) m
+    have hp2 : (List.filter (fun b => decide (p b)) ((List.mergeSort' (fun i j => i ≤ j) m))).Perm
         (List.filter (fun b => decide (p b)) m) := by
       exact List.Perm.filter (fun b => decide (p b)) hp1
     have hp3 : (List.filter (fun b => decide (p b)) m).Perm
-      (List.mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)) := by
-      exact List.Perm.symm (List.perm_mergeSort (fun i j => i ≤ j)
+      (List.mergeSort' (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)) := by
+      exact List.Perm.symm (List.perm_mergeSort' (fun i j => i ≤ j)
       (List.filter (fun b => decide (p b)) m))
     have hp4 := hp2.trans hp3
     refine List.eq_of_perm_of_sorted hp4 h1 ?_
-    exact List.sorted_mergeSort (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
+    exact List.sorted_mergeSort' (fun i j => i ≤ j) (List.filter (fun b => decide (p b)) m)
   exact this s.val
 
 omit [IndexNotation X] [Fintype X] [DecidableEq X] in

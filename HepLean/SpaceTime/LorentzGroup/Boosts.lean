@@ -98,7 +98,7 @@ lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
     LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, basis_left, map_smul, smul_eq_mul, map_neg,
     mul_eq_mul_left_iff]
   ring_nf
-  exact (true_or_iff (η μ μ = 0)).mpr trivial
+  exact (true_or (η μ μ = 0)).mpr trivial
 
 open minkowskiMatrix LorentzVector in
 lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by

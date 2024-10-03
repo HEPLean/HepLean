@@ -31,7 +31,8 @@ open minkowskiMatrix
 lemma transpose_eta (A : lorentzAlgebra) : A.1ᵀ * η = - η * A.1 := by
   have h1 := A.2
   erw [mem_skewAdjointMatricesLieSubalgebra] at h1
-  simpa [LieAlgebra.Orthogonal.so', IsSkewAdjoint, IsAdjointPair] using h1
+  simpa only [neg_mul, mem_skewAdjointMatricesSubmodule, IsSkewAdjoint, IsAdjointPair,
+    mul_neg] using h1
 
 lemma mem_of_transpose_eta_eq_eta_mul_self {A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ}
     (h : Aᵀ * η = - η * A) : A ∈ lorentzAlgebra := by
@@ -96,8 +97,7 @@ instance lorentzVectorAsLieRingModule : LieRingModule lorentzAlgebra (LorentzVec
 
 @[simps!]
 instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra (LorentzVector 3) where
-  smul_lie r Λ x := by
-    simp [Bracket.bracket, smul_mulVec_assoc]
+  smul_lie r Λ x := smul_mulVec_assoc r Λ.1 x
   lie_smul r Λ x := by
     simp only [Bracket.bracket]
     rw [mulVec_smul]
