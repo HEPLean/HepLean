@@ -21,7 +21,7 @@ open Matrix
 open MatrixGroups
 open Complex
 
-/-- A 2×2-complex matrix formed from a space-time point. -/
+/-- A 2×2-complex matrix formed from a Lorentz vector point. -/
 @[simp]
 def toMatrix (x : LorentzVector 3) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![x.time + x.space 2, x.space 0 - x.space 1 * I; x.space 0 + x.space 1 * I, x.time - x.space 2]
@@ -34,12 +34,12 @@ lemma toMatrix_isSelfAdjoint (x : LorentzVector 3) : IsSelfAdjoint (toMatrix x) 
     simp [toMatrix, conj_ofReal]
   rfl
 
-/-- A self-adjoint matrix formed from a space-time point. -/
+/-- A self-adjoint matrix formed from a Lorentz vector point. -/
 @[simps!]
 def toSelfAdjointMatrix' (x : LorentzVector 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   ⟨toMatrix x, toMatrix_isSelfAdjoint x⟩
 
-/-- A self-adjoint matrix formed from a space-time point. -/
+/-- A self-adjoint matrix formed from a Lorentz vector point. -/
 @[simp]
 noncomputable def fromSelfAdjointMatrix' (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     LorentzVector 3 := fun i =>

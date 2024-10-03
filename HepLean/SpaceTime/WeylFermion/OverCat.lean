@@ -9,6 +9,7 @@ import Mathlib.CategoryTheory.Monoidal.Category
 import Mathlib.CategoryTheory.Comma.Over
 import Mathlib.CategoryTheory.Core
 import HepLean.SpaceTime.WeylFermion.Basic
+import HepLean.SpaceTime.LorentzVector.Complex
 /-!
 
 ## Category over color
@@ -49,7 +50,86 @@ lemma toEquiv_symm_apply (m : f ⟶ g) (i : g.left) :
     f.hom ((toEquiv m).symm i) = g.hom i := by
   simpa [toEquiv, types_comp] using congrFun m.inv.w i
 
+lemma toEquiv_comp_hom  (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
+  ext x
+  simpa [types_comp, toEquiv] using congrFun m.hom.w x
+
+
+
 end Hom
+
+instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
+  tensorObj f g := Over.mk (Sum.elim f.hom g.hom)
+  tensorUnit := Over.mk Empty.elim
+  whiskerLeft X Y1 Y2 m := Over.isoMk (Equiv.sumCongr (Equiv.refl X.left) (Hom.toEquiv m)).toIso
+    (by
+      ext x
+      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
+        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
+      rw [Sum.elim_map, Hom.toEquiv_comp_hom]
+      rfl)
+  whiskerRight m X := Over.isoMk (Equiv.sumCongr (Hom.toEquiv m) (Equiv.refl X.left)).toIso
+    (by
+      ext x
+      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
+        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
+      rw [Sum.elim_map, Hom.toEquiv_comp_hom]
+      rfl)
+  associator X Y Z := {
+    hom := Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Functor.const_obj_obj, Equiv.sumAssoc,
+        Equiv.toIso_hom, Equiv.coe_fn_mk, types_comp]
+      ext x
+      simp only [Function.comp_apply]
+      cases x with
+      | inl val =>
+        cases val with
+        | inl val_1 => simp_all only [Sum.elim_inl]
+        | inr val_2 => simp_all only [Sum.elim_inl, Sum.elim_inr, Function.comp_apply]
+      | inr val_1 => simp_all only [Sum.elim_inr, Function.comp_apply]),
+    inv := (Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Functor.const_obj_obj, Equiv.sumAssoc,
+        Equiv.toIso_hom, Equiv.coe_fn_mk, types_comp]
+      ext x
+      simp only [Function.comp_apply]
+      cases x with
+      | inl val =>
+        cases val with
+        | inl val_1 => simp_all only [Sum.elim_inl]
+        | inr val_2 => simp_all only [Sum.elim_inl, Sum.elim_inr, Function.comp_apply]
+      | inr val_1 => simp_all only [Sum.elim_inr, Function.comp_apply])).symm,
+    hom_inv_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
+      rfl,
+    inv_hom_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.inv_hom_id]
+      rfl}
+  leftUnitor X := {
+    hom := Over.isoMk (Equiv.emptySum Empty X.left).toIso
+    inv := (Over.isoMk (Equiv.emptySum Empty X.left).toIso).symm
+    hom_inv_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
+      rfl,
+    inv_hom_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]}
+  rightUnitor X := {
+    hom := Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
+    inv := (Over.isoMk (Equiv.sumEmpty X.left Empty).toIso).symm
+    hom_inv_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]
+      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
+      rfl,
+    inv_hom_id := by
+      apply CategoryTheory.Iso.ext
+      erw [CategoryTheory.Iso.trans_hom]}
 
 end OverColor
 
@@ -72,6 +152,8 @@ inductive Color
   | downL : Color
   | upR : Color
   | downR : Color
+  | up : Color
+  | down : Color
 
 /-- The corresponding representations associated with a color. -/
 def colorToRep (c : Color) : Rep ℂ SL(2, ℂ) :=
@@ -80,6 +162,8 @@ def colorToRep (c : Color) : Rep ℂ SL(2, ℂ) :=
   | Color.downL => leftHanded
   | Color.upR => altRightHanded
   | Color.downR => rightHanded
+  | Color.up => Lorentz.complexContr
+  | Color.down => Lorentz.complexCo
 
 /-- The linear equivalence between `colorToRep c1` and `colorToRep c2` when `c1 = c2`. -/
 def colorToRepCongr {c1 c2 : Color} (h : c1 = c2) : colorToRep c1 ≃ₗ[ℂ] colorToRep c2 where
@@ -172,44 +256,34 @@ def colorFun : OverColor Color ⥤ Rep ℂ SL(2, ℂ) where
   obj := colorFun.obj'
   map := colorFun.map'
   map_id f := by
-    simp only
     ext x
-    refine PiTensorProduct.induction_on' x ?_ (by
-      intro x y hx hy
+    refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
       simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
         Function.comp_apply, hy])
-    intro r x
     simp only [CategoryTheory.Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
       _root_.map_smul, Action.id_hom, ModuleCat.id_apply]
     apply congrArg
-    rw [colorFun.map']
     erw [colorFun.mapToLinearEquiv'_tprod]
-    apply congrArg
-    funext i
-    rfl
+    exact congrArg _ (funext (fun i => rfl))
   map_comp {X Y Z} f g := by
-    simp only
     ext x
-    refine PiTensorProduct.induction_on' x ?_ (by
-      intro x y hx hy
+    refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
       simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
         Function.comp_apply, hy])
-    intro r x
     simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, _root_.map_smul,
       Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
     apply congrArg
     rw [colorFun.map', colorFun.map', colorFun.map']
-    simp only
     change (colorFun.mapToLinearEquiv' (CategoryTheory.CategoryStruct.comp f g))
       ((PiTensorProduct.tprod ℂ) x) =
       (colorFun.mapToLinearEquiv' g) ((colorFun.mapToLinearEquiv' f) ((PiTensorProduct.tprod ℂ) x))
     rw [colorFun.mapToLinearEquiv'_tprod, colorFun.mapToLinearEquiv'_tprod]
     erw [colorFun.mapToLinearEquiv'_tprod]
-    apply congrArg
-    funext i
+    refine congrArg _ (funext (fun i => ?_))
     simp only [colorToRepCongr, Function.comp_apply, Equiv.cast_symm, LinearEquiv.coe_mk,
       Equiv.cast_apply, cast_cast, cast_inj]
     rfl
+
 
 end
 end Fermion
