@@ -66,7 +66,7 @@ def arrayImportSorted (imports : Array Import) : IO Bool :=  do
   return true if this is NOT the case. -/
 def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
     IO Bool := do
-  let names : HashSet Name := HashSet.ofArray (modData.imports.map (·.module))
+  let names : Std.HashSet Name := Std.HashSet.ofArray (modData.imports.map (·.module))
   let mut warned := false
   let nameArray := reqImports.filterMap (
     fun req => if !names.contains req then
