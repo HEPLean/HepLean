@@ -129,7 +129,9 @@ lemma mem_withDualInOther_of_withUniqueDualInOther (i : l.withUniqueDualInOther 
 
 @[simp]
 lemma withDual_isSome (i : l.withDual) : (l.getDual? i).isSome := by
-  simpa [withDual] using i.2
+  have hx := i.2
+  simp only [Finset.mem_filter, withDual] at hx
+  exact hx.2
 
 @[simp]
 lemma mem_withDual_iff_isSome (i : Fin l.length) : i ∈ l.withDual ↔ (l.getDual? i).isSome := by

@@ -156,6 +156,7 @@ lemma one_add_metric_non_zero : 1 + ⟪f, f'.1.1⟫ₘ ≠ 0 := by
 
 section
 variable {v w : NormOneLorentzVector d}
+open InnerProductSpace
 
 lemma metric_reflect_mem_mem (h : v ∈ FuturePointing d) (hw : w ∈ FuturePointing d) :
     0 ≤ ⟪v.1, w.1.spaceReflection⟫ₘ := by

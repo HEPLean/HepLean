@@ -85,7 +85,11 @@ def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
       have h := congrFun F.w x
       simp only [Functor.const_obj_obj, Functor.id_obj, Functor.id_map, types_comp_apply,
         CostructuredArrow.right_eq_id, Functor.const_obj_map, types_id_apply] at h
-      simpa [h] using x.2⟩
+      simp only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage, Set.mem_singleton_iff]
+      obtain ⟨val, property⟩ := x
+      simp_all only
+      simp_all only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage,
+        Set.mem_singleton_iff]⟩
 
 /-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
   `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`. -/
@@ -288,7 +292,7 @@ instance diagramVertexPropDecidable
     (f : 𝓥 ⟶ P.VertexLabel) : Decidable (P.DiagramVertexProp F f) :=
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
-    (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
+    (fun _ => @instDecidableAnd _ _ _ (@Fintype.decidablePiFintype _ _
     (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramVertexProp_iff F f).symm
 
@@ -298,7 +302,7 @@ instance diagramEdgePropDecidable
     (f : 𝓔 ⟶ P.EdgeLabel) : Decidable (P.DiagramEdgeProp F f) :=
   @decidable_of_decidable_of_iff _ _
     (@Fintype.decidableForallFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
-    (fun _ => @And.decidable _ _ _ (@Fintype.decidablePiFintype _ _
+    (fun _ => @instDecidableAnd _ _ _ (@Fintype.decidablePiFintype _ _
     (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramEdgeProp_iff F f).symm
 
@@ -371,7 +375,7 @@ instance CondDecidable [IsFinitePreFeynmanRule P] {𝓔 𝓥 𝓱𝓔 : Type} (�
     (𝓱𝓔To𝓔𝓥 : 𝓱𝓔 → P.HalfEdgeLabel × 𝓔 × 𝓥)
     [Fintype 𝓥] [DecidableEq 𝓥] [Fintype 𝓔] [DecidableEq 𝓔] [h : Fintype 𝓱𝓔] [DecidableEq 𝓱𝓔] :
     Decidable (Cond 𝓔𝓞 𝓥𝓞 𝓱𝓔To𝓔𝓥) :=
-  @And.decidable _ _
+  @instDecidableAnd _ _
     (@diagramEdgePropDecidable P _ _ _ _ _ (Over.mk 𝓱𝓔To𝓔𝓥) _ h 𝓔𝓞)
     (@diagramVertexPropDecidable P _ _ _ _ _ (Over.mk 𝓱𝓔To𝓔𝓥) _ h 𝓥𝓞)
 
@@ -569,7 +573,7 @@ instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFin
 
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) : Decidable (Cond 𝓔 𝓥 𝓱𝓔) :=
-  And.decidable
+  instDecidableAnd
 
 /-- Making a Feynman diagram from maps of edges, vertices and half-edges. -/
 @[simps! 𝓔𝓞_left 𝓥𝓞_left 𝓱𝓔To𝓔𝓥_left]
@@ -712,10 +716,10 @@ def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
   ∧ (F.𝓱𝓔To𝓔𝓥.hom a).2.2 = x ∧ (F.𝓱𝓔To𝓔𝓥.hom b).2.2 = y)
 
 instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
-  @And.decidable _ _ _ $
+  @instDecidableAnd _ _ _ $
   @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _ (
-  fun _ => @And.decidable _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
-    @And.decidable _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
+  fun _ => @instDecidableAnd _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
+    @instDecidableAnd _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
     (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _) _
 
 /-- From a Feynman diagram the simple graph showing those vertices which are connected. -/
@@ -736,7 +740,7 @@ instance [IsFiniteDiagram F] : DecidableRel F.toSimpleGraph.Adj :=
 
 instance [IsFiniteDiagram F] :
   Decidable (F.toSimpleGraph.Preconnected ∧ Nonempty F.𝓥) :=
-  @And.decidable _ _ _ $ decidable_of_iff _ Finset.univ_nonempty_iff
+  @instDecidableAnd _ _ _ $ decidable_of_iff _ Finset.univ_nonempty_iff
 
 instance [IsFiniteDiagram F] : Decidable F.toSimpleGraph.Connected :=
   decidable_of_iff _ (SimpleGraph.connected_iff F.toSimpleGraph).symm

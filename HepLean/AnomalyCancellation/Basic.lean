@@ -230,7 +230,7 @@ structure Hom (χ η : ACCSystem) where
 def Hom.comp {χ η ε : ACCSystem} (g : Hom η ε) (f : Hom χ η) : Hom χ ε where
   charges := LinearMap.comp g.charges f.charges
   anomalyFree := g.anomalyFree ∘ f.anomalyFree
-  commute := by rw [LinearMap.coe_comp, Function.comp.assoc, f.commute,
-    ← Function.comp.assoc, g.commute, Function.comp.assoc]
+  commute := by rw [LinearMap.coe_comp, Function.comp_assoc, f.commute,
+    ← Function.comp_assoc, g.commute, Function.comp_assoc]
 
 end ACCSystem

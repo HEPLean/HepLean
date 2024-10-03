@@ -303,7 +303,8 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
     rw [cb_eq_zero_of_ud_us_zero ha] at h1
     simp at h1
     simp only [VcdAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, VcsAbs]
-    linear_combination ← h1
+    rw [← h1]
+    ring
   · simp only [VcdAbs, Fin.isValue, sub_nonneg, sq_le_one_iff_abs_le_one]
     rw [@abs_le]
     have h1 := VAbs_leq_one 1 0 ⟦V⟧

@@ -331,7 +331,8 @@ lemma countSelf_eq_countDual_iff_of_isSome (hl : l.OnlyUniqueDuals)
             exact hn hn''
           erw [hm'']
           rfl
-        · exact true_iff_iff.mpr hm
+        · rw [true_iff]
+          exact hm
       · simp only [hm, iff_false, ne_eq]
         simp only [colorMap, List.get_eq_getElem] at hm
         have hm' : decide (l.val[↑i].toColor = 𝓒.τ l.val[↑i].toColor) = false := by simpa using hm

@@ -63,6 +63,7 @@ def toLinearMapSelfAdjointMatrix (M : SL(2, ℂ)) :
         conjTranspose_mul, conjTranspose_conjTranspose,
         (star_eq_conjTranspose A.1).symm.trans $ selfAdjoint.mem_iff.mp A.2]⟩
   map_add' A B := by
+    simp only [AddSubgroup.coe_add, AddMemClass.mk_add_mk, Subtype.mk.injEq]
     noncomm_ring [AddSubmonoid.coe_add, AddSubgroup.coe_toAddSubmonoid, AddSubmonoid.mk_add_mk,
       Subtype.mk.injEq]
   map_smul' r A := by

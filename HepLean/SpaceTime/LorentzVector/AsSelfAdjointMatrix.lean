@@ -98,20 +98,36 @@ noncomputable def toSelfAdjointMatrix :
     · rw [show (x + y) (Sum.inl 0) = x (Sum.inl 0) + y (Sum.inl 0) from rfl]
       rw [show (x + y) (Sum.inr 2) = x (Sum.inr 2) + y (Sum.inr 2) from rfl]
       simp only [Fin.isValue, ofReal_add, Fin.zero_eta, cons_val_zero]
+      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
+        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
+        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_zero, empty_val',
+        cons_val_fin_one]
       ring
     · rw [show (x + y) (Sum.inr 0) = x (Sum.inr 0) + y (Sum.inr 0) from rfl]
       rw [show (x + y) (Sum.inr 1) = x (Sum.inr 1) + y (Sum.inr 1) from rfl]
       simp only [Fin.isValue, ofReal_add, Fin.mk_one, cons_val_one, head_cons, Fin.zero_eta,
         cons_val_zero]
+      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
+        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
+        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_one, empty_val',
+        cons_val_fin_one, cons_val_zero]
       ring
     · rw [show (x + y) (Sum.inr 0) = x (Sum.inr 0) + y (Sum.inr 0) from rfl]
       rw [show (x + y) (Sum.inr 1) = x (Sum.inr 1) + y (Sum.inr 1) from rfl]
       simp only [Fin.isValue, ofReal_add, Fin.zero_eta, cons_val_zero, Fin.mk_one, cons_val_one,
         head_fin_const]
+      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
+        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
+        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_zero, empty_val',
+        cons_val_fin_one, cons_val_one, head_fin_const]
       ring
     · rw [show (x + y) (Sum.inl 0) = x (Sum.inl 0) + y (Sum.inl 0) from rfl]
       rw [show (x + y) (Sum.inr 2) = x (Sum.inr 2) + y (Sum.inr 2) from rfl]
       simp only [Fin.isValue, ofReal_add, Fin.mk_one, cons_val_one, head_cons, head_fin_const]
+      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
+        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
+        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_one, empty_val',
+        cons_val_fin_one, head_fin_const]
       ring
   map_smul' r x := by
     ext i j : 2

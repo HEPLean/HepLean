@@ -75,7 +75,7 @@ lemma orderEmbOfFin_univ (n m : ℕ) (h : n = m) :
     intro x
     exact Finset.mem_univ ((Fin.castOrderIso (Eq.symm h)).toFun x)
     exact fun ⦃a b⦄ a => a
-  exact Eq.symm (Fin.orderEmbedding_eq (congrArg Set.range (id (Eq.symm h1))))
+  exact Eq.symm (OrderEmbedding.range_inj.mp (congrArg Set.range (id (Eq.symm h1))))
 
 /-!
 

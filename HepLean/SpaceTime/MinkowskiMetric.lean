@@ -17,7 +17,7 @@ of Lorentz vectors in d dimensions.
 -/
 
 open Matrix
-
+open InnerProductSpace
 /-!
 
 # The definition of the Minkowski Matrix

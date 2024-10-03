@@ -51,8 +51,8 @@ variable {d : ℕ} {X X' Y Y' Z W : Type} [Fintype X] [DecidableEq X] [Fintype Y
 /-- A relation on colors which is true if the two colors are equal or are duals. -/
 def colorRel (μ ν : 𝓒.Color) : Prop := μ = ν ∨ μ = 𝓒.τ ν
 
-instance : Decidable (colorRel 𝓒 μ ν) :=
-  Or.decidable
+instance : Decidable (colorRel 𝓒 μ ν) := instDecidableOr
+
 omit [Fintype 𝓒.Color] [DecidableEq 𝓒.Color]
 /-- An equivalence relation on colors which is true if the two colors are equal or are duals. -/
 lemma colorRel_equivalence : Equivalence 𝓒.colorRel where
@@ -90,8 +90,7 @@ instance colorSetoid : Setoid 𝓒.Color := ⟨𝓒.colorRel, 𝓒.colorRel_equi
 def colorQuot (μ : 𝓒.Color) : Quotient 𝓒.colorSetoid :=
   Quotient.mk 𝓒.colorSetoid μ
 
-instance (μ ν : 𝓒.Color) : Decidable (μ ≈ ν) :=
-  Or.decidable
+instance (μ ν : 𝓒.Color) : Decidable (μ ≈ ν) := instDecidableOr
 
 instance : DecidableEq (Quotient 𝓒.colorSetoid) :=
   instDecidableEqQuotientOfDecidableEquiv
