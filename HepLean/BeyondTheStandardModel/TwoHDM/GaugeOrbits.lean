@@ -75,8 +75,8 @@ lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
 
 /-- The map `prodMatrix` is a smooth function on spacetime. -/
 lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ,  Matrix (Fin 2) (Fin 2) ℂ) (prodMatrix Φ1 Φ2) := by
-  rw [show 𝓘(ℝ,  Matrix (Fin 2) (Fin 2) ℂ) = modelWithCornersSelf ℝ (Fin 2 → Fin 2 → ℂ) from rfl,
+    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Matrix (Fin 2) (Fin 2) ℂ) (prodMatrix Φ1 Φ2) := by
+  rw [show 𝓘(ℝ, Matrix (Fin 2) (Fin 2) ℂ) = modelWithCornersSelf ℝ (Fin 2 → Fin 2 → ℂ) from rfl,
     smooth_pi_space]
   intro i
   rw [smooth_pi_space]
@@ -87,7 +87,7 @@ lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
 
 informal_lemma prodMatrix_invariant where
   math :≈ "The map ``prodMatrix is invariant under the simultanous action of ``gaugeAction
-   on the two Higgs fields."
+    on the two Higgs fields."
   deps :≈ [``prodMatrix, ``gaugeAction]
 
 informal_lemma prodMatrix_to_higgsField where

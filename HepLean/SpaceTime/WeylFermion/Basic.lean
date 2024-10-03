@@ -18,7 +18,6 @@ https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrul
 
 -/
 
-
 namespace Fermion
 noncomputable section
 
@@ -28,7 +27,7 @@ open Complex
 open TensorProduct
 
 /-- The vector space ℂ^2 carrying the fundamental representation of SL(2,C).
-  In index notation corresponds to a Weyl fermion with indices ψ_a.-/
+  In index notation corresponds to a Weyl fermion with indices ψ_a. -/
 def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : LeftHandedModule) =>
@@ -49,7 +48,7 @@ def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
       mulVec_mulVec]}
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
-    M → (M⁻¹)ᵀ.  In index notation corresponds to a Weyl fermion with indices ψ^a. -/
+    M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ^a. -/
 def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : AltLeftHandedModule) =>
@@ -72,7 +71,7 @@ def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     exact transpose_mul _ _}
 
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
-  In index notation corresponds to a Weyl fermion with indices ψ_{dot a}.-/
+  In index notation corresponds to a Weyl fermion with indices ψ_{dot a}. -/
 def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : RightHandedModule) =>
@@ -93,7 +92,7 @@ def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
-    In index notation this corresponds to a Weyl fermion with index `ψ^{dot a}`.-/
+    In index notation this corresponds to a Weyl fermion with index `ψ^{dot a}`. -/
 def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : AltRightHandedModule) =>
@@ -153,7 +152,7 @@ lemma leftHandedToAlt_hom_apply (ψ : leftHanded) :
 /-- The morphism from `altLeftHanded` to
   `leftHanded` defined by multiplying an element of
   altLeftHandedWeyl by the matrix `εₐ₁ₐ₂ = !![0, -1; 1, 0]`. -/
-def leftHandedAltTo : altLeftHanded ⟶ leftHanded  where
+def leftHandedAltTo : altLeftHanded ⟶ leftHanded where
   hom := {
     toFun := fun ψ =>
       LeftHandedModule.toFin2ℂEquiv.symm (!![0, -1; 1, 0] *ᵥ ψ.toFin2ℂ),
@@ -293,7 +292,6 @@ def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,�
     rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
     simp
 
-@[simp]
 lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     leftAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
   rw [leftAltContraction]
@@ -304,7 +302,7 @@ lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     summing over components of altLeftHandedWeyl and leftHandedWeyl in the
     standard basis (i.e. the dot product).
     Physically, the contraction of a alt-left-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^a ψ_a.  -/
+    In index notation this is φ^a ψ_a. -/
 def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altLeftBi
   comm M := by
@@ -314,8 +312,7 @@ def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,�
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
     simp
 
-@[simp]
-lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded)  :
+lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded) :
     altLeftContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
   rw [altLeftContraction]
   erw [TensorProduct.lift.tmul]

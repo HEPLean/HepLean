@@ -63,7 +63,7 @@ def toFin2ℂEquiv : LeftHandedModule ≃ₗ[ℂ] (Fin 2 → ℂ) where
   right_inv := fun _ => rfl
 
 /-- The underlying element of `Fin 2 → ℂ` of a element in `LeftHandedModule` defined
-  through the linear equivalence  `toFin2ℂEquiv`. -/
+  through the linear equivalence `toFin2ℂEquiv`. -/
 abbrev toFin2ℂ (ψ : LeftHandedModule) := toFin2ℂEquiv ψ
 
 end LeftHandedModule
@@ -109,7 +109,7 @@ def toFin2ℂEquiv : AltLeftHandedModule ≃ₗ[ℂ] (Fin 2 → ℂ) where
   right_inv := fun _ => rfl
 
 /-- The underlying element of `Fin 2 → ℂ` of a element in `AltLeftHandedModule` defined
-  through the linear equivalence  `toFin2ℂEquiv`. -/
+  through the linear equivalence `toFin2ℂEquiv`. -/
 abbrev toFin2ℂ (ψ : AltLeftHandedModule) := toFin2ℂEquiv ψ
 
 end AltLeftHandedModule
@@ -155,7 +155,7 @@ def toFin2ℂEquiv : RightHandedModule ≃ₗ[ℂ] (Fin 2 → ℂ) where
   right_inv := fun _ => rfl
 
 /-- The underlying element of `Fin 2 → ℂ` of a element in `RightHandedModule` defined
-  through the linear equivalence  `toFin2ℂEquiv`. -/
+  through the linear equivalence `toFin2ℂEquiv`. -/
 abbrev toFin2ℂ (ψ : RightHandedModule) := toFin2ℂEquiv ψ
 
 end RightHandedModule
@@ -201,7 +201,7 @@ def toFin2ℂEquiv : AltRightHandedModule ≃ₗ[ℂ] (Fin 2 → ℂ) where
   right_inv := fun _ => rfl
 
 /-- The underlying element of `Fin 2 → ℂ` of a element in `AltRightHandedModule` defined
-  through the linear equivalence  `toFin2ℂEquiv`. -/
+  through the linear equivalence `toFin2ℂEquiv`. -/
 abbrev toFin2ℂ (ψ : AltRightHandedModule) := toFin2ℂEquiv ψ
 
 end AltRightHandedModule
