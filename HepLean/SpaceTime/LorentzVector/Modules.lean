@@ -25,7 +25,9 @@ open Matrix
 open MatrixGroups
 open Complex
 
+/-- The module for contravariant (up-index) complex Lorentz vectors. -/
 structure ContrℂModule where
+  /-- The underlying value as a vector `Fin 1 ⊕ Fin 3 → ℂ`. -/
   val : Fin 1 ⊕ Fin 3 → ℂ
 
 namespace ContrℂModule
@@ -87,7 +89,9 @@ def SL2CRep : Representation ℂ SL(2, ℂ) ContrℂModule :=
 
 end ContrℂModule
 
+/-- The module for covariant (up-index) complex Lorentz vectors. -/
 structure CoℂModule where
+  /-- The underlying value as a vector `Fin 1 ⊕ Fin 3 → ℂ`. -/
   val : Fin 1 ⊕ Fin 3 → ℂ
 
 namespace CoℂModule

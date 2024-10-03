@@ -50,11 +50,9 @@ lemma toEquiv_symm_apply (m : f ⟶ g) (i : g.left) :
     f.hom ((toEquiv m).symm i) = g.hom i := by
   simpa [toEquiv, types_comp] using congrFun m.inv.w i
 
-lemma toEquiv_comp_hom  (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
+lemma toEquiv_comp_hom (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
   ext x
   simpa [types_comp, toEquiv] using congrFun m.hom.w x
-
-
 
 end Hom
 
@@ -283,7 +281,6 @@ def colorFun : OverColor Color ⥤ Rep ℂ SL(2, ℂ) where
     simp only [colorToRepCongr, Function.comp_apply, Equiv.cast_symm, LinearEquiv.coe_mk,
       Equiv.cast_apply, cast_cast, cast_inj]
     rfl
-
 
 end
 end Fermion
