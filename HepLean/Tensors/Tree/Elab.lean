@@ -103,6 +103,7 @@ syntax tensorExpr "+" tensorExpr : tensorExpr
 /-- Allowing brackets to be used in a tensor expression. -/
 syntax "(" tensorExpr ")" : tensorExpr
 
+/-- Scalar multiplication for tensors. -/
 syntax term "•" tensorExpr : tensorExpr
 
 namespace TensorNode

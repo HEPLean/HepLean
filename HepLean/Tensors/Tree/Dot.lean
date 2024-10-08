@@ -67,6 +67,8 @@ section dotElab
 
 open Lean.Elab.Command Lean Meta Lean.Elab
 
+/-- Syntax for showing the dot file associated with a tensor tree.
+  Use as `#tensor_dot {T4 | i j l d ⊗ T5 | i j k a b}ᵀ.dot`. -/
 syntax (name := tensorDot) "#tensor_dot " term : command
 
 /-- Adapted from `Lean.Elab.Command.elabReduce` in file copyright Microsoft Corporation. -/
@@ -75,7 +77,8 @@ unsafe def dotElab  (term : Syntax)  : CommandElabM Unit :=
     let e ← Term.elabTerm term none
     Term.synthesizeSyntheticMVarsNoPostponing
     let e ← Term.levelMVarToParam (← instantiateMVars e)
-    withTheReader Core.Context (fun ctx => { ctx with options := ctx.options.setBool `smartUnfolding false }) do
+    withTheReader Core.Context (fun ctx =>
+      { ctx with options := ctx.options.setBool `smartUnfolding false }) do
       let e ← withTransparency (mode := TransparencyMode.all) <|
         reduce e (skipProofs := true) (skipTypes := true)
       let str ← Lean.Meta.evalExpr' String ``String e
