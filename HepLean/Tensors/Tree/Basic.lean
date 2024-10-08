@@ -34,7 +34,7 @@ instance : Group S.G := S.G_group
 end TensorStruct
 
 inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
-  | tensorNode {n : ℕ} {c : Fin n → S.C} : S.F.obj (OverColor.mk c) → TensorTree S c
+  | tensorNode {n : ℕ} {c : Fin n → S.C} (T: S.F.obj (OverColor.mk c)):  TensorTree S c
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
@@ -48,8 +48,8 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
     (j : Fin n.succ) → TensorTree S c → TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | jiggle {n : ℕ} {c : Fin n → S.C} : (i : Fin n) → TensorTree S c  →
      TensorTree S (Function.update c i (S.τ (c i)))
-  | eval {n : ℕ} {c : Fin n.succ → S.C} : TensorTree S c →
-    (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) →
+  | eval {n : ℕ} {c : Fin n.succ → S.C} :
+    (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) → TensorTree S c →
      TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
@@ -68,7 +68,7 @@ def size : ∀  {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | mult _ _ t1 t2 => t1.size + t2.size + 1
   | contr _ _ t => t.size + 1
   | jiggle _ t => t.size + 1
-  | eval t _ _ => t.size + 1
+  | eval _ _ t => t.size + 1
 
 
 noncomputable section

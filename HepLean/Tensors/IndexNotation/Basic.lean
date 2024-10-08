@@ -17,6 +17,11 @@ The first character `ᵘ` specifies the color of the index, and the subsequent c
 
 Strings of indices e.g. `ᵘ¹²ᵤ₄₃`` are defined elsewhere.
 
+## Note
+
+Index notation is currently being refactored. Much of the content here will likely be replaced
+or removed.
+
 -/
 
 open Lean
