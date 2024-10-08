@@ -15,7 +15,6 @@ import HepLean.SpaceTime.LorentzVector.Complex
 
 ## Over category.
 
-
 -/
 
 namespace IndexNotation
@@ -106,7 +105,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl)).symm,
-    hom_inv_id := CategoryTheory.Iso.ext <|  Over.OverMorphism.ext <| funext fun x => by
+    hom_inv_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
@@ -226,10 +225,13 @@ instance (C : Type) : SymmetricCategory (OverColor C) where
 
 end monoidal
 
+/-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := Over.mk f
 
 open MonoidalCategory
 
+/-- The isomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
+  equivalence `e`. -/
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) := {
   hom := Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl),
   inv := (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl)).symm,

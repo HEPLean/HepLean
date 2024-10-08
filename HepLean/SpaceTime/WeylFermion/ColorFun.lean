@@ -126,7 +126,7 @@ end colorFun
 
 /-- The functor between `OverColor Color` and `Rep ℂ SL(2, ℂ)` taking a map of colors
   to the corresponding tensor product representation. -/
-@[simps!]
+@[simps! obj_V_carrier]
 def colorFun : OverColor Color ⥤ Rep ℂ SL(2, ℂ) where
   obj := colorFun.obj'
   map := colorFun.map'
@@ -165,7 +165,7 @@ open CategoryTheory
 open MonoidalCategory
 
 @[simp]
-lemma obj_ρ_empty  (g : SL(2, ℂ)) : (colorFun.obj (𝟙_ (OverColor Color))).ρ g = LinearMap.id := by
+lemma obj_ρ_empty (g : SL(2, ℂ)) : (colorFun.obj (𝟙_ (OverColor Color))).ρ g = LinearMap.id := by
   erw [colorFun.obj'_ρ]
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
