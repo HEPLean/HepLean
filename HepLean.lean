@@ -124,4 +124,5 @@ import HepLean.Tensors.IndexNotation.TensorIndex
 import HepLean.Tensors.MulActionTensor
 import HepLean.Tensors.RisingLowering
 import HepLean.Tensors.Tree.Basic
+import HepLean.Tensors.Tree.Dot
 import HepLean.Tensors.Tree.Elab

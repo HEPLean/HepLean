@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Basic
 import Lean.Elab.Term
+import HepLean.Tensors.Tree.Dot
 /-!
 
 ## Elaboration of tensor trees
@@ -21,6 +22,8 @@ open Lean.Elab
 open Lean.Elab.Term
 open Lean Meta Elab Tactic
 open IndexNotation
+
+namespace TensorTree
 
 /-!
 
@@ -99,6 +102,8 @@ syntax tensorExpr "+" tensorExpr : tensorExpr
 
 /-- Allowing brackets to be used in a tensor expression. -/
 syntax "(" tensorExpr ")" : tensorExpr
+
+syntax term "•" tensorExpr : tensorExpr
 
 namespace TensorNode
 
@@ -283,18 +288,24 @@ elab_rules (kind:=tensorExprSyntax) : term
     return tensorTree
 
 variable {S : TensorStruct} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4))
-  {c5 : Fin 5 → S.C} (T5 : S.F.obj (OverColor.mk c5))
+  {c5 : Fin 5 → S.C} (T5 : S.F.obj (OverColor.mk c5)) (a : S.k)
+
+variable (𝓣 : TensorTree S c4)
 
 /-!
 
 # Checks
 
 -/
+
 /-
-example : {T4 | i j k m}ᵀ = TensorTree.tensorNode T4 := by rfl
+#tensor_dot {T4 | i j l d ⊗ T5 | i j k m m}ᵀ.dot
 
 #check {T4 | i j l d ⊗ T5 | i j k a b}ᵀ
 
 #check {(T4 | i j l a ⊗ T5 | i j k c d) ⊗ T5 | i1 i2 i3 e f}ᵀ
 -/
 end ProdNode
+
+
+end TensorTree

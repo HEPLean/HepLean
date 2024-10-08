@@ -54,7 +54,7 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
-  | scale {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
+  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
   | mult {n m : ℕ} {c : Fin n.succ → S.C} {c1 : Fin m.succ → S.C} :
     (i : Fin n.succ) → (j : Fin m.succ) → TensorTree S c → TensorTree S c1 →
     TensorTree S (Sum.elim (c ∘ Fin.succAbove i) (c1 ∘ Fin.succAbove j) ∘ finSumFinEquiv.symm)
@@ -78,7 +78,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | tensorNode _ => 1
   | add t1 t2 => t1.size + t2.size + 1
   | perm _ t => t.size + 1
-  | scale _ t => t.size + 1
+  | smul _ t => t.size + 1
   | prod t1 t2 => t1.size + t2.size + 1
   | mult _ _ t1 t2 => t1.size + t2.size + 1
   | contr _ _ t => t.size + 1
@@ -93,7 +93,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | tensorNode t => t
   | add t1 t2 => t1.tensor + t2.tensor
   | perm σ t => (S.F.map σ).hom t.tensor
-  | scale a t => a • t.tensor
+  | smul a t => a • t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | _ => 0
