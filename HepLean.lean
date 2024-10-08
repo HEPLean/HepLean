@@ -90,8 +90,8 @@ import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
 import HepLean.SpaceTime.WeylFermion.Basic
+import HepLean.SpaceTime.WeylFermion.ColorFun
 import HepLean.SpaceTime.WeylFermion.Modules
-import HepLean.SpaceTime.WeylFermion.OverCat
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction
@@ -99,6 +99,7 @@ import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
 import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.Basic
+import HepLean.Tensors.ColorCat.Basic
 import HepLean.Tensors.Contraction
 import HepLean.Tensors.EinsteinNotation.Basic
 import HepLean.Tensors.EinsteinNotation.IndexNotation
@@ -122,3 +123,5 @@ import HepLean.Tensors.IndexNotation.IndexString
 import HepLean.Tensors.IndexNotation.TensorIndex
 import HepLean.Tensors.MulActionTensor
 import HepLean.Tensors.RisingLowering
+import HepLean.Tensors.Tree.Basic
+import HepLean.Tensors.Tree.Elab

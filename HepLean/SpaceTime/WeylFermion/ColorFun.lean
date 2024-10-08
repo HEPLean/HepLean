@@ -3,136 +3,12 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.CategoryTheory.Category.Basic
-import Mathlib.CategoryTheory.Types
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Comma.Over
-import Mathlib.CategoryTheory.Core
-import HepLean.SpaceTime.WeylFermion.Basic
-import HepLean.SpaceTime.LorentzVector.Complex
+import HepLean.Tensors.ColorCat.Basic
 /-!
 
-## Category over color
+## Monodial functor from color cat.
 
 -/
-
-namespace IndexNotation
-open CategoryTheory
-
-/-- The core of the category of Types over C. -/
-def OverColor (C : Type) := CategoryTheory.Core (CategoryTheory.Over C)
-
-/-- The instance of `OverColor C` as a groupoid. -/
-instance (C : Type) : Groupoid (OverColor C) := coreCategory
-
-namespace OverColor
-
-namespace Hom
-
-variable {C : Type} {f g h : OverColor C}
-
-/-- Given a hom in `OverColor C` the underlying equivalence between types. -/
-def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
-  toFun := m.hom.left
-  invFun := m.inv.left
-  left_inv := by
-    simpa only [Over.comp_left] using congrFun (congrArg (fun x => x.left) m.hom_inv_id)
-  right_inv := by
-    simpa only [Over.comp_left] using congrFun (congrArg (fun x => x.left) m.inv_hom_id)
-
-@[simp]
-lemma toEquiv_comp (m : f ⟶ g) (n : g ⟶ h) : toEquiv (m ≫ n) = (toEquiv m).trans (toEquiv n) := by
-  ext x
-  simp [toEquiv]
-  rfl
-
-lemma toEquiv_symm_apply (m : f ⟶ g) (i : g.left) :
-    f.hom ((toEquiv m).symm i) = g.hom i := by
-  simpa [toEquiv, types_comp] using congrFun m.inv.w i
-
-lemma toEquiv_comp_hom (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
-  ext x
-  simpa [types_comp, toEquiv] using congrFun m.hom.w x
-
-end Hom
-
-instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
-  tensorObj f g := Over.mk (Sum.elim f.hom g.hom)
-  tensorUnit := Over.mk Empty.elim
-  whiskerLeft X Y1 Y2 m := Over.isoMk (Equiv.sumCongr (Equiv.refl X.left) (Hom.toEquiv m)).toIso
-    (by
-      ext x
-      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
-        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
-      rw [Sum.elim_map, Hom.toEquiv_comp_hom]
-      rfl)
-  whiskerRight m X := Over.isoMk (Equiv.sumCongr (Hom.toEquiv m) (Equiv.refl X.left)).toIso
-    (by
-      ext x
-      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
-        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
-      rw [Sum.elim_map, Hom.toEquiv_comp_hom]
-      rfl)
-  associator X Y Z := {
-    hom := Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Functor.const_obj_obj, Equiv.sumAssoc,
-        Equiv.toIso_hom, Equiv.coe_fn_mk, types_comp]
-      ext x
-      simp only [Function.comp_apply]
-      cases x with
-      | inl val =>
-        cases val with
-        | inl val_1 => simp_all only [Sum.elim_inl]
-        | inr val_2 => simp_all only [Sum.elim_inl, Sum.elim_inr, Function.comp_apply]
-      | inr val_1 => simp_all only [Sum.elim_inr, Function.comp_apply]),
-    inv := (Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Functor.const_obj_obj, Equiv.sumAssoc,
-        Equiv.toIso_hom, Equiv.coe_fn_mk, types_comp]
-      ext x
-      simp only [Function.comp_apply]
-      cases x with
-      | inl val =>
-        cases val with
-        | inl val_1 => simp_all only [Sum.elim_inl]
-        | inr val_2 => simp_all only [Sum.elim_inl, Sum.elim_inr, Function.comp_apply]
-      | inr val_1 => simp_all only [Sum.elim_inr, Function.comp_apply])).symm,
-    hom_inv_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
-      rfl,
-    inv_hom_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.inv_hom_id]
-      rfl}
-  leftUnitor X := {
-    hom := Over.isoMk (Equiv.emptySum Empty X.left).toIso
-    inv := (Over.isoMk (Equiv.emptySum Empty X.left).toIso).symm
-    hom_inv_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
-      rfl,
-    inv_hom_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]}
-  rightUnitor X := {
-    hom := Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
-    inv := (Over.isoMk (Equiv.sumEmpty X.left Empty).toIso).symm
-    hom_inv_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
-      rfl,
-    inv_hom_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]}
-
-end OverColor
-
-end IndexNotation
-
 namespace Fermion
 
 noncomputable section
@@ -250,6 +126,7 @@ end colorFun
 
 /-- The functor between `OverColor Color` and `Rep ℂ SL(2, ℂ)` taking a map of colors
   to the corresponding tensor product representation. -/
+@[simps! obj_V_carrier]
 def colorFun : OverColor Color ⥤ Rep ℂ SL(2, ℂ) where
   obj := colorFun.obj'
   map := colorFun.map'
@@ -281,6 +158,41 @@ def colorFun : OverColor Color ⥤ Rep ℂ SL(2, ℂ) where
     simp only [colorToRepCongr, Function.comp_apply, Equiv.cast_symm, LinearEquiv.coe_mk,
       Equiv.cast_apply, cast_cast, cast_inj]
     rfl
+
+namespace colorFun
+
+open CategoryTheory
+open MonoidalCategory
+
+@[simp]
+lemma obj_ρ_empty (g : SL(2, ℂ)) : (colorFun.obj (𝟙_ (OverColor Color))).ρ g = LinearMap.id := by
+  erw [colorFun.obj'_ρ]
+  ext x
+  refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
+    simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+      Function.comp_apply, hy]
+    erw [hx, hy]
+    rfl
+  simp only [OverColor.instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
+    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod,
+    _root_.map_smul, PiTensorProduct.map_tprod, LinearMap.id_coe, id_eq]
+  apply congrArg
+  apply congrArg
+  funext i
+  exact Empty.elim i
+
+/-- The unit natural transformation. -/
+def ε : 𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ colorFun.obj (𝟙_ (OverColor Color)) where
+  hom := (PiTensorProduct.isEmptyEquiv Empty).symm.toLinearMap
+  comm M := by
+    refine LinearMap.ext (fun x => ?_)
+    simp only [colorFun_obj_V_carrier, OverColor.instMonoidalCategoryStruct_tensorUnit_left,
+      OverColor.instMonoidalCategoryStruct_tensorUnit_hom, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', Functor.id_obj, Category.id_comp, LinearEquiv.coe_coe]
+    erw [obj_ρ_empty M]
+    rfl
+
+end colorFun
 
 end
 end Fermion

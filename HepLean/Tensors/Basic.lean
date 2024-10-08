@@ -541,8 +541,10 @@ def domCoprod : MultilinearMap R (fun x => 𝓣.ColorModule (Sum.elim cX cY x))
     (PiTensorProduct.tprod R (𝓣.inrPureTensor f))
   map_add' f xy v1 v2:= by
     match xy with
-    | Sum.inl x => simp [← TensorProduct.add_tmul]
-    | Sum.inr y => simp [← TensorProduct.tmul_add]
+    | Sum.inl x => simp only [Sum.elim_inl, inlPureTensor_update_left, MultilinearMap.map_add,
+      inrPureTensor_update_left, ← add_tmul]
+    | Sum.inr y => simp only [Sum.elim_inr, inlPureTensor_update_right, inrPureTensor_update_right,
+      MultilinearMap.map_add, ← tmul_add]
   map_smul' f xy r p := by
     match xy with
     | Sum.inl x => simp [TensorProduct.tmul_smul, TensorProduct.smul_tmul]
