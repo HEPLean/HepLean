@@ -1,7 +1,7 @@
 
 ![HepLean](./docs/HepLeanLogo_white.jpeg)
 [![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.github.io/HepLean/)
-[![](https://img.shields.io/badge/PRs-Welcome-green)](https://github.com/HEPLean/HepLean/pulls)
+[![](https://img.shields.io/badge/Get-Involved-green)](https://heplean.github.io/HepLean/#how-to-get-involved)
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
 [![](https://img.shields.io/badge/TODO-List-green)](https://heplean.github.io/HepLean/TODOList)
 [![](https://img.shields.io/badge/Informal_dependencies-Graph-green)](https://heplean.github.io/HepLean/InformalGraph)
@@ -17,19 +17,6 @@ into Lean 4.
   with the potential future use of AI.
 3. Create good documentation so that the project can be used for pedagogical purposes.
 
-## Ideas for contributions
-
-Any contribution to HepLean is more than welcome. However, if you would like to contribute but
-are struggling to work out how, here are some potential starting points:
-
-1. Prove further results related to the Lorentz group, the Poincare group and their algebras.
-  Despite some work has being done in this direction there is still much more to do.
-2. Prove further results related to the two Higgs doublet model, or other BSM theories.
-  HepLean does not currently contain fermions (but soon will) so starting with the scalar potential
-  is a good start.
-3. Tidy up the material on anomaly cancellation. Furthermore, there are results from the
-  literature in this area not already digitalized.
-4. Make the first steps in digitalizing super-symmetry, the Randall-Sundrum model etc.
 
 ## Areas of high energy physics with some coverage in HepLean
 
@@ -48,7 +35,8 @@ are struggling to work out how, here are some potential starting points:
 | [Video](https://www.youtube.com/watch?v=W2cObnopqas) | HepLean: Lean and high energy physics |
 | [Video](https://www.youtube.com/watch?v=IjodVUawTjM) | Index notation in Lean 4 |
 
-
+### Papers referencing HepLean
+- Hu, Jiewen, Thomas Zhu, and Sean Welleck. "miniCTX: Neural Theorem Proving with (Long-) Contexts." arXiv preprint arXiv:2408.03350 (2024).
 ## Contributing
 
 We follow here roughly the same contribution policies as MathLib4 (which can be found [here](https://leanprover-community.github.io/contribute/index.html)).
