@@ -19,48 +19,52 @@ namespace TensorTree
 /-- Turns a nodes of tensor trees into nodes and edges of a dot file. -/
 def dotString (m  : ℕ) (nt : ℕ): ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → String := fun
   | tensorNode _ =>
-    "node" ++ toString m ++ " [label=\"T" ++ toString nt ++ "\"];\n"
+    "  node" ++ toString m ++ " [label=\"T" ++ toString nt ++ "\"];\n"
   | add t1 t2 =>
-    let addNode := "node" ++ toString m ++ " [label=\"+\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
-    let edge2 := "node" ++ toString m ++ " -> node" ++ toString (m + 2) ++ ";\n"
+    let addNode := "  node" ++ toString m ++ " [label=\"+\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let edge2 := "  node" ++ toString m ++ " -> node" ++ toString (m + 2) ++ ";\n"
     addNode ++ dotString (m + 1) nt t1 ++ dotString (m + 2) (nt + 1) t2 ++ edge1 ++ edge2
   | perm σ t =>
-    let permNode := "node" ++ toString m ++ " [label=\"perm\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let permNode := "  node" ++ toString m ++ " [label=\"perm\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     permNode ++ dotString (m + 1) nt t ++ edge1
   | prod t1 t2 =>
-    let prodNode := "node" ++ toString m ++ " [label=\"⊗\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
-    let edge2 := "node" ++ toString m ++ " -> node" ++ toString (m + 2) ++ ";\n"
-    prodNode ++ dotString (m + 1) nt t1 ++ dotString (m + 2) (nt + 1) t2 ++ edge1 ++ edge2
+    let prodNode := "  node" ++ toString m ++ " [label=\"⊗\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let edge2 := "  node" ++ toString m ++ " -> node" ++ toString (2 * t1.size + m + 2) ++ ";\n"
+    prodNode ++ dotString (m + 1) nt t1 ++ dotString (2 * t1.size + m + 2) (nt + 1) t2
+      ++ edge1 ++ edge2
   | smul k t =>
-    let smulNode := "node" ++ toString m ++ " [label=\"smul\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let smulNode := "  node" ++ toString m ++ " [label=\"smul\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     smulNode ++ dotString (m + 1) nt t ++ edge1
   | mult _ _ t1 t2 =>
-    let multNode := "node" ++ toString m ++ " [label=\"mult\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
-    let edge2 := "node" ++ toString m ++ " -> node" ++ toString (m + 2) ++ ";\n"
-    multNode ++ dotString (m + 1) nt t1 ++ dotString (m + 2) (nt + 1) t2 ++ edge1 ++ edge2
+    let multNode := "  node" ++ toString m ++ " [label=\"mult\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let edge2 := "  node" ++ toString m ++ " -> node" ++ toString (t1.size + m + 2) ++ ";\n"
+    multNode ++ dotString (m + 1) nt t1 ++ dotString (2 * t1.size + m + 2) (nt + 1) t2
+      ++ edge1 ++ edge2
   | eval _ _ t1 =>
-    let evalNode := "node" ++ toString m ++ " [label=\"eval\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let evalNode := "  node" ++ toString m ++ " [label=\"eval\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     evalNode ++ dotString (m + 1) nt t1 ++ edge1
   | jiggle i t1 =>
-    let jiggleNode := "node" ++ toString m ++ " [label=\"jiggle\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let jiggleNode := "  node" ++ toString m ++ " [label=\"τ\", shape=box];\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     jiggleNode ++ dotString (m + 1) nt t1 ++ edge1
   | contr i j t1 =>
-    let contrNode := "node" ++ toString m ++ " [label=\"contr " ++ toString i ++ " "
+    let contrNode := "  node" ++ toString m ++ " [label=\"contr " ++ toString i ++ " "
       ++ toString j ++ "\", shape=box];\n"
-    let edge1 := "node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    let edge1 := "  node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     contrNode ++ dotString (m + 1) nt t1 ++ edge1
 
 /-- Used to form a dot graph from a tensor tree. use e.g.
   `#tensor_dot {T4 | i j l d ⊗ T5 | i j k a b}ᵀ.dot`.
   Dot files can be viewed by copying and pasting into: https://dreampuf.github.io/GraphvizOnline. -/
 def dot {n : ℕ} {c : Fin n → S.C} (t : TensorTree S c) : String :=
+  "// Dot file created by HepLean for a tensor expression.
+// Can be viewed at https://dreampuf.github.io/GraphvizOnline/\n" ++
   "digraph G {\n" ++ dotString 0 0 t ++ "}"
 
 section dotElab

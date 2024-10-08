@@ -300,7 +300,7 @@ variable (𝓣 : TensorTree S c4)
 -/
 
 /-
-#tensor_dot {T4 | i j l d ⊗ T5 | i j k m m}ᵀ.dot
+#tensor_dot {T4 | i j τ(l) d ⊗ T5 | i j k m m}ᵀ.dot
 
 #check {T4 | i j l d ⊗ T5 | i j k a b}ᵀ
 
