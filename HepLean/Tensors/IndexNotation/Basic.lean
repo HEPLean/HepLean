@@ -20,7 +20,7 @@ Strings of indices e.g. `ᵘ¹²ᵤ₄₃`` are defined elsewhere.
 ## Note
 
 Index notation is currently being refactored. Much of the content here will likely be replaced
-or removed.
+or removed. See the HepLean.Tensors.Tree.Basic for the current approach of the index notation.
 
 -/
 
