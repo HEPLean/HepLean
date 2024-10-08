@@ -48,8 +48,9 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
     (j : Fin n.succ) → TensorTree S c → TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | jiggle {n : ℕ} {c : Fin n → S.C} : (i : Fin n) → TensorTree S c  →
      TensorTree S (Function.update c i (S.τ (c i)))
-  | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) →
-    TensorTree S c → TensorTree S (c ∘ Fin.succAbove i)
+  | eval {n : ℕ} {c : Fin n.succ → S.C} : TensorTree S c →
+    (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) →
+     TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
 
@@ -67,7 +68,7 @@ def size : ∀  {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | mult _ _ t1 t2 => t1.size + t2.size + 1
   | contr _ _ t => t.size + 1
   | jiggle _ t => t.size + 1
-  | eval _ _ t => t.size + 1
+  | eval t _ _ => t.size + 1
 
 
 noncomputable section
