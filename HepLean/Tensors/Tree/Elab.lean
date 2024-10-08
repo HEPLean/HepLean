@@ -100,7 +100,6 @@ syntax tensorExpr "+" tensorExpr : tensorExpr
 /-- Allowing brackets to be used in a tensor expression. -/
 syntax "(" tensorExpr ")" : tensorExpr
 
-
 namespace TensorNode
 
 /-!
@@ -115,7 +114,6 @@ The operations are done in the following order:
 We also want to ensure the number of indices is correct.
 
 -/
-
 
 /-- The indices of a tensor node. Before contraction, dualisation, and evaluation. -/
 partial def getIndices (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
@@ -141,8 +139,6 @@ def getNoIndicesExact (stx : Syntax) : TermElabM ℕ := do
     | _ => throwError "Could not extract number of indices from tensor (getNoIndicesExact). "
   | _ =>
     throwError "Could not extract number of indices from tensor (getNoIndicesExact)."
-
-
 
 /-- The positions in getIndicesNode which get evaluated, and the value they take. -/
 partial def getEvalPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
@@ -197,7 +193,7 @@ def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
   | `(tensorExpr| $T:term | $[$args]*) => do
       let indices ← getIndices stx
-      let rawIndex ←  getNoIndicesExact T
+      let rawIndex ← getNoIndicesExact T
       if indices.length ≠ rawIndex then
         throwError "The number of indices does not match the tensor {T}."
       let tensorNodeSyntax := Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
@@ -233,7 +229,6 @@ partial def getIndices (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) :=
       return (← getIndices a)
   | _ =>
     throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
-
 
 /-- The pairs of positions in getIndicesNode which get contracted. -/
 partial def getContrPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
@@ -274,7 +269,6 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   | _ =>
     throwError "Unsupported tensor expression syntax in elaborateTensorNode: {stx}"
 
-
 /-- An elaborator for tensor nodes. This is to be generalized. -/
 def elaborateTensorNode (stx : Syntax) : TermElabM Expr := do
   let tensorExpr ← elabTerm (← syntaxFull stx) none
@@ -289,7 +283,7 @@ elab_rules (kind:=tensorExprSyntax) : term
     return tensorTree
 
 variable {S : TensorStruct} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4))
-  {c5 : Fin 5 → S.C} (T5 :  S.F.obj (OverColor.mk c5))
+  {c5 : Fin 5 → S.C} (T5 : S.F.obj (OverColor.mk c5))
 
 /-!
 
@@ -299,7 +293,7 @@ variable {S : TensorStruct} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4)
 /-
 example : {T4 | i j k m}ᵀ = TensorTree.tensorNode T4 := by rfl
 
-#check {T4 | i j l d  ⊗ T5 | i j k a b}ᵀ
+#check {T4 | i j l d ⊗ T5 | i j k a b}ᵀ
 
 #check {(T4 | i j l a ⊗ T5 | i j k c d) ⊗ T5 | i1 i2 i3 e f}ᵀ
 -/
