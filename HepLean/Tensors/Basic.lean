@@ -514,9 +514,9 @@ def elimPureTensorMulLin : MultilinearMap R (fun i => 𝓣.ColorModule (cX i))
   toFun p := {
     toFun := fun q => PiTensorProduct.tprod R (𝓣.elimPureTensor p q)
     map_add' := fun m x v1 v2 => by
-      simp [Sum.elim_inl, Sum.elim_inr]
+      simp only [elimPureTensor_update_right, MultilinearMap.map_add]
     map_smul' := fun m x r v => by
-      simp [Sum.elim_inl, Sum.elim_inr]}
+      simp only [elimPureTensor_update_right, MultilinearMap.map_smul]}
   map_add' p x v1 v2 := by
     apply MultilinearMap.ext
     intro y
@@ -547,7 +547,8 @@ def domCoprod : MultilinearMap R (fun x => 𝓣.ColorModule (Sum.elim cX cY x))
       MultilinearMap.map_add, ← tmul_add]
   map_smul' f xy r p := by
     match xy with
-    | Sum.inl x => simp [TensorProduct.tmul_smul, TensorProduct.smul_tmul]
+    | Sum.inl x => simp only [Sum.elim_inl, inlPureTensor_update_left, MultilinearMap.map_smul,
+      inrPureTensor_update_left, smul_tmul, tmul_smul]
     | Sum.inr y => simp [TensorProduct.tmul_smul, TensorProduct.smul_tmul]
 
 /-- The linear map combining two tensors into a single tensor
