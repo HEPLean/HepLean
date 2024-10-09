@@ -264,9 +264,7 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
     | Sum.inl x => rfl
     | Sum.inr x => rfl
 
-def emptyEquiv (X1 X2 Y1 Y2 : Type): (X1 ⊕ X2) ⊕ (Y1 ⊕ Y2) ≃ (X1 ⊕ Y1) ⊕ (X2 ⊕ Y2) := by
-  exact Equiv.sumSumSumComm X1 X2 Y1 Y2
-
+/-- The tensor product on `OverColor C` as a monoidal functor. -/
 def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C)  where
   toFunctor := MonoidalCategory.tensor (OverColor C)
   ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
@@ -332,6 +330,8 @@ def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) := {
     simp only [Iso.symm_hom, Iso.inv_hom_id]
     rfl}
 
+/-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
+  `i`th component. -/
 def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
   (finCongr (by omega : n.succ = i + 1 + (n - i))).trans <|
   finSumFinEquiv.symm.trans <|
