@@ -269,7 +269,7 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
     | Sum.inr x => rfl
 
 /-- The tensor product on `OverColor C` as a monoidal functor. -/
-def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
+def tensor (C : Type)  : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
   toFunctor := MonoidalCategory.tensor (OverColor C)
   ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
     ext x
@@ -311,6 +311,35 @@ def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
     | Sum.inl (Sum.inl x) => rfl
     | Sum.inl (Sum.inr x) => rfl
     | Sum.inr x => exact Empty.elim x
+
+def diag (C : Type) : MonoidalFunctor (OverColor C) (OverColor C × OverColor C) :=
+  MonoidalFunctor.diag (OverColor C)
+
+
+def const (C : Type) : MonoidalFunctor (OverColor C) (OverColor C) where
+  toFunctor := (Functor.const (OverColor C)).obj (𝟙_ (OverColor C))
+  ε := 𝟙 (𝟙_ (OverColor C))
+  μ _ _:= (λ_  (𝟙_ (OverColor C))).hom
+  μ_natural_left _ _ := by
+    simp only [Functor.const_obj_obj, Functor.const_obj_map, MonoidalCategory.whiskerRight_id,
+      Category.id_comp, Iso.hom_inv_id, Category.comp_id]
+  μ_natural_right _ _ := by
+    simp only [Functor.const_obj_obj, Functor.const_obj_map, MonoidalCategory.whiskerLeft_id,
+      Category.id_comp, Category.comp_id]
+  associativity X Y Z := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun i => by
+    match i with
+    | Sum.inl (Sum.inl i) => rfl
+    | Sum.inl (Sum.inr i) => rfl
+    | Sum.inr i => rfl
+  left_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun i => by
+    match i with
+    | Sum.inl i => exact Empty.elim i
+    | Sum.inr i => exact Empty.elim i
+  right_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun i => by
+    match i with
+    | Sum.inl i => exact Empty.elim i
+    | Sum.inr i => exact Empty.elim i
+
 
 /-!
 

@@ -13,6 +13,7 @@ import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 
 open IndexNotation
 open CategoryTheory
+open MonoidalCategory
 
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors.
@@ -33,6 +34,9 @@ structure TensorStruct where
   F : MonoidalFunctor (OverColor C) (Rep k G)
   /-- A map from `C` to `C`. An involution. -/
   τ : C → C
+  /-- Contraction natural transformation. -/
+  ηContr : (OverColor.diag C) ⊗⋙ (MonoidalFunctor.prod (MonoidalFunctor.id (OverColor C)) (OverColor.map τ))
+    ⊗⋙ OverColor.tensor C  ⊗⋙ F ⟶ @constMonoFunc (OverColor C) G k
   /-- A monoidal natural isomorphism from OverColor.map τ ⊗⋙ F to F.
     This will allow us to, for example, rise and lower indices. -/
   dual : (OverColor.map τ ⊗⋙ F) ≅ F
