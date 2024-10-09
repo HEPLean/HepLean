@@ -172,7 +172,7 @@ lemma map_tprod {X Y : OverColor Color} (p : (i : X.left) → (colorToRep (X.hom
   change (colorFun.map' f).hom ((PiTensorProduct.tprod ℂ) p) = _
   simp [colorFun.map', mapToLinearEquiv']
   erw [LinearEquiv.trans_apply]
-  change  (PiTensorProduct.congr fun i => colorToRepCongr _)
+  change (PiTensorProduct.congr fun i => colorToRepCongr _)
     ((PiTensorProduct.reindex ℂ (fun x => _) (OverColor.Hom.toEquiv f))
       ((PiTensorProduct.tprod ℂ) p)) = _
   rw [PiTensorProduct.reindex_tprod, PiTensorProduct.congr_tprod]
@@ -244,8 +244,8 @@ def μModEquiv (X Y : OverColor Color) :
     (colorFun.obj X ⊗ colorFun.obj Y).V ≃ₗ[ℂ] colorFun.obj (X ⊗ Y) :=
   HepLean.PiTensorProduct.tmulEquiv ≪≫ₗ PiTensorProduct.congr colorToRepSumEquiv
 
-lemma μModEquiv_tmul_tprod  {X Y : OverColor Color}(p : (i :  X.left) → (colorToRep (X.hom i)))
-    (q : (i : Y.left) → (colorToRep (Y.hom i)))  :
+lemma μModEquiv_tmul_tprod {X Y : OverColor Color}(p : (i : X.left) → (colorToRep (X.hom i)))
+    (q : (i : Y.left) → (colorToRep (Y.hom i))) :
     (μModEquiv X Y) ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) q) =
     (PiTensorProduct.tprod ℂ) fun i =>
     (colorToRepSumEquiv i) (HepLean.PiTensorProduct.elimPureTensor p q i) := by
@@ -289,8 +289,8 @@ def μ (X Y : OverColor Color) : colorFun.obj X ⊗ colorFun.obj Y ≅ colorFun.
     hom := (μModEquiv X Y).symm.toLinearMap
     comm := fun M => by
       simp [CategoryStruct.comp]
-      erw [LinearEquiv.eq_comp_toLinearMap_symm,LinearMap.comp_assoc ,
-      LinearEquiv.toLinearMap_symm_comp_eq ]
+      erw [LinearEquiv.eq_comp_toLinearMap_symm,LinearMap.comp_assoc,
+      LinearEquiv.toLinearMap_symm_comp_eq]
       refine HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
       simp only [colorFun_obj_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
         OverColor.instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
@@ -325,8 +325,8 @@ def μ (X Y : OverColor Color) : colorFun.obj X ⊗ colorFun.obj Y ≅ colorFun.
       LinearEquiv.symm_trans_self, LinearEquiv.refl_toLinearMap, Action.id_hom]
     rfl
 
-lemma μ_tmul_tprod {X Y : OverColor Color} (p : (i :  X.left) → (colorToRep (X.hom i)))
-    (q : (i : Y.left) → (colorToRep (Y.hom i)))  :
+lemma μ_tmul_tprod {X Y : OverColor Color} (p : (i : X.left) → (colorToRep (X.hom i)))
+    (q : (i : Y.left) → (colorToRep (Y.hom i))) :
     (μ X Y).hom.hom ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) q) =
     (PiTensorProduct.tprod ℂ) fun i =>
     (colorToRepSumEquiv i) (HepLean.PiTensorProduct.elimPureTensor p q i) := by
@@ -353,7 +353,7 @@ lemma μ_natural_left {X Y : OverColor Color} (f : X ⟶ Y) (Z : OverColor Color
       ((PiTensorProduct.tprod ℂ) p) ⊗ₜ[ℂ] ((PiTensorProduct.tprod ℂ) q)) := by rfl
   erw [h1]
   rw [colorFun.map_tprod]
-  change (μ Y Z).hom.hom (((PiTensorProduct.tprod ℂ) fun i =>  (colorToRepCongr _)
+  change (μ Y Z).hom.hom (((PiTensorProduct.tprod ℂ) fun i => (colorToRepCongr _)
     (p ((OverColor.Hom.toEquiv f).symm i))) ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) q) = _
   rw [μ_tmul_tprod]
   apply congrArg
@@ -363,7 +363,7 @@ lemma μ_natural_left {X Y : OverColor Color} (f : X ⟶ Y) (Z : OverColor Color
   | Sum.inr i => rfl
 
 lemma μ_natural_right {X Y : OverColor Color} (X' : OverColor Color) (f : X ⟶ Y) :
-    MonoidalCategory.whiskerLeft (colorFun.obj X') (colorFun.map f) ≫ (μ X' Y).hom  =
+    MonoidalCategory.whiskerLeft (colorFun.obj X') (colorFun.map f) ≫ (μ X' Y).hom =
     (μ X' X).hom ≫ colorFun.map (MonoidalCategory.whiskerLeft X' f) := by
   ext1
   refine HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
@@ -384,7 +384,7 @@ lemma μ_natural_right {X Y : OverColor Color} (X' : OverColor Color) (f : X ⟶
   erw [h1]
   rw [map_tprod]
   change (μ X' Y).hom.hom ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) fun i =>
-    (colorToRepCongr _) (q ((OverColor.Hom.toEquiv f).symm i)))  = _
+    (colorToRepCongr _) (q ((OverColor.Hom.toEquiv f).symm i))) = _
   rw [μ_tmul_tprod]
   apply congrArg
   funext i
@@ -410,7 +410,7 @@ lemma associativity (X Y Z : OverColor Color) :
     (μ X (Y ⊗ Z)).hom.hom ((((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] ((μ Y Z).hom.hom
     ((PiTensorProduct.tprod ℂ) q ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) m)))))
   rw [μ_tmul_tprod, μ_tmul_tprod]
-  change  (colorFun.map (α_ X Y Z).hom).hom ((μ (X ⊗ Y) Z).hom.hom
+  change (colorFun.map (α_ X Y Z).hom).hom ((μ (X ⊗ Y) Z).hom.hom
     (((PiTensorProduct.tprod ℂ) fun i => (colorToRepSumEquiv i)
     (HepLean.PiTensorProduct.elimPureTensor p q i)) ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) m)) =
     (μ X (Y ⊗ Z)).hom.hom ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) fun i =>
@@ -463,7 +463,7 @@ lemma right_unitality (X : OverColor Color) : (MonoidalCategory.rightUnitor (col
     OverColor.instMonoidalCategoryStruct_tensorUnit_left,
     OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_whiskerLeft_hom,
     LinearMap.coe_comp, Function.comp_apply]
-  change TensorProduct.rid ℂ (colorFun.obj X) ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] x ) =
+  change TensorProduct.rid ℂ (colorFun.obj X) ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] x) =
     (colorFun.map (ρ_ X).hom).hom ((μ X (𝟙_ (OverColor Color))).hom.hom
     ((((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] ((PiTensorProduct.isEmptyEquiv Empty).symm x)))))
   simp [PiTensorProduct.isEmptyEquiv]
@@ -477,7 +477,7 @@ lemma right_unitality (X : OverColor Color) : (MonoidalCategory.rightUnitor (col
 
 end colorFun
 
-/-- The  monoidal functor between `OverColor Color` and `Rep ℂ SL(2, ℂ)` taking a map of colors
+/-- The monoidal functor between `OverColor Color` and `Rep ℂ SL(2, ℂ)` taking a map of colors
   to the corresponding tensor product representation. -/
 def colorFunMon : MonoidalFunctor (OverColor Color) (Rep ℂ SL(2, ℂ)) where
   toFunctor := colorFun

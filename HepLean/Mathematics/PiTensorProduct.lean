@@ -18,7 +18,6 @@ namespace HepLean.PiTensorProduct
 
 noncomputable section tmulEquiv
 
-
 variable {R ι1 ι2 ι3 M N : Type} [CommSemiring R]
   {s1 : ι1 → Type} [inst1 : (i : ι1) → AddCommMonoid (s1 i)] [inst1' : (i : ι1) → Module R (s1 i)]
   {s2 : ι2 → Type} [inst2 : (i : ι2) → AddCommMonoid (s2 i)] [inst2' : (i : ι2) → Module R (s2 i)]
@@ -69,13 +68,13 @@ lemma induction_assoc
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod]
   simp only [smul_tmul, tmul_smul, LinearMapClass.map_smul]
   apply congrArg
-  let f' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M  := {
+  let f' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M := {
     toFun := fun y => f (PiTensorProduct.tprod R fx ⊗ₜ[R] y),
     map_add' := fun y1 y2 => by
       simp [tmul_add]
     map_smul' := fun r y => by
       simp [tmul_smul]}
-  let g' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M  := {
+  let g' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M := {
     toFun := fun y => g (PiTensorProduct.tprod R fx ⊗ₜ[R] y),
     map_add' := fun y1 y2 => by
       simp [tmul_add]
@@ -102,13 +101,13 @@ lemma induction_assoc'
   intro ry fy
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, map_smul]
   apply congrArg
-  let f' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M  := {
+  let f' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M := {
     toFun := fun y => f (y ⊗ₜ[R] PiTensorProduct.tprod R fy),
     map_add' := fun y1 y2 => by
       simp [add_tmul]
     map_smul' := fun r y => by
       simp [smul_tmul]}
-  let g' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M  := {
+  let g' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M := {
     toFun := fun y => g (y ⊗ₜ[R] PiTensorProduct.tprod R fy),
     map_add' := fun y1 y2 => by
       simp [add_tmul]
@@ -165,7 +164,6 @@ instance : (i : ι1 ⊕ ι2) → Module R ((fun i => Sum.elim s1 s2 i) i) := fun
   | Sum.inl i => inst1' i
   | Sum.inr i => inst2' i
 
-
 /-- Takes a map `(i : ι1 ⊕ ι2) → Sum.elim s1 s2 i` to the underlying map `(i : ι1) → s1 i `. -/
 private def pureInl (f : (i : ι1 ⊕ ι2) → Sum.elim s1 s2 i) : (i : ι1) → s1 i :=
   fun i => f (Sum.inl i)
@@ -215,7 +213,7 @@ lemma pureInl_update_right (f : (i : ι1 ⊕ ι2) → Sum.elim s1 s2 i) (x : ι2
 
 end
 
-/-- The multilinear map  from `(Sum.elim s1 s2)` to `((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i)`
+/-- The multilinear map from `(Sum.elim s1 s2)` to `((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i)`
   defined by splitting elements of `(Sum.elim s1 s2)` into two parts. -/
 def domCoprod :
     MultilinearMap R (Sum.elim s1 s2) ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) where
@@ -340,7 +338,7 @@ def tmul : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R]
 
 /-- THe equivalence formed by combining a `TensorProduct` into a `PiTensorProduct`. -/
 def tmulEquiv : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) ≃ₗ[R]
-    ⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i  :=
+    ⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i :=
   LinearEquiv.ofLinear tmul tmulSymm
   (by
     apply PiTensorProduct.ext

@@ -269,7 +269,7 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
     | Sum.inr x => rfl
 
 /-- The tensor product on `OverColor C` as a monoidal functor. -/
-def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C)  where
+def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
   toFunctor := MonoidalCategory.tensor (OverColor C)
   ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
     ext x
@@ -343,7 +343,6 @@ def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
     (Equiv.refl (Fin (n-i)))).trans <|
   (Equiv.sumAssoc (Fin 1) (Fin i) (Fin (n - i))).trans <|
   Equiv.sumCongr (Equiv.refl (Fin 1)) (finSumFinEquiv.trans (finCongr (by omega)))
-
 
 end OverColor
 

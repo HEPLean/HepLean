@@ -308,5 +308,4 @@ variable (𝓣 : TensorTree S c4)
 -/
 end ProdNode
 
-
 end TensorTree
