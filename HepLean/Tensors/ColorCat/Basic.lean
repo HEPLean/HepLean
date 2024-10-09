@@ -61,6 +61,10 @@ lemma toEquiv_comp_hom (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
   ext x
   simpa [types_comp, toEquiv] using congrFun m.hom.w x
 
+lemma toEquiv_comp_inv_apply (m : f ⟶ g) (i : g.left) :
+    f.hom ((OverColor.Hom.toEquiv m).symm i) = g.hom i := by
+  simpa [toEquiv, types_comp] using congrFun m.inv.w i
+
 end Hom
 
 section monoidal

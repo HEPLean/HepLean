@@ -63,6 +63,7 @@ import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
 import HepLean.Mathematics.LinearMaps
+import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Informal
