@@ -230,6 +230,90 @@ def mk (f : X → C) : OverColor C := Over.mk f
 
 open MonoidalCategory
 
+/-- The monoidal functor from `OverColor C` to `OverColor D` constructed from a map
+  `f : C → D`. -/
+def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D) where
+  toFunctor := Core.functorToCore (Core.inclusion (Over C) ⋙ (Over.map f))
+  ε := Over.isoMk (Iso.refl _) (by
+    ext x
+    exact Empty.elim x)
+  μ X Y := Over.isoMk (Iso.refl _) (by
+    ext x
+    match x with
+    | Sum.inl x => rfl
+    | Sum.inr x => rfl)
+  μ_natural_left X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl x => rfl
+    | Sum.inr x => rfl
+  μ_natural_right X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl x => rfl
+    | Sum.inr x => rfl
+  associativity X Y Z := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr x) => rfl
+    | Sum.inr x => rfl
+  left_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl x => rfl
+    | Sum.inr x => rfl
+  right_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl x => rfl
+    | Sum.inr x => rfl
+
+/-- The tensor product on `OverColor C` as a monoidal functor. -/
+def tensor : MonoidalFunctor (OverColor C × OverColor C) (OverColor C)  where
+  toFunctor := MonoidalCategory.tensor (OverColor C)
+  ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
+    ext x
+    exact Empty.elim x)
+  μ X Y := Over.isoMk (Equiv.sumSumSumComm X.1.left X.2.left Y.1.left Y.2.left).toIso (by
+    ext x
+    match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr x) => rfl
+    | Sum.inr (Sum.inl x) => rfl
+    | Sum.inr (Sum.inr x) => rfl)
+  μ_natural_left X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr x) => rfl
+    | Sum.inr (Sum.inl x) => rfl
+    | Sum.inr (Sum.inr x) => rfl
+  μ_natural_right X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr x) => rfl
+    | Sum.inr (Sum.inl x) => rfl
+    | Sum.inr (Sum.inr x) => rfl
+  associativity X Y Z := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl (Sum.inl (Sum.inl x)) => rfl
+    | Sum.inl (Sum.inl (Sum.inr x)) => rfl
+    | Sum.inl (Sum.inr (Sum.inl x)) => rfl
+    | Sum.inl (Sum.inr (Sum.inr x)) => rfl
+    | Sum.inr (Sum.inl x) => rfl
+    | Sum.inr (Sum.inr x) => rfl
+  left_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl x => exact Empty.elim x
+    | Sum.inr (Sum.inl x)=> rfl
+    | Sum.inr (Sum.inr x)=> rfl
+  right_unitality X := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    match x with
+    | Sum.inl (Sum.inl x) => rfl
+    | Sum.inl (Sum.inr x) => rfl
+    | Sum.inr x => exact Empty.elim x
+
+/-!
+
+## Useful equivalences.
+
+-/
+
 /-- The isomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
   equivalence `e`. -/
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) := {
@@ -245,6 +329,17 @@ def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) := {
     erw [CategoryTheory.Iso.trans_hom]
     simp only [Iso.symm_hom, Iso.inv_hom_id]
     rfl}
+
+/-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
+  `i`th component. -/
+def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
+  (finCongr (by omega : n.succ = i + 1 + (n - i))).trans <|
+  finSumFinEquiv.symm.trans <|
+  (Equiv.sumCongr (finSumFinEquiv.symm.trans (Equiv.sumComm (Fin i) (Fin 1)))
+    (Equiv.refl (Fin (n-i)))).trans <|
+  (Equiv.sumAssoc (Fin 1) (Fin i) (Fin (n - i))).trans <|
+  Equiv.sumCongr (Equiv.refl (Fin 1)) (finSumFinEquiv.trans (finCongr (by omega)))
+
 
 end OverColor
 

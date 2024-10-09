@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.ColorCat.Basic
+import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 /-!
 
 ## Tensor trees
@@ -32,6 +33,9 @@ structure TensorStruct where
   F : MonoidalFunctor (OverColor C) (Rep k G)
   /-- A map from `C` to `C`. An involution. -/
   τ : C → C
+  /-- A monoidal natural isomorphism from OverColor.map τ ⊗⋙ F to F.
+    This will allow us to, for example, rise and lower indices. -/
+  dual : (OverColor.map τ ⊗⋙ F) ≅ F
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   evalNo : C → ℕ
