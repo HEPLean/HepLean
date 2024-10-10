@@ -53,7 +53,7 @@ def dotString (m : ℕ) (nt : ℕ) : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTr
     let jiggleNode := " node" ++ toString m ++ " [label=\"τ\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     jiggleNode ++ dotString (m + 1) nt t1 ++ edge1
-  | contr i j t1 =>
+  | contr i j _ t1 =>
     let contrNode := " node" ++ toString m ++ " [label=\"contr " ++ toString i ++ " "
       ++ toString j ++ "\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"

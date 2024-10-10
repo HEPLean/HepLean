@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.ColorCat.Basic
+import HepLean.Tensors.OverColor.Iso
 import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 /-!
 
@@ -34,12 +34,9 @@ structure TensorStruct where
   F : MonoidalFunctor (OverColor C) (Rep k G)
   /-- A map from `C` to `C`. An involution. -/
   τ : C → C
-  /-- Contraction natural transformation. -/
-  ηContr : (OverColor.diag C) ⊗⋙ (MonoidalFunctor.prod (MonoidalFunctor.id (OverColor C)) (OverColor.map τ))
-    ⊗⋙ OverColor.tensor C  ⊗⋙ F ⟶ @constMonoFunc (OverColor C) G k
-  /-- A monoidal natural isomorphism from OverColor.map τ ⊗⋙ F to F.
-    This will allow us to, for example, rise and lower indices. -/
-  dual : (OverColor.map τ ⊗⋙ F) ≅ F
+  /-
+  μContr : OverColor.contrPair C τ ⊗⋙ F ⟶ OverColor.const C ⊗⋙ F
+  dual : (OverColor.map τ ⊗⋙ F) ≅ F-/
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   evalNo : C → ℕ
@@ -67,7 +64,7 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
     (i : Fin n.succ) → (j : Fin m.succ) → TensorTree S c → TensorTree S c1 →
     TensorTree S (Sum.elim (c ∘ Fin.succAbove i) (c1 ∘ Fin.succAbove j) ∘ finSumFinEquiv.symm)
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
-    (j : Fin n.succ) → TensorTree S c → TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c → TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | jiggle {n : ℕ} {c : Fin n → S.C} : (i : Fin n) → TensorTree S c →
     TensorTree S (Function.update c i (S.τ (c i)))
   | eval {n : ℕ} {c : Fin n.succ → S.C} :
@@ -89,7 +86,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | smul _ t => t.size + 1
   | prod t1 t2 => t1.size + t2.size + 1
   | mult _ _ t1 t2 => t1.size + t2.size + 1
-  | contr _ _ t => t.size + 1
+  | contr _ _ _ t => t.size + 1
   | jiggle _ t => t.size + 1
   | eval _ _ t => t.size + 1
 
