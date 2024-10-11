@@ -192,7 +192,7 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
 def contrSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
   l.foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
-    #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x0), T']) T
+    #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x0), mkIdent ``rfl, T']) T
 
 /-- Creates the syntax associated with a tensor node. -/
 def syntaxFull (stx : Syntax) : TermElabM Term := do
@@ -256,7 +256,7 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
 def contrSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
   l.foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
-    #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x0), T']) T
+    #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x0), mkIdent ``rfl, T']) T
 
 /-- The syntax associated with a product of tensors. -/
 def prodSyntax (T1 T2 : Term) : Term :=

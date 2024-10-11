@@ -91,7 +91,6 @@ import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.SL2C.Basic
 import HepLean.SpaceTime.WeylFermion.Basic
-import HepLean.SpaceTime.WeylFermion.ColorFun
 import HepLean.SpaceTime.WeylFermion.Modules
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
@@ -100,7 +99,11 @@ import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
 import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.Basic
-import HepLean.Tensors.ColorCat.Basic
+import HepLean.Tensors.ComplexLorentz.Basic
+import HepLean.Tensors.ComplexLorentz.ColorFun
+import HepLean.Tensors.ComplexLorentz.ContrNatTransform
+import HepLean.Tensors.ComplexLorentz.Examples
+import HepLean.Tensors.ComplexLorentz.TensorStruct
 import HepLean.Tensors.Contraction
 import HepLean.Tensors.EinsteinNotation.Basic
 import HepLean.Tensors.EinsteinNotation.IndexNotation
@@ -123,6 +126,9 @@ import HepLean.Tensors.IndexNotation.IndexList.Subperm
 import HepLean.Tensors.IndexNotation.IndexString
 import HepLean.Tensors.IndexNotation.TensorIndex
 import HepLean.Tensors.MulActionTensor
+import HepLean.Tensors.OverColor.Basic
+import HepLean.Tensors.OverColor.Functors
+import HepLean.Tensors.OverColor.Iso
 import HepLean.Tensors.RisingLowering
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
