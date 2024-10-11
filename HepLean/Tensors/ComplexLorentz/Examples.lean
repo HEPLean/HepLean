@@ -32,7 +32,10 @@ def upDown : Fin 2 → complexLorentzTensor.C
 
 variable (T S : complexLorentzTensor.F.obj (OverColor.mk upDown))
 
-#check {T | i i}ᵀ.dot
+/-
+#check {T | i m ⊗ S | m l}ᵀ.dot
+#check {T | i m ⊗ S | l τ(m)}ᵀ.dot
+-/
 end complexLorentzTensor
 
 end

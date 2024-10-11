@@ -3,6 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.Tensors.ComplexLorentz.Basic
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Mathematics.PiTensorProduct
 /-!
@@ -20,40 +21,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-
-/-- The colors associated with complex representations of SL(2, ℂ) of intrest to physics. -/
-inductive Color
-  | upL : Color
-  | downL : Color
-  | upR : Color
-  | downR : Color
-  | up : Color
-  | down : Color
-
-def τ : Color → Color
-  | Color.upL => Color.downL
-  | Color.downL => Color.upL
-  | Color.upR => Color.downR
-  | Color.downR => Color.upR
-  | Color.up => Color.down
-  | Color.down => Color.up
-
-def evalNo : Color → ℕ
-  | Color.upL => 2
-  | Color.downL => 2
-  | Color.upR => 2
-  | Color.downR => 2
-  | Color.up => 4
-  | Color.down => 4
-/-- The corresponding representations associated with a color. -/
-def colorToRep (c : Color) : Rep ℂ SL(2, ℂ) :=
-  match c with
-  | Color.upL => altLeftHanded
-  | Color.downL => leftHanded
-  | Color.upR => altRightHanded
-  | Color.downR => rightHanded
-  | Color.up => Lorentz.complexContr
-  | Color.down => Lorentz.complexCo
 
 /-- The linear equivalence between `colorToRep c1` and `colorToRep c2` when `c1 = c2`. -/
 def colorToRepCongr {c1 c2 : Color} (h : c1 = c2) : colorToRep c1 ≃ₗ[ℂ] colorToRep c2 where
@@ -191,6 +158,12 @@ lemma map_tprod {X Y : OverColor Color} (p : (i : X.left) → (colorToRep (X.hom
     ((PiTensorProduct.reindex ℂ (fun x => _) (OverColor.Hom.toEquiv f))
       ((PiTensorProduct.tprod ℂ) p)) = _
   rw [PiTensorProduct.reindex_tprod, PiTensorProduct.congr_tprod]
+
+lemma obj_ρ_tprod (f : OverColor Color) (M : SL(2, ℂ))
+    (x : (i : f.left) → CoeSort.coe (colorToRep (f.hom i))) :
+    (colorFun.obj f).ρ M ((PiTensorProduct.tprod ℂ) x) =
+    PiTensorProduct.tprod ℂ (fun i => (colorToRep (f.hom i)).ρ M (x i)) := by
+  exact obj'_ρ_tprod _ _ _
 
 @[simp]
 lemma obj_ρ_empty (g : SL(2, ℂ)) : (colorFun.obj (𝟙_ (OverColor Color))).ρ g = LinearMap.id := by
