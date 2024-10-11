@@ -14,7 +14,6 @@ namespace OverColor
 open CategoryTheory
 open MonoidalCategory
 
-
 /-- The monoidal functor from `OverColor C` to `OverColor D` constructed from a map
   `f : C → D`. -/
 def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D) where
@@ -50,7 +49,7 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
     | Sum.inr x => rfl
 
 /-- The tensor product on `OverColor C` as a monoidal functor. -/
-def tensor (C : Type)  : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
+def tensor (C : Type) : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
   toFunctor := MonoidalCategory.tensor (OverColor C)
   ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
     ext x
@@ -93,13 +92,16 @@ def tensor (C : Type)  : MonoidalFunctor (OverColor C × OverColor C) (OverColor
     | Sum.inl (Sum.inr x) => rfl
     | Sum.inr x => exact Empty.elim x
 
+/-- The monoidal functor from `OverColor C` to `OverColor C × OverColor C` landing on the
+  diagonal. -/
 def diag (C : Type) : MonoidalFunctor (OverColor C) (OverColor C × OverColor C) :=
   MonoidalFunctor.diag (OverColor C)
 
+/-- The constant monoidal functor from `OverColor C` to itself landing on `𝟙_ (OverColor C)`. -/
 def const (C : Type) : MonoidalFunctor (OverColor C) (OverColor C) where
   toFunctor := (Functor.const (OverColor C)).obj (𝟙_ (OverColor C))
   ε := 𝟙 (𝟙_ (OverColor C))
-  μ _ _:= (λ_  (𝟙_ (OverColor C))).hom
+  μ _ _:= (λ_ (𝟙_ (OverColor C))).hom
   μ_natural_left _ _ := by
     simp only [Functor.const_obj_obj, Functor.const_obj_map, MonoidalCategory.whiskerRight_id,
       Category.id_comp, Iso.hom_inv_id, Category.comp_id]
@@ -120,9 +122,11 @@ def const (C : Type) : MonoidalFunctor (OverColor C) (OverColor C) where
     | Sum.inl i => exact Empty.elim i
     | Sum.inr i => exact Empty.elim i
 
+/-- The monoidal functor from `OverColor C` to `OverColor C` taking `f` to `f ⊗ τ_* f`. -/
 def contrPair (C : Type) (τ : C → C) : MonoidalFunctor (OverColor C) (OverColor C) :=
   OverColor.diag C
   ⊗⋙ (MonoidalFunctor.prod (MonoidalFunctor.id (OverColor C)) (OverColor.map τ))
   ⊗⋙ OverColor.tensor C
+
 end OverColor
 end IndexNotation

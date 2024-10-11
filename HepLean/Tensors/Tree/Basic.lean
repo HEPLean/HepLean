@@ -64,7 +64,8 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
     (i : Fin n.succ) → (j : Fin m.succ) → TensorTree S c → TensorTree S c1 →
     TensorTree S (Sum.elim (c ∘ Fin.succAbove i) (c1 ∘ Fin.succAbove j) ∘ finSumFinEquiv.symm)
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
-    (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c → TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
+    TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | jiggle {n : ℕ} {c : Fin n → S.C} : (i : Fin n) → TensorTree S c →
     TensorTree S (Function.update c i (S.τ (c i)))
   | eval {n : ℕ} {c : Fin n.succ → S.C} :

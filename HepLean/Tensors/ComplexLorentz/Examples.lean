@@ -21,11 +21,11 @@ open TensorProduct
 open IndexNotation
 open CategoryTheory
 
-
 noncomputable section
 
 namespace complexLorentzTensor
 
+/-- The color map for a 2d tensor with the first index up and the second index down. -/
 def upDown : Fin 2 → complexLorentzTensor.C
   | 0 => Fermion.Color.up
   | 1 => Fermion.Color.down

@@ -30,6 +30,7 @@ inductive Color
   | up : Color
   | down : Color
 
+/-- The involution taking a colour to its dual. -/
 def τ : Color → Color
   | Color.upL => Color.downL
   | Color.downL => Color.upL
@@ -38,6 +39,7 @@ def τ : Color → Color
   | Color.up => Color.down
   | Color.down => Color.up
 
+/-- The function taking a color to the dimension of the basis of vectors. -/
 def evalNo : Color → ℕ
   | Color.upL => 2
   | Color.downL => 2

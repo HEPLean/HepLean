@@ -65,6 +65,7 @@ lemma toEquiv_comp_inv_apply (m : f ⟶ g) (i : g.left) :
     f.hom ((OverColor.Hom.toEquiv m).symm i) = g.hom i := by
   simpa [toEquiv, types_comp] using congrFun m.inv.w i
 
+/-- Given a morphism in `OverColor C`, the corresponding isomorphism. -/
 def toIso (m : f ⟶ g) : f ≅ g := {
   hom := m,
   inv := m.symm,

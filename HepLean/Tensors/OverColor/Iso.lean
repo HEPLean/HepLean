@@ -25,6 +25,7 @@ open MonoidalCategory
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
   Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
 
+/-- Given a map `X ⊕ Y → C`, the isomorphism `mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr)`. -/
 def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr) :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     ext x
@@ -32,6 +33,7 @@ def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.in
     | Sum.inl x => rfl
     | Sum.inr x => rfl))
 
+/-- The isomorphism between objects in `OverColor C` given equality of maps. -/
 def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
@@ -53,11 +55,13 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
   simp only [Nat.succ_eq_add_one, finExtractOne, Function.comp_apply, Equiv.symm_trans_apply,
     finCongr_symm, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply,
     Equiv.coe_refl, Sum.map_inr, finCongr_apply, Fin.coe_cast]
-  change (finSumFinEquiv (Sum.map (⇑(finSumFinEquiv.symm.trans (Equiv.sumComm (Fin ↑i) (Fin 1))).symm) id
-        ((Equiv.sumAssoc (Fin 1) (Fin ↑i) (Fin (n - i))).symm (Sum.inr (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)))))).val = _
+  change (finSumFinEquiv
+    (Sum.map (⇑(finSumFinEquiv.symm.trans (Equiv.sumComm (Fin ↑i) (Fin 1))).symm) id
+    ((Equiv.sumAssoc (Fin 1) (Fin ↑i) (Fin (n - i))).symm
+    (Sum.inr (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)))))).val = _
   by_cases hi : x.1 < i.1
   · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
-        Sum.inl ⟨x, hi⟩  := by
+        Sum.inl ⟨x, hi⟩ := by
       rw [← finSumFinEquiv_symm_apply_castAdd]
       apply congrArg
       ext
@@ -78,7 +82,7 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
       rw [← finSumFinEquiv_symm_apply_natAdd]
       apply congrArg
       ext
-      simp
+      simp only [Nat.succ_eq_add_one, Fin.coe_cast, Fin.natAdd_mk]
       omega
     rw [h1, Fin.succAbove]
     split
@@ -91,8 +95,8 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
 @[simp]
 lemma finExtractOne_symm_inr_apply {n : ℕ} (i : Fin n.succ) (x : Fin n) :
     (finExtractOne i).symm (Sum.inr x) = i.succAbove x := calc
-  _ = ((finExtractOne i).symm ∘ Sum.inr) x  := rfl
-  _ = i.succAbove x  := by rw [finExtractOne_symm_inr]
+  _ = ((finExtractOne i).symm ∘ Sum.inr) x := rfl
+  _ = i.succAbove x := by rw [finExtractOne_symm_inr]
 
 @[simp]
 lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
@@ -104,6 +108,8 @@ lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
   ext
   rfl
 
+/-- The equivalence of types `Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n` extracting
+  the `i` and `(i.succAbove j)`. -/
 def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n :=
   (finExtractOne i).trans <|
@@ -129,11 +135,14 @@ lemma finExtractTwo_symm_inl_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin 
   simp
 
 @[simp]
-lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)  :
+lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     (finExtractTwo i j).symm (Sum.inl (Sum.inl 0)) = i := by
   rw [finExtractTwo]
   simp
 
+/-- The isomorphism between a `Fin 1 ⊕ Fin 1 → C` satisfying the condition
+  `c (Sum.inr 0) = τ (c (Sum.inl 0))`
+  and an object in the image of `contrPair`. -/
 def contrPairFin1Fin1 (τ : C → C) (c : Fin 1 ⊕ Fin 1 → C)
     (h : c (Sum.inr 0) = τ (c (Sum.inl 0))) :
     OverColor.mk c ≅ (contrPair C τ).obj (OverColor.mk (fun (_ : Fin 1) => c (Sum.inl 0))) :=
@@ -149,6 +158,8 @@ def contrPairFin1Fin1 (τ : C → C) (c : Fin 1 ⊕ Fin 1 → C)
       rw [h]
       rfl))
 
+/-- The Isomorphism between a `Fin n.succ.succ → C` and the product containing an object in the
+  image of `contrPair` based on the given values. -/
 def contrPairEquiv {n : ℕ} (τ : C → C) (c : Fin n.succ.succ → C) (i : Fin n.succ.succ)
     (j : Fin n.succ) (h : c (i.succAbove j) = τ (c i)) :
     OverColor.mk c ≅ ((contrPair C τ).obj (Over.mk (fun (_ : Fin 1) => c i))) ⊗
