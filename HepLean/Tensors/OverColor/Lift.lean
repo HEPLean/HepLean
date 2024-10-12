@@ -29,6 +29,7 @@ variable {C k : Type} [CommRing k] {G : Type} [Group G]
 
 namespace Discrete
 
+/-- Takes a homorphism in `Discrete C` to an isomorphism built on the same objects. -/
 def homToIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) : c1 ≅ c2 :=
   Discrete.eqToIso (Discrete.eq_of_hom h)
 
@@ -38,6 +39,7 @@ namespace lift
 noncomputable section
 variable (F : Discrete C ⥤ Rep k G)
 
+/-- Takes a homorphisms of `Discrete C` to an isomorphism `F.obj c1 ≅ F.obj c2`. -/
 def discreteFunctorMapIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) :
     F.obj c1 ≅ F.obj c2 := F.mapIso (Discrete.homToIso h)
 
@@ -55,7 +57,6 @@ def objObj' (f : OverColor C) : Rep k G := Rep.of {
 lemma objObj'_ρ (f : OverColor C) (M : G) : (objObj' F f).ρ M =
     PiTensorProduct.map (fun x => (F.obj (Discrete.mk (f.hom x))).ρ M) := rfl
 
-@[simp]
 lemma objObj'_ρ_tprod (f : OverColor C) (M : G) (x : (i : f.left) → F.obj (Discrete.mk (f.hom i))) :
     (objObj' F f).ρ M (PiTensorProduct.tprod k x) =
     PiTensorProduct.tprod k fun i => (F.obj (Discrete.mk (f.hom i))).ρ M (x i) := by
@@ -64,17 +65,8 @@ lemma objObj'_ρ_tprod (f : OverColor C) (M : G) (x : (i : f.left) → F.obj (Di
   rw [PiTensorProduct.map_tprod]
   rfl
 
-/-- Given a morphism in `OverColor Color` the corresopnding linear equivalence between `obj' _`
-  induced by reindexing. -/
-def objMapToLinearEquiv' {f g : OverColor C} (m : f ⟶ g) :
-    (objObj' F f).V ≃ₗ[k] (objObj' F g).V :=
-  (PiTensorProduct.reindex k (fun x => (F.obj (Discrete.mk (f.hom x)))) (OverColor.Hom.toEquiv m)).trans
-  (PiTensorProduct.congr (fun i => colorToRepCongr (OverColor.Hom.toEquiv_symm_apply m i)))
-
 end
 end lift
-
-def lift : (Discrete C ⥤ Rep k G) ⥤ (MonoidalFunctor (OverColor C) (Rep k G)) := sorry
 
 end OverColor
 end IndexNotation
