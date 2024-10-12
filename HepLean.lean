@@ -129,6 +129,7 @@ import HepLean.Tensors.MulActionTensor
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.OverColor.Iso
+import HepLean.Tensors.OverColor.Lift
 import HepLean.Tensors.RisingLowering
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
