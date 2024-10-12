@@ -62,7 +62,8 @@ lemma shift_ub_phase_zero {V : CKMMatrix} (h1 : u + b = - arg [V]ub) :
     simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VubAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_cs_phase_zero {V : CKMMatrix} (h1 : c + s = - arg [V]cs) :
@@ -71,10 +72,11 @@ lemma shift_cs_phase_zero {V : CKMMatrix} (h1 : c + s = - arg [V]cs) :
   rw [← abs_mul_exp_arg_mul_I [V]cs]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]cs) * I + (↑c * I + ↑s * I) = ↑(arg [V]cs + (c + s)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VcsAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_cb_phase_zero {V : CKMMatrix} (h1 : c + b = - arg [V]cb) :
@@ -83,10 +85,11 @@ lemma shift_cb_phase_zero {V : CKMMatrix} (h1 : c + b = - arg [V]cb) :
   rw [← abs_mul_exp_arg_mul_I [V]cb]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]cb) * I + (↑c * I + ↑b * I) = ↑(arg [V]cb + (c + b)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VcbAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_tb_phase_zero {V : CKMMatrix} (h1 : t + b = - arg [V]tb) :
@@ -95,10 +98,11 @@ lemma shift_tb_phase_zero {V : CKMMatrix} (h1 : t + b = - arg [V]tb) :
   rw [← abs_mul_exp_arg_mul_I [V]tb]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]tb) * I + (↑t * I + ↑b * I) = ↑(arg [V]tb + (t + b)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_neg_cancel, ofReal_zero, zero_mul, exp_zero, mul_one, VtbAbs,
+    ofReal_inj]
   rfl
 
 lemma shift_cd_phase_pi {V : CKMMatrix} (h1 : c + d = Real.pi - arg [V]cd) :
@@ -107,10 +111,11 @@ lemma shift_cd_phase_pi {V : CKMMatrix} (h1 : c + d = Real.pi - arg [V]cd) :
   rw [← abs_mul_exp_arg_mul_I [V]cd]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]cd) * I + (↑c * I + ↑d * I) = ↑(arg [V]cd + (c + d)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
-  simp
+  simp only [Fin.isValue, add_sub_cancel, exp_pi_mul_I, mul_neg, mul_one, VcdAbs, neg_inj,
+    ofReal_inj]
   rfl
 
 lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
@@ -120,33 +125,35 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
   change _ = phaseShiftApply.ucCross _ _ _ _ _ _ _
   funext i
   fin_cases i
-  · simp
+  · simp only [Fin.zero_eta, Fin.isValue]
     rw [phaseShiftApply.ucCross_fst]
-    simp [tRow, phaseShiftApply.td]
+    simp only [tRow, Fin.isValue, phaseShiftApply.td, phaseShiftApply_coe, cons_val_zero, neg_mul]
     have hτ0 := congrFun hτ 0
-    simp [tRow] at hτ0
+    simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, tRow, cons_val_zero] at hτ0
     rw [← hτ0]
     rw [← mul_assoc, ← exp_add, h1]
     congr 2
     simp only [ofReal_sub, ofReal_neg]
     ring
-  · simp
+  · simp only [Fin.mk_one, Fin.isValue]
     rw [phaseShiftApply.ucCross_snd]
-    simp [tRow, phaseShiftApply.ts]
+    simp only [tRow, Fin.isValue, phaseShiftApply_coe, phaseShiftApply.ts, cons_val_one, head_cons,
+      neg_mul]
     have hτ0 := congrFun hτ 1
-    simp [tRow] at hτ0
+    simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, tRow, cons_val_one, head_cons] at hτ0
     rw [← hτ0]
     rw [← mul_assoc, ← exp_add, h1]
     congr 2
     simp only [ofReal_sub, ofReal_neg]
     ring
-  · simp
+  · simp only [Fin.reduceFinMk, Fin.isValue]
     rw [phaseShiftApply.ucCross_thd]
-    simp [tRow, phaseShiftApply.tb]
+    simp only [tRow, Fin.isValue, phaseShiftApply_coe, phaseShiftApply.tb, cons_val_two,
+      Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons, neg_mul]
     have hτ0 := congrFun hτ 2
-    simp [tRow] at hτ0
-    rw [← hτ0]
-    rw [← mul_assoc, ← exp_add, h1]
+    simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, tRow, cons_val_two, Nat.succ_eq_add_one,
+      Nat.reduceAdd, tail_cons, head_cons] at hτ0
+    rw [← hτ0, ← mul_assoc, ← exp_add, h1]
     congr 2
     simp only [ofReal_sub, ofReal_neg]
     ring
@@ -271,26 +278,26 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
   apply And.intro
   · exact phaseShiftApply.equiv _ _ _ _ _ _ _
   · apply And.intro
-    · simp [not_or] at hb
+    · simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hb
       have h1 : VudAbs ⟦U⟧ = 0 := by
         rw [hUV]
         simp [VAbs, hb]
-      simp [VAbs] at h1
+      simp only [VudAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero] at h1
       exact h1
     apply And.intro
-    · simp [not_or] at hb
+    · simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hb
       have h1 : VusAbs ⟦U⟧ = 0 := by
         rw [hUV]
         simp [VAbs, hb]
-      simp [VAbs] at h1
+      simp only [VusAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero] at h1
       exact h1
     apply And.intro
-    · simp [not_or] at hb
+    · simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hb
       have h3 := cb_eq_zero_of_ud_us_zero hb
       have h1 : VcbAbs ⟦U⟧ = 0 := by
         rw [hUV]
         simp [VAbs, h3]
-      simp [VAbs] at h1
+      simp only [VcbAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero] at h1
       exact h1
     apply And.intro
     · have hU1 : [U]ub = VubAbs ⟦V⟧ := by
@@ -325,7 +332,8 @@ lemma cd_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠
     exact hV.2.2.2.2
   rw [cd_of_ud_us_ub_cb_tb hb hτ]
   rw [hV.1, hV.2.1, hV.2.2.1, hV.2.2.2.1]
-  simp [sq, conj_ofReal]
+  simp only [Fin.isValue, VudAbs, VcbAbs, ofReal_zero, zero_mul, exp_zero, VtbAbs, conj_ofReal,
+    one_mul, VusAbs, neg_add_rev, normSq_ofReal, ofReal_mul, neg_mul, sq, VubAbs]
   have hx := Vabs_sq_add_neq_zero hb
   field_simp
   have h1 : conj [V]ub = VubAbs ⟦V⟧ * cexp (- arg [V]ub * I) := by
@@ -343,15 +351,16 @@ lemma cs_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 ∨ [V]us ≠
   have hτ : [V]t = cexp ((0 : ℝ) * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
     simp only [ofReal_zero, zero_mul, exp_zero, one_smul]
     exact hV.2.2.2.2
-  rw [cs_of_ud_us_ub_cb_tb hb hτ]
-  rw [hV.1, hV.2.1, hV.2.2.1, hV.2.2.2.1]
-  simp [sq, conj_ofReal]
+  rw [cs_of_ud_us_ub_cb_tb hb hτ, hV.1, hV.2.1, hV.2.2.1, hV.2.2.2.1]
+  simp only [Fin.isValue, VusAbs, neg_mul, VcbAbs, ofReal_zero, zero_mul, exp_zero, VtbAbs,
+    conj_ofReal, one_mul, VudAbs, normSq_ofReal, ofReal_mul, sq, VubAbs]
   have hx := Vabs_sq_add_neq_zero hb
   field_simp
   have h1 : conj [V]ub = VubAbs ⟦V⟧ * cexp (- arg [V]ub * I) := by
     nth_rewrite 1 [← abs_mul_exp_arg_mul_I [V]ub]
     rw [@RingHom.map_mul]
-    simp [conj_ofReal, ← exp_conj, VAbs]
+    simp only [Fin.isValue, conj_ofReal, ← exp_conj, _root_.map_mul, conj_I, mul_neg, VubAbs, VAbs,
+      VAbs', Quotient.lift_mk, neg_mul]
   rw [h1]
   ring_nf
 

@@ -47,9 +47,12 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     empty_val', cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one, head_cons,
     star_sub, star_neg, ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons,
     head_fin_const]
-    simp [conj_ofReal]
+    simp only [ofReal_cos, ofReal_sin]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, one_apply_eq, Fin.mk_one, cons_val_one,
+        head_cons, ne_eq, zero_ne_one, not_false_eq_true, one_apply_ne, Fin.reduceFinMk,
+        cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, Fin.reduceEq]
     · ring_nf
       field_simp
       rw [sin_sq, sin_sq, sin_sq]
@@ -65,9 +68,12 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
   · simp only [Fin.mk_one, Fin.isValue, conjTranspose_apply, cons_val', cons_val_one, head_cons,
     empty_val', cons_val_fin_one, cons_val_zero, star_mul', RCLike.star_def, conj_ofReal, star_sub,
     ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const, star_neg]
-    simp [conj_ofReal]
+    simp only [ofReal_sin, ofReal_cos]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, Fin.mk_one, ne_eq, one_ne_zero,
+        not_false_eq_true, one_apply_ne, cons_val_one, head_cons, one_apply_eq, Fin.reduceFinMk,
+        cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, Fin.reduceEq]
     · ring_nf
       field_simp
       rw [sin_sq, sin_sq]
@@ -86,7 +92,10 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     head_fin_const]
     simp only [ofReal_sin, ofReal_cos]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, Fin.reduceFinMk, ne_eq, Fin.reduceEq,
+        not_false_eq_true, one_apply_ne, Fin.mk_one, cons_val_one, head_cons, cons_val_two,
+        Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, one_apply_eq]
     · ring_nf
       rw [sin_sq]
       ring
@@ -148,7 +157,7 @@ lemma eq_rows (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : 
 
 lemma eq_exp_of_phases (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h : cexp (δ₁₃ * I) = cexp (δ₁₃' * I)) :
     standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃' := by
-  simp [standParam, standParamAsMatrix]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, ofReal_sin, neg_mul]
   apply CKMMatrix_ext
   simp only
   rw [show exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]
@@ -169,15 +178,16 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
       neg_zero, Real.exp_zero, mul_one, _root_.sq_abs]
     rw [_root_.abs_of_nonneg h1, _root_.abs_of_nonneg h3, _root_.abs_of_nonneg h2,
       _root_.abs_of_nonneg h4]
-    simp [sq]
+    simp only [sq]
     ring_nf
     nth_rewrite 2 [Real.sin_sq θ₁₂]
     ring_nf
     field_simp
     ring
-  · simp at hx
+  · simp only [ne_eq, Decidable.not_not] at hx
     rw [hx]
-    simp
+    simp only [abs_zero, mul_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+      zero_mul, add_zero, div_zero]
 
 open Invariant in
 lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Real.sin θ₁₂)

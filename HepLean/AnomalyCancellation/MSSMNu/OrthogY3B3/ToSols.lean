@@ -426,13 +426,13 @@ theorem toSol_surjective : Function.Surjective toSol := by
   intro T
   by_cases h₁ : ¬ LineEqPropSol T
   · exact toSol_toSolNSProj ⟨T, h₁⟩
-  · simp at h₁
+  · simp only [not_not] at h₁
     by_cases h₂ : ¬ InQuadSolProp T
     · exact toSol_inLineEq ⟨T, And.intro h₁ h₂⟩
-    · simp at h₂
+    · simp only [not_not] at h₂
       by_cases h₃ : ¬ InCubeSolProp T
       · exact toSol_inQuad ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
-      · simp at h₃
+      · simp only [not_not] at h₃
         exact toSol_inQuadCube ⟨T, And.intro h₁ (And.intro h₂ h₃)⟩
 
 end AnomalyFreePerp

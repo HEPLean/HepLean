@@ -118,14 +118,14 @@ lemma quadSolToSolInv_α₁_α₂_neq_zero (S : (PlusU1 n).Sols) (h : α₁ S.1 
 lemma quadSolToSolInv_special (S : (PlusU1 n).Sols) (h : α₁ S.1 = 0) :
     special (quadSolToSolInv S).1 (quadSolToSolInv S).2.1 (quadSolToSolInv S).2.2
     (quadSolToSolInv_α₁_α₂_zero S h).1 (quadSolToSolInv_α₁_α₂_zero S h).2 = S := by
-  simp [quadSolToSolInv_1]
+  simp only [quadSolToSolInv_1]
   rw [show (quadSolToSolInv S).2.1 = 1 by rw [quadSolToSolInv, if_pos h]]
   rw [show (quadSolToSolInv S).2.2 = 0 by rw [quadSolToSolInv, if_pos h]]
   rw [special_on_AF]
 
 lemma quadSolToSolInv_generic (S : (PlusU1 n).Sols) (h : α₁ S.1 ≠ 0) :
     (quadSolToSolInv S).2.1 • generic (quadSolToSolInv S).1 = S := by
-  simp [quadSolToSolInv_1]
+  simp only [quadSolToSolInv_1]
   rw [show (quadSolToSolInv S).2.1 = (α₁ S.1)⁻¹ by rw [quadSolToSolInv, if_neg h]]
   rw [generic_on_AF_α₁_ne_zero S h]
 

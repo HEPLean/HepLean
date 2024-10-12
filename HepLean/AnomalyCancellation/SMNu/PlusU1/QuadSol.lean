@@ -55,7 +55,9 @@ lemma accQuad_α₁_α₂ (S : (PlusU1 n).LinSols) :
 lemma accQuad_α₁_α₂_zero (S : (PlusU1 n).LinSols) (h1 : α₁ C S = 0)
     (h2 : α₂ S = 0) (a b : ℚ) : accQuad (a • S + b • C.1).val = 0 := by
   erw [add_AFL_quad]
-  simp [α₁, α₂] at h1 h2
+  simp only [α₁, quadBiLin_toFun_apply, Fin.isValue, neg_mul, neg_eq_zero, mul_eq_zero,
+    OfNat.ofNat_ne_zero, false_or, α₂, HomogeneousQuadratic.eq_1, accQuad,
+    BiLinearSymm.toHomogeneousQuad_apply] at h1 h2
   field_simp [h1, h2]
 
 /-- The construction of a `QuadSol` from a `LinSols` in the generic case. -/

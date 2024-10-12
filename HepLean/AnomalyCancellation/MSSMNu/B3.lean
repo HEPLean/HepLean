@@ -70,10 +70,12 @@ lemma doublePoint_B₃_B₃ (R : MSSMACC.LinSols) : cubeTriLin B₃.val B₃.val
   simp only [mul_one, Fin.isValue, toSMSpecies_apply, one_mul, mul_neg, neg_neg, neg_mul, Hd_apply,
     Fin.reduceFinMk, Hu_apply]
   have hLin := R.linearSol
-  simp at hLin
+  simp only [MSSMACC_numberLinear, MSSMACC_linearACCs, Nat.reduceMul, Fin.isValue,
+    Fin.reduceFinMk] at hLin
   have h0 := hLin 0
   have h2 := hLin 2
-  simp [Fin.sum_univ_three] at h0 h2
+  simp only [Fin.isValue, Fin.sum_univ_three, Prod.mk_zero_zero, Prod.mk_one_one, LinearMap.coe_mk,
+    AddHom.coe_mk] at h0 h2
   linear_combination (norm := ring_nf) 9 * (h0) - 24 * (h2)
   simp only [Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one, add_add_sub_cancel, add_neg_cancel]
 

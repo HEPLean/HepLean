@@ -47,7 +47,8 @@ lemma uRow_normalized (V : CKMMatrix) : conj [V]u ⬝ᵥ [V]u = 1 := by
   have hV := V.prop
   rw [mem_unitaryGroup_iff] at hV
   have ht := congrFun (congrFun hV 0) 0
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
+  simp only [Fin.isValue, mul_apply, star_apply, RCLike.star_def, Fin.sum_univ_three,
+    one_apply_eq] at ht
   rw [mul_comm (V.1 0 0) _, mul_comm (V.1 0 1) _, mul_comm (V.1 0 2) _] at ht
   exact ht
 
@@ -215,7 +216,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     fin_cases i <;> simp
   simp only [h3, Fin.isValue, smul_dotProduct, Pi.conj_apply, smul_eq_mul,
     uRow_normalized, Fin.isValue, mul_one, mul_conj, ← Complex.sq_abs] at h2
-  simp at h2
+  simp only [Fin.isValue, ofReal_pow, sq_eq_one_iff, ofReal_eq_one] at h2
   cases' h2 with h2 h2
   · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
       rw [← hg, smul_smul, inv_mul_cancel₀, one_smul]
@@ -242,7 +243,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
   obtain ⟨g, hg⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
     (conj ([V]u) ×₃ conj ([V]c)))
   rw [Fin.sum_univ_three, rowBasis] at hg
-  simp at hg
+  simp only [Fin.isValue, coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
   simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,
@@ -308,21 +309,26 @@ def ucCross : Fin 3 → ℂ :=
 
 lemma ucCross_fst (V : CKMMatrix) : (ucCross V a b c d e f) 0 =
     cexp ((- a * I) + (- b * I) + (- e * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 0 := by
-  simp [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
-    LinearMap.mk₂_apply, Pi.conj_apply, cons_val_zero, neg_mul, uRow, us, ub, cRow, cs, cb,
-    exp_add, exp_sub, ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow,
+    phaseShiftApply_coe, us, exp_add, ub, cRow, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply,
+    cons_val_one, head_cons, _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two,
+    tail_cons, cons_val_zero, neg_mul]
   ring
 
 lemma ucCross_snd (V : CKMMatrix) : (ucCross V a b c d e f) 1 =
     cexp ((- a * I) + (- b * I) + (- d * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 1 := by
-  simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add,
-    exp_sub, ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
+    exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
+    _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,
+    cons_val_zero, neg_mul]
   ring
 
 lemma ucCross_thd (V : CKMMatrix) : (ucCross V a b c d e f) 2 =
     cexp ((- a * I) + (- b * I) + (- d * I) + (- e * I)) * (conj [V]u ×₃ conj [V]c) 2 := by
-  simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add, exp_sub,
-    ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
+    exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
+    _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,
+    cons_val_zero, neg_mul]
   ring
 
 lemma uRow_mul (V : CKMMatrix) (a b c : ℝ) :

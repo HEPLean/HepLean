@@ -158,8 +158,7 @@ lemma basis!_on_δ!₁_self (j : Fin n) : basis!AsCharges j (δ!₁ j) = 1 := by
 
 lemma basis_on_δ₁_other {k j : Fin n.succ} (h : k ≠ j) :
     basisAsCharges k (δ₁ j) = 0 := by
-  simp [basisAsCharges]
-  simp [δ₁, δ₂]
+  simp only [basisAsCharges, succ_eq_add_one, PureU1_numberCharges, δ₁, succ_eq_add_one, δ₂]
   split
   · rename_i h1
     rw [Fin.ext_iff] at h1

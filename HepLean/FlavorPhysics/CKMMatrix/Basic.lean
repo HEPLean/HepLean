@@ -45,7 +45,11 @@ lemma phaseShiftMatrix_star (a b c : ℝ) :
     (phaseShiftMatrix a b c)ᴴ = phaseShiftMatrix (- a) (- b) (- c) := by
   funext i j
   fin_cases i <;> fin_cases j <;>
-  simp [← exp_conj, conj_ofReal]
+  simp only [phaseShiftMatrix, Fin.zero_eta, Fin.isValue, conjTranspose_apply, cons_val',
+    cons_val_zero, empty_val', cons_val_fin_one, vecCons_const, star_def, ← exp_conj,
+    _root_.map_mul, conj_I, conj_ofReal, neg_mul, ofReal_neg, mul_neg, Fin.mk_one, cons_val_one,
+    head_fin_const, star_zero, head_cons, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd,
+    tail_val', head_val', tail_cons, Fin.reduceFinMk, map_eq_zero]
   · rfl
   · rfl
 
@@ -53,7 +57,10 @@ lemma phaseShiftMatrix_mul (a b c d e f : ℝ) :
     phaseShiftMatrix a b c * phaseShiftMatrix d e f = phaseShiftMatrix (a + d) (b + e) (c + f) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-  simp [Matrix.mul_apply, Fin.sum_univ_three]
+  simp only [phaseShiftMatrix, Fin.zero_eta, Fin.isValue, mul_apply, cons_val', empty_val',
+    cons_val_fin_one, cons_val_zero, vecCons_const, Fin.sum_univ_three, cons_val_one, head_cons,
+    head_fin_const, mul_zero, add_zero, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
+    tail_val', head_val', zero_mul, ofReal_add, Fin.mk_one, Fin.reduceFinMk, zero_add]
   any_goals rw [mul_add, exp_add]
   change cexp (I * ↑c) * 0 = 0
   simp
@@ -116,8 +123,8 @@ lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
 def CKMMatrix : Type := unitaryGroup (Fin 3) ℂ
 
 lemma CKMMatrix_ext {U V : CKMMatrix} (h : U.val = V.val) : U = V := by
-  cases U; cases V
-  simp at h
+  cases U
+  cases V
   subst h
   rfl
 
@@ -286,7 +293,11 @@ lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
     vecCons_const, cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons,
     head_fin_const, mul_zero]
   fin_cases i <;> fin_cases j <;>
-  simp [Complex.abs_exp]
+    simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, zero_mul, add_zero, mul_zero,
+      _root_.map_mul, abs_exp, mul_re, I_re, ofReal_re, I_im, ofReal_im, sub_self, Real.exp_zero,
+      one_mul, mul_one, Fin.mk_one, cons_val_one, head_cons, zero_add, head_fin_const,
+      Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
+      tail_val', head_val']
   all_goals change Complex.abs (0 * _ + _) = _
   all_goals simp [Complex.abs_exp]
 

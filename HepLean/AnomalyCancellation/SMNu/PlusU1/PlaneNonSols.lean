@@ -162,7 +162,7 @@ lemma isSolution_sum_part (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ 
   rw [isSolution_f0 f hS, isSolution_f1 f hS, isSolution_f2 f hS, isSolution_f3 f hS,
     isSolution_f4 f hS, isSolution_f5 f hS,
     isSolution_f6 f hS, isSolution_f7 f hS, isSolution_f8 f hS]
-  simp
+  simp only [Fin.isValue, zero_smul, add_zero, zero_add]
   rfl
 
 lemma isSolution_grav (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
@@ -172,7 +172,7 @@ lemma isSolution_grav (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f
   have hg := gravSol S.toLinSols
   rw [hS', hx, accGrav.map_add, accGrav.map_smul, accGrav.map_smul, show accGrav B₉ = 3 by rfl,
     show accGrav B₁₀ = 1 by rfl] at hg
-  simp at hg
+  simp only [Fin.isValue, smul_eq_mul, mul_one] at hg
   linear_combination hg
 
 lemma isSolution_sum_part' (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
@@ -193,7 +193,7 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i
     cubeTriLin.map_smul₃, cubeTriLin.map_smul₃] at hc
   rw [show accCube B₉ = 9 by rfl, show accCube B₁₀ = 1 by rfl, show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl,
     show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
-  simp at hc
+  simp only [Fin.isValue, neg_mul, mul_one, mul_zero, add_zero] at hc
   have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by ring
   rw [h1] at hc
   simpa using hc

@@ -108,7 +108,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
   have h4 := Pa_δa₄ f g 0
   have h2 := Pa_δa₂ f g 0
   rw [← hS] at h1 h2 h4
-  simp at h2
+  simp only [Nat.succ_eq_add_one, Fin.succ_zero_eq_one, Fin.castSucc_zero] at h2
   have h5 : f 1 = S.val (δa₂ 0) + S.val δa₁ + S.val (δa₄ 0) := by
     linear_combination -(1 * h1) - 1 * h4 - 1 * h2
   rw [h5, δa₄_δ!₂, show (δa₂ (0 : Fin n.succ)) = δ!₁ 0 from rfl, δa₁_δ!₃]
@@ -120,7 +120,7 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
   obtain ⟨g, f, hfg⟩ := span_basis S
   have h1 := lineInCubicPerm_swap LIC 0 g f hfg
   rw [P_P_P!_accCube' g f hfg] at h1
-  simp at h1
+  simp only [Nat.succ_eq_add_one, mul_eq_zero] at h1
   cases h1 <;> rename_i h1
   · apply Or.inl
     linear_combination h1

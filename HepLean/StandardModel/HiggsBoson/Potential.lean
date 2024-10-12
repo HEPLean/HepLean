@@ -62,7 +62,7 @@ def neg : Potential where
 
 @[simp]
 lemma toFun_neg (φ : HiggsField) (x : SpaceTime) : P.neg.toFun φ x = - P.toFun φ x := by
-  simp [neg, toFun]
+  simp only [toFun, neg, neg_neg, normSq, neg_mul, neg_add_rev]
   ring
 
 @[simp]
@@ -247,7 +247,8 @@ lemma neg_𝓵_sol_exists_iff (h𝓵 : P.𝓵 < 0) (c : ℝ) : (∃ φ x, P.toFu
 lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFun φ x = c) ↔ (P.μ2 < 0 ∧ 0 ≤ c) ∨
     (0 ≤ P.μ2 ∧ - P.μ2 ^ 2 / (4 * P.𝓵) ≤ c) := by
   have h1 := P.neg.neg_𝓵_sol_exists_iff (by simpa using h𝓵) (- c)
-  simp at h1
+  simp only [toFun_neg, neg_inj, μ2_neg, Left.neg_pos_iff, Left.neg_nonpos_iff, even_two,
+    Even.neg_pow, 𝓵_neg, mul_neg, neg_div_neg_eq] at h1
   rw [neg_le, neg_div'] at h1
   exact h1
 
@@ -310,7 +311,7 @@ lemma isBounded_of_𝓵_pos (h : 0 < P.𝓵) : P.IsBounded := by
   simp only [IsBounded]
   have h2 := P.pos_𝓵_quadDiscrim_zero_bound h
   by_contra hn
-  simp at hn
+  simp only [not_exists, not_forall, not_le] at hn
   obtain ⟨φ, x, hx⟩ := hn (-P.μ2 ^ 2 / (4 * P.𝓵))
   have h2' := h2 φ x
   linarith
@@ -342,7 +343,6 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
     (x : SpaceTime) : IsMinOn (fun (φ, x) => P.toFun φ x) Set.univ (φ, x)
     ↔ P.toFun φ x = 0 := by
   have h1 := P.pos_𝓵_sol_exists_iff h𝓵
-  simp [hμ2] at h1
   rw [isMinOn_univ_iff]
   simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
@@ -375,7 +375,7 @@ lemma isMinOn_iff_of_μSq_nonneg_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : 0 ≤ P.�
     (x : SpaceTime) : IsMinOn (fun (φ, x) => P.toFun φ x) Set.univ (φ, x) ↔
     P.toFun φ x = - P.μ2 ^ 2 / (4 * P.𝓵) := by
   have h1 := P.pos_𝓵_sol_exists_iff h𝓵
-  simp [hμ2, not_lt.mpr hμ2] at h1
+  simp only [not_lt.mpr hμ2, false_and, hμ2, true_and, false_or] at h1
   rw [isMinOn_univ_iff]
   simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)

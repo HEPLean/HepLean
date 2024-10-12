@@ -142,14 +142,16 @@ def accGrav : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [mul_add]
+    simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
+      toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
+      reduceMul, Hd_apply, Fin.reduceFinMk, Hu_apply, eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -175,14 +177,16 @@ def accSU2 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [mul_add]
+    simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
+      toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
+      reduceMul, Hd_apply, Fin.reduceFinMk, Hu_apply, eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -208,13 +212,15 @@ def accSU3 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [mul_add]
+    simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
+      toSMSpecies_apply, reduceMul, Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat rw [(toSMSpecies _).map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
+      reduceMul, eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     --rw [show Rat.cast a = a from rfl]
@@ -239,14 +245,16 @@ def accYY : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   map_add' S T := by
     simp only
     repeat rw [map_add]
-    simp [mul_add]
+    simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
+      toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
+      reduceMul, Hd_apply, Fin.reduceFinMk, Hu_apply, eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
     repeat erw [← Finset.mul_sum]
     -- rw [show Rat.cast a = a from rfl]
@@ -462,14 +470,14 @@ def AnomalyFreeMk (S : MSSMACC.Charges) (hg : accGrav S = 0)
     (hquad : accQuad S = 0) (hcube : accCube S = 0) : MSSMACC.Sols :=
   ⟨⟨⟨S, by
     intro i
-    simp at i
+    simp only [MSSMACC_numberLinear] at i
     match i with
     | 0 => exact hg
     | 1 => exact hsu2
     | 2 => exact hsu3
     | 3 => exact hyy⟩, by
     intro i
-    simp at i
+    simp only [MSSMACC_numberQuadratic] at i
     match i with
     | 0 => exact hquad⟩, hcube⟩
 
@@ -485,7 +493,7 @@ def AnomalyFreeQuadMk' (S : MSSMACC.LinSols) (hquad : accQuad S.val = 0) :
     MSSMACC.QuadSols :=
   ⟨S, by
     intro i
-    simp at i
+    simp only [MSSMACC_numberQuadratic] at i
     match i with
     | 0 => exact hquad⟩
 
@@ -495,7 +503,7 @@ def AnomalyFreeMk' (S : MSSMACC.LinSols) (hquad : accQuad S.val = 0)
     (hcube : accCube S.val = 0) : MSSMACC.Sols :=
   ⟨⟨S, by
     intro i
-    simp at i
+    simp only [MSSMACC_numberQuadratic] at i
     match i with
     | 0 => exact hquad⟩, hcube⟩
 

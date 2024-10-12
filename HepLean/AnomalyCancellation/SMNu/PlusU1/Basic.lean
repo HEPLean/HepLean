@@ -40,27 +40,27 @@ variable {n : ℕ}
 
 lemma gravSol (S : (PlusU1 n).LinSols) : accGrav S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [PlusU1_numberLinear, PlusU1_linearACCs, Fin.isValue] at hS
   exact hS 0
 
 lemma SU2Sol (S : (PlusU1 n).LinSols) : accSU2 S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [PlusU1_numberLinear, PlusU1_linearACCs, Fin.isValue] at hS
   exact hS 1
 
 lemma SU3Sol (S : (PlusU1 n).LinSols) : accSU3 S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [PlusU1_numberLinear, PlusU1_linearACCs, Fin.isValue] at hS
   exact hS 2
 
 lemma YYsol (S : (PlusU1 n).LinSols) : accYY S.val = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [PlusU1_numberLinear, PlusU1_linearACCs, Fin.isValue] at hS
   exact hS 3
 
 lemma quadSol (S : (PlusU1 n).QuadSols) : accQuad S.val = 0 := by
   have hS := S.quadSol
-  simp at hS
+  simp only [PlusU1_numberQuadratic, HomogeneousQuadratic.eq_1, PlusU1_quadraticACCs] at hS
   exact hS 0
 
 lemma cubeSol (S : (PlusU1 n).Sols) : accCube S.val = 0 := by
@@ -73,7 +73,7 @@ def chargeToLinear (S : (PlusU1 n).Charges) (hGrav : accGrav S = 0)
     (PlusU1 n).LinSols :=
   ⟨S, by
     intro i
-    simp at i
+    simp only [PlusU1_numberLinear] at i
     match i with
     | 0 => exact hGrav
     | 1 => exact hSU2
@@ -86,7 +86,7 @@ def linearToQuad (S : (PlusU1 n).LinSols) (hQ : accQuad S.val = 0) :
     (PlusU1 n).QuadSols :=
   ⟨S, by
     intro i
-    simp at i
+    simp only [PlusU1_numberQuadratic] at i
     match i with
     | 0 => exact hQ⟩
 
@@ -122,7 +122,7 @@ def perm (n : ℕ) : ACCSystemGroupAction (PlusU1 n) where
   rep := repCharges
   linearInvariant := by
     intro i
-    simp at i
+    simp only [PlusU1_numberLinear] at i
     match i with
     | 0 => exact accGrav_invariant
     | 1 => exact accSU2_invariant
@@ -130,7 +130,7 @@ def perm (n : ℕ) : ACCSystemGroupAction (PlusU1 n) where
     | 3 => exact accYY_invariant
   quadInvariant := by
     intro i
-    simp at i
+    simp only [PlusU1_numberQuadratic] at i
     match i with
     | 0 => exact accQuad_invariant
   cubicInvariant := accCube_invariant

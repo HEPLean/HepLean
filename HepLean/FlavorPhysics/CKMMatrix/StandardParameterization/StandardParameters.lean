@@ -397,10 +397,16 @@ lemma on_param_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
   have hS12 := congrArg ofReal (S₁₂_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
   simp only [ofReal_eq_coe, ← S₁₂_eq_ℂsin_θ₁₂, map_zero] at hS12
   use 0, 0, 0, δ₁₃, 0, -δ₁₃
-  simp [standParam, standParamAsMatrix, h, phaseShift, hS13, hC12, hS12]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, hC12, h, ofReal_zero, mul_zero, ofReal_sin,
+    hS12, hS13, neg_mul, one_mul, neg_zero, zero_mul, mul_one, zero_sub, sub_zero, phaseShift,
+    phaseShiftMatrix, exp_zero, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_zero, tail_val', head_val', zero_add, Fin.mk_one, Fin.reduceFinMk,
+      neg_mul, mul_one]
   · rfl
   · rfl
 
@@ -413,7 +419,11 @@ lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
     exp_zero, mul_one, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_zero, tail_val', head_val', zero_add, zero_eq_mul, mul_neg, neg_mul,
+      mul_one, neg_inj, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · change _ = _ + _ * 0
     field_simp
@@ -429,10 +439,16 @@ lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, δ₁₃, 0, 0, 0, - δ₁₃
   have hb := exp_ne_zero (I * δ₁₃)
-  simp [standParam, standParamAsMatrix, h, phaseShift, exp_neg]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, ofReal_sin, neg_mul, exp_neg, h,
+    ofReal_zero, mul_zero, zero_sub, zero_mul, sub_zero, phaseShift, phaseShiftMatrix, exp_zero,
+    mul_one, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      zero_add, mul_neg, neg_inj, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · ring_nf
     change _ = _ + _ * 0
@@ -448,7 +464,11 @@ lemma on_param_sin_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     Submonoid.mk_mul_mk, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', zero_add, self_eq_add_right,
+      mul_eq_zero, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · exact Or.inr rfl
 
@@ -456,10 +476,16 @@ lemma on_param_sin_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   use 0, δ₁₃, δ₁₃, 0, -δ₁₃, - δ₁₃
   have hb := exp_ne_zero (I * δ₁₃)
-  simp [standParam, standParamAsMatrix, h, phaseShift, exp_neg]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, h, ofReal_zero, zero_mul, ofReal_sin,
+    neg_mul, exp_neg, neg_zero, zero_sub, sub_zero, phaseShift, phaseShiftMatrix, mul_zero,
+    exp_zero, mul_one, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      Fin.mk_one, zero_add, Fin.reduceFinMk, mul_neg, neg_mul, neg_inj]
   · apply Or.inr rfl
   · change _ = _ + _ * 0
     simp only [mul_zero, add_zero, neg_inj]
@@ -484,7 +510,11 @@ lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     mul_one, Submonoid.mk_mul_mk, ofReal_neg, mul_neg, Subtype.mk.injEq]
   funext i j
   fin_cases i <;> fin_cases j <;>
-    simp [mul_apply, Fin.sum_univ_three, mul_apply, Fin.sum_univ_three]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
+      cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
+      cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      Fin.mk_one, zero_add, Fin.reduceFinMk, mul_neg, neg_inj]
   · exact Or.inr rfl
   · change _ = _ + _ * 0
     simp only [mul_zero, add_zero, neg_inj]

@@ -34,7 +34,7 @@ lemma constAbs_perm (S : (PureU1 n).Charges) (M :(FamilyPermutations n).group) :
     MonoidHom.coe_mk, OneHom.coe_mk, chargeMap_apply]
   refine Iff.intro (fun h i j => ?_) (fun h i j => h (M.invFun i) (M.invFun j))
   have h2 := h (M.toFun i) (M.toFun j)
-  simp at h2
+  simp only [Equiv.toFun_as_coe, Equiv.Perm.inv_apply_self] at h2
   exact h2
 
 lemma constAbs_sort {S : (PureU1 n).Charges} (CA : ConstAbs S) : ConstAbs (sort S) := by
@@ -93,7 +93,7 @@ lemma is_zero (h0 : S (0 : Fin n.succ) = 0) : S = 0 := by
   funext i
   have ht := hS.1 i (0 : Fin n.succ)
   rw [h0] at ht
-  simp at ht
+  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, pow_eq_zero_iff] at ht
   exact ht
 
 /-- A boundary of `S : (PureU1 n.succ).charges` (assumed sorted, constAbs and non-zero)
@@ -117,7 +117,8 @@ lemma boundary_split (k : Fin n) : k.succ.val + (n.succ - k.succ.val) = n.succ :
 
 lemma boundary_accGrav' (k : Fin n) : accGrav n.succ S =
     ∑ i : Fin (k.succ.val + (n.succ - k.succ.val)), S (Fin.cast (boundary_split k) i) := by
-  simp [accGrav]
+  simp only [succ_eq_add_one, accGrav, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_succ,
+    PureU1_numberCharges]
   erw [Finset.sum_equiv (Fin.castOrderIso (boundary_split k)).toEquiv]
   · intro i
     simp only [Fin.val_succ, mem_univ, RelIso.coe_fn_toEquiv]
@@ -149,7 +150,7 @@ include hS in
 lemma not_hasBoundary_zero_le (hnot : ¬ (HasBoundary S)) (h0 : S (0 : Fin n.succ) < 0) :
     ∀ i, S (0 : Fin n.succ) = S i := by
   intro ⟨i, hi⟩
-  simp at hnot
+  simp only [HasBoundary, Boundary, not_exists, not_and, not_lt] at hnot
   induction i
   · rfl
   · rename_i i hii
@@ -163,7 +164,7 @@ lemma not_hasBoundry_zero (hnot : ¬ (HasBoundary S)) (i : Fin n.succ) :
     S (0 : Fin n.succ) = S i := by
   by_cases hi : S (0 : Fin n.succ) < 0
   · exact not_hasBoundary_zero_le hS hnot hi i
-  · simp at hi
+  · simp only [not_lt] at hi
     exact zero_gt hS hi i
 
 include hS in
@@ -175,9 +176,9 @@ include hA in
 lemma AFL_hasBoundary (h : A.val (0 : Fin n.succ) ≠ 0) : HasBoundary A.val := by
   by_contra hn
   have h0 := not_hasBoundary_grav hA hn
-  simp [accGrav] at h0
+  simp only [succ_eq_add_one, accGrav, LinearMap.coe_mk, AddHom.coe_mk, cast_add, cast_one] at h0
   erw [pureU1_linear A] at h0
-  simp at h0
+  simp only [zero_eq_mul] at h0
   cases' h0
   · linarith
   · simp_all
@@ -187,9 +188,9 @@ lemma AFL_odd_noBoundary {A : (PureU1 (2 * n + 1)).LinSols} (h : ConstAbsSorted 
   by_contra hn
   obtain ⟨k, hk⟩ := hn
   have h0 := boundary_accGrav'' h k hk
-  simp [accGrav] at h0
+  simp only [succ_eq_add_one, accGrav, LinearMap.coe_mk, AddHom.coe_mk, cast_mul, cast_ofNat] at h0
   erw [pureU1_linear A] at h0
-  simp [hA] at h0
+  simp only [zero_eq_mul, hA, or_false] at h0
   have h1 : 2 * n = 2 * k.val + 1 := by
     rw [← @Nat.cast_inj ℚ]
     simp only [cast_mul, cast_ofNat, cast_add, cast_one]
@@ -212,7 +213,8 @@ lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted 
   have h0 := boundary_accGrav'' h k hk
   change ∑ i : Fin (succ (Nat.mul 2 n + 1)), A.val i = _ at h0
   erw [pureU1_linear A] at h0
-  simp [hA] at h0
+  simp only [mul_eq, cast_add, cast_mul, cast_ofNat, cast_one, add_sub_add_right_eq_sub,
+    succ_eq_add_one, zero_eq_mul, hA, or_false] at h0
   rw [← @Nat.cast_inj ℚ]
   linear_combination h0 / 2
 

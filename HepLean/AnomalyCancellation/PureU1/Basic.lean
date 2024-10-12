@@ -31,7 +31,7 @@ def accGrav (n : ℕ) : ((PureU1Charges n).Charges →ₗ[ℚ] ℚ) where
   toFun S := ∑ i : Fin n, S i
   map_add' S T := Finset.sum_add_distrib
   map_smul' a S := by
-    simp [HSMul.hSMul, SMul.smul]
+    simp only [HSMul.hSMul, SMul.smul, eq_ratCast, Rat.cast_eq_id, id_eq]
     rw [← Finset.mul_sum]
 
 /-- The symmetric trilinear form used to define the cubic anomaly. -/
@@ -40,7 +40,7 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
   (fun S => ∑ i, S.1 i * S.2.1 i * S.2.2 i)
   (by
     intro a S L T
-    simp [HSMul.hSMul]
+    simp only [PureU1Charges_numberCharges, HSMul.hSMul, ACCSystemCharges.chargesModule_smul]
     rw [Finset.mul_sum]
     apply Fintype.sum_congr
     intro i
@@ -108,7 +108,7 @@ open BigOperators
 lemma pureU1_linear {n : ℕ} (S : (PureU1 n.succ).LinSols) :
     ∑ i, S.val i = 0 := by
   have hS := S.linearSol
-  simp at hS
+  simp only [succ_eq_add_one, PureU1_numberLinear, PureU1_linearACCs] at hS
   exact hS 0
 
 lemma pureU1_cube {n : ℕ} (S : (PureU1 n.succ).Sols) :
@@ -120,7 +120,7 @@ lemma pureU1_cube {n : ℕ} (S : (PureU1 n.succ).Sols) :
 lemma pureU1_last {n : ℕ} (S : (PureU1 n.succ).LinSols) :
     S.val (Fin.last n) = - ∑ i : Fin n, S.val i.castSucc := by
   have hS := pureU1_linear S
-  simp at hS
+  simp only [succ_eq_add_one, PureU1_numberCharges] at hS
   rw [Fin.sum_univ_castSucc] at hS
   linear_combination hS
 
@@ -134,7 +134,7 @@ lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
     obtain ⟨j, hj⟩ := hiCast
     rw [← hj]
     exact h j
-  · simp at hi
+  · simp only [succ_eq_add_one, PureU1_numberCharges, ne_eq, Decidable.not_not] at hi
     rw [hi, pureU1_last, pureU1_last]
     simp only [neg_inj]
     apply Finset.sum_congr
