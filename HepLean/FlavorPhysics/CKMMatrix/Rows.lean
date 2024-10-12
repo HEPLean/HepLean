@@ -47,7 +47,8 @@ lemma uRow_normalized (V : CKMMatrix) : conj [V]u ⬝ᵥ [V]u = 1 := by
   have hV := V.prop
   rw [mem_unitaryGroup_iff] at hV
   have ht := congrFun (congrFun hV 0) 0
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
+  simp only [Fin.isValue, mul_apply, star_apply, RCLike.star_def, Fin.sum_univ_three,
+    one_apply_eq] at ht
   rw [mul_comm (V.1 0 0) _, mul_comm (V.1 0 1) _, mul_comm (V.1 0 2) _] at ht
   exact ht
 
@@ -215,7 +216,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     fin_cases i <;> simp
   simp only [h3, Fin.isValue, smul_dotProduct, Pi.conj_apply, smul_eq_mul,
     uRow_normalized, Fin.isValue, mul_one, mul_conj, ← Complex.sq_abs] at h2
-  simp at h2
+  simp only [Fin.isValue, ofReal_pow, sq_eq_one_iff, ofReal_eq_one] at h2
   cases' h2 with h2 h2
   · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
       rw [← hg, smul_smul, inv_mul_cancel₀, one_smul]
@@ -242,7 +243,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
   obtain ⟨g, hg⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
     (conj ([V]u) ×₃ conj ([V]c)))
   rw [Fin.sum_univ_three, rowBasis] at hg
-  simp at hg
+  simp only [Fin.isValue, coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
   simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,

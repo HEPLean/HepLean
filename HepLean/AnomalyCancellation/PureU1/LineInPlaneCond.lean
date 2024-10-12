@@ -121,7 +121,7 @@ theorem linesInPlane_constAbs {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
 
 lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
     ConstAbsProp (S.val (0 : Fin 4), S.val (1 : Fin 4)) := by
-  simp [ConstAbsProp]
+  simp only [ConstAbsProp, Fin.isValue]
   by_contra hn
   have hLin := pureU1_linear S.1.1
   have hcube := pureU1_cube S

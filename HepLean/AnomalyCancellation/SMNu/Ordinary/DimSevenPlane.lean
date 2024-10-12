@@ -130,7 +130,11 @@ def B₆ : (SM 3).Charges := toSpeciesEquiv.invFun (fun s => fun i =>
 
 lemma B₆_cubic (S T : (SM 3).Charges) : cubeTriLin B₆ S T =
     3 * (S (5 : Fin 18) * T (5 : Fin 18) - S (8 : Fin 18) * T (8 : Fin 18)) := by
-  simp [Fin.sum_univ_three, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp only [B₆, Equiv.invFun_as_coe, cubeTriLin_toFun_apply_apply, Nat.reduceMul, finProdFinEquiv,
+    Fin.divNat, Fin.modNat, Fin.isValue, Equiv.coe_fn_mk, Fin.val_zero, mul_zero, add_zero,
+    toSpeciesEquiv_symm_apply, Fin.val_one, mul_one, Nat.ofNat_pos, Nat.add_div_right,
+    Nat.add_mod_right, Fin.val_two, Nat.add_mul_mod_self_left, Fin.sum_univ_three, Fin.zero_eta,
+    zero_mul, zero_add, Fin.reduceFinMk, Fin.mk_one, Nat.reduceAdd, one_mul, neg_mul, mul_neg]
   ring_nf
 
 /-- The charge assignments forming a basis of the plane. -/
@@ -150,7 +154,8 @@ lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin B₀ (B i) S = 0
   rw [B₀_cubic]
   fin_cases i <;>
-    simp at hi <;>
+    simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+      Fin.reduceFinMk, not_true_eq_false] at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
@@ -158,7 +163,8 @@ lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin B₁ (B i) S = 0
   rw [B₁_cubic]
   fin_cases i <;>
-    simp at hi <;>
+    simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+      Fin.reduceFinMk, not_true_eq_false] at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).Charges) :
@@ -166,7 +172,8 @@ lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin B₂ (B i) S = 0
   rw [B₂_cubic]
   fin_cases i <;>
-    simp at hi <;>
+    simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+      Fin.reduceFinMk, not_true_eq_false] at hi <;>
     simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).Charges) :
@@ -174,7 +181,8 @@ lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin (B₃) (B i) S = 0
   rw [B₃_cubic]
   fin_cases i <;>
-  simp at hi <;>
+  simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+    Fin.reduceFinMk, not_true_eq_false] at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).Charges) :
@@ -182,7 +190,8 @@ lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin (B₄) (B i) S = 0
   rw [B₄_cubic]
   fin_cases i <;>
-  simp at hi <;>
+  simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+    Fin.reduceFinMk, not_true_eq_false] at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).Charges) :
@@ -190,7 +199,8 @@ lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin (B₅) (B i) S = 0
   rw [B₅_cubic]
   fin_cases i <;>
-  simp at hi <;>
+  simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+    Fin.reduceFinMk, not_true_eq_false] at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
@@ -198,7 +208,8 @@ lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
   change cubeTriLin (B₆) (B i) S = 0
   rw [B₆_cubic]
   fin_cases i <;>
-  simp at hi <;>
+  simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
+    Fin.reduceFinMk, not_true_eq_false] at hi <;>
   simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
 
 lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).Charges) :

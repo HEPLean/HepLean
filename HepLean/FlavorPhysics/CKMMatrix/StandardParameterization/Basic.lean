@@ -49,7 +49,10 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     head_fin_const]
     simp only [ofReal_cos, ofReal_sin]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, one_apply_eq, Fin.mk_one, cons_val_one,
+        head_cons, ne_eq, zero_ne_one, not_false_eq_true, one_apply_ne, Fin.reduceFinMk,
+        cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, Fin.reduceEq]
     · ring_nf
       field_simp
       rw [sin_sq, sin_sq, sin_sq]
@@ -67,7 +70,10 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const, star_neg]
     simp only [ofReal_sin, ofReal_cos]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, Fin.mk_one, ne_eq, one_ne_zero,
+        not_false_eq_true, one_apply_ne, cons_val_one, head_cons, one_apply_eq, Fin.reduceFinMk,
+        cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, Fin.reduceEq]
     · ring_nf
       field_simp
       rw [sin_sq, sin_sq]
@@ -86,7 +92,10 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     head_fin_const]
     simp only [ofReal_sin, ofReal_cos]
     rw [exp_neg]
-    fin_cases i <;> simp
+    fin_cases i <;>
+      simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, Fin.reduceFinMk, ne_eq, Fin.reduceEq,
+        not_false_eq_true, one_apply_ne, Fin.mk_one, cons_val_one, head_cons, cons_val_two,
+        Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, one_apply_eq]
     · ring_nf
       rw [sin_sq]
       ring
@@ -148,7 +157,7 @@ lemma eq_rows (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : 
 
 lemma eq_exp_of_phases (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h : cexp (δ₁₃ * I) = cexp (δ₁₃' * I)) :
     standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃' := by
-  simp [standParam, standParamAsMatrix]
+  simp only [standParam, standParamAsMatrix, ofReal_cos, ofReal_sin, neg_mul]
   apply CKMMatrix_ext
   simp only
   rw [show exp (I * δ₁₃) = exp (I * δ₁₃') by rw [mul_comm, h, mul_comm]]

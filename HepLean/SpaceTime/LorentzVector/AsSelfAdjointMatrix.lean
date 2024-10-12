@@ -31,7 +31,10 @@ lemma toMatrix_isSelfAdjoint (x : LorentzVector 3) : IsSelfAdjoint (toMatrix x) 
   rw [isSelfAdjoint_iff, star_eq_conjTranspose, ← Matrix.ext_iff]
   intro i j
   fin_cases i <;> fin_cases j <;>
-    simp [toMatrix, conj_ofReal]
+    simp only [toMatrix, LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply,
+    Fin.zero_eta, conjTranspose_apply, of_apply, cons_val', cons_val_zero, empty_val',
+    cons_val_fin_one, star_add, RCLike.star_def, conj_ofReal, Fin.mk_one, cons_val_one,
+    head_fin_const, star_mul', conj_I, mul_neg, head_cons, star_sub, sub_neg_eq_add]
   rfl
 
 /-- A self-adjoint matrix formed from a Lorentz vector point. -/

@@ -273,7 +273,8 @@ lemma VAbs_sum_sq_col_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
   have hV := V.prop
   rw [mem_unitaryGroup_iff'] at hV
   have ht := congrFun (congrFun hV i) i
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
+  simp only [mul_apply, star_apply, RCLike.star_def, Fin.sum_univ_three, Fin.isValue,
+    one_apply_eq] at ht
   rw [mul_comm, mul_conj, mul_comm, mul_conj, mul_comm, mul_conj] at ht
   repeat rw [← Complex.sq_abs] at ht
   rw [← ofReal_inj]
@@ -309,9 +310,10 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
   have h1 := snd_row_normalized_abs V
   symm
   rw [Real.sqrt_eq_iff_eq_sq]
-  · simp [not_or] at ha
+  · simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at ha
     rw [cb_eq_zero_of_ud_us_zero ha] at h1
-    simp at h1
+    simp only [Fin.isValue, map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+      add_zero] at h1
     simp only [VcdAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, VcsAbs]
     rw [← h1]
     ring
