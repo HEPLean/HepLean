@@ -13,7 +13,17 @@ import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.SpaceTime.LorentzVector.Complex
 /-!
 
-## Over color category.
+# Over color category.
+
+## Color
+
+The notion of color will plays a critical role of the formalisation of index notation used here.
+The way to describe color is through examples.
+Indices of real Lorentz tensors can either be up-colored or down-colored.
+On the other hand, indices of Einstein tensors can just down-colored.
+In the case of complex Lorentz tensors, indices can take one of six different colors,
+corresponding to up and down, dotted and undotted weyl fermion indcies and up and down
+Lorentz indices.
 
 -/
 
