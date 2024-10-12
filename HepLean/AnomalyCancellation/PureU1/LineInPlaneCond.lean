@@ -58,14 +58,18 @@ lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : LineIn
   erw [sq_eq_sq_iff_eq_or_eq_neg] at h
   rw [LineInPlaneCond] at hS
   simp only [LineInPlaneProp] at hS
-  simp [not_or] at h
+  simp only [Nat.succ_eq_add_one, Fin.succ_last, not_or] at h
   have h1 (i : Fin n) : S.val i.castSucc.castSucc =
       - (S.val ((Fin.last n).castSucc) + (S.val ((Fin.last n).succ))) / 2 := by
     have h1S := hS (Fin.last n).castSucc ((Fin.last n).succ) i.castSucc.castSucc
-      (by simp; rw [Fin.ext_iff]; exact Nat.ne_add_one ↑(Fin.last n).castSucc)
-      (by simp; rw [Fin.ext_iff]; simp; omega)
-      (by simp; rw [Fin.ext_iff]; simp; omega)
-    simp_all
+      (by simp only [Fin.ext_iff, Nat.succ_eq_add_one, Fin.succ_last, ne_eq]
+          exact Nat.ne_add_one ↑(Fin.last n).castSucc)
+      (by simp only [Nat.succ_eq_add_one, Fin.succ_last, ne_eq, Fin.ext_iff, Fin.val_last,
+        Fin.coe_castSucc]
+          omega)
+      (by simp only [Nat.succ_eq_add_one, ne_eq, Fin.ext_iff, Fin.coe_castSucc, Fin.val_last]
+          omega)
+    simp_all only [Nat.succ_eq_add_one, ne_eq, Fin.succ_last, false_or, neg_add_rev]
     field_simp
     linear_combination h1S
   have h2 := pureU1_last S
@@ -152,7 +156,7 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
       rw [h4, h5] at hcube
       have h6 : S.val (3 : Fin 4) ^ 3 = 0 := by
         linear_combination -1 * hcube / 24
-      simp at h6
+      simp only [Fin.isValue, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff] at h6
       simp_all
 
 lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}

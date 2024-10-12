@@ -152,7 +152,7 @@ lemma map_tprod {X Y : OverColor Color} (p : (i : X.left) → (colorToRep (X.hom
     PiTensorProduct.tprod ℂ fun (i : Y.left) => colorToRepCongr
     (OverColor.Hom.toEquiv_comp_inv_apply f i) (p ((OverColor.Hom.toEquiv f).symm i)) := by
   change (colorFun.map' f).hom ((PiTensorProduct.tprod ℂ) p) = _
-  simp [colorFun.map', mapToLinearEquiv']
+  simp only [map', mapToLinearEquiv', Functor.id_obj]
   erw [LinearEquiv.trans_apply]
   change (PiTensorProduct.congr fun i => colorToRepCongr _)
     ((PiTensorProduct.reindex ℂ (fun x => _) (OverColor.Hom.toEquiv f))
@@ -276,7 +276,9 @@ def μ (X Y : OverColor Color) : colorFun.obj X ⊗ colorFun.obj Y ≅ colorFun.
   inv := {
     hom := (μModEquiv X Y).symm.toLinearMap
     comm := fun M => by
-      simp [CategoryStruct.comp]
+      simp only [Action.instMonoidalCategory_tensorObj_V, CategoryStruct.comp,
+        colorFun_obj_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
+        OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.tensor_ρ']
       erw [LinearEquiv.eq_comp_toLinearMap_symm,LinearMap.comp_assoc,
       LinearEquiv.toLinearMap_symm_comp_eq]
       refine HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
@@ -428,7 +430,14 @@ lemma left_unitality (X : OverColor Color) : (leftUnitor (colorFun.obj X)).hom =
   change TensorProduct.lid ℂ (colorFun.obj X) (x ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) q) =
     (colorFun.map (λ_ X).hom).hom ((μ (𝟙_ (OverColor Color)) X).hom.hom
     ((((PiTensorProduct.isEmptyEquiv Empty).symm x) ⊗ₜ[ℂ] (PiTensorProduct.tprod ℂ) q)))
-  simp [PiTensorProduct.isEmptyEquiv]
+  simp only [Functor.id_obj, lid_tmul, colorFun_obj_V_carrier,
+    OverColor.instMonoidalCategoryStruct_tensorObj_left,
+    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
+    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj,
+    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.isEmptyEquiv,
+    LinearEquiv.coe_symm_mk]
   rw [TensorProduct.smul_tmul, TensorProduct.tmul_smul]
   erw [LinearMap.map_smul, LinearMap.map_smul]
   apply congrArg
@@ -454,7 +463,14 @@ lemma right_unitality (X : OverColor Color) : (MonoidalCategory.rightUnitor (col
   change TensorProduct.rid ℂ (colorFun.obj X) ((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] x) =
     (colorFun.map (ρ_ X).hom).hom ((μ X (𝟙_ (OverColor Color))).hom.hom
     ((((PiTensorProduct.tprod ℂ) p ⊗ₜ[ℂ] ((PiTensorProduct.isEmptyEquiv Empty).symm x)))))
-  simp [PiTensorProduct.isEmptyEquiv]
+  simp only [Functor.id_obj, rid_tmul, colorFun_obj_V_carrier,
+    OverColor.instMonoidalCategoryStruct_tensorObj_left,
+    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
+    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj,
+    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.isEmptyEquiv,
+    LinearEquiv.coe_symm_mk, tmul_smul]
   erw [LinearMap.map_smul, LinearMap.map_smul]
   apply congrArg
   change _ = (colorFun.map (ρ_ X).hom).hom ((μ X (𝟙_ (OverColor Color))).hom.hom

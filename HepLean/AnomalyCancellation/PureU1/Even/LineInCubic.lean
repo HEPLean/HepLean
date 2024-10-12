@@ -113,7 +113,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ)).LinSols}
   have h1 := Pa_δ!₄ f g
   have h2 := Pa_δ!₁ f g (Fin.last n)
   have h3 := Pa_δ!₂ f g (Fin.last n)
-  simp at h1 h2 h3
+  simp only [Fin.succ_last, Nat.succ_eq_add_one] at h1 h2 h3
   have hl : f (Fin.succ (Fin.last n)) = - Pa f g δ!₄ := by
     simp_all only [Fin.succ_last, neg_neg]
   erw [hl] at h2
@@ -133,7 +133,7 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ)).LinSols}
   obtain ⟨g, f, hfg⟩ := span_basis S
   have h1 := lineInCubicPerm_swap LIC (Fin.last n) g f hfg
   rw [P_P_P!_accCube' g f hfg] at h1
-  simp at h1
+  simp only [Nat.succ_eq_add_one, neg_add_rev, mul_eq_zero] at h1
   cases h1 <;> rename_i h1
   · apply Or.inl
     linear_combination h1
@@ -148,7 +148,8 @@ lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ)).LinSols}
     δ!₄ ?_ ?_ ?_ ?_
   · simp [Fin.ext_iff, δ!₂, δ!₁]
   · simp [Fin.ext_iff, δ!₂, δ!₄]
-  · simp [Fin.ext_iff, δ!₁, δ!₄]
+  · simp only [Nat.succ_eq_add_one, δ!₁, δ!₄, Fin.isValue, ne_eq, Fin.ext_iff, Fin.coe_cast,
+    Fin.coe_natAdd, Fin.coe_castAdd, Fin.val_last, Fin.coe_fin_one, add_zero, add_right_inj]
     omega
   · exact fun M => lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)
 

@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.ComplexLorentz.TensorStruct
-import HepLean.Tensors.Tree.Elab
 /-!
 
 ## The tensor structure for complex Lorentz tensors
@@ -33,6 +32,8 @@ def upDown : Fin 2 → complexLorentzTensor.C
 variable (T S : complexLorentzTensor.F.obj (OverColor.mk upDown))
 
 /-
+import HepLean.Tensors.Tree.Elab
+
 #check {T | i m ⊗ S | m l}ᵀ.dot
 #check {T | i m ⊗ S | l τ(m)}ᵀ.dot
 -/

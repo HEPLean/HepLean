@@ -33,7 +33,7 @@ def Y₁ : (PlusU1 1).Sols where
     | (5 : Fin 6) => 0
   linearSol := by
     intro i
-    simp at i
+    simp only [PlusU1_numberLinear] at i
     match i with
     | 0 => rfl
     | 1 => rfl
@@ -41,7 +41,7 @@ def Y₁ : (PlusU1 1).Sols where
     | 3 => rfl
   quadSol := by
     intro i
-    simp at i
+    simp only [PlusU1_numberQuadratic] at i
     match i with
     | 0 => rfl
   cubicSol := by rfl

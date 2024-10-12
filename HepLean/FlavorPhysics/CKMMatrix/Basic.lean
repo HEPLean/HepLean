@@ -116,8 +116,8 @@ lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
 def CKMMatrix : Type := unitaryGroup (Fin 3) ℂ
 
 lemma CKMMatrix_ext {U V : CKMMatrix} (h : U.val = V.val) : U = V := by
-  cases U; cases V
-  simp at h
+  cases U
+  cases V
   subst h
   rfl
 

@@ -30,7 +30,8 @@ lemma VAbs_sum_sq_row_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
   have hV := V.prop
   rw [mem_unitaryGroup_iff] at hV
   have ht := congrFun (congrFun hV i) i
-  simp [Matrix.mul_apply, Fin.sum_univ_three] at ht
+  simp only [mul_apply, star_apply, RCLike.star_def, Fin.sum_univ_three, Fin.isValue,
+    one_apply_eq] at ht
   rw [mul_conj, mul_conj, mul_conj] at ht
   repeat rw [← Complex.sq_abs] at ht
   rw [← ofReal_inj]

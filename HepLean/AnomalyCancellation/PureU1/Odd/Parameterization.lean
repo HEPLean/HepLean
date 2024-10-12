@@ -60,7 +60,7 @@ lemma parameterizationCharge_cube (g f : Fin n → ℚ) (a : ℚ) :
 /-- Given a `g f : Fin n → ℚ` and a `a : ℚ` we form a solution. -/
 def parameterization (g f : Fin n → ℚ) (a : ℚ) :
     (PureU1 (2 * n + 1)).Sols :=
-  ⟨⟨parameterizationAsLinear g f a, by intro i; simp at i; exact Fin.elim0 i⟩,
+  ⟨⟨parameterizationAsLinear g f a, fun i => Fin.elim0 i⟩,
   parameterizationCharge_cube g f a⟩
 
 lemma anomalyFree_param {S : (PureU1 (2 * n + 1)).Sols}
@@ -125,13 +125,10 @@ theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
   apply ACCSystem.Sols.ext
   rw [parameterizationAsLinear_val]
   change S.val = _ • (_ • P g + _• P! f)
-  rw [anomalyFree_param _ _ hS]
-  rw [neg_neg, ← smul_add, smul_smul, inv_mul_cancel₀, one_smul]
+  rw [anomalyFree_param _ _ hS, neg_neg, ← smul_add, smul_smul, inv_mul_cancel₀, one_smul]
   · exact hS
-  · have h := h g f hS
-    rw [anomalyFree_param _ _ hS] at h
-    simp at h
-    exact h
+  · simpa only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, ne_eq,
+      anomalyFree_param _ _ hS, neg_eq_zero] using h g f hS
 
 lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
     (h : SpecialCase S) :
@@ -139,15 +136,13 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
   intro g f hS a b
   erw [TriLinearSymm.toCubic_add]
   rw [HomogeneousCubic.map_smul, HomogeneousCubic.map_smul]
-  erw [P_accCube]
-  erw [P!_accCube]
+  erw [P_accCube, P!_accCube]
   have h := h g f hS
   rw [accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
     accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
-    accCubeTriLinSymm.map_smul₃]
-  rw [h]
+    accCubeTriLinSymm.map_smul₃, h]
   rw [anomalyFree_param _ _ hS] at h
-  simp at h
+  simp only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, neg_eq_zero] at h
   change accCubeTriLinSymm (P! f) (P! f) (P g) = 0 at h
   erw [h]
   simp

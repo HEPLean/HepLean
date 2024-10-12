@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Basic
-import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.ComplexLorentz.ColorFun
 import HepLean.Mathematics.PiTensorProduct
 /-!
@@ -59,7 +58,7 @@ lemma mapToLinearEquiv'_tprod {f g : OverColor Color} (m : f ⟶ g)
     PiTensorProduct.tprod ℂ fun i =>
     (TensorProduct.congr (colorToRepCongr (OverColor.Hom.toEquiv_symm_apply m i))
     (colorToRepCongr (mapToLinearEquiv'.proof_4 m i))) (x ((OverColor.Hom.toEquiv m).symm i)) := by
-  simp [mapToLinearEquiv']
+  simp only [mapToLinearEquiv', Functor.id_obj, LinearEquiv.trans_apply]
   change (PiTensorProduct.congr fun i => TensorProduct.congr (colorToRepCongr _)
     (colorToRepCongr _)) ((PiTensorProduct.reindex ℂ
     (fun x => ↑(colorToRep (f.hom x)).V ⊗[ℂ] ↑(colorToRep (τ (f.hom x))).V)

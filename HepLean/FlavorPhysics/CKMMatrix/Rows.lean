@@ -308,21 +308,26 @@ def ucCross : Fin 3 → ℂ :=
 
 lemma ucCross_fst (V : CKMMatrix) : (ucCross V a b c d e f) 0 =
     cexp ((- a * I) + (- b * I) + (- e * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 0 := by
-  simp [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
-    LinearMap.mk₂_apply, Pi.conj_apply, cons_val_zero, neg_mul, uRow, us, ub, cRow, cs, cb,
-    exp_add, exp_sub, ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow,
+    phaseShiftApply_coe, us, exp_add, ub, cRow, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply,
+    cons_val_one, head_cons, _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two,
+    tail_cons, cons_val_zero, neg_mul]
   ring
 
 lemma ucCross_snd (V : CKMMatrix) : (ucCross V a b c d e f) 1 =
     cexp ((- a * I) + (- b * I) + (- d * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 1 := by
-  simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add,
-    exp_sub, ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
+    exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
+    _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,
+    cons_val_zero, neg_mul]
   ring
 
 lemma ucCross_thd (V : CKMMatrix) : (ucCross V a b c d e f) 2 =
     cexp ((- a * I) + (- b * I) + (- d * I) + (- e * I)) * (conj [V]u ×₃ conj [V]c) 2 := by
-  simp [ucCross, crossProduct, uRow, us, ub, cRow, cs, cb, ud, cd, exp_add, exp_sub,
-    ← exp_conj, conj_ofReal]
+  simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
+    exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
+    _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,
+    cons_val_zero, neg_mul]
   ring
 
 lemma uRow_mul (V : CKMMatrix) (a b c : ℝ) :
