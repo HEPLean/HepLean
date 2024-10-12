@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Basic
 import Lean.Elab.Term
+import HepLean.Tensors.Tree.Dot
 /-!
 
 ## Elaboration of tensor trees
@@ -20,6 +21,7 @@ open Lean.Meta
 open Lean.Elab
 open Lean.Elab.Term
 open Lean Meta Elab Tactic
+open IndexNotation
 
 namespace TensorTree
 
