@@ -74,7 +74,8 @@ lemma lineInPlaneCond_eq_last' {S : (PureU1 (n.succ.succ)).LinSols} (hS : LineIn
     linear_combination h1S
   have h2 := pureU1_last S
   rw [Fin.sum_univ_castSucc] at h2
-  simp [h1] at h2
+  simp only [Nat.succ_eq_add_one, h1, Fin.succ_last, neg_add_rev, Finset.sum_const,
+    Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h2
   field_simp at h2
   linear_combination h2
 
@@ -85,7 +86,7 @@ lemma lineInPlaneCond_eq_last {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
   by_contra hn
   have h := lineInPlaneCond_eq_last' hS hn
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hn
-  simp [or_not] at hn
+  simp only [Nat.succ_eq_add_one, Fin.succ_last, not_or] at hn
   have hx : ((2 : ℚ) - ↑(n + 3)) ≠ 0 := by
     rw [Nat.cast_add]
     simp only [Nat.cast_ofNat, ne_eq]
@@ -95,8 +96,8 @@ lemma lineInPlaneCond_eq_last {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
   have ht : S.val ((Fin.last n.succ.succ.succ).succ) =
     - S.val ((Fin.last n.succ.succ.succ).castSucc) := by
     rw [← mul_right_inj' hx]
-    simp [Nat.succ_eq_add_one]
-    simp at h
+    simp only [Nat.cast_add, Nat.cast_ofNat, Nat.succ_eq_add_one, Fin.succ_last, mul_neg]
+    simp only [Nat.cast_add, Nat.cast_ofNat, Nat.succ_eq_add_one, neg_sub] at h
     rw [h]
     ring
   simp_all
@@ -115,7 +116,7 @@ theorem linesInPlane_constAbs {S : (PureU1 (n.succ.succ.succ.succ.succ)).LinSols
   intro i j
   by_cases hij : i ≠ j
   · exact linesInPlane_eq_sq hS i j hij
-  · simp at hij
+  · simp only [Nat.succ_eq_add_one, PureU1_numberCharges, ne_eq, Decidable.not_not] at hij
     rw [hij]
 
 lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
@@ -124,10 +125,10 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
   by_contra hn
   have hLin := pureU1_linear S.1.1
   have hcube := pureU1_cube S
-  simp at hLin hcube
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, PureU1_numberCharges] at hLin hcube
   rw [Fin.sum_univ_four] at hLin hcube
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hn
-  simp [not_or] at hn
+  simp only [Fin.isValue, not_or] at hn
   have l012 := hS 0 1 2 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
   have l013 := hS 0 1 3 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
   have l023 := hS 0 2 3 (ne_of_beq_false rfl) (ne_of_beq_false rfl) (ne_of_beq_false rfl)
@@ -141,8 +142,9 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
     rw [← h1, h3] at hcube
     have h4 : S.val (2 : Fin 4) ^ 3 = 0 := by
       linear_combination -1 * hcube / 24
-    simp at h4
-    simp_all
+    simp only [Fin.isValue, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff] at h4
+    simp_all only [neg_mul, neg_neg, add_left_eq_self, add_right_eq_self, not_true_eq_false,
+      false_and]
   · by_cases h3 : S.val (0 : Fin 4) = - S.val (2 : Fin 4)
     · simp_all
       have h4 : S.val (1 : Fin 4) = - S.val (2 : Fin 4) := by
@@ -174,7 +176,7 @@ lemma linesInPlane_constAbs_four (S : (PureU1 4).Sols)
   intro i j
   by_cases hij : i ≠ j
   · exact linesInPlane_eq_sq_four hS i j hij
-  · simp at hij
+  · simp only [PureU1_numberCharges, ne_eq, Decidable.not_not] at hij
     rw [hij]
 
 theorem linesInPlane_constAbs_AF (S : (PureU1 (n.succ.succ.succ.succ)).Sols)

@@ -111,7 +111,7 @@ lemma shift_cd_phase_pi {V : CKMMatrix} (h1 : c + d = Real.pi - arg [V]cd) :
   rw [← abs_mul_exp_arg_mul_I [V]cd]
   rw [mul_comm, mul_assoc, ← exp_add]
   have h2 : ↑(arg [V]cd) * I + (↑c * I + ↑d * I) = ↑(arg [V]cd + (c + d)) * I := by
-    simp [add_assoc]
+    simp only [Fin.isValue, ofReal_add]
     ring
   rw [h2, h1]
   simp only [Fin.isValue, add_sub_cancel, exp_pi_mul_I, mul_neg, mul_one, VcdAbs, neg_inj,
@@ -127,7 +127,7 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
   fin_cases i
   · simp only [Fin.zero_eta, Fin.isValue]
     rw [phaseShiftApply.ucCross_fst]
-    simp [tRow, phaseShiftApply.td]
+    simp only [tRow, Fin.isValue, phaseShiftApply.td, phaseShiftApply_coe, cons_val_zero, neg_mul]
     have hτ0 := congrFun hτ 0
     simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, tRow, cons_val_zero] at hτ0
     rw [← hτ0]
@@ -289,7 +289,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
       have h1 : VusAbs ⟦U⟧ = 0 := by
         rw [hUV]
         simp [VAbs, hb]
-      simp [VAbs] at h1
+      simp only [VusAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero] at h1
       exact h1
     apply And.intro
     · simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hb
@@ -297,7 +297,7 @@ lemma ubOnePhaseCond_hold_up_to_equiv_of_ub_one {V : CKMMatrix} (hb : ¬ ([V]ud 
       have h1 : VcbAbs ⟦U⟧ = 0 := by
         rw [hUV]
         simp [VAbs, h3]
-      simp [VAbs] at h1
+      simp only [VcbAbs, VAbs, VAbs', Fin.isValue, Quotient.lift_mk, map_eq_zero] at h1
       exact h1
     apply And.intro
     · have hU1 : [U]ub = VubAbs ⟦V⟧ := by

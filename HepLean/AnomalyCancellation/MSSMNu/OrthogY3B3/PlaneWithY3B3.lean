@@ -81,7 +81,7 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
   obtain ⟨i, hi⟩ := hR
   have h2 := congrArg (fun S => S i) h1i
   change _ = 0 at h2
-  simp [HSMul.hSMul] at h2
+  simp only [HSMul.hSMul, ACCSystemCharges.chargesModule_smul, mul_eq_zero] at h2
   have hc : c + -c' = 0 := by
     cases h2 <;> rename_i h2
     exact h2

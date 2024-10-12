@@ -36,14 +36,14 @@ lemma asCharges_eq_castSucc (j : Fin n) :
 
 lemma asCharges_ne_castSucc {k j : Fin n} (h : k ≠ j) :
     asCharges k (Fin.castSucc j) = 0 := by
-  simp [asCharges]
+  simp only [asCharges, Nat.succ_eq_add_one, PureU1_numberCharges, Fin.castSucc_inj]
   split
   · rename_i h1
     exact False.elim (h (id (Eq.symm h1)))
   · split
     · rename_i h1 h2
       rw [Fin.ext_iff] at h1 h2
-      simp at h1 h2
+      simp only [Fin.coe_castSucc, Fin.val_last] at h1 h2
       have hj : j.val < n := by
         exact j.prop
       simp_all
@@ -54,7 +54,7 @@ lemma asCharges_ne_castSucc {k j : Fin n} (h : k ≠ j) :
 def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
   ⟨asCharges j, by
     intro i
-    simp at i
+    simp only [Nat.succ_eq_add_one, PureU1_numberLinear] at i
     match i with
     | 0 =>
     simp only [Fin.isValue, PureU1_linearACCs, accGrav,

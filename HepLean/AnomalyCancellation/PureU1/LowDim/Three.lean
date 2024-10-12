@@ -25,7 +25,7 @@ lemma cube_for_linSol' (S : (PureU1 3).LinSols) :
     3 * S.val (0 : Fin 3) * S.val (1 : Fin 3) * S.val (2 : Fin 3) = 0 ↔
     (PureU1 3).cubicACC S.val = 0 := by
   have hL := pureU1_linear S
-  simp at hL
+  simp only [succ_eq_add_one, reduceAdd, PureU1_numberCharges] at hL
   rw [Fin.sum_univ_three] at hL
   change _ ↔ accCube _ _ = _
   rw [accCube_explicit, Fin.sum_univ_three]
@@ -47,7 +47,7 @@ lemma three_sol_zero (S : (PureU1 3).Sols) : S.val (0 : Fin 3) = 0 ∨ S.val (1 
 def solOfLinear (S : (PureU1 3).LinSols)
     (hS : S.val (0 : Fin 3) = 0 ∨ S.val (1 : Fin 3) = 0 ∨ S.val (2 : Fin 3) = 0) :
     (PureU1 3).Sols :=
-  ⟨⟨S, by intro i; simp at i; exact Fin.elim0 i⟩,
+  ⟨⟨S, fun i => Fin.elim0 i⟩,
     (cube_for_linSol S).mp hS⟩
 
 theorem solOfLinear_surjects (S : (PureU1 3).Sols) :

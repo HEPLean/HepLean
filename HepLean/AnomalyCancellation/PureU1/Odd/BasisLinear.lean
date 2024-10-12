@@ -459,7 +459,7 @@ lemma P_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P f) = 0 := by
   simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Function.comp_apply, zero_add]
   apply Finset.sum_eq_zero
   intro i _
-  simp [P_δ₁, P_δ₂]
+  simp only [P_δ₁, P_δ₂]
   ring
 
 lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P! f) = 0 := by
@@ -514,7 +514,7 @@ lemma Pa_zero (f g : Fin n.succ → ℚ) (h : Pa f g = 0) :
     change 0 = _ at h1
     simp only [neg_zero, succ_eq_add_one, zero_sub, zero_eq_neg] at h1
     have h2 := Pa_δa₂ f g ⟨iv, succ_lt_succ_iff.mp hiv⟩
-    simp [h, h1] at h2
+    simp only [succ_eq_add_one, h, Fin.succ_mk, Fin.castSucc_mk, h1, add_zero] at h2
     exact h2.symm
   exact hinduc i.val i.prop
 

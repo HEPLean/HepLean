@@ -63,7 +63,7 @@ lemma parameterizationCharge_cube (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (
 /-- The construction of a `Sol` from a `Fin n.succ → ℚ`, a `Fin n → ℚ` and a `ℚ`. -/
 def parameterization (g : Fin n.succ → ℚ) (f : Fin n → ℚ) (a : ℚ) :
     (PureU1 (2 * n.succ)).Sols :=
-  ⟨⟨parameterizationAsLinear g f a, by intro i; simp at i; exact Fin.elim0 i⟩,
+  ⟨⟨parameterizationAsLinear g f a, fun i => Fin.elim0 i⟩,
   parameterizationCharge_cube g f a⟩
 
 lemma anomalyFree_param {S : (PureU1 (2 * n.succ)).Sols}
