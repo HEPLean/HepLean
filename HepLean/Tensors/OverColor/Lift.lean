@@ -45,24 +45,29 @@ def discreteFunctorMapIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) :
     F.obj c1 ≅ F.obj c2 := F.mapIso (Discrete.homToIso h)
 
 lemma discreteFun_hom_trans {c1 c2 c3 : Discrete C} (h1 : c1 = c2) (h2 : c2 = c3)
-    (v : F.obj c1) :
-   (F.map (eqToHom h2)).hom ((F.map (eqToHom h1)).hom v) = (F.map (eqToHom ( h1.trans h2))).hom v  := by
+    (v : F.obj c1) : (F.map (eqToHom h2)).hom ((F.map (eqToHom h1)).hom v)
+    = (F.map (eqToHom ( h1.trans h2))).hom v  := by
   subst h2 h1
   simp_all only [eqToHom_refl, Discrete.functor_map_id, Action.id_hom, ModuleCat.id_apply]
 
+/-- The linear equivalence between `(F.obj c1).V ≃ₗ[k] (F.obj c2).V` induced by an equality of
+  `c1` and `c2`. -/
 def discreteFunctorMapEqIso {c1 c2 : Discrete C} (h : c1.as = c2.as) :
-    (F.obj c1).V ≃ₗ[k] (F.obj c2).V  :=
-  LinearEquiv.ofLinear (F.mapIso (Discrete.eqToIso h)).hom.hom (F.mapIso (Discrete.eqToIso h)).inv.hom
+    (F.obj c1).V ≃ₗ[k] (F.obj c2).V  := LinearEquiv.ofLinear
+  (F.mapIso (Discrete.eqToIso h)).hom.hom (F.mapIso (Discrete.eqToIso h)).inv.hom
   (by
     ext x : 2
-    simp
+    simp only [Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearMap.coe_comp,
+      Function.comp_apply, LinearMap.id_coe, id_eq]
     have h1 := congrArg (fun f => f.hom) (F.mapIso (Discrete.eqToIso h)).inv_hom_id
     rw [ModuleCat.ext_iff] at h1
     have h1x := h1 x
     simp only [CategoryStruct.comp] at h1x
-    simpa using h1x ) (by
+    simpa using h1x )
+  (by
     ext x : 2
-    simp
+    simp only [Functor.mapIso_inv, eqToIso.inv, Functor.mapIso_hom, eqToIso.hom, LinearMap.coe_comp,
+      Function.comp_apply, LinearMap.id_coe, id_eq]
     have h1 := congrArg (fun f => f.hom) (F.mapIso (Discrete.eqToIso h)).hom_inv_id
     rw [ModuleCat.ext_iff] at h1
     have h1x := h1 x
@@ -121,12 +126,13 @@ lemma objObj'_ρ_empty (g : G) : (objObj' F (𝟙_ (OverColor C))).ρ g = Linear
 open TensorProduct in
 @[simp]
 lemma objObj'_V_carrier (f : OverColor C) :
-  (objObj' F f).V = ⨂[k] (i : f.left), F.obj (Discrete.mk (f.hom i)) := rfl
+    (objObj' F f).V = ⨂[k] (i : f.left), F.obj (Discrete.mk (f.hom i)) := rfl
 
 /-- Given a morphism in `OverColor C` the corresopnding linear equivalence between `obj' _`
   induced by reindexing. -/
 def mapToLinearEquiv' {f g : OverColor C} (m : f ⟶ g) : (objObj' F f).V ≃ₗ[k] (objObj' F g).V :=
-  (PiTensorProduct.reindex k (fun x => (F.obj (Discrete.mk (f.hom x)))) (OverColor.Hom.toEquiv m)).trans
+  (PiTensorProduct.reindex k (fun x => (F.obj (Discrete.mk (f.hom x))))
+    (OverColor.Hom.toEquiv m)).trans
   (PiTensorProduct.congr (fun i =>
     discreteFunctorMapEqIso F (Hom.toEquiv_symm_apply m i)))
 
@@ -166,7 +172,6 @@ def objMap' {f g : OverColor C} (m : f ⟶ g) : objObj' F f ⟶ objObj' F g wher
     funext i
     rw [discreteFunctorMapEqIso_comm_ρ]
 
-@[simp]
 lemma objMap'_tprod {X Y : OverColor C} (p : (i : X.left) → F.obj (Discrete.mk (X.hom i)))
     (f : X ⟶ Y) : (objMap' F f).hom (PiTensorProduct.tprod k p) =
     PiTensorProduct.tprod k fun (i : Y.left) => discreteFunctorMapEqIso F
@@ -197,8 +202,8 @@ def ε : 𝟙_ (Rep k G) ≅ objObj' F (𝟙_ (OverColor C)) :=
 
 /-- An auxillary equivalence, and trivial, of modules needed to define `μModEquiv`. -/
 def discreteSumEquiv {X Y : OverColor C} (i : X.left ⊕ Y.left) :
-    Sum.elim (fun i => F.obj (Discrete.mk (X.hom i))) (fun i => F.obj (Discrete.mk (Y.hom i))) i ≃ₗ[k]
-    F.obj (Discrete.mk ((X ⊗ Y).hom i)) :=
+    Sum.elim (fun i => F.obj (Discrete.mk (X.hom i)))
+    (fun i => F.obj (Discrete.mk (Y.hom i))) i ≃ₗ[k] F.obj (Discrete.mk ((X ⊗ Y).hom i)) :=
   match i with
   | Sum.inl _ => LinearEquiv.refl _ _
   | Sum.inr _ => LinearEquiv.refl _ _
@@ -453,6 +458,7 @@ lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
     LinearEquiv.ofLinear_apply]
   rfl
 
+/-- The `MonoidalFunctor (OverColor C) (Rep k G)` from a functor `Discrete C ⥤ Rep k G`. -/
 def obj' : MonoidalFunctor (OverColor C) (Rep k G) where
   obj := objObj' F
   map := objMap' F
@@ -498,6 +504,7 @@ def obj' : MonoidalFunctor (OverColor C) (Rep k G) where
 
 variable {F F' : Discrete C ⥤ Rep k G} (η : F ⟶ F')
 
+/-- The maps for a natural transformation between `obj' F` and `obj' F'`. -/
 def mapApp' (X : OverColor C) : (obj' F).obj X ⟶ (obj' F').obj X where
   hom := PiTensorProduct.map (fun x => (η.app (Discrete.mk (X.hom x))).hom)
   comm M := by
@@ -511,11 +518,14 @@ def mapApp' (X : OverColor C) : (obj' F).obj X ⟶ (obj' F').obj X where
     simp only [CategoryTheory.Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
       _root_.map_smul, ModuleCat.coe_comp, Function.comp_apply]
     apply congrArg
-    change (PiTensorProduct.map fun x => (η.app { as := X.hom x }).hom) ((((obj' F).obj X).ρ M) ((PiTensorProduct.tprod k) x)) =
-        (((obj' F').obj X).ρ M) ((PiTensorProduct.map fun x => (η.app { as := X.hom x }).hom) ((PiTensorProduct.tprod k) x))
+    change (PiTensorProduct.map fun x => (η.app { as := X.hom x }).hom)
+      ((((obj' F).obj X).ρ M) ((PiTensorProduct.tprod k) x)) =
+      (((obj' F').obj X).ρ M) ((PiTensorProduct.map fun x =>
+      (η.app { as := X.hom x }).hom) ((PiTensorProduct.tprod k) x))
     rw [PiTensorProduct.map_tprod]
     simp only [Functor.id_obj, obj']
-    change (PiTensorProduct.map fun x => (η.app { as := X.hom x }).hom) (((objObj' F X).ρ M) ((PiTensorProduct.tprod k) x)) =
+    change (PiTensorProduct.map fun x => (η.app { as := X.hom x }).hom)
+      (((objObj' F X).ρ M) ((PiTensorProduct.tprod k) x)) =
       ((objObj' F' X).ρ M) ((PiTensorProduct.tprod k) fun i => (η.app { as := X.hom i }).hom (x i))
     rw [objObj'_ρ_tprod, objObj'_ρ_tprod]
     erw [PiTensorProduct.map_tprod]
@@ -523,7 +533,6 @@ def mapApp' (X : OverColor C) : (obj' F).obj X ⟶ (obj' F').obj X where
     funext i
     simpa using LinearMap.congr_fun ((η.app (Discrete.mk (X.hom i))).comm M) (x i)
 
-@[simp]
 lemma mapApp'_tprod  (X : OverColor C) (p : (i : X.left) → F.obj (Discrete.mk (X.hom i))) :
     (mapApp' η X).hom (PiTensorProduct.tprod k p) =
     PiTensorProduct.tprod k fun i => (η.app (Discrete.mk (X.hom i))).hom (p i) := by
@@ -579,8 +588,9 @@ lemma mapApp'_tensor (X Y : OverColor C) :
   simp [CategoryStruct.comp, obj']
   erw [μ_tmul_tprod]
   erw [mapApp'_tprod]
-  change _ =(μ F' X Y).hom.hom
-    ((mapApp' η X).hom (PiTensorProduct.tprod k p) ⊗ₜ[k] (mapApp' η Y).hom (PiTensorProduct.tprod k q))
+  change _ = (μ F' X Y).hom.hom
+    ((mapApp' η X).hom (PiTensorProduct.tprod k p) ⊗ₜ[k]
+    (mapApp' η Y).hom (PiTensorProduct.tprod k q))
   rw [mapApp'_tprod, mapApp'_tprod]
   erw [μ_tmul_tprod]
   apply congrArg
@@ -589,6 +599,8 @@ lemma mapApp'_tensor (X Y : OverColor C) :
   | Sum.inr i => rfl
   | Sum.inl i => rfl
 
+/-- Given a natural transformation between `F F' : Discrete C ⥤ Rep k G` the
+  monoidal natural transformation between `obj' F` and `obj' F'`. -/
 def map' : obj' F ⟶ obj' F' where
   app := mapApp' η
   naturality _ _ f := mapApp'_naturality η f
@@ -598,6 +610,8 @@ def map' : obj' F ⟶ obj' F' where
 end
 end lift
 
+/-- The functor taking functors in `Discrete C ⥤ Rep k G` to monoidal functors in
+  `MonoidalFunctor (OverColor C) (Rep k G)`, built on the PiTensorProduct. -/
 noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor C) (Rep k G) where
   obj F := lift.obj' F
   map η := lift.map' η
@@ -610,7 +624,7 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
         simp only [Functor.id_obj, map_add, ModuleCat.coe_comp, Function.comp_apply]
         rw [hx, hy])
     intro r y
-    simp
+    simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul]
     apply congrArg
     erw [lift.mapApp'_tprod]
     rfl
@@ -622,7 +636,9 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
         simp only [Functor.id_obj, map_add, ModuleCat.coe_comp, Function.comp_apply]
         rw [hx, hy])
     intro r y
-    simp
+    simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul,
+      MonoidalNatTrans.comp_toNatTrans, NatTrans.comp_app, Action.comp_hom, ModuleCat.coe_comp,
+      Function.comp_apply]
     apply congrArg
     simp [lift.map']
     erw [lift.mapApp'_tprod]
@@ -632,9 +648,12 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
     erw [lift.mapApp'_tprod]
     rfl
 
+/-- The natural inclusion of `Discrete C` into `OverColor C`. -/
 def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
   OverColor.mk (fun (_ : Fin 1) => c)
 
+/-- The forgetful map from `MonoidalFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
+  built on the inclusion `incl` and forgetting the monoidal structure. -/
 def forget : MonoidalFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G) where
   obj F := Discrete.functor fun c => F.obj (incl.obj (Discrete.mk c))
   map η := Discrete.natTrans fun c => η.app (incl.obj c)
