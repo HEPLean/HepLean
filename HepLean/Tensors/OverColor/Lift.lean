@@ -632,5 +632,17 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
     erw [lift.mapApp'_tprod]
     rfl
 
+def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
+  OverColor.mk (fun (_ : Fin 1) => c)
+
+def forget : MonoidalFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G) where
+  obj F := Discrete.functor fun c => F.obj (incl.obj (Discrete.mk c))
+  map η := Discrete.natTrans fun c => η.app (incl.obj c)
+
+informal_definition forgetLift where
+  math :≈ "The natural isomorphism between `lift (C := C) ⋙ forget` and
+    `Functor.id (Discrete C ⥤ Rep k G)`."
+  deps :≈ [``forget, ``lift]
+
 end OverColor
 end IndexNotation
