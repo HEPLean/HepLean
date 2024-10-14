@@ -585,7 +585,10 @@ lemma mapApp'_tensor (X Y : OverColor C) :
     (mapApp' η X ⊗ mapApp' η Y) ≫ (obj' F').μ X Y := by
   ext1
   apply HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp [CategoryStruct.comp, obj']
+  simp only [obj', objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
+    instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
+    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V, LinearMap.coe_comp,
+    Function.comp_apply, Action.instMonoidalCategory_tensorHom_hom]
   erw [μ_tmul_tprod]
   erw [mapApp'_tprod]
   change _ = (μ F' X Y).hom.hom
@@ -616,7 +619,7 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
   obj F := lift.obj' F
   map η := lift.map' η
   map_id F  := by
-    simp [lift.map', lift.mapApp']
+    simp only [lift.map']
     refine MonoidalNatTrans.ext' (fun X => ?_)
     ext x : 2
     refine PiTensorProduct.induction_on' x ?_ (by
@@ -640,7 +643,7 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
       MonoidalNatTrans.comp_toNatTrans, NatTrans.comp_app, Action.comp_hom, ModuleCat.coe_comp,
       Function.comp_apply]
     apply congrArg
-    simp [lift.map']
+    simp only [lift.map']
     erw [lift.mapApp'_tprod]
     change _ =
       (lift.mapApp' θ X).hom ((lift.mapApp' η X).hom ((PiTensorProduct.tprod k) y))
