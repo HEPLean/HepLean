@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Functors
+import HepLean.Tensors.OverColor.Lift
 /-!
 
 ## Isomorphisms in the OverColor category
@@ -38,6 +39,18 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
+
+def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] :=by
+  let e1 : Fin 2 ≃ Fin 1 ⊕ Fin 1 := (finSumFinEquiv (n := 1)).symm
+  apply (equivToIso e1).trans
+  apply (mkSum _).trans
+  refine tensorIso (mkIso ?_) (mkIso ?_)
+  · funext x
+    fin_cases x
+    rfl
+  · funext x
+    fin_cases x
+    rfl
 
 /-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
   `i`th component. -/
@@ -157,6 +170,9 @@ def contrPairFin1Fin1 (τ : C → C) (c : Fin 1 ⊕ Fin 1 → C)
       change _ = c (Sum.inr 0)
       rw [h]
       rfl))
+
+variable {k : Type} [CommRing k] {G : Type} [Group G]
+
 
 /-- The Isomorphism between a `Fin n.succ.succ → C` and the product containing an object in the
   image of `contrPair` based on the given values. -/
