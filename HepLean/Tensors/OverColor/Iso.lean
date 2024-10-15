@@ -52,6 +52,11 @@ def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] :=by
     fin_cases x
     rfl
 
+def finSwapTwo {n : ℕ} (i : Fin n) : Fin (2 + n) ≃ Fin n.succ.succ := by
+  let e1 := Equiv.swap (Fin.castAdd n (0 : Fin 2)) (Fin.natAdd 2 i)
+  let e2 := Equiv.swap (Fin.castAdd n (1 : Fin 2)) (Fin.natAdd 2 i)
+
+
 /-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
   `i`th component. -/
 def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=

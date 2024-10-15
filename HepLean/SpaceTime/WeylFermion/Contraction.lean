@@ -4,9 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.WeylFermion.Basic
+import LLMlean
 /-!
 
 # Contraction of Weyl fermions
+
+We define the contraction of Weyl fermions.
 
 -/
 
@@ -128,9 +131,7 @@ def altRightBi : altRightHanded →ₗ[ℂ] rightHanded →ₗ[ℂ] ℂ where
     In index notation this is ψ_a φ^a. -/
 def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift leftAltBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro ψ φ
+  comm M := TensorProduct.ext' fun ψ φ => by
     change (M.1 *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
     rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
     simp
@@ -148,9 +149,7 @@ lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     In index notation this is φ^a ψ_a. -/
 def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altLeftBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro φ ψ
+  comm M := TensorProduct.ext' fun φ ψ => by
     change (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1 *ᵥ ψ.toFin2ℂ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
     simp
@@ -170,13 +169,9 @@ The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
 -/
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift rightAltBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro ψ φ
+  comm M := TensorProduct.ext' fun ψ φ => by
     change (M.1.map star *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
-    have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by
-      rw [conjTranspose]
-      exact rfl
+    have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl
     rw [dotProduct_mulVec, h1, vecMul_transpose, mulVec_mulVec]
     have h2 : ((M.1)⁻¹.map star * (M.1).map star) = 1 := by
       refine transpose_inj.mp ?_
@@ -189,23 +184,18 @@ def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2
     simp only [one_mulVec, vec2_dotProduct, Fin.isValue, RightHandedModule.toFin2ℂEquiv_apply,
       AltRightHandedModule.toFin2ℂEquiv_apply]
 
-informal_definition altRightWeylContraction where
-  math :≈ "The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
+/--
+  The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
     summing over components of altRightHandedWeyl and rightHandedWeyl in the
-    standard basis (i.e. the dot product)."
-  physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^{dot a} ψ_{dot a}."
-  deps :≈ [``rightHanded, ``altRightHanded]
-
+    standard basis (i.e. the dot product).
+  The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
+    In index notation this is φ^{dot a} ψ_{dot a}.
+-/
 def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altRightBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro φ ψ
+  comm M := TensorProduct.ext' fun φ ψ =>  by
     change (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1.map star *ᵥ ψ.toFin2ℂ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
-    have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by
-      rw [conjTranspose]
-      exact rfl
+    have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl
     rw [dotProduct_mulVec, h1, mulVec_transpose, vecMul_vecMul]
     have h2 : ((M.1)⁻¹.map star * (M.1).map star) = 1 := by
       refine transpose_inj.mp ?_
@@ -270,13 +260,12 @@ informal_lemma rightAltWeylContraction_invariant where
 informal_lemma rightAltWeylContraction_symm_altRightWeylContraction where
   math :≈ "The linear map altRightWeylContraction is rightAltWeylContraction composed
     with the braiding of the tensor product."
-  deps :≈ [``rightAltContraction, ``altRightWeylContraction]
+  deps :≈ [``rightAltContraction, ``altRightContraction]
 
 informal_lemma altRightWeylContraction_invariant where
   math :≈ "The contraction altRightWeylContraction is invariant with respect to
     the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``altRightWeylContraction]
-
+  deps :≈ [``altRightContraction]
 
 end
 end Fermion

@@ -9,6 +9,7 @@ import Mathlib.RepresentationTheory.Rep
 import HepLean.Tensors.Basic
 import HepLean.SpaceTime.WeylFermion.Modules
 import Mathlib.Logic.Equiv.TransferInstance
+import LLMlean
 /-!
 
 # Weyl fermions
@@ -47,6 +48,18 @@ def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     simp only [LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply,
       mulVec_mulVec]}
 
+/-- The standard basis on left-handed Weyl fermions. -/
+def leftBasis : Basis (Fin 2) ℂ leftHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ LeftHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M) i j = M.1 i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp [leftBasis]
+  change (M.1 *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, mul_one]
+
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ^a. -/
 def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
@@ -70,6 +83,18 @@ def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     rw [Matrix.mul_inv_rev]
     exact transpose_mul _ _}
 
+/-- The standard basis on alt-left-handed Weyl fermions. -/
+def altLeftBasis : Basis (Fin 2) ℂ altLeftHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ AltLeftHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M) i j = (M.1⁻¹)ᵀ i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [altLeftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change ((M.1⁻¹)ᵀ *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
+
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
   In index notation corresponds to a Weyl fermion with indices ψ_{dot a}. -/
 def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
@@ -89,6 +114,18 @@ def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     ext1 x
     simp only [SpecialLinearGroup.coe_mul, RCLike.star_def, Matrix.map_mul, LinearMap.coe_mk,
       AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply, mulVec_mulVec]}
+
+/-- The standard basis on right-handed Weyl fermions. -/
+def rightBasis : Basis (Fin 2) ℂ rightHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ RightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M) i j = (M.1.map star) i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change (M.1.map star *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
@@ -113,6 +150,19 @@ def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     refine (congrFun (congrArg _ ?_) _)
     rw [Matrix.mul_inv_rev]
     exact conjTranspose_mul _ _}
+
+/-- The standard basis on alt-right-handed Weyl fermions. -/
+def altRightBasis : Basis (Fin 2) ℂ altRightHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ AltRightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altRightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M) i j =
+    ((M.1⁻¹).conjTranspose) i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change ((M.1⁻¹).conjTranspose *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
 
 /-!
 
