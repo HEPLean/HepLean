@@ -26,6 +26,7 @@ open Complex
 open TensorProduct
 open CategoryTheory.MonoidalCategory
 
+/-- The raw `2x2` matrix corresponding to the metric for fermions. -/
 def metricRaw : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -1, 0]
 
 lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)ᵀ := by
@@ -91,7 +92,7 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
       (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) (x' • leftMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [leftMetricVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, leftMetricVal, map_neg, neg_inj]
     erw [leftLeftToMatrix_ρ_symm]
     apply congrArg
     rw [comm_metricRaw, mul_assoc, ← @transpose_mul]
@@ -124,7 +125,7 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
       (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) (x' • altLeftMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [altLeftMetricVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, altLeftMetricVal]
     erw [altLeftaltLeftToMatrix_ρ_symm]
     apply congrArg
     rw [← metricRaw_comm, mul_assoc]

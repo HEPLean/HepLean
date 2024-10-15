@@ -81,7 +81,7 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
       (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) (x' • altLeftLeftUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [altLeftLeftUnitVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, altLeftLeftUnitVal]
     erw [altLeftLeftToMatrix_ρ_symm]
     apply congrArg
     simp only [mul_one, ← transpose_mul, SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq,
@@ -154,7 +154,7 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
       (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) (x' • altRightRightUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [altRightRightUnitVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, altRightRightUnitVal]
     erw [altRightRightToMatrix_ρ_symm]
     apply congrArg
     simp only [mul_one, RCLike.star_def]

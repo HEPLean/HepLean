@@ -55,7 +55,7 @@ def leftBasis : Basis (Fin 2) ℂ leftHanded := Basis.ofEquivFun
 lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M) i j = M.1 i j := by
   rw [LinearMap.toMatrix_apply]
-  simp [leftBasis]
+  simp only [leftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1 *ᵥ (Pi.single j 1)) i = _
   simp only [mulVec_single, mul_one]
 
