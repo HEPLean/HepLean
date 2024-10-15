@@ -47,6 +47,18 @@ def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     simp only [LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply,
       mulVec_mulVec]}
 
+/-- The standard basis on left-handed Weyl fermions. -/
+def leftBasis : Basis (Fin 2) ℂ leftHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ LeftHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M) i j = M.1 i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [leftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
+  change (M.1 *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, mul_one]
+
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ^a. -/
 def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
@@ -70,6 +82,18 @@ def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     rw [Matrix.mul_inv_rev]
     exact transpose_mul _ _}
 
+/-- The standard basis on alt-left-handed Weyl fermions. -/
+def altLeftBasis : Basis (Fin 2) ℂ altLeftHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ AltLeftHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M) i j = (M.1⁻¹)ᵀ i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [altLeftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change ((M.1⁻¹)ᵀ *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
+
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
   In index notation corresponds to a Weyl fermion with indices ψ_{dot a}. -/
 def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
@@ -89,6 +113,18 @@ def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     ext1 x
     simp only [SpecialLinearGroup.coe_mul, RCLike.star_def, Matrix.map_mul, LinearMap.coe_mk,
       AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply, mulVec_mulVec]}
+
+/-- The standard basis on right-handed Weyl fermions. -/
+def rightBasis : Basis (Fin 2) ℂ rightHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ RightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M) i j = (M.1.map star) i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change (M.1.map star *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
@@ -113,6 +149,19 @@ def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     refine (congrFun (congrArg _ ?_) _)
     rw [Matrix.mul_inv_rev]
     exact conjTranspose_mul _ _}
+
+/-- The standard basis on alt-right-handed Weyl fermions. -/
+def altRightBasis : Basis (Fin 2) ℂ altRightHanded := Basis.ofEquivFun
+  (Equiv.linearEquiv ℂ AltRightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altRightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
+    (LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M) i j =
+    ((M.1⁻¹).conjTranspose) i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change ((M.1⁻¹).conjTranspose *ᵥ (Pi.single j 1)) i = _
+  simp only [mulVec_single, transpose_apply, mul_one]
 
 /-!
 
@@ -223,174 +272,6 @@ informal_lemma rightHandedWeylAltEquiv_equivariant where
   math :≈ "The linear equiv rightHandedWeylAltEquiv is equivariant with respect to the
     action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
   deps :≈ [``rightHandedWeylAltEquiv]
-
-/-!
-
-## Contraction of Weyl fermions.
-
--/
-open CategoryTheory.MonoidalCategory
-
-/-- The bi-linear map corresponding to contraction of a left-handed Weyl fermion with a
-  alt-left-handed Weyl fermion. -/
-def leftAltBi : leftHanded →ₗ[ℂ] altLeftHanded →ₗ[ℂ] ℂ where
-  toFun ψ := {
-    toFun := fun φ => ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ,
-    map_add' := by
-      intro φ φ'
-      simp only [map_add]
-      rw [dotProduct_add]
-    map_smul' := by
-      intro r φ
-      simp only [LinearEquiv.map_smul]
-      rw [dotProduct_smul]
-      rfl}
-  map_add' ψ ψ':= by
-    refine LinearMap.ext (fun φ => ?_)
-    simp only [map_add, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.add_apply]
-    rw [add_dotProduct]
-  map_smul' r ψ := by
-    refine LinearMap.ext (fun φ => ?_)
-    simp only [LinearEquiv.map_smul, LinearMap.coe_mk, AddHom.coe_mk]
-    rw [smul_dotProduct]
-    rfl
-
-/-- The bi-linear map corresponding to contraction of a alt-left-handed Weyl fermion with a
-  left-handed Weyl fermion. -/
-def altLeftBi : altLeftHanded →ₗ[ℂ] leftHanded →ₗ[ℂ] ℂ where
-  toFun ψ := {
-    toFun := fun φ => ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ,
-    map_add' := by
-      intro φ φ'
-      simp only [map_add]
-      rw [dotProduct_add]
-    map_smul' := by
-      intro r φ
-      simp only [LinearEquiv.map_smul]
-      rw [dotProduct_smul]
-      rfl}
-  map_add' ψ ψ':= by
-    refine LinearMap.ext (fun φ => ?_)
-    simp only [map_add, add_dotProduct, vec2_dotProduct, Fin.isValue, LinearMap.coe_mk,
-      AddHom.coe_mk, LinearMap.add_apply]
-  map_smul' ψ ψ' := by
-    refine LinearMap.ext (fun φ => ?_)
-    simp only [_root_.map_smul, smul_dotProduct, vec2_dotProduct, Fin.isValue, smul_eq_mul,
-      LinearMap.coe_mk, AddHom.coe_mk, RingHom.id_apply, LinearMap.smul_apply]
-
-/-- The linear map from leftHandedWeyl ⊗ altLeftHandedWeyl to ℂ given by
-    summing over components of leftHandedWeyl and altLeftHandedWeyl in the
-    standard basis (i.e. the dot product).
-    Physically, the contraction of a left-handed Weyl fermion with a alt-left-handed Weyl fermion.
-    In index notation this is ψ_a φ^a. -/
-def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift leftAltBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro ψ φ
-    change (M.1 *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
-    rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
-    simp
-
-lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
-    leftAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
-  rw [leftAltContraction]
-  erw [TensorProduct.lift.tmul]
-  rfl
-
-/-- The linear map from altLeftHandedWeyl ⊗ leftHandedWeyl to ℂ given by
-    summing over components of altLeftHandedWeyl and leftHandedWeyl in the
-    standard basis (i.e. the dot product).
-    Physically, the contraction of a alt-left-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^a ψ_a. -/
-def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift altLeftBi
-  comm M := by
-    apply TensorProduct.ext'
-    intro φ ψ
-    change (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1 *ᵥ ψ.toFin2ℂ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
-    rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
-    simp
-
-lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded) :
-    altLeftContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
-  rw [altLeftContraction]
-  erw [TensorProduct.lift.tmul]
-  rfl
-
-lemma leftAltContraction_apply_symm (ψ : leftHanded) (φ : altLeftHanded) :
-    leftAltContraction.hom (ψ ⊗ₜ φ) = altLeftContraction.hom (φ ⊗ₜ ψ) := by
-  rw [altLeftContraction_hom_tmul, leftAltContraction_hom_tmul]
-  exact dotProduct_comm ψ.toFin2ℂ φ.toFin2ℂ
-
-/-- A manifestation of the statement that `ψ ψ' = - ψ' ψ` where `ψ` and `ψ'`
-  are `leftHandedWeyl`. -/
-lemma leftAltContraction_apply_leftHandedAltEquiv (ψ ψ' : leftHanded) :
-    leftAltContraction.hom (ψ ⊗ₜ leftHandedAltEquiv.hom.hom ψ') =
-    - leftAltContraction.hom (ψ' ⊗ₜ leftHandedAltEquiv.hom.hom ψ) := by
-  rw [leftAltContraction_hom_tmul, leftAltContraction_hom_tmul,
-    leftHandedAltEquiv_hom_hom_apply, leftHandedAltEquiv_hom_hom_apply]
-  simp only [CategoryTheory.Monoidal.transportStruct_tensorUnit,
-    CategoryTheory.Equivalence.symm_functor, Action.functorCategoryEquivalence_inverse,
-    Action.FunctorCategoryEquivalence.inverse_obj_V, CategoryTheory.Monoidal.tensorUnit_obj,
-    cons_mulVec, cons_dotProduct, zero_mul, one_mul, dotProduct_empty, add_zero, zero_add, neg_mul,
-    empty_mulVec, LinearEquiv.apply_symm_apply, dotProduct_cons, mul_neg, neg_add_rev, neg_neg]
-  ring
-
-/-- A manifestation of the statement that `φ φ' = - φ' φ` where `φ` and `φ'` are
-  `altLeftHandedWeyl`. -/
-lemma leftAltContraction_apply_leftHandedAltEquiv_inv (φ φ' : altLeftHanded) :
-    leftAltContraction.hom (leftHandedAltEquiv.inv.hom φ ⊗ₜ φ') =
-    - leftAltContraction.hom (leftHandedAltEquiv.inv.hom φ' ⊗ₜ φ) := by
-  rw [leftAltContraction_hom_tmul, leftAltContraction_hom_tmul,
-    leftHandedAltEquiv_inv_hom_apply, leftHandedAltEquiv_inv_hom_apply]
-  simp only [CategoryTheory.Monoidal.transportStruct_tensorUnit,
-    CategoryTheory.Equivalence.symm_functor, Action.functorCategoryEquivalence_inverse,
-    Action.FunctorCategoryEquivalence.inverse_obj_V, CategoryTheory.Monoidal.tensorUnit_obj,
-    cons_mulVec, cons_dotProduct, zero_mul, neg_mul, one_mul, dotProduct_empty, add_zero, zero_add,
-    empty_mulVec, LinearEquiv.apply_symm_apply, neg_add_rev, neg_neg]
-  ring
-
-informal_lemma leftAltWeylContraction_symm_altLeftWeylContraction where
-  math :≈ "The linear map altLeftWeylContraction is leftAltWeylContraction composed
-    with the braiding of the tensor product."
-  deps :≈ [``leftAltContraction, ``altLeftContraction]
-
-informal_lemma altLeftWeylContraction_invariant where
-  math :≈ "The contraction altLeftWeylContraction is invariant with respect to
-    the action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
-  deps :≈ [``altLeftContraction]
-
-informal_definition rightAltWeylContraction where
-  math :≈ "The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
-    summing over components of rightHandedWeyl and altRightHandedWeyl in the
-    standard basis (i.e. the dot product)."
-  physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is ψ_{dot a} φ^{dot a}."
-  deps :≈ [``rightHanded, ``altRightHanded]
-
-informal_lemma rightAltWeylContraction_invariant where
-  math :≈ "The contraction rightAltWeylContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``rightAltWeylContraction]
-
-informal_definition altRightWeylContraction where
-  math :≈ "The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
-    summing over components of altRightHandedWeyl and rightHandedWeyl in the
-    standard basis (i.e. the dot product)."
-  physics :≈ "The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^{dot a} ψ_{dot a}."
-  deps :≈ [``rightHanded, ``altRightHanded]
-
-informal_lemma rightAltWeylContraction_symm_altRightWeylContraction where
-  math :≈ "The linear map altRightWeylContraction is rightAltWeylContraction composed
-    with the braiding of the tensor product."
-  deps :≈ [``rightAltWeylContraction, ``altRightWeylContraction]
-
-informal_lemma altRightWeylContraction_invariant where
-  math :≈ "The contraction altRightWeylContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``altRightWeylContraction]
 
 end
 
