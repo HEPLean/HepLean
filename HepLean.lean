@@ -82,6 +82,11 @@ import HepLean.SpaceTime.LorentzTensor.Real.Basic
 import HepLean.SpaceTime.LorentzTensor.Real.IndexNotation
 import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzVector.Basic
+import HepLean.SpaceTime.LorentzVector.Complex.Basic
+import HepLean.SpaceTime.LorentzVector.Complex.Contraction
+import HepLean.SpaceTime.LorentzVector.Complex.Metric
+import HepLean.SpaceTime.LorentzVector.Complex.Two
+import HepLean.SpaceTime.LorentzVector.Complex.Unit
 import HepLean.SpaceTime.LorentzVector.Contraction
 import HepLean.SpaceTime.LorentzVector.Covariant
 import HepLean.SpaceTime.LorentzVector.LorentzAction

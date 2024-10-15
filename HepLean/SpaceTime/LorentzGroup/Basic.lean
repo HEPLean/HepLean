@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.LorentzVector.NormOne
-import LLMLean
 /-!
 # The Lorentz Group
 
@@ -298,18 +297,18 @@ def toComplex : LorentzGroup d →* Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
   toFun Λ := Λ.1.map ofReal
   map_one' := by
     ext i j
-    simp
+    simp only [lorentzGroupIsGroup_one_coe, map_apply, ofReal_eq_coe]
     simp only [Matrix.one_apply, ofReal_one, ofReal_zero]
     split_ifs
     · rfl
     · rfl
   map_mul' Λ Λ' := by
     ext i j
-    simp
+    simp only [lorentzGroupIsGroup_mul_coe, map_apply, ofReal_eq_coe]
     simp only [← Matrix.map_mul, RingHom.map_matrix_mul]
     rfl
 
-instance (M : LorentzGroup d ) : Invertible (toComplex M) where
+instance (M : LorentzGroup d) : Invertible (toComplex M) where
   invOf := toComplex M⁻¹
   invOf_mul_self := by
     rw [← toComplex.map_mul, Group.inv_mul_cancel]
@@ -319,7 +318,7 @@ instance (M : LorentzGroup d ) : Invertible (toComplex M) where
     rw [@mul_inv_cancel]
     simp
 
-lemma toComplex_inv (Λ : LorentzGroup d) : (toComplex Λ)⁻¹ = toComplex Λ⁻¹  := by
+lemma toComplex_inv (Λ : LorentzGroup d) : (toComplex Λ)⁻¹ = toComplex Λ⁻¹ := by
   refine inv_eq_right_inv ?h
   rw [← toComplex.map_mul, mul_inv_cancel]
   simp
@@ -340,7 +339,7 @@ lemma toComplex_transpose_mul_minkowskiMatrix_mul_self (Λ : LorentzGroup d) :
   simp [toComplex]
   have h1 : ((Λ.1).map ⇑ofReal)ᵀ = (Λ.1ᵀ).map ofReal := rfl
   rw [h1]
-  trans  (Λ.1ᵀ * minkowskiMatrix * Λ.1).map ofReal
+  trans (Λ.1ᵀ * minkowskiMatrix * Λ.1).map ofReal
   · simp only [Matrix.map_mul]
   simp only [transpose_mul_minkowskiMatrix_mul_self]
 

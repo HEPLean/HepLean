@@ -26,7 +26,7 @@ def contrCoUnitVal : (complexContr ⊗ complexCo).V :=
 /-- The contra-co unit for complex lorentz vectors as a morphism
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo`, manifesting the invaraince under
   the `SL(2, ℂ)` action. -/
-def contrCoUnit :  𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
+def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
   hom := {
     toFun := fun a =>
       let a' : ℂ := a
@@ -58,7 +58,7 @@ def coContrUnitVal : (complexCo ⊗ complexContr).V :=
 /-- The co-contra unit for complex lorentz vectors as a morphism
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr`, manifesting the invaraince under
   the `SL(2, ℂ)` action. -/
-def coContrUnit :  𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
+def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
   hom := {
     toFun := fun a =>
       let a' : ℂ := a

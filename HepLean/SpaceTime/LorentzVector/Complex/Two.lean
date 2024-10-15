@@ -80,9 +80,9 @@ lemma contrContrToMatrix_ρ (v : (complexContr ⊗ complexContr).V) (M : SL(2,�
         * contrContrToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x, (∑ x1 , LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
+  have h1 : ∑ x, (∑ x1, LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
       contrContrToMatrix v x1 x) * LorentzGroup.toComplex (SL2C.toLorentzGroup M) j x
-      = ∑ x , ∑ x1 , (LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1
+      = ∑ x, ∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1
       * contrContrToMatrix v x1 x) * LorentzGroup.toComplex (SL2C.toLorentzGroup M) j x := by
     congr
     funext x
@@ -122,9 +122,9 @@ lemma coCoToMatrix_ρ (v : (complexCo ⊗ complexCo).V) (M : SL(2,ℂ)) :
         * coCoToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x, (∑ x1 , (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
+  have h1 : ∑ x, (∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
       coCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j
-      = ∑ x , ∑ x1 , ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i
+      = ∑ x, ∑ x1, ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i
       * coCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j := by
     congr
     funext x
@@ -164,9 +164,9 @@ lemma contrCoToMatrix_ρ (v : (complexContr ⊗ complexCo).V) (M : SL(2,ℂ)) :
         * contrCoToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply]
-  have h1 : ∑ x, (∑ x1 , LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
+  have h1 : ∑ x, (∑ x1, LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
       contrCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j
-      = ∑ x , ∑ x1 , (LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1
+      = ∑ x, ∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1
       * contrCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j := by
     congr
     funext x
@@ -207,9 +207,9 @@ lemma coContrToMatrix_ρ (v : (complexCo ⊗ complexContr).V) (M : SL(2,ℂ)) :
         * coContrToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x, (∑ x1 , (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
+  have h1 : ∑ x, (∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
       coContrToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M)) j x
-      = ∑ x , ∑ x1 , ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i
+      = ∑ x, ∑ x1, ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i
       * coContrToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M)) j x := by
     congr
     funext x
@@ -227,7 +227,6 @@ lemma coContrToMatrix_ρ (v : (complexCo ⊗ complexContr).V) (M : SL(2,ℂ)) :
 /-!
 
 ## The symm version of the group actions.
-
 
 -/
 

@@ -8,7 +8,6 @@ import HepLean.SpaceTime.LorentzVector.Complex.Basic
 
 # Contraction of Lorentz vectors
 
-
 -/
 
 noncomputable section
@@ -91,7 +90,7 @@ def contrCoContraction : complexContr ⊗ complexCo ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)
 def coContrContraction : complexCo ⊗ complexContr ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift contrContrCoBi
   comm M := TensorProduct.ext' fun φ ψ => by
-    change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ  *ᵥ φ.toFin13ℂ) ⬝ᵥ
+    change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ *ᵥ φ.toFin13ℂ) ⬝ᵥ
       ((LorentzGroup.toComplex (SL2C.toLorentzGroup M)) *ᵥ ψ.toFin13ℂ) = φ.toFin13ℂ ⬝ᵥ ψ.toFin13ℂ
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
     rw [inv_mul_of_invertible (LorentzGroup.toComplex (SL2C.toLorentzGroup M))]
