@@ -10,7 +10,7 @@ import Mathlib.CategoryTheory.Comma.Over
 import Mathlib.CategoryTheory.Core
 import Mathlib.CategoryTheory.Monoidal.Braided.Basic
 import HepLean.SpaceTime.WeylFermion.Basic
-import HepLean.SpaceTime.LorentzVector.Complex
+import HepLean.SpaceTime.LorentzVector.Complex.Basic
 /-!
 
 # Over color category.
