@@ -42,13 +42,15 @@ def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • leftAltLeftUnitVal =
       (TensorProduct.map (leftHanded.ρ M) (altLeftHanded.ρ M)) (x' • leftAltLeftUnitVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [leftAltLeftUnitVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, leftAltLeftUnitVal]
     erw [leftAltLeftToMatrix_ρ_symm]
     apply congrArg
     simp
@@ -71,11 +73,13 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • altLeftLeftUnitVal =
       (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) (x' • altLeftLeftUnitVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp [altLeftLeftUnitVal]
     erw [altLeftLeftToMatrix_ρ_symm]
@@ -103,20 +107,22 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • rightAltRightUnitVal =
       (TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M)) (x' • rightAltRightUnitVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [rightAltRightUnitVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, rightAltRightUnitVal]
     erw [rightAltRightToMatrix_ρ_symm]
     apply congrArg
-    simp
+    simp only [RCLike.star_def, mul_one]
     symm
     refine transpose_eq_one.mp ?h.h.h.a
-    simp
-    change  (M.1)⁻¹ᴴ * (M.1)ᴴ = 1
+    simp only [transpose_mul, transpose_transpose]
+    change (M.1)⁻¹ᴴ * (M.1)ᴴ = 1
     rw [@conjTranspose_nonsing_inv]
     simp
 
@@ -140,18 +146,20 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • altRightRightUnitVal =
       (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) (x' • altRightRightUnitVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp [altRightRightUnitVal]
     erw [altRightRightToMatrix_ρ_symm]
     apply congrArg
-    simp
+    simp only [mul_one, RCLike.star_def]
     symm
-    change  (M.1)⁻¹ᴴ * (M.1)ᴴ = 1
+    change (M.1)⁻¹ᴴ * (M.1)ᴴ = 1
     rw [@conjTranspose_nonsing_inv]
     simp
 

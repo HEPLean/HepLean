@@ -10,7 +10,6 @@ import Mathlib.LinearAlgebra.TensorProduct.Matrix
 
 # Tensor product of two Weyl fermion
 
-
 -/
 
 namespace Fermion
@@ -96,7 +95,7 @@ lemma leftLeftToMatrix_ρ (v : (leftHanded ⊗ leftHanded).V) (M : SL(2,ℂ)) :
       ((leftBasis.tensorProduct leftBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (leftBasis.tensorProduct leftBasis)
-       (leftBasis.tensorProduct leftBasis) (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) v)
+      (leftBasis.tensorProduct leftBasis) (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -108,7 +107,7 @@ lemma leftLeftToMatrix_ρ (v : (leftHanded ⊗ leftHanded).V) (M : SL(2,ℂ)) :
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ j : Fin 2, M.1 i j * leftLeftToMatrix v j x) * M.1 j x
-    = ∑ x : Fin 2, ∑ x1 : Fin 2, (M.1 i x1 * leftLeftToMatrix v x1 x) * M.1 j x  := by
+    = ∑ x : Fin 2, ∑ x1 : Fin 2, (M.1 i x1 * leftLeftToMatrix v x1 x) * M.1 j x := by
     congr
     funext x
     rw [Finset.sum_mul]
@@ -138,8 +137,8 @@ lemma altLeftaltLeftToMatrix_ρ (v : (altLeftHanded ⊗ altLeftHanded).V) (M : S
       ((altLeftBasis.tensorProduct altLeftBasis).repr v)))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (altLeftBasis.tensorProduct altLeftBasis)
-       (altLeftBasis.tensorProduct altLeftBasis)
-       (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) v)
+      (altLeftBasis.tensorProduct altLeftBasis)
+      (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -178,8 +177,8 @@ lemma leftAltLeftToMatrix_ρ (v : (leftHanded ⊗ altLeftHanded).V) (M : SL(2,�
       ((leftBasis.tensorProduct altLeftBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (leftBasis.tensorProduct altLeftBasis)
-       (leftBasis.tensorProduct altLeftBasis)
-       (TensorProduct.map (leftHanded.ρ M) (altLeftHanded.ρ M)) v)
+      (leftBasis.tensorProduct altLeftBasis)
+      (TensorProduct.map (leftHanded.ρ M) (altLeftHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -219,8 +218,8 @@ lemma altLeftLeftToMatrix_ρ (v : (altLeftHanded ⊗ leftHanded).V) (M : SL(2,�
       ((altLeftBasis.tensorProduct leftBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (altLeftBasis.tensorProduct leftBasis)
-       (altLeftBasis.tensorProduct leftBasis)
-       (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) v)
+      (altLeftBasis.tensorProduct leftBasis)
+      (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -260,7 +259,8 @@ lemma rightRightToMatrix_ρ (v : (rightHanded ⊗ rightHanded).V) (M : SL(2,ℂ)
       ((rightBasis.tensorProduct rightBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (rightBasis.tensorProduct rightBasis)
-       (rightBasis.tensorProduct rightBasis) (TensorProduct.map (rightHanded.ρ M) (rightHanded.ρ M)) v)
+      (rightBasis.tensorProduct rightBasis)
+      (TensorProduct.map (rightHanded.ρ M) (rightHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -271,8 +271,9 @@ lemma rightRightToMatrix_ρ (v : (rightHanded ⊗ rightHanded).V) (M : SL(2,ℂ)
         * rightRightToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightRightToMatrix v x1 x) * (M.1.map star) j x
-    = ∑ x : Fin 2, ∑ x1 : Fin 2, ((M.1.map star) i x1 * rightRightToMatrix v x1 x) * (M.1.map star) j x:= by
+  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightRightToMatrix v x1 x) *
+      (M.1.map star) j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
+      ((M.1.map star) i x1 * rightRightToMatrix v x1 x) * (M.1.map star) j x:= by
     congr
     funext x
     rw [Finset.sum_mul]
@@ -300,8 +301,8 @@ lemma altRightAltRightToMatrix_ρ (v : (altRightHanded ⊗ altRightHanded).V) (M
       ((altRightBasis.tensorProduct altRightBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (altRightBasis.tensorProduct altRightBasis)
-       (altRightBasis.tensorProduct altRightBasis)
-       (TensorProduct.map (altRightHanded.ρ M) (altRightHanded.ρ M)) v)
+      (altRightBasis.tensorProduct altRightBasis)
+      (TensorProduct.map (altRightHanded.ρ M) (altRightHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -312,8 +313,9 @@ lemma altRightAltRightToMatrix_ρ (v : (altRightHanded ⊗ altRightHanded).V) (M
         * altRightAltRightToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (↑M)⁻¹ᴴ i x1 * altRightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x
-    = ∑ x : Fin 2, ∑ x1 : Fin 2, ((↑M)⁻¹ᴴ i x1 * altRightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x := by
+  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (↑M)⁻¹ᴴ i x1 * altRightAltRightToMatrix v x1 x) *
+      (↑M)⁻¹ᴴ j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
+      ((↑M)⁻¹ᴴ i x1 * altRightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x := by
     congr
     funext x
     rw [Finset.sum_mul]
@@ -340,8 +342,8 @@ lemma rightAltRightToMatrix_ρ (v : (rightHanded ⊗ altRightHanded).V) (M : SL(
       ((rightBasis.tensorProduct altRightBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (rightBasis.tensorProduct altRightBasis)
-       (rightBasis.tensorProduct altRightBasis)
-       (TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M)) v)
+    (rightBasis.tensorProduct altRightBasis)
+    (TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -352,8 +354,9 @@ lemma rightAltRightToMatrix_ρ (v : (rightHanded ⊗ altRightHanded).V) (M : SL(
         * rightAltRightToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x
-    = ∑ x : Fin 2, ∑ x1 : Fin 2, ((M.1.map star) i x1 * rightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x := by
+  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightAltRightToMatrix v x1 x)
+      * (↑M)⁻¹ᴴ j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
+      ((M.1.map star) i x1 * rightAltRightToMatrix v x1 x) * (↑M)⁻¹ᴴ j x := by
     congr
     funext x
     rw [Finset.sum_mul]
@@ -381,8 +384,8 @@ lemma altRightRightToMatrix_ρ (v : (altRightHanded ⊗ rightHanded).V) (M : SL(
       ((altRightBasis.tensorProduct rightBasis).repr (v))))
   · apply congrArg
     have h1 := (LinearMap.toMatrix_mulVec_repr (altRightBasis.tensorProduct rightBasis)
-       (altRightBasis.tensorProduct rightBasis)
-       (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) v)
+      (altRightBasis.tensorProduct rightBasis)
+      (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) v)
     erw [h1]
     rfl
   rw [TensorProduct.toMatrix_map]
@@ -393,8 +396,10 @@ lemma altRightRightToMatrix_ρ (v : (altRightHanded ⊗ rightHanded).V) (M : SL(
         * altRightRightToMatrix v k.1 k.2) = _
   erw [Finset.sum_product]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
-  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (↑M)⁻¹ᴴ i x1 * altRightRightToMatrix v x1 x) * (M.1.map star) j x
-    = ∑ x : Fin 2, ∑ x1 : Fin 2, ((↑M)⁻¹ᴴ i x1 * altRightRightToMatrix v x1 x) * (M.1.map star) j x := by
+  have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2,
+      (↑M)⁻¹ᴴ i x1 * altRightRightToMatrix v x1 x) * (M.1.map star) j x
+      = ∑ x : Fin 2, ∑ x1 : Fin 2, ((↑M)⁻¹ᴴ i x1 * altRightRightToMatrix v x1 x) *
+      (M.1.map star) j x := by
     congr
     funext x
     rw [Finset.sum_mul]
@@ -464,7 +469,7 @@ lemma altRightAltRightToMatrix_ρ_symm (v : Matrix (Fin 2) (Fin 2) ℂ) (M : SL(
 
 lemma rightAltRightToMatrix_ρ_symm (v : Matrix (Fin 2) (Fin 2) ℂ) (M : SL(2,ℂ)) :
     TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M) (rightAltRightToMatrix.symm v) =
-    rightAltRightToMatrix.symm ((M.1.map star) * v * (((M.1⁻¹).conjTranspose)ᵀ) ) := by
+    rightAltRightToMatrix.symm ((M.1.map star) * v * (((M.1⁻¹).conjTranspose)ᵀ)) := by
   have h1 := rightAltRightToMatrix_ρ (rightAltRightToMatrix.symm v) M
   simp only [Action.instMonoidalCategory_tensorObj_V, LinearEquiv.apply_symm_apply] at h1
   rw [← h1]
@@ -477,8 +482,6 @@ lemma altRightRightToMatrix_ρ_symm (v : Matrix (Fin 2) (Fin 2) ℂ) (M : SL(2,�
   simp only [Action.instMonoidalCategory_tensorObj_V, LinearEquiv.apply_symm_apply] at h1
   rw [← h1]
   simp
-
-
 
 end
 end Fermion

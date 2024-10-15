@@ -21,7 +21,6 @@ open MatrixGroups
 open Complex
 open TensorProduct
 
-
 /-!
 
 ## Contraction of Weyl fermions.
@@ -75,7 +74,6 @@ def altLeftBi : altLeftHanded →ₗ[ℂ] leftHanded →ₗ[ℂ] ℂ where
     refine LinearMap.ext (fun φ => ?_)
     simp only [_root_.map_smul, smul_dotProduct, vec2_dotProduct, Fin.isValue, smul_eq_mul,
       LinearMap.coe_mk, AddHom.coe_mk, RingHom.id_apply, LinearMap.smul_apply]
-
 
 /-- The bi-linear map corresponding to contraction of a right-handed Weyl fermion with a
   alt-right-handed Weyl fermion. -/
@@ -170,7 +168,8 @@ The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift rightAltBi
   comm M := TensorProduct.ext' fun ψ φ => by
-    change (M.1.map star *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
+    change (M.1.map star *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) =
+      ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
     have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl
     rw [dotProduct_mulVec, h1, vecMul_transpose, mulVec_mulVec]
     have h2 : ((M.1)⁻¹.map star * (M.1).map star) = 1 := by
@@ -193,8 +192,9 @@ def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2
 -/
 def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altRightBi
-  comm M := TensorProduct.ext' fun φ ψ =>  by
-    change (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1.map star *ᵥ ψ.toFin2ℂ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
+  comm M := TensorProduct.ext' fun φ ψ => by
+    change (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1.map star *ᵥ ψ.toFin2ℂ) =
+      φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
     have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl
     rw [dotProduct_mulVec, h1, mulVec_transpose, vecMul_vecMul]
     have h2 : ((M.1)⁻¹.map star * (M.1).map star) = 1 := by
@@ -250,7 +250,6 @@ informal_lemma altLeftWeylContraction_invariant where
   math :≈ "The contraction altLeftWeylContraction is invariant with respect to
     the action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
   deps :≈ [``altLeftContraction]
-
 
 informal_lemma rightAltWeylContraction_invariant where
   math :≈ "The contraction rightAltWeylContraction is invariant with respect to
