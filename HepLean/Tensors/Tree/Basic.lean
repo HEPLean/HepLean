@@ -38,9 +38,9 @@ structure TensorStruct where
   τ : C → C
   τ_involution : Function.Involutive τ
   /-- The natural transformation describing contraction. -/
-  contr : OverColor.Discrete.pairτ F τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
+  contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
   /-- The natural transformation describing the metric. -/
-  metricNat : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
+  metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
   /-- The natural transformation describing the unit. -/
   unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- A specification of the dimension of each color in C. This will be used for explicit
@@ -60,66 +60,18 @@ instance : Group S.G := S.G_group
 /-- The lift of the functor `S.F` to a monoidal functor. -/
 def F : MonoidalFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
 
+/-
 def metric (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
   (OverColor.Discrete.pairIso S.FDiscrete c).hom.hom <|
   (S.metricNat.app (Discrete.mk c)).hom (1 : S.k)
+-/
 
-def contrNLE {n : ℕ} {i j : Fin n} (h : i ≠ j) : 2 ≤ n := by
-  omega
-
-def contrNPred {n : ℕ} {i j : Fin n} (h : i ≠ j) : n.pred.pred.succ.succ = n := by
-  simp_all only [ne_eq, Nat.pred_eq_sub_one, Nat.succ_eq_add_one]
-  have hi : i < n := i.isLt
-  have hj : j < n := j.isLt
-  by_contra hn
-  have hn : n  = 0 ∨ n =1 := by omega
-  cases hn
-  · omega
-  · omega
-
-def contrFstSucc {n : ℕ} {i j : Fin n} (hineqj : i ≠ j) :
-    Fin n.pred.pred.succ.succ := Fin.castOrderIso (contrNPred hineqj).symm i
-
-def contrSndSucc {n : ℕ} {i j : Fin n} (hineqj : i ≠ j) :
-    Fin n.pred.pred.succ := (Fin.predAbove 0 (contrFstSucc hineqj)).predAbove
-    (Fin.castOrderIso (contrNPred hineqj).symm j)
-
-@[simp]
-lemma contrSndSucc_succAbove {n : ℕ} {i j : Fin n} (hineqj : i ≠ j) :
-    (contrFstSucc hineqj).succAbove (contrSndSucc hineqj) =
-    Fin.castOrderIso (contrNPred hineqj).symm j := by
-  simp [contrFstSucc, contrSndSucc, Fin.succAbove,
-    Fin.predAbove]
-  split_ifs
-  · rename_i h1 h2
-    rw [Fin.lt_def] at h1 h2
-    simp_all [Fin.lt_def, Fin.ext_iff]
-    intro h
-    omega
-  · rename_i h1 h2
-    rw [Fin.lt_def] at h1 h2
-    simp_all [Fin.ext_iff]
-    rw [Fin.lt_def]
-    simp only [Fin.coe_cast, Fin.val_fin_lt]
-    rw [Fin.lt_def]
-    omega
-  · rename_i h1 h2
-    rw [Fin.lt_def] at h1 h2
-    simp_all [Fin.ext_iff]
-    rw [Fin.lt_def]
-    simp only [Fin.coe_cast, Fin.val_fin_lt]
-    omega
-  · rename_i h1 h2
-    rw [Fin.lt_def] at h1 h2
-    simp_all [Fin.ext_iff]
-    rw [Fin.lt_def]
-    simp only [Fin.coe_cast, Fin.val_fin_lt]
-    omega
-
-
+/-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ.succ` and
+ a `j` in `Fin n.succ` allowing us to undertake contraction. -/
 def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
-    S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj (Discrete.mk (c i))) ⊗
+    S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj
+      (Discrete.mk (c i))) ⊗
       (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
   (S.F.mapIso (OverColor.equivToIso (OverColor.finExtractTwo i j))).trans <|
   (S.F.mapIso (OverColor.mkSum (c ∘ (OverColor.finExtractTwo i j).symm))).trans <|
@@ -143,7 +95,13 @@ def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     fin_cases x
     simp [h]
 
-def contrMap' {n : ℕ} (c : Fin n.succ.succ → S.C)
+/--
+`contrMap` is a function that takes a natural number `n`, a function `c` from
+`Fin n.succ.succ` to `S.C`, an index `i` of type `Fin n.succ.succ`, an index `j` of type
+`Fin n.succ`, and a proof `h` that `c (i.succAbove j) = S.τ (c i)`. It returns a morphism
+corresponding to the contraction of the `i`th index with the `i.succAbove j` index.
+--/
+def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
     S.F.obj (OverColor.mk c) ⟶
     (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
@@ -151,37 +109,47 @@ def contrMap' {n : ℕ} (c : Fin n.succ.succ → S.C)
   (tensorHom (S.contr.app (Discrete.mk (c i))) (𝟙 _)) ≫
   (MonoidalCategory.leftUnitor _).hom
 
-def contrMap {n : ℕ} (c : Fin n → S.C)
-    (i j : Fin n) (hij : i ≠ j) (h : c j = S.τ (c i)) :
-    S.F.obj (OverColor.mk c) ⟶
-    (OverColor.lift.obj S.FDiscrete).obj
-    (OverColor.mk ((c ∘ Fin.cast (contrNPred hij)) ∘ Fin.succAbove (contrFstSucc hij) ∘
-    Fin.succAbove (contrSndSucc hij))) := by
-  refine (S.F.mapIso (OverColor.equivToIso (Fin.castOrderIso (contrNPred hij)).toEquiv.symm)).hom ≫
-    S.contrMap' (c ∘ Fin.cast (contrNPred hij)) (contrFstSucc hij) (contrSndSucc hij) ?_
-  simp only [Nat.pred_eq_sub_one, Nat.succ_eq_add_one, contrSndSucc_succAbove,
-    Fin.castOrderIso_apply, Function.comp_apply, Fin.cast_trans, Fin.cast_eq_self]
-  simpa [contrFstSucc] using h
-
-
 end TensorStruct
 
 /-- A syntax tree for tensor expressions. -/
 inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
+  /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
+  /-- A node consisting of a single vector. -/
+  | vecNode {c : S.C} (v : S.FDiscrete.obj (Discrete.mk c)) : TensorTree S ![c]
+  /-- A node consisting of a two tensor. -/
+  | twoNode {c1 c2 : S.C}
+    (v : S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    TensorTree S ![c1, c2]
+  /-- A node consisting of a three tensor. -/
+  | threeNode {c1 c2 c3 : S.C}
+    (v : S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+      S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3]
+  /-- A general constant node. -/
+  | constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep S.k S.G) ⟶ S.F.obj (OverColor.mk c)) :
+    TensorTree S c
+  /-- A constant vector. -/
+  | constVecNode {c : S.C} (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c)) :
+    TensorTree S ![c]
+  /-- A constant two tensor (e.g. metric and unit). -/
+  | constTwoNode {c1 c2 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    TensorTree S ![c1, c2]
+  /-- A constant three tensor (e.g. Pauli-matrices). -/
+  | constThreeNode {c1 c2 c3 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+      S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3]
+  /-- A node corresponding to the addition of two tensors. -/
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
+  /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
-  | contr {n : ℕ} {c : Fin n → S.C} : (i j : Fin n) →
-    (hij : i ≠ j) → (h : c j = S.τ (c i)) → TensorTree S c →
-    TensorTree S ((c ∘ Fin.cast (TensorStruct.contrNPred hij)) ∘
-      Fin.succAbove (TensorStruct.contrFstSucc hij) ∘
-      Fin.succAbove (TensorStruct.contrSndSucc hij))
-  | jiggle {n : ℕ} {c : Fin n → S.C} : (i : Fin n) → TensorTree S c →
-    TensorTree S (Function.update c i (S.τ (c i)))
+  | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
+    (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
+    TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | eval {n : ℕ} {c : Fin n.succ → S.C} :
     (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
@@ -190,19 +158,40 @@ namespace TensorTree
 
 variable {S : TensorStruct} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
-def metric : TensorTree S ![]
 open MonoidalCategory
 open TensorProduct
+
+/-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
+abbrev twoNodeE (S : TensorStruct) (c1 c2 : S.C)
+    (v : S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    TensorTree S ![c1, c2] := twoNode v
+
+/-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
+abbrev constTwoNodeE (S : TensorStruct) (c1 c2 : S.C)
+    (v :  𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    TensorTree S ![c1, c2] := constTwoNode v
+
+/-- The node `constThreeNodeE` of a tensor tree, with all arguments explicit. -/
+abbrev constThreeNodeE (S : TensorStruct) (c1 c2  c3 : S.C)
+    (v :  𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+      S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
+    constThreeNode v
 
 /-- The number of nodes in a tensor tree. -/
 def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | tensorNode _ => 1
+  | vecNode _ => 1
+  | twoNode _ => 1
+  | threeNode _ => 1
+  | constNode _ => 1
+  | constVecNode _ => 1
+  | constTwoNode _ => 1
+  | constThreeNode _ => 1
   | add t1 t2 => t1.size + t2.size + 1
   | perm _ t => t.size + 1
   | smul _ t => t.size + 1
   | prod t1 t2 => t1.size + t2.size + 1
-  | contr _ _ _ _ t => t.size + 1
-  | jiggle _ t => t.size + 1
+  | contr _ _ _ t => t.size + 1
   | eval _ _ t => t.size + 1
 
 noncomputable section
@@ -216,63 +205,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | smul a t => a • t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
-  | contr i j hij h t  => (S.contrMap _ i j hij h).hom t.tensor
-  | jiggle i t => by
-    rename_i n c'
-    let T := (tensorNode (S.metric (S.τ (c' i))))
-    let T2 := (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
-      ((S.F.μ _ _).hom (T.tensor ⊗ₜ t.tensor))
-    let e1 : Fin (2 + n) ≃ Fin (2 + n) :=
-      (Equiv.swap (Fin.castAdd n (0 : Fin 2)) (Fin.natAdd 2 i))
-    let T3 := (S.F.map ((OverColor.equivToIso e1).hom)).hom  T2
-    let T4 := (S.contrMap _  (Fin.castAdd n (0 : Fin 2)) (Fin.castAdd n (1 : Fin 2))
-       (by
-      simp only [Fin.isValue, ne_eq,
-      Fin.ext_iff, Fin.coe_castAdd, Fin.val_zero, Fin.coe_natAdd]
-      omega)
-      (by
-        simp [e1]
-        rw [Equiv.swap_apply_of_ne_of_ne]
-        · simp [Fin.ext_iff]
-          rfl
-        · simp [Fin.ext_iff]
-        · simp [Fin.ext_iff]
-          omega)).hom T3
-    refine (S.F.map ?_).hom T4
-    refine (OverColor.equivToIso (Fin.castOrderIso (by simp : (2 + n).pred.pred = n)).toEquiv).hom ≫  ?_
-    refine (OverColor.mkIso ?_).hom
-    funext x
-    simp
-    trans Sum.elim ![S.τ (c' i), S.τ (c' i)] c' (finSumFinEquiv.symm
-      (e1.symm (Fin.natAdd 2 x)))
-    congr
-    simp [Fin.ext_iff]
-    simp [Fin.succAbove]
-    split_ifs
-    · rename_i h1 h2
-      rw [Fin.lt_def] at h1 h2
-      simp_all [TensorStruct.contrSndSucc, TensorStruct.contrFstSucc]
-    · rename_i h1 h2
-      rw [Fin.lt_def] at h1 h2
-      simp_all [TensorStruct.contrSndSucc, TensorStruct.contrFstSucc]
-      simp [Fin.predAbove, Fin.lt_def] at h1
-    · rename_i h1 h2
-      rw [Fin.lt_def] at h1 h2
-      simp_all [TensorStruct.contrSndSucc, TensorStruct.contrFstSucc]
-    · simp
-      omega
-    simp [e1]
-    by_cases hi: x= i
-    · subst hi
-      simp
-    · rw [Equiv.swap_apply_of_ne_of_ne]
-      · simp
-        rw [Function.update]
-        simp [hi]
-      · simp [Fin.ext_iff]
-      · simp [Fin.ext_iff]
-        omega
-
+  | contr i j h t  => (S.contrMap _ i j h).hom t.tensor
   | _ => 0
 
 lemma tensor_tensorNode {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :

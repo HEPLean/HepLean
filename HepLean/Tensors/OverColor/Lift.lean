@@ -660,11 +660,19 @@ variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
 
 noncomputable section
 
+/--
+The `forgetLiftAppV` function takes an object `c` of type `C` and returns a linear equivalence
+between the vector space obtained by applying the lift of `F` and that obtained by applying
+`F`.
+--/
 def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c))).V ≃ₗ[k]
      (F.obj (Discrete.mk c)).V :=
   (PiTensorProduct.subsingletonEquiv 0 :
     (⨂[k] (_ : Fin 1), (F.obj (Discrete.mk c))) ≃ₗ[k] F.obj (Discrete.mk c) )
 
+/-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism
+between the objects obtained by applying the lift of `F` and that obtained by applying
+`F`.  -/
 def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1 ) => c))
     ≅ F.obj (Discrete.mk c) :=
     Action.mkIso (forgetLiftAppV F c).toModuleIso

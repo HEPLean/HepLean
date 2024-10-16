@@ -20,6 +20,20 @@ namespace TensorTree
 def dotString (m : ℕ) (nt : ℕ) : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → String := fun
   | tensorNode _ =>
     " node" ++ toString m ++ " [label=\"T" ++ toString nt ++ "\"];\n"
+  | vecNode T =>
+    " node" ++ toString m ++ " [label=\"vec " ++ toString nt ++ "\"];\n"
+  | twoNode T =>
+    " node" ++ toString m ++ " [label=\"vec2\", shape=box];\n"
+  | threeNode T =>
+    " node" ++ toString m ++ " [label=\"vec3\", shape=box];\n"
+  | constNode T =>
+    " node" ++ toString m ++ " [label=\"const " ++ toString nt ++ "\"];\n"
+  | constVecNode T =>
+    " node" ++ toString m ++ " [label=\"constVec " ++ toString nt ++ "\"];\n"
+  | constTwoNode T =>
+    " node" ++ toString m ++ " [label=\"constVec2\", shape=box];\n"
+  | constThreeNode T =>
+    " node" ++ toString m ++ " [label=\"constVec3\", shape=box];\n"
   | add t1 t2 =>
     let addNode := " node" ++ toString m ++ " [label=\"+\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
@@ -39,20 +53,10 @@ def dotString (m : ℕ) (nt : ℕ) : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTr
     let smulNode := " node" ++ toString m ++ " [label=\"smul\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     smulNode ++ dotString (m + 1) nt t ++ edge1
-  | mult _ _ t1 t2 =>
-    let multNode := " node" ++ toString m ++ " [label=\"mult\", shape=box];\n"
-    let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
-    let edge2 := " node" ++ toString m ++ " -> node" ++ toString (t1.size + m + 2) ++ ";\n"
-    multNode ++ dotString (m + 1) nt t1 ++ dotString (2 * t1.size + m + 2) (nt + 1) t2
-      ++ edge1 ++ edge2
   | eval _ _ t1 =>
     let evalNode := " node" ++ toString m ++ " [label=\"eval\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     evalNode ++ dotString (m + 1) nt t1 ++ edge1
-  | jiggle i t1 =>
-    let jiggleNode := " node" ++ toString m ++ " [label=\"τ\", shape=box];\n"
-    let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
-    jiggleNode ++ dotString (m + 1) nt t1 ++ edge1
   | contr i j _ t1 =>
     let contrNode := " node" ++ toString m ++ " [label=\"contr " ++ toString i ++ " "
       ++ toString j ++ "\", shape=box];\n"
