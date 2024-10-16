@@ -93,6 +93,9 @@ import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.Modules
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.MinkowskiMetric
+import HepLean.SpaceTime.PauliMatrices.AsTensor
+import HepLean.SpaceTime.PauliMatrices.Basic
+import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 import HepLean.SpaceTime.SL2C.Basic
 import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.SpaceTime.WeylFermion.Contraction

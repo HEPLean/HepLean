@@ -125,7 +125,7 @@ def altRightBi : altRightHanded →ₗ[ℂ] rightHanded →ₗ[ℂ] ℂ where
     summing over components of leftHandedWeyl and altLeftHandedWeyl in the
     standard basis (i.e. the dot product).
     Physically, the contraction of a left-handed Weyl fermion with a alt-left-handed Weyl fermion.
-    In index notation this is ψ_a φ^a. -/
+    In index notation this is ψ^a φ_a. -/
 def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift leftAltBi
   comm M := TensorProduct.ext' fun ψ φ => by
@@ -143,7 +143,7 @@ lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     summing over components of altLeftHandedWeyl and leftHandedWeyl in the
     standard basis (i.e. the dot product).
     Physically, the contraction of a alt-left-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^a ψ_a. -/
+    In index notation this is φ_a ψ^a. -/
 def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altLeftBi
   comm M := TensorProduct.ext' fun φ ψ => by
@@ -162,7 +162,7 @@ The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
   summing over components of rightHandedWeyl and altRightHandedWeyl in the
   standard basis (i.e. the dot product).
   The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is ψ_{dot a} φ^{dot a}.
+    In index notation this is ψ^{dot a} φ_{dot a}.
 -/
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift rightAltBi
@@ -187,7 +187,7 @@ def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2
     summing over components of altRightHandedWeyl and rightHandedWeyl in the
     standard basis (i.e. the dot product).
   The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is φ^{dot a} ψ_{dot a}.
+    In index notation this is φ_{dot a} ψ^{dot a}.
 -/
 def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift altRightBi

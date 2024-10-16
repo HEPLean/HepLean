@@ -82,6 +82,14 @@ lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := 
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   exact diagonal_apply_ne _ h
 
+lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  rfl
+
+lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  simp_all only [diagonal_apply_eq, Sum.elim_inr]
+
 end minkowskiMatrix
 
 /-!
@@ -267,6 +275,16 @@ lemma det_dual : (dual Λ).det = Λ.det := by
   simp only [dual, det_mul, minkowskiMatrix.det_eq_neg_one_pow_d, det_transpose]
   group
   norm_cast
+  simp
+
+lemma dual_apply (μ ν : Fin 1 ⊕ Fin d) :
+    dual Λ μ ν = η μ μ * Λ ν μ * η ν ν := by
+  simp only [dual, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
+    diagonal_mul, transpose_apply, diagonal_apply_eq]
+
+lemma dual_apply_minkowskiMatrix (μ ν : Fin 1 ⊕ Fin d) :
+    dual Λ μ ν * η ν ν = η μ μ * Λ ν μ := by
+  rw [dual_apply, mul_assoc]
   simp
 
 @[simp]

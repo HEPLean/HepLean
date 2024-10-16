@@ -36,7 +36,7 @@ open minkowskiMetric in
 /-- The Lorentz group is the subset of matrices which preserve the minkowski metric. -/
 def LorentzGroup (d : ℕ) : Set (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :=
     {Λ : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ |
-      ∀ (x y : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ y⟫ₘ = ⟪x, y⟫ₘ}
+    ∀ (x y : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ y⟫ₘ = ⟪x, y⟫ₘ}
 
 namespace LorentzGroup
 /-- Notation for the Lorentz group. -/
@@ -326,7 +326,7 @@ lemma toComplex_inv (Λ : LorentzGroup d) : (toComplex Λ)⁻¹ = toComplex Λ�
 @[simp]
 lemma toComplex_mul_minkowskiMatrix_mul_transpose (Λ : LorentzGroup d) :
     toComplex Λ * minkowskiMatrix.map ofReal * (toComplex Λ)ᵀ = minkowskiMatrix.map ofReal := by
-  simp [toComplex]
+  simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
   have h1 : ((Λ.1).map ⇑ofReal)ᵀ = (Λ.1ᵀ).map ofReal := rfl
   rw [h1]
   trans (Λ.1 * minkowskiMatrix * Λ.1ᵀ).map ofReal
@@ -336,12 +336,19 @@ lemma toComplex_mul_minkowskiMatrix_mul_transpose (Λ : LorentzGroup d) :
 @[simp]
 lemma toComplex_transpose_mul_minkowskiMatrix_mul_self (Λ : LorentzGroup d) :
     (toComplex Λ)ᵀ * minkowskiMatrix.map ofReal * toComplex Λ = minkowskiMatrix.map ofReal := by
-  simp [toComplex]
+  simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
   have h1 : ((Λ.1).map ⇑ofReal)ᵀ = (Λ.1ᵀ).map ofReal := rfl
   rw [h1]
   trans (Λ.1ᵀ * minkowskiMatrix * Λ.1).map ofReal
   · simp only [Matrix.map_mul]
   simp only [transpose_mul_minkowskiMatrix_mul_self]
+
+lemma toComplex_mulVec_ofReal (v : Fin 1 ⊕ Fin d → ℝ) (Λ : LorentzGroup d) :
+    toComplex Λ *ᵥ (ofReal ∘ v) = ofReal ∘ (Λ *ᵥ v) := by
+  simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
+  funext i
+  rw [← RingHom.map_mulVec]
+  rfl
 
 end
 end LorentzGroup
