@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Functors
+import HepLean.Tensors.OverColor.Lift
 /-!
 
 ## Isomorphisms in the OverColor category
@@ -38,6 +39,20 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
+
+/-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
+  the `Fin 1 → C` maps defined by `c 0` and `c 1`. -/
+def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] := by
+  let e1 : Fin 2 ≃ Fin 1 ⊕ Fin 1 := (finSumFinEquiv (n := 1)).symm
+  apply (equivToIso e1).trans
+  apply (mkSum _).trans
+  refine tensorIso (mkIso ?_) (mkIso ?_)
+  · funext x
+    fin_cases x
+    rfl
+  · funext x
+    fin_cases x
+    rfl
 
 /-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
   `i`th component. -/
@@ -158,6 +173,8 @@ def contrPairFin1Fin1 (τ : C → C) (c : Fin 1 ⊕ Fin 1 → C)
       rw [h]
       rfl))
 
+variable {k : Type} [CommRing k] {G : Type} [Group G]
+
 /-- The Isomorphism between a `Fin n.succ.succ → C` and the product containing an object in the
   image of `contrPair` based on the given values. -/
 def contrPairEquiv {n : ℕ} (τ : C → C) (c : Fin n.succ.succ → C) (i : Fin n.succ.succ)
@@ -169,6 +186,30 @@ def contrPairEquiv {n : ℕ} (τ : C → C) (c : Fin n.succ.succ → C) (i : Fin
   tensorIso
     (contrPairFin1Fin1 τ ((c ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inl) (by simpa using h)) <|
     mkIso (by ext x; simp)
+
+/-- Given a function `c` from `Fin 1` to `C`, this function returns a morphism
+  from `mk c` to `mk ![c 0]`. --/
+def permFinOne (c : Fin 1 → C) : mk c ⟶ mk ![c 0] :=
+  (mkIso (by
+    funext x
+    fin_cases x
+    rfl)).hom
+
+/-- This a function that takes a function `c` from `Fin 2` to `C` and
+returns a morphism from `mk c` to `mk ![c 0, c 1]`. --/
+def permFinTwo (c : Fin 2 → C) : mk c ⟶ mk ![c 0, c 1] :=
+  (mkIso (by
+    funext x
+    fin_cases x <;>
+    rfl)).hom
+
+/-- This is a function that takes a function `c` from `Fin 3` to `C` and returns a morphism
+  from `mk c` to `mk ![c 0, c 1, c 2]`. --/
+def permFinThree (c : Fin 3 → C) : mk c ⟶ mk ![c 0, c 1, c 2] :=
+  (mkIso (by
+    funext x
+    fin_cases x <;>
+    rfl)).hom
 
 end OverColor
 end IndexNotation

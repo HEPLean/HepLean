@@ -23,6 +23,7 @@ interfact more generally with tensors.
 
 namespace IndexNotation
 namespace OverColor
+
 open CategoryTheory
 open MonoidalCategory
 open TensorProduct
@@ -655,10 +656,47 @@ def forget : MonoidalFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G
   obj F := Discrete.functor fun c => F.obj (incl.obj (Discrete.mk c))
   map η := Discrete.natTrans fun c => η.app (incl.obj c)
 
+variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
+
+noncomputable section
+
+/--
+The `forgetLiftAppV` function takes an object `c` of type `C` and returns a linear equivalence
+between the vector space obtained by applying the lift of `F` and that obtained by applying
+`F`.
+--/
+def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c))).V ≃ₗ[k]
+    (F.obj (Discrete.mk c)).V :=
+  (PiTensorProduct.subsingletonEquiv 0 :
+    (⨂[k] (_ : Fin 1), (F.obj (Discrete.mk c))) ≃ₗ[k] F.obj (Discrete.mk c))
+
+/-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism
+between the objects obtained by applying the lift of `F` and that obtained by applying
+`F`. -/
+def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c))
+    ≅ F.obj (Discrete.mk c) :=
+    Action.mkIso (forgetLiftAppV F c).toModuleIso
+  (fun g => by
+    refine LinearMap.ext (fun x => ?_)
+    simp only [forgetLiftAppV, Fin.isValue, LinearEquiv.toModuleIso_hom]
+    refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
+      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+        Function.comp_apply, hy]
+    simp only [CategoryStruct.comp, Fin.isValue, Functor.id_obj,
+      PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul, LinearMap.coe_comp, LinearEquiv.coe_coe,
+      Function.comp_apply]
+    apply congrArg
+    erw [PiTensorProduct.subsingletonEquiv_apply_tprod]
+    simp only [lift, lift.obj', lift.objObj'_V_carrier, Fin.isValue]
+    erw [lift.objObj'_ρ_tprod]
+    erw [PiTensorProduct.subsingletonEquiv_apply_tprod]
+    rfl)
+
 informal_definition forgetLift where
   math :≈ "The natural isomorphism between `lift (C := C) ⋙ forget` and
     `Functor.id (Discrete C ⥤ Rep k G)`."
   deps :≈ [``forget, ``lift]
 
+end
 end OverColor
 end IndexNotation

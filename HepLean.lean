@@ -111,10 +111,7 @@ import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.Basic
 import HepLean.Tensors.ComplexLorentz.Basic
-import HepLean.Tensors.ComplexLorentz.ColorFun
-import HepLean.Tensors.ComplexLorentz.ContrNatTransform
 import HepLean.Tensors.ComplexLorentz.Examples
-import HepLean.Tensors.ComplexLorentz.TensorStruct
 import HepLean.Tensors.Contraction
 import HepLean.Tensors.EinsteinNotation.Basic
 import HepLean.Tensors.EinsteinNotation.IndexNotation
@@ -138,6 +135,7 @@ import HepLean.Tensors.IndexNotation.IndexString
 import HepLean.Tensors.IndexNotation.TensorIndex
 import HepLean.Tensors.MulActionTensor
 import HepLean.Tensors.OverColor.Basic
+import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.OverColor.Iso
 import HepLean.Tensors.OverColor.Lift
