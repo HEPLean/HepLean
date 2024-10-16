@@ -67,7 +67,7 @@ def metric (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
 -/
 
 /-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ.succ` and
- a `j` in `Fin n.succ` allowing us to undertake contraction. -/
+  a `j` in `Fin n.succ` allowing us to undertake contraction. -/
 def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
     S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj
@@ -168,12 +168,12 @@ abbrev twoNodeE (S : TensorStruct) (c1 c2 : S.C)
 
 /-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
 abbrev constTwoNodeE (S : TensorStruct) (c1 c2 : S.C)
-    (v :  𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
 
 /-- The node `constThreeNodeE` of a tensor tree, with all arguments explicit. -/
-abbrev constThreeNodeE (S : TensorStruct) (c1 c2  c3 : S.C)
-    (v :  𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+abbrev constThreeNodeE (S : TensorStruct) (c1 c2 c3 : S.C)
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
       S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
     constThreeNode v
 
@@ -205,7 +205,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | smul a t => a • t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
-  | contr i j h t  => (S.contrMap _ i j h).hom t.tensor
+  | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | _ => 0
 
 lemma tensor_tensorNode {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :

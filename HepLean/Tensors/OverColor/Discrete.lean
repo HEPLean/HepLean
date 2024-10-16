@@ -29,7 +29,7 @@ noncomputable section
 def pair : Discrete C ⥤ Rep k G := F ⊗ F
 
 /-- The isomorphism between the image of `(pair F).obj` and
-  `(lift.obj F).obj (OverColor.mk ![c,c])`.  -/
+  `(lift.obj F).obj (OverColor.mk ![c,c])`. -/
 def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverColor.mk ![c,c]) := by
   symm
   apply ((lift.obj F).mapIso fin2Iso).trans
@@ -50,11 +50,11 @@ def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverCol
 
 /-- The functor taking `c` to `F c ⊗ F (τ c)`. -/
 def pairτ (τ : C → C) : Discrete C ⥤ Rep k G :=
-  F ⊗ ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤  Discrete C) ⋙ F)
+  F ⊗ ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤ Discrete C) ⋙ F)
 
 /-- The functor taking `c` to `F (τ c) ⊗ F c`. -/
 def τPair (τ : C → C) : Discrete C ⥤ Rep k G :=
-  ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤  Discrete C) ⋙ F) ⊗ F
+  ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤ Discrete C) ⋙ F) ⊗ F
 
 end
 end Discrete

@@ -178,9 +178,11 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
       | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
     | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
   | 2, 1 =>
-    match ← isDefEq type (← stringToType "CoeSort.coe leftHanded ⊗ CoeSort.coe Lorentz.complexContr") with
+    match ← isDefEq type (← stringToType
+      "CoeSort.coe leftHanded ⊗ CoeSort.coe Lorentz.complexContr") with
     | true => return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE)
-                #[mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.up, T]
+                #[mkIdent ``Fermion.complexLorentzTensor,
+                mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.up, T]
     | _ => return Syntax.mkApp (mkIdent ``TensorTree.twoNode) #[T]
   | 3, 1 => return Syntax.mkApp (mkIdent ``TensorTree.threeNode) #[T]
   | 1, 2 => return Syntax.mkApp (mkIdent ``TensorTree.constVecNode) #[T]
@@ -191,7 +193,7 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
       println! "here"
       return Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
         mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
-         mkIdent ``Fermion.Color.down, T]
+        mkIdent ``Fermion.Color.down, T]
     | _ => return Syntax.mkApp (mkIdent ``TensorTree.constTwoNode) #[T]
   | 3, 2 =>
     /- Specific types. -/
@@ -238,7 +240,8 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
 def contrSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
   l.foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
-    #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x0), mkIdent `sorry, mkIdent ``rfl, T']) T
+    #[Syntax.mkNumLit (toString x1),
+    Syntax.mkNumLit (toString x0), mkIdent ``rfl, T']) T
 
 /-- Creates the syntax associated with a tensor node. -/
 def syntaxFull (stx : Syntax) : TermElabM Term := do
