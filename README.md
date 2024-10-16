@@ -38,7 +38,7 @@ into Lean 4.
 ### Papers referencing HepLean
 - Hu, Jiewen, Thomas Zhu, and Sean Welleck. "miniCTX: Neural Theorem Proving with (Long-) Contexts." arXiv preprint [arXiv:2408.03350](https://www.arxiv.org/abs/2408.03350) (2024). [Project page]( https://cmu-l3.github.io/minictx/)
 
-How HepLean was used: *Theorems from the space-time files of HepLean were included in a data set used to a evaluate models' ability to prove theorems from real-world repositories, which requires working with definitions, theorems, and other context not seen in training.*
+How HepLean was used: *Theorems from the space-time files of HepLean were included in a data set used to evaluate the ability of models to prove theorems from real-world repositories, which requires working with definitions, theorems, and other context not seen in training.*
 
 ## Contributing
 
