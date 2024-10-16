@@ -4,7 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMetric
+import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
+import Mathlib.Tactic.Polyrith
+import LLMLean
 /-!
 # Lorentz vector as a self-adjoint matrix
 
@@ -20,150 +23,79 @@ namespace SpaceTime
 open Matrix
 open MatrixGroups
 open Complex
-
-/-- A 2×2-complex matrix formed from a Lorentz vector point. -/
-@[simp]
-def toMatrix (x : LorentzVector 3) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![x.time + x.space 2, x.space 0 - x.space 1 * I; x.space 0 + x.space 1 * I, x.time - x.space 2]
-
-/-- The matrix `x.toMatrix` for `x ∈ spaceTime` is self adjoint. -/
-lemma toMatrix_isSelfAdjoint (x : LorentzVector 3) : IsSelfAdjoint (toMatrix x) := by
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose, ← Matrix.ext_iff]
-  intro i j
-  fin_cases i <;> fin_cases j <;>
-    simp only [toMatrix, LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply,
-    Fin.zero_eta, conjTranspose_apply, of_apply, cons_val', cons_val_zero, empty_val',
-    cons_val_fin_one, star_add, RCLike.star_def, conj_ofReal, Fin.mk_one, cons_val_one,
-    head_fin_const, star_mul', conj_I, mul_neg, head_cons, star_sub, sub_neg_eq_add]
-  rfl
-
-/-- A self-adjoint matrix formed from a Lorentz vector point. -/
-@[simps!]
-def toSelfAdjointMatrix' (x : LorentzVector 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
-  ⟨toMatrix x, toMatrix_isSelfAdjoint x⟩
-
-/-- A self-adjoint matrix formed from a Lorentz vector point. -/
-@[simp]
-noncomputable def fromSelfAdjointMatrix' (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
-    LorentzVector 3 := fun i =>
-  match i with
-  | Sum.inl 0 => 1/2 * (x.1 0 0 + x.1 1 1).re
-  | Sum.inr 0 => (x.1 1 0).re
-  | Sum.inr 1 => (x.1 1 0).im
-  | Sum.inr 2 => 1/2 * (x.1 0 0 - x.1 1 1).re
+noncomputable section
 
 /-- The linear equivalence between the vector-space `spaceTime` and self-adjoint
-  2×2-complex matrices. -/
-noncomputable def toSelfAdjointMatrix :
-    LorentzVector 3 ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
-  toFun := toSelfAdjointMatrix'
-  invFun := fromSelfAdjointMatrix'
-  left_inv x := by
-    funext i
-    match i with
-    | Sum.inl 0 =>
-      simp only [fromSelfAdjointMatrix', one_div, toSelfAdjointMatrix', toMatrix,
-        LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply,
-        cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons,
-        head_fin_const, add_add_sub_cancel, add_re, ofReal_re]
-      ring_nf
-    | Sum.inr 0 =>
-      simp [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, toMatrix_isSelfAdjoint]
-    | Sum.inr 1 =>
-      simp only [fromSelfAdjointMatrix', toSelfAdjointMatrix', toMatrix, LorentzVector.time,
-        Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply, cons_val', cons_val_zero,
-        empty_val', cons_val_fin_one, cons_val_one, head_fin_const, add_im, ofReal_im, mul_im,
-        ofReal_re, I_im, mul_one, I_re, mul_zero, add_zero, zero_add]
-    | Sum.inr 2 =>
-      simp only [fromSelfAdjointMatrix', one_div, toSelfAdjointMatrix', toMatrix,
-        LorentzVector.time, Fin.isValue, LorentzVector.space, Function.comp_apply, of_apply,
-        cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_cons,
-        head_fin_const, add_sub_sub_cancel, add_re, ofReal_re]
-      ring
-  right_inv x := by
-    simp only [toSelfAdjointMatrix', toMatrix, LorentzVector.time, fromSelfAdjointMatrix', one_div,
-      Fin.isValue, add_re, ofReal_mul, ofReal_inv, ofReal_ofNat, ofReal_add, LorentzVector.space,
-      Function.comp_apply, sub_re, ofReal_sub, re_add_im]
-    ext i j
-    fin_cases i <;> fin_cases j <;>
-      field_simp [fromSelfAdjointMatrix', toMatrix, conj_ofReal]
-    · exact conj_eq_iff_re.mp (congrArg (fun M => M 0 0) $ selfAdjoint.mem_iff.mp x.2)
-    · have h01 := congrArg (fun M => M 0 1) $ selfAdjoint.mem_iff.mp x.2
-      simp only [Fin.isValue, star_apply, RCLike.star_def] at h01
-      rw [← h01, RCLike.conj_eq_re_sub_im]
-      rfl
-    · exact conj_eq_iff_re.mp (congrArg (fun M => M 1 1) $ selfAdjoint.mem_iff.mp x.2)
-  map_add' x y := by
-    ext i j : 2
-    simp only [toSelfAdjointMatrix'_coe, add_apply, ofReal_add, of_apply, cons_val', empty_val',
-      cons_val_fin_one, AddSubmonoid.coe_add, AddSubgroup.coe_toAddSubmonoid, Matrix.add_apply]
-    fin_cases i <;> fin_cases j
-    · rw [show (x + y) (Sum.inl 0) = x (Sum.inl 0) + y (Sum.inl 0) from rfl]
-      rw [show (x + y) (Sum.inr 2) = x (Sum.inr 2) + y (Sum.inr 2) from rfl]
-      simp only [Fin.isValue, ofReal_add, Fin.zero_eta, cons_val_zero]
-      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
-        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
-        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_zero, empty_val',
-        cons_val_fin_one]
-      ring
-    · rw [show (x + y) (Sum.inr 0) = x (Sum.inr 0) + y (Sum.inr 0) from rfl]
-      rw [show (x + y) (Sum.inr 1) = x (Sum.inr 1) + y (Sum.inr 1) from rfl]
-      simp only [Fin.isValue, ofReal_add, Fin.mk_one, cons_val_one, head_cons, Fin.zero_eta,
-        cons_val_zero]
-      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
-        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
-        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_one, empty_val',
-        cons_val_fin_one, cons_val_zero]
-      ring
-    · rw [show (x + y) (Sum.inr 0) = x (Sum.inr 0) + y (Sum.inr 0) from rfl]
-      rw [show (x + y) (Sum.inr 1) = x (Sum.inr 1) + y (Sum.inr 1) from rfl]
-      simp only [Fin.isValue, ofReal_add, Fin.zero_eta, cons_val_zero, Fin.mk_one, cons_val_one,
-        head_fin_const]
-      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
-        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
-        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_zero, empty_val',
-        cons_val_fin_one, cons_val_one, head_fin_const]
-      ring
-    · rw [show (x + y) (Sum.inl 0) = x (Sum.inl 0) + y (Sum.inl 0) from rfl]
-      rw [show (x + y) (Sum.inr 2) = x (Sum.inr 2) + y (Sum.inr 2) from rfl]
-      simp only [Fin.isValue, ofReal_add, Fin.mk_one, cons_val_one, head_cons, head_fin_const]
-      simp only [Fin.isValue, toSelfAdjointMatrix', toMatrix, LorentzVector.time,
-        LorentzVector.space, Function.comp_apply, AddMemClass.mk_add_mk, of_add_of, add_cons,
-        head_cons, tail_cons, empty_add_empty, of_apply, cons_val', cons_val_one, empty_val',
-        cons_val_fin_one, head_fin_const]
-      ring
-  map_smul' r x := by
-    ext i j : 2
-    simp only [toSelfAdjointMatrix'_coe, Fin.isValue, of_apply, cons_val', empty_val',
-      cons_val_fin_one, RingHom.id_apply, selfAdjoint.val_smul, smul_apply, real_smul]
-    fin_cases i <;> fin_cases j
-    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0) from rfl]
-      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2) from rfl]
-      simp only [Fin.isValue, ofReal_mul, Fin.zero_eta, cons_val_zero]
-      ring
-    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0) from rfl]
-      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1) from rfl]
-      simp only [Fin.isValue, ofReal_mul, Fin.mk_one, cons_val_one, head_cons, Fin.zero_eta,
-        cons_val_zero]
-      ring
-    · rw [show (r • x) (Sum.inr 0) = r * x (Sum.inr 0) from rfl]
-      rw [show (r • x) (Sum.inr 1) = r * x (Sum.inr 1) from rfl]
-      simp only [Fin.isValue, ofReal_mul, Fin.zero_eta, cons_val_zero, Fin.mk_one, cons_val_one,
-        head_fin_const]
-      ring
-    · rw [show (r • x) (Sum.inl 0) = r * x (Sum.inl 0) from rfl]
-      rw [show (r • x) (Sum.inr 2) = r * x (Sum.inr 2) from rfl]
-      simp only [Fin.isValue, ofReal_mul, Fin.mk_one, cons_val_one, head_cons, head_fin_const]
-      ring
+  `2×2`-complex matrices. -/
+def toSelfAdjointMatrix : LorentzVector 3 ≃ₗ[ℝ] selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
+  (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)).symm ≪≫ₗ PauliMatrix.σSAL.repr.symm
+
+lemma toSelfAdjointMatrix_apply (x : LorentzVector 3) : toSelfAdjointMatrix x =
+    x (Sum.inl 0) • ⟨PauliMatrix.σ0, PauliMatrix.σ0_selfAdjoint⟩
+    - x (Sum.inr 0) • ⟨PauliMatrix.σ1, PauliMatrix.σ1_selfAdjoint⟩
+    - x (Sum.inr 1) • ⟨PauliMatrix.σ2, PauliMatrix.σ2_selfAdjoint⟩
+    - x (Sum.inr 2) • ⟨PauliMatrix.σ3, PauliMatrix.σ3_selfAdjoint⟩  := by
+  simp only [toSelfAdjointMatrix, PauliMatrix.σSAL, LinearEquiv.trans_apply, Basis.repr_symm_apply,
+    Basis.coe_mk, Fin.isValue]
+  rw [Finsupp.linearCombination_apply_of_mem_supported ℝ (s := Finset.univ)]
+  · change (∑ i : Fin 1 ⊕ Fin 3, x i • PauliMatrix.σSAL' i)  = _
+    simp [Fin.sum_univ_three, PauliMatrix.σSAL']
+    apply Subtype.ext
+    simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg,
+      AddSubgroupClass.coe_sub]
+    simp only [neg_add, add_assoc, sub_eq_add_neg]
+  · simp_all only [Finset.coe_univ, Finsupp.supported_univ, Submodule.mem_top]
+
+lemma toSelfAdjointMatrix_apply_coe (x : LorentzVector 3) : (toSelfAdjointMatrix x).1 =
+    x (Sum.inl 0) • PauliMatrix.σ0
+    - x (Sum.inr 0) • PauliMatrix.σ1
+    - x (Sum.inr 1) • PauliMatrix.σ2
+    - x (Sum.inr 2) • PauliMatrix.σ3  := by
+  rw [toSelfAdjointMatrix_apply]
+  simp only [Fin.isValue, AddSubgroupClass.coe_sub, selfAdjoint.val_smul]
+
+lemma toSelfAdjointMatrix_stdBasis (i : Fin 1 ⊕ Fin 3) :
+    toSelfAdjointMatrix (LorentzVector.stdBasis i) = PauliMatrix.σSAL i := by
+  rw [toSelfAdjointMatrix_apply]
+  match i with
+  | Sum.inl 0 =>
+    simp [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+  | Sum.inr 0 =>
+    simp [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+  | Sum.inr 1 =>
+    simp [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+  | Sum.inr 2 =>
+    simp [LorentzVector.stdBasis]
+    erw [Pi.basisFun_apply]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+
+@[simp]
+lemma toSelfAdjointMatrix_symm_basis (i : Fin 1 ⊕ Fin 3) :
+    toSelfAdjointMatrix.symm (PauliMatrix.σSAL i) = (LorentzVector.stdBasis i) := by
+  refine (LinearEquiv.symm_apply_eq toSelfAdjointMatrix).mpr ?_
+  rw [toSelfAdjointMatrix_stdBasis]
 
 open minkowskiMetric in
 lemma det_eq_ηLin (x : LorentzVector 3) : det (toSelfAdjointMatrix x).1 = ⟪x, x⟫ₘ := by
-  simp only [toSelfAdjointMatrix, LinearEquiv.coe_mk, toSelfAdjointMatrix'_coe, Fin.isValue,
-    det_fin_two_of, eq_time_minus_inner_prod, LorentzVector.time, LorentzVector.space,
+  rw [toSelfAdjointMatrix_apply_coe]
+  simp only [Fin.isValue, eq_time_minus_inner_prod, LorentzVector.time, LorentzVector.space,
     PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three,
     ofReal_sub, ofReal_mul, ofReal_add]
+  simp only [Fin.isValue, PauliMatrix.σ0, smul_of, smul_cons, real_smul, mul_one, smul_zero,
+    smul_empty, PauliMatrix.σ1, of_sub_of, sub_cons, head_cons, sub_zero, tail_cons, zero_sub,
+    sub_self, zero_empty, PauliMatrix.σ2, smul_neg, sub_neg_eq_add, PauliMatrix.σ3, det_fin_two_of]
   ring_nf
   simp only [Fin.isValue, I_sq, mul_neg, mul_one]
   ring
 
+end
 end SpaceTime
