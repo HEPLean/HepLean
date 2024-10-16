@@ -38,7 +38,8 @@ lemma toSelfAdjointMatrix_apply (x : LorentzVector 3) : toSelfAdjointMatrix x =
     Basis.coe_mk, Fin.isValue]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℝ (s := Finset.univ)]
   · change (∑ i : Fin 1 ⊕ Fin 3, x i • PauliMatrix.σSAL' i) = _
-    simp [Fin.sum_univ_three, PauliMatrix.σSAL']
+    simp only [PauliMatrix.σSAL', Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+      Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three]
     apply Subtype.ext
     simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg,
       AddSubgroupClass.coe_sub]
@@ -58,23 +59,29 @@ lemma toSelfAdjointMatrix_stdBasis (i : Fin 1 ⊕ Fin 3) :
   rw [toSelfAdjointMatrix_apply]
   match i with
   | Sum.inl 0 =>
-    simp [LorentzVector.stdBasis]
+    simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
     simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
   | Sum.inr 0 =>
-    simp [LorentzVector.stdBasis]
+    simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
+    simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
+      Pi.single_eq_same, one_smul, zero_sub, Sum.inr.injEq, one_ne_zero, sub_zero, Fin.reduceEq,
+      PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
   | Sum.inr 1 =>
-    simp [LorentzVector.stdBasis]
+    simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
+    simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
+      Sum.inr.injEq, zero_ne_one, sub_self, Pi.single_eq_same, one_smul, zero_sub, Fin.reduceEq,
+      sub_zero, PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
   | Sum.inr 2 =>
-    simp [LorentzVector.stdBasis]
+    simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
+    simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
+      Sum.inr.injEq, Fin.reduceEq, sub_self, Pi.single_eq_same, one_smul, zero_sub,
+      PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
 
 @[simp]

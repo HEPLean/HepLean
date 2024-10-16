@@ -145,7 +145,7 @@ lemma toLorentzGroup_eq_stdBasis (M : SL(2, ℂ)) :
 
 lemma repLorentzVector_apply_eq_mulVec (v : LorentzVector 3) :
     SL2C.repLorentzVector M v = (SL2C.toLorentzGroup M).1 *ᵥ v := by
-  simp [toLorentzGroup]
+  simp only [toLorentzGroup, MonoidHom.coe_mk, OneHom.coe_mk, toLorentzGroupElem_coe]
   have hv : v = (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
     (LorentzVector.stdBasis.repr v) := by rfl
   nth_rewrite 2 [hv]

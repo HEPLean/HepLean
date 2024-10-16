@@ -99,7 +99,8 @@ lemma inclCongrRealLorentz_val (v : LorentzVector 3) :
 lemma complexContrBasis_of_real (i : Fin 1 ⊕ Fin 3) :
     (complexContrBasis i) = inclCongrRealLorentz (LorentzVector.stdBasis i) := by
   apply Lorentz.ContrℂModule.ext
-  simp [complexContrBasis, inclCongrRealLorentz, LorentzVector.stdBasis]
+  simp only [complexContrBasis, Basis.coe_ofEquivFun, inclCongrRealLorentz, LorentzVector.stdBasis,
+    LinearMap.coe_mk, AddHom.coe_mk]
   ext j
   simp only [Function.comp_apply, ofReal_eq_coe]
   erw [Pi.basisFun_apply]
