@@ -13,7 +13,7 @@ import HepLean.SpaceTime.WeylFermion.Two
 
 We define the metrics for Weyl fermions, often denoted `ε` in the literature.
 These allow us to go from left-handed to alt-left-handed Weyl fermions and back,
-and  from right-handed to alt-right-handed Weyl fermions and back.
+and from right-handed to alt-right-handed Weyl fermions and back.
 
 -/
 
@@ -26,6 +26,7 @@ open Complex
 open TensorProduct
 open CategoryTheory.MonoidalCategory
 
+/-- The raw `2x2` matrix corresponding to the metric for fermions. -/
 def metricRaw : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -1, 0]
 
 lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)ᵀ := by
@@ -49,7 +50,7 @@ lemma metricRaw_comm (M : SL(2,ℂ)) : metricRaw * M.1 = (M.1⁻¹)ᵀ * metricR
     mul_one, smul_empty, tail_cons, neg_smul, mul_neg, neg_cons, neg_neg, neg_zero, neg_empty,
     empty_vecMul, add_cons, empty_add_empty, empty_mul, Equiv.symm_apply_apply]
 
-lemma star_comm_metricRaw  (M : SL(2,ℂ)) : M.1.map star * metricRaw = metricRaw * ((M.1)⁻¹)ᴴ := by
+lemma star_comm_metricRaw (M : SL(2,ℂ)) : M.1.map star * metricRaw = metricRaw * ((M.1)⁻¹)ᴴ := by
   rw [metricRaw]
   rw [SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
@@ -83,13 +84,15 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • leftMetricVal =
       (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) (x' • leftMetricVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [leftMetricVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, leftMetricVal, map_neg, neg_inj]
     erw [leftLeftToMatrix_ρ_symm]
     apply congrArg
     rw [comm_metricRaw, mul_assoc, ← @transpose_mul]
@@ -114,19 +117,20 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • altLeftMetricVal =
       (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) (x' • altLeftMetricVal)
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp [altLeftMetricVal]
+    simp only [Action.instMonoidalCategory_tensorObj_V, altLeftMetricVal]
     erw [altLeftaltLeftToMatrix_ρ_symm]
     apply congrArg
     rw [← metricRaw_comm, mul_assoc]
     simp only [SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq, one_ne_zero,
       not_false_eq_true, mul_nonsing_inv, mul_one]
-
 
 /-- The metric `ε_{dot a}_{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
 def rightMetricVal : (rightHanded ⊗ rightHanded).V :=
@@ -146,7 +150,9 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • rightMetricVal =
       (TensorProduct.map (rightHanded.ρ M) (rightHanded.ρ M)) (x' • rightMetricVal)
@@ -186,7 +192,9 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
       rfl}
   comm M := by
     ext x : 2
-    simp
+    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Function.comp_apply]
     let x' : ℂ := x
     change x' • altRightMetricVal =
       (TensorProduct.map (altRightHanded.ρ M) (altRightHanded.ρ M)) (x' • altRightMetricVal)
@@ -201,7 +209,7 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
       have h1 : ((M.1).map star * (M.1)⁻¹ᴴᵀ) = 1 := by
         refine transpose_eq_one.mp ?_
         rw [@transpose_mul]
-        simp
+        simp only [transpose_transpose, RCLike.star_def]
         change (M.1)⁻¹ᴴ * (M.1)ᴴ = 1
         rw [← @conjTranspose_mul]
         simp

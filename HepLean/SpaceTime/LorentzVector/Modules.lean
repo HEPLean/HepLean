@@ -51,6 +51,19 @@ instance : AddCommGroup ContrℂModule := Equiv.addCommGroup toFin13ℂFun
   with `Fin 1 ⊕ Fin 3 → ℂ`. -/
 instance : Module ℂ ContrℂModule := Equiv.module ℂ toFin13ℂFun
 
+@[ext]
+lemma ext (ψ ψ' : ContrℂModule) (h : ψ.val = ψ'.val) : ψ = ψ' := by
+  cases ψ
+  cases ψ'
+  subst h
+  simp_all only
+
+@[simp]
+lemma val_add (ψ ψ' : ContrℂModule) : (ψ + ψ').val = ψ.val + ψ'.val := rfl
+
+@[simp]
+lemma val_smul (r : ℂ) (ψ : ContrℂModule) : (r • ψ).val = r • ψ.val := rfl
+
 /-- The linear equivalence between `ContrℂModule` and `(Fin 1 ⊕ Fin 3 → ℂ)`. -/
 @[simps!]
 def toFin13ℂEquiv : ContrℂModule ≃ₗ[ℂ] (Fin 1 ⊕ Fin 3 → ℂ) where
@@ -68,7 +81,7 @@ abbrev toFin13ℂ (ψ : ContrℂModule) := toFin13ℂEquiv ψ
 /-- The representation of the Lorentz group on `ContrℂModule`. -/
 def lorentzGroupRep : Representation ℂ (LorentzGroup 3) ContrℂModule where
   toFun M := {
-      toFun := fun v => toFin13ℂEquiv.symm ((M.1.map ofReal) *ᵥ v.toFin13ℂ),
+      toFun := fun v => toFin13ℂEquiv.symm (LorentzGroup.toComplex M *ᵥ v.toFin13ℂ),
       map_add' := by
         intro ψ ψ'
         simp [mulVec_add]
@@ -132,7 +145,7 @@ abbrev toFin13ℂ (ψ : CoℂModule) := toFin13ℂEquiv ψ
 /-- The representation of the Lorentz group on `CoℂModule`. -/
 def lorentzGroupRep : Representation ℂ (LorentzGroup 3) CoℂModule where
   toFun M := {
-      toFun := fun v => toFin13ℂEquiv.symm ((M.1.map ofReal)⁻¹ᵀ *ᵥ v.toFin13ℂ),
+      toFun := fun v => toFin13ℂEquiv.symm ((LorentzGroup.toComplex M)⁻¹ᵀ *ᵥ v.toFin13ℂ),
       map_add' := by
         intro ψ ψ'
         simp [mulVec_add]
@@ -147,7 +160,7 @@ def lorentzGroupRep : Representation ℂ (LorentzGroup 3) CoℂModule where
     simp only [SpecialLinearGroup.coe_mul, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply,
       LinearEquiv.apply_symm_apply, mulVec_mulVec, EmbeddingLike.apply_eq_iff_eq]
     refine (congrFun (congrArg _ ?_) _)
-    simp only [lorentzGroupIsGroup_mul_coe, Matrix.map_mul]
+    simp only [_root_.map_mul]
     rw [Matrix.mul_inv_rev]
     exact transpose_mul _ _
 

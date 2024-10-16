@@ -36,7 +36,10 @@ into Lean 4.
 | [Video](https://www.youtube.com/watch?v=IjodVUawTjM) | Index notation in Lean 4 |
 
 ### Papers referencing HepLean
-- Hu, Jiewen, Thomas Zhu, and Sean Welleck. "miniCTX: Neural Theorem Proving with (Long-) Contexts." arXiv preprint arXiv:2408.03350 (2024).
+- Hu, Jiewen, Thomas Zhu, and Sean Welleck. "miniCTX: Neural Theorem Proving with (Long-) Contexts." arXiv preprint [arXiv:2408.03350](https://www.arxiv.org/abs/2408.03350) (2024). [Project page]( https://cmu-l3.github.io/minictx/)
+
+How HepLean was used: *Theorems from the space-time files of HepLean were included in a data set used to evaluate the ability of models to prove theorems from real-world repositories, which requires working with definitions, theorems, and other context not seen in training.*
+
 ## Contributing
 
 We follow here roughly the same contribution policies as MathLib4 (which can be found [here](https://leanprover-community.github.io/contribute/index.html)).
@@ -61,5 +64,5 @@ The installation instructions for Lean 4 are given here: https://leanprover-comm
 
 ### Optional extras
 
-- [Lean Copilot](https://github.com/lean-dojo/LeanCopilot) allows the use of large language models in Lean.
+- [Lean Copilot](https://github.com/lean-dojo/LeanCopilot) and [LLMLean](https://github.com/cmu-l3/llmlean) allow for the use of large language models in Lean
 - [tryAtEachStep](https://github.com/dwrensha/tryAtEachStep) allows one to apply a tactic, e.g. `exact?` at each step of a lemma in a file to see if it completes the goal. This is useful for golfing proofs.

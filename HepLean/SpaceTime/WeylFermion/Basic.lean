@@ -9,7 +9,6 @@ import Mathlib.RepresentationTheory.Rep
 import HepLean.Tensors.Basic
 import HepLean.SpaceTime.WeylFermion.Modules
 import Mathlib.Logic.Equiv.TransferInstance
-import LLMlean
 /-!
 
 # Weyl fermions
@@ -28,7 +27,7 @@ open Complex
 open TensorProduct
 
 /-- The vector space ℂ^2 carrying the fundamental representation of SL(2,C).
-  In index notation corresponds to a Weyl fermion with indices ψ_a. -/
+  In index notation corresponds to a Weyl fermion with indices ψ^a. -/
 def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : LeftHandedModule) =>
@@ -56,12 +55,12 @@ def leftBasis : Basis (Fin 2) ℂ leftHanded := Basis.ofEquivFun
 lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M) i j = M.1 i j := by
   rw [LinearMap.toMatrix_apply]
-  simp [leftBasis]
+  simp only [leftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1 *ᵥ (Pi.single j 1)) i = _
   simp only [mulVec_single, mul_one]
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
-    M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ^a. -/
+    M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ_a. -/
 def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : AltLeftHandedModule) =>
@@ -96,7 +95,7 @@ lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   simp only [mulVec_single, transpose_apply, mul_one]
 
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
-  In index notation corresponds to a Weyl fermion with indices ψ_{dot a}. -/
+  In index notation corresponds to a Weyl fermion with indices ψ^{dot a}. -/
 def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : RightHandedModule) =>
@@ -129,7 +128,7 @@ lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
-    In index notation this corresponds to a Weyl fermion with index `ψ^{dot a}`. -/
+    In index notation this corresponds to a Weyl fermion with index `ψ_{dot a}`. -/
 def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   toFun := fun M => {
     toFun := fun (ψ : AltRightHandedModule) =>

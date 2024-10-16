@@ -43,6 +43,7 @@ lemma inverse_coe (M : SL(2, ℂ)) : M.1⁻¹ = (M⁻¹).1 := by
   · simp
   · simp
 
+lemma transpose_coe (M : SL(2, ℂ)) : M.1ᵀ = (M.transpose).1 := rfl
 /-!
 
 ## Representation of SL(2, ℂ) on spacetime
@@ -132,6 +133,64 @@ def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3 where
     apply Subtype.eq
     simp only [toLorentzGroupElem, _root_.map_mul, LinearMap.toMatrix_mul,
       lorentzGroupIsGroup_mul_coe]
+
+lemma toLorentzGroup_eq_σSAL (M : SL(2, ℂ)) :
+    toLorentzGroup M = LinearMap.toMatrix
+    PauliMatrix.σSAL PauliMatrix.σSAL (repSelfAdjointMatrix M) := by
+  rfl
+
+lemma toLorentzGroup_eq_stdBasis (M : SL(2, ℂ)) :
+    toLorentzGroup M = LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis
+    (repLorentzVector M) := by rfl
+
+lemma repLorentzVector_apply_eq_mulVec (v : LorentzVector 3) :
+    SL2C.repLorentzVector M v = (SL2C.toLorentzGroup M).1 *ᵥ v := by
+  simp only [toLorentzGroup, MonoidHom.coe_mk, OneHom.coe_mk, toLorentzGroupElem_coe]
+  have hv : v = (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
+    (LorentzVector.stdBasis.repr v) := by rfl
+  nth_rewrite 2 [hv]
+  change _ = toLorentzGroup M *ᵥ (LorentzVector.stdBasis.repr v)
+  rw [toLorentzGroup_eq_stdBasis, LinearMap.toMatrix_mulVec_repr]
+  rfl
+
+lemma repSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
+    SL2C.repSelfAdjointMatrix M (PauliMatrix.σSAL i) =
+    ∑ j, (toLorentzGroup M).1 j i •
+    PauliMatrix.σSAL j := by
+  rw [toLorentzGroup_eq_σSAL]
+  simp only [LinearMap.toMatrix_apply, Finset.univ_unique,
+    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
+  nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL
+    ((repSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
+  congr
+
+lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
+    SL2C.repSelfAdjointMatrix M (PauliMatrix.σSA i) =
+    ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.σSA j := by
+  have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMetric.dual (toLorentzGroup M).1 := by
+    simp
+  simp only [h1]
+  rw [PauliMatrix.σSA_minkowskiMetric_σSAL, _root_.map_smul]
+  rw [repSelfAdjointMatrix_basis]
+  rw [Finset.smul_sum]
+  apply congrArg
+  funext j
+  rw [smul_smul, PauliMatrix.σSA_minkowskiMetric_σSAL, smul_smul]
+  apply congrFun
+  apply congrArg
+  exact Eq.symm (minkowskiMetric.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
+
+lemma repLorentzVector_stdBasis (i : Fin 1 ⊕ Fin 3) :
+    SL2C.repLorentzVector M (LorentzVector.stdBasis i) =
+    ∑ j, (toLorentzGroup M).1 j i • LorentzVector.stdBasis j := by
+  simp only [repLorentzVector, MonoidHom.coe_mk, OneHom.coe_mk, LinearMap.coe_comp,
+    LinearEquiv.coe_coe, Function.comp_apply]
+  rw [toSelfAdjointMatrix_stdBasis]
+  rw [repSelfAdjointMatrix_basis]
+  rw [map_sum]
+  apply congrArg
+  funext j
+  simp
 
 /-!
 
