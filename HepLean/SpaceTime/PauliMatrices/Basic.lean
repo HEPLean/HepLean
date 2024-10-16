@@ -8,7 +8,6 @@ import Mathlib.RepresentationTheory.Rep
 import HepLean.Tensors.Basic
 import Mathlib.Logic.Equiv.TransferInstance
 import HepLean.SpaceTime.LorentzGroup.Basic
-import LLMLean
 /-!
 
 ## Pauli matrices
@@ -69,11 +68,9 @@ lemma σ0_σ0_trace : Matrix.trace (σ0 * σ0) = 2 := by
 lemma σ0_σ1_trace : Matrix.trace (σ0 * σ1) = 0 := by
   simp [σ0, σ1]
 
-
 @[simp]
 lemma σ0_σ2_trace : Matrix.trace (σ0 * σ2) = 0 := by
   simp [σ0, σ2]
-
 
 @[simp]
 lemma σ0_σ3_trace : Matrix.trace (σ0 * σ3) = 0 := by

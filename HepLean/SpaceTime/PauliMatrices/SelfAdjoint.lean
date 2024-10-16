@@ -9,7 +9,6 @@ import HepLean.Tensors.Basic
 import Mathlib.Logic.Equiv.TransferInstance
 import HepLean.SpaceTime.LorentzGroup.Basic
 import HepLean.SpaceTime.PauliMatrices.Basic
-import LLMLean
 /-!
 
 ## Interaction of Pauli matrices with self-adjoint matrices
@@ -34,7 +33,7 @@ lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
   have hA00 : A.1 0 0 = (A.1 0 0).re := by
     exact Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h00)
   rw [hA00]
-  simp
+  simp only [Fin.isValue, Complex.ofReal_re, add_right_inj]
   have h11 := congrArg (fun f => f 1 1) hA
   simp only [Fin.isValue, of_apply, cons_val', cons_val_one, head_cons, empty_val',
     cons_val_fin_one, head_fin_const] at h11
@@ -51,12 +50,11 @@ lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
   rw [eta_fin_two (A.1)ᴴ] at hA
   simp at hA
   have h01 := congrArg (fun f => f 0 1) hA
-  have h10 := congrArg (fun f => f 1 0) hA
-  simp at h01 h10
+  simp at h01
   rw [← h01]
-  simp
+  simp only [Fin.isValue, Complex.conj_re]
   rw [Complex.add_conj]
-  simp
+  simp only [Fin.isValue, Complex.ofReal_mul, Complex.ofReal_ofNat]
   ring
 
 lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
@@ -67,14 +65,17 @@ lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
     Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
   have hA : IsSelfAdjoint A.1 := A.2
   rw [isSelfAdjoint_iff, star_eq_conjTranspose, eta_fin_two (A.1)ᴴ] at hA
-  simp at hA
-  have h01 := congrArg (fun f => f 0 1) hA
+  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def] at hA
   have h10 := congrArg (fun f => f 1 0) hA
-  simp at h01 h10
+  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
+    cons_val_one, head_fin_const] at h10
   rw [← h10]
-  simp
+  simp only [Fin.isValue, neg_smul, smul_cons, smul_eq_mul, smul_empty, neg_cons, neg_empty,
+    trace_fin_two_of, Complex.add_re, Complex.neg_re, Complex.mul_re, Complex.I_re, Complex.conj_re,
+    zero_mul, Complex.I_im, Complex.conj_im, mul_neg, one_mul, sub_neg_eq_add, zero_add, zero_sub,
+    Complex.ofReal_add, Complex.ofReal_neg]
   trans Complex.I * (A.1 0 1 - (starRingEnd ℂ) (A.1 0 1))
-  · rw [Complex.sub_conj ]
+  · rw [Complex.sub_conj]
     ring_nf
     simp
   · ring
@@ -92,10 +93,10 @@ lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
   have h11 := congrArg (fun f => f 1 1) hA
   have hA00 : A.1 0 0 = (A.1 0 0).re := Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h00)
   have hA11 : A.1 1 1 = (A.1 1 1).re := Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h11)
-  simp
+  simp only [Fin.isValue, neg_smul, one_smul, neg_cons, neg_empty, trace_fin_two_of, Complex.add_re,
+    Complex.neg_re, Complex.ofReal_add, Complex.ofReal_neg]
   rw [hA00, hA11]
   simp
-
 
 open Complex
 
@@ -114,15 +115,15 @@ lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
   simp [PauliMatrix.σ3] at h3
   match i, j with
   | 0, 0 =>
-    linear_combination (norm := ring_nf)  (h0 + h3) / 2
+    linear_combination (norm := ring_nf) (h0 + h3) / 2
   | 0, 1 =>
-    linear_combination (norm := ring_nf)  (h1 - I * h2) / 2
+    linear_combination (norm := ring_nf) (h1 - I * h2) / 2
     simp
   | 1, 0 =>
-    linear_combination (norm := ring_nf)  (h1 + I * h2) / 2
+    linear_combination (norm := ring_nf) (h1 + I * h2) / 2
     simp
   | 1, 1 =>
-    linear_combination (norm := ring_nf)  (h0 - h3) / 2
+    linear_combination (norm := ring_nf) (h0 - h3) / 2
 
 lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h0 : ((Matrix.trace (PauliMatrix.σ0 * A.1))).re = ((Matrix.trace (PauliMatrix.σ0 * B.1))).re)
@@ -143,13 +144,14 @@ lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
 
 noncomputable section
 
+/-- An auxillary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
+  Pauli-matrix as a self-adjoint matrix. -/
 def σSA' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   match i with
   | Sum.inl 0 => ⟨σ0, σ0_selfAdjoint⟩
   | Sum.inr 0 => ⟨σ1, σ1_selfAdjoint⟩
   | Sum.inr 1 => ⟨σ2, σ2_selfAdjoint⟩
   | Sum.inr 2 => ⟨σ3, σ3_selfAdjoint⟩
-
 
 lemma σSA_linearly_independent : LinearIndependent ℝ σSA' := by
   apply Fintype.linearIndependent_iff.mpr
@@ -189,16 +191,18 @@ lemma σSA_span : ⊤ ≤ Submodule.span ℝ (Set.range σSA') := by
   · simp [mul_add, σSA']
     ring
 
+/-- The basis of `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` formed by Pauli matrices. -/
 def σSA : Basis (Fin 1 ⊕ Fin 3) ℝ (selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :=
   Basis.mk σSA_linearly_independent σSA_span
 
+/-- An auxillary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
+  Pauli-matrix as a self-adjoint matrix with a minus sign for `Sum.inr _`. -/
 def σSAL' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   match i with
   | Sum.inl 0 => ⟨σ0, σ0_selfAdjoint⟩
   | Sum.inr 0 => ⟨-σ1, by rw [neg_mem_iff]; exact σ1_selfAdjoint⟩
-  | Sum.inr 1 => ⟨-σ2,  by rw [neg_mem_iff]; exact σ2_selfAdjoint⟩
+  | Sum.inr 1 => ⟨-σ2, by rw [neg_mem_iff]; exact σ2_selfAdjoint⟩
   | Sum.inr 2 => ⟨-σ3, by rw [neg_mem_iff]; exact σ3_selfAdjoint⟩
-
 
 lemma σSAL_linearly_independent : LinearIndependent ℝ σSAL' := by
   apply Fintype.linearIndependent_iff.mpr
@@ -238,6 +242,8 @@ lemma σSAL_span : ⊤ ≤ Submodule.span ℝ (Set.range σSAL') := by
   · simp [mul_add, σSAL']
     ring
 
+/-- The basis of `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` formed by Pauli matrices
+where the `1, 2, 3` pauli matrices are negated. -/
 def σSAL : Basis (Fin 1 ⊕ Fin 3) ℝ (selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :=
   Basis.mk σSAL_linearly_independent σSAL_span
 
@@ -328,7 +334,6 @@ lemma σSA_minkowskiMetric_σSAL (i : Fin 1 ⊕ Fin 3) :
     | inr val_1 =>
       ext i j : 2
       simp_all only [NegMemClass.coe_neg, neg_apply, neg_neg]
-
 
 end
 end PauliMatrix

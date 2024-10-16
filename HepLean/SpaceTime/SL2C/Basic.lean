@@ -144,9 +144,10 @@ lemma toLorentzGroup_eq_stdBasis (M : SL(2, ℂ)) :
     (repLorentzVector M) := by rfl
 
 lemma repLorentzVector_apply_eq_mulVec (v : LorentzVector 3) :
-    SL2C.repLorentzVector M v = (SL2C.toLorentzGroup M).1 *ᵥ v  := by
+    SL2C.repLorentzVector M v = (SL2C.toLorentzGroup M).1 *ᵥ v := by
   simp [toLorentzGroup]
-  have hv : v = (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (LorentzVector.stdBasis.repr v)  := by rfl
+  have hv : v = (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
+    (LorentzVector.stdBasis.repr v) := by rfl
   nth_rewrite 2 [hv]
   change _ = toLorentzGroup M *ᵥ (LorentzVector.stdBasis.repr v)
   rw [toLorentzGroup_eq_stdBasis, LinearMap.toMatrix_mulVec_repr]
@@ -159,9 +160,9 @@ lemma repSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
   rw [toLorentzGroup_eq_σSAL]
   simp only [LinearMap.toMatrix_apply, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
-  nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL ((repSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
+  nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL
+    ((repSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
   congr
-
 
 lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
     SL2C.repSelfAdjointMatrix M (PauliMatrix.σSA i) =
@@ -178,7 +179,6 @@ lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
   apply congrFun
   apply congrArg
   exact Eq.symm (minkowskiMetric.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
-
 
 lemma repLorentzVector_stdBasis (i : Fin 1 ⊕ Fin 3) :
     SL2C.repLorentzVector M (LorentzVector.stdBasis i) =

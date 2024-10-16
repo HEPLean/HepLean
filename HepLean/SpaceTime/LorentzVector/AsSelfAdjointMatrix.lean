@@ -7,7 +7,6 @@ import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 import Mathlib.Tactic.Polyrith
-import LLMLean
 /-!
 # Lorentz vector as a self-adjoint matrix
 
@@ -34,11 +33,11 @@ lemma toSelfAdjointMatrix_apply (x : LorentzVector 3) : toSelfAdjointMatrix x =
     x (Sum.inl 0) • ⟨PauliMatrix.σ0, PauliMatrix.σ0_selfAdjoint⟩
     - x (Sum.inr 0) • ⟨PauliMatrix.σ1, PauliMatrix.σ1_selfAdjoint⟩
     - x (Sum.inr 1) • ⟨PauliMatrix.σ2, PauliMatrix.σ2_selfAdjoint⟩
-    - x (Sum.inr 2) • ⟨PauliMatrix.σ3, PauliMatrix.σ3_selfAdjoint⟩  := by
+    - x (Sum.inr 2) • ⟨PauliMatrix.σ3, PauliMatrix.σ3_selfAdjoint⟩ := by
   simp only [toSelfAdjointMatrix, PauliMatrix.σSAL, LinearEquiv.trans_apply, Basis.repr_symm_apply,
     Basis.coe_mk, Fin.isValue]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℝ (s := Finset.univ)]
-  · change (∑ i : Fin 1 ⊕ Fin 3, x i • PauliMatrix.σSAL' i)  = _
+  · change (∑ i : Fin 1 ⊕ Fin 3, x i • PauliMatrix.σSAL' i) = _
     simp [Fin.sum_univ_three, PauliMatrix.σSAL']
     apply Subtype.ext
     simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg,
@@ -50,7 +49,7 @@ lemma toSelfAdjointMatrix_apply_coe (x : LorentzVector 3) : (toSelfAdjointMatrix
     x (Sum.inl 0) • PauliMatrix.σ0
     - x (Sum.inr 0) • PauliMatrix.σ1
     - x (Sum.inr 1) • PauliMatrix.σ2
-    - x (Sum.inr 2) • PauliMatrix.σ3  := by
+    - x (Sum.inr 2) • PauliMatrix.σ3 := by
   rw [toSelfAdjointMatrix_apply]
   simp only [Fin.isValue, AddSubgroupClass.coe_sub, selfAdjoint.val_smul]
 
@@ -61,21 +60,21 @@ lemma toSelfAdjointMatrix_stdBasis (i : Fin 1 ⊕ Fin 3) :
   | Sum.inl 0 =>
     simp [LorentzVector.stdBasis]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
   | Sum.inr 0 =>
     simp [LorentzVector.stdBasis]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
   | Sum.inr 1 =>
     simp [LorentzVector.stdBasis]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
   | Sum.inr 2 =>
     simp [LorentzVector.stdBasis]
     erw [Pi.basisFun_apply]
-    simp [PauliMatrix.σSAL, PauliMatrix.σSAL' ]
+    simp [PauliMatrix.σSAL, PauliMatrix.σSAL']
     refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
 
 @[simp]

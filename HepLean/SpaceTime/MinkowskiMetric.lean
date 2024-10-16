@@ -242,7 +242,6 @@ variable (Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 /-- The dual of a matrix with respect to the Minkowski metric. -/
 def dual : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ := η * Λᵀ * η
 
-
 @[simp]
 lemma dual_id : @dual d 1 = 1 := by
   simpa only [dual, transpose_one, mul_one] using minkowskiMatrix.sq
@@ -279,7 +278,7 @@ lemma det_dual : (dual Λ).det = Λ.det := by
   simp
 
 lemma dual_apply (μ ν : Fin 1 ⊕ Fin d) :
-    dual Λ μ ν = η μ μ * Λ ν μ  * η ν ν := by
+    dual Λ μ ν = η μ μ * Λ ν μ * η ν ν := by
   simp only [dual, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
     diagonal_mul, transpose_apply, diagonal_apply_eq]
 

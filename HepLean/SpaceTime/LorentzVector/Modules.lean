@@ -32,7 +32,6 @@ structure ContrℂModule where
 
 namespace ContrℂModule
 
-
 /-- The equivalence between `ContrℂModule` and `Fin 1 ⊕ Fin 3 → ℂ`. -/
 def toFin13ℂFun : ContrℂModule ≃ (Fin 1 ⊕ Fin 3 → ℂ) where
   toFun v := v.val
