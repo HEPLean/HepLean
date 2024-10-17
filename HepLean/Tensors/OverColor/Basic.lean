@@ -42,6 +42,9 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
+lemma ext (m n : f ⟶ g) (h : m.hom  = n.hom) : m = n := by
+  apply CategoryTheory.Iso.ext h
+
 /-- Given a hom in `OverColor C` the underlying equivalence between types. -/
 def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
   toFun := m.hom.left
@@ -74,6 +77,10 @@ lemma toEquiv_comp_hom (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
 lemma toEquiv_comp_inv_apply (m : f ⟶ g) (i : g.left) :
     f.hom ((OverColor.Hom.toEquiv m).symm i) = g.hom i := by
   simpa [toEquiv, types_comp] using congrFun m.inv.w i
+
+lemma toEquiv_comp_apply (m : f ⟶ g) (i : f.left) :
+    f.hom i = g.hom ((toEquiv m) i) := by
+  simpa [toEquiv, types_comp] using (congrFun m.hom.w i).symm
 
 /-- Given a morphism in `OverColor C`, the corresponding isomorphism. -/
 def toIso (m : f ⟶ g) : f ≅ g := {
@@ -253,6 +260,8 @@ end monoidal
 /-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := Over.mk f
 
+@[simp]
+lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
 
 end OverColor

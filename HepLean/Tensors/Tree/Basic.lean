@@ -74,11 +74,11 @@ def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj
       (Discrete.mk (c i))) ⊗
       (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
-  (S.F.mapIso (OverColor.equivToIso (OverColor.finExtractTwo i j))).trans <|
-  (S.F.mapIso (OverColor.mkSum (c ∘ (OverColor.finExtractTwo i j).symm))).trans <|
+  (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractTwo i j))).trans <|
+  (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractTwo i j).symm))).trans <|
   (S.F.μIso _ _).symm.trans <| by
   refine tensorIso ?_ (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
-  apply (S.F.mapIso (OverColor.mkSum (((c ∘ ⇑(OverColor.finExtractTwo i j).symm) ∘ Sum.inl)))).trans
+  apply (S.F.mapIso (OverColor.mkSum (((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)))).trans
   apply (S.F.μIso _ _).symm.trans
   apply tensorIso ?_ ?_
   · symm
@@ -95,6 +95,52 @@ def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     funext x
     fin_cases x
     simp [h]
+
+open OverColor
+lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    (h : c1 (i.succAbove j) = S.τ (c1 i)) (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    c (Fin.succAbove ((Hom.toEquiv σ).symm i) ((Hom.toEquiv (extractOne i σ)).symm j)) =
+    S.τ (c ((Hom.toEquiv σ).symm i)) := by
+  have h1 := Hom.toEquiv_comp_apply σ
+  simp at h1
+  rw [h1, h1]
+  simp
+  rw [← h]
+  congr
+  simp [HepLean.Fin.finExtractOnePerm, HepLean.Fin.finExtractOnPermHom]
+  erw [Equiv.apply_symm_apply]
+  rw [HepLean.Fin.succsAbove_predAboveI]
+  erw [Equiv.apply_symm_apply]
+  simp
+  erw [Equiv.apply_eq_iff_eq]
+  exact (Fin.succAbove_ne i j).symm
+
+open OverColor in
+lemma contrIso_comm_map {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    {h : c1 (i.succAbove j) = S.τ (c1 i)}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+  (S.F.map σ) ≫ (S.contrIso c1 i j h).hom =
+  (S.contrIso c ((OverColor.Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j) (S.perm_contr_cond h σ)).hom  ≫
+    (((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
+      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)) )) ⊗ (S.F.map (extractTwo i j σ)))  := by
+  ext Z
+  simp
+  rw [contrIso]
+  simp
+  have h1 : ((S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ((S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ((S.F.map σ).hom Z)))
+    = ((S.F.map σ) ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom) ≫ (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom)).hom Z := by
+      rfl
+  have h1' : ((S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ((S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ((S.F.map σ).hom Z)))
+    = ((S.F.map (σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom))).hom Z := by
+    rw [h1]
+    simp
+  rw [h1']
+  rw [extractTwo_finExtractTwo]
+  simp
+  sorry
 
 /--
 `contrMap` is a function that takes a natural number `n`, a function `c` from
@@ -301,6 +347,33 @@ lemma neg_snd_prod  {c1 : Fin n → S.C} {c2 : Fin m → S.C} (T1 : TensorTree S
 lemma neg_contr {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)}
     (t : TensorTree S c) : (contr i j h (neg t)).tensor = (neg (contr i j h t)).tensor := by
   simp only [Nat.succ_eq_add_one, contr_tensor, neg_tensor, map_neg]
+
+lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) :
+    (perm σ (neg t)).tensor = (neg (perm σ t)).tensor := by
+  simp only [perm_tensor, neg_tensor, map_neg]
+
+/-!
+
+## Permutation lemmas
+
+-/
+
+
+lemma perm_contr {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    {h : c1 (i.succAbove j) = S.τ (c1 i)} (t : TensorTree S c)
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    ((contr i j h (perm σ t))).tensor
+    = (perm (extractTwo i j σ) (contr ((OverColor.Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j) (perm_contr_cond h σ) t)).tensor := by
+  rw [contr_tensor, perm_tensor]
+  rw [TensorStruct.contrMap]
+  change (
+        (S.contr.app { as := c1 i } ⊗
+            𝟙 ((OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c1 ∘ i.succAbove ∘ j.succAbove)))) ≫
+          (λ_ ((OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c1 ∘ i.succAbove ∘ j.succAbove)))).hom).hom
+    ((S.contrIso c1 i j h).hom.hom ((S.F.map σ).hom t.tensor)) = _
 
 end
 
