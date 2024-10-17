@@ -646,6 +646,25 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
     erw [lift.mapApp'_tprod]
     rfl
 
+namespace lift
+
+lemma map_tprod (F :  Discrete C ⥤ Rep k G ) {X Y : OverColor C} (f : X ⟶ Y)
+    (p : (i : X.left) → F.obj (Discrete.mk <| X.hom i)) :
+    ((lift.obj F).map f).hom (PiTensorProduct.tprod k p) =
+    PiTensorProduct.tprod k fun (i : Y.left) => discreteFunctorMapEqIso F
+    (OverColor.Hom.toEquiv_comp_inv_apply f i) (p ((OverColor.Hom.toEquiv f).symm i)) := by
+  simp [lift, obj']
+  erw [objMap'_tprod]
+
+lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
+    (p : (i : X.left) → (F.obj (Discrete.mk <| X.hom i)))
+    (q : (i : Y.left) → F.obj (Discrete.mk <| Y.hom i)) :
+    ((lift.obj F).μ X Y).hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
+    (PiTensorProduct.tprod k) fun i =>
+    discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
+  exact μ_tmul_tprod F p q
+
+end lift
 /-- The natural inclusion of `Discrete C` into `OverColor C`. -/
 def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
   OverColor.mk (fun (_ : Fin 1) => c)
@@ -669,6 +688,12 @@ def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) =>
     (F.obj (Discrete.mk c)).V :=
   (PiTensorProduct.subsingletonEquiv 0 :
     (⨂[k] (_ : Fin 1), (F.obj (Discrete.mk c))) ≃ₗ[k] F.obj (Discrete.mk c))
+
+@[simp]
+lemma forgetLiftAppV_symm_apply (c : C) (x : (F.obj (Discrete.mk c)).V) :
+    (forgetLiftAppV F c).symm x = PiTensorProduct.tprod k (fun _ => x) := by
+  simp [forgetLiftAppV]
+  erw [PiTensorProduct.subsingletonEquiv_symm_apply]
 
 /-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism
 between the objects obtained by applying the lift of `F` and that obtained by applying

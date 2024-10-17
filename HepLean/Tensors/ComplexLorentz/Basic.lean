@@ -38,6 +38,46 @@ inductive Color
   | up : Color
   | down : Color
 
+instance : DecidableEq Color := fun x y =>
+  match x, y with
+  | Color.upL, Color.upL => isTrue rfl
+  | Color.downL, Color.downL => isTrue rfl
+  | Color.upR, Color.upR => isTrue rfl
+  | Color.downR, Color.downR => isTrue rfl
+  | Color.up, Color.up => isTrue rfl
+  | Color.down, Color.down => isTrue rfl
+  /- The false -/
+  | Color.upL, Color.downL => isFalse fun h => Color.noConfusion h
+  | Color.upL, Color.upR => isFalse fun h => Color.noConfusion h
+  | Color.upL, Color.downR => isFalse fun h => Color.noConfusion h
+  | Color.upL, Color.up => isFalse fun h => Color.noConfusion h
+  | Color.upL, Color.down => isFalse fun h => Color.noConfusion h
+  | Color.downL, Color.upL => isFalse fun h => Color.noConfusion h
+  | Color.downL, Color.upR => isFalse fun h => Color.noConfusion h
+  | Color.downL, Color.downR => isFalse fun h => Color.noConfusion h
+  | Color.downL, Color.up => isFalse fun h => Color.noConfusion h
+  | Color.downL, Color.down => isFalse fun h => Color.noConfusion h
+  | Color.upR, Color.upL => isFalse fun h => Color.noConfusion h
+  | Color.upR, Color.downL => isFalse fun h => Color.noConfusion h
+  | Color.upR, Color.downR => isFalse fun h => Color.noConfusion h
+  | Color.upR, Color.up => isFalse fun h => Color.noConfusion h
+  | Color.upR, Color.down => isFalse fun h => Color.noConfusion h
+  | Color.downR, Color.upL => isFalse fun h => Color.noConfusion h
+  | Color.downR, Color.downL => isFalse fun h => Color.noConfusion h
+  | Color.downR, Color.upR => isFalse fun h => Color.noConfusion h
+  | Color.downR, Color.up => isFalse fun h => Color.noConfusion h
+  | Color.downR, Color.down => isFalse fun h => Color.noConfusion h
+  | Color.up, Color.upL => isFalse fun h => Color.noConfusion h
+  | Color.up, Color.downL => isFalse fun h => Color.noConfusion h
+  | Color.up, Color.upR => isFalse fun h => Color.noConfusion h
+  | Color.up, Color.downR => isFalse fun h => Color.noConfusion h
+  | Color.up, Color.down => isFalse fun h => Color.noConfusion h
+  | Color.down, Color.upL => isFalse fun h => Color.noConfusion h
+  | Color.down, Color.downL => isFalse fun h => Color.noConfusion h
+  | Color.down, Color.upR => isFalse fun h => Color.noConfusion h
+  | Color.down, Color.downR => isFalse fun h => Color.noConfusion h
+  | Color.down, Color.up => isFalse fun h => Color.noConfusion h
+
 noncomputable section
 
 /-- The tensor structure for complex Lorentz tensors. -/
@@ -103,6 +143,8 @@ def complexLorentzTensor : TensorStruct where
     | Color.downR => 2
     | Color.up => 4
     | Color.down => 4
+
+instance : DecidableEq complexLorentzTensor.C := Fermion.instDecidableEqColor
 
 end
 end Fermion

@@ -26,6 +26,11 @@ open MonoidalCategory
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
   Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
 
+def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
+  (equivToIso e).hom
+
+
+
 /-- Given a map `X ⊕ Y → C`, the isomorphism `mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr)`. -/
 def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr) :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
@@ -39,6 +44,10 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
+
+def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y) (h : ∀ x, c1 x = (c ∘ e.symm ) x := by decide) :
+    mk c ⟶ mk c1 :=
+  (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
   the `Fin 1 → C` maps defined by `c 0` and `c 1`. -/

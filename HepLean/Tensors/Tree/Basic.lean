@@ -7,6 +7,7 @@ import HepLean.Tensors.OverColor.Iso
 import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Lift
 import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
+import LLMLean
 /-!
 
 ## Tensor trees
@@ -119,7 +120,7 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
   | vecNode {c : S.C} (v : S.FDiscrete.obj (Discrete.mk c)) : TensorTree S ![c]
   /-- A node consisting of a two tensor. -/
   | twoNode {c1 c2 : S.C}
-    (v : S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2]
   /-- A node consisting of a three tensor. -/
   | threeNode {c1 c2 c3 : S.C}
@@ -147,6 +148,8 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
+  /-- The negative of a node. -/
+  | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
@@ -163,7 +166,7 @@ open TensorProduct
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
 abbrev twoNodeE (S : TensorStruct) (c1 c2 : S.C)
-    (v : S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
 /-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
@@ -189,6 +192,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | constThreeNode _ => 1
   | add t1 t2 => t1.size + t2.size + 1
   | perm _ t => t.size + 1
+  | neg t => t.size + 1
   | smul _ t => t.size + 1
   | prod t1 t2 => t1.size + t2.size + 1
   | contr _ _ _ t => t.size + 1
@@ -200,16 +204,103 @@ noncomputable section
   Note: This function is not fully defined yet. -/
 def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
+  | constTwoNode t => (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (t.hom (1 : S.k))
   | add t1 t2 => t1.tensor + t2.tensor
   | perm σ t => (S.F.map σ).hom t.tensor
+  | neg t => - t.tensor
   | smul a t => a • t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | _ => 0
 
-lemma tensor_tensorNode {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
+/-!
+
+## Tensor on different nodes.
+
+-/
+
+@[simp]
+lemma tensoreNode_tensor {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
     (tensorNode T).tensor = T := rfl
+
+@[simp]
+lemma constTwoNode_tensor {c1 c2 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
+    (constTwoNode v).tensor = (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (v.hom (1 : S.k)) :=
+  rfl
+
+lemma prod_tensor {c1 : Fin n → S.C} {c2 : Fin m → S.C} (t1 : TensorTree S c1) (t2 : TensorTree S c2) :
+    (prod t1 t2).tensor = (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
+    ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))  := rfl
+
+lemma add_tensor (t1 t2 : TensorTree S c) : (add t1 t2).tensor = t1.tensor + t2.tensor := rfl
+
+lemma perm_tensor (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) :
+    (perm σ t).tensor = (S.F.map σ).hom t.tensor := rfl
+
+lemma contr_tensor {n : ℕ} {c : Fin n.succ.succ → S.C}  {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)}
+    (t : TensorTree S c) : (contr i j h t).tensor = (S.contrMap c i j h).hom t.tensor := rfl
+
+lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
+
+/-!
+
+## Equality of tensors and rewrites.
+
+-/
+lemma contr_tensor_eq {n : ℕ} {c : Fin n.succ.succ → S.C} {T1 T2 : TensorTree S c}
+    (h : T1.tensor = T2.tensor) {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h' : c (i.succAbove j) = S.τ (c i)} :
+    (contr i j h' T1).tensor = (contr i j h' T2).tensor := by
+  simp only [Nat.succ_eq_add_one, contr_tensor]
+  rw [h]
+
+lemma prod_tensor_eq_fst {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {T1  T1' : TensorTree S c} { T2 : TensorTree S c1}
+    (h : T1.tensor = T1'.tensor) :
+    (prod T1 T2).tensor = (prod T1' T2).tensor := by
+  simp [prod_tensor]
+  rw [h]
+
+lemma prod_tensor_eq_snd {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {T1 : TensorTree S c} {T2 T2' : TensorTree S c1}
+    (h : T2.tensor = T2'.tensor) :
+    (prod T1 T2).tensor = (prod T1 T2').tensor := by
+  simp [prod_tensor]
+  rw [h]
+
+/-!
+
+## Negation lemmas
+
+We define the simp lemmas here so that negation is always moved to the top of the tree.
+-/
+
+@[simp]
+lemma neg_neg (t : TensorTree S c) : (neg (neg t)).tensor = t.tensor := by
+  simp only [neg_tensor, _root_.neg_neg]
+
+@[simp]
+lemma neg_fst_prod  {c1 : Fin n → S.C} {c2 : Fin m → S.C} (T1 : TensorTree S c1)
+    (T2 : TensorTree S c2) :
+    (prod (neg T1) T2).tensor = (neg (prod T1 T2)).tensor := by
+  simp only [prod_tensor, Functor.id_obj, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, neg_tensor, neg_tmul, map_neg]
+
+@[simp]
+lemma neg_snd_prod  {c1 : Fin n → S.C} {c2 : Fin m → S.C} (T1 : TensorTree S c1)
+    (T2 : TensorTree S c2) :
+    (prod T1 (neg T2)).tensor = (neg (prod T1 T2)).tensor := by
+  simp only [prod_tensor, Functor.id_obj, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, neg_tensor, tmul_neg, map_neg]
+
+@[simp]
+lemma neg_contr {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)}
+    (t : TensorTree S c) : (contr i j h (neg t)).tensor = (neg (contr i j h t)).tensor := by
+  simp only [Nat.succ_eq_add_one, contr_tensor, neg_tensor, map_neg]
 
 end
 
