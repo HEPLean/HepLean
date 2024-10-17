@@ -9,7 +9,6 @@ import HepLean.SpaceTime.SL2C.Basic
 import HepLean.SpaceTime.LorentzVector.Modules
 import HepLean.Meta.Informal
 import Mathlib.RepresentationTheory.Rep
-import HepLean.Tensors.Basic
 import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 /-!
 
