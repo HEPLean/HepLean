@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import HepLean.Meta.Informal
 import HepLean.SpaceTime.SL2C.Basic
 import Mathlib.RepresentationTheory.Rep
-import HepLean.Tensors.Basic
 import Mathlib.Logic.Equiv.TransferInstance
 /-!
 
