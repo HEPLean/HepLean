@@ -104,13 +104,16 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
 
 
 
-
-
-
 /-- The functor taking `c` to `F c ⊗ F (τ c)`. -/
 def pairτ (τ : C → C) : Discrete C ⥤ Rep k G :=
   F ⊗ ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤ Discrete C) ⋙ F)
 
+lemma pairτ_tmul {c : C} (x : F.obj (Discrete.mk c)) (y : ↑(((Action.functorCategoryEquivalence (ModuleCat k) (MonCat.of G)).symm.inverse.obj
+        ((Discrete.functor (Discrete.mk ∘ τ) ⋙ F).obj { as := c })).obj
+        PUnit.unit)) (h : c = c1):
+    ((pairτ F τ).map (Discrete.eqToHom h)).hom (x ⊗ₜ[k] y)=
+    ((F.map (Discrete.eqToHom h)).hom x) ⊗ₜ[k] ((F.map (Discrete.eqToHom (by simp [h] ))).hom y) := by
+  rfl
 /-- The functor taking `c` to `F (τ c) ⊗ F c`. -/
 def τPair (τ : C → C) : Discrete C ⥤ Rep k G :=
   ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤ Discrete C) ⋙ F) ⊗ F

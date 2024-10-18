@@ -67,17 +67,12 @@ def metric (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
   (S.metricNat.app (Discrete.mk c)).hom (1 : S.k)
 -/
 
-/-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ.succ` and
-  a `j` in `Fin n.succ` allowing us to undertake contraction. -/
-def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
+/-- The isomorphism between the image of a map `Fin 1 ⊕ Fin 1 → S.C` contructed by `finExtractTwo`
+ under `S.F.obj`, and an object in the image of `OverColor.Discrete.pairτ S.FDiscrete`. -/
+def contrFin1Fin1 {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
-    S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj
-      (Discrete.mk (c i))) ⊗
-      (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
-  (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractTwo i j))).trans <|
-  (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractTwo i j).symm))).trans <|
-  (S.F.μIso _ _).symm.trans <| by
-  refine tensorIso ?_ (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
+    S.F.obj (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)) ≅
+    (OverColor.Discrete.pairτ S.FDiscrete S.τ).obj { as := c i } := by
   apply (S.F.mapIso (OverColor.mkSum (((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)))).trans
   apply (S.F.μIso _ _).symm.trans
   apply tensorIso ?_ ?_
@@ -95,6 +90,72 @@ def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     funext x
     fin_cases x
     simp [h]
+
+lemma contrFin1Fin1_inv_tmul {n : ℕ} (c : Fin n.succ.succ → S.C)
+    (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i))
+    (x : S.FDiscrete.obj { as := c i })
+    (y : S.FDiscrete.obj { as := S.τ (c i) }) :
+    (S.contrFin1Fin1 c i j h).inv.hom (x ⊗ₜ[S.k] y) =
+    PiTensorProduct.tprod S.k (fun k =>
+    match k with | Sum.inl 0 => x | Sum.inr 0 => (S.FDiscrete.map
+    (eqToHom (by simp [h]))).hom y) := by
+  simp [contrFin1Fin1]
+  change (S.F.map (OverColor.mkSum ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
+    ((S.F.map ((OverColor.mkIso _).hom ⊗ (OverColor.mkIso _).hom)).hom
+      ((S.F.μ (OverColor.mk fun x => c i) (OverColor.mk fun x => S.τ (c i))).hom
+        ((((OverColor.forgetLiftApp S.FDiscrete (c i)).inv.hom x) ⊗ₜ[S.k]
+        ((OverColor.forgetLiftApp S.FDiscrete (S.τ (c i))).inv.hom y))))) = _
+  simp [OverColor.forgetLiftApp]
+  erw [OverColor.forgetLiftAppV_symm_apply, OverColor.forgetLiftAppV_symm_apply S.FDiscrete (S.τ (c i))]
+  change  ((OverColor.lift.obj S.FDiscrete).map (OverColor.mkSum ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
+    (((OverColor.lift.obj S.FDiscrete).map ((OverColor.mkIso _).hom ⊗ (OverColor.mkIso _).hom)).hom
+      (((OverColor.lift.obj S.FDiscrete).μ (OverColor.mk fun x => c i) (OverColor.mk fun x => S.τ (c i))).hom
+        (((PiTensorProduct.tprod S.k) fun x_1 => x) ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) fun x => y))) = _
+  rw [OverColor.lift.obj_μ_tprod_tmul S.FDiscrete]
+  change ((OverColor.lift.obj S.FDiscrete).map (OverColor.mkSum ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
+    (((OverColor.lift.obj S.FDiscrete).map ((OverColor.mkIso _).hom ⊗ (OverColor.mkIso _).hom)).hom
+      ((PiTensorProduct.tprod S.k) _))  = _
+  rw [OverColor.lift.map_tprod S.FDiscrete]
+  change  ((OverColor.lift.obj S.FDiscrete).map (OverColor.mkSum ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
+    ((PiTensorProduct.tprod S.k _)) = _
+  rw [OverColor.lift.map_tprod S.FDiscrete]
+  apply congrArg
+  funext r
+  match r with
+  | Sum.inl 0 =>
+    simp [OverColor.lift.discreteSumEquiv, HepLean.PiTensorProduct.elimPureTensor]
+    simp [OverColor.lift.discreteFunctorMapEqIso]
+    rfl
+  | Sum.inr 0 =>
+    simp [OverColor.lift.discreteFunctorMapEqIso, OverColor.lift.discreteSumEquiv, HepLean.PiTensorProduct.elimPureTensor]
+    rfl
+
+
+lemma contrFin1Fin1_inv_tmul' {n : ℕ} (c : Fin n.succ.succ → S.C)
+    (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i))
+    (x :  ↑(((Action.functorCategoryEquivalence (ModuleCat S.k) (MonCat.of S.G)).symm.inverse.obj
+        (S.FDiscrete.obj { as := c ( i) })).obj
+    PUnit.unit))
+    (y : ↑(((Action.functorCategoryEquivalence (ModuleCat S.k) (MonCat.of S.G)).symm.inverse.obj
+        ((Discrete.functor (Discrete.mk ∘ S.τ) ⋙ S.FDiscrete).obj { as := c ( i) })).obj
+    PUnit.unit)) :
+    (S.contrFin1Fin1 c i j h).inv.hom (x ⊗ₜ[S.k] y) =
+    PiTensorProduct.tprod S.k (fun k =>
+    match k with | Sum.inl 0 => x | Sum.inr 0 => (S.FDiscrete.map
+    (eqToHom (by simp [h]))).hom y) := by
+  exact contrFin1Fin1_inv_tmul S c i j h x y
+
+/-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ.succ` and
+  a `j` in `Fin n.succ` allowing us to undertake contraction. -/
+def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
+    (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
+    S.F.obj (OverColor.mk c) ≅ ((OverColor.Discrete.pairτ S.FDiscrete S.τ).obj
+      (Discrete.mk (c i))) ⊗
+      (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
+  (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractTwo i j))).trans <|
+  (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractTwo i j).symm))).trans <|
+  (S.F.μIso _ _).symm.trans <| by
+  refine tensorIso (S.contrFin1Fin1 c i j h) (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
 
 open OverColor
 lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.succ.succ.succ → S.C}
@@ -116,6 +177,165 @@ lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.s
   erw [Equiv.apply_eq_iff_eq]
   exact (Fin.succAbove_ne i j).symm
 
+lemma contrIso_comm_aux_1 {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    ((S.F.map σ).hom ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom) ≫
+        (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom =
+     (S.F.map (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+     ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom).hom  ≫ (S.F.map
+     (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)).symm)).hom).hom
+     ≫ (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)).hom
+     := by
+  ext X
+  change ((S.F.map σ) ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom) ≫ (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom)).hom X = _
+  rw [← Functor.map_comp, ← Functor.map_comp]
+  erw [extractTwo_finExtractTwo]
+  simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Functor.map_comp, Action.comp_hom,
+    ModuleCat.coe_comp, Function.comp_apply]
+  rfl
+
+lemma contrIso_comm_aux_2 {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)).hom ≫
+    (S.F.μIso (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+    (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom  =
+    (S.F.μIso _ _).inv.hom ≫ (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)).hom
+     := by
+  have h1 : (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)) ≫
+    (S.F.μIso (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+    (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv  =
+    (S.F.μIso _ _).inv ≫ (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)) := by
+    erw [CategoryTheory.IsIso.comp_inv_eq, CategoryTheory.Category.assoc]
+    erw [CategoryTheory.IsIso.eq_inv_comp ]
+    exact Eq.symm
+        (LaxMonoidalFunctor.μ_natural S.F.toLaxMonoidalFunctor (extractTwoAux' i j σ)
+          (extractTwoAux i j σ))
+  exact congrArg (λ f => Action.Hom.hom f) h1
+
+lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+      ((Action.functorCategoryEquivalence (ModuleCat S.k) (MonCat.of S.G)).symm.inverse.map
+                  (S.F.map (extractTwoAux i j σ))).app
+              PUnit.unit ≫
+            (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom
+    = (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j) )).hom).hom  ≫
+    (S.F.map (extractTwo i j σ)).hom := by
+  change  (S.F.map (extractTwoAux i j σ)).hom ≫ _ = _
+  have h1 : (S.F.map (extractTwoAux i j σ)) ≫ (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom) =
+  (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j) )).hom) ≫ (S.F.map (extractTwo i j σ)) := by
+    rw [← Functor.map_comp, ← Functor.map_comp]
+    apply congrArg
+    rfl
+  exact congrArg (λ f => Action.Hom.hom f) h1
+
+lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ} (h : c1 (i.succAbove j) = S.τ (c1 i))
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    (S.F.map (extractTwoAux' i j σ)).hom ≫ (S.contrFin1Fin1 c1 i j h).hom.hom
+    = (S.contrFin1Fin1 c ((Hom.toEquiv σ).symm i)
+      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+      (perm_contr_cond S h σ)).hom.hom
+
+    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
+      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)) )).hom
+    := by
+  have h1 : (S.F.map (extractTwoAux' i j σ)) ≫ (S.contrFin1Fin1 c1 i j h).hom
+    = (S.contrFin1Fin1 c ((Hom.toEquiv σ).symm i)
+      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+      (perm_contr_cond S h σ)).hom
+
+    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
+      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)) )) := by
+    erw [← CategoryTheory.Iso.eq_comp_inv ]
+    rw [CategoryTheory.Category.assoc]
+    erw [← CategoryTheory.Iso.inv_comp_eq ]
+    ext1
+    apply TensorProduct.ext'
+    intro x  y
+    simp only [Nat.succ_eq_add_one, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Function.comp_apply, CategoryStruct.comp,
+      extractOne_homToEquiv, Action.Hom.comp_hom, LinearMap.coe_comp]
+
+    trans (S.F.map (extractTwoAux' i j σ)).hom (PiTensorProduct.tprod S.k (fun k =>
+      match k with | Sum.inl 0 => x | Sum.inr 0 => (S.FDiscrete.map
+      (eqToHom (by simp; erw [perm_contr_cond S h σ]))).hom y) )
+    · apply congrArg
+      have h1' {α :Type} {a b c d : α} (hab : a= b) (hcd : c =d ) (h : a = d) : b = c := by
+          rw [← hab,  hcd]
+          exact h
+      have h1 := S.contrFin1Fin1_inv_tmul c ((Hom.toEquiv σ).symm i)
+          ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+          (perm_contr_cond S h σ ) x y
+      refine h1' ?_ ?_ h1
+      congr
+      apply congrArg
+      funext x
+      match x with
+      | Sum.inl 0 => rfl
+      | Sum.inr 0 => rfl
+    change _ = (S.contrFin1Fin1 c1 i j h).inv.hom
+      ((S.FDiscrete.map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i))).hom x ⊗ₜ[S.k]
+      (S.FDiscrete.map (Discrete.eqToHom (congrArg S.τ (Hom.toEquiv_comp_inv_apply σ i)))).hom y)
+    rw [contrFin1Fin1_inv_tmul]
+    change  ((lift.obj S.FDiscrete).map (extractTwoAux' i j σ)).hom _ = _
+    rw [lift.map_tprod]
+    apply congrArg
+    funext i
+    match i with
+    | Sum.inl 0 => rfl
+    | Sum.inr 0 =>
+      simp [lift.discreteFunctorMapEqIso]
+      change  ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y =  ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y
+      rw [← Functor.map_comp, ← Functor.map_comp]
+      simp only [Fin.isValue, Nat.succ_eq_add_one, Discrete.functor_obj_eq_as, Function.comp_apply,
+        eqToHom_trans]
+  exact congrArg (λ f => Action.Hom.hom f) h1
+
+def contrIsoComm  {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :=
+     (((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
+      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)) )) ⊗ (S.F.map (extractTwo i j σ)))
+
+lemma contrIso_comm_aux_5 {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ} (h : c1 (i.succAbove j) = S.τ (c1 i))
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)).hom ≫
+    ((S.contrFin1Fin1 c1 i j h).hom.hom ⊗ (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom)
+    = ((S.contrFin1Fin1 c  ((Hom.toEquiv σ).symm i)
+      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+      (perm_contr_cond S h σ)).hom.hom ⊗ (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j) )).hom).hom)
+    ≫ (S.contrIsoComm σ).hom
+     := by
+  erw [← CategoryTheory.MonoidalCategory.tensor_comp (f₁ := (S.F.map (extractTwoAux' i j σ)).hom)]
+  rw [contrIso_comm_aux_3 S σ]
+  rw [contrFin1Fin1_naturality S h σ]
+  simp [contrIsoComm]
+
+
+lemma contrIso_hom_hom {n : ℕ} {c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
+    {h : c1 (i.succAbove j) = S.τ (c1 i)} :
+ (S.contrIso c1 i j h).hom.hom =
+  (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ≫
+      (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ≫
+        (S.F.μIso (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+                (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom ≫
+          ((S.contrFin1Fin1 c1 i j h).hom.hom ⊗ (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom)
+   := by
+  rw [contrIso]
+  simp  [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
+    extractOne_homToEquiv, Action.instMonoidalCategory_tensorHom_hom]
+
 open OverColor in
 lemma contrIso_comm_map {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
     {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
@@ -124,23 +344,28 @@ lemma contrIso_comm_map {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
   (S.F.map σ) ≫ (S.contrIso c1 i j h).hom =
   (S.contrIso c ((OverColor.Hom.toEquiv σ).symm i)
     (((Hom.toEquiv (extractOne i σ))).symm j) (S.perm_contr_cond h σ)).hom  ≫
-    (((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
-      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)) )) ⊗ (S.F.map (extractTwo i j σ)))  := by
-  ext Z
-  simp
-  rw [contrIso]
-  simp
-  have h1 : ((S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ((S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ((S.F.map σ).hom Z)))
-    = ((S.F.map σ) ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom) ≫ (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom)).hom Z := by
-      rfl
-  have h1' : ((S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ((S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ((S.F.map σ).hom Z)))
-    = ((S.F.map (σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom))).hom Z := by
-    rw [h1]
-    simp
-  rw [h1']
-  rw [extractTwo_finExtractTwo]
-  simp
-  sorry
+    contrIsoComm S σ  := by
+  ext1
+  simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
+    extractOne_homToEquiv, Action.instMonoidalCategory_tensorHom_hom]
+  rw [contrIso_hom_hom]
+  rw [← CategoryTheory.Category.assoc, ← CategoryTheory.Category.assoc, ← CategoryTheory.Category.assoc  ]
+  rw [contrIso_comm_aux_1 S σ]
+  rw [CategoryTheory.Category.assoc, CategoryTheory.Category.assoc, CategoryTheory.Category.assoc]
+  rw [← CategoryTheory.Category.assoc (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)).hom]
+  rw [contrIso_comm_aux_2 S σ]
+  simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Action.instMonoidalCategory_tensorObj_V,
+    Action.instMonoidalCategory_tensorHom_hom, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    contrIso, Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom, tensorIso_hom, Action.comp_hom,
+    Category.assoc]
+  apply congrArg
+  apply congrArg
+  apply congrArg
+  simpa only [Nat.succ_eq_add_one, extractOne_homToEquiv, Action.instMonoidalCategory_tensorObj_V,
+    Action.instMonoidalCategory_tensorHom_hom, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj] using contrIso_comm_aux_5 S h σ
 
 /--
 `contrMap` is a function that takes a natural number `n`, a function `c` from
@@ -155,6 +380,41 @@ def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
   (S.contrIso c i j h).hom ≫
   (tensorHom (S.contr.app (Discrete.mk (c i))) (𝟙 _)) ≫
   (MonoidalCategory.leftUnitor _).hom
+
+lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ} {h : c1 (i.succAbove j) = S.τ (c1 i)}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
+    (S.F.map σ) ≫ (S.contrMap c1 i j h) =
+    (S.contrMap c ((OverColor.Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j) (S.perm_contr_cond h σ)) ≫
+    (S.F.map (extractTwo i j σ)) := by
+  change (S.F.map σ) ≫ ((S.contrIso c1 i j h).hom ≫
+    (tensorHom (S.contr.app (Discrete.mk (c1 i))) (𝟙 _)) ≫
+    (MonoidalCategory.leftUnitor _).hom) =
+    ((S.contrIso _ _ _ _).hom ≫
+    (tensorHom (S.contr.app (Discrete.mk _)) (𝟙 _)) ≫ (MonoidalCategory.leftUnitor _).hom) ≫ _
+  rw [← CategoryTheory.Category.assoc]
+  rw [contrIso_comm_map S σ]
+  repeat rw [CategoryTheory.Category.assoc]
+  rw [← CategoryTheory.Category.assoc (S.contrIsoComm σ)]
+  apply congrArg
+  rw [← leftUnitor_naturality]
+  repeat rw [← CategoryTheory.Category.assoc]
+  apply congrFun
+  apply congrArg
+  rw [contrIsoComm]
+  rw [← tensor_comp]
+  have h1 : 𝟙_ (Rep S.k S.G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ)  := by
+    rfl
+  rw [h1, ← tensor_comp]
+  erw [CategoryTheory.Category.id_comp, CategoryTheory.Category.comp_id]
+  erw [CategoryTheory.Category.comp_id]
+  rw [S.contr.naturality]
+  simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Monoidal.tensorUnit_obj,
+    Monoidal.tensorUnit_map, Category.comp_id]
+
+
+
 
 end TensorStruct
 
@@ -360,20 +620,19 @@ lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 -/
 
 
+open OverColor
+
 lemma perm_contr {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.succ.succ.succ → S.C}
     {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
     {h : c1 (i.succAbove j) = S.τ (c1 i)} (t : TensorTree S c)
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
-    ((contr i j h (perm σ t))).tensor
-    = (perm (extractTwo i j σ) (contr ((OverColor.Hom.toEquiv σ).symm i)
-    (((Hom.toEquiv (extractOne i σ))).symm j) (perm_contr_cond h σ) t)).tensor := by
-  rw [contr_tensor, perm_tensor]
-  rw [TensorStruct.contrMap]
-  change (
-        (S.contr.app { as := c1 i } ⊗
-            𝟙 ((OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c1 ∘ i.succAbove ∘ j.succAbove)))) ≫
-          (λ_ ((OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c1 ∘ i.succAbove ∘ j.succAbove)))).hom).hom
-    ((S.contrIso c1 i j h).hom.hom ((S.F.map σ).hom t.tensor)) = _
+    (contr i j h (perm σ t)).tensor
+    = (perm (extractTwo i j σ) (contr ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j) (S.perm_contr_cond h σ) t)).tensor := by
+  rw [contr_tensor, perm_tensor, perm_tensor]
+  change ((S.F.map σ) ≫ S.contrMap c1 i j h).hom t.tensor = _
+  rw [S.contrMap_naturality σ]
+  rfl
 
 end
 

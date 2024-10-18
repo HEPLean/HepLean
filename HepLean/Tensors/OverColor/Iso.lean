@@ -41,6 +41,15 @@ def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.in
     | Sum.inl x => rfl
     | Sum.inr x => rfl))
 
+@[simp]
+lemma mkSum_homToEquiv {c : X ⊕ Y → C}:
+    Hom.toEquiv (mkSum c).hom = (Equiv.refl _) := by
+  rfl
+
+@[simp]
+lemma mkSum_inv_homToEquiv {c : X ⊕ Y → C}:
+    Hom.toEquiv (mkSum c).inv = (Equiv.refl _) := by
+  rfl
 /-- The isomorphism between objects in `OverColor C` given equality of maps. -/
 def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
