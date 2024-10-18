@@ -98,22 +98,25 @@ lemma extractOne_homToEquiv {n : ℕ} (i : Fin n.succ.succ)
     Hom.toEquiv (extractOne i σ) = (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)) := by
   rfl
 
-def extractTwo {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
-    {c1 c2 : Fin n.succ.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
+def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
     mk (c1  ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘
       Fin.succAbove (((Hom.toEquiv (extractOne i σ))).symm j)) ⟶
     mk (c2 ∘ Fin.succAbove i ∘ Fin.succAbove j) :=
-  equivToHomEq (Equiv.refl _) (by simp) ≫ extractOne j (extractOne i σ) ≫
-  equivToHomEq (Equiv.refl _) (by simp)
+  match n with
+  | 0 =>  equivToHomEq (Equiv.refl _) (by simp)
+  | Nat.succ n =>
+    equivToHomEq (Equiv.refl _) (by simp) ≫ extractOne j (extractOne i σ) ≫
+    equivToHomEq (Equiv.refl _) (by simp)
 
-def extractTwoAux {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
-    {c c1 : Fin n.succ.succ.succ → C} (σ : mk c ⟶ mk c1) :
+def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
     mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i) ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inr) ⟶
     mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inr) :=
   equivToHomEq (Equiv.refl _) (by simp) ≫ extractTwo i j σ ≫ equivToHomEq (Equiv.refl _) (by simp)
 
-def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
-    {c c1 : Fin n.succ.succ.succ → C} (σ : mk c ⟶ mk c1) :
+def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
   mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i) ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inl) ⟶
   mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inl) :=
   equivToHomEq (Equiv.refl _) (by
@@ -138,7 +141,7 @@ def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
       erw [Equiv.apply_eq_iff_eq]
       exact (Fin.succAbove_ne i j).symm)
 
-lemma extractTwo_finExtractTwo  {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
+lemma extractTwo_finExtractTwo_succ  {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
     {c c1 : Fin n.succ.succ.succ → C} (σ : mk c ⟶ mk c1) :
     σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
     (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j))).hom
@@ -217,6 +220,45 @@ lemma extractTwo_finExtractTwo  {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.
     exact Fin.succAbove_ne
              (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))) x hn'
     exact hy
+
+lemma extractTwo_finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
+    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
+    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j))).hom
+    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
+    ≫ ((extractTwoAux' i j σ) ⊗ (extractTwoAux i j σ)) := by
+  match n with
+  | 0 =>
+    apply IndexNotation.OverColor.Hom.ext
+    ext x
+    simp [CategoryStruct.comp,extractTwoAux', extractTwoAux, mkSum,equivToIso, Hom.toIso]
+    change ((finExtractTwo i j) (σ.hom.left x)) = Sum.map (Equiv.refl _) (Equiv.refl _) _
+    simp
+    change (finExtractTwo i j) ((Hom.toEquiv σ) x) = ((finExtractTwo ((Hom.toEquiv σ).symm i)
+      ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)) x)
+    obtain ⟨k, hk⟩ := (Hom.toEquiv σ).symm.surjective x
+    subst hk
+    simp
+    have hk : k = i ∨ k = i.succAbove j := by
+      match i, j, k with
+      | (0 : Fin 2), (0 : Fin 1), (0 : Fin 2) => exact Or.intro_left (0 = Fin.succAbove 0 0) rfl
+      | (0 : Fin 2), (0 : Fin 1), (1 : Fin 2) => exact Or.inr rfl
+      | (1 : Fin 2), (0 : Fin 1), (0 : Fin 2) => exact Or.inr rfl
+      | (1 : Fin 2), (0 : Fin 1), (1 : Fin 2) => exact Or.intro_left (1 = Fin.succAbove 1 0) rfl
+    rcases hk with hk | hk
+    subst hk
+    simp
+    subst hk
+    simp
+    rw [← Equiv.symm_apply_eq]
+    simp [finExtractOnePerm, finExtractOnPermHom]
+    erw [Equiv.apply_symm_apply]
+    rw [succsAbove_predAboveI]
+    rfl
+    simp
+    erw [Equiv.apply_eq_iff_eq]
+    exact (Fin.succAbove_ne i j).symm
+  | Nat.succ n => exact extractTwo_finExtractTwo_succ i j σ
 
 /-- The isomorphism between a `Fin 1 ⊕ Fin 1 → C` satisfying the condition
   `c (Sum.inr 0) = τ (c (Sum.inl 0))`

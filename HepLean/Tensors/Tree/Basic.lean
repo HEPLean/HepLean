@@ -381,6 +381,7 @@ def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
   (tensorHom (S.contr.app (Discrete.mk (c i))) (𝟙 _)) ≫
   (MonoidalCategory.leftUnitor _).hom
 
+/-- Contraction commutes with `S.F.map σ` on removing corresponding indices from `σ`.  -/
 lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
     {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ} {h : c1 (i.succAbove j) = S.τ (c1 i)}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
@@ -412,9 +413,6 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ.succ → S.C}
   rw [S.contr.naturality]
   simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Monoidal.tensorUnit_obj,
     Monoidal.tensorUnit_map, Category.comp_id]
-
-
-
 
 end TensorStruct
 
@@ -622,6 +620,8 @@ lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 
 open OverColor
 
+/-- Permuting indices, and then contracting is equivalent to contracting and then permuting,
+  once care is taking about ensuring one is contracting the same idices. -/
 lemma perm_contr {n : ℕ} {c : Fin n.succ.succ.succ → S.C} {c1 : Fin n.succ.succ.succ → S.C}
     {i : Fin n.succ.succ.succ} {j : Fin n.succ.succ}
     {h : c1 (i.succAbove j) = S.τ (c1 i)} (t : TensorTree S c)

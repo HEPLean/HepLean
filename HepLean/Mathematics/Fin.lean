@@ -212,6 +212,7 @@ def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
   (Equiv.sumCongr (Equiv.refl (Fin 1)) (finExtractOne j)).trans <|
   (Equiv.sumAssoc (Fin 1) (Fin 1) (Fin n)).symm
 
+
 @[simp]
 lemma finExtractTwo_apply_fst {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     finExtractTwo i j i = Sum.inl (Sum.inl 0) := by
@@ -240,6 +241,12 @@ lemma finExtractTwo_symm_inl_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin 
 lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     (finExtractTwo i j).symm (Sum.inl (Sum.inl 0)) = i := by
   rw [finExtractTwo]
+  simp
+
+@[simp]
+lemma finExtractTwo_apply_snd {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
+    finExtractTwo i j (i.succAbove j) = Sum.inl (Sum.inr 0) := by
+  rw [← Equiv.eq_symm_apply]
   simp
 
 end HepLean.Fin
