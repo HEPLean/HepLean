@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.LinearAlgebra.PiTensorProduct
 import Mathlib.Tactic.Polyrith
 import Mathlib.Tactic.Linarith
+import LLMLean
 /-!
 # Fin lemmas
 
@@ -85,6 +86,83 @@ lemma predAboveI_ge {i x : Fin n.succ.succ} (h : i.val < x.val) :
     predAboveI i x = ⟨x.val - 1, by omega⟩ := by
   simp [predAboveI, h]
   omega
+
+lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :
+    i.succAbove (j.succAbove x) =
+    (i.succAbove j).succAbove ((predAboveI (i.succAbove j) i).succAbove x) := by
+  by_cases h1 : j.castSucc < i
+  · have hx := Fin.succAbove_of_castSucc_lt _  _ h1
+    rw [hx]
+    rw [predAboveI_ge h1]
+    by_cases hx1 : x.castSucc < j
+    · rw [Fin.succAbove_of_castSucc_lt _  _ hx1]
+      rw  [Fin.succAbove_of_castSucc_lt _ _]
+      · nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
+        · rw [Fin.succAbove_of_castSucc_lt _ _]
+          exact hx1
+        · rw [Fin.lt_def] at h1 hx1 ⊢
+          simp_all
+          omega
+      · exact Nat.lt_trans hx1 h1
+    · simp at hx1
+      rw [Fin.le_def] at hx1
+      rw [Fin.lt_def] at h1
+      rw [Fin.succAbove_of_le_castSucc _ _ hx1]
+      by_cases hx2 : x.succ.castSucc < i
+      · rw [Fin.succAbove_of_castSucc_lt _ _ hx2]
+        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
+        · rw [Fin.succAbove_of_le_castSucc]
+          · simp [Fin.ext_iff]
+          · exact hx1
+        · rw [Fin.lt_def] at hx2 ⊢
+          simp_all
+          omega
+      · simp at hx2
+        rw [Fin.succAbove_of_le_castSucc _ _ hx2]
+        nth_rewrite 2 [Fin.succAbove_of_le_castSucc]
+        · rw [Fin.succAbove_of_le_castSucc]
+          rw [Fin.le_def]
+          exact Nat.le_succ_of_le hx1
+        · rw [Fin.le_def] at hx2 ⊢
+          simp_all
+  · simp at h1
+    have hx := Fin.succAbove_of_le_castSucc _  _ h1
+    rw [hx]
+    rw [predAboveI_lt (Nat.lt_add_one_of_le h1)]
+    by_cases hx1 : j ≤ x.castSucc
+    · rw [Fin.succAbove_of_le_castSucc _ _ hx1]
+      rw [Fin.succAbove_of_le_castSucc _ _]
+      · nth_rewrite 2 [Fin.succAbove_of_le_castSucc _ _]
+        · rw [Fin.succAbove_of_le_castSucc _ _]
+          rw [Fin.le_def] at hx1 ⊢
+          simp_all
+        · rw [Fin.le_def] at h1 hx1 ⊢
+          simp_all
+          omega
+      · rw [Fin.le_def] at hx1 h1 ⊢
+        simp_all
+        omega
+    · simp at hx1
+      rw [Fin.lt_def] at hx1
+      rw [Fin.le_def] at h1
+      rw [Fin.succAbove_of_castSucc_lt _ _ hx1]
+      by_cases hx2 : x.castSucc.castSucc < i
+      · rw [Fin.succAbove_of_castSucc_lt _ _ hx2]
+        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
+        · rw [Fin.succAbove_of_castSucc_lt _ _]
+          rw [Fin.lt_def] at  hx2 ⊢
+          simp_all
+          omega
+        · rw [Fin.lt_def] at hx2  ⊢
+          simp_all
+      · simp at hx2
+        rw [Fin.succAbove_of_le_castSucc _ _ hx2]
+        nth_rewrite 2 [Fin.succAbove_of_le_castSucc]
+        · rw [Fin.succAbove_of_castSucc_lt]
+          · simp [Fin.ext_iff]
+          exact Fin.castSucc_lt_succ_iff.mpr hx1
+        · rw [Fin.le_def] at hx2 ⊢
+          simp_all
 
 /-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
   `i`th component. -/

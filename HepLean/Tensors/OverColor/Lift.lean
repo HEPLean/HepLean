@@ -664,6 +664,23 @@ lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
     discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   exact μ_tmul_tprod F p q
 
+lemma μIso_inv_tprod (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
+    (p : (i : (X ⊗ Y).left) → F.obj (Discrete.mk <| (X ⊗ Y).hom i)) :
+    ((lift.obj F).μIso X Y).inv.hom (PiTensorProduct.tprod k p) =
+    (PiTensorProduct.tprod k (fun i => p (Sum.inl i))) ⊗ₜ[k]
+    (PiTensorProduct.tprod k (fun i => p (Sum.inr i))) := by
+  change ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).inv (PiTensorProduct.tprod k p) = _
+  trans ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).toLinearEquiv.symm (PiTensorProduct.tprod k p)
+  · congr
+  erw [← LinearEquiv.eq_symm_apply]
+  change _ = ((lift.obj F).μ X Y).hom _
+  erw [obj_μ_tprod_tmul]
+  congr
+  funext i
+  match i with
+  | Sum.inl i => rfl
+  | Sum.inr i => rfl
+
 end lift
 /-- The natural inclusion of `Discrete C` into `OverColor C`. -/
 def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
