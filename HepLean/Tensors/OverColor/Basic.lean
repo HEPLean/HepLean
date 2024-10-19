@@ -56,14 +56,10 @@ def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
 
 @[simp]
 lemma toEquiv_id (f : OverColor C) : toEquiv (𝟙 f) = Equiv.refl f.left := by
-  ext x
-  simp only [toEquiv, Equiv.coe_fn_mk, Equiv.refl_apply]
   rfl
 
 @[simp]
 lemma toEquiv_comp (m : f ⟶ g) (n : g ⟶ h) : toEquiv (m ≫ n) = (toEquiv m).trans (toEquiv n) := by
-  ext x
-  simp only [toEquiv, Equiv.coe_fn_mk, Equiv.trans_apply]
   rfl
 
 lemma toEquiv_symm_apply (m : f ⟶ g) (i : g.left) :

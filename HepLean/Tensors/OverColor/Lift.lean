@@ -489,7 +489,6 @@ def obj' : MonoidalFunctor (OverColor C) (Rep k G) where
     simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
       eqToIso.inv, LinearEquiv.ofLinear_apply]
     rw [discreteFun_hom_trans]
-    apply congrArg
     rfl
   μ_natural_left := μ_natural_left F
   μ_natural_right := μ_natural_right F
@@ -672,7 +671,7 @@ lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
   change ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).inv (PiTensorProduct.tprod k p) = _
   trans ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).toLinearEquiv.symm
     (PiTensorProduct.tprod k p)
-  · congr
+  · rfl
   erw [← LinearEquiv.eq_symm_apply]
   change _ = ((lift.obj F).μ X Y).hom _
   erw [obj_μ_tprod_tmul]
@@ -710,8 +709,7 @@ def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) =>
 @[simp]
 lemma forgetLiftAppV_symm_apply (c : C) (x : (F.obj (Discrete.mk c)).V) :
     (forgetLiftAppV F c).symm x = PiTensorProduct.tprod k (fun _ => x) := by
-  simp only [forgetLiftAppV, Fin.isValue, Functor.id_obj]
-  erw [PiTensorProduct.subsingletonEquiv_symm_apply]
+  rfl
 
 /-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism
 between the objects obtained by applying the lift of `F` and that obtained by applying

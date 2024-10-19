@@ -54,7 +54,7 @@ lemma swap_map_eq (x : Fin n) : (q.swapI.succAbove (q.swapJ.succAbove
   apply congrArg
   rw [succAbove_succAbove_predAboveI (predAboveI (q.j.succAbove q.k) q.j)]
   rw [succAbove_succAbove_predAboveI (predAboveI (q.i.succAbove (q.j.succAbove q.k)) q.i)]
-  congr
+  rfl
 
 @[simp]
 lemma swapI_neq_i : ¬ q.swapI = q.i := by
