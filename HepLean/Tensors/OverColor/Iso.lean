@@ -204,7 +204,7 @@ lemma extractTwo_finExtractTwo_succ  {n : ℕ} (i : Fin n.succ.succ.succ) (j : F
     rw [succsAbove_predAboveI, succsAbove_predAboveI]
     exact hy
     simp
-    rw [predAbove_eq_iff]
+    rw [predAboveI_eq_iff]
     simp [y]
     erw [← Equiv.symm_apply_eq ]
     have h0 : (Hom.toEquiv σ).symm (i.succAbove j) =

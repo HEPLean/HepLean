@@ -205,7 +205,7 @@ corresponding to the contraction of the `i`th index with the `i.succAbove j` ind
 def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :
     S.F.obj (OverColor.mk c) ⟶
-    (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
+    S.F.obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)) :=
   (S.contrIso c i j h).hom ≫
   (tensorHom (S.contr.app (Discrete.mk (c i))) (𝟙 _)) ≫
   (MonoidalCategory.leftUnitor _).hom
@@ -218,7 +218,7 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     (S.contrMap c i j h).hom  (PiTensorProduct.tprod S.k x) =
     (S.castToField ((S.contr.app (Discrete.mk (c i))).hom ((x i) ⊗ₜ[S.k]
     (S.FDiscrete.map (Discrete.eqToHom h)).hom (x (i.succAbove j)) )): S.k)
-    • (PiTensorProduct.tprod S.k (fun k => x (i.succAbove (j.succAbove k)))) := by
+    • (PiTensorProduct.tprod S.k (fun k => x (i.succAbove (j.succAbove k))) : S.F.obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove))) := by
   rw [contrMap, contrIso]
   simp only [Nat.succ_eq_add_one, S.F_def, Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom,
     tensorIso_hom, Monoidal.tensorUnit_obj, tensorHom_id,
@@ -476,44 +476,6 @@ lemma prod_tensor_eq_snd {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (prod T1 T2).tensor = (prod T1 T2').tensor := by
   simp [prod_tensor]
   rw [h]
-
-/-!
-
-## Negation lemmas
-
-We define the simp lemmas here so that negation is always moved to the top of the tree.
--/
-
-@[simp]
-lemma neg_neg (t : TensorTree S c) : (neg (neg t)).tensor = t.tensor := by
-  simp only [neg_tensor, _root_.neg_neg]
-
-@[simp]
-lemma neg_fst_prod  {c1 : Fin n → S.C} {c2 : Fin m → S.C} (T1 : TensorTree S c1)
-    (T2 : TensorTree S c2) :
-    (prod (neg T1) T2).tensor = (neg (prod T1 T2)).tensor := by
-  simp only [prod_tensor, Functor.id_obj, Action.instMonoidalCategory_tensorObj_V,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, neg_tensor, neg_tmul, map_neg]
-
-@[simp]
-lemma neg_snd_prod  {c1 : Fin n → S.C} {c2 : Fin m → S.C} (T1 : TensorTree S c1)
-    (T2 : TensorTree S c2) :
-    (prod T1 (neg T2)).tensor = (neg (prod T1 T2)).tensor := by
-  simp only [prod_tensor, Functor.id_obj, Action.instMonoidalCategory_tensorObj_V,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, neg_tensor, tmul_neg, map_neg]
-
-@[simp]
-lemma neg_contr {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)}
-    (t : TensorTree S c) : (contr i j h (neg t)).tensor = (neg (contr i j h t)).tensor := by
-  simp only [Nat.succ_eq_add_one, contr_tensor, neg_tensor, map_neg]
-
-lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) :
-    (perm σ (neg t)).tensor = (neg (perm σ t)).tensor := by
-  simp only [perm_tensor, neg_tensor, map_neg]
-
 
 end
 

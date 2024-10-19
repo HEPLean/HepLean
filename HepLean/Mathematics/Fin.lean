@@ -68,7 +68,7 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
     omega
 
 
-lemma predAbove_eq_iff {i x : Fin n.succ.succ} (h : i ≠ x) (y : Fin n.succ) :
+lemma predAboveI_eq_iff {i x : Fin n.succ.succ} (h : i ≠ x) (y : Fin n.succ) :
     y = predAboveI i x  ↔ i.succAbove y  = x := by
   apply Iff.intro
   · intro h
@@ -86,6 +86,7 @@ lemma predAboveI_ge {i x : Fin n.succ.succ} (h : i.val < x.val) :
     predAboveI i x = ⟨x.val - 1, by omega⟩ := by
   simp [predAboveI, h]
   omega
+
 
 lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :
     i.succAbove (j.succAbove x) =
