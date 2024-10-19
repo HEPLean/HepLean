@@ -67,8 +67,7 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
 
-open TensorTree in
-
+/-
 lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V)
     (S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V)
     (hA : (twoNodeE complexLorentzTensor Color.up Color.up A).tensor =
@@ -85,7 +84,7 @@ lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr
     apply congrArg
     sorry
     sorry
-
+-/
 end Fermion
 
 end

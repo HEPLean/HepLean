@@ -67,7 +67,6 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
     rw [Fin.le_def] at h1
     omega
 
-
 lemma predAboveI_eq_iff {i x : Fin n.succ.succ} (h : i ≠ x) (y : Fin n.succ) :
     y = predAboveI i x  ↔ i.succAbove y  = x := by
   apply Iff.intro
@@ -86,7 +85,6 @@ lemma predAboveI_ge {i x : Fin n.succ.succ} (h : i.val < x.val) :
     predAboveI i x = ⟨x.val - 1, by omega⟩ := by
   simp [predAboveI, h]
   omega
-
 
 lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :
     i.succAbove (j.succAbove x) =
@@ -178,7 +176,7 @@ def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
 lemma finExtractOne_apply_eq {n : ℕ} (i : Fin n.succ) :
     finExtractOne i i = Sum.inl 0 := by
   simp [finExtractOne]
-  have h1 : Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i) ) ⟨i.1, lt_add_one i.1⟩ := by
+  have h1 : Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ := by
     simp [Fin.ext_iff]
   rw [h1, finSumFinEquiv_symm_apply_castAdd]
   simp
@@ -246,7 +244,6 @@ lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
   ext
   rfl
 
-
 def finExtractOnPermHom (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ) :
    Fin n.succ → Fin n.succ := fun x => predAboveI (σ i) (σ ((finExtractOne i).symm (Sum.inr x)))
 
@@ -282,7 +279,6 @@ def finExtractOnePerm (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ
   right_inv x := by
     simpa using congrFun (finExtractOnPermHom_inv (σ i) σ.symm) x
 
-
 /-- The equivalence of types `Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n` extracting
   the `i` and `(i.succAbove j)`. -/
 def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
@@ -290,7 +286,6 @@ def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
   (finExtractOne i).trans <|
   (Equiv.sumCongr (Equiv.refl (Fin 1)) (finExtractOne j)).trans <|
   (Equiv.sumAssoc (Fin 1) (Fin 1) (Fin n)).symm
-
 
 @[simp]
 lemma finExtractTwo_apply_fst {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :

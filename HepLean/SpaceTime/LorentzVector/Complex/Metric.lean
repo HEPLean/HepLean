@@ -105,6 +105,5 @@ lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
   change coMetric.hom.toFun (1 : ℂ) = coMetricVal
   simp [coMetric]
 
-
 end Lorentz
 end

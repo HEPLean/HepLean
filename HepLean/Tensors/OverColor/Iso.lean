@@ -31,8 +31,6 @@ def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
 def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
   (equivToIso e).hom
 
-
-
 /-- Given a map `X ⊕ Y → C`, the isomorphism `mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr)`. -/
 def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr) :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
@@ -56,7 +54,7 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
     subst h
     rfl))
 
-def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y) (h : ∀ x, c1 x = (c ∘ e.symm ) x := by decide) :
+def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y) (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) :
     mk c ⟶ mk c1 :=
   (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
 
@@ -216,7 +214,7 @@ lemma extractTwo_finExtractTwo_succ  {n : ℕ} (i : Fin n.succ.succ.succ) (j : F
       exact (Fin.succAbove_ne i j).symm
     by_contra hn
     have hn' := hn.symm.trans h0
-    erw [ Fin.succAbove_right_injective.eq_iff] at hn'
+    erw [Fin.succAbove_right_injective.eq_iff] at hn'
     exact Fin.succAbove_ne
              (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))) x hn'
     exact hy

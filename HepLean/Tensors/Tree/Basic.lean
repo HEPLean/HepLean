@@ -181,7 +181,6 @@ def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
   (S.F.μIso _ _).symm.trans <| by
   refine tensorIso (S.contrFin1Fin1 c i j h) (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
 
-
 lemma contrIso_hom_hom {n : ℕ} {c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     {h : c1 (i.succAbove j) = S.τ (c1 i)} :
@@ -195,7 +194,6 @@ lemma contrIso_hom_hom {n : ℕ} {c1 : Fin n.succ.succ → S.C}
   rw [contrIso]
   simp  [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     extractOne_homToEquiv, Action.instMonoidalCategory_tensorHom_hom]
-
 
 /-- `contrMap` is a function that takes a natural number `n`, a function `c` from
 `Fin n.succ.succ` to `S.C`, an index `i` of type `Fin n.succ.succ`, an index `j` of type
@@ -217,7 +215,7 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     (x : (i : Fin n.succ.succ) → S.FDiscrete.obj (Discrete.mk (c i))) :
     (S.contrMap c i j h).hom  (PiTensorProduct.tprod S.k x) =
     (S.castToField ((S.contr.app (Discrete.mk (c i))).hom ((x i) ⊗ₜ[S.k]
-    (S.FDiscrete.map (Discrete.eqToHom h)).hom (x (i.succAbove j)) )): S.k)
+    (S.FDiscrete.map (Discrete.eqToHom h)).hom (x (i.succAbove j)))): S.k)
     • (PiTensorProduct.tprod S.k (fun k => x (i.succAbove (j.succAbove k))) : S.F.obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove))) := by
   rw [contrMap, contrIso]
   simp only [Nat.succ_eq_add_one, S.F_def, Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom,

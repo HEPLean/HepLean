@@ -173,7 +173,6 @@ def stringToTerm (str : String) : TermElabM Term := do
     match stx with
     | `(term| $e) => return e
 
-
 /-- The syntax associated with a terminal node of a tensor tree. -/
 def termNodeSyntax (T : Term) : TermElabM Term := do
   let expr ← elabTerm T none
@@ -270,7 +269,7 @@ def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   | []             => []
   | [x]     => [(x, 0)]
 
-def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ ) :=
+def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
   let l' := l.bind (fun p => [p.1, p.2])
   let l'' := List.mapAccumr
     (fun  x  (prev : List ℕ) =>

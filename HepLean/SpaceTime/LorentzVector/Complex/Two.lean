@@ -46,7 +46,6 @@ lemma coCoToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin
     rfl
   · simp
 
-
 /-- Equivalence of `complexContr ⊗ complexCo` to `4 x 4` complex matrices. -/
 def contrCoToMatrix : (complexContr ⊗ complexCo).V ≃ₗ[ℂ]
     Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ :=

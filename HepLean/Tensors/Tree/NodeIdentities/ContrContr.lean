@@ -74,7 +74,6 @@ lemma swapI_neq_i_j_k_l_succAbove : ¬ q.swapI = q.i.succAbove (q.j.succAbove (q
   apply Function.Injective.ne Fin.succAbove_right_injective
   exact Fin.ne_succAbove q.k q.l
 
-
 lemma swapJ_swapI_succAbove : q.swapI.succAbove q.swapJ = q.i.succAbove
     (q.j.succAbove (q.k.succAbove q.l)) := by
   simp [swapI, swapJ]
@@ -124,7 +123,6 @@ def swap : ContrQuartet c where
   hkl := by
     simpa using q.hij
 
-
 noncomputable section
 
 def contrMapFst := S.contrMap c q.i q.j q.hij
@@ -148,9 +146,10 @@ lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).
   rw [contrMapSnd,TensorStruct.contrMap_tprod]
   change ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
     (_ • ((PiTensorProduct.tprod S.k) fun k =>
-        x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove (q.swap.l.succAbove k))
-        )): S.F.obj (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘
-        q.swap.k.succAbove ∘ q.swap.l.succAbove)) )) = _
+        x (q.swap.i.succAbove (q.swap.j.succAbove
+        (q.swap.k.succAbove (q.swap.l.succAbove k)))) :
+        S.F.obj (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘
+        q.swap.k.succAbove ∘ q.swap.l.succAbove)))) = _
   rw [map_smul]
   rfl
 
@@ -251,13 +250,14 @@ end ContrQuartet
 /-- Contraction nodes commute on adjusting indices. -/
 theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
     {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
-    (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) = S.τ ((c ∘ i.succAbove ∘ j.succAbove) k))
+    (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) =
+    S.τ ((c ∘ i.succAbove ∘ j.succAbove) k))
     (t : TensorTree S c)  :
     (contr k l hkl (contr i j hij t)).tensor =
     (perm (ContrQuartet.mk i j k l hij hkl).contrSwapHom
     (contr (ContrQuartet.mk i j k l hij hkl).swapK (ContrQuartet.mk i j k l hij hkl).swapL
-    (ContrQuartet.mk i j k l hij hkl).swap.hkl (contr (ContrQuartet.mk i j k l hij hkl).swapI (ContrQuartet.mk i j k l hij hkl).swapJ (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor  := by
+    (ContrQuartet.mk i j k l hij hkl).swap.hkl (contr (ContrQuartet.mk i j k l hij hkl).swapI
+    (ContrQuartet.mk i j k l hij hkl).swapJ (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor  := by
   exact ContrQuartet.contr_contr (ContrQuartet.mk i j k l hij hkl) t
-
 
 end TensorTree

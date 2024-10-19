@@ -62,6 +62,7 @@ import HepLean.FlavorPhysics.CKMMatrix.Relations
 import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
+import HepLean.Mathematics.Fin
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
@@ -108,6 +109,7 @@ import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.ComplexLorentz.Basic
 import HepLean.Tensors.ComplexLorentz.Examples
+import HepLean.Tensors.ComplexLorentz.Lemmas
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Functors
@@ -116,3 +118,6 @@ import HepLean.Tensors.OverColor.Lift
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
 import HepLean.Tensors.Tree.Elab
+import HepLean.Tensors.Tree.NodeIdentities.Basic
+import HepLean.Tensors.Tree.NodeIdentities.ContrContr
+import HepLean.Tensors.Tree.NodeIdentities.PermContr

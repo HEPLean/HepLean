@@ -34,10 +34,6 @@ open Matrix
 example (v : Fermion.leftHanded) : TensorTree complexLorentzTensor ![Color.upL] :=
   {v | i}ᵀ
 
-example (v : Fermion.leftHanded ⊗ Lorentz.complexContr) :
-    TensorTree complexLorentzTensor ![Color.upL, Color.up] :=
-  {v | i j}ᵀ
-
 example :
     TensorTree complexLorentzTensor ![Color.downR, Color.downR] :=
   {Fermion.altRightMetric | μ j}ᵀ
@@ -55,13 +51,13 @@ open Lean.Elab
 open Lean.Elab.Term
 open Lean Meta Elab Tactic
 open IndexNotation
-
+/-
 example : True :=
   let f := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗ PauliMatrix.asConsTensor | ν α' β'}ᵀ
   have h1 : {Lorentz.coMetric | μ ν = Lorentz.coMetric | μ ν}ᵀ := by
     sorry
   sorry
-
+-/
 end Fermion
 
 end

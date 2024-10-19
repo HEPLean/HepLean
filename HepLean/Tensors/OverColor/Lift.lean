@@ -648,7 +648,7 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
 
 namespace lift
 
-lemma map_tprod (F :  Discrete C ⥤ Rep k G ) {X Y : OverColor C} (f : X ⟶ Y)
+lemma map_tprod (F :  Discrete C ⥤ Rep k G) {X Y : OverColor C} (f : X ⟶ Y)
     (p : (i : X.left) → F.obj (Discrete.mk <| X.hom i)) :
     ((lift.obj F).map f).hom (PiTensorProduct.tprod k p) =
     PiTensorProduct.tprod k fun (i : Y.left) => discreteFunctorMapEqIso F
@@ -656,7 +656,7 @@ lemma map_tprod (F :  Discrete C ⥤ Rep k G ) {X Y : OverColor C} (f : X ⟶ Y)
   simp [lift, obj']
   erw [objMap'_tprod]
 
-lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
+lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (p : (i : X.left) → (F.obj (Discrete.mk <| X.hom i)))
     (q : (i : Y.left) → F.obj (Discrete.mk <| Y.hom i)) :
     ((lift.obj F).μ X Y).hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
@@ -664,7 +664,7 @@ lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
     discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   exact μ_tmul_tprod F p q
 
-lemma μIso_inv_tprod (F :  Discrete C ⥤ Rep k G ) (X Y : OverColor C)
+lemma μIso_inv_tprod (F :  Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (p : (i : (X ⊗ Y).left) → F.obj (Discrete.mk <| (X ⊗ Y).hom i)) :
     ((lift.obj F).μIso X Y).inv.hom (PiTensorProduct.tprod k p) =
     (PiTensorProduct.tprod k (fun i => p (Sum.inl i))) ⊗ₜ[k]

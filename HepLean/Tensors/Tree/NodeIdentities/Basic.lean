@@ -13,7 +13,6 @@ More compliciated identities appear in there own files.
 
 -/
 
-
 open IndexNotation
 open CategoryTheory
 open MonoidalCategory
@@ -42,7 +41,6 @@ informal_lemma constTwoNode_eq_twoNode where
 informal_lemma constThreeNode_eq_threeNode where
   math :≈ "A constThreeNode has equal tensor to the threeNode with the map evaluated at 1."
   deps :≈ [``constThreeNode, ``threeNode]
-
 
 /-!
 
@@ -79,6 +77,5 @@ lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) :
     (perm σ (neg t)).tensor = (neg (perm σ t)).tensor := by
   simp only [perm_tensor, neg_tensor, map_neg]
-
 
 end TensorTree
