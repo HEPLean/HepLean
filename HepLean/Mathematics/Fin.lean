@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import Mathlib.LinearAlgebra.PiTensorProduct
 import Mathlib.Tactic.Polyrith
 import Mathlib.Tactic.Linarith
-import LLMLean
 /-!
 # Fin lemmas
 
@@ -177,7 +176,8 @@ lemma finExtractOne_apply_eq {n : ℕ} (i : Fin n.succ) :
     finExtractOne i i = Sum.inl 0 := by
   simp only [Nat.succ_eq_add_one, finExtractOne, Equiv.trans_apply, finCongr_apply,
     Equiv.sumCongr_apply, Equiv.coe_trans, Equiv.sumComm_apply, Equiv.coe_refl, Fin.isValue]
-  have h1 : Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ := by
+  have h1 :
+      Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ := by
     simp [Fin.ext_iff]
   rw [h1, finSumFinEquiv_symm_apply_castAdd]
   simp only [Nat.succ_eq_add_one, Sum.map_inl, Function.comp_apply, Fin.isValue]
@@ -249,7 +249,7 @@ def finExtractOnPermHom (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.su
     Fin n.succ → Fin n.succ := fun x => predAboveI (σ i) (σ ((finExtractOne i).symm (Sum.inr x)))
 
 lemma finExtractOnPermHom_inv (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ) :
-  (finExtractOnPermHom (σ i) σ.symm) ∘ (finExtractOnPermHom i σ) = id := by
+    (finExtractOnPermHom (σ i) σ.symm) ∘ (finExtractOnPermHom i σ) = id := by
   funext x
   simp only [Nat.succ_eq_add_one, Function.comp_apply, finExtractOnPermHom, Equiv.symm_apply_apply,
     finExtractOne_symm_inr_apply, id_eq]

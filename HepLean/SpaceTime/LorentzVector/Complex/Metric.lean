@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Complex.Two
 import HepLean.SpaceTime.MinkowskiMetric
-import LLMLean
 /-!
 
 # Metric for complex Lorentz vectors

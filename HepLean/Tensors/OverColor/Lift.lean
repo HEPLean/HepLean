@@ -670,7 +670,8 @@ lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (PiTensorProduct.tprod k (fun i => p (Sum.inl i))) ⊗ₜ[k]
     (PiTensorProduct.tprod k (fun i => p (Sum.inr i))) := by
   change ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).inv (PiTensorProduct.tprod k p) = _
-  trans ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).toLinearEquiv.symm (PiTensorProduct.tprod k p)
+  trans ((Action.forget _ _).mapIso ((lift.obj F).μIso X Y)).toLinearEquiv.symm
+    (PiTensorProduct.tprod k p)
   · congr
   erw [← LinearEquiv.eq_symm_apply]
   change _ = ((lift.obj F).μ X Y).hom _

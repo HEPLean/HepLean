@@ -385,7 +385,7 @@ lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     real_smul, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
     IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
-  simp [σSAL]
+  simp only [σSAL, Basis.mk_repr, Fin.isValue, sub_self]
 
 lemma σSA_minkowskiMetric_σSAL (i : Fin 1 ⊕ Fin 3) :
     (σSA i) = minkowskiMatrix i i • (σSAL i) := by

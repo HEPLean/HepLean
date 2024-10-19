@@ -406,7 +406,8 @@ def getPermutation (l1 l2 : List (TSyntax `indexExpr)) : TermElabM (List (ℕ)) 
   let l1' ← l1.mapM (fun x => indexToIdent x)
   let l2' ← l2.mapM (fun x => indexToIdent x)
   let l1enum := l1'.enum
-  let l2'' := l2'.filterMap (fun x => l1enum.find? (fun y => Lean.TSyntax.getId y.2 = Lean.TSyntax.getId x))
+  let l2'' := l2'.filterMap
+    (fun x => l1enum.find? (fun y => Lean.TSyntax.getId y.2 = Lean.TSyntax.getId x))
   return l2''.map fun x => x.1
 
 def finMapToEquiv (f1 f2 : Fin n → Fin n) (h : ∀ x, f1 (f2 x) = x := by decide)

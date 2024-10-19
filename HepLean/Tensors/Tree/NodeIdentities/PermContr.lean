@@ -30,15 +30,14 @@ lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     = (S.contrFin1Fin1 c ((Hom.toEquiv σ).symm i)
       ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
       (perm_contr_cond S h σ)).hom.hom
-    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
-      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)))).hom
-    := by
+    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i) :
+      (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)))).hom := by
   have h1 : (S.F.map (extractTwoAux' i j σ)) ≫ (S.contrFin1Fin1 c1 i j h).hom
     = (S.contrFin1Fin1 c ((Hom.toEquiv σ).symm i)
-      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
-      (perm_contr_cond S h σ)).hom
-    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i)
-      : (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)))) := by
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (perm_contr_cond S h σ)).hom
+    ≫ ((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i) :
+    (Discrete.mk (c ((Hom.toEquiv σ).symm i))) ⟶ (Discrete.mk (c1 i)))) := by
     erw [← CategoryTheory.Iso.eq_comp_inv]
     rw [CategoryTheory.Category.assoc]
     erw [← CategoryTheory.Iso.inv_comp_eq]
@@ -85,7 +84,8 @@ lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
         extractOne_homToEquiv, lift.discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom,
         Functor.mapIso_inv, eqToIso.inv, Functor.id_obj, Discrete.functor_obj_eq_as,
         LinearEquiv.ofLinear_apply]
-      change ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y = ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y
+      change ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y =
+        ((S.FDiscrete.map (eqToHom _)) ≫ S.FDiscrete.map (eqToHom _)).hom y
       rw [← Functor.map_comp, ← Functor.map_comp]
       simp only [Fin.isValue, Nat.succ_eq_add_one, Discrete.functor_obj_eq_as, Function.comp_apply,
         eqToHom_trans]
@@ -97,12 +97,14 @@ lemma contrIso_comm_aux_1 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     ((S.F.map σ).hom ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom) ≫
         (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom =
     (S.F.map (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
-    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom).hom ≫ (S.F.map
-    (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
-    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)).symm)).hom).hom
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom).hom ≫
+    (S.F.map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm
+    ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)).symm)).hom).hom
     ≫ (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)).hom := by
   ext X
-  change ((S.F.map σ) ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom) ≫ (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom)).hom X = _
+  change ((S.F.map σ) ≫ (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom) ≫
+    (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom)).hom X = _
   rw [← Functor.map_comp, ← Functor.map_comp]
   erw [extractTwo_finExtractTwo]
   simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Functor.map_comp, Action.comp_hom,
@@ -140,8 +142,9 @@ lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     (S.F.map (extractTwo i j σ)).hom := by
   change (S.F.map (extractTwoAux i j σ)).hom ≫ _ = _
   have h1 : (S.F.map (extractTwoAux i j σ)) ≫ (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom) =
-  (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
-    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom) ≫ (S.F.map (extractTwo i j σ)) := by
+      (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
+      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom) ≫
+      (S.F.map (extractTwo i j σ)) := by
     rw [← Functor.map_comp, ← Functor.map_comp]
     apply congrArg
     rfl
@@ -159,8 +162,9 @@ lemma contrIso_comm_aux_5 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)).hom ≫
     ((S.contrFin1Fin1 c1 i j h).hom.hom ⊗ (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom)
     = ((S.contrFin1Fin1 c ((Hom.toEquiv σ).symm i)
-      ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
-      (perm_contr_cond S h σ)).hom.hom ⊗ (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
+    ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (perm_contr_cond S h σ)).hom.hom ⊗
+    (S.F.map (mkIso (contrIso.proof_1 S c ((Hom.toEquiv σ).symm i)
     ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom).hom)
     ≫ (S.contrIsoComm σ).hom := by
   erw [← CategoryTheory.MonoidalCategory.tensor_comp (f₁ := (S.F.map (extractTwoAux' i j σ)).hom)]

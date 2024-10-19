@@ -53,7 +53,8 @@ open Lean Meta Elab Tactic
 open IndexNotation
 /-
 example : True :=
-  let f := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗ PauliMatrix.asConsTensor | ν α' β'}ᵀ
+  let f := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
+    PauliMatrix.asConsTensor | ν α' β'}ᵀ
   have h1 : {Lorentz.coMetric | μ ν = Lorentz.coMetric | μ ν}ᵀ := by
     sorry
   sorry

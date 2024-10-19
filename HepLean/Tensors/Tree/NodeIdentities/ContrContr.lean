@@ -68,7 +68,8 @@ lemma swapI_neq_succAbove : ¬ q.swapI = q.i.succAbove q.j := by
   exact Fin.succAbove_ne q.j q.k
 
 @[simp]
-lemma swapI_neq_i_j_k_l_succAbove : ¬ q.swapI = q.i.succAbove (q.j.succAbove (q.k.succAbove q.l)) := by
+lemma swapI_neq_i_j_k_l_succAbove :
+    ¬ q.swapI = q.i.succAbove (q.j.succAbove (q.k.succAbove q.l)) := by
   simp only [Nat.succ_eq_add_one, swapI]
   apply Function.Injective.ne Fin.succAbove_right_injective
   apply Function.Injective.ne Fin.succAbove_right_injective
@@ -100,8 +101,8 @@ lemma swapK_swapJ_swapI_succAbove : (q.swapI).succAbove (predAboveI q.swapI q.i)
   simp
 
 @[simp]
-lemma swapL_swapK_swapJ_swapI_succAbove : q.swapI.succAbove (q.swapJ.succAbove (q.swapK.succAbove q.swapL)) =
-  q.i.succAbove q.j := by
+lemma swapL_swapK_swapJ_swapI_succAbove :
+    q.swapI.succAbove (q.swapJ.succAbove (q.swapK.succAbove q.swapL)) = q.i.succAbove q.j := by
   rw [swapJ, swapK]
   rw [← succAbove_succAbove_predAboveI]
   rw [swapI]
@@ -129,14 +130,16 @@ def contrMapFst := S.contrMap c q.i q.j q.hij
 
 def contrMapSnd := S.contrMap (c ∘ q.i.succAbove ∘ q.j.succAbove) q.k q.l q.hkl
 
-def contrSwapHom : (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘ q.swap.k.succAbove ∘ q.swap.l.succAbove)) ⟶
-  (OverColor.mk fun x => c (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove x))))) :=
+def contrSwapHom : (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘
+    q.swap.k.succAbove ∘ q.swap.l.succAbove)) ⟶
+    (OverColor.mk fun x => c (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove x))))) :=
   (mkIso (funext fun x => congrArg c (swap_map_eq q x))).hom
 
-lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i })) :
+lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) →
+    CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i })) :
     ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
-    (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k) fun k => x (q.swap.i.succAbove (q.swap.j.succAbove k))))
-    = ((S.castToField
+    (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k) fun k =>
+    x (q.swap.i.succAbove (q.swap.j.succAbove k)))) = ((S.castToField
     ((S.contr.app { as := (c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) q.swap.k }).hom
     (x (q.swap.i.succAbove (q.swap.j.succAbove q.swap.k)) ⊗ₜ[S.k]
     (S.FDiscrete.map (Discrete.eqToHom q.swap.hkl)).hom
@@ -153,8 +156,10 @@ lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).
   rw [map_smul]
   rfl
 
-lemma contrSwapHom_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i })) :
-    ((PiTensorProduct.tprod S.k) fun k => x (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove k))))) =
+lemma contrSwapHom_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) →
+    CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i })) :
+    ((PiTensorProduct.tprod S.k)
+    fun k => x (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove k))))) =
     ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
     ((PiTensorProduct.tprod S.k) fun k =>
       x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove (q.swap.l.succAbove k))))) := by
@@ -185,7 +190,8 @@ lemma contrMapFst_contrMapSnd_swap :
   rw [contrMapFst, contrMapFst]
   change q.contrMapSnd.hom ((S.contrMap c q.i q.j _).hom ((PiTensorProduct.tprod S.k) x)) =
     (S.F.map q.contrSwapHom).hom
-    (q.swap.contrMapSnd.hom ((S.contrMap c q.swap.i q.swap.j _).hom ((PiTensorProduct.tprod S.k) x)))
+    (q.swap.contrMapSnd.hom ((S.contrMap c q.swap.i q.swap.j _).hom
+    ((PiTensorProduct.tprod S.k) x)))
   rw [TensorStruct.contrMap_tprod, TensorStruct.contrMap_tprod]
   simp only [Nat.succ_eq_add_one, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -196,7 +202,8 @@ lemma contrMapFst_contrMapSnd_swap :
     S.castToField
     _ •
     ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
-      (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k) fun k => x (q.swap.i.succAbove (q.swap.j.succAbove k))))
+      (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k)
+      fun k => x (q.swap.i.succAbove (q.swap.j.succAbove k))))
   rw [contrMapSnd, TensorStruct.contrMap_tprod, q.contrSwapHom_contrMapSnd_tprod]
   rw [smul_smul, smul_smul]
   congr 1
@@ -204,7 +211,8 @@ lemma contrMapFst_contrMapSnd_swap :
   · nth_rewrite 1 [mul_comm]
     congr 1
     · congr 3
-      have h1' {a b d: Fin n.succ.succ.succ.succ} (hbd : b =d) (h : c d = S.τ (c a)) (h' : c b = S.τ (c a)) :
+      have h1' {a b d: Fin n.succ.succ.succ.succ} (hbd : b =d) (h : c d = S.τ (c a))
+          (h' : c b = S.τ (c a)) :
           (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
           (S.FDiscrete.map (Discrete.eqToHom h')).hom (x b) := by
         subst hbd
@@ -234,8 +242,8 @@ lemma contrMapFst_contrMapSnd_swap :
   · exact q.contrSwapHom_tprod _
 
 lemma contr_contr (t : TensorTree S c) :
-  (contr q.k q.l q.hkl (contr q.i q.j q.hij t)).tensor =
-  (perm q.contrSwapHom (contr q.swapK q.swapL q.swap.hkl (contr q.swapI q.swapJ q.swap.hij t))).tensor := by
+    (contr q.k q.l q.hkl (contr q.i q.j q.hij t)).tensor = (perm q.contrSwapHom
+    (contr q.swapK q.swapL q.swap.hkl (contr q.swapI q.swapJ q.swap.hij t))).tensor := by
   simp only [contr_tensor, perm_tensor]
   trans (q.contrMapFst ≫ q.contrMapSnd).hom t.tensor
   simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.coe_comp,
@@ -261,7 +269,8 @@ theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n
     (perm (ContrQuartet.mk i j k l hij hkl).contrSwapHom
     (contr (ContrQuartet.mk i j k l hij hkl).swapK (ContrQuartet.mk i j k l hij hkl).swapL
     (ContrQuartet.mk i j k l hij hkl).swap.hkl (contr (ContrQuartet.mk i j k l hij hkl).swapI
-    (ContrQuartet.mk i j k l hij hkl).swapJ (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor := by
+    (ContrQuartet.mk i j k l hij hkl).swapJ
+    (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor := by
   exact ContrQuartet.contr_contr (ContrQuartet.mk i j k l hij hkl) t
 
 end TensorTree

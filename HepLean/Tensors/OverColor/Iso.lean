@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.OverColor.Lift
 import HepLean.Mathematics.Fin
-import LLMLean
 /-!
 
 ## Isomorphisms in the OverColor category
@@ -54,8 +53,8 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
     subst h
     rfl))
 
-def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y) (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) :
-    mk c ⟶ mk c1 :=
+def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : mk c ⟶ mk c1 :=
   (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
@@ -93,8 +92,8 @@ def extractOne {n : ℕ} (i : Fin n.succ.succ)
 
 @[simp]
 lemma extractOne_homToEquiv {n : ℕ} (i : Fin n.succ.succ)
-    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
-    Hom.toEquiv (extractOne i σ) = (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)) := by
+    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) : Hom.toEquiv (extractOne i σ) =
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)) := by
   rfl
 
 def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
@@ -110,13 +109,15 @@ def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
 
 def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
-    mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i) ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inr) ⟶
+    mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
+    ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inr) ⟶
     mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inr) :=
   equivToHomEq (Equiv.refl _) (by simp) ≫ extractTwo i j σ ≫ equivToHomEq (Equiv.refl _) (by simp)
 
 def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
-  mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i) ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inl) ⟶
+  mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
+  ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inl) ⟶
   mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inl) :=
   equivToHomEq (Equiv.refl _) (by
     intro x
@@ -144,9 +145,12 @@ def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
 
 lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
     {c c1 : Fin n.succ.succ.succ → C} (σ : mk c ⟶ mk c1) :
-    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
-    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j))).hom
-    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
+    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫
+    (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
+    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j))).hom
+    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
     ≫ ((extractTwoAux' i j σ) ⊗ (extractTwoAux i j σ)) := by
   apply IndexNotation.OverColor.Hom.ext
   ext x
@@ -155,8 +159,9 @@ lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fi
     Discrete.mk_as, instMonoidalCategoryStruct_tensorObj_right_as, CostructuredArrow.right_eq_id,
     ULift.rec.constant, Function.comp_apply, extractOne_homToEquiv, extractTwoAux', extractTwoAux,
     instMonoidalCategoryStruct_tensorHom_hom_left]
-  change ((finExtractTwo i j) ((Hom.toEquiv σ) x)) = Sum.map id ((finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
-            (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))))
+  change ((finExtractTwo i j) ((Hom.toEquiv σ) x)) = Sum.map id
+    ((finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))))
     (((finExtractTwo ((Hom.toEquiv σ).symm i)
     ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)) x))
   simp only [Nat.succ_eq_add_one]
@@ -192,14 +197,14 @@ lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fi
       finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk, Equiv.coe_fn_mk]
     erw [Equiv.apply_symm_apply]
     have h1 : (predAboveI i ((Hom.toEquiv σ)
-            (Fin.succAbove ((Hom.toEquiv σ).symm i)
-              (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j)))))) = j := by
-        rw [succsAbove_predAboveI]
-        · erw [Equiv.apply_symm_apply]
-          simp
-        · simp only [Nat.succ_eq_add_one, ne_eq]
-          erw [Equiv.apply_eq_iff_eq]
-          exact (Fin.succAbove_ne i j).symm
+        (Fin.succAbove ((Hom.toEquiv σ).symm i)
+        (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j)))))) = j := by
+      rw [succsAbove_predAboveI]
+      · erw [Equiv.apply_symm_apply]
+        simp
+      · simp only [Nat.succ_eq_add_one, ne_eq]
+        erw [Equiv.apply_eq_iff_eq]
+        exact (Fin.succAbove_ne i j).symm
     erw [h1]
     let y := (Hom.toEquiv σ) (Fin.succAbove ((Hom.toEquiv σ).symm i)
       ((predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))).succAbove x))
@@ -230,9 +235,12 @@ lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fi
 
 lemma extractTwo_finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
-    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫ (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
-    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j))).hom
-    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i) (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
+    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫
+    (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
+    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j))).hom
+    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
     ≫ ((extractTwoAux' i j σ) ⊗ (extractTwoAux i j σ)) := by
   match n with
   | 0 =>
