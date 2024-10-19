@@ -619,8 +619,7 @@ lemma leftRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) ℂ)
     leftRightToMatrix.symm
     (SL2C.repSelfAdjointMatrix M ⟨v, hv⟩) := by
   rw [leftRightToMatrix_ρ_symm]
-  apply congrArg
-  simp [SpaceTime.SL2C.repSelfAdjointMatrix]
+  rfl
 
 end
 end Fermion

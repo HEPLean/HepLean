@@ -418,6 +418,7 @@ def getPermutation (l1 l2 : List (TSyntax `indexExpr)) : TermElabM (List (ℕ)) 
     (fun x => l1enum.find? (fun y => Lean.TSyntax.getId y.2 = Lean.TSyntax.getId x))
   return l2''.map fun x => x.1
 
+/-- Takes two maps `Fin n → Fin n` and returns the equivelance they form. -/
 def finMapToEquiv (f1 f2 : Fin n → Fin n) (h : ∀ x, f1 (f2 x) = x := by decide)
   (h' : ∀ x, f2 (f1 x) = x := by decide) : Fin n ≃ Fin n where
   toFun := f1
@@ -425,6 +426,7 @@ def finMapToEquiv (f1 f2 : Fin n → Fin n) (h : ∀ x, f1 (f2 x) = x := by deci
   left_inv := h'
   right_inv := h
 
+/-- Given two lists of indices returns the permutation between them based on `finMapToEquiv`. -/
 def getPermutationSyntax (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term := do
   let lPerm ← getPermutation l1 l2
   let l2Perm ← getPermutation l1 l2
@@ -435,6 +437,7 @@ def getPermutationSyntax (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term :=
   let stx := Syntax.mkApp (mkIdent ``finMapToEquiv) #[P1, P2]
   return stx
 
+/-- The syntax for a equality of tensor trees. -/
 def equalSyntax (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
   let X1 := Syntax.mkApp (mkIdent ``TensorTree.tensor) #[T1]
   let P := Syntax.mkApp (mkIdent ``OverColor.equivToHomEq) #[permSyntax]

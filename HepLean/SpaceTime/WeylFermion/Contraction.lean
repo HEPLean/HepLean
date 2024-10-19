@@ -135,8 +135,6 @@ def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,�
 
 lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     leftAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
-  rw [leftAltContraction]
-  erw [TensorProduct.lift.tmul]
   rfl
 
 /-- The linear map from altLeftHandedWeyl ⊗ leftHandedWeyl to ℂ given by
@@ -153,8 +151,6 @@ def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,�
 
 lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded) :
     altLeftContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
-  rw [altLeftContraction]
-  erw [TensorProduct.lift.tmul]
   rfl
 
 /--
@@ -162,7 +158,7 @@ The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
   summing over components of rightHandedWeyl and altRightHandedWeyl in the
   standard basis (i.e. the dot product).
   The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-    In index notation this is ψ^{dot a} φ_{dot a}.
+  In index notation this is ψ^{dot a} φ_{dot a}.
 -/
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := TensorProduct.lift rightAltBi

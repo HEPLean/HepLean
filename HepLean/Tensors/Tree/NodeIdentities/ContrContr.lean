@@ -22,27 +22,43 @@ namespace TensorTree
 
 variable {S : TensorStruct}
 
+/-- A structure containing two pairs of indices (i, j) and (k, l) to be sequentially
+  contracted in a tensor.-/
 structure ContrQuartet {n : ℕ} (c : Fin n.succ.succ.succ.succ → S.C) where
+  /-- The first index of the first pair to be contracted. -/
   i : Fin n.succ.succ.succ.succ
+  /-- The second index of the first pair to be contracted. -/
   j : Fin n.succ.succ.succ
+  /-- The first index of the second pair to be contracted. -/
   k : Fin n.succ.succ
+  /-- The second index of the second pair to be contracted. -/
   l : Fin n.succ
+  /-- The condition on the first pair of indices permitting their contraction. -/
   hij : c (i.succAbove j) = S.τ (c i)
+  /-- The condition on the second pair of indices permitting their contraction. -/
   hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) = S.τ ((c ∘ i.succAbove ∘ j.succAbove) k)
 
 namespace ContrQuartet
 variable {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} (q : ContrQuartet c)
 
+/-- On swapping the order of contraction (notionally `(i, j) - (k, l)` vs `(k, l) - (i, j)`), this
+  is the new `i` index. -/
 def swapI : Fin n.succ.succ.succ.succ := q.i.succAbove (q.j.succAbove q.k)
 
+/-- On swapping the order of contraction (notionally `(i, j) - (k, l)` vs `(k, l) - (i, j)`), this
+  is the new `j` index. -/
 def swapJ : Fin n.succ.succ.succ := (predAboveI (q.i.succAbove (q.j.succAbove q.k)) q.i).succAbove
   ((predAboveI (q.j.succAbove q.k) q.j).succAbove q.l)
 
+/-- On swapping the order of contraction (notionally `(i, j) - (k, l)` vs `(k, l) - (i, j)`), this
+  is the new `k` index. -/
 def swapK : Fin n.succ.succ := predAboveI
     ((predAboveI (q.i.succAbove (q.j.succAbove q.k)) q.i).succAbove
       ((predAboveI (q.j.succAbove q.k) q.j).succAbove q.l))
     (predAboveI (q.i.succAbove (q.j.succAbove q.k)) q.i)
 
+/-- On swapping the order of contraction (notionally `(i, j) - (k, l)` vs `(k, l) - (i, j)`), this
+  is the new `l` index. -/
 def swapL : Fin n.succ := predAboveI ((predAboveI (q.j.succAbove q.k) q.j).succAbove q.l)
   (predAboveI (q.j.succAbove q.k) q.j)
 
@@ -113,6 +129,8 @@ lemma swapL_swapK_swapJ_swapI_succAbove :
   exact Fin.succAbove_ne q.j q.k
   exact Fin.succAbove_ne (predAboveI (q.j.succAbove q.k) q.j) q.l
 
+/-- The `ContrQuartet` corresponding to swapping the order of contraction
+  (notionally `(i, j) - (k, l)` vs `(k, l) - (i, j)`). -/
 def swap : ContrQuartet c where
   i := q.swapI
   j := q.swapJ
@@ -126,10 +144,13 @@ def swap : ContrQuartet c where
 
 noncomputable section
 
+/-- The contraction map for the first pair of indices. -/
 def contrMapFst := S.contrMap c q.i q.j q.hij
 
+/-- The contractoin map for the second pair of indices. -/
 def contrMapSnd := S.contrMap (c ∘ q.i.succAbove ∘ q.j.succAbove) q.k q.l q.hkl
 
+/-- The homomorphism one must apply on swapping the order of contractions. -/
 def contrSwapHom : (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘
     q.swap.k.succAbove ∘ q.swap.l.succAbove)) ⟶
     (OverColor.mk fun x => c (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove x))))) :=
