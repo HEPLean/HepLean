@@ -648,15 +648,15 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor
 
 namespace lift
 
-lemma map_tprod (F :  Discrete C ⥤ Rep k G) {X Y : OverColor C} (f : X ⟶ Y)
+lemma map_tprod (F : Discrete C ⥤ Rep k G) {X Y : OverColor C} (f : X ⟶ Y)
     (p : (i : X.left) → F.obj (Discrete.mk <| X.hom i)) :
     ((lift.obj F).map f).hom (PiTensorProduct.tprod k p) =
     PiTensorProduct.tprod k fun (i : Y.left) => discreteFunctorMapEqIso F
     (OverColor.Hom.toEquiv_comp_inv_apply f i) (p ((OverColor.Hom.toEquiv f).symm i)) := by
-  simp [lift, obj']
+  simp only [lift, obj', objObj'_V_carrier, Functor.id_obj]
   erw [objMap'_tprod]
 
-lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G) (X Y : OverColor C)
+lemma obj_μ_tprod_tmul (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (p : (i : X.left) → (F.obj (Discrete.mk <| X.hom i)))
     (q : (i : Y.left) → F.obj (Discrete.mk <| Y.hom i)) :
     ((lift.obj F).μ X Y).hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
@@ -664,7 +664,7 @@ lemma obj_μ_tprod_tmul (F :  Discrete C ⥤ Rep k G) (X Y : OverColor C)
     discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   exact μ_tmul_tprod F p q
 
-lemma μIso_inv_tprod (F :  Discrete C ⥤ Rep k G) (X Y : OverColor C)
+lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (p : (i : (X ⊗ Y).left) → F.obj (Discrete.mk <| (X ⊗ Y).hom i)) :
     ((lift.obj F).μIso X Y).inv.hom (PiTensorProduct.tprod k p) =
     (PiTensorProduct.tprod k (fun i => p (Sum.inl i))) ⊗ₜ[k]
@@ -709,7 +709,7 @@ def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) =>
 @[simp]
 lemma forgetLiftAppV_symm_apply (c : C) (x : (F.obj (Discrete.mk c)).V) :
     (forgetLiftAppV F c).symm x = PiTensorProduct.tprod k (fun _ => x) := by
-  simp [forgetLiftAppV]
+  simp only [forgetLiftAppV, Fin.isValue, Functor.id_obj]
   erw [PiTensorProduct.subsingletonEquiv_symm_apply]
 
 /-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism

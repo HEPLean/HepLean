@@ -42,7 +42,7 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
-lemma ext (m n : f ⟶ g) (h : m.hom  = n.hom) : m = n := by
+lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
   apply CategoryTheory.Iso.ext h
 
 /-- Given a hom in `OverColor C` the underlying equivalence between types. -/

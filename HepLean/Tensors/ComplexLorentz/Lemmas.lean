@@ -73,7 +73,7 @@ lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr
     (hA : (twoNodeE complexLorentzTensor Color.up Color.up A).tensor =
       (TensorTree.neg (perm
       (OverColor.equivToHomEq (Equality.finMapToEquiv ![1, 0] ![1, 0]) (by decide))
-      (twoNodeE complexLorentzTensor  Color.up  Color.up A))).tensor)
+      (twoNodeE complexLorentzTensor Color.up Color.up A))).tensor)
     (hs : {S | μ ν = S | ν μ}ᵀ) : {A | μ ν ⊗ S | μ ν}ᵀ.tensor = 0 := by
   have h1 : {A | μ ν ⊗ S | μ ν}ᵀ.tensor = - {A | μ ν ⊗ S | μ ν}ᵀ.tensor := by
     nth_rewrite 1 [contr_tensor_eq (contr_tensor_eq (prod_tensor_eq_fst hA))]

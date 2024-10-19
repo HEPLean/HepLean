@@ -266,13 +266,13 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
 def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   match l with
   | x1 :: x2 :: xs => (x1, x2) :: toPairs xs
-  | []             => []
-  | [x]     => [(x, 0)]
+  | [] => []
+  | [x] => [(x, 0)]
 
 def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
   let l' := l.bind (fun p => [p.1, p.2])
   let l'' := List.mapAccumr
-    (fun  x  (prev : List ℕ) =>
+    (fun x (prev : List ℕ) =>
       let e := prev.countP (fun y => y < x)
       (x :: prev, x - e)) l'.reverse []
   toPairs l''.2.reverse
@@ -419,8 +419,8 @@ def finMapToEquiv (f1 f2 : Fin n → Fin n) (h : ∀ x, f1 (f2 x) = x := by deci
 def getPermutationSyntax (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term := do
   let lPerm ← getPermutation l1 l2
   let l2Perm ← getPermutation l1 l2
-  let permString := "![" ++ String.intercalate  ", " (lPerm.map toString) ++ "]"
-  let perm2String := "![" ++ String.intercalate  ", " (l2Perm.map toString) ++ "]"
+  let permString := "![" ++ String.intercalate ", " (lPerm.map toString) ++ "]"
+  let perm2String := "![" ++ String.intercalate ", " (l2Perm.map toString) ++ "]"
   let P1 ← TensorNode.stringToTerm permString
   let P2 ← TensorNode.stringToTerm perm2String
   let stx := Syntax.mkApp (mkIdent ``finMapToEquiv) #[P1, P2]

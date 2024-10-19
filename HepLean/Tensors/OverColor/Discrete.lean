@@ -70,7 +70,7 @@ def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) �
 
 lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discrete.mk c2)) :
     (pairIsoSep F).hom.hom (x ⊗ₜ[k] y) =
-    PiTensorProduct.tprod k (Fin.cases x (Fin.cases y (fun i  => Fin.elim0 i))) := by
+    PiTensorProduct.tprod k (Fin.cases x (Fin.cases y (fun i => Fin.elim0 i))) := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.instMonoidalCategory_tensorObj_V,
     pairIsoSep, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     forgetLiftApp, Iso.trans_symm, Iso.symm_symm_eq, Iso.trans_assoc, Iso.trans_hom, Iso.symm_hom,
@@ -88,7 +88,7 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
   rw [lift.obj_μ_tprod_tmul F (mk fun _ => c1) (mk fun _ => c2)]
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
-      ((PiTensorProduct.tprod k) _))  = _
+      ((PiTensorProduct.tprod k) _)) = _
   rw [lift.map_tprod]
   change ((lift.obj F).map fin2Iso.inv).hom ((PiTensorProduct.tprod k) fun i => _) = _
   rw [lift.map_tprod]
@@ -96,10 +96,18 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
   funext i
   match i with
   | (0 : Fin 2) =>
-    simp [fin2Iso, HepLean.PiTensorProduct.elimPureTensor, mkIso, mkSum]
+    simp only [mk_hom, Fin.isValue, Matrix.cons_val_zero, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Matrix.cons_val_one, Matrix.head_cons, instMonoidalCategoryStruct_tensorObj_left, fin2Iso,
+      Equiv.symm_symm, mkSum, mkIso, Iso.trans_inv, tensorIso_inv,
+      instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj,
+      HepLean.PiTensorProduct.elimPureTensor, Fin.cases_zero]
     exact (LinearEquiv.eq_symm_apply _).mp rfl
   | (1 : Fin 2) =>
-    simp [fin2Iso, HepLean.PiTensorProduct.elimPureTensor, mkIso, mkSum]
+    simp only [mk_hom, Fin.isValue, Matrix.cons_val_one, Matrix.head_cons, Nat.succ_eq_add_one,
+      Nat.reduceAdd, Matrix.cons_val_zero, instMonoidalCategoryStruct_tensorObj_left, fin2Iso,
+      Equiv.symm_symm, mkSum, mkIso, Iso.trans_inv, tensorIso_inv,
+      instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj,
+      HepLean.PiTensorProduct.elimPureTensor]
     exact (LinearEquiv.eq_symm_apply _).mp rfl
 
 /-- The functor taking `c` to `F c ⊗ F (τ c)`. -/
@@ -108,7 +116,7 @@ def pairτ (τ : C → C) : Discrete C ⥤ Rep k G :=
 
 lemma pairτ_tmul {c : C} (x : F.obj (Discrete.mk c)) (y : ↑(((Action.functorCategoryEquivalence (ModuleCat k) (MonCat.of G)).symm.inverse.obj
         ((Discrete.functor (Discrete.mk ∘ τ) ⋙ F).obj { as := c })).obj
-        PUnit.unit)) (h : c = c1):
+        PUnit.unit)) (h : c = c1) :
     ((pairτ F τ).map (Discrete.eqToHom h)).hom (x ⊗ₜ[k] y)=
     ((F.map (Discrete.eqToHom h)).hom x) ⊗ₜ[k] ((F.map (Discrete.eqToHom (by simp [h]))).hom y) := by
   rfl

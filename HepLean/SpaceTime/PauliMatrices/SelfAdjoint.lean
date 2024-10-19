@@ -379,7 +379,11 @@ lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three] at hM
   have h0 := congrArg (fun A => - Matrix.trace (σ3 * A.1)/ 2) hM
-  simp [σSAL, σSAL', mul_add] at h0
+  simp only [σSAL, Basis.mk_repr, Fin.isValue, Basis.coe_mk, σSAL', AddSubgroup.coe_add,
+    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
+    σ3_σ0_trace, smul_zero, trace_neg, σ3_σ1_trace, neg_zero, σ3_σ2_trace, add_zero, σ3_σ3_trace,
+    real_smul, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+    IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
   simp [σSAL]
 
