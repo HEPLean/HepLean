@@ -27,13 +27,9 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
     | Sum.inl x => rfl
     | Sum.inr x => rfl)
   μ_natural_left X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
-    match x with
-    | Sum.inl x => rfl
-    | Sum.inr x => rfl
+    rfl
   μ_natural_right X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
-    match x with
-    | Sum.inl x => rfl
-    | Sum.inr x => rfl
+    rfl
   associativity X Y Z := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
     match x with
     | Sum.inl (Sum.inl x) => rfl
@@ -51,9 +47,7 @@ def map {C D : Type} (f : C → D) : MonoidalFunctor (OverColor C) (OverColor D)
 /-- The tensor product on `OverColor C` as a monoidal functor. -/
 def tensor (C : Type) : MonoidalFunctor (OverColor C × OverColor C) (OverColor C) where
   toFunctor := MonoidalCategory.tensor (OverColor C)
-  ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso (by
-    ext x
-    exact Empty.elim x)
+  ε := Over.isoMk (Equiv.sumEmpty Empty Empty).symm.toIso rfl
   μ X Y := Over.isoMk (Equiv.sumSumSumComm X.1.left X.2.left Y.1.left Y.2.left).toIso (by
     ext x
     match x with

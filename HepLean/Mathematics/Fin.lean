@@ -237,10 +237,6 @@ lemma finExtractOne_symm_inr_apply {n : ℕ} (i : Fin n.succ) (x : Fin n) :
 @[simp]
 lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
     (finExtractOne i).symm (Sum.inl 0) = i := by
-  simp only [Nat.succ_eq_add_one, finExtractOne, Fin.isValue, Equiv.symm_trans_apply, finCongr_symm,
-    Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply, Equiv.coe_refl,
-    Sum.map_inl, id_eq, Equiv.sumAssoc_symm_apply_inl, Equiv.sumComm_symm, Equiv.sumComm_apply,
-    Sum.swap_inl, finSumFinEquiv_apply_right, finSumFinEquiv_apply_left, finCongr_apply]
   rfl
 
 /-- Given an equivalence `Fin n.succ.succ ≃ Fin n.succ.succ`, and an `i : Fin n.succ.succ`,

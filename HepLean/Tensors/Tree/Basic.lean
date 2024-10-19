@@ -180,14 +180,14 @@ lemma contrFin1Fin1_hom_hom_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
   change ((Action.forget _ _).mapIso (S.contrFin1Fin1 c i j h)).hom _ = _
   trans ((Action.forget _ _).mapIso (S.contrFin1Fin1 c i j h)).toLinearEquiv
     (PiTensorProduct.tprod S.k x)
-  · congr
+  · rfl
   erw [← LinearEquiv.eq_symm_apply]
   erw [contrFin1Fin1_inv_tmul]
   congr
   funext i
   match i with
   | Sum.inl 0 =>
-    simp
+    rfl
   | Sum.inr 0 =>
     simp only [Nat.succ_eq_add_one, Fin.isValue, mk_hom, Function.comp_apply,
       Discrete.functor_obj_eq_as]
@@ -217,9 +217,7 @@ lemma contrIso_hom_hom {n : ℕ} {c1 : Fin n.succ.succ → S.C}
     (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom ≫
     ((S.contrFin1Fin1 c1 i j h).hom.hom ⊗
     (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom) := by
-  rw [contrIso]
-  simp [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
-    extractOne_homToEquiv, Action.instMonoidalCategory_tensorHom_hom]
+  rfl
 
 /-- `contrMap` is a function that takes a natural number `n`, a function `c` from
 `Fin n.succ.succ` to `S.C`, an index `i` of type `Fin n.succ.succ`, an index `j` of type

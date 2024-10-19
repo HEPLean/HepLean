@@ -146,7 +146,6 @@ lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
       ((HepLean.Fin.finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))).hom) ≫
       (S.F.map (extractTwo i j σ)) := by
     rw [← Functor.map_comp, ← Functor.map_comp]
-    apply congrArg
     rfl
   exact congrArg (λ f => Action.Hom.hom f) h1
 
@@ -234,8 +233,7 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   erw [CategoryTheory.Category.id_comp, CategoryTheory.Category.comp_id]
   erw [CategoryTheory.Category.comp_id]
   rw [S.contr.naturality]
-  simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Monoidal.tensorUnit_obj,
-    Monoidal.tensorUnit_map, Category.comp_id]
+  rfl
 
 end
 end TensorStruct
