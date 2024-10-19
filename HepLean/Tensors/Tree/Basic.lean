@@ -460,7 +460,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
 -/
 
 @[simp]
-lemma tensoreNode_tensor {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
+lemma tensorNode_tensor {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
     (tensorNode T).tensor = T := rfl
 
 @[simp]

@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.ComplexLorentz.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
+import HepLean.Tensors.Tree.NodeIdentities.Basic
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -66,7 +67,6 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
     match i with
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
-
 /-
 lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V)
     (S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V)
@@ -84,7 +84,7 @@ lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr
     apply congrArg
     sorry
     sorry
--/
+    -/
 end Fermion
 
 end
