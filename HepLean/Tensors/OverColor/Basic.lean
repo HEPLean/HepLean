@@ -42,6 +42,9 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
+lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
+  apply CategoryTheory.Iso.ext h
+
 /-- Given a hom in `OverColor C` the underlying equivalence between types. -/
 def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
   toFun := m.hom.left
@@ -53,14 +56,10 @@ def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
 
 @[simp]
 lemma toEquiv_id (f : OverColor C) : toEquiv (𝟙 f) = Equiv.refl f.left := by
-  ext x
-  simp only [toEquiv, Equiv.coe_fn_mk, Equiv.refl_apply]
   rfl
 
 @[simp]
 lemma toEquiv_comp (m : f ⟶ g) (n : g ⟶ h) : toEquiv (m ≫ n) = (toEquiv m).trans (toEquiv n) := by
-  ext x
-  simp only [toEquiv, Equiv.coe_fn_mk, Equiv.trans_apply]
   rfl
 
 lemma toEquiv_symm_apply (m : f ⟶ g) (i : g.left) :
@@ -74,6 +73,10 @@ lemma toEquiv_comp_hom (m : f ⟶ g) : g.hom ∘ (toEquiv m) = f.hom := by
 lemma toEquiv_comp_inv_apply (m : f ⟶ g) (i : g.left) :
     f.hom ((OverColor.Hom.toEquiv m).symm i) = g.hom i := by
   simpa [toEquiv, types_comp] using congrFun m.inv.w i
+
+lemma toEquiv_comp_apply (m : f ⟶ g) (i : f.left) :
+    f.hom i = g.hom ((toEquiv m) i) := by
+  simpa [toEquiv, types_comp] using (congrFun m.hom.w i).symm
 
 /-- Given a morphism in `OverColor C`, the corresponding isomorphism. -/
 def toIso (m : f ⟶ g) : f ≅ g := {
@@ -149,8 +152,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
       simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
       rfl,
     inv_hom_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]}
+      rfl}
   rightUnitor X := {
     hom := Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
     inv := (Over.isoMk (Equiv.sumEmpty X.left Empty).toIso).symm
@@ -160,8 +162,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
       simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
       rfl,
     inv_hom_id := by
-      apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]}
+      rfl}
 
 instance (C : Type) : MonoidalCategory (OverColor C) where
     tensorHom_def f g := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => rfl
@@ -253,6 +254,8 @@ end monoidal
 /-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := Over.mk f
 
+@[simp]
+lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
 
 end OverColor

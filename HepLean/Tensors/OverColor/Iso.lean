@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.OverColor.Lift
+import HepLean.Mathematics.Fin
 /-!
 
 ## Isomorphisms in the OverColor category
@@ -14,7 +15,7 @@ namespace IndexNotation
 namespace OverColor
 open CategoryTheory
 open MonoidalCategory
-
+open HepLean.Fin
 /-!
 
 ## Useful equivalences.
@@ -26,6 +27,11 @@ open MonoidalCategory
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
   Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
 
+/-- The homomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
+  equivalence `e`. -/
+def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
+  (equivToIso e).hom
+
 /-- Given a map `X ⊕ Y → C`, the isomorphism `mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr)`. -/
 def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr) :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
@@ -34,11 +40,27 @@ def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.in
     | Sum.inl x => rfl
     | Sum.inr x => rfl))
 
+@[simp]
+lemma mkSum_homToEquiv {c : X ⊕ Y → C}:
+    Hom.toEquiv (mkSum c).hom = (Equiv.refl _) := by
+  rfl
+
+@[simp]
+lemma mkSum_inv_homToEquiv {c : X ⊕ Y → C}:
+    Hom.toEquiv (mkSum c).inv = (Equiv.refl _) := by
+  rfl
+
 /-- The isomorphism between objects in `OverColor C` given equality of maps. -/
 def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
+
+/-- The homorophism from `mk c` to `mk c1` obtaied by an equivalence and
+  an equality lemma. -/
+def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : mk c ⟶ mk c1 :=
+  (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
   the `Fin 1 → C` maps defined by `c 0` and `c 1`. -/
@@ -54,106 +76,221 @@ def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] := by
     fin_cases x
     rfl
 
-/-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
-  `i`th component. -/
-def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
-  (finCongr (by omega : n.succ = i + 1 + (n - i))).trans <|
-  finSumFinEquiv.symm.trans <|
-  (Equiv.sumCongr (finSumFinEquiv.symm.trans (Equiv.sumComm (Fin i) (Fin 1)))
-    (Equiv.refl (Fin (n-i)))).trans <|
-  (Equiv.sumAssoc (Fin 1) (Fin i) (Fin (n - i))).trans <|
-  Equiv.sumCongr (Equiv.refl (Fin 1)) (finSumFinEquiv.trans (finCongr (by omega)))
-
-lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
-    (finExtractOne i).symm ∘ Sum.inr = i.succAbove := by
-  ext x
-  simp only [Nat.succ_eq_add_one, finExtractOne, Function.comp_apply, Equiv.symm_trans_apply,
-    finCongr_symm, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply,
-    Equiv.coe_refl, Sum.map_inr, finCongr_apply, Fin.coe_cast]
-  change (finSumFinEquiv
-    (Sum.map (⇑(finSumFinEquiv.symm.trans (Equiv.sumComm (Fin ↑i) (Fin 1))).symm) id
-    ((Equiv.sumAssoc (Fin 1) (Fin ↑i) (Fin (n - i))).symm
-    (Sum.inr (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)))))).val = _
-  by_cases hi : x.1 < i.1
-  · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
-        Sum.inl ⟨x, hi⟩ := by
-      rw [← finSumFinEquiv_symm_apply_castAdd]
-      apply congrArg
-      ext
-      simp
-    rw [h1]
-    simp only [Nat.succ_eq_add_one, Equiv.sumAssoc_symm_apply_inr_inl, Sum.map_inl,
-      Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.sumComm_symm, Equiv.sumComm_apply,
-      Sum.swap_inr, finSumFinEquiv_apply_left, Fin.castAdd_mk]
-    rw [Fin.succAbove]
-    split
+/-- Removes a given `i : Fin n.succ.succ` from a morphism in `OverColor C`. -/
+def extractOne {n : ℕ} (i : Fin n.succ.succ)
+    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
+    mk (c1 ∘ Fin.succAbove ((Hom.toEquiv σ).symm i)) ⟶ mk (c2 ∘ Fin.succAbove i) :=
+  equivToHomEq ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))) (by
+    intro x
+    simp_all only [Nat.succ_eq_add_one, Function.comp_apply]
+    have h1 := Hom.toEquiv_comp_inv_apply σ (i.succAbove x)
+    simp only [Nat.succ_eq_add_one, Functor.const_obj_obj, mk_hom] at h1
+    rw [← h1]
+    apply congrArg
+    simp only [finExtractOnePerm, Nat.succ_eq_add_one, finExtractOnPermHom,
+      finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk]
+    erw [Equiv.apply_symm_apply]
+    rw [succsAbove_predAboveI]
     · rfl
-    rename_i hn
-    simp_all only [Nat.succ_eq_add_one, not_lt, Fin.le_def, Fin.coe_castSucc, Fin.val_succ,
-      self_eq_add_right, one_ne_zero]
-    omega
-  · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
-        Sum.inr ⟨x - i, by omega⟩ := by
-      rw [← finSumFinEquiv_symm_apply_natAdd]
-      apply congrArg
-      ext
-      simp only [Nat.succ_eq_add_one, Fin.coe_cast, Fin.natAdd_mk]
-      omega
-    rw [h1, Fin.succAbove]
-    split
-    · rename_i hn
-      simp_all [Fin.lt_def]
-    simp only [Nat.succ_eq_add_one, Equiv.sumAssoc_symm_apply_inr_inr, Sum.map_inr, id_eq,
-      finSumFinEquiv_apply_right, Fin.natAdd_mk, Fin.val_succ]
-    omega
+    simp only [Nat.succ_eq_add_one, ne_eq]
+    erw [Equiv.apply_eq_iff_eq]
+    exact (Fin.succAbove_ne i x).symm)
 
 @[simp]
-lemma finExtractOne_symm_inr_apply {n : ℕ} (i : Fin n.succ) (x : Fin n) :
-    (finExtractOne i).symm (Sum.inr x) = i.succAbove x := calc
-  _ = ((finExtractOne i).symm ∘ Sum.inr) x := rfl
-  _ = i.succAbove x := by rw [finExtractOne_symm_inr]
-
-@[simp]
-lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
-    (finExtractOne i).symm (Sum.inl 0) = i := by
-  simp only [Nat.succ_eq_add_one, finExtractOne, Fin.isValue, Equiv.symm_trans_apply, finCongr_symm,
-    Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply, Equiv.coe_refl,
-    Sum.map_inl, id_eq, Equiv.sumAssoc_symm_apply_inl, Equiv.sumComm_symm, Equiv.sumComm_apply,
-    Sum.swap_inl, finSumFinEquiv_apply_right, finSumFinEquiv_apply_left, finCongr_apply]
-  ext
+lemma extractOne_homToEquiv {n : ℕ} (i : Fin n.succ.succ)
+    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) : Hom.toEquiv (extractOne i σ) =
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)) := by
   rfl
 
-/-- The equivalence of types `Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n` extracting
-  the `i` and `(i.succAbove j)`. -/
-def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
-    Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n :=
-  (finExtractOne i).trans <|
-  (Equiv.sumCongr (Equiv.refl (Fin 1)) (finExtractOne j)).trans <|
-  (Equiv.sumAssoc (Fin 1) (Fin 1) (Fin n)).symm
+/-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`. -/
+def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
+    mk (c1 ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘
+      Fin.succAbove (((Hom.toEquiv (extractOne i σ))).symm j)) ⟶
+    mk (c2 ∘ Fin.succAbove i ∘ Fin.succAbove j) :=
+  match n with
+  | 0 => equivToHomEq (Equiv.refl _) (by simp)
+  | Nat.succ n =>
+    equivToHomEq (Equiv.refl _) (by simp) ≫ extractOne j (extractOne i σ) ≫
+    equivToHomEq (Equiv.refl _) (by simp)
 
-lemma finExtractTwo_symm_inr {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
-    (finExtractTwo i j).symm ∘ Sum.inr = i.succAbove ∘ j.succAbove := by
-  rw [finExtractTwo]
-  ext1 x
-  simp
+/-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`.
+  This is from and to different (by equivalent) objects to `extractTwo`. -/
+def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
+    mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
+    ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inr) ⟶
+    mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inr) :=
+  equivToHomEq (Equiv.refl _) (by simp) ≫ extractTwo i j σ ≫ equivToHomEq (Equiv.refl _) (by simp)
 
-@[simp]
-lemma finExtractTwo_symm_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :
-    (finExtractTwo i j).symm (Sum.inr x) = i.succAbove (j.succAbove x) := by
-  rw [finExtractTwo]
-  simp
+/-- Given a morphism ` mk c ⟶ mk c1` the corresponding morphism on the `Fin 1 ⊕ Fin 1` maps
+  obtained by extracting `i` and `j`. -/
+def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
+  mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
+  ((Hom.toEquiv (extractOne i σ)).symm j)).symm) ∘ Sum.inl) ⟶
+  mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inl) :=
+  equivToHomEq (Equiv.refl _) (by
+    intro x
+    simp only [Nat.succ_eq_add_one, Function.comp_apply, extractOne_homToEquiv, Equiv.refl_symm,
+      Equiv.coe_refl, id_eq]
+    match x with
+    | Sum.inl 0=>
+      simp only [Fin.isValue, finExtractTwo_symm_inl_inl_apply]
+      have h1 := Hom.toEquiv_comp_inv_apply σ i
+      simpa using h1.symm
+    | Sum.inr 0 =>
+      simp only [Fin.isValue, finExtractTwo_symm_inl_inr_apply]
+      have h1 := Hom.toEquiv_comp_inv_apply σ (i.succAbove j)
+      simp only [Nat.succ_eq_add_one, Functor.const_obj_obj, mk_hom] at h1
+      rw [← h1]
+      congr
+      simp only [Nat.succ_eq_add_one, finExtractOnePerm, finExtractOnPermHom,
+        finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk]
+      erw [Equiv.apply_symm_apply]
+      rw [succsAbove_predAboveI]
+      rfl
+      simp only [Nat.succ_eq_add_one, ne_eq]
+      erw [Equiv.apply_eq_iff_eq]
+      exact (Fin.succAbove_ne i j).symm)
 
-@[simp]
-lemma finExtractTwo_symm_inl_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
-    (finExtractTwo i j).symm (Sum.inl (Sum.inr 0)) = i.succAbove j := by
-  rw [finExtractTwo]
-  simp
+lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
+    {c c1 : Fin n.succ.succ.succ → C} (σ : mk c ⟶ mk c1) :
+    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫
+    (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
+    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j))).hom
+    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
+    ≫ ((extractTwoAux' i j σ) ⊗ (extractTwoAux i j σ)) := by
+  apply IndexNotation.OverColor.Hom.ext
+  ext x
+  simp only [Nat.succ_eq_add_one, instMonoidalCategoryStruct_tensorObj_left, CategoryStruct.comp,
+    equivToIso, Hom.toIso, mkSum, Iso.trans_hom, Over.isoMk_hom_left, Equiv.toIso_hom,
+    Discrete.mk_as, instMonoidalCategoryStruct_tensorObj_right_as, CostructuredArrow.right_eq_id,
+    ULift.rec.constant, Function.comp_apply, extractOne_homToEquiv, extractTwoAux', extractTwoAux,
+    instMonoidalCategoryStruct_tensorHom_hom_left]
+  change ((finExtractTwo i j) ((Hom.toEquiv σ) x)) = Sum.map id
+    ((finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))))
+    (((finExtractTwo ((Hom.toEquiv σ).symm i)
+    ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)) x))
+  simp only [Nat.succ_eq_add_one]
+  obtain ⟨k, hk⟩ := (finExtractTwo ((Hom.toEquiv σ).symm i)
+      ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)).symm.surjective x
+  subst hk
+  simp only [Nat.succ_eq_add_one, Equiv.apply_symm_apply]
+  match k with
+  | Sum.inl (Sum.inl 0) =>
+    simp
+  | Sum.inl (Sum.inr 0) =>
+    simp only [Fin.isValue, finExtractTwo_symm_inl_inr_apply, Sum.map_inl, id_eq]
+    have h1 : ((Hom.toEquiv σ) (Fin.succAbove
+        ((Hom.toEquiv σ).symm i)
+        ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j))) =
+        i.succAbove j := by
+      simp only [Nat.succ_eq_add_one, finExtractOnePerm, finExtractOnPermHom,
+        finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk]
+      erw [Equiv.apply_symm_apply]
+      rw [succsAbove_predAboveI]
+      exact Equiv.apply_symm_apply (Hom.toEquiv σ) (i.succAbove j)
+      simp only [Nat.succ_eq_add_one, ne_eq]
+      erw [Equiv.apply_eq_iff_eq]
+      exact (Fin.succAbove_ne i j).symm
+    rw [h1]
+    erw [Equiv.apply_eq_iff_eq_symm_apply]
+    simp
+  | Sum.inr x =>
+    simp only [finExtractTwo_symm_inr_apply, Sum.map_inr]
+    erw [Equiv.apply_eq_iff_eq_symm_apply]
+    simp only [finExtractTwo_symm_inr_apply]
+    simp only [finExtractOnePerm, Nat.succ_eq_add_one, finExtractOnPermHom,
+      finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk, Equiv.coe_fn_mk]
+    erw [Equiv.apply_symm_apply]
+    have h1 : (predAboveI i ((Hom.toEquiv σ)
+        (Fin.succAbove ((Hom.toEquiv σ).symm i)
+        (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j)))))) = j := by
+      rw [succsAbove_predAboveI]
+      · erw [Equiv.apply_symm_apply]
+        simp
+      · simp only [Nat.succ_eq_add_one, ne_eq]
+        erw [Equiv.apply_eq_iff_eq]
+        exact (Fin.succAbove_ne i j).symm
+    erw [h1]
+    let y := (Hom.toEquiv σ) (Fin.succAbove ((Hom.toEquiv σ).symm i)
+      ((predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))).succAbove x))
+    change y = i.succAbove (j.succAbove (predAboveI j (predAboveI i y)))
+    have hy : i ≠ y := by
+      simp only [Nat.succ_eq_add_one, ne_eq, y]
+      erw [← Equiv.symm_apply_eq]
+      exact (Fin.succAbove_ne _ _).symm
+    rw [succsAbove_predAboveI, succsAbove_predAboveI]
+    exact hy
+    simp only [Nat.succ_eq_add_one, ne_eq]
+    rw [predAboveI_eq_iff]
+    simp only [Nat.succ_eq_add_one, y]
+    erw [← Equiv.symm_apply_eq]
+    have h0 : (Hom.toEquiv σ).symm (i.succAbove j) =
+      Fin.succAbove ((Hom.toEquiv σ).symm i)
+        (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))) := by
+      rw [succsAbove_predAboveI]
+      simp only [Nat.succ_eq_add_one, ne_eq]
+      erw [Equiv.apply_eq_iff_eq]
+      exact (Fin.succAbove_ne i j).symm
+    by_contra hn
+    have hn' := hn.symm.trans h0
+    erw [Fin.succAbove_right_injective.eq_iff] at hn'
+    exact Fin.succAbove_ne
+      (predAboveI ((Hom.toEquiv σ).symm i) ((Hom.toEquiv σ).symm (i.succAbove j))) x hn'
+    exact hy
 
-@[simp]
-lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
-    (finExtractTwo i j).symm (Sum.inl (Sum.inl 0)) = i := by
-  rw [finExtractTwo]
-  simp
+lemma extractTwo_finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
+    {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
+    σ ≫ (equivToIso (HepLean.Fin.finExtractTwo i j)).hom ≫
+    (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom =
+    (equivToIso (HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j))).hom
+    ≫ (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo ((Hom.toEquiv σ).symm i)
+    (((Hom.toEquiv (extractOne i σ))).symm j)).symm)).hom
+    ≫ ((extractTwoAux' i j σ) ⊗ (extractTwoAux i j σ)) := by
+  match n with
+  | 0 =>
+    apply IndexNotation.OverColor.Hom.ext
+    ext x
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, instMonoidalCategoryStruct_tensorObj_left,
+      CategoryStruct.comp, equivToIso, Hom.toIso, mkSum, Iso.trans_hom, Over.isoMk_hom_left,
+      Equiv.toIso_hom, Discrete.mk_as, instMonoidalCategoryStruct_tensorObj_right_as,
+      CostructuredArrow.right_eq_id, ULift.rec.constant, Function.comp_apply, extractOne_homToEquiv,
+      extractTwoAux', extractTwoAux, instMonoidalCategoryStruct_tensorHom_hom_left]
+    change ((finExtractTwo i j) (σ.hom.left x)) = Sum.map (Equiv.refl _) (Equiv.refl _) _
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equiv.coe_refl, Sum.map_id_id, id_eq]
+    change (finExtractTwo i j) ((Hom.toEquiv σ) x) = ((finExtractTwo ((Hom.toEquiv σ).symm i)
+      ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)) x)
+    obtain ⟨k, hk⟩ := (Hom.toEquiv σ).symm.surjective x
+    subst hk
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equiv.apply_symm_apply]
+    have hk : k = i ∨ k = i.succAbove j := by
+      match i, j, k with
+      | (0 : Fin 2), (0 : Fin 1), (0 : Fin 2) => exact Or.intro_left (0 = Fin.succAbove 0 0) rfl
+      | (0 : Fin 2), (0 : Fin 1), (1 : Fin 2) => exact Or.inr rfl
+      | (1 : Fin 2), (0 : Fin 1), (0 : Fin 2) => exact Or.inr rfl
+      | (1 : Fin 2), (0 : Fin 1), (1 : Fin 2) => exact Or.intro_left (1 = Fin.succAbove 1 0) rfl
+    rcases hk with hk | hk
+    subst hk
+    simp only [finExtractTwo_apply_fst, Fin.isValue]
+    subst hk
+    simp only [finExtractTwo_apply_snd, Fin.isValue]
+    rw [← Equiv.symm_apply_eq]
+    simp only [finExtractOnePerm, Nat.succ_eq_add_one, Nat.reduceAdd, finExtractOnPermHom,
+      finExtractOne_symm_inr_apply, Equiv.symm_apply_apply, Equiv.coe_fn_symm_mk, Fin.isValue,
+      finExtractTwo_symm_inl_inr_apply]
+    erw [Equiv.apply_symm_apply]
+    rw [succsAbove_predAboveI]
+    rfl
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ne_eq]
+    erw [Equiv.apply_eq_iff_eq]
+    exact (Fin.succAbove_ne i j).symm
+  | Nat.succ n => exact extractTwo_finExtractTwo_succ i j σ
 
 /-- The isomorphism between a `Fin 1 ⊕ Fin 1 → C` satisfying the condition
   `c (Sum.inr 0) = τ (c (Sum.inl 0))`

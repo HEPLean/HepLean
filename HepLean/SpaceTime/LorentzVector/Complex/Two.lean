@@ -34,6 +34,18 @@ def coCoToMatrix : (complexCo ⊗ complexCo).V ≃ₗ[ℂ]
   Finsupp.linearEquivFunOnFinite ℂ ℂ ((Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)) ≪≫ₗ
   LinearEquiv.curry ℂ ℂ (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3)
 
+/-- Expanding `coCoToMatrix` in terms of the standard basis. -/
+lemma coCoToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ) :
+    coCoToMatrix.symm M = ∑ i, ∑ j, M i j • (complexCoBasis i ⊗ₜ[ℂ] complexCoBasis j) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, coCoToMatrix, LinearEquiv.trans_symm,
+    LinearEquiv.trans_apply, Basis.repr_symm_apply]
+  rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
+  · erw [Finset.sum_product]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    erw [Basis.tensorProduct_apply complexCoBasis complexCoBasis i j]
+    rfl
+  · simp
+
 /-- Equivalence of `complexContr ⊗ complexCo` to `4 x 4` complex matrices. -/
 def contrCoToMatrix : (complexContr ⊗ complexCo).V ≃ₗ[ℂ]
     Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ :=

@@ -162,7 +162,7 @@ lemma repSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
   nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL
     ((repSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
-  congr
+  rfl
 
 lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
     SL2C.repSelfAdjointMatrix M (PauliMatrix.σSA i) =
