@@ -150,6 +150,7 @@ lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     rfl
   exact congrArg (λ f => Action.Hom.hom f) h1
 
+/-- A helper function used to proof the relation between perm and contr. -/
 def contrIsoComm {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :=
   (((Discrete.pairτ S.FDiscrete S.τ).map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i) :

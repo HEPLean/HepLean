@@ -21,6 +21,8 @@ namespace HepLean.Fin
 open Fin
 variable {n : Nat}
 
+/-- Given a `i` and `x` in `Fin n.succ.succ` returns an element of `Fin n.succ`
+  subtracting 1 if `i.val ≤ x.val` else casting x. -/
 def predAboveI (i x : Fin n.succ.succ) : Fin n.succ :=
   if h : x.val < i.val then
     ⟨x.val, by omega⟩
@@ -245,6 +247,8 @@ lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
   ext
   rfl
 
+/-- Given an equivalence `Fin n.succ.succ ≃ Fin n.succ.succ`, and an `i : Fin n.succ.succ`,
+  the map  `Fin n.succ → Fin n.succ` obtained by dropping `i` and it's image. -/
 def finExtractOnPermHom (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ) :
     Fin n.succ → Fin n.succ := fun x => predAboveI (σ i) (σ ((finExtractOne i).symm (Sum.inr x)))
 

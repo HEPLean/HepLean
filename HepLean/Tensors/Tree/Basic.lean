@@ -234,6 +234,7 @@ def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
   (tensorHom (S.contr.app (Discrete.mk (c i))) (𝟙 _)) ≫
   (MonoidalCategory.leftUnitor _).hom
 
+/-- Casts an element of the monoidal unit of `Rep S.k S.G` to the field `S.k`. -/
 def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep S.k S.G)).obj { as := c }).V)) : S.k := v
 
 lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)

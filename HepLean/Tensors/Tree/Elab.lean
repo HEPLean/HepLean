@@ -263,12 +263,17 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
   return ind.filter (fun x => indFilt.count x ≤ 1)
 
+/-- Takes a list and puts conseutive  elements into pairs.
+  e.g. [0, 1, 2, 3] becomes [(0, 1), (2, 3)]. -/
 def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   match l with
   | x1 :: x2 :: xs => (x1, x2) :: toPairs xs
   | [] => []
   | [x] => [(x, 0)]
 
+/-- Adjusts a list `List (ℕ × ℕ)` by subtracting from each natrual number the number
+  of elements before it in the list which are less then itself. This is used
+  to form a list of pairs which can be used for contracting indices. -/
 def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
   let l' := l.bind (fun p => [p.1, p.2])
   let l'' := List.mapAccumr
@@ -367,6 +372,7 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
 
 end ProdNode
 
+/-- Returns the full list of indices after contraction. TODO: Include evaluation. -/
 partial def getIndicesFull (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   match stx with
   | `(tensorExpr| $_:term | $[$args]*) => do
@@ -402,6 +408,8 @@ partial def getIndicesRight (stx : Syntax) : TermElabM (List (TSyntax `indexExpr
   | _ =>
     throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
 
+/-- Given two lists of indices returns the `List (ℕ)` representing the how one list
+  permutes into the other. -/
 def getPermutation (l1 l2 : List (TSyntax `indexExpr)) : TermElabM (List (ℕ)) := do
   let l1' ← l1.mapM (fun x => indexToIdent x)
   let l2' ← l2.mapM (fun x => indexToIdent x)

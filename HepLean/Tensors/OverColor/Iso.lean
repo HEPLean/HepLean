@@ -27,6 +27,8 @@ open HepLean.Fin
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
   Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
 
+/-- The homomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
+  equivalence `e`. -/
 def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
   (equivToIso e).hom
 
@@ -47,12 +49,15 @@ lemma mkSum_homToEquiv {c : X ⊕ Y → C}:
 lemma mkSum_inv_homToEquiv {c : X ⊕ Y → C}:
     Hom.toEquiv (mkSum c).inv = (Equiv.refl _) := by
   rfl
+
 /-- The isomorphism between objects in `OverColor C` given equality of maps. -/
 def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
 
+/-- The homorophism from `mk c` to `mk c1` obtaied by an equivalence and
+  an equality lemma. -/
 def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
     (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : mk c ⟶ mk c1 :=
   (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
@@ -71,6 +76,7 @@ def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] := by
     fin_cases x
     rfl
 
+/-- Removes a given `i : Fin n.succ.succ` from a morphism in `OverColor C`. -/
 def extractOne {n : ℕ} (i : Fin n.succ.succ)
     {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
     mk (c1 ∘ Fin.succAbove ((Hom.toEquiv σ).symm i)) ⟶ mk (c2 ∘ Fin.succAbove i) :=
@@ -96,6 +102,7 @@ lemma extractOne_homToEquiv {n : ℕ} (i : Fin n.succ.succ)
     (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)) := by
   rfl
 
+/-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`. -/
 def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c1 c2 : Fin n.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
     mk (c1 ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘
@@ -107,6 +114,8 @@ def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     equivToHomEq (Equiv.refl _) (by simp) ≫ extractOne j (extractOne i σ) ≫
     equivToHomEq (Equiv.refl _) (by simp)
 
+/-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`.
+  This is from and to different (by equivalent) objects to `extractTwo`. -/
 def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
     mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
@@ -114,6 +123,8 @@ def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     mk ((c1 ∘ ⇑(finExtractTwo i j).symm) ∘ Sum.inr) :=
   equivToHomEq (Equiv.refl _) (by simp) ≫ extractTwo i j σ ≫ equivToHomEq (Equiv.refl _) (by simp)
 
+/-- Given a morphism ` mk c ⟶ mk c1` the corresponding morphism on the `Fin 1 ⊕ Fin 1` maps
+  obtained by extracting `i` and `j`. -/
 def extractTwoAux' {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     {c c1 : Fin n.succ.succ → C} (σ : mk c ⟶ mk c1) :
   mk ((c ∘ ⇑(finExtractTwo ((Hom.toEquiv σ).symm i)
