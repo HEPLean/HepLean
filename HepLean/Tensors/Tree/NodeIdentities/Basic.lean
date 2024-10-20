@@ -79,4 +79,20 @@ lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (perm σ (neg t)).tensor = (neg (perm σ t)).tensor := by
   simp only [perm_tensor, neg_tensor, map_neg]
 
+/-!
+
+## Basic perm identities
+
+-/
+
+/-- Applying two permutations is the same as applying the transitive permutation. -/
+lemma perm_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C} {c2 : Fin n → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (σ2 : (OverColor.mk c1) ⟶ (OverColor.mk c2))
+    (t : TensorTree S c) : (perm σ2 (perm σ t)).tensor = (perm (σ ≫ σ2) t).tensor := by
+  simp [perm_tensor]
+
+/-- Applying the identity permutation is the same as not applying a permutation. -/
+lemma perm_id (t : TensorTree S c) : (perm (𝟙 (OverColor.mk c)) t).tensor = t.tensor := by
+  simp [perm_tensor]
+
 end TensorTree

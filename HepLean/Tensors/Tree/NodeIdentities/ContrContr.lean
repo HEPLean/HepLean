@@ -8,7 +8,8 @@ import HepLean.Tensors.Tree.Basic
 
 ## Commutativity of two contractions
 
-This file is currently a work-in-progress.
+The order of two contractions can be swapped, once the indices have been
+accordingly adjusted.
 
 -/
 
@@ -23,7 +24,7 @@ namespace TensorTree
 variable {S : TensorStruct}
 
 /-- A structure containing two pairs of indices (i, j) and (k, l) to be sequentially
-  contracted in a tensor.-/
+  contracted in a tensor. -/
 structure ContrQuartet {n : ℕ} (c : Fin n.succ.succ.succ.succ → S.C) where
   /-- The first index of the first pair to be contracted. -/
   i : Fin n.succ.succ.succ.succ

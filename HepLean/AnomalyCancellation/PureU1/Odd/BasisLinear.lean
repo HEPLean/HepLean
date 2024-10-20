@@ -85,7 +85,6 @@ lemma δa₂_δ₁ (j : Fin n) : δa₂ j = δ₁ j.succ := by
   exact Nat.add_comm 1 ↑j
 
 lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = δ!₁ j.castSucc := by
-  rw [Fin.ext_iff]
   rfl
 
 lemma δa₃_δ₃ : @δa₃ n = δ₃ := by

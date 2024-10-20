@@ -83,7 +83,6 @@ lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := 
   exact diagonal_apply_ne _ h
 
 lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   rfl
 
 lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
