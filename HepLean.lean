@@ -121,3 +121,4 @@ import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
+import HepLean.Tensors.Tree.NodeIdentities.PermProd
