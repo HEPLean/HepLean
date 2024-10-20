@@ -55,7 +55,7 @@ lemma ext (ψ ψ' : ContrℂModule) (h : ψ.val = ψ'.val) : ψ = ψ' := by
   cases ψ
   cases ψ'
   subst h
-  simp_all only
+  rfl
 
 @[simp]
 lemma val_add (ψ ψ' : ContrℂModule) : (ψ + ψ').val = ψ.val + ψ'.val := rfl

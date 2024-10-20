@@ -36,9 +36,7 @@ lemma exists_plane_exists_basis {n : ℕ} (hE : ExistsPlane n) :
   have h1 : ∑ x : Fin n, -(g (Sum.inr x) • Y (Sum.inr x)) =
       ∑ x : Fin n, (-g (Sum.inr x)) • Y (Sum.inr x) := by
     apply Finset.sum_congr
-    simp only
-    intro i _
-    simp
+    rfl
   rw [h1] at hg
   have h2 : ∑ a₁ : Fin 11, g (Sum.inl a₁) • Y (Sum.inl a₁) = 0 := by
     apply hB2
