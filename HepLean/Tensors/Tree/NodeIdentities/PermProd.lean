@@ -26,12 +26,14 @@ variable {S : TensorStruct} {n n' n2 : ℕ}
 /-- The permutation that arises when moving a `perm` node in the left entry through a `prod` node.
   This permutation is defined using right-whiskering and composition with `finSumFinEquiv`
   based-isomorphisms. -/
-def permProdLeft := (equivToIso finSumFinEquiv).inv ≫ σ ▷ OverColor.mk c2 ≫ (equivToIso finSumFinEquiv).hom
+def permProdLeft := (equivToIso finSumFinEquiv).inv ≫ σ ▷ OverColor.mk c2
+  ≫ (equivToIso finSumFinEquiv).hom
 
 /-- The permutation that arises when moving a `perm` node in the right entry through a `prod` node.
   This permutation is defined using left-whiskering and composition with `finSumFinEquiv`
   based-isomorphisms. -/
-def permProdRight:= (equivToIso finSumFinEquiv).inv ≫ OverColor.mk c2 ◁ σ ≫ (equivToIso finSumFinEquiv).hom
+def permProdRight := (equivToIso finSumFinEquiv).inv ≫ OverColor.mk c2 ◁ σ
+  ≫ (equivToIso finSumFinEquiv).hom
 
 /-- When a `prod` acts on a `perm` node in the left entry, the `perm` node can be moved through
   the `prod` node via right-whiskering. -/
