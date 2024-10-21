@@ -88,12 +88,6 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Functor.comp_obj, Discrete.functor_obj_eq_as, map_smul]
-  have h1n' {a b d: Fin n.succ.succ} (hbd : b = d) (h : c d = S.τ (c a))
-          (h' : c b = S.τ (c a)) :
-          (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
-          (S.FDiscrete.map (Discrete.eqToHom h')).hom (x b) := by
-        subst hbd
-        rfl
   congr 1
   /- The contractions. -/
   · apply congrArg
@@ -106,10 +100,9 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
       subst haa'
       simp_all
     refine h1' ?_ ?_ ?_
-    · simp
+    · simp only [Discrete.mk.injEq]
       exact Eq.symm (swapI_color q)
-    · refine h1n' ?_ ?_ ?_
-      rfl
+    · rfl
     · change _ = ((S.FDiscrete.map (Discrete.eqToHom _)) ≫ S.FDiscrete.map (Discrete.eqToHom _)).hom
         (x (q.swap.i.succAbove q.swap.j))
       rw [← S.FDiscrete.map_comp]
