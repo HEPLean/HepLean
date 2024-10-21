@@ -36,6 +36,7 @@ structure TensorStruct where
   FDiscrete : Discrete C ⥤ Rep k G
   /-- A map from `C` to `C`. An involution. -/
   τ : C → C
+  /-- The condition that `τ` is an involution. -/
   τ_involution : Function.Involutive τ
   /-- The natural transformation describing contraction. -/
   contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
