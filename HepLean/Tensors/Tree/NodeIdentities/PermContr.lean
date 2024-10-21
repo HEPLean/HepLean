@@ -8,7 +8,7 @@ import HepLean.Tensors.Tree.Basic
 
 # The commutativity of Permutations and contractions.
 
-There is very likely a better way to do this using `TensorStruct.contrMap_tprod`.
+There is very likely a better way to do this using `TensorSpecies.contrMap_tprod`.
 
 -/
 
@@ -18,10 +18,10 @@ open MonoidalCategory
 open OverColor
 open HepLean.Fin
 
-namespace TensorStruct
+namespace TensorSpecies
 noncomputable section
 
-variable (S : TensorStruct)
+variable (S : TensorSpecies)
 
 lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} (h : c1 (i.succAbove j) = S.τ (c1 i))
@@ -236,11 +236,11 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   rfl
 
 end
-end TensorStruct
+end TensorSpecies
 
 namespace TensorTree
 
-variable {S : TensorStruct}
+variable {S : TensorSpecies}
 
 /-- Permuting indices, and then contracting is equivalent to contracting and then permuting,
   once care is taking about ensuring one is contracting the same idices. -/

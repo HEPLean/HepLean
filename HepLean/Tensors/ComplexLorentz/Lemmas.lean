@@ -9,6 +9,8 @@ import Mathlib.LinearAlgebra.TensorProduct.Basis
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.PermProd
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
+import HepLean.Tensors.Tree.NodeIdentities.ProdComm
+import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 /-!
 
@@ -59,7 +61,7 @@ lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
 lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, perm_tensor]
   rw [coMetric_expand]
-  simp only [TensorStruct.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
+  simp only [TensorSpecies.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
     map_sub]
   congr 1
   congr 1
@@ -71,6 +73,37 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
     match i with
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
+
+set_option maxRecDepth 20000 in
+lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
+    {T2 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V} :
+    {(T1 | μ ν ⊗ T2 | μ ν) = (T2 | μ ν ⊗ T1 | μ ν)}ᵀ := by
+  rw [perm_tensor_eq (contr_tensor_eq (contr_tensor_eq (prod_comm _ _ _ _)))]
+  rw [perm_tensor_eq (contr_tensor_eq (perm_contr _ _))]
+  rw [perm_tensor_eq (perm_contr _ _)]
+  rw [perm_perm]
+  rw [perm_eq_id]
+  · rw [(contr_tensor_eq (contr_swap _ _))]
+    rw [perm_contr]
+    rw [perm_tensor_eq (contr_swap _ _)]
+    rw [perm_perm]
+    rw [perm_eq_id]
+    · rfl
+    · apply OverColor.Hom.ext
+      rfl
+  · apply OverColor.Hom.ext
+    ext x
+    exact Fin.elim0 x
+
+lemma contr_rank_2_symm' {T1 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
+    {T2 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V} :
+    {(T1 | μ ν ⊗ T2 | μ ν) = (T2 | μ ν ⊗ T1 | μ ν)}ᵀ := by
+  rw [perm_tensor_eq contr_rank_2_symm]
+  rw [perm_perm]
+  rw [perm_eq_id]
+  apply OverColor.Hom.ext
+  ext x
+  exact Fin.elim0 x
 
 set_option maxRecDepth 20000 in
 /-- Contracting a rank-2 anti-symmetric tensor with a rank-2 symmetric tensor gives zero. -/
@@ -102,8 +135,16 @@ lemma antiSymm_contr_symm {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V
   rw [perm_perm]
   rw [perm_eq_id]
   · rfl
-  · apply OverColor.Hom.ext
-    rfl
+  · rfl
+
+lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
+    {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
+    (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
+    {S | μ ν ⊗ A | μ ν}ᵀ.tensor = 0 := by
+  rw [contr_rank_2_symm']
+  rw [perm_tensor]
+  rw [antiSymm_contr_symm hA hs]
+  rfl
 
 end Fermion
 

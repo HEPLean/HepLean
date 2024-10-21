@@ -18,9 +18,8 @@ open CategoryTheory
 open MonoidalCategory
 
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
-  complex Lorentz tensors.
-  Note: This structure is not fully defined yet. -/
-structure TensorStruct where
+  complex Lorentz tensors. -/
+structure TensorSpecies where
   /-- The colors of indices e.g. up or down. -/
   C : Type
   /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
@@ -36,6 +35,7 @@ structure TensorStruct where
   FDiscrete : Discrete C ⥤ Rep k G
   /-- A map from `C` to `C`. An involution. -/
   τ : C → C
+  /-- The condition that `τ` is an involution. -/
   τ_involution : Function.Involutive τ
   /-- The natural transformation describing contraction. -/
   contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
@@ -46,13 +46,18 @@ structure TensorStruct where
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   evalNo : C → ℕ
+  /-- Contraction is symmetric with respect to duals. -/
+  contr_tmul_symm (c : C) (x : FDiscrete.obj (Discrete.mk c))
+      (y : FDiscrete.obj (Discrete.mk (τ c))) :
+    (contr.app (Discrete.mk c)).hom (x ⊗ₜ[k] y) = (contr.app (Discrete.mk (τ c))).hom
+      (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
 
 noncomputable section
 
-namespace TensorStruct
+namespace TensorSpecies
 open OverColor
 
-variable (S : TensorStruct)
+variable (S : TensorSpecies)
 
 instance : CommRing S.k := S.k_commRing
 
@@ -349,10 +354,10 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
       simp
     exact h1' h1
 
-end TensorStruct
+end TensorSpecies
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
+inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node consisting of a single vector. -/
@@ -398,23 +403,23 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
 
 namespace TensorTree
 
-variable {S : TensorStruct} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
+variable {S : TensorSpecies} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
 open MonoidalCategory
 open TensorProduct
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
-abbrev twoNodeE (S : TensorStruct) (c1 c2 : S.C)
+abbrev twoNodeE (S : TensorSpecies) (c1 c2 : S.C)
     (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
 /-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
-abbrev constTwoNodeE (S : TensorStruct) (c1 c2 : S.C)
+abbrev constTwoNodeE (S : TensorSpecies) (c1 c2 : S.C)
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
 
 /-- The node `constThreeNodeE` of a tensor tree, with all arguments explicit. -/
-abbrev constThreeNodeE (S : TensorStruct) (c1 c2 c3 : S.C)
+abbrev constThreeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
       S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
     constThreeNode v
@@ -443,6 +448,7 @@ noncomputable section
   Note: This function is not fully defined yet. -/
 def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
+  | twoNode t => (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom t
   | constTwoNode t => (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (t.hom (1 : S.k))
   | add t1 t2 => t1.tensor + t2.tensor
   | perm σ t => (S.F.map σ).hom t.tensor
@@ -523,6 +529,32 @@ lemma perm_tensor_eq {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp only [perm_tensor]
   rw [h]
 
+/-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
+  This is used in some proofs of node identities for tensor trees. -/
+structure ContrPair {n : ℕ} (c : Fin n.succ.succ → S.C) where
+  /-- The first index in the pair, appearing on the left in the contraction
+    node `contr i j h _`. -/
+  i : Fin n.succ.succ
+  /-- The second index in the pair, appearing on the right in the contraction
+    node `contr i j h _`. -/
+  j : Fin n.succ
+  /-- A proof that the two indices can be contracted. -/
+  h : c (i.succAbove j) = S.τ (c i)
+
+namespace ContrPair
+variable {n : ℕ} {c : Fin n.succ.succ → S.C} {q q' : ContrPair c}
+
+lemma ext (hi : q.i = q'.i) (hj : q.j = q'.j) : q = q' := by
+  cases q
+  cases q'
+  subst hi
+  subst hj
+  rfl
+
+/-- The contraction map for a pair of indices. -/
+def contrMap := S.contrMap c q.i q.j q.h
+
+end ContrPair
 end
 
 end TensorTree
