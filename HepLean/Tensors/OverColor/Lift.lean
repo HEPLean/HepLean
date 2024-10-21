@@ -782,9 +782,10 @@ def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c
     erw [PiTensorProduct.subsingletonEquiv_apply_tprod]
     rfl)
 
-lemma forgetLiftApp_hom_hom_apply_eq (c : C) (x : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c)))
+lemma forgetLiftApp_hom_hom_apply_eq (c : C)
+    (x : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c)))
     (y : (F.obj (Discrete.mk c)).V) :
-    (forgetLiftApp F c).hom.hom x = y ↔ x  = PiTensorProduct.tprod k (fun _ => y) := by
+    (forgetLiftApp F c).hom.hom x = y ↔ x = PiTensorProduct.tprod k (fun _ => y) := by
   rw [← forgetLiftAppV_symm_apply]
   erw [LinearEquiv.eq_symm_apply]
   rfl

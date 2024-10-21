@@ -363,10 +363,10 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
 -/
 
 /-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ`
-   allowing us to undertake evaluation. -/
+  allowing us to undertake evaluation. -/
 def evalIso {n : ℕ} (c : Fin n.succ → S.C)
     (i : Fin n.succ) : S.F.obj (OverColor.mk c) ≅ (S.FDiscrete.obj (Discrete.mk (c i))) ⊗
-      (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove )) :=
+      (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove)) :=
   (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractOne i))).trans <|
   (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractOne i).symm))).trans <|
   (S.F.μIso _ _).symm.trans <|
@@ -377,7 +377,7 @@ def evalIso {n : ℕ} (c : Fin n.succ → S.C)
 lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     (x : (i : Fin n.succ) → S.FDiscrete.obj (Discrete.mk (c i))) :
     (S.evalIso c i).hom.hom (PiTensorProduct.tprod S.k x) =
-    x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k (fun k => x (i.succAbove k)))  := by
+    x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k (fun k => x (i.succAbove k))) := by
   simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, F_def, evalIso,
     Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom, tensorIso_hom, Action.comp_hom,
     Action.instMonoidalCategory_tensorHom_hom, Functor.id_obj, mk_hom, ModuleCat.coe_comp,
@@ -456,7 +456,7 @@ def evalLinearMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (
   of representations. -/
 def evalMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i))) :
     (S.F.obj (OverColor.mk c)).V ⟶ (S.F.obj (OverColor.mk (c ∘ i.succAbove))).V :=
-  (S.evalIso c i).hom.hom ≫ ((Action.forgetMonoidal _ _ ).μIso _ _).inv
+  (S.evalIso c i).hom.hom ≫ ((Action.forgetMonoidal _ _).μIso _ _).inv
   ≫ ModuleCat.asHom (TensorProduct.map (S.evalLinearMap i e) LinearMap.id) ≫
   ModuleCat.asHom (TensorProduct.lid S.k _).toLinearMap
 
@@ -472,10 +472,10 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
     Function.comp_apply, ModuleCat.coe_comp]
   erw [evalIso_tprod]
   change ((TensorProduct.lid S.k ↑((lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove))).V))
-    (( (TensorProduct.map (S.evalLinearMap i e) LinearMap.id))
-      (((Action.forgetMonoidal (ModuleCat S.k) (MonCat.of S.G)).μIso (S.FDiscrete.obj { as := c i })
-            ((lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove)))).inv
-        (x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) fun k => x (i.succAbove k)))) = _
+    (((TensorProduct.map (S.evalLinearMap i e) LinearMap.id))
+    (((Action.forgetMonoidal (ModuleCat S.k) (MonCat.of S.G)).μIso (S.FDiscrete.obj { as := c i })
+    ((lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove)))).inv
+    (x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) fun k => x (i.succAbove k)))) = _
   simp only [Nat.succ_eq_add_one, Action.forgetMonoidal_toLaxMonoidalFunctor_toFunctor,
     Action.forget_obj, Action.instMonoidalCategory_tensorObj_V, MonoidalFunctor.μIso,
     Action.forgetMonoidal_toLaxMonoidalFunctor_μ, asIso_inv, IsIso.inv_id, Equivalence.symm_inverse,
