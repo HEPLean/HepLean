@@ -102,7 +102,7 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
         (_ : b = (S.FDiscrete.map (Discrete.eqToHom (by rw [haa']))).hom b')
         (_ : c = (S.FDiscrete.map (Discrete.eqToHom (by rw [haa']))).hom c'),
         (S.contr.app a).hom (b ⊗ₜ[S.k] c) = (S.contr.app a').hom (b' ⊗ₜ[S.k] c') := by
-      intro a a' b c b' c'  haa' hbc hcc
+      intro a a' b c b' c' haa' hbc hcc
       subst haa'
       simp_all
     refine h1' ?_ ?_ ?_
@@ -111,11 +111,11 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     · refine h1n' ?_ ?_ ?_
       rfl
     · change _ = ((S.FDiscrete.map (Discrete.eqToHom _)) ≫ S.FDiscrete.map (Discrete.eqToHom _)).hom
-        ( (x (q.swap.i.succAbove q.swap.j)))
+        (x (q.swap.i.succAbove q.swap.j))
       rw [← S.FDiscrete.map_comp]
       simp only [Nat.succ_eq_add_one, mk_hom, Discrete.functor_obj_eq_as, Function.comp_apply,
         eqToHom_trans]
-      have h1nn' {a b d: Fin n.succ.succ} (hbd : b = d) (h : c d = S.τ (S.τ (c a))):
+      have h1nn' {a b d: Fin n.succ.succ} (hbd : b = d) (h : c d = S.τ (S.τ (c a))) :
           (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
           (S.FDiscrete.map (eqToHom (by
           subst hbd

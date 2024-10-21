@@ -74,7 +74,6 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
 
-
 set_option maxRecDepth 20000 in
 lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     {T2 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V} :
@@ -105,7 +104,6 @@ lemma contr_rank_2_symm' {T1 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
   apply OverColor.Hom.ext
   ext x
   exact Fin.elim0 x
-
 
 set_option maxRecDepth 20000 in
 /-- Contracting a rank-2 anti-symmetric tensor with a rank-2 symmetric tensor gives zero. -/
