@@ -45,7 +45,9 @@ structure TensorSpecies where
   unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
-  evalNo : C → ℕ
+  repDim : C → ℕ
+  /-- A basis for each Module, determined by the evaluation map. -/
+  basis : (c : C) → Basis (Fin (repDim c)) k (FDiscrete.obj (Discrete.mk c)).V
   /-- Contraction is symmetric with respect to duals. -/
   contr_tmul_symm (c : C) (x : FDiscrete.obj (Discrete.mk c))
       (y : FDiscrete.obj (Discrete.mk (τ c))) :
@@ -354,6 +356,134 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
       simp
     exact h1' h1
 
+/-!
+
+## Evalutation of indices.
+
+-/
+
+/-- The isomorphism of objects in `Rep S.k S.G` given an `i` in `Fin n.succ`
+  allowing us to undertake evaluation. -/
+def evalIso {n : ℕ} (c : Fin n.succ → S.C)
+    (i : Fin n.succ) : S.F.obj (OverColor.mk c) ≅ (S.FDiscrete.obj (Discrete.mk (c i))) ⊗
+      (OverColor.lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove)) :=
+  (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractOne i))).trans <|
+  (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractOne i).symm))).trans <|
+  (S.F.μIso _ _).symm.trans <|
+  tensorIso
+    ((S.F.mapIso (OverColor.mkIso (by ext x; fin_cases x; simp))).trans
+    (OverColor.forgetLiftApp S.FDiscrete (c i))) (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
+
+lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
+    (x : (i : Fin n.succ) → S.FDiscrete.obj (Discrete.mk (c i))) :
+    (S.evalIso c i).hom.hom (PiTensorProduct.tprod S.k x) =
+    x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k (fun k => x (i.succAbove k))) := by
+  simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, F_def, evalIso,
+    Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom, tensorIso_hom, Action.comp_hom,
+    Action.instMonoidalCategory_tensorHom_hom, Functor.id_obj, mk_hom, ModuleCat.coe_comp,
+    Function.comp_apply]
+  change (((lift.obj S.FDiscrete).map (mkIso _).hom).hom ≫
+    (forgetLiftApp S.FDiscrete (c i)).hom.hom ⊗
+    ((lift.obj S.FDiscrete).map (mkIso _).hom).hom)
+    (((lift.obj S.FDiscrete).μIso
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
+    (((lift.obj S.FDiscrete).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
+    (((lift.obj S.FDiscrete).map (equivToIso (HepLean.Fin.finExtractOne i)).hom).hom
+    ((PiTensorProduct.tprod S.k) _)))) =_
+  rw [lift.map_tprod]
+  change (((lift.obj S.FDiscrete).map (mkIso _).hom).hom ≫
+    (forgetLiftApp S.FDiscrete (c i)).hom.hom ⊗
+    ((lift.obj S.FDiscrete).map (mkIso _).hom).hom)
+    (((lift.obj S.FDiscrete).μIso
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
+    (((lift.obj S.FDiscrete).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
+    (((PiTensorProduct.tprod S.k) _)))) =_
+  rw [lift.map_tprod]
+  change ((TensorProduct.map (((lift.obj S.FDiscrete).map (mkIso _).hom).hom ≫
+    (forgetLiftApp S.FDiscrete (c i)).hom.hom)
+    ((lift.obj S.FDiscrete).map (mkIso _).hom).hom))
+    (((lift.obj S.FDiscrete).μIso
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
+    ((((PiTensorProduct.tprod S.k) _)))) =_
+  rw [lift.μIso_inv_tprod]
+  rw [TensorProduct.map_tmul]
+  erw [lift.map_tprod]
+  simp only [Nat.succ_eq_add_one, CategoryStruct.comp, Functor.id_obj,
+    instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inl, Function.comp_apply,
+    instMonoidalCategoryStruct_tensorObj_left, mkSum_homToEquiv, Equiv.refl_symm,
+    LinearMap.coe_comp, Sum.elim_inr]
+  congr 1
+  · change (forgetLiftApp S.FDiscrete (c i)).hom.hom
+      (((lift.obj S.FDiscrete).map (mkIso _).hom).hom
+      ((PiTensorProduct.tprod S.k) _)) = _
+    rw [lift.map_tprod]
+    rw [forgetLiftApp_hom_hom_apply_eq]
+    apply congrArg
+    funext i
+    match i with
+    | (0 : Fin 1) =>
+      simp only [mk_hom, Fin.isValue, Function.comp_apply, lift.discreteFunctorMapEqIso,
+        eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv,
+        LinearEquiv.ofLinear_apply]
+      rfl
+  · apply congrArg
+    funext k
+    simp [lift.discreteFunctorMapEqIso]
+    change (S.FDiscrete.map (eqToHom _)).hom
+      (x ((HepLean.Fin.finExtractOne i).symm ((Sum.inr k)))) = _
+    have h1' {a b : Fin n.succ} (h : a = b) :
+      (S.FDiscrete.map (eqToHom (by rw [h]))).hom (x a) = x b := by
+      subst h
+      simp
+    refine h1' ?_
+    exact HepLean.Fin.finExtractOne_symm_inr_apply i k
+
+/-- The linear map giving the coordinate of a vector with respect to the given basis.
+  Important Note: This is not a morphism in the category of representations. In general,
+  it cannot be lifted thereto. -/
+def evalLinearMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i))) :
+    S.FDiscrete.obj { as := c i } →ₗ[S.k] S.k where
+  toFun := fun v => (S.basis (c i)).repr v e
+  map_add' := by simp
+  map_smul' := by simp
+
+/-- The evaluation map, used to evaluate indices of tensors.
+  Important Note: The evaluation map is in general, not equivariant with respect to
+  group actions. It is a morphism in the underlying module category, not the category
+  of representations. -/
+def evalMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i))) :
+    (S.F.obj (OverColor.mk c)).V ⟶ (S.F.obj (OverColor.mk (c ∘ i.succAbove))).V :=
+  (S.evalIso c i).hom.hom ≫ ((Action.forgetMonoidal _ _).μIso _ _).inv
+  ≫ ModuleCat.asHom (TensorProduct.map (S.evalLinearMap i e) LinearMap.id) ≫
+  ModuleCat.asHom (TensorProduct.lid S.k _).toLinearMap
+
+lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i)))
+    (x : (i : Fin n.succ) → S.FDiscrete.obj (Discrete.mk (c i))) :
+    (S.evalMap i e) (PiTensorProduct.tprod S.k x) =
+    (((S.basis (c i)).repr (x i) e) : S.k) •
+    (PiTensorProduct.tprod S.k
+    (fun k => x (i.succAbove k)) : S.F.obj (OverColor.mk (c ∘ i.succAbove))) := by
+  rw [evalMap]
+  simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V,
+    Action.forgetMonoidal_toLaxMonoidalFunctor_toFunctor, Action.forget_obj, Functor.id_obj, mk_hom,
+    Function.comp_apply, ModuleCat.coe_comp]
+  erw [evalIso_tprod]
+  change ((TensorProduct.lid S.k ↑((lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove))).V))
+    (((TensorProduct.map (S.evalLinearMap i e) LinearMap.id))
+    (((Action.forgetMonoidal (ModuleCat S.k) (MonCat.of S.G)).μIso (S.FDiscrete.obj { as := c i })
+    ((lift.obj S.FDiscrete).obj (OverColor.mk (c ∘ i.succAbove)))).inv
+    (x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) fun k => x (i.succAbove k)))) = _
+  simp only [Nat.succ_eq_add_one, Action.forgetMonoidal_toLaxMonoidalFunctor_toFunctor,
+    Action.forget_obj, Action.instMonoidalCategory_tensorObj_V, MonoidalFunctor.μIso,
+    Action.forgetMonoidal_toLaxMonoidalFunctor_μ, asIso_inv, IsIso.inv_id, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Functor.id_obj, mk_hom, Function.comp_apply, ModuleCat.id_apply, TensorProduct.map_tmul,
+    LinearMap.id_coe, id_eq, TensorProduct.lid_tmul]
+  rfl
+
 end TensorSpecies
 
 /-- A syntax tree for tensor expressions. -/
@@ -398,7 +528,7 @@ inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Ty
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | eval {n : ℕ} {c : Fin n.succ → S.C} :
-    (i : Fin n.succ) → (x : Fin (S.evalNo (c i))) → TensorTree S c →
+    (i : Fin n.succ) → (x : Fin (S.repDim (c i))) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
@@ -457,6 +587,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
+  | eval i e t => (S.evalMap i e) t.tensor
   | _ => 0
 
 /-!
@@ -491,6 +622,9 @@ lemma contr_tensor {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
     (contr i j h t).tensor = (S.contrMap c i j h).hom t.tensor := rfl
 
 lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
+
+lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i)))
+    (t : TensorTree S c) : (eval i e t).tensor = (S.evalMap i e) t.tensor := rfl
 
 /-!
 
