@@ -47,6 +47,11 @@ structure TensorSpeciesStruct where
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   evalNo : C → ℕ
+  /-- Contraction is symmetric with respect to duals. -/
+  contr_tmul_symm (c : C) (x : FDiscrete.obj (Discrete.mk c))
+      (y : FDiscrete.obj (Discrete.mk (τ c))) :
+    (contr.app (Discrete.mk c)).hom (x ⊗ₜ[k] y) = (contr.app (Discrete.mk (τ c))).hom
+      (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
 
 noncomputable section
 

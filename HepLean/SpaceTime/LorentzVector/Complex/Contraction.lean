@@ -82,6 +82,10 @@ def contrCoContraction : complexContr ⊗ complexCo ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)
     rw [inv_mul_of_invertible (LorentzGroup.toComplex (SL2C.toLorentzGroup M))]
     simp
 
+lemma contrCoContraction_hom_tmul (ψ : complexContr) (φ : complexCo) :
+    contrCoContraction.hom (ψ ⊗ₜ φ) = ψ.toFin13ℂ ⬝ᵥ φ.toFin13ℂ := by
+  rfl
+
 /-- The linear map from complexCo ⊗ complexContr to ℂ given by
     summing over components of covariant Lorentz vector and
     contravariant Lorentz vector in the
@@ -95,6 +99,24 @@ def coContrContraction : complexCo ⊗ complexContr ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
     rw [inv_mul_of_invertible (LorentzGroup.toComplex (SL2C.toLorentzGroup M))]
     simp
+
+lemma coContrContraction_hom_tmul (φ : complexCo) (ψ : complexContr) :
+    coContrContraction.hom (φ ⊗ₜ ψ) = φ.toFin13ℂ ⬝ᵥ ψ.toFin13ℂ := by
+  rfl
+
+/-!
+
+## Symmetry
+
+-/
+
+lemma contrCoContraction_tmul_symm (φ : complexContr) (ψ : complexCo) :
+    contrCoContraction.hom (φ ⊗ₜ ψ) = coContrContraction.hom (ψ ⊗ₜ φ) := by
+  rw [contrCoContraction_hom_tmul, coContrContraction_hom_tmul, dotProduct_comm]
+
+lemma coContrContraction_tmul_symm (φ : complexCo) (ψ : complexContr) :
+    coContrContraction.hom (φ ⊗ₜ ψ) = contrCoContraction.hom (ψ ⊗ₜ φ) := by
+  rw [contrCoContraction_hom_tmul, coContrContraction_hom_tmul, dotProduct_comm]
 
 end Lorentz
 end

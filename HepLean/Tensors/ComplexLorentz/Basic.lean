@@ -143,6 +143,14 @@ def complexLorentzTensor : TensorSpeciesStruct where
     | Color.downR => 2
     | Color.up => 4
     | Color.down => 4
+  contr_tmul_symm := fun c =>
+    match c with
+    | Color.upL => Fermion.leftAltContraction_tmul_symm
+    | Color.downL => Fermion.altLeftContraction_tmul_symm
+    | Color.upR => Fermion.rightAltContraction_tmul_symm
+    | Color.downR => Fermion.altRightContraction_tmul_symm
+    | Color.up => Lorentz.contrCoContraction_tmul_symm
+    | Color.down => Lorentz.coContrContraction_tmul_symm
 
 instance : DecidableEq complexLorentzTensor.C := Fermion.instDecidableEqColor
 

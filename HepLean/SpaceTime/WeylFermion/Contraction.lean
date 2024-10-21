@@ -178,6 +178,10 @@ def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2
     simp only [one_mulVec, vec2_dotProduct, Fin.isValue, RightHandedModule.toFin2ℂEquiv_apply,
       AltRightHandedModule.toFin2ℂEquiv_apply]
 
+lemma rightAltContraction_hom_tmul (ψ : rightHanded) (φ : altRightHanded) :
+    rightAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
+  rfl
+
 /--
   The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
     summing over components of altRightHandedWeyl and rightHandedWeyl in the
@@ -203,63 +207,31 @@ def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2
     simp only [vecMul_one, vec2_dotProduct, Fin.isValue, AltRightHandedModule.toFin2ℂEquiv_apply,
       RightHandedModule.toFin2ℂEquiv_apply]
 
-lemma leftAltContraction_apply_symm (ψ : leftHanded) (φ : altLeftHanded) :
-    leftAltContraction.hom (ψ ⊗ₜ φ) = altLeftContraction.hom (φ ⊗ₜ ψ) := by
-  rw [altLeftContraction_hom_tmul, leftAltContraction_hom_tmul]
-  exact dotProduct_comm ψ.toFin2ℂ φ.toFin2ℂ
+lemma altRightContraction_hom_tmul (φ : altRightHanded) (ψ : rightHanded) :
+    altRightContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
+  rfl
 
-/-- A manifestation of the statement that `ψ ψ' = - ψ' ψ` where `ψ` and `ψ'`
-  are `leftHandedWeyl`. -/
-lemma leftAltContraction_apply_leftHandedAltEquiv (ψ ψ' : leftHanded) :
-    leftAltContraction.hom (ψ ⊗ₜ leftHandedAltEquiv.hom.hom ψ') =
-    - leftAltContraction.hom (ψ' ⊗ₜ leftHandedAltEquiv.hom.hom ψ) := by
-  rw [leftAltContraction_hom_tmul, leftAltContraction_hom_tmul,
-    leftHandedAltEquiv_hom_hom_apply, leftHandedAltEquiv_hom_hom_apply]
-  simp only [CategoryTheory.Monoidal.transportStruct_tensorUnit,
-    CategoryTheory.Equivalence.symm_functor, Action.functorCategoryEquivalence_inverse,
-    Action.FunctorCategoryEquivalence.inverse_obj_V, CategoryTheory.Monoidal.tensorUnit_obj,
-    cons_mulVec, cons_dotProduct, zero_mul, one_mul, dotProduct_empty, add_zero, zero_add, neg_mul,
-    empty_mulVec, LinearEquiv.apply_symm_apply, dotProduct_cons, mul_neg, neg_add_rev, neg_neg]
-  ring
+/-!
 
-/-- A manifestation of the statement that `φ φ' = - φ' φ` where `φ` and `φ'` are
-  `altLeftHandedWeyl`. -/
-lemma leftAltContraction_apply_leftHandedAltEquiv_inv (φ φ' : altLeftHanded) :
-    leftAltContraction.hom (leftHandedAltEquiv.inv.hom φ ⊗ₜ φ') =
-    - leftAltContraction.hom (leftHandedAltEquiv.inv.hom φ' ⊗ₜ φ) := by
-  rw [leftAltContraction_hom_tmul, leftAltContraction_hom_tmul,
-    leftHandedAltEquiv_inv_hom_apply, leftHandedAltEquiv_inv_hom_apply]
-  simp only [CategoryTheory.Monoidal.transportStruct_tensorUnit,
-    CategoryTheory.Equivalence.symm_functor, Action.functorCategoryEquivalence_inverse,
-    Action.FunctorCategoryEquivalence.inverse_obj_V, CategoryTheory.Monoidal.tensorUnit_obj,
-    cons_mulVec, cons_dotProduct, zero_mul, neg_mul, one_mul, dotProduct_empty, add_zero, zero_add,
-    empty_mulVec, LinearEquiv.apply_symm_apply, neg_add_rev, neg_neg]
-  ring
+## Symmetry properties
 
-informal_lemma leftAltWeylContraction_symm_altLeftWeylContraction where
-  math :≈ "The linear map altLeftWeylContraction is leftAltWeylContraction composed
-    with the braiding of the tensor product."
-  deps :≈ [``leftAltContraction, ``altLeftContraction]
+-/
 
-informal_lemma altLeftWeylContraction_invariant where
-  math :≈ "The contraction altLeftWeylContraction is invariant with respect to
-    the action of SL(2,C) on leftHandedWeyl and altLeftHandedWeyl."
-  deps :≈ [``altLeftContraction]
+lemma leftAltContraction_tmul_symm (ψ : leftHanded) (φ : altLeftHanded) :
+    leftAltContraction.hom (ψ ⊗ₜ[ℂ] φ) = altLeftContraction.hom (φ ⊗ₜ[ℂ] ψ) := by
+  rw [leftAltContraction_hom_tmul, altLeftContraction_hom_tmul, dotProduct_comm]
 
-informal_lemma rightAltWeylContraction_invariant where
-  math :≈ "The contraction rightAltWeylContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``rightAltContraction]
+lemma altLeftContraction_tmul_symm (φ : altLeftHanded) (ψ : leftHanded) :
+    altLeftContraction.hom (φ ⊗ₜ[ℂ] ψ) = leftAltContraction.hom (ψ ⊗ₜ[ℂ] φ) := by
+  rw [leftAltContraction_tmul_symm]
 
-informal_lemma rightAltWeylContraction_symm_altRightWeylContraction where
-  math :≈ "The linear map altRightWeylContraction is rightAltWeylContraction composed
-    with the braiding of the tensor product."
-  deps :≈ [``rightAltContraction, ``altRightContraction]
+lemma rightAltContraction_tmul_symm (ψ : rightHanded) (φ : altRightHanded) :
+    rightAltContraction.hom (ψ ⊗ₜ[ℂ] φ) = altRightContraction.hom (φ ⊗ₜ[ℂ] ψ) := by
+  rw [rightAltContraction_hom_tmul, altRightContraction_hom_tmul, dotProduct_comm]
 
-informal_lemma altRightWeylContraction_invariant where
-  math :≈ "The contraction altRightWeylContraction is invariant with respect to
-    the action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``altRightContraction]
+lemma altRightContraction_tmul_symm (φ : altRightHanded) (ψ : rightHanded) :
+    altRightContraction.hom (φ ⊗ₜ[ℂ] ψ) = rightAltContraction.hom (ψ ⊗ₜ[ℂ] φ) := by
+  rw [rightAltContraction_tmul_symm]
 
 end
 end Fermion
