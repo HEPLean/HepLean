@@ -108,6 +108,9 @@ syntax "(" tensorExpr ")" : tensorExpr
 /-- Scalar multiplication for tensors. -/
 syntax term "•" tensorExpr : tensorExpr
 
+/-- Negation of a tensor tree. -/
+syntax "-" tensorExpr : tensorExpr
+
 /-- Equality. -/
 syntax tensorExpr "=" tensorExpr : tensorExpr
 
@@ -372,6 +375,15 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
 
 end ProdNode
 
+namespace negNode
+
+/-- The syntax associated with a product of tensors. -/
+def negSyntax (T1 : Term) : Term :=
+  Syntax.mkApp (mkIdent ``TensorTree.neg) #[T1]
+
+end negNode
+
+
 /-- Returns the full list of indices after contraction. TODO: Include evaluation. -/
 partial def getIndicesFull (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   match stx with
@@ -380,6 +392,8 @@ partial def getIndicesFull (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)
   | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => do
       return (← ProdNode.withoutContr stx)
   | `(tensorExpr| ($a:tensorExpr)) => do
+      return (← getIndicesFull a)
+  | `(tensorExpr| -$a:tensorExpr) => do
       return (← getIndicesFull a)
   | _ =>
     throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
@@ -448,10 +462,13 @@ def equalSyntax (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
 /-- Creates the syntax associated with a tensor node. -/
 partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
-  | `(tensorExpr| $_:term | $[$args]*) => ProdNode.syntaxFull stx
+  | `(tensorExpr| $_:term | $[$args]*) =>
+    ProdNode.syntaxFull stx
   | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => ProdNode.syntaxFull stx
   | `(tensorExpr| ($a:tensorExpr)) => do
       return (← syntaxFull a)
+  | `(tensorExpr| -$a:tensorExpr) => do
+      return negNode.negSyntax (← syntaxFull a)
   | `(tensorExpr| $a:tensorExpr = $b:tensorExpr) => do
       let indicesLeft ← getIndicesLeft stx
       let indicesRight ← getIndicesRight stx
