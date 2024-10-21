@@ -59,7 +59,7 @@ instance : CommRing S.k := S.k_commRing
 instance : Group S.G := S.G_group
 
 /-- The lift of the functor `S.F` to a monoidal functor. -/
-def F : MonoidalFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
+def F : BraidedFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
 
 lemma F_def : F S = (OverColor.lift).obj S.FDiscrete := rfl
 
