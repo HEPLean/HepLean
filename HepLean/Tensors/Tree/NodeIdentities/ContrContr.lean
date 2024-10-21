@@ -233,7 +233,7 @@ lemma contrMapFst_contrMapSnd_swap :
   · nth_rewrite 1 [mul_comm]
     congr 1
     · congr 3
-      have h1' {a b d: Fin n.succ.succ.succ.succ} (hbd : b =d) (h : c d = S.τ (c a))
+      have h1' {a b d: Fin n.succ.succ.succ.succ} (hbd : b = d) (h : c d = S.τ (c a))
           (h' : c b = S.τ (c a)) :
           (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
           (S.FDiscrete.map (Discrete.eqToHom h')).hom (x b) := by
@@ -292,7 +292,7 @@ theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n
     (contr (ContrQuartet.mk i j k l hij hkl).swapK (ContrQuartet.mk i j k l hij hkl).swapL
     (ContrQuartet.mk i j k l hij hkl).swap.hkl (contr (ContrQuartet.mk i j k l hij hkl).swapI
     (ContrQuartet.mk i j k l hij hkl).swapJ
-    (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor := by
-  exact ContrQuartet.contr_contr (ContrQuartet.mk i j k l hij hkl) t
+    (ContrQuartet.mk i j k l hij hkl).swap.hij t))).tensor :=
+  (ContrQuartet.mk i j k l hij hkl).contr_contr t
 
 end TensorTree
