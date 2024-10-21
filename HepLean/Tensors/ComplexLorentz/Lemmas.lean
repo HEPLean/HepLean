@@ -74,14 +74,14 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
 
 set_option maxRecDepth 20000 in
 /-- Contracting a rank-2 anti-symmetric tensor with a rank-2 symmetric tensor gives zero. -/
-lemma symm_contract_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V)
-    (S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V)
+lemma antiSymm_contr_symm {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
+    {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
     (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
     {A | μ ν ⊗ S | μ ν}ᵀ.tensor = 0 := by
-  have hn {M : Type} [AddCommGroup M] [Module ℂ M] {x : M} (h : x = - x) : x = 0 := by
+  have h1 {M : Type} [AddCommGroup M] [Module ℂ M] {x : M} (h : x = - x) : x = 0 := by
     rw [eq_neg_iff_add_eq_zero, ← two_smul ℂ x] at h
     simpa using h
-  refine hn ?_
+  refine h1 ?_
   rw [← neg_tensor]
   rw [neg_perm] at hA
   nth_rewrite 1 [contr_tensor_eq (contr_tensor_eq (prod_tensor_eq_fst hA))]

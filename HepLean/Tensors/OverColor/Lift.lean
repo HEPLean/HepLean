@@ -457,9 +457,13 @@ lemma braided' (X Y : OverColor C) : (μ F X Y).hom ≫ (objMap' F) (β_ X Y).ho
     (β_ (objObj' F X) (objObj' F Y)).hom ≫ (μ F Y X).hom := by
   ext1
   apply HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp [CategoryStruct.comp]
-  change (objMap' F (β_ X Y).hom).hom ((μ F X Y).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q)) = (μ F Y X).hom.hom
-      ((PiTensorProduct.tprod k) q ⊗ₜ[k] (PiTensorProduct.tprod k) p)
+  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
+    instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
+    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V, LinearMap.coe_comp,
+    Function.comp_apply]
+  change (objMap' F (β_ X Y).hom).hom ((μ F X Y).hom.hom
+    ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q)) = (μ F Y X).hom.hom
+    ((PiTensorProduct.tprod k) q ⊗ₜ[k] (PiTensorProduct.tprod k) p)
   rw [μ_tmul_tprod, μ_tmul_tprod]
   erw [objMap'_tprod]
   apply congrArg
