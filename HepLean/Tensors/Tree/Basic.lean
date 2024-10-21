@@ -528,6 +528,18 @@ lemma perm_tensor_eq {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp only [perm_tensor]
   rw [h]
 
+/-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
+  This is used in some proofs of node identities for tensor trees. -/
+structure ContrPair {n : ℕ} (c : Fin n.succ.succ → S.C) where
+  /-- The first index in the pair, appearing on the left in the contraction
+    node `contr i j h _`. -/
+  i : Fin n.succ.succ
+  /-- The second index in the pair, appearing on the right in the contraction
+    node `contr i j h _`. -/
+  j : Fin n.succ
+  /-- A proof that the two indices can be contracted. -/
+  h : c (i.succAbove j) = S.τ (c i)
+
 end
 
 end TensorTree
