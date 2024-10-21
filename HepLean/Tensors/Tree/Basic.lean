@@ -516,6 +516,13 @@ lemma prod_tensor_eq_snd {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     Action.FunctorCategoryEquivalence.functor_obj_obj]
   rw [h]
 
+lemma perm_tensor_eq {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} {T1 T2 : TensorTree S c}
+    (h : T1.tensor = T2.tensor) :
+    (perm σ T1).tensor = (perm σ T2).tensor := by
+  simp only [perm_tensor]
+  rw [h]
+
 end
 
 end TensorTree

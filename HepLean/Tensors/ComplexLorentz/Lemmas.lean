@@ -7,6 +7,9 @@ import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.ComplexLorentz.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import HepLean.Tensors.Tree.NodeIdentities.Basic
+import HepLean.Tensors.Tree.NodeIdentities.PermProd
+import HepLean.Tensors.Tree.NodeIdentities.PermContr
+import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -52,6 +55,7 @@ lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
     erw [pairIsoSep_tmul]
     rfl
 
+/-- The covariant Lorentz metric is symmetric. -/
 lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, perm_tensor]
   rw [coMetric_expand]
@@ -67,8 +71,9 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
     match i with
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
-/-
-lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V)
+
+set_option maxRecDepth 20000 in
+lemma symm_contract_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V)
     (S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V)
     (hA : (twoNodeE complexLorentzTensor Color.up Color.up A).tensor =
       (TensorTree.neg (perm
@@ -77,14 +82,28 @@ lemma coMetric_prod_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr
     (hs : {S | μ ν = S | ν μ}ᵀ) : {A | μ ν ⊗ S | μ ν}ᵀ.tensor = 0 := by
   have h1 : {A | μ ν ⊗ S | μ ν}ᵀ.tensor = - {A | μ ν ⊗ S | μ ν}ᵀ.tensor := by
     nth_rewrite 1 [contr_tensor_eq (contr_tensor_eq (prod_tensor_eq_fst hA))]
+    nth_rewrite 1 [(contr_tensor_eq (contr_tensor_eq (prod_tensor_eq_snd hs)))]
     rw [contr_tensor_eq (contr_tensor_eq (neg_fst_prod _ _))]
     rw [contr_tensor_eq (neg_contr _)]
     rw [neg_contr]
     rw [neg_tensor]
     apply congrArg
-    sorry
-    sorry
-    -/
+    rw [contr_tensor_eq (contr_tensor_eq (prod_perm_left _ _ _ _))]
+    rw [contr_tensor_eq (perm_contr _ _)]
+    rw [perm_contr]
+    rw [perm_tensor_eq (contr_tensor_eq (contr_tensor_eq (prod_perm_right _ _ _ _)))]
+    rw [perm_tensor_eq (contr_tensor_eq (perm_contr _ _))]
+    rw [perm_tensor_eq (perm_contr _  _)]
+    rw [perm_perm]
+    nth_rewrite 1 [perm_tensor_eq (contr_contr _ _ _)]
+    rw [perm_perm]
+    rw [perm_eq_id]
+    · rfl
+    · apply OverColor.Hom.ext
+      rfl
+
+
+
 end Fermion
 
 end

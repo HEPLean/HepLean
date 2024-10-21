@@ -95,4 +95,10 @@ lemma perm_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C} {c2 : Fin n �
 lemma perm_id (t : TensorTree S c) : (perm (𝟙 (OverColor.mk c)) t).tensor = t.tensor := by
   simp [perm_tensor]
 
+/-- Applying a permutation which is equal to the identity permutation is the same
+  as not applying a permutation. -/
+lemma perm_eq_id {n : ℕ} {c : Fin n → S.C} (σ : (OverColor.mk c) ⟶ (OverColor.mk c))
+    (h : σ = 𝟙 _) (t : TensorTree S c) : (perm σ t).tensor = t.tensor := by
+  simp [perm_tensor, h]
+
 end TensorTree
