@@ -113,7 +113,8 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     · change _ = ((S.FDiscrete.map (Discrete.eqToHom _)) ≫ S.FDiscrete.map (Discrete.eqToHom _)).hom
         ( (x (q.swap.i.succAbove q.swap.j)))
       rw [← S.FDiscrete.map_comp]
-      simp
+      simp only [Nat.succ_eq_add_one, mk_hom, Discrete.functor_obj_eq_as, Function.comp_apply,
+        eqToHom_trans]
       have h1nn' {a b d: Fin n.succ.succ} (hbd : b = d) (h : c d = S.τ (S.τ (c a))):
           (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
           (S.FDiscrete.map (eqToHom (by
