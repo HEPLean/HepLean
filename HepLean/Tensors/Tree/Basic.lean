@@ -20,7 +20,7 @@ open MonoidalCategory
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors.
   Note: This structure is not fully defined yet. -/
-structure TensorStruct where
+structure TensorSpeciesStruct where
   /-- The colors of indices e.g. up or down. -/
   C : Type
   /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
@@ -50,10 +50,10 @@ structure TensorStruct where
 
 noncomputable section
 
-namespace TensorStruct
+namespace TensorSpeciesStruct
 open OverColor
 
-variable (S : TensorStruct)
+variable (S : TensorSpeciesStruct)
 
 instance : CommRing S.k := S.k_commRing
 
@@ -350,10 +350,10 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
       simp
     exact h1' h1
 
-end TensorStruct
+end TensorSpeciesStruct
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
+inductive TensorTree (S : TensorSpeciesStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node consisting of a single vector. -/
@@ -399,23 +399,23 @@ inductive TensorTree (S : TensorStruct) : ∀ {n : ℕ}, (Fin n → S.C) → Typ
 
 namespace TensorTree
 
-variable {S : TensorStruct} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
+variable {S : TensorSpeciesStruct} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
 open MonoidalCategory
 open TensorProduct
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
-abbrev twoNodeE (S : TensorStruct) (c1 c2 : S.C)
+abbrev twoNodeE (S : TensorSpeciesStruct) (c1 c2 : S.C)
     (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
 /-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
-abbrev constTwoNodeE (S : TensorStruct) (c1 c2 : S.C)
+abbrev constTwoNodeE (S : TensorSpeciesStruct) (c1 c2 : S.C)
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
 
 /-- The node `constThreeNodeE` of a tensor tree, with all arguments explicit. -/
-abbrev constThreeNodeE (S : TensorStruct) (c1 c2 c3 : S.C)
+abbrev constThreeNodeE (S : TensorSpeciesStruct) (c1 c2 c3 : S.C)
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
       S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
     constThreeNode v

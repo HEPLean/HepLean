@@ -19,7 +19,7 @@ open HepLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorStruct} {n n' n2 : ℕ}
+variable {S : TensorSpeciesStruct} {n n' n2 : ℕ}
     {c : Fin n → S.C} {c' : Fin n' → S.C} (c2 : Fin n2 → S.C)
     (σ : OverColor.mk c ⟶ OverColor.mk c')
 

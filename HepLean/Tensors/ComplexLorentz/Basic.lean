@@ -81,7 +81,7 @@ instance : DecidableEq Color := fun x y =>
 noncomputable section
 
 /-- The tensor structure for complex Lorentz tensors. -/
-def complexLorentzTensor : TensorStruct where
+def complexLorentzTensor : TensorSpeciesStruct where
   C := Fermion.Color
   G := SL(2, ℂ)
   G_group := inferInstance
