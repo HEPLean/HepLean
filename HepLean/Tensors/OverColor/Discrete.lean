@@ -49,7 +49,7 @@ def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverCol
     rfl
 
 /-- The isomorphism between `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2)` and
-  `(lift.obj F).obj (OverColor.mk ![c1,c2])` fored by the tensorate.  -/
+  `(lift.obj F).obj (OverColor.mk ![c1,c2])` fored by the tensorate. -/
 def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ≅
     (lift.obj F).obj (OverColor.mk ![c1,c2]) := by
   symm
