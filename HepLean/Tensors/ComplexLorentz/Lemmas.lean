@@ -59,7 +59,7 @@ lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
 lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, perm_tensor]
   rw [coMetric_expand]
-  simp only [TensorSpeciesStruct.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
+  simp only [TensorSpecies.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
     map_sub]
   congr 1
   congr 1

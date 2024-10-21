@@ -22,7 +22,7 @@ open TensorProduct
 
 namespace TensorTree
 
-variable {S : TensorSpeciesStruct}
+variable {S : TensorSpecies}
 
 /-!
 

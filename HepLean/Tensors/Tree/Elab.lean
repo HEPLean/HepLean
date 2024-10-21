@@ -487,7 +487,7 @@ elab_rules (kind:=tensorExprSyntax) : term
     let tensorTree ← elaborateTensorNode e
     return tensorTree
 
-variable {S : TensorSpeciesStruct} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4))
+variable {S : TensorSpecies} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4))
   {c5 : Fin 5 → S.C} (T5 : S.F.obj (OverColor.mk c5)) (a : S.k)
 
 variable (𝓣 : TensorTree S c4)

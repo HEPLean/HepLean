@@ -21,7 +21,7 @@ open HepLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpeciesStruct}
+variable {S : TensorSpecies}
 
 /-- A structure containing two pairs of indices (i, j) and (k, l) to be sequentially
   contracted in a tensor. -/
@@ -168,7 +168,7 @@ lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).
     (x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove q.swap.l))))))) •
     ((lift.obj S.FDiscrete).map q.contrSwapHom).hom ((PiTensorProduct.tprod S.k) fun k =>
     x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove (q.swap.l.succAbove k)))))) := by
-  rw [contrMapSnd,TensorSpeciesStruct.contrMap_tprod]
+  rw [contrMapSnd,TensorSpecies.contrMap_tprod]
   change ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
     (_ • ((PiTensorProduct.tprod S.k) fun k =>
         x (q.swap.i.succAbove (q.swap.j.succAbove
@@ -214,7 +214,7 @@ lemma contrMapFst_contrMapSnd_swap :
     (S.F.map q.contrSwapHom).hom
     (q.swap.contrMapSnd.hom ((S.contrMap c q.swap.i q.swap.j _).hom
     ((PiTensorProduct.tprod S.k) x)))
-  rw [TensorSpeciesStruct.contrMap_tprod, TensorSpeciesStruct.contrMap_tprod]
+  rw [TensorSpecies.contrMap_tprod, TensorSpecies.contrMap_tprod]
   simp only [Nat.succ_eq_add_one, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as,
@@ -226,7 +226,7 @@ lemma contrMapFst_contrMapSnd_swap :
     ((lift.obj S.FDiscrete).map q.contrSwapHom).hom
       (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k)
       fun k => x (q.swap.i.succAbove (q.swap.j.succAbove k))))
-  rw [contrMapSnd, TensorSpeciesStruct.contrMap_tprod, q.contrSwapHom_contrMapSnd_tprod]
+  rw [contrMapSnd, TensorSpecies.contrMap_tprod, q.contrSwapHom_contrMapSnd_tprod]
   rw [smul_smul, smul_smul]
   congr 1
   /- The contractions. -/

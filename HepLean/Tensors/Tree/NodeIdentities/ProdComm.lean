@@ -19,7 +19,7 @@ open HepLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpeciesStruct} {n n2 : ℕ}
+variable {S : TensorSpecies} {n n2 : ℕ}
     (c : Fin n → S.C) (c2 : Fin n2 → S.C)
 
 /-- The permutation that arises when moving a commuting terms in a `prod` node.
