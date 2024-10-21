@@ -96,7 +96,7 @@ lemma symm_contract_antiSymm (A : (Lorentz.complexContr ⊗ Lorentz.complexContr
   rw [perm_contr]
   rw [perm_tensor_eq (contr_tensor_eq (contr_tensor_eq (prod_perm_right _ _ _ _)))]
   rw [perm_tensor_eq (contr_tensor_eq (perm_contr _ _))]
-  rw [perm_tensor_eq (perm_contr _  _)]
+  rw [perm_tensor_eq (perm_contr _ _)]
   rw [perm_perm]
   nth_rewrite 1 [perm_tensor_eq (contr_contr _ _ _)]
   rw [perm_perm]

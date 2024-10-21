@@ -240,7 +240,7 @@ lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
   rfl
 
 /-- Given an equivalence `Fin n.succ.succ ≃ Fin n.succ.succ`, and an `i : Fin n.succ.succ`,
-  the map  `Fin n.succ → Fin n.succ` obtained by dropping `i` and it's image. -/
+  the map `Fin n.succ → Fin n.succ` obtained by dropping `i` and it's image. -/
 def finExtractOnPermHom (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ) :
     Fin n.succ → Fin n.succ := fun x => predAboveI (σ i) (σ ((finExtractOne i).symm (Sum.inr x)))
 
@@ -269,7 +269,7 @@ lemma finExtractOnPermHom_inv (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fi
   omega
 
 /-- Given an equivalence `Fin n.succ.succ ≃ Fin n.succ.succ`, and an `i : Fin n.succ.succ`,
-  the equivalence  `Fin n.succ ≃ Fin n.succ` obtained by dropping `i` and it's image. -/
+  the equivalence `Fin n.succ ≃ Fin n.succ` obtained by dropping `i` and it's image. -/
 def finExtractOnePerm (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ) :
     Fin n.succ ≃ Fin n.succ where
   toFun x := finExtractOnPermHom i σ x
