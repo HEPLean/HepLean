@@ -40,6 +40,10 @@ def complexCo : Rep ℂ SL(2, ℂ) := Rep.of CoℂModule.SL2CRep
 def complexContrBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexContr := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ ContrℂModule.toFin13ℂFun)
 
+/-- The standard basis of complex contravariant Lorentz vectors indexed by `Fin 4`. -/
+def complexContrBasisFin4 : Basis (Fin 4) ℂ complexContr :=
+  Basis.reindex complexContrBasis finSumFinEquiv
+
 @[simp]
 lemma complexContrBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
     (LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M) i j =
@@ -57,6 +61,10 @@ lemma complexContrBasis_ρ_val (M : SL(2,ℂ)) (v : complexContr) :
 /-- The standard basis of complex covariant Lorentz vectors. -/
 def complexCoBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexCo := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ CoℂModule.toFin13ℂFun)
+
+/-- The standard basis of complex covariant Lorentz vectors indexed by `Fin 4`. -/
+def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
+  Basis.reindex complexCoBasis finSumFinEquiv
 
 @[simp]
 lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
