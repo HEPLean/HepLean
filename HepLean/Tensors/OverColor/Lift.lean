@@ -10,10 +10,10 @@ import HepLean.Mathematics.PiTensorProduct
 ## Lifting functors.
 
 There is a functor from functors `Discrete C ⥤ Rep k G` to
-monoidal functors `MonoidalFunctor (OverColor C) (Rep k G)`.
+braided monoidal functors `BraidedFunctor (OverColor C) (Rep k G)`.
 We call this functor `lift`. It is a lift in the
 sense that it is a section of the forgetful functor
-`MonoidalFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G)`.
+`BraidedFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G)`.
 
 Functors in `Discrete C ⥤ Rep k G` form the basic building blocks of tensor structures.
 The fact that they extend to monoidal functors `OverColor C ⥤ Rep k G` allows us to
@@ -453,48 +453,86 @@ lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
     LinearEquiv.ofLinear_apply]
   rfl
 
-/-- The `MonoidalFunctor (OverColor C) (Rep k G)` from a functor `Discrete C ⥤ Rep k G`. -/
-def obj' : MonoidalFunctor (OverColor C) (Rep k G) where
+lemma braided' (X Y : OverColor C)  : (μ F X Y).hom ≫  (objMap' F) (β_ X Y).hom =
+    (β_ (objObj' F X) (objObj' F Y)).hom ≫ (μ F Y X).hom := by
+  ext1
+  apply HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
+  simp [CategoryStruct.comp]
+  change (objMap' F (β_ X Y).hom).hom ((μ F X Y).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q)) = (μ F Y X).hom.hom
+      ((PiTensorProduct.tprod k) q ⊗ₜ[k] (PiTensorProduct.tprod k) p)
+  rw [μ_tmul_tprod, μ_tmul_tprod]
+  erw [objMap'_tprod]
+  apply congrArg
+  funext i
+  match i with
+  | Sum.inl i =>
+    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inl,
+      instMonoidalCategoryStruct_tensorObj_left, discreteFunctorMapEqIso, eqToIso_refl,
+      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+    rfl
+  | Sum.inr i =>
+    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inr,
+      instMonoidalCategoryStruct_tensorObj_left, discreteFunctorMapEqIso, eqToIso_refl,
+      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+    rfl
+
+lemma braided (X Y : OverColor C) :
+    (objMap' F) (β_ X Y).hom = (μ F X Y).inv ≫
+    ((β_ (objObj' F X) (objObj' F Y)).hom ≫ (μ F Y X).hom) :=
+  (Iso.eq_inv_comp (μ F X Y)).mpr (braided' F X Y)
+
+lemma objMap'_id (X : OverColor C) : objMap' F (𝟙 X) = 𝟙 _ := by
+  ext x
+  refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
+    simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+      Function.comp_apply, hy])
+  simp only [CategoryTheory.Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
+    _root_.map_smul, Action.id_hom, ModuleCat.id_apply]
+  apply congrArg
+  erw [mapToLinearEquiv'_tprod]
+  simp only [objObj'_V_carrier, discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl,
+    Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+  exact congrArg _ (funext (fun i => rfl))
+
+lemma objMap'_comp {X Y Z : OverColor C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    objMap' F (f ≫ g) = objMap' F f ≫ objMap' F g := by
+  ext x
+  refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
+    simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+      Function.comp_apply, hy])
+  simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, _root_.map_smul,
+    Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
+  apply congrArg
+  rw [objMap', objMap', objMap']
+  change (mapToLinearEquiv' F (CategoryTheory.CategoryStruct.comp f g))
+    ((PiTensorProduct.tprod k) x) =
+    (mapToLinearEquiv' F g) ((mapToLinearEquiv' F f) ((PiTensorProduct.tprod k) x))
+  rw [mapToLinearEquiv'_tprod, mapToLinearEquiv'_tprod]
+  erw [mapToLinearEquiv'_tprod]
+  refine congrArg _ (funext (fun i => ?_))
+  simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
+    eqToIso.inv, LinearEquiv.ofLinear_apply]
+  rw [discreteFun_hom_trans]
+  rfl
+
+/-- The `BraidedFunctor (OverColor C) (Rep k G)` from a functor `Discrete C ⥤ Rep k G`. -/
+def obj' : BraidedFunctor (OverColor C) (Rep k G) where
   obj := objObj' F
   map := objMap' F
   ε := (ε F).hom
   μ X Y := (μ F X Y).hom
-  map_id f := by
-    ext x
-    refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
-      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
-        Function.comp_apply, hy])
-    simp only [CategoryTheory.Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
-      _root_.map_smul, Action.id_hom, ModuleCat.id_apply]
-    apply congrArg
-    erw [mapToLinearEquiv'_tprod]
-    simp only [objObj'_V_carrier, discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl,
-      Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
-    exact congrArg _ (funext (fun i => rfl))
-  map_comp {X Y Z} f g := by
-    ext x
-    refine PiTensorProduct.induction_on' x (fun r x => ?_) (fun x y hx hy => by
-      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
-        Function.comp_apply, hy])
-    simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, _root_.map_smul,
-      Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
-    apply congrArg
-    rw [objMap', objMap', objMap']
-    change (mapToLinearEquiv' F (CategoryTheory.CategoryStruct.comp f g))
-      ((PiTensorProduct.tprod k) x) =
-      (mapToLinearEquiv' F g) ((mapToLinearEquiv' F f) ((PiTensorProduct.tprod k) x))
-    rw [mapToLinearEquiv'_tprod, mapToLinearEquiv'_tprod]
-    erw [mapToLinearEquiv'_tprod]
-    refine congrArg _ (funext (fun i => ?_))
-    simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
-      eqToIso.inv, LinearEquiv.ofLinear_apply]
-    rw [discreteFun_hom_trans]
-    rfl
+  map_id f := objMap'_id F f
+  map_comp {X Y Z} f g := objMap'_comp F f g
   μ_natural_left := μ_natural_left F
   μ_natural_right := μ_natural_right F
   associativity := associativity F
   left_unitality := left_unitality F
   right_unitality := right_unitality F
+  braided X Y := by
+    change (objMap' F) (β_ X Y).hom  = _
+    rw [braided F X Y]
+    congr
+    simp_all only [IsIso.Iso.inv_hom]
 
 variable {F F' : Discrete C ⥤ Rep k G} (η : F ⟶ F')
 
@@ -608,8 +646,8 @@ end
 end lift
 
 /-- The functor taking functors in `Discrete C ⥤ Rep k G` to monoidal functors in
-  `MonoidalFunctor (OverColor C) (Rep k G)`, built on the PiTensorProduct. -/
-noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ MonoidalFunctor (OverColor C) (Rep k G) where
+  `BraidedFunctor (OverColor C) (Rep k G)`, built on the PiTensorProduct. -/
+noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ BraidedFunctor (OverColor C) (Rep k G) where
   obj F := lift.obj' F
   map η := lift.map' η
   map_id F := by
@@ -686,9 +724,9 @@ end lift
 def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
   OverColor.mk (fun (_ : Fin 1) => c)
 
-/-- The forgetful map from `MonoidalFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
+/-- The forgetful map from `BraidedFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
   built on the inclusion `incl` and forgetting the monoidal structure. -/
-def forget : MonoidalFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G) where
+def forget : BraidedFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G) where
   obj F := Discrete.functor fun c => F.obj (incl.obj (Discrete.mk c))
   map η := Discrete.natTrans fun c => η.app (incl.obj c)
 
