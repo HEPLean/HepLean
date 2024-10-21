@@ -453,7 +453,7 @@ lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
     LinearEquiv.ofLinear_apply]
   rfl
 
-lemma braided' (X Y : OverColor C)  : (μ F X Y).hom ≫  (objMap' F) (β_ X Y).hom =
+lemma braided' (X Y : OverColor C) : (μ F X Y).hom ≫ (objMap' F) (β_ X Y).hom =
     (β_ (objObj' F X) (objObj' F Y)).hom ≫ (μ F Y X).hom := by
   ext1
   apply HepLean.PiTensorProduct.induction_tmul (fun p q => ?_)
@@ -529,7 +529,7 @@ def obj' : BraidedFunctor (OverColor C) (Rep k G) where
   left_unitality := left_unitality F
   right_unitality := right_unitality F
   braided X Y := by
-    change (objMap' F) (β_ X Y).hom  = _
+    change (objMap' F) (β_ X Y).hom = _
     rw [braided F X Y]
     congr
     simp_all only [IsIso.Iso.inv_hom]
@@ -684,6 +684,7 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ BraidedFunctor (OverColor 
     rfl
 
 namespace lift
+variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
 
 lemma map_tprod (F : Discrete C ⥤ Rep k G) {X Y : OverColor C} (f : X ⟶ Y)
     (p : (i : X.left) → F.obj (Discrete.mk <| X.hom i)) :
@@ -718,6 +719,12 @@ lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
   match i with
   | Sum.inl i => rfl
   | Sum.inr i => rfl
+
+@[simp]
+lemma inv_μ (X Y : OverColor C) : inv ((lift.obj F).μ X Y) =
+    (lift.μ F X Y).inv := by
+  change inv (lift.μ F X Y).hom = _
+  exact IsIso.Iso.inv_hom (μ F X Y)
 
 end lift
 /-- The natural inclusion of `Discrete C` into `OverColor C`. -/
