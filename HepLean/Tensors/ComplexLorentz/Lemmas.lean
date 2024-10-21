@@ -89,7 +89,8 @@ lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     rw [perm_perm]
     rw [perm_eq_id]
     · rfl
-    · rfl
+    · apply OverColor.Hom.ext
+      rfl
   · apply OverColor.Hom.ext
     ext x
     exact Fin.elim0 x
@@ -104,6 +105,7 @@ lemma contr_rank_2_symm' {T1 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
   ext x
   exact Fin.elim0 x
 
+set_option maxRecDepth 20000 in
 /-- Contracting a rank-2 anti-symmetric tensor with a rank-2 symmetric tensor gives zero. -/
 lemma antiSymm_contr_symm {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
@@ -120,7 +122,20 @@ lemma antiSymm_contr_symm {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V
   rw [contr_tensor_eq (contr_tensor_eq (neg_fst_prod _ _))]
   rw [contr_tensor_eq (neg_contr _)]
   rw [neg_contr]
-  rfl
+  rw [neg_tensor]
+  apply congrArg
+  rw [contr_tensor_eq (contr_tensor_eq (prod_perm_left _ _ _ _))]
+  rw [contr_tensor_eq (perm_contr _ _)]
+  rw [perm_contr]
+  rw [perm_tensor_eq (contr_tensor_eq (contr_tensor_eq (prod_perm_right _ _ _ _)))]
+  rw [perm_tensor_eq (contr_tensor_eq (perm_contr _ _))]
+  rw [perm_tensor_eq (perm_contr _ _)]
+  rw [perm_perm]
+  nth_rewrite 1 [perm_tensor_eq (contr_contr _ _ _)]
+  rw [perm_perm]
+  rw [perm_eq_id]
+  · rfl
+  · rfl
 
 lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
     {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}

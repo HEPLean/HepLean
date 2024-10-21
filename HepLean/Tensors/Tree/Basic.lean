@@ -448,6 +448,7 @@ noncomputable section
   Note: This function is not fully defined yet. -/
 def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
+  | twoNode t => (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom t
   | constTwoNode t => (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (t.hom (1 : S.k))
   | add t1 t2 => t1.tensor + t2.tensor
   | perm σ t => (S.F.map σ).hom t.tensor
