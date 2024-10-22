@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Basic
+import HepLean.Tensors.Tree.NodeIdentities.Basic
 /-!
 
 # Associativity of products
@@ -103,5 +104,11 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     ModuleCat.coe_comp, Function.comp_apply]
   rfl
+
+/-- The alternative version of associativity for `prod` where the permutation is on the opposite
+  side. -/
+lemma prod_assoc' (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree S c3) :
+    (prod (prod t t2) t3).tensor = (perm (assocPerm c c2 c3).inv (prod t (prod t2 t3))).tensor :=
+  perm_eq_of_eq_perm _ (prod_assoc c c2 c3 t t2 t3).symm
 
 end TensorTree

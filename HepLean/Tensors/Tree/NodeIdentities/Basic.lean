@@ -107,6 +107,14 @@ lemma perm_eq_id {n : ℕ} {c : Fin n → S.C} (σ : (OverColor.mk c) ⟶ (OverC
     (h : σ = 𝟙 _) (t : TensorTree S c) : (perm σ t).tensor = t.tensor := by
   simp [perm_tensor, h]
 
+lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ≅ (OverColor.mk c1))
+    {t : TensorTree S c} {t2 : TensorTree S c1} (h : (perm σ.hom t).tensor = t2.tensor) :
+    t.tensor = (perm σ.inv t2).tensor := by
+  rw [perm_tensor, ← h]
+  change _ = (S.F.map σ.hom ≫ S.F.map σ.inv).hom _
+  simp only [Iso.map_hom_inv_id, Action.id_hom, ModuleCat.id_apply]
+
 /-!
 
 ## Additive identities
