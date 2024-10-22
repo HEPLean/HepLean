@@ -12,6 +12,7 @@ import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.ProdComm
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
+import LLMLean
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -35,19 +36,45 @@ namespace Fermion
 example : 0 < complexLorentzTensor.repDim (![Color.down] 0):= by decide
 
 
+def coCoBasis (b : Fin 4 × Fin 4) :
+    complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down]) :=
+  PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasisFin4 b.1)
+  (fun i => Fin.cases (Lorentz.complexCoBasisFin4 b.2) (fun i => i.elim0) i) i)
+
+
+lemma coCoBasis_eval (e1 e2 : Fin (complexLorentzTensor.repDim Color.down)) (i : Fin 4 × Fin 4) :
+    complexLorentzTensor.castFin0ToField
+      ((complexLorentzTensor.evalMap 0 e2) ((complexLorentzTensor.evalMap 0 e1) (coCoBasis i))) =
+    if i = (e1, e2) then 1 else 0 := by
+  simp only [coCoBasis]
+  have h1 := @TensorSpecies.evalMap_tprod complexLorentzTensor _ (![Color.down, Color.down]) 0 e1
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Functor.id_obj,
+      OverColor.mk_hom, Function.comp_apply, cons_val_zero, Fin.cases_zero,  Fin.cases_succ] at h1
+  erw [h1]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Functor.id_obj, OverColor.mk_hom,
+    Fin.cases_zero, Fin.cases_succ, _root_.map_smul, smul_eq_mul]
+  erw [TensorSpecies.evalMap_tprod]
+  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.succAbove_zero, Functor.id_obj,
+    OverColor.mk_hom, Function.comp_apply, Fin.succ_zero_eq_one, cons_val_one, head_cons,
+    Fin.cases_zero, Fin.zero_succAbove, Fin.cases_succ, _root_.map_smul, smul_eq_mul]
+  erw [complexLorentzTensor.castFin0ToField_tprod]
+  simp only [Fin.isValue, mul_one]
+  change (Lorentz.complexCoBasisFin4.repr (Lorentz.complexCoBasisFin4 i.1)) e1 *
+    (Lorentz.complexCoBasisFin4.repr (Lorentz.complexCoBasisFin4 i.2)) e2  = _
+  simp only [Basis.repr_self]
+  rw [Finsupp.single_apply, Finsupp.single_apply]
+  rw [@ite_zero_mul_ite_zero]
+  simp
+  congr
+  simp_all only [Fin.isValue, Fin.succAbove_zero, Fin.zero_succAbove, eq_iff_iff]
+  obtain ⟨fst, snd⟩ := i
+  simp_all only [Fin.isValue, Prod.mk.injEq]
+
 lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
-    (PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inl 0))
-        (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inl 0)) (fun i => i.elim0) i) i) :
-        complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down]))
-    - (PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 0))
-        (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 0)) (fun i => i.elim0) i) i) :
-        complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down]))
-    - (PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 1))
-        (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 1)) (fun i => i.elim0) i) i) :
-        complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down]))
-    - (PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 2))
-        (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inr 2)) (fun i => i.elim0) i) i) :
-        complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down])) := by
+    coCoBasis (0, 0)
+    - coCoBasis (1, 1)
+    - coCoBasis (2, 2)
+    - coCoBasis (3, 3):= by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     Functor.id_obj, Fin.isValue]
@@ -57,7 +84,9 @@ lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
   congr 1
   congr 1
   all_goals
-    erw [pairIsoSep_tmul]
+    erw [pairIsoSep_tmul, coCoBasis]
+    simp only [Nat.reduceAdd, Nat.succ_eq_add_one, OverColor.mk_hom, Functor.id_obj, Fin.isValue,
+      Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
     rfl
 
 /-- The covariant Lorentz metric is symmetric. -/
@@ -66,16 +95,27 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
   rw [coMetric_expand]
   simp only [TensorSpecies.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
     map_sub]
+  simp only [coCoBasis, Nat.reduceAdd, Nat.succ_eq_add_one, OverColor.mk_hom, Functor.id_obj, Fin.isValue,
+      Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
   congr 1
   congr 1
   congr 1
   all_goals
     erw [OverColor.lift.map_tprod]
-    apply congrArg
+    congr 1
     funext i
     match i with
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
+
+lemma coMetric_0_0_field : {Lorentz.coMetric | 0 0}ᵀ.field  = 1 := by
+  rw [field, eval_tensor, eval_tensor, coMetric_expand]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+    Function.comp_apply, Fin.succ_zero_eq_one, cons_val_one, head_cons, Fin.ofNat'_zero,
+    cons_val_zero, Functor.id_obj, OverColor.mk_hom, map_sub]
+  rw [coCoBasis_eval, coCoBasis_eval, coCoBasis_eval, coCoBasis_eval]
+  simp only [Fin.isValue, Prod.mk_zero_zero, ↓reduceIte, Prod.mk_one_one, one_ne_zero, sub_zero,
+    Prod.mk_eq_zero, Fin.reduceEq, and_self]
 
 set_option maxRecDepth 20000 in
 lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
@@ -148,12 +188,6 @@ lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
   rw [perm_tensor]
   rw [antiSymm_contr_symm hA hs]
   rfl
-
-variable (p : Lorentz.complexCo) (q : Lorentz.complexContr)
-
-lemma contr_rank_1_expand (p : Lorentz.complexCo) (q : Lorentz.complexContr) :
-    {p | μ ⊗ q | μ = p | 0}ᵀ := by
-  sorry
 
 end Fermion
 

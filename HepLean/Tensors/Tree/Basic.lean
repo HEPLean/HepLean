@@ -246,6 +246,14 @@ def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
 /-- Casts an element of the monoidal unit of `Rep S.k S.G` to the field `S.k`. -/
 def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep S.k S.G)).obj { as := c }).V)) : S.k := v
 
+def castFin0ToField {c : Fin 0 → S.C} : (S.F.obj (OverColor.mk c)).V →ₗ[S.k] S.k :=
+  (PiTensorProduct.isEmptyEquiv (Fin 0)).toLinearMap
+
+lemma castFin0ToField_tprod {c : Fin 0 → S.C} (x : (i : Fin 0) → S.FDiscrete.obj (Discrete.mk (c i))) :
+    castFin0ToField S (PiTensorProduct.tprod S.k x) = 1 := by
+  simp [castFin0ToField]
+  erw [PiTensorProduct.isEmptyEquiv_apply_tprod]
+
 lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i))
     (x : (i : Fin n.succ.succ) → S.FDiscrete.obj (Discrete.mk (c i))) :
@@ -594,6 +602,8 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor
+
+def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
 
 /-!
 

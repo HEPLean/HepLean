@@ -474,7 +474,6 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
 
 /-- An elaborator for tensor nodes. This is to be generalized. -/
 def elaborateTensorNode (stx : Syntax) : TermElabM Expr := do
-  println! "{(← syntaxFull stx)}"
   let tensorExpr ← elabTerm (← syntaxFull stx) none
   return tensorExpr
 
