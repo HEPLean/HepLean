@@ -176,63 +176,50 @@ def stringToTerm (str : String) : TermElabM Term := do
     match stx with
     | `(term| $e) => return e
 
+def specialTypes : List (String × (Term → Term)) := [
+  ("CoeSort.coe Lorentz.complexCo", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.down, T]),
+  ("CoeSort.coe Lorentz.complexContr", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.up, T]),
+  ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexCo).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.down, T]),
+  ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexContr).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.up, T]),
+  ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexCo).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]),
+  ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexContr).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.up, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexCo ⊗ Lorentz.complexCo", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
+        mkIdent ``Fermion.Color.down, T])]
+
 /-- The syntax associated with a terminal node of a tensor tree. -/
 def termNodeSyntax (T : Term) : TermElabM Term := do
   let expr ← elabTerm T none
   let type ← inferType expr
-  let strType := toString type
-  let n := (String.splitOn strType "CategoryTheory.MonoidalCategoryStruct.tensorObj").length
-  let const := (String.splitOn strType "Quiver.Hom").length
-  match ← isDefEq type (← stringToType "CoeSort.coe Lorentz.complexCo") with
-  | true =>
-    return Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.down, T]
+  let defEqList ← specialTypes.filterM (fun x => do
+    let type' ← stringToType x.1
+    let defEq ← isDefEq type type'
+    return defEq)
+  match defEqList with
+  | [(_, f)] =>
+    return f T
   | _ =>
-  match ← isDefEq type (← stringToType "CoeSort.coe Lorentz.complexContr") with
-  | true =>
-    return Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.up, T]
-  | _ =>
-  match n, const with
-  | 1, 1 =>
-    match type with
-    | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
-      let typeC ← inferType c
-      match typeC with
-      | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal _))) _)) _ _ =>
-        return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
-      | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
-    | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
-  | 2, 1 =>
-    match ← isDefEq type (← stringToType
-      "CoeSort.coe leftHanded ⊗ CoeSort.coe Lorentz.complexContr") with
-    | true => return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE)
-                #[mkIdent ``Fermion.complexLorentzTensor,
-                mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.up, T]
-    | _ =>
-    match ← isDefEq type (← stringToType "ModuleCat.carrier
-      (Lorentz.complexContr ⊗ Lorentz.complexContr).V") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.up, T]
-    | _ =>
-    match ← isDefEq type (← stringToType "ModuleCat.carrier
-      (Lorentz.complexCo ⊗ Lorentz.complexCo).V") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]
-    | _ =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNode) #[T]
-  | 1, 2 => return Syntax.mkApp (mkIdent ``TensorTree.constVecNode) #[T]
-  | 2, 2 =>
-    match ← isDefEq type (← stringToType
-      "𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexCo ⊗ Lorentz.complexCo") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
-        mkIdent ``Fermion.Color.down, T]
-    | _ => return Syntax.mkApp (mkIdent ``TensorTree.constTwoNode) #[T]
-  | _, _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
+  match type with
+  | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
+    let typeC ← inferType c
+    match typeC with
+    | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal _))) _)) _ _ =>
+      return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
+    | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
+  | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
 
 /-- Adjusts a list `List ℕ` by subtracting from each natrual number the number
   of elements before it in the list which are less then itself. This is used
