@@ -146,6 +146,9 @@ lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
   rw [antiSymm_contr_symm hA hs]
   rfl
 
+lemma contr_rank_1_expand (p : Lorentz.complexCo) (q : Lorentz.complexContr) :
+    {(p | μ ⊗ q | μ) = p | 0}ᵀ := by
+  sorry
 end Fermion
 
 end

@@ -143,6 +143,14 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => 2
     | Color.up => 4
     | Color.down => 4
+  repDim_neZero := fun c =>
+    match c with
+    | Color.upL => inferInstance
+    | Color.downL => inferInstance
+    | Color.upR => inferInstance
+    | Color.downR => inferInstance
+    | Color.up => inferInstance
+    | Color.down => inferInstance
   basis := fun c =>
     match c with
     | Color.upL => Fermion.leftBasis

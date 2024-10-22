@@ -46,6 +46,8 @@ structure TensorSpecies where
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   repDim : C → ℕ
+  /-- repDim is not zero for any color. This allows casting of `ℕ` to `Fin (S.repDim c)`. -/
+  repDim_neZero (c : C) : NeZero (repDim c)
   /-- A basis for each Module, determined by the evaluation map. -/
   basis : (c : C) → Basis (Fin (repDim c)) k (FDiscrete.obj (Discrete.mk c)).V
   /-- Contraction is symmetric with respect to duals. -/
@@ -64,6 +66,8 @@ variable (S : TensorSpecies)
 instance : CommRing S.k := S.k_commRing
 
 instance : Group S.G := S.G_group
+
+instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 
 /-- The lift of the functor `S.F` to a monoidal functor. -/
 def F : BraidedFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
@@ -528,7 +532,7 @@ inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Ty
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
   | eval {n : ℕ} {c : Fin n.succ → S.C} :
-    (i : Fin n.succ) → (x : Fin (S.repDim (c i))) → TensorTree S c →
+    (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
@@ -537,6 +541,11 @@ variable {S : TensorSpecies} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
 open MonoidalCategory
 open TensorProduct
+
+/-- The node `vecNode` of a tensor tree, with all arguments explicit. -/
+abbrev vecNodeE (S : TensorSpecies) (c1 : S.C)
+    (v : (S.FDiscrete.obj (Discrete.mk c1)).V) :
+    TensorTree S ![c1] := vecNode v
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
 abbrev twoNodeE (S : TensorSpecies) (c1 c2 : S.C)
@@ -587,7 +596,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
-  | eval i e t => (S.evalMap i e) t.tensor
+  | eval i e t => (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor
   | _ => 0
 
 /-!
@@ -623,8 +632,8 @@ lemma contr_tensor {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
 
 lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 
-lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i)))
-    (t : TensorTree S c) : (eval i e t).tensor = (S.evalMap i e) t.tensor := rfl
+lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ)
+    (t : TensorTree S c) : (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
 
 /-!
 
