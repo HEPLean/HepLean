@@ -75,6 +75,16 @@ lemma neg_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (perm σ (neg t)).tensor = (neg (perm σ t)).tensor := by
   simp only [perm_tensor, neg_tensor, map_neg]
 
+@[simp]
+lemma neg_add (t : TensorTree S c) : (add (neg t) t).tensor = 0 := by
+  rw [add_tensor, neg_tensor]
+  simp only [neg_add_cancel]
+
+@[simp]
+lemma add_neg (t : TensorTree S c) : (add t (neg t)).tensor = 0 := by
+  rw [add_tensor, neg_tensor]
+  simp only [add_neg_cancel]
+
 /-!
 
 ## Basic perm identities
@@ -96,5 +106,37 @@ lemma perm_id (t : TensorTree S c) : (perm (𝟙 (OverColor.mk c)) t).tensor = t
 lemma perm_eq_id {n : ℕ} {c : Fin n → S.C} (σ : (OverColor.mk c) ⟶ (OverColor.mk c))
     (h : σ = 𝟙 _) (t : TensorTree S c) : (perm σ t).tensor = t.tensor := by
   simp [perm_tensor, h]
+
+/-!
+
+## Additive identities
+
+These identities are related to the fact that all the maps are linear.
+
+-/
+
+/-- The addition node is commutative. -/
+lemma add_comm (t1 t2 : TensorTree S c) : (add t1 t2).tensor = (add t2 t1).tensor := by
+  simp only [add_tensor]
+  exact AddCommMagma.add_comm t1.tensor t2.tensor
+
+/-- The addition node is associative. -/
+lemma add_assoc (t1 t2 t3 : TensorTree S c) :
+    (add (add t1 t2) t3).tensor = (add t1 (add t2 t3)).tensor := by
+  simp only [add_tensor]
+  exact _root_.add_assoc t1.tensor t2.tensor t3.tensor
+
+/-- When the same permutation acts on both arguments of an addition, the permutation
+  can be moved out of the addition. -/
+lemma add_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
+    (add (perm σ t) (perm σ t1)).tensor = (perm σ (add t t1)).tensor := by
+  simp only [add_tensor, perm_tensor, map_add]
+
+/-- When the same evaluation acts on both arguments of an addition, the evaluation
+  can be moved out of the addition. -/
+lemma add_eval {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t t1 : TensorTree S c) :
+    (add (eval i e t) (eval i e t1)).tensor = (eval i e (add t t1)).tensor := by
+  simp only [add_tensor, eval_tensor, Nat.succ_eq_add_one, map_add]
 
 end TensorTree

@@ -263,6 +263,8 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
   return indFilt.filter (fun x => indFilt.count x ≤ 1)
 
+end TensorNode
+
 /-- Takes a list and puts conseutive elements into pairs.
   e.g. [0, 1, 2, 3] becomes [(0, 1), (2, 3)]. -/
 def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
@@ -287,23 +289,6 @@ def contrSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
   (contrListAdjust l).foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
     #[Syntax.mkNumLit (toString x0),
     Syntax.mkNumLit (toString x1), mkIdent ``rfl, T']) T
-
-/-- Creates the syntax associated with a tensor node. -/
-def syntaxFull (stx : Syntax) : TermElabM Term := do
-  match stx with
-  | `(tensorExpr| $T:term | $[$args]*) => do
-      let indices ← getIndices stx
-      let rawIndex ← getNoIndicesExact T
-      if indices.length ≠ rawIndex then
-        throwError "The expected number of indices {rawIndex} does not match the tensor {T}."
-      let tensorNodeSyntax ← termNodeSyntax T
-      let evalSyntax := evalSyntax (← getEvalPos stx) tensorNodeSyntax
-      let contrSyntax := contrSyntax (← getContrPos stx) evalSyntax
-      return contrSyntax
-  | _ =>
-    throwError "Unsupported tensor expression syntax in elaborateTensorNode: {stx}"
-
-end TensorNode
 
 namespace ProdNode
 
@@ -346,76 +331,17 @@ def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
   return ind.filter (fun x => indFilt.count x ≤ 1)
 
-/-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
-def contrSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
-  (TensorNode.contrListAdjust l).foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
-    #[Syntax.mkNumLit (toString x0), Syntax.mkNumLit (toString x1), mkIdent ``rfl, T']) T
-
 /-- The syntax associated with a product of tensors. -/
 def prodSyntax (T1 T2 : Term) : Term :=
   Syntax.mkApp (mkIdent ``TensorTree.prod) #[T1, T2]
 
-/-- The full term taking tensor syntax into a term for products and single tensor nodes. -/
-partial def syntaxFull (stx : Syntax) : TermElabM Term := do
-  match stx with
-  | `(tensorExpr| $_:term | $[$args]*) => TensorNode.syntaxFull stx
-  | `(tensorExpr| $a:tensorExpr ⊗ $b:tensorExpr) => do
-      let prodSyntax := prodSyntax (← syntaxFull a) (← syntaxFull b)
-      let contrSyntax := contrSyntax (← getContrPos stx) prodSyntax
-      return contrSyntax
-  | `(tensorExpr| ($a:tensorExpr)) => do
-      return (← syntaxFull a)
-  | _ =>
-    throwError "Unsupported tensor expression syntax in elaborateTensorNode: {stx}"
-
 end ProdNode
-
-namespace negNode
-
-/-- The syntax associated with a product of tensors. -/
-def negSyntax (T1 : Term) : Term :=
-  Syntax.mkApp (mkIdent ``TensorTree.neg) #[T1]
-
-end negNode
-
-/-- Returns the full list of indices after contraction. TODO: Include evaluation. -/
-partial def getIndicesFull (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
-  match stx with
-  | `(tensorExpr| $_:term | $[$args]*) => do
-      return (← TensorNode.withoutContr stx)
-  | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => do
-      return (← ProdNode.withoutContr stx)
-  | `(tensorExpr| ($a:tensorExpr)) => do
-      return (← getIndicesFull a)
-  | `(tensorExpr| -$a:tensorExpr) => do
-      return (← getIndicesFull a)
-  | _ =>
-    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
-
-namespace Equality
 
 /-!
 
-## For equality.
+## Permutation constructions
 
 -/
-
-/-- Gets the indices associated with the LHS of an equality. -/
-partial def getIndicesLeft (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
-  match stx with
-  | `(tensorExpr| $a:tensorExpr = $_:tensorExpr) => do
-      return (← getIndicesFull a)
-  | _ =>
-    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
-
-/-- Gets the indices associated with the RHS of an equality. -/
-partial def getIndicesRight (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
-  match stx with
-  | `(tensorExpr| $_:tensorExpr = $a:tensorExpr) => do
-      return (← getIndicesFull a)
-  | _ =>
-    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
-
 /-- Given two lists of indices returns the `List (ℕ)` representing the how one list
   permutes into the other. -/
 def getPermutation (l1 l2 : List (TSyntax `indexExpr)) : TermElabM (List (ℕ)) := do
@@ -445,6 +371,80 @@ def getPermutationSyntax (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term :=
   let stx := Syntax.mkApp (mkIdent ``finMapToEquiv) #[P1, P2]
   return stx
 
+namespace negNode
+
+/-- The syntax associated with a product of tensors. -/
+def negSyntax (T1 : Term) : Term :=
+  Syntax.mkApp (mkIdent ``TensorTree.neg) #[T1]
+
+end negNode
+
+/-- Returns the full list of indices after contraction. TODO: Include evaluation. -/
+partial def getIndicesFull (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
+  match stx with
+  | `(tensorExpr| $_:term | $[$args]*) => do
+      return (← TensorNode.withoutContr stx)
+  | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => do
+      return (← ProdNode.withoutContr stx)
+  | `(tensorExpr| ($a:tensorExpr)) => do
+      return (← getIndicesFull a)
+  | `(tensorExpr| -$a:tensorExpr) => do
+      return (← getIndicesFull a)
+  | `(tensorExpr| $a:tensorExpr + $_:tensorExpr) => do
+      return (← getIndicesFull a)
+  | _ =>
+    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
+
+namespace Add
+
+/-- Gets the indices associated with the LHS of an addition. -/
+partial def getIndicesLeft (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
+  match stx with
+  | `(tensorExpr| $a:tensorExpr + $_:tensorExpr) => do
+      return (← getIndicesFull a)
+  | _ =>
+    throwError "Unsupported tensor expression syntax in Add.getIndicesLeft: {stx}"
+
+/-- Gets the indices associated with the RHS of an addition. -/
+partial def getIndicesRight (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
+  match stx with
+  | `(tensorExpr| $_:tensorExpr + $a:tensorExpr) => do
+      return (← getIndicesFull a)
+  | _ =>
+    throwError "Unsupported tensor expression syntax in Add.getIndicesRight: {stx}"
+
+/-- The syntax for a equality of tensor trees. -/
+def addSyntax (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
+  let P := Syntax.mkApp (mkIdent ``OverColor.equivToHomEq) #[permSyntax]
+  let RHS := Syntax.mkApp (mkIdent ``TensorTree.perm) #[P, T2]
+  return Syntax.mkApp (mkIdent ``add) #[T1, RHS]
+
+end Add
+
+namespace Equality
+
+/-!
+
+## For equality.
+
+-/
+
+/-- Gets the indices associated with the LHS of an equality. -/
+partial def getIndicesLeft (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
+  match stx with
+  | `(tensorExpr| $a:tensorExpr = $_:tensorExpr) => do
+      return (← getIndicesFull a)
+  | _ =>
+    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
+
+/-- Gets the indices associated with the RHS of an equality. -/
+partial def getIndicesRight (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
+  match stx with
+  | `(tensorExpr| $_:tensorExpr = $a:tensorExpr) => do
+      return (← getIndicesFull a)
+  | _ =>
+    throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
+
 /-- The syntax for a equality of tensor trees. -/
 def equalSyntax (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
   let X1 := Syntax.mkApp (mkIdent ``TensorTree.tensor) #[T1]
@@ -453,22 +453,39 @@ def equalSyntax (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
   let X2 := Syntax.mkApp (mkIdent ``TensorTree.tensor) #[X2']
   return Syntax.mkApp (mkIdent ``Eq) #[X1, X2]
 
+end Equality
+
 /-- Creates the syntax associated with a tensor node. -/
 partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
-  | `(tensorExpr| $_:term | $[$args]*) =>
-    ProdNode.syntaxFull stx
-  | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => do
-      return ← ProdNode.syntaxFull stx
+  | `(tensorExpr| $T:term | $[$args]*) =>
+      let indices ← TensorNode.getIndices stx
+      let rawIndex ← TensorNode.getNoIndicesExact T
+      if indices.length ≠ rawIndex then
+        throwError "The expected number of indices {rawIndex} does not match the tensor {T}."
+      let tensorNodeSyntax ← TensorNode.termNodeSyntax T
+      let evalSyntax := TensorNode.evalSyntax (← TensorNode.getEvalPos stx) tensorNodeSyntax
+      let contrSyntax := contrSyntax (← TensorNode.getContrPos stx) evalSyntax
+      return contrSyntax
+  | `(tensorExpr| $a:tensorExpr ⊗ $b:tensorExpr) => do
+      let prodSyntax := ProdNode.prodSyntax (← syntaxFull a) (← syntaxFull b)
+      let contrSyntax := contrSyntax (← ProdNode.getContrPos stx) prodSyntax
+      return contrSyntax
   | `(tensorExpr| ($a:tensorExpr)) => do
       return (← syntaxFull a)
   | `(tensorExpr| -$a:tensorExpr) => do
       return negNode.negSyntax (← syntaxFull a)
-  | `(tensorExpr| $a:tensorExpr = $b:tensorExpr) => do
-      let indicesLeft ← getIndicesLeft stx
-      let indicesRight ← getIndicesRight stx
+  | `(tensorExpr| $a + $b) => do
+      let indicesLeft ← Add.getIndicesLeft stx
+      let indicesRight ← Add.getIndicesRight stx
       let permSyntax ← getPermutationSyntax indicesLeft indicesRight
-      let equalSyntax ← equalSyntax permSyntax (← syntaxFull a) (← syntaxFull b)
+      let addSyntax ← Add.addSyntax permSyntax (← syntaxFull a) (← syntaxFull b)
+      return addSyntax
+  | `(tensorExpr| $a:tensorExpr = $b:tensorExpr) => do
+      let indicesLeft ← Equality.getIndicesLeft stx
+      let indicesRight ← Equality.getIndicesRight stx
+      let permSyntax ← getPermutationSyntax indicesLeft indicesRight
+      let equalSyntax ← Equality.equalSyntax permSyntax (← syntaxFull a) (← syntaxFull b)
       return equalSyntax
   | _ =>
     throwError "Unsupported tensor expression syntax in elaborateTensorNode: {stx}"
@@ -485,25 +502,5 @@ elab_rules (kind:=tensorExprSyntax) : term
   | `(term| {$e:tensorExpr}ᵀ) => do
     let tensorTree ← elaborateTensorNode e
     return tensorTree
-
-variable {S : TensorSpecies} {c4 : Fin 4 → S.C} (T4 : S.F.obj (OverColor.mk c4))
-  {c5 : Fin 5 → S.C} (T5 : S.F.obj (OverColor.mk c5)) (a : S.k)
-
-variable (𝓣 : TensorTree S c4)
-
-/-!
-
-# Checks
-
--/
-
-/-
-#tensor_dot {T4 | i j τ(l) d ⊗ T5 | i j k m m}ᵀ.dot
-
-#check {T4 | i j l d ⊗ T5 | i j k a b}ᵀ
-
-#check {(T4 | i j l a ⊗ T5 | i j k c d) ⊗ T5 | i1 i2 i3 e f}ᵀ
--/
-end Equality
 
 end TensorTree

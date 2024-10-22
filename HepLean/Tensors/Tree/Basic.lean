@@ -684,6 +684,27 @@ lemma perm_tensor_eq {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp only [perm_tensor]
   rw [h]
 
+lemma add_tensor_eq_fst {T1 T1' T2 : TensorTree S c} (h : T1.tensor = T1'.tensor) :
+    (add T1 T2).tensor = (add T1' T2).tensor := by
+  simp only [add_tensor]
+  rw [h]
+
+lemma add_tensor_eq_snd {T1 T2 T2' : TensorTree S c} (h : T2.tensor = T2'.tensor) :
+    (add T1 T2).tensor = (add T1 T2').tensor := by
+  simp only [add_tensor]
+  rw [h]
+
+lemma add_tensor_eq {T1 T1' T2 T2' : TensorTree S c} (h1 : T1.tensor = T1'.tensor)
+    (h2 : T2.tensor = T2'.tensor) :
+    (add T1 T2).tensor = (add T1' T2').tensor := by
+  simp only [add_tensor]
+  rw [h1, h2]
+
+lemma neg_tensor_eq {T1 T2 : TensorTree S c} (h : T1.tensor = T2.tensor) :
+    (neg T1).tensor = (neg T2).tensor := by
+  simp only [neg_tensor]
+  rw [h]
+
 /-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
   This is used in some proofs of node identities for tensor trees. -/
 structure ContrPair {n : ℕ} (c : Fin n.succ.succ → S.C) where
