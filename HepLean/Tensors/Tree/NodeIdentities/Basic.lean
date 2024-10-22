@@ -130,7 +130,7 @@ lemma add_assoc (t1 t2 t3 : TensorTree S c) :
   can be moved out of the addition. -/
 lemma add_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
-    (add (perm σ t) (perm σ t1)).tensor = (perm σ (add t t1)).tensor  := by
+    (add (perm σ t) (perm σ t1)).tensor = (perm σ (add t t1)).tensor := by
   simp only [add_tensor, perm_tensor, map_add]
 
 /-- When the same evaluation acts on both arguments of an addition, the evaluation
