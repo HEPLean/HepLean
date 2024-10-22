@@ -122,4 +122,5 @@ import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.PermProd
+import HepLean.Tensors.Tree.NodeIdentities.ProdAssoc
 import HepLean.Tensors.Tree.NodeIdentities.ProdComm
