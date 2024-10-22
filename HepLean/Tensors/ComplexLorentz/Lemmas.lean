@@ -115,7 +115,7 @@ lemma coMetric_0_0_field : {Lorentz.coMetric | 0 0}ᵀ.field = 1 := by
 set_option maxRecDepth 20000 in
 lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     {T2 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V} :
-    {(T1 | μ ν ⊗ T2 | μ ν) = (T2 | μ ν ⊗ T1 | μ ν)}ᵀ := by
+    {T1 | μ ν ⊗ T2 | μ ν = T2 | μ ν ⊗ T1 | μ ν}ᵀ := by
   rw [perm_tensor_eq (contr_tensor_eq (contr_tensor_eq (prod_comm _ _ _ _)))]
   rw [perm_tensor_eq (contr_tensor_eq (perm_contr _ _))]
   rw [perm_tensor_eq (perm_contr _ _)]
@@ -134,7 +134,7 @@ lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
 
 lemma contr_rank_2_symm' {T1 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
     {T2 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V} :
-    {(T1 | μ ν ⊗ T2 | μ ν) = (T2 | μ ν ⊗ T1 | μ ν)}ᵀ := by
+    {T1 | μ ν ⊗ T2 | μ ν = T2 | μ ν ⊗ T1 | μ ν}ᵀ := by
   rw [perm_tensor_eq contr_rank_2_symm]
   rw [perm_perm]
   rw [perm_eq_id]
@@ -180,6 +180,13 @@ lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
     {S | μ ν ⊗ A | μ ν}ᵀ.tensor = 0 := by
   rw [contr_rank_2_symm', perm_tensor, antiSymm_contr_symm hA hs]
   rfl
+
+lemma antiSymm_add_self {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
+    (hA : {A | μ ν = - (A | ν μ)}ᵀ) :
+    {A | μ ν + A | ν μ}ᵀ.tensor = 0 := by
+  rw [← TensorTree.add_neg (twoNodeE complexLorentzTensor Color.up Color.up A)]
+  apply TensorTree.add_tensor_eq_snd
+  rw [neg_tensor_eq hA, neg_tensor_eq (neg_perm _ _), neg_neg]
 
 end Fermion
 
