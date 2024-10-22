@@ -10,7 +10,6 @@ import HepLean.Tensors.Tree.Basic
 
 The results here follow from the properties of braided categories and braided functors.
 -/
-
 open IndexNotation
 open CategoryTheory
 open MonoidalCategory
@@ -20,31 +19,32 @@ open HepLean.Fin
 namespace TensorTree
 
 variable {S : TensorSpecies} {n n2 n3 : ℕ}
-    (c : Fin n → S.C) (c2 : Fin n2 → S.C) (c3 : Fin n3 → S.C )
+    (c : Fin n → S.C) (c2 : Fin n2 → S.C) (c3 : Fin n3 → S.C)
 
 /-- The permutation that arises from assocativity of `prod` node.
   This permutation is defined using braiding and composition with `finSumFinEquiv`
   based-isomorphisms. -/
-def assocPerm :  OverColor.mk (Sum.elim (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm) c3 ∘ ⇑finSumFinEquiv.symm) ≅
+def assocPerm : OverColor.mk
+    (Sum.elim (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm) c3 ∘ ⇑finSumFinEquiv.symm) ≅
     OverColor.mk (Sum.elim c (Sum.elim c2 c3 ∘ ⇑finSumFinEquiv.symm) ∘ ⇑finSumFinEquiv.symm) :=
   (equivToIso finSumFinEquiv).symm.trans <|
   (whiskerRightIso (equivToIso finSumFinEquiv).symm (OverColor.mk c3)).trans <|
-  (α_ (OverColor.mk c) (OverColor.mk c2) (OverColor.mk c3)).trans  <|
-  (whiskerLeftIso  (OverColor.mk c) (equivToIso finSumFinEquiv)).trans <|
-  (equivToIso finSumFinEquiv)
+  (α_ (OverColor.mk c) (OverColor.mk c2) (OverColor.mk c3)).trans <|
+  (whiskerLeftIso (OverColor.mk c) (equivToIso finSumFinEquiv)).trans <|
+  equivToIso finSumFinEquiv
 
 lemma finSumFinEquiv_comp_assocPerm :
     (equivToIso finSumFinEquiv).hom ≫ (assocPerm c c2 c3).hom =
     (whiskerRightIso (equivToIso finSumFinEquiv).symm (OverColor.mk c3)).hom ≫
     (α_ (OverColor.mk c) (OverColor.mk c2) (OverColor.mk c3)).hom ≫
-    (whiskerLeftIso  (OverColor.mk c) (equivToIso finSumFinEquiv)).hom
+    (whiskerLeftIso (OverColor.mk c) (equivToIso finSumFinEquiv)).hom
     ≫ (equivToIso finSumFinEquiv).hom := by
   rw [assocPerm]
   simp
 
-/-- The  `prod` obeys associativity. -/
+/-- The `prod` obeys associativity. -/
 theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree S c3) :
-     (prod t (prod t2 t3)).tensor = (perm (assocPerm c c2 c3).hom (prod (prod t t2) t3)).tensor := by
+    (prod t (prod t2 t3)).tensor = (perm (assocPerm c c2 c3).hom (prod (prod t t2) t3)).tensor := by
   rw [perm_tensor]
   nth_rewrite 2 [prod_tensor]
   change _ = ((S.F.map (equivToIso finSumFinEquiv).hom) ≫ S.F.map (assocPerm c c2 c3).hom).hom
@@ -94,10 +94,10 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
     Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.associator_hom_apply]
   rw [prod_tensor]
-  change ((_ ◁ (S.F.map (equivToIso finSumFinEquiv).hom) ) ≫
+  change ((_ ◁ (S.F.map (equivToIso finSumFinEquiv).hom)) ≫
     S.F.μ (OverColor.mk c) (OverColor.mk (Sum.elim c2 c3 ∘ ⇑finSumFinEquiv.symm))).hom
     (t.tensor ⊗ₜ[S.k]
-    ((S.F.μ (OverColor.mk c2) (OverColor.mk c3)).hom (t2.tensor ⊗ₜ[S.k] t3.tensor)))  = _
+    ((S.F.μ (OverColor.mk c2) (OverColor.mk c3)).hom (t2.tensor ⊗ₜ[S.k] t3.tensor))) = _
   rw [S.F.μ_natural_right]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
