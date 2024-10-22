@@ -49,7 +49,7 @@ def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverCol
     rfl
 
 /-- The isomorphism between `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2)` and
-  `(lift.obj F).obj (OverColor.mk ![c1,c2])` fored by the tensorate. -/
+  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensorate. -/
 def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ≅
     (lift.obj F).obj (OverColor.mk ![c1,c2]) := by
   symm
@@ -110,6 +110,17 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
       instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj,
       HepLean.PiTensorProduct.elimPureTensor]
     exact (LinearEquiv.eq_symm_apply _).mp rfl
+
+/-- The isomorphism between
+  `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3)` and
+  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensorate. -/
+def tripleIsoSep {c1 c2 c3 : C} :
+    F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3) ≅
+    (lift.obj F).obj (OverColor.mk ![c1,c2,c3]) :=
+  (whiskerLeftIso (F.obj (Discrete.mk c1)) (pairIsoSep F (c1 := c2) (c2 := c3))).trans <|
+  (whiskerRightIso (forgetLiftApp F c1).symm _).trans <|
+  ((lift.obj F).μIso _ _).trans <|
+  (lift.obj F).mapIso fin3Iso'.symm
 
 /-- The functor taking `c` to `F c ⊗ F (τ c)`. -/
 def pairτ (τ : C → C) : Discrete C ⥤ Rep k G :=
