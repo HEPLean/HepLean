@@ -223,7 +223,6 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
         mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]
     | _ =>
       return Syntax.mkApp (mkIdent ``TensorTree.twoNode) #[T]
-  | 3, 1 => return Syntax.mkApp (mkIdent ``TensorTree.threeNode) #[T]
   | 1, 2 => return Syntax.mkApp (mkIdent ``TensorTree.constVecNode) #[T]
   | 2, 2 =>
     match ← isDefEq type (← stringToType
@@ -233,16 +232,6 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
         mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
         mkIdent ``Fermion.Color.down, T]
     | _ => return Syntax.mkApp (mkIdent ``TensorTree.constTwoNode) #[T]
-  | 3, 2 =>
-    /- Specific types. -/
-    match ← isDefEq type (← stringToType
-      "𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Fermion.leftHanded ⊗ Fermion.rightHanded") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constThreeNodeE) #[
-        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.up,
-        mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.upR, T]
-    | _ =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constThreeNode) #[T]
   | _, _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
 
 /-- Adjusts a list `List ℕ` by subtracting from each natrual number the number

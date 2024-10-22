@@ -20,20 +20,6 @@ namespace TensorTree
 def dotString (m : ℕ) (nt : ℕ) : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → String := fun
   | tensorNode _ =>
     " node" ++ toString m ++ " [label=\"T" ++ toString nt ++ "\"];\n"
-  | vecNode T =>
-    " node" ++ toString m ++ " [label=\"vec " ++ toString nt ++ "\"];\n"
-  | twoNode T =>
-    " node" ++ toString m ++ " [label=\"vec2\", shape=box];\n"
-  | threeNode T =>
-    " node" ++ toString m ++ " [label=\"vec3\", shape=box];\n"
-  | constNode T =>
-    " node" ++ toString m ++ " [label=\"const " ++ toString nt ++ "\"];\n"
-  | constVecNode T =>
-    " node" ++ toString m ++ " [label=\"constVec " ++ toString nt ++ "\"];\n"
-  | constTwoNode T =>
-    " node" ++ toString m ++ " [label=\"constVec2\", shape=box];\n"
-  | constThreeNode T =>
-    " node" ++ toString m ++ " [label=\"constVec3\", shape=box];\n"
   | add t1 t2 =>
     let addNode := " node" ++ toString m ++ " [label=\"+\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"

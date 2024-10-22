@@ -32,6 +32,9 @@ noncomputable section
 
 namespace Fermion
 
+example : 0 < complexLorentzTensor.repDim (![Color.down] 0):= by decide
+
+
 lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
     (PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inl 0))
         (fun i => Fin.cases (Lorentz.complexCoBasis (Sum.inl 0)) (fun i => i.elim0) i) i) :
@@ -146,9 +149,12 @@ lemma symm_contr_antiSymm {S : (Lorentz.complexCo ⊗ Lorentz.complexCo).V}
   rw [antiSymm_contr_symm hA hs]
   rfl
 
+variable (p : Lorentz.complexCo) (q : Lorentz.complexContr)
+
 lemma contr_rank_1_expand (p : Lorentz.complexCo) (q : Lorentz.complexContr) :
-    {(p | μ ⊗ q | μ) = p | 0}ᵀ := by
+    {p | μ ⊗ q | μ = p | 0}ᵀ := by
   sorry
+
 end Fermion
 
 end
