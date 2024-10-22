@@ -135,7 +135,7 @@ def complexLorentzTensor : TensorSpecies where
     | Discrete.mk Color.downR => Fermion.rightAltRightUnit
     | Discrete.mk Color.up => Lorentz.coContrUnit
     | Discrete.mk Color.down => Lorentz.contrCoUnit
-  evalNo := fun c =>
+  repDim := fun c =>
     match c with
     | Color.upL => 2
     | Color.downL => 2
@@ -143,6 +143,22 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => 2
     | Color.up => 4
     | Color.down => 4
+  repDim_neZero := fun c =>
+    match c with
+    | Color.upL => inferInstance
+    | Color.downL => inferInstance
+    | Color.upR => inferInstance
+    | Color.downR => inferInstance
+    | Color.up => inferInstance
+    | Color.down => inferInstance
+  basis := fun c =>
+    match c with
+    | Color.upL => Fermion.leftBasis
+    | Color.downL => Fermion.altLeftBasis
+    | Color.upR => Fermion.rightBasis
+    | Color.downR => Fermion.altRightBasis
+    | Color.up => Lorentz.complexContrBasisFin4
+    | Color.down => Lorentz.complexCoBasisFin4
   contr_tmul_symm := fun c =>
     match c with
     | Color.upL => Fermion.leftAltContraction_tmul_symm

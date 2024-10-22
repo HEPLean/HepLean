@@ -765,7 +765,7 @@ between the objects obtained by applying the lift of `F` and that obtained by ap
 `F`. -/
 def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c))
     ≅ F.obj (Discrete.mk c) :=
-    Action.mkIso (forgetLiftAppV F c).toModuleIso
+  Action.mkIso (forgetLiftAppV F c).toModuleIso
   (fun g => by
     refine LinearMap.ext (fun x => ?_)
     simp only [forgetLiftAppV, Fin.isValue, LinearEquiv.toModuleIso_hom]
@@ -781,6 +781,14 @@ def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c
     erw [lift.objObj'_ρ_tprod]
     erw [PiTensorProduct.subsingletonEquiv_apply_tprod]
     rfl)
+
+lemma forgetLiftApp_hom_hom_apply_eq (c : C)
+    (x : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c)))
+    (y : (F.obj (Discrete.mk c)).V) :
+    (forgetLiftApp F c).hom.hom x = y ↔ x = PiTensorProduct.tprod k (fun _ => y) := by
+  rw [← forgetLiftAppV_symm_apply]
+  erw [LinearEquiv.eq_symm_apply]
+  rfl
 
 informal_definition forgetLift where
   math :≈ "The natural isomorphism between `lift (C := C) ⋙ forget` and

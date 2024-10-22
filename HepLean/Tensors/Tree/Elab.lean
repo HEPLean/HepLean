@@ -96,8 +96,11 @@ declare_syntax_cat tensorExpr
 /-- The syntax for a tensor node. -/
 syntax term "|" (ppSpace indexExpr)* : tensorExpr
 
+/-- Equality. -/
+syntax:40 tensorExpr "=" tensorExpr:41 : tensorExpr
+
 /-- The syntax for tensor prod two tensor nodes. -/
-syntax tensorExpr "⊗" tensorExpr : tensorExpr
+syntax:70 tensorExpr "⊗" tensorExpr:71 : tensorExpr
 
 /-- The syntax for tensor addition. -/
 syntax tensorExpr "+" tensorExpr : tensorExpr
@@ -110,9 +113,6 @@ syntax term "•" tensorExpr : tensorExpr
 
 /-- Negation of a tensor tree. -/
 syntax "-" tensorExpr : tensorExpr
-
-/-- Equality. -/
-syntax tensorExpr "=" tensorExpr : tensorExpr
 
 namespace TensorNode
 
@@ -129,7 +129,7 @@ We also want to ensure the number of indices is correct.
 
 -/
 
-/-- The indices of a tensor node. Before contraction, dualisation, and evaluation. -/
+/-- The indices of a tensor node. Before contraction, and evaluation. -/
 partial def getIndices (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   match stx with
   | `(tensorExpr| $_:term | $[$args]*) => do
@@ -176,64 +176,61 @@ def stringToTerm (str : String) : TermElabM Term := do
     match stx with
     | `(term| $e) => return e
 
+/-- Specific types of tensors which appear which we want to elaborate in specific ways. -/
+def specialTypes : List (String × (Term → Term)) := [
+  ("CoeSort.coe Lorentz.complexCo", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.down, T]),
+  ("CoeSort.coe Lorentz.complexContr", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.up, T]),
+  ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexCo).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.down, T]),
+  ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexContr).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.up, T]),
+  ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexCo).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]),
+  ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexContr).V", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
+        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.up, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexCo ⊗ Lorentz.complexCo", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
+        mkIdent ``Fermion.Color.down, T])]
+
 /-- The syntax associated with a terminal node of a tensor tree. -/
 def termNodeSyntax (T : Term) : TermElabM Term := do
   let expr ← elabTerm T none
   let type ← inferType expr
-  let strType := toString type
-  let n := (String.splitOn strType "CategoryTheory.MonoidalCategoryStruct.tensorObj").length
-  let const := (String.splitOn strType "Quiver.Hom").length
-  match n, const with
-  | 1, 1 =>
-    match type with
-    | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
-      let typeC ← inferType c
-      match typeC with
-      | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal _))) _)) _ _ =>
-        return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
-      | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
-    | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
-  | 2, 1 =>
-    match ← isDefEq type (← stringToType
-      "CoeSort.coe leftHanded ⊗ CoeSort.coe Lorentz.complexContr") with
-    | true => return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE)
-                #[mkIdent ``Fermion.complexLorentzTensor,
-                mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.up, T]
-    | _ =>
-    match ← isDefEq type (← stringToType "ModuleCat.carrier
-      (Lorentz.complexContr ⊗ Lorentz.complexContr).V") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.up, T]
-    | _ =>
-    match ← isDefEq type (← stringToType "ModuleCat.carrier
-      (Lorentz.complexCo ⊗ Lorentz.complexCo).V") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]
-    | _ =>
-      return Syntax.mkApp (mkIdent ``TensorTree.twoNode) #[T]
-  | 3, 1 => return Syntax.mkApp (mkIdent ``TensorTree.threeNode) #[T]
-  | 1, 2 => return Syntax.mkApp (mkIdent ``TensorTree.constVecNode) #[T]
-  | 2, 2 =>
-    match ← isDefEq type (← stringToType
-      "𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexCo ⊗ Lorentz.complexCo") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.down,
-        mkIdent ``Fermion.Color.down, T]
-    | _ => return Syntax.mkApp (mkIdent ``TensorTree.constTwoNode) #[T]
-  | 3, 2 =>
-    /- Specific types. -/
-    match ← isDefEq type (← stringToType
-      "𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Fermion.leftHanded ⊗ Fermion.rightHanded") with
-    | true =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constThreeNodeE) #[
-        mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.up,
-        mkIdent ``Fermion.Color.upL, mkIdent ``Fermion.Color.upR, T]
-    | _ =>
-      return Syntax.mkApp (mkIdent ``TensorTree.constThreeNode) #[T]
-  | _, _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
+  let defEqList ← specialTypes.filterM (fun x => do
+    let type' ← stringToType x.1
+    let defEq ← isDefEq type type'
+    return defEq)
+  match defEqList with
+  | [(_, f)] =>
+    return f T
+  | _ =>
+  match type with
+  | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
+    let typeC ← inferType c
+    match typeC with
+    | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal _))) _)) _ _ =>
+      return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
+    | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
+  | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
+
+/-- Adjusts a list `List ℕ` by subtracting from each natrual number the number
+  of elements before it in the list which are less then itself. This is used
+  to form a list of pairs which can be used for evaluating indices. -/
+def evalAdjustPos (l : List ℕ) : List ℕ :=
+  let l' := List.mapAccumr
+    (fun x (prev : List ℕ) =>
+      let e := prev.countP (fun y => y < x)
+      (x :: prev, x - e)) l.reverse []
+  l'.2.reverse
 
 /-- The positions in getIndicesNode which get evaluated, and the value they take. -/
 partial def getEvalPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
@@ -241,7 +238,8 @@ partial def getEvalPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
   let indEnum := ind.enum
   let evals := indEnum.filter (fun x => indexExprIsNum x.2)
   let evals2 ← (evals.mapM (fun x => indexToNum x.2))
-  return List.zip (evals.map (fun x => x.1)) evals2
+  let pos := evalAdjustPos (evals.map (fun x => x.1))
+  return List.zip pos evals2
 
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.eval` to the given term. -/
 def evalSyntax (l : List (ℕ × ℕ)) (T : Term) : Term :=
@@ -259,11 +257,11 @@ partial def getContrPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
     throwError "To many contractions"
   return filt
 
-/-- The list of indices after contraction. -/
+/-- The list of indices after contraction or evaluation. -/
 def withoutContr (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := do
   let ind ← getIndices stx
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
-  return ind.filter (fun x => indFilt.count x ≤ 1)
+  return indFilt.filter (fun x => indFilt.count x ≤ 1)
 
 /-- Takes a list and puts conseutive elements into pairs.
   e.g. [0, 1, 2, 3] becomes [(0, 1), (2, 3)]. -/
@@ -460,7 +458,8 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
   | `(tensorExpr| $_:term | $[$args]*) =>
     ProdNode.syntaxFull stx
-  | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => ProdNode.syntaxFull stx
+  | `(tensorExpr| $_:tensorExpr ⊗ $_:tensorExpr) => do
+      return ← ProdNode.syntaxFull stx
   | `(tensorExpr| ($a:tensorExpr)) => do
       return (← syntaxFull a)
   | `(tensorExpr| -$a:tensorExpr) => do

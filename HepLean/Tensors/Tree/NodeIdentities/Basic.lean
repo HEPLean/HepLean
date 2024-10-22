@@ -38,10 +38,6 @@ informal_lemma constTwoNode_eq_twoNode where
   math :≈ "A constTwoNode has equal tensor to the twoNode with the map evaluated at 1."
   deps :≈ [``constTwoNode, ``twoNode]
 
-informal_lemma constThreeNode_eq_threeNode where
-  math :≈ "A constThreeNode has equal tensor to the threeNode with the map evaluated at 1."
-  deps :≈ [``constThreeNode, ``threeNode]
-
 /-!
 
 ## Negation
