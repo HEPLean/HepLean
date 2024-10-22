@@ -69,6 +69,14 @@ def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) �
     fin_cases x
     rfl
 
+def tripleIsoSep {c1 c2 c3 : C} :
+    F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3) ≅
+    (lift.obj F).obj (OverColor.mk ![c1,c2,c3]) :=
+  (whiskerLeftIso (F.obj (Discrete.mk c1)) (pairIsoSep F (c1 := c2) (c2 := c3))).trans  <|
+  (whiskerRightIso (forgetLiftApp F c1).symm _).trans <|
+  ((lift.obj F).μIso _ _).trans <|
+  (lift.obj F).mapIso fin3Iso'.symm
+
 lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discrete.mk c2)) :
     (pairIsoSep F).hom.hom (x ⊗ₜ[k] y) =
     PiTensorProduct.tprod k (Fin.cases x (Fin.cases y (fun i => Fin.elim0 i))) := by

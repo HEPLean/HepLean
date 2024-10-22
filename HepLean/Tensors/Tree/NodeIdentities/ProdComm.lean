@@ -36,7 +36,7 @@ lemma finSumFinEquiv_comp_braidPerm :
     (β_ (OverColor.mk c2) (OverColor.mk c)).hom
     ≫ (equivToIso finSumFinEquiv).hom := by
   rw [braidPerm]
-  simp
+  simp only [Functor.id_obj, mk_hom, Iso.hom_inv_id_assoc]
 
 /-- The arguments of a `prod` node can be commuted using braiding. -/
 theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :

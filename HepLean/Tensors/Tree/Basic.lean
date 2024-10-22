@@ -559,6 +559,18 @@ abbrev twoNodeE (S : TensorSpecies) (c1 c2 : S.C)
     (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
+/-- A node consisting of a three tensor. -/
+def threeNode {c1 c2 c3 : S.C} (t : (S.FDiscrete.obj (Discrete.mk c1) ⊗
+    S.FDiscrete.obj (Discrete.mk c2) ⊗ S.FDiscrete.obj (Discrete.mk c3)).V) :
+    TensorTree S ![c1, c2, c3] :=
+  (tensorNode ((OverColor.Discrete.tripleIsoSep S.FDiscrete).hom.hom t))
+
+/-- The node `threeNode` of a tensor tree, with all arguments explicit. -/
+abbrev threeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
+    (v : (S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+    S.FDiscrete.obj (Discrete.mk c3)).V) :
+    TensorTree S ![c1, c2, c3] := threeNode v
+
 /-- A general constant node. -/
 def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep S.k S.G) ⟶ S.F.obj (OverColor.mk c)) :
     TensorTree S c := tensorNode (T.hom (1 : S.k))
@@ -567,15 +579,27 @@ def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep S.k S.G) ⟶ S.F.obj
 def constVecNode {c : S.C} (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c)) :
     TensorTree S ![c] := vecNode (v.hom (1 : S.k))
 
-  /-- A constant two tensor (e.g. metric and unit). -/
+/-- A constant two tensor (e.g. metric and unit). -/
 def constTwoNode {c1 c2 : S.C}
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := twoNode (v.hom (1 : S.k))
 
-/-- The node `constTwoNodeE` of a tensor tree, with all arguments explicit. -/
+/-- The node `constTwoNode` of a tensor tree, with all arguments explicit. -/
 abbrev constTwoNodeE (S : TensorSpecies) (c1 c2 : S.C)
     (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
+
+/-- A constant three tensor (e.g. Pauli matrices). -/
+def constThreeNode {c1 c2 c3 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+    S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
+  threeNode (v.hom (1 : S.k))
+
+/-- The node `constThreeNode` of a tensor tree, with all arguments explicit. -/
+abbrev constThreeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+    S.FDiscrete.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
+  constThreeNode v
 
 /-!
 
