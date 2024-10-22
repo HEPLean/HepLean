@@ -224,7 +224,7 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
 /-- Adjusts a list `List ℕ` by subtracting from each natrual number the number
   of elements before it in the list which are less then itself. This is used
   to form a list of pairs which can be used for evaluating indices. -/
-def evalAdjustPos (l : List ℕ) : List ℕ  :=
+def evalAdjustPos (l : List ℕ) : List ℕ :=
   let l' := List.mapAccumr
     (fun x (prev : List ℕ) =>
       let e := prev.countP (fun y => y < x)
@@ -237,7 +237,7 @@ partial def getEvalPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
   let indEnum := ind.enum
   let evals := indEnum.filter (fun x => indexExprIsNum x.2)
   let evals2 ← (evals.mapM (fun x => indexToNum x.2))
-  let pos :=  evalAdjustPos (evals.map (fun x => x.1))
+  let pos := evalAdjustPos (evals.map (fun x => x.1))
   return List.zip pos evals2
 
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.eval` to the given term. -/
