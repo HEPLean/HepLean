@@ -90,8 +90,8 @@ lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ :
   rw [coMetric_expand]
   simp only [TensorSpecies.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
     map_sub]
-  simp only [coCoBasis, Nat.reduceAdd, Nat.succ_eq_add_one, OverColor.mk_hom, Functor.id_obj, Fin.isValue,
-      Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
+  simp only [coCoBasis, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, OverColor.mk_hom,
+    Lorentz.complexCoBasisFin4, Fin.isValue, Basis.coe_reindex, Function.comp_apply]
   congr 1
   congr 1
   congr 1
@@ -127,8 +127,7 @@ lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     rw [perm_perm]
     rw [perm_eq_id]
     · rfl
-    · apply OverColor.Hom.ext
-      rfl
+    · rfl
   · apply OverColor.Hom.ext
     ext x
     exact Fin.elim0 x

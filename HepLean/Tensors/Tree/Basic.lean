@@ -246,12 +246,15 @@ def contrMap {n : ℕ} (c : Fin n.succ.succ → S.C)
 /-- Casts an element of the monoidal unit of `Rep S.k S.G` to the field `S.k`. -/
 def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep S.k S.G)).obj { as := c }).V)) : S.k := v
 
+/-- Casts an element of `(S.F.obj (OverColor.mk c)).V` for `c` a map from `Fin 0` to an
+  element of the field. -/
 def castFin0ToField {c : Fin 0 → S.C} : (S.F.obj (OverColor.mk c)).V →ₗ[S.k] S.k :=
   (PiTensorProduct.isEmptyEquiv (Fin 0)).toLinearMap
 
-lemma castFin0ToField_tprod {c : Fin 0 → S.C} (x : (i : Fin 0) → S.FDiscrete.obj (Discrete.mk (c i))) :
+lemma castFin0ToField_tprod {c : Fin 0 → S.C}
+    (x : (i : Fin 0) → S.FDiscrete.obj (Discrete.mk (c i))) :
     castFin0ToField S (PiTensorProduct.tprod S.k x) = 1 := by
-  simp [castFin0ToField]
+  simp only [castFin0ToField, mk_hom, Functor.id_obj, LinearEquiv.coe_coe]
   erw [PiTensorProduct.isEmptyEquiv_apply_tprod]
 
 lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
@@ -383,7 +386,7 @@ def evalIso {n : ℕ} (c : Fin n.succ → S.C)
   (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractOne i).symm))).trans <|
   (S.F.μIso _ _).symm.trans <|
   tensorIso
-    ((S.F.mapIso (OverColor.mkIso (by ext x; fin_cases x; simp))).trans
+    ((S.F.mapIso (OverColor.mkIso (by ext x; fin_cases x; rfl))).trans
     (OverColor.forgetLiftApp S.FDiscrete (c i))) (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
 
 lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
@@ -443,7 +446,9 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
       rfl
   · apply congrArg
     funext k
-    simp [lift.discreteFunctorMapEqIso]
+    simp only [lift.discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
+      eqToIso.inv, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv,
+      LinearEquiv.ofLinear_apply]
     change (S.FDiscrete.map (eqToHom _)).hom
       (x ((HepLean.Fin.finExtractOne i).symm ((Sum.inr k)))) = _
     have h1' {a b : Fin n.succ} (h : a = b) :
@@ -603,6 +608,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor
 
+/-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
 def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
 
 /-!
@@ -638,8 +644,8 @@ lemma contr_tensor {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
 
 lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 
-lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ)
-    (t : TensorTree S c) : (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
+lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t : TensorTree S c) :
+    (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
 
 /-!
 

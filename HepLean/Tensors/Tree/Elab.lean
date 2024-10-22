@@ -176,6 +176,7 @@ def stringToTerm (str : String) : TermElabM Term := do
     match stx with
     | `(term| $e) => return e
 
+/-- Specific types of tensors which appear which we want to elaborate in specific ways. -/
 def specialTypes : List (String × (Term → Term)) := [
   ("CoeSort.coe Lorentz.complexCo", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
