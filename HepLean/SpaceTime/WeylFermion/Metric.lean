@@ -70,6 +70,15 @@ lemma metricRaw_comm_star (M : SL(2,ℂ)) : metricRaw * M.1.map star = ((M.1)⁻
 def leftMetricVal : (leftHanded ⊗ leftHanded).V :=
   leftLeftToMatrix.symm (- metricRaw)
 
+/-- Expansion of `leftMetricVal` into the left basis. -/
+lemma leftMetricVal_expand_tmul : leftMetricVal =
+    - leftBasis 0 ⊗ₜ[ℂ] leftBasis 1 + leftBasis 1 ⊗ₜ[ℂ] leftBasis 0 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, leftMetricVal, Fin.isValue]
+  erw [leftLeftToMatrix_symm_expand_tmul]
+  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
+    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+
 /-- The metric `εₐₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
@@ -99,9 +108,24 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
     simp only [SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq, one_ne_zero,
       not_false_eq_true, mul_nonsing_inv, transpose_one, mul_one]
 
+lemma leftMetric_apply_one : leftMetric.hom (1 : ℂ) = leftMetricVal := by
+  change leftMetric.hom.toFun (1 : ℂ) = leftMetricVal
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    leftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
 /-- The metric `εᵃᵃ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
 def altLeftMetricVal : (altLeftHanded ⊗ altLeftHanded).V :=
   altLeftaltLeftToMatrix.symm metricRaw
+
+/-- Expansion of `altLeftMetricVal` into the left basis. -/
+lemma altLeftMetricVal_expand_tmul : altLeftMetricVal =
+    altLeftBasis 0 ⊗ₜ[ℂ] altLeftBasis 1 - altLeftBasis 1 ⊗ₜ[ℂ] altLeftBasis 0 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, altLeftMetricVal, Fin.isValue]
+  erw [altLeftaltLeftToMatrix_symm_expand_tmul]
+  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
+    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+  rfl
 
 /-- The metric `εᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
@@ -132,9 +156,23 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
     simp only [SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq, one_ne_zero,
       not_false_eq_true, mul_nonsing_inv, mul_one]
 
+lemma altLeftMetric_apply_one : altLeftMetric.hom (1 : ℂ) = altLeftMetricVal := by
+  change altLeftMetric.hom.toFun (1 : ℂ) = altLeftMetricVal
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    altLeftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
 /-- The metric `ε_{dot a}_{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
 def rightMetricVal : (rightHanded ⊗ rightHanded).V :=
   rightRightToMatrix.symm (- metricRaw)
+
+/-- Expansion of `rightMetricVal` into the left basis. -/
+lemma rightMetricVal_expand_tmul : rightMetricVal =
+    - rightBasis 0 ⊗ₜ[ℂ] rightBasis 1 + rightBasis 1 ⊗ₜ[ℂ] rightBasis 0 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, rightMetricVal, Fin.isValue]
+  erw [rightRightToMatrix_symm_expand_tmul]
+  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
+    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
 
 /-- The metric `ε_{dot a}_{dot a}` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
@@ -173,9 +211,24 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
     · rw [← rightRightToMatrix_ρ_symm metricRaw M]
       rfl
 
+lemma rightMetric_apply_one : rightMetric.hom (1 : ℂ) = rightMetricVal := by
+  change rightMetric.hom.toFun (1 : ℂ) = rightMetricVal
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    rightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
 /-- The metric `ε^{dot a}^{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
 def altRightMetricVal : (altRightHanded ⊗ altRightHanded).V :=
   altRightAltRightToMatrix.symm (metricRaw)
+
+/-- Expansion of `rightMetricVal` into the left basis. -/
+lemma altRightMetricVal_expand_tmul : altRightMetricVal =
+    altRightBasis 0 ⊗ₜ[ℂ] altRightBasis 1 - altRightBasis 1 ⊗ₜ[ℂ] altRightBasis 0 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, altRightMetricVal, Fin.isValue]
+  erw [altRightAltRightToMatrix_symm_expand_tmul]
+  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
+    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+  rfl
 
 /-- The metric `ε^{dot a}^{dot a}` as a morphism
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHanded`,
@@ -217,5 +270,9 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
     · rw [← altRightAltRightToMatrix_ρ_symm metricRaw M]
       rfl
 
+lemma altRightMetric_apply_one : altRightMetric.hom (1 : ℂ) = altRightMetricVal := by
+  change altRightMetric.hom.toFun (1 : ℂ) = altRightMetricVal
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    altRightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 end
 end Fermion

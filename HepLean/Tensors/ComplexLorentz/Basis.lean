@@ -114,15 +114,15 @@ lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     basisVector (Sum.elim c c1 ∘ finSumFinEquiv.symm) (fun i =>
     prodBasisVecEquiv (finSumFinEquiv.symm i)
     ((HepLean.PiTensorProduct.elimPureTensor b b1) (finSumFinEquiv.symm i))) := by
-  rw [prod_tensor]
-  simp
-  rw [basisVector, basisVector]
-  simp [TensorSpecies.F_def]
+  rw [prod_tensor, basisVector, basisVector]
+  simp only [TensorSpecies.F_def, Functor.id_obj, OverColor.mk_hom,
+    Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    tensorNode_tensor]
   have h1 := OverColor.lift.μ_tmul_tprod_mk complexLorentzTensor.FDiscrete
     (fun i => (complexLorentzTensor.basis (c i)) (b i))
     (fun i => (complexLorentzTensor.basis (c1 i)) (b1 i))
-  erw [h1]
-  erw [OverColor.lift.map_tprod]
+  erw [h1, OverColor.lift.map_tprod]
   apply congrArg
   funext i
   obtain ⟨k, hk⟩ := finSumFinEquiv.surjective i
@@ -135,6 +135,21 @@ lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   | Sum.inl k => rfl
   | Sum.inr k => rfl
 
+lemma eval_basisVector  {n : ℕ} {c : Fin n.succ → complexLorentzTensor.C}
+    {i : Fin n.succ} (j : Fin (complexLorentzTensor.repDim (c i)))
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
+    (eval i j (tensorNode (basisVector c b))).tensor = (if j = b i then (1 : ℂ) else 0) •
+    basisVector (c ∘ Fin.succAbove i) (fun k => b (i.succAbove k)) := by
+  rw [eval_tensor, basisVector, basisVector]
+  simp only [Nat.succ_eq_add_one, Functor.id_obj, OverColor.mk_hom, tensorNode_tensor,
+    Function.comp_apply, one_smul, zero_smul]
+  erw [TensorSpecies.evalMap_tprod]
+  congr 1
+  have h1 : Fin.ofNat' ↑j (@Fin.size_pos' (complexLorentzTensor.repDim (c i)) _) = j := by
+    simpa [Fin.ext_iff] using Nat.mod_eq_of_lt j.prop
+  rw [Basis.repr_self, Finsupp.single_apply, h1]
+  exact ite_congr (Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a))
+    (congrFun rfl) (congrFun rfl)
 
 /-!
 
@@ -192,6 +207,72 @@ lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
       change _ = Lorentz.complexContrBasisFin4 _
       simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
+
+lemma leftMetric_expand : {Fermion.leftMetric | α β}ᵀ.tensor =
+   - basisVector ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1)
+    + basisVector ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V, Fin.isValue]
+  erw [Fermion.leftMetric_apply_one, Fermion.leftMetricVal_expand_tmul]
+  simp only [Fin.isValue, map_add, map_neg]
+  congr 1
+  congr 1
+  all_goals
+    erw [pairIsoSep_tmul, basisVector]
+    apply congrArg
+    funext i
+    fin_cases i
+    · rfl
+    · rfl
+
+lemma altLeftMetric_expand : {Fermion.altLeftMetric | α β}ᵀ.tensor =
+    basisVector ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1)
+    - basisVector ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V, Fin.isValue]
+  erw [Fermion.altLeftMetric_apply_one, Fermion.altLeftMetricVal_expand_tmul]
+  simp only [Fin.isValue, map_sub]
+  congr 1
+  all_goals
+    erw [pairIsoSep_tmul, basisVector]
+    apply congrArg
+    funext i
+    fin_cases i
+    · rfl
+    · rfl
+
+lemma rightMetric_expand : {Fermion.rightMetric | α β}ᵀ.tensor =
+    - basisVector ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1)
+    + basisVector ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V, Fin.isValue]
+  erw [Fermion.rightMetric_apply_one, Fermion.rightMetricVal_expand_tmul]
+  simp only [Fin.isValue, map_add, map_neg]
+  congr 1
+  congr 1
+  all_goals
+    erw [pairIsoSep_tmul, basisVector]
+    apply congrArg
+    funext i
+    fin_cases i
+    · rfl
+    · rfl
+
+lemma altRightMetric_expand : {Fermion.altRightMetric | α β}ᵀ.tensor =
+    basisVector ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1)
+    - basisVector ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V, Fin.isValue]
+  erw [Fermion.altRightMetric_apply_one, Fermion.altRightMetricVal_expand_tmul]
+  simp only [Fin.isValue, map_sub]
+  congr 1
+  all_goals
+    erw [pairIsoSep_tmul, basisVector]
+    apply congrArg
+    funext i
+    fin_cases i
+    · rfl
+    · rfl
 
 /-- The expansion of the Pauli matrices `σ^μ^a^{dot a}` in terms of basis vectors. -/
 lemma pauliMatrix_basis_expand : {PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
