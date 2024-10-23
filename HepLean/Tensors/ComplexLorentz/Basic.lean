@@ -170,5 +170,20 @@ def complexLorentzTensor : TensorSpecies where
 
 instance : DecidableEq complexLorentzTensor.C := Fermion.instDecidableEqColor
 
+lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
+    (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
+    complexLorentzTensor.castToField
+    ((complexLorentzTensor.contr.app {as := c}).hom
+    (complexLorentzTensor.basis c i ⊗ₜ complexLorentzTensor.basis (complexLorentzTensor.τ c) j)) =
+    if i.val = j.val then 1 else 0 :=
+  match c with
+  | Color.upL => Fermion.leftAltContraction_basis _ _
+  | Color.downL => Fermion.altLeftContraction_basis _ _
+  | Color.upR => Fermion.rightAltContraction_basis _ _
+  | Color.downR => Fermion.altRightContraction_basis _ _
+  | Color.up => Lorentz.contrCoContraction_basis _ _
+  | Color.down => Lorentz.coContrContraction_basis _ _
+
+
 end
 end Fermion

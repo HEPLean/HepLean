@@ -42,6 +42,58 @@ def basisVector {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     complexLorentzTensor.F.obj (OverColor.mk c) :=
   PiTensorProduct.tprod ℂ (fun i => complexLorentzTensor.basis (c i) (b i))
 
+lemma perm_basisVector_cast {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
+    {c1 : Fin m → complexLorentzTensor.C}
+    (σ : OverColor.mk c ⟶ OverColor.mk c1) (i : Fin m) :
+    complexLorentzTensor.repDim (c ((OverColor.Hom.toEquiv σ).symm i)) =
+    complexLorentzTensor.repDim (c1 i) := by
+  have h1 := OverColor.Hom.toEquiv_symm_apply σ i
+  simp only [Functor.const_obj_obj, OverColor.mk_hom] at h1
+  rw [h1]
+
+/-! TODO: Generalize `basis_eq_FDiscrete`. -/
+lemma basis_eq_FDiscrete {n : ℕ} (c : Fin n → complexLorentzTensor.C)
+    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) (i : Fin n)
+    (h : { as := c i } = { as := c1 }) :
+    (complexLorentzTensor.FDiscrete.map (eqToHom h)).hom
+    (complexLorentzTensor.basis (c i) (b i)) =
+    (complexLorentzTensor.basis c1 (Fin.cast (by simp_all) (b i))) := by
+  have h' : c i = c1 := by
+    simp_all only [Discrete.mk.injEq]
+  subst h'
+  rfl
+
+lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
+    {c1 : Fin m → complexLorentzTensor.C} (σ : OverColor.mk c ⟶ OverColor.mk c1)
+    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
+    (perm σ (tensorNode (basisVector c b))).tensor =
+    (basisVector c1 (fun i => Fin.cast (perm_basisVector_cast σ i)
+    (b ((OverColor.Hom.toEquiv σ).symm i)))) := by
+  rw [perm_tensor]
+  simp only [TensorSpecies.F_def, tensorNode_tensor]
+  rw [basisVector, basisVector]
+  erw [OverColor.lift.map_tprod]
+  apply congrArg
+  funext i
+  simp only [OverColor.mk_hom, OverColor.lift.discreteFunctorMapEqIso, Functor.mapIso_hom,
+    eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
+  rw [basis_eq_FDiscrete]
+
+lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)} (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
+    (contr i j h (tensorNode (basisVector c b))).tensor = (if (b i).val = ((b (i.succAbove j))).val then (1 : ℂ) else 0) •
+    basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+      (fun k => b (i.succAbove (j.succAbove k))) := by
+  rw [contr_tensor]
+  simp only [Nat.succ_eq_add_one, tensorNode_tensor]
+  rw [basisVector]
+  erw [TensorSpecies.contrMap_tprod]
+  congr 1
+  rw [basis_eq_FDiscrete]
+  simp
+  erw [basis_contr]
+  rfl
+
 /-!
 
 ## Useful expansions.

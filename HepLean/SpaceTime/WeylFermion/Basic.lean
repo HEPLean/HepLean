@@ -58,6 +58,12 @@ lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   change (M.1 *ᵥ (Pi.single j 1)) i = _
   simp only [mulVec_single, mul_one]
 
+@[simp]
+lemma leftBasis_toFin2ℂ (i : Fin 2) : (leftBasis i).toFin2ℂ = Pi.single i 1 := by
+  simp only [leftBasis, Basis.coe_ofEquivFun]
+  rw [LeftHandedModule.toFin2ℂ]
+  rfl
+
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)ᵀ. In index notation corresponds to a Weyl fermion with indices ψ_a. -/
 def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
@@ -84,6 +90,12 @@ def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
 /-- The standard basis on alt-left-handed Weyl fermions. -/
 def altLeftBasis : Basis (Fin 2) ℂ altLeftHanded := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ AltLeftHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altLeftBasis_toFin2ℂ (i : Fin 2) : (altLeftBasis i).toFin2ℂ = Pi.single i 1 := by
+  simp only [altLeftBasis, Basis.coe_ofEquivFun]
+  rw [AltLeftHandedModule.toFin2ℂ]
+  rfl
 
 @[simp]
 lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
@@ -116,6 +128,12 @@ def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
 /-- The standard basis on right-handed Weyl fermions. -/
 def rightBasis : Basis (Fin 2) ℂ rightHanded := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ RightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma rightBasis_toFin2ℂ (i : Fin 2) : (rightBasis i).toFin2ℂ = Pi.single i 1 := by
+  simp only [rightBasis, Basis.coe_ofEquivFun]
+  rw [RightHandedModule.toFin2ℂ]
+  rfl
 
 @[simp]
 lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
@@ -152,6 +170,12 @@ def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
 /-- The standard basis on alt-right-handed Weyl fermions. -/
 def altRightBasis : Basis (Fin 2) ℂ altRightHanded := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ AltRightHandedModule.toFin2ℂFun)
+
+@[simp]
+lemma altRightBasis_toFin2ℂ (i : Fin 2) : (altRightBasis i).toFin2ℂ = Pi.single i 1 := by
+  simp only [altRightBasis, Basis.coe_ofEquivFun]
+  rw [AltRightHandedModule.toFin2ℂ]
+  rfl
 
 @[simp]
 lemma altRightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :

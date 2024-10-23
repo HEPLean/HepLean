@@ -86,6 +86,17 @@ lemma contrCoContraction_hom_tmul (ψ : complexContr) (φ : complexCo) :
     contrCoContraction.hom (ψ ⊗ₜ φ) = ψ.toFin13ℂ ⬝ᵥ φ.toFin13ℂ := by
   rfl
 
+lemma contrCoContraction_basis (i j : Fin 4) :
+    contrCoContraction.hom (complexContrBasisFin4 i ⊗ₜ complexCoBasisFin4 j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [contrCoContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, complexContrBasisFin4, Basis.coe_reindex,
+    Function.comp_apply, complexContrBasis_toFin13ℂ, complexCoBasisFin4, complexCoBasis_toFin13ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+
 /-- The linear map from complexCo ⊗ complexContr to ℂ given by
     summing over components of covariant Lorentz vector and
     contravariant Lorentz vector in the
@@ -103,6 +114,17 @@ def coContrContraction : complexCo ⊗ complexContr ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)
 lemma coContrContraction_hom_tmul (φ : complexCo) (ψ : complexContr) :
     coContrContraction.hom (φ ⊗ₜ ψ) = φ.toFin13ℂ ⬝ᵥ ψ.toFin13ℂ := by
   rfl
+
+lemma coContrContraction_basis (i j : Fin 4) :
+    coContrContraction.hom (complexCoBasisFin4 i ⊗ₜ complexContrBasisFin4 j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [coContrContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, complexCoBasisFin4, Basis.coe_reindex,
+    Function.comp_apply, complexCoBasis_toFin13ℂ, complexContrBasisFin4, complexContrBasis_toFin13ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
 
 /-!
 
