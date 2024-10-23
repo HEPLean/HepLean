@@ -652,6 +652,14 @@ lemma constTwoNode_tensor {c1 c2 : S.C}
     (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (v.hom (1 : S.k)) :=
   rfl
 
+@[simp]
+lemma constThreeNode_tensor {c1 c2 c3 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+    S.FDiscrete.obj (Discrete.mk c3)) :
+    (constThreeNode v).tensor =
+    (OverColor.Discrete.tripleIsoSep S.FDiscrete).hom.hom (v.hom (1 : S.k)) :=
+  rfl
+
 lemma prod_tensor {c1 : Fin n → S.C} {c2 : Fin m → S.C} (t1 : TensorTree S c1)
     (t2 : TensorTree S c2) :
     (prod t1 t2).tensor = (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom

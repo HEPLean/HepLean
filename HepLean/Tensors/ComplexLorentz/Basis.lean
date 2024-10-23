@@ -81,8 +81,7 @@ lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
     - basisVector ![Color.up, Color.up] (fun _ => 2)
     - basisVector ![Color.up, Color.up] (fun _ => 3) := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
-    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    Functor.id_obj, Fin.isValue]
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
   erw [Lorentz.contrMetric_apply_one, Lorentz.contrMetricVal_expand_tmul]
   simp only [Fin.isValue, map_sub]
   congr 1
@@ -99,6 +98,45 @@ lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
       change _ = Lorentz.complexContrBasisFin4 _
       simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
+
+/-- The expansion of the Pauli matrices `σ^μ^a^{dot a}` in terms of basis vectors. -/
+lemma pauliMatrix_basis_expand : {PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
+    basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1)
+    + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 1 | 2 => 0)
+    - I • basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    + I • basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 1 | 2 => 0)
+    + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    - basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constThreeNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V, Fin.isValue]
+  erw [PauliMatrix.asConsTensor_apply_one, PauliMatrix.asTensor_expand]
+  simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Action.instMonoidalCategory_tensorObj_V,
+    Fin.isValue, map_sub, map_add, _root_.map_smul]
+  congr 1
+  congr 1
+  congr 1
+  congr 1
+  congr 1
+  congr 1
+  congr 1
+  all_goals
+    erw [tripleIsoSep_tmul, basisVector]
+    apply congrArg
+    try apply congrArg
+    funext i
+    match i with
+    | (0 : Fin 3) =>
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, OverColor.mk_hom,
+        cons_val_zero, Fin.cases_zero]
+      change _ = Lorentz.complexContrBasisFin4 _
+      simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
+      rfl
+    | (1 : Fin 3) => rfl
+    | (2 : Fin 3) => rfl
+
 
 end complexLorentzTensor
 end Fermion
