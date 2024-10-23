@@ -327,6 +327,14 @@ lemma pauliMatrix_contr_down_1 : (contr 0 1 rfl
     funext k
     fin_cases k <;> rfl
 
+lemma pauliMatrix_contr_down_1_tree : (contr 0 1 rfl
+    (((tensorNode (basisVector ![Color.down, Color.down] fun x => 1)).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor)))).tensor
+    = (TensorTree.add (tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 0 | 2 => 1)))
+    (tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 1 | 2 => 0)))).tensor := by
+  exact pauliMatrix_contr_down_1
+
 lemma pauliMatrix_contr_down_2 : (contr 0 1 rfl
     (((tensorNode (basisVector ![Color.down, Color.down] fun x => 2)).prod
     (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
@@ -865,7 +873,6 @@ lemma pauliMatrix_contr_lower_3_1_1 :  (contr 0 2 rfl
 
 
 
-/-
 lemma pauliMatrix_lower :
     {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β}ᵀ.tensor
     = basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
@@ -877,9 +884,26 @@ lemma pauliMatrix_lower :
     + basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0)
     - basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
   rw [contr_tensor_eq <| prod_tensor_eq_fst <| coMetric_basis_expand_tree]
-  rw [contr_tensor_eq <| prod_tensor_eq_snd <| pauliMatrix_basis_expand_tree]
-
-  sorry -/
+  /- Moving the prod through additions. -/
+  rw [contr_tensor_eq <| add_prod _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_prod _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_prod _ _ _]
+  /- Moving the prod through smuls. -/
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_prod _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| smul_prod _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| smul_prod _ _ _]
+  /- Moving contraction through addition. -/
+  rw [contr_add]
+  rw [add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| contr_add _ _]
+  /- Moving contraction through smul. -/
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_smul _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_smul _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| contr_smul _ _]
+  /- Replacing the contractions. -/
+  sorry
 
 
 lemma pauliMatrix_contract_pauliMatrix :
@@ -888,7 +912,7 @@ lemma pauliMatrix_contract_pauliMatrix :
     - basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
     - basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0)  := by
-
+  sorry
 end Fermion
 
 end

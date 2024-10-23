@@ -744,6 +744,10 @@ lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tens
   simp only [smul_tensor]
   rw [h]
 
+lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.mk c)}
+    (h : T1.tensor = t) : T1.tensor = (tensorNode t).tensor := by
+  simpa using h
+
 /-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
   This is used in some proofs of node identities for tensor trees. -/
 structure ContrPair {n : ℕ} (c : Fin n.succ.succ → S.C) where
