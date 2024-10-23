@@ -207,6 +207,13 @@ def discreteSumEquiv {X Y : OverColor C} (i : X.left ⊕ Y.left) :
   | Sum.inl _ => LinearEquiv.refl _ _
   | Sum.inr _ => LinearEquiv.refl _ _
 
+def discreteSumEquiv' {X Y : Type} {cX : X → C} {cY : Y → C} (i : X ⊕ Y) :
+    Sum.elim (fun i => F.obj (Discrete.mk (cX i)))
+    (fun i => F.obj (Discrete.mk (cY i))) i ≃ₗ[k] F.obj (Discrete.mk ((Sum.elim cX cY) i)) :=
+  match i with
+  | Sum.inl _ => LinearEquiv.refl _ _
+  | Sum.inr _ => LinearEquiv.refl _ _
+
 /-- The equivalence of modules corresonding to the tensorate. -/
 def μModEquiv (X Y : OverColor C) :
     (objObj' F X ⊗ objObj' F Y).V ≃ₗ[k] objObj' F (X ⊗ Y) :=
@@ -258,8 +265,27 @@ lemma μ_tmul_tprod {X Y : OverColor C} (p : (i : X.left) → F.obj (Discrete.mk
     (q : (i : Y.left) → (F.obj <| Discrete.mk (Y.hom i))) :
     (μ F X Y).hom.hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
     (PiTensorProduct.tprod k) fun i =>
-    discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
-  exact μModEquiv_tmul_tprod F p q
+    discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) :=
+  μModEquiv_tmul_tprod F p q
+
+lemma μ_tmul_tprod_mk {X Y : Type} {cX : X → C} {cY : Y → C}
+    (p : (i : X) → F.obj (Discrete.mk <| cX i))
+    (q : (i : Y) → (F.obj <| Discrete.mk (cY i))) :
+    (μ F (OverColor.mk cX) (OverColor.mk cY)).hom.hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q)
+    = (PiTensorProduct.tprod k) fun i =>
+    discreteSumEquiv' F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
+  let q' : (i : (OverColor.mk cY).left) → (F.obj <| Discrete.mk ((OverColor.mk cY).hom i)) := q
+  let p' : (i : (OverColor.mk cX).left) → (F.obj <| Discrete.mk ((OverColor.mk cX).hom i)) := p
+  have h1 := μModEquiv_tmul_tprod F p' q'
+  simp at h1
+  erw [h1]
+  simp [p', q']
+  apply congrArg
+  funext i
+  match i with
+  | Sum.inl i => rfl
+  | Sum.inr i => rfl
+
 
 lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
     MonoidalCategory.whiskerRight (objMap' F f) (objObj' F Z) ≫ (μ F Y Z).hom =

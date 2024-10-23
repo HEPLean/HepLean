@@ -79,20 +79,62 @@ lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
   rw [basis_eq_FDiscrete]
 
-lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C} {i : Fin n.succ.succ} {j : Fin n.succ}
-    {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)} (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
-    (contr i j h (tensorNode (basisVector c b))).tensor = (if (b i).val = ((b (i.succAbove j))).val then (1 : ℂ) else 0) •
-    basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
-      (fun k => b (i.succAbove (j.succAbove k))) := by
+lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
+    (contr i j h (tensorNode (basisVector c b))).tensor = (if (b i).val = (b (i.succAbove j)).val
+    then (1 : ℂ) else 0) • basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (fun k => b (i.succAbove (j.succAbove k))) := by
   rw [contr_tensor]
   simp only [Nat.succ_eq_add_one, tensorNode_tensor]
   rw [basisVector]
   erw [TensorSpecies.contrMap_tprod]
   congr 1
   rw [basis_eq_FDiscrete]
-  simp
+  simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as,
+    Function.comp_apply]
   erw [basis_contr]
   rfl
+
+def prodBasisVecEquiv {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
+    {c1 : Fin m → complexLorentzTensor.C} (i : Fin n ⊕ Fin m) :
+    Sum.elim (fun i => Fin (complexLorentzTensor.repDim (c i))) (fun i => Fin (complexLorentzTensor.repDim (c1 i)))
+    i ≃ Fin (complexLorentzTensor.repDim ((Sum.elim c c1 i))) :=
+  match i with
+  | Sum.inl _ => Equiv.refl _
+  | Sum.inr _ => Equiv.refl _
+
+lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
+    {c1 : Fin m → complexLorentzTensor.C}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k)))
+    (b1 : Π k, Fin (complexLorentzTensor.repDim (c1 k))) :
+    (prod (tensorNode (basisVector c b)) (tensorNode (basisVector c1 b1))).tensor =
+    basisVector (Sum.elim c c1 ∘ finSumFinEquiv.symm) (fun i =>
+    prodBasisVecEquiv (finSumFinEquiv.symm i)
+    ((HepLean.PiTensorProduct.elimPureTensor b b1) (finSumFinEquiv.symm i))) := by
+  rw [prod_tensor]
+  simp
+  rw [basisVector, basisVector]
+  simp [TensorSpecies.F_def]
+  have h1 := OverColor.lift.μ_tmul_tprod_mk complexLorentzTensor.FDiscrete
+    (fun i => (complexLorentzTensor.basis (c i)) (b i))
+    (fun i => (complexLorentzTensor.basis (c1 i)) (b1 i))
+  erw [h1]
+  erw [OverColor.lift.map_tprod]
+  apply congrArg
+  funext i
+  obtain ⟨k, hk⟩ := finSumFinEquiv.surjective i
+  subst hk
+  simp only [Functor.id_obj, OverColor.mk_hom, Function.comp_apply,
+    OverColor.lift.discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom,
+    Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+  erw [← (Equiv.apply_eq_iff_eq_symm_apply finSumFinEquiv).mp rfl]
+  match k with
+  | Sum.inl k => rfl
+  | Sum.inr k => rfl
+
 
 /-!
 
