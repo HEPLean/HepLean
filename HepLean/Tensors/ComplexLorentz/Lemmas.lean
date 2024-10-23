@@ -12,6 +12,8 @@ import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.ProdComm
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
+import HepLean.Tensors.ComplexLorentz.Basis
+import LLMLean
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -31,86 +33,6 @@ open OverColor.Discrete
 noncomputable section
 
 namespace Fermion
-
-/-- The vectors forming a basis of
-  `complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down])`.
-  Not proved it is a basis yet. -/
-def coCoBasis (b : Fin 4 × Fin 4) :
-    complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down]) :=
-  PiTensorProduct.tprod ℂ (fun i => Fin.cases (Lorentz.complexCoBasisFin4 b.1)
-  (fun i => Fin.cases (Lorentz.complexCoBasisFin4 b.2) (fun i => i.elim0) i) i)
-
-lemma coCoBasis_eval (e1 e2 : Fin (complexLorentzTensor.repDim Color.down)) (i : Fin 4 × Fin 4) :
-    complexLorentzTensor.castFin0ToField
-      ((complexLorentzTensor.evalMap 0 e2) ((complexLorentzTensor.evalMap 0 e1) (coCoBasis i))) =
-    if i = (e1, e2) then 1 else 0 := by
-  simp only [coCoBasis]
-  have h1 := @TensorSpecies.evalMap_tprod complexLorentzTensor _ (![Color.down, Color.down]) 0 e1
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Functor.id_obj,
-      OverColor.mk_hom, Function.comp_apply, cons_val_zero, Fin.cases_zero, Fin.cases_succ] at h1
-  erw [h1]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Functor.id_obj, OverColor.mk_hom,
-    Fin.cases_zero, Fin.cases_succ, _root_.map_smul, smul_eq_mul]
-  erw [TensorSpecies.evalMap_tprod]
-  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.succAbove_zero, Functor.id_obj,
-    OverColor.mk_hom, Function.comp_apply, Fin.succ_zero_eq_one, cons_val_one, head_cons,
-    Fin.cases_zero, Fin.zero_succAbove, Fin.cases_succ, _root_.map_smul, smul_eq_mul]
-  erw [complexLorentzTensor.castFin0ToField_tprod]
-  simp only [Fin.isValue, mul_one]
-  change (Lorentz.complexCoBasisFin4.repr (Lorentz.complexCoBasisFin4 i.1)) e1 *
-    (Lorentz.complexCoBasisFin4.repr (Lorentz.complexCoBasisFin4 i.2)) e2 = _
-  simp only [Basis.repr_self]
-  rw [Finsupp.single_apply, Finsupp.single_apply]
-  rw [@ite_zero_mul_ite_zero]
-  simp only [mul_one]
-  congr
-  simp_all only [Fin.isValue, Fin.succAbove_zero, Fin.zero_succAbove, eq_iff_iff]
-  obtain ⟨fst, snd⟩ := i
-  simp_all only [Fin.isValue, Prod.mk.injEq]
-
-lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
-    coCoBasis (0, 0) - coCoBasis (1, 1) - coCoBasis (2, 2) - coCoBasis (3, 3) := by
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
-    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    Functor.id_obj, Fin.isValue]
-  erw [Lorentz.coMetric_apply_one, Lorentz.coMetricVal_expand_tmul]
-  simp only [Fin.isValue, map_sub]
-  congr 1
-  congr 1
-  congr 1
-  all_goals
-    erw [pairIsoSep_tmul, coCoBasis]
-    simp only [Nat.reduceAdd, Nat.succ_eq_add_one, OverColor.mk_hom, Functor.id_obj, Fin.isValue,
-      Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
-    rfl
-
-/-- The covariant Lorentz metric is symmetric. -/
-lemma coMetric_symm : {Lorentz.coMetric | μ ν = Lorentz.coMetric | ν μ}ᵀ := by
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, perm_tensor]
-  rw [coMetric_expand]
-  simp only [TensorSpecies.F, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, Fin.isValue,
-    map_sub]
-  simp only [coCoBasis, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, OverColor.mk_hom,
-    Lorentz.complexCoBasisFin4, Fin.isValue, Basis.coe_reindex, Function.comp_apply]
-  congr 1
-  congr 1
-  congr 1
-  all_goals
-    erw [OverColor.lift.map_tprod]
-    congr 1
-    funext i
-    match i with
-    | (0 : Fin 2) => rfl
-    | (1 : Fin 2) => rfl
-
-lemma coMetric_0_0_field : {Lorentz.coMetric | 0 0}ᵀ.field = 1 := by
-  rw [field, eval_tensor, eval_tensor, coMetric_expand]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
-    Function.comp_apply, Fin.succ_zero_eq_one, cons_val_one, head_cons, Fin.ofNat'_zero,
-    cons_val_zero, Functor.id_obj, OverColor.mk_hom, map_sub]
-  rw [coCoBasis_eval, coCoBasis_eval, coCoBasis_eval, coCoBasis_eval]
-  simp only [Fin.isValue, Prod.mk_zero_zero, ↓reduceIte, Prod.mk_one_one, one_ne_zero, sub_zero,
-    Prod.mk_eq_zero, Fin.reduceEq, and_self]
 
 set_option maxRecDepth 20000 in
 lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
@@ -187,6 +109,785 @@ lemma antiSymm_add_self {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
   rw [← TensorTree.add_neg (twoNodeE complexLorentzTensor Color.up Color.up A)]
   apply TensorTree.add_tensor_eq_snd
   rw [neg_tensor_eq hA, neg_tensor_eq (neg_perm _ _), neg_neg]
+
+/-!
+
+## The contraction of Pauli matrices with Pauli matrices
+
+And related results.
+
+-/
+open complexLorentzTensor
+
+def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL]  ![Color.upR, Color.upR]) ∘ finSumFinEquiv.symm
+
+lemma leftMetric_mul_rightMetric : {Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ.tensor
+    = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
+    - basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
+    - basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
+    + basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
+  rw [prod_tensor_eq_fst (leftMetric_expand_tree)]
+  rw [prod_tensor_eq_snd (rightMetric_expand_tree)]
+  rw [prod_add_both]
+  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_prod _ _ _]
+  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_tensor_eq <| prod_smul _ _ _]
+  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_smul _ _ _]
+  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_eq_one _ _ (by simp)]
+  rw [add_tensor_eq_fst <| add_tensor_eq_snd <| smul_prod _ _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| prod_smul _ _ _]
+  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_fst <| add_tensor_eq_snd <| smul_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| prod_basisVector_tree _ _]
+  rw [← add_assoc]
+  simp only [add_tensor, smul_tensor, tensorNode_tensor]
+  change _ =  basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
+    +- basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
+    +- basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
+    + basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0)
+  congr 1
+  congr 1
+  congr 1
+  all_goals
+    congr
+    funext x
+    fin_cases x <;> rfl
+
+
+def pauliMatrixLowerMap := ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm) ∘
+    Fin.succAbove 0 ∘ Fin.succAbove 1)
+
+abbrev pauliMatrixContrMap {n : ℕ} (c : Fin n → complexLorentzTensor.C) := (Sum.elim c ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm)
+
+lemma pauliMatrix_contr_expand {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (t : TensorTree complexLorentzTensor c) (i : Fin (n + 3)) (j : Fin (n +2))
+    (h : (pauliMatrixContrMap c) (i.succAbove j) = complexLorentzTensor.τ ((pauliMatrixContrMap c) i)) :
+    (contr i j h (TensorTree.prod t (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor))).tensor = (
+    (contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 0 | 1 => 0 | 2 => 0)))).add
+    ((contr i j h (t.prod (tensorNode
+       (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 0 | 1 => 1 | 2 => 1)))).add
+    ((contr i j h (t.prod (tensorNode
+       (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 1  | 1 => 0 | 2 => 1)))).add
+    ((contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 1 | 1 => 1 | 2 => 0)))).add
+   ((TensorTree.smul (-I) (contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 2 | 1 => 0 | 2 => 1))))).add
+    ((TensorTree.smul I (contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 2 | 1 => 1 | 2 => 0))))).add
+    ((contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 3 | 1 => 0 | 2 => 0)))).add
+    (TensorTree.smul (-1) (contr i j h (t.prod (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] fun | 0 => 3 | 1 => 1 | 2 => 1)))))))))))).tensor := by
+  rw [contr_tensor_eq <| prod_tensor_eq_snd <| pauliMatrix_basis_expand_tree]
+  rw [contr_tensor_eq <| prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <|  prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| prod_add _ _ _]
+  rw [contr_tensor_eq <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd  <| prod_add _ _ _]
+  /- Moving smuls. -/
+  rw [contr_tensor_eq  <| add_tensor_eq_snd  <| add_tensor_eq_snd  <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| prod_smul _ _ _]
+  rw [contr_tensor_eq  <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd  <| add_tensor_eq_snd <| add_tensor_eq_fst <| prod_smul _ _ _]
+  rw [contr_tensor_eq  <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd  <| add_tensor_eq_snd<| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| prod_smul _ _ _]
+  /- Moving contr over add. -/
+  rw [contr_add]
+  rw [add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| contr_add _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| contr_add _ _]
+  /- Moving contr over smul. -/
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <|  add_tensor_eq_snd <| add_tensor_eq_fst <| contr_smul _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <|  add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_smul _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+    add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd  <| add_tensor_eq_snd <|
+    contr_smul _ _]
+  rfl
+
+lemma pauliMatrix_contr_down_0 :
+    (contr 0 1 rfl (((tensorNode (basisVector ![Color.down, Color.down] fun x => 0)).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor)))).tensor
+    = basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 1 | 2 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_pos _ rfl]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _ rfl]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_down_1 : (contr 0 1 rfl
+    (((tensorNode (basisVector ![Color.down, Color.down] fun x => 1)).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor)))).tensor
+    = basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 1 | 2 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_pos _ rfl]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_pos _ rfl]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_down_2 : (contr 0 1 rfl
+    (((tensorNode (basisVector ![Color.down, Color.down] fun x => 2)).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor)))).tensor
+    = (- I) • basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    + (I) •  basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 1 | 2 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_down_3 : (contr 0 1 rfl
+    (((tensorNode (basisVector ![Color.down, Color.down] fun x => 3)).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+      PauliMatrix.asConsTensor)))).tensor
+    =  basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    + (- 1 : ℂ) • basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_pos _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+def pauliMatrixContrPauliMatrixMap := ((Sum.elim
+        ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm) ∘
+          Fin.succAbove 0 ∘ Fin.succAbove 1)
+        ![Color.up, Color.upL, Color.upR] ∘
+      ⇑finSumFinEquiv.symm) ∘
+    Fin.succAbove 0 ∘ Fin.succAbove 2)
+
+lemma pauliMatrix_contr_lower_0_0_0 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 0 | 2 => 0))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor = basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
+    + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_lower_0_1_1 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 1 | 2 => 1))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor = basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
+    + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+      <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+
+lemma pauliMatrix_contr_lower_1_0_1 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 0 | 2 => 1))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor = basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
+    + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_pos _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_lower_1_1_0 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 1 | 2 => 0))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor = basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
+    + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_pos _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+  · congr 1
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_lower_2_0_1 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 0 | 2 => 1))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor =
+      (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
+    + (I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+lemma pauliMatrix_contr_lower_2_1_0 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 1 | 2 => 0))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor =
+      (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
+    + (I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_neg _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+
+lemma pauliMatrix_contr_lower_3_0_0 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor =
+       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
+    + (-1 : ℂ) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_pos _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+
+lemma pauliMatrix_contr_lower_3_1_1 :  (contr 0 2 rfl
+    (((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 1 | 2 => 1))).prod
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor)))).tensor =
+       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
+    + (-1 : ℂ) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
+  rw [pauliMatrix_contr_expand]
+  /- Product of basis vectors . -/
+  rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_tensor_eq
+    <| prod_basisVector_tree _ _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|  add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| smul_tensor_eq
+    <| contr_tensor_eq <| prod_basisVector_tree _ _]
+  /- Contracting basis vectors. -/
+  rw [add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst
+    <| contr_basisVector_tree_neg _ ]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_fst <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <|  add_tensor_eq_fst <| smul_tensor_eq <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <|add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq
+    <| contr_basisVector_tree_neg _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd
+    <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_fst <| contr_basisVector_tree_pos _]
+  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
+     smul_tensor_eq <| contr_basisVector_tree_pos _]
+  /- Simplifying. -/
+  simp only [smul_tensor, add_tensor, tensorNode_tensor]
+  simp only [smul_zero, add_zero, zero_add]
+  congr 1
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+  · congr 2
+    funext k
+    fin_cases k <;> rfl
+
+
+
+/-
+lemma pauliMatrix_lower :
+    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β}ᵀ.tensor
+    = basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 1 | 2 => 1)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 1 | 2 => 0)
+    - I • basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    + I • basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 1 | 2 => 0)
+    + basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    - basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  rw [contr_tensor_eq <| prod_tensor_eq_fst <| coMetric_basis_expand_tree]
+  rw [contr_tensor_eq <| prod_tensor_eq_snd <| pauliMatrix_basis_expand_tree]
+
+  sorry -/
+
+
+lemma pauliMatrix_contract_pauliMatrix :
+  {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗ PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor
+  = basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
+    - basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
+    - basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
+    + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0)  := by
 
 end Fermion
 

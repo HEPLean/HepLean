@@ -98,6 +98,34 @@ lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.
   erw [basis_contr]
   rfl
 
+lemma contr_basisVector_tree  {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
+    (contr i j h (tensorNode (basisVector c b))).tensor =
+    (smul ((if (b i).val = (b (i.succAbove j)).val
+    then (1 : ℂ) else 0)) (tensorNode ( basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (fun k => b (i.succAbove (j.succAbove k)))) )).tensor := by
+  exact contr_basisVector _
+
+lemma contr_basisVector_tree_pos  {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (hn : (b i).val = (b (i.succAbove j)).val := by decide) :
+    (contr i j h (tensorNode (basisVector c b))).tensor =
+    ((tensorNode ( basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (fun k => b (i.succAbove (j.succAbove k)))))).tensor := by
+  rw [contr_basisVector_tree]
+  rw [if_pos hn]
+  simp [smul_tensor]
+
+lemma contr_basisVector_tree_neg  {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (hn : ¬ (b i).val = (b (i.succAbove j)).val := by decide) :
+    (contr i j h (tensorNode (basisVector c b))).tensor =
+    (tensorNode 0).tensor := by
+  rw [contr_basisVector_tree]
+  rw [if_neg hn]
+  simp [smul_tensor]
+
 def prodBasisVecEquiv {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (i : Fin n ⊕ Fin m) :
     Sum.elim (fun i => Fin (complexLorentzTensor.repDim (c i))) (fun i => Fin (complexLorentzTensor.repDim (c1 i)))
@@ -134,6 +162,16 @@ lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   match k with
   | Sum.inl k => rfl
   | Sum.inr k => rfl
+
+lemma prod_basisVector_tree  {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
+    {c1 : Fin m → complexLorentzTensor.C}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k)))
+    (b1 : Π k, Fin (complexLorentzTensor.repDim (c1 k))) :
+   (prod (tensorNode (basisVector c b)) (tensorNode (basisVector c1 b1))).tensor =
+    (tensorNode (basisVector (Sum.elim c c1 ∘ finSumFinEquiv.symm) (fun i =>
+    prodBasisVecEquiv (finSumFinEquiv.symm i)
+    ((HepLean.PiTensorProduct.elimPureTensor b b1) (finSumFinEquiv.symm i))))).tensor := by
+  exact prod_basisVector _ _
 
 lemma eval_basisVector  {n : ℕ} {c : Fin n.succ → complexLorentzTensor.C}
     {i : Fin n.succ} (j : Fin (complexLorentzTensor.repDim (c i)))
@@ -183,6 +221,13 @@ lemma coMetric_basis_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
       simp only [Fin.isValue, Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
+lemma coMetric_basis_expand_tree : {Lorentz.coMetric | μ ν}ᵀ.tensor =
+    (TensorTree.add (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 0))) <|
+    TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 1)))) <|
+    TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 2)))) <|
+    (smul (-1) (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 3))))).tensor :=
+  coMetric_basis_expand
+
 /-- The expansion of the Lorentz contrvariant metric in terms of basis vectors. -/
 lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
     basisVector ![Color.up, Color.up] (fun _ => 0)
@@ -208,6 +253,13 @@ lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
       simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
+lemma contrMatrix_basis_expand_tree : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
+    (TensorTree.add (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 0))) <|
+    TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 1)))) <|
+    TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 2)))) <|
+    (smul (-1) (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 3))))).tensor :=
+  contrMatrix_basis_expand
+
 lemma leftMetric_expand : {Fermion.leftMetric | α β}ᵀ.tensor =
    - basisVector ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1)
     + basisVector ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0) := by
@@ -225,6 +277,11 @@ lemma leftMetric_expand : {Fermion.leftMetric | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+lemma leftMetric_expand_tree : {Fermion.leftMetric | α β}ᵀ.tensor =
+    (TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1)))) <|
+    (tensorNode (basisVector ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0)))).tensor :=
+  leftMetric_expand
+
 lemma altLeftMetric_expand : {Fermion.altLeftMetric | α β}ᵀ.tensor =
     basisVector ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1)
     - basisVector ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0) := by
@@ -240,6 +297,11 @@ lemma altLeftMetric_expand : {Fermion.altLeftMetric | α β}ᵀ.tensor =
     fin_cases i
     · rfl
     · rfl
+
+lemma altLeftMetric_expand_tree : {Fermion.altLeftMetric | α β}ᵀ.tensor =
+    (TensorTree.add (tensorNode (basisVector ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1))) <|
+    (smul (-1) (tensorNode (basisVector ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0))))).tensor :=
+  altLeftMetric_expand
 
 lemma rightMetric_expand : {Fermion.rightMetric | α β}ᵀ.tensor =
     - basisVector ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1)
@@ -258,6 +320,11 @@ lemma rightMetric_expand : {Fermion.rightMetric | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+lemma rightMetric_expand_tree : {Fermion.rightMetric | α β}ᵀ.tensor =
+    (TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1)))) <|
+    (tensorNode (basisVector ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0)))).tensor :=
+  rightMetric_expand
+
 lemma altRightMetric_expand : {Fermion.altRightMetric | α β}ᵀ.tensor =
     basisVector ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1)
     - basisVector ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0) := by
@@ -273,6 +340,11 @@ lemma altRightMetric_expand : {Fermion.altRightMetric | α β}ᵀ.tensor =
     fin_cases i
     · rfl
     · rfl
+
+lemma altRightMetric_expand_tree : {Fermion.altRightMetric | α β}ᵀ.tensor =
+    (TensorTree.add (tensorNode (basisVector ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1))) <|
+    (smul (-1) (tensorNode (basisVector ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0))))).tensor :=
+  altRightMetric_expand
 
 /-- The expansion of the Pauli matrices `σ^μ^a^{dot a}` in terms of basis vectors. -/
 lemma pauliMatrix_basis_expand : {PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
@@ -312,6 +384,27 @@ lemma pauliMatrix_basis_expand : {PauliMatrix.asConsTensor | μ α β}ᵀ.tensor
     | (1 : Fin 3) => rfl
     | (2 : Fin 3) => rfl
 
+lemma pauliMatrix_basis_expand_tree : {PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
+   (TensorTree.add (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0))) <|
+    TensorTree.add (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1))) <|
+    TensorTree.add (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 0 | 2 => 1))) <|
+   TensorTree.add (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 1 | 2 => 0))) <|
+    TensorTree.add (smul (-I) (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 0 | 2 => 1)))) <|
+    TensorTree.add (smul I (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 1 | 2 => 0)))) <|
+    TensorTree.add (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 0 | 2 => 0))) <|
+    (smul (-1) (tensorNode
+      (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1))))).tensor := by
+  rw [pauliMatrix_basis_expand]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, add_tensor, tensorNode_tensor,
+    smul_tensor, neg_smul, one_smul]
+  rfl
 
 end complexLorentzTensor
 end Fermion

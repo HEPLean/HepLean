@@ -679,6 +679,8 @@ lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t : TensorTree S c) :
     (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
 
+lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
+    (smul a  T).tensor = a • T.tensor:= rfl
 /-!
 
 ## Equality of tensors and rewrites.
@@ -735,6 +737,11 @@ lemma add_tensor_eq {T1 T1' T2 T2' : TensorTree S c} (h1 : T1.tensor = T1'.tenso
 lemma neg_tensor_eq {T1 T2 : TensorTree S c} (h : T1.tensor = T2.tensor) :
     (neg T1).tensor = (neg T2).tensor := by
   simp only [neg_tensor]
+  rw [h]
+
+lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tensor) :
+    (smul a T1).tensor = (smul a T2).tensor := by
+  simp only [smul_tensor]
   rw [h]
 
 /-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
