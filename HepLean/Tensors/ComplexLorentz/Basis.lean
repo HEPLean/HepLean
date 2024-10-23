@@ -42,8 +42,14 @@ def basisVector {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     complexLorentzTensor.F.obj (OverColor.mk c) :=
   PiTensorProduct.tprod ℂ (fun i => complexLorentzTensor.basis (c i) (b i))
 
+/-!
+
+## Useful expansions.
+
+-/
+
 /-- The expansion of the Lorentz covariant metric in terms of basis vectors. -/
-lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
+lemma coMetric_basis_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
     basisVector ![Color.down, Color.down] (fun _ => 0)
     - basisVector ![Color.down, Color.down] (fun _ => 1)
     - basisVector ![Color.down, Color.down] (fun _ => 2)
@@ -66,6 +72,32 @@ lemma coMetric_expand : {Lorentz.coMetric | μ ν}ᵀ.tensor =
         cons_val_zero, Fin.cases_zero]
       change _ = Lorentz.complexCoBasisFin4 _
       simp only [Fin.isValue, Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
+      rfl
+
+/-- The expansion of the Lorentz contrvariant metric in terms of basis vectors. -/
+lemma contrMatrix_basis_expand : {Lorentz.contrMetric | μ ν}ᵀ.tensor =
+    basisVector ![Color.up, Color.up] (fun _ => 0)
+    - basisVector ![Color.up, Color.up] (fun _ => 1)
+    - basisVector ![Color.up, Color.up] (fun _ => 2)
+    - basisVector ![Color.up, Color.up] (fun _ => 3) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Functor.id_obj, Fin.isValue]
+  erw [Lorentz.contrMetric_apply_one, Lorentz.contrMetricVal_expand_tmul]
+  simp only [Fin.isValue, map_sub]
+  congr 1
+  congr 1
+  congr 1
+  all_goals
+    erw [pairIsoSep_tmul, basisVector]
+    apply congrArg
+    funext i
+    fin_cases i
+    all_goals
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, OverColor.mk_hom,
+        cons_val_zero, Fin.cases_zero]
+      change _ = Lorentz.complexContrBasisFin4 _
+      simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
 end complexLorentzTensor

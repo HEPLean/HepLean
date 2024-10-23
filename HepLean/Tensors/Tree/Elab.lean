@@ -203,6 +203,11 @@ def specialTypes : List (String × (Term → Term)) := [
       mkIdent ``Fermion.complexLorentzTensor,
       mkIdent ``Fermion.Color.down,
       mkIdent ``Fermion.Color.down, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Lorentz.complexContr", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+      mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.up,
+      mkIdent ``Fermion.Color.up, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Fermion.leftHanded ⊗ Fermion.rightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constThreeNodeE) #[
       mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.up,
