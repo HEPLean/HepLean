@@ -152,8 +152,11 @@ def getNoIndicesExact (stx : Syntax) : TermElabM ℕ := do
     | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
       let typeC ← inferType c
       match typeC with
-      | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal n))) _)) _ _ =>
-        return n
+      | Expr.forallE _ (Expr.app _ a) _ _ =>
+        let a' ← whnf a
+        match a' with
+        | Expr.lit (Literal.natVal n) => return n
+        |_ => throwError "Could not extract number of indices from tensor (getNoIndicesExact). "
       | _ => throwError "Could not extract number of indices from tensor (getNoIndicesExact). "
     | _ => return 1
   | k => return k
@@ -203,6 +206,11 @@ def specialTypes : List (String × (Term → Term)) := [
       mkIdent ``Fermion.complexLorentzTensor,
       mkIdent ``Fermion.Color.down,
       mkIdent ``Fermion.Color.down, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Lorentz.complexContr", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+      mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.up,
+      mkIdent ``Fermion.Color.up, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Fermion.leftHanded ⊗ Fermion.rightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constThreeNodeE) #[
       mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.up,
@@ -213,6 +221,16 @@ def specialTypes : List (String × (Term → Term)) := [
       mkIdent ``Fermion.complexLorentzTensor,
       mkIdent ``Fermion.Color.upL,
       mkIdent ``Fermion.Color.upL, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.altLeftHanded ⊗ Fermion.altLeftHanded", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+      mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.downL,
+      mkIdent ``Fermion.Color.downL, T]),
+  ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.altRightHanded ⊗ Fermion.altRightHanded", fun T =>
+    Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
+      mkIdent ``Fermion.complexLorentzTensor,
+      mkIdent ``Fermion.Color.downR,
+      mkIdent ``Fermion.Color.downR, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.rightHanded ⊗ Fermion.rightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
       mkIdent ``Fermion.complexLorentzTensor,
@@ -232,12 +250,8 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
     return f T
   | _ =>
   match type with
-  | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
-    let typeC ← inferType c
-    match typeC with
-    | Expr.forallE _ (Expr.app _ (Expr.app (Expr.app _ (Expr.lit (Literal.natVal _))) _)) _ _ =>
+  | Expr.app _ (Expr.app _ (Expr.app _ _)) =>
       return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
-    | _ => throwError "Could not create terminal node syntax (termNodeSyntax). "
   | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
 
 /-- Adjusts a list `List ℕ` by subtracting from each natrual number the number
@@ -532,5 +546,14 @@ elab_rules (kind:=tensorExprSyntax) : term
   | `(term| {$e:tensorExpr}ᵀ) => do
     let tensorTree ← elaborateTensorNode e
     return tensorTree
+/-!
 
+## Test cases
+
+-/
+
+variable {S : TensorSpecies} {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
+/-
+#check {t | α β}ᵀ
+-/
 end TensorTree

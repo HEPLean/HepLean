@@ -91,8 +91,7 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
       ((PiTensorProduct.tprod k) _)) = _
   rw [lift.map_tprod]
-  change ((lift.obj F).map fin2Iso.inv).hom ((PiTensorProduct.tprod k) fun i => _) = _
-  rw [lift.map_tprod]
+  erw [lift.map_tprod]
   congr
   funext i
   match i with
@@ -121,6 +120,44 @@ def tripleIsoSep {c1 c2 c3 : C} :
   (whiskerRightIso (forgetLiftApp F c1).symm _).trans <|
   ((lift.obj F).μIso _ _).trans <|
   (lift.obj F).mapIso fin3Iso'.symm
+
+lemma tripleIsoSep_tmul {c1 c2 c3 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discrete.mk c2))
+    (z : F.obj (Discrete.mk c3)) :
+    (tripleIsoSep F).hom.hom (x ⊗ₜ[k] y ⊗ₜ[k] z) = PiTensorProduct.tprod k
+      (fun | (0 : Fin 3) => x | (1 : Fin 3) => y | (2 : Fin 3) => z) := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.instMonoidalCategory_tensorObj_V,
+    tripleIsoSep, Functor.mapIso_symm, Iso.trans_hom, whiskerLeftIso_hom, whiskerRightIso_hom,
+    Iso.symm_hom, MonoidalFunctor.μIso_hom, Functor.mapIso_inv, Action.comp_hom,
+    Action.instMonoidalCategory_whiskerLeft_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    ModuleCat.MonoidalCategory.whiskerLeft_apply, ModuleCat.MonoidalCategory.whiskerRight_apply,
+    Functor.id_obj, mk_hom]
+  erw [pairIsoSep_tmul F y z]
+  erw [forgetLiftAppV_symm_apply F c1]
+  erw [lift.obj_μ_tprod_tmul F _ _]
+  erw [lift.map_tprod]
+  apply congrArg
+  funext i
+  match i with
+  | (0 : Fin 3) =>
+    simp only [mk_hom, Fin.isValue, Matrix.cons_val_zero, instMonoidalCategoryStruct_tensorObj_left,
+      instMonoidalCategoryStruct_tensorObj_hom, lift.discreteFunctorMapEqIso, eqToIso_refl,
+      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, Functor.id_obj, Nat.reduceAdd,
+      Nat.succ_eq_add_one, LinearEquiv.ofLinear_apply]
+    rfl
+  | (1 : Fin 3) =>
+    simp only [mk_hom, Fin.isValue, Matrix.cons_val_one, Matrix.head_cons,
+      instMonoidalCategoryStruct_tensorObj_left, instMonoidalCategoryStruct_tensorObj_hom,
+      lift.discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
+      Iso.refl_inv, Functor.id_obj, Nat.reduceAdd, Nat.succ_eq_add_one, LinearEquiv.ofLinear_apply]
+    rfl
+  | (2 : Fin 3) =>
+    simp only [mk_hom, Fin.isValue, Matrix.cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd,
+      instMonoidalCategoryStruct_tensorObj_left, instMonoidalCategoryStruct_tensorObj_hom,
+      lift.discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
+      Iso.refl_inv, Functor.id_obj, LinearEquiv.ofLinear_apply]
+    rfl
 
 /-- The functor taking `c` to `F c ⊗ F (τ c)`. -/
 def pairτ (τ : C → C) : Discrete C ⥤ Rep k G :=

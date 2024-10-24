@@ -35,6 +35,76 @@ open SpaceTime
 def asTensor : (complexContr ⊗ leftHanded ⊗ rightHanded).V :=
   ∑ i, complexContrBasis i ⊗ₜ leftRightToMatrix.symm (σSA i)
 
+/-- The expansion of `asTensor` into complexContrBasis basis vectors . -/
+lemma asTensor_expand_complexContrBasis : asTensor =
+    complexContrBasis (Sum.inl 0) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inl 0))
+    + complexContrBasis (Sum.inr 0) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 0))
+    + complexContrBasis (Sum.inr 1) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 1))
+    + complexContrBasis (Sum.inr 2) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 2)) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, asTensor,
+    CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Fintype.sum_sum_type, Finset.univ_unique,
+    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three]
+  rfl
+
+/-- The expansion of the pauli matrix `σ₀` in terms of a basis of tensor product vectors. -/
+lemma leftRightToMatrix_σSA_inl_0_expand : leftRightToMatrix.symm (σSA (Sum.inl 0)) =
+    leftBasis 0 ⊗ₜ rightBasis 0 + leftBasis 1 ⊗ₜ rightBasis 1 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
+  erw [leftRightToMatrix_symm_expand_tmul]
+  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ0, of_apply, cons_val', empty_val',
+    cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, one_smul, zero_smul,
+    add_zero, head_fin_const, zero_add, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+
+  /-- The expansion of the pauli matrix `σ₁` in terms of a basis of tensor product vectors. -/
+lemma leftRightToMatrix_σSA_inr_0_expand : leftRightToMatrix.symm (σSA (Sum.inr 0)) =
+    leftBasis 0 ⊗ₜ rightBasis 1 + leftBasis 1 ⊗ₜ rightBasis 0:= by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
+  erw [leftRightToMatrix_symm_expand_tmul]
+  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ1, of_apply, cons_val', empty_val',
+    cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, zero_smul, one_smul,
+    zero_add, head_fin_const, add_zero, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+
+/-- The expansion of the pauli matrix `σ₂` in terms of a basis of tensor product vectors. -/
+lemma leftRightToMatrix_σSA_inr_1_expand : leftRightToMatrix.symm (σSA (Sum.inr 1)) =
+    -(I • leftBasis 0 ⊗ₜ[ℂ] rightBasis 1) + I • leftBasis 1 ⊗ₜ[ℂ] rightBasis 0 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
+  erw [leftRightToMatrix_symm_expand_tmul]
+  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ2, of_apply, cons_val', empty_val',
+    cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, zero_smul, neg_smul,
+    zero_add, head_fin_const, add_zero]
+
+/-- The expansion of the pauli matrix `σ₃` in terms of a basis of tensor product vectors. -/
+lemma leftRightToMatrix_σSA_inr_2_expand : leftRightToMatrix.symm (σSA (Sum.inr 2)) =
+    leftBasis 0 ⊗ₜ rightBasis 0 - leftBasis 1 ⊗ₜ rightBasis 1 := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
+  erw [leftRightToMatrix_symm_expand_tmul]
+  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ3, of_apply, cons_val', empty_val',
+    cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, one_smul, zero_smul,
+    add_zero, head_fin_const, neg_smul, zero_add, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+  rfl
+
+/-- The expansion of `asTensor` into complexContrBasis basis of tensor product vectors. -/
+lemma asTensor_expand : asTensor =
+    complexContrBasis (Sum.inl 0) ⊗ₜ (leftBasis 0 ⊗ₜ rightBasis 0)
+    + complexContrBasis (Sum.inl 0) ⊗ₜ (leftBasis 1 ⊗ₜ rightBasis 1)
+    + complexContrBasis (Sum.inr 0) ⊗ₜ (leftBasis 0 ⊗ₜ rightBasis 1)
+    + complexContrBasis (Sum.inr 0) ⊗ₜ (leftBasis 1 ⊗ₜ rightBasis 0)
+    - I • complexContrBasis (Sum.inr 1) ⊗ₜ (leftBasis 0 ⊗ₜ rightBasis 1)
+    + I • complexContrBasis (Sum.inr 1) ⊗ₜ (leftBasis 1 ⊗ₜ rightBasis 0)
+    + complexContrBasis (Sum.inr 2) ⊗ₜ (leftBasis 0 ⊗ₜ rightBasis 0)
+    - complexContrBasis (Sum.inr 2) ⊗ₜ (leftBasis 1 ⊗ₜ rightBasis 1) := by
+  rw [asTensor_expand_complexContrBasis]
+  rw [leftRightToMatrix_σSA_inl_0_expand, leftRightToMatrix_σSA_inr_0_expand,
+    leftRightToMatrix_σSA_inr_1_expand, leftRightToMatrix_σSA_inr_2_expand]
+  simp only [Action.instMonoidalCategory_tensorObj_V, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fin.isValue, tmul_add, tmul_neg, tmul_smul, tmul_sub]
+  rfl
+
 /-- The tensor `σ^μ^a^{dot a}` based on the Pauli-matrices as a morphism,
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗ rightHanded` manifesting
   the invariance under the `SL(2,ℂ)` action. -/
@@ -123,6 +193,11 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
         simp only [Action.instMonoidalCategory_tensorObj_V, one_apply_eq, one_smul,
           CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
           Action.FunctorCategoryEquivalence.functor_obj_obj]
+
+lemma asConsTensor_apply_one : asConsTensor.hom (1 : ℂ) = asTensor := by
+  change asConsTensor.hom.toFun (1 : ℂ) = asTensor
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    asConsTensor, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
 end
 end PauliMatrix

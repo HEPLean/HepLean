@@ -652,6 +652,14 @@ lemma constTwoNode_tensor {c1 c2 : S.C}
     (OverColor.Discrete.pairIsoSep S.FDiscrete).hom.hom (v.hom (1 : S.k)) :=
   rfl
 
+@[simp]
+lemma constThreeNode_tensor {c1 c2 c3 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+    S.FDiscrete.obj (Discrete.mk c3)) :
+    (constThreeNode v).tensor =
+    (OverColor.Discrete.tripleIsoSep S.FDiscrete).hom.hom (v.hom (1 : S.k)) :=
+  rfl
+
 lemma prod_tensor {c1 : Fin n → S.C} {c2 : Fin m → S.C} (t1 : TensorTree S c1)
     (t2 : TensorTree S c2) :
     (prod t1 t2).tensor = (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
@@ -671,6 +679,8 @@ lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t : TensorTree S c) :
     (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
 
+lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
+    (smul a T).tensor = a • T.tensor:= rfl
 /-!
 
 ## Equality of tensors and rewrites.
@@ -728,6 +738,15 @@ lemma neg_tensor_eq {T1 T2 : TensorTree S c} (h : T1.tensor = T2.tensor) :
     (neg T1).tensor = (neg T2).tensor := by
   simp only [neg_tensor]
   rw [h]
+
+lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tensor) :
+    (smul a T1).tensor = (smul a T2).tensor := by
+  simp only [smul_tensor]
+  rw [h]
+
+lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.mk c)}
+    (h : T1.tensor = t) : T1.tensor = (tensorNode t).tensor := by
+  simpa using h
 
 /-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
   This is used in some proofs of node identities for tensor trees. -/

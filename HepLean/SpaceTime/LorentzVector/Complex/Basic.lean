@@ -40,9 +40,12 @@ def complexCo : Rep ℂ SL(2, ℂ) := Rep.of CoℂModule.SL2CRep
 def complexContrBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexContr := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ ContrℂModule.toFin13ℂFun)
 
-/-- The standard basis of complex contravariant Lorentz vectors indexed by `Fin 4`. -/
-def complexContrBasisFin4 : Basis (Fin 4) ℂ complexContr :=
-  Basis.reindex complexContrBasis finSumFinEquiv
+@[simp]
+lemma complexContrBasis_toFin13ℂ (i :Fin 1 ⊕ Fin 3) :
+    (complexContrBasis i).toFin13ℂ = Pi.single i 1 := by
+  simp only [complexContrBasis, Basis.coe_ofEquivFun]
+  rw [Lorentz.ContrℂModule.toFin13ℂ]
+  rfl
 
 @[simp]
 lemma complexContrBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
@@ -58,13 +61,19 @@ lemma complexContrBasis_ρ_val (M : SL(2,ℂ)) (v : complexContr) :
     LorentzGroup.toComplex (SL2C.toLorentzGroup M) *ᵥ v.val := by
   rfl
 
+/-- The standard basis of complex contravariant Lorentz vectors indexed by `Fin 4`. -/
+def complexContrBasisFin4 : Basis (Fin 4) ℂ complexContr :=
+  Basis.reindex complexContrBasis finSumFinEquiv
+
 /-- The standard basis of complex covariant Lorentz vectors. -/
 def complexCoBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexCo := Basis.ofEquivFun
   (Equiv.linearEquiv ℂ CoℂModule.toFin13ℂFun)
 
-/-- The standard basis of complex covariant Lorentz vectors indexed by `Fin 4`. -/
-def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
-  Basis.reindex complexCoBasis finSumFinEquiv
+@[simp]
+lemma complexCoBasis_toFin13ℂ (i :Fin 1 ⊕ Fin 3) : (complexCoBasis i).toFin13ℂ = Pi.single i 1 := by
+  simp only [complexCoBasis, Basis.coe_ofEquivFun]
+  rw [Lorentz.CoℂModule.toFin13ℂ]
+  rfl
 
 @[simp]
 lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
@@ -74,6 +83,10 @@ lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
   simp only [complexCoBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
   change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ *ᵥ (Pi.single j 1)) i = _
   simp only [mulVec_single, transpose_apply, mul_one]
+
+/-- The standard basis of complex covariant Lorentz vectors indexed by `Fin 4`. -/
+def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
+  Basis.reindex complexCoBasis finSumFinEquiv
 
 /-!
 

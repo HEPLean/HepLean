@@ -137,6 +137,16 @@ lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
     leftAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
   rfl
 
+lemma leftAltContraction_basis (i j : Fin 2) :
+    leftAltContraction.hom (leftBasis i ⊗ₜ altLeftBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [leftAltContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, leftBasis_toFin2ℂ, altLeftBasis_toFin2ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  simp only [Fin.ext_iff]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
+
 /-- The linear map from altLeftHandedWeyl ⊗ leftHandedWeyl to ℂ given by
     summing over components of altLeftHandedWeyl and leftHandedWeyl in the
     standard basis (i.e. the dot product).
@@ -152,6 +162,16 @@ def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,�
 lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded) :
     altLeftContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
   rfl
+
+lemma altLeftContraction_basis (i j : Fin 2) :
+    altLeftContraction.hom (altLeftBasis i ⊗ₜ leftBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [altLeftContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, leftBasis_toFin2ℂ, altLeftBasis_toFin2ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  simp only [Fin.ext_iff]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
 /--
 The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
@@ -182,6 +202,17 @@ lemma rightAltContraction_hom_tmul (ψ : rightHanded) (φ : altRightHanded) :
     rightAltContraction.hom (ψ ⊗ₜ φ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ := by
   rfl
 
+lemma rightAltContraction_basis (i j : Fin 2) :
+    rightAltContraction.hom (rightBasis i ⊗ₜ altRightBasis j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [rightAltContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  simp only [Fin.ext_iff]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
+
 /--
   The linear map from altRightHandedWeyl ⊗ rightHandedWeyl to ℂ given by
     summing over components of altRightHandedWeyl and rightHandedWeyl in the
@@ -210,6 +241,17 @@ def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2
 lemma altRightContraction_hom_tmul (φ : altRightHanded) (ψ : rightHanded) :
     altRightContraction.hom (φ ⊗ₜ ψ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ := by
   rfl
+
+lemma altRightContraction_basis (i j : Fin 2) :
+    altRightContraction.hom (altRightBasis i ⊗ₜ rightBasis j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
+  rw [altRightContraction_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
+    dotProduct_single, mul_one]
+  rw [Pi.single_apply]
+  simp only [Fin.ext_iff]
+  refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
 /-!
 

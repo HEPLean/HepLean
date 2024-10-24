@@ -108,7 +108,11 @@ import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
 import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.ComplexLorentz.Basic
+import HepLean.Tensors.ComplexLorentz.Basis
+import HepLean.Tensors.ComplexLorentz.BasisTrees
 import HepLean.Tensors.ComplexLorentz.Lemmas
+import HepLean.Tensors.ComplexLorentz.PauliContr
+import HepLean.Tensors.ComplexLorentz.PauliLower
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Functors

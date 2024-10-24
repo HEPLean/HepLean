@@ -117,11 +117,25 @@ lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 
 /-!
 
-## Additive identities
+## Vector based identities
 
 These identities are related to the fact that all the maps are linear.
 
 -/
+
+lemma smul_smul (t : TensorTree S c) (a b : S.k) :
+    (smul a (smul b t)).tensor = (smul (a * b) t).tensor := by
+  simp only [smul_tensor]
+  exact _root_.smul_smul a b t.tensor
+
+lemma smul_one (t : TensorTree S c) :
+    (smul 1 t).tensor = t.tensor := by
+  simp [smul_tensor]
+
+lemma smul_eq_one (t : TensorTree S c) (a : S.k) (h : a = 1) :
+    (smul a t).tensor = t.tensor := by
+  rw [h]
+  exact smul_one _
 
 /-- The addition node is commutative. -/
 lemma add_comm (t1 t2 : TensorTree S c) : (add t1 t2).tensor = (add t2 t1).tensor := by
@@ -136,15 +150,69 @@ lemma add_assoc (t1 t2 t3 : TensorTree S c) :
 
 /-- When the same permutation acts on both arguments of an addition, the permutation
   can be moved out of the addition. -/
-lemma add_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C}
+lemma add_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
     (add (perm σ t) (perm σ t1)).tensor = (perm σ (add t t1)).tensor := by
   simp only [add_tensor, perm_tensor, map_add]
+
+lemma perm_add {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
+    (perm σ (add t t1)).tensor = (add (perm σ t) (perm σ t1)).tensor := by
+  simp only [add_tensor, perm_tensor, map_add]
+
+lemma perm_smul {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (a : S.k) (t : TensorTree S c) :
+    (perm σ (smul a t)).tensor = (smul a (perm σ t)).tensor := by
+  simp only [smul_tensor, perm_tensor, map_smul]
 
 /-- When the same evaluation acts on both arguments of an addition, the evaluation
   can be moved out of the addition. -/
 lemma add_eval {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t t1 : TensorTree S c) :
     (add (eval i e t) (eval i e t1)).tensor = (eval i e (add t t1)).tensor := by
   simp only [add_tensor, eval_tensor, Nat.succ_eq_add_one, map_add]
+
+lemma contr_add {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = S.τ (c i)} (t1 t2 : TensorTree S c) :
+  (contr i j h (add t1 t2)).tensor = (add (contr i j h t1) (contr i j h t2)).tensor := by
+  simp [contr_tensor, add_tensor]
+
+lemma contr_smul {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = S.τ (c i)} (a : S.k) (t : TensorTree S c) :
+    (contr i j h (smul a t)).tensor = (smul a (contr i j h t)).tensor := by
+  simp [contr_tensor, smul_tensor]
+
+@[simp]
+lemma add_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (t1 t2 : TensorTree S c) (t3 : TensorTree S c1) :
+    (prod (add t1 t2) t3).tensor = (add (prod t1 t3) (prod t2 t3)).tensor := by
+  simp only [prod_tensor, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, add_tensor, add_tmul, map_add]
+
+@[simp]
+lemma prod_add {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (t1 : TensorTree S c) (t2 t3 : TensorTree S c1) :
+    (prod t1 (add t2 t3)).tensor = (add (prod t1 t2) (prod t1 t3)).tensor := by
+  simp only [prod_tensor, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, add_tensor, tmul_add, map_add]
+
+lemma smul_prod {n m: ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (a : S.k) (t1 : TensorTree S c) (t2 : TensorTree S c1) :
+    ((prod (smul a t1) t2)).tensor = (smul a (prod t1 t2)).tensor := by
+  simp [prod_tensor, smul_tensor, tmul_smul, smul_tmul, map_smul]
+
+lemma prod_smul {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (a : S.k) (t1 : TensorTree S c) (t2 : TensorTree S c1) :
+    (prod t1 (smul a t2)).tensor = (smul a (prod t1 t2)).tensor := by
+  simp [prod_tensor, smul_tensor, tmul_smul, smul_tmul, map_smul]
+
+lemma prod_add_both {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (t1 t2 : TensorTree S c) (t3 t4 : TensorTree S c1) :
+    (prod (add t1 t2) (add t3 t4)).tensor = (add (add (prod t1 t3) (prod t1 t4))
+    (add (prod t2 t3) (prod t2 t4))).tensor := by
+  rw [add_prod]
+  rw [add_tensor_eq_fst (prod_add _ _ _)]
+  rw [add_tensor_eq_snd (prod_add _ _ _)]
 
 end TensorTree

@@ -24,6 +24,23 @@ namespace Lorentz
 def contrMetricVal : (complexContr ⊗ complexContr).V :=
   contrContrToMatrix.symm ((@minkowskiMatrix 3).map ofReal)
 
+/-- The expansion of `contrMetricVal` into basis vectors. -/
+lemma contrMetricVal_expand_tmul : contrMetricVal =
+    complexContrBasis (Sum.inl 0) ⊗ₜ[ℂ] complexContrBasis (Sum.inl 0)
+    - complexContrBasis (Sum.inr 0) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 0)
+    - complexContrBasis (Sum.inr 1) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 1)
+    - complexContrBasis (Sum.inr 2) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 2) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, contrMetricVal, Fin.isValue]
+  erw [contrContrToMatrix_symm_expand_tmul]
+  simp only [map_apply, ofReal_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
+    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq,
+    not_false_eq_true, minkowskiMatrix.off_diag_zero, zero_smul, add_zero, zero_add, Sum.inr.injEq,
+    zero_ne_one, Fin.reduceEq, one_ne_zero]
+  rw [minkowskiMatrix.inl_0_inl_0, minkowskiMatrix.inr_i_inr_i,
+    minkowskiMatrix.inr_i_inr_i, minkowskiMatrix.inr_i_inr_i]
+  simp only [Fin.isValue, one_smul, neg_smul]
+  rfl
+
 /-- The metric `ηᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr`,
   making its invariance under the action of `SL(2,ℂ)`. -/
 def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr where
@@ -51,10 +68,16 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
     apply congrArg
     simp only [LorentzGroup.toComplex_mul_minkowskiMatrix_mul_transpose]
 
+lemma contrMetric_apply_one : contrMetric.hom (1 : ℂ) = contrMetricVal := by
+  change contrMetric.hom.toFun (1 : ℂ) = contrMetricVal
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    contrMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
 /-- The metric `ηᵢᵢ` as an element of `(complexCo ⊗ complexCo).V`. -/
 def coMetricVal : (complexCo ⊗ complexCo).V :=
   coCoToMatrix.symm ((@minkowskiMatrix 3).map ofReal)
 
+/-- The expansion of `coMetricVal` into basis vectors. -/
 lemma coMetricVal_expand_tmul : coMetricVal =
     complexCoBasis (Sum.inl 0) ⊗ₜ[ℂ] complexCoBasis (Sum.inl 0)
     - complexCoBasis (Sum.inr 0) ⊗ₜ[ℂ] complexCoBasis (Sum.inr 0)
@@ -102,7 +125,8 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
 
 lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
   change coMetric.hom.toFun (1 : ℂ) = coMetricVal
-  simp [coMetric]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    coMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
 end Lorentz
 end
