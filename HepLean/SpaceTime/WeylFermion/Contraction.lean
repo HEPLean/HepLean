@@ -203,7 +203,8 @@ lemma rightAltContraction_hom_tmul (ψ : rightHanded) (φ : altRightHanded) :
   rfl
 
 lemma rightAltContraction_basis (i j : Fin 2) :
-    rightAltContraction.hom (rightBasis i ⊗ₜ altRightBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
+    rightAltContraction.hom (rightBasis i ⊗ₜ altRightBasis j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [rightAltContraction_hom_tmul]
   simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
     dotProduct_single, mul_one]
@@ -242,7 +243,8 @@ lemma altRightContraction_hom_tmul (φ : altRightHanded) (ψ : rightHanded) :
   rfl
 
 lemma altRightContraction_basis (i j : Fin 2) :
-    altRightContraction.hom (altRightBasis i ⊗ₜ rightBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
+    altRightContraction.hom (altRightBasis i ⊗ₜ rightBasis j) =
+    if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [altRightContraction_hom_tmul]
   simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
     dotProduct_single, mul_one]

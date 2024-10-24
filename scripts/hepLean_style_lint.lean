@@ -52,6 +52,14 @@ def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
+def longLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
+  let enumLines := (lines.toList.enumFrom 1)
+  let errors := enumLines.filterMap (fun (lno, l) ↦
+    if l.length > 100 ∧ ¬ String.containsSubstr l "http" then
+      some (s!" Line is too long.", lno, 100)
+    else none)
+  errors.toArray
+
 /-- Substring linter. -/
 def substringLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
@@ -93,7 +101,7 @@ def hepLeanLintFile (path : FilePath) : IO (Array HepLeanErrorContext) := do
   let lines ← IO.FS.lines path
   let allOutput := (Array.map (fun lint ↦
     (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
-    #[doubleEmptyLineLinter, doubleSpaceLinter, numInitialSpacesEven,
+    #[doubleEmptyLineLinter, doubleSpaceLinter, numInitialSpacesEven, longLineLinter,
     substringLinter ".-/", substringLinter " )",
     substringLinter "( ", substringLinter "=by", substringLinter "  def ",
     substringLinter "/-- We ", substringLinter "[ ", substringLinter " ]", substringLinter " ,"

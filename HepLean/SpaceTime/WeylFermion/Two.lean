@@ -125,7 +125,8 @@ def altRightAltRightToMatrix : (altRightHanded ⊗ altRightHanded).V ≃ₗ[ℂ]
 
 /-- Expanding `altRightAltRightToMatrix` in terms of the standard basis. -/
 lemma altRightAltRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
-    altRightAltRightToMatrix.symm M = ∑ i, ∑ j, M i j • (altRightBasis i ⊗ₜ[ℂ] altRightBasis j) := by
+    altRightAltRightToMatrix.symm M =
+    ∑ i, ∑ j, M i j • (altRightBasis i ⊗ₜ[ℂ] altRightBasis j) := by
   simp only [Action.instMonoidalCategory_tensorObj_V, altRightAltRightToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]

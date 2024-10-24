@@ -207,6 +207,8 @@ def discreteSumEquiv {X Y : OverColor C} (i : X.left ⊕ Y.left) :
   | Sum.inl _ => LinearEquiv.refl _ _
   | Sum.inr _ => LinearEquiv.refl _ _
 
+/-- An equivalence used in the lemma of `μ_tmul_tprod_mk`. Identical to `μModEquiv`
+  except with arguments based on maps instead of elements of `OverColor C`.  -/
 def discreteSumEquiv' {X Y : Type} {cX : X → C} {cY : Y → C} (i : X ⊕ Y) :
     Sum.elim (fun i => F.obj (Discrete.mk (cX i)))
     (fun i => F.obj (Discrete.mk (cY i))) i ≃ₗ[k] F.obj (Discrete.mk ((Sum.elim cX cY) i)) :=
@@ -271,7 +273,8 @@ lemma μ_tmul_tprod {X Y : OverColor C} (p : (i : X.left) → F.obj (Discrete.mk
 lemma μ_tmul_tprod_mk {X Y : Type} {cX : X → C} {cY : Y → C}
     (p : (i : X) → F.obj (Discrete.mk <| cX i))
     (q : (i : Y) → (F.obj <| Discrete.mk (cY i))) :
-    (μ F (OverColor.mk cX) (OverColor.mk cY)).hom.hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q)
+    (μ F (OverColor.mk cX) (OverColor.mk cY)).hom.hom
+    (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q)
     = (PiTensorProduct.tprod k) fun i =>
     discreteSumEquiv' F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   let q' : (i : (OverColor.mk cY).left) → (F.obj <| Discrete.mk ((OverColor.mk cY).hom i)) := q
