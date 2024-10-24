@@ -167,6 +167,14 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => Fermion.altRightContraction_tmul_symm
     | Color.up => Lorentz.contrCoContraction_tmul_symm
     | Color.down => Lorentz.coContrContraction_tmul_symm
+  contr_unit := fun c =>
+    match c with
+    | Color.upL => Fermion.contr_altLeftLeftUnit
+    | Color.downL => Fermion.contr_leftAltLeftUnit
+    | Color.upR => Fermion.contr_altRightRightUnit
+    | Color.downR => Fermion.contr_rightAltRightUnit
+    | Color.up => Lorentz.contr_coContrUnit
+    | Color.down => Lorentz.contr_contrCoUnit
 
 instance : DecidableEq complexLorentzTensor.C := Fermion.instDecidableEqColor
 

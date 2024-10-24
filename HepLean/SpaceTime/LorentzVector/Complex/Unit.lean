@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Complex.Two
+import HepLean.SpaceTime.LorentzVector.Complex.Contraction
 /-!
 
 # Unit for complex Lorentz vectors
@@ -122,6 +123,76 @@ lemma coContrUnit_apply_one : coContrUnit.hom (1 : ℂ) = coContrUnitVal := by
   change coContrUnit.hom.toFun (1 : ℂ) = coContrUnitVal
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     coContrUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+/-!
+
+## Contraction of the units
+
+-/
+
+/-- Contraction on the right with `contrCoUnit` does nothing. -/
+lemma contr_contrCoUnit (x : complexCo) :
+    (λ_ complexCo).hom.hom
+    ((coContrContraction ▷ complexCo).hom
+    ((α_ _ _ complexCo).inv.hom
+    (x ⊗ₜ[ℂ] contrCoUnit.hom (1 : ℂ)))) = x := by
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span complexCoBasis x)
+  subst hc
+  rw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, Fin.sum_univ_three, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1'  (x y :  CoeSort.coe complexCo) (z :  CoeSort.coe complexContr) :
+    (α_ complexCo.V complexContr.V complexCo.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y) = (x ⊗ₜ[ℂ] z) ⊗ₜ[ℂ] y := rfl
+  repeat rw [h1']
+  have h1'' ( y :  CoeSort.coe complexCo) (z :  CoeSort.coe complexCo ⊗[ℂ] CoeSort.coe complexContr) :
+    (coContrContraction.hom ▷ complexCo.V) (z ⊗ₜ[ℂ] y) = (coContrContraction.hom z) ⊗ₜ[ℂ] y := rfl
+  repeat rw (config := { transparency := .instances }) [h1'']
+  repeat rw [coContrContraction_basis']
+  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
+    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, ↓reduceIte,
+    reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero,
+    Fin.reduceEq, zero_add, zero_ne_one]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul, TensorProduct.lid_tmul,
+    TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+  repeat rw [add_assoc]
+
+/-- Contraction on the right with `coContrUnit`. -/
+lemma contr_coContrUnit (x : complexContr) :
+    (λ_ complexContr).hom.hom
+    ((contrCoContraction ▷ complexContr).hom
+    ((α_ _ _ complexContr).inv.hom
+    (x ⊗ₜ[ℂ] coContrUnit.hom (1 : ℂ)))) = x := by
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span complexContrBasis x)
+  subst hc
+  rw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
+    Finset.sum_singleton, Fin.sum_univ_three, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1'  (x y :  CoeSort.coe complexContr) (z :  CoeSort.coe complexCo) :
+    (α_ complexContr.V complexCo.V complexContr.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y) = (x ⊗ₜ[ℂ] z) ⊗ₜ[ℂ] y := rfl
+  repeat rw [h1']
+  have h1'' ( y :  CoeSort.coe complexContr) (z :  CoeSort.coe complexContr ⊗[ℂ] CoeSort.coe complexCo) :
+    (contrCoContraction.hom ▷ complexContr.V) (z ⊗ₜ[ℂ] y) = (contrCoContraction.hom z) ⊗ₜ[ℂ] y := rfl
+  repeat rw (config := { transparency := .instances }) [h1'']
+  repeat rw [contrCoContraction_basis']
+  simp only [Fin.isValue, Action.instMonoidalCategory_tensorUnit_V, ↓reduceIte, reduceCtorEq,
+    zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero, Fin.reduceEq, zero_add,
+    zero_ne_one]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul, TensorProduct.lid_tmul,
+    TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+  repeat rw [add_assoc]
+
 
 end Lorentz
 end

@@ -7,6 +7,7 @@ import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.SpaceTime.WeylFermion.Contraction
 import Mathlib.LinearAlgebra.TensorProduct.Matrix
 import HepLean.SpaceTime.WeylFermion.Two
+import LLMLean
 /-!
 
 # Units of Weyl fermions
@@ -221,11 +222,108 @@ lemma altRightRightUnit_apply_one : altRightRightUnit.hom (1 : ℂ) = altRightRi
 
 -/
 
-lemma contr_leftAltLeftUnitVal (x : leftHanded) :
+/-- Contraction on the right with `altLeftLeftUnit` does nothing. -/
+lemma contr_altLeftLeftUnit (x : leftHanded) :
     (λ_ leftHanded).hom.hom
     (((leftAltContraction) ▷ leftHanded).hom
     ((α_ _ _ leftHanded).inv.hom
     (x ⊗ₜ[ℂ] altLeftLeftUnit.hom (1 : ℂ)))) = x := by
-  sorry
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span leftBasis x)
+  subst hc
+  rw [altLeftLeftUnit_apply_one, altLeftLeftUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1 (x y : leftHanded) (z : altLeftHanded) : (leftAltContraction.hom ▷ leftHanded.V)
+    ((α_ leftHanded.V altLeftHanded.V leftHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    (leftAltContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
+  erw [h1, h1, h1, h1]
+  repeat rw [leftAltContraction_basis]
+  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
+    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero,
+    ↓reduceIte, Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one,
+    zero_add]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+
+/-- Contraction on the right with `leftAltLeftUnit` does nothing. -/
+lemma contr_leftAltLeftUnit  (x : altLeftHanded) :
+    (λ_ altLeftHanded).hom.hom
+    (((altLeftContraction) ▷ altLeftHanded).hom
+    ((α_ _ _ altLeftHanded).inv.hom
+    (x ⊗ₜ[ℂ] leftAltLeftUnit.hom (1 : ℂ)))) = x := by
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altLeftBasis x)
+  subst hc
+  rw [leftAltLeftUnit_apply_one, leftAltLeftUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1 (x y : altLeftHanded) (z : leftHanded) : (altLeftContraction.hom ▷ altLeftHanded.V)
+    ((α_ altLeftHanded.V leftHanded.V altLeftHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    (altLeftContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
+  erw [h1, h1, h1, h1]
+  repeat rw [altLeftContraction_basis]
+  simp only [Fin.isValue, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero, ↓reduceIte,
+    Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one, zero_add]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+
+/-- Contraction on the right with `altRightRightUnit` does nothing. -/
+lemma contr_altRightRightUnit (x : rightHanded) :
+    (λ_ rightHanded).hom.hom
+    (((rightAltContraction) ▷ rightHanded).hom
+    ((α_ _ _ rightHanded).inv.hom
+    (x ⊗ₜ[ℂ] altRightRightUnit.hom (1 : ℂ)))) = x := by
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span rightBasis x)
+  subst hc
+  rw [altRightRightUnit_apply_one, altRightRightUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1 (x y : rightHanded) (z : altRightHanded) : (rightAltContraction.hom ▷ rightHanded.V)
+    ((α_ rightHanded.V altRightHanded.V rightHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    (rightAltContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
+  erw [h1, h1, h1, h1]
+  repeat rw [rightAltContraction_basis]
+  simp only [Fin.isValue, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero, ↓reduceIte,
+    Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one, zero_add]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+
+/-- Contraction on the right with `rightAltRightUnit` does nothing. -/
+lemma contr_rightAltRightUnit (x : altRightHanded) :
+    (λ_ altRightHanded).hom.hom
+    (((altRightContraction) ▷ altRightHanded).hom
+    ((α_ _ _ altRightHanded).inv.hom
+    (x ⊗ₜ[ℂ] rightAltRightUnit.hom (1 : ℂ)))) = x := by
+  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altRightBasis x)
+  subst hc
+  rw [rightAltRightUnit_apply_one, rightAltRightUnitVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Action.instMonoidalCategory_whiskerRight_hom,
+    Action.instMonoidalCategory_associator_inv_hom, CategoryTheory.Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+    Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
+    _root_.map_smul]
+  have h1 (x y : altRightHanded) (z : rightHanded) : (altRightContraction.hom ▷ altRightHanded.V)
+    ((α_ altRightHanded.V rightHanded.V altRightHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    (altRightContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
+  erw [h1, h1, h1, h1]
+  repeat rw [altRightContraction_basis]
+  simp only [Fin.isValue, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero, ↓reduceIte,
+    Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one, zero_add]
+  erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
+  simp only [Fin.isValue, one_smul]
+
 end
 end Fermion
