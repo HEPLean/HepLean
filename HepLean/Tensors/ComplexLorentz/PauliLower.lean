@@ -139,7 +139,7 @@ lemma pauliMatrix_contr_down_3 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_down_3_tree : {(basisVector ![Color.down, Color.down] fun x => 3) | μ ν ⊗
-      PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
+    PauliMatrix.asConsTensor | μ α β}ᵀ.tensor =
     (TensorTree.add
       ((tensorNode (basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0))))
       (smul (-1) (tensorNode (basisVector pauliMatrixLowerMap

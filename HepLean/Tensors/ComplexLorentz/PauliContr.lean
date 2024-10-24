@@ -237,9 +237,9 @@ private lemma pauliMatrix_lower_basis_expand_prod' {n : ℕ} {c : Fin n → comp
     exact pauliMatrix_lower_basis_expand_prod _
 
 lemma pauliMatrix_contract_pauliMatrix_aux :
-  {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
+    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
     PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor
-  = ((tensorNode
+    = ((tensorNode
       ((basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0) +
         basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)).add
     ((tensorNode
@@ -310,8 +310,8 @@ lemma pauliMatrix_contract_pauliMatrix_aux :
     pauliMatrix_contr_lower_3_1_1]
 
 lemma pauliMatrix_contract_pauliMatrix_expand :
-  {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
-  PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor =
+    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
+    PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor =
     2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)
     + 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)

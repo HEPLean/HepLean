@@ -203,7 +203,7 @@ lemma smul_prod {n m: ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp [prod_tensor, smul_tensor, tmul_smul, smul_tmul, map_smul]
 
 lemma prod_smul {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-  (a : S.k) (t1 : TensorTree S c) (t2 : TensorTree S c1) :
+    (a : S.k) (t1 : TensorTree S c) (t2 : TensorTree S c1) :
     (prod t1 (smul a t2)).tensor = (smul a (prod t1 t2)).tensor := by
   simp [prod_tensor, smul_tensor, tmul_smul, smul_tmul, map_smul]
 
