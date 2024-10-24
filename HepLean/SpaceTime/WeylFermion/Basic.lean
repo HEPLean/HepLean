@@ -61,7 +61,6 @@ lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
 @[simp]
 lemma leftBasis_toFin2ℂ (i : Fin 2) : (leftBasis i).toFin2ℂ = Pi.single i 1 := by
   simp only [leftBasis, Basis.coe_ofEquivFun]
-  rw [LeftHandedModule.toFin2ℂ]
   rfl
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
@@ -94,7 +93,6 @@ def altLeftBasis : Basis (Fin 2) ℂ altLeftHanded := Basis.ofEquivFun
 @[simp]
 lemma altLeftBasis_toFin2ℂ (i : Fin 2) : (altLeftBasis i).toFin2ℂ = Pi.single i 1 := by
   simp only [altLeftBasis, Basis.coe_ofEquivFun]
-  rw [AltLeftHandedModule.toFin2ℂ]
   rfl
 
 @[simp]
@@ -132,7 +130,6 @@ def rightBasis : Basis (Fin 2) ℂ rightHanded := Basis.ofEquivFun
 @[simp]
 lemma rightBasis_toFin2ℂ (i : Fin 2) : (rightBasis i).toFin2ℂ = Pi.single i 1 := by
   simp only [rightBasis, Basis.coe_ofEquivFun]
-  rw [RightHandedModule.toFin2ℂ]
   rfl
 
 @[simp]
@@ -174,7 +171,6 @@ def altRightBasis : Basis (Fin 2) ℂ altRightHanded := Basis.ofEquivFun
 @[simp]
 lemma altRightBasis_toFin2ℂ (i : Fin 2) : (altRightBasis i).toFin2ℂ = Pi.single i 1 := by
   simp only [altRightBasis, Basis.coe_ofEquivFun]
-  rw [AltRightHandedModule.toFin2ℂ]
   rfl
 
 @[simp]

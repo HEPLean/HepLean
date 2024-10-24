@@ -7,7 +7,6 @@ import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.SpaceTime.WeylFermion.Contraction
 import Mathlib.LinearAlgebra.TensorProduct.Matrix
 import HepLean.SpaceTime.WeylFermion.Two
-import LLMLean
 /-!
 
 # Units of Weyl fermions

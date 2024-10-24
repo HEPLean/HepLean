@@ -44,7 +44,6 @@ def complexContrBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexContr := Basis.ofEqui
 lemma complexContrBasis_toFin13ℂ (i :Fin 1 ⊕ Fin 3) :
     (complexContrBasis i).toFin13ℂ = Pi.single i 1 := by
   simp only [complexContrBasis, Basis.coe_ofEquivFun]
-  rw [Lorentz.ContrℂModule.toFin13ℂ]
   rfl
 
 @[simp]
@@ -72,7 +71,6 @@ def complexCoBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexCo := Basis.ofEquivFun
 @[simp]
 lemma complexCoBasis_toFin13ℂ (i :Fin 1 ⊕ Fin 3) : (complexCoBasis i).toFin13ℂ = Pi.single i 1 := by
   simp only [complexCoBasis, Basis.coe_ofEquivFun]
-  rw [Lorentz.CoℂModule.toFin13ℂ]
   rfl
 
 @[simp]
