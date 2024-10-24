@@ -88,7 +88,6 @@ lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
 def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
   Basis.reindex complexCoBasis finSumFinEquiv
 
-
 /-!
 
 ## Relation to real

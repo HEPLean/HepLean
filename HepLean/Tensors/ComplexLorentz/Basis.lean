@@ -79,11 +79,32 @@ lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
   rw [basis_eq_FDiscrete]
 
+def contrBasisVectorMul {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    (i : Fin n.succ.succ) (j : Fin n.succ)
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) : ℂ :=
+  (if (b i).val = (b (i.succAbove j)).val then (1 : ℂ) else 0)
+
+lemma contrBasisVectorMul_neg {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {b : Π k, Fin (complexLorentzTensor.repDim (c k))}
+    (h : ¬ (b i).val = (b (i.succAbove j)).val := by decide) :
+    contrBasisVectorMul i j b = 0 := by
+  rw [contrBasisVectorMul]
+  simp
+  exact h
+
+lemma contrBasisVectorMul_pos {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {b : Π k, Fin (complexLorentzTensor.repDim (c k))}
+    (h : (b i).val = (b (i.succAbove j)).val := by decide) :
+    contrBasisVectorMul i j b = 1 := by
+  rw [contrBasisVectorMul]
+  simp
+  exact h
+
 lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
-    (contr i j h (tensorNode (basisVector c b))).tensor = (if (b i).val = (b (i.succAbove j)).val
-    then (1 : ℂ) else 0) • basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (contr i j h (tensorNode (basisVector c b))).tensor = (contrBasisVectorMul i j b) •
+    basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
     (fun k => b (i.succAbove (j.succAbove k))) := by
   rw [contr_tensor]
   simp only [Nat.succ_eq_add_one, tensorNode_tensor]
@@ -102,8 +123,7 @@ lemma contr_basisVector_tree  {n : ℕ} {c : Fin n.succ.succ → complexLorentzT
     {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
     (contr i j h (tensorNode (basisVector c b))).tensor =
-    (smul ((if (b i).val = (b (i.succAbove j)).val
-    then (1 : ℂ) else 0)) (tensorNode ( basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    (smul (contrBasisVectorMul i j b) (tensorNode ( basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
     (fun k => b (i.succAbove (j.succAbove k)))) )).tensor := by
   exact contr_basisVector _
 
@@ -113,7 +133,7 @@ lemma contr_basisVector_tree_pos  {n : ℕ} {c : Fin n.succ.succ → complexLore
     (contr i j h (tensorNode (basisVector c b))).tensor =
     ((tensorNode ( basisVector (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
     (fun k => b (i.succAbove (j.succAbove k)))))).tensor := by
-  rw [contr_basisVector_tree]
+  rw [contr_basisVector_tree, contrBasisVectorMul]
   rw [if_pos hn]
   simp [smul_tensor]
 
@@ -122,9 +142,10 @@ lemma contr_basisVector_tree_neg  {n : ℕ} {c : Fin n.succ.succ → complexLore
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (hn : ¬ (b i).val = (b (i.succAbove j)).val := by decide) :
     (contr i j h (tensorNode (basisVector c b))).tensor =
     (tensorNode 0).tensor := by
-  rw [contr_basisVector_tree]
+  rw [contr_basisVector_tree, contrBasisVectorMul]
   rw [if_neg hn]
   simp [smul_tensor]
+
 
 def prodBasisVecEquiv {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (i : Fin n ⊕ Fin m) :

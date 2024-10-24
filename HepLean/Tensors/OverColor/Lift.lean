@@ -286,7 +286,6 @@ lemma μ_tmul_tprod_mk {X Y : Type} {cX : X → C} {cY : Y → C}
   | Sum.inl i => rfl
   | Sum.inr i => rfl
 
-
 lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
     MonoidalCategory.whiskerRight (objMap' F f) (objObj' F Z) ≫ (μ F Y Z).hom =
     (μ F X Z).hom ≫ objMap' F (MonoidalCategory.whiskerRight f Z) := by

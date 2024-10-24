@@ -680,7 +680,7 @@ lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) 
     (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
 
 lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
-    (smul a  T).tensor = a • T.tensor:= rfl
+    (smul a T).tensor = a • T.tensor:= rfl
 /-!
 
 ## Equality of tensors and rewrites.
