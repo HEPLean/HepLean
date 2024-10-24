@@ -178,7 +178,7 @@ lemma contr_coContrUnit (x : complexContr) :
     Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add,
     _root_.map_smul]
-  have h1'  (x y :  CoeSort.coe complexContr) (z :  CoeSort.coe complexCo) :
+  have h1' (x y :  CoeSort.coe complexContr) (z :  CoeSort.coe complexCo) :
     (α_ complexContr.V complexCo.V complexContr.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y) = (x ⊗ₜ[ℂ] z) ⊗ₜ[ℂ] y := rfl
   repeat rw [h1']
   have h1'' ( y :  CoeSort.coe complexContr) (z :  CoeSort.coe complexContr ⊗[ℂ] CoeSort.coe complexCo) :

@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Complex.Two
 import HepLean.SpaceTime.MinkowskiMetric
+import HepLean.SpaceTime.LorentzVector.Complex.Contraction
+import HepLean.SpaceTime.LorentzVector.Complex.Unit
 /-!
 
 # Metric for complex Lorentz vectors
@@ -127,6 +129,65 @@ lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
   change coMetric.hom.toFun (1 : ℂ) = coMetricVal
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     coMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
+
+/-!
+
+## Contraction of metrics
+
+-/
+
+lemma contrCoContraction_apply_metric : (β_ complexContr complexCo).hom.hom
+    ((complexContr.V ◁ (λ_ complexCo.V).hom)
+    ((complexContr.V ◁ contrCoContraction.hom ▷ complexCo.V)
+    ((complexContr.V ◁ (α_ complexContr.V complexCo.V complexCo.V).inv)
+    ((α_ complexContr.V complexContr.V (complexCo.V ⊗ complexCo.V)).hom
+    (contrMetric.hom (1 : ℂ) ⊗ₜ[ℂ] coMetric.hom (1 : ℂ)))))) =
+    coContrUnit.hom (1 : ℂ) := by
+  rw [contrMetric_apply_one, coMetric_apply_one]
+  rw [contrMetricVal_expand_tmul, coMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg, tmul_sub, sub_tmul]
+  have h1 (x1 x2 : complexContr) (y1 y2 :complexCo) :
+    (complexContr.V ◁ (λ_ complexCo.V).hom)
+    ((complexContr.V ◁ contrCoContraction.hom ▷ complexCo.V) (((complexContr.V ◁
+    (α_ complexContr.V complexCo.V complexCo.V).inv)
+    ((α_ complexContr.V complexContr.V (complexCo.V ⊗ complexCo.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+      = x1 ⊗ₜ[ℂ] ((λ_ complexCo.V).hom ((contrCoContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [contrCoContraction_basis']
+  simp only [Fin.isValue, ↓reduceIte, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul,
+    reduceCtorEq, zero_tmul, map_zero, tmul_zero, sub_zero, zero_sub, Sum.inr.injEq, one_ne_zero,
+    Fin.reduceEq, sub_neg_eq_add, zero_ne_one, sub_self]
+  erw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
+  rfl
+
+lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
+    ((complexCo.V ◁ (λ_ complexContr.V).hom)
+    ((complexCo.V ◁ coContrContraction.hom ▷ complexContr.V)
+    ((complexCo.V ◁ (α_ complexCo.V complexContr.V complexContr.V).inv)
+    ((α_ complexCo.V complexCo.V (complexContr.V ⊗ complexContr.V)).hom
+    (coMetric.hom (1 : ℂ) ⊗ₜ[ℂ] contrMetric.hom (1 : ℂ)))))) =
+    contrCoUnit.hom (1 : ℂ) := by
+  rw [coMetric_apply_one, contrMetric_apply_one]
+  rw [coMetricVal_expand_tmul, contrMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg, tmul_sub, sub_tmul]
+  have h1 (x1 x2 : complexCo) (y1 y2 :complexContr) :
+    (complexCo.V ◁ (λ_ complexContr.V).hom)
+    ((complexCo.V ◁ coContrContraction.hom ▷ complexContr.V) (((complexCo.V ◁
+    (α_ complexCo.V complexContr.V complexContr.V).inv)
+    ((α_ complexCo.V complexCo.V (complexContr.V ⊗ complexContr.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+      = x1 ⊗ₜ[ℂ] ((λ_ complexContr.V).hom ((coContrContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [coContrContraction_basis']
+  simp only [Fin.isValue, ↓reduceIte, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul,
+    reduceCtorEq, zero_tmul, map_zero, tmul_zero, sub_zero, zero_sub, Sum.inr.injEq, one_ne_zero,
+    Fin.reduceEq, sub_neg_eq_add, zero_ne_one, sub_self]
+  erw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
+  rfl
 
 end Lorentz
 end
