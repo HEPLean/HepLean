@@ -66,12 +66,36 @@ def contrCoToMatrix : (complexContr ⊗ complexCo).V ≃ₗ[ℂ]
   Finsupp.linearEquivFunOnFinite ℂ ℂ ((Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)) ≪≫ₗ
   LinearEquiv.curry ℂ ℂ (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3)
 
+/-- Expansion of `contrCoToMatrix` in terms of the standard basis. -/
+lemma contrCoToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ) :
+    contrCoToMatrix.symm M = ∑ i, ∑ j, M i j • (complexContrBasis i ⊗ₜ[ℂ] complexCoBasis j) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, contrCoToMatrix, LinearEquiv.trans_symm,
+    LinearEquiv.trans_apply, Basis.repr_symm_apply]
+  rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
+  · erw [Finset.sum_product]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    erw [Basis.tensorProduct_apply complexContrBasis complexCoBasis i j]
+    rfl
+  · simp
+
 /-- Equivalence of `complexCo ⊗ complexContr` to `4 x 4` complex matrices. -/
 def coContrToMatrix : (complexCo ⊗ complexContr).V ≃ₗ[ℂ]
     Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ :=
   (Basis.tensorProduct complexCoBasis complexContrBasis).repr ≪≫ₗ
   Finsupp.linearEquivFunOnFinite ℂ ℂ ((Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)) ≪≫ₗ
   LinearEquiv.curry ℂ ℂ (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3)
+
+/-- Expansion of `coContrToMatrix` in terms of the standard basis. -/
+lemma coContrToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℂ) :
+    coContrToMatrix.symm M = ∑ i, ∑ j, M i j • (complexCoBasis i ⊗ₜ[ℂ] complexContrBasis j) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, coContrToMatrix, LinearEquiv.trans_symm,
+    LinearEquiv.trans_apply, Basis.repr_symm_apply]
+  rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
+  · erw [Finset.sum_product]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    erw [Basis.tensorProduct_apply complexCoBasis complexContrBasis i j]
+    rfl
+  · simp
 
 /-!
 
