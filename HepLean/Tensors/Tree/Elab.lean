@@ -162,19 +162,19 @@ def getNoIndicesExact (stx : Syntax) : TermElabM ℕ := do
   | k => return k
 
 /-- The construction of an expression corresponding to the type of a given string once parsed. -/
-def stringToType (str : String) : TermElabM Expr := do
+def stringToType (str : String) : TermElabM (Option Expr) := do
   let env ← getEnv
   let stx := Parser.runParserCategory env `term str
   match stx with
-  | Except.error _ => throwError "Could not create type from string (stringToType). "
-  | Except.ok stx => elabTerm stx none
+  | Except.error _ => return none
+  | Except.ok stx => return (some (← elabTerm stx none))
 
 /-- The construction of an expression corresponding to the type of a given string once parsed. -/
 def stringToTerm (str : String) : TermElabM Term := do
   let env ← getEnv
   let stx := Parser.runParserCategory env `term str
   match stx with
-  | Except.error _ => throwError "Could not create type from string (stringToType). "
+  | Except.error _ => throwError "Could not create type from string (stringToTerm). "
   | Except.ok stx =>
     match stx with
     | `(term| $e) => return e
@@ -243,6 +243,9 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
   let type ← inferType expr
   let defEqList ← specialTypes.filterM (fun x => do
     let type' ← stringToType x.1
+    match type' with
+    | none => return false
+    | some type' =>
     let defEq ← isDefEq type type'
     return defEq)
   match defEqList with
@@ -552,8 +555,9 @@ elab_rules (kind:=tensorExprSyntax) : term
 
 -/
 
-variable {S : TensorSpecies} {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
 /-
+variable {S : TensorSpecies} {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
+
 #check {t | α β}ᵀ
 -/
 end TensorTree
