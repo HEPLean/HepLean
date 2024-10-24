@@ -52,7 +52,7 @@ lemma toSelfAdjointMatrix_apply_coe (x : LorentzVector 3) : (toSelfAdjointMatrix
     - x (Sum.inr 1) • PauliMatrix.σ2
     - x (Sum.inr 2) • PauliMatrix.σ3 := by
   rw [toSelfAdjointMatrix_apply]
-  simp only [Fin.isValue, AddSubgroupClass.coe_sub, selfAdjoint.val_smul]
+  rfl
 
 lemma toSelfAdjointMatrix_stdBasis (i : Fin 1 ⊕ Fin 3) :
     toSelfAdjointMatrix (LorentzVector.stdBasis i) = PauliMatrix.σSAL i := by
@@ -68,21 +68,21 @@ lemma toSelfAdjointMatrix_stdBasis (i : Fin 1 ⊕ Fin 3) :
     simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
       Pi.single_eq_same, one_smul, zero_sub, Sum.inr.injEq, one_ne_zero, sub_zero, Fin.reduceEq,
       PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
-    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+    rfl
   | Sum.inr 1 =>
     simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
     simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
       Sum.inr.injEq, zero_ne_one, sub_self, Pi.single_eq_same, one_smul, zero_sub, Fin.reduceEq,
       sub_zero, PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
-    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+    rfl
   | Sum.inr 2 =>
     simp only [LorentzVector.stdBasis, Fin.isValue]
     erw [Pi.basisFun_apply]
     simp only [Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
       Sum.inr.injEq, Fin.reduceEq, sub_self, Pi.single_eq_same, one_smul, zero_sub,
       PauliMatrix.σSAL, Basis.coe_mk, PauliMatrix.σSAL']
-    refine Eq.symm (PauliMatrix.selfAdjoint_ext rfl rfl rfl rfl)
+    rfl
 
 @[simp]
 lemma toSelfAdjointMatrix_symm_basis (i : Fin 1 ⊕ Fin 3) :

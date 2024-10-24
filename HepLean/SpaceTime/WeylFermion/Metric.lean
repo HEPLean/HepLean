@@ -7,6 +7,7 @@ import HepLean.SpaceTime.WeylFermion.Basic
 import HepLean.SpaceTime.WeylFermion.Contraction
 import Mathlib.LinearAlgebra.TensorProduct.Matrix
 import HepLean.SpaceTime.WeylFermion.Two
+import HepLean.SpaceTime.WeylFermion.Unit
 /-!
 
 # Metrics of Weyl fermions
@@ -274,5 +275,120 @@ lemma altRightMetric_apply_one : altRightMetric.hom (1 : ℂ) = altRightMetricVa
   change altRightMetric.hom.toFun (1 : ℂ) = altRightMetricVal
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     altRightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+
+/-!
+
+## Contraction of metrics
+
+-/
+
+lemma leftAltContraction_apply_metric : (β_ leftHanded altLeftHanded).hom.hom
+    ((leftHanded.V ◁ (λ_ altLeftHanded.V).hom)
+    ((leftHanded.V ◁ leftAltContraction.hom ▷ altLeftHanded.V)
+    ((leftHanded.V ◁ (α_ leftHanded.V altLeftHanded.V altLeftHanded.V).inv)
+    ((α_ leftHanded.V leftHanded.V (altLeftHanded.V ⊗ altLeftHanded.V)).hom
+    (leftMetric.hom (1 : ℂ) ⊗ₜ[ℂ] altLeftMetric.hom (1 : ℂ)))))) =
+    altLeftLeftUnit.hom (1 : ℂ) := by
+  rw [leftMetric_apply_one, altLeftMetric_apply_one]
+  rw [leftMetricVal_expand_tmul, altLeftMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg]
+  have h1 (x1 x2 : leftHanded) (y1 y2 :altLeftHanded) :
+    (leftHanded.V ◁ (λ_ altLeftHanded.V).hom)
+    ((leftHanded.V ◁ leftAltContraction.hom ▷ altLeftHanded.V) (((leftHanded.V ◁
+    (α_ leftHanded.V altLeftHanded.V altLeftHanded.V).inv)
+    ((α_ leftHanded.V leftHanded.V (altLeftHanded.V ⊗ altLeftHanded.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+      = x1 ⊗ₜ[ℂ] ((λ_ altLeftHanded.V).hom ((leftAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [leftAltContraction_basis]
+  simp only [Fin.isValue, Fin.val_one, Fin.val_zero, one_ne_zero, ↓reduceIte, zero_tmul, map_zero,
+    tmul_zero, neg_zero, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul, zero_add,
+    zero_ne_one, add_zero, sub_neg_eq_add]
+  erw [altLeftLeftUnit_apply_one, altLeftLeftUnitVal_expand_tmul]
+  rw [add_comm]
+  rfl
+
+lemma altLeftContraction_apply_metric : (β_ altLeftHanded leftHanded).hom.hom
+    ((altLeftHanded.V ◁ (λ_ leftHanded.V).hom)
+    ((altLeftHanded.V ◁ altLeftContraction.hom ▷ leftHanded.V)
+    ((altLeftHanded.V ◁ (α_ altLeftHanded.V leftHanded.V leftHanded.V).inv)
+    ((α_ altLeftHanded.V altLeftHanded.V (leftHanded.V ⊗ leftHanded.V)).hom
+    (altLeftMetric.hom (1 : ℂ) ⊗ₜ[ℂ] leftMetric.hom (1 : ℂ)))))) =
+    leftAltLeftUnit.hom (1 : ℂ) := by
+  rw [leftMetric_apply_one, altLeftMetric_apply_one]
+  rw [leftMetricVal_expand_tmul, altLeftMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_add, tmul_neg, sub_tmul, map_add, map_neg, map_sub]
+  have h1 (x1 x2 : altLeftHanded) (y1 y2 : leftHanded) :
+    (altLeftHanded.V ◁ (λ_ leftHanded.V).hom)
+    ((altLeftHanded.V ◁ altLeftContraction.hom ▷ leftHanded.V) (((altLeftHanded.V ◁
+    (α_ altLeftHanded.V leftHanded.V leftHanded.V).inv)
+    ((α_ altLeftHanded.V altLeftHanded.V (leftHanded.V ⊗ leftHanded.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+      = x1 ⊗ₜ[ℂ] ((λ_ leftHanded.V).hom ((altLeftContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [altLeftContraction_basis]
+  simp only [Fin.isValue, Fin.val_one, Fin.val_zero, one_ne_zero, ↓reduceIte, zero_tmul, map_zero,
+    tmul_zero, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul, zero_sub, neg_neg,
+    zero_ne_one, sub_zero]
+  erw [leftAltLeftUnit_apply_one, leftAltLeftUnitVal_expand_tmul]
+  rw [add_comm]
+  rfl
+
+lemma rightAltContraction_apply_metric : (β_ rightHanded altRightHanded).hom.hom
+    ((rightHanded.V ◁ (λ_ altRightHanded.V).hom)
+    ((rightHanded.V ◁ rightAltContraction.hom ▷ altRightHanded.V)
+    ((rightHanded.V ◁ (α_ rightHanded.V altRightHanded.V altRightHanded.V).inv)
+    ((α_ rightHanded.V rightHanded.V (altRightHanded.V ⊗ altRightHanded.V)).hom
+    (rightMetric.hom (1 : ℂ) ⊗ₜ[ℂ] altRightMetric.hom (1 : ℂ)))))) =
+    altRightRightUnit.hom (1 : ℂ) := by
+  rw [rightMetric_apply_one, altRightMetric_apply_one]
+  rw [rightMetricVal_expand_tmul, altRightMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg]
+  have h1 (x1 x2 : rightHanded) (y1 y2 : altRightHanded) :
+    (rightHanded.V ◁ (λ_ altRightHanded.V).hom)
+    ((rightHanded.V ◁ rightAltContraction.hom ▷ altRightHanded.V) (((rightHanded.V ◁
+    (α_ rightHanded.V altRightHanded.V altRightHanded.V).inv)
+    ((α_ rightHanded.V rightHanded.V (altRightHanded.V ⊗ altRightHanded.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
+    ((rightAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [rightAltContraction_basis]
+  simp only [Fin.isValue, Fin.val_one, Fin.val_zero, one_ne_zero, ↓reduceIte, zero_tmul, map_zero,
+    tmul_zero, neg_zero, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul, zero_add,
+    zero_ne_one, add_zero, sub_neg_eq_add]
+  erw [altRightRightUnit_apply_one, altRightRightUnitVal_expand_tmul]
+  rw [add_comm]
+  rfl
+
+lemma altRightContraction_apply_metric : (β_ altRightHanded rightHanded).hom.hom
+    ((altRightHanded.V ◁ (λ_ rightHanded.V).hom)
+    ((altRightHanded.V ◁ altRightContraction.hom ▷ rightHanded.V)
+    ((altRightHanded.V ◁ (α_ altRightHanded.V rightHanded.V rightHanded.V).inv)
+    ((α_ altRightHanded.V altRightHanded.V (rightHanded.V ⊗ rightHanded.V)).hom
+    (altRightMetric.hom (1 : ℂ) ⊗ₜ[ℂ] rightMetric.hom (1 : ℂ)))))) =
+    rightAltRightUnit.hom (1 : ℂ) := by
+  rw [rightMetric_apply_one, altRightMetric_apply_one]
+  rw [rightMetricVal_expand_tmul, altRightMetricVal_expand_tmul]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Fin.isValue, tmul_add, tmul_neg, sub_tmul, map_add, map_neg, map_sub]
+  have h1 (x1 x2 : altRightHanded) (y1 y2 : rightHanded) :
+    (altRightHanded.V ◁ (λ_ rightHanded.V).hom)
+    ((altRightHanded.V ◁ altRightContraction.hom ▷ rightHanded.V) (((altRightHanded.V ◁
+    (α_ altRightHanded.V rightHanded.V rightHanded.V).inv)
+    ((α_ altRightHanded.V altRightHanded.V (rightHanded.V ⊗ rightHanded.V)).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+      = x1 ⊗ₜ[ℂ] ((λ_ rightHanded.V).hom ((altRightContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [altRightContraction_basis]
+  simp only [Fin.isValue, Fin.val_one, Fin.val_zero, one_ne_zero, ↓reduceIte, zero_tmul, map_zero,
+    tmul_zero, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul, zero_sub, neg_neg,
+    zero_ne_one, sub_zero]
+  erw [rightAltRightUnit_apply_one, rightAltRightUnitVal_expand_tmul]
+  rw [add_comm]
+  rfl
+
 end
 end Fermion

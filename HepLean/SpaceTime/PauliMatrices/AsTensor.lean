@@ -41,10 +41,6 @@ lemma asTensor_expand_complexContrBasis : asTensor =
     + complexContrBasis (Sum.inr 0) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 0))
     + complexContrBasis (Sum.inr 1) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 1))
     + complexContrBasis (Sum.inr 2) ⊗ₜ leftRightToMatrix.symm (σSA (Sum.inr 2)) := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, asTensor,
-    CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, Fintype.sum_sum_type, Finset.univ_unique,
-    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three]
   rfl
 
 /-- The expansion of the pauli matrix `σ₀` in terms of a basis of tensor product vectors. -/
