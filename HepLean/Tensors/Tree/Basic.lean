@@ -55,6 +55,30 @@ structure TensorSpecies where
       (y : FDiscrete.obj (Discrete.mk (τ c))) :
     (contr.app (Discrete.mk c)).hom (x ⊗ₜ[k] y) = (contr.app (Discrete.mk (τ c))).hom
       (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
+  /-- Contraction with unit leaves invariant. -/
+  contr_unit (c : C) (x : FDiscrete.obj (Discrete.mk (c))) :
+    (λ_ (FDiscrete.obj (Discrete.mk (c)))).hom.hom
+    (((contr.app (Discrete.mk c)) ▷ (FDiscrete.obj (Discrete.mk (c)))).hom
+    ((α_ _ _ (FDiscrete.obj (Discrete.mk (c)))).inv.hom
+    (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
+  /-- The unit is symmetric. -/
+  unit_symm (c : C) :
+    ((unit.app (Discrete.mk c)).hom (1 : k)) =
+    ((FDiscrete.obj (Discrete.mk (τ (c)))) ◁ (FDiscrete.map (Discrete.eqToHom (τ_involution c)))).hom
+    ((β_ (FDiscrete.obj (Discrete.mk (τ (τ c)))) (FDiscrete.obj (Discrete.mk (τ (c))))).hom.hom
+    ((unit.app (Discrete.mk (τ c))).hom (1 : k)))
+  /-- On contracting metrics we get back the unit. -/
+  contr_metric (c : C) :
+    (β_ (FDiscrete.obj (Discrete.mk c)) (FDiscrete.obj (Discrete.mk (τ c)))).hom.hom
+    (((FDiscrete.obj (Discrete.mk c)) ◁  (λ_ (FDiscrete.obj (Discrete.mk (τ c)))).hom).hom
+    (((FDiscrete.obj (Discrete.mk c)) ◁ ((contr.app (Discrete.mk c)) ▷
+    (FDiscrete.obj (Discrete.mk (τ c))))).hom
+    (((FDiscrete.obj (Discrete.mk c)) ◁ (α_ (FDiscrete.obj (Discrete.mk (c)))
+      (FDiscrete.obj (Discrete.mk (τ c))) (FDiscrete.obj (Discrete.mk (τ c)))).inv).hom
+    ((α_ (FDiscrete.obj (Discrete.mk (c))) (FDiscrete.obj (Discrete.mk (c)))
+      (FDiscrete.obj (Discrete.mk (τ c)) ⊗ FDiscrete.obj (Discrete.mk (τ c)))).hom.hom
+    ((metric.app (Discrete.mk c)).hom (1 : k) ⊗ₜ[k] (metric.app (Discrete.mk (τ c))).hom (1 : k))))))
+    = (unit.app (Discrete.mk c)).hom (1 : k)
 
 noncomputable section
 
