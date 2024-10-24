@@ -193,6 +193,28 @@ lemma contr_coContrUnit (x : complexContr) :
   simp only [Fin.isValue, one_smul]
   repeat rw [add_assoc]
 
+/-!
+
+## Symmetry properties of the units
+
+-/
+
+
+open CategoryTheory
+
+lemma contrCoUnit_symm :
+    (contrCoUnit.hom (1 : ℂ)) = (complexContr ◁ 𝟙 _).hom ((β_ complexCo complexContr).hom.hom
+    (coContrUnit.hom (1 : ℂ))) := by
+  rw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
+  rw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
+  rfl
+
+lemma coContrUnit_symm :
+    (coContrUnit.hom (1 : ℂ)) = (complexCo ◁ 𝟙 _).hom ((β_ complexContr complexCo).hom.hom
+    (contrCoUnit.hom (1 : ℂ))) := by
+  rw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
+  rw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
+  rfl
 
 end Lorentz
 end

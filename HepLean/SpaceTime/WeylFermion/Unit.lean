@@ -325,5 +325,40 @@ lemma contr_rightAltRightUnit (x : altRightHanded) :
   erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
   simp only [Fin.isValue, one_smul]
 
+/-!
+
+## Symmetry properties of the units
+
+-/
+open CategoryTheory
+
+lemma altLeftLeftUnit_symm :
+    (altLeftLeftUnit.hom (1 : ℂ)) = (altLeftHanded ◁ 𝟙 _).hom ((β_ leftHanded altLeftHanded ).hom.hom
+    (leftAltLeftUnit.hom (1 : ℂ))) := by
+  rw [altLeftLeftUnit_apply_one, altLeftLeftUnitVal_expand_tmul]
+  rw [leftAltLeftUnit_apply_one, leftAltLeftUnitVal_expand_tmul]
+  rfl
+
+lemma leftAltLeftUnit_symm :
+    (leftAltLeftUnit.hom (1 : ℂ)) = (leftHanded ◁ 𝟙 _).hom ((β_ altLeftHanded leftHanded ).hom.hom
+    (altLeftLeftUnit.hom (1 : ℂ))) := by
+  rw [altLeftLeftUnit_apply_one, altLeftLeftUnitVal_expand_tmul]
+  rw [leftAltLeftUnit_apply_one, leftAltLeftUnitVal_expand_tmul]
+  rfl
+
+lemma altRightRightUnit_symm :
+    (altRightRightUnit.hom (1 : ℂ)) = (altRightHanded ◁ 𝟙 _).hom ((β_ rightHanded altRightHanded ).hom.hom
+    (rightAltRightUnit.hom (1 : ℂ))) := by
+  rw [altRightRightUnit_apply_one, altRightRightUnitVal_expand_tmul]
+  rw [rightAltRightUnit_apply_one, rightAltRightUnitVal_expand_tmul]
+  rfl
+
+lemma rightAltRightUnit_symm :
+    (rightAltRightUnit.hom (1 : ℂ)) = (rightHanded ◁ 𝟙 _).hom ((β_ altRightHanded rightHanded ).hom.hom
+    (altRightRightUnit.hom (1 : ℂ))) := by
+  rw [altRightRightUnit_apply_one, altRightRightUnitVal_expand_tmul]
+  rw [rightAltRightUnit_apply_one, rightAltRightUnitVal_expand_tmul]
+  rfl
+
 end
 end Fermion
