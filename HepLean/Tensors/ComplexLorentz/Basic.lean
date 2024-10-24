@@ -183,7 +183,7 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => Fermion.rightAltRightUnit_symm
     | Color.up => Lorentz.coContrUnit_symm
     | Color.down => Lorentz.contrCoUnit_symm
-  contr_metric :=  fun c =>
+  contr_metric := fun c =>
     match c with
     | Color.upL => by simpa using Fermion.leftAltContraction_apply_metric
     | Color.downL => by simpa using Fermion.altLeftContraction_apply_metric

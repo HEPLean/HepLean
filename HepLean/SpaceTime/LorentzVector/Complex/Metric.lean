@@ -130,7 +130,6 @@ lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     coMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
-
 /-!
 
 ## Contraction of metrics

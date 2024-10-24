@@ -352,8 +352,8 @@ lemma rightAltContraction_apply_metric : (β_ rightHanded altRightHanded).hom.ho
     ((rightHanded.V ◁ rightAltContraction.hom ▷ altRightHanded.V) (((rightHanded.V ◁
     (α_ rightHanded.V altRightHanded.V altRightHanded.V).inv)
     ((α_ rightHanded.V rightHanded.V (altRightHanded.V ⊗ altRightHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
-      = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom ((rightAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
+    ((rightAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw (config := { transparency := .instances }) [h1]
   repeat rw [rightAltContraction_basis]
   simp only [Fin.isValue, Fin.val_one, Fin.val_zero, one_ne_zero, ↓reduceIte, zero_tmul, map_zero,
@@ -374,7 +374,8 @@ lemma altRightContraction_apply_metric : (β_ altRightHanded rightHanded).hom.ho
   rw [rightMetricVal_expand_tmul, altRightMetricVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     Fin.isValue, tmul_add, tmul_neg, sub_tmul, map_add, map_neg, map_sub]
-  have h1 (x1 x2 : altRightHanded) (y1 y2 : rightHanded) : (altRightHanded.V ◁ (λ_ rightHanded.V).hom)
+  have h1 (x1 x2 : altRightHanded) (y1 y2 : rightHanded) :
+    (altRightHanded.V ◁ (λ_ rightHanded.V).hom)
     ((altRightHanded.V ◁ altRightContraction.hom ▷ rightHanded.V) (((altRightHanded.V ◁
     (α_ altRightHanded.V rightHanded.V rightHanded.V).inv)
     ((α_ altRightHanded.V altRightHanded.V (rightHanded.V ⊗ rightHanded.V)).hom
