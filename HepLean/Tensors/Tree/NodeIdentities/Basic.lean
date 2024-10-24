@@ -125,7 +125,7 @@ These identities are related to the fact that all the maps are linear.
 
 lemma smul_smul (t : TensorTree S c) (a b : S.k) :
     (smul a (smul b t)).tensor = (smul (a * b) t).tensor := by
-  simp [smul_tensor]
+  simp only [smul_tensor]
   exact _root_.smul_smul a b t.tensor
 
 lemma smul_one (t : TensorTree S c) :
@@ -150,10 +150,20 @@ lemma add_assoc (t1 t2 t3 : TensorTree S c) :
 
 /-- When the same permutation acts on both arguments of an addition, the permutation
   can be moved out of the addition. -/
-lemma add_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C}
+lemma add_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
     (add (perm σ t) (perm σ t1)).tensor = (perm σ (add t t1)).tensor := by
   simp only [add_tensor, perm_tensor, map_add]
+
+lemma perm_add {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t t1 : TensorTree S c) :
+    (perm σ (add t t1)).tensor = (add (perm σ t) (perm σ t1)).tensor := by
+  simp only [add_tensor, perm_tensor, map_add]
+
+lemma perm_smul {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (a : S.k) (t : TensorTree S c) :
+    (perm σ (smul a t)).tensor = (smul a (perm σ t)).tensor := by
+  simp only [smul_tensor, perm_tensor, map_smul]
 
 /-- When the same evaluation acts on both arguments of an addition, the evaluation
   can be moved out of the addition. -/

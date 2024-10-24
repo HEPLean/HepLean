@@ -250,7 +250,7 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
     return f T
   | _ =>
   match type with
-  | Expr.app _ (Expr.app _ (Expr.app _ c)) =>
+  | Expr.app _ (Expr.app _ (Expr.app _ _)) =>
       return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
   | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
 
