@@ -32,8 +32,8 @@ open IndexNotation
 open CategoryTheory
 open TensorTree
 open OverColor.Discrete
+open Fermion
 noncomputable section
-namespace Fermion
 namespace complexLorentzTensor
 
 /-- Basis vectors for complex Lorentz tensors. -/
@@ -95,7 +95,7 @@ def contrBasisVectorMul {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.
 
 lemma contrBasisVectorMul_neg {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} {b : Π k, Fin (complexLorentzTensor.repDim (c k))}
-    (h : ¬ (b i).val = (b (i.succAbove j)).val := by decide) :
+    (h : ¬ (b i).val = (b (i.succAbove j)).val) :
     contrBasisVectorMul i j b = 0 := by
   rw [contrBasisVectorMul]
   simp only [ite_eq_else, one_ne_zero, imp_false]
@@ -103,7 +103,7 @@ lemma contrBasisVectorMul_neg {n : ℕ} {c : Fin n.succ.succ → complexLorentzT
 
 lemma contrBasisVectorMul_pos {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} {b : Π k, Fin (complexLorentzTensor.repDim (c k))}
-    (h : (b i).val = (b (i.succAbove j)).val := by decide) :
+    (h : (b i).val = (b (i.succAbove j)).val) :
     contrBasisVectorMul i j b = 1 := by
   rw [contrBasisVectorMul]
   simp only [ite_eq_then, zero_ne_one, imp_false, Decidable.not_not]
@@ -156,7 +156,7 @@ lemma contr_basisVector_tree_neg {n : ℕ} {c : Fin n.succ.succ → complexLoren
     (tensorNode 0).tensor := by
   rw [contr_basisVector_tree, contrBasisVectorMul]
   rw [if_neg hn]
-  simp only [Nat.succ_eq_add_one, smul_tensor, tensorNode_tensor, zero_smul]
+  simp only [Nat.succ_eq_add_one, smul_tensor, tensorNode_tensor, _root_.zero_smul]
 
 /-- Equivalence of Fin types appearing in the product of two basis vectors. -/
 def prodBasisVecEquiv {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
@@ -214,7 +214,7 @@ lemma eval_basisVector {n : ℕ} {c : Fin n.succ → complexLorentzTensor.C}
     basisVector (c ∘ Fin.succAbove i) (fun k => b (i.succAbove k)) := by
   rw [eval_tensor, basisVector, basisVector]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, OverColor.mk_hom, tensorNode_tensor,
-    Function.comp_apply, one_smul, zero_smul]
+    Function.comp_apply, one_smul, _root_.zero_smul]
   erw [TensorSpecies.evalMap_tprod]
   congr 1
   have h1 : Fin.ofNat' ↑j (@Fin.size_pos' (complexLorentzTensor.repDim (c i)) _) = j := by
@@ -448,5 +448,4 @@ lemma pauliMatrix_basis_expand_tree : {PauliMatrix.asConsTensor | μ α β}ᵀ.t
   rfl
 
 end complexLorentzTensor
-end Fermion
 end

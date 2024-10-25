@@ -29,28 +29,52 @@ open TensorTree
 open OverColor.Discrete
 noncomputable section
 
-namespace Fermion
-open complexLorentzTensor
+namespace complexLorentzTensor
+open Fermion
 
 /-- The map to colors one gets when contracting the 4-vector indices pauli matrices. -/
 def pauliMatrixContrPauliMatrixMap := ((Sum.elim
   ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm) ∘
-  Fin.succAbove 0 ∘ Fin.succAbove 1) ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm) ∘
+  Fin.succAbove 1 ∘ Fin.succAbove 1) ![Color.up, Color.upL, Color.upR] ∘ ⇑finSumFinEquiv.symm) ∘
   Fin.succAbove 0 ∘ Fin.succAbove 2)
 
 lemma pauliMatrix_contr_lower_0_0_0 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 0 | 2 => 0)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 1
     funext k
@@ -60,18 +84,42 @@ lemma pauliMatrix_contr_lower_0_0_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_0_1_1 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 0 | 1 => 1 | 2 => 1)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 1
     funext k
@@ -81,18 +129,42 @@ lemma pauliMatrix_contr_lower_0_1_1 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_1_0_1 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 0 | 2 => 1)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 1
     funext k
@@ -102,18 +174,42 @@ lemma pauliMatrix_contr_lower_1_0_1 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_1_1_0 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 1 | 1 => 1 | 2 => 0)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 1
     funext k
@@ -123,19 +219,43 @@ lemma pauliMatrix_contr_lower_1_1_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_2_0_1 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 0 | 2 => 1)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
       (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     + (I) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 2
     funext k
@@ -145,19 +265,43 @@ lemma pauliMatrix_contr_lower_2_0_1 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_2_1_0 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 2 | 1 => 1 | 2 => 0)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 1 | 2 => 0)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
       (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
     + (I) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 2
     funext k
@@ -167,19 +311,43 @@ lemma pauliMatrix_contr_lower_2_1_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_3_0_0 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 0 | 2 => 0)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 0 | 2 => 0)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
     + (-1 : ℂ) • basisVector pauliMatrixContrPauliMatrixMap
     (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 2
     funext k
@@ -189,19 +357,43 @@ lemma pauliMatrix_contr_lower_3_0_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_lower_3_1_1 :
-    {(basisVector pauliMatrixLowerMap (fun | 0 => 3 | 1 => 1 | 2 => 1)) | μ α β ⊗
+    {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 1 | 2 => 1)) | μ α β ⊗
     PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     + (-1 : ℂ) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
-  rw [basis_contr_pauliMatrix_basis_tree_expand]
-  rw [contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_neg, contrBasisVectorMul_neg,
-      contrBasisVectorMul_pos, contrBasisVectorMul_pos]
+  conv =>
+    lhs
+    rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; lhs; rhs; rhs; lhs
+    rw [contrBasisVectorMul_neg (by decide)]
+  conv =>
+    lhs; lhs; rhs; lhs;
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs; rhs; rhs; lhs;
+    rw [contrBasisVectorMul_pos (by decide)]
+  conv =>
+    lhs
+    simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
+    rw [basisVectorContrPauli, basisVectorContrPauli]
   /- Simplifying. -/
-  simp only [smul_tensor, add_tensor, tensorNode_tensor]
-  simp only [zero_smul, one_smul, smul_zero, add_zero, zero_add]
   congr 1
   · congr 2
     funext k
@@ -210,35 +402,34 @@ lemma pauliMatrix_contr_lower_3_1_1 :
     funext k
     fin_cases k <;> rfl
 
-/-! TODO: Work out why `pauliMatrix_lower_basis_expand_prod'` is needed. -/
-/-- This lemma is exactly the same as `pauliMatrix_lower_basis_expand_prod'`.
+/-! TODO: Work out why `pauliCo_prod_basis_expand'` is needed. -/
+/-- This lemma is exactly the same as `pauliCo_prod_basis_expand`.
   It is needed here for `pauliMatrix_contract_pauliMatrix_aux`. It is unclear why
   `pauliMatrix_lower_basis_expand_prod` does not work. -/
-private lemma pauliMatrix_lower_basis_expand_prod' {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+private lemma pauliCo_prod_basis_expand' {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (t : TensorTree complexLorentzTensor c) :
-    (prod {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β}ᵀ t).tensor =
+    (TensorTree.prod (tensorNode pauliCo) t).tensor =
     ((((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 0 | 1 => 0 | 2 => 0)).prod t).add
+      (basisVector pauliCoMap fun | 0 => 0 | 1 => 0 | 2 => 0)).prod t).add
     (((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 0 | 1 => 1 | 2 => 1)).prod t).add
+      (basisVector pauliCoMap fun | 0 => 0 | 1 => 1 | 2 => 1)).prod t).add
     ((TensorTree.smul (-1) ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 1 | 1 => 0 | 2 => 1)).prod t)).add
+      (basisVector pauliCoMap fun | 0 => 1 | 1 => 0 | 2 => 1)).prod t)).add
     ((TensorTree.smul (-1) ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 1 | 1 => 1 | 2 => 0)).prod t)).add
+      (basisVector pauliCoMap fun | 0 => 1 | 1 => 1 | 2 => 0)).prod t)).add
     ((TensorTree.smul I ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 2 | 1 => 0 | 2 => 1)).prod t)).add
+      (basisVector pauliCoMap fun | 0 => 2 | 1 => 0 | 2 => 1)).prod t)).add
     ((TensorTree.smul (-I) ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 2 | 1 => 1 | 2 => 0)).prod t)).add
+      (basisVector pauliCoMap fun | 0 => 2 | 1 => 1 | 2 => 0)).prod t)).add
     ((TensorTree.smul (-1) ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 3 | 1 => 0 | 2 => 0)).prod t)).add
+      (basisVector pauliCoMap fun | 0 => 3 | 1 => 0 | 2 => 0)).prod t)).add
     ((tensorNode
-      (basisVector pauliMatrixLowerMap fun | 0 => 3 | 1 => 1 | 2 => 1)).prod
+      (basisVector pauliCoMap fun | 0 => 3 | 1 => 1 | 2 => 1)).prod
       t))))))))).tensor := by
-    exact pauliMatrix_lower_basis_expand_prod _
+    exact pauliCo_prod_basis_expand _
 
-lemma pauliMatrix_contract_pauliMatrix_aux :
-    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
-    PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor
+lemma pauliCo_contr_pauliContr_expand_aux :
+    {pauliCo | μ α β ⊗ PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor
     = ((tensorNode
       ((basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0) +
         basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)).add
@@ -266,7 +457,7 @@ lemma pauliMatrix_contract_pauliMatrix_aux :
         ((basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0) +
         (-1 : ℂ) • basisVector pauliMatrixContrPauliMatrixMap
           fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1))))))))).tensor := by
-  rw [contr_tensor_eq <| pauliMatrix_lower_basis_expand_prod' _]
+  rw [contr_tensor_eq <| pauliCo_prod_basis_expand' _]
   /- Moving contraction through addition. -/
   rw [contr_add]
   rw [add_tensor_eq_snd <| contr_add _ _]
@@ -309,14 +500,13 @@ lemma pauliMatrix_contract_pauliMatrix_aux :
     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| eq_tensorNode_of_eq_tensor <|
     pauliMatrix_contr_lower_3_1_1]
 
-lemma pauliMatrix_contract_pauliMatrix_expand :
-    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
-    PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor =
+lemma pauliCo_contr_pauliContr_expand :
+    {pauliCo | ν α β ⊗ PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor =
     2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)
     + 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1) := by
-  rw [pauliMatrix_contract_pauliMatrix_aux]
+  rw [pauliCo_contr_pauliContr_expand_aux]
   simp only [Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero, neg_smul,
     one_smul, add_tensor, tensorNode_tensor, smul_tensor, smul_add, smul_neg, _root_.smul_smul,
     neg_mul, _root_.neg_neg]
@@ -326,11 +516,10 @@ lemma pauliMatrix_contract_pauliMatrix_expand :
   abel
 
 /-- The statement that `η_{μν} σ^{μ α dot β} σ^{ν α' dot β'} = 2 ε^{αα'} ε^{dot β dot β'}`. -/
-theorem pauliMatrix_contract_pauliMatrix :
-    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | μ α β ⊗
-    PauliMatrix.asConsTensor | ν α' β' =
+theorem pauliCo_contr_pauliContr :
+    {pauliCo | ν α β ⊗ PauliMatrix.asConsTensor | ν α' β' =
     2 •ₜ Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ := by
-  rw [pauliMatrix_contract_pauliMatrix_expand]
+  rw [pauliCo_contr_pauliContr_expand]
   rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_mul_rightMetric_tree]
   rw [perm_smul]
   /- Moving perm through adds. -/
@@ -370,4 +559,4 @@ theorem pauliMatrix_contract_pauliMatrix :
   · funext i
     fin_cases i <;> rfl
 
-end Fermion
+end complexLorentzTensor

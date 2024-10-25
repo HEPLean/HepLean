@@ -36,8 +36,8 @@ open OverColor.Discrete
 
 noncomputable section
 
-namespace Fermion
-open complexLorentzTensor
+namespace complexLorentzTensor
+open Fermion
 
 /-!
 
@@ -177,6 +177,29 @@ lemma basis_contr_pauliMatrix_basis_tree_expand' {n : ℕ} {c : Fin n → comple
     <| contr_tensor_eq <| prod_basisVector_tree _ _]
   rfl
 
+/-- The map to color which appears when contracting a basis vector with
+  puali matrices. -/
+def pauliMatrixBasisProdMap
+    {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (i1 i2 i3 : Fin 4) :
+    (i : Fin (n + (Nat.succ 0).succ.succ)) →
+      Fin (complexLorentzTensor.repDim (Sum.elim c ![Color.up, Color.upL, Color.upR]
+          (finSumFinEquiv.symm i))) := fun i => prodBasisVecEquiv (finSumFinEquiv.symm i)
+      ((HepLean.PiTensorProduct.elimPureTensor b (fun | (0 : Fin 3) => i1 | 1 => i2 | 2 => i3))
+      (finSumFinEquiv.symm i))
+
+/-- The new basis vectors which appear when contracting pauli matrices with
+  basis vectors. -/
+def basisVectorContrPauli {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (i : Fin (n + 3)) (j : Fin (n +2))
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k)))
+    (i1 i2 i3 : Fin 4) :=
+  let c' := (Sum.elim c ![Color.up, Color.upL, Color.upR] ∘ finSumFinEquiv.symm)
+      ∘ Fin.succAbove i ∘ Fin.succAbove j
+  let b' (i1 i2 i3 : Fin 4) := fun k => (pauliMatrixBasisProdMap b i1 i2 i3)
+    (i.succAbove (j.succAbove k))
+  basisVector c' (b' i1 i2 i3)
+
 lemma basis_contr_pauliMatrix_basis_tree_expand {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (i : Fin (n + 3)) (j : Fin (n +2))
     (h : (pauliMatrixContrMap c) (i.succAbove j) = complexLorentzTensor.τ
@@ -184,30 +207,29 @@ lemma basis_contr_pauliMatrix_basis_tree_expand {n : ℕ} {c : Fin n → complex
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
     let c' := (Sum.elim c ![Color.up, Color.upL, Color.upR] ∘ finSumFinEquiv.symm)
       ∘ Fin.succAbove i ∘ Fin.succAbove j
-    let b'' (i1 i2 i3 : Fin 4) : (i : Fin (n + (Nat.succ 0).succ.succ)) →
-        Fin (complexLorentzTensor.repDim (Sum.elim c ![Color.up, Color.upL, Color.upR]
-          (finSumFinEquiv.symm i))) := fun i => prodBasisVecEquiv (finSumFinEquiv.symm i)
-      ((HepLean.PiTensorProduct.elimPureTensor b (fun | (0 : Fin 3) => i1 | 1 => i2 | 2 => i3))
-      (finSumFinEquiv.symm i))
-    let b' (i1 i2 i3 : Fin 4) := fun k => (b'' i1 i2 i3) (i.succAbove (j.succAbove k))
+    let b' (i1 i2 i3 : Fin 4) := fun k => (pauliMatrixBasisProdMap b i1 i2 i3)
+      (i.succAbove (j.succAbove k))
     (contr i j h (TensorTree.prod (tensorNode (basisVector c b))
     (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
     PauliMatrix.asConsTensor))).tensor = (((
-    TensorTree.smul (contrBasisVectorMul i j (b'' 0 0 0))
+    TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 0 0))
       (tensorNode (basisVector c' (b' 0 0 0))))).add
-    (((TensorTree.smul (contrBasisVectorMul i j (b'' 0 1 1))
+    (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 1 1))
       (tensorNode (basisVector c' (b' 0 1 1))))).add
-    (((TensorTree.smul (contrBasisVectorMul i j (b'' 1 0 1))
+    (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 1 0 1))
       (tensorNode (basisVector c' (b' 1 0 1))))).add
-    (((TensorTree.smul (contrBasisVectorMul i j (b'' 1 1 0))
+    (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 1 1 0))
       (tensorNode (basisVector c' (b' 1 1 0))))).add
-    ((TensorTree.smul (-I) ((TensorTree.smul (contrBasisVectorMul i j (b'' 2 0 1))
+    ((TensorTree.smul (-I) ((TensorTree.smul
+      (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 2 0 1))
       (tensorNode (basisVector c' (b' 2 0 1)))))).add
-    ((TensorTree.smul I ((TensorTree.smul (contrBasisVectorMul i j (b'' 2 1 0))
+    ((TensorTree.smul I ((TensorTree.smul
+      (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 2 1 0))
       (tensorNode (basisVector c' (b' 2 1 0)))))).add
-    (((TensorTree.smul (contrBasisVectorMul i j (b'' 3 0 0))
+    (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 3 0 0))
       (tensorNode (basisVector c' (b' 3 0 0))))).add
-    (TensorTree.smul (-1) ((TensorTree.smul (contrBasisVectorMul i j (b'' 3 1 1)) (tensorNode
+    (TensorTree.smul (-1) ((TensorTree.smul
+      (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 3 1 1)) (tensorNode
       (basisVector c' (b' 3 1 1))))))))))))).tensor := by
   rw [basis_contr_pauliMatrix_basis_tree_expand']
   /- Contracting basis vectors. -/
@@ -227,7 +249,39 @@ lemma basis_contr_pauliMatrix_basis_tree_expand {n : ℕ} {c : Fin n → complex
   rw [add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
     add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <| add_tensor_eq_snd <|
     smul_tensor_eq <| contr_basisVector_tree _]
+  rfl
 
-end Fermion
+lemma basis_contr_pauliMatrix_basis_tree_expand_tensor {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (i : Fin (n + 3)) (j : Fin (n +2))
+    (h : (pauliMatrixContrMap c) (i.succAbove j) = complexLorentzTensor.τ
+      ((pauliMatrixContrMap c) i))
+    (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :
+    (contr i j h (TensorTree.prod (tensorNode (basisVector c b))
+    (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
+    PauliMatrix.asConsTensor))).tensor =
+    (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 0 0)) •
+      (basisVectorContrPauli i j b 0 0 0)
+    + (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 1 1)) •
+      (basisVectorContrPauli i j b 0 1 1)
+    + (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 1 0 1)) •
+      (basisVectorContrPauli i j b 1 0 1)
+    + (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 1 1 0)) •
+      (basisVectorContrPauli i j b 1 1 0)
+    + (-I) • (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 2 0 1)) •
+      (basisVectorContrPauli i j b 2 0 1)
+    + I • (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 2 1 0)) •
+      (basisVectorContrPauli i j b 2 1 0)
+    + (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 3 0 0)) •
+      (basisVectorContrPauli i j b 3 0 0)
+    + (-1 : ℂ) • (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 3 1 1)) •
+      (basisVectorContrPauli i j b 3 1 1) := by
+  rw [basis_contr_pauliMatrix_basis_tree_expand]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, cons_val_one, head_cons, Fin.val_zero,
+    Nat.cast_zero, cons_val_two, Fin.val_one, Nat.cast_one, add_tensor, smul_tensor,
+    tensorNode_tensor, neg_smul, one_smul, Int.reduceNeg]
+  simp_all only [Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
+  rfl
+
+end complexLorentzTensor
 
 end

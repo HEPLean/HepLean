@@ -18,9 +18,6 @@ import HepLean.SpaceTime.PauliMatrices.AsTensor
 ## Complex Lorentz tensors
 
 -/
-
-namespace Fermion
-
 open Matrix
 open MatrixGroups
 open Complex
@@ -28,6 +25,8 @@ open TensorProduct
 open IndexNotation
 open CategoryTheory
 open MonoidalCategory
+
+namespace complexLorentzTensor
 
 /-- The colors associated with complex representations of SL(2, ℂ) of intrest to physics. -/
 inductive Color
@@ -78,11 +77,13 @@ instance : DecidableEq Color := fun x y =>
   | Color.down, Color.downR => isFalse fun h => Color.noConfusion h
   | Color.down, Color.up => isFalse fun h => Color.noConfusion h
 
-noncomputable section
+end complexLorentzTensor
 
+noncomputable section
+open complexLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
 def complexLorentzTensor : TensorSpecies where
-  C := Fermion.Color
+  C := complexLorentzTensor.Color
   G := SL(2, ℂ)
   G_group := inferInstance
   k := ℂ
@@ -191,8 +192,8 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => by simpa using Fermion.altRightContraction_apply_metric
     | Color.up => by simpa using Lorentz.contrCoContraction_apply_metric
     | Color.down => by simpa using Lorentz.coContrContraction_apply_metric
-
-instance : DecidableEq complexLorentzTensor.C := Fermion.instDecidableEqColor
+namespace complexLorentzTensor
+instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
 
 lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
     (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
@@ -208,5 +209,5 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.up => Lorentz.contrCoContraction_basis _ _
   | Color.down => Lorentz.coContrContraction_basis _ _
 
+end complexLorentzTensor
 end
-end Fermion
