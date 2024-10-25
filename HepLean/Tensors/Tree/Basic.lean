@@ -791,11 +791,11 @@ def zeroTree {n : ℕ} {c : Fin n → S.C} : TensorTree S c := tensorNode 0
 lemma zeroTree_tensor {n : ℕ} {c : Fin n → S.C} : (zeroTree (c := c)).tensor = 0 := by
   rfl
 
-lemma zero_smul {T1  : TensorTree S c} :
+lemma zero_smul {T1 : TensorTree S c} :
     (smul 0 T1).tensor = zeroTree.tensor := by
   simp only [smul_tensor, _root_.zero_smul, zeroTree_tensor]
 
-lemma smul_zero {a : S.k} : (smul a (zeroTree (c :=c ))).tensor = zeroTree.tensor := by
+lemma smul_zero {a : S.k} : (smul a (zeroTree (c := c))).tensor = zeroTree.tensor := by
   simp only [smul_tensor, zeroTree_tensor, _root_.smul_zero]
 
 lemma zero_add {T1 : TensorTree S c} : (add zeroTree T1).tensor = T1.tensor := by
@@ -808,11 +808,11 @@ lemma perm_zero {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} (σ : (Over
     (OverColor.mk c1)) : (perm σ zeroTree).tensor = zeroTree.tensor := by
   simp only [perm_tensor, zeroTree_tensor, map_zero]
 
-lemma neg_zero  : (neg (zeroTree (c := c))).tensor = zeroTree.tensor := by
+lemma neg_zero : (neg (zeroTree (c := c))).tensor = zeroTree.tensor := by
   simp only [neg_tensor, zeroTree_tensor, _root_.neg_zero]
 
-lemma contr_zero  {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
-    {h : c (i.succAbove j) = S.τ (c i)}  : (contr i j h zeroTree).tensor = zeroTree.tensor := by
+lemma contr_zero {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = S.τ (c i)} : (contr i j h zeroTree).tensor = zeroTree.tensor := by
   simp only [contr_tensor, zeroTree_tensor, map_zero]
 
 lemma zero_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} (t : TensorTree S c1) :

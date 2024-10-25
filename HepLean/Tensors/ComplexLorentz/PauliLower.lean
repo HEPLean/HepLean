@@ -76,7 +76,7 @@ lemma pauliMatrix_contr_down_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_down_1 :
-    {(basisVector ![Color.down, Color.down] fun x => 1) | ν μ  ⊗
+    {(basisVector ![Color.down, Color.down] fun x => 1) | ν μ ⊗
       PauliMatrix.asConsTensor | μ α β}ᵀ.tensor
     = basisVector pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)
     + basisVector pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0) := by
@@ -267,7 +267,6 @@ lemma pauliCo_basis_expand : pauliCo
     rw [pauliMatrix_contr_down_3]
   simp only [neg_smul, one_smul]
   abel
-
 
 lemma pauliCo_basis_expand_tree : pauliCo
     = (TensorTree.add (tensorNode

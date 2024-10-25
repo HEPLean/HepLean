@@ -209,6 +209,5 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.up => Lorentz.contrCoContraction_basis _ _
   | Color.down => Lorentz.coContrContraction_basis _ _
 
-
 end complexLorentzTensor
 end
