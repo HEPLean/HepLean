@@ -770,9 +770,62 @@ lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tens
   simp only [smul_tensor]
   rw [h]
 
+lemma smul_mul_eq {T1 : TensorTree S c} {a b : S.k} (h : a = b) :
+    (smul a T1).tensor = (smul b T1).tensor := by
+  rw [h]
+
 lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.mk c)}
     (h : T1.tensor = t) : T1.tensor = (tensorNode t).tensor := by
   simpa using h
+
+/-!
+
+## The zero tensor tree
+
+-/
+
+/-- The zero tensor tree. -/
+def zeroTree {n : ℕ} {c : Fin n → S.C} : TensorTree S c := tensorNode 0
+
+@[simp]
+lemma zeroTree_tensor {n : ℕ} {c : Fin n → S.C} : (zeroTree (c := c)).tensor = 0 := by
+  rfl
+
+lemma zero_smul {T1  : TensorTree S c} :
+    (smul 0 T1).tensor = zeroTree.tensor := by
+  simp only [smul_tensor, _root_.zero_smul, zeroTree_tensor]
+
+lemma smul_zero {a : S.k} : (smul a (zeroTree (c :=c ))).tensor = zeroTree.tensor := by
+  simp only [smul_tensor, zeroTree_tensor, _root_.smul_zero]
+
+lemma zero_add {T1 : TensorTree S c} : (add zeroTree T1).tensor = T1.tensor := by
+  simp only [add_tensor, zeroTree_tensor, _root_.zero_add]
+
+lemma add_zero {T1 : TensorTree S c} : (add T1 zeroTree).tensor = T1.tensor := by
+  simp only [add_tensor, zeroTree_tensor, _root_.add_zero]
+
+lemma perm_zero {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} (σ : (OverColor.mk c) ⟶
+    (OverColor.mk c1)) : (perm σ zeroTree).tensor = zeroTree.tensor := by
+  simp only [perm_tensor, zeroTree_tensor, map_zero]
+
+lemma neg_zero  : (neg (zeroTree (c := c))).tensor = zeroTree.tensor := by
+  simp only [neg_tensor, zeroTree_tensor, _root_.neg_zero]
+
+lemma contr_zero  {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = S.τ (c i)}  : (contr i j h zeroTree).tensor = zeroTree.tensor := by
+  simp only [contr_tensor, zeroTree_tensor, map_zero]
+
+lemma zero_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} (t : TensorTree S c1) :
+    (prod (zeroTree (c := c)) t).tensor = zeroTree.tensor := by
+  simp only [prod_tensor, Functor.id_obj, OverColor.mk_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, zeroTree_tensor, zero_tmul, map_zero]
+
+lemma prod_zero {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} (t : TensorTree S c) :
+    (prod t (zeroTree (c := c1))).tensor = zeroTree.tensor := by
+  simp only [prod_tensor, Functor.id_obj, OverColor.mk_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, zeroTree_tensor, tmul_zero, map_zero]
 
 /-- A structure containing a pair of indices (i, j) to be contracted in a tensor.
   This is used in some proofs of node identities for tensor trees. -/

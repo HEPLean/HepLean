@@ -22,8 +22,8 @@ open TensorTree
 open OverColor.Discrete
 noncomputable section
 
-namespace Fermion
-open complexLorentzTensor
+namespace complexLorentzTensor
+open Fermion
 set_option maxRecDepth 20000 in
 lemma contr_rank_2_symm {T1 : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
     {T2 : (Lorentz.complexCo ⊗ Lorentz.complexCo).V} :
@@ -159,6 +159,6 @@ lemma leftMetric_mul_rightMetric_tree :
     smul_tensor, neg_smul, one_smul]
   rfl
 
-end Fermion
+end complexLorentzTensor
 
 end

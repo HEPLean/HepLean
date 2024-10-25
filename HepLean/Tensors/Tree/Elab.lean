@@ -23,7 +23,7 @@ open Lean.Elab
 open Lean.Elab.Term
 open Lean Meta Elab Tactic
 open IndexNotation
-
+open complexLorentzTensor
 namespace TensorTree
 
 /-!
@@ -182,60 +182,60 @@ def stringToTerm (str : String) : TermElabM Term := do
 /-- Specific types of tensors which appear which we want to elaborate in specific ways. -/
 def specialTypes : List (String × (Term → Term)) := [
   ("CoeSort.coe Lorentz.complexCo", fun T =>
-    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.down, T]),
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.down, T]),
   ("CoeSort.coe Lorentz.complexContr", fun T =>
-    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.up, T]),
+    Syntax.mkApp (mkIdent ``TensorTree.vecNodeE) #[mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.up, T]),
   ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexCo).V", fun T =>
-    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.down, T]),
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``complexLorentzTensor,
+        mkIdent ``complexLorentzTensor.Color.up, mkIdent ``complexLorentzTensor.Color.down, T]),
   ("ModuleCat.carrier (Lorentz.complexContr ⊗ Lorentz.complexContr).V", fun T =>
-    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.up, mkIdent ``Fermion.Color.up, T]),
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``complexLorentzTensor,
+        mkIdent ``complexLorentzTensor.Color.up, mkIdent ``complexLorentzTensor.Color.up, T]),
   ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexCo).V", fun T =>
-    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.down, mkIdent ``Fermion.Color.down, T]),
+    Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[mkIdent ``complexLorentzTensor,
+        mkIdent ``complexLorentzTensor.Color.down, mkIdent ``complexLorentzTensor.Color.down, T]),
   ("ModuleCat.carrier (Lorentz.complexCo ⊗ Lorentz.complexContr).V", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.twoNodeE) #[
-        mkIdent ``Fermion.complexLorentzTensor,
-        mkIdent ``Fermion.Color.down,
-        mkIdent ``Fermion.Color.up, T]),
+        mkIdent ``complexLorentzTensor,
+        mkIdent ``complexLorentzTensor.Color.down,
+        mkIdent ``complexLorentzTensor.Color.up, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexCo ⊗ Lorentz.complexCo", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.down,
-      mkIdent ``Fermion.Color.down, T]),
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.down,
+      mkIdent ``complexLorentzTensor.Color.down, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Lorentz.complexContr", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.up,
-      mkIdent ``Fermion.Color.up, T]),
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.up,
+      mkIdent ``complexLorentzTensor.Color.up, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Lorentz.complexContr ⊗ Fermion.leftHanded ⊗ Fermion.rightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constThreeNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor, mkIdent ``Fermion.Color.up,
-      mkIdent ``Fermion.Color.upL,
-      mkIdent ``Fermion.Color.upR, T]),
+      mkIdent ``complexLorentzTensor, mkIdent ``complexLorentzTensor.Color.up,
+      mkIdent ``complexLorentzTensor.Color.upL,
+      mkIdent ``complexLorentzTensor.Color.upR, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.leftHanded ⊗ Fermion.leftHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.upL,
-      mkIdent ``Fermion.Color.upL, T]),
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.upL,
+      mkIdent ``complexLorentzTensor.Color.upL, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.altLeftHanded ⊗ Fermion.altLeftHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.downL,
-      mkIdent ``Fermion.Color.downL, T]),
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.downL,
+      mkIdent ``complexLorentzTensor.Color.downL, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.altRightHanded ⊗ Fermion.altRightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.downR,
-      mkIdent ``Fermion.Color.downR, T]),
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.downR,
+      mkIdent ``complexLorentzTensor.Color.downR, T]),
   ("𝟙_ (Rep ℂ SL(2, ℂ)) ⟶ Fermion.rightHanded ⊗ Fermion.rightHanded", fun T =>
     Syntax.mkApp (mkIdent ``TensorTree.constTwoNodeE) #[
-      mkIdent ``Fermion.complexLorentzTensor,
-      mkIdent ``Fermion.Color.upR,
-      mkIdent ``Fermion.Color.upR, T])]
+      mkIdent ``complexLorentzTensor,
+      mkIdent ``complexLorentzTensor.Color.upR,
+      mkIdent ``complexLorentzTensor.Color.upR, T])]
 
 /-- The syntax associated with a terminal node of a tensor tree. -/
 def termNodeSyntax (T : Term) : TermElabM Term := do
