@@ -60,6 +60,27 @@ lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContr
     omega
   · simp only [Fin.val_succ, Fin.coe_cast, Fin.coe_castAdd]
 
+lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
+    (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.castAdd n1 x)) =
+    leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove (q.j.succAbove x))) := by
+  rw [Fin.ext_iff]
+  simp [leftContrI, leftContrJ, leftContrEquivSuccSucc, Fin.succAbove]
+  split_ifs <;> rename_i h1 h2 h3 h4
+    <;> rw [Fin.lt_def] at h1 h2 h3 h4
+    <;> simp_all [leftContrEquivSucc]
+    <;> omega
+
+lemma succAbove_leftContrJ_leftContrI_natAdd (x : Fin n1) :
+    (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.natAdd n x)) =
+    leftContrEquivSuccSucc (Fin.natAdd n.succ.succ x) := by
+  rw [Fin.ext_iff]
+  simp [leftContrI, leftContrJ, leftContrEquivSuccSucc, Fin.succAbove]
+  split_ifs <;> rename_i h1 h2
+    <;> rw [Fin.lt_def] at h1 h2
+    <;> simp_all [leftContrEquivSucc]
+    <;> omega
+
+
 def leftContr : ContrPair ((Sum.elim c c1 ∘ (@finSumFinEquiv n.succ.succ n1).symm.toFun) ∘
     leftContrEquivSuccSucc.symm) where
   i := q.leftContrI n1
@@ -75,8 +96,23 @@ lemma leftContr_map_eq : ((Sum.elim c (OverColor.mk c1).hom ∘ finSumFinEquiv.s
     Sum.elim (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).hom (OverColor.mk c1).hom ∘
     ⇑finSumFinEquiv.symm := by
   funext x
-  simp
-  sorry
+  simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Equiv.toFun_as_coe, Function.comp_apply,
+    Functor.const_obj_obj]
+  obtain ⟨k, hk⟩ := finSumFinEquiv.surjective x
+  subst hk
+  match k with
+  | Sum.inl k =>
+    simp only [finSumFinEquiv_apply_left, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl,
+      Function.comp_apply]
+    erw [succAbove_leftContrJ_leftContrI_castAdd]
+    simp only [Nat.succ_eq_add_one, Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd,
+      Sum.elim_inl]
+  | Sum.inr k =>
+    simp only [finSumFinEquiv_apply_right, finSumFinEquiv_symm_apply_natAdd, Sum.elim_inr]
+    erw [succAbove_leftContrJ_leftContrI_natAdd]
+    simp only [Nat.succ_eq_add_one, Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_natAdd,
+      Sum.elim_inr]
+
 
 lemma contrMap_prod :
     (q.contrMap ▷ S.F.obj (OverColor.mk c1)) ≫ (S.F.μ _ ((OverColor.mk c1))) ≫
@@ -85,6 +121,11 @@ lemma contrMap_prod :
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
     S.F.map (OverColor.equivToIso leftContrEquivSuccSucc).hom ≫ q.leftContr.contrMap
     ≫ S.F.map (OverColor.mkIso (q.leftContr_map_eq)).hom  := by
+  ext1
+  refine HepLean.PiTensorProduct.induction_tmul (fun p q' => ?_)
+  simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, CategoryStruct.comp, Action.Hom.comp_hom,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_whiskerRight_hom,
+    LinearMap.coe_comp, Function.comp_apply, Functor.const_obj_obj, Equiv.toFun_as_coe]
   sorry
 
 /-!
