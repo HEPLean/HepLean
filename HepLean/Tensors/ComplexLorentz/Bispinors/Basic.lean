@@ -30,9 +30,9 @@ def contrBispinorUp (p : complexContr) :=
   {p | μ ⊗ pauliCo | μ α β}ᵀ.tensor
 
 /-- A bispinor `pₐₐ` created from a lorentz vector  `p^μ`. -/
-def bispinorDown (p : complexContr) :=
+def contrBispinorDown (p : complexContr) :=
   {Fermion.altRightMetric | β β' ⊗ Fermion.altLeftMetric | α α' ⊗
-    (complexContr.bispinorUp p) | α β}ᵀ.tensor
+    (contrBispinorUp p) | α β}ᵀ.tensor
 
 end complexLorentzTensor
 end
