@@ -177,6 +177,8 @@ lemma basis_contr_pauliMatrix_basis_tree_expand' {n : ℕ} {c : Fin n → comple
     <| contr_tensor_eq <| prod_basisVector_tree _ _]
   rfl
 
+/-- The map to color which appears when contracting a basis vector with
+  puali matrices. -/
 def pauliMatrixBasisProdMap
     {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (i1 i2 i3 : Fin 4) :
@@ -186,6 +188,8 @@ def pauliMatrixBasisProdMap
       ((HepLean.PiTensorProduct.elimPureTensor b (fun | (0 : Fin 3) => i1 | 1 => i2 | 2 => i3))
       (finSumFinEquiv.symm i))
 
+/-- The new basis vectors which appear when contracting pauli matrices with
+  basis vectors. -/
 def basisVectorContrPauli {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (i : Fin (n + 3)) (j : Fin (n +2))
     (b : Π k, Fin (complexLorentzTensor.repDim (c k)))

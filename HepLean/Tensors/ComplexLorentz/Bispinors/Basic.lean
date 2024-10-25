@@ -25,7 +25,7 @@ noncomputable section
 namespace complexLorentzTensor
 open Lorentz
 
-/-- A bispinor `pᵃᵃ` created from a lorentz vector  `p^μ`. -/
+/-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
 def contrBispinorUp (p : complexContr) :=
   {p | μ ⊗ pauliCo | μ α β}ᵀ.tensor
 
@@ -33,7 +33,7 @@ lemma tensorNode_contrBispinorUp (p : complexContr) :
     (tensorNode (contrBispinorUp p)).tensor = {p | μ ⊗ pauliCo | μ α β}ᵀ.tensor := by
   rw [contrBispinorUp, tensorNode_tensor]
 
-/-- A bispinor `pₐₐ` created from a lorentz vector  `p^μ`. -/
+/-- A bispinor `pₐₐ` created from a lorentz vector `p^μ`. -/
 def contrBispinorDown (p : complexContr) :=
   {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
     (contrBispinorUp p) | α β}ᵀ.tensor

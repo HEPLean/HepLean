@@ -506,7 +506,7 @@ lemma pauliCo_contr_pauliContr_expand :
     + 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1) := by
-  rw [pauliMatrix_contract_pauliMatrix_aux]
+  rw [pauliCo_contr_pauliContr_expand_aux]
   simp only [Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero, neg_smul,
     one_smul, add_tensor, tensorNode_tensor, smul_tensor, smul_add, smul_neg, _root_.smul_smul,
     neg_mul, _root_.neg_neg]
@@ -519,7 +519,7 @@ lemma pauliCo_contr_pauliContr_expand :
 theorem pauliCo_contr_pauliContr :
     {pauliCo | ν α β ⊗ PauliMatrix.asConsTensor | ν α' β' =
     2 •ₜ Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ := by
-  rw [pauliMatrix_contract_pauliMatrix_expand]
+  rw [pauliCo_contr_pauliContr_expand]
   rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_mul_rightMetric_tree]
   rw [perm_smul]
   /- Moving perm through adds. -/

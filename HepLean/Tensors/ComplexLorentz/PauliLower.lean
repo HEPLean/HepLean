@@ -25,6 +25,7 @@ noncomputable section
 namespace Fermion
 open complexLorentzTensor
 
+/-- The pauli matrices as `σ_μ^α^{dot β}`. -/
 def pauliCo := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
 lemma tensorNode_pauliCo : (tensorNode pauliCo).tensor =
