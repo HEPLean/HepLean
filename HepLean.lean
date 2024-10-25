@@ -110,6 +110,7 @@ import HepLean.StandardModel.Representations
 import HepLean.Tensors.ComplexLorentz.Basic
 import HepLean.Tensors.ComplexLorentz.Basis
 import HepLean.Tensors.ComplexLorentz.BasisTrees
+import HepLean.Tensors.ComplexLorentz.Bispinors.Basic
 import HepLean.Tensors.ComplexLorentz.Lemmas
 import HepLean.Tensors.ComplexLorentz.PauliContr
 import HepLean.Tensors.ComplexLorentz.PauliLower

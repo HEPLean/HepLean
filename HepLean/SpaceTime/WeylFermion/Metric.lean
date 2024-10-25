@@ -67,7 +67,7 @@ lemma metricRaw_comm_star (M : SL(2,ℂ)) : metricRaw * M.1.map star = ((M.1)⁻
   rw [eta_fin_two (!![M.1 0 0, M.1 0 1; M.1 1 0, M.1 1 1].map star)]
   simp
 
-/-- The metric `εₐₐ` as an element of `(leftHanded ⊗ leftHanded).V`. -/
+/-- The metric `εᵃᵃ` as an element of `(leftHanded ⊗ leftHanded).V`. -/
 def leftMetricVal : (leftHanded ⊗ leftHanded).V :=
   leftLeftToMatrix.symm (- metricRaw)
 
@@ -80,7 +80,7 @@ lemma leftMetricVal_expand_tmul : leftMetricVal =
     Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
     neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
 
-/-- The metric `εₐₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded`,
+/-- The metric `εᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
   hom := {
@@ -114,7 +114,7 @@ lemma leftMetric_apply_one : leftMetric.hom (1 : ℂ) = leftMetricVal := by
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     leftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
-/-- The metric `εᵃᵃ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
+/-- The metric `εₐₐ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
 def altLeftMetricVal : (altLeftHanded ⊗ altLeftHanded).V :=
   altLeftaltLeftToMatrix.symm metricRaw
 
@@ -128,7 +128,7 @@ lemma altLeftMetricVal_expand_tmul : altLeftMetricVal =
     neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
   rfl
 
-/-- The metric `εᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded`,
+/-- The metric `εₐₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded where
   hom := {
@@ -162,7 +162,7 @@ lemma altLeftMetric_apply_one : altLeftMetric.hom (1 : ℂ) = altLeftMetricVal :
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     altLeftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
-/-- The metric `ε_{dot a}_{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
+/-- The metric `ε^{dot a}^{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
 def rightMetricVal : (rightHanded ⊗ rightHanded).V :=
   rightRightToMatrix.symm (- metricRaw)
 
@@ -175,7 +175,7 @@ lemma rightMetricVal_expand_tmul : rightMetricVal =
     Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
     neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
 
-/-- The metric `ε_{dot a}_{dot a}` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded`,
+/-- The metric `ε^{dot a}^{dot a}` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded where
   hom := {
@@ -217,7 +217,7 @@ lemma rightMetric_apply_one : rightMetric.hom (1 : ℂ) = rightMetricVal := by
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     rightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
 
-/-- The metric `ε^{dot a}^{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
+/-- The metric `ε_{dot a}_{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
 def altRightMetricVal : (altRightHanded ⊗ altRightHanded).V :=
   altRightAltRightToMatrix.symm (metricRaw)
 
@@ -231,7 +231,7 @@ lemma altRightMetricVal_expand_tmul : altRightMetricVal =
     neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
   rfl
 
-/-- The metric `ε^{dot a}^{dot a}` as a morphism
+/-- The metric `ε_{dot a}_{dot a}` as a morphism
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHanded where
