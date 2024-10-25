@@ -25,6 +25,13 @@ noncomputable section
 namespace Fermion
 open complexLorentzTensor
 
+def pauliCo := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
+
+lemma tensorNode_pauliCo : (tensorNode pauliCo).tensor =
+    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
+  rw [pauliCo]
+  rfl
+
 /-- The map to color one gets when lowering the indices of pauli matrices. -/
 def pauliCoMap := ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Color.upR] ∘
   ⇑finSumFinEquiv.symm) ∘ Fin.succAbove 1 ∘ Fin.succAbove 1)
@@ -211,15 +218,6 @@ lemma pauliMatrix_contr_down_3 :
     funext k
     fin_cases k <;> rfl
 
-def pauliCo := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
-
-lemma tensoreNode_pauliCo : (tensorNode pauliCo).tensor =
-    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
-  rw [pauliCo]
-  rfl
-
-set_option profiler true
-set_option profiler.threshold 10
 lemma pauliCo_basis_expand : pauliCo
     = basisVector pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
     + basisVector pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1)
@@ -309,7 +307,7 @@ lemma pauliCo_prod_basis_expand {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     ((tensorNode
       (basisVector pauliCoMap fun | 0 => 3 | 1 => 1 | 2 => 1)).prod
       t)))))))).tensor := by
-  rw [prod_tensor_eq_fst <| tensoreNode_pauliCo]
+  rw [prod_tensor_eq_fst <| tensorNode_pauliCo]
   rw [prod_tensor_eq_fst <| pauliCo_basis_expand_tree]
   /- Moving the prod through additions. -/
   rw [add_prod _ _ _]
