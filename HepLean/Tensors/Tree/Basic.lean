@@ -840,7 +840,7 @@ structure ContrPair {n : ℕ} (c : Fin n.succ.succ → S.C) where
   h : c (i.succAbove j) = S.τ (c i)
 
 namespace ContrPair
-variable {n : ℕ} {c : Fin n.succ.succ → S.C} {q q' : ContrPair c}
+variable {n : ℕ} {c : Fin n.succ.succ → S.C} (q q' : ContrPair c)
 
 lemma ext (hi : q.i = q'.i) (hj : q.j = q'.j) : q = q' := by
   cases q
