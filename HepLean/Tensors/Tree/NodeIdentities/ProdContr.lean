@@ -156,6 +156,15 @@ lemma contrMap_prod :
       ((PiTensorProduct.tprod S.k) _))
   conv_rhs => rw [contrMap, TensorSpecies.contrMap_tprod]
   simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul]
+  have hL (a : Fin n.succ.succ) {b :  Fin (n + 1 + 1) ⊕ Fin n1}
+          (h : b = Sum.inl a) :  p a = (S.FDiscrete.map (Discrete.eqToHom (by rw [h]; simp ))).hom
+          ((lift.discreteSumEquiv S.FDiscrete b)
+          (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
+        subst h
+        simp only [Nat.succ_eq_add_one, mk_hom, instMonoidalCategoryStruct_tensorObj_hom,
+          Sum.elim_inl, eqToHom_refl, Discrete.functor_map_id, Action.id_hom, Functor.id_obj,
+          ModuleCat.id_apply]
+        rfl
   congr 1
   /- The contraction. -/
   · apply congrArg
@@ -179,16 +188,7 @@ lemma contrMap_prod :
     · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply]
       simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, equivToIso_homToEquiv,
         LinearEquiv.coe_coe]
-      have h1' {a : Fin n.succ.succ} {b :  Fin (n + 1 + 1) ⊕ Fin n1}
-          (h : b = Sum.inl a) :  p a = (S.FDiscrete.map (Discrete.eqToHom (by rw [h]; simp ))).hom
-          ((lift.discreteSumEquiv S.FDiscrete b)
-          (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
-        subst h
-        simp only [Nat.succ_eq_add_one, mk_hom, instMonoidalCategoryStruct_tensorObj_hom,
-          Sum.elim_inl, eqToHom_refl, Discrete.functor_map_id, Action.id_hom, Functor.id_obj,
-          ModuleCat.id_apply]
-        rfl
-      apply h1'
+      apply hL
       exact Eq.symm ((fun f => (Equiv.apply_eq_iff_eq_symm_apply f).mp) finSumFinEquiv rfl)
     · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply,
          ModuleCat.id_apply]
