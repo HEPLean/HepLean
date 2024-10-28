@@ -60,6 +60,7 @@ lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContr
     rename_i h1 h2
     rw [Fin.lt_def] at h1 h2
     simp_all
+  omega
 
 lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.castAdd n1 x)) =
