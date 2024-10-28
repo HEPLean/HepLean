@@ -61,6 +61,10 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
     subst h
     rfl))
 
+lemma mkIso_refl_hom {c : X → C} : (mkIso (by rfl : c =c)).hom = 𝟙 _ := by
+  simp [mkIso]
+  rfl
+
 @[simp]
 lemma equivToIso_mkIso_hom {c1 c2 : X → C} (h : c1 = c2) :
     Hom.toEquiv (mkIso h).hom = Equiv.refl _ := by

@@ -45,6 +45,7 @@ variable {C : Type} {f g h : OverColor C}
 lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
   apply CategoryTheory.Iso.ext h
 
+
 /-- Given a hom in `OverColor C` the underlying equivalence between types. -/
 def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
   toFun := m.hom.left
@@ -257,6 +258,12 @@ def mk (f : X → C) : OverColor C := Over.mk f
 @[simp]
 lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
+
+lemma Hom.fin_ext {n : ℕ} {f g : Fin n → C} (σ σ' : OverColor.mk f ⟶ OverColor.mk g)
+    (h : ∀ (i : Fin n), σ.hom.left i = σ'.hom.left i) : σ = σ' := by
+  apply Hom.ext
+  ext i
+  apply h
 
 end OverColor
 
