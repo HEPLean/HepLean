@@ -121,8 +121,8 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
       Function.comp_apply]
     let x' : ℂ := x
     change x' • asTensor =
-      (TensorProduct.map (complexContr.ρ M) (
-        TensorProduct.map (leftHanded.ρ M) (rightHanded.ρ M))) (x' • asTensor)
+      (TensorProduct.map (complexContr.ρ M)
+        (TensorProduct.map (leftHanded.ρ M) (rightHanded.ρ M))) (x' • asTensor)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     nth_rewrite 2 [asTensor]

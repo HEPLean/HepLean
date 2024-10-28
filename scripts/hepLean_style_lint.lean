@@ -73,6 +73,14 @@ def substringLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
+def endLineLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
+  let enumLines := (lines.toList.enumFrom 1)
+  let errors := enumLines.filterMap (fun (lno, l) ↦
+    if l.endsWith s then
+      some (s!" Line ends with `{s}`.", lno, l.length)
+    else none)
+  errors.toArray
+
 /-- Number of space at new line must be even. -/
 def numInitialSpacesEven : HepLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
@@ -104,9 +112,9 @@ def hepLeanLintFile (path : FilePath) : IO (Array HepLeanErrorContext) := do
     #[doubleEmptyLineLinter, doubleSpaceLinter, numInitialSpacesEven, longLineLinter,
     substringLinter ".-/", substringLinter " )",
     substringLinter "( ", substringLinter "=by", substringLinter "  def ",
-    substringLinter "/-- We ", substringLinter "[ ", substringLinter " ]", substringLinter " ,"
-    , substringLinter "by exact ",
-     substringLinter "⟨ ", substringLinter " ⟩",  substringLinter "):",  substringLinter "(_)"]
+    substringLinter "/-- We ", substringLinter "[ ", substringLinter " ]", substringLinter " ,",
+    substringLinter "⟨ ", substringLinter " ⟩",  substringLinter "):",  substringLinter "(_)",
+    endLineLinter "("]
   let errors := allOutput.flatten
   return errors
 

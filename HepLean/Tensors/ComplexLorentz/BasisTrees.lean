@@ -211,8 +211,8 @@ lemma basis_contr_pauliMatrix_basis_tree_expand {n : ℕ} {c : Fin n → complex
       (i.succAbove (j.succAbove k))
     (contr i j h (TensorTree.prod (tensorNode (basisVector c b))
     (constThreeNodeE complexLorentzTensor Color.up Color.upL Color.upR
-    PauliMatrix.asConsTensor))).tensor = (((
-    TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 0 0))
+    PauliMatrix.asConsTensor))).tensor =
+    (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 0 0))
       (tensorNode (basisVector c' (b' 0 0 0))))).add
     (((TensorTree.smul (contrBasisVectorMul i j (pauliMatrixBasisProdMap b 0 1 1))
       (tensorNode (basisVector c' (b' 0 1 1))))).add

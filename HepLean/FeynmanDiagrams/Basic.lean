@@ -717,8 +717,8 @@ def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
 
 instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   @instDecidableAnd _ _ _ $
-  @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _ (
-  fun _ => @instDecidableAnd _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
+  @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
+  (fun _ => @instDecidableAnd _ _ (instDecidableEq𝓔OfIsFiniteDiagram _ _) $
     @instDecidableAnd _ _ (instDecidableEq𝓥OfIsFiniteDiagram _ _)
     (instDecidableEq𝓥OfIsFiniteDiagram _ _)) _) _
 

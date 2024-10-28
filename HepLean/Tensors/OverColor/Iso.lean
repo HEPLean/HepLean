@@ -27,6 +27,11 @@ open HepLean.Fin
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
   Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
 
+@[simp]
+lemma equivToIso_homToEquiv {c : X → C} (e : X ≃ Y) :
+    Hom.toEquiv (equivToIso (c := c) e).hom = e := by
+  rfl
+
 /-- The homomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
   equivalence `e`. -/
 def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
@@ -55,6 +60,16 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
   Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
     subst h
     rfl))
+
+@[simp]
+lemma equivToIso_mkIso_hom {c1 c2 : X → C} (h : c1 = c2) :
+    Hom.toEquiv (mkIso h).hom = Equiv.refl _ := by
+  rfl
+
+@[simp]
+lemma equivToIso_mkIso_inv {c1 c2 : X → C} (h : c1 = c2) :
+    Hom.toEquiv (mkIso h).inv = Equiv.refl _ := by
+  rfl
 
 /-- The homorophism from `mk c` to `mk c1` obtaied by an equivalence and
   an equality lemma. -/
