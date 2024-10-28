@@ -33,19 +33,19 @@ open Fermion
 
 -/
 
-/- The Pauli matrices as `σ^μ^α^{dot β}`. -/
+/- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
 def pauliContr := {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
-/-- The Pauli matrices as `σ_μ^α^{dot β}`. -/
+/-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
 def pauliCo := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
-/-- The Pauli matrices as `σ_μ_α_{dot β}`. -/
-def pauliCoDown := {Fermion.altLeftMetric | α α' ⊗
-  Fermion.altRightMetric | β β' ⊗ pauliCo | μ α β}ᵀ.tensor
+/-- The Pauli matrices as the complex Lorentz tensor `σ_μ_α_{dot β}`. -/
+def pauliCoDown := {pauliCo | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
+  Fermion.altRightMetric | β β'}ᵀ.tensor
 
-/-- The Pauli matrices as `σ^μ_α_{dot β}`. -/
-def pauliContrDown := {Fermion.altLeftMetric | α α' ⊗
-  Fermion.altRightMetric | β β' ⊗ pauliContr | μ α β}ᵀ.tensor
+/-- The Pauli matrices as the complex Lorentz tensor `σ^μ_α_{dot β}`. -/
+def pauliContrDown := {pauliContr | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
+  Fermion.altRightMetric | β β'}ᵀ.tensor
 
 /-!
 
@@ -65,14 +65,14 @@ lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor  =
 
 /-- The definitional tensor node relation for `pauliCoDown`. -/
 lemma tensorNode_pauliCoDown : {pauliCoDown | μ α β}ᵀ.tensor =
-    {Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β' ⊗ pauliCo | μ α β}ᵀ.tensor := by
+    {pauliCo | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
+    Fermion.altRightMetric | β β'}ᵀ.tensor := by
   rfl
 
 /-- The definitional tensor node relation for `pauliContrDown`. -/
 lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
-    {Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β' ⊗ pauliContr | μ α β}ᵀ.tensor := by
+    {pauliContr | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
+    Fermion.altRightMetric | β β'}ᵀ.tensor := by
   rfl
 
 end complexLorentzTensor
