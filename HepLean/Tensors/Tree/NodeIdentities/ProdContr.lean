@@ -114,26 +114,40 @@ lemma leftContr_map_eq : ((Sum.elim c (OverColor.mk c1).hom ∘ finSumFinEquiv.s
     simp only [Nat.succ_eq_add_one, Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_natAdd,
       Sum.elim_inr]
 
+lemma sum_inl_succAbove_leftContrI_leftContrJ (k : Fin n) : finSumFinEquiv.symm
+  (leftContrEquivSuccSucc.symm
+      ((q.leftContr (c1 := c1)).i.succAbove
+        ((q.leftContr (c1 := c1)).j.succAbove
+          (
+            (finSumFinEquiv (Sum.inl k)))))) =
+  Sum.map (q.i.succAbove ∘ q.j.succAbove) id (Sum.inl k) := by
+  simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
+    Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
+  erw [succAbove_leftContrJ_leftContrI_castAdd]
+  simp
 
-set_option maxHeartbeats 0 in
-lemma contrMap_prod :
-    (q.contrMap ▷ S.F.obj (OverColor.mk c1)) ≫ (S.F.μ _ ((OverColor.mk c1))) ≫
-    S.F.map (OverColor.equivToIso finSumFinEquiv).hom =
-    (S.F.μ ((OverColor.mk c)) ((OverColor.mk c1))) ≫
-    S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
-    S.F.map (OverColor.equivToIso leftContrEquivSuccSucc).hom ≫ q.leftContr.contrMap
-    ≫ S.F.map (OverColor.mkIso (q.leftContr_map_eq)).hom  := by
-  ext1
-  refine HepLean.PiTensorProduct.induction_tmul (fun p q' => ?_)
-  change (S.F.map (equivToIso finSumFinEquiv).hom).hom
+lemma sum_inr_succAbove_leftContrI_leftContrJ (k : Fin n1) :  finSumFinEquiv.symm
+    (leftContrEquivSuccSucc.symm
+      ((q.leftContr (c1 := c1)).i.succAbove
+        ((q.leftContr (c1 := c1)).j.succAbove
+          (
+            (finSumFinEquiv (Sum.inr k)))))) =
+  Sum.map (q.i.succAbove ∘ q.j.succAbove) id (Sum.inr k) := by
+  simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
+    Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
+  erw [succAbove_leftContrJ_leftContrI_natAdd]
+  simp
+lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i }))
+  (q' : (i : (𝟭 Type).obj (OverColor.mk c1).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c1).hom i })):
+  (S.F.map (equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)) (OverColor.mk c1)).hom
     ((q.contrMap.hom (PiTensorProduct.tprod S.k p)) ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q'))
-     = (S.F.map (mkIso _).hom).hom
+     = (S.F.map (mkIso (by exact leftContr_map_eq q)).hom).hom
     (q.leftContr.contrMap.hom
       ((S.F.map (equivToIso (@leftContrEquivSuccSucc n n1)).hom).hom
         ((S.F.map (equivToIso finSumFinEquiv).hom).hom
           ((S.F.μ (OverColor.mk c) (OverColor.mk c1)).hom
-            ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q')))))
+            ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q'))))) := by
   conv_lhs => rw [contrMap, TensorSpecies.contrMap_tprod]
   simp only [TensorSpecies.F_def]
   conv_rhs => rw [lift.obj_μ_tprod_tmul]
@@ -190,9 +204,7 @@ lemma contrMap_prod :
         LinearEquiv.coe_coe]
       apply hL
       exact Eq.symm ((fun f => (Equiv.apply_eq_iff_eq_symm_apply f).mp) finSumFinEquiv rfl)
-    · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply,
-         ModuleCat.id_apply]
-      simp only [Discrete.functor_obj_eq_as, Function.comp_apply, AddHom.toFun_eq_coe,
+    · simp only [Discrete.functor_obj_eq_as, Function.comp_apply, AddHom.toFun_eq_coe,
         LinearMap.coe_toAddHom, equivToIso_homToEquiv]
       change _ = (S.FDiscrete.map (Discrete.eqToHom _) ≫ S.FDiscrete.map (Discrete.eqToHom _)).hom _
       rw [← S.FDiscrete.map_comp]
@@ -220,9 +232,6 @@ lemma contrMap_prod :
       Iso.refl_hom, Action.id_hom, Iso.refl_inv, instMonoidalCategoryStruct_tensorObj_hom,
       LinearEquiv.ofLinear_apply, Equiv.toFun_as_coe, equivToIso_mkIso_hom, Equiv.refl_symm,
       Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv]
-    conv_rhs => repeat erw [ModuleCat.id_apply]
-    simp only [Nat.succ_eq_add_one, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom,
-      LinearEquiv.coe_coe]
     have h1 (l : (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).left ⊕ (OverColor.mk c1).left)
       (l' : Fin n.succ.succ ⊕ Fin n1)
       (h : Sum.elim c c1 l' = Sum.elim (c ∘ q.i.succAbove ∘ q.j.succAbove) c1 l)
@@ -235,14 +244,13 @@ lemma contrMap_prod :
       subst h'
       match l with
       | Sum.inl l =>
-        simp only [Nat.succ_eq_add_one, instMonoidalCategoryStruct_tensorObj_hom, mk_hom,
+        simp only [ instMonoidalCategoryStruct_tensorObj_hom, mk_hom,
           Sum.elim_inl, Function.comp_apply, Functor.id_obj, Sum.map_inl, eqToHom_refl,
           Discrete.functor_map_id, Action.id_hom, ModuleCat.id_apply]
         rfl
       | Sum.inr l =>
-        simp only [Nat.succ_eq_add_one, instMonoidalCategoryStruct_tensorObj_hom, mk_hom,
-          Sum.elim_inr, Functor.id_obj, Function.comp_apply, Sum.map_inr, id_eq, eqToHom_refl,
-          Discrete.functor_map_id, Action.id_hom, ModuleCat.id_apply]
+        simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inr, Functor.id_obj,
+          Function.comp_apply, Sum.map_inr, Discrete.functor_map_id, Action.id_hom]
         rfl
     refine h1 _ _ ?_ ?_
     · simpa using Discrete.eqToIso.proof_1
@@ -251,20 +259,18 @@ lemma contrMap_prod :
       subst hk
       erw [Equiv.symm_apply_apply]
       match k with
-      | Sum.inl k =>
-        simp only [Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContr, finSumFinEquiv_apply_left,
-          Sum.map_inl, Function.comp_apply]
-        erw [Equiv.refl_apply, Equiv.refl_apply]
-        erw [succAbove_leftContrJ_leftContrI_castAdd]
-        simp only [Nat.succ_eq_add_one, Equiv.invFun_as_coe, Equiv.symm_apply_apply,
-          finSumFinEquiv_symm_apply_castAdd]
-      | Sum.inr k =>
-        simp  [finSumFinEquiv_apply_left, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl, leftContr]
-        erw [Equiv.refl_apply, Equiv.refl_apply]
-        erw [succAbove_leftContrJ_leftContrI_natAdd]
-        simp only [Nat.succ_eq_add_one, Equiv.invFun_as_coe, Equiv.symm_apply_apply,
-          finSumFinEquiv_symm_apply_natAdd]
+      | Sum.inl k => exact q.sum_inl_succAbove_leftContrI_leftContrJ _
+      | Sum.inr k => exact q.sum_inr_succAbove_leftContrI_leftContrJ _
 
+lemma contrMap_prod :
+    (q.contrMap ▷ S.F.obj (OverColor.mk c1)) ≫ (S.F.μ _ ((OverColor.mk c1))) ≫
+    S.F.map (OverColor.equivToIso finSumFinEquiv).hom =
+    (S.F.μ ((OverColor.mk c)) ((OverColor.mk c1))) ≫
+    S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
+    S.F.map (OverColor.equivToIso leftContrEquivSuccSucc).hom ≫ q.leftContr.contrMap
+    ≫ S.F.map (OverColor.mkIso (q.leftContr_map_eq)).hom  := by
+  ext1
+  exact HepLean.PiTensorProduct.induction_tmul (fun p q' => q.contrMap_prod_tprod p q')
 
 lemma contr_prod
     (t : TensorTree S c) (t1 : TensorTree S c1) :
@@ -360,22 +366,38 @@ lemma rightContr_map_eq : ((Sum.elim c1 (OverColor.mk c).hom ∘ finSumFinEquiv.
     erw [succAbove_rightContrJ_rightContrI_natAdd]
     simp only [finSumFinEquiv_symm_apply_natAdd, Sum.elim_inr, Function.comp_apply]
 
-set_option maxHeartbeats 0 in
-lemma prod_contrMap :
-    (S.F.obj (OverColor.mk c1) ◁ q.contrMap) ≫ (S.F.μ ((OverColor.mk c1)) _) ≫
-    S.F.map (OverColor.equivToIso finSumFinEquiv).hom =
-    (S.F.μ ((OverColor.mk c1)) ((OverColor.mk c))) ≫
-    S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
-     q.rightContr.contrMap ≫  S.F.map (OverColor.mkIso (q.rightContr_map_eq)).hom := by
-  ext1
-  refine HepLean.PiTensorProduct.induction_tmul (fun p q' => ?_)
-  change  (S.F.map (equivToIso finSumFinEquiv).hom).hom
+
+lemma sum_inl_succAbove_rightContrI_rightContrJ (k : Fin n1): (@finSumFinEquiv n1 n.succ.succ).symm
+    ((q.rightContr (c1 := c1)).i.succAbove
+      ((q.rightContr (c1 := c1)).j.succAbove
+        (((@finSumFinEquiv n1 n) (Sum.inl k))))) =
+    Sum.map id (q.i.succAbove ∘ q.j.succAbove) (finSumFinEquiv.symm (finSumFinEquiv (Sum.inl k))) := by
+  simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
+    Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
+  erw [succAbove_rightContrJ_rightContrI_castAdd]
+  simp
+
+lemma sum_inr_succAbove_rightContrI_rightContrJ (k : Fin n): (@finSumFinEquiv n1 n.succ.succ).symm
+    ((q.rightContr (c1 := c1)).i.succAbove
+      ((q.rightContr (c1 := c1)).j.succAbove
+        (
+          (finSumFinEquiv (Sum.inr k))))) =
+  Sum.map id (q.i.succAbove ∘ q.j.succAbove) (finSumFinEquiv.symm (finSumFinEquiv (Sum.inr k))):= by
+  simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
+    Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
+  erw [succAbove_rightContrJ_rightContrI_natAdd]
+  simp
+
+
+lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c1).hom i }))
+  (q' : (i : (𝟭 Type).obj (OverColor.mk c).left) → CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i })):
+     (S.F.map (equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ (OverColor.mk c1) (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove))).hom
     ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (q.contrMap.hom (PiTensorProduct.tprod S.k q')))) =
-    (S.F.map (mkIso _).hom).hom
+    (S.F.map (mkIso (by exact (rightContr_map_eq q))).hom).hom
     (q.rightContr.contrMap.hom
     (((S.F.map (equivToIso finSumFinEquiv).hom ).hom
-    ((S.F.μ (OverColor.mk c1) (OverColor.mk c)).hom ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q')))))
+    ((S.F.μ (OverColor.mk c1) (OverColor.mk c)).hom ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q'))))) := by
   conv_lhs => rw [contrMap, TensorSpecies.contrMap_tprod]
   simp only [TensorSpecies.F_def]
   conv_rhs => rw [lift.obj_μ_tprod_tmul]
@@ -473,21 +495,18 @@ lemma prod_contrMap :
         (Hom.toEquiv_comp_inv_apply (mkIso (rightContr_map_eq q)).hom k)
     · obtain ⟨k, hk⟩ := finSumFinEquiv.surjective k
       subst hk
-      erw [Equiv.symm_apply_apply]
       match k with
-      | Sum.inl k =>
-        simp only [Nat.succ_eq_add_one, rightContr, Nat.add_eq, Equiv.toFun_as_coe,
-          finSumFinEquiv_apply_left, Sum.map_inl, id_eq]
-        erw [Equiv.refl_apply, Equiv.refl_apply]
-        rw [succAbove_rightContrJ_rightContrI_castAdd]
-        simp only [Nat.succ_eq_add_one, Equiv.invFun_as_coe, finSumFinEquiv_symm_apply_castAdd]
-      | Sum.inr k =>
-        simp only [Nat.succ_eq_add_one, rightContr, Nat.add_eq, Equiv.toFun_as_coe,
-          finSumFinEquiv_apply_right, Sum.map_inr, Function.comp_apply]
-        erw [Equiv.refl_apply, Equiv.refl_apply]
-        rw [succAbove_rightContrJ_rightContrI_natAdd]
-        simp only [Equiv.invFun_as_coe, finSumFinEquiv_symm_apply_natAdd]
+      | Sum.inl k => exact sum_inl_succAbove_rightContrI_rightContrJ _ _
+      | Sum.inr k => exact sum_inr_succAbove_rightContrI_rightContrJ _ _
 
+lemma prod_contrMap :
+    (S.F.obj (OverColor.mk c1) ◁ q.contrMap) ≫ (S.F.μ ((OverColor.mk c1)) _) ≫
+    S.F.map (OverColor.equivToIso finSumFinEquiv).hom =
+    (S.F.μ ((OverColor.mk c1)) ((OverColor.mk c))) ≫
+    S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
+     q.rightContr.contrMap ≫  S.F.map (OverColor.mkIso (q.rightContr_map_eq)).hom := by
+  ext1
+  exact HepLean.PiTensorProduct.induction_tmul (fun p q' => q.prod_contrMap_tprod p q')
 
 lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
    (prod t1 (contr q.i q.j q.h t)).tensor =  ((perm (OverColor.mkIso q.rightContr_map_eq).hom
