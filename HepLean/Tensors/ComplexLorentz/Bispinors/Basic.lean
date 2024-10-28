@@ -119,6 +119,7 @@ lemma contrBispinorDown_eq_metric_contr_contrBispinorUp  (p : complexContr) :
     | (1 : Fin 2) => rfl
   · rfl
 
+/- TODO: Remove maxHeartbeats from this result. -/
 set_option maxHeartbeats 400000 in
 set_option maxRecDepth 2000 in
 lemma contrBispinorDown_eq_contr_with_self (p : complexContr) :
@@ -154,8 +155,8 @@ lemma contrBispinorDown_eq_contr_with_self (p : complexContr) :
   apply OverColor.Hom.fin_ext
   intro i
   fin_cases i
-  exact rfl
-  exact rfl
+  · exact rfl
+  · exact rfl
 
 /-- Expansion of a `contrBispinorDown` into the original contravariant tensor nested
   between pauli matrices and metrics. -/
