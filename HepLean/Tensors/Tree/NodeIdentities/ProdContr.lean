@@ -55,14 +55,11 @@ lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContr
   simp only [Fin.succAbove, Nat.succ_eq_add_one, leftContrEquivSucc, RelIso.coe_fn_toEquiv,
     Fin.castOrderIso_apply, leftContrEquivSuccSucc, Fin.coe_cast, Fin.coe_castAdd]
   split_ifs
-    <;> rename_i h1 h2
-    <;> rw [Fin.lt_def] at h1 h2
-  · simp only [Fin.coe_castSucc, Fin.coe_cast, Fin.coe_castAdd]
-  · simp_all only [Fin.coe_castSucc, Fin.coe_cast, Fin.coe_castAdd, not_true_eq_false]
-  · simp_all only [Fin.coe_castSucc, Fin.coe_cast, Fin.coe_castAdd, not_lt, Fin.val_succ,
-    add_right_eq_self, one_ne_zero]
-    omega
-  · simp only [Fin.val_succ, Fin.coe_cast, Fin.coe_castAdd]
+  any_goals rfl
+  all_goals
+    rename_i h1 h2
+    rw [Fin.lt_def] at h1 h2
+    simp_all
 
 lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.castAdd n1 x)) =
@@ -539,6 +536,7 @@ lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
 
 end ContrPair
 
+/-- Contraction in the LHS of a product can be moved out of that product. -/
 theorem contr_prod {n n1 : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n1 → S.C} {i : Fin n.succ.succ}
     {j : Fin n.succ} (hij : c (i.succAbove j) = S.τ (c i))
     (t : TensorTree S c) (t1 : TensorTree S c1) :
@@ -549,6 +547,7 @@ theorem contr_prod {n n1 : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n1 → S
     (perm (OverColor.equivToIso ContrPair.leftContrEquivSuccSucc).hom (prod t t1)))).tensor) :=
   (ContrPair.mk i j hij).contr_prod t t1
 
+/-- Contraction in the RHS of a product can be moved out of that product. -/
 theorem prod_contr {n n1 : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n1 → S.C} {i : Fin n.succ.succ}
     {j : Fin n.succ} (hij : c (i.succAbove j) = S.τ (c i))
     (t1 : TensorTree S c1) (t : TensorTree S c) :
