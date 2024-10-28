@@ -39,13 +39,17 @@ def leftContrEquivSuccSucc : Fin (n.succ.succ + n1) ≃ Fin ((n + n1).succ.succ)
 def leftContrEquivSucc : Fin (n.succ + n1) ≃ Fin ((n + n1).succ) :=
   (Fin.castOrderIso (by omega)).toEquiv
 
+/-- The new fst index of a contraction obtained on moving a contraction in the LHS of a product
+  through the product. -/
 def leftContrI (n1 : ℕ) : Fin ((n + n1).succ.succ) := leftContrEquivSuccSucc <| Fin.castAdd n1 q.i
 
+/-- The new snd index of a contraction obtained on moving a contraction in the LHS of a product
+  through the product. -/
 def leftContrJ (n1 : ℕ) : Fin ((n + n1).succ) := leftContrEquivSucc <| Fin.castAdd n1 q.j
 
 @[simp]
 lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContrJ n1)
-      = leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove q.j)) := by
+    = leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove q.j)) := by
   rw [leftContrI, leftContrJ]
   rw [Fin.ext_iff]
   simp only [Fin.succAbove, Nat.succ_eq_add_one, leftContrEquivSucc, RelIso.coe_fn_toEquiv,
@@ -64,7 +68,8 @@ lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.castAdd n1 x)) =
     leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove (q.j.succAbove x))) := by
   rw [Fin.ext_iff]
-  simp [leftContrI, leftContrJ, leftContrEquivSuccSucc, Fin.succAbove]
+  simp only [Fin.succAbove, leftContrJ, Nat.succ_eq_add_one, leftContrI, leftContrEquivSuccSucc,
+    RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast, Fin.coe_castAdd]
   split_ifs <;> rename_i h1 h2 h3 h4
     <;> rw [Fin.lt_def] at h1 h2 h3 h4
     <;> simp_all [leftContrEquivSucc]
@@ -74,12 +79,15 @@ lemma succAbove_leftContrJ_leftContrI_natAdd (x : Fin n1) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.natAdd n x)) =
     leftContrEquivSuccSucc (Fin.natAdd n.succ.succ x) := by
   rw [Fin.ext_iff]
-  simp [leftContrI, leftContrJ, leftContrEquivSuccSucc, Fin.succAbove]
+  simp only [Fin.succAbove, leftContrJ, Nat.succ_eq_add_one, leftContrI, leftContrEquivSuccSucc,
+    RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast, Fin.coe_natAdd]
   split_ifs <;> rename_i h1 h2
     <;> rw [Fin.lt_def] at h1 h2
     <;> simp_all [leftContrEquivSucc]
     <;> omega
 
+/-- The pair of contraction indices obtained on moving a contraction in the LHS of a product
+  through the product. -/
 def leftContr : ContrPair ((Sum.elim c c1 ∘ (@finSumFinEquiv n.succ.succ n1).symm.toFun) ∘
     leftContrEquivSuccSucc.symm) where
   i := q.leftContrI n1
@@ -114,11 +122,10 @@ lemma leftContr_map_eq : ((Sum.elim c (OverColor.mk c1).hom ∘ finSumFinEquiv.s
       Sum.elim_inr]
 
 lemma sum_inl_succAbove_leftContrI_leftContrJ (k : Fin n) : finSumFinEquiv.symm
-  (leftContrEquivSuccSucc.symm
-      ((q.leftContr (c1 := c1)).i.succAbove
-        ((q.leftContr (c1 := c1)).j.succAbove
-          (
-            (finSumFinEquiv (Sum.inl k)))))) =
+    (leftContrEquivSuccSucc.symm
+    ((q.leftContr (c1 := c1)).i.succAbove
+    ((q.leftContr (c1 := c1)).j.succAbove
+    ((finSumFinEquiv (Sum.inl k)))))) =
   Sum.map (q.i.succAbove ∘ q.j.succAbove) id (Sum.inl k) := by
   simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
     Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
@@ -126,12 +133,9 @@ lemma sum_inl_succAbove_leftContrI_leftContrJ (k : Fin n) : finSumFinEquiv.symm
   simp
 
 lemma sum_inr_succAbove_leftContrI_leftContrJ (k : Fin n1) : finSumFinEquiv.symm
-    (leftContrEquivSuccSucc.symm
-      ((q.leftContr (c1 := c1)).i.succAbove
-        ((q.leftContr (c1 := c1)).j.succAbove
-          (
-            (finSumFinEquiv (Sum.inr k)))))) =
-  Sum.map (q.i.succAbove ∘ q.j.succAbove) id (Sum.inr k) := by
+    (leftContrEquivSuccSucc.symm ((q.leftContr (c1 := c1)).i.succAbove
+    ((q.leftContr (c1 := c1)).j.succAbove ((finSumFinEquiv (Sum.inr k)))))) =
+    Sum.map (q.i.succAbove ∘ q.j.succAbove) id (Sum.inr k) := by
   simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
     Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
   erw [succAbove_leftContrJ_leftContrI_natAdd]
@@ -144,7 +148,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     (S.F.map (equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)) (OverColor.mk c1)).hom
     ((q.contrMap.hom (PiTensorProduct.tprod S.k p)) ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q'))
-    = (S.F.map (mkIso (by simpa using leftContr_map_eq q)).hom).hom
+    = (S.F.map (mkIso (by exact leftContr_map_eq q)).hom).hom
     (q.leftContr.contrMap.hom
     ((S.F.map (equivToIso (@leftContrEquivSuccSucc n n1)).hom).hom
     ((S.F.map (equivToIso finSumFinEquiv).hom).hom
@@ -163,9 +167,8 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
   conv_rhs => rw [lift.map_tprod]
   change _ = ((lift.obj S.FDiscrete).map (mkIso _).hom).hom
     (q.leftContr.contrMap.hom
-      (((lift.obj S.FDiscrete).map (equivToIso leftContrEquivSuccSucc).hom).hom
-        (
-          ((PiTensorProduct.tprod S.k) _))))
+    (((lift.obj S.FDiscrete).map (equivToIso leftContrEquivSuccSucc).hom).hom
+    (((PiTensorProduct.tprod S.k) _))))
   conv_rhs => rw [lift.map_tprod]
   change _ = ((lift.obj S.FDiscrete).map (mkIso _).hom).hom
     (q.leftContr.contrMap.hom
@@ -298,13 +301,17 @@ lemma contr_prod
 
 -/
 
+/-- The new fst index of a contraction obtained on moving a contraction in the RHS of a product
+  through the product. -/
 def rightContrI (n1 : ℕ) : Fin ((n1 + n).succ.succ) := Fin.natAdd n1 q.i
 
+/-- The new snd index of a contraction obtained on moving a contraction in the RHS of a product
+  through the product. -/
 def rightContrJ (n1 : ℕ) : Fin ((n1 + n).succ) := Fin.natAdd n1 q.j
 
 @[simp]
 lemma rightContrJ_succAbove_rightContrI : (q.rightContrI n1).succAbove (q.rightContrJ n1)
-      = (Fin.natAdd n1 (q.i.succAbove q.j)) := by
+    = (Fin.natAdd n1 (q.i.succAbove q.j)) := by
   rw [rightContrI, rightContrJ]
   rw [Fin.ext_iff]
   simp only [Fin.succAbove, Nat.succ_eq_add_one, Fin.coe_natAdd]
@@ -323,7 +330,7 @@ lemma succAbove_rightContrJ_rightContrI_castAdd (x : Fin n1) :
     (q.rightContrI n1).succAbove ((q.rightContrJ n1).succAbove (Fin.castAdd n x)) =
     (Fin.castAdd n.succ.succ x) := by
   rw [Fin.ext_iff]
-  simp [rightContrI, rightContrJ, Fin.succAbove]
+  simp only [Fin.succAbove, rightContrJ, Nat.succ_eq_add_one, rightContrI, Fin.coe_castAdd]
   split_ifs <;> rename_i h1 h2
     <;> rw [Fin.lt_def] at h1 h2
     <;> simp_all
@@ -333,12 +340,14 @@ lemma succAbove_rightContrJ_rightContrI_natAdd (x : Fin n) :
     (q.rightContrI n1).succAbove ((q.rightContrJ n1).succAbove (Fin.natAdd n1 x)) =
     (Fin.natAdd n1 ((q.i.succAbove) (q.j.succAbove x))) := by
   rw [Fin.ext_iff]
-  simp [rightContrI, rightContrJ, Fin.succAbove]
+  simp only [Fin.succAbove, rightContrJ, Nat.succ_eq_add_one, rightContrI, Fin.coe_natAdd]
   split_ifs <;> rename_i h1 h2 h3 h4
     <;> rw [Fin.lt_def] at h1 h2 h3 h4
     <;> simp_all
     <;> omega
 
+/-- The new pair of indices obtained on moving a contraction in the RHS of a product
+  through the product. -/
 def rightContr : ContrPair ((Sum.elim c1 c ∘ (@finSumFinEquiv n1 n.succ.succ).symm.toFun)) where
   i := q.rightContrI n1
   j := q.rightContrJ n1
@@ -394,7 +403,7 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
     (S.F.map (equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ (OverColor.mk c1) (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove))).hom
     ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (q.contrMap.hom (PiTensorProduct.tprod S.k q')))) =
-    (S.F.map (mkIso (by simpa using (rightContr_map_eq q))).hom).hom
+    (S.F.map (mkIso (by exact (rightContr_map_eq q))).hom).hom
     (q.rightContr.contrMap.hom
     (((S.F.map (equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ (OverColor.mk c1) (OverColor.mk c)).hom
@@ -428,7 +437,8 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
     · simp only [Nat.add_eq, rightContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, rightContrI,
       finSumFinEquiv_symm_apply_natAdd, Sum.elim_inr]
     · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply]
-      simp
+      simp only [Nat.add_eq, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, equivToIso_homToEquiv,
+        LinearEquiv.coe_coe]
       have hL (a : Fin n.succ.succ) {b : Fin n1 ⊕ Fin n.succ.succ}
           (h : b = Sum.inr a) : q' a = (S.FDiscrete.map (Discrete.eqToHom (by rw [h]; simp))).hom
           ((lift.discreteSumEquiv S.FDiscrete b)
@@ -446,7 +456,7 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
       change _ = (S.FDiscrete.map (Discrete.eqToHom _) ≫
         S.FDiscrete.map (Discrete.eqToHom _)).hom _
       rw [← S.FDiscrete.map_comp]
-      simp
+      simp only [Nat.add_eq, eqToHom_trans]
       have h1 {a d : Fin n.succ.succ} {b : Fin n1 ⊕ Fin (n + 1 + 1) }
           (h1' : b = Sum.inr a) (h2' : c a = S.τ (c d)) :
           (S.FDiscrete.map (Discrete.eqToHom h2')).hom (q' a) =
@@ -535,8 +545,8 @@ theorem contr_prod {n n1 : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n1 → S
     (prod (contr i j hij t) t1).tensor =
     ((perm (OverColor.mkIso (ContrPair.mk i j hij).leftContr_map_eq).hom
     (contr ((ContrPair.mk i j hij).leftContrI n1) ((ContrPair.mk i j hij).leftContrJ n1)
-    (ContrPair.mk i j hij).leftContr.h (
-    perm (OverColor.equivToIso ContrPair.leftContrEquivSuccSucc).hom (prod t t1)))).tensor) :=
+    (ContrPair.mk i j hij).leftContr.h
+    (perm (OverColor.equivToIso ContrPair.leftContrEquivSuccSucc).hom (prod t t1)))).tensor) :=
   (ContrPair.mk i j hij).contr_prod t t1
 
 theorem prod_contr {n n1 : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n1 → S.C} {i : Fin n.succ.succ}
