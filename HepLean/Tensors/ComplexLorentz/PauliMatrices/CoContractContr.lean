@@ -517,8 +517,7 @@ lemma pauliCo_contr_pauliContr_expand :
 
 /-- The statement that `η_{μν} σ^{μ α dot β} σ^{ν α' dot β'} = 2 ε^{αα'} ε^{dot β dot β'}`. -/
 theorem pauliCo_contr_pauliContr :
-    {pauliCo | ν α β ⊗ pauliContr | ν α' β' =
-    2 •ₜ Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ := by
+    {pauliCo | ν α β ⊗ pauliContr | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀ := by
   rw [pauliCo_contr_pauliContr_expand]
   rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_mul_rightMetric_tree]
   rw [perm_smul]

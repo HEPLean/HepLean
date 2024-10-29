@@ -100,65 +100,6 @@ lemma antiSymm_add_self {A : (Lorentz.complexContr ⊗ Lorentz.complexContr).V}
   apply TensorTree.add_tensor_eq_snd
   rw [neg_tensor_eq hA, neg_tensor_eq (neg_perm _ _), neg_neg]
 
-/-!
-
-## The contraction of Pauli matrices with Pauli matrices
-
-And related results.
-
--/
-
-/-- The map to color one gets when multiplying left and right metrics. -/
-def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL] ![Color.upR, Color.upR]) ∘
-  finSumFinEquiv.symm
-
-lemma leftMetric_mul_rightMetric : {Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ.tensor
-    = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
-    - basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
-    - basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
-    + basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
-  rw [prod_tensor_eq_fst (leftMetric_expand_tree)]
-  rw [prod_tensor_eq_snd (rightMetric_expand_tree)]
-  rw [prod_add_both]
-  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_prod _ _ _]
-  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_tensor_eq <| prod_smul _ _ _]
-  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_smul _ _ _]
-  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| smul_eq_one _ _ (by simp)]
-  rw [add_tensor_eq_fst <| add_tensor_eq_snd <| smul_prod _ _ _]
-  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| prod_smul _ _ _]
-  rw [add_tensor_eq_fst <| add_tensor_eq_fst <| prod_basisVector_tree _ _]
-  rw [add_tensor_eq_fst <| add_tensor_eq_snd <| smul_tensor_eq <| prod_basisVector_tree _ _]
-  rw [add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| prod_basisVector_tree _ _]
-  rw [add_tensor_eq_snd <| add_tensor_eq_snd <| prod_basisVector_tree _ _]
-  rw [← add_assoc]
-  simp only [add_tensor, smul_tensor, tensorNode_tensor]
-  change _ = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
-    +- basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
-    +- basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
-    + basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0)
-  congr 1
-  congr 1
-  congr 1
-  all_goals
-    congr
-    funext x
-    fin_cases x <;> rfl
-
-lemma leftMetric_mul_rightMetric_tree :
-    {Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ.tensor
-    = (TensorTree.add (tensorNode
-        (basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1))) <|
-      TensorTree.add (TensorTree.smul (-1 : ℂ) (tensorNode
-        (basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)))) <|
-      TensorTree.add (TensorTree.smul (-1 : ℂ) (tensorNode
-        (basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)))) <|
-      (tensorNode
-        (basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0)))).tensor := by
-  rw [leftMetric_mul_rightMetric]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, add_tensor, tensorNode_tensor,
-    smul_tensor, neg_smul, one_smul]
-  rfl
-
 end complexLorentzTensor
 
 end
