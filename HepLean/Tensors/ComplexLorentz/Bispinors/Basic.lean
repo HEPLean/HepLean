@@ -76,7 +76,7 @@ lemma tensorNode_contrBispinorDown (p : complexContr) :
   rw [contrBispinorDown, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `coBispinorUp`. -/
-lemma tensorNode_coBispinorUp  (p : complexCo) :
+lemma tensorNode_coBispinorUp (p : complexCo) :
     {coBispinorUp p | α β}ᵀ.tensor = {pauliContr | μ α β ⊗ p | μ}ᵀ.tensor := by
   rw [coBispinorUp, tensorNode_tensor]
 
@@ -94,23 +94,26 @@ lemma tensorNode_coBispinorDown (p : complexCo) :
 -/
 
 lemma contrBispinorDown_expand (p : complexContr) :
-    {contrBispinorDown p | α β}ᵀ.tensor = {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
+    {contrBispinorDown p | α β}ᵀ.tensor =
+    {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
     (pauliCo | μ α β ⊗ p | μ)}ᵀ.tensor := by
   rw [tensorNode_contrBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_contrBispinorUp p]
 
 lemma coBispinorDown_expand (p : complexCo) :
-    {coBispinorDown p | α β}ᵀ.tensor = {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
+    {coBispinorDown p | α β}ᵀ.tensor =
+    {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
     (pauliContr | μ α β ⊗ p | μ)}ᵀ.tensor := by
   rw [tensorNode_coBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_coBispinorUp p]
 
 set_option maxRecDepth 5000 in
 lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
-    {contrBispinorDown p | α β = pauliCoDown | μ α β ⊗ p | μ}ᵀ  := by
+    {contrBispinorDown p | α β = pauliCoDown | μ α β ⊗ p | μ}ᵀ := by
   conv =>
     rhs
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| pauliCoDown_eq_metric_mul_pauliCo]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <|
+      pauliCoDown_eq_metric_mul_pauliCo]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
@@ -118,12 +121,14 @@ lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
     apply (perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _).trans
-    rw [perm_tensor_eq <| contr_tensor_eq <|  contr_tensor_eq <| contr_prod _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_prod _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
-    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_assoc' _ _ _ _ _ _]
+    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <|
+      perm_eq_id _ rfl _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <|
+      prod_assoc' _ _ _ _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_contr_congr 0 4]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
@@ -144,10 +149,11 @@ lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
 
 set_option maxRecDepth 5000 in
 lemma coBispinorDown_eq_pauliContrDown_contr (p : complexCo) :
-    {coBispinorDown p | α β = pauliContrDown | μ α β ⊗ p | μ}ᵀ  := by
+    {coBispinorDown p | α β = pauliContrDown | μ α β ⊗ p | μ}ᵀs := by
   conv =>
     rhs
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| pauliContrDown_eq_metric_mul_pauliContr]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <|
+      pauliContrDown_eq_metric_mul_pauliContr]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
@@ -155,12 +161,14 @@ lemma coBispinorDown_eq_pauliContrDown_contr (p : complexCo) :
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
     apply (perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _).trans
-    rw [perm_tensor_eq <| contr_tensor_eq <|  contr_tensor_eq <| contr_prod _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_prod _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]
     rw [perm_perm]
-    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_assoc' _ _ _ _ _ _]
+    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <|
+      perm_eq_id _ rfl _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <|
+      prod_assoc' _ _ _ _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_contr_congr 0 4]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
     rw [perm_tensor_eq <| perm_contr_congr 2 2]

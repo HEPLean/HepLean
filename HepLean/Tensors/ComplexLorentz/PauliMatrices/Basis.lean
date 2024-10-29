@@ -26,7 +26,6 @@ noncomputable section
 namespace complexLorentzTensor
 open Fermion
 
-
 /-!
 
 ## Expanding pauliContr in a basis.
@@ -93,7 +92,6 @@ lemma pauliContr_basis_expand_tree : {pauliContr | μ α β}ᵀ.tensor =
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, add_tensor, tensorNode_tensor,
     smul_tensor, neg_smul, one_smul]
   rfl
-
 
 /-- The map to colors one gets when contracting with Pauli matrices on the right. -/
 abbrev pauliMatrixContrMap {n : ℕ} (c : Fin n → complexLorentzTensor.C) :=
@@ -325,13 +323,11 @@ lemma basis_contr_pauliMatrix_basis_tree_expand_tensor {n : ℕ} {c : Fin n → 
   simp_all only [Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
   rfl
 
-
 /-!
 
 ## Expanding pauliCo in a basis.
 
 -/
-
 
 /-- The map to color one gets when lowering the indices of pauli matrices. -/
 def pauliCoMap := ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Color.upR] ∘

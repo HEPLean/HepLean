@@ -209,17 +209,16 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.up => Lorentz.contrCoContraction_basis _ _
   | Color.down => Lorentz.coContrContraction_basis _ _
 
-instance  {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     DecidableEq (OverColor.mk c).left := instDecidableEqFin n
 
-instance  {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 
 instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
-
 
 end complexLorentzTensor
 end

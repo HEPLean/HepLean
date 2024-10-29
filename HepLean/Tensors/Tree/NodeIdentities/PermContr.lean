@@ -264,8 +264,8 @@ lemma perm_contr_congr_mkIso_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : 
     {i' : Fin n.succ.succ} {j' : Fin n.succ}
     (hi : i' = ((Hom.toEquiv σ).symm i))
     (hj : j' = (((Hom.toEquiv (extractOne i σ))).symm j)) :
-    c ∘ i'.succAbove ∘ j'.succAbove =
-    c ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘ Fin.succAbove ((Hom.toEquiv (extractOne i σ)).symm j) := by
+    c ∘ i'.succAbove ∘ j'.succAbove = c ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘
+    Fin.succAbove ((Hom.toEquiv (extractOne i σ)).symm j) := by
   rw [hi, hj]
 
 lemma perm_contr_congr_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}

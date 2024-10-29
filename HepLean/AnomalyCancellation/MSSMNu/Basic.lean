@@ -275,8 +275,8 @@ lemma accYY_ext {S T : MSSMCharges.Charges}
 
 /-- The symmetric bilinear function used to define the quadratic ACC. -/
 @[simps!]
-def quadBiLin : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂ (
-  fun (S, T) => ∑ i, (Q S i * Q T i + (- 2) * (U S i * U T i) +
+def quadBiLin : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂
+  (fun (S, T) => ∑ i, (Q S i * Q T i + (- 2) * (U S i * U T i) +
     D S i * D T i + (- 1) * (L S i * L T i) + E S i * E T i) +
     (- Hd S * Hd T + Hu S * Hu T))
   (by

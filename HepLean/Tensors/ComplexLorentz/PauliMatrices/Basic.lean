@@ -63,7 +63,7 @@ lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀ.tensor =
   rfl
 
 /-- The definitional tensor node relation for `pauliCo`. -/
-lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor  =
+lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor =
     {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
   rfl
 
@@ -111,7 +111,7 @@ lemma pauliCoDown_eq_metric_mul_pauliCo :
     rw [perm_perm]
     rw [perm_tensor_eq <| contr_congr 1 2]
     rw [perm_perm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_comm  _ _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_comm _ _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| contr_congr 5 0]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
@@ -138,7 +138,7 @@ lemma pauliCoDown_eq_metric_mul_pauliCo :
 set_option maxRecDepth 5000 in
 /-- A rearanging of `pauliContrDown` to place the pauli matrices on the right. -/
 lemma pauliContrDown_eq_metric_mul_pauliContr :
-   {pauliContrDown | μ α' β' = Fermion.altLeftMetric | α α' ⊗
+    {pauliContrDown | μ α' β' = Fermion.altLeftMetric | α α' ⊗
     Fermion.altRightMetric | β β' ⊗ pauliContr | μ α β}ᵀ := by
   conv =>
     lhs
@@ -161,7 +161,7 @@ lemma pauliContrDown_eq_metric_mul_pauliContr :
     rw [perm_perm]
     rw [perm_tensor_eq <| contr_congr 1 2]
     rw [perm_perm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_comm  _ _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_comm _ _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| contr_congr 5 0]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]

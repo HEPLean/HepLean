@@ -116,15 +116,16 @@ lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp only [Iso.map_hom_inv_id, Action.id_hom, ModuleCat.id_apply]
 
 lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    (σ : (OverColor.mk c) ⟶  (OverColor.mk c1))
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1))
     {t : TensorTree S c} {t2 : TensorTree S c1} :
     (perm σ t).tensor = t2.tensor ↔ t.tensor =
     (perm (equivToHomEq (Hom.toEquiv σ).symm (fun x => Hom.toEquiv_comp_apply σ x)) t2).tensor := by
-  refine Iff.intro (fun h => ?_)  (fun h => ?_)
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
   · simp [perm_tensor, ← h]
     change _ = (S.F.map _ ≫ S.F.map _).hom _
     rw [← S.F.map_comp]
-    have h1 : (σ ≫ equivToHomEq (Hom.toEquiv σ).symm (fun x => Hom.toEquiv_comp_apply σ x)) = 𝟙 _ := by
+    have h1 : (σ ≫ equivToHomEq (Hom.toEquiv σ).symm
+        (fun x => Hom.toEquiv_comp_apply σ x)) = 𝟙 _ := by
       apply Hom.ext
       ext x
       change (Hom.toEquiv σ).symm ((Hom.toEquiv σ) x) = x
@@ -134,7 +135,8 @@ lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   · rw [perm_tensor, h]
     change (S.F.map _ ≫ S.F.map _).hom _ = _
     rw [← S.F.map_comp]
-    have h1 : (equivToHomEq (Hom.toEquiv σ).symm (fun x => Hom.toEquiv_comp_apply σ x) ≫ σ) = 𝟙 _ := by
+    have h1 : (equivToHomEq (Hom.toEquiv σ).symm
+        (fun x => Hom.toEquiv_comp_apply σ x) ≫ σ) = 𝟙 _ := by
       apply Hom.ext
       ext x
       change (Hom.toEquiv σ) ((Hom.toEquiv σ).symm x) = x

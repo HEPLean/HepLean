@@ -206,8 +206,8 @@ lemma lineCube_quad (R : MSSMACC.AnomalyFreePerp) (a₁ a₂ a₃ : ℚ) :
 section proj
 
 lemma α₃_proj (T : MSSMACC.Sols) : α₃ (proj T.1.1) =
-    6 * dot Y₃.val B₃.val ^ 3 * (
-    cubeTriLin T.val T.val Y₃.val * quadBiLin B₃.val T.val -
+    6 * dot Y₃.val B₃.val ^ 3 *
+    (cubeTriLin T.val T.val Y₃.val * quadBiLin B₃.val T.val -
     cubeTriLin T.val T.val B₃.val * quadBiLin Y₃.val T.val) := by
   rw [α₃]
   rw [cube_proj_proj_Y₃, cube_proj_proj_B₃, quad_B₃_proj, quad_Y₃_proj]

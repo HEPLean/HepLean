@@ -285,15 +285,13 @@ def contrContrPerm {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.
     {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
     (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) =
     S.τ ((c ∘ i.succAbove ∘ j.succAbove) k)) :
-    OverColor.mk
-    ((c ∘
-        (ContrQuartet.mk i j k l hij hkl).swapI.succAbove ∘
-         (ContrQuartet.mk i j k l hij hkl).swapJ.succAbove) ∘
+    OverColor.mk ((c ∘ (ContrQuartet.mk i j k l hij hkl).swapI.succAbove ∘
+      (ContrQuartet.mk i j k l hij hkl).swapJ.succAbove) ∘
       (ContrQuartet.mk i j k l hij hkl).swapK.succAbove ∘
-        (ContrQuartet.mk i j k l hij hkl).swapL.succAbove) ⟶
-  OverColor.mk
-    ((c ∘ i.succAbove ∘ j.succAbove) ∘ k.succAbove ∘ l.succAbove)
-         := (ContrQuartet.mk i j k l hij hkl).contrSwapHom
+      (ContrQuartet.mk i j k l hij hkl).swapL.succAbove) ⟶
+    OverColor.mk
+      ((c ∘ i.succAbove ∘ j.succAbove) ∘ k.succAbove ∘ l.succAbove) :=
+  (ContrQuartet.mk i j k l hij hkl).contrSwapHom
 
 /-- Contraction nodes commute on adjusting indices. -/
 theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
