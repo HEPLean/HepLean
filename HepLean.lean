@@ -111,6 +111,9 @@ import HepLean.Tensors.ComplexLorentz.Basic
 import HepLean.Tensors.ComplexLorentz.Basis
 import HepLean.Tensors.ComplexLorentz.Bispinors.Basic
 import HepLean.Tensors.ComplexLorentz.Lemmas
+import HepLean.Tensors.ComplexLorentz.Metrics.Basic
+import HepLean.Tensors.ComplexLorentz.Metrics.Basis
+import HepLean.Tensors.ComplexLorentz.Metrics.Lemmas
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basic
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basis
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.CoContractContr

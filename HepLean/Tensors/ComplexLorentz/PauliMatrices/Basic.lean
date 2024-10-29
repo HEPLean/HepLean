@@ -10,6 +10,7 @@ import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.Congr
+import HepLean.Tensors.ComplexLorentz.Metrics.Lemmas
 /-!
 
 ## Pauli matrices as complex Lorentz tensors
@@ -41,15 +42,13 @@ open Fermion
 def pauliContr := {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
-def pauliCo := {Lorentz.coMetric | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor
+def pauliCo := {η' | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ_α_{dot β}`. -/
-def pauliCoDown := {pauliCo | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
-  Fermion.altRightMetric | β β'}ᵀ.tensor
+def pauliCoDown := {pauliCo | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ^μ_α_{dot β}`. -/
-def pauliContrDown := {pauliContr | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
-  Fermion.altRightMetric | β β'}ᵀ.tensor
+def pauliContrDown := {pauliContr | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor
 
 /-!
 
@@ -64,19 +63,17 @@ lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀ.tensor =
 
 /-- The definitional tensor node relation for `pauliCo`. -/
 lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor =
-    {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
+    {η' | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
   rfl
 
 /-- The definitional tensor node relation for `pauliCoDown`. -/
 lemma tensorNode_pauliCoDown : {pauliCoDown | μ α β}ᵀ.tensor =
-    {pauliCo | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β'}ᵀ.tensor := by
+    {pauliCo | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor := by
   rfl
 
 /-- The definitional tensor node relation for `pauliContrDown`. -/
 lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
-    {pauliContr | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β'}ᵀ.tensor := by
+    {pauliContr | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor := by
   rfl
 
 /-!
@@ -88,8 +85,7 @@ lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
 set_option maxRecDepth 5000 in
 /-- A rearanging of `pauliCoDown` to place the pauli matrices on the right. -/
 lemma pauliCoDown_eq_metric_mul_pauliCo :
-    {pauliCoDown | μ α' β' = Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β' ⊗ pauliCo | μ α β}ᵀ := by
+    {pauliCoDown | μ α' β' = εL' | α α' ⊗ εR' | β β' ⊗ pauliCo | μ α β}ᵀ := by
   conv =>
     lhs
     rw [tensorNode_pauliCoDown]
@@ -138,8 +134,8 @@ lemma pauliCoDown_eq_metric_mul_pauliCo :
 set_option maxRecDepth 5000 in
 /-- A rearanging of `pauliContrDown` to place the pauli matrices on the right. -/
 lemma pauliContrDown_eq_metric_mul_pauliContr :
-    {pauliContrDown | μ α' β' = Fermion.altLeftMetric | α α' ⊗
-    Fermion.altRightMetric | β β' ⊗ pauliContr | μ α β}ᵀ := by
+    {pauliContrDown | μ α' β' = εL' | α α' ⊗
+    εR' | β β' ⊗ pauliContr | μ α β}ᵀ := by
   conv =>
     lhs
     rw [tensorNode_pauliContrDown]
@@ -224,7 +220,7 @@ lemma action_pauliCoDown (g : SL(2,ℂ)) : {g •ₐ pauliCoDown | μ α β}ᵀ.
       action_pauliCo _]
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
       action_constTwoNode _ _]
-    rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
+    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
   rfl
 
 /-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
@@ -241,7 +237,7 @@ lemma action_pauliContrDown (g : SL(2,ℂ)) : {g •ₐ pauliContrDown | μ α �
       action_pauliContr _]
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
       action_constTwoNode _ _]
-    rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
+    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
   rfl
 
 end complexLorentzTensor
