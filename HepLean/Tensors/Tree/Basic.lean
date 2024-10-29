@@ -543,9 +543,13 @@ inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Ty
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
   /-- The negative of a node. -/
   | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
+  /-- The contraction of indices. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+  /-- The group action on a tensor. -/
+  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
+  /-- The evaluation of an index-/
   | eval {n : ℕ} {c : Fin n.succ → S.C} :
     (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
@@ -642,6 +646,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
   | prod t1 t2 => t1.size + t2.size + 1
   | contr _ _ _ t => t.size + 1
   | eval _ _ t => t.size + 1
+  | action _ t => t.size + 1
 
 noncomputable section
 
@@ -657,6 +662,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor
+  | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
 
 /-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
 def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
@@ -707,6 +713,10 @@ lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) 
 
 lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
     (smul a T).tensor = a • T.tensor:= rfl
+
+lemma action_tensor {c : Fin n → S.C} (g : S.G) (T : TensorTree S c) :
+    (action g T).tensor = (S.F.obj (OverColor.mk c)).ρ g T.tensor := rfl
+
 /-!
 
 ## Equality of tensors and rewrites.
@@ -768,6 +778,11 @@ lemma neg_tensor_eq {T1 T2 : TensorTree S c} (h : T1.tensor = T2.tensor) :
 lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tensor) :
     (smul a T1).tensor = (smul a T2).tensor := by
   simp only [smul_tensor]
+  rw [h]
+
+lemma action_tensor_eq {T1 T2 : TensorTree S c} {g : S.G} (h : T1.tensor = T2.tensor) :
+    (action g T1).tensor = (action g T2).tensor := by
+  simp only [action_tensor]
   rw [h]
 
 lemma smul_mul_eq {T1 : TensorTree S c} {a b : S.k} (h : a = b) :

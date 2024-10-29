@@ -111,6 +111,9 @@ syntax "(" tensorExpr ")" : tensorExpr
 /-- Scalar multiplication for tensors. -/
 syntax term "•ₜ" tensorExpr : tensorExpr
 
+/-- group action for tensors. -/
+syntax term "•ₐ" tensorExpr : tensorExpr
+
 /-- Negation of a tensor tree. -/
 syntax "-" tensorExpr : tensorExpr
 
@@ -440,6 +443,14 @@ def smulSyntax (c T : Term) : Term :=
 
 end SMul
 
+namespace Action
+
+/-- The syntax associated with the group action of tensors. -/
+def actionSyntax (c T : Term) : Term :=
+  Syntax.mkApp (mkIdent ``TensorTree.action) #[c, T]
+
+end Action
+
 namespace Add
 
 /-- Gets the indices associated with the LHS of an addition. -/
@@ -522,6 +533,8 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
       return negNode.negSyntax (← syntaxFull a)
   | `(tensorExpr| $c:term •ₜ $a:tensorExpr) => do
       return SMul.smulSyntax c (← syntaxFull a)
+  | `(tensorExpr| $c:term •ₐ $a:tensorExpr) => do
+      return Action.actionSyntax c (← syntaxFull a)
   | `(tensorExpr| $a + $b) => do
       let indicesLeft ← Add.getIndicesLeft stx
       let indicesRight ← Add.getIndicesRight stx
