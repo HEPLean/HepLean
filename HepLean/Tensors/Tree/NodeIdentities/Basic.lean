@@ -270,7 +270,9 @@ lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : S.
     (S.F.obj (OverColor.mk (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm))).ρ g)
     (((S.F.μ (OverColor.mk c) (OverColor.mk c1)).hom (t.tensor ⊗ₜ[S.k] t1.tensor)))
   erw [← (S.F.map (equivToIso finSumFinEquiv).hom).comm g]
-  simp
+  simp only [Action.forget_obj, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply]
   change _ = (S.F.map (equivToIso finSumFinEquiv).hom).hom
     (((S.F.μ (OverColor.mk c) (OverColor.mk c1)).hom ≫ (S.F.obj (OverColor.mk (Sum.elim c c1))).ρ g)
       (t.tensor ⊗ₜ[S.k] t1.tensor))
