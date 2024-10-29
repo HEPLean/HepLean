@@ -41,7 +41,7 @@ open Fermion
 def pauliContr := {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
-def pauliCo := {Lorentz.coMetric | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
+def pauliCo := {Lorentz.coMetric | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ_α_{dot β}`. -/
 def pauliCoDown := {pauliCo | μ α β ⊗ Fermion.altLeftMetric | α α' ⊗
