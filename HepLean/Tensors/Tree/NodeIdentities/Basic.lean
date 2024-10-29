@@ -244,4 +244,88 @@ lemma prod_add_both {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   rw [add_tensor_eq_fst (prod_add _ _ _)]
   rw [add_tensor_eq_snd (prod_add _ _ _)]
 
+/-!
+
+## Nodes and the group action.
+
+-/
+
+lemma smul_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (a : S.k) (t : TensorTree S c) :
+    (smul a (action g t)).tensor = (action g (smul a t)).tensor := by
+  simp only [smul_tensor, action_tensor, map_smul]
+
+lemma contr_action {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c (i.succAbove j) = S.τ (c i)} (g : S.G) (t : TensorTree S c) :
+    (contr i j h (action g t)).tensor = (action g (contr i j h t)).tensor := by
+  simp only [Nat.succ_eq_add_one, contr_tensor, action_tensor]
+  change ((S.F.obj (OverColor.mk c)).ρ g ≫ (S.contrMap c i j h).hom) t.tensor = _
+  erw [(S.contrMap c i j h).comm g]
+  rfl
+
+lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : S.G)
+    (t : TensorTree S c) (t1 : TensorTree S c1) :
+    (prod (action g t) (action g t1)).tensor = (action g (prod t t1)).tensor := by
+  simp only [prod_tensor, action_tensor, map_tmul]
+  change _ = ((S.F.map (equivToIso finSumFinEquiv).hom).hom ≫
+    (S.F.obj (OverColor.mk (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm))).ρ g)
+    (((S.F.μ (OverColor.mk c) (OverColor.mk c1)).hom (t.tensor ⊗ₜ[S.k] t1.tensor)))
+  erw [← (S.F.map (equivToIso finSumFinEquiv).hom).comm g]
+  simp
+  change _ = (S.F.map (equivToIso finSumFinEquiv).hom).hom
+    (((S.F.μ (OverColor.mk c) (OverColor.mk c1)).hom ≫ (S.F.obj (OverColor.mk (Sum.elim c c1))).ρ g)
+      (t.tensor ⊗ₜ[S.k] t1.tensor))
+  erw [← (S.F.μ (OverColor.mk c) (OverColor.mk c1)).comm g]
+  rfl
+
+lemma add_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (t t1 : TensorTree S c) :
+    (add (action g t) (action g t1)).tensor = (action g (add t t1)).tensor := by
+  simp only [add_tensor, action_tensor, map_add]
+
+lemma perm_action {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (g : S.G) (t : TensorTree S c) :
+    (perm σ (action g t)).tensor = (action g (perm σ t)).tensor := by
+  simp only [perm_tensor, action_tensor]
+  change (((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.F.map σ).hom) t.tensor = _
+  erw [(S.F.map σ).comm g]
+  rfl
+
+lemma neg_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (t : TensorTree S c) :
+    (neg (action g t)).tensor = (action g (neg t)).tensor := by
+  simp only [neg_tensor, action_tensor, map_neg]
+
+lemma action_action {n : ℕ} {c : Fin n → S.C} (g h : S.G) (t : TensorTree S c) :
+    (action g (action h t)).tensor = (action (g * h) t).tensor := by
+  simp only [action_tensor, map_mul, LinearMap.mul_apply]
+
+lemma action_id {n : ℕ} {c : Fin n → S.C} (t : TensorTree S c) :
+    (action 1 t).tensor = t.tensor := by
+  simp only [action_tensor, map_one, LinearMap.one_apply]
+
+lemma action_constTwoNode {c1 c2 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2))
+    (g : S.G) : (action g (constTwoNode v)).tensor = (constTwoNode v).tensor := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constTwoNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
+  change ((Discrete.pairIsoSep S.FDiscrete).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2])).ρ g)
+    ((v.hom _)) = _
+  erw [← (Discrete.pairIsoSep S.FDiscrete).hom.comm g]
+  change ((v.hom ≫ (S.FDiscrete.obj { as := c1 } ⊗ S.FDiscrete.obj { as := c2 }).ρ g) ≫
+    (Discrete.pairIsoSep S.FDiscrete).hom.hom) _ =_
+  erw [← v.comm g]
+  simp
+
+lemma action_constThreeNode {c1 c2 c3 : S.C}
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
+      S.FDiscrete.obj (Discrete.mk c3))
+    (g : S.G) : (action g (constThreeNode v)).tensor = (constThreeNode v).tensor := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constThreeNode_tensor,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
+  change ((Discrete.tripleIsoSep S.FDiscrete).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2, c3])).ρ g)
+    ((v.hom _)) = _
+  erw [← (Discrete.tripleIsoSep S.FDiscrete).hom.comm g]
+  change ((v.hom ≫ (S.FDiscrete.obj { as := c1 } ⊗ S.FDiscrete.obj { as := c2 } ⊗
+    S.FDiscrete.obj { as := c3 }).ρ g) ≫ (Discrete.tripleIsoSep S.FDiscrete).hom.hom) _ =_
+  erw [← v.comm g]
+  simp
+
 end TensorTree

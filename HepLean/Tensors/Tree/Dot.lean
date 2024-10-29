@@ -47,6 +47,10 @@ def dotString (m : ℕ) (nt : ℕ) : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTr
     let evalNode := " node" ++ toString m ++ " [label=\"eval\", shape=box];\n"
     let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
     evalNode ++ dotString (m + 1) nt t1 ++ edge1
+  | action g t =>
+    let actionNode := " node" ++ toString m ++ " [label=\"action\", shape=box];\n"
+    let edge1 := " node" ++ toString m ++ " -> node" ++ toString (m + 1) ++ ";\n"
+    actionNode ++ dotString (m + 1) nt t ++ edge1
   | contr i j _ t1 =>
     let contrNode := " node" ++ toString m ++ " [label=\"contr " ++ toString i ++ " "
       ++ toString j ++ "\", shape=box];\n"
