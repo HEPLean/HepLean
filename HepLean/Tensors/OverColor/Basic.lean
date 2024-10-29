@@ -45,6 +45,13 @@ variable {C : Type} {f g h : OverColor C}
 lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
   apply CategoryTheory.Iso.ext h
 
+lemma ext_iff (m n : f ⟶ g) : (∀ x, m.hom.left x = n.hom.left x) ↔ m = n := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · apply ext
+    ext x
+    exact h x
+  · rw [h]
+    exact fun x => rfl
 
 /-- Given a hom in `OverColor C` the underlying equivalence between types. -/
 def toEquiv (m : f ⟶ g) : f.left ≃ g.left where

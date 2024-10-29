@@ -92,7 +92,7 @@ lemma add_neg (t : TensorTree S c) : (add t (neg t)).tensor = 0 := by
 -/
 
 /-- Applying two permutations is the same as applying the transitive permutation. -/
-lemma perm_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C} {c2 : Fin n → S.C}
+lemma perm_perm {n n1 n2 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} {c2 : Fin n2 → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (σ2 : (OverColor.mk c1) ⟶ (OverColor.mk c2))
     (t : TensorTree S c) : (perm σ2 (perm σ t)).tensor = (perm (σ ≫ σ2) t).tensor := by
   simp [perm_tensor]

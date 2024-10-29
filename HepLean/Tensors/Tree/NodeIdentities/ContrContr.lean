@@ -281,6 +281,20 @@ lemma contr_contr (t : TensorTree S c) :
 end
 end ContrQuartet
 
+def contrContrPerm {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
+    {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
+    (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) =
+    S.τ ((c ∘ i.succAbove ∘ j.succAbove) k)) :
+    OverColor.mk
+    ((c ∘
+        (ContrQuartet.mk i j k l hij hkl).swapI.succAbove ∘
+         (ContrQuartet.mk i j k l hij hkl).swapJ.succAbove) ∘
+      (ContrQuartet.mk i j k l hij hkl).swapK.succAbove ∘
+        (ContrQuartet.mk i j k l hij hkl).swapL.succAbove) ⟶
+  OverColor.mk
+    ((c ∘ i.succAbove ∘ j.succAbove) ∘ k.succAbove ∘ l.succAbove)
+         := (ContrQuartet.mk i j k l hij hkl).contrSwapHom
+
 /-- Contraction nodes commute on adjusting indices. -/
 theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
     {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
@@ -288,7 +302,7 @@ theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n
     S.τ ((c ∘ i.succAbove ∘ j.succAbove) k))
     (t : TensorTree S c) :
     (contr k l hkl (contr i j hij t)).tensor =
-    (perm (ContrQuartet.mk i j k l hij hkl).contrSwapHom
+    (perm (contrContrPerm hij hkl)
     (contr (ContrQuartet.mk i j k l hij hkl).swapK (ContrQuartet.mk i j k l hij hkl).swapL
     (ContrQuartet.mk i j k l hij hkl).swap.hkl (contr (ContrQuartet.mk i j k l hij hkl).swapI
     (ContrQuartet.mk i j k l hij hkl).swapJ
