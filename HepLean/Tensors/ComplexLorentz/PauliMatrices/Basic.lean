@@ -135,5 +135,54 @@ lemma pauliCoDown_eq_metric_mul_pauliCo :
   apply perm_congr _ rfl
   decide
 
+set_option maxRecDepth 5000 in
+/-- A rearanging of `pauliContrDown` to place the pauli matrices on the right. -/
+lemma pauliContrDown_eq_metric_mul_pauliContr :
+   {pauliContrDown | μ α' β' = Fermion.altLeftMetric | α α' ⊗
+    Fermion.altRightMetric | β β' ⊗ pauliContr | μ α β}ᵀ := by
+  conv =>
+    lhs
+    rw [tensorNode_pauliContrDown]
+    rw [contr_tensor_eq <| contr_prod _ _ _]
+    rw [perm_contr]
+    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _]
+    rw [perm_tensor_eq <| contr_congr 1 2]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_congr 1 2]
+    rw [perm_tensor_eq <| perm_contr _ _]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_congr 1 2]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_assoc' _ _ _ _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| contr_congr 1 2]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
+    rw [perm_tensor_eq <| perm_contr _ _]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_congr 1 2]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_comm  _ _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| contr_congr 5 0]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
+    rw [perm_tensor_eq <| perm_contr _ _]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_congr 4 1]
+    rw [perm_perm]
+  conv =>
+    rhs
+    rw [perm_tensor_eq <| contr_swap _ _]
+    rw [perm_perm]
+    erw [perm_tensor_eq <| contr_congr 4 1]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_swap _ _]
+    erw [perm_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| contr_congr 5 0]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
+    rw [perm_tensor_eq <| perm_contr _ _]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_congr 4 1]
+    rw [perm_perm]
+  apply perm_congr _ rfl
+  decide
 
 end complexLorentzTensor

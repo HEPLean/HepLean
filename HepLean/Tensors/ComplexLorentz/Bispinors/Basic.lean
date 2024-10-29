@@ -99,6 +99,12 @@ lemma contrBispinorDown_expand (p : complexContr) :
   rw [tensorNode_contrBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_contrBispinorUp p]
 
+lemma coBispinorDown_expand (p : complexCo) :
+    {coBispinorDown p | α β}ᵀ.tensor = {Fermion.altLeftMetric | α α' ⊗ Fermion.altRightMetric | β β' ⊗
+    (pauliContr | μ α β ⊗ p | μ)}ᵀ.tensor := by
+  rw [tensorNode_coBispinorDown p]
+  rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_coBispinorUp p]
+
 set_option maxRecDepth 5000 in
 lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
     {contrBispinorDown p | α β = pauliCoDown | μ α β ⊗ p | μ}ᵀ  := by
@@ -136,8 +142,42 @@ lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
   apply perm_congr _ rfl
   decide
 
-
-
+set_option maxRecDepth 5000 in
+lemma coBispinorDown_eq_pauliContrDown_contr (p : complexCo) :
+    {coBispinorDown p | α β = pauliContrDown | μ α β ⊗ p | μ}ᵀ  := by
+  conv =>
+    rhs
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| pauliContrDown_eq_metric_mul_pauliContr]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
+    rw [perm_tensor_eq <| perm_contr_congr 2 2]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_prod _ _ _]
+    rw [perm_tensor_eq <| perm_contr_congr 2 2]
+    rw [perm_perm]
+    apply (perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _).trans
+    rw [perm_tensor_eq <| contr_tensor_eq <|  contr_tensor_eq <| contr_prod _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
+    rw [perm_tensor_eq <| perm_contr_congr 2 2]
+    rw [perm_perm]
+    erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_eq_id _ rfl _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| prod_assoc' _ _ _ _ _ _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_contr_congr 0 4]
+    rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 1 3]
+    rw [perm_tensor_eq <| perm_contr_congr 2 2]
+    rw [perm_perm]
+  conv =>
+    lhs
+    rw [coBispinorDown_expand p]
+    rw [contr_tensor_eq <| contr_tensor_eq <| prod_contr _ _ _]
+    rw [contr_tensor_eq <| perm_contr_congr 0 3]
+    rw [perm_contr_congr 1 2]
+    apply (perm_tensor_eq <| contr_tensor_eq <| contr_contr _ _ _).trans
+    rw [perm_tensor_eq <| perm_contr _ _]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_contr _ _ _]
+    rw [perm_perm]
+  apply perm_congr _ rfl
+  decide
 
 end complexLorentzTensor
 end
