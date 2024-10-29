@@ -37,7 +37,7 @@ open Fermion
 
 -/
 
-/- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
+/-- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
 def pauliContr := {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/

@@ -149,7 +149,7 @@ lemma contrBispinorDown_eq_pauliCoDown_contr (p : complexContr) :
 
 set_option maxRecDepth 5000 in
 lemma coBispinorDown_eq_pauliContrDown_contr (p : complexCo) :
-    {coBispinorDown p | α β = pauliContrDown | μ α β ⊗ p | μ}ᵀs := by
+    {coBispinorDown p | α β = pauliContrDown | μ α β ⊗ p | μ}ᵀ := by
   conv =>
     rhs
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <|

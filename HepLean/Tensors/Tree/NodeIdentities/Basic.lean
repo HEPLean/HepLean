@@ -121,7 +121,7 @@ lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (perm σ t).tensor = t2.tensor ↔ t.tensor =
     (perm (equivToHomEq (Hom.toEquiv σ).symm (fun x => Hom.toEquiv_comp_apply σ x)) t2).tensor := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · simp [perm_tensor, ← h]
+  · simp only [mk_hom, perm_tensor, ← h]
     change _ = (S.F.map _ ≫ S.F.map _).hom _
     rw [← S.F.map_comp]
     have h1 : (σ ≫ equivToHomEq (Hom.toEquiv σ).symm

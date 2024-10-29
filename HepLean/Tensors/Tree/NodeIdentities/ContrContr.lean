@@ -281,6 +281,9 @@ lemma contr_contr (t : TensorTree S c) :
 end
 end ContrQuartet
 
+/-- The homomorphism one must apply on swapping the order of contractions.
+  This is identical to `ContrQuartet.contrSwapHom` except manifestly between the correct
+  types. -/
 def contrContrPerm {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
     {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
     (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) =

@@ -62,7 +62,7 @@ def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
     rfl))
 
 lemma mkIso_refl_hom {c : X → C} : (mkIso (by rfl : c =c)).hom = 𝟙 _ := by
-  simp [mkIso]
+  rw [mkIso]
   rfl
 
 @[simp]
