@@ -253,8 +253,8 @@ def inLineEqProj (T : InLineEqSol) : InLineEq × ℚ × ℚ × ℚ :=
   (⟨proj T.val.1.1, (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1⟩,
   (quadCoeff T.val)⁻¹ * quadBiLin B₃.val T.val.val,
   (quadCoeff T.val)⁻¹ * (- quadBiLin Y₃.val T.val.val),
-  (quadCoeff T.val)⁻¹ * (
-  quadBiLin B₃.val T.val.val * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
+  (quadCoeff T.val)⁻¹ *
+  (quadBiLin B₃.val T.val.val * (dot B₃.val T.val.val - dot Y₃.val T.val.val)
   - quadBiLin Y₃.val T.val.val * (dot Y₃.val T.val.val - 2 * dot B₃.val T.val.val)))
 
 lemma inLineEqTo_smul (R : InLineEq) (c₁ c₂ c₃ d : ℚ) :

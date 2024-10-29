@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.ComplexLorentz.PauliLower
+import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basis
 import HepLean.Tensors.ComplexLorentz.Lemmas
 /-!
 
@@ -40,7 +40,7 @@ def pauliMatrixContrPauliMatrixMap := ((Sum.elim
 
 lemma pauliMatrix_contr_lower_0_0_0 :
     {(basisVector pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
   conv =>
@@ -85,7 +85,7 @@ lemma pauliMatrix_contr_lower_0_0_0 :
 
 lemma pauliMatrix_contr_lower_0_1_1 :
     {(basisVector pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
   conv =>
@@ -130,7 +130,7 @@ lemma pauliMatrix_contr_lower_0_1_1 :
 
 lemma pauliMatrix_contr_lower_1_0_1 :
     {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
   conv =>
@@ -175,7 +175,7 @@ lemma pauliMatrix_contr_lower_1_0_1 :
 
 lemma pauliMatrix_contr_lower_1_1_0 :
     {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
     + basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
   conv =>
@@ -220,7 +220,7 @@ lemma pauliMatrix_contr_lower_1_1_0 :
 
 lemma pauliMatrix_contr_lower_2_0_1 :
     {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
       (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     + (I) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0) := by
@@ -266,7 +266,7 @@ lemma pauliMatrix_contr_lower_2_0_1 :
 
 lemma pauliMatrix_contr_lower_2_1_0 :
     {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 1 | 2 => 0)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
       (-I) • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
     + (I) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 0 | 2 => 1 | 3 => 0) := by
@@ -312,7 +312,7 @@ lemma pauliMatrix_contr_lower_2_1_0 :
 
 lemma pauliMatrix_contr_lower_3_0_0 :
     {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 0 | 2 => 0)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0)
     + (-1 : ℂ) • basisVector pauliMatrixContrPauliMatrixMap
     (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1) := by
@@ -358,7 +358,7 @@ lemma pauliMatrix_contr_lower_3_0_0 :
 
 lemma pauliMatrix_contr_lower_3_1_1 :
     {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 1 | 2 => 1)) | μ α β ⊗
-    PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor =
+    pauliContr | μ α' β'}ᵀ.tensor =
     basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     + (-1 : ℂ) •
       basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 1 | 3 => 1) := by
@@ -429,7 +429,7 @@ private lemma pauliCo_prod_basis_expand' {n : ℕ} {c : Fin n → complexLorentz
     exact pauliCo_prod_basis_expand _
 
 lemma pauliCo_contr_pauliContr_expand_aux :
-    {pauliCo | μ α β ⊗ PauliMatrix.asConsTensor | μ α' β'}ᵀ.tensor
+    {pauliCo | μ α β ⊗ pauliContr | μ α' β'}ᵀ.tensor
     = ((tensorNode
       ((basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 0 | 3 => 0) +
         basisVector pauliMatrixContrPauliMatrixMap fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)).add
@@ -501,7 +501,7 @@ lemma pauliCo_contr_pauliContr_expand_aux :
     pauliMatrix_contr_lower_3_1_1]
 
 lemma pauliCo_contr_pauliContr_expand :
-    {pauliCo | ν α β ⊗ PauliMatrix.asConsTensor | ν α' β'}ᵀ.tensor =
+    {pauliCo | ν α β ⊗ pauliContr | ν α' β'}ᵀ.tensor =
     2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 0 | 2 => 1 | 3 => 1)
     + 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 1 | 1 => 1 | 2 => 0 | 3 => 0)
     - 2 • basisVector pauliMatrixContrPauliMatrixMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
@@ -517,7 +517,7 @@ lemma pauliCo_contr_pauliContr_expand :
 
 /-- The statement that `η_{μν} σ^{μ α dot β} σ^{ν α' dot β'} = 2 ε^{αα'} ε^{dot β dot β'}`. -/
 theorem pauliCo_contr_pauliContr :
-    {pauliCo | ν α β ⊗ PauliMatrix.asConsTensor | ν α' β' =
+    {pauliCo | ν α β ⊗ pauliContr | ν α' β' =
     2 •ₜ Fermion.leftMetric | α α' ⊗ Fermion.rightMetric | β β'}ᵀ := by
   rw [pauliCo_contr_pauliContr_expand]
   rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_mul_rightMetric_tree]

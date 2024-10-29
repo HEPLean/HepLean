@@ -92,7 +92,7 @@ lemma add_neg (t : TensorTree S c) : (add t (neg t)).tensor = 0 := by
 -/
 
 /-- Applying two permutations is the same as applying the transitive permutation. -/
-lemma perm_perm {n : ℕ} {c : Fin n → S.C} {c1 : Fin n → S.C} {c2 : Fin n → S.C}
+lemma perm_perm {n n1 n2 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} {c2 : Fin n2 → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (σ2 : (OverColor.mk c1) ⟶ (OverColor.mk c2))
     (t : TensorTree S c) : (perm σ2 (perm σ t)).tensor = (perm (σ ≫ σ2) t).tensor := by
   simp [perm_tensor]
@@ -114,6 +114,35 @@ lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   rw [perm_tensor, ← h]
   change _ = (S.F.map σ.hom ≫ S.F.map σ.inv).hom _
   simp only [Iso.map_hom_inv_id, Action.id_hom, ModuleCat.id_apply]
+
+lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1))
+    {t : TensorTree S c} {t2 : TensorTree S c1} :
+    (perm σ t).tensor = t2.tensor ↔ t.tensor =
+    (perm (equivToHomEq (Hom.toEquiv σ).symm (fun x => Hom.toEquiv_comp_apply σ x)) t2).tensor := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · simp only [mk_hom, perm_tensor, ← h]
+    change _ = (S.F.map _ ≫ S.F.map _).hom _
+    rw [← S.F.map_comp]
+    have h1 : (σ ≫ equivToHomEq (Hom.toEquiv σ).symm
+        (fun x => Hom.toEquiv_comp_apply σ x)) = 𝟙 _ := by
+      apply Hom.ext
+      ext x
+      change (Hom.toEquiv σ).symm ((Hom.toEquiv σ) x) = x
+      simp
+    rw [h1]
+    simp
+  · rw [perm_tensor, h]
+    change (S.F.map _ ≫ S.F.map _).hom _ = _
+    rw [← S.F.map_comp]
+    have h1 : (equivToHomEq (Hom.toEquiv σ).symm
+        (fun x => Hom.toEquiv_comp_apply σ x) ≫ σ) = 𝟙 _ := by
+      apply Hom.ext
+      ext x
+      change (Hom.toEquiv σ) ((Hom.toEquiv σ).symm x) = x
+      simp
+    rw [h1]
+    simp
 
 /-!
 

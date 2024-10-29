@@ -109,11 +109,11 @@ import HepLean.StandardModel.HiggsBoson.Potential
 import HepLean.StandardModel.Representations
 import HepLean.Tensors.ComplexLorentz.Basic
 import HepLean.Tensors.ComplexLorentz.Basis
-import HepLean.Tensors.ComplexLorentz.BasisTrees
 import HepLean.Tensors.ComplexLorentz.Bispinors.Basic
 import HepLean.Tensors.ComplexLorentz.Lemmas
-import HepLean.Tensors.ComplexLorentz.PauliContr
-import HepLean.Tensors.ComplexLorentz.PauliLower
+import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basic
+import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basis
+import HepLean.Tensors.ComplexLorentz.PauliMatrices.CoContractContr
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Functors
@@ -123,6 +123,7 @@ import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
 import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.Tree.NodeIdentities.Basic
+import HepLean.Tensors.Tree.NodeIdentities.Congr
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.PermContr

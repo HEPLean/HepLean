@@ -307,8 +307,8 @@ lemma Prop_two (P : ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
 lemma Prop_three (P : ℚ × ℚ × ℚ → Prop) {S : (PureU1 n).LinSols}
     {a b c : Fin n} (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c)
     (h : ∀ (f : (FamilyPermutations n).group),
-    P ((((FamilyPermutations n).linSolRep f S).val a),(
-      (((FamilyPermutations n).linSolRep f S).val b),
+    P ((((FamilyPermutations n).linSolRep f S).val a),
+      ((((FamilyPermutations n).linSolRep f S).val b),
       (((FamilyPermutations n).linSolRep f S).val c)))) : ∀ (i j k : Fin n)
       (_ : i ≠ j) (_ : j ≠ k) (_ : i ≠ k), P (S.val i, (S.val j, S.val k)) := by
   intro i j k hij hjk hik

@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Basic
+import HepLean.Tensors.Tree.NodeIdentities.Congr
+import HepLean.Tensors.Tree.NodeIdentities.Basic
 /-!
 
 # The commutativity of Permutations and contractions.
@@ -255,5 +257,39 @@ lemma perm_contr {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ �
   change ((S.F.map σ) ≫ S.contrMap c1 i j h).hom t.tensor = _
   rw [S.contrMap_naturality σ]
   rfl
+
+lemma perm_contr_congr_mkIso_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)}
+    {i' : Fin n.succ.succ} {j' : Fin n.succ}
+    (hi : i' = ((Hom.toEquiv σ).symm i))
+    (hj : j' = (((Hom.toEquiv (extractOne i σ))).symm j)) :
+    c ∘ i'.succAbove ∘ j'.succAbove = c ∘ Fin.succAbove ((Hom.toEquiv σ).symm i) ∘
+    Fin.succAbove ((Hom.toEquiv (extractOne i σ)).symm j) := by
+  rw [hi, hj]
+
+lemma perm_contr_congr_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (h : c1 (i.succAbove j) = S.τ (c1 i))
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)}
+    {i' : Fin n.succ.succ} {j' : Fin n.succ}
+    (hi : i' = ((Hom.toEquiv σ).symm i))
+    (hj : j' = (((Hom.toEquiv (extractOne i σ))).symm j)) :
+    c (i'.succAbove j') = S.τ (c i') := by
+  rw [hi, hj]
+  exact S.perm_contr_cond h σ
+
+lemma perm_contr_congr {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    {h : c1 (i.succAbove j) = S.τ (c1 i)} {t : TensorTree S c}
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)}
+    (i' : Fin n.succ.succ) (j' : Fin n.succ)
+    (hi : i' = ((Hom.toEquiv σ).symm i) := by decide)
+    (hj : j' = (((Hom.toEquiv (extractOne i σ))).symm j) := by decide) :
+  (contr i j h (perm σ t)).tensor = (perm ((mkIso (perm_contr_congr_mkIso_cond hi hj)).hom ≫
+    extractTwo i j σ) (contr i' j' (perm_contr_congr_contr_cond h hi hj) t)).tensor := by
+  rw [perm_contr]
+  rw [perm_tensor_eq <| contr_congr i' j' hi.symm hj.symm]
+  rw [perm_perm]
 
 end TensorTree
