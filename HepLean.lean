@@ -117,6 +117,7 @@ import HepLean.Tensors.ComplexLorentz.Metrics.Lemmas
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basic
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basis
 import HepLean.Tensors.ComplexLorentz.PauliMatrices.CoContractContr
+import HepLean.Tensors.ComplexLorentz.Units.Basic
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.OverColor.Discrete
 import HepLean.Tensors.OverColor.Functors
