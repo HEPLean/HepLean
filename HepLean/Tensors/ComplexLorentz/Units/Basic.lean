@@ -129,38 +129,32 @@ lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀ.tensor = (TensorTree.constT
 
 /-- The tensor `coContrUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_coContrUnit (g : SL(2,ℂ)) : {g •ₐ δ' | μ ν}ᵀ.tensor = {δ' | μ ν}ᵀ.tensor := by
-  rw [tensorNode_coContrUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_coContrUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `contrCoUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_contrCoUnit (g : SL(2,ℂ)) : {g •ₐ δ | μ ν}ᵀ.tensor = {δ | μ ν}ᵀ.tensor := by
-  rw [tensorNode_contrCoUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_contrCoUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altLeftLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_altLeftLeftUnit (g : SL(2,ℂ)) : {g •ₐ δL' | μ ν}ᵀ.tensor = {δL' | μ ν}ᵀ.tensor := by
-  rw [tensorNode_altLeftLeftUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_altLeftLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `leftAltLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_leftAltLeftUnit (g : SL(2,ℂ)) : {g •ₐ δL | μ ν}ᵀ.tensor = {δL | μ ν}ᵀ.tensor := by
-  rw [tensorNode_leftAltLeftUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_leftAltLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altRightRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_altRightRightUnit (g : SL(2,ℂ)) : {g •ₐ δR' | μ ν}ᵀ.tensor = {δR' | μ ν}ᵀ.tensor := by
-  rw [tensorNode_altRightRightUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_altRightRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `rightAltRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_rightAltRightUnit (g : SL(2,ℂ)) : {g •ₐ δR | μ ν}ᵀ.tensor = {δR | μ ν}ᵀ.tensor := by
-  rw [tensorNode_rightAltRightUnit, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
+  rw [tensorNode_rightAltRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 end complexLorentzTensor

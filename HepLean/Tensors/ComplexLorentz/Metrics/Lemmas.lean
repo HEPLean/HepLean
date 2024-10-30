@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.ComplexLorentz.Metrics.Basis
+import HepLean.Tensors.ComplexLorentz.Units.Basic
 import HepLean.Tensors.ComplexLorentz.Basis
 /-!
 
@@ -55,6 +56,46 @@ informal_lemma altRightMetric_antisymm where
   math :≈ "The alt-right metric is antisymmetric {εR' | β β' = - εR' | β' β}ᵀ"
   deps :≈ [``altRightMetric]
 
+/-!
+
+## Contractions with each other
+
+-/
+
+informal_lemma coMetric_contr_contrMetric where
+  math :≈ "The contraction of the covariant metric with the contravariant metric is the unit
+        {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ"
+  deps :≈ [``coMetric, ``contrMetric, ``coContrUnit]
+
+informal_lemma contrMetric_contr_coMetric where
+  math :≈ "The contraction of the contravariant metric with the covariant metric is the unit
+        {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ"
+  deps :≈ [``contrMetric, ``coMetric, ``contrCoUnit]
+
+informal_lemma leftMetric_contr_altLeftMetric where
+  math :≈ "The contraction of the left metric with the alt-left metric is the unit
+        {εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ"
+  deps :≈ [``leftMetric, ``altLeftMetric, ``leftAltLeftUnit]
+
+informal_lemma rightMetric_contr_altRightMetric where
+  math :≈ "The contraction of the right metric with the alt-right metric is the unit
+        {εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ"
+  deps :≈ [``rightMetric, ``altRightMetric, ``rightAltRightUnit]
+
+informal_lemma altLeftMetric_contr_leftMetric where
+  math :≈ "The contraction of the alt-left metric with the left metric is the unit
+        {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ"
+  deps :≈ [``altLeftMetric, ``leftMetric, ``altLeftLeftUnit]
+
+informal_lemma altRightMetric_contr_rightMetric where
+  math :≈ "The contraction of the alt-right metric with the right metric is the unit
+        {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ"
+  deps :≈ [``altRightMetric, ``rightMetric, ``altRightRightUnit]
+/-!
+
+## Other relations
+
+-/
 /-- The map to color one gets when multiplying left and right metrics. -/
 def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL] ![Color.upR, Color.upR]) ∘
   finSumFinEquiv.symm
