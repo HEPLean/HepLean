@@ -8,7 +8,7 @@ import HepLean.Tensors.ComplexLorentz.Units.Basic
 import HepLean.Tensors.ComplexLorentz.Basis
 /-!
 
-## Metrics and basis expansions
+## Basic lemmas regarding metrics
 
 -/
 open IndexNotation
@@ -91,6 +91,7 @@ informal_lemma altRightMetric_contr_rightMetric where
   math :≈ "The contraction of the alt-right metric with the right metric is the unit
         {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ"
   deps :≈ [``altRightMetric, ``rightMetric, ``altRightRightUnit]
+
 /-!
 
 ## Other relations
