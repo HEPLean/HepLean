@@ -519,7 +519,7 @@ lemma pauliCo_contr_pauliContr_expand :
 theorem pauliCo_contr_pauliContr :
     {pauliCo | ν α β ⊗ pauliContr | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀ := by
   rw [pauliCo_contr_pauliContr_expand]
-  rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_mul_rightMetric_tree]
+  rw [perm_tensor_eq <| smul_tensor_eq <| leftMetric_prod_rightMetric_tree]
   rw [perm_smul]
   /- Moving perm through adds. -/
   rw [smul_tensor_eq <| perm_add _ _ _]

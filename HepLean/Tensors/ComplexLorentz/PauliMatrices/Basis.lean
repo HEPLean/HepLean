@@ -514,6 +514,7 @@ lemma pauliMatrix_contr_down_3 :
     funext k
     fin_cases k <;> rfl
 
+/-- The expansion of `pauliCo` in terms of a basis. -/
 lemma pauliCo_basis_expand : pauliCo
     = basisVector pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
     + basisVector pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1)
