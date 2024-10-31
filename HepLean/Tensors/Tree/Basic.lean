@@ -11,6 +11,14 @@ import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 
 # Tensor species and trees
 
+## Tensor species
+
+- A tensor species is a structure including all of the ingredients needed to define a type of
+  tensor.
+- Examples of tensor species will include real Lorentz tensors, complex Lorentz tensors, and
+  Einstien tensors.
+- Tensor species are built upon symmetric monoidal categories.
+
 ## Trees
 
 - Tensor trees provide an abstract way to represent tensor expressions.
@@ -110,6 +118,7 @@ instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 /-- The lift of the functor `S.F` to a monoidal functor. -/
 def F : BraidedFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
 
+/- The definition of `F` as a lemma. -/
 lemma F_def : F S = (OverColor.lift).obj S.FDiscrete := rfl
 
 lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
