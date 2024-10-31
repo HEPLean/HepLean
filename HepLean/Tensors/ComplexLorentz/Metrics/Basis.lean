@@ -52,6 +52,8 @@ lemma coMetric_basis_expand : {η' | μ ν}ᵀ.tensor =
       simp only [Fin.isValue, Lorentz.complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
+/-- Provides the explicit expansion of the co-metric tensor in terms of the basis elements, as
+a tensor tree.-/
 lemma coMetric_basis_expand_tree : {η' | μ ν}ᵀ.tensor =
     (TensorTree.add (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 0))) <|
     TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 1)))) <|
