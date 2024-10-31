@@ -6,7 +6,7 @@
 [![](https://img.shields.io/badge/TODO-List-green)](https://heplean.github.io/HepLean/TODOList)
 [![](https://img.shields.io/badge/Informal_dependencies-Graph-green)](https://heplean.github.io/HepLean/InformalGraph)
 [![](https://img.shields.io/badge/Lean-v4.12.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.12.0)
-
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 A project to digitalize high energy physics.
 
 ## Aims of this project
