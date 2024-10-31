@@ -672,8 +672,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
 
 noncomputable section
 
-/-- The underlying tensor a tensor tree corresponds to.
-  Note: This function is not fully defined yet. -/
+/-- The underlying tensor a tensor tree corresponds to. -/
 def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
   | add t1 t2 => t1.tensor + t2.tensor
