@@ -9,9 +9,41 @@ import HepLean.Tensors.Tree.Dot
 import HepLean.Tensors.ComplexLorentz.Basic
 /-!
 
-## Elaboration of tensor trees
+# Elaboration of tensor trees
 
-This file turns tensor expressions into tensor trees.
+- Syntax in Lean allows us to represent tensor expressions in a way close to what we expect to
+  see on pen-and-paper.
+- The elaborator turns this syntax into a tensor tree.
+
+## Examples
+
+- Suppose `T` and `T'` are tensors `S.F (OverColor.mk ![c1, c2])`.
+- `{T | μ ν}ᵀ` is `tensorNode T`.
+- We can also write e.g. `{T | μ ν}ᵀ.tensor` to get the tensor itself.
+- `{- T | μ ν}ᵀ` is `neg (tensorNode T)`.
+- `{T | 0 ν}ᵀ` is `eval 0 0 (tensorNode T)`.
+- `{T | μ ν + T' | μ ν}ᵀ` is `addNode (tensorNode T) (perm _ (tensorNode T'))`, where
+  here `_` will be the identity permutation so does nothing.
+- `{T | μ ν = T' | μ ν}ᵀ` is `(tensorNode T).tensor = (perm _ (tensorNode T')).tensor`.
+- If `a ∈ S.k` then `{a •ₜ T | μ ν}ᵀ` is `smulNode a (tensorNode T)`.
+- If `g ∈ S.G` then `{g •ₐ T | μ ν}ᵀ` is `actionNode g (tensorNode T)`.
+- Suppose `T2` is a tensor `S.F (OverColor.mk ![c3])`.
+  Then `{T | μ ν ⊗ T2 | σ}ᵀ` is `prodNode (tensorNode T1) (tensorNode T2)`.
+- If `T3` is a tensor `S.F (OverColor.mk ![S.τ c1, S.τ c2])`, then
+  `{T | μ ν ⊗ T3 | μ σ}ᵀ` is `contr 0 1 _ (prodNode (tensorNode T1) (tensorNode T3))`.
+  `{T | μ ν ⊗ T3 | μ ν }ᵀ` is
+  `contr 0 0 _ (contr 0 1 _ (prodNode (tensorNode T1) (tensorNode T3)))`.
+- If `T4` is a tensor  `S.F (OverColor.mk ![c2, c1])` then
+  `{T | μ ν + T4 | ν μ }ᵀ`is `addNode (tensorNode T) (perm _ (tensorNode T4))` where `_`
+  is the permutation of the two indices of `T4`.
+  `{T | μ ν = T4 | ν μ }ᵀ` is `(tensorNode T).tensor = (perm _ (tensorNode T4)).tensor` is the
+  permutation of the two indices of `T4`.
+
+## Comments
+
+- In all of theses expressions `μ`, `ν` etc are free. It does not matter what they are called,
+ Lean will elaborate them in the same way. I.e. `{T | μ ν ⊗ T3 | μ ν }ᵀ` is exactly the same
+ to Lean as `{T | α β ⊗ T3 | α β }ᵀ`.
 
 -/
 open Lean
