@@ -32,13 +32,13 @@ lemma antiSymm_contr_symm {A : complexLorentzTensor.F.obj (OverColor.mk ![Color.
     {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
   conv =>
     lhs
-    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst hA]
-    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd hs]
+    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| hA]
+    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| hs]
     rw [contr_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
     rw [contr_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| prod_perm_right _ _ _ _]
     rw [contr_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
     rw [contr_tensor_eq <| perm_contr_congr 1 2]
-    rw [perm_contr_congr 0 1]
+    rw [perm_contr_congr 0 0]
     rw [perm_tensor_eq <| contr_contr _ _ _]
     rw [perm_perm]
     rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| neg_fst_prod _ _]
