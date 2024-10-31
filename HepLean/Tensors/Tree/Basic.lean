@@ -9,7 +9,19 @@ import HepLean.Tensors.OverColor.Lift
 import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 /-!
 
-## Tensor trees
+# Tensor species and trees
+
+## Trees
+
+- Tensor trees provide an abstract way to represent tensor expressions.
+- Their nodes are either tensors or operations between tensors.
+- Every tensor tree has associated with an underlying tensor.
+- This is not a one-to-one correspondence. Lots tensor trees represent the same tensor.
+  In the same way that lots of tensor expressions represent the same tensor.
+- Define a sub-tensor tree as a node of a tensor tree and all child nodes thereof. One
+  can replace sub-tensor tree with another tensor tree which has the same underlying tensor
+  without changing the underlying tensor of the parent tensor tree. These appear as the e.g.
+  the lemmas `contr_tensor_eq` in what follows.
 
 -/
 
