@@ -9,7 +9,27 @@ import HepLean.Tensors.OverColor.Lift
 import Mathlib.CategoryTheory.Monoidal.NaturalTransformation
 /-!
 
-## Tensor trees
+# Tensor species and trees
+
+## Tensor species
+
+- A tensor species is a structure including all of the ingredients needed to define a type of
+  tensor.
+- Examples of tensor species will include real Lorentz tensors, complex Lorentz tensors, and
+  Einstien tensors.
+- Tensor species are built upon symmetric monoidal categories.
+
+## Trees
+
+- Tensor trees provide an abstract way to represent tensor expressions.
+- Their nodes are either tensors or operations between tensors.
+- Every tensor tree has associated with an underlying tensor.
+- This is not a one-to-one correspondence. Lots tensor trees represent the same tensor.
+  In the same way that lots of tensor expressions represent the same tensor.
+- Define a sub-tensor tree as a node of a tensor tree and all child nodes thereof. One
+  can replace sub-tensor tree with another tensor tree which has the same underlying tensor
+  without changing the underlying tensor of the parent tensor tree. These appear as the e.g.
+  the lemmas `contr_tensor_eq` in what follows.
 
 -/
 
@@ -98,6 +118,7 @@ instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 /-- The lift of the functor `S.F` to a monoidal functor. -/
 def F : BraidedFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FDiscrete
 
+/- The definition of `F` as a lemma. -/
 lemma F_def : F S = (OverColor.lift).obj S.FDiscrete := rfl
 
 lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
@@ -530,7 +551,7 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
 end TensorSpecies
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
+inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
@@ -538,20 +559,21 @@ inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Ty
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
+  /-- A node corresponding to the product of two tensors. -/
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
+  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
-  /-- The negative of a node. -/
+  /-- A node corresponding to negation of a tensor. -/
   | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
-  /-- The contraction of indices. -/
+  /-- A node corresponding to the contraction of indices of a tensor. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
-  /-- The group action on a tensor. -/
+  /-- A node correpsonding to the action of a group element on a tensor. -/
   | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
-  /-- The evaluation of an index-/
-  | eval {n : ℕ} {c : Fin n.succ → S.C} :
-    (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
+  /-- A node corresponding to the evaluation of an index of a tensor. -/
+  | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
@@ -650,8 +672,7 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
 
 noncomputable section
 
-/-- The underlying tensor a tensor tree corresponds to.
-  Note: This function is not fully defined yet. -/
+/-- The underlying tensor a tensor tree corresponds to. -/
 def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
   | add t1 t2 => t1.tensor + t2.tensor
