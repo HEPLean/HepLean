@@ -551,7 +551,7 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
 end TensorSpecies
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Type where
+inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
@@ -559,20 +559,21 @@ inductive TensorTree (S : TensorSpecies) : ∀ {n : ℕ}, (Fin n → S.C) → Ty
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
+  /-- A node corresponding to the product of two tensors. -/
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
+  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
-  /-- The negative of a node. -/
+  /-- A node corresponding to negation of a tensor. -/
   | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
-  /-- The contraction of indices. -/
+  /-- A node corresponding to the contraction of indices of a tensor. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
-  /-- The group action on a tensor. -/
+  /-- A node correpsonding to the action of a group element on a tensor. -/
   | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
-  /-- The evaluation of an index-/
-  | eval {n : ℕ} {c : Fin n.succ → S.C} :
-    (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
+  /-- A node corresponding to the evaluation of an index of a tensor. -/
+  | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
 
 namespace TensorTree
