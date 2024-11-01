@@ -9,9 +9,7 @@ import Mathlib.RepresentationTheory.Rep
 import Mathlib.Logic.Equiv.TransferInstance
 /-!
 
-## Modules associated with Lorentz vectors
-
-These have not yet been fully-implmented.
+## Modules associated with complex Lorentz vectors
 
 We define these modules to prevent casting between different types of Lorentz vectors.
 
