@@ -231,23 +231,23 @@ lemma toProd_continuous : Continuous (@toProd d) := by
 
 /-- The embedding from the Lorentz Group into the monoid of matrices times the opposite of
   the monoid of matrices. -/
-lemma toProd_embedding : Embedding (@toProd d) where
+lemma toProd_embedding : IsEmbedding (@toProd d) where
   inj := toProd_injective
-  induced :=
-    (inducing_iff ⇑toProd).mp (inducing_of_inducing_compose toProd_continuous continuous_fst
-      ((inducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
+  eq_induced :=
+    (isInducing_iff ⇑toProd).mp (IsInducing.of_comp toProd_continuous continuous_fst
+      ((isInducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
 
 /-- The embedding from the Lorentz Group into `GL (Fin 4) ℝ`. -/
-lemma toGL_embedding : Embedding (@toGL d).toFun where
+lemma toGL_embedding : IsEmbedding (@toGL d).toFun where
   inj := toGL_injective
-  induced := by
+  eq_induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) fun _ ↦ ?_).symm
-    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced _, isOpen_induced_iff,
+    rw [TopologicalSpace.ext_iff.mp toProd_embedding.eq_induced _, isOpen_induced_iff,
       isOpen_induced_iff]
     exact exists_exists_and_eq_and
 
 instance : TopologicalGroup (LorentzGroup d) :=
-Inducing.topologicalGroup toGL toGL_embedding.toInducing
+  IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 
 section
 open LorentzVector
@@ -294,17 +294,17 @@ lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
 
 /-- The monoid homomorphisms taking the lorentz group to complex matrices. -/
 def toComplex : LorentzGroup d →* Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℂ where
-  toFun Λ := Λ.1.map ofReal
+  toFun Λ := Λ.1.map ofRealHom
   map_one' := by
     ext i j
-    simp only [lorentzGroupIsGroup_one_coe, map_apply, ofReal_eq_coe]
+    simp only [lorentzGroupIsGroup_one_coe, map_apply, ofRealHom_eq_coe]
     simp only [Matrix.one_apply, ofReal_one, ofReal_zero]
     split_ifs
     · rfl
     · rfl
   map_mul' Λ Λ' := by
     ext i j
-    simp only [lorentzGroupIsGroup_mul_coe, map_apply, ofReal_eq_coe]
+    simp only [lorentzGroupIsGroup_mul_coe, map_apply, ofRealHom_eq_coe]
     simp only [← Matrix.map_mul, RingHom.map_matrix_mul]
     rfl
 
@@ -325,26 +325,28 @@ lemma toComplex_inv (Λ : LorentzGroup d) : (toComplex Λ)⁻¹ = toComplex Λ�
 
 @[simp]
 lemma toComplex_mul_minkowskiMatrix_mul_transpose (Λ : LorentzGroup d) :
-    toComplex Λ * minkowskiMatrix.map ofReal * (toComplex Λ)ᵀ = minkowskiMatrix.map ofReal := by
+    toComplex Λ * minkowskiMatrix.map ofRealHom * (toComplex Λ)ᵀ =
+    minkowskiMatrix.map ofRealHom := by
   simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
-  have h1 : ((Λ.1).map ⇑ofReal)ᵀ = (Λ.1ᵀ).map ofReal := rfl
+  have h1 : ((Λ.1).map ⇑ofRealHom)ᵀ = (Λ.1ᵀ).map ofRealHom := rfl
   rw [h1]
-  trans (Λ.1 * minkowskiMatrix * Λ.1ᵀ).map ofReal
+  trans (Λ.1 * minkowskiMatrix * Λ.1ᵀ).map ofRealHom
   · simp only [Matrix.map_mul]
   simp only [mul_minkowskiMatrix_mul_transpose]
 
 @[simp]
 lemma toComplex_transpose_mul_minkowskiMatrix_mul_self (Λ : LorentzGroup d) :
-    (toComplex Λ)ᵀ * minkowskiMatrix.map ofReal * toComplex Λ = minkowskiMatrix.map ofReal := by
+    (toComplex Λ)ᵀ * minkowskiMatrix.map ofRealHom * toComplex Λ =
+    minkowskiMatrix.map ofRealHom := by
   simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
-  have h1 : ((Λ.1).map ⇑ofReal)ᵀ = (Λ.1ᵀ).map ofReal := rfl
+  have h1 : ((Λ.1).map ofRealHom)ᵀ = (Λ.1ᵀ).map ofRealHom := rfl
   rw [h1]
-  trans (Λ.1ᵀ * minkowskiMatrix * Λ.1).map ofReal
+  trans (Λ.1ᵀ * minkowskiMatrix * Λ.1).map ofRealHom
   · simp only [Matrix.map_mul]
   simp only [transpose_mul_minkowskiMatrix_mul_self]
 
 lemma toComplex_mulVec_ofReal (v : Fin 1 ⊕ Fin d → ℝ) (Λ : LorentzGroup d) :
-    toComplex Λ *ᵥ (ofReal ∘ v) = ofReal ∘ (Λ *ᵥ v) := by
+    toComplex Λ *ᵥ (ofRealHom ∘ v) = ofRealHom ∘ (Λ *ᵥ v) := by
   simp only [toComplex, MonoidHom.coe_mk, OneHom.coe_mk]
   funext i
   rw [← RingHom.map_mulVec]
