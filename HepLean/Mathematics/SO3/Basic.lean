@@ -81,18 +81,18 @@ lemma toProd_continuous : Continuous toProd :=
 
 /-- The embedding of `SO(3)` into the monoid of matrices times the opposite of
   the monoid of matrices. -/
-lemma toProd_embedding : Embedding toProd where
+lemma toProd_embedding : IsEmbedding toProd where
   inj := toProd_injective
-  induced := (inducing_iff ⇑toProd).mp (inducing_of_inducing_compose toProd_continuous
-    continuous_fst ((inducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
+  eq_induced := (isInducing_iff ⇑toProd).mp (IsInducing.of_comp toProd_continuous
+    continuous_fst ((isInducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
 
 /-- The embedding of `SO(3)` into `GL (Fin 3) ℝ`. -/
-lemma toGL_embedding : Embedding toGL.toFun where
+lemma toGL_embedding : IsEmbedding toGL.toFun where
   inj := toGL_injective
-  induced := by
+  eq_induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) ?_).symm
     intro s
-    rw [TopologicalSpace.ext_iff.mp toProd_embedding.induced s]
+    rw [TopologicalSpace.ext_iff.mp toProd_embedding.eq_induced s]
     rw [isOpen_induced_iff, isOpen_induced_iff]
     apply Iff.intro ?_ ?_
     · intro h
@@ -111,7 +111,7 @@ lemma toGL_embedding : Embedding toGL.toFun where
       exact hU2
 
 instance : TopologicalGroup SO(3) :=
-  Inducing.topologicalGroup toGL toGL_embedding.toInducing
+  IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 
 lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
   have h1 : det (A.1 - 1) = - det (A.1 - 1) :=
@@ -185,7 +185,7 @@ lemma exists_stationary_vec (A : SO(3)) :
 lemma exists_basis_preserved (A : SO(3)) :
     ∃ (b : OrthonormalBasis (Fin 3) ℝ (EuclideanSpace ℝ (Fin 3))), A.toEnd (b 0) = b 0 := by
   obtain ⟨v, hv⟩ := exists_stationary_vec A
-  have h3 : FiniteDimensional.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
+  have h3 : Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
     simp_all only [toEnd_apply, finrank_euclideanSpace, Fintype.card_fin]
   obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
   simp only [Fin.isValue, Set.mem_singleton_iff, forall_eq] at hb
