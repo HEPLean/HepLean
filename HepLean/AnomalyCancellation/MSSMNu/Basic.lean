@@ -315,7 +315,7 @@ def quadBiLin : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂
       Hd_apply, Fin.reduceFinMk, Hu_apply]
     congr 1
     · rw [Fin.sum_univ_three, Fin.sum_univ_three]
-      simp only [Fin.isValue]
+      simp only [reduceMul, Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
       ring
     · ring)
 
@@ -390,7 +390,7 @@ lemma cubeTriLinToFun_swap1 (S T R : MSSMCharges.Charges) :
     Fin.reduceFinMk, Hu_apply]
   congr 1
   · rw [Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue]
+    simp only [reduceMul, Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
     ring
   · ring
 
@@ -400,7 +400,7 @@ lemma cubeTriLinToFun_swap2 (S T R : MSSMCharges.Charges) :
     Fin.reduceFinMk, Hu_apply]
   congr 1
   · rw [Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue]
+    simp only [reduceMul, Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
     ring
   · ring
 
@@ -537,14 +537,14 @@ def dot : BiLinearSymm MSSMCharges.Charges := BiLinearSymm.mk₂
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
       ACCSystemCharges.chargesAddCommMonoid_add, map_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     rw [Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue]
+    simp only [reduceMul, Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
     ring)
   (by
     intro S T
     simp only [MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue, Hd_apply, Fin.reduceFinMk,
       Hu_apply]
     rw [Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue]
+    simp only [reduceMul, Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
     ring)
 
 end MSSMACC

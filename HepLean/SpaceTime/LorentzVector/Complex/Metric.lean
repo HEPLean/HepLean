@@ -24,7 +24,7 @@ namespace Lorentz
 
 /-- The metric `ηᵃᵃ` as an element of `(complexContr ⊗ complexContr).V`. -/
 def contrMetricVal : (complexContr ⊗ complexContr).V :=
-  contrContrToMatrix.symm ((@minkowskiMatrix 3).map ofReal)
+  contrContrToMatrix.symm ((@minkowskiMatrix 3).map ofRealHom)
 
 /-- The expansion of `contrMetricVal` into basis vectors. -/
 lemma contrMetricVal_expand_tmul : contrMetricVal =
@@ -34,7 +34,7 @@ lemma contrMetricVal_expand_tmul : contrMetricVal =
     - complexContrBasis (Sum.inr 2) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 2) := by
   simp only [Action.instMonoidalCategory_tensorObj_V, contrMetricVal, Fin.isValue]
   erw [contrContrToMatrix_symm_expand_tmul]
-  simp only [map_apply, ofReal_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
+  simp only [map_apply, ofRealHom_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq,
     not_false_eq_true, minkowskiMatrix.off_diag_zero, zero_smul, add_zero, zero_add, Sum.inr.injEq,
     zero_ne_one, Fin.reduceEq, one_ne_zero]
@@ -77,7 +77,7 @@ lemma contrMetric_apply_one : contrMetric.hom (1 : ℂ) = contrMetricVal := by
 
 /-- The metric `ηᵢᵢ` as an element of `(complexCo ⊗ complexCo).V`. -/
 def coMetricVal : (complexCo ⊗ complexCo).V :=
-  coCoToMatrix.symm ((@minkowskiMatrix 3).map ofReal)
+  coCoToMatrix.symm ((@minkowskiMatrix 3).map ofRealHom)
 
 /-- The expansion of `coMetricVal` into basis vectors. -/
 lemma coMetricVal_expand_tmul : coMetricVal =
@@ -87,7 +87,7 @@ lemma coMetricVal_expand_tmul : coMetricVal =
     - complexCoBasis (Sum.inr 2) ⊗ₜ[ℂ] complexCoBasis (Sum.inr 2) := by
   simp only [Action.instMonoidalCategory_tensorObj_V, coMetricVal, Fin.isValue]
   erw [coCoToMatrix_symm_expand_tmul]
-  simp only [map_apply, ofReal_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
+  simp only [map_apply, ofRealHom_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq,
     not_false_eq_true, minkowskiMatrix.off_diag_zero, zero_smul, add_zero, zero_add, Sum.inr.injEq,
     zero_ne_one, Fin.reduceEq, one_ne_zero]

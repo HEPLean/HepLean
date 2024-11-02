@@ -124,8 +124,11 @@ lemma left_eq_right : P.toFun Φ1 Φ1 =
     neg_zero, zero_div, zero_mul, Complex.mul_im, add_zero, mul_neg, neg_mul, sub_neg_eq_add,
     sub_add_add_cancel, zero_add, HiggsField.Potential.toFun, neg_add_rev, neg_sub]
   ring_nf
-  erw [show ((Complex.ofReal ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
+  erw [show ((Complex.ofRealHom ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
     erw [← Complex.ofReal_pow]; rfl]
+  erw [show ((Complex.ofRealHom ‖Φ1 x‖) ^ 2).re = ‖Φ1 x‖ ^ 2 by
+    erw [← Complex.ofReal_pow]; rfl]
+  erw [show (Complex.ofRealHom ‖Φ1 x‖ ^ 2).im = 0 by exact normSq_apply_im_zero Φ1 x]
   ring
 
 lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =

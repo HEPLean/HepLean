@@ -84,7 +84,7 @@ lemma predAboveI_lt {i x : Fin n.succ.succ} (h : x.val < i.val) :
 
 lemma predAboveI_ge {i x : Fin n.succ.succ} (h : i.val < x.val) :
     predAboveI i x = ⟨x.val - 1, by omega⟩ := by
-  simp only [Nat.succ_eq_add_one, predAboveI, Fin.val_fin_lt, dite_eq_else, Fin.mk.injEq]
+  simp only [Nat.succ_eq_add_one, predAboveI, Fin.val_fin_lt, dite_eq_right_iff, Fin.mk.injEq]
   omega
 
 lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :

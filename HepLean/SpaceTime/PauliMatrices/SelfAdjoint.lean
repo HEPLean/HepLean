@@ -137,11 +137,11 @@ lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h2 : ((Matrix.trace (PauliMatrix.σ2 * A.1))).re = ((Matrix.trace (PauliMatrix.σ2 * B.1))).re)
     (h3 : ((Matrix.trace (PauliMatrix.σ3 * A.1))).re = ((Matrix.trace (PauliMatrix.σ3 * B.1))).re) :
     A = B := by
-  have h0' := congrArg ofReal h0
-  have h1' := congrArg ofReal h1
-  have h2' := congrArg ofReal h2
-  have h3' := congrArg ofReal h3
-  rw [ofReal_eq_coe, ofReal_eq_coe] at h0' h1' h2' h3'
+  have h0' := congrArg ofRealHom h0
+  have h1' := congrArg ofRealHom h1
+  have h2' := congrArg ofRealHom h2
+  have h3' := congrArg ofRealHom h3
+  rw [ofRealHom_eq_coe, ofRealHom_eq_coe] at h0' h1' h2' h3'
   rw [selfAdjoint_trace_σ0_real A, selfAdjoint_trace_σ0_real B] at h0'
   rw [selfAdjoint_trace_σ1_real A, selfAdjoint_trace_σ1_real B] at h1'
   rw [selfAdjoint_trace_σ2_real A, selfAdjoint_trace_σ2_real B] at h2'

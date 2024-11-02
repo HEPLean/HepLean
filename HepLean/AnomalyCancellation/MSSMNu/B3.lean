@@ -54,7 +54,9 @@ def B₃AsCharge : MSSMACC.Charges := toSpecies.symm
 
 /-- `B₃` as a solution. -/
 def B₃ : MSSMACC.Sols :=
-  MSSMACC.AnomalyFreeMk B₃AsCharge (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
+  MSSMACC.AnomalyFreeMk B₃AsCharge (by with_unfolding_all rfl)
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl)
 
 lemma B₃_val : B₃.val = B₃AsCharge := by
   rfl

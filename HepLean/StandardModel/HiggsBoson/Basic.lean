@@ -88,7 +88,7 @@ We also define the Higgs bundle.
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
 instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
-  Bundle.Trivial.smoothVectorBundle HiggsVec 𝓘(ℝ, SpaceTime)
+  Bundle.Trivial.smoothVectorBundle HiggsVec
 
 /-- A Higgs field is a smooth section of the Higgs bundle. -/
 abbrev HiggsField : Type := SmoothSection SpaceTime.asSmoothManifold HiggsVec HiggsBundle

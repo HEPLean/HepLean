@@ -227,43 +227,43 @@ lemma B₀_B₀_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 0) (B 0) (B i) = 0 := by
   change cubeTriLin (B₀) (B₀) (B i) = 0
   rw [B₀_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₁_B₁_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 1) (B 1) (B i) = 0 := by
   change cubeTriLin (B₁) (B₁) (B i) = 0
   rw [B₁_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₂_B₂_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 2) (B 2) (B i) = 0 := by
   change cubeTriLin (B₂) (B₂) (B i) = 0
   rw [B₂_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₃_B₃_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 3) (B 3) (B i) = 0 := by
   change cubeTriLin (B₃) (B₃) (B i) = 0
   rw [B₃_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₄_B₄_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 4) (B 4) (B i) = 0 := by
   change cubeTriLin (B₄) (B₄) (B i) = 0
   rw [B₄_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₅_B₅_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 5) (B 5) (B i) = 0 := by
   change cubeTriLin (B₅) (B₅) (B i) = 0
   rw [B₅_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma B₆_B₆_Bi_cubic {i : Fin 7} :
     cubeTriLin (B 6) (B 6) (B i) = 0 := by
   change cubeTriLin (B₆) (B₆) (B i) = 0
   rw [B₆_cubic]
-  fin_cases i <;> rfl
+  fin_cases i <;> with_unfolding_all rfl
 
 lemma Bi_Bi_Bj_cubic (i j : Fin 7) :
     cubeTriLin (B i) (B i) (B j) = 0 := by
@@ -297,21 +297,21 @@ lemma B_sum_is_sol (f : Fin 7 → ℚ) : (SM 3).IsSolution (∑ i, f i • B i) 
     apply Fintype.sum_eq_zero _ fun i ↦ ?_
     rw [map_smul]
     have h : accGrav (B i) = 0 := by
-      fin_cases i <;> rfl
+      fin_cases i <;> with_unfolding_all rfl
     rw [h]
     exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
       apply Fintype.sum_eq_zero _ fun i ↦ ?_
       rw [map_smul]
-      have h : accSU2 (B i) = 0 := by fin_cases i <;> rfl
+      have h : accSU2 (B i) = 0 := by fin_cases i <;> with_unfolding_all rfl
       rw [h]
       exact DistribMulAction.smul_zero (f i))
     (by
       rw [map_sum]
       apply Fintype.sum_eq_zero _ fun i ↦ ?_
       rw [map_smul]
-      have h : accSU3 (B i) = 0 := by fin_cases i <;> rfl
+      have h : accSU3 (B i) = 0 := by fin_cases i <;> with_unfolding_all rfl
       rw [h]
       exact DistribMulAction.smul_zero (f i))
     (B_in_accCube f)

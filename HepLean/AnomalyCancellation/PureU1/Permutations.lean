@@ -38,8 +38,6 @@ def chargeMap {n : ℕ} (f : PermGroup n) :
   map_add' _ _ := rfl
   map_smul' _ _:= rfl
 
-open PureU1Charges in
-
 /-- The representation of `permGroup` acting on the vector space of charges. -/
 @[simp]
 def permCharges {n : ℕ} : Representation ℚ (PermGroup n) (PureU1 n).Charges where

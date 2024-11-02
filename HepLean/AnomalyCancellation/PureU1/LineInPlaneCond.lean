@@ -166,7 +166,7 @@ lemma linesInPlane_eq_sq_four {S : (PureU1 4).Sols}
     ConstAbsProp (S.val i, S.val j) := by
   refine Prop_two ConstAbsProp Fin.zero_ne_one ?_
   intro M
-  let S' := (FamilyPermutations 4).solAction.toFun S M
+  let S' := (FamilyPermutations 4).solAction.toFun _ _ S M
   have hS' : LineInPlaneCond S'.1.1 :=
     (lineInPlaneCond_perm hS M)
   exact linesInPlane_four S' hS'

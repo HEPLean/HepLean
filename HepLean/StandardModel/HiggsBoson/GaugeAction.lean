@@ -135,10 +135,10 @@ def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
-    rep (rotateGuageGroup hφ) φ = ![0, Complex.ofReal ‖φ‖] := by
+    rep (rotateGuageGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
   rw [rep_apply]
   simp only [rotateGuageGroup, rotateMatrix, one_pow, one_smul,
-    Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe]
+    Nat.succ_eq_add_one, Nat.reduceAdd, ofRealHom_eq_coe]
   ext i
   fin_cases i
   · simp only [mulVec, Fin.zero_eta, Fin.isValue, cons_val', empty_val', cons_val_fin_one,
@@ -181,7 +181,7 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
   rw [rep.map_mul]
   change rep P (rep g φ) = _
   rw [h, rep_apply]
-  simp only [one_pow, Nat.succ_eq_add_one, Nat.reduceAdd, ofReal_eq_coe, mulVec_cons, zero_smul,
+  simp only [one_pow, Nat.succ_eq_add_one, Nat.reduceAdd, ofRealHom_eq_coe, mulVec_cons, zero_smul,
     coe_smul, mulVec_empty, add_zero, zero_add, one_smul]
   funext i
   fin_cases i

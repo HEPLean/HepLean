@@ -57,7 +57,7 @@ lemma lineEqPropSol_iff_lineEqCoeff_zero (T : MSSMACC.Sols) :
   simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero,
     false_or]
   rw [cube_proj_proj_B₃, cube_proj_proj_Y₃, quad_B₃_proj, quad_Y₃_proj]
-  rw [show dot Y₃.val B₃.val = 108 by rfl]
+  rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl]
   simp only [Fin.isValue, Fin.reduceFinMk, OfNat.ofNat_ne_zero, false_or]
   ring_nf
   rw [mul_comm _ 1259712, mul_comm _ 1259712, ← mul_sub]
@@ -67,7 +67,7 @@ lemma linEqPropSol_iff_proj_linEqProp (R : MSSMACC.Sols) :
     LineEqPropSol R ↔ LineEqProp (proj R.1.1) := by
   rw [lineEqPropSol_iff_lineEqCoeff_zero, lineEqCoeff, LineEqProp]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+  · rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h
     simp only [mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at h
     rw [α₁_proj, α₂_proj, h]
     simp only [neg_zero, Fin.isValue, Fin.reduceFinMk, zero_mul, and_self]
@@ -95,8 +95,8 @@ def quadCoeff (T : MSSMACC.Sols) : ℚ :=
 lemma inQuadSolProp_iff_quadCoeff_zero (T : MSSMACC.Sols) : InQuadSolProp T ↔ quadCoeff T = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [quadCoeff, h.1, h.2]
-    rfl
-  · rw [quadCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
+    with_unfolding_all rfl
+  · rw [quadCoeff, show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
     apply (add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)).mp at h
@@ -112,7 +112,7 @@ lemma inQuadSolProp_iff_proj_inQuadProp (R : MSSMACC.Sols) :
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [h.1, h.2]
     simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
-  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+  · rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero,
       OfNat.ofNat_ne_zero, or_self, false_or] at h
     rw [h.2.1, h.2.2]
@@ -141,8 +141,8 @@ lemma inCubeSolProp_iff_cubicCoeff_zero (T : MSSMACC.Sols) :
     InCubeSolProp T ↔ cubicCoeff T = 0 := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [cubicCoeff, h.1, h.2]
-    rfl
-  · rw [cubicCoeff, show dot Y₃.val B₃.val = 108 by rfl] at h
+    with_unfolding_all rfl
+  · rw [cubicCoeff, show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
     apply (add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)).mp at h
@@ -157,7 +157,7 @@ lemma inCubeSolProp_iff_proj_inCubeProp (R : MSSMACC.Sols) :
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · rw [h.1, h.2]
     simp only [Fin.isValue, Fin.reduceFinMk, mul_zero, add_zero, and_self]
-  · rw [show dot Y₃.val B₃.val = 108 by rfl] at h
+  · rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h
     simp only [Fin.isValue, Fin.reduceFinMk, mul_eq_zero, OfNat.ofNat_ne_zero, ne_eq,
       not_false_eq_true, pow_eq_zero_iff, or_self, false_or] at h
     rw [h.2.1, h.2.2]
@@ -367,7 +367,7 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀]
   · exact MulAction.one_smul (T.1).val
-  · rw [show dot Y₃.val B₃.val = 108 by rfl]
+  · rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl]
     exact Ne.symm (OfNat.zero_ne_ofNat 108)
 
 /-- A solution from an element of `MSSMACC.AnomalyFreePerp × ℚ × ℚ × ℚ`. We will
