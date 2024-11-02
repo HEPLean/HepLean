@@ -75,7 +75,7 @@ def B : Fin 11 → (PlusU1 3).Charges := fun i =>
 
 lemma Bi_Bj_quad {i j : Fin 11} (hi : i ≠ j) : quadBiLin (B i) (B j) = 0 := by
   fin_cases i <;> fin_cases j
-  any_goals rfl
+  any_goals with_unfolding_all rfl
   all_goals simp at hi
 
 lemma Bi_sum_quad (i : Fin 11) (f : Fin 11 → ℚ) :
@@ -92,7 +92,7 @@ def quadCoeff : Fin 11 → ℚ := ![1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
 
 lemma quadCoeff_eq_bilinear (i : Fin 11) : quadCoeff i = quadBiLin (B i) (B i) := by
   fin_cases i
-  all_goals rfl
+  all_goals with_unfolding_all rfl
 
 lemma on_accQuad (f : Fin 11 → ℚ) :
     accQuad (∑ i, f i • B i) = ∑ i, quadCoeff i * (f i)^2 := by
@@ -170,8 +170,9 @@ lemma isSolution_grav (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f
   have hx := isSolution_sum_part f hS
   obtain ⟨S, hS'⟩ := hS
   have hg := gravSol S.toLinSols
-  rw [hS', hx, accGrav.map_add, accGrav.map_smul, accGrav.map_smul, show accGrav B₉ = 3 by rfl,
-    show accGrav B₁₀ = 1 by rfl] at hg
+  rw [hS', hx, accGrav.map_add, accGrav.map_smul, accGrav.map_smul,
+    show accGrav B₉ = 3 by with_unfolding_all rfl,
+    show accGrav B₁₀ = 1 by with_unfolding_all rfl] at hg
   simp only [Fin.isValue, smul_eq_mul, mul_one] at hg
   linear_combination hg
 
@@ -191,8 +192,10 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i
   erw [accCube.map_smul (- 3 * f 9) B₁₀] at hc
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₂,
     cubeTriLin.map_smul₃, cubeTriLin.map_smul₃] at hc
-  rw [show accCube B₉ = 9 by rfl, show accCube B₁₀ = 1 by rfl, show cubeTriLin B₉ B₉ B₁₀ = 0 by rfl,
-    show cubeTriLin B₁₀ B₁₀ B₉ = 0 by rfl] at hc
+  rw [show accCube B₉ = 9 by with_unfolding_all rfl,
+    show accCube B₁₀ = 1 by with_unfolding_all rfl,
+    show cubeTriLin B₉ B₉ B₁₀ = 0 by with_unfolding_all rfl,
+    show cubeTriLin B₁₀ B₁₀ B₉ = 0 by with_unfolding_all rfl] at hc
   simp only [Fin.isValue, neg_mul, mul_one, mul_zero, add_zero] at hc
   have h1 : f 9 ^ 3 * 9 + (-(3 * f 9)) ^ 3 = - 18 * f 9 ^ 3 := by ring
   rw [h1] at hc
@@ -201,7 +204,7 @@ lemma isSolution_f9 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i
 lemma isSolution_f10 (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i)) :
     f 10 = 0 := by
   rw [isSolution_grav f hS, isSolution_f9 f hS]
-  rfl
+  with_unfolding_all rfl
 
 lemma isSolution_f_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (∑ i, f i • B i))
     (k : Fin 11) : f k = 0 := by
@@ -225,7 +228,9 @@ lemma isSolution_only_if_zero (f : Fin 11 → ℚ) (hS : (PlusU1 3).IsSolution (
 
 theorem basis_linear_independent : LinearIndependent ℚ B :=
   Fintype.linearIndependent_iff.mpr fun f h ↦ isSolution_f_zero f
-    ⟨chargeToAF 0 (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl), id (Eq.symm h)⟩
+    ⟨chargeToAF 0 (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+      (by with_unfolding_all rfl) (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+      (by with_unfolding_all rfl), id (Eq.symm h)⟩
 
 end ElevenPlane
 

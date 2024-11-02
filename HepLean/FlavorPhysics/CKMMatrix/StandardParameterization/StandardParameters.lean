@@ -391,11 +391,11 @@ lemma mulExpδ₁₃_on_param_neq_zero_arg (V : CKMMatrix) (δ₁₃ : ℝ)
 lemma on_param_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₃ ⟦V⟧) = 0) :
     standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) δ₁₃ ≈ standParam (θ₁₂ ⟦V⟧) (θ₁₃ ⟦V⟧) (θ₂₃ ⟦V⟧) 0 := by
   have hS13 := congrArg ofReal (S₁₃_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
-  simp only [ofReal_eq_coe, ← S₁₃_eq_ℂsin_θ₁₃, _root_.map_one] at hS13
+  simp only [← S₁₃_eq_ℂsin_θ₁₃] at hS13
   have hC12 := congrArg ofReal (C₁₂_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
-  simp only [ofReal_eq_coe, ← C₁₂_eq_ℂcos_θ₁₂, _root_.map_one] at hC12
+  simp only [← C₁₂_eq_ℂcos_θ₁₂] at hC12
   have hS12 := congrArg ofReal (S₁₂_of_Vub_one (VubAbs_of_cos_θ₁₃_zero h))
-  simp only [ofReal_eq_coe, ← S₁₂_eq_ℂsin_θ₁₂, map_zero] at hS12
+  simp only [← S₁₂_eq_ℂsin_θ₁₂] at hS12
   use 0, 0, 0, δ₁₃, 0, -δ₁₃
   simp only [standParam, standParamAsMatrix, ofReal_cos, hC12, h, ofReal_zero, mul_zero, ofReal_sin,
     hS12, hS13, neg_mul, one_mul, neg_zero, zero_mul, mul_one, zero_sub, sub_zero, phaseShift,
@@ -407,7 +407,8 @@ lemma on_param_cos_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
       cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
       vecCons_const, mul_zero, tail_val', head_val', zero_add, Fin.mk_one, Fin.reduceFinMk,
       neg_mul, mul_one]
-  · rfl
+  · simp_all only [ofReal_one, ofReal_zero, one_mul]
+    rfl
   · rfl
 
 lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.cos (θ₁₂ ⟦V⟧) = 0) :
@@ -527,11 +528,11 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
   have hb' : VubAbs ⟦V⟧ ≠ 1 := by
     rw [ud_us_neq_zero_iff_ub_neq_one] at hb
     exact hb
-  have h1 : ofReal (√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) *
-    ↑√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2)) = ofReal (VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) := by
+  have h1 : ofRealHom (√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) *
+    ↑√(VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2)) = ofRealHom (VAbs 0 0 ⟦V⟧ ^ 2 + VAbs 0 1 ⟦V⟧ ^ 2) := by
     rw [Real.mul_self_sqrt]
     apply add_nonneg (sq_nonneg _) (sq_nonneg _)
-  simp only [Fin.isValue, _root_.map_mul, ofReal_eq_coe, map_add, map_pow] at h1
+  simp only [Fin.isValue, _root_.map_mul, ofRealHom_eq_coe, map_add, map_pow] at h1
   have hx := Vabs_sq_add_neq_zero hb
   refine eq_rows V ?_ ?_ hV.2.2.2.2
   · funext i
