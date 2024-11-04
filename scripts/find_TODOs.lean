@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Lean
 import Batteries.Data.String.Matcher
-import Mathlib.Init.Data.Nat.Lemmas
+import Mathlib.Data.Nat.Notation
 /-!
 
 # TODO finder
