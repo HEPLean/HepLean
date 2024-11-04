@@ -555,24 +555,24 @@ end TensorSpecies
 inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
+  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
+  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
+  /-- A node corresponding to negation of a tensor. -/
+  | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
+  /-- A node correpsonding to the action of a group element on a tensor. -/
+  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
   /-- A node corresponding to the product of two tensors. -/
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
-  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
-  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
-  /-- A node corresponding to negation of a tensor. -/
-  | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the contraction of indices of a tensor. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
-  /-- A node correpsonding to the action of a group element on a tensor. -/
-  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the evaluation of an index of a tensor. -/
   | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
@@ -660,7 +660,7 @@ abbrev constThreeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
 
 -/
 /-- The number of nodes in a tensor tree. -/
-def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
+def size {n : ℕ} {c : Fin n → S.C} : TensorTree S c → ℕ := fun
   | tensorNode _ => 1
   | add t1 t2 => t1.size + t2.size + 1
   | perm _ t => t.size + 1
@@ -674,17 +674,17 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
 noncomputable section
 
 /-- The underlying tensor a tensor tree corresponds to. -/
-def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
+def tensor {n : ℕ} {c : Fin n → S.C} : TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
-  | add t1 t2 => t1.tensor + t2.tensor
-  | perm σ t => (S.F.map σ).hom t.tensor
-  | neg t => - t.tensor
   | smul a t => a • t.tensor
+  | neg t => - t.tensor
+  | add t1 t2 => t1.tensor + t2.tensor
+  | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
+  | perm σ t => (S.F.map σ).hom t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' _ e)) t.tensor
-  | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
 
 /-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
 def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
