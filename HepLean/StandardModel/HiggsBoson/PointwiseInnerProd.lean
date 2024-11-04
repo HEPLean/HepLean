@@ -141,13 +141,11 @@ lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
 
 -/
 
-@[simp]
 lemma normSq_apply_im_zero (φ : HiggsField) (x : SpaceTime) :
     ((Complex.ofRealHom ‖φ x‖) ^ 2).im = 0 := by
   rw [sq]
   simp only [ofRealHom_eq_coe, mul_im, ofReal_re, ofReal_im, mul_zero, zero_mul, add_zero]
 
-@[simp]
 lemma normSq_apply_re_self (φ : HiggsField) (x : SpaceTime) :
     ((Complex.ofRealHom ‖φ x‖) ^ 2).re = φ.normSq x := by
   rw [sq]

@@ -162,6 +162,5 @@ theorem special_case {S : (PureU1 (2 * n.succ.succ + 1)).Sols}
   have ht := special_case_lineInCubic_perm h
   exact lineInCubicPerm_zero ht
 
-
 end Odd
 end PureU1

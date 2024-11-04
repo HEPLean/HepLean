@@ -298,7 +298,7 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
     ring_nf
     exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
   have h'' : (1 * (S.w * S.w) + (-1) * S.w + 1) ≠ 0 := by
-    refine quadratic_ne_zero_of_discrim_ne_sq ?_  S.w
+    refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.w
     intro s
     by_contra hn
     have h : s ^ 2 < 0 := by
