@@ -40,29 +40,20 @@ open MonoidalCategory
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors. -/
 structure TensorSpecies where
-  /-- The colors of indices e.g. up or down. -/
-  C : Type
+  /-- The commutative ring  over which we want to consider the tensors to live in,
+    usually `ℝ` or `ℂ`. -/
+  k : Type
+  /-- An instance of `k` as a commutative ring. -/
+  k_commRing : CommRing k
   /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
   G : Type
   /-- An instance of `G` as a group. -/
   G_group : Group G
-  /-- The field over which we want to consider the tensors to live in, usually `ℝ` or `ℂ`. -/
-  k : Type
-  /-- An instance of `k` as a commutative ring. -/
-  k_commRing : CommRing k
-  /-- A `MonoidalFunctor` from `OverColor C` giving the rep corresponding to a map of colors
-    `X → C`. -/
+  /-- The colors of indices e.g. up or down. -/
+  C : Type
+  /-- A functor from `C` to `Rep k G` giving our building block representations.
+    Equivalently a function `C → Re k G`. -/
   FDiscrete : Discrete C ⥤ Rep k G
-  /-- A map from `C` to `C`. An involution. -/
-  τ : C → C
-  /-- The condition that `τ` is an involution. -/
-  τ_involution : Function.Involutive τ
-  /-- The natural transformation describing contraction. -/
-  contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
-  /-- The natural transformation describing the metric. -/
-  metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
-  /-- The natural transformation describing the unit. -/
-  unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   repDim : C → ℕ
@@ -70,17 +61,19 @@ structure TensorSpecies where
   repDim_neZero (c : C) : NeZero (repDim c)
   /-- A basis for each Module, determined by the evaluation map. -/
   basis : (c : C) → Basis (Fin (repDim c)) k (FDiscrete.obj (Discrete.mk c)).V
+  /-- A map from `C` to `C`. An involution. -/
+  τ : C → C
+  /-- The condition that `τ` is an involution. -/
+  τ_involution : Function.Involutive τ
+  /-- The natural transformation describing contraction. -/
+  contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
   /-- Contraction is symmetric with respect to duals. -/
   contr_tmul_symm (c : C) (x : FDiscrete.obj (Discrete.mk c))
       (y : FDiscrete.obj (Discrete.mk (τ c))) :
     (contr.app (Discrete.mk c)).hom (x ⊗ₜ[k] y) = (contr.app (Discrete.mk (τ c))).hom
-      (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
-  /-- Contraction with unit leaves invariant. -/
-  contr_unit (c : C) (x : FDiscrete.obj (Discrete.mk (c))) :
-    (λ_ (FDiscrete.obj (Discrete.mk (c)))).hom.hom
-    (((contr.app (Discrete.mk c)) ▷ (FDiscrete.obj (Discrete.mk (c)))).hom
-    ((α_ _ _ (FDiscrete.obj (Discrete.mk (c)))).inv.hom
-    (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
+    (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
+  /-- The natural transformation describing the unit. -/
+  unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- The unit is symmetric. -/
   unit_symm (c : C) :
     ((unit.app (Discrete.mk c)).hom (1 : k)) =
@@ -88,6 +81,14 @@ structure TensorSpecies where
       (FDiscrete.map (Discrete.eqToHom (τ_involution c)))).hom
     ((β_ (FDiscrete.obj (Discrete.mk (τ (τ c)))) (FDiscrete.obj (Discrete.mk (τ (c))))).hom.hom
     ((unit.app (Discrete.mk (τ c))).hom (1 : k)))
+  /-- Contraction with unit leaves invariant. -/
+  contr_unit (c : C) (x : FDiscrete.obj (Discrete.mk (c))) :
+    (λ_ (FDiscrete.obj (Discrete.mk (c)))).hom.hom
+    (((contr.app (Discrete.mk c)) ▷ (FDiscrete.obj (Discrete.mk (c)))).hom
+    ((α_ _ _ (FDiscrete.obj (Discrete.mk (c)))).inv.hom
+    (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
+  /-- The natural transformation describing the metric. -/
+  metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
   /-- On contracting metrics we get back the unit. -/
   contr_metric (c : C) :
     (β_ (FDiscrete.obj (Discrete.mk c)) (FDiscrete.obj (Discrete.mk (τ c)))).hom.hom
@@ -554,24 +555,24 @@ end TensorSpecies
 inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
+  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
+  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
+  /-- A node corresponding to negation of a tensor. -/
+  | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
+  /-- A node correpsonding to the action of a group element on a tensor. -/
+  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
   /-- A node corresponding to the product of two tensors. -/
   | prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (t : TensorTree S c) (t1 : TensorTree S c1) : TensorTree S (Sum.elim c c1 ∘ finSumFinEquiv.symm)
-  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
-  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
-  /-- A node corresponding to negation of a tensor. -/
-  | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the contraction of indices of a tensor. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
-  /-- A node correpsonding to the action of a group element on a tensor. -/
-  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the evaluation of an index of a tensor. -/
   | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
     TensorTree S (c ∘ Fin.succAbove i)
@@ -659,7 +660,7 @@ abbrev constThreeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
 
 -/
 /-- The number of nodes in a tensor tree. -/
-def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
+def size {n : ℕ} {c : Fin n → S.C} : TensorTree S c → ℕ := fun
   | tensorNode _ => 1
   | add t1 t2 => t1.size + t2.size + 1
   | perm _ t => t.size + 1
@@ -673,17 +674,17 @@ def size : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → ℕ := fun
 noncomputable section
 
 /-- The underlying tensor a tensor tree corresponds to. -/
-def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (OverColor.mk c) := fun
+def tensor {n : ℕ} {c : Fin n → S.C} : TensorTree S c → S.F.obj (OverColor.mk c) := fun
   | tensorNode t => t
-  | add t1 t2 => t1.tensor + t2.tensor
-  | perm σ t => (S.F.map σ).hom t.tensor
-  | neg t => - t.tensor
   | smul a t => a • t.tensor
+  | neg t => - t.tensor
+  | add t1 t2 => t1.tensor + t2.tensor
+  | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
+  | perm σ t => (S.F.map σ).hom t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' _ e)) t.tensor
-  | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
 
 /-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
 def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
