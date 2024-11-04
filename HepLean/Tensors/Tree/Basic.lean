@@ -50,8 +50,8 @@ structure TensorSpecies where
   G_group : Group G
   /-- The colors of indices e.g. up or down. -/
   C : Type
-  /-- A `MonoidalFunctor` from `OverColor C` giving the rep corresponding to a map of colors
-    `X → C`. -/
+  /-- A functor from `C` to `Rep k G` giving our building block representations.
+    Equivalently a function `C → Re k G`. -/
   FDiscrete : Discrete C ⥤ Rep k G
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
