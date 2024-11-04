@@ -40,29 +40,19 @@ open MonoidalCategory
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors. -/
 structure TensorSpecies where
-  /-- The colors of indices e.g. up or down. -/
-  C : Type
-  /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
-  G : Type
-  /-- An instance of `G` as a group. -/
-  G_group : Group G
   /-- The field over which we want to consider the tensors to live in, usually `ℝ` or `ℂ`. -/
   k : Type
   /-- An instance of `k` as a commutative ring. -/
   k_commRing : CommRing k
+  /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
+  G : Type
+  /-- An instance of `G` as a group. -/
+  G_group : Group G
+  /-- The colors of indices e.g. up or down. -/
+  C : Type
   /-- A `MonoidalFunctor` from `OverColor C` giving the rep corresponding to a map of colors
     `X → C`. -/
   FDiscrete : Discrete C ⥤ Rep k G
-  /-- A map from `C` to `C`. An involution. -/
-  τ : C → C
-  /-- The condition that `τ` is an involution. -/
-  τ_involution : Function.Involutive τ
-  /-- The natural transformation describing contraction. -/
-  contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
-  /-- The natural transformation describing the metric. -/
-  metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
-  /-- The natural transformation describing the unit. -/
-  unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- A specification of the dimension of each color in C. This will be used for explicit
     evaluation of tensors. -/
   repDim : C → ℕ
@@ -70,17 +60,19 @@ structure TensorSpecies where
   repDim_neZero (c : C) : NeZero (repDim c)
   /-- A basis for each Module, determined by the evaluation map. -/
   basis : (c : C) → Basis (Fin (repDim c)) k (FDiscrete.obj (Discrete.mk c)).V
+  /-- A map from `C` to `C`. An involution. -/
+  τ : C → C
+  /-- The condition that `τ` is an involution. -/
+  τ_involution : Function.Involutive τ
+  /-- The natural transformation describing contraction. -/
+  contr : OverColor.Discrete.pairτ FDiscrete τ ⟶ 𝟙_ (Discrete C ⥤ Rep k G)
   /-- Contraction is symmetric with respect to duals. -/
   contr_tmul_symm (c : C) (x : FDiscrete.obj (Discrete.mk c))
       (y : FDiscrete.obj (Discrete.mk (τ c))) :
     (contr.app (Discrete.mk c)).hom (x ⊗ₜ[k] y) = (contr.app (Discrete.mk (τ c))).hom
-      (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
-  /-- Contraction with unit leaves invariant. -/
-  contr_unit (c : C) (x : FDiscrete.obj (Discrete.mk (c))) :
-    (λ_ (FDiscrete.obj (Discrete.mk (c)))).hom.hom
-    (((contr.app (Discrete.mk c)) ▷ (FDiscrete.obj (Discrete.mk (c)))).hom
-    ((α_ _ _ (FDiscrete.obj (Discrete.mk (c)))).inv.hom
-    (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
+    (y ⊗ₜ (FDiscrete.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
+  /-- The natural transformation describing the unit. -/
+  unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FDiscrete τ
   /-- The unit is symmetric. -/
   unit_symm (c : C) :
     ((unit.app (Discrete.mk c)).hom (1 : k)) =
@@ -88,6 +80,14 @@ structure TensorSpecies where
       (FDiscrete.map (Discrete.eqToHom (τ_involution c)))).hom
     ((β_ (FDiscrete.obj (Discrete.mk (τ (τ c)))) (FDiscrete.obj (Discrete.mk (τ (c))))).hom.hom
     ((unit.app (Discrete.mk (τ c))).hom (1 : k)))
+  /-- Contraction with unit leaves invariant. -/
+  contr_unit (c : C) (x : FDiscrete.obj (Discrete.mk (c))) :
+    (λ_ (FDiscrete.obj (Discrete.mk (c)))).hom.hom
+    (((contr.app (Discrete.mk c)) ▷ (FDiscrete.obj (Discrete.mk (c)))).hom
+    ((α_ _ _ (FDiscrete.obj (Discrete.mk (c)))).inv.hom
+    (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
+  /-- The natural transformation describing the metric. -/
+  metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FDiscrete
   /-- On contracting metrics we get back the unit. -/
   contr_metric (c : C) :
     (β_ (FDiscrete.obj (Discrete.mk c)) (FDiscrete.obj (Discrete.mk (τ c)))).hom.hom
