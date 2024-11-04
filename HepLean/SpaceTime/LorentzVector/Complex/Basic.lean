@@ -94,25 +94,25 @@ def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
 
 /-- The semilinear map including real Lorentz vectors into complex contravariant
   lorentz vectors. -/
-def inclCongrRealLorentz : LorentzVector 3 →ₛₗ[Complex.ofReal] complexContr where
+def inclCongrRealLorentz : LorentzVector 3 →ₛₗ[Complex.ofRealHom] complexContr where
   toFun v := {val := ofReal ∘ v}
   map_add' x y := by
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_add]
     funext i
-    simp only [Function.comp_apply, ofReal_eq_coe, Pi.add_apply]
+    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.add_apply]
     change ofReal (x i + y i) = _
-    simp only [ofReal_eq_coe, ofReal_add]
+    simp only [ofRealHom_eq_coe, ofReal_add]
   map_smul' c x := by
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_smul]
     funext i
-    simp only [Function.comp_apply, ofReal_eq_coe, Pi.smul_apply]
+    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.smul_apply]
     change ofReal (c • x i) = _
-    simp only [smul_eq_mul, ofReal_eq_coe, ofReal_mul]
+    simp only [smul_eq_mul, ofRealHom_eq_coe, ofReal_mul]
 
 lemma inclCongrRealLorentz_val (v : LorentzVector 3) :
-    (inclCongrRealLorentz v).val = ofReal ∘ v := rfl
+    (inclCongrRealLorentz v).val = ofRealHom ∘ v := rfl
 
 lemma complexContrBasis_of_real (i : Fin 1 ⊕ Fin 3) :
     (complexContrBasis i) = inclCongrRealLorentz (LorentzVector.stdBasis i) := by
@@ -120,10 +120,10 @@ lemma complexContrBasis_of_real (i : Fin 1 ⊕ Fin 3) :
   simp only [complexContrBasis, Basis.coe_ofEquivFun, inclCongrRealLorentz, LorentzVector.stdBasis,
     LinearMap.coe_mk, AddHom.coe_mk]
   ext j
-  simp only [Function.comp_apply, ofReal_eq_coe]
+  simp only [Function.comp_apply, ofRealHom_eq_coe]
   erw [Pi.basisFun_apply]
   change (Pi.single i 1) j = _
-  exact Eq.symm (Pi.apply_single (fun _ => ofReal') (congrFun rfl) i 1 j)
+  exact Eq.symm (Pi.apply_single (fun _ => ofRealHom) (congrFun rfl) i 1 j)
 
 lemma inclCongrRealLorentz_ρ (M : SL(2, ℂ)) (v : LorentzVector 3) :
     (complexContr.ρ M) (inclCongrRealLorentz v) =
@@ -143,7 +143,7 @@ lemma SL2CRep_ρ_basis (M : SL(2, ℂ)) (i : Fin 1 ⊕ Fin 3) :
   rw [complexContrBasis_of_real, inclCongrRealLorentz_ρ, SL2C.repLorentzVector_stdBasis, map_sum]
   apply congrArg
   funext j
-  simp only [LinearMap.map_smulₛₗ, ofReal_eq_coe, coe_smul]
+  simp only [LinearMap.map_smulₛₗ, ofRealHom_eq_coe, coe_smul]
   rw [complexContrBasis_of_real]
 
 end Lorentz

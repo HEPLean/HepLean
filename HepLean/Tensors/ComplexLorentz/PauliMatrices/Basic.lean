@@ -63,17 +63,18 @@ lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀ.tensor =
 
 /-- The definitional tensor node relation for `pauliCo`. -/
 lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor =
-    {η' | μ ν ⊗ PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
-  rfl
+    {η' | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor := by
+  rw [pauliCo, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `pauliCoDown`. -/
 lemma tensorNode_pauliCoDown : {pauliCoDown | μ α β}ᵀ.tensor =
     {pauliCo | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor := by
-  rfl
+  rw [pauliCoDown, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `pauliContrDown`. -/
 lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
     {pauliContr | μ α β ⊗ εL' | α α' ⊗ εR' | β β'}ᵀ.tensor := by
+  rw [pauliContr, tensorNode_tensor]
   rfl
 
 /-!
@@ -200,10 +201,15 @@ lemma action_pauliCo (g : SL(2,ℂ)) : {g •ₐ pauliCo | μ α β}ᵀ.tensor =
   conv =>
     lhs
     rw [action_tensor_eq <| tensorNode_pauliCo]
+    rw [action_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_pauliContr]
     rw [(contr_action _ _).symm]
     rw [contr_tensor_eq <| (prod_action _ _ _).symm]
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| action_constTwoNode _ _]
     rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constThreeNode _ _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliCo]
+    rw [contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_pauliContr]
   rfl
 
 /-- The tensor `pauliCoDown` is invariant under the action of `SL(2,ℂ)`. -/
@@ -219,9 +225,11 @@ lemma action_pauliCoDown (g : SL(2,ℂ)) : {g •ₐ pauliCoDown | μ α β}ᵀ.
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_fst <|
       action_pauliCo _]
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
-      action_constTwoNode _ _]
-    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
-  rfl
+      action_altLeftMetric _]
+    rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_altRightMetric _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliCoDown]
 
 /-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
 lemma action_pauliContrDown (g : SL(2,ℂ)) : {g •ₐ pauliContrDown | μ α β}ᵀ.tensor =
@@ -236,8 +244,10 @@ lemma action_pauliContrDown (g : SL(2,ℂ)) : {g •ₐ pauliContrDown | μ α �
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_fst <|
       action_pauliContr _]
     rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
-      action_constTwoNode _ _]
-    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constTwoNode _ _]
-  rfl
+      action_altLeftMetric _]
+    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_altRightMetric _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliContrDown]
 
 end complexLorentzTensor

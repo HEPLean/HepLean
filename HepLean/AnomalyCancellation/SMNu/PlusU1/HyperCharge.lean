@@ -35,16 +35,16 @@ def Y₁ : (PlusU1 1).Sols where
     intro i
     simp only [PlusU1_numberLinear] at i
     match i with
-    | 0 => rfl
-    | 1 => rfl
-    | 2 => rfl
-    | 3 => rfl
+    | 0 => with_unfolding_all rfl
+    | 1 => with_unfolding_all rfl
+    | 2 => with_unfolding_all rfl
+    | 3 => with_unfolding_all rfl
   quadSol := by
     intro i
     simp only [PlusU1_numberQuadratic] at i
     match i with
-    | 0 => rfl
-  cubicSol := by rfl
+    | 0 => with_unfolding_all rfl
+  cubicSol := by with_unfolding_all rfl
 
 /-- The hypercharge for `n` family. -/
 @[simps!]
@@ -96,7 +96,7 @@ lemma on_cubeTriLin (S : (PlusU1 n).Charges) :
 lemma on_cubeTriLin_AFL (S : (PlusU1 n).LinSols) :
     cubeTriLin (Y n).val (Y n).val S.val = 0 := by
   rw [on_cubeTriLin, YYsol S]
-  rfl
+  with_unfolding_all rfl
 
 lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
     cubeTriLin (Y n).val S S = 6 * accQuad S := by
@@ -109,7 +109,7 @@ lemma on_cubeTriLin' (S : (PlusU1 n).Charges) :
 lemma on_cubeTriLin'_ALQ (S : (PlusU1 n).QuadSols) :
     cubeTriLin (Y n).val S.val S.val = 0 := by
   rw [on_cubeTriLin', quadSol S]
-  rfl
+  with_unfolding_all rfl
 
 lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
     accCube (a • S.val + b • (Y n).val) =

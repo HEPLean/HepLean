@@ -66,7 +66,7 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
       split
       · rename_i ht
         exact (hn ht).elim
-      · rfl
+      · with_unfolding_all rfl
     · intro k _ hkj
       exact asCharges_ne_castSucc hkj.symm
     · intro hk
@@ -124,10 +124,11 @@ instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
   Module.Finite.of_basis asBasis
 
 lemma finrank_AnomalyFreeLinear :
-    FiniteDimensional.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by
+    Module.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by
   have h := Module.mk_finrank_eq_card_basis (@asBasis n)
-  simp only [Nat.succ_eq_add_one, finrank_eq_rank, Cardinal.mk_fintype, Fintype.card_fin] at h
-  exact FiniteDimensional.finrank_eq_of_rank_eq h
+  simp only [Nat.succ_eq_add_one, Module.finrank_eq_rank, Cardinal.mk_fintype,
+    Fintype.card_fin] at h
+  exact Module.finrank_eq_of_rank_eq h
 
 end BasisLinear
 

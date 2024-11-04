@@ -458,15 +458,10 @@ lemma pauliMatrix_contr_down_2 :
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
-  congr 1
-  · rw [basisVectorContrPauli]
-    congr 2
-    funext k
-    fin_cases k <;> rfl
-  · rw [basisVectorContrPauli]
-    congr 2
-    funext k
-    fin_cases k <;> rfl
+  rw [basisVectorContrPauli, basisVectorContrPauli]
+  congr 3
+  · decide
+  · decide
 
 lemma pauliMatrix_contr_down_3 :
     {(basisVector ![Color.down, Color.down] fun x => 3) | μ ν ⊗
@@ -503,16 +498,10 @@ lemma pauliMatrix_contr_down_3 :
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
-  congr 1
-  · rw [basisVectorContrPauli]
-    congr 1
-    funext k
-    fin_cases k <;> rfl
-  · rw [basisVectorContrPauli]
-    congr 1
-    congr 1
-    funext k
-    fin_cases k <;> rfl
+  rw [basisVectorContrPauli, basisVectorContrPauli]
+  congr 3
+  · decide
+  · decide
 
 /-- The expansion of `pauliCo` in terms of a basis. -/
 lemma pauliCo_basis_expand : pauliCo

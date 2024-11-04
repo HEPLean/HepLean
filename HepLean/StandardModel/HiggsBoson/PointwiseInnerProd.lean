@@ -87,8 +87,7 @@ lemma innerProd_expand (φ1 φ2 : HiggsField) :
   nth_rewrite 1 [← RCLike.re_add_im (φ2 x 0)]
   nth_rewrite 1 [← RCLike.re_add_im (φ2 x 1)]
   ring_nf
-  repeat rw [show RCLike.ofReal _ = ofReal' _ by rfl]
-  simp only [Algebra.id.map_eq_id, RCLike.re_to_complex, RingHom.id_apply, RCLike.I_to_complex,
+  simp only [Fin.isValue, RCLike.re_to_complex, coe_algebraMap, RCLike.I_to_complex,
     RCLike.im_to_complex, I_sq, mul_neg, mul_one, neg_mul, sub_neg_eq_add, one_mul]
   ring
 
@@ -142,18 +141,15 @@ lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :
 
 -/
 
-@[simp]
 lemma normSq_apply_im_zero (φ : HiggsField) (x : SpaceTime) :
-    ((Complex.ofReal' ‖φ x‖) ^ 2).im = 0 := by
+    ((Complex.ofRealHom ‖φ x‖) ^ 2).im = 0 := by
   rw [sq]
-  simp only [Complex.ofReal_eq_coe, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-    mul_zero, zero_mul, add_zero]
+  simp only [ofRealHom_eq_coe, mul_im, ofReal_re, ofReal_im, mul_zero, zero_mul, add_zero]
 
-@[simp]
 lemma normSq_apply_re_self (φ : HiggsField) (x : SpaceTime) :
-    ((Complex.ofReal' ‖φ x‖) ^ 2).re = φ.normSq x := by
+    ((Complex.ofRealHom ‖φ x‖) ^ 2).re = φ.normSq x := by
   rw [sq]
-  simp only [mul_re, ofReal_re, ofReal_im, mul_zero, sub_zero, normSq]
+  simp only [ofRealHom_eq_coe, mul_re, ofReal_re, ofReal_im, mul_zero, sub_zero, normSq]
   exact Eq.symm (pow_two ‖φ x‖)
 
 lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :

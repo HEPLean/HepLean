@@ -110,7 +110,7 @@ lemma δ!₃_δ₁0 : @δ!₃ n = δ₁ 0 := rfl
 
 lemma δ!₄_δ₂Last: @δ!₄ n = δ₂ (Fin.last n) := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.coe_fin_one,
+  simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.val_eq_zero,
     add_zero, δ₂, Fin.natAdd_last, Fin.val_last]
   omega
 
@@ -169,7 +169,7 @@ lemma basis_on_δ₁_other {k j : Fin n.succ} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_addNat] at h2
       omega
     · rfl
 
@@ -197,7 +197,7 @@ lemma basis!_on_δ!₁_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, add_right_inj] at h2
+      simp only [Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, Fin.coe_addNat, add_right_inj] at h2
       omega
     · rfl
 
@@ -254,11 +254,11 @@ lemma basis!_on_δ!₃ (j : Fin n) : basis!AsCharges j δ!₃ = 0 := by
   simp only [basis!AsCharges, succ_eq_add_one, PureU1_numberCharges]
   split<;> rename_i h
   · simp only [δ!₃, succ_eq_add_one, Fin.isValue, δ!₁, Fin.ext_iff, Fin.coe_cast, Fin.coe_castAdd,
-    Fin.coe_fin_one, Fin.coe_natAdd] at h
+    Fin.val_eq_zero, Fin.coe_natAdd] at h
     omega
   · split <;> rename_i h2
     · simp only [δ!₃, succ_eq_add_one, Fin.isValue, δ!₂, Fin.ext_iff, Fin.coe_cast,
-      Fin.coe_castAdd, Fin.coe_fin_one, Fin.coe_natAdd] at h2
+      Fin.coe_castAdd, Fin.val_eq_zero, Fin.coe_natAdd] at h2
       omega
     · rfl
 
@@ -266,12 +266,12 @@ lemma basis!_on_δ!₄ (j : Fin n) : basis!AsCharges j δ!₄ = 0 := by
   simp only [basis!AsCharges, succ_eq_add_one, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.coe_fin_one,
+    simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.val_eq_zero,
       add_zero, δ!₁, Fin.coe_castAdd, add_right_inj] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.coe_fin_one,
+      simp only [succ_eq_add_one, δ!₄, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd, Fin.val_eq_zero,
         add_zero, δ!₂, Fin.coe_castAdd, add_right_inj] at h2
       omega
     · rfl
@@ -650,7 +650,7 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n → ℚ) :
   exact Pa'_eq _ _
 
 lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n)) =
-    FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ)).LinSols := by
+    Module.finrank ℚ (PureU1 (2 * n.succ)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
   simp only [Fintype.card_sum, Fintype.card_fin, mul_eq]
   exact split_odd n

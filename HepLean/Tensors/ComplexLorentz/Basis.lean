@@ -98,7 +98,7 @@ lemma contrBasisVectorMul_neg {n : ℕ} {c : Fin n.succ.succ → complexLorentzT
     (h : ¬ (b i).val = (b (i.succAbove j)).val) :
     contrBasisVectorMul i j b = 0 := by
   rw [contrBasisVectorMul]
-  simp only [ite_eq_else, one_ne_zero, imp_false]
+  simp only [ite_eq_right_iff, one_ne_zero, imp_false]
   exact h
 
 lemma contrBasisVectorMul_pos {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
@@ -106,7 +106,7 @@ lemma contrBasisVectorMul_pos {n : ℕ} {c : Fin n.succ.succ → complexLorentzT
     (h : (b i).val = (b (i.succAbove j)).val) :
     contrBasisVectorMul i j b = 1 := by
   rw [contrBasisVectorMul]
-  simp only [ite_eq_then, zero_ne_one, imp_false, Decidable.not_not]
+  simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not]
   exact h
 
 lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.C}
@@ -217,8 +217,8 @@ lemma eval_basisVector {n : ℕ} {c : Fin n.succ → complexLorentzTensor.C}
     Function.comp_apply, one_smul, _root_.zero_smul]
   erw [TensorSpecies.evalMap_tprod]
   congr 1
-  have h1 : Fin.ofNat' ↑j (@Fin.size_pos' (complexLorentzTensor.repDim (c i)) _) = j := by
-    simpa [Fin.ext_iff] using Nat.mod_eq_of_lt j.prop
+  have h1 : Fin.ofNat' _ ↑j = j := by
+    simp [Fin.ext_iff]
   rw [Basis.repr_self, Finsupp.single_apply, h1]
   exact ite_congr (Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a))
     (congrFun rfl) (congrFun rfl)

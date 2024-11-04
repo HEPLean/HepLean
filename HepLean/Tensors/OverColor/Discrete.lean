@@ -80,7 +80,8 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     LaxMonoidalFunctor.μ_natural_assoc, Action.comp_hom, Action.instMonoidalCategory_tensorHom_hom,
     Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.hom_apply, Functor.id_obj]
+    ModuleCat.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.tensorHom_tmul,
+    Functor.id_obj]
   erw [forgetLiftAppV_symm_apply F c1, forgetLiftAppV_symm_apply F c2]
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom

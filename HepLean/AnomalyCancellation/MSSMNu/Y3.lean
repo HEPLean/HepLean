@@ -54,7 +54,9 @@ def Y₃AsCharge : MSSMACC.Charges := toSpecies.symm
 
 /-- $Y_3$ as a solution. -/
 def Y₃ : MSSMACC.Sols :=
-  MSSMACC.AnomalyFreeMk Y₃AsCharge (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
+  MSSMACC.AnomalyFreeMk Y₃AsCharge
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl) (by with_unfolding_all rfl)
 
 lemma Y₃_val : Y₃.val = Y₃AsCharge := by
   rfl

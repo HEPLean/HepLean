@@ -33,7 +33,7 @@ import HepLean.Tensors.ComplexLorentz.Basic
   `{T | μ ν ⊗ T3 | μ σ}ᵀ` is `contr 0 1 _ (prodNode (tensorNode T1) (tensorNode T3))`.
   `{T | μ ν ⊗ T3 | μ ν }ᵀ` is
   `contr 0 0 _ (contr 0 1 _ (prodNode (tensorNode T1) (tensorNode T3)))`.
-- If `T4` is a tensor  `S.F (OverColor.mk ![c2, c1])` then
+- If `T4` is a tensor `S.F (OverColor.mk ![c2, c1])` then
   `{T | μ ν + T4 | ν μ }ᵀ`is `addNode (tensorNode T) (perm _ (tensorNode T4))` where `_`
   is the permutation of the two indices of `T4`.
   `{T | μ ν = T4 | ν μ }ᵀ` is `(tensorNode T).tensor = (perm _ (tensorNode T4)).tensor` is the
@@ -42,8 +42,8 @@ import HepLean.Tensors.ComplexLorentz.Basic
 ## Comments
 
 - In all of theses expressions `μ`, `ν` etc are free. It does not matter what they are called,
- Lean will elaborate them in the same way. I.e. `{T | μ ν ⊗ T3 | μ ν }ᵀ` is exactly the same
- to Lean as `{T | α β ⊗ T3 | α β }ᵀ`.
+  Lean will elaborate them in the same way. I.e. `{T | μ ν ⊗ T3 | μ ν }ᵀ` is exactly the same
+  to Lean as `{T | α β ⊗ T3 | α β }ᵀ`.
 - Note that compared to ordinary index notation, we do not rise or lower the indices.
   This is for two reasons: 1) It is difficult to make this general for all tensor species,
   2) It is a reduency in ordinary index notation, since the tensor `T` itself already tells you

@@ -41,7 +41,7 @@ lemma lineY₃B₃Charges_quad (a b : ℚ) : accQuad (lineY₃B₃Charges a b).v
   simp only [mul_zero, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add,
     mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
   apply Or.inr ∘ Or.inr
-  rfl
+  with_unfolding_all rfl
 
 lemma lineY₃B₃Charges_cubic (a b : ℚ) : accCube (lineY₃B₃Charges a b).val = 0 := by
   change accCube (a • Y₃.val + b • B₃.val) = 0
@@ -52,8 +52,8 @@ lemma lineY₃B₃Charges_cubic (a b : ℚ) : accCube (lineY₃B₃Charges a b).
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   erw [Y₃.cubicSol, B₃.cubicSol]
-  rw [show cubeTriLin Y₃.val Y₃.val B₃.val = 0 by rfl]
-  rw [show cubeTriLin B₃.val B₃.val Y₃.val = 0 by rfl]
+  rw [show cubeTriLin Y₃.val Y₃.val B₃.val = 0 by with_unfolding_all rfl]
+  rw [show cubeTriLin B₃.val B₃.val Y₃.val = 0 by with_unfolding_all rfl]
   simp
 
 /-- The line through $Y_3$ and $B_3$ as `Sols`. -/

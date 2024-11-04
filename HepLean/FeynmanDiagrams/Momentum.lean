@@ -182,7 +182,7 @@ allowed space of half-edge momenta.
 
 /-- The number of loops of a Feynman diagram. Defined as the dimension
   of the space of allowed Half-loop momenta. -/
-noncomputable def numberOfLoops : ℕ := FiniteDimensional.finrank ℝ F.allowedHalfEdgeMomenta
+noncomputable def numberOfLoops : ℕ := Module.finrank ℝ F.allowedHalfEdgeMomenta
 
 /-!
 

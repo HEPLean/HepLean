@@ -66,7 +66,7 @@ def speciesEmbed (m n : ℕ) :
     by_cases hi : i.val < m
     · erw [dif_pos hi, dif_pos hi, dif_pos hi]
     · erw [dif_neg hi, dif_neg hi, dif_neg hi]
-      rfl
+      with_unfolding_all rfl
   map_smul' a S := by
     funext i
     simp only [SMνSpecies_numberCharges, HSMul.hSMul, ACCSystemCharges.chargesModule_smul,

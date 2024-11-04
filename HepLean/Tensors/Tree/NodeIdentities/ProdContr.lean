@@ -139,6 +139,34 @@ lemma sum_inr_succAbove_leftContrI_leftContrJ (k : Fin n1) : finSumFinEquiv.symm
   erw [succAbove_leftContrJ_leftContrI_natAdd]
   simp
 
+/- An auxillary lemma to `contrMap_prod_tprod`. -/
+lemma contrMap_prod_tprod_aux
+    (l : (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).left ⊕ (OverColor.mk c1).left)
+    (l' : Fin n.succ.succ ⊕ Fin n1)
+    (h : Sum.elim c c1 l' = Sum.elim (c ∘ q.i.succAbove ∘ q.j.succAbove) c1 l)
+    (h' : l' = (Sum.map (q.i.succAbove ∘ q.j.succAbove) id l))
+    (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
+      CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i }))
+    (q' : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
+      CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c1).hom i })) :
+    (lift.discreteSumEquiv S.FDiscrete l)
+    (HepLean.PiTensorProduct.elimPureTensor
+    (fun k => p (q.i.succAbove (q.j.succAbove k))) q' l) =
+    (S.FDiscrete.map (eqToHom (by simp [h]))).hom
+    ((lift.discreteSumEquiv S.FDiscrete l')
+    (HepLean.PiTensorProduct.elimPureTensor p q' l')) := by
+  subst h'
+  match l with
+  | Sum.inl l =>
+    simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom,
+      Sum.elim_inl, Function.comp_apply, Functor.id_obj, Sum.map_inl, eqToHom_refl,
+      Discrete.functor_map_id, Action.id_hom, ModuleCat.id_apply]
+    rfl
+  | Sum.inr l =>
+    simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inr, Functor.id_obj,
+      Function.comp_apply, Sum.map_inr, Discrete.functor_map_id, Action.id_hom]
+    rfl
+
 lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     CoeSort.coe (S.FDiscrete.obj { as := (OverColor.mk c).hom i }))
     (q' : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
@@ -183,7 +211,6 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
           ModuleCat.id_apply]
         rfl
   congr 1
-  /- The contraction. -/
   · apply congrArg
     simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
       Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -234,28 +261,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
       Iso.refl_hom, Action.id_hom, Iso.refl_inv, instMonoidalCategoryStruct_tensorObj_hom,
       LinearEquiv.ofLinear_apply, Equiv.toFun_as_coe, equivToIso_mkIso_hom, Equiv.refl_symm,
       Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv]
-    have h1 (l : (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).left ⊕ (OverColor.mk c1).left)
-        (l' : Fin n.succ.succ ⊕ Fin n1)
-        (h : Sum.elim c c1 l' = Sum.elim (c ∘ q.i.succAbove ∘ q.j.succAbove) c1 l)
-        (h' : l' = (Sum.map (q.i.succAbove ∘ q.j.succAbove) id l)) :
-        (lift.discreteSumEquiv S.FDiscrete l)
-        (HepLean.PiTensorProduct.elimPureTensor
-        (fun k => p (q.i.succAbove (q.j.succAbove k))) q' l) =
-        (S.FDiscrete.map (eqToHom (by simp [h]))).hom
-        ((lift.discreteSumEquiv S.FDiscrete l')
-        (HepLean.PiTensorProduct.elimPureTensor p q' l')) := by
-      subst h'
-      match l with
-      | Sum.inl l =>
-        simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom,
-          Sum.elim_inl, Function.comp_apply, Functor.id_obj, Sum.map_inl, eqToHom_refl,
-          Discrete.functor_map_id, Action.id_hom, ModuleCat.id_apply]
-        rfl
-      | Sum.inr l =>
-        simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inr, Functor.id_obj,
-          Function.comp_apply, Sum.map_inr, Discrete.functor_map_id, Action.id_hom]
-        rfl
-    refine h1 _ _ ?_ ?_
+    refine contrMap_prod_tprod_aux _ _ _ ?_ ?_ _ _
     · simpa using Discrete.eqToIso.proof_1
         (Hom.toEquiv_comp_inv_apply (mkIso (leftContr_map_eq q)).hom k)
     · obtain ⟨k, hk⟩ := finSumFinEquiv.surjective k

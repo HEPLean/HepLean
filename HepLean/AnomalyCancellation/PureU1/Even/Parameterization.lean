@@ -150,15 +150,15 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ)).Sols}
 
 lemma special_case_lineInCubic_perm {S : (PureU1 (2 * n.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ)).group),
-    SpecialCase ((FamilyPermutations (2 * n.succ)).solAction.toFun S M)) :
+    SpecialCase ((FamilyPermutations (2 * n.succ)).solAction.toFun _ _ S M)) :
     LineInCubicPerm S.1.1 :=
   fun M => special_case_lineInCubic (h M)
 
 theorem special_case {S : (PureU1 (2 * n.succ.succ)).Sols}
     (h : ∀ (M : (FamilyPermutations (2 * n.succ.succ)).group),
-    SpecialCase ((FamilyPermutations (2 * n.succ.succ)).solAction.toFun S M)) :
+    SpecialCase ((FamilyPermutations (2 * n.succ.succ)).solAction.toFun _ _ S M)) :
     ∃ (M : (FamilyPermutations (2 * n.succ.succ)).group),
-    ((FamilyPermutations (2 * n.succ.succ)).solAction.toFun S M).1.1
+    ((FamilyPermutations (2 * n.succ.succ)).solAction.toFun _ _ S M).1.1
     ∈ Submodule.span ℚ (Set.range basis) :=
   lineInCubicPerm_in_plane S (special_case_lineInCubic_perm h)
 

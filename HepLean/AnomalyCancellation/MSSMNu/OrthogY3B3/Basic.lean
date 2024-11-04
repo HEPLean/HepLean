@@ -42,16 +42,16 @@ def proj (T : MSSMACC.LinSols) : MSSMACC.AnomalyFreePerp :=
     change dot _ (_ • Y₃.val + _ • B₃.val + _ • T.val) = 0
     rw [dot.map_add₂, dot.map_add₂]
     rw [dot.map_smul₂, dot.map_smul₂, dot.map_smul₂]
-    rw [show dot Y₃.val B₃.val = 108 by rfl]
-    rw [show dot Y₃.val Y₃.val = 216 by rfl]
+    rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl]
+    rw [show dot Y₃.val Y₃.val = 216 by with_unfolding_all rfl]
     ring,
   by
     change dot _ (_ • Y₃.val + _ • B₃.val + _ • T.val) = 0
     rw [dot.map_add₂, dot.map_add₂]
     rw [dot.map_smul₂, dot.map_smul₂, dot.map_smul₂]
-    rw [show dot Y₃.val B₃.val = 108 by rfl]
-    rw [show dot B₃.val Y₃.val = 108 by rfl]
-    rw [show dot B₃.val B₃.val = 108 by rfl]
+    rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl]
+    rw [show dot B₃.val Y₃.val = 108 by with_unfolding_all rfl]
+    rw [show dot B₃.val B₃.val = 108 by with_unfolding_all rfl]
     ring⟩
 
 lemma proj_val (T : MSSMACC.LinSols) :
@@ -83,8 +83,8 @@ lemma quad_Y₃_proj (T : MSSMACC.LinSols) :
   rw [proj_val]
   rw [quadBiLin.map_add₂, quadBiLin.map_add₂]
   rw [quadBiLin.map_smul₂, quadBiLin.map_smul₂, quadBiLin.map_smul₂]
-  rw [show quadBiLin Y₃.val B₃.val = 0 by rfl]
-  rw [show quadBiLin Y₃.val Y₃.val = 0 by rfl]
+  rw [show quadBiLin Y₃.val B₃.val = 0 by with_unfolding_all rfl]
+  rw [show quadBiLin Y₃.val Y₃.val = 0 by with_unfolding_all rfl]
   ring
 
 lemma quad_B₃_proj (T : MSSMACC.LinSols) :
@@ -92,8 +92,8 @@ lemma quad_B₃_proj (T : MSSMACC.LinSols) :
   rw [proj_val]
   rw [quadBiLin.map_add₂, quadBiLin.map_add₂]
   rw [quadBiLin.map_smul₂, quadBiLin.map_smul₂, quadBiLin.map_smul₂]
-  rw [show quadBiLin B₃.val Y₃.val = 0 by rfl]
-  rw [show quadBiLin B₃.val B₃.val = 0 by rfl]
+  rw [show quadBiLin B₃.val Y₃.val = 0 by with_unfolding_all rfl]
+  rw [show quadBiLin B₃.val B₃.val = 0 by with_unfolding_all rfl]
   ring
 
 lemma quad_self_proj (T : MSSMACC.Sols) :

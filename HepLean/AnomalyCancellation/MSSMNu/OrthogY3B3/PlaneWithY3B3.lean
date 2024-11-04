@@ -61,10 +61,10 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
   rw [dot.map_smul₂, dot.map_smul₂, dot.map_smul₂] at h1 h2
   rw [R.perpY₃] at h1
   rw [R.perpB₃] at h2
-  rw [show dot Y₃.val Y₃.val = 216 by rfl] at h1
-  rw [show dot B₃.val B₃.val = 108 by rfl] at h2
-  rw [show dot Y₃.val B₃.val = 108 by rfl] at h1
-  rw [show dot B₃.val Y₃.val = 108 by rfl] at h2
+  rw [show dot Y₃.val Y₃.val = 216 by with_unfolding_all rfl] at h1
+  rw [show dot B₃.val B₃.val = 108 by with_unfolding_all rfl] at h2
+  rw [show dot Y₃.val B₃.val = 108 by with_unfolding_all rfl] at h1
+  rw [show dot B₃.val Y₃.val = 108 by with_unfolding_all rfl] at h2
   simp_all
   have ha : a = a' := by
     linear_combination h1 / 108 + -1 * h2 / 108

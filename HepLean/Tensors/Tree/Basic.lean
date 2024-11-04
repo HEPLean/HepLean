@@ -682,7 +682,7 @@ def tensor : ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → S.F.obj (Over
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
     ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
-  | eval i e t => (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor
+  | eval i e t => (S.evalMap i (Fin.ofNat' _ e)) t.tensor
   | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
 
 /-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
@@ -730,7 +730,7 @@ lemma contr_tensor {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
 lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 
 lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t : TensorTree S c) :
-    (eval i e t).tensor = (S.evalMap i (Fin.ofNat' e Fin.size_pos')) t.tensor := rfl
+    (eval i e t).tensor = (S.evalMap i (Fin.ofNat' (S.repDim (c i)) e)) t.tensor := rfl
 
 lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
     (smul a T).tensor = a • T.tensor:= rfl

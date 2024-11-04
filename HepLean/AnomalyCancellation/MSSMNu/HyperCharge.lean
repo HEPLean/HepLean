@@ -48,6 +48,9 @@ def YAsCharge : MSSMACC.Charges := toSpecies.invFun
 
 /-- The hypercharge as an element of `MSSMACC.Sols`. -/
 def Y : MSSMACC.Sols :=
-  MSSMACC.AnomalyFreeMk YAsCharge (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl)
+  MSSMACC.AnomalyFreeMk YAsCharge
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+    (by with_unfolding_all rfl) (by with_unfolding_all rfl) (by with_unfolding_all rfl)
+    (by with_unfolding_all rfl)
 
 end MSSMACC

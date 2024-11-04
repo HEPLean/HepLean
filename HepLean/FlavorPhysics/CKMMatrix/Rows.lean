@@ -186,7 +186,7 @@ lemma rows_linearly_independent (V : CKMMatrix) : LinearIndependent ℂ (rows V)
   · exact h1
   · exact h2
 
-lemma rows_card : Fintype.card (Fin 3) = FiniteDimensional.finrank ℂ (Fin 3 → ℂ) := by
+lemma rows_card : Fintype.card (Fin 3) = Module.finrank ℂ (Fin 3 → ℂ) := by
   simp
 
 /-- The rows of a CKM matrix as a basis of `ℂ³`. -/

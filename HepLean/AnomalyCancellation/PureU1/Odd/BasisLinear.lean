@@ -90,7 +90,7 @@ lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = δ!₁ j.castSucc := by
 lemma δa₃_δ₃ : @δa₃ n = δ₃ := by
   rw [Fin.ext_iff]
   simp only [succ_eq_add_one, δa₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd,
-    Fin.coe_fin_one, add_zero, δ₃]
+    Fin.val_eq_zero, add_zero, δ₃]
   exact Nat.add_comm 1 n
 
 lemma δa₃_δ!₁ : δa₃ = δ!₁ (Fin.last n) := by
@@ -265,12 +265,12 @@ lemma basis_on_δ₃ (j : Fin n) : basisAsCharges j δ₃ = 0 := by
   simp only [basisAsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.coe_fin_one,
+    simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
       add_zero, δ₁] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.coe_fin_one,
+      simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
         add_zero, δ₂] at h2
       omega
     · rfl
@@ -279,12 +279,12 @@ lemma basis!_on_δ!₃ (j : Fin n) : basis!AsCharges j δ!₃ = 0 := by
   simp only [basis!AsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_fin_one, δ!₁,
+    simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, δ!₁,
       Fin.coe_natAdd] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_fin_one, δ!₂,
+      simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, δ!₂,
         Fin.coe_natAdd] at h2
       omega
     · rfl
@@ -643,7 +643,7 @@ lemma Pa_eq (g g' : Fin n.succ → ℚ) (f f' : Fin n.succ → ℚ) :
   exact Pa'_eq _ _
 
 lemma basisa_card : Fintype.card ((Fin n.succ) ⊕ (Fin n.succ)) =
-    FiniteDimensional.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
+    Module.finrank ℚ (PureU1 (2 * n.succ + 1)).LinSols := by
   erw [BasisLinear.finrank_AnomalyFreeLinear]
   simp only [Fintype.card_sum, Fintype.card_fin]
   exact Eq.symm (Nat.two_mul n.succ)
