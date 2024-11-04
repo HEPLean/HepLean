@@ -40,7 +40,8 @@ open MonoidalCategory
 /-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors. -/
 structure TensorSpecies where
-  /-- The field over which we want to consider the tensors to live in, usually `ℝ` or `ℂ`. -/
+  /-- The commutative ring  over which we want to consider the tensors to live in,
+    usually `ℝ` or `ℂ`. -/
   k : Type
   /-- An instance of `k` as a commutative ring. -/
   k_commRing : CommRing k
