@@ -19,19 +19,19 @@ noncomputable section diracRepresentation
 
 /-- The γ⁰ gamma matrix in the Dirac representation. -/
 def γ0 : Matrix (Fin 4) (Fin 4) ℂ :=
-  ![![1, 0, 0, 0], ![0, 1, 0, 0], ![0, 0, -1, 0], ![0, 0, 0, -1]]
+  !![1, 0, 0, 0; 0, 1, 0, 0; 0, 0, -1, 0; 0, 0, 0, -1]
 
 /-- The γ¹ gamma matrix in the Dirac representation. -/
 def γ1 : Matrix (Fin 4) (Fin 4) ℂ :=
-  ![![0, 0, 0, 1], ![0, 0, 1, 0], ![0, -1, 0, 0], ![-1, 0, 0, 0]]
+  !![0, 0, 0, 1; 0, 0, 1, 0; 0, -1, 0, 0; -1, 0, 0, 0]
 
 /-- The γ² gamma matrix in the Dirac representation. -/
 def γ2 : Matrix (Fin 4) (Fin 4) ℂ :=
-  ![![0, 0, 0, - I], ![0, 0, I, 0], ![0, I, 0, 0], ![-I, 0, 0, 0]]
+  !![0, 0, 0, - I; 0, 0, I, 0; 0, I, 0, 0; -I, 0, 0, 0]
 
 /-- The γ³ gamma matrix in the Dirac representation. -/
 def γ3 : Matrix (Fin 4) (Fin 4) ℂ :=
-  ![![0, 0, 1, 0], ![0, 0, 0, -1], ![-1, 0, 0, 0], ![0, 1, 0, 0]]
+  !![0, 0, 1, 0; 0, 0, 0, -1; -1, 0, 0, 0; 0, 1, 0, 0]
 
 /-- The γ⁵ gamma matrix in the Dirac representation. -/
 def γ5 : Matrix (Fin 4) (Fin 4) ℂ := I • (γ0 * γ1 * γ2 * γ3)
