@@ -304,29 +304,29 @@ lemma action_id {n : ℕ} {c : Fin n → S.C} (t : TensorTree S c) :
   simp only [action_tensor, map_one, LinearMap.one_apply]
 
 lemma action_constTwoNode {c1 c2 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2))
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2))
     (g : S.G) : (action g (constTwoNode v)).tensor = (constTwoNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constTwoNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
-  change ((Discrete.pairIsoSep S.FDiscrete).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2])).ρ g)
+  change ((Discrete.pairIsoSep S.FD).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2])).ρ g)
     ((v.hom _)) = _
-  erw [← (Discrete.pairIsoSep S.FDiscrete).hom.comm g]
-  change ((v.hom ≫ (S.FDiscrete.obj { as := c1 } ⊗ S.FDiscrete.obj { as := c2 }).ρ g) ≫
-    (Discrete.pairIsoSep S.FDiscrete).hom.hom) _ =_
+  erw [← (Discrete.pairIsoSep S.FD).hom.comm g]
+  change ((v.hom ≫ (S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 }).ρ g) ≫
+    (Discrete.pairIsoSep S.FD).hom.hom) _ =_
   erw [← v.comm g]
   simp
 
 lemma action_constThreeNode {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FDiscrete.obj (Discrete.mk c1) ⊗ S.FDiscrete.obj (Discrete.mk c2) ⊗
-      S.FDiscrete.obj (Discrete.mk c3))
+    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+      S.FD.obj (Discrete.mk c3))
     (g : S.G) : (action g (constThreeNode v)).tensor = (constThreeNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constThreeNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
-  change ((Discrete.tripleIsoSep S.FDiscrete).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2, c3])).ρ g)
+  change ((Discrete.tripleIsoSep S.FD).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2, c3])).ρ g)
     ((v.hom _)) = _
-  erw [← (Discrete.tripleIsoSep S.FDiscrete).hom.comm g]
-  change ((v.hom ≫ (S.FDiscrete.obj { as := c1 } ⊗ S.FDiscrete.obj { as := c2 } ⊗
-    S.FDiscrete.obj { as := c3 }).ρ g) ≫ (Discrete.tripleIsoSep S.FDiscrete).hom.hom) _ =_
+  erw [← (Discrete.tripleIsoSep S.FD).hom.comm g]
+  change ((v.hom ≫ (S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗
+    S.FD.obj { as := c3 }).ρ g) ≫ (Discrete.tripleIsoSep S.FD).hom.hom) _ =_
   erw [← v.comm g]
   simp
 

@@ -88,7 +88,7 @@ def complexLorentzTensor : TensorSpecies where
   G_group := inferInstance
   k := ℂ
   k_commRing := inferInstance
-  FDiscrete := Discrete.functor fun c =>
+  FD := Discrete.functor fun c =>
     match c with
     | Color.upL => Fermion.leftHanded
     | Color.downL => Fermion.altLeftHanded
