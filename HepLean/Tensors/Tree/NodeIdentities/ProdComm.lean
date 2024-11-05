@@ -56,15 +56,15 @@ theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :
   apply congrArg
   apply congrArg
   change _ = (β_ (S.F.obj (OverColor.mk c2)) (S.F.obj (OverColor.mk c))).hom.hom
-    ((inv (lift.μ S.FDiscrete (OverColor.mk c2) (OverColor.mk c)).hom).hom
-    ((lift.μ S.FDiscrete (OverColor.mk c2) (OverColor.mk c)).hom.hom (t2.tensor ⊗ₜ[S.k] t.tensor)))
+    ((inv (lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom).hom
+    ((lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom.hom (t2.tensor ⊗ₜ[S.k] t.tensor)))
   simp only [Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     lift.objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
     instMonoidalCategoryStruct_tensorObj_hom, mk_hom, IsIso.Iso.inv_hom]
   change _ = (β_ (S.F.obj (OverColor.mk c2)) (S.F.obj (OverColor.mk c))).hom.hom
-    (((lift.μ S.FDiscrete (OverColor.mk c2) (OverColor.mk c)).hom ≫
-    (lift.μ S.FDiscrete (OverColor.mk c2) (OverColor.mk c)).inv).hom ((t2.tensor ⊗ₜ[S.k] t.tensor)))
+    (((lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom ≫
+    (lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).inv).hom ((t2.tensor ⊗ₜ[S.k] t.tensor)))
   simp only [Action.instMonoidalCategory_tensorObj_V, Iso.hom_inv_id, Action.id_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, lift.objObj'_V_carrier, mk_hom,

@@ -51,11 +51,11 @@ lemma perm_basisVector_cast {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   simp only [Functor.const_obj_obj, OverColor.mk_hom] at h1
   rw [h1]
 
-/-! TODO: Generalize `basis_eq_FDiscrete`. -/
-lemma basis_eq_FDiscrete {n : ℕ} (c : Fin n → complexLorentzTensor.C)
+/-! TODO: Generalize `basis_eq_FD`. -/
+lemma basis_eq_FD {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) (i : Fin n)
     (h : { as := c i } = { as := c1 }) :
-    (complexLorentzTensor.FDiscrete.map (eqToHom h)).hom
+    (complexLorentzTensor.FD.map (eqToHom h)).hom
     (complexLorentzTensor.basis (c i) (b i)) =
     (complexLorentzTensor.basis c1 (Fin.cast (by simp_all) (b i))) := by
   have h' : c i = c1 := by
@@ -77,7 +77,7 @@ lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   funext i
   simp only [OverColor.mk_hom, OverColor.lift.discreteFunctorMapEqIso, Functor.mapIso_hom,
     eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
-  rw [basis_eq_FDiscrete]
+  rw [basis_eq_FD]
 
 lemma perm_basisVector_tree {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ : OverColor.mk c ⟶ OverColor.mk c1)
@@ -120,7 +120,7 @@ lemma contr_basisVector {n : ℕ} {c : Fin n.succ.succ → complexLorentzTensor.
   rw [basisVector]
   erw [TensorSpecies.contrMap_tprod]
   congr 1
-  rw [basis_eq_FDiscrete]
+  rw [basis_eq_FD]
   simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as,
@@ -181,7 +181,7 @@ lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     tensorNode_tensor]
-  have h1 := OverColor.lift.μ_tmul_tprod_mk complexLorentzTensor.FDiscrete
+  have h1 := OverColor.lift.μ_tmul_tprod_mk complexLorentzTensor.FD
     (fun i => (complexLorentzTensor.basis (c i)) (b i))
     (fun i => (complexLorentzTensor.basis (c1 i)) (b1 i))
   erw [h1, OverColor.lift.map_tprod]

@@ -93,8 +93,8 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
   · apply congrArg
     erw [S.contr_tmul_symm]
     have h1' : ∀ {a a' b c b' c'} (haa' : a = a')
-        (_ : b = (S.FDiscrete.map (Discrete.eqToHom (by rw [haa']))).hom b')
-        (_ : c = (S.FDiscrete.map (Discrete.eqToHom (by rw [haa']))).hom c'),
+        (_ : b = (S.FD.map (Discrete.eqToHom (by rw [haa']))).hom b')
+        (_ : c = (S.FD.map (Discrete.eqToHom (by rw [haa']))).hom c'),
         (S.contr.app a).hom (b ⊗ₜ[S.k] c) = (S.contr.app a').hom (b' ⊗ₜ[S.k] c') := by
       intro a a' b c b' c' haa' hbc hcc
       subst haa'
@@ -103,14 +103,14 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     · simp only [Discrete.mk.injEq]
       exact Eq.symm (swapI_color q)
     · rfl
-    · change _ = ((S.FDiscrete.map (Discrete.eqToHom _)) ≫ S.FDiscrete.map (Discrete.eqToHom _)).hom
+    · change _ = ((S.FD.map (Discrete.eqToHom _)) ≫ S.FD.map (Discrete.eqToHom _)).hom
         (x (q.swap.i.succAbove q.swap.j))
-      rw [← S.FDiscrete.map_comp]
+      rw [← S.FD.map_comp]
       simp only [Nat.succ_eq_add_one, mk_hom, Discrete.functor_obj_eq_as, Function.comp_apply,
         eqToHom_trans]
       have h1nn' {a b d: Fin n.succ.succ} (hbd : b = d) (h : c d = S.τ (S.τ (c a))) :
-          (S.FDiscrete.map (Discrete.eqToHom (h))).hom (x d) =
-          (S.FDiscrete.map (eqToHom (by
+          (S.FD.map (Discrete.eqToHom (h))).hom (x d) =
+          (S.FD.map (eqToHom (by
           subst hbd
           simp_all only [Nat.succ_eq_add_one, forall_true_left, Discrete.functor_obj_eq_as,
             Function.comp_apply, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
@@ -127,7 +127,7 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     apply congrArg
     funext k
     have h1' {a b : Fin n.succ.succ} (h : a = b) :
-      x b = (S.FDiscrete.map (Discrete.eqToIso (by rw [h])).hom).hom (x a) := by
+      x b = (S.FD.map (Discrete.eqToIso (by rw [h])).hom).hom (x a) := by
       subst h
       simp only [Nat.succ_eq_add_one, mk_hom, eqToIso_refl, Iso.refl_hom, Discrete.functor_map_id,
         Action.id_hom, ModuleCat.id_apply]
