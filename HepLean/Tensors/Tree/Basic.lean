@@ -572,10 +572,10 @@ inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Typ
   /-- A node corresponding to the contraction of indices of a tensor. -/
   | contr {n : ℕ} {c : Fin n.succ.succ → S.C} : (i : Fin n.succ.succ) →
     (j : Fin n.succ) → (h : c (i.succAbove j) = S.τ (c i)) → TensorTree S c →
-    TensorTree S (c ∘ Fin.succAbove i ∘ Fin.succAbove j)
+    TensorTree S (c ∘ i.succAbove ∘ j.succAbove)
   /-- A node corresponding to the evaluation of an index of a tensor. -/
   | eval {n : ℕ} {c : Fin n.succ → S.C} : (i : Fin n.succ) → (x : ℕ) → TensorTree S c →
-    TensorTree S (c ∘ Fin.succAbove i)
+    TensorTree S (c ∘ i.succAbove)
 
 namespace TensorTree
 
