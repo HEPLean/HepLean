@@ -37,7 +37,7 @@ open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
-/-- The sturcture of a type of tensors e.g. Lorentz tensors, Einstien tensors,
+/-- The structure of a type of tensors e.g. Lorentz tensors, Einstien tensors,
   complex Lorentz tensors. -/
 structure TensorSpecies where
   /-- The commutative ring  over which we want to consider the tensors to live in,
@@ -555,13 +555,13 @@ end TensorSpecies
 inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
-  /-- A node correpsonding to the scalar multiple of a tensor by a element of the field. -/
+  /-- A node corresponding to the scalar multiple of a tensor by a element of the field. -/
   | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
   /-- A node corresponding to negation of a tensor. -/
   | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
-  /-- A node correpsonding to the action of a group element on a tensor. -/
+  /-- A node corresponding to the action of a group element on a tensor. -/
   | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
