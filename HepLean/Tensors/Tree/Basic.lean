@@ -37,8 +37,8 @@ open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
-/-- The structure of a type of tensors e.g. Lorentz tensors, Einstien tensors,
-  complex Lorentz tensors. -/
+/-- The structure of a type of tensors e.g. Lorentz tensors, ordinary tensors
+  (vectors and matrices), complex Lorentz tensors. -/
 structure TensorSpecies where
   /-- The commutative ring  over which we want to consider the tensors to live in,
     usually `ℝ` or `ℂ`. -/
