@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - DocPreface
 
 name: Build and deploy documentation
 
@@ -49,6 +50,9 @@ jobs:
 
       - name: Generate svg from dot
         run : dot -Tsvg -o ./docs/graph.svg ./docs/InformalDot.dot
+
+      - name: Replace template file with custom
+        run : cp ./scripts/Template.lean .lake/packages/doc-gen4/DocGen4/Output/Template.lean
 
       - name: Get doc cache
         uses: actions/cache@v3
