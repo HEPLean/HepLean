@@ -16,6 +16,7 @@ import ImportGraph.RequiredModules
 To make the dot file for the dependency graph run:
 - lake exe informal mkDot
 - dot -Tsvg -o ./Docs/graph.svg ./Docs/InformalDot.dot
+- or dot -Tpng  -Gdpi=300 -o ./Docs/graph.png ./Docs/InformalDot.dot
 -/
 
 open Lean System Meta
