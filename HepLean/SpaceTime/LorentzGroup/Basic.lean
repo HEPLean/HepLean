@@ -184,6 +184,32 @@ lemma transpose_one : @transpose d 1 = 1 := Subtype.eq Matrix.transpose_one
 lemma transpose_mul : transpose (Λ * Λ') = transpose Λ' * transpose Λ :=
   Subtype.eq (Matrix.transpose_mul Λ.1 Λ'.1)
 
+lemma transpose_val : (transpose Λ).1 = Λ.1ᵀ := rfl
+
+lemma transpose_inv : (transpose Λ)⁻¹ = transpose Λ⁻¹ := by
+  refine Subtype.eq ?_
+  rw [transpose_val, coe_inv, transpose_val, coe_inv, Matrix.transpose_nonsing_inv]
+
+lemma comm_minkowskiMatrix : Λ.1 * minkowskiMatrix = minkowskiMatrix * (transpose Λ⁻¹).1 := by
+  conv_rhs => rw [← @mul_minkowskiMatrix_mul_transpose d Λ]
+  rw [← transpose_inv, coe_inv, transpose_val]
+  rw [mul_assoc]
+  have h1 : ((Λ.1)ᵀ * (Λ.1)ᵀ⁻¹) = 1 := by
+    rw [← transpose_val]
+    simp only [subtype_mul_inv]
+  rw [h1]
+  simp
+
+lemma minkowskiMatrix_comm : minkowskiMatrix *  Λ.1  = (transpose Λ⁻¹).1 * minkowskiMatrix := by
+  conv_rhs => rw [← @transpose_mul_minkowskiMatrix_mul_self d Λ]
+  rw [← transpose_inv, coe_inv, transpose_val]
+  rw [← mul_assoc, ← mul_assoc]
+  have h1 : ((Λ.1)ᵀ⁻¹ * (Λ.1)ᵀ) = 1 := by
+    rw [← transpose_val]
+    simp only [subtype_inv_mul]
+  rw [h1]
+  simp
+
 /-!
 
 ## Lorentz group as a topological group
