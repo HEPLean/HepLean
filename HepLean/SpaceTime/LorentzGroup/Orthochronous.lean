@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.LorentzVector.NormOne
+import HepLean.SpaceTime.LorentzVector.Real.NormOne
 import HepLean.SpaceTime.LorentzGroup.Proper
 /-!
 # The Orthochronous Lorentz Group
@@ -25,45 +25,35 @@ namespace LorentzGroup
 variable {d : ℕ}
 variable (Λ : LorentzGroup d)
 open LorentzVector
-open minkowskiMetric
+open Lorentz.Contr
 
 /-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/
-def IsOrthochronous : Prop := 0 ≤ timeComp Λ
+def IsOrthochronous : Prop := 0 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0)
 
 lemma IsOrthochronous_iff_futurePointing :
-    IsOrthochronous Λ ↔ (toNormOneLorentzVector Λ) ∈ NormOneLorentzVector.FuturePointing d := by
-  simp only [IsOrthochronous, timeComp_eq_toNormOneLorentzVector]
-  rw [NormOneLorentzVector.FuturePointing.mem_iff_time_nonneg]
+    IsOrthochronous Λ ↔ toNormOne Λ ∈ NormOne.FuturePointing d := by
+  simp only [IsOrthochronous]
+  rw [NormOne.FuturePointing.mem_iff_inl_nonneg, toNormOne_inl]
 
 lemma IsOrthochronous_iff_transpose :
     IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by rfl
 
 lemma IsOrthochronous_iff_ge_one :
-    IsOrthochronous Λ ↔ 1 ≤ timeComp Λ := by
-  rw [IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.mem_iff,
-    NormOneLorentzVector.time_pos_iff]
-  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  rfl
+    IsOrthochronous Λ ↔ 1 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0) := by
+  rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.mem_iff_inl_one_le_inl,
+    toNormOne_inl]
 
 lemma not_orthochronous_iff_le_neg_one :
-    ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ -1 := by
-  rw [timeComp, IsOrthochronous_iff_futurePointing, NormOneLorentzVector.FuturePointing.not_mem_iff,
-    NormOneLorentzVector.time_nonpos_iff]
-  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  rfl
+    ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) ≤ -1 := by
+  rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.not_mem_iff_inl_le_neg_one,
+    toNormOne_inl]
 
-lemma not_orthochronous_iff_le_zero :
-    ¬ IsOrthochronous Λ ↔ timeComp Λ ≤ 0 := by
-  refine Iff.intro (fun h => ?_) (fun h => ?_)
-  · rw [not_orthochronous_iff_le_neg_one] at h
-    linarith
-  · rw [IsOrthochronous_iff_ge_one]
-    linarith
+lemma not_orthochronous_iff_le_zero : ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) ≤ 0 := by
+  rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.not_mem_iff_inl_le_zero,
+    toNormOne_inl]
 
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
-def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => timeComp Λ,
+def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => Λ.1 (Sum.inl 0) (Sum.inl 0),
     Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxillary function used in the definition of `orthchroMapReal`. -/
@@ -89,7 +79,7 @@ def orthchroMapReal : C(LorentzGroup d, ℝ) := ContinuousMap.comp
 
 lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMapReal Λ = 1 := by
-  rw [IsOrthochronous_iff_ge_one, timeComp] at h
+  rw [IsOrthochronous_iff_ge_one] at h
   change stepFunction (Λ.1 _ _) = 1
   rw [stepFunction, if_pos h, if_neg]
   linarith
@@ -97,8 +87,9 @@ lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochron
 lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMapReal Λ = - 1 := by
   rw [not_orthochronous_iff_le_neg_one] at h
-  change stepFunction (timeComp _)= - 1
-  rw [stepFunction, if_pos h]
+  change stepFunction (_)= - 1
+  rw [stepFunction, if_pos]
+  exact h
 
 lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
     orthchroMapReal Λ = -1 ∨ orthchroMapReal Λ = 1 := by
@@ -130,29 +121,29 @@ lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthoch
     (h' : IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
   rw [IsOrthochronous_iff_futurePointing] at h h'
-  rw [IsOrthochronous, timeComp_mul]
-  exact NormOneLorentzVector.FuturePointing.metric_reflect_mem_mem h h'
+  rw [IsOrthochronous, LorentzGroup.inl_inl_mul]
+  exact NormOne.FuturePointing.metric_reflect_mem_mem h h'
 
 lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
   rw [IsOrthochronous_iff_futurePointing] at h h'
-  rw [IsOrthochronous, timeComp_mul]
-  exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_not_mem h h'
+  rw [IsOrthochronous, LorentzGroup.inl_inl_mul]
+  exact NormOne.FuturePointing.metric_reflect_not_mem_not_mem h h'
 
 lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
-  rw [not_orthochronous_iff_le_zero, timeComp_mul]
+  rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]
   rw [IsOrthochronous_iff_transpose] at h
   rw [IsOrthochronous_iff_futurePointing] at h h'
-  exact NormOneLorentzVector.FuturePointing.metric_reflect_mem_not_mem h h'
+  exact NormOne.FuturePointing.metric_reflect_mem_not_mem h h'
 
 lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
-  rw [not_orthochronous_iff_le_zero, timeComp_mul]
+  rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]
   rw [IsOrthochronous_iff_transpose] at h
   rw [IsOrthochronous_iff_futurePointing] at h h'
-  exact NormOneLorentzVector.FuturePointing.metric_reflect_not_mem_mem h h'
+  exact NormOne.FuturePointing.metric_reflect_not_mem_mem h h'
 
 /-- The homomorphism from `LorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroRep : LorentzGroup d →* ℤ₂ where

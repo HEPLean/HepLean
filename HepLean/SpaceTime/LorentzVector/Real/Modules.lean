@@ -93,12 +93,21 @@ lemma stdBasis_toFin1dℝEquiv_apply_same (μ : Fin 1 ⊕ Fin d) :
   rw [@LinearEquiv.apply_symm_apply]
   exact Pi.single_eq_same μ 1
 
+@[simp]
+lemma stdBasis_apply_same (μ : Fin 1 ⊕ Fin d) : (stdBasis μ).val μ = 1 :=
+  stdBasis_toFin1dℝEquiv_apply_same μ
+
 lemma stdBasis_toFin1dℝEquiv_apply_ne {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) :
     toFin1dℝEquiv (stdBasis μ) ν = 0 := by
   simp only [stdBasis, Basis.ofEquivFun, Basis.coe_ofRepr, LinearEquiv.trans_symm,
     LinearEquiv.symm_symm, LinearEquiv.trans_apply, Finsupp.linearEquivFunOnFinite_single]
   rw [@LinearEquiv.apply_symm_apply]
   exact Pi.single_eq_of_ne' h 1
+
+@[simp]
+lemma stdBasis_inl_apply_inr (i : Fin d) : (stdBasis (Sum.inl 0)).val (Sum.inr i) = 0 := by
+  refine stdBasis_toFin1dℝEquiv_apply_ne ?_
+  simp
 
 /-- Decomposition of a contrvariant Lorentz vector into the standard basis. -/
 lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i := by
@@ -148,6 +157,22 @@ lemma one_mulVec (v : ContrMod d) : (1 : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin
 lemma mulVec_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     M *ᵥ (N *ᵥ v) = (M * N) *ᵥ v := by
   simp only [mulVec, _root_.map_mul, LinearMap.mul_apply]
+
+/-!
+
+## The norm
+
+(Not the Minkowski norm, but the norm of a vector in `ContrℝModule d`.)
+-/
+
+def norm : NormedAddCommGroup (ContrMod d) where
+  norm v := ‖v.val‖₊
+  dist_self x := Pi.normedAddCommGroup.dist_self x.val
+  dist_triangle x y z := Pi.normedAddCommGroup.dist_triangle x.val y.val z.val
+  dist_comm x y := Pi.normedAddCommGroup.dist_comm x.val y.val
+  eq_of_dist_eq_zero {x y} := fun h => ext (MetricSpace.eq_of_dist_eq_zero h)
+
+def toSpace (v : ContrMod d) : EuclideanSpace ℝ (Fin d) := v.val ∘ Sum.inr
 
 /-!
 
@@ -229,6 +254,10 @@ lemma stdBasis_toFin1dℝEquiv_apply_same (μ : Fin 1 ⊕ Fin d) :
     LinearEquiv.symm_symm, LinearEquiv.trans_apply, Finsupp.linearEquivFunOnFinite_single]
   rw [@LinearEquiv.apply_symm_apply]
   exact Pi.single_eq_same μ 1
+
+@[simp]
+lemma stdBasis_apply_same (μ : Fin 1 ⊕ Fin d) : (stdBasis μ).val μ = 1 :=
+  stdBasis_toFin1dℝEquiv_apply_same μ
 
 lemma stdBasis_toFin1dℝEquiv_apply_ne {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) :
     toFin1dℝEquiv (stdBasis μ) ν = 0 := by

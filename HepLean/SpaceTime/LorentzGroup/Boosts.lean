@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Proper
 import Mathlib.Topology.Constructions
-import HepLean.SpaceTime.LorentzVector.NormOne
+import HepLean.SpaceTime.LorentzVector.Real.NormOne
 /-!
 # Boosts
 
@@ -27,41 +27,67 @@ noncomputable section
 
 namespace LorentzGroup
 
-open NormOneLorentzVector
-open minkowskiMetric
+open Lorentz.Contr.NormOne
+open Lorentz
+open TensorProduct
 
 variable {d : ℕ}
 
 /-- An auxillary linear map used in the definition of a generalised boost. -/
-def genBoostAux₁ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
-  toFun x := (2 * ⟪x, u⟫ₘ) • v.1.1
+def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
+  toFun x := (2 * toField d ⟪x, u.val.val⟫ₘ) • v.1.1
   map_add' x y := by
-    simp only [map_add, LinearMap.add_apply]
-    rw [mul_add, add_smul]
+    simp [map_add, LinearMap.add_apply, tmul_add, add_tmul, mul_add, add_smul]
   map_smul' c x := by
-    simp only [LinearMapClass.map_smul, LinearMap.smul_apply, smul_eq_mul,
-      RingHom.id_apply]
+    simp only [toField, Action.instMonoidalCategory_tensorObj_V,
+      Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      smul_tmul, tmul_smul, map_smul, smul_eq_mul, RingHom.id_apply]
+    erw [LinearMap.id_apply]
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
+    rfl
 
 /-- An auxillary linear map used in the definition of a genearlised boost. -/
-def genBoostAux₂ (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d where
-  toFun x := - (⟪x, u.1.1 + v⟫ₘ / (1 + ⟪u.1.1, v⟫ₘ)) • (u.1.1 + v)
+def genBoostAux₂ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
+  toFun x := - (toField d ⟪x, u.1.1 + v.1.1⟫ₘ / (1 + toField d ⟪u.1.1, v.1.1⟫ₘ)) • (u.1.1 + v.1.1)
   map_add' x y := by
     simp only
     rw [← add_smul]
     apply congrFun (congrArg _ _)
-    field_simp
+    field_simp [add_tmul]
     apply congrFun (congrArg _ _)
     ring
   map_smul' c x := by
-    simp only
-    rw [map_smul, show (c • minkowskiMetric x) (↑u + ↑v) = c * minkowskiMetric x (u+v) from rfl,
-      mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
+    simp only [smul_tmul, tmul_smul]
+    rw [map_smul]
+    conv =>
+      lhs; lhs; rhs; lhs
+      change (c * toField d (contrContrContract.hom (x ⊗ₜ[ℝ] (u.val.val + v.val.val))))
+    rw [mul_div_assoc, neg_mul_eq_mul_neg, smul_smul]
     rfl
+
+lemma genBoostAux₂_self (u : FuturePointing d) : genBoostAux₂ u u = - genBoostAux₁ u u := by
+  ext1 x
+  simp only [genBoostAux₂, LinearMap.coe_mk, AddHom.coe_mk, genBoostAux₁, LinearMap.neg_apply]
+  rw [neg_smul]
+  apply congrArg
+  conv => lhs; rhs; rw [← (two_smul ℝ u.val.val)]
+  rw [smul_smul]
+  congr 1
+  rw [u.1.2]
+  simp [toField]
+  conv => lhs; lhs; rhs; rhs; change 1
+  rw [show 1 + (1 : ℝ) = (2 : ℝ ) by ring]
+  simp only [isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+    IsUnit.div_mul_cancel]
+  rw [← (two_smul ℝ u.val.val)]
+  simp only [tmul_smul, map_smul, smul_eq_mul]
+  rfl
+
 
 /-- An generalised boost. This is a Lorentz transformation which takes the four velocity `u`
 to `v`. -/
-def genBoost (u v : FuturePointing d) : LorentzVector d →ₗ[ℝ] LorentzVector d :=
+def genBoost (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d :=
   LinearMap.id + genBoostAux₁ u v + genBoostAux₂ u v
 
 namespace genBoost
@@ -73,26 +99,26 @@ namespace genBoost
 lemma self (u : FuturePointing d) : genBoost u u = LinearMap.id := by
   ext x
   simp only [genBoost, LinearMap.add_apply, LinearMap.id_coe, id_eq]
-  rw [add_assoc, add_right_eq_self, add_eq_zero_iff_eq_neg, genBoostAux₁, genBoostAux₂]
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, map_add, smul_add, neg_smul, neg_add_rev, neg_neg]
-  rw [← add_smul]
-  apply congrFun (congrArg _ _)
-  rw [u.1.2]
-  ring
+  rw [genBoostAux₂_self]
+  simp only [LinearMap.neg_apply, add_neg_cancel_right]
 
 /-- A generalised boost as a matrix. -/
 def toMatrix (u v : FuturePointing d) : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ :=
-  LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (genBoost u v)
+  LinearMap.toMatrix ContrMod.stdBasis ContrMod.stdBasis (genBoost u v)
 
-lemma toMatrix_mulVec (u v : FuturePointing d) (x : LorentzVector d) :
-    (toMatrix u v).mulVec x = genBoost u v x :=
-  LinearMap.toMatrix_mulVec_repr LorentzVector.stdBasis LorentzVector.stdBasis (genBoost u v) x
+lemma toMatrix_mulVec (u v : FuturePointing d) (x : Contr d) :
+    (toMatrix u v) *ᵥ x = genBoost u v x :=
+  ContrMod.ext (LinearMap.toMatrix_mulVec_repr ContrMod.stdBasis ContrMod.stdBasis (genBoost u v) x)
 
 open minkowskiMatrix LorentzVector in
 @[simp]
 lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
-    (toMatrix u v) μ ν = η μ μ * (⟪e μ, e ν⟫ₘ + 2 * ⟪e ν, u⟫ₘ * ⟪e μ, v⟫ₘ
-    - ⟪e μ, u + v⟫ₘ * ⟪e ν, u + v⟫ₘ / (1 + ⟪u, v.1.1⟫ₘ)) := by
+    (toMatrix u v) μ ν = η μ μ * (toField d ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ + 2 *
+     toField d ⟪ContrMod.stdBasis ν, u.val.val⟫ₘ * toField d  ⟪ContrMod.stdBasis μ, v.val.val⟫ₘ
+    - toField d  ⟪ContrMod.stdBasis μ, u.val.val + v.val.val⟫ₘ *
+    toField d  ⟪ContrMod.stdBasis ν, u.val.val + v.val.val⟫ₘ /
+    (1 + toField d  ⟪u.val.val, v.val.val⟫ₘ)) := by
+  sorry
   rw [matrix_apply_stdBasis (toMatrix u v) μ ν, toMatrix_mulVec]
   simp only [genBoost, genBoostAux₁, genBoostAux₂, map_add, smul_add, neg_smul, LinearMap.add_apply,
     LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, basis_left, map_smul, smul_eq_mul, map_neg,

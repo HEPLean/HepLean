@@ -183,6 +183,17 @@ namespace contrContrContract
 
 variable (x y : Contr d)
 
+@[simp]
+lemma action_tmul (g : LorentzGroup d) : ⟪(Contr d).ρ g x, (Contr d).ρ g y⟫ₘ = ⟪x, y⟫ₘ := by
+  conv =>
+    lhs
+    change (CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.MonoidalCategory.tensorObj (Contr d) (Contr d)).ρ g)
+      contrContrContract.hom) (x ⊗ₜ[ℝ] y)
+    arg 1
+    apply contrContrContract.comm g
+  rfl
+
 lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
       ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i)  := by
   rw [contrContrContract_hom_tmul]
@@ -190,6 +201,26 @@ lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
     Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Sum.elim_inl,
     one_mul, Finset.sum_singleton, Sum.elim_inr, neg_mul, mul_neg, Finset.sum_neg_distrib]
   rfl
+
+open InnerProductSpace
+
+lemma as_sum_toSpace : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
+    ⟪x.toSpace, y.toSpace⟫_ℝ := by
+  rw [as_sum]
+  rfl
+
+@[simp]
+lemma stdBasis_inl {d : ℕ} :
+    ⟪@ContrMod.stdBasis d (Sum.inl 0), ContrMod.stdBasis (Sum.inl 0)⟫ₘ = (1 : ℝ) := by
+  rw [as_sum]
+  trans (1 : ℝ) - (0 : ℝ)
+  congr
+  · rw [ContrMod.stdBasis_apply_same]
+    simp
+  · rw [Fintype.sum_eq_zero]
+    intro a
+    simp
+  · ring
 
 lemma symm : ⟪x, y⟫ₘ = ⟪y, x⟫ₘ := by
   rw [as_sum, as_sum]
@@ -315,6 +346,39 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, add_sub_cancel, neg_add_cancel, e]
+
+/-!
+
+## Some equalities and inequalities
+
+-/
+
+lemma inl_sq_eq (v : Contr d) : v.val (Sum.inl 0) ^ 2 =
+    (toField d ⟪v, v⟫ₘ) + ∑ i, v.val (Sum.inr i) ^ 2:= by
+  rw [as_sum]
+  apply sub_eq_iff_eq_add.mp
+  congr
+  · exact pow_two (v.val (Sum.inl 0))
+  · funext i
+    exact pow_two (v.val (Sum.inr i))
+
+lemma le_inl_sq (v : Contr d) : toField d ⟪v, v⟫ₘ ≤ v.val (Sum.inl 0) ^ 2 := by
+  rw [inl_sq_eq]
+  apply (le_add_iff_nonneg_right _).mpr
+  refine Fintype.sum_nonneg ?hf
+  exact fun i => pow_two_nonneg (v.val (Sum.inr i))
+
+
+lemma ge_abs_inner_product (v w : Contr d) : v.val (Sum.inl 0)  * w.val (Sum.inl 0)  -
+    ‖⟪v.toSpace, w.toSpace⟫_ℝ‖ ≤ ⟪v, w⟫ₘ := by
+  rw [as_sum_toSpace, sub_le_sub_iff_left]
+  exact Real.le_norm_self ⟪v.toSpace, w.toSpace⟫_ℝ
+
+lemma ge_sub_norm  (v w : Contr d) : v.val (Sum.inl 0)  * w.val (Sum.inl 0) -
+    ‖v.toSpace‖ * ‖w.toSpace‖ ≤ ⟪v, w⟫ₘ := by
+  apply le_trans _ (ge_abs_inner_product v w)
+  rw [sub_le_sub_iff_left]
+  exact norm_inner_le_norm v.toSpace w.toSpace
 
 end contrContrContract
 

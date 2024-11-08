@@ -30,9 +30,17 @@ open minkowskiMatrix
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 
+instance : TopologicalSpace (Contr d) :=
+  haveI : NormedAddCommGroup (Contr d) := ContrMod.norm
+  UniformSpace.toTopologicalSpace
+
 /-- The representation of `LorentzGroup d` on real vectors corresponding to covariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Co (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of CoMod.rep
+
+open CategoryTheory.MonoidalCategory
+
+def toField (d : ℕ) : (𝟙_ (Rep ℝ ↑(LorentzGroup d))) →ₗ[ℝ] ℝ := LinearMap.id
 
 /-!
 

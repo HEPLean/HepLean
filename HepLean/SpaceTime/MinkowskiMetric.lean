@@ -178,7 +178,7 @@ lemma dual_mulVec_left : ⟪(dual Λ) *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ :=
 lemma matrix_apply_eq_iff_sub : ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ ↔ ⟪v, (Λ - Λ') *ᵥ w⟫ₘ = 0 := by
   rw [← sub_eq_zero, ← LinearMap.map_sub, sub_mulVec]
 
-lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v= Λ' *ᵥ v) ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
+lemma matrix_eq_iff_eq_forall' : (∀ v, Λ *ᵥ v = Λ' *ᵥ v) ↔ ∀ w v, ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
   refine Iff.intro (fun h ↦ fun w v ↦ ?_) (fun h ↦ fun v ↦ ?_)
   · rw [h w]
   · simp only [matrix_apply_eq_iff_sub] at h

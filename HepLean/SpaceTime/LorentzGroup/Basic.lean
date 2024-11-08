@@ -85,28 +85,6 @@ lemma dual_mem (h : Λ ∈ LorentzGroup d) : dual Λ ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self, dual_dual]
   exact mem_iff_self_mul_dual.mp h
 
-/-
-lemma mem_iff_norm : Λ ∈ LorentzGroup d ↔
-    ∀ (x : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ x⟫ₘ = ⟪x, x⟫ₘ := by
-  refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
-  have hp := h (x + y)
-  have hn := h (x - y)
-  rw [mulVec_add] at hp
-  rw [mulVec_sub] at hn
-  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
-  rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
-  linear_combination hp / 4 + -1 * hn / 4
-
-lemma mem_iff_on_right : Λ ∈ LorentzGroup d ↔
-    ∀ (x y : LorentzVector d), ⟪x, (dual Λ * Λ) *ᵥ y⟫ₘ = ⟪x, y⟫ₘ := by
-  refine Iff.intro (fun h x y ↦ ?_) (fun h x y ↦ ?_)
-  · have h1 := h x y
-    rw [← dual_mulVec_right, mulVec_mulVec] at h1
-    exact h1
-  · rw [← dual_mulVec_right, mulVec_mulVec]
-    exact h x y
-
--/
 
 end LorentzGroup
 
