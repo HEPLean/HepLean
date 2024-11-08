@@ -167,7 +167,7 @@ lemma repSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
 lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
     SL2C.repSelfAdjointMatrix M (PauliMatrix.σSA i) =
     ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.σSA j := by
-  have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMetric.dual (toLorentzGroup M).1 := by
+  have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMatrix.dual (toLorentzGroup M).1 := by
     simp
   simp only [h1]
   rw [PauliMatrix.σSA_minkowskiMetric_σSAL, _root_.map_smul]
@@ -178,7 +178,7 @@ lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
   rw [smul_smul, PauliMatrix.σSA_minkowskiMetric_σSAL, smul_smul]
   apply congrFun
   apply congrArg
-  exact Eq.symm (minkowskiMetric.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
+  exact Eq.symm (minkowskiMatrix.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
 
 lemma repLorentzVector_stdBasis (i : Fin 1 ⊕ Fin 3) :
     SL2C.repLorentzVector M (LorentzVector.stdBasis i) =

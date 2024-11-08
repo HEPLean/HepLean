@@ -43,7 +43,7 @@ namespace LorentzGroup
 scoped[LorentzGroup] notation (name := lorentzGroup_notation) "𝓛" => LorentzGroup
 
 open minkowskiMetric
-
+open minkowskiMatrix
 variable {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
 
 /-!
@@ -123,7 +123,7 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   one := ⟨1, LorentzGroup.one_mem⟩
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
   mul_one A := Subtype.eq (Matrix.mul_one A.1)
-  inv A := ⟨minkowskiMetric.dual A.1, LorentzGroup.dual_mem A.2⟩
+  inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
 /-- `LorentzGroup` has the subtype topology. -/
@@ -132,6 +132,7 @@ instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
 namespace LorentzGroup
 
 open minkowskiMetric
+open minkowskiMatrix
 
 variable {Λ Λ' : LorentzGroup d}
 
@@ -250,7 +251,7 @@ def toProd : LorentzGroup d →* (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ
     (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)ᵐᵒᵖ :=
   MonoidHom.comp (Units.embedProduct _) toGL
 
-lemma toProd_eq_transpose_η : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMetric.dual Λ.1) := rfl
+lemma toProd_eq_transpose_η : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMatrix.dual Λ.1) := rfl
 
 lemma toProd_injective : Function.Injective (@toProd d) := by
   intro A B h

@@ -25,7 +25,7 @@ def SO3ToMatrix (A : SO(3)) : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ :=
 
 lemma SO3ToMatrix_in_LorentzGroup (A : SO(3)) : SO3ToMatrix A ∈ LorentzGroup 3 := by
   rw [LorentzGroup.mem_iff_dual_mul_self]
-  simp only [minkowskiMetric.dual, minkowskiMatrix.as_block, SO3ToMatrix,
+  simp only [minkowskiMatrix.dual, minkowskiMatrix.as_block, SO3ToMatrix,
     Matrix.fromBlocks_transpose, Matrix.transpose_one, Matrix.transpose_zero,
     Matrix.fromBlocks_multiply, mul_one, Matrix.mul_zero, add_zero, Matrix.zero_mul, Matrix.mul_one,
     neg_mul, one_mul, zero_add, Matrix.mul_neg, neg_zero, mul_neg, neg_neg,
