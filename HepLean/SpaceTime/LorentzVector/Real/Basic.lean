@@ -30,11 +30,11 @@ namespace Lorentz
 
 /-- The representation of `LorentzGroup d` on real vectors corresponding to contravariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
-def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrℝModule.rep
+def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 
 /-- The representation of `LorentzGroup d` on real vectors corresponding to covariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
-def Co (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of CoℝModule.rep
+def Co (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of CoMod.rep
 
 end Lorentz
 end
