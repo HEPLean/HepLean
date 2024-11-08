@@ -137,6 +137,15 @@ variable {Λ Λ' : LorentzGroup d}
 
 lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= (inv_eq_left_inv (mem_iff_dual_mul_self.mp Λ.2)).symm
 
+instance (M : LorentzGroup d) : Invertible M.1 where
+  invOf := M⁻¹
+  invOf_mul_self := by
+    rw [← coe_inv]
+    exact (mem_iff_dual_mul_self.mp M.2)
+  mul_invOf_self := by
+    rw [← coe_inv]
+    exact (mem_iff_self_mul_dual.mp M.2)
+
 @[simp]
 lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   trans Subtype.val (Λ⁻¹ * Λ)

@@ -91,6 +91,7 @@ import HepLean.SpaceTime.LorentzVector.Covariant
 import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.LorentzVector.Real.Basic
+import HepLean.SpaceTime.LorentzVector.Real.Contraction
 import HepLean.SpaceTime.LorentzVector.Real.Modules
 import HepLean.SpaceTime.MinkowskiMetric
 import HepLean.SpaceTime.PauliMatrices.AsTensor

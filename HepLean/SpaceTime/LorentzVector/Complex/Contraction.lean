@@ -160,7 +160,7 @@ lemma contrCoContraction_tmul_symm (φ : complexContr) (ψ : complexCo) :
 
 lemma coContrContraction_tmul_symm (φ : complexCo) (ψ : complexContr) :
     coContrContraction.hom (φ ⊗ₜ ψ) = contrCoContraction.hom (ψ ⊗ₜ φ) := by
-  rw [contrCoContraction_hom_tmul, coContrContraction_hom_tmul, dotProduct_comm]
+  rw [contrCoContraction_tmul_symm]
 
 end Lorentz
 end
