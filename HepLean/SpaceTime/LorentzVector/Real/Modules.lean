@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Informal
-import HepLean.SpaceTime.SL2C.Basic
+import HepLean.SpaceTime.LorentzGroup.Basic
 import Mathlib.RepresentationTheory.Rep
 import Mathlib.Logic.Equiv.TransferInstance
 /-!
@@ -34,6 +34,13 @@ namespace ContrMod
 
 variable {d : ℕ}
 
+@[ext]
+lemma ext {ψ ψ' : ContrMod d} (h : ψ.val = ψ'.val) : ψ = ψ' := by
+  cases ψ
+  cases ψ'
+  subst h
+  rfl
+
 /-- The equivalence between `ContrℝModule` and `Fin 1 ⊕ Fin d → ℂ`. -/
 def toFin1dℝFun : ContrMod d ≃ (Fin 1 ⊕ Fin d → ℝ) where
   toFun v := v.val
@@ -52,13 +59,6 @@ instance : AddCommGroup (ContrMod d) := Equiv.addCommGroup toFin1dℝFun
 /-- The instance of `Module` on `ContrℝModule` defined via its equivalence
   with `Fin 1 ⊕ Fin d → ℝ`. -/
 instance : Module ℝ (ContrMod d) := Equiv.module ℝ toFin1dℝFun
-
-@[ext]
-lemma ext (ψ ψ' : ContrMod d) (h : ψ.val = ψ'.val) : ψ = ψ' := by
-  cases ψ
-  cases ψ'
-  subst h
-  rfl
 
 @[simp]
 lemma val_add (ψ ψ' : ContrMod d) : (ψ + ψ').val = ψ.val + ψ'.val := rfl
@@ -122,12 +122,32 @@ lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis 
 abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     ContrMod d := Matrix.toLinAlgEquiv stdBasis M v
 
-scoped[Lorentz] notation M " *ᵥ " v => ContrMod.mulVec M v
+scoped[Lorentz] infixr:73 " *ᵥ " => ContrMod.mulVec
 
 @[simp]
 lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     (M *ᵥ v).toFin1dℝ = M *ᵥ v.toFin1dℝ := by
   rfl
+
+lemma mulVec_sub (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v w : ContrMod d) :
+    M *ᵥ (v - w) = M *ᵥ v - M *ᵥ w := by
+  simp only [mulVec, LinearMap.map_sub]
+
+lemma sub_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
+    (M - N) *ᵥ v = M *ᵥ v - N *ᵥ v := by
+  simp only [mulVec, map_sub, LinearMap.sub_apply]
+
+lemma mulVec_add (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v w : ContrMod d) :
+    M *ᵥ (v + w) = M *ᵥ v + M *ᵥ w := by
+  simp only [mulVec, LinearMap.map_add]
+
+@[simp]
+lemma one_mulVec (v : ContrMod d) : (1 : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) *ᵥ v = v := by
+  simp only [mulVec, _root_.map_one, LinearMap.one_apply]
+
+lemma mulVec_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
+    M *ᵥ (N *ᵥ v) = (M * N) *ᵥ v := by
+  simp only [mulVec, _root_.map_mul, LinearMap.mul_apply]
 
 /-!
 
@@ -157,6 +177,13 @@ structure CoMod (d : ℕ) where
 namespace CoMod
 
 variable {d : ℕ}
+
+@[ext]
+lemma ext {ψ ψ' : CoMod d} (h : ψ.val = ψ'.val) : ψ = ψ' := by
+  cases ψ
+  cases ψ'
+  subst h
+  rfl
 
 /-- The equivalence between `CoℝModule` and `Fin 1 ⊕ Fin d → ℝ`. -/
 def toFin1dℝFun : CoMod d ≃ (Fin 1 ⊕ Fin d → ℝ) where
@@ -232,7 +259,7 @@ lemma stdBasis_decomp (v : CoMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i :
 abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :
     CoMod d := Matrix.toLinAlgEquiv stdBasis M v
 
-scoped[Lorentz] notation M " *ᵥ " v => CoMod.mulVec M v
+scoped[Lorentz] infixr:73 " *ᵥ " => CoMod.mulVec
 
 @[simp]
 lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :

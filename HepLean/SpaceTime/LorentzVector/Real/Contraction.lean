@@ -16,7 +16,6 @@ open Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
-open SpaceTime
 open CategoryTheory.MonoidalCategory
 open minkowskiMatrix
 namespace Lorentz
@@ -183,7 +182,6 @@ We derive the lemmas in main for `contrContrContract`.
 namespace contrContrContract
 
 variable (x y : Contr d)
-open minkowskiMetric
 
 lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
       ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i)  := by
@@ -209,6 +207,114 @@ lemma dual_mulVec_right : ⟪x, dual Λ *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ := 
 
 lemma dual_mulVec_left : ⟪dual Λ *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ := by
   rw [symm, dual_mulVec_right, symm]
+
+lemma right_parity : ⟪x, (Contr d).ρ LorentzGroup.parity y⟫ₘ =  ∑ i, x.val i * y.val i := by
+  rw [as_sum]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, Fintype.sum_sum_type,
+    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
+  trans x.val (Sum.inl 0) * (((Contr d).ρ LorentzGroup.parity) y).val (Sum.inl 0) +
+    ∑ i : Fin d, - (x.val (Sum.inr i) * (((Contr d).ρ LorentzGroup.parity) y).val (Sum.inr i))
+  · simp only [Fin.isValue, Finset.sum_neg_distrib]
+    rfl
+  congr 1
+  · change x.val (Sum.inl 0) * (η *ᵥ y.toFin1dℝ) (Sum.inl 0) = _
+    simp only [Fin.isValue, mulVec_inl_0, mul_eq_mul_left_iff]
+    exact mul_eq_mul_left_iff.mp rfl
+  · congr
+    funext i
+    change - (x.val (Sum.inr i) * ((η *ᵥ y.toFin1dℝ) (Sum.inr i)))  = _
+    simp only [mulVec_inr_i, mul_neg, neg_neg, mul_eq_mul_left_iff]
+    exact mul_eq_mul_left_iff.mp rfl
+
+lemma self_parity_eq_zero_iff : ⟪y, (Contr d).ρ LorentzGroup.parity y⟫ₘ = 0 ↔ y = 0 := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · rw [right_parity] at h
+    have hn := Fintype.sum_eq_zero_iff_of_nonneg (f := fun i => y.val i * y.val i) (fun i => by
+      simpa using mul_self_nonneg (y.val i))
+    rw [h] at hn
+    simp at hn
+    apply ContrMod.ext
+    funext i
+    simpa using congrFun hn i
+  · rw [h]
+    simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, map_zero, tmul_zero]
+
+/-- The metric tensor is non-degenerate. -/
+lemma nondegenerate : (∀ (x : Contr d), ⟪x, y⟫ₘ = 0) ↔ y = 0 := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · exact (self_parity_eq_zero_iff _).mp ((symm _ _).trans $ h _)
+  · simp [h]
+
+lemma matrix_apply_eq_iff_sub : ⟪x, Λ *ᵥ y⟫ₘ = ⟪x, Λ' *ᵥ y⟫ₘ ↔ ⟪x, (Λ - Λ') *ᵥ y⟫ₘ = 0 := by
+  rw [← sub_eq_zero, ← LinearMap.map_sub, ← tmul_sub, ← ContrMod.sub_mulVec Λ Λ' y]
+
+lemma matrix_eq_iff_eq_forall' : (∀ (v : Contr d), (Λ *ᵥ v) = Λ' *ᵥ v) ↔
+    ∀ (w v : Contr d), ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
+  refine Iff.intro (fun h ↦ fun w v ↦ ?_) (fun h ↦ fun v ↦ ?_)
+  · rw [h w]
+  · simp only [matrix_apply_eq_iff_sub] at h
+    refine sub_eq_zero.1 ?_
+    have h1 := h v
+    rw [nondegenerate] at h1
+    simp only [ContrMod.sub_mulVec] at h1
+    exact h1
+
+lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ (w v : Contr d), ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, Λ' *ᵥ w⟫ₘ := by
+  rw [← matrix_eq_iff_eq_forall']
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · subst h
+    exact fun v => rfl
+  · rw [← (LinearMap.toMatrix ContrMod.stdBasis ContrMod.stdBasis).toEquiv.symm.apply_eq_iff_eq]
+    ext1 v
+    exact h v
+
+lemma matrix_eq_id_iff : Λ = 1 ↔ ∀ (w v : Contr d), ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫ₘ := by
+  rw [matrix_eq_iff_eq_forall]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ContrMod.one_mulVec]
+
+lemma _root_.LorentzGroup.mem_iff_invariant : Λ ∈ LorentzGroup d ↔
+    ∀ (w v : Contr d), ⟪Λ *ᵥ v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫ₘ := by
+  refine Iff.intro (fun h => ?_) (fun h => ?_)
+  · intro x y
+    rw [← dual_mulVec_right, ContrMod.mulVec_mulVec]
+    have h1 := LorentzGroup.mem_iff_dual_mul_self.mp h
+    rw [h1]
+    simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, ContrMod.one_mulVec]
+  · conv at h =>
+      intro x y
+      rw [← dual_mulVec_right, ContrMod.mulVec_mulVec]
+    rw [← matrix_eq_id_iff] at h
+    exact LorentzGroup.mem_iff_dual_mul_self.mpr h
+
+lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
+    ∀ (w : Contr d), ⟪Λ *ᵥ w, Λ *ᵥ w⟫ₘ = ⟪w, w⟫ₘ := by
+  rw [LorentzGroup.mem_iff_invariant]
+  refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
+  have hp := h (x + y)
+  have hn := h (x - y)
+  rw [ContrMod.mulVec_add, tmul_add, add_tmul, add_tmul, tmul_add, add_tmul, add_tmul] at hp
+  rw [ContrMod.mulVec_sub, tmul_sub, sub_tmul, sub_tmul, tmul_sub, sub_tmul, sub_tmul] at hn
+  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
+  rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
+  let e :  𝟙_ (Rep ℝ ↑(LorentzGroup d)) ≃ₗ[ℝ] ℝ :=
+    LinearEquiv.refl ℝ (CoeSort.coe (𝟙_ (Rep ℝ ↑(LorentzGroup d))))
+  apply e.injective
+  have hp' := e.injective.eq_iff.mpr hp
+  have hn' := e.injective.eq_iff.mpr hn
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, map_add, map_sub] at hp' hn'
+  linear_combination  (norm := ring_nf) (1 / 4) * hp' + (-1/ 4) * hn'
+  rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, add_sub_cancel, neg_add_cancel, e]
 
 end contrContrContract
 

@@ -3,8 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.MinkowskiMetric
-import HepLean.SpaceTime.LorentzVector.NormOne
+import HepLean.SpaceTime.MinkowskiMatrix
 /-!
 # The Lorentz Group
 
@@ -32,17 +31,16 @@ These matrices form the Lorentz group, which we will define in the next section 
 -/
 variable {d : ℕ}
 
-open minkowskiMetric in
-/-- The Lorentz group is the subset of matrices which preserve the minkowski metric. -/
+open minkowskiMatrix in
+/-- The Lorentz group is the subset of matrices for which
+  `Λ * dual Λ = 1`. -/
 def LorentzGroup (d : ℕ) : Set (Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) :=
-    {Λ : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ |
-    ∀ (x y : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ y⟫ₘ = ⟪x, y⟫ₘ}
+    {Λ : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ | Λ * dual Λ = 1}
 
 namespace LorentzGroup
 /-- Notation for the Lorentz group. -/
 scoped[LorentzGroup] notation (name := lorentzGroup_notation) "𝓛" => LorentzGroup
 
-open minkowskiMetric
 open minkowskiMatrix
 variable {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
 
@@ -52,32 +50,11 @@ variable {Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ}
 
 -/
 
-lemma mem_iff_norm : Λ ∈ LorentzGroup d ↔
-    ∀ (x : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ x⟫ₘ = ⟪x, x⟫ₘ := by
-  refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
-  have hp := h (x + y)
-  have hn := h (x - y)
-  rw [mulVec_add] at hp
-  rw [mulVec_sub] at hn
-  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
-  rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
-  linear_combination hp / 4 + -1 * hn / 4
-
-lemma mem_iff_on_right : Λ ∈ LorentzGroup d ↔
-    ∀ (x y : LorentzVector d), ⟪x, (dual Λ * Λ) *ᵥ y⟫ₘ = ⟪x, y⟫ₘ := by
-  refine Iff.intro (fun h x y ↦ ?_) (fun h x y ↦ ?_)
-  · have h1 := h x y
-    rw [← dual_mulVec_right, mulVec_mulVec] at h1
-    exact h1
-  · rw [← dual_mulVec_right, mulVec_mulVec]
-    exact h x y
+lemma mem_iff_self_mul_dual : Λ ∈ LorentzGroup d ↔ Λ * dual Λ = 1 := by
+  rfl
 
 lemma mem_iff_dual_mul_self : Λ ∈ LorentzGroup d ↔ dual Λ * Λ = 1 := by
-  rw [mem_iff_on_right, matrix_eq_id_iff]
-  exact forall_comm
-
-lemma mem_iff_self_mul_dual : Λ ∈ LorentzGroup d ↔ Λ * dual Λ = 1 := by
-  rw [mem_iff_dual_mul_self]
+  rw [mem_iff_self_mul_dual]
   exact mul_eq_one_comm
 
 lemma mem_iff_transpose : Λ ∈ LorentzGroup d ↔ Λᵀ ∈ LorentzGroup d := by
@@ -108,6 +85,29 @@ lemma dual_mem (h : Λ ∈ LorentzGroup d) : dual Λ ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self, dual_dual]
   exact mem_iff_self_mul_dual.mp h
 
+/-
+lemma mem_iff_norm : Λ ∈ LorentzGroup d ↔
+    ∀ (x : LorentzVector d), ⟪Λ *ᵥ x, Λ *ᵥ x⟫ₘ = ⟪x, x⟫ₘ := by
+  refine Iff.intro (fun h x => h x x) (fun h x y => ?_)
+  have hp := h (x + y)
+  have hn := h (x - y)
+  rw [mulVec_add] at hp
+  rw [mulVec_sub] at hn
+  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
+  rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
+  linear_combination hp / 4 + -1 * hn / 4
+
+lemma mem_iff_on_right : Λ ∈ LorentzGroup d ↔
+    ∀ (x y : LorentzVector d), ⟪x, (dual Λ * Λ) *ᵥ y⟫ₘ = ⟪x, y⟫ₘ := by
+  refine Iff.intro (fun h x y ↦ ?_) (fun h x y ↦ ?_)
+  · have h1 := h x y
+    rw [← dual_mulVec_right, mulVec_mulVec] at h1
+    exact h1
+  · rw [← dual_mulVec_right, mulVec_mulVec]
+    exact h x y
+
+-/
+
 end LorentzGroup
 
 /-!
@@ -131,7 +131,6 @@ instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
 
 namespace LorentzGroup
 
-open minkowskiMetric
 open minkowskiMatrix
 
 variable {Λ Λ' : LorentzGroup d}
@@ -285,43 +284,6 @@ lemma toGL_embedding : IsEmbedding (@toGL d).toFun where
 instance : TopologicalGroup (LorentzGroup d) :=
   IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 
-section
-open LorentzVector
-/-!
-
-# To a norm one Lorentz vector
-
--/
-
-/-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
-@[simps!]
-def toNormOneLorentzVector (Λ : LorentzGroup d) : NormOneLorentzVector d :=
-  ⟨Λ.1 *ᵥ timeVec, by rw [NormOneLorentzVector.mem_iff, Λ.2, minkowskiMetric.on_timeVec]⟩
-
-/-!
-
-# The time like element
-
--/
-
-/-- The time like element of a Lorentz matrix. -/
-@[simp]
-def timeComp (Λ : LorentzGroup d) : ℝ := Λ.1 (Sum.inl 0) (Sum.inl 0)
-
-lemma timeComp_eq_toNormOneLorentzVector : timeComp Λ = (toNormOneLorentzVector Λ).1.time := by
-  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue, timeComp]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  rfl
-
-lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
-    ⟪toNormOneLorentzVector (transpose Λ), (toNormOneLorentzVector Λ').1.spaceReflection⟫ₘ := by
-  simp only [timeComp, Fin.isValue, lorentzGroupIsGroup_mul_coe, mul_apply, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, toNormOneLorentzVector,
-    transpose, timeVec, right_spaceReflection, time, space, PiLp.inner_apply, Function.comp_apply,
-    RCLike.inner_apply, conj_trivial]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  simp
-
 /-!
 
 ## To Complex matrices
@@ -387,6 +349,46 @@ lemma toComplex_mulVec_ofReal (v : Fin 1 ⊕ Fin d → ℝ) (Λ : LorentzGroup d
   funext i
   rw [← RingHom.map_mulVec]
   rfl
+  /-!
+/-!
 
-end
+# To a norm one Lorentz vector
+
+-/
+
+/-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
+@[simps!]
+def toNormOneLorentzVector (Λ : LorentzGroup d) : NormOneLorentzVector d :=
+  ⟨Λ.1 *ᵥ timeVec, by rw [NormOneLorentzVector.mem_iff, Λ.2, minkowskiMetric.on_timeVec]⟩
+
+/-!
+
+# The time like element
+
+-/
+
+/-- The time like element of a Lorentz matrix. -/
+@[simp]
+def timeComp (Λ : LorentzGroup d) : ℝ := Λ.1 (Sum.inl 0) (Sum.inl 0)
+
+lemma timeComp_eq_toNormOneLorentzVector : timeComp Λ = (toNormOneLorentzVector Λ).1.time := by
+  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue, timeComp]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
+  rfl
+
+lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
+    ⟪toNormOneLorentzVector (transpose Λ), (toNormOneLorentzVector Λ').1.spaceReflection⟫ₘ := by
+  simp only [timeComp, Fin.isValue, lorentzGroupIsGroup_mul_coe, mul_apply, Fintype.sum_sum_type,
+    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, toNormOneLorentzVector,
+    transpose, timeVec, right_spaceReflection, time, space, PiLp.inner_apply, Function.comp_apply,
+    RCLike.inner_apply, conj_trivial]
+  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
+  simp
+-/
+
+/-- The parity transformation. -/
+def parity : LorentzGroup d := ⟨minkowskiMatrix, by
+  rw [mem_iff_dual_mul_self]
+  simp only [dual_eta, minkowskiMatrix.sq]⟩
+
 end LorentzGroup

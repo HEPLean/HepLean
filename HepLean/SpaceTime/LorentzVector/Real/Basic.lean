@@ -5,8 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import HepLean.SpaceTime.SL2C.Basic
-import HepLean.SpaceTime.LorentzVector.Complex.Modules
+import HepLean.SpaceTime.LorentzGroup.Basic
 import HepLean.Meta.Informal
 import Mathlib.RepresentationTheory.Rep
 import HepLean.SpaceTime.LorentzVector.Real.Modules
@@ -24,10 +23,8 @@ open Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
-open SpaceTime
 
 namespace Lorentz
-open minkowskiMetric
 open minkowskiMatrix
 /-- The representation of `LorentzGroup d` on real vectors corresponding to contravariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/

@@ -21,7 +21,6 @@ open ComplexConjugate
 
 namespace LorentzGroup
 
-open minkowskiMetric
 open minkowskiMatrix
 
 variable {d : ℕ}
