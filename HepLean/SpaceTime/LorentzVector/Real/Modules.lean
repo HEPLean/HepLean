@@ -115,9 +115,26 @@ lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis 
 
 /-!
 
+## mulVec
+
+-/
+
+abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
+    ContrMod d := Matrix.toLinAlgEquiv stdBasis M v
+
+scoped[Lorentz] notation M " *ᵥ " v => ContrMod.mulVec M v
+
+@[simp]
+lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
+    (M *ᵥ v).toFin1dℝ = M *ᵥ v.toFin1dℝ := by
+  rfl
+
+/-!
+
 ## The representation.
 
 -/
+
 
 /-- The representation of the Lorentz group acting on `ContrℝModule d`. -/
 def rep : Representation ℝ (LorentzGroup d) (ContrMod d) where
@@ -205,6 +222,22 @@ lemma stdBasis_decomp (v : CoMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i :
   · intro b _ hbμ
     rw [stdBasis_toFin1dℝEquiv_apply_ne hbμ]
     simp only [smul_eq_mul, mul_zero]
+
+/-!
+
+## mulVec
+
+-/
+
+abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :
+    CoMod d := Matrix.toLinAlgEquiv stdBasis M v
+
+scoped[Lorentz] notation M " *ᵥ " v => CoMod.mulVec M v
+
+@[simp]
+lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :
+    (M *ᵥ v).toFin1dℝ = M *ᵥ v.toFin1dℝ := by
+  rfl
 
 /-!
 

@@ -18,6 +18,7 @@ open Complex
 open TensorProduct
 open SpaceTime
 open CategoryTheory.MonoidalCategory
+open minkowskiMatrix
 namespace Lorentz
 
 variable {d : ℕ}
@@ -141,12 +142,71 @@ def contrContrContract : Contr d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)
 
 scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContract.hom (ψ ⊗ₜ φ)
 
+lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
+    ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+    contrContrContract, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    ModuleCat.MonoidalCategory.whiskerLeft_apply]
+  erw [contrCoContract_hom_tmul]
+  rfl
+
 /-- The linear map from Co d ⊗ Co d to ℝ induced by the homomorphism
   `Co.toContr` and the contraction `coContrContract`. -/
 def coCoContract : Co d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) :=
   (Co d ◁ Co.toContr d) ≫ coContrContract
 
 scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => coCoContract.hom (ψ ⊗ₜ φ)
+
+lemma coCoContract_hom_tmul (φ : Co d) (ψ : Co d) :
+    ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
+  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
+    contrContrContract, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    ModuleCat.MonoidalCategory.whiskerLeft_apply]
+  erw [coContrContract_hom_tmul]
+  rfl
+
+/-!
+
+## Lemmas related to contraction.
+
+We derive the lemmas in main for `contrContrContract`.
+
+-/
+namespace contrContrContract
+
+variable (x y : Contr d)
+open minkowskiMetric
+
+lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
+      ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i)  := by
+  rw [contrContrContract_hom_tmul]
+  simp only [dotProduct, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal,
+    Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Sum.elim_inl,
+    one_mul, Finset.sum_singleton, Sum.elim_inr, neg_mul, mul_neg, Finset.sum_neg_distrib]
+  rfl
+
+lemma symm : ⟪x, y⟫ₘ = ⟪y, x⟫ₘ := by
+  rw [as_sum, as_sum]
+  congr 1
+  rw [mul_comm]
+  congr
+  funext i
+  rw [mul_comm]
+
+lemma dual_mulVec_right : ⟪x, dual Λ *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ := by
+  rw [contrContrContract_hom_tmul, contrContrContract_hom_tmul]
+  simp only [Action.instMonoidalCategory_tensorUnit_V, ContrMod.mulVec_toFin1dℝ, mulVec_mulVec]
+  simp only [dual, ← mul_assoc, minkowskiMatrix.sq, one_mul]
+  rw [← mulVec_mulVec, dotProduct_mulVec, vecMul_transpose]
+
+lemma dual_mulVec_left : ⟪dual Λ *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ := by
+  rw [symm, dual_mulVec_right, symm]
+
+end contrContrContract
 
 end Lorentz
 end
