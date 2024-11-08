@@ -18,16 +18,20 @@ namespace PauliMatrix
 open Complex
 open Matrix
 
-/-- The zeroth Pauli-matrix as a `2 x 2` complex matrix. -/
+/-- The zeroth Pauli-matrix as a `2 x 2` complex matrix.
+  That is the matrix `!![1, 0; 0, 1]`.  -/
 def σ0 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
 
-/-- The first Pauli-matrix as a `2 x 2` complex matrix. -/
+/-- The first Pauli-matrix as a `2 x 2` complex matrix.
+  That is, the matrix `!![0, 1; 1, 0]`. -/
 def σ1 : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; 1, 0]
 
-/-- The second Pauli-matrix as a `2 x 2` complex matrix. -/
+/-- The second Pauli-matrix as a `2 x 2` complex matrix.
+  That is, the matrix `!![0, -I; I, 0]`. -/
 def σ2 : Matrix (Fin 2) (Fin 2) ℂ := !![0, -I; I, 0]
 
-/-- The third Pauli-matrix as a `2 x 2` complex matrix. -/
+/-- The third Pauli-matrix as a `2 x 2` complex matrix.
+  That is, the matrix `!![1, 0; 0, -1]`. -/
 def σ3 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
 
 @[simp]

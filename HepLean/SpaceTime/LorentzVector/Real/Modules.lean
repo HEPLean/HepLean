@@ -67,7 +67,6 @@ lemma val_add (ψ ψ' : ContrMod d) : (ψ + ψ').val = ψ.val + ψ'.val := rfl
 lemma val_smul (r : ℝ) (ψ : ContrMod d) : (r • ψ).val = r • ψ.val := rfl
 
 /-- The linear equivalence between `ContrℝModule` and `(Fin 1 ⊕ Fin d → ℝ)`. -/
-@[simps!]
 def toFin1dℝEquiv : ContrMod d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) :=
   Equiv.linearEquiv ℝ toFin1dℝFun
 
@@ -117,7 +116,6 @@ instance : AddCommGroup (CoMod d) := Equiv.addCommGroup toFin1dℝFun
 instance : Module ℝ (CoMod d) := Equiv.module ℝ toFin1dℝFun
 
 /-- The linear equivalence between `CoℝModule` and `(Fin 1 ⊕ Fin d → ℝ)`. -/
-@[simps!]
 def toFin1dℝEquiv : CoMod d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) :=
   Equiv.linearEquiv ℝ toFin1dℝFun
 
@@ -128,6 +126,34 @@ abbrev toFin1dℝ (ψ : CoMod d) := toFin1dℝEquiv ψ
 /-- The standard basis of `CoℝModule` indexed by `Fin 1 ⊕ Fin d`. -/
 @[simps!]
 def stdBasis : Basis (Fin 1 ⊕ Fin d) ℝ (CoMod d) := Basis.ofEquivFun toFin1dℝEquiv
+
+@[simp]
+lemma stdBasis_toFin1dℝEquiv_apply_self (μ : Fin 1 ⊕ Fin d) :
+  toFin1dℝEquiv (stdBasis μ) μ = 1 := by
+  simp only [stdBasis, Basis.ofEquivFun, Basis.coe_ofRepr, LinearEquiv.trans_symm,
+    LinearEquiv.symm_symm, LinearEquiv.trans_apply, Finsupp.linearEquivFunOnFinite_single]
+  rw [@LinearEquiv.apply_symm_apply]
+  exact Pi.single_eq_same μ 1
+
+lemma stdBasis_toFin1dℝEquiv_apply_ne {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) :
+  toFin1dℝEquiv (stdBasis μ) ν = 0 := by
+  simp only [stdBasis, Basis.ofEquivFun, Basis.coe_ofRepr, LinearEquiv.trans_symm,
+    LinearEquiv.symm_symm, LinearEquiv.trans_apply, Finsupp.linearEquivFunOnFinite_single]
+  rw [@LinearEquiv.apply_symm_apply]
+  exact Pi.single_eq_of_ne' h 1
+
+/-- Decomposition of a covariant Lorentz vector into the standard basis. -/
+lemma stdBasis_decomp (v : CoMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i := by
+  apply toFin1dℝEquiv.injective
+  simp only  [map_sum, _root_.map_smul]
+  funext μ
+  rw [Fintype.sum_apply μ fun c => toFin1dℝEquiv v c • toFin1dℝEquiv (stdBasis c)]
+  change _ = ∑ x : Fin 1 ⊕ Fin d, toFin1dℝEquiv v x • (toFin1dℝEquiv (stdBasis x) μ)
+  rw [Finset.sum_eq_single_of_mem μ (Finset.mem_univ μ)]
+  · simp only [stdBasis_toFin1dℝEquiv_apply_self, smul_eq_mul, mul_one]
+  · intro b _ hbμ
+    rw [stdBasis_toFin1dℝEquiv_apply_ne hbμ]
+    simp only [smul_eq_mul, mul_zero]
 
 /-- The representation of the Lorentz group acting on `CoℝModule d`. -/
 def rep : Representation ℝ (LorentzGroup d) (CoMod d) where
