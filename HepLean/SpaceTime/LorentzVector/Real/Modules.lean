@@ -35,7 +35,7 @@ namespace ContrℝModule
 variable {d : ℕ}
 
 /-- The equivalence between `ContrℝModule` and `Fin 1 ⊕ Fin d → ℂ`. -/
-def toFin1dℝFun : ContrℝModule d  ≃ (Fin 1 ⊕ Fin d → ℝ) where
+def toFin1dℝFun : ContrℝModule d ≃ (Fin 1 ⊕ Fin d → ℝ) where
   toFun v := v.val
   invFun f := ⟨f⟩
   left_inv _ := rfl
