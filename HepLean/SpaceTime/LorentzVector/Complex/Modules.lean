@@ -65,13 +65,8 @@ lemma val_smul (r : ℂ) (ψ : ContrℂModule) : (r • ψ).val = r • ψ.val :
 
 /-- The linear equivalence between `ContrℂModule` and `(Fin 1 ⊕ Fin 3 → ℂ)`. -/
 @[simps!]
-def toFin13ℂEquiv : ContrℂModule ≃ₗ[ℂ] (Fin 1 ⊕ Fin 3 → ℂ) where
-  toFun := toFin13ℂFun
-  map_add' := fun _ _ => rfl
-  map_smul' := fun _ _ => rfl
-  invFun := toFin13ℂFun.symm
-  left_inv := fun _ => rfl
-  right_inv := fun _ => rfl
+def toFin13ℂEquiv : ContrℂModule ≃ₗ[ℂ] (Fin 1 ⊕ Fin 3 → ℂ) :=
+  Equiv.linearEquiv ℂ toFin13ℂFun
 
 /-- The underlying element of `Fin 1 ⊕ Fin 3 → ℂ` of a element in `ContrℂModule` defined
   through the linear equivalence `toFin13ℂEquiv`. -/
@@ -129,13 +124,8 @@ instance : Module ℂ CoℂModule := Equiv.module ℂ toFin13ℂFun
 
 /-- The linear equivalence between `CoℂModule` and `(Fin 1 ⊕ Fin 3 → ℂ)`. -/
 @[simps!]
-def toFin13ℂEquiv : CoℂModule ≃ₗ[ℂ] (Fin 1 ⊕ Fin 3 → ℂ) where
-  toFun := toFin13ℂFun
-  map_add' := fun _ _ => rfl
-  map_smul' := fun _ _ => rfl
-  invFun := toFin13ℂFun.symm
-  left_inv := fun _ => rfl
-  right_inv := fun _ => rfl
+def toFin13ℂEquiv : CoℂModule ≃ₗ[ℂ] (Fin 1 ⊕ Fin 3 → ℂ) :=
+  Equiv.linearEquiv ℂ toFin13ℂFun
 
 /-- The underlying element of `Fin 1 ⊕ Fin 3 → ℂ` of a element in `CoℂModule` defined
   through the linear equivalence `toFin13ℂEquiv`. -/

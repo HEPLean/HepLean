@@ -59,9 +59,9 @@ def time : ℝ := v (Sum.inl 0)
 
 -/
 
-/-- The standard basis of `LorentzVector` indexed by `Fin 1 ⊕ Fin (d)`. -/
+/-- The standard basis of `LorentzVector` indexed by `Fin 1 ⊕ Fin d`. -/
 @[simps!]
-noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin (d)) ℝ (LorentzVector d) := Pi.basisFun ℝ _
+noncomputable def stdBasis : Basis (Fin 1 ⊕ Fin d) ℝ (LorentzVector d) := Pi.basisFun ℝ _
 
 /-- Notation for `stdBasis`. -/
 scoped[LorentzVector] notation "e" => stdBasis

@@ -68,17 +68,23 @@ lemma val_smul (r : ℝ) (ψ : ContrℝModule d) : (r • ψ).val = r • ψ.val
 
 /-- The linear equivalence between `ContrℝModule` and `(Fin 1 ⊕ Fin d → ℝ)`. -/
 @[simps!]
-def toFin1dℝEquiv : ContrℝModule d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) where
-  toFun := toFin1dℝFun
-  map_add' := fun _ _ => rfl
-  map_smul' := fun _ _ => rfl
-  invFun := toFin1dℝFun.symm
-  left_inv := fun _ => rfl
-  right_inv := fun _ => rfl
+def toFin1dℝEquiv : ContrℝModule d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) :=
+  Equiv.linearEquiv ℝ toFin1dℝFun
 
 /-- The underlying element of `Fin 1 ⊕ Fin d → ℝ` of a element in `ContrℝModule` defined
   through the linear equivalence `toFin1dℝEquiv`. -/
 abbrev toFin1dℝ (ψ : ContrℝModule d) := toFin1dℝEquiv ψ
+
+/-- The standard basis of `ContrℝModule` indexed by `Fin 1 ⊕ Fin d`. -/
+@[simps!]
+def stdBasis : Basis (Fin 1 ⊕ Fin d) ℝ (ContrℝModule d) := Basis.ofEquivFun toFin1dℝEquiv
+
+/-- The representation of the Lorentz group acting on `ContrℝModule d`. -/
+def rep : Representation ℝ (LorentzGroup d) (ContrℝModule d) where
+  toFun g := Matrix.toLinAlgEquiv stdBasis g
+  map_one' := (MulEquivClass.map_eq_one_iff (Matrix.toLinAlgEquiv stdBasis)).mpr rfl
+  map_mul' x y := by
+    simp only [lorentzGroupIsGroup_mul_coe, _root_.map_mul]
 
 end ContrℝModule
 
@@ -112,17 +118,25 @@ instance : Module ℝ (CoℝModule d) := Equiv.module ℝ toFin1dℝFun
 
 /-- The linear equivalence between `CoℝModule` and `(Fin 1 ⊕ Fin d → ℝ)`. -/
 @[simps!]
-def toFin1dℝEquiv : CoℝModule d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) where
-  toFun := toFin1dℝFun
-  map_add' := fun _ _ => rfl
-  map_smul' := fun _ _ => rfl
-  invFun := toFin1dℝFun.symm
-  left_inv := fun _ => rfl
-  right_inv := fun _ => rfl
+def toFin1dℝEquiv : CoℝModule d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) :=
+  Equiv.linearEquiv ℝ toFin1dℝFun
 
 /-- The underlying element of `Fin 1 ⊕ Fin d → ℝ` of a element in `CoℝModule` defined
   through the linear equivalence `toFin1dℝEquiv`. -/
 abbrev toFin1dℝ (ψ : CoℝModule d) := toFin1dℝEquiv ψ
+
+/-- The standard basis of `CoℝModule` indexed by `Fin 1 ⊕ Fin d`. -/
+@[simps!]
+def stdBasis : Basis (Fin 1 ⊕ Fin d) ℝ (CoℝModule d) := Basis.ofEquivFun toFin1dℝEquiv
+
+/-- The representation of the Lorentz group acting on `CoℝModule d`. -/
+def rep : Representation ℝ (LorentzGroup d) (CoℝModule d) where
+  toFun g := Matrix.toLinAlgEquiv stdBasis (LorentzGroup.transpose g⁻¹)
+  map_one' := by
+    simp only [inv_one, LorentzGroup.transpose_one, lorentzGroupIsGroup_one_coe, _root_.map_one]
+  map_mul' x y := by
+    simp only [_root_.mul_inv_rev, lorentzGroupIsGroup_inv, LorentzGroup.transpose_mul,
+      lorentzGroupIsGroup_mul_coe, _root_.map_mul]
 
 end CoℝModule
 
