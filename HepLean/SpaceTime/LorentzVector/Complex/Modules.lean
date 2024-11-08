@@ -11,7 +11,7 @@ import Mathlib.Logic.Equiv.TransferInstance
 
 ## Modules associated with complex Lorentz vectors
 
-We define these modules to prevent casting between different types of Lorentz vectors.
+We define the modules underlying complex Lorentz vectors.
 
 -/
 
