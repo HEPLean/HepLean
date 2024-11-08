@@ -12,6 +12,8 @@ import Mathlib.Logic.Equiv.TransferInstance
 ## Modules associated with complex Lorentz vectors
 
 We define the modules underlying complex Lorentz vectors.
+These definitions are preludes to the definitions of
+`Lorentz.complexContr` and `Lorentz.complexCo`.
 
 -/
 

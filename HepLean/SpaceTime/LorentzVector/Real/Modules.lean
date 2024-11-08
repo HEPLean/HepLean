@@ -13,6 +13,9 @@ import Mathlib.Logic.Equiv.TransferInstance
 
 We define the modules underlying real Lorentz vectors.
 
+These definitions are preludes to the definitions of
+`Lorentz.contr` and `Lorentz.co`.
+
 -/
 
 namespace Lorentz
@@ -119,7 +122,7 @@ def toFin1dℝEquiv : CoℝModule d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) where
 
 /-- The underlying element of `Fin 1 ⊕ Fin d → ℝ` of a element in `CoℝModule` defined
   through the linear equivalence `toFin1dℝEquiv`. -/
-abbrev toFin13ℂ (ψ : CoℝModule d) := toFin1dℝEquiv ψ
+abbrev toFin1dℝ (ψ : CoℝModule d) := toFin1dℝEquiv ψ
 
 end CoℝModule
 
