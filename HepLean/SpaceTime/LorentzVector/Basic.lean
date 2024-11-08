@@ -24,7 +24,8 @@ corresponds to contravariant Lorentz tensors.
 /- The number of space dimensions . -/
 variable (d : ℕ)
 
-/-- The type of (contravariant) Lorentz Vectors in `d`-space dimensions. -/
+/-- The type of Lorentz Vectors in `d`-space dimensions.
+  This is very weak definition of a Lorentz vector. -/
 def LorentzVector : Type := (Fin 1 ⊕ Fin d) → ℝ
 
 /-- An instance of an additive commutative monoid on `LorentzVector`. -/
