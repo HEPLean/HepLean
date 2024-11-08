@@ -88,6 +88,7 @@ def contrCoContract : Contr d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
       Action.tensorUnit_ρ', CategoryTheory.Category.comp_id, lift.tmul]
     rfl
 
+/-- Notation for `contrCoContract` acting on a tmul. -/
 scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrCoContract.hom (ψ ⊗ₜ φ)
 
 lemma contrCoContract_hom_tmul (ψ : Contr d) (φ : Co d) : ⟪ψ, φ⟫ₘ = ψ.toFin1dℝ ⬝ᵥ φ.toFin1dℝ := by
@@ -110,6 +111,7 @@ def coContrContract : Co d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
       Action.tensorUnit_ρ', CategoryTheory.Category.comp_id, lift.tmul]
     rfl
 
+/-- Notation for `coContrContract` acting on a tmul. -/
 scoped[Lorentz] notation "⟪" φ "," ψ "⟫ₘ" => coContrContract.hom (φ ⊗ₜ ψ)
 
 lemma coContrContract_hom_tmul (φ : Co d) (ψ : Contr d) : ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ ψ.toFin1dℝ := by
@@ -140,6 +142,7 @@ open CategoryTheory
 def contrContrContract : Contr d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) :=
   (Contr d ◁ Contr.toCo d) ≫ contrCoContract
 
+/-- Notation for `contrContrContract` acting on a tmul. -/
 scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContract.hom (ψ ⊗ₜ φ)
 
 lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
@@ -157,6 +160,7 @@ lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
 def coCoContract : Co d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) :=
   (Co d ◁ Co.toContr d) ≫ coContrContract
 
+/-- Notation for `coCoContract` acting on a tmul. -/
 scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => coCoContract.hom (ψ ⊗ₜ φ)
 
 lemma coCoContract_hom_tmul (φ : Co d) (ψ : Co d) :

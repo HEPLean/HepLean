@@ -87,7 +87,6 @@ import HepLean.SpaceTime.LorentzVector.Complex.Metric
 import HepLean.SpaceTime.LorentzVector.Complex.Modules
 import HepLean.SpaceTime.LorentzVector.Complex.Two
 import HepLean.SpaceTime.LorentzVector.Complex.Unit
-import HepLean.SpaceTime.LorentzVector.Covariant
 import HepLean.SpaceTime.LorentzVector.LorentzAction
 import HepLean.SpaceTime.LorentzVector.NormOne
 import HepLean.SpaceTime.LorentzVector.Real.Basic
