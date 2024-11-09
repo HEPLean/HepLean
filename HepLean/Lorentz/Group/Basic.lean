@@ -85,7 +85,6 @@ lemma dual_mem (h : Λ ∈ LorentzGroup d) : dual Λ ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self, dual_dual]
   exact mem_iff_self_mul_dual.mp h
 
-
 end LorentzGroup
 
 /-!
@@ -187,7 +186,7 @@ lemma comm_minkowskiMatrix : Λ.1 * minkowskiMatrix = minkowskiMatrix * (transpo
   rw [h1]
   simp
 
-lemma minkowskiMatrix_comm : minkowskiMatrix *  Λ.1  = (transpose Λ⁻¹).1 * minkowskiMatrix := by
+lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * minkowskiMatrix := by
   conv_rhs => rw [← @transpose_mul_minkowskiMatrix_mul_self d Λ]
   rw [← transpose_inv, coe_inv, transpose_val]
   rw [← mul_assoc, ← mul_assoc]

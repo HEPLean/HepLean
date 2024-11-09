@@ -39,7 +39,7 @@ def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d 
   map_add' x y := by
     simp [map_add, LinearMap.add_apply, tmul_add, add_tmul, mul_add, add_smul]
   map_smul' c x := by
-    simp only [ Action.instMonoidalCategory_tensorObj_V,
+    simp only [Action.instMonoidalCategory_tensorObj_V,
       Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
       smul_tmul, tmul_smul, map_smul, smul_eq_mul, RingHom.id_apply]
@@ -74,7 +74,7 @@ lemma genBoostAux₂_self (u : FuturePointing d) : genBoostAux₂ u u = - genBoo
   congr 1
   rw [u.1.2]
   conv => lhs; lhs; rhs; rhs; change 1
-  rw [show 1 + (1 : ℝ) = (2 : ℝ ) by ring]
+  rw [show 1 + (1 : ℝ) = (2 : ℝ) by ring]
   simp only [isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
     IsUnit.div_mul_cancel]
   rw [← (two_smul ℝ u.val.val)]
@@ -137,15 +137,15 @@ lemma toMatrix_mulVec (u v : FuturePointing d) (x : Contr d) :
 open minkowskiMatrix in
 @[simp]
 lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
-    (toMatrix u v) μ ν = η μ μ * (toField d ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ + 2 *
-     toField d ⟪ContrMod.stdBasis ν, u.val.val⟫ₘ * toField d  ⟪ContrMod.stdBasis μ, v.val.val⟫ₘ
-    - toField d  ⟪ContrMod.stdBasis μ, u.val.val + v.val.val⟫ₘ *
-    toField d  ⟪ContrMod.stdBasis ν, u.val.val + v.val.val⟫ₘ /
-    (1 + toField d  ⟪u.val.val, v.val.val⟫ₘ)) := by
+    (toMatrix u v) μ ν = η μ μ * (⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ + 2 *
+    ⟪ContrMod.stdBasis ν, u.val.val⟫ₘ * ⟪ContrMod.stdBasis μ, v.val.val⟫ₘ
+    - ⟪ContrMod.stdBasis μ, u.val.val + v.val.val⟫ₘ *
+    ⟪ContrMod.stdBasis ν, u.val.val + v.val.val⟫ₘ /
+    (1 + ⟪u.val.val, v.val.val⟫ₘ)) := by
   rw [contrContrContractField.matrix_apply_stdBasis (Λ := toMatrix u v) μ ν, toMatrix_mulVec]
-  simp only [genBoost, genBoostAux₁, genBoostAux₂, map_add, smul_add, neg_smul, LinearMap.add_apply,
-    LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, contrContrContractField.basis_left, map_smul, smul_eq_mul, map_neg,
-    mul_eq_mul_left_iff, toField_apply]
+  simp only [genBoost, genBoostAux₁, genBoostAux₂, smul_add, neg_smul, LinearMap.add_apply,
+    LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, contrContrContractField.basis_left,
+    map_add, map_smul, map_neg, toField_apply, mul_eq_mul_left_iff]
   ring_nf
   simp only [Pi.add_apply, Action.instMonoidalCategory_tensorObj_V,
     Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
@@ -186,9 +186,9 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
   rw [LorentzGroup.mem_iff_invariant]
   intro x y
   rw [toMatrix_mulVec, toMatrix_mulVec]
-  have h1 : (((1 +  ⟪u.1.1, v.1.1⟫ₘ)) * (1 +  ⟪u.1.1, v.1.1⟫ₘ)) •
-       (contrContrContractField ((genBoost u v) y ⊗ₜ[ℝ] (genBoost u v) x))
-    = (((1 +  ⟪u.1.1, v.1.1⟫ₘ)) * (1 +  ⟪u.1.1, v.1.1⟫ₘ)) • ⟪y, x⟫ₘ := by
+  have h1 : (((1 + ⟪u.1.1, v.1.1⟫ₘ)) * (1 + ⟪u.1.1, v.1.1⟫ₘ)) •
+      (contrContrContractField ((genBoost u v) y ⊗ₜ[ℝ] (genBoost u v) x))
+      = (((1 + ⟪u.1.1, v.1.1⟫ₘ)) * (1 + ⟪u.1.1, v.1.1⟫ₘ)) • ⟪y, x⟫ₘ := by
     conv_lhs =>
       erw [← map_smul]
       rw [← smul_smul]
@@ -200,7 +200,7 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
         contrContrContractField.symm u.1.1 x]
     simp only [smul_eq_mul]
     ring
-  have hn (a  : ℝ ) {b c : ℝ} (h : a ≠ 0) (hab : a * b = a * c ) : b =  c := by
+  have hn (a : ℝ) {b c : ℝ} (h : a ≠ 0) (hab : a * b = a * c) : b = c := by
     simp_all only [smul_eq_mul, ne_eq, mul_eq_mul_left_iff, or_false]
   refine hn _ ?_ h1
   simpa using (FuturePointing.one_add_metric_non_zero u v)

@@ -78,7 +78,7 @@ def coModContrModBi (d : ℕ) : CoMod d →ₗ[ℝ] ContrMod d →ₗ[ℝ] ℝ w
 def contrCoContract : Contr d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) where
   hom := TensorProduct.lift (contrModCoModBi d)
   comm M := TensorProduct.ext' fun ψ φ => by
-    change (M.1 *ᵥ ψ.toFin1dℝ)  ⬝ᵥ ((LorentzGroup.transpose M⁻¹).1 *ᵥ φ.toFin1dℝ) = _
+    change (M.1 *ᵥ ψ.toFin1dℝ) ⬝ᵥ ((LorentzGroup.transpose M⁻¹).1 *ᵥ φ.toFin1dℝ) = _
     rw [dotProduct_mulVec, LorentzGroup.transpose_val,
       vecMul_transpose, mulVec_mulVec, LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [one_mulVec, CategoryTheory.Equivalence.symm_inverse,
@@ -101,7 +101,7 @@ lemma contrCoContract_hom_tmul (ψ : Contr d) (φ : Co d) : ⟪ψ, φ⟫ₘ = ψ
 def coContrContract : Co d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) where
   hom := TensorProduct.lift (coModContrModBi d)
   comm M := TensorProduct.ext' fun ψ φ => by
-    change ((LorentzGroup.transpose M⁻¹).1 *ᵥ ψ.toFin1dℝ) ⬝ᵥ (M.1 *ᵥ φ.toFin1dℝ)  = _
+    change ((LorentzGroup.transpose M⁻¹).1 *ᵥ ψ.toFin1dℝ) ⬝ᵥ (M.1 *ᵥ φ.toFin1dℝ) = _
     rw [dotProduct_mulVec, LorentzGroup.transpose_val, mulVec_transpose, vecMul_vecMul,
       LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [vecMul_one, CategoryTheory.Equivalence.symm_inverse,
@@ -143,7 +143,7 @@ def contrContrContract : Contr d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)
 
 /-- The linear map from Contr d ⊗ Contr d to ℝ induced by the homomorphism
   `Contr.toCo` and the contraction `contrCoContract`. -/
-def contrContrContractField : (Contr d).V ⊗[ℝ] (Contr d).V →ₗ[ℝ] ℝ  :=
+def contrContrContractField : (Contr d).V ⊗[ℝ] (Contr d).V →ₗ[ℝ] ℝ :=
   contrContrContract.hom
 
 /-- Notation for `contrContrContractField` acting on a tmul. -/
@@ -200,7 +200,7 @@ lemma action_tmul (g : LorentzGroup d) : ⟪(Contr d).ρ g x, (Contr d).ρ g y�
   rfl
 
 lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
-      ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i)  := by
+      ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i) := by
   rw [contrContrContract_hom_tmul]
   simp only [dotProduct, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal,
     Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Sum.elim_inl,
@@ -244,7 +244,7 @@ lemma dual_mulVec_right : ⟪x, dual Λ *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ := 
 lemma dual_mulVec_left : ⟪dual Λ *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ := by
   rw [symm, dual_mulVec_right, symm]
 
-lemma right_parity : ⟪x, (Contr d).ρ LorentzGroup.parity y⟫ₘ =  ∑ i, x.val i * y.val i := by
+lemma right_parity : ⟪x, (Contr d).ρ LorentzGroup.parity y⟫ₘ = ∑ i, x.val i * y.val i := by
   rw [as_sum]
   simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, Fintype.sum_sum_type,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
@@ -258,7 +258,7 @@ lemma right_parity : ⟪x, (Contr d).ρ LorentzGroup.parity y⟫ₘ =  ∑ i, x.
     exact mul_eq_mul_left_iff.mp rfl
   · congr
     funext i
-    change - (x.val (Sum.inr i) * ((η *ᵥ y.toFin1dℝ) (Sum.inr i)))  = _
+    change - (x.val (Sum.inr i) * ((η *ᵥ y.toFin1dℝ) (Sum.inr i))) = _
     simp only [mulVec_inr_i, mul_neg, neg_neg, mul_eq_mul_left_iff]
     exact mul_eq_mul_left_iff.mp rfl
 
@@ -338,7 +338,7 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   rw [ContrMod.mulVec_sub, tmul_sub, sub_tmul, sub_tmul, tmul_sub, sub_tmul, sub_tmul] at hn
   simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
   rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
-  let e :  𝟙_ (Rep ℝ ↑(LorentzGroup d)) ≃ₗ[ℝ] ℝ :=
+  let e : 𝟙_ (Rep ℝ ↑(LorentzGroup d)) ≃ₗ[ℝ] ℝ :=
     LinearEquiv.refl ℝ (CoeSort.coe (𝟙_ (Rep ℝ ↑(LorentzGroup d))))
   apply e.injective
   have hp' := e.injective.eq_iff.mpr hp
@@ -346,7 +346,7 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, map_add, map_sub] at hp' hn'
-  linear_combination  (norm := ring_nf) (1 / 4) * hp' + (-1/ 4) * hn'
+  linear_combination (norm := ring_nf) (1 / 4) * hp' + (-1/ 4) * hn'
   rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x]
   simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -373,18 +373,16 @@ lemma le_inl_sq (v : Contr d) : ⟪v, v⟫ₘ ≤ v.val (Sum.inl 0) ^ 2 := by
   refine Fintype.sum_nonneg ?hf
   exact fun i => pow_two_nonneg (v.val (Sum.inr i))
 
-
-lemma ge_abs_inner_product (v w : Contr d) : v.val (Sum.inl 0)  * w.val (Sum.inl 0)  -
+lemma ge_abs_inner_product (v w : Contr d) : v.val (Sum.inl 0) * w.val (Sum.inl 0) -
     ‖⟪v.toSpace, w.toSpace⟫_ℝ‖ ≤ ⟪v, w⟫ₘ := by
   rw [as_sum_toSpace, sub_le_sub_iff_left]
   exact Real.le_norm_self ⟪v.toSpace, w.toSpace⟫_ℝ
 
-lemma ge_sub_norm  (v w : Contr d) : v.val (Sum.inl 0)  * w.val (Sum.inl 0) -
+lemma ge_sub_norm (v w : Contr d) : v.val (Sum.inl 0) * w.val (Sum.inl 0) -
     ‖v.toSpace‖ * ‖w.toSpace‖ ≤ ⟪v, w⟫ₘ := by
   apply le_trans _ (ge_abs_inner_product v w)
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm v.toSpace w.toSpace
-
 
 /-!
 
@@ -413,7 +411,6 @@ lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) :
   rw [basis_left, ContrMod.mulVec_toFin1dℝ]
   simp [basis_left, mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
 
-
 lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ = η μ ν := by
   trans ⟪ContrMod.stdBasis μ, 1 *ᵥ ContrMod.stdBasis ν⟫ₘ
   · rw [ContrMod.one_mulVec]
@@ -424,10 +421,9 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.std
   · simp only [Action.instMonoidalCategory_tensorUnit_V, ne_eq, h, not_false_eq_true, one_apply_ne,
     mul_zero, off_diag_zero]
 
-
 lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
-    Λ ν μ = η ν ν * ⟪ ContrMod.stdBasis ν, Λ *ᵥ  ContrMod.stdBasis μ⟫ₘ := by
-  rw [on_basis_mulVec,  ← mul_assoc]
+    Λ ν μ = η ν ν * ⟪ ContrMod.stdBasis ν, Λ *ᵥ ContrMod.stdBasis μ⟫ₘ := by
+  rw [on_basis_mulVec, ← mul_assoc]
   simp [η_apply_mul_η_apply_diag ν]
 
 /-!
@@ -437,7 +433,7 @@ lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
 -/
 
 lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
-    ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1  := by
+    ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1 := by
   rw [ContrMod.toSelfAdjoint_apply_coe]
   simp only [Fin.isValue, as_sum_toSpace,
     PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three,

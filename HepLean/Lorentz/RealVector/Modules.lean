@@ -86,7 +86,6 @@ lemma toFin1dℝ_eq_val (ψ : ContrMod d) : ψ.toFin1dℝ = ψ.val := by rfl
 @[simps!]
 def stdBasis : Basis (Fin 1 ⊕ Fin d) ℝ (ContrMod d) := Basis.ofEquivFun toFin1dℝEquiv
 
-
 @[simp]
 lemma stdBasis_toFin1dℝEquiv_apply_same (μ : Fin 1 ⊕ Fin d) :
     toFin1dℝEquiv (stdBasis μ) μ = 1 := by
@@ -121,7 +120,7 @@ lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : (stdBasis μ).val ν = if μ = 
 /-- Decomposition of a contrvariant Lorentz vector into the standard basis. -/
 lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i := by
   apply toFin1dℝEquiv.injective
-  simp only  [map_sum, _root_.map_smul]
+  simp only [map_sum, _root_.map_smul]
   funext μ
   rw [Fintype.sum_apply μ fun c => toFin1dℝEquiv v c • toFin1dℝEquiv (stdBasis c)]
   change _ = ∑ x : Fin 1 ⊕ Fin d, toFin1dℝEquiv v x • (toFin1dℝEquiv (stdBasis x) μ)
@@ -189,7 +188,6 @@ def toSpace (v : ContrMod d) : EuclideanSpace ℝ (Fin d) := v.val ∘ Sum.inr
 
 -/
 
-
 /-- The representation of the Lorentz group acting on `ContrℝModule d`. -/
 def rep : Representation ℝ (LorentzGroup d) (ContrMod d) where
   toFun g := Matrix.toLinAlgEquiv stdBasis g
@@ -236,7 +234,6 @@ lemma toSelfAdjoint_apply_coe (x : ContrMod 3) : (toSelfAdjoint x).1 =
     - x.toFin1dℝ (Sum.inr 2) • PauliMatrix.σ3 := by
   rw [toSelfAdjoint_apply]
   rfl
-
 
 lemma toSelfAdjoint_stdBasis (i : Fin 1 ⊕ Fin 3) :
     toSelfAdjoint (stdBasis i) = PauliMatrix.σSAL i := by
@@ -352,11 +349,10 @@ lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : (stdBasis μ).val ν = if μ = 
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
-
 /-- Decomposition of a covariant Lorentz vector into the standard basis. -/
 lemma stdBasis_decomp (v : CoMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i := by
   apply toFin1dℝEquiv.injective
-  simp only  [map_sum, _root_.map_smul]
+  simp only [map_sum, _root_.map_smul]
   funext μ
   rw [Fintype.sum_apply μ fun c => toFin1dℝEquiv v c • toFin1dℝEquiv (stdBasis c)]
   change _ = ∑ x : Fin 1 ⊕ Fin d, toFin1dℝEquiv v x • (toFin1dℝEquiv (stdBasis x) μ)

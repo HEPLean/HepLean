@@ -103,8 +103,8 @@ lemma toMatrix_apply_contrMod (M : SL(2, ℂ)) (v : ContrMod 3) :
   rw [LinearEquiv.apply_symm_apply]
   simp only [ContrMod.toSelfAdjoint, LinearEquiv.trans_symm, LinearEquiv.symm_symm,
     LinearEquiv.trans_apply]
-  change ContrMod.toFin1dℝEquiv.symm ((
-    ((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toLinearMapSelfAdjointMatrix M)))
+  change ContrMod.toFin1dℝEquiv.symm
+    ((((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toLinearMapSelfAdjointMatrix M)))
     *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.σSAL.repr a)))) = _
   apply congrArg
   erw [LinearMap.toMatrix_mulVec_repr]
@@ -130,7 +130,6 @@ def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3 where
   map_mul' M N := by
     ext1
     simp only [_root_.map_mul, lorentzGroupIsGroup_mul_coe]
-
 
 lemma toLorentzGroup_eq_σSAL (M : SL(2, ℂ)) :
     toLorentzGroup M = LinearMap.toMatrix

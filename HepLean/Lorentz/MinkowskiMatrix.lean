@@ -10,7 +10,6 @@ import Mathlib.Algebra.Lie.Classical
 
 # The Minkowski matrix
 
-
 -/
 
 open Matrix
@@ -97,7 +96,6 @@ lemma mulVec_inr_i (v : (Fin 1 ⊕ Fin d) → ℝ) (i : Fin d) :
     (η *ᵥ v) (Sum.inr i)= - v (Sum.inr i) := by
   simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal]
   simp only [diagonal_dotProduct, Sum.elim_inr, neg_mul, one_mul]
-
 
 variable (Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 

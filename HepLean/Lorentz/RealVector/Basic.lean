@@ -49,7 +49,7 @@ lemma continuous_contr {T : Type} [TopologicalSpace T] (f : T → Contr d)
   exact continuous_induced_rng.mpr h
 
 lemma contr_continuous {T : Type} [TopologicalSpace T] (f : Contr d → T)
-    (h : Continuous (f ∘ (@ContrMod.toFin1dℝEquiv d).symm)): Continuous f := by
+    (h : Continuous (f ∘ (@ContrMod.toFin1dℝEquiv d).symm)) : Continuous f := by
   let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
     toFin1dℝEquiv_isInducing
   rw [← Homeomorph.comp_continuous_iff' x.symm]

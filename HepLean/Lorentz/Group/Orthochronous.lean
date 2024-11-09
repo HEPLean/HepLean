@@ -86,7 +86,7 @@ lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochron
 lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMapReal Λ = - 1 := by
   rw [not_orthochronous_iff_le_neg_one] at h
-  change stepFunction (_)= - 1
+  change stepFunction _ = - 1
   rw [stepFunction, if_pos]
   exact h
 

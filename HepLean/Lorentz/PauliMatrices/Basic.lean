@@ -19,7 +19,7 @@ open Complex
 open Matrix
 
 /-- The zeroth Pauli-matrix as a `2 x 2` complex matrix.
-  That is the matrix `!![1, 0; 0, 1]`.  -/
+  That is the matrix `!![1, 0; 0, 1]`. -/
 def σ0 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
 
 /-- The first Pauli-matrix as a `2 x 2` complex matrix.

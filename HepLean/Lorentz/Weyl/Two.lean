@@ -722,7 +722,7 @@ lemma altLeftAltRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) �
     (SL2C.toLinearMapSelfAdjointMatrix (M.transpose⁻¹) ⟨v, hv⟩) := by
   rw [altLeftAltRightToMatrix_ρ_symm]
   apply congrArg
-  simp only [ MonoidHom.coe_mk, OneHom.coe_mk,
+  simp only [MonoidHom.coe_mk, OneHom.coe_mk,
     SL2C.toLinearMapSelfAdjointMatrix_apply_coe, SpecialLinearGroup.coe_inv,
     SpecialLinearGroup.coe_transpose]
   congr
