@@ -77,9 +77,13 @@ import HepLean.Lorentz.Group.Proper
 import HepLean.Lorentz.Group.Restricted
 import HepLean.Lorentz.Group.Rotations
 import HepLean.Lorentz.MinkowskiMatrix
+import HepLean.Lorentz.PauliMatrices.AsTensor
+import HepLean.Lorentz.PauliMatrices.Basic
+import HepLean.Lorentz.PauliMatrices.SelfAdjoint
 import HepLean.Lorentz.RealVector.Basic
 import HepLean.Lorentz.RealVector.Contraction
 import HepLean.Lorentz.RealVector.Modules
+import HepLean.Lorentz.SL2C.Basic
 import HepLean.Lorentz.Weyl.Basic
 import HepLean.Lorentz.Weyl.Contraction
 import HepLean.Lorentz.Weyl.Metric
@@ -95,10 +99,6 @@ import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
-import HepLean.SpaceTime.PauliMatrices.AsTensor
-import HepLean.SpaceTime.PauliMatrices.Basic
-import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
-import HepLean.SpaceTime.SL2C.Basic
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction

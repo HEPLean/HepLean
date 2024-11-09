@@ -5,11 +5,11 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import HepLean.SpaceTime.SL2C.Basic
+import HepLean.Lorentz.SL2C.Basic
 import HepLean.Lorentz.ComplexVector.Modules
 import HepLean.Meta.Informal
 import Mathlib.RepresentationTheory.Rep
-import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
+import HepLean.Lorentz.PauliMatrices.SelfAdjoint
 /-!
 
 # Complex Lorentz vectors

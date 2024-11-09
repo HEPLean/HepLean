@@ -7,7 +7,7 @@ import HepLean.Mathematics.PiTensorProduct
 import Mathlib.RepresentationTheory.Rep
 import Mathlib.Logic.Equiv.TransferInstance
 import HepLean.Lorentz.Group.Basic
-import HepLean.SpaceTime.PauliMatrices.Basic
+import HepLean.Lorentz.PauliMatrices.Basic
 /-!
 
 ## Interaction of Pauli matrices with self-adjoint matrices

@@ -7,7 +7,7 @@ import HepLean.Tensors.OverColor.Basic
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Lorentz.ComplexVector.Basic
 import HepLean.Lorentz.Weyl.Two
-import HepLean.SpaceTime.PauliMatrices.Basic
+import HepLean.Lorentz.PauliMatrices.Basic
 /-!
 
 ## Pauli matrices

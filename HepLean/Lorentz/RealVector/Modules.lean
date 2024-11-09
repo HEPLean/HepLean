@@ -7,7 +7,7 @@ import HepLean.Meta.Informal
 import HepLean.Lorentz.Group.Basic
 import Mathlib.RepresentationTheory.Rep
 import Mathlib.Logic.Equiv.TransferInstance
-import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
+import HepLean.Lorentz.PauliMatrices.SelfAdjoint
 /-!
 
 ## Modules associated with Real Lorentz vectors

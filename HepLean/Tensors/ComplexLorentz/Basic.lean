@@ -12,7 +12,7 @@ import HepLean.Lorentz.ComplexVector.Contraction
 import HepLean.Lorentz.ComplexVector.Metric
 import HepLean.Lorentz.ComplexVector.Unit
 import HepLean.Mathematics.PiTensorProduct
-import HepLean.SpaceTime.PauliMatrices.AsTensor
+import HepLean.Lorentz.PauliMatrices.AsTensor
 /-!
 
 ## Complex Lorentz tensors
