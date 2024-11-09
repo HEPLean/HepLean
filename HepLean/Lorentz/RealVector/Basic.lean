@@ -8,7 +8,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import HepLean.Lorentz.Group.Basic
 import HepLean.Meta.Informal
 import Mathlib.RepresentationTheory.Rep
-import HepLean.SpaceTime.LorentzVector.Real.Modules
+import HepLean.Lorentz.RealVector.Modules
 /-!
 
 # Real Lorentz vectors

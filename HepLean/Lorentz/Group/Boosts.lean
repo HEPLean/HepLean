@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Group.Proper
 import Mathlib.Topology.Constructions
-import HepLean.SpaceTime.LorentzVector.Real.NormOne
+import HepLean.Lorentz.RealVector.NormOne
 /-!
 # Boosts
 

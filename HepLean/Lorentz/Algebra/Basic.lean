@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.MinkowskiMatrix
 import Mathlib.Algebra.Lie.Classical
-import HepLean.SpaceTime.LorentzVector.Real.Basic
+import HepLean.Lorentz.RealVector.Basic
 /-!
 # The Lorentz Algebra
 

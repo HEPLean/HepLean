@@ -70,6 +70,9 @@ import HepLean.Lorentz.Group.Orthochronous
 import HepLean.Lorentz.Group.Proper
 import HepLean.Lorentz.Group.Restricted
 import HepLean.Lorentz.Group.Rotations
+import HepLean.Lorentz.RealVector.Basic
+import HepLean.Lorentz.RealVector.Contraction
+import HepLean.Lorentz.RealVector.Modules
 import HepLean.Lorentz.Weyl.Basic
 import HepLean.Lorentz.Weyl.Contraction
 import HepLean.Lorentz.Weyl.Metric
@@ -91,9 +94,6 @@ import HepLean.SpaceTime.LorentzVector.Complex.Metric
 import HepLean.SpaceTime.LorentzVector.Complex.Modules
 import HepLean.SpaceTime.LorentzVector.Complex.Two
 import HepLean.SpaceTime.LorentzVector.Complex.Unit
-import HepLean.SpaceTime.LorentzVector.Real.Basic
-import HepLean.SpaceTime.LorentzVector.Real.Contraction
-import HepLean.SpaceTime.LorentzVector.Real.Modules
 import HepLean.SpaceTime.MinkowskiMatrix
 import HepLean.SpaceTime.PauliMatrices.AsTensor
 import HepLean.SpaceTime.PauliMatrices.Basic
