@@ -719,10 +719,10 @@ lemma altLeftAltRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) �
     (hv : IsSelfAdjoint v) (M : SL(2,ℂ)) :
     TensorProduct.map (altLeftHanded.ρ M) (altRightHanded.ρ M) (altLeftAltRightToMatrix.symm v) =
     altLeftAltRightToMatrix.symm
-    (SL2C.repSelfAdjointMatrix (M.transpose⁻¹) ⟨v, hv⟩) := by
+    (SL2C.toLinearMapSelfAdjointMatrix (M.transpose⁻¹) ⟨v, hv⟩) := by
   rw [altLeftAltRightToMatrix_ρ_symm]
   apply congrArg
-  simp only [SL2C.repSelfAdjointMatrix, MonoidHom.coe_mk, OneHom.coe_mk,
+  simp only [ MonoidHom.coe_mk, OneHom.coe_mk,
     SL2C.toLinearMapSelfAdjointMatrix_apply_coe, SpecialLinearGroup.coe_inv,
     SpecialLinearGroup.coe_transpose]
   congr
@@ -738,7 +738,7 @@ lemma leftRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) ℂ)
     (hv : IsSelfAdjoint v) (M : SL(2,ℂ)) :
     TensorProduct.map (leftHanded.ρ M) (rightHanded.ρ M) (leftRightToMatrix.symm v) =
     leftRightToMatrix.symm
-    (SL2C.repSelfAdjointMatrix M ⟨v, hv⟩) := by
+    (SL2C.toLinearMapSelfAdjointMatrix M ⟨v, hv⟩) := by
   rw [leftRightToMatrix_ρ_symm]
   rfl
 

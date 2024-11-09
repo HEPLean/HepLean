@@ -25,8 +25,6 @@ open ComplexConjugate
 
 namespace LorentzGroup
 
-open minkowskiMetric
-
 informal_definition Restricted where
   math :≈ "The subgroup of the Lorentz group consisting of elements which
     are proper and orthochronous."

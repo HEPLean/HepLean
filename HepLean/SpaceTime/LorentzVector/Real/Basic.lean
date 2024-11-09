@@ -30,9 +30,30 @@ open minkowskiMatrix
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 
-instance : TopologicalSpace (Contr d) :=
-  haveI : NormedAddCommGroup (Contr d) := ContrMod.norm
-  UniformSpace.toTopologicalSpace
+instance : TopologicalSpace (Contr d) := TopologicalSpace.induced
+  ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
+
+instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
+  ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
+
+lemma toFin1dℝEquiv_isInducing : IsInducing (@ContrMod.toFin1dℝEquiv d) := by
+  exact { eq_induced := rfl }
+
+lemma toFin1dℝEquiv_symm_isInducing : IsInducing ((@ContrMod.toFin1dℝEquiv d).symm) := by
+  let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
+    toFin1dℝEquiv_isInducing
+  exact Homeomorph.isInducing x.symm
+
+lemma continuous_contr {T : Type} [TopologicalSpace T] (f : T → Contr d)
+    (h : Continuous (fun i => (f i).toFin1dℝ)) : Continuous f := by
+  exact continuous_induced_rng.mpr h
+
+lemma contr_continuous {T : Type} [TopologicalSpace T] (f : Contr d → T)
+    (h : Continuous (f ∘ (@ContrMod.toFin1dℝEquiv d).symm)): Continuous f := by
+  let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
+    toFin1dℝEquiv_isInducing
+  rw [← Homeomorph.comp_continuous_iff' x.symm]
+  exact h
 
 /-- The representation of `LorentzGroup d` on real vectors corresponding to covariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
@@ -42,6 +63,7 @@ open CategoryTheory.MonoidalCategory
 
 def toField (d : ℕ) : (𝟙_ (Rep ℝ ↑(LorentzGroup d))) →ₗ[ℝ] ℝ := LinearMap.id
 
+lemma toField_apply {d : ℕ} (a : 𝟙_ (Rep ℝ ↑(LorentzGroup d))) : toField d a = a := rfl
 /-!
 
 ## Isomorphism between contravariant and covariant Lorentz vectors
@@ -108,5 +130,21 @@ def contrIsoCo (d : ℕ) : Contr d ≅ Co d where
     rw [LinearEquiv.apply_symm_apply, mulVec_mulVec, minkowskiMatrix.sq]
     simp
 
+/-!
+
+## Other properties
+
+-/
+namespace Contr
+
+open Lorentz
+lemma ρ_stdBasis (μ : Fin 1 ⊕ Fin 3) (Λ : LorentzGroup 3) :
+    (Contr 3).ρ Λ (ContrMod.stdBasis μ) = ∑ j, Λ.1 j μ • ContrMod.stdBasis j := by
+  change Λ *ᵥ ContrMod.stdBasis μ = ∑ j, Λ.1 j μ • ContrMod.stdBasis j
+  apply ContrMod.ext
+  simp only [toLinAlgEquiv_self, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+    Fin.isValue, Finset.sum_singleton, ContrMod.val_add, ContrMod.val_smul]
+
+end Contr
 end Lorentz
 end

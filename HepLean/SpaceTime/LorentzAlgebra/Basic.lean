@@ -3,8 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.SpaceTime.MinkowskiMetric
+import HepLean.SpaceTime.MinkowskiMatrix
 import Mathlib.Algebra.Lie.Classical
+import HepLean.SpaceTime.LorentzVector.Real.Basic
 /-!
 # The Lorentz Algebra
 
@@ -83,23 +84,5 @@ lemma space_comps (Λ : lorentzAlgebra) (i j : Fin 3) :
     (congrArg (fun M ↦ M (Sum.inr i) (Sum.inr j)) $ mem_iff.mp Λ.2).symm
 
 end lorentzAlgebra
-
-@[simps!]
-instance lorentzVectorAsLieRingModule : LieRingModule lorentzAlgebra (LorentzVector 3) where
-  bracket Λ x := Λ.1.mulVec x
-  add_lie Λ1 Λ2 x := by
-    simp [add_mulVec]
-  lie_add Λ x1 x2 := by
-    simp only
-    exact mulVec_add _ _ _
-  leibniz_lie Λ1 Λ2 x := by
-    simp [mulVec_add, Bracket.bracket, sub_mulVec]
-
-@[simps!]
-instance spaceTimeAsLieModule : LieModule ℝ lorentzAlgebra (LorentzVector 3) where
-  smul_lie r Λ x := smul_mulVec_assoc r Λ.1 x
-  lie_smul r Λ x := by
-    simp only [Bracket.bracket]
-    rw [mulVec_smul]
 
 end SpaceTime

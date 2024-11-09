@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzGroup.Basic
+import HepLean.SpaceTime.LorentzVector.Real.Basic
 import Mathlib.RepresentationTheory.Basic
-import HepLean.SpaceTime.LorentzVector.AsSelfAdjointMatrix
 import HepLean.SpaceTime.LorentzGroup.Restricted
+import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 import HepLean.Meta.Informal
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
@@ -71,107 +72,90 @@ def toLinearMapSelfAdjointMatrix (M : SL(2, ℂ)) :
     noncomm_ring [selfAdjoint.val_smul, Algebra.mul_smul_comm, Algebra.smul_mul_assoc,
       RingHom.id_apply]
 
-/-- The representation of `SL(2, ℂ)` on `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` given by
-  `M A ↦ M * A * Mᴴ`. -/
-@[simps!]
-def repSelfAdjointMatrix : Representation ℝ SL(2, ℂ) $ selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) where
-  toFun := toLinearMapSelfAdjointMatrix
+lemma toLinearMapSelfAdjointMatrix_det (M : SL(2, ℂ)) (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
+    det ((toLinearMapSelfAdjointMatrix M) A).1 = det A.1 := by
+  simp only [LinearMap.coe_mk, AddHom.coe_mk, toLinearMapSelfAdjointMatrix, det_mul,
+    selfAdjoint.mem_iff, det_conjTranspose, det_mul, det_one, RingHom.id_apply]
+  simp only [SpecialLinearGroup.det_coe, one_mul, star_one, mul_one]
+
+def toMatrix : SL(2, ℂ) →* Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ where
+  toFun M := LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL (toLinearMapSelfAdjointMatrix M)
   map_one' := by
-    noncomm_ring [toLinearMapSelfAdjointMatrix, SpecialLinearGroup.coe_one, one_mul,
-      conjTranspose_one, mul_one, Subtype.coe_eta]
+    simp only [toLinearMapSelfAdjointMatrix, SpecialLinearGroup.coe_one, one_mul, conjTranspose_one,
+      mul_one, Subtype.coe_eta]
+    erw [LinearMap.toMatrix_one]
   map_mul' M N := by
-    ext x i j : 3
-    noncomm_ring [toLinearMapSelfAdjointMatrix, SpecialLinearGroup.coe_mul, mul_assoc,
-      conjTranspose_mul, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply]
+    simp only
+    rw [← LinearMap.toMatrix_mul]
+    apply congrArg
+    ext1 x
+    simp only [toLinearMapSelfAdjointMatrix, SpecialLinearGroup.coe_mul, conjTranspose_mul,
+      LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, Subtype.mk.injEq]
+    noncomm_ring
 
-/-- The representation of `SL(2, ℂ)` on `spaceTime` obtained from `toSelfAdjointMatrix` and
-  `repSelfAdjointMatrix`. -/
-def repLorentzVector : Representation ℝ SL(2, ℂ) (LorentzVector 3) where
-  toFun M := toSelfAdjointMatrix.symm.comp ((repSelfAdjointMatrix M).comp
-    toSelfAdjointMatrix.toLinearMap)
-  map_one' := by
-    ext
-    simp
-  map_mul' M N := by
-    ext x : 3
-    simp
+open Lorentz in
+lemma toMatrix_apply_contrMod (M : SL(2, ℂ)) (v : ContrMod 3) :
+    (toMatrix M) *ᵥ v = ContrMod.toSelfAdjoint.symm
+    ((toLinearMapSelfAdjointMatrix M) (ContrMod.toSelfAdjoint v)) := by
+  simp [toMatrix, LinearMap.toMatrix_apply, ContrMod.mulVec]
+  obtain ⟨a, ha⟩ := ContrMod.toSelfAdjoint.symm.surjective v
+  subst ha
+  rw [LinearEquiv.apply_symm_apply]
+  simp [ContrMod.toSelfAdjoint]
+  change  ContrMod.toFin1dℝEquiv.symm ((
+      ((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toLinearMapSelfAdjointMatrix M)))
+     *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.σSAL.repr a)))) = _
+  apply congrArg
+  erw [LinearMap.toMatrix_mulVec_repr]
+  rfl
 
-/-!
-
-## Homomorphism to the Lorentz group
-
-There is a group homomorphism from `SL(2, ℂ)` to the Lorentz group `𝓛`.
-The purpose of this section is to define this homomorphism.
-In the next section we will restrict this homomorphism to the restricted Lorentz group.
-
--/
-
-lemma iff_det_selfAdjoint (Λ : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) : Λ ∈ LorentzGroup 3 ↔
-    ∀ (x : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)),
-    det ((toSelfAdjointMatrix ∘
-    toLin LorentzVector.stdBasis LorentzVector.stdBasis Λ ∘ toSelfAdjointMatrix.symm) x).1
-    = det x.1 := by
+lemma toMatrix_mem_lorentzGroup (M : SL(2, ℂ)) : toMatrix M ∈ LorentzGroup 3 := by
   rw [LorentzGroup.mem_iff_norm]
-  refine Iff.intro (fun h x => ?_) (fun h x => ?_)
-  · simpa [← det_eq_ηLin] using congrArg ofReal $ h (toSelfAdjointMatrix.symm x)
-  · simpa [det_eq_ηLin] using h (toSelfAdjointMatrix x)
+  intro x
+  apply ofReal_injective
+  rw [Lorentz.contrContrContractField.same_eq_det_toSelfAdjoint]
+  rw [toMatrix_apply_contrMod]
+  rw [LinearEquiv.apply_symm_apply]
+  rw [toLinearMapSelfAdjointMatrix_det]
+  rw [Lorentz.contrContrContractField.same_eq_det_toSelfAdjoint]
 
-/-- Given an element `M ∈ SL(2, ℂ)` the corresponding element of the Lorentz group. -/
-@[simps!]
-def toLorentzGroupElem (M : SL(2, ℂ)) : LorentzGroup 3 :=
-  ⟨LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis (repLorentzVector M),
-    by simp [repLorentzVector, iff_det_selfAdjoint]⟩
-
-/-- The group homomorphism from ` SL(2, ℂ)` to the Lorentz group `𝓛`. -/
+/-- The group homomorphism from `SL(2, ℂ)` to the Lorentz group `𝓛`. -/
 @[simps!]
 def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3 where
-  toFun := toLorentzGroupElem
+  toFun M := ⟨toMatrix M, toMatrix_mem_lorentzGroup M⟩
   map_one' := by
-    simp only [toLorentzGroupElem, _root_.map_one, LinearMap.toMatrix_one]
+    simp only [_root_.map_one]
     rfl
   map_mul' M N := by
-    apply Subtype.eq
-    simp only [toLorentzGroupElem, _root_.map_mul, LinearMap.toMatrix_mul,
-      lorentzGroupIsGroup_mul_coe]
+    ext1
+    simp only [_root_.map_mul, lorentzGroupIsGroup_mul_coe]
+
 
 lemma toLorentzGroup_eq_σSAL (M : SL(2, ℂ)) :
     toLorentzGroup M = LinearMap.toMatrix
-    PauliMatrix.σSAL PauliMatrix.σSAL (repSelfAdjointMatrix M) := by
+    PauliMatrix.σSAL PauliMatrix.σSAL (toLinearMapSelfAdjointMatrix M) := by
   rfl
 
-lemma toLorentzGroup_eq_stdBasis (M : SL(2, ℂ)) :
-    toLorentzGroup M = LinearMap.toMatrix LorentzVector.stdBasis LorentzVector.stdBasis
-    (repLorentzVector M) := by rfl
 
-lemma repLorentzVector_apply_eq_mulVec (v : LorentzVector 3) :
-    SL2C.repLorentzVector M v = (SL2C.toLorentzGroup M).1 *ᵥ v := by
-  simp only [toLorentzGroup, MonoidHom.coe_mk, OneHom.coe_mk, toLorentzGroupElem_coe]
-  have hv : v = (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
-    (LorentzVector.stdBasis.repr v) := by rfl
-  nth_rewrite 2 [hv]
-  change _ = toLorentzGroup M *ᵥ (LorentzVector.stdBasis.repr v)
-  rw [toLorentzGroup_eq_stdBasis, LinearMap.toMatrix_mulVec_repr]
-  rfl
-
-lemma repSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
-    SL2C.repSelfAdjointMatrix M (PauliMatrix.σSAL i) =
+lemma toLinearMapSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
+    toLinearMapSelfAdjointMatrix M (PauliMatrix.σSAL i) =
     ∑ j, (toLorentzGroup M).1 j i •
     PauliMatrix.σSAL j := by
   rw [toLorentzGroup_eq_σSAL]
   simp only [LinearMap.toMatrix_apply, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
   nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL
-    ((repSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
+    ((toLinearMapSelfAdjointMatrix M) (PauliMatrix.σSAL i)))]
   rfl
 
-lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
-    SL2C.repSelfAdjointMatrix M (PauliMatrix.σSA i) =
+lemma toLinearMapSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
+    toLinearMapSelfAdjointMatrix M (PauliMatrix.σSA i) =
     ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.σSA j := by
   have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMatrix.dual (toLorentzGroup M).1 := by
     simp
   simp only [h1]
   rw [PauliMatrix.σSA_minkowskiMetric_σSAL, _root_.map_smul]
-  rw [repSelfAdjointMatrix_basis]
+  rw [toLinearMapSelfAdjointMatrix_basis]
   rw [Finset.smul_sum]
   apply congrArg
   funext j
@@ -179,18 +163,6 @@ lemma repSelfAdjointMatrix_σSA (i : Fin 1 ⊕ Fin 3) :
   apply congrFun
   apply congrArg
   exact Eq.symm (minkowskiMatrix.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
-
-lemma repLorentzVector_stdBasis (i : Fin 1 ⊕ Fin 3) :
-    SL2C.repLorentzVector M (LorentzVector.stdBasis i) =
-    ∑ j, (toLorentzGroup M).1 j i • LorentzVector.stdBasis j := by
-  simp only [repLorentzVector, MonoidHom.coe_mk, OneHom.coe_mk, LinearMap.coe_comp,
-    LinearEquiv.coe_coe, Function.comp_apply]
-  rw [toSelfAdjointMatrix_stdBasis]
-  rw [repSelfAdjointMatrix_basis]
-  rw [map_sum]
-  apply congrArg
-  funext j
-  simp
 
 /-!
 
@@ -205,13 +177,13 @@ informal_lemma toLorentzGroup_det_one where
   math :≈ "The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one."
   deps :≈ [``toLorentzGroup]
 
-informal_lemma toLorentzGroup_timeComp_nonneg where
+informal_lemma toLorentzGroup_inl_inl_nonneg where
   math :≈ "The time coponent of the image of `SL(2, ℂ)` in the Lorentz group is non-negative."
-  deps :≈ [``toLorentzGroup, ``LorentzGroup.timeComp]
+  deps :≈ [``toLorentzGroup]
 
 informal_lemma toRestrictedLorentzGroup where
   math :≈ "The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group."
-  deps :≈ [``toLorentzGroup, ``toLorentzGroup_det_one, ``toLorentzGroup_timeComp_nonneg,
+  deps :≈ [``toLorentzGroup, ``toLorentzGroup_det_one, ``toLorentzGroup_inl_inl_nonneg,
     ``LorentzGroup.Restricted]
 
 /-! TODO: Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. -/

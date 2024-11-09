@@ -141,13 +141,18 @@ open CategoryTheory
 def contrContrContract : Contr d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) :=
   (Contr d ◁ Contr.toCo d) ≫ contrCoContract
 
-/-- Notation for `contrContrContract` acting on a tmul. -/
-scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContract.hom (ψ ⊗ₜ φ)
+/-- The linear map from Contr d ⊗ Contr d to ℝ induced by the homomorphism
+  `Contr.toCo` and the contraction `contrCoContract`. -/
+def contrContrContractField : (Contr d).V ⊗[ℝ] (Contr d).V →ₗ[ℝ] ℝ  :=
+  contrContrContract.hom
+
+/-- Notation for `contrContrContractField` acting on a tmul. -/
+scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContractField (ψ ⊗ₜ φ)
 
 lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
     ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
   simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    contrContrContract, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
+    contrContrContractField, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.whiskerLeft_apply]
@@ -176,10 +181,10 @@ lemma coCoContract_hom_tmul (φ : Co d) (ψ : Co d) :
 
 ## Lemmas related to contraction.
 
-We derive the lemmas in main for `contrContrContract`.
+We derive the lemmas in main for `contrContrContractField`.
 
 -/
-namespace contrContrContract
+namespace contrContrContractField
 
 variable (x y : Contr d)
 
@@ -354,7 +359,7 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
 -/
 
 lemma inl_sq_eq (v : Contr d) : v.val (Sum.inl 0) ^ 2 =
-    (toField d ⟪v, v⟫ₘ) + ∑ i, v.val (Sum.inr i) ^ 2:= by
+    (⟪v, v⟫ₘ) + ∑ i, v.val (Sum.inr i) ^ 2:= by
   rw [as_sum]
   apply sub_eq_iff_eq_add.mp
   congr
@@ -362,7 +367,7 @@ lemma inl_sq_eq (v : Contr d) : v.val (Sum.inl 0) ^ 2 =
   · funext i
     exact pow_two (v.val (Sum.inr i))
 
-lemma le_inl_sq (v : Contr d) : toField d ⟪v, v⟫ₘ ≤ v.val (Sum.inl 0) ^ 2 := by
+lemma le_inl_sq (v : Contr d) : ⟪v, v⟫ₘ ≤ v.val (Sum.inl 0) ^ 2 := by
   rw [inl_sq_eq]
   apply (le_add_iff_nonneg_right _).mpr
   refine Fintype.sum_nonneg ?hf
@@ -380,7 +385,70 @@ lemma ge_sub_norm  (v w : Contr d) : v.val (Sum.inl 0)  * w.val (Sum.inl 0) -
   rw [sub_le_sub_iff_left]
   exact norm_inner_le_norm v.toSpace w.toSpace
 
-end contrContrContract
+
+/-!
+
+# The Minkowski metric and the standard basis
+
+-/
+
+@[simp]
+lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
+    ⟪ ContrMod.stdBasis μ, v⟫ₘ = η μ μ * v.toFin1dℝ μ := by
+  rw [as_sum]
+  rcases μ with μ | μ
+  · fin_cases μ
+    simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+    rfl
+  · simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, ContrMod.stdBasis_apply,
+    reduceCtorEq, ↓reduceIte, zero_mul, Sum.inr.injEq, ite_mul, one_mul, Finset.sum_ite_eq,
+    Finset.mem_univ, zero_sub, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal,
+    diagonal_apply_eq, Sum.elim_inr, neg_mul, neg_inj]
+    rfl
+
+lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, Λ *ᵥ ContrMod.stdBasis ν⟫ₘ = η μ μ * Λ μ ν := by
+  rw [basis_left]
+  rw [@ContrMod.mulVec_toFin1dℝ]
+  simp [basis_left, mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
+
+
+lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ = η μ ν := by
+  trans ⟪ContrMod.stdBasis μ, 1 *ᵥ ContrMod.stdBasis ν⟫ₘ
+  · rw [ContrMod.one_mulVec]
+  rw [on_basis_mulVec]
+  by_cases h : μ = ν
+  · subst h
+    simp
+  · simp only [Action.instMonoidalCategory_tensorUnit_V, ne_eq, h, not_false_eq_true, one_apply_ne,
+    mul_zero, off_diag_zero]
+
+
+lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
+    Λ ν μ = η ν ν * ⟪ ContrMod.stdBasis ν, Λ *ᵥ  ContrMod.stdBasis μ⟫ₘ := by
+  rw [on_basis_mulVec,  ← mul_assoc]
+  simp [η_apply_mul_η_apply_diag ν]
+
+/-!
+
+## Self-adjoint
+
+-/
+
+lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
+    ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1  := by
+  rw [ContrMod.toSelfAdjoint_apply_coe]
+  simp only [Fin.isValue, as_sum_toSpace,
+    PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three,
+    ofReal_sub, ofReal_mul, ofReal_add]
+  simp only [Fin.isValue, PauliMatrix.σ0, smul_of, smul_cons, real_smul, mul_one, smul_zero,
+    smul_empty, PauliMatrix.σ1, of_sub_of, sub_cons, head_cons, sub_zero, tail_cons, zero_sub,
+    sub_self, zero_empty, PauliMatrix.σ2, smul_neg, sub_neg_eq_add, PauliMatrix.σ3, det_fin_two_of]
+  ring_nf
+  simp only [Fin.isValue, ContrMod.toFin1dℝ_eq_val, I_sq, mul_neg, mul_one, ContrMod.toSpace,
+    Function.comp_apply]
+  ring
+
+end contrContrContractField
 
 end Lorentz
 end

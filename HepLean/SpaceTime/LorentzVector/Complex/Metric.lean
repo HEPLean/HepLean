@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Complex.Two
-import HepLean.SpaceTime.MinkowskiMetric
+import HepLean.SpaceTime.MinkowskiMatrix
 import HepLean.SpaceTime.LorentzVector.Complex.Contraction
 import HepLean.SpaceTime.LorentzVector.Complex.Unit
 /-!

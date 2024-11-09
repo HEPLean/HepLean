@@ -24,7 +24,6 @@ namespace LorentzGroup
 
 variable {d : ℕ}
 variable (Λ : LorentzGroup d)
-open LorentzVector
 open Lorentz.Contr
 
 /-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/

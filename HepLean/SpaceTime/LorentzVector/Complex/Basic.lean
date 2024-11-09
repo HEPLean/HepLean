@@ -94,57 +94,62 @@ def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
 
 /-- The semilinear map including real Lorentz vectors into complex contravariant
   lorentz vectors. -/
-def inclCongrRealLorentz : LorentzVector 3 →ₛₗ[Complex.ofRealHom] complexContr where
-  toFun v := {val := ofReal ∘ v}
+def inclCongrRealLorentz : ContrMod 3 →ₛₗ[Complex.ofRealHom] complexContr where
+  toFun v := {val := ofReal ∘ v.toFin1dℝ}
   map_add' x y := by
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_add]
     funext i
-    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.add_apply]
-    change ofReal (x i + y i) = _
+    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.add_apply, map_add]
     simp only [ofRealHom_eq_coe, ofReal_add]
   map_smul' c x := by
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_smul]
     funext i
-    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.smul_apply]
-    change ofReal (c • x i) = _
+    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.smul_apply, _root_.map_smul]
     simp only [smul_eq_mul, ofRealHom_eq_coe, ofReal_mul]
 
-lemma inclCongrRealLorentz_val (v : LorentzVector 3) :
-    (inclCongrRealLorentz v).val = ofRealHom ∘ v := rfl
+lemma inclCongrRealLorentz_val (v : ContrMod 3) :
+    (inclCongrRealLorentz v).val = ofRealHom ∘ v.toFin1dℝ := rfl
 
 lemma complexContrBasis_of_real (i : Fin 1 ⊕ Fin 3) :
-    (complexContrBasis i) = inclCongrRealLorentz (LorentzVector.stdBasis i) := by
+    (complexContrBasis i) = inclCongrRealLorentz (ContrMod.stdBasis i) := by
   apply Lorentz.ContrℂModule.ext
-  simp only [complexContrBasis, Basis.coe_ofEquivFun, inclCongrRealLorentz, LorentzVector.stdBasis,
+  simp only [complexContrBasis, Basis.coe_ofEquivFun, inclCongrRealLorentz,
     LinearMap.coe_mk, AddHom.coe_mk]
   ext j
-  simp only [Function.comp_apply, ofRealHom_eq_coe]
-  erw [Pi.basisFun_apply]
+  simp
   change (Pi.single i 1) j = _
-  exact Eq.symm (Pi.apply_single (fun _ => ofRealHom) (congrFun rfl) i 1 j)
+  by_cases h : i = j
+  · subst h
+    rw [ContrMod.toFin1dℝ, ContrMod.stdBasis_toFin1dℝEquiv_apply_same]
+    simp
+  · rw [ContrMod.toFin1dℝ, ContrMod.stdBasis_toFin1dℝEquiv_apply_ne h]
+    simp [h]
 
-lemma inclCongrRealLorentz_ρ (M : SL(2, ℂ)) (v : LorentzVector 3) :
+lemma inclCongrRealLorentz_ρ (M : SL(2, ℂ)) (v : ContrMod 3) :
     (complexContr.ρ M) (inclCongrRealLorentz v) =
-    inclCongrRealLorentz (SL2C.repLorentzVector M v) := by
+    inclCongrRealLorentz ((Contr 3).ρ (SL2C.toLorentzGroup M) v) := by
   apply Lorentz.ContrℂModule.ext
   rw [complexContrBasis_ρ_val, inclCongrRealLorentz_val, inclCongrRealLorentz_val]
   rw [LorentzGroup.toComplex_mulVec_ofReal]
   apply congrArg
   simp only [SL2C.toLorentzGroup_apply_coe]
-  rw [SL2C.repLorentzVector_apply_eq_mulVec]
-  rfl
+  change _ = ContrMod.toFin1dℝ ((SL2C.toLorentzGroup M) *ᵥ v)
+  simp only [SL2C.toLorentzGroup_apply_coe, ContrMod.mulVec_toFin1dℝ]
 
+/-! TODO: Rename.-/
 lemma SL2CRep_ρ_basis (M : SL(2, ℂ)) (i : Fin 1 ⊕ Fin 3) :
     (complexContr.ρ M) (complexContrBasis i) =
     ∑ j, (SL2C.toLorentzGroup M).1 j i •
     complexContrBasis j := by
-  rw [complexContrBasis_of_real, inclCongrRealLorentz_ρ, SL2C.repLorentzVector_stdBasis, map_sum]
+  rw [complexContrBasis_of_real, inclCongrRealLorentz_ρ]
+  rw [Contr.ρ_stdBasis, map_sum]
   apply congrArg
   funext j
   simp only [LinearMap.map_smulₛₗ, ofRealHom_eq_coe, coe_smul]
   rw [complexContrBasis_of_real]
 
+/-! TODO: Include relation to real Lorentz vectors.-/
 end Lorentz
 end
