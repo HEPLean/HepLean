@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Meta.Informal
 import HepLean.SpaceTime.SL2C.Basic
 import Mathlib.RepresentationTheory.Rep
-import HepLean.SpaceTime.WeylFermion.Modules
+import HepLean.Lorentz.Weyl.Modules
 import Mathlib.Logic.Equiv.TransferInstance
 /-!
 

@@ -70,6 +70,12 @@ import HepLean.Lorentz.Group.Orthochronous
 import HepLean.Lorentz.Group.Proper
 import HepLean.Lorentz.Group.Restricted
 import HepLean.Lorentz.Group.Rotations
+import HepLean.Lorentz.Weyl.Basic
+import HepLean.Lorentz.Weyl.Contraction
+import HepLean.Lorentz.Weyl.Metric
+import HepLean.Lorentz.Weyl.Modules
+import HepLean.Lorentz.Weyl.Two
+import HepLean.Lorentz.Weyl.Unit
 import HepLean.Mathematics.Fin
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.PiTensorProduct
@@ -93,12 +99,6 @@ import HepLean.SpaceTime.PauliMatrices.AsTensor
 import HepLean.SpaceTime.PauliMatrices.Basic
 import HepLean.SpaceTime.PauliMatrices.SelfAdjoint
 import HepLean.SpaceTime.SL2C.Basic
-import HepLean.SpaceTime.WeylFermion.Basic
-import HepLean.SpaceTime.WeylFermion.Contraction
-import HepLean.SpaceTime.WeylFermion.Metric
-import HepLean.SpaceTime.WeylFermion.Modules
-import HepLean.SpaceTime.WeylFermion.Two
-import HepLean.SpaceTime.WeylFermion.Unit
 import HepLean.StandardModel.Basic
 import HepLean.StandardModel.HiggsBoson.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction

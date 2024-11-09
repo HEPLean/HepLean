@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.SpaceTime.LorentzVector.Complex.Basic
-import HepLean.SpaceTime.WeylFermion.Two
+import HepLean.Lorentz.Weyl.Two
 import HepLean.SpaceTime.PauliMatrices.Basic
 /-!
 

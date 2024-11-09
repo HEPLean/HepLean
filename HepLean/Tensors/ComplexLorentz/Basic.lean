@@ -5,9 +5,9 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.Tree.Dot
-import HepLean.SpaceTime.WeylFermion.Contraction
-import HepLean.SpaceTime.WeylFermion.Metric
-import HepLean.SpaceTime.WeylFermion.Unit
+import HepLean.Lorentz.Weyl.Contraction
+import HepLean.Lorentz.Weyl.Metric
+import HepLean.Lorentz.Weyl.Unit
 import HepLean.SpaceTime.LorentzVector.Complex.Contraction
 import HepLean.SpaceTime.LorentzVector.Complex.Metric
 import HepLean.SpaceTime.LorentzVector.Complex.Unit
