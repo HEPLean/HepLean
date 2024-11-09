@@ -268,7 +268,7 @@ lemma self_parity_eq_zero_iff : ⟪y, (Contr d).ρ LorentzGroup.parity y⟫ₘ =
     have hn := Fintype.sum_eq_zero_iff_of_nonneg (f := fun i => y.val i * y.val i) (fun i => by
       simpa using mul_self_nonneg (y.val i))
     rw [h] at hn
-    simp at hn
+    simp only [true_iff] at hn
     apply ContrMod.ext
     funext i
     simpa using congrFun hn i
@@ -398,7 +398,9 @@ lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
   rw [as_sum]
   rcases μ with μ | μ
   · fin_cases μ
-    simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+    simp only [Fin.zero_eta, Fin.isValue, ContrMod.stdBasis_apply_same, one_mul,
+      ContrMod.stdBasis_inl_apply_inr, zero_mul, Finset.sum_const_zero, sub_zero, minkowskiMatrix,
+      LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inl]
     rfl
   · simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, ContrMod.stdBasis_apply,
     reduceCtorEq, ↓reduceIte, zero_mul, Sum.inr.injEq, ite_mul, one_mul, Finset.sum_ite_eq,
@@ -406,9 +408,9 @@ lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
     diagonal_apply_eq, Sum.elim_inr, neg_mul, neg_inj]
     rfl
 
-lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, Λ *ᵥ ContrMod.stdBasis ν⟫ₘ = η μ μ * Λ μ ν := by
-  rw [basis_left]
-  rw [@ContrMod.mulVec_toFin1dℝ]
+lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) :
+    ⟪ContrMod.stdBasis μ, Λ *ᵥ ContrMod.stdBasis ν⟫ₘ = η μ μ * Λ μ ν := by
+  rw [basis_left, ContrMod.mulVec_toFin1dℝ]
   simp [basis_left, mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
 
 

@@ -98,7 +98,7 @@ lemma genBoost_mul_one_plus_contr (u v : FuturePointing d) (x : Contr d) :
   · congr 1
     · congr 1
       rw [genBoostAux₁]
-      simp
+      simp only [LinearMap.coe_mk, AddHom.coe_mk]
       rw [smul_smul]
       congr 1
       ring
@@ -198,7 +198,7 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
         smul_tmul, tmul_smul, map_sub, map_smul, smul_eq_mul, contr_self, mul_one]
       rw [contrContrContractField.symm v.1.1 u, contrContrContractField.symm v.1.1 x,
         contrContrContractField.symm u.1.1 x]
-    simp
+    simp only [smul_eq_mul]
     ring
   have hn (a  : ℝ ) {b c : ℝ} (h : a ≠ 0) (hab : a * b = a * c ) : b =  c := by
     simp_all only [smul_eq_mul, ne_eq, mul_eq_mul_left_iff, or_false]

@@ -97,14 +97,15 @@ open Lorentz in
 lemma toMatrix_apply_contrMod (M : SL(2, ℂ)) (v : ContrMod 3) :
     (toMatrix M) *ᵥ v = ContrMod.toSelfAdjoint.symm
     ((toLinearMapSelfAdjointMatrix M) (ContrMod.toSelfAdjoint v)) := by
-  simp [toMatrix, LinearMap.toMatrix_apply, ContrMod.mulVec]
+  simp only [ContrMod.mulVec, toMatrix, MonoidHom.coe_mk, OneHom.coe_mk]
   obtain ⟨a, ha⟩ := ContrMod.toSelfAdjoint.symm.surjective v
   subst ha
   rw [LinearEquiv.apply_symm_apply]
-  simp [ContrMod.toSelfAdjoint]
-  change  ContrMod.toFin1dℝEquiv.symm ((
-      ((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toLinearMapSelfAdjointMatrix M)))
-     *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.σSAL.repr a)))) = _
+  simp only [ContrMod.toSelfAdjoint, LinearEquiv.trans_symm, LinearEquiv.symm_symm,
+    LinearEquiv.trans_apply]
+  change ContrMod.toFin1dℝEquiv.symm ((
+    ((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toLinearMapSelfAdjointMatrix M)))
+    *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.σSAL.repr a)))) = _
   apply congrArg
   erw [LinearMap.toMatrix_mulVec_repr]
   rfl
@@ -135,7 +136,6 @@ lemma toLorentzGroup_eq_σSAL (M : SL(2, ℂ)) :
     toLorentzGroup M = LinearMap.toMatrix
     PauliMatrix.σSAL PauliMatrix.σSAL (toLinearMapSelfAdjointMatrix M) := by
   rfl
-
 
 lemma toLinearMapSelfAdjointMatrix_basis (i : Fin 1 ⊕ Fin 3) :
     toLinearMapSelfAdjointMatrix M (PauliMatrix.σSAL i) =

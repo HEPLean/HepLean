@@ -112,9 +112,9 @@ lemma stdBasis_inl_apply_inr (i : Fin d) : (stdBasis (Sum.inl 0)).val (Sum.inr i
   simp
 
 lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : (stdBasis μ).val ν = if μ = ν then 1 else 0 := by
-  simp [stdBasis, Pi.basisFun_apply, Pi.single_apply]
+  simp only [stdBasis, Basis.coe_ofEquivFun]
   change Pi.single μ 1 ν = _
-  simp [Pi.single_apply]
+  simp only [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
@@ -346,9 +346,9 @@ lemma stdBasis_toFin1dℝEquiv_apply_ne {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν
   exact Pi.single_eq_of_ne' h 1
 
 lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : (stdBasis μ).val ν = if μ = ν then 1 else 0 := by
-  simp [stdBasis, Pi.basisFun_apply, Pi.single_apply]
+  simp only [stdBasis, Basis.coe_ofEquivFun]
   change Pi.single μ 1 ν = _
-  simp [Pi.single_apply]
+  simp only [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 

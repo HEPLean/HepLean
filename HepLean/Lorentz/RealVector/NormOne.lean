@@ -290,7 +290,7 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
     funext i
     match i with
     | Sum.inl 0 =>
-      simp  [Set.Icc.coe_one, one_pow, one_mul, Fin.isValue]
+      simp only [Set.Icc.coe_one, one_pow, one_mul, Fin.isValue]
       exact (inl_eq_sqrt u).symm
     | Sum.inr i =>
       simp only [Set.Icc.coe_one, one_pow, one_mul, Fin.isValue]
