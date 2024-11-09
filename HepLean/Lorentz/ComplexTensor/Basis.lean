@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.Tree.Elab
-import HepLean.Tensors.ComplexLorentz.Basic
+import HepLean.Lorentz.ComplexTensor.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.PermProd

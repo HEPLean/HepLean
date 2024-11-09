@@ -3,8 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basis
-import HepLean.Tensors.ComplexLorentz.Lemmas
+import HepLean.Lorentz.ComplexTensor.PauliMatrices.Basis
+import HepLean.Lorentz.ComplexTensor.Lemmas
 /-!
 
 ## Contractiong of indices of Pauli matrix.

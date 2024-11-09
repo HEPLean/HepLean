@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.ComplexLorentz.PauliMatrices.Basic
+import HepLean.Lorentz.ComplexTensor.PauliMatrices.Basic
 import HepLean.Tensors.Tree.NodeIdentities.ProdContr
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.PermProd

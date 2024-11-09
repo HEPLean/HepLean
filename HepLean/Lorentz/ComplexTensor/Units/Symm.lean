@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.ComplexLorentz.Metrics.Basis
-import HepLean.Tensors.ComplexLorentz.Units.Basic
-import HepLean.Tensors.ComplexLorentz.Basis
+import HepLean.Lorentz.ComplexTensor.Metrics.Basis
+import HepLean.Lorentz.ComplexTensor.Units.Basic
+import HepLean.Lorentz.ComplexTensor.Basis
 /-!
 
 ## Symmetry lemmas relating to units

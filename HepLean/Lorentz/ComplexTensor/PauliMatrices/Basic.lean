@@ -10,7 +10,7 @@ import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.Congr
-import HepLean.Tensors.ComplexLorentz.Metrics.Lemmas
+import HepLean.Lorentz.ComplexTensor.Metrics.Lemmas
 /-!
 
 ## Pauli matrices as complex Lorentz tensors
