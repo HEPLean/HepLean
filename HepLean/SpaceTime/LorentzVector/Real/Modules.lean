@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Informal
-import HepLean.SpaceTime.LorentzGroup.Basic
+import HepLean.Lorentz.Group.Basic
 import Mathlib.RepresentationTheory.Rep
 import Mathlib.Logic.Equiv.TransferInstance
 import HepLean.SpaceTime.PauliMatrices.SelfAdjoint

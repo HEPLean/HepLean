@@ -62,6 +62,12 @@ import HepLean.FlavorPhysics.CKMMatrix.Relations
 import HepLean.FlavorPhysics.CKMMatrix.Rows
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import HepLean.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
+import HepLean.Lorentz.Group.Basic
+import HepLean.Lorentz.Group.Boosts
+import HepLean.Lorentz.Group.Orthochronous
+import HepLean.Lorentz.Group.Proper
+import HepLean.Lorentz.Group.Restricted
+import HepLean.Lorentz.Group.Rotations
 import HepLean.Mathematics.Fin
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.PiTensorProduct
@@ -73,12 +79,6 @@ import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
 import HepLean.SpaceTime.LorentzAlgebra.Basic
 import HepLean.SpaceTime.LorentzAlgebra.Basis
-import HepLean.SpaceTime.LorentzGroup.Basic
-import HepLean.SpaceTime.LorentzGroup.Boosts
-import HepLean.SpaceTime.LorentzGroup.Orthochronous
-import HepLean.SpaceTime.LorentzGroup.Proper
-import HepLean.SpaceTime.LorentzGroup.Restricted
-import HepLean.SpaceTime.LorentzGroup.Rotations
 import HepLean.SpaceTime.LorentzVector.Complex.Basic
 import HepLean.SpaceTime.LorentzVector.Complex.Contraction
 import HepLean.SpaceTime.LorentzVector.Complex.Metric

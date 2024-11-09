@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.LorentzVector.Real.NormOne
-import HepLean.SpaceTime.LorentzGroup.Proper
+import HepLean.Lorentz.Group.Proper
 /-!
 # The Orthochronous Lorentz Group
 

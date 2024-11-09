@@ -118,7 +118,7 @@ lemma complexContrBasis_of_real (i : Fin 1 ⊕ Fin 3) :
   simp only [complexContrBasis, Basis.coe_ofEquivFun, inclCongrRealLorentz,
     LinearMap.coe_mk, AddHom.coe_mk]
   ext j
-  simp
+  simp only [Function.comp_apply]
   change (Pi.single i 1) j = _
   by_cases h : i = j
   · subst h

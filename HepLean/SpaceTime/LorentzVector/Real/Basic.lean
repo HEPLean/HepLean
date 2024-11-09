@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Complex.Exponential
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import HepLean.SpaceTime.LorentzGroup.Basic
+import HepLean.Lorentz.Group.Basic
 import HepLean.Meta.Informal
 import Mathlib.RepresentationTheory.Rep
 import HepLean.SpaceTime.LorentzVector.Real.Modules
