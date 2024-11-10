@@ -19,7 +19,17 @@ into Lean 4.
 3. Create good documentation so that the project can be used for pedagogical purposes.
 
 
-## Areas of high energy physics with some coverage in HepLean
+## Some parts of HepLean
+
+__Lorentz [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Lorentz/Group/Basic.html):__  The Lorentz group, Lorentz algebra, Weyl fermions, Real Lorentz vectors, complex Lorentz vectors, complex Lorentz tensors.
+
+__Index notation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Tensors/OverColor/Basic.html):__  Formalization of index notation using category theory allowing commands like 
+
+```Lean
+{A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ
+```
+
+__Anomaly cancellation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html):__  Results related to solutions to the anomaly cancellation conditions of several theories.  
 
 
 [![](https://img.shields.io/badge/The_CKM_Matrix-blue)](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html)
