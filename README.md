@@ -20,8 +20,9 @@ into Lean 4.
 
 
 ## Some parts of HepLean
+HepLean _currently_ includes but is not limited to the following parts: 
 
-__Lorentz [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Lorentz/Group/Basic.html):__  The Lorentz group, Lorentz algebra, Weyl fermions, Real Lorentz vectors, complex Lorentz vectors, complex Lorentz tensors.
+__Lorentz [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Lorentz/Group/Basic.html):__  The Lorentz group, Lorentz algebra, Weyl fermions, Real Lorentz vectors, complex Lorentz vectors, complex Lorentz tensors, bispinors, Pauli matrices, etc.
 
 __Index notation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Tensors/OverColor/Basic.html):__  Formalization of index notation using category theory allowing commands like 
 
@@ -29,15 +30,14 @@ __Index notation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/Tensor
 {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ
 ```
 
-__Anomaly cancellation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html):__  Results related to solutions to the anomaly cancellation conditions of several theories.  
+__Anomaly cancellation [🗂️](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html):__  Results related to solutions to the anomaly cancellation conditions of several theories. 
 
+__Standard Model physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/StandardModel/Basic.html):__ Properties of the Higgs potential.
 
-[![](https://img.shields.io/badge/The_CKM_Matrix-blue)](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html)
-[![](https://img.shields.io/badge/Higgs_Field-blue)](https://heplean.github.io/HepLean/docs/HepLean/StandardModel/HiggsBoson/Basic.html)
-[![](https://img.shields.io/badge/2HDM-blue)](https://heplean.github.io/HepLean/docs/HepLean/BeyondTheStandardModel/TwoHDM/Basic.html)
-[![](https://img.shields.io/badge/Lorentz_Group-blue)](https://heplean.github.io/HepLean/docs/HepLean/SpaceTime/LorentzGroup/Basic.html)
-[![](https://img.shields.io/badge/Anomaly_Cancellation-blue)](https://heplean.github.io/HepLean/docs/HepLean/AnomalyCancellation/Basic.html)
-[![](https://img.shields.io/badge/Feynman_diagrams-blue)](https://heplean.github.io/HepLean/docs/HepLean/FeynmanDiagrams/PhiFour/Basic.html)
+__BSM physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/BeyondTheStandardModel/TwoHDM/Basic.html):__ Starts to: Georgi Glashow model, Pati-Salam, Spin(10), Two Higgs doublet model.
+
+__Flavor physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html):__ Properties of the CKM matrix.
+
 ## Associated media and publications
 | | Description |
 |----|------|
