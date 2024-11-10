@@ -32,7 +32,7 @@ def metricRaw : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -1, 0]
 
 lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)ᵀ := by
   rw [metricRaw]
-  rw [SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
+  rw [Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       Matrix.mul_fin_two, eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᵀ]
   simp only [Fin.isValue, mul_zero, mul_neg, mul_one, zero_add, add_zero, transpose_apply, of_apply,
@@ -42,7 +42,7 @@ lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)�
 
 lemma metricRaw_comm (M : SL(2,ℂ)) : metricRaw * M.1 = (M.1⁻¹)ᵀ * metricRaw := by
   rw [metricRaw]
-  rw [SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
+  rw [Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       Matrix.mul_fin_two, eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᵀ]
   simp only [Fin.isValue, zero_mul, one_mul, zero_add, neg_mul, add_zero, transpose_apply, of_apply,
@@ -53,7 +53,7 @@ lemma metricRaw_comm (M : SL(2,ℂ)) : metricRaw * M.1 = (M.1⁻¹)ᵀ * metricR
 
 lemma star_comm_metricRaw (M : SL(2,ℂ)) : M.1.map star * metricRaw = metricRaw * ((M.1)⁻¹)ᴴ := by
   rw [metricRaw]
-  rw [SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
+  rw [Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᴴ]
   rw [eta_fin_two (!![M.1 0 0, M.1 0 1; M.1 1 0, M.1 1 1].map star)]
@@ -61,7 +61,7 @@ lemma star_comm_metricRaw (M : SL(2,ℂ)) : M.1.map star * metricRaw = metricRaw
 
 lemma metricRaw_comm_star (M : SL(2,ℂ)) : metricRaw * M.1.map star = ((M.1)⁻¹)ᴴ * metricRaw := by
   rw [metricRaw]
-  rw [SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
+  rw [Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᴴ]
   rw [eta_fin_two (!![M.1 0 0, M.1 0 1; M.1 1 0, M.1 1 1].map star)]

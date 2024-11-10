@@ -24,7 +24,6 @@ open Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
-open SpaceTime
 
 namespace Lorentz
 

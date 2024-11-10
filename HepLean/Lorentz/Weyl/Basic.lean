@@ -207,7 +207,7 @@ def leftHandedToAlt : leftHanded ⟶ altLeftHanded where
     change AltLeftHandedModule.toFin2ℂEquiv.symm (!![0, 1; -1, 0] *ᵥ M.1 *ᵥ ψ.val) =
       AltLeftHandedModule.toFin2ℂEquiv.symm ((M.1⁻¹)ᵀ *ᵥ !![0, 1; -1, 0] *ᵥ ψ.val)
     apply congrArg
-    rw [mulVec_mulVec, mulVec_mulVec, SpaceTime.SL2C.inverse_coe, eta_fin_two M.1]
+    rw [mulVec_mulVec, mulVec_mulVec, Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
     refine congrFun (congrArg _ ?_) _
     rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       Matrix.mul_fin_two, eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᵀ]
@@ -238,7 +238,7 @@ def leftHandedAltTo : altLeftHanded ⟶ leftHanded where
     refine LinearMap.ext (fun ψ => ?_)
     change LeftHandedModule.toFin2ℂEquiv.symm (!![0, -1; 1, 0] *ᵥ (M.1⁻¹)ᵀ *ᵥ ψ.val) =
       LeftHandedModule.toFin2ℂEquiv.symm (M.1 *ᵥ !![0, -1; 1, 0] *ᵥ ψ.val)
-    rw [EquivLike.apply_eq_iff_eq, mulVec_mulVec, mulVec_mulVec, SpaceTime.SL2C.inverse_coe,
+    rw [EquivLike.apply_eq_iff_eq, mulVec_mulVec, mulVec_mulVec, Lorentz.SL2C.inverse_coe,
       eta_fin_two M.1]
     refine congrFun (congrArg _ ?_) _
     rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,

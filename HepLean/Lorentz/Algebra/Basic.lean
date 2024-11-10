@@ -18,7 +18,6 @@ We define
 
 -/
 
-namespace SpaceTime
 open Matrix
 open TensorProduct
 
@@ -84,5 +83,3 @@ lemma space_comps (Λ : lorentzAlgebra) (i j : Fin 3) :
     (congrArg (fun M ↦ M (Sum.inr i) (Sum.inr j)) $ mem_iff.mp Λ.2).symm
 
 end lorentzAlgebra
-
-end SpaceTime

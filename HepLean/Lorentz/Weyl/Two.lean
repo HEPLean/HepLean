@@ -713,7 +713,7 @@ lemma leftRightToMatrix_ρ_symm (v : Matrix (Fin 2) (Fin 2) ℂ) (M : SL(2,ℂ))
   rw [← h1]
   simp
 
-open SpaceTime
+open Lorentz
 
 lemma altLeftAltRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) ℂ)
     (hv : IsSelfAdjoint v) (M : SL(2,ℂ)) :

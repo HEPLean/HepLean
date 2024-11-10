@@ -28,7 +28,6 @@ open Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
-open SpaceTime
 
 /-- The tensor `σ^μ^a^{dot a}` based on the Pauli-matrices as an element of
   `complexContr ⊗ leftHanded ⊗ rightHanded`. -/

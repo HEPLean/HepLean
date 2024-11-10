@@ -15,15 +15,13 @@ import HepLean.Meta.Informal
 The aim of this file is to give the relationship between `SL(2, ℂ)` and the Lorentz group.
 
 -/
-namespace SpaceTime
+namespace Lorentz
 
 open Matrix
 open MatrixGroups
 open Complex
 
 namespace SL2C
-
-open SpaceTime
 
 noncomputable section
 
@@ -189,4 +187,4 @@ informal_lemma toRestrictedLorentzGroup where
 end
 end SL2C
 
-end SpaceTime
+end Lorentz

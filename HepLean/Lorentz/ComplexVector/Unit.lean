@@ -16,7 +16,6 @@ open Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
-open SpaceTime
 open CategoryTheory.MonoidalCategory
 namespace Lorentz
 

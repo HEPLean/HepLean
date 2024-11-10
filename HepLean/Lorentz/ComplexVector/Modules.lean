@@ -92,7 +92,7 @@ def lorentzGroupRep : Representation ℂ (LorentzGroup 3) ContrℂModule where
 /-- The representation of the SL(2, ℂ) on `ContrℂModule` induced by the representation of the
   Lorentz group. -/
 def SL2CRep : Representation ℂ SL(2, ℂ) ContrℂModule :=
-  MonoidHom.comp lorentzGroupRep SpaceTime.SL2C.toLorentzGroup
+  MonoidHom.comp lorentzGroupRep Lorentz.SL2C.toLorentzGroup
 
 end ContrℂModule
 
@@ -156,7 +156,7 @@ def lorentzGroupRep : Representation ℂ (LorentzGroup 3) CoℂModule where
 /-- The representation of the SL(2, ℂ) on `ContrℂModule` induced by the representation of the
   Lorentz group. -/
 def SL2CRep : Representation ℂ SL(2, ℂ) CoℂModule :=
-  MonoidHom.comp lorentzGroupRep SpaceTime.SL2C.toLorentzGroup
+  MonoidHom.comp lorentzGroupRep Lorentz.SL2C.toLorentzGroup
 
 end CoℂModule
 
