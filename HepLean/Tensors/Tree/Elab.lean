@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.Tree.Basic
 import Lean.Elab.Term
 import HepLean.Tensors.Tree.Dot
-import HepLean.Tensors.ComplexLorentz.Basic
+import HepLean.Lorentz.ComplexTensor.Basic
 /-!
 
 # Elaboration of tensor trees
