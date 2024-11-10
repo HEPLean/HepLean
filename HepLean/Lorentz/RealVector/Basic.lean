@@ -33,17 +33,6 @@ def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 instance : TopologicalSpace (Contr d) := TopologicalSpace.induced
   ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
 
-instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
-  ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
-
-lemma toFin1dℝEquiv_isInducing : IsInducing (@ContrMod.toFin1dℝEquiv d) := by
-  exact { eq_induced := rfl }
-
-lemma toFin1dℝEquiv_symm_isInducing : IsInducing ((@ContrMod.toFin1dℝEquiv d).symm) := by
-  let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
-    toFin1dℝEquiv_isInducing
-  exact Homeomorph.isInducing x.symm
-
 lemma continuous_contr {T : Type} [TopologicalSpace T] (f : T → Contr d)
     (h : Continuous (fun i => (f i).toFin1dℝ)) : Continuous f := by
   exact continuous_induced_rng.mpr h
@@ -51,7 +40,7 @@ lemma continuous_contr {T : Type} [TopologicalSpace T] (f : T → Contr d)
 lemma contr_continuous {T : Type} [TopologicalSpace T] (f : Contr d → T)
     (h : Continuous (f ∘ (@ContrMod.toFin1dℝEquiv d).symm)) : Continuous f := by
   let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
-    toFin1dℝEquiv_isInducing
+    ContrMod.toFin1dℝEquiv_isInducing
   rw [← Homeomorph.comp_continuous_iff' x.symm]
   exact h
 

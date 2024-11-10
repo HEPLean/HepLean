@@ -274,6 +274,23 @@ lemma toSelfAdjoint_symm_basis (i : Fin 1 ⊕ Fin 3) :
   refine (LinearEquiv.symm_apply_eq toSelfAdjoint).mpr ?_
   rw [toSelfAdjoint_stdBasis]
 
+/-!
+## Topology
+-/
+
+
+instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
+  ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
+
+
+lemma toFin1dℝEquiv_isInducing : IsInducing (@ContrMod.toFin1dℝEquiv d) := by
+  exact { eq_induced := rfl }
+
+lemma toFin1dℝEquiv_symm_isInducing : IsInducing ((@ContrMod.toFin1dℝEquiv d).symm) := by
+  let x := Equiv.toHomeomorphOfIsInducing (@ContrMod.toFin1dℝEquiv d).toEquiv
+    toFin1dℝEquiv_isInducing
+  exact Homeomorph.isInducing x.symm
+
 end ContrMod
 
 /-- The module for covariant (up-index) complex Lorentz vectors. -/
