@@ -200,7 +200,7 @@ lemma action_tmul (g : LorentzGroup d) : ⟪(Contr d).ρ g x, (Contr d).ρ g y�
   rfl
 
 lemma as_sum : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
-      ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i) := by
+    ∑ i, x.val (Sum.inr i) * y.val (Sum.inr i) := by
   rw [contrContrContract_hom_tmul]
   simp only [dotProduct, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal,
     Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Sum.elim_inl,
@@ -214,7 +214,6 @@ lemma as_sum_toSpace : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
   rw [as_sum]
   rfl
 
-@[simp]
 lemma stdBasis_inl {d : ℕ} :
     ⟪@ContrMod.stdBasis d (Sum.inl 0), ContrMod.stdBasis (Sum.inl 0)⟫ₘ = (1 : ℝ) := by
   rw [as_sum]

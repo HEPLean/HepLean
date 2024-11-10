@@ -61,9 +61,6 @@ def Co (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of CoMod.rep
 
 open CategoryTheory.MonoidalCategory
 
-def toField (d : ℕ) : (𝟙_ (Rep ℝ ↑(LorentzGroup d))) →ₗ[ℝ] ℝ := LinearMap.id
-
-lemma toField_apply {d : ℕ} (a : 𝟙_ (Rep ℝ ↑(LorentzGroup d))) : toField d a = a := rfl
 /-!
 
 ## Isomorphism between contravariant and covariant Lorentz vectors

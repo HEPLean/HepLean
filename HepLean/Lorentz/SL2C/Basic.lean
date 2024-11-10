@@ -76,6 +76,8 @@ lemma toLinearMapSelfAdjointMatrix_det (M : SL(2, ℂ)) (A : selfAdjoint (Matrix
     selfAdjoint.mem_iff, det_conjTranspose, det_mul, det_one, RingHom.id_apply]
   simp only [SpecialLinearGroup.det_coe, one_mul, star_one, mul_one]
 
+/-- The monoid homomorphisms from `SL(2, ℂ)` to matrices indexed by `Fin 1 ⊕ Fin 3`
+  formed by the action `M A Mᴴ`. -/
 def toMatrix : SL(2, ℂ) →* Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ where
   toFun M := LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL (toLinearMapSelfAdjointMatrix M)
   map_one' := by

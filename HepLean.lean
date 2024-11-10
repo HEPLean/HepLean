@@ -95,6 +95,7 @@ import HepLean.Lorentz.PauliMatrices.SelfAdjoint
 import HepLean.Lorentz.RealVector.Basic
 import HepLean.Lorentz.RealVector.Contraction
 import HepLean.Lorentz.RealVector.Modules
+import HepLean.Lorentz.RealVector.NormOne
 import HepLean.Lorentz.SL2C.Basic
 import HepLean.Lorentz.Weyl.Basic
 import HepLean.Lorentz.Weyl.Contraction

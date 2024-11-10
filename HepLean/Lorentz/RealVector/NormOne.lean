@@ -208,7 +208,7 @@ lemma metric_reflect_not_mem_not_mem (h : v ∉ FuturePointing d) (hw : w ∉ Fu
   simp [neg, neg_tmul, tmul_neg]
 
 lemma metric_reflect_mem_not_mem (h : v ∈ FuturePointing d) (hw : w ∉ FuturePointing d) :
-   ⟪v.val, (Contr d).ρ LorentzGroup.parity w.1⟫ₘ ≤ 0 := by
+    ⟪v.val, (Contr d).ρ LorentzGroup.parity w.1⟫ₘ ≤ 0 := by
   rw [show (0 : ℝ) = - 0 from zero_eq_neg.mpr rfl, le_neg]
   have h1 := metric_reflect_mem_mem h ((not_mem_iff_neg w).mp hw)
   apply le_of_le_of_eq h1 ?_
@@ -248,8 +248,8 @@ noncomputable def pathFromTime (u : FuturePointing d) : Path timeVecNormOneFutur
       | Sum.inr i => t * u.1.1.toSpace i},
     by
       rw [NormOne.mem_iff, contrContrContractField.as_sum_toSpace]
-      simp only [ContrMod.toSpace, Function.comp_apply, PiLp.inner_apply, RCLike.inner_apply, map_mul,
-        conj_trivial]
+      simp only [ContrMod.toSpace, Function.comp_apply, PiLp.inner_apply, RCLike.inner_apply,
+        map_mul, conj_trivial]
       rw [Real.mul_self_sqrt, ← @real_inner_self_eq_norm_sq, @PiLp.inner_apply]
       · simp only [Function.comp_apply, RCLike.inner_apply, conj_trivial]
         refine Eq.symm (eq_sub_of_add_eq (congrArg (HAdd.hAdd _) ?_))

@@ -145,7 +145,7 @@ lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
   rw [contrContrContractField.matrix_apply_stdBasis (Λ := toMatrix u v) μ ν, toMatrix_mulVec]
   simp only [genBoost, genBoostAux₁, genBoostAux₂, smul_add, neg_smul, LinearMap.add_apply,
     LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, contrContrContractField.basis_left,
-    map_add, map_smul, map_neg, toField_apply, mul_eq_mul_left_iff]
+    map_add, map_smul, map_neg, mul_eq_mul_left_iff]
   ring_nf
   simp only [Pi.add_apply, Action.instMonoidalCategory_tensorObj_V,
     Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,

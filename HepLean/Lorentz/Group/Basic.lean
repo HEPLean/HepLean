@@ -123,7 +123,6 @@ instance (M : LorentzGroup d) : Invertible M.1 where
     rw [← coe_inv]
     exact (mem_iff_self_mul_dual.mp M.2)
 
-@[simp]
 lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   trans Subtype.val (Λ⁻¹ * Λ)
   · rw [← coe_inv]
@@ -131,7 +130,6 @@ lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
   · rw [inv_mul_cancel Λ]
     rfl
 
-@[simp]
 lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
   trans Subtype.val (Λ * Λ⁻¹)
   · rw [← coe_inv]

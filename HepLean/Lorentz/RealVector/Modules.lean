@@ -136,9 +136,11 @@ lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis 
 
 -/
 
+/-- Multiplication of a matrix with a vector in `ContrMod`. -/
 abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     ContrMod d := Matrix.toLinAlgEquiv stdBasis M v
 
+/-- Multiplication of a matrix with a vector in `ContrMod`. -/
 scoped[Lorentz] infixr:73 " *ᵥ " => ContrMod.mulVec
 
 @[simp]
@@ -173,6 +175,8 @@ lemma mulVec_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : 
 (Not the Minkowski norm, but the norm of a vector in `ContrℝModule d`.)
 -/
 
+/-- A `NormedAddCommGroup` structure on `ContrMod`. This is not an instance, as we
+  don't want it to be applied always. -/
 def norm : NormedAddCommGroup (ContrMod d) where
   norm v := ‖v.val‖₊
   dist_self x := Pi.normedAddCommGroup.dist_self x.val
@@ -180,6 +184,8 @@ def norm : NormedAddCommGroup (ContrMod d) where
   dist_comm x y := Pi.normedAddCommGroup.dist_comm x.val y.val
   eq_of_dist_eq_zero {x y} := fun h => ext (MetricSpace.eq_of_dist_eq_zero h)
 
+/-- The underlying space part of a `ContrMod` formed by removing the first element.
+  A better name for this might be `tail`. -/
 def toSpace (v : ContrMod d) : EuclideanSpace ℝ (Fin d) := v.val ∘ Sum.inr
 
 /-!
@@ -368,9 +374,11 @@ lemma stdBasis_decomp (v : CoMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i :
 
 -/
 
+/-- Multiplication of a matrix with a vector in `CoMod`. -/
 abbrev mulVec (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :
     CoMod d := Matrix.toLinAlgEquiv stdBasis M v
 
+/-- Multiplication of a matrix with a vector in `CoMod`. -/
 scoped[Lorentz] infixr:73 " *ᵥ " => CoMod.mulVec
 
 @[simp]
