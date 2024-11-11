@@ -108,6 +108,7 @@ import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
 import HepLean.Meta.AllFilePaths
+import HepLean.Meta.Basic
 import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
 import HepLean.SpaceTime.Basic

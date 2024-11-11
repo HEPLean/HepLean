@@ -47,6 +47,9 @@ jobs:
       - name: make list of informal proofs and lemmas
         run : lake exe informal mkFile mkDot mkHTML
 
+      - name: make stats page
+        run : lake exe stats mkHTML
+
       - name: Generate svg from dot
         run : dot -Tsvg -o ./docs/graph.svg ./docs/InformalDot.dot
 
