@@ -30,6 +30,8 @@ def PermGroup (n : ℕ) := ∀ (_ : Fin 5), Equiv.Perm (Fin n)
 
 variable {n : ℕ}
 
+/-- The type `PermGroup n` inherits the instance of a group from it's
+  target space `Equiv.Perm`.  -/
 @[simp]
 instance : Group (PermGroup n) := Pi.group
 

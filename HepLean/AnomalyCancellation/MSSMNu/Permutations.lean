@@ -29,6 +29,7 @@ open BigOperators
 @[simp]
 def PermGroup := Fin 6 → Equiv.Perm (Fin 3)
 
+/-- The type `PermGroup` has a group instances derived from the group instance of it's target. -/
 @[simp]
 instance : Group PermGroup := Pi.group
 

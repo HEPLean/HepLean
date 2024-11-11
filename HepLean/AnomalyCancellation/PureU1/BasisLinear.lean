@@ -120,6 +120,7 @@ noncomputable
 def asBasis : Basis (Fin n) ℚ ((PureU1 n.succ).LinSols) where
   repr := coordinateMap
 
+/-- The module over `ℚ` defined by linear solutions to the pure `U(1)` ACCs is finite. -/
 instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
   Module.Finite.of_basis asBasis
 

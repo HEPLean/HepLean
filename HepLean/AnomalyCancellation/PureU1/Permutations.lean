@@ -26,6 +26,7 @@ namespace PureU1
 @[simp]
 def PermGroup (n : ℕ) := Equiv.Perm (Fin n)
 
+/-- The type `PermGroup n` inherits the instance of a group from `Equiv.Perm`. -/
 instance {n : ℕ} : Group (PermGroup n) := Equiv.Perm.permGroup
 
 section Charges
