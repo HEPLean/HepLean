@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.AnomalyCancellation.SM.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
+import Mathlib.NumberTheory.FLT.Three
 /-!
 # Lemmas for 1 family SM Accs
 
@@ -47,12 +48,12 @@ lemma accGrav_Q_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) = 0) :
   simp_all
   linear_combination 3 * h2
 
-lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0)
-    (FLTThree : FermatLastTheoremWith ℚ 3) :
+lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0) :
     accGrav S.val = 0 := by
   have hE := E_zero_iff_Q_zero.mpr.mt hQ
   let S' := linearParametersQENeqZero.bijection.symm ⟨S.1.1, And.intro hQ hE⟩
   have hC := cubeSol S
+  have FLTThree := fermatLastTheoremFor_iff_rat.mp fermatLastTheoremThree
   have hS' := congrArg (fun S => S.val.val)
     (linearParametersQENeqZero.bijection.right_inv ⟨S.1.1, And.intro hQ hE⟩)
   change _ = S.val at hS'
@@ -60,11 +61,11 @@ lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0
   exact S'.grav_of_cubic hC FLTThree
 
 /-- Any solution to the ACCs without gravity satisfies the gravitational ACC. -/
-theorem accGravSatisfied {S : (SMNoGrav 1).Sols} (FLTThree : FermatLastTheoremWith ℚ 3) :
+theorem accGravSatisfied {S : (SMNoGrav 1).Sols} :
     accGrav S.val = 0 := by
   by_cases hQ : Q S.val (0 : Fin 1)= 0
   · exact accGrav_Q_zero hQ
-  · exact accGrav_Q_neq_zero hQ FLTThree
+  · exact accGrav_Q_neq_zero hQ
 
 end One
 end SMNoGrav
