@@ -48,7 +48,7 @@ scoped[StandardModel.HiggsField] notation "⟪" φ1 "," φ2 "⟫_H" => innerProd
 -/
 
 @[simp]
-lemma innerProd_neg_left (φ1 φ2 : HiggsField) : ⟪- φ1, φ2⟫_H = -⟪φ1, φ2⟫_H := by
+lemma innerProd_neg_left (φ1 φ2 : HiggsField) : ⟪- φ1, φ2⟫_H = - ⟪φ1, φ2⟫_H := by
   funext x
   simp [innerProd]
 

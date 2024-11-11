@@ -42,8 +42,9 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
-lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
-  apply CategoryTheory.Iso.ext h
+/-- If `m` and `n` are morphisms in `OverColor C`, they are equal if their underlying
+  morphisms in `Over C` are equal. -/
+lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := CategoryTheory.Iso.ext h
 
 lemma ext_iff (m n : f ⟶ g) : (∀ x, m.hom.left x = n.hom.left x) ↔ m = n := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
@@ -62,10 +63,12 @@ def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
   right_inv := by
     simpa only [Over.comp_left] using congrFun (congrArg (fun x => x.left) m.inv_hom_id)
 
+/-- The equivalence of types underlying the identity morphism is the reflexive equivalence.  -/
 @[simp]
 lemma toEquiv_id (f : OverColor C) : toEquiv (𝟙 f) = Equiv.refl f.left := by
   rfl
 
+/-- The function `toEquiv` obeys compositions. -/
 @[simp]
 lemma toEquiv_comp (m : f ⟶ g) (n : g ⟶ h) : toEquiv (m ≫ n) = (toEquiv m).trans (toEquiv n) := by
   rfl
@@ -110,6 +113,7 @@ symmetric monoidal category.
 
 -/
 
+/-- The category `OverColor C` carries an instance of a Monoidal category structure. -/
 @[simps!]
 instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
   tensorObj f g := Over.mk (Sum.elim f.hom g.hom)
@@ -172,6 +176,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
     inv_hom_id := by
       rfl}
 
+/-- The category `OverColor C` carries an instance of a Monoidal category. -/
 instance (C : Type) : MonoidalCategory (OverColor C) where
     tensorHom_def f g := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => rfl
     tensor_id X Y := CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
@@ -215,6 +220,7 @@ instance (C : Type) : MonoidalCategory (OverColor C) where
       | Sum.inl (Sum.inr x) => exact Empty.elim x
       | Sum.inr x => rfl
 
+/-- The category `OverColor C` carries an instance of a braided category. -/
 instance (C : Type) : BraidedCategory (OverColor C) where
   braiding f g := {
     hom := Over.isoMk (Equiv.sumComm f.left g.left).toIso
@@ -250,6 +256,7 @@ instance (C : Type) : BraidedCategory (OverColor C) where
     | Sum.inr (Sum.inr x) => rfl
     | Sum.inl x => rfl
 
+/-- The category `OverColor C` carries an instance of a symmetric monoidal category. -/
 instance (C : Type) : SymmetricCategory (OverColor C) where
   toBraidedCategory := instBraidedCategory C
   symmetry X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
