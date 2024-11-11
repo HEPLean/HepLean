@@ -37,6 +37,7 @@ structure ACCSystemGroupAction (χ : ACCSystem) where
 
 namespace ACCSystemGroupAction
 
+/-- The given instance of a group on the `group` field of a `ACCSystemGroupAction`. -/
 instance {χ : ACCSystem} (G : ACCSystemGroupAction χ) : Group G.group := G.groupInst
 
 /-- The action of a group element on the vector space of linear solutions. -/
