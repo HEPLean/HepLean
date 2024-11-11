@@ -278,10 +278,8 @@ lemma toSelfAdjoint_symm_basis (i : Fin 1 ⊕ Fin 3) :
 ## Topology
 -/
 
-
 instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
   ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
-
 
 lemma toFin1dℝEquiv_isInducing : IsInducing (@ContrMod.toFin1dℝEquiv d) := by
   exact { eq_induced := rfl }

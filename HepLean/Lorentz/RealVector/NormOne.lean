@@ -22,7 +22,7 @@ variable {d : ℕ}
 /-- The set of Lorentz vectors with norm 1. -/
 def NormOne (d : ℕ) : Set (Contr d) := fun v => ⟪v, v⟫ₘ = (1 : ℝ)
 
-noncomputable  section
+noncomputable section
 
 namespace NormOne
 
@@ -68,7 +68,7 @@ lemma _root_.LorentzGroup.inl_inl_mul (Λ Λ' : LorentzGroup d) : (Λ * Λ').1 (
     ⟪(LorentzGroup.toNormOne (LorentzGroup.transpose Λ)).1,
       (Contr d).ρ LorentzGroup.parity (LorentzGroup.toNormOne Λ').1⟫ₘ := by
   rw [contrContrContractField.right_parity]
-  simp  only [Fin.isValue, lorentzGroupIsGroup_mul_coe, Matrix.mul_apply, Fintype.sum_sum_type,
+  simp only [Fin.isValue, lorentzGroupIsGroup_mul_coe, Matrix.mul_apply, Fintype.sum_sum_type,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton,
     LorentzGroup.transpose, PiLp.inner_apply, Function.comp_apply,
     RCLike.inner_apply, conj_trivial]
@@ -80,7 +80,7 @@ lemma _root_.LorentzGroup.inl_inl_mul (Λ Λ' : LorentzGroup d) : (Λ * Λ').1 (
     rw [LorentzGroup.toNormOne_inr, LorentzGroup.toNormOne_inr]
     rfl
 
-lemma inl_sq : v.val.val (Sum.inl 0) ^ 2 = 1 + ‖ContrMod.toSpace v.val‖ ^ 2  := by
+lemma inl_sq : v.val.val (Sum.inl 0) ^ 2 = 1 + ‖ContrMod.toSpace v.val‖ ^ 2 := by
   rw [contrContrContractField.inl_sq_eq, v.2]
   congr
   rw [← real_inner_self_eq_norm_sq]
@@ -99,14 +99,14 @@ lemma inl_le_neg_one_or_one_le_inl : v.val.val (Sum.inl 0) ≤ -1 ∨ 1 ≤ v.va
 
 lemma norm_space_le_abs_inl : ‖v.1.toSpace‖ < |v.val.val (Sum.inl 0)| := by
   rw [(abs_norm _).symm, ← @sq_lt_sq, inl_sq]
-  change  ‖ContrMod.toSpace v.val‖ ^ 2 < 1 + ‖ContrMod.toSpace v.val‖ ^ 2
+  change ‖ContrMod.toSpace v.val‖ ^ 2 < 1 + ‖ContrMod.toSpace v.val‖ ^ 2
   exact lt_one_add (‖(v.1).toSpace‖ ^ 2)
 
 lemma norm_space_leq_abs_inl : ‖v.1.toSpace‖ ≤ |v.val.val (Sum.inl 0)| :=
   le_of_lt (norm_space_le_abs_inl v)
 
 lemma inl_abs_sub_space_norm :
-    0 ≤ |v.val.val (Sum.inl 0)| * |w.val.val (Sum.inl 0)| - ‖v.1.toSpace‖  * ‖w.1.toSpace‖ := by
+    0 ≤ |v.val.val (Sum.inl 0)| * |w.val.val (Sum.inl 0)| - ‖v.1.toSpace‖ * ‖w.1.toSpace‖ := by
   apply sub_nonneg.mpr
   apply mul_le_mul (norm_space_leq_abs_inl v) (norm_space_leq_abs_inl w) ?_ ?_
   · exact norm_nonneg _
@@ -148,7 +148,6 @@ lemma mem_iff_parity_mem : v ∈ FuturePointing d ↔ ⟨(Contr d).ρ LorentzGro
   change _ ↔ 0 < (minkowskiMatrix.mulVec v.val.val) (Sum.inl 0)
   simp only [Fin.isValue, minkowskiMatrix.mulVec_inl_0]
 
-
 lemma not_mem_iff_inl_le_zero : v ∉ FuturePointing d ↔ v.val.val (Sum.inl 0) ≤ 0 := by
   rw [mem_iff]
   simp
@@ -173,7 +172,7 @@ lemma not_mem_iff_neg : v ∉ FuturePointing d ↔ neg v ∈ FuturePointing d :=
 
 variable (f f' : FuturePointing d)
 
-lemma inl_nonneg : 0 ≤ f.val.val.val (Sum.inl 0):= le_of_lt f.2
+lemma inl_nonneg : 0 ≤ f.val.val.val (Sum.inl 0) := le_of_lt f.2
 
 lemma abs_inl : |f.val.val.val (Sum.inl 0)| = f.val.val.val (Sum.inl 0) :=
   abs_of_nonneg (inl_nonneg f)
@@ -230,7 +229,6 @@ namespace FuturePointing
 /-!
 ## Topology
 -/
-
 
 /-- The `FuturePointing d` which has all space components zero. -/
 @[simps!]

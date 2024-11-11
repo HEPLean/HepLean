@@ -83,7 +83,7 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
     (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
       (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re)) • PauliMatrix.σSAL (Sum.inr 0)
     + ((- (M.1 0 0).re * (M.1 1 0).im + ↑(M.1 1 0).re * (M.1 0 0).im
-      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) •  PauliMatrix.σSAL (Sum.inr 1)
+      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) • PauliMatrix.σSAL (Sum.inr 1)
     + ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) •
       PauliMatrix.σSAL (Sum.inr 2) := by
   simp only [toSelfAdjointMap, PauliMatrix.σSAL, Fin.isValue, Basis.coe_mk, PauliMatrix.σSAL',
@@ -97,33 +97,42 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
   conv => lhs; erw [← eta_fin_two 1, mul_one]
   conv => lhs; lhs; rw [eta_fin_two M.1]
   conv => lhs; rhs; rw [eta_fin_two M.1ᴴ]
-  simp
+  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def, cons_mul, Nat.succ_eq_add_one,
+    Nat.reduceAdd, vecMul_cons, head_cons, smul_cons, smul_eq_mul, smul_empty, tail_cons,
+    empty_vecMul, add_zero, add_cons, empty_add_empty, empty_mul, Equiv.symm_apply_apply,
+    EmbeddingLike.apply_eq_iff_eq]
   rw [mul_conj', mul_conj', mul_conj', mul_conj']
   ext x y
   match x, y with
   | 0, 0 =>
-    simp
+    simp only [Fin.isValue, norm_eq_abs, cons_val', cons_val_zero, empty_val', cons_val_fin_one]
     ring_nf
   | 0, 1 =>
-    simp
+    simp only [Fin.isValue, norm_eq_abs, cons_val', cons_val_one, head_cons, empty_val',
+      cons_val_fin_one, cons_val_zero]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
-    simp [- re_add_im]
+    simp only [Fin.isValue, map_add, conj_ofReal, _root_.map_mul, conj_I, mul_neg, add_re,
+      ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self, add_zero, add_im,
+      mul_im, zero_add]
     ring_nf
-    simp
+    simp only [Fin.isValue, I_sq, mul_neg, mul_one, neg_mul, neg_neg, one_mul, sub_neg_eq_add]
     ring
   | 1, 0 =>
-    simp
+    simp only [Fin.isValue, norm_eq_abs, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
+      cons_val_one, head_fin_const]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
-    simp [- re_add_im]
+    simp only [Fin.isValue, map_add, conj_ofReal, _root_.map_mul, conj_I, mul_neg, add_re,
+      ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self, add_zero, add_im,
+      mul_im, zero_add]
     ring_nf
-    simp
+    simp only [Fin.isValue, I_sq, mul_neg, mul_one, neg_mul, neg_neg, one_mul, sub_neg_eq_add]
     ring
   | 1, 1 =>
-    simp
+    simp only [Fin.isValue, norm_eq_abs, cons_val', cons_val_one, head_cons, empty_val',
+      cons_val_fin_one, head_fin_const]
     ring_nf
-
 
 /-- The monoid homomorphisms from `SL(2, ℂ)` to matrices indexed by `Fin 1 ⊕ Fin 3`
   formed by the action `M A Mᴴ`. -/
@@ -216,15 +225,15 @@ lemma toLorentzGroup_fst_col (M : SL(2, ℂ)) :
     (fun μ => (toLorentzGroup M).1 μ (Sum.inl 0)) = fun μ =>
       match μ with
       | Sum.inl 0 => ((‖M.1 0 0‖ ^ 2 + ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2)
-      | Sum.inr 0 =>  (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
+      | Sum.inr 0 => (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
         (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re))
       | Sum.inr 1 => ((- (M.1 0 0).re * (M.1 1 0).im + ↑(M.1 1 0).re * (M.1 0 0).im
         - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re))
       | Sum.inr 2 => ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) := by
-  let k :  Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
+  let k : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
     match μ with
     | Sum.inl 0 => ((‖M.1 0 0‖ ^ 2 + ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2)
-    | Sum.inr 0 =>  (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
+    | Sum.inr 0 => (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
       (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re))
     | Sum.inr 1 => ((- (M.1 0 0).re * (M.1 1 0).im + ↑(M.1 1 0).re * (M.1 0 0).im
       - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re))

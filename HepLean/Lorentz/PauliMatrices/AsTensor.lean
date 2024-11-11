@@ -130,14 +130,14 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
       map_sum, map_tmul]
     symm
     calc _ = ∑ x, ((complexContr.ρ M) (complexContrBasis x) ⊗ₜ[ℂ]
-      leftRightToMatrix.symm (SL2C.toLinearMapSelfAdjointMatrix M (σSA x))) := by
+      leftRightToMatrix.symm (SL2C.toSelfAdjointMap M (σSA x))) := by
           refine Finset.sum_congr rfl (fun x _ => ?_)
           rw [← leftRightToMatrix_ρ_symm_selfAdjoint]
           rfl
       _ = ∑ x, ((∑ i, (SL2C.toLorentzGroup M).1 i x • (complexContrBasis i)) ⊗ₜ[ℂ]
           ∑ j, leftRightToMatrix.symm ((SL2C.toLorentzGroup M⁻¹).1 x j • (σSA j))) := by
           refine Finset.sum_congr rfl (fun x _ => ?_)
-          rw [SL2CRep_ρ_basis, toSelfAdjointMap_σSA]
+          rw [SL2CRep_ρ_basis, SL2C.toSelfAdjointMap_σSA]
           simp only [Action.instMonoidalCategory_tensorObj_V, SL2C.toLorentzGroup_apply_coe,
             Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
             Finset.sum_singleton, map_inv, lorentzGroupIsGroup_inv, AddSubgroup.coe_add,

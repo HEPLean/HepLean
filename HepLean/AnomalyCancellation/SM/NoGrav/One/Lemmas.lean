@@ -53,12 +53,11 @@ lemma accGrav_Q_neq_zero {S : (SMNoGrav 1).Sols} (hQ : Q S.val (0 : Fin 1) ≠ 0
   have hE := E_zero_iff_Q_zero.mpr.mt hQ
   let S' := linearParametersQENeqZero.bijection.symm ⟨S.1.1, And.intro hQ hE⟩
   have hC := cubeSol S
-  have FLTThree := fermatLastTheoremFor_iff_rat.mp fermatLastTheoremThree
   have hS' := congrArg (fun S => S.val.val)
     (linearParametersQENeqZero.bijection.right_inv ⟨S.1.1, And.intro hQ hE⟩)
   change _ = S.val at hS'
   rw [← hS'] at hC ⊢
-  exact S'.grav_of_cubic hC FLTThree
+  exact S'.grav_of_cubic hC
 
 /-- Any solution to the ACCs without gravity satisfies the gravitational ACC. -/
 theorem accGravSatisfied {S : (SMNoGrav 1).Sols} :
