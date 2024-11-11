@@ -193,7 +193,10 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => by simpa using Fermion.altRightContraction_apply_metric
     | Color.up => by simpa using Lorentz.contrCoContraction_apply_metric
     | Color.down => by simpa using Lorentz.coContrContraction_apply_metric
+
 namespace complexLorentzTensor
+
+/-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
 
 lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
