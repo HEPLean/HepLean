@@ -1,15 +1,14 @@
 
-on: 
-  push: 
-  pull_request: 
+on:
+  pull_request:
 
 name: continuous integration
 
-jobs: 
-  doc_lint: 
-    name: doc lint 
+jobs:
+  doc_lint:
+    name: doc lint
     runs-on: ubuntu-latest
-    steps: 
+    steps:
 
       - uses: actions/checkout@v4
 
@@ -28,7 +27,7 @@ jobs:
       - name: build cache
         run: |
           lake exe cache get
- 
+
       - name: build HepLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3
@@ -37,8 +36,8 @@ jobs:
           run: |
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
-      - name: check file imports 
-        run: | 
+      - name: check file imports
+        run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
 
       - name: runLinter on HepLean
@@ -49,7 +48,7 @@ jobs:
           linters: gcc
           run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter HepLean
 
-  style_lint: 
+  style_lint:
     name: Python based style linter
     runs-on: ubuntu-latest
     steps:
@@ -76,4 +75,3 @@ jobs:
         run: |
           chmod u+x scripts/lint-style.sh
           ./scripts/lint-style.sh
-
