@@ -3,11 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
-import Lean
-import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
-import HepLean
+import HepLean.Meta.Basic
 /-!
 
 # HepLean Stats
@@ -17,72 +13,103 @@ This file concerns with statistics of HepLean.
 -/
 
 
-open Lean System Meta
+open Lean System Meta HepLean
 
-structure FileStats where
-  numDefs : Nat
-  numLemsWithoutDocString : Nat
-  numLemsWithDocString : Nat
 
-def FileStats.add (a b : FileStats) : FileStats where
-  numDefs := a.numDefs + b.numDefs
-  numLemsWithoutDocString := a.numLemsWithoutDocString + b.numLemsWithoutDocString
-  numLemsWithDocString := a.numLemsWithDocString + b.numLemsWithDocString
+def getStats : MetaM String := do
+  let noDefsVal ← noDefs
+  let noLemmasVal ← noLemmas
+  let noImportsVal ← noImports
+  let noDefsNoDocVal ← noDefsNoDocString
+  let noLemmasNoDocVal ← noLemmasNoDocString
+  let noLinesVal ← noLines
+  let s := s!"
+    Number of Imports: {noImportsVal}
+    Number of Definitions: {noDefsVal}
+    Number of Lemmas: {noLemmasVal}
+    Number of Definitions without doc strings: {noDefsNoDocVal} (out of {noDefsVal})
+    Number of Lemmas without doc strings: {noLemmasNoDocVal} (out of {noLemmasVal})
+    Number of Lines: {noLinesVal}"
+  pure s
 
-def FileStats.zero : FileStats where
-  numDefs := 0
-  numLemsWithoutDocString := 0
-  numLemsWithDocString := 0
+unsafe def Stats.toHtml : MetaM String := do
+  let noDefsVal ← noDefs
+  let noLemmasVal ← noLemmas
+  let noImportsVal ← noImports
+  let noDefsNoDocVal ← noDefsNoDocString
+  let noLemmasNoDocVal ← noLemmasNoDocString
+  let noLinesVal ← noLines
+  let noInformalDefsVal ← noInformalDefs
+  let noInformalLemmasVal ← noInformalLemmas
+  let noTODOsVal ← noTODOs
+  let noFilesWithTODOsVal ← noFilesWithTODOs
+  let header := "---
+layout: default
+---
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stats for HepLean</title>
+     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+     <style>
+        /* Style the progress bar to be wider and take up more space */
+        progress {
+            width: 80%; /* Adjust to take up more horizontal space */
+            height: 30px; /* Increase height to make it wider */
+            appearance: none; /* Remove default browser styles */
+        }
 
-instance : ToString FileStats where
-  toString fs := s!"Number of definitions: {fs.numDefs}\n" ++
-    s!"Number of lemmas without doc string: {fs.numLemsWithoutDocString}\n" ++
-    s!"Number of lemmas with doc string: {fs.numLemsWithDocString}"
+        /* Change the color for WebKit browsers (Chrome, Safari, etc.) */
+        progress::-webkit-progress-bar {
+            background-color: #f3f3f3; /* Background color */
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-def getConstantDoc (constName : Array ConstantInfo) : MetaM (FileStats) := do
-  let env ← getEnv
-  let mut numDefs := 0
-  let mut numLemsWithoutDocString := 0
-  let mut numLemsWithDocString := 0
-  for c in constName do
-    if ¬ Lean.Name.isInternalDetail c.name then
-      if c.isDef then
-        numDefs := numDefs + 1
-      if c.isThm then
-        let doc ← Lean.findDocString? env c.name
-        if doc == none then
-          numLemsWithoutDocString := numLemsWithoutDocString + 1
-        else
-          numLemsWithDocString := numLemsWithDocString + 1
-  return {numDefs := numDefs,
-          numLemsWithoutDocString := numLemsWithoutDocString,
-          numLemsWithDocString := numLemsWithDocString}
+        progress::-webkit-progress-value {
+            background-color: #157878; /* Change this to your desired color */
+            border-radius: 5px;
+        }
 
-def getStats (imp : Import) : MetaM FileStats := do
-  if imp.module == `Init then
-    return {numDefs := 0,
-            numLemsWithoutDocString := 0,
-            numLemsWithDocString := 0}
-  let mFile ← findOLean imp.module
-  let (modData, _) ← readModuleData mFile
-  let cons := modData.constants
-  let out ← (getConstantDoc cons)
-  return out
+        /* Change the color for Firefox */
+        progress::-moz-progress-bar {
+            background-color: #157878; /* Change this to your desired color */
+        }
+    </style>
+</head>
+<body>"
+  let body := s!"
+<h1>Stats for HepLean</h1>
+<h3>Number of Files 📄: {noImportsVal}</h3>
+<h3>Number of lines 💻: {noLinesVal}</h3>
+<h3>Number of Definitions (incl. instances): {noDefsVal - noInformalLemmasVal}</h3>
+<p>- Of which {noDefsVal - noDefsNoDocVal- noInformalLemmasVal} have doc-strings:</p>
+<progress value=\"{noDefsVal - noDefsNoDocVal- noInformalLemmasVal}\" max=\"{noDefsVal- noInformalLemmasVal}\"></progress>
+<p>- Of which {noDefsVal - noInformalLemmasVal - noInformalDefsVal} are not <a href=\"https://heplean.github.io/HepLean/InformalGraph.html\">informal definitions</a>:</p>
+<progress value=\"{noDefsVal - noInformalLemmasVal - noInformalDefsVal}\" max=\"{noDefsVal - noInformalLemmasVal}\"></progress>
 
-def getStatsArray (a : Array Import) : MetaM (Array FileStats) := do
-  return ← a.mapM getStats
+<h3>Number of Lemmas: {noLemmasVal + noInformalLemmasVal}</h3>
+<p>- Of which {noLemmasVal - noLemmasNoDocVal + noInformalLemmasVal} have doc-strings:</p>
+<progress value=\"{noLemmasVal - noLemmasNoDocVal + noInformalLemmasVal}\" max=\"{noLemmasVal + noInformalLemmasVal}\"></progress>
+<p>- Of which {noLemmasVal} are not <a href=\"https://heplean.github.io/HepLean/InformalGraph.html\">informal lemmas</a>:</p>
+<progress value=\"{noLemmasVal}\" max=\"{noLemmasVal + noInformalLemmasVal}\"></progress>
+<h3>Number of <a href=\"https://heplean.github.io/HepLean/TODOList\">TODOs</a>: {noTODOsVal}</h3>
+<p>- There are {noImportsVal - noFilesWithTODOsVal} (of {noImportsVal}) files which are TODO free:</p>
+<progress value=\"{noImportsVal - noFilesWithTODOsVal}\" max=\"{noImportsVal}\"></progress>
+   "
+  let footer := "
+</body>
+</html>
+"
+  pure (header ++ "\n" ++ body ++  "\n" ++ footer)
 
-def main (_ : List String) : IO UInt32 := do
-  initSearchPath (← findSysroot)
-  let mods : Name :=  `HepLean
-  let imp :  Import := {module := mods}
-  let mFile ← findOLean imp.module
-  unless (← mFile.pathExists) do
-        throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
-  let (hepLeanMod, _) ← readModuleData mFile
-  let noFiles := hepLeanMod.imports.size - 1
-  let fileStats ← CoreM.withImportModules #[`HepLean] (getStatsArray hepLeanMod.imports).run'
-  let totalStats := Array.foldl FileStats.add FileStats.zero fileStats
-  IO.println s!"Total number of files: {noFiles}"
-  IO.println totalStats
+unsafe def main (args  : List String) : IO UInt32 := do
+  let _ ← noImports
+  let statString ← CoreM.withImportModules #[`HepLean] (getStats).run'
+  println! statString
+  if "mkHTML" ∈ args then
+    let html ← CoreM.withImportModules #[`HepLean] (Stats.toHtml).run'
+    let htmlFile : System.FilePath := {toString := "./docs/Stats.html"}
+    IO.FS.writeFile htmlFile html
+    IO.println (s!"HTML file made.")
   pure 0

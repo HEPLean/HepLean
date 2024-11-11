@@ -155,6 +155,7 @@ scoped[CKMMatrix] notation (name := ts_element) "[" V "]ts" => V.1 2 1
 /-- The `tb`th element of the CKM matrix. -/
 scoped[CKMMatrix] notation (name := tb_element) "[" V "]tb" => V.1 2 2
 
+/-- The setoid of CKM matrices defined by phase shifts of fermions. -/
 instance CKMMatrixSetoid : Setoid CKMMatrix := ⟨PhaseShiftRelation, phaseShiftRelation_equiv⟩
 
 /-- The matrix obtained from `V` by shifting the phases of the fermions. -/

@@ -215,6 +215,7 @@ instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
 instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 
+/-- The equality of two maps in `OverColor C` from objects based on `Fin _` is decidable. -/
 instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
     Decidable (σ = σ') :=

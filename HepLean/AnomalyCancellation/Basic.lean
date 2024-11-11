@@ -57,6 +57,7 @@ instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.Charges :=
 instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.Charges :=
   Module.addCommMonoidToAddCommGroup ℚ
 
+/-- The module `χ.Charges` over `ℚ` is finite. -/
 instance (χ : ACCSystemCharges) : Module.Finite ℚ χ.Charges :=
   FiniteDimensional.finiteDimensional_pi ℚ
 
