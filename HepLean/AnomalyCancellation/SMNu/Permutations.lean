@@ -29,6 +29,7 @@ def PermGroup (n : ℕ) := Fin 6 → Equiv.Perm (Fin n)
 
 variable {n : ℕ}
 
+/-- The instance of a group on `PermGroup n` through the target space `Equiv.Perm (Fin n)`. -/
 @[simp]
 instance : Group (PermGroup n) := Pi.group
 

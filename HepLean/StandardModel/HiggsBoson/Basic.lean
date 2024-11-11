@@ -87,14 +87,12 @@ We also define the Higgs bundle.
 /-- The trivial vector bundle 𝓡² × ℂ². -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
+/-- The instance of a smooth vector bundle with total space `HiggsBundle` and fiber `HiggsVec`. -/
 instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
   Bundle.Trivial.smoothVectorBundle HiggsVec
 
 /-- A Higgs field is a smooth section of the Higgs bundle. -/
 abbrev HiggsField : Type := SmoothSection SpaceTime.asSmoothManifold HiggsVec HiggsBundle
-
-instance : NormedAddCommGroup (Fin 2 → ℂ) := by
-  exact Pi.normedAddCommGroup
 
 /-- Given a vector in `HiggsVec` the constant Higgs field with value equal to that
 section. -/

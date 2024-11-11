@@ -58,6 +58,7 @@ srcDir = "scripts"
 
 [[lean_exe]]
 name = "stats"
+supportInterpreter = true
 srcDir = "scripts"
 
 [[lean_exe]]

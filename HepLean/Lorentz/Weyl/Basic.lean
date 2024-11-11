@@ -274,10 +274,14 @@ def leftHandedAltEquiv : leftHanded ≅ altLeftHanded where
     rw [one_mulVec]
     rfl
 
+/-- `leftHandedAltEquiv` acting on an element `ψ : leftHanded` corresponds
+  to multiplying `ψ` by the matrix `!![0, 1; -1, 0]`. -/
 lemma leftHandedAltEquiv_hom_hom_apply (ψ : leftHanded) :
     leftHandedAltEquiv.hom.hom ψ =
     AltLeftHandedModule.toFin2ℂEquiv.symm (!![0, 1; -1, 0] *ᵥ ψ.toFin2ℂ) := rfl
 
+/-- The inverse of `leftHandedAltEquiv` acting on an element`ψ : altLeftHanded` corresponds
+  to multiplying `ψ` by the matrix `!![0, -1; 1, 0]`. -/
 lemma leftHandedAltEquiv_inv_hom_apply (ψ : altLeftHanded) :
     leftHandedAltEquiv.inv.hom ψ =
     LeftHandedModule.toFin2ℂEquiv.symm (!![0, -1; 1, 0] *ᵥ ψ.toFin2ℂ) := rfl
