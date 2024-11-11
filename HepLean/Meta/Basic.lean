@@ -175,4 +175,19 @@ def noInformalDefs : MetaM Nat := do
   let x := x.filter (Informal.isInformalDef)
   pure x.toList.length
 
+/-- The number of TODO items. -/
+def noTODOs : IO Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getLines
+  let x := x.flatten
+  let x := x.filter fun l => l.startsWith "/-! TODO:"
+  pure x.size
+
+/-- The number of files with a TODO item. -/
+def noFilesWithTODOs : IO Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getLines
+  let x := x.filter (fun M => M.any fun l => l.startsWith "/-! TODO:")
+  pure x.size
+
 end HepLean
