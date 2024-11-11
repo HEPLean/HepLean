@@ -24,9 +24,12 @@ instance : AddCommMonoid SpaceTime := Pi.addCommMonoid
 /-- Give spacetime the structure of a module over the reals. -/
 instance : Module ℝ SpaceTime := Pi.module _ _ _
 
+/-- The instance of a normed group on spacetime defined via the Euclidean norm. -/
 instance euclideanNormedAddCommGroup : NormedAddCommGroup SpaceTime := Pi.normedAddCommGroup
 
+/-- The Euclidean norm-structure on space time. This is used to give it a smooth structure. -/
 instance euclideanNormedSpace : NormedSpace ℝ SpaceTime := Pi.normedSpace
+
 namespace SpaceTime
 
 open Manifold
@@ -41,6 +44,7 @@ def space (x : SpaceTime) : EuclideanSpace ℝ (Fin 3) := ![x 1, x 2, x 3]
 /-- The structure of a smooth manifold on spacetime. -/
 def asSmoothManifold : ModelWithCorners ℝ SpaceTime SpaceTime := 𝓘(ℝ, SpaceTime)
 
+/-- The instance of a `ChartedSpace` on `SpaceTime`. -/
 instance : ChartedSpace SpaceTime SpaceTime := chartedSpaceSelf SpaceTime
 
 /-- The standard basis for spacetime. -/

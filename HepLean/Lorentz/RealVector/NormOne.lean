@@ -36,6 +36,7 @@ lemma mem_mulAction (g : LorentzGroup d) (v : Contr d) :
     v ∈ NormOne d ↔ (Contr d).ρ g v ∈ NormOne d := by
   rw [mem_iff, mem_iff, contrContrContractField.action_tmul]
 
+/-- The instance of a topological space on `NormOne d` defined as the subspace topology. -/
 instance : TopologicalSpace (NormOne d) := instTopologicalSpaceSubtype
 
 variable (v w : NormOne d)

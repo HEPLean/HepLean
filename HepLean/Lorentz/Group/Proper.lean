@@ -30,13 +30,17 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   refine mul_self_eq_one_iff.mp ?_
   simpa only [det_mul, det_dual, det_one] using congrArg det ((mem_iff_self_mul_dual).mp Λ.2)
 
+/-- The group `ℤ₂`. -/
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
+/-- The instance of a topological space on `ℤ₂` corresponding to the discrete topology. -/
 instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
+/-- The topological space defined by `ℤ₂` is discrete. -/
 instance : DiscreteTopology ℤ₂ := by
   exact forall_open_iff_discrete.mp fun _ => trivial
 
+/-- The instance of a topological group on `ℤ₂` defined via the discrete topology. -/
 instance : TopologicalGroup ℤ₂ := TopologicalGroup.mk
 
 /-- A continuous function from `({-1, 1} : Set ℝ)` to `ℤ₂`. -/
@@ -138,8 +142,12 @@ def detRep : 𝓛 d →* ℤ₂ where
         apply (detContinuous_eq_one _).mpr
         simp only [lorentzGroupIsGroup_mul_coe, det_mul, h1, h2, mul_neg, mul_one, neg_neg]
 
+/-- The representation of the Lorentz group defined by taking the determinant `detRep` is
+  continuous. -/
 lemma detRep_continuous : Continuous (@detRep d) := detContinuous.2
 
+/-- Two Lorentz transformations which are in the same connected component have the same
+  determinant. -/
 lemma det_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     Λ.1.det = Λ'.1.det := by
   obtain ⟨s, hs, hΛ'⟩ := h
@@ -149,12 +157,15 @@ lemma det_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connecte
     (@IsPreconnected.subsingleton ℤ₂ _ _ _ (isPreconnected_range f.2))
     (Set.mem_range_self ⟨Λ, hs.2⟩) (Set.mem_range_self ⟨Λ', hΛ'⟩)
 
+/-- Two Lorentz transformations which are in the same connected component have the same
+  image under `detRep`, the determinant representation. -/
 lemma detRep_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     detRep Λ = detRep Λ' := by
   simp only [detRep_apply, detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
     coeForℤ₂_apply, Subtype.mk.injEq]
   rw [det_on_connected_component h]
 
+/-- Two Lorentz transformations which are joined by a path have the same determinant. -/
 lemma det_of_joined {Λ Λ' : LorentzGroup d} (h : Joined Λ Λ') : Λ.1.det = Λ'.1.det :=
   det_on_connected_component $ pathComponent_subset_component _ h
 
@@ -162,18 +173,24 @@ lemma det_of_joined {Λ Λ' : LorentzGroup d} (h : Joined Λ Λ') : Λ.1.det = �
 @[simp]
 def IsProper (Λ : LorentzGroup d) : Prop := Λ.1.det = 1
 
+/-- The predicate `IsProper` is decidable. -/
 instance : DecidablePred (@IsProper d) := by
   intro Λ
   apply Real.decidableEq
 
+/-- A Lorentz transformation is proper if it's image under the det-representation
+  `detRep` is `1`. -/
 lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep), detRep_apply, detRep_apply,
     detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 
+/-- The identity Lorentz transformation is proper. -/
 lemma id_IsProper : @IsProper d 1 := by
   simp [IsProper]
 
+/-- If two Lorentz transformations are in the same connected componenet, and one is proper then
+  the other is also proper. -/
 lemma isProper_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     IsProper Λ ↔ IsProper Λ' := by
   simp only [IsProper]

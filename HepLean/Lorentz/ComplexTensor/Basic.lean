@@ -37,6 +37,7 @@ inductive Color
   | up : Color
   | down : Color
 
+/-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq Color := fun x y =>
   match x, y with
   | Color.upL, Color.upL => isTrue rfl

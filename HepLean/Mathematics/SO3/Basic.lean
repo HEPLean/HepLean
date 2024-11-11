@@ -19,6 +19,7 @@ open Matrix
 /-- The group of `3×3` real matrices with determinant 1 and `A * Aᵀ = 1`. -/
 def SO3 : Type := {A : Matrix (Fin 3) (Fin 3) ℝ // A.det = 1 ∧ A * Aᵀ = 1}
 
+/-- The instance of a group on `SO3`. -/
 @[simps! mul_coe one_coe inv div]
 instance SO3Group : Group SO3 where
   mul A B := ⟨A.1 * B.1,
@@ -110,6 +111,8 @@ lemma toGL_embedding : IsEmbedding toGL.toFun where
       apply And.intro (isOpen_induced hU1)
       exact hU2
 
+/-- The instance of a topological group on `SO(3)`, defined through the embedding of `SO(3)`
+  into `GL(n)`. -/
 instance : TopologicalGroup SO(3) :=
   IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 

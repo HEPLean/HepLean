@@ -112,8 +112,11 @@ instance (i : Fin 2) : Module ℝ (EdgeVertexMomentaMap F i) :=
 /-- The direct sum of `EdgeMomenta` and `VertexMomenta`. -/
 def EdgeVertexMomenta : Type := DirectSum (Fin 2) (EdgeVertexMomentaMap F)
 
+/-- The structure of a addative commutative group on `EdgeVertexMomenta` for a
+  Feynman diagram `F`. -/
 instance : AddCommGroup F.EdgeVertexMomenta := DirectSum.instAddCommGroup _
 
+/-- The structure of a module over `ℝ` on `EdgeVertexMomenta` for a Feynman diagram `F`. -/
 instance : Module ℝ F.EdgeVertexMomenta := DirectSum.instModule
 
 /-!
