@@ -9,6 +9,7 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.NumberTheory.FLT.Basic
 import Mathlib.Algebra.QuadraticDiscriminant
+import Mathlib.NumberTheory.FLT.Three
 /-!
 # Parameterizations for solutions to the linear ACCs for 1 family
 
@@ -279,14 +280,14 @@ lemma cubic (S : linearParametersQENeqZero) :
   simp_all
   exact add_eq_zero_iff_eq_neg
 
-lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
-    (FLTThree : FermatLastTheoremWith ℚ 3) :
+lemma cubic_v_or_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
     S.v = 0 ∨ S.w = 0 := by
   rw [S.cubic] at h
   have h1 : (-1)^3 = (-1 : ℚ) := by rfl
   rw [← h1] at h
   by_contra hn
   rw [not_or] at hn
+  have FLTThree := fermatLastTheoremFor_iff_rat.mp fermatLastTheoremThree
   have h2 := FLTThree S.v S.w (-1) hn.1 hn.2 (Ne.symm (ne_of_beq_false (by rfl)))
   exact h2 h
 
@@ -326,10 +327,9 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
   simp_all
   exact eq_neg_of_add_eq_zero_left h'
 
-lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
-    (FLTThree : FermatLastTheoremWith ℚ 3) :
+lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
     (S.v = -1 ∧ S.w = 0) ∨ (S.v = 0 ∧ S.w = -1) := by
-  have h' := cubic_v_or_w_zero S h FLTThree
+  have h' := cubic_v_or_w_zero S h
   cases' h' with hx hx
   · simpa [hx] using cubic_v_zero S h hx
   · simpa [hx] using cube_w_zero S h hx
@@ -345,11 +345,10 @@ lemma grav (S : linearParametersQENeqZero) : accGrav (bijection S).1.val = 0 ↔
   · rw [h]
     exact Eq.symm (mul_neg_one (6 * S.x))
 
-lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0)
-    (FLTThree : FermatLastTheoremWith ℚ 3) :
+lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
     accGrav (bijection S).1.val = 0 := by
   rw [grav]
-  have h' := cube_w_v S h FLTThree
+  have h' := cube_w_v S h
   cases' h' with h h
   · rw [h.1, h.2]
     exact Rat.add_zero (-1)
