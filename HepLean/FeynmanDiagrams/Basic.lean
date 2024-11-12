@@ -42,15 +42,17 @@ Prove that the `halfEdgeLimit` functor lands on limits of functors.
   edges and vertices in a diagram. (It does not specify how to turn the diagram
   into an algebraic expression.) -/
 structure PreFeynmanRule where
-  /-- The type labelling the different half-edges. -/
+  /-- The type labelling the different types of half-edges. -/
   HalfEdgeLabel : Type
   /-- A type labelling the different types of edges. -/
   EdgeLabel : Type
   /-- A type labelling the different types of vertices. -/
   VertexLabel : Type
-  /-- A function taking `EdgeLabels` to the half edges it contains. -/
+  /-- A function taking `EdgeLabels` to the half edges it contains.
+    This will usually land on `Fin 2 → _` -/
   edgeLabelMap : EdgeLabel → CategoryTheory.Over HalfEdgeLabel
-  /-- A function taking `VertexLabels` to the half edges it contains. -/
+  /-- A function taking `VertexLabels` to the half edges it contains.
+    For example, if the vertex is of order-3 it will land on `Fin 3 → _`. -/
   vertexLabelMap : VertexLabel → CategoryTheory.Over HalfEdgeLabel
 
 namespace PreFeynmanRule
@@ -90,7 +92,7 @@ def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
       simp_all only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage,
         Set.mem_singleton_iff]⟩
 
-/-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
+/-- The functor from `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)` to
   `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`. -/
 def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
@@ -152,15 +154,23 @@ instance preFeynmanRuleDecEq𝓱𝓔 (P : PreFeynmanRule) [IsFinitePreFeynmanRul
     DecidableEq P.HalfEdgeLabel :=
   IsFinitePreFeynmanRule.halfEdgeLabelDecidable
 
+/-- If `P` is a finite pre-feynman rule, then every vertex has a finite
+  number of half-edges associated to it. -/
 instance [IsFinitePreFeynmanRule P] (v : P.VertexLabel) : Fintype (P.vertexLabelMap v).left :=
   IsFinitePreFeynmanRule.vertexMapFintype v
 
+/-- If `P` is a finite pre-feynman rule, then the indexing set of half-edges associated
+  to a vertex is decidable. -/
 instance [IsFinitePreFeynmanRule P] (v : P.VertexLabel) : DecidableEq (P.vertexLabelMap v).left :=
   IsFinitePreFeynmanRule.vertexMapDecidable v
 
+/-- If `P` is a finite pre-feynman rule, then every edge has a finite
+  number of half-edges associated to it. -/
 instance [IsFinitePreFeynmanRule P] (v : P.EdgeLabel) : Fintype (P.edgeLabelMap v).left :=
   IsFinitePreFeynmanRule.edgeMapFintype v
 
+/-- If `P` is a finite pre-feynman rule, then the indexing set of half-edges associated
+  to an edge is decidable. -/
 instance [IsFinitePreFeynmanRule P] (v : P.EdgeLabel) : DecidableEq (P.edgeLabelMap v).left :=
   IsFinitePreFeynmanRule.edgeMapDecidable v
 
@@ -178,6 +188,9 @@ instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : �
   | isTrue h => isTrue h
   | isFalse h => isFalse h
 
+/-- If `F` is an object in `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`, with a decidable source,
+  then the object in `Over P.HalfEdgeLabel` formed by following the functor `preimageVertex`
+  has a decidable source (since it is the same source). -/
 instance preimageVertexDecidable {𝓔 𝓥 : Type} (v : 𝓥)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageVertex v).obj F).left := Subtype.instDecidableEq
