@@ -21,7 +21,7 @@ def Imports.NoDocStringDef (imp : Import) : MetaM UInt32 := do
   if loc.toList.length > 0 then
     IO.println "\n"
     IO.println s!"Module {imp.module} has the following definitions without doc strings:"
-    IO.println (String.intercalate "\n" loc.toList)
+    IO.println (String.intercalate "\n" loc.toList.mergeSort)
   pure 0
 
 def Imports.NoDocStringLemma (imp : Import) : MetaM UInt32 := do
@@ -33,7 +33,7 @@ def Imports.NoDocStringLemma (imp : Import) : MetaM UInt32 := do
   if loc.toList.length > 0 then
     IO.println "\n"
     IO.println s!"Module {imp.module} has the following lemmas without doc strings:"
-    IO.println (String.intercalate "\n" loc.toList)
+    IO.println (String.intercalate "\n" loc.toList.mergeSort)
   pure 0
 
 unsafe def main (args : List String) : IO UInt32 := do
