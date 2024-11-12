@@ -59,9 +59,9 @@ def Imports.getUserConsts (imp : Import) : MetaM (Array ConstantInfo) := do
   let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.belowSuffix)
   let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.ibelowSuffix)
   /- Removing syntax category declarations. -/
-  let x := x.filter (fun c => ¬ c.name.toString = "Informal.informalAssignment.quot" )
-  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.indexExpr.quot" )
-  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.tensorExpr.quot" )
+  let x := x.filter (fun c => ¬ c.name.toString = "Informal.informalAssignment.quot")
+  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.indexExpr.quot")
+  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.tensorExpr.quot")
   pure x
 
 /-- Lines from import. -/
@@ -76,21 +76,20 @@ def Imports.getLines (imp : Import) : IO (Array String) := do
 
 -/
 
-
 /-- Turns a name into a Lean file. -/
 def Name.toFile (c : Name) : MetaM String := do
   return s!"./{c.toString.replace "." "/" ++ ".lean"}"
 
 /-- Given a name, returns the line number. -/
 def Name.lineNumber (c : Name) : MetaM Nat := do
-  match ← findDeclarationRanges? c  with
+  match ← findDeclarationRanges? c with
   | some decl => pure decl.range.pos.line
   | none => panic! s!"{c} is a declaration without position"
 
 /-- Returns the location of a name. -/
 def Name.location (c : Name) : MetaM String := do
   let env ← getEnv
-  let x := env.getModuleFor?  c
+  let x := env.getModuleFor? c
   match x with
   | some decl => pure ((← Name.toFile decl) ++ ":" ++ toString (← Name.lineNumber c) ++ " "
     ++ c.toString)
@@ -98,7 +97,7 @@ def Name.location (c : Name) : MetaM String := do
 
 /-- Determines if a name has a location. -/
 def Name.hasPos (c : Name) : MetaM Bool := do
-  match ← findDeclarationRanges? c  with
+  match ← findDeclarationRanges? c with
   | some _ => pure true
   | none => pure false
 
@@ -116,7 +115,7 @@ def noDefs : MetaM Nat := do
   let x ← imports.mapM Imports.getUserConsts
   let x := x.flatten
   let x := x.filter (fun c => c.isDef)
-  let x ←  x.filterM (fun c => (Name.hasPos c.name))
+  let x ← x.filterM (fun c => (Name.hasPos c.name))
   pure x.toList.length
 
 /-- Number of definitions. -/
@@ -125,7 +124,7 @@ def noLemmas : MetaM Nat := do
   let x ← imports.mapM Imports.getUserConsts
   let x := x.flatten
   let x := x.filter (fun c => ¬ c.isDef)
-  let x ←  x.filterM (fun c => (Name.hasPos c.name))
+  let x ← x.filterM (fun c => (Name.hasPos c.name))
   pure x.toList.length
 
 /-- Number of definitions without a doc-string. -/
@@ -134,7 +133,7 @@ def noDefsNoDocString : MetaM Nat := do
   let x ← imports.mapM Imports.getUserConsts
   let x := x.flatten
   let x := x.filter (fun c => c.isDef)
-  let x ←  x.filterM (fun c => (Name.hasPos c.name))
+  let x ← x.filterM (fun c => (Name.hasPos c.name))
   let x ← x.filterM (fun c => do
     return Bool.not (← (Name.hasDocString c.name)))
   pure x.toList.length
@@ -145,7 +144,7 @@ def noLemmasNoDocString : MetaM Nat := do
   let x ← imports.mapM Imports.getUserConsts
   let x := x.flatten
   let x := x.filter (fun c => ¬ c.isDef)
-  let x ←  x.filterM (fun c => (Name.hasPos c.name))
+  let x ← x.filterM (fun c => (Name.hasPos c.name))
   let x ← x.filterM (fun c => do
     return Bool.not (← (Name.hasDocString c.name)))
   pure x.toList.length

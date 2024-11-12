@@ -144,7 +144,7 @@ def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 /-- Acting on a non-zero Higgs vector with its rotation matrix gives a vector which is
-  zero in the first componenent and a positive real in the second component.  -/
+  zero in the first componenent and a positive real in the second component. -/
 lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     rep (rotateGuageGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
   rw [rep_apply]

@@ -177,7 +177,7 @@ instance [IsFinitePreFeynmanRule P] (v : P.EdgeLabel) : DecidableEq (P.edgeLabel
   IsFinitePreFeynmanRule.edgeMapDecidable v
 
 /-- It is decidable to check whether a half edge of a diagram (an object in
-   `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given vertex. -/
+  `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given vertex. -/
 instance preimageVertexDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓥] (v : 𝓥)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) :
     DecidablePred fun x => x ∈ (P.toVertex.obj F).hom ⁻¹' {v} := fun y =>
@@ -186,7 +186,7 @@ instance preimageVertexDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓥] (v : 
   | isFalse h => isFalse h
 
 /-- It is decidable to check whether a half edge of a diagram (an object in
-   `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given edge. -/
+  `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given edge. -/
 instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : 𝓔)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) :
     DecidablePred fun x => x ∈ (P.toEdge.obj F).hom ⁻¹' {v} := fun y =>

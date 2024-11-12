@@ -63,7 +63,7 @@ def toEquiv (m : f ⟶ g) : f.left ≃ g.left where
   right_inv := by
     simpa only [Over.comp_left] using congrFun (congrArg (fun x => x.left) m.inv_hom_id)
 
-/-- The equivalence of types underlying the identity morphism is the reflexive equivalence.  -/
+/-- The equivalence of types underlying the identity morphism is the reflexive equivalence. -/
 @[simp]
 lemma toEquiv_id (f : OverColor C) : toEquiv (𝟙 f) = Equiv.refl f.left := by
   rfl
