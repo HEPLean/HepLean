@@ -42,15 +42,17 @@ Prove that the `halfEdgeLimit` functor lands on limits of functors.
   edges and vertices in a diagram. (It does not specify how to turn the diagram
   into an algebraic expression.) -/
 structure PreFeynmanRule where
-  /-- The type labelling the different half-edges. -/
+  /-- The type labelling the different types of half-edges. -/
   HalfEdgeLabel : Type
   /-- A type labelling the different types of edges. -/
   EdgeLabel : Type
   /-- A type labelling the different types of vertices. -/
   VertexLabel : Type
-  /-- A function taking `EdgeLabels` to the half edges it contains. -/
+  /-- A function taking `EdgeLabels` to the half edges it contains.
+    This will usually land on `Fin 2 → _` -/
   edgeLabelMap : EdgeLabel → CategoryTheory.Over HalfEdgeLabel
-  /-- A function taking `VertexLabels` to the half edges it contains. -/
+  /-- A function taking `VertexLabels` to the half edges it contains.
+    For example, if the vertex is of order-3 it will land on `Fin 3 → _`. -/
   vertexLabelMap : VertexLabel → CategoryTheory.Over HalfEdgeLabel
 
 namespace PreFeynmanRule
@@ -90,8 +92,9 @@ def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
       simp_all only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage,
         Set.mem_singleton_iff]⟩
 
-/-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
-  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`. -/
+/-- The functor from `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)` to
+  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`.
+  For a given vertex, it returns all half edges corresponding to that vertex. -/
 def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
   obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
@@ -100,7 +103,8 @@ def preimageVertex {𝓔 𝓥 : Type} (v : 𝓥) :
     (funext <| fun x => congrArg Prod.fst <| congrFun F.w x.1)
 
 /-- The functor from `Over (P.HalfEdgeLabel × P.EdgeLabel × P.VertexLabel)` to
-  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.EdgeLabel`. -/
+  `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.EdgeLabel`.
+  For a given edge, it returns all half edges corresponding to that edge. -/
 def preimageEdge {𝓔 𝓥 : Type} (v : 𝓔) :
     Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ Over P.HalfEdgeLabel where
   obj f := Over.mk (fun x => Prod.fst (f.hom x.1) :
@@ -137,30 +141,43 @@ class IsFinitePreFeynmanRule (P : PreFeynmanRule) where
   /-- The type of half-edges associated with an edge is decidable. -/
   edgeMapDecidable : ∀ v : P.EdgeLabel, DecidableEq (P.edgeLabelMap v).left
 
+/-- If `P` is a finite pre feynman rule, then equality of edge labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓔 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.EdgeLabel :=
   IsFinitePreFeynmanRule.edgeLabelDecidable
 
+/-- If `P` is a finite pre feynman rule, then equality of vertex labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓥 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.VertexLabel :=
   IsFinitePreFeynmanRule.vertexLabelDecidable
 
+/-- If `P` is a finite pre feynman rule, then equality of half-edge labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓱𝓔 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.HalfEdgeLabel :=
   IsFinitePreFeynmanRule.halfEdgeLabelDecidable
 
+/-- If `P` is a finite pre-feynman rule, then every vertex has a finite
+  number of half-edges associated to it. -/
 instance [IsFinitePreFeynmanRule P] (v : P.VertexLabel) : Fintype (P.vertexLabelMap v).left :=
   IsFinitePreFeynmanRule.vertexMapFintype v
 
+/-- If `P` is a finite pre-feynman rule, then the indexing set of half-edges associated
+  to a vertex is decidable. -/
 instance [IsFinitePreFeynmanRule P] (v : P.VertexLabel) : DecidableEq (P.vertexLabelMap v).left :=
   IsFinitePreFeynmanRule.vertexMapDecidable v
 
+/-- If `P` is a finite pre-feynman rule, then every edge has a finite
+  number of half-edges associated to it. -/
 instance [IsFinitePreFeynmanRule P] (v : P.EdgeLabel) : Fintype (P.edgeLabelMap v).left :=
   IsFinitePreFeynmanRule.edgeMapFintype v
 
+/-- If `P` is a finite pre-feynman rule, then the indexing set of half-edges associated
+  to an edge is decidable. -/
 instance [IsFinitePreFeynmanRule P] (v : P.EdgeLabel) : DecidableEq (P.edgeLabelMap v).left :=
   IsFinitePreFeynmanRule.edgeMapDecidable v
 
+/-- It is decidable to check whether a half edge of a diagram (an object in
+  `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given vertex. -/
 instance preimageVertexDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓥] (v : 𝓥)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) :
     DecidablePred fun x => x ∈ (P.toVertex.obj F).hom ⁻¹' {v} := fun y =>
@@ -168,6 +185,8 @@ instance preimageVertexDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓥] (v : 
   | isTrue h => isTrue h
   | isFalse h => isFalse h
 
+/-- It is decidable to check whether a half edge of a diagram (an object in
+  `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`) corresponds to a given edge. -/
 instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : 𝓔)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) :
     DecidablePred fun x => x ∈ (P.toEdge.obj F).hom ⁻¹' {v} := fun y =>
@@ -175,28 +194,38 @@ instance preimageEdgeDecidablePred {𝓔 𝓥 : Type} [DecidableEq 𝓔] (v : �
   | isTrue h => isTrue h
   | isFalse h => isFalse h
 
+/-- If `F` is an object in `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)`, with a decidable source,
+  then the object in `Over P.HalfEdgeLabel` formed by following the functor `preimageVertex`
+  has a decidable source (since it is the same source). -/
 instance preimageVertexDecidable {𝓔 𝓥 : Type} (v : 𝓥)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageVertex v).obj F).left := Subtype.instDecidableEq
 
+/-- The half edges corresponding to a given edge has an indexing set which is decidable. -/
 instance preimageEdgeDecidable {𝓔 𝓥 : Type} (v : 𝓔)
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] :
     DecidableEq ((P.preimageEdge v).obj F).left := Subtype.instDecidableEq
 
+/-- The half edges corresponding to a given vertex has an indexing set which is decidable. -/
 instance preimageVertexFintype {𝓔 𝓥 : Type} [DecidableEq 𝓥]
     (v : 𝓥) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [h : Fintype F.left] :
     Fintype ((P.preimageVertex v).obj F).left := @Subtype.fintype _ _ _ h
 
+/-- The half edges corresponding to a given edge has an indexing set which is finite. -/
 instance preimageEdgeFintype {𝓔 𝓥 : Type} [DecidableEq 𝓔]
     (v : 𝓔) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [h : Fintype F.left] :
     Fintype ((P.preimageEdge v).obj F).left := @Subtype.fintype _ _ _ h
 
+/-- The half edges corresponding to a given vertex has an indexing set which is finite. -/
 instance preimageVertexMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
     [DecidableEq 𝓥] (v : 𝓥) (f : 𝓥 ⟶ P.VertexLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
     Fintype ((P.vertexLabelMap (f v)).left → ((P.preimageVertex v).obj F).left) :=
   Pi.fintype
 
+/-- Given an edge, there is a finite number of maps between the indexing set of the
+  expected half-edges corresponding to that edges label, and the actual indexing
+  set of half-edges corresponding to that edge. Given various finiteness conditions. -/
 instance preimageEdgeMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
     [DecidableEq 𝓔] (v : 𝓔) (f : 𝓔 ⟶ P.EdgeLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
@@ -229,6 +258,7 @@ lemma external_iff_exists_bijection {P : PreFeynmanRule} (v : P.VertexLabel) :
     obtain ⟨fm, hf1, hf2⟩ := ft
     exact ⟨f, fm, hf1, hf2⟩
 
+/-- Whether or not a vertex is external is decidable. -/
 instance externalDecidable [IsFinitePreFeynmanRule P] (v : P.VertexLabel) :
     Decidable (External v) :=
   decidable_of_decidable_of_iff (external_iff_exists_bijection v).symm
@@ -285,6 +315,8 @@ lemma diagramEdgeProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 
     obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
     exact ⟨f, fm, hf1, hf2⟩
 
+/-- The proposition `DiagramVertexProp` is decidable given various decidablity and finite
+  conditions. -/
 instance diagramVertexPropDecidable
     [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓥] [DecidableEq 𝓥]
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] [Fintype F.left]
@@ -295,6 +327,8 @@ instance diagramVertexPropDecidable
     (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramVertexProp_iff F f).symm
 
+/-- The proposition `DiagramEdgeProp` is decidable given various decidablity and finite
+  conditions. -/
 instance diagramEdgePropDecidable
     [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓔] [DecidableEq 𝓔]
     (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥)) [DecidableEq F.left] [Fintype F.left]
@@ -418,6 +452,8 @@ class IsFiniteDiagram (F : FeynmanDiagram P) where
   /-- The type of half-edges is decidable. -/
   𝓱𝓔DecidableEq : DecidableEq F.𝓱𝓔
 
+/-- The instance of a finite diagram given explicit finiteness and decidable conditions
+  on the various maps making it up. -/
 instance {𝓔 𝓥 𝓱𝓔 : Type} [h1 : Fintype 𝓔] [h2 : DecidableEq 𝓔]
     [h3 : Fintype 𝓥] [h4 : DecidableEq 𝓥] [h5 : Fintype 𝓱𝓔] [h6 : DecidableEq 𝓱𝓔]
     (𝓔𝓞 : 𝓔 → P.EdgeLabel) (𝓥𝓞 : 𝓥 → P.VertexLabel)
@@ -425,27 +461,37 @@ instance {𝓔 𝓥 𝓱𝓔 : Type} [h1 : Fintype 𝓔] [h2 : DecidableEq 𝓔]
     IsFiniteDiagram (mk' 𝓔𝓞 𝓥𝓞 𝓱𝓔To𝓔𝓥 C) :=
   ⟨h1, h2, h3, h4, h5, h6⟩
 
+/-- If `F` is a finite Feynman diagram, then its edges are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓔 :=
   IsFiniteDiagram.𝓔Fintype
 
+/-- If `F` is a finite Feynman diagram, then its edges are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓔 :=
   IsFiniteDiagram.𝓔DecidableEq
 
+/-- If `F` is a finite Feynman diagram, then its vertices are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓥 :=
   IsFiniteDiagram.𝓥Fintype
 
+/-- If `F` is a finite Feynman diagram, then its vertices are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓥 :=
   IsFiniteDiagram.𝓥DecidableEq
 
+/-- If `F` is a finite Feynman diagram, then its half-edges are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓱𝓔 :=
   IsFiniteDiagram.𝓱𝓔Fintype
 
+/-- If `F` is a finite Feynman diagram, then its half-edges are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓱𝓔 :=
   IsFiniteDiagram.𝓱𝓔DecidableEq
 
+/-- The proposition of whether the given an half-edge and an edge,
+  the edge corresponding to the half edges is the given edge is decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] (i : F.𝓱𝓔) (j : F.𝓔) :
     Decidable (F.𝓱𝓔To𝓔.hom i = j) := IsFiniteDiagram.𝓔DecidableEq (F.𝓱𝓔To𝓔.hom i) j
 
+/-- For a finite feynman diagram, the type of half edge lables, edges and vertices
+  is decidable. -/
 instance fintypeProdHalfEdgeLabel𝓔𝓥 {F : FeynmanDiagram P} [IsFinitePreFeynmanRule P]
     [IsFiniteDiagram F] : DecidableEq (P.HalfEdgeLabel × F.𝓔 × F.𝓥) :=
   instDecidableEqProd
@@ -557,19 +603,30 @@ lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.�
     simp only [Functor.const_obj_obj, Equiv.apply_symm_apply] at h1
     exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
 
+/-- If `𝓔` is a map between the edges of one finite Feynman diagram and another Feynman diagram,
+  then deciding whether `𝓔` froms a morphism in `Over P.EdgeLabel` between the edge
+  maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) : Decidable (∀ x, G.𝓔𝓞.hom (𝓔 x) = F.𝓔𝓞.hom x) :=
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓔 P _ _) _
 
+/-- If `𝓥` is a map between the vertices of one finite Feynman diagram and another Feynman diagram,
+  then deciding whether `𝓥` froms a morphism in `Over P.VertexLabel` between the vertex
+  maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓥 : F.𝓥 → G.𝓥) : Decidable (∀ x, G.𝓥𝓞.hom (𝓥 x) = F.𝓥𝓞.hom x) :=
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓥 P _ _) _
 
+/-- Given maps between parts of two Feynman diagrams, it is decidable to determine
+  whether on mapping half-edges, the corresponding half-edge labels, edges and vertices
+  are consistent. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) :
     Decidable (∀ x, G.𝓱𝓔To𝓔𝓥.hom (𝓱𝓔 x) = edgeVertexMap 𝓔 𝓥 (F.𝓱𝓔To𝓔𝓥.hom x)) :=
   @Fintype.decidableForallFintype _ _ (fun _ => fintypeProdHalfEdgeLabel𝓔𝓥 _ _) _
 
+/-- The condition on whether a map of maps of edges, vertices and half-edges can be
+    lifted to a morphism of Feynman diagrams is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFiniteDiagram G] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) (𝓥 : F.𝓥 → G.𝓥) (𝓱𝓔 : F.𝓱𝓔 → G.𝓱𝓔) : Decidable (Cond 𝓔 𝓥 𝓱𝓔) :=
   instDecidableAnd
@@ -672,6 +729,7 @@ def symmetryTypeEquiv :
   left_inv _ := rfl
   right_inv _ := rfl
 
+/-- For a finite Feynman diagram, the type of automorphisms of that Feynman diagram is finite. -/
 instance [IsFinitePreFeynmanRule P] [IsFiniteDiagram F] : Fintype F.SymmetryType :=
   Fintype.ofEquiv _ F.symmetryTypeEquiv.symm
 
@@ -707,13 +765,15 @@ A feynman diagram is connected if its simple graph is connected.
 -/
 
 /-- A relation on the vertices of Feynman diagrams. The proposition is true if the two
-  vertices are not equal and are connected by a single edge. -/
+  vertices are not equal and are connected by a single edge.
+  This is the adjacency relation. -/
 @[simp]
 def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
   x ≠ y ∧
   ∃ (a b : F.𝓱𝓔), ((F.𝓱𝓔To𝓔𝓥.hom a).2.1 = (F.𝓱𝓔To𝓔𝓥.hom b).2.1
   ∧ (F.𝓱𝓔To𝓔𝓥.hom a).2.2 = x ∧ (F.𝓱𝓔To𝓔𝓥.hom b).2.2 = y)
 
+/-- The condition on whether two vertices are adjacent is deciable. -/
 instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   @instDecidableAnd _ _ _ $
   @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
@@ -734,19 +794,26 @@ def toSimpleGraph : SimpleGraph F.𝓥 where
     intro x h
     simp at h
 
+/-- The adjacency relation for a simple graph created by a finite Feynman diagram
+  is a decidable relation. -/
 instance [IsFiniteDiagram F] : DecidableRel F.toSimpleGraph.Adj :=
   instDecidableRel𝓥AdjRelationOfIsFiniteDiagram F
 
+/-- For a finite feynman diagram it is deciable whether it is preconnected and has
+  the Feynman diagram has a non-empty type of vertices. -/
 instance [IsFiniteDiagram F] :
   Decidable (F.toSimpleGraph.Preconnected ∧ Nonempty F.𝓥) :=
   @instDecidableAnd _ _ _ $ decidable_of_iff _ Finset.univ_nonempty_iff
 
+/-- For a finite Feynman diagram it is decidable whether the simple graph corresponding to it
+  is connected. -/
 instance [IsFiniteDiagram F] : Decidable F.toSimpleGraph.Connected :=
   decidable_of_iff _ (SimpleGraph.connected_iff F.toSimpleGraph).symm
 
 /-- A Feynman diagram is connected if its simple graph is connected. -/
 def Connected : Prop := F.toSimpleGraph.Connected
 
+/-- For a finite Feynman diagram it is decidable whether or not it is connected. -/
 instance [IsFiniteDiagram F] : Decidable (Connected F) :=
   instDecidableConnected𝓥ToSimpleGraphOfIsFiniteDiagram F
 

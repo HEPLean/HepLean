@@ -23,13 +23,14 @@ def getStats : MetaM String := do
   let noDefsNoDocVal ← noDefsNoDocString
   let noLemmasNoDocVal ← noLemmasNoDocString
   let noLinesVal ← noLines
+  let noInformalLemmasVal ← noInformalLemmas
   let s := s!"
-    Number of Imports: {noImportsVal}
-    Number of Definitions: {noDefsVal}
-    Number of Lemmas: {noLemmasVal}
-    Number of Definitions without doc strings: {noDefsNoDocVal} (out of {noDefsVal})
-    Number of Lemmas without doc strings: {noLemmasNoDocVal} (out of {noLemmasVal})
-    Number of Lines: {noLinesVal}"
+    Number of Files 📄: {noImportsVal}
+    Number of lines 💻: {noLinesVal}
+    Number of Definitions (incl. instances): {noDefsVal - noInformalLemmasVal}
+    - Of which {noDefsNoDocVal} do not have doc-strings
+    Number of Lemmas: {noLemmasVal + noInformalLemmasVal}
+    - Of which {noLemmasNoDocVal} do not have doc-strings"
   pure s
 
 unsafe def Stats.toHtml : MetaM String := do

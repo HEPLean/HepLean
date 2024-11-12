@@ -42,7 +42,8 @@ noncomputable def higgsRepUnitary : GaugeGroupI →* unitaryGroup (Fin 2) ℂ wh
     repeat rw [mul_assoc]
   map_one' := by simp
 
-/-- Takes in a `2×2`-matrix and returns a linear map of `higgsVec`. -/
+/-- Using the orthonormal basis of `HiggsVec`, turns a `2×2`-matrix intoa a linear map
+  of `HiggsVec`. -/
 noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[ℂ] HiggsVec) where
   toFun g := LinearMap.toContinuousLinearMap
     $ Matrix.toLin orthonormBasis.toBasis orthonormBasis.toBasis g
@@ -50,11 +51,13 @@ noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[�
     Matrix.toLin_mul orthonormBasis.toBasis orthonormBasis.toBasis orthonormBasis.toBasis g h
   map_one' := ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_one orthonormBasis.toBasis
 
-/-- `matrixToLin` commutes with the `star` operation. -/
+/-- The map `matrixToLin` commutes with the `star` operation. -/
 lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
     matrixToLin (star g) = star (matrixToLin g) :=
   ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g
 
+/-- If `g` is a member of the `2 × 2` unitary group, then as a linear map from
+  `HiggsVec →L[ℂ] HiggsVec` formed by the orthonormal basis on `HiggsVec`, it is unitary. -/
 lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
     matrixToLin g ∈ unitary (HiggsVec →L[ℂ] HiggsVec) := by
   rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul,
@@ -82,6 +85,8 @@ lemma higgsRepUnitary_mul (g : GaugeGroupI) (φ : HiggsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
   simp [higgsRepUnitary_apply_coe, smul_mulVec_assoc]
 
+/-- The application of gauge group on a Higgs vector can be decomposed in
+  to an smul with the `U(1)-factor` and a multiplication by the `SU(2)`-factor. -/
 lemma rep_apply (g : GaugeGroupI) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
@@ -92,10 +97,11 @@ lemma rep_apply (g : GaugeGroupI) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.
 -/
 
 /-- Given a Higgs vector, a rotation matrix which puts the first component of the
-vector to zero, and the second component to a real -/
+  svector to zero, and the second component to a real -/
 def rotateMatrix (φ : HiggsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
   ![![φ 1 /‖φ‖, - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖, conj (φ 1) / ‖φ‖]]
 
+/-- An expansion of the conjugate of the `rotateMatrix` for a higgs vector. -/
 lemma rotateMatrix_star (φ : HiggsVec) :
     star φ.rotateMatrix =
     ![![conj (φ 1) /‖φ‖, φ 0 /‖φ‖], ![- conj (φ 0) / ‖φ‖, φ 1 / ‖φ‖]] := by
@@ -103,6 +109,7 @@ lemma rotateMatrix_star (φ : HiggsVec) :
   ext i j
   fin_cases i <;> fin_cases j <;> simp [conj_ofReal]
 
+/-- The determinant of the `rotateMatrix` for a non-zero Higgs vector is `1`. -/
 lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det = 1 := by
   have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   field_simp [rotateMatrix, det_fin_two]
@@ -110,6 +117,7 @@ lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det 
   simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
     Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
 
+/-- The `rotateMatrix` for a non-zero Higgs vector is untitary. -/
 lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ unitaryGroup (Fin 2) ℂ := by
   rw [mem_unitaryGroup_iff', rotateMatrix_star, rotateMatrix]
@@ -125,6 +133,7 @@ lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   · simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
 
+/-- The `rotateMatrix` for a non-zero Higgs vector is special unitary. -/
 lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ specialUnitaryGroup (Fin 2) ℂ :=
   mem_specialUnitaryGroup_iff.mpr ⟨rotateMatrix_unitary hφ, rotateMatrix_det hφ⟩
@@ -134,6 +143,8 @@ vector to zero, and the second component to a real number. -/
 def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
+/-- Acting on a non-zero Higgs vector with its rotation matrix gives a vector which is
+  zero in the first componenent and a positive real in the second component. -/
 lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     rep (rotateGuageGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
   rw [rep_apply]
@@ -154,6 +165,9 @@ lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
 
+/-- For every Higgs vector there exists an element of the gauge group which rotates that
+  Higgs vector to have `0` in the first component and be a non-negative real in the second
+  componenet. -/
 theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
     ∃ (g : GaugeGroupI), rep g φ = ![0, Complex.ofReal ‖φ‖] := by
   by_cases h : φ = 0
@@ -165,6 +179,9 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
   · use rotateGuageGroup h
     exact rotateGuageGroup_apply h
 
+/-- For every Higgs vector there exists an element of the gauge group which rotates that
+  Higgs vector to have `0` in the second component and be a non-negative real in the first
+  componenet. -/
 theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
     ∃ (g : GaugeGroupI), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
   obtain ⟨g, h⟩ := rotate_fst_zero_snd_real φ

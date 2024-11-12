@@ -93,6 +93,7 @@ end LorentzGroup
 
 -/
 
+/-- The instance of a group on `LorentzGroup d`. -/
 @[simps! mul_coe one_coe inv div]
 instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   mul A B := ⟨A.1 * B.1, LorentzGroup.mem_mul A.2 B.2⟩
@@ -114,6 +115,7 @@ variable {Λ Λ' : LorentzGroup d}
 
 lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= (inv_eq_left_inv (mem_iff_dual_mul_self.mp Λ.2)).symm
 
+/-- The underlying matrix of a Lorentz transformation is invertible. -/
 instance (M : LorentzGroup d) : Invertible M.1 where
   invOf := M⁻¹
   invOf_mul_self := by
@@ -256,6 +258,8 @@ lemma toGL_embedding : IsEmbedding (@toGL d).toFun where
       isOpen_induced_iff]
     exact exists_exists_and_eq_and
 
+/-- The embedding of the Lorentz group into `GL(n, ℝ)` gives `LorentzGroup d` an instance
+  of a topological group. -/
 instance : TopologicalGroup (LorentzGroup d) :=
   IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 
@@ -281,6 +285,7 @@ def toComplex : LorentzGroup d →* Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
     simp only [← Matrix.map_mul, RingHom.map_matrix_mul]
     rfl
 
+/-- The image of a Lorentz transformation under `toComplex` is invertible. -/
 instance (M : LorentzGroup d) : Invertible (toComplex M) where
   invOf := toComplex M⁻¹
   invOf_mul_self := by
@@ -324,42 +329,6 @@ lemma toComplex_mulVec_ofReal (v : Fin 1 ⊕ Fin d → ℝ) (Λ : LorentzGroup d
   funext i
   rw [← RingHom.map_mulVec]
   rfl
-  /-!
-/-!
-
-# To a norm one Lorentz vector
-
--/
-
-/-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
-@[simps!]
-def toNormOneLorentzVector (Λ : LorentzGroup d) : NormOneLorentzVector d :=
-  ⟨Λ.1 *ᵥ timeVec, by rw [NormOneLorentzVector.mem_iff, Λ.2, minkowskiMetric.on_timeVec]⟩
-
-/-!
-
-# The time like element
-
--/
-
-/-- The time like element of a Lorentz matrix. -/
-@[simp]
-def timeComp (Λ : LorentzGroup d) : ℝ := Λ.1 (Sum.inl 0) (Sum.inl 0)
-
-lemma timeComp_eq_toNormOneLorentzVector : timeComp Λ = (toNormOneLorentzVector Λ).1.time := by
-  simp only [time, toNormOneLorentzVector, timeVec, Fin.isValue, timeComp]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  rfl
-
-lemma timeComp_mul (Λ Λ' : LorentzGroup d) : timeComp (Λ * Λ') =
-    ⟪toNormOneLorentzVector (transpose Λ), (toNormOneLorentzVector Λ').1.spaceReflection⟫ₘ := by
-  simp only [timeComp, Fin.isValue, lorentzGroupIsGroup_mul_coe, mul_apply, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, toNormOneLorentzVector,
-    transpose, timeVec, right_spaceReflection, time, space, PiLp.inner_apply, Function.comp_apply,
-    RCLike.inner_apply, conj_trivial]
-  erw [Pi.basisFun_apply, Matrix.mulVec_single_one]
-  simp
--/
 
 /-- The parity transformation. -/
 def parity : LorentzGroup d := ⟨minkowskiMatrix, by

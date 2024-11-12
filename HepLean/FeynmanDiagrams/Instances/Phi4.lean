@@ -34,15 +34,19 @@ def phi4PreFeynmanRules : PreFeynmanRule where
     | 0 => Over.mk ![0]
     | 1 => Over.mk ![0, 0, 0, 0]
 
+/-- An instance allowing us to use integers for edge labels for Phi-4. -/
 instance (a : ℕ) : OfNat phi4PreFeynmanRules.EdgeLabel a where
   ofNat := (a : Fin _)
 
+/-- An instance allowing us to use integers for half edge labels for Phi-4. -/
 instance (a : ℕ) : OfNat phi4PreFeynmanRules.HalfEdgeLabel a where
   ofNat := (a : Fin _)
 
+/-- An instance allowing us to use integers for vertex labels for Phi-4. -/
 instance (a : ℕ) : OfNat phi4PreFeynmanRules.VertexLabel a where
   ofNat := (a : Fin _)
 
+/-- The pre feynman rules for Phi-4 are finite. -/
 instance : IsFinitePreFeynmanRule phi4PreFeynmanRules where
   edgeLabelDecidable := instDecidableEqFin _
   vertexLabelDecidable := instDecidableEqFin _

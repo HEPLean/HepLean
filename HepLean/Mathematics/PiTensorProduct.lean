@@ -154,11 +154,15 @@ lemma induction_mod_tmul
 # Dependent type version of PiTensorProduct.tmulEquiv
 -/
 
+/-- Given two maps `s1` and `s2` whose targets carry an instance of an addative commutative
+  monoid, the target of the sum of these two maps also carry an instance thereof. -/
 instance : (i : ι1 ⊕ ι2) → AddCommMonoid ((fun i => Sum.elim s1 s2 i) i) := fun i =>
   match i with
   | Sum.inl i => inst1 i
   | Sum.inr i => inst2 i
 
+/-- Given two maps `s1` and `s2` whose targets carry an instance of a module over `R`,
+  the target of the sum of these two maps also carry an instance thereof. -/
 instance : (i : ι1 ⊕ ι2) → Module R ((fun i => Sum.elim s1 s2 i) i) := fun i =>
   match i with
   | Sum.inl i => inst1' i

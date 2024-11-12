@@ -278,6 +278,8 @@ lemma toSelfAdjoint_symm_basis (i : Fin 1 ⊕ Fin 3) :
 ## Topology
 -/
 
+/-- The type `ContrMod d` carries an instance of a topological group, induced by
+  it's equivalence to `Fin 1 ⊕ Fin d → ℝ`. -/
 instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
   ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
 

@@ -37,6 +37,7 @@ inductive Color
   | up : Color
   | down : Color
 
+/-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq Color := fun x y =>
   match x, y with
   | Color.upL, Color.upL => isTrue rfl
@@ -192,9 +193,14 @@ def complexLorentzTensor : TensorSpecies where
     | Color.downR => by simpa using Fermion.altRightContraction_apply_metric
     | Color.up => by simpa using Lorentz.contrCoContraction_apply_metric
     | Color.down => by simpa using Lorentz.coContrContraction_apply_metric
+
 namespace complexLorentzTensor
+
+/-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
 
+/-- Contracting two basis elements gives `1` if the index for the basis elements is the same,
+  and `0` otherwise. Holds for any color of index. -/
 lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
     (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
     complexLorentzTensor.castToField
@@ -209,9 +215,11 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.up => Lorentz.contrCoContraction_basis _ _
   | Color.down => Lorentz.coContrContraction_basis _ _
 
+/-- For any object in the over color category, with source `Fin n`, has a decidable source. -/
 instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     DecidableEq (OverColor.mk c).left := instDecidableEqFin n
 
+/-- For any object in the over color category, with source `Fin n`, has a finite source. -/
 instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 

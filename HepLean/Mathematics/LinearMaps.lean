@@ -24,6 +24,7 @@ namespace HomogeneousQuadratic
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
+/-- A homogenous quadratic equation can be treated as a function from `V` to `ℚ`. -/
 instance instFun : FunLike (HomogeneousQuadratic V) V ℚ where
   coe f := f.toFun
   coe_injective' f g h := by
@@ -49,6 +50,7 @@ open BigOperators
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
+/-- A symmetric bilinear form can be treated as a function from `V` to `V →ₗ[ℚ] ℚ`. -/
 instance instFun (V : Type) [AddCommMonoid V] [Module ℚ V] :
     FunLike (BiLinearSymm V) V (V →ₗ[ℚ] ℚ) where
   coe f := f.toFun
@@ -146,6 +148,7 @@ namespace HomogeneousCubic
 
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
+/-- A homogenous cubic equation can be treated as a function from `V` to `ℚ`. -/
 instance instFun : FunLike (HomogeneousCubic V) V ℚ where
   coe f := f.toFun
   coe_injective' f g h := by
@@ -168,6 +171,7 @@ namespace TriLinearSymm
 open BigOperators
 variable {V : Type} [AddCommMonoid V] [Module ℚ V]
 
+/-- A symmetric trilinear form can be treated as a function from `V` to `V →ₗ[ℚ] V →ₗ[ℚ] ℚ`. -/
 instance instFun : FunLike (TriLinearSymm V) V (V →ₗ[ℚ] V →ₗ[ℚ] ℚ) where
   coe f := f.toFun
   coe_injective' f g h := by

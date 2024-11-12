@@ -87,11 +87,14 @@ lemma complete_square (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
   field_simp
   ring
 
+/-- The quadratic equation satisfied by the Higgs potential at a spacetime point `x`. -/
 lemma as_quad (φ : HiggsField) (x : SpaceTime) :
     P.𝓵 * ‖φ‖_H ^ 2 x * ‖φ‖_H ^ 2 x + (- P.μ2) * ‖φ‖_H ^ 2 x + (- P.toFun φ x) = 0 := by
   simp only [normSq, neg_mul, toFun, neg_add_rev, neg_neg]
   ring
 
+/-- The Higgs potential is zero iff and only if the higgs field is zero, or the
+  higgs field has norm-squared `P.μ2 / P.𝓵`, assuming `P.𝓁 = 0`. -/
 lemma toFun_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     P.toFun φ x = 0 ↔ φ x = 0 ∨ ‖φ‖_H ^ 2 x = P.μ2 / P.𝓵 := by
   refine Iff.intro (fun hV => ?_) (fun hD => ?_)
@@ -173,6 +176,8 @@ lemma pos_𝓵_quadDiscrim_zero_bound (h : 0 < P.𝓵) (φ : HiggsField) (x : Sp
   rw [neg_le, neg_div'] at h1
   exact h1
 
+/-- If `P.𝓵` is negative, then if `P.μ2` is greater then zero, for all space-time points,
+  the potential is negative `P.toFun φ x ≤ 0`. -/
 lemma neg_𝓵_toFun_neg (h : P.𝓵 < 0) (φ : HiggsField) (x : SpaceTime) :
     (0 < P.μ2 ∧ P.toFun φ x ≤ 0) ∨ P.μ2 ≤ 0 := by
   by_cases hμ2 : P.μ2 ≤ 0
@@ -187,6 +192,8 @@ lemma neg_𝓵_toFun_neg (h : P.𝓵 < 0) (φ : HiggsField) (x : SpaceTime) :
   exact mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg (le_of_lt h)
     (sq_nonneg ‖φ x‖)) (sq_nonneg ‖φ x‖)
 
+/-- If `P.𝓵` is bigger then zero, then if `P.μ2` is less then zero, for all space-time points,
+  the potential is positive `0 ≤ P.toFun φ x`. -/
 lemma pos_𝓵_toFun_pos (h : 0 < P.𝓵) (φ : HiggsField) (x : SpaceTime) :
     (P.μ2 < 0 ∧ 0 ≤ P.toFun φ x) ∨ 0 ≤ P.μ2 := by
   simpa using P.neg.neg_𝓵_toFun_neg (by simpa using h) φ x
@@ -263,8 +270,8 @@ lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFu
 def IsBounded : Prop :=
   ∃ c, ∀ Φ x, c ≤ P.toFun Φ x
 
-lemma isBounded_𝓵_nonneg (h : P.IsBounded) :
-    0 ≤ P.𝓵 := by
+/-- If the potential is bounded, then `P.𝓵` is non-negative. -/
+lemma isBounded_𝓵_nonneg (h : P.IsBounded) : 0 ≤ P.𝓵 := by
   by_contra hl
   rw [not_le] at hl
   obtain ⟨c, hc⟩ := h
@@ -308,6 +315,7 @@ lemma isBounded_𝓵_nonneg (h : P.IsBounded) :
       rw [hφ] at hc2
       linarith
 
+/-- If `P.𝓵` is positive, then the potential is bounded. -/
 lemma isBounded_of_𝓵_pos (h : 0 < P.𝓵) : P.IsBounded := by
   simp only [IsBounded]
   have h2 := P.pos_𝓵_quadDiscrim_zero_bound h

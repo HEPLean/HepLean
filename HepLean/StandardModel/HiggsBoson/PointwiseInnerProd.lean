@@ -48,7 +48,7 @@ scoped[StandardModel.HiggsField] notation "⟪" φ1 "," φ2 "⟫_H" => innerProd
 -/
 
 @[simp]
-lemma innerProd_neg_left (φ1 φ2 : HiggsField) : ⟪- φ1, φ2⟫_H = -⟪φ1, φ2⟫_H := by
+lemma innerProd_neg_left (φ1 φ2 : HiggsField) : ⟪- φ1, φ2⟫_H = - ⟪φ1, φ2⟫_H := by
   funext x
   simp [innerProd]
 
@@ -155,17 +155,22 @@ lemma normSq_apply_re_self (φ : HiggsField) (x : SpaceTime) :
 lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
     ‖φ x‖ = ‖φ.toHiggsVec x‖ := rfl
 
+/-- The expansion of the norm squared of into components. -/
 lemma normSq_expand (φ : HiggsField) :
     φ.normSq = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1)).re := by
   funext x
   simp [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add, @norm_sq_eq_inner ℂ]
 
+/-- The norm squared of a higgs field at any point is non-negative. -/
 lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ φ.normSq x := by
   simp [normSq, ge_iff_le, norm_nonneg, pow_nonneg]
 
+/-- If the norm square of a Higgs field at a point `x` is zero, then the Higgs field
+  at that point is zero. -/
 lemma normSq_zero (φ : HiggsField) (x : SpaceTime) : φ.normSq x = 0 ↔ φ x = 0 := by
   simp [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
 
+/-- The norm squared of the Higgs field is a smooth function on space-time. -/
 lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
   rw [normSq_expand]
   refine Smooth.add ?_ ?_
@@ -176,6 +181,8 @@ lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, �
     exact ((φ.apply_re_smooth 1).smul (φ.apply_re_smooth 1)).add $
       (φ.apply_im_smooth 1).smul (φ.apply_im_smooth 1)
 
+/-- The norm-squared of the Higgs field `HiggsField.ofReal a` for a non-negative real number `a`,
+  is equal to `a`. -/
 lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) (x : SpaceTime) : (ofReal a).normSq x = a := by
   simp only [normSq, ofReal, HiggsVec.toField_apply, ha, HiggsVec.ofReal_normSq]
 
