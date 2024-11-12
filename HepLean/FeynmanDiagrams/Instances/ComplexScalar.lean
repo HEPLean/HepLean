@@ -32,15 +32,19 @@ def complexScalarFeynmanRules : PreFeynmanRule where
     | 1 => Over.mk ![1]
     | 2 => Over.mk ![0, 0, 1, 1]
 
+/-- An instance allowing us to use integers for edge labels for complex scalar theory. -/
 instance (a : ℕ) : OfNat complexScalarFeynmanRules.EdgeLabel a where
   ofNat := (a : Fin _)
 
+/-- An instance allowing us to use integers for half-edge labels for complex scalar theory. -/
 instance (a : ℕ) : OfNat complexScalarFeynmanRules.HalfEdgeLabel a where
   ofNat := (a : Fin _)
 
+/-- An instance allowing us to use integers for vertex labels for complex scalar theory. -/
 instance (a : ℕ) : OfNat complexScalarFeynmanRules.VertexLabel a where
   ofNat := (a : Fin _)
 
+/-- The pre feynman rules for complex scalars are finite. -/
 instance : IsFinitePreFeynmanRule complexScalarFeynmanRules where
   edgeLabelDecidable := instDecidableEqFin _
   vertexLabelDecidable := instDecidableEqFin _

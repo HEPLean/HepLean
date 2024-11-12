@@ -137,14 +137,17 @@ class IsFinitePreFeynmanRule (P : PreFeynmanRule) where
   /-- The type of half-edges associated with an edge is decidable. -/
   edgeMapDecidable : ∀ v : P.EdgeLabel, DecidableEq (P.edgeLabelMap v).left
 
+/-- If `P` is a finite pre feynman rule, then equality of edge labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓔 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.EdgeLabel :=
   IsFinitePreFeynmanRule.edgeLabelDecidable
 
+/-- If `P` is a finite pre feynman rule, then equality of vertex labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓥 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.VertexLabel :=
   IsFinitePreFeynmanRule.vertexLabelDecidable
 
+/-- If `P` is a finite pre feynman rule, then equality of half-edge labels of `P` is decidable. -/
 instance preFeynmanRuleDecEq𝓱𝓔 (P : PreFeynmanRule) [IsFinitePreFeynmanRule P] :
     DecidableEq P.HalfEdgeLabel :=
   IsFinitePreFeynmanRule.halfEdgeLabelDecidable
@@ -425,27 +428,37 @@ instance {𝓔 𝓥 𝓱𝓔 : Type} [h1 : Fintype 𝓔] [h2 : DecidableEq 𝓔]
     IsFiniteDiagram (mk' 𝓔𝓞 𝓥𝓞 𝓱𝓔To𝓔𝓥 C) :=
   ⟨h1, h2, h3, h4, h5, h6⟩
 
+/-- If `F` is a finite Feynman diagram, then its edges are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓔 :=
   IsFiniteDiagram.𝓔Fintype
 
+/-- If `F` is a finite Feynman diagram, then its edges are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓔 :=
   IsFiniteDiagram.𝓔DecidableEq
 
+/-- If `F` is a finite Feynman diagram, then its vertices are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓥 :=
   IsFiniteDiagram.𝓥Fintype
 
+/-- If `F` is a finite Feynman diagram, then its vertices are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓥 :=
   IsFiniteDiagram.𝓥DecidableEq
 
+/-- If `F` is a finite Feynman diagram, then its half-edges are finite. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : Fintype F.𝓱𝓔 :=
   IsFiniteDiagram.𝓱𝓔Fintype
 
+/-- If `F` is a finite Feynman diagram, then its half-edges are decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓱𝓔 :=
   IsFiniteDiagram.𝓱𝓔DecidableEq
 
+/-- The proposition of whether the given an half-edge and an edge,
+  the edge corresponding to the half edges is the given edge is decidable. -/
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] (i : F.𝓱𝓔) (j : F.𝓔) :
     Decidable (F.𝓱𝓔To𝓔.hom i = j) := IsFiniteDiagram.𝓔DecidableEq (F.𝓱𝓔To𝓔.hom i) j
 
+/-- For a finite feynman diagram, the type of half edge lables, edges and vertices
+  is decidable. -/
 instance fintypeProdHalfEdgeLabel𝓔𝓥 {F : FeynmanDiagram P} [IsFinitePreFeynmanRule P]
     [IsFiniteDiagram F] : DecidableEq (P.HalfEdgeLabel × F.𝓔 × F.𝓥) :=
   instDecidableEqProd
@@ -557,10 +570,16 @@ lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.�
     simp only [Functor.const_obj_obj, Equiv.apply_symm_apply] at h1
     exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
 
+/-- If `𝓔` is a map between the edges of one finite Feynman diagram and another Feynman diagram,
+  then deciding whether `𝓔` froms a morphism in `Over P.EdgeLabel` between the edge
+  maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) : Decidable (∀ x, G.𝓔𝓞.hom (𝓔 x) = F.𝓔𝓞.hom x) :=
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓔 P _ _) _
 
+/-- If `𝓥` is a map between the vertices of one finite Feynman diagram and another Feynman diagram,
+  then deciding whether `𝓥` froms a morphism in `Over P.VertexLabel` between the vertex
+  maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓥 : F.𝓥 → G.𝓥) : Decidable (∀ x, G.𝓥𝓞.hom (𝓥 x) = F.𝓥𝓞.hom x) :=
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓥 P _ _) _
