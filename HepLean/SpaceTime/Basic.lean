@@ -15,6 +15,8 @@ This file introduce 4d Minkowski spacetime.
 
 noncomputable section
 
+/-! TODO: SpaceTime should be refactored into a structure, to prevent casting. -/
+
 /-- The space-time -/
 def SpaceTime : Type := Fin 4 → ℝ
 
@@ -59,18 +61,22 @@ lemma stdBasis_not_eq {μ ν : Fin 4} (h : μ ≠ ν) : stdBasis μ ν = 0 := by
   rw [stdBasis_apply]
   exact if_neg h
 
+/-- For space-time,`stdBasis 0` is equal to `![1, 0, 0, 0] `. -/
 lemma stdBasis_0 : stdBasis 0 = ![1, 0, 0, 0] := by
   funext i
   fin_cases i <;> simp [stdBasis_apply]
 
+/-- For space-time,`stdBasis 1` is equal to `![0, 1, 0, 0] `. -/
 lemma stdBasis_1 : stdBasis 1 = ![0, 1, 0, 0] := by
   funext i
   fin_cases i <;> simp [stdBasis_apply]
 
+/-- For space-time,`stdBasis 2` is equal to `![0, 0, 1, 0] `. -/
 lemma stdBasis_2 : stdBasis 2 = ![0, 0, 1, 0] := by
   funext i
   fin_cases i <;> simp [stdBasis_apply]
 
+/-- For space-time,`stdBasis 3` is equal to `![0, 0, 0, 1] `. -/
 lemma stdBasis_3 : stdBasis 3 = ![0, 0, 0, 1] := by
   funext i
   fin_cases i <;> simp [stdBasis_apply]
@@ -83,6 +89,7 @@ lemma stdBasis_mulVec (μ ν : Fin 4) (Λ : Matrix (Fin 4) (Fin 4) ℝ) :
     rw [stdBasis_apply, if_neg (Ne.symm h)]
     exact CommMonoidWithZero.mul_zero (Λ ν x)
 
+/-- The explicit expansion of a point in spacetime as `![x 0, x 1, x 2, x 3]`. -/
 lemma explicit (x : SpaceTime) : x = ![x 0, x 1, x 2, x 3] := by
   funext i
   fin_cases i <;> rfl
