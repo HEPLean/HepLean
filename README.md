@@ -5,6 +5,8 @@
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
 [![](https://img.shields.io/badge/TODO-List-green)](https://heplean.github.io/HepLean/TODOList)
 [![](https://img.shields.io/badge/Informal_dependencies-Graph-green)](https://heplean.github.io/HepLean/InformalGraph)
+
+[![](https://img.shields.io/badge/View_The-Stats-blue)](https://heplean.github.io/HepLean/Stats)
 [![](https://img.shields.io/badge/Lean-v4.13.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.13.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 
