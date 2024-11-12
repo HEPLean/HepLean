@@ -42,7 +42,8 @@ noncomputable def higgsRepUnitary : GaugeGroupI →* unitaryGroup (Fin 2) ℂ wh
     repeat rw [mul_assoc]
   map_one' := by simp
 
-/-- Takes in a `2×2`-matrix and returns a linear map of `higgsVec`. -/
+/-- Using the orthonormal basis of `HiggsVec`, turns a `2×2`-matrix intoa a linear map
+  of `HiggsVec`. -/
 noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[ℂ] HiggsVec) where
   toFun g := LinearMap.toContinuousLinearMap
     $ Matrix.toLin orthonormBasis.toBasis orthonormBasis.toBasis g
@@ -50,11 +51,13 @@ noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[�
     Matrix.toLin_mul orthonormBasis.toBasis orthonormBasis.toBasis orthonormBasis.toBasis g h
   map_one' := ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_one orthonormBasis.toBasis
 
-/-- `matrixToLin` commutes with the `star` operation. -/
+/-- The map `matrixToLin` commutes with the `star` operation. -/
 lemma matrixToLin_star (g : Matrix (Fin 2) (Fin 2) ℂ) :
     matrixToLin (star g) = star (matrixToLin g) :=
   ContinuousLinearMap.coe_inj.mp $ Matrix.toLin_conjTranspose orthonormBasis orthonormBasis g
 
+/-- If `g` is a member of the `2 × 2` unitary group, then as a linear map from
+  `HiggsVec →L[ℂ] HiggsVec` formed by the orthonormal basis on `HiggsVec`, it is unitary. -/
 lemma matrixToLin_unitary (g : unitaryGroup (Fin 2) ℂ) :
     matrixToLin g ∈ unitary (HiggsVec →L[ℂ] HiggsVec) := by
   rw [@unitary.mem_iff, ← matrixToLin_star, ← matrixToLin.map_mul, ← matrixToLin.map_mul,
@@ -82,6 +85,8 @@ lemma higgsRepUnitary_mul (g : GaugeGroupI) (φ : HiggsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
   simp [higgsRepUnitary_apply_coe, smul_mulVec_assoc]
 
+/-- The application of gauge group on a Higgs vector can be decomposed in
+  to an smul with the `U(1)-factor` and a multiplication by the `SU(2)`-factor.  -/
 lemma rep_apply (g : GaugeGroupI) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) :=
   higgsRepUnitary_mul g φ
 
