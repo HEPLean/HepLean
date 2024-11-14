@@ -322,4 +322,13 @@ lemma finExtractTwo_apply_snd {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
   rw [← Equiv.eq_symm_apply]
   simp
 
+/-- Takes two maps `Fin n → Fin n` and returns the equivelance they form. -/
+def finMapToEquiv (f1 : Fin n → Fin m) (f2 : Fin m → Fin n)
+    (h : ∀ x, f1 (f2 x) = x := by decide)
+    (h' : ∀ x, f2 (f1 x) = x := by decide) : Fin n ≃ Fin m where
+  toFun := f1
+  invFun := f2
+  left_inv := h'
+  right_inv := h
+
 end HepLean.Fin
