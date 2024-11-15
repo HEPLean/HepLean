@@ -35,6 +35,11 @@ def permProdLeft := (equivToIso finSumFinEquiv).inv ≫ σ ▷ OverColor.mk c2
 def permProdRight := (equivToIso finSumFinEquiv).inv ≫ OverColor.mk c2 ◁ σ
   ≫ (equivToIso finSumFinEquiv).hom
 
+@[simp]
+lemma permProdRight_toEquiv : Hom.toEquiv (permProdRight c2 σ) =  finSumFinEquiv.symm.trans
+    (((Equiv.refl (Fin n2)).sumCongr (Hom.toEquiv σ)).trans finSumFinEquiv)  := by
+  simp [permProdRight]
+
 /-- When a `prod` acts on a `perm` node in the left entry, the `perm` node can be moved through
   the `prod` node via right-whiskering. -/
 theorem prod_perm_left (t : TensorTree S c) (t2 : TensorTree S c2) :

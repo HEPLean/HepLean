@@ -140,7 +140,7 @@ lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       apply Hom.ext
       ext x
       change (Hom.toEquiv σ) ((Hom.toEquiv σ).symm x) = x
-      simp
+      simp [-OverColor.mk_left]
     rw [h1]
     simp
 

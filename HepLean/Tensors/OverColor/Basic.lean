@@ -100,6 +100,9 @@ def toIso (m : f ⟶ g) : f ≅ g := {
     simp only [CategoryStruct.comp, Iso.symm_self_id, Iso.refl_hom, Over.id_left, types_id_apply]
     rfl}
 
+@[simp]
+lemma hom_comp (m : f ⟶ g) (n : g ⟶ h) : (m ≫ n).hom = m.hom ≫ n.hom := by rfl
+
 end Hom
 
 section monoidal
@@ -273,11 +276,31 @@ def mk (f : X → C) : OverColor C := Over.mk f
 lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
 
+@[simp]
+lemma mk_left (f : X → C) : (mk f).left = X := rfl
+
 lemma Hom.fin_ext {n : ℕ} {f g : Fin n → C} (σ σ' : OverColor.mk f ⟶ OverColor.mk g)
     (h : ∀ (i : Fin n), σ.hom.left i = σ'.hom.left i) : σ = σ' := by
   apply Hom.ext
   ext i
   apply h
+
+@[simp]
+lemma β_hom_toEquiv (f : X → C) (g : Y → C) :
+    Hom.toEquiv (β_ (OverColor.mk f) (OverColor.mk g)).hom = Equiv.sumComm X Y := by
+  rfl
+
+@[simp]
+lemma β_inv_toEquiv (f : X → C) (g : Y → C) :
+    Hom.toEquiv (β_ (OverColor.mk f) (OverColor.mk g)).inv = Equiv.sumComm Y X := by
+  rfl
+
+@[simp]
+lemma whiskeringLeft_toEquiv (f : X → C) (g : Y → C) (h : Z → C) (σ : OverColor.mk f ⟶  OverColor.mk g) :
+    Hom.toEquiv (OverColor.mk h ◁ σ) = (Equiv.refl Z).sumCongr (Hom.toEquiv σ) := by
+  simp [MonoidalCategory.whiskerLeft]
+  rfl
+
 
 end OverColor
 
