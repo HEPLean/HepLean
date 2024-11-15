@@ -112,7 +112,7 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     exact (LinearEquiv.eq_symm_apply _).mp rfl
 
 lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk ![c1, c2]).left) →
-      CoeSort.coe (F.obj { as := (OverColor.mk ![c1, c2]).hom i })) :
+    CoeSort.coe (F.obj { as := (OverColor.mk ![c1, c2]).hom i })) :
     (pairIsoSep F).inv.hom (PiTensorProduct.tprod k fx) = fx (0 : Fin 2) ⊗ₜ fx (1 : Fin 2) := by
   simp [pairIsoSep]
   erw [lift.map_tprod]
