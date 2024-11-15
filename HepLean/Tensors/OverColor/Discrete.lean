@@ -111,6 +111,89 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
       HepLean.PiTensorProduct.elimPureTensor]
     exact (LinearEquiv.eq_symm_apply _).mp rfl
 
+lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk ![c1, c2]).left) →
+    CoeSort.coe (F.obj { as := (OverColor.mk ![c1, c2]).hom i })) :
+    (pairIsoSep F).inv.hom (PiTensorProduct.tprod k fx) = fx (0 : Fin 2) ⊗ₜ fx (1 : Fin 2) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+    pairIsoSep, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    Iso.trans_symm, Iso.symm_symm_eq, Iso.trans_assoc, Iso.trans_inv, Iso.symm_inv,
+    Functor.mapIso_hom, tensorIso_hom, Iso.trans_hom, Iso.symm_hom, Functor.mapIso_inv, tensor_comp,
+    Category.assoc, Action.comp_hom, Action.instMonoidalCategory_tensorHom_hom, mk_left,
+    Functor.id_obj, mk_hom, ModuleCat.coe_comp, Function.comp_apply, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+  erw [lift.map_tprod]
+  erw [lift.μIso_inv_tprod]
+  change (((forgetLiftApp F c1).hom.hom (((lift.obj F).map (mkIso _).inv).hom
+    ((PiTensorProduct.tprod k) fun i =>
+    (lift.discreteFunctorMapEqIso F _) (fx ((Hom.toEquiv fin2Iso.hom).symm (Sum.inl i)))))) ⊗ₜ[k]
+    (forgetLiftApp F c2).hom.hom (((lift.obj F).map (mkIso _).inv).hom ((PiTensorProduct.tprod k)
+    fun i =>
+    (lift.discreteFunctorMapEqIso F _) (fx ((Hom.toEquiv fin2Iso.hom).symm (Sum.inr i)))))) = _
+  congr 1
+  · rw [lift.map_tprod]
+    rw [forgetLiftApp_hom_hom_apply_eq]
+    apply congrArg
+    funext x
+    match x with
+    | (0 : Fin 1) =>
+      simp only [mk_hom, Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.cons_val_zero,
+        equivToIso_mkIso_inv, Equiv.refl_symm, lift.discreteFunctorMapEqIso, eqToIso_refl,
+        Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, Matrix.cons_val_one,
+        Matrix.head_cons, instMonoidalCategoryStruct_tensorObj_left, Functor.id_obj,
+        LinearEquiv.ofLinear_apply]
+      rfl
+  · rw [lift.map_tprod]
+    rw [forgetLiftApp_hom_hom_apply_eq]
+    apply congrArg
+    funext x
+    match x with
+    | (0 : Fin 1) =>
+      simp only [mk_hom, Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.cons_val_one,
+        Matrix.head_cons, equivToIso_mkIso_inv, Equiv.refl_symm, lift.discreteFunctorMapEqIso,
+        eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv,
+        Matrix.cons_val_zero, instMonoidalCategoryStruct_tensorObj_left, Functor.id_obj,
+        LinearEquiv.ofLinear_apply]
+      rfl
+
+open HepLean.Fin
+
+/-! TODO: Find a better place for this. -/
+lemma pairIsoSep_β_perm_cond (c1 c2 : C) : ∀ (x : Fin (Nat.succ 0).succ), ![c2, c1] x =
+    (![c1, c2] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x:= by
+  intro x
+  fin_cases x
+  · rfl
+  · rfl
+
+lemma pairIsoSep_β {c1 c2 : C} (x : ↑(F.obj { as := c1 } ⊗ F.obj { as := c2 }).V) :
+    (Discrete.pairIsoSep F).hom.hom ((β_ (F.obj (Discrete.mk c1)) _).hom.hom x) =
+    ((lift.obj F).map ((OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
+    (pairIsoSep_β_perm_cond c1 c2)))).hom
+    ((Discrete.pairIsoSep F).hom.hom x) := by
+  have h1 : (Discrete.pairIsoSep F).hom.hom ∘ₗ
+      (β_ (F.obj (Discrete.mk c1)) (F.obj (Discrete.mk c2))).hom.hom
+      = ((lift.obj F).map ((OverColor.equivToHomEq
+      (finMapToEquiv ![1, 0] ![1, 0]) (pairIsoSep_β_perm_cond c1 c2)))).hom ∘ₗ
+      (Discrete.pairIsoSep F).hom.hom := by
+    apply TensorProduct.ext'
+    intro x y
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Action.instMonoidalCategory_tensorObj_V, LinearMap.coe_comp, Function.comp_apply, Fin.isValue]
+    change (Discrete.pairIsoSep F).hom.hom (y ⊗ₜ x) = ((lift.obj F).map
+      ((OverColor.equivToHomEq _ (pairIsoSep_β_perm_cond c1 c2)))).hom
+      ((Discrete.pairIsoSep F).hom.hom (x ⊗ₜ y))
+    rw [Discrete.pairIsoSep_tmul, Discrete.pairIsoSep_tmul]
+    erw [OverColor.lift.map_tprod]
+    apply congrArg
+    funext i
+    fin_cases i
+    · simp [lift.discreteFunctorMapEqIso]
+      rfl
+    · simp [lift.discreteFunctorMapEqIso]
+      rfl
+  exact congrFun (congrArg (fun f => f.toFun) h1) _
+
 /-- The isomorphism between
   `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3)` and
   `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensorate. -/
@@ -174,6 +257,24 @@ lemma pairτ_tmul {c : C} (x : F.obj (Discrete.mk c))
 /-- The functor taking `c` to `F (τ c) ⊗ F c`. -/
 def τPair (τ : C → C) : Discrete C ⥤ Rep k G :=
   ((Discrete.functor (Discrete.mk ∘ τ) : Discrete C ⥤ Discrete C) ⋙ F) ⊗ F
+
+/-!
+
+## A need lemma about rep
+
+-/
+
+@[simp]
+lemma rep_iso_inv_hom_apply (x y : Rep k G) (f : x ≅ y) (i : x) :
+    f.inv.hom (f.hom.hom i) = i := by
+  change (f.hom ≫ f.inv).hom i = i
+  simp
+
+@[simp]
+lemma rep_iso_hom_inv_apply (x y : Rep k G) (f : x ≅ y) (i : y) :
+    f.hom.hom (f.inv.hom i) = i := by
+  change (f.inv ≫ f.hom).hom i = i
+  simp
 
 end
 end Discrete

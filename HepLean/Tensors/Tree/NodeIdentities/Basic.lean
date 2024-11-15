@@ -140,7 +140,7 @@ lemma perm_eq_iff_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       apply Hom.ext
       ext x
       change (Hom.toEquiv σ) ((Hom.toEquiv σ).symm x) = x
-      simp
+      simp [-OverColor.mk_left]
     rw [h1]
     simp
 
@@ -250,6 +250,7 @@ lemma prod_add_both {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 
 -/
 
+/-- The action of a group element can be brought though a scalar multiplication. -/
 lemma smul_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (a : S.k) (t : TensorTree S c) :
     (smul a (action g t)).tensor = (action g (smul a t)).tensor := by
   simp only [smul_tensor, action_tensor, map_smul]

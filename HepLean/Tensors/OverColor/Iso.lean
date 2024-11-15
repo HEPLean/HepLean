@@ -32,6 +32,11 @@ lemma equivToIso_homToEquiv {c : X → C} (e : X ≃ Y) :
     Hom.toEquiv (equivToIso (c := c) e).hom = e := by
   rfl
 
+@[simp]
+lemma equivToIso_inv_homToEquiv {c : X → C} (e : X ≃ Y) :
+    Hom.toEquiv (equivToIso (c := c) e).inv = e.symm := by
+  rfl
+
 /-- The homomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
   equivalence `e`. -/
 def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
@@ -65,6 +70,17 @@ lemma mkIso_refl_hom {c : X → C} : (mkIso (by rfl : c =c)).hom = 𝟙 _ := by
   rw [mkIso]
   rfl
 
+lemma mkIso_hom_hom_left {c1 c2 : X → C} (h : c1 = c2) : (mkIso h).hom.hom.left =
+    (Equiv.refl X).toFun := by
+  rw [mkIso]
+  rfl
+
+@[simp]
+lemma mkIso_hom_hom_left_apply {c1 c2 : X → C} (h : c1 = c2) (x : X) :
+    (mkIso h).hom.hom.left x = x := by
+  rw [mkIso_hom_hom_left]
+  rfl
+
 @[simp]
 lemma equivToIso_mkIso_hom {c1 c2 : X → C} (h : c1 = c2) :
     Hom.toEquiv (mkIso h).hom = Equiv.refl _ := by
@@ -80,6 +96,17 @@ lemma equivToIso_mkIso_inv {c1 c2 : X → C} (h : c1 = c2) :
 def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
     (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : mk c ⟶ mk c1 :=
   (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
+
+@[simp]
+lemma equivToHomEq_hom_left {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : (equivToHomEq e h).hom.left =
+    e.toFun := by
+  rfl
+
+@[simp]
+lemma equivToHomEq_toEquiv {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : Hom.toEquiv (equivToHomEq e h) = e := by
+    rfl
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
   the `Fin 1 → C` maps defined by `c 0` and `c 1`. -/
@@ -163,6 +190,15 @@ def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
     equivToHomEq (Equiv.refl _) (by simp) ≫ extractOne j (extractOne i σ) ≫
     equivToHomEq (Equiv.refl _) (by simp)
 
+@[simp]
+lemma extractTwo_hom_left_apply {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
+    {c1 c2 : Fin n.succ.succ.succ → C} (σ : mk c1 ⟶ mk c2) (x : Fin n.succ) :
+    (extractTwo i j σ).hom.left x =
+      (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+      (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))) x := by
+  simp only [extractTwo, extractOne]
+  rfl
+
 /-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`.
   This is from and to different (by equivalent) objects to `extractTwo`. -/
 def extractTwoAux {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
@@ -231,7 +267,7 @@ lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fi
   simp only [Nat.succ_eq_add_one, Equiv.apply_symm_apply]
   match k with
   | Sum.inl (Sum.inl 0) =>
-    simp
+    simp [-OverColor.mk_left]
   | Sum.inl (Sum.inr 0) =>
     simp only [Fin.isValue, finExtractTwo_symm_inl_inr_apply, Sum.map_inl, id_eq]
     have h1 : ((Hom.toEquiv σ) (Fin.succAbove

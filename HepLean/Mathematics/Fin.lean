@@ -279,6 +279,16 @@ def finExtractOnePerm (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ
   right_inv x := by
     simpa using congrFun (finExtractOnPermHom_inv (σ i) σ.symm) x
 
+@[simp]
+lemma finExtractOnePerm_apply (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ)
+    (x : Fin n.succ) : finExtractOnePerm i σ x = predAboveI (σ i)
+    (σ ((finExtractOne i).symm (Sum.inr x))) := rfl
+
+@[simp]
+lemma finExtractOnePerm_symm_apply (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ)
+    (x : Fin n.succ) : (finExtractOnePerm i σ).symm x = predAboveI (σ.symm (σ i))
+    (σ.symm ((finExtractOne (σ i)).symm (Sum.inr x))) := rfl
+
 /-- The equivalence of types `Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n` extracting
   the `i` and `(i.succAbove j)`. -/
 def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
@@ -321,5 +331,29 @@ lemma finExtractTwo_apply_snd {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     finExtractTwo i j (i.succAbove j) = Sum.inl (Sum.inr 0) := by
   rw [← Equiv.eq_symm_apply]
   simp
+
+/-- Takes two maps `Fin n → Fin n` and returns the equivelance they form. -/
+def finMapToEquiv (f1 : Fin n → Fin m) (f2 : Fin m → Fin n)
+    (h : ∀ x, f1 (f2 x) = x := by decide)
+    (h' : ∀ x, f2 (f1 x) = x := by decide) : Fin n ≃ Fin m where
+  toFun := f1
+  invFun := f2
+  left_inv := h'
+  right_inv := h
+
+@[simp]
+lemma finMapToEquiv_apply {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
+    {h : ∀ x, f1 (f2 x) = x} {h' : ∀ x, f2 (f1 x) = x} (x : Fin n) :
+    finMapToEquiv f1 f2 h h' x = f1 x := rfl
+
+@[simp]
+lemma finMapToEquiv_symm_apply {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
+    {h : ∀ x, f1 (f2 x) = x} {h' : ∀ x, f2 (f1 x) = x} (x : Fin m) :
+    (finMapToEquiv f1 f2 h h').symm x = f2 x := rfl
+
+lemma finMapToEquiv_symm_eq {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
+    {h : ∀ x, f1 (f2 x) = x} {h' : ∀ x, f2 (f1 x) = x} :
+    (finMapToEquiv f1 f2 h h').symm = finMapToEquiv f2 f1 h' h := by
+  rfl
 
 end HepLean.Fin

@@ -31,6 +31,11 @@ def braidPerm : OverColor.mk (Sum.elim c2 c ∘ ⇑finSumFinEquiv.symm) ⟶
   (β_ (OverColor.mk c2) (OverColor.mk c)).hom
   ≫ (equivToIso finSumFinEquiv).hom
 
+@[simp]
+lemma braidPerm_toEquiv : Hom.toEquiv (braidPerm c c2) = finSumFinEquiv.symm.trans
+    ((Equiv.sumComm (Fin n2) (Fin n)).trans finSumFinEquiv) := by
+  simp [braidPerm]
+
 lemma finSumFinEquiv_comp_braidPerm :
     (equivToIso finSumFinEquiv).hom ≫ braidPerm c c2 =
     (β_ (OverColor.mk c2) (OverColor.mk c)).hom

@@ -425,14 +425,7 @@ def getPermutation (l1 l2 : List (TSyntax `indexExpr)) : TermElabM (List (ℕ)) 
     (fun x => l1enum.find? (fun y => Lean.TSyntax.getId y.2 = Lean.TSyntax.getId x))
   return l2''.map fun x => x.1
 
-/-- Takes two maps `Fin n → Fin n` and returns the equivelance they form. -/
-def finMapToEquiv (f1 : Fin n → Fin m) (f2 : Fin m → Fin n)
-    (h : ∀ x, f1 (f2 x) = x := by decide)
-    (h' : ∀ x, f2 (f1 x) = x := by decide) : Fin n ≃ Fin m where
-  toFun := f1
-  invFun := f2
-  left_inv := h'
-  right_inv := h
+open HepLean.Fin
 
 /-- Given two lists of indices returns the permutation between them based on `finMapToEquiv`. -/
 def getPermutationSyntax (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term := do
