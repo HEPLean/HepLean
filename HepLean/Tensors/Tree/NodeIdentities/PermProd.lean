@@ -36,8 +36,8 @@ def permProdRight := (equivToIso finSumFinEquiv).inv ≫ OverColor.mk c2 ◁ σ
   ≫ (equivToIso finSumFinEquiv).hom
 
 @[simp]
-lemma permProdRight_toEquiv : Hom.toEquiv (permProdRight c2 σ) =  finSumFinEquiv.symm.trans
-    (((Equiv.refl (Fin n2)).sumCongr (Hom.toEquiv σ)).trans finSumFinEquiv)  := by
+lemma permProdRight_toEquiv : Hom.toEquiv (permProdRight c2 σ) = finSumFinEquiv.symm.trans
+    (((Equiv.refl (Fin n2)).sumCongr (Hom.toEquiv σ)).trans finSumFinEquiv) := by
   simp [permProdRight]
 
 /-- When a `prod` acts on a `perm` node in the left entry, the `perm` node can be moved through

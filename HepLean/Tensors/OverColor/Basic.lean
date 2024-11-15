@@ -296,11 +296,11 @@ lemma β_inv_toEquiv (f : X → C) (g : Y → C) :
   rfl
 
 @[simp]
-lemma whiskeringLeft_toEquiv (f : X → C) (g : Y → C) (h : Z → C) (σ : OverColor.mk f ⟶  OverColor.mk g) :
+lemma whiskeringLeft_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
+    (σ : OverColor.mk f ⟶ OverColor.mk g) :
     Hom.toEquiv (OverColor.mk h ◁ σ) = (Equiv.refl Z).sumCongr (Hom.toEquiv σ) := by
   simp [MonoidalCategory.whiskerLeft]
   rfl
-
 
 end OverColor
 

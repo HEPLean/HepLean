@@ -281,12 +281,12 @@ def finExtractOnePerm (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ
 
 @[simp]
 lemma finExtractOnePerm_apply (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ)
-    (x : Fin n.succ) :  finExtractOnePerm i σ x = predAboveI (σ i)
+    (x : Fin n.succ) : finExtractOnePerm i σ x = predAboveI (σ i)
     (σ ((finExtractOne i).symm (Sum.inr x))) := rfl
 
 @[simp]
 lemma finExtractOnePerm_symm_apply (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin n.succ.succ)
-    (x : Fin n.succ) :  (finExtractOnePerm i σ).symm x = predAboveI (σ.symm (σ i))
+    (x : Fin n.succ) : (finExtractOnePerm i σ).symm x = predAboveI (σ.symm (σ i))
     (σ.symm ((finExtractOne (σ i)).symm (Sum.inr x))) := rfl
 
 /-- The equivalence of types `Fin n.succ.succ ≃ (Fin 1 ⊕ Fin 1) ⊕ Fin n` extracting

@@ -33,22 +33,22 @@ def metricTensor (S : TensorSpecies) (c : S.C) : S.F.obj (OverColor.mk ![c, c]) 
 variable {S : TensorSpecies}
 
 lemma metricTensor_congr {c c' : S.C} (h : c = c') : {S.metricTensor c | μ ν}ᵀ.tensor =
-    (perm  (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl ))
+    (perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl))
     {S.metricTensor c' | μ ν}ᵀ).tensor := by
   subst h
   change _ = (S.F.map (𝟙 _)).hom (S.metricTensor c)
   simp
 
-
 lemma pairIsoSep_inv_metricTensor (c : S.C) :
     (Discrete.pairIsoSep S.FD).inv.hom (S.metricTensor c) =
     (S.metric.app (Discrete.mk c)).hom (1 : S.k) := by
-  simp [metricTensor]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+    metricTensor, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V]
   erw [Discrete.rep_iso_inv_hom_apply]
 
 /-- Contraction of a metric tensor with a metric tensor gives the unit.
   Like `S.contr_metric` but with the braiding appearing on the side of the unit. -/
-lemma contr_metric_braid_unit (c : S.C) :  (((S.FD.obj (Discrete.mk c)) ◁
+lemma contr_metric_braid_unit (c : S.C) : (((S.FD.obj (Discrete.mk c)) ◁
     (λ_ (S.FD.obj (Discrete.mk (S.τ c)))).hom).hom
     (((S.FD.obj (Discrete.mk c)) ◁ ((S.contr.app (Discrete.mk c)) ▷
     (S.FD.obj (Discrete.mk (S.τ c))))).hom
@@ -63,12 +63,13 @@ lemma contr_metric_braid_unit (c : S.C) :  (((S.FD.obj (Discrete.mk c)) ◁
   apply (β_ _ _).toLinearEquiv.toEquiv.injective
   rw [pairIsoSep_inv_metricTensor, pairIsoSep_inv_metricTensor]
   erw [S.contr_metric c]
-  change  _ = (β_  (S.FD.obj { as := S.τ c }) (S.FD.obj { as := c })).inv.hom
+  change _ = (β_ (S.FD.obj { as := S.τ c }) (S.FD.obj { as := c })).inv.hom
     ((β_ (S.FD.obj { as := S.τ c }) (S.FD.obj { as := c })).hom.hom _)
   rw [Discrete.rep_iso_inv_hom_apply]
 
 lemma metricTensor_contr_dual_metricTensor_perm_cond (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
-    ((Sum.elim ![c, c] ![S.τ c, S.τ c] ∘ ⇑finSumFinEquiv.symm) ∘ Fin.succAbove 1 ∘ Fin.succAbove 1) x =
+    ((Sum.elim ![c, c] ![S.τ c, S.τ c] ∘ ⇑finSumFinEquiv.symm) ∘
+    Fin.succAbove 1 ∘ Fin.succAbove 1) x =
     (![S.τ c, c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := by
   intro x
   fin_cases x
@@ -81,12 +82,12 @@ lemma metricTensor_contr_dual_metricTensor_eq_unit (c : S.C) :
     perm (OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
       (metricTensor_contr_dual_metricTensor_perm_cond c))).tensor := by
   rw [contr_two_two_inner, contr_metric_braid_unit, Discrete.pairIsoSep_β]
-  change (S.F.map _ ≫ S.F.map _ ).hom _ = _
+  change (S.F.map _ ≫ S.F.map _).hom _ = _
   rw [← S.F.map_comp]
   rfl
 
 /-- The contraction of a metric tensor with its dual via the outer indices gives the unit. -/
-lemma metricTensor_contr_dual_metricTensor_outer_eq_unit  (c : S.C) :
+lemma metricTensor_contr_dual_metricTensor_outer_eq_unit (c : S.C) :
     {S.metricTensor c | ν μ ⊗ S.metricTensor (S.τ c) | ρ ν}ᵀ.tensor = ({S.unitTensor c | μ ρ}ᵀ |>
     perm (OverColor.equivToHomEq
       (finMapToEquiv ![1, 0] ![1, 0]) (fun x => by fin_cases x <;> rfl))).tensor := by

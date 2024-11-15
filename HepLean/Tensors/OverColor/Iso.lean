@@ -71,7 +71,7 @@ lemma mkIso_refl_hom {c : X → C} : (mkIso (by rfl : c =c)).hom = 𝟙 _ := by
   rfl
 
 lemma mkIso_hom_hom_left {c1 c2 : X → C} (h : c1 = c2) : (mkIso h).hom.hom.left =
-    (Equiv.refl X).toFun  := by
+    (Equiv.refl X).toFun := by
   rw [mkIso]
   rfl
 
@@ -104,8 +104,8 @@ lemma equivToHomEq_hom_left {c : X → C} {c1 : Y → C} (e : X ≃ Y)
   rfl
 
 @[simp]
-lemma equivToHomEq_toEquiv  {c : X → C} {c1 : Y → C} (e : X ≃ Y)
-    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide)  : Hom.toEquiv (equivToHomEq e h) = e := by
+lemma equivToHomEq_toEquiv {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : Hom.toEquiv (equivToHomEq e h) = e := by
     rfl
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
@@ -193,7 +193,8 @@ def extractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ)
 @[simp]
 lemma extractTwo_hom_left_apply {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
     {c1 c2 : Fin n.succ.succ.succ → C} (σ : mk c1 ⟶ mk c2) (x : Fin n.succ) :
-    (extractTwo i j σ).hom.left x = (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (extractTwo i j σ).hom.left x =
+      (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
       (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))) x := by
   simp only [extractTwo, extractOne]
   rfl

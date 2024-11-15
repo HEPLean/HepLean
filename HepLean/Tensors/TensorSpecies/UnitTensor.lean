@@ -31,21 +31,21 @@ open TensorTree
 
 /-- The relation between two units of colors which are equal. -/
 lemma unitTensor_congr {c c' : S.C} (h : c = c') : {S.unitTensor c | μ ν}ᵀ.tensor =
-    (perm  (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl ))
+    (perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl))
     {S.unitTensor c' | μ ν}ᵀ).tensor := by
   subst h
   change _ = (S.F.map (𝟙 _)).hom (S.unitTensor c)
   simp
 
 lemma unitTensor_eq_dual_perm_eq (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
-   ![S.τ c, c] x = (![S.τ (S.τ c), S.τ c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by
+    ![S.τ c, c] x = (![S.τ (S.τ c), S.τ c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by
   fin_cases x
   · rfl
   · exact (S.τ_involution c).symm
 
 /-- The unit tensor is equal to a permutation of indices of the dual tensor. -/
 lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
-    (perm  (OverColor.equivToHomEq (finMapToEquiv ![1,0] ![1, 0]) (unitTensor_eq_dual_perm_eq c))
+    (perm (OverColor.equivToHomEq (finMapToEquiv ![1,0] ![1, 0]) (unitTensor_eq_dual_perm_eq c))
     {S.unitTensor (S.τ c) | ν μ }ᵀ).tensor := by
   simp [unitTensor, tensorNode_tensor, perm_tensor]
   have h1 := S.unit_symm c
@@ -85,7 +85,7 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
       Nat.succ_eq_add_one, Nat.reduceAdd, lift.discreteFunctorMapEqIso, Functor.mapIso_hom,
       eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
       rfl
-  exact congrFun (congrArg (fun f => f.toFun) hg)  _
+  exact congrFun (congrArg (fun f => f.toFun) hg) _
 
 lemma dual_unitTensor_eq_perm_eq (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
     ![S.τ (S.τ c), S.τ c] x = (![S.τ c, c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by

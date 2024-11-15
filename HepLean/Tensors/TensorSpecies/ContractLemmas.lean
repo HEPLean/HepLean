@@ -34,7 +34,7 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
       CoeSort.coe (S.FD.obj { as := (OverColor.mk ![S.τ c, S.τ c]).hom i }))
     (hx : x = PiTensorProduct.tprod S.k fx)
     (hy : y = PiTensorProduct.tprod S.k fy) :
-    {x | μ ν ⊗ y| ν ρ}ᵀ.tensor =  (S.F.map (OverColor.mkIso (by
+    {x | μ ν ⊗ y| ν ρ}ᵀ.tensor = (S.F.map (OverColor.mkIso (by
       funext x
       fin_cases x <;> rfl)).hom).hom ((OverColor.Discrete.pairIsoSep S.FD).hom.hom
     (((S.FD.obj (Discrete.mk c)) ◁ (λ_ (S.FD.obj (Discrete.mk (S.τ c)))).hom).hom
@@ -45,13 +45,14 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     ((α_ (S.FD.obj (Discrete.mk (c))) (S.FD.obj (Discrete.mk (c)))
       (S.FD.obj (Discrete.mk (S.τ c)) ⊗ S.FD.obj (Discrete.mk (S.τ c)))).hom.hom
     (((OverColor.Discrete.pairIsoSep S.FD).inv.hom x ⊗ₜ
-    (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))):= by
+    (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))) := by
   subst hx
   subst hy
   rw [Discrete.pairIsoSep_inv_tprod S.FD fx, Discrete.pairIsoSep_inv_tprod S.FD fy]
   change _ = (S.F.map (OverColor.mkIso _).hom).hom ((OverColor.Discrete.pairIsoSep S.FD).hom.hom
-    ((fx (0 : Fin 2) ⊗ₜ[S.k]  (λ_ (S.FD.obj { as := S.τ c }).V).hom
-      ((S.contr.app { as := c }).hom (fx (1 : Fin 2) ⊗ₜ[S.k] fy (0 : Fin 2)) ⊗ₜ[S.k] fy (1 : Fin 2)))))
+    ((fx (0 : Fin 2) ⊗ₜ[S.k] (λ_ (S.FD.obj { as := S.τ c }).V).hom
+      ((S.contr.app { as := c }).hom (fx (1 : Fin 2)
+      ⊗ₜ[S.k] fy (0 : Fin 2)) ⊗ₜ[S.k] fy (1 : Fin 2)))))
   simp only [F_def, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Monoidal.tensorUnit_obj,
@@ -86,7 +87,7 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
       Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom, LinearEquiv.ofLinear_apply]
       rfl
   /- The tensor. -/
-  · rw (config := { transparency := .instances })  [Discrete.pairIsoSep_tmul,
+  · rw (config := { transparency := .instances }) [Discrete.pairIsoSep_tmul,
       OverColor.lift.map_tprod]
     apply congrArg
     funext k
@@ -97,7 +98,7 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
 /-- Expands the inner contraction of two 2-tensors in terms of basic categorical
   constructions and fields of the tensor species. -/
 lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
-    (y : S.F.obj (OverColor.mk ![(S.τ c), (S.τ c)])):
+    (y : S.F.obj (OverColor.mk ![(S.τ c), (S.τ c)])) :
     {x | μ ν ⊗ y| ν ρ}ᵀ.tensor = (S.F.map (OverColor.mkIso (by
       funext x
       fin_cases x <;> rfl)).hom).hom ((OverColor.Discrete.pairIsoSep S.FD).hom.hom
@@ -109,7 +110,7 @@ lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     ((α_ (S.FD.obj (Discrete.mk (c))) (S.FD.obj (Discrete.mk (c)))
       (S.FD.obj (Discrete.mk (S.τ c)) ⊗ S.FD.obj (Discrete.mk (S.τ c)))).hom.hom
     (((OverColor.Discrete.pairIsoSep S.FD).inv.hom x ⊗ₜ
-    (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))):= by
+    (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))) := by
   simp only [Nat.reduceAdd, Fin.isValue, contr_tensor, prod_tensor, Functor.id_obj, mk_hom,
     Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
