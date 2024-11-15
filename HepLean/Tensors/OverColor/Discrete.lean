@@ -276,6 +276,26 @@ lemma rep_iso_hom_inv_apply (x y : Rep k G) (f : x ≅ y) (i : y) :
   change (f.inv ≫ f.hom).hom i = i
   simp
 
+lemma rep_iso_apply_iff (x y : Rep k G) (f : x ≅ y) (i : x) (j : y) :
+    f.hom.hom i = j ↔ i = f.inv.hom j := by
+  apply Iff.intro
+  · intro a
+    subst a
+    simp_all only [rep_iso_inv_hom_apply]
+  · intro a
+    subst a
+    exact rep_iso_hom_inv_apply x y f j
+
+lemma rep_iso_inv_apply_iff (x y : Rep k G) (f : x ≅ y) (i : y) (j : x) :
+    f.inv.hom i = j ↔ i = f.hom.hom j := by
+  apply Iff.intro
+  · intro a
+    subst a
+    simp_all only [rep_iso_hom_inv_apply]
+  · intro a
+    subst a
+    simp_all only [rep_iso_inv_hom_apply]
+
 end
 end Discrete
 end OverColor

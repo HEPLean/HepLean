@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.Congr
+import HepLean.Tensors.TensorSpecies.ContractLemmas
 /-!
 
 ## Units as tensors
@@ -36,6 +37,13 @@ lemma unitTensor_congr {c c' : S.C} (h : c = c') : {S.unitTensor c | μ ν}ᵀ.t
   subst h
   change _ = (S.F.map (𝟙 _)).hom (S.unitTensor c)
   simp
+
+lemma pairIsoSep_inv_unitTensor (c : S.C) :
+    (Discrete.pairIsoSep S.FD).inv.hom (S.unitTensor c) =
+    (S.unit.app (Discrete.mk c)).hom (1 : S.k) := by
+  simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+    unitTensor, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V]
+  erw [Discrete.rep_iso_inv_hom_apply]
 
 lemma unitTensor_eq_dual_perm_eq (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
     ![S.τ c, c] x = (![S.τ (S.τ c), S.τ c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by
@@ -103,6 +111,27 @@ lemma dual_unitTensor_eq_perm (c : S.C) : {S.unitTensor (S.τ c) | ν μ}ᵀ.ten
     rw [perm_perm]
   refine perm_congr ?_ rfl
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
+  rfl
+
+lemma contrOneTwoLeft_unitTensor  {c1 : S.C}
+    (x : S.F.obj (OverColor.mk ![c1])) :
+    contrOneTwoLeft x (S.unitTensor c1) = x := by
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, contrOneTwoLeft,
+    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+    Action.instMonoidalCategory_whiskerRight_hom, Functor.comp_obj, Discrete.functor_obj_eq_as,
+    Function.comp_apply, Action.instMonoidalCategory_associator_inv_hom, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+  erw [pairIsoSep_inv_unitTensor (S := S) (c := c1)]
+  change (S.F.mapIso (mkIso _)).hom.hom _ = _
+  rw [Discrete.rep_iso_apply_iff, Discrete.rep_iso_inv_apply_iff]
+  simpa using  S.contr_unit c1 ((OverColor.forgetLiftApp S.FD c1).hom.hom ((S.F.map (OverColor.mkIso (by
+    funext x; fin_cases x; rfl)).hom).hom x))
+
+lemma one_contr_unitTensor_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
+    {x | μ ⊗ S.unitTensor c1 | μ ν}ᵀ.tensor = ({x | ν}ᵀ |>
+    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor  := by
+  rw [contr_one_two_left_eq_contrOneTwoLeft, contrOneTwoLeft_unitTensor]
   rfl
 
 end TensorSpecies
