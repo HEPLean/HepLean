@@ -114,7 +114,13 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
 lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk ![c1, c2]).left) →
     CoeSort.coe (F.obj { as := (OverColor.mk ![c1, c2]).hom i })) :
     (pairIsoSep F).inv.hom (PiTensorProduct.tprod k fx) = fx (0 : Fin 2) ⊗ₜ fx (1 : Fin 2) := by
-  simp [pairIsoSep]
+  simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+    pairIsoSep, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    Iso.trans_symm, Iso.symm_symm_eq, Iso.trans_assoc, Iso.trans_inv, Iso.symm_inv,
+    Functor.mapIso_hom, tensorIso_hom, Iso.trans_hom, Iso.symm_hom, Functor.mapIso_inv, tensor_comp,
+    Category.assoc, Action.comp_hom, Action.instMonoidalCategory_tensorHom_hom, mk_left,
+    Functor.id_obj, mk_hom, ModuleCat.coe_comp, Function.comp_apply, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
   erw [lift.map_tprod]
   erw [lift.μIso_inv_tprod]
   change (((forgetLiftApp F c1).hom.hom (((lift.obj F).map (mkIso _).inv).hom
