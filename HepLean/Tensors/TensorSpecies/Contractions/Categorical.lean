@@ -10,6 +10,9 @@ import HepLean.Tensors.Tree.NodeIdentities.Congr
 
 ## Contraction of specific tensor types
 
+In this file we expand some contractions of given tensors in terms of
+basic categorical properties of the tensor species.
+
 -/
 
 open IndexNotation

@@ -421,7 +421,7 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.std
     mul_zero, off_diag_zero]
 
 lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
-    Λ ν μ = η ν ν * ⟪ ContrMod.stdBasis ν, Λ *ᵥ ContrMod.stdBasis μ⟫ₘ := by
+    Λ ν μ = η ν ν * ⟪ContrMod.stdBasis ν, Λ *ᵥ ContrMod.stdBasis μ⟫ₘ := by
   rw [on_basis_mulVec, ← mul_assoc]
   simp [η_apply_mul_η_apply_diag ν]
 

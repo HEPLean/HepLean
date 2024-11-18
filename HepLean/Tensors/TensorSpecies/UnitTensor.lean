@@ -10,7 +10,7 @@ import HepLean.Tensors.Tree.NodeIdentities.ProdComm
 import HepLean.Tensors.Tree.NodeIdentities.PermProd
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
-import HepLean.Tensors.TensorSpecies.ContractLemmas
+import HepLean.Tensors.TensorSpecies.Contractions.Categorical
 /-!
 
 ## Units as tensors
