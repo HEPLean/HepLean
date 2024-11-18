@@ -538,6 +538,35 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
     LinearMap.id_coe, id_eq, TensorProduct.lid_tmul]
   rfl
 
+/-!
+
+## The equivalence turning vecs into tensors
+
+-/
+
+/-- The equivaelcne between tensors based on `![c]` and vectros in ` S.FD.obj (Discrete.mk c)`. -/
+def tensorToVec (c : S.C) : S.F.obj (OverColor.mk ![c]) ≅ S.FD.obj (Discrete.mk c) :=
+  OverColor.forgetLiftAppCon S.FD c
+
+lemma tensorToVec_inv_apply_expand (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
+    (S.tensorToVec c).inv.hom x =
+    ((lift.obj S.FD).map (OverColor.mkIso (by
+    funext i
+    fin_cases i
+    rfl)).hom).hom ((OverColor.forgetLiftApp S.FD c).inv.hom x) :=
+  forgetLiftAppCon_inv_apply_expand S.FD c x
+
+lemma tensorToVec_naturality_eqToHom (c c1 : S.C) (h : c = c1) :
+    (S.tensorToVec c).hom ≫ S.FD.map (Discrete.eqToHom h) =
+    S.F.map (OverColor.mkIso (by rw [h])).hom ≫ (S.tensorToVec c1).hom :=
+  OverColor.forgetLiftAppCon_naturality_eqToHom S.FD c c1 h
+
+lemma tensorToVec_naturality_eqToHom_apply (c c1 : S.C) (h : c = c1)
+    (x : S.F.obj (OverColor.mk ![c])) :
+    (S.FD.map (Discrete.eqToHom h)).hom ((S.tensorToVec c).hom.hom x) =
+    (S.tensorToVec c1).hom.hom (((S.F.map (OverColor.mkIso (by rw [h])).hom).hom x)) :=
+  forgetLiftAppCon_naturality_eqToHom_apply S.FD c c1 h x
+
 end TensorSpecies
 
 end

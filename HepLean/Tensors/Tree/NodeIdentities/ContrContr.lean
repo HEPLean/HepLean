@@ -296,6 +296,15 @@ def contrContrPerm {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.
       ((c ∘ i.succAbove ∘ j.succAbove) ∘ k.succAbove ∘ l.succAbove) :=
   (ContrQuartet.mk i j k l hij hkl).contrSwapHom
 
+@[simp]
+lemma contrContrPerm_hom_left_apply {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C}
+    {i : Fin n.succ.succ.succ.succ}
+    {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}
+    (hij : c (i.succAbove j) = S.τ (c i)) (hkl : (c ∘ i.succAbove ∘ j.succAbove) (k.succAbove l) =
+    S.τ ((c ∘ i.succAbove ∘ j.succAbove) k)) (x : Fin n) :
+    (contrContrPerm hij hkl).hom.left x = x := by
+  simp [contrContrPerm, ContrQuartet.contrSwapHom]
+
 /-- Contraction nodes commute on adjusting indices. -/
 theorem contr_contr {n : ℕ} {c : Fin n.succ.succ.succ.succ → S.C} {i : Fin n.succ.succ.succ.succ}
     {j : Fin n.succ.succ.succ} {k : Fin n.succ.succ} {l : Fin n.succ}

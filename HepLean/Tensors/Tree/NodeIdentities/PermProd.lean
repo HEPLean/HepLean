@@ -30,10 +30,9 @@ def permProdLeft := (equivToIso finSumFinEquiv).inv ≫ σ ▷ OverColor.mk c2
   ≫ (equivToIso finSumFinEquiv).hom
 
 @[simp]
-lemma permProdLeft_toEquiv : Hom.toEquiv (permProdLeft c2 σ) =  finSumFinEquiv.symm.trans
-    (((Hom.toEquiv σ).sumCongr (Equiv.refl (Fin n2))).trans finSumFinEquiv)  := by
+lemma permProdLeft_toEquiv : Hom.toEquiv (permProdLeft c2 σ) = finSumFinEquiv.symm.trans
+    (((Hom.toEquiv σ).sumCongr (Equiv.refl (Fin n2))).trans finSumFinEquiv) := by
   simp [permProdLeft]
-
 
 /-- The permutation that arises when moving a `perm` node in the right entry through a `prod` node.
   This permutation is defined using left-whiskering and composition with `finSumFinEquiv`

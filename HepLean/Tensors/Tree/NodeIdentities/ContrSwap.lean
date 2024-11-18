@@ -74,6 +74,14 @@ def contrSwapHom : (OverColor.mk (c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbov
     (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)) :=
   (mkIso (funext fun x => congrArg c (swap_map_eq q x))).hom
 
+@[simp]
+lemma contrSwapHom_toEquiv : Hom.toEquiv q.contrSwapHom = Equiv.refl (Fin n) := by
+  simp [contrSwapHom]
+
+@[simp]
+lemma contrSwapHom_hom_left_apply (x : Fin n) : q.contrSwapHom.hom.left x = x := by
+  simp [contrSwapHom]
+
 lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom := by
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
