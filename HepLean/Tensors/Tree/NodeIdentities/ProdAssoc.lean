@@ -54,7 +54,7 @@ lemma assocPerm_toHomEquiv_hom : Hom.toEquiv (assocPerm c c2 c3).hom = finSumFin
 lemma assocPerm_toHomEquiv_inv : Hom.toEquiv (assocPerm c c2 c3).inv = finSumFinEquiv.symm.trans
     (((Equiv.refl (Fin n)).sumCongr finSumFinEquiv.symm).trans
     ((Equiv.sumAssoc (Fin n) (Fin n2) (Fin n3)).symm.trans
-    ((finSumFinEquiv.sumCongr (Equiv.refl (Fin n3))).trans finSumFinEquiv)))  := by
+    ((finSumFinEquiv.sumCongr (Equiv.refl (Fin n3))).trans finSumFinEquiv))) := by
   simp [assocPerm]
 
 /-- The `prod` obeys associativity. -/

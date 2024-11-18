@@ -188,9 +188,16 @@ lemma pairIsoSep_β {c1 c2 : C} (x : ↑(F.obj { as := c1 } ⊗ F.obj { as := c2
     apply congrArg
     funext i
     fin_cases i
-    · simp [lift.discreteFunctorMapEqIso]
+    · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, mk_hom,
+      Matrix.cons_val_zero, Fin.cases_zero, mk_left, equivToHomEq_toEquiv, finMapToEquiv_symm_apply,
+      Matrix.cons_val_one, Matrix.head_cons, lift.discreteFunctorMapEqIso, eqToIso_refl,
+      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
       rfl
-    · simp [lift.discreteFunctorMapEqIso]
+    · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.mk_one, Fin.isValue, mk_hom,
+      Matrix.cons_val_one, Matrix.head_cons, mk_left, equivToHomEq_toEquiv,
+      finMapToEquiv_symm_apply, Matrix.cons_val_zero, lift.discreteFunctorMapEqIso, eqToIso_refl,
+      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, Fin.cases_zero,
+      LinearEquiv.ofLinear_apply]
       rfl
   exact congrFun (congrArg (fun f => f.toFun) h1) _
 

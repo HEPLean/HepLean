@@ -201,15 +201,17 @@ lemma extractTwo_hom_left_apply {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.
 @[simp]
 lemma extractTwo_toEquiv {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
     {c1 c2 : Fin n.succ.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
-    (Hom.toEquiv (extractTwo i j σ)) = (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
-      (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))) := by
+    (Hom.toEquiv (extractTwo i j σ)) =
+    (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))) := by
   simp only [extractTwo, extractOne]
   rfl
 
 lemma extractTwo_toEquiv_symm {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fin n.succ.succ)
     {c1 c2 : Fin n.succ.succ.succ → C} (σ : mk c1 ⟶ mk c2) :
-    (Hom.toEquiv (extractTwo i j σ)).symm = (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
-      (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))).symm := by
+    (Hom.toEquiv (extractTwo i j σ)).symm =
+    (finExtractOnePerm ((finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ)).symm j)
+    (finExtractOnePerm ((Hom.toEquiv σ).symm i) (Hom.toEquiv σ))).symm := by
   simp
 
 /-- Removes a given `i : Fin n.succ.succ` and `j : Fin n.succ` from a morphism in `OverColor C`.

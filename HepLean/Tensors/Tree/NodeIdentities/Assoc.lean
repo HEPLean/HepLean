@@ -44,19 +44,28 @@ lemma assoc_one_two_two {c1 c2 c3 : S.C} (t1 : S.F.obj (OverColor.mk ![c1]))
     rw [contr_tensor_eq <| contr_prod _ _ _]
     rw [perm_contr_congr 0 0 (by rfl) (by rfl)]
     erw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <|
-      perm_tensor_eq <| prod_assoc' _ _ _ _ _ _ ]
+      perm_tensor_eq <| prod_assoc' _ _ _ _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
     rw [perm_tensor_eq <| contr_tensor_eq <| perm_contr_congr 0 0 (by
       simp only [Nat.succ_eq_add_one,
       Nat.reduceAdd, Fin.isValue, mk_left, Functor.id_obj, mk_hom, Equiv.toFun_as_coe,
       Hom.toEquiv_comp, equivToIso_homToEquiv, Equiv.symm_trans_apply]
-      rfl) (by simp; rfl)]
+      rfl) (by
+        simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, mk_left, Functor.id_obj, mk_hom,
+          Equiv.toFun_as_coe, Fin.zero_succAbove, Fin.succ_zero_eq_one, Function.comp_apply,
+          Hom.toEquiv_comp, equivToIso_homToEquiv, Equiv.symm_trans_apply, extractOne_homToEquiv,
+          assocPerm_toHomEquiv_inv, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm,
+          Equiv.sumCongr_apply, Equiv.coe_refl, finExtractOnePerm_symm_apply, Equiv.trans_apply,
+          Equiv.symm_apply_apply, Sum.map_map, CompTriple.comp_eq, Equiv.symm_comp_self,
+          Sum.map_id_id, id_eq, Equiv.self_comp_symm, Equiv.apply_symm_apply,
+          finExtractOne_symm_inr_apply]
+        rfl)]
     rw [perm_tensor_eq <| perm_contr_congr 0 2 (by
       simp only [Nat.succ_eq_add_one,
       Nat.reduceAdd, Fin.isValue, mk_left, Functor.id_obj, mk_hom, Equiv.toFun_as_coe,
       Hom.toEquiv_comp, equivToIso_homToEquiv, Equiv.symm_trans_apply, equivToIso_mkIso_hom,
       extractTwo_toEquiv]
-      simp only [ Equiv.refl_symm,  mk_left,
+      simp only [Equiv.refl_symm, mk_left,
         Hom.toEquiv_comp, assocPerm_toHomEquiv_inv, equivToIso_homToEquiv, ContrPair.leftContr,
         Equiv.toFun_as_coe, ContrPair.leftContrI, ContrPair.leftContrJ, Equiv.symm_trans_apply,
         Equiv.symm_apply_apply, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.sumCongr_apply,
@@ -86,17 +95,15 @@ lemma assoc_one_two_two {c1 c2 c3 : S.C} (t1 : S.F.obj (OverColor.mk ![c1]))
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_contr _ _ _]
     rw [perm_tensor_eq <| perm_contr_congr 0 0 (by rfl) (by rfl)]
     rw [perm_perm]
-  apply perm_congr (OverColor.Hom.fin_ext _ _ fun i => ?_)  rfl
+  apply perm_congr (OverColor.Hom.fin_ext _ _ fun i => ?_) rfl
   fin_cases i
   simp only [Hom.hom_comp, types_comp_apply, Over.comp_left, extractTwo_hom_left_apply]
   simp only [mkIso_hom_hom_left_apply]
   simp only [Hom.toEquiv_comp, extractTwo_toEquiv, assocPerm_toHomEquiv_inv,
     ContrPair.leftContrI, ContrPair.leftContrJ, ContrPair.leftContr]
   simp only [mk_left, equivToIso_mkIso_hom]
-  simp only [ equivToIso_homToEquiv, equivToHomEq_hom_left]
+  simp only [equivToIso_homToEquiv, equivToHomEq_hom_left]
   simp only [contrContrPerm_hom_left_apply]
   decide
-
-
 
 end TensorTree

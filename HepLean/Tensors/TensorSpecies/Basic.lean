@@ -556,7 +556,7 @@ lemma tensorToVec_inv_apply_expand (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
     rfl)).hom).hom ((OverColor.forgetLiftApp S.FD c).inv.hom x) :=
   forgetLiftAppCon_inv_apply_expand S.FD c x
 
-lemma tensorToVec_naturality_eqToHom (c c1 : S.C) (h : c = c1):
+lemma tensorToVec_naturality_eqToHom (c c1 : S.C) (h : c = c1) :
     (S.tensorToVec c).hom ≫ S.FD.map (Discrete.eqToHom h) =
     S.F.map (OverColor.mkIso (by rw [h])).hom ≫ (S.tensorToVec c1).hom :=
   OverColor.forgetLiftAppCon_naturality_eqToHom S.FD c c1 h

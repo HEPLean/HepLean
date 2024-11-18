@@ -67,7 +67,7 @@ lemma toDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
     let y : S.F.obj (OverColor.mk ![c]) := (S.tensorToVec c).inv.hom x
     (S.toDualRep c).hom x = (S.tensorToVec (S.τ c)).hom.hom
     ({y | μ ⊗ S.metricTensor (S.τ c) | μ ν}ᵀ
-    |> perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor := by
+    |> perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl))).tensor := by
   simp only
   rw [toDualRep_apply_eq_contrOneTwoLeft]
   apply congrArg
@@ -78,7 +78,7 @@ lemma fromDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
     (S.fromDualRep c).hom x = (S.tensorToVec c).hom.hom
     ({y | μ ⊗ S.metricTensor (S.τ (S.τ c))| μ ν}ᵀ
     |> perm (OverColor.equivToHomEq (Equiv.refl _)
-      (fun x => by fin_cases x; exact (S.τ_involution c).symm ))).tensor := by
+      (fun x => by fin_cases x; exact (S.τ_involution c).symm))).tensor := by
   simp only
   rw [fromDualRep]
   simp only [Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply, Nat.succ_eq_add_one,
@@ -106,7 +106,15 @@ lemma toDualRep_fromDualRep_tensorTree_metrics (c : S.C) (x : S.FD.obj (Discrete
   conv_lhs =>
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| tensorNode_of_tree _]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
-    rw [perm_tensor_eq <| perm_contr_congr 0 0 (by simp) (by simp; decide)]
+    rw [perm_tensor_eq <| perm_contr_congr 0 0 (by simp) (by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
+        OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, Equiv.refl_symm, Equiv.coe_refl,
+        Function.comp_apply, id_eq, Fin.zero_eta, List.pmap.eq_1, Matrix.cons_val_zero,
+        Fin.succ_zero_eq_one, Fin.succ_one_eq_two, OverColor.extractOne_homToEquiv,
+        permProdLeft_toEquiv, OverColor.equivToHomEq_toEquiv, Equiv.sumCongr_refl, Equiv.refl_trans,
+        Equiv.symm_trans_self, Equiv.refl_apply, HepLean.Fin.finExtractOnePerm_symm_apply,
+        HepLean.Fin.finExtractOne_symm_inr_apply, Fin.zero_succAbove]
+      decide)]
     rw [perm_perm]
   apply perm_congr _ rfl
   apply OverColor.Hom.fin_ext
@@ -136,14 +144,44 @@ lemma toDualRep_fromDualRep_tensorTree_unitTensor (c : S.C) (x : S.FD.obj (Discr
   conv_lhs =>
     rw [perm_tensor_eq <| assoc_one_two_two _ _ _]
     rw [perm_perm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| metricTensor_contr_dual_metricTensor_eq_unit _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <|
+      metricTensor_contr_dual_metricTensor_eq_unit _]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_right _ _ _ _]
-    rw [perm_tensor_eq <| perm_contr_congr 0 1 (by simp; rfl) (by simp; rfl)]
+    rw [perm_tensor_eq <| perm_contr_congr 0 1 (by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, OverColor.mk_left, Functor.id_obj,
+        OverColor.mk_hom, permProdRight_toEquiv, OverColor.equivToHomEq_toEquiv,
+        Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm,
+        Equiv.sumCongr_apply, Equiv.coe_refl]
+      rfl) (by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
+        OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, OverColor.extractOne_homToEquiv,
+        permProdRight_toEquiv, OverColor.equivToHomEq_toEquiv, Equiv.symm_trans_apply,
+        Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply, Equiv.coe_refl,
+        HepLean.Fin.finExtractOnePerm_symm_apply, Equiv.trans_apply, Equiv.symm_apply_apply,
+        Sum.map_map, CompTriple.comp_eq, Equiv.self_comp_symm, Sum.map_id_id, id_eq,
+        Equiv.apply_symm_apply, HepLean.Fin.finExtractOne_symm_inr_apply, Fin.zero_succAbove,
+        Fin.succ_zero_eq_one]
+      rfl)]
     rw [perm_perm]
   conv_rhs =>
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| unitTensor_eq_dual_perm _]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_right _ _ _ _]
-    rw [perm_tensor_eq <| perm_contr_congr 0 1 (by simp; rfl) (by simp; rfl)]
+    rw [perm_tensor_eq <| perm_contr_congr 0 1 (by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, OverColor.mk_left, Functor.id_obj,
+        OverColor.mk_hom, permProdRight_toEquiv, OverColor.equivToHomEq_toEquiv,
+        Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm,
+        Equiv.sumCongr_apply, Equiv.coe_refl]
+      rfl) (by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
+        OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, Function.comp_apply,
+        HepLean.Fin.finMapToEquiv_symm_apply, Matrix.cons_val_zero, OverColor.extractOne_homToEquiv,
+        permProdRight_toEquiv, OverColor.equivToHomEq_toEquiv, Equiv.symm_trans_apply,
+        Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply, Equiv.coe_refl,
+        HepLean.Fin.finExtractOnePerm_symm_apply, Equiv.trans_apply, Equiv.symm_apply_apply,
+        Sum.map_map, CompTriple.comp_eq, Equiv.self_comp_symm, Sum.map_id_id, id_eq,
+        Equiv.apply_symm_apply, HepLean.Fin.finExtractOne_symm_inr_apply, Fin.zero_succAbove,
+        Fin.succ_zero_eq_one]
+      rfl)]
     rw [perm_perm]
   refine perm_congr (OverColor.Hom.fin_ext _ _ fun i => ?_) rfl
   fin_cases i
@@ -170,21 +208,22 @@ lemma toDualRep_fromDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk c)) 
     rw [perm_perm]
     rw [perm_eq_id]
 
-lemma toDualRep_fromDualRep_eq_self  (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
+lemma toDualRep_fromDualRep_eq_self (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
     (S.fromDualRep c).hom ((S.toDualRep c).hom x) = x := by
   rw [toDualRep_fromDualRep_tensorTree]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, tensorNode_tensor,
     OverColor.Discrete.rep_iso_hom_inv_apply]
 
-lemma fromDualRep_toDualRep_eq_self  (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
+lemma fromDualRep_toDualRep_eq_self (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
     (S.toDualRep c).hom ((S.fromDualRep c).hom x) = x := by
   rw [S.toDualRep_congr (S.τ_involution c).symm, fromDualRep]
-  simp
-  change  (S.FD.map (Discrete.eqToHom _)).hom ((S.toDualRep (S.τ (S.τ c))).hom
+  simp only [Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
+  change (S.FD.map (Discrete.eqToHom _)).hom ((S.toDualRep (S.τ (S.τ c))).hom
     (((S.FD.map (Discrete.eqToHom _)) ≫ S.FD.map (Discrete.eqToHom _)).hom
     (((S.toDualRep (S.τ c)).hom x)))) = _
   rw [← S.FD.map_comp]
-  simp
+  simp only [eqToHom_trans, eqToHom_refl, Discrete.functor_map_id, Action.id_hom,
+    ModuleCat.id_apply]
   conv_rhs => rw [← S.toDualRep_fromDualRep_eq_self (S.τ c) x]
   rfl
 
@@ -202,8 +241,8 @@ def dualRepIsoDiscrete (c : S.C) : S.FD.obj (Discrete.mk c) ≅ S.FD.obj (Discre
 
 informal_definition dualRepIso where
   math :≈ "Given a `i : Fin n` the isomorphism between `S.F.obj (OverColor.mk c)` and
-     `S.F.obj (OverColor.mk (Function.update c i (S.τ (c i))))` induced by `dualRepIsoDiscrete`
-     acting on the `i`-th component of the color."
+    `S.F.obj (OverColor.mk (Function.update c i (S.τ (c i))))` induced by `dualRepIsoDiscrete`
+    acting on the `i`-th component of the color."
   deps :≈ [``dualRepIsoDiscrete]
 
 informal_lemma dualRepIso_unitTensor_fst where

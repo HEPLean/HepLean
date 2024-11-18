@@ -113,7 +113,7 @@ lemma dual_unitTensor_eq_perm (c : S.C) :
   rfl
 
 /-- Applying `contrOneTwoLeft` with the unit tensor is the identity map. -/
-lemma contrOneTwoLeft_unitTensor  {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
+lemma contrOneTwoLeft_unitTensor {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
     contrOneTwoLeft x (S.unitTensor c1) = x := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, contrOneTwoLeft,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -131,14 +131,14 @@ lemma contrOneTwoLeft_unitTensor  {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) 
 /-- Contracting a vector with a unit tensor returns the vector. -/
 lemma vec_contr_unitTensor_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
     {x | μ ⊗ S.unitTensor c1 | μ ν}ᵀ.tensor = ({x | ν}ᵀ |>
-    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor  := by
+    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl))).tensor := by
   rw [contr_one_two_left_eq_contrOneTwoLeft, contrOneTwoLeft_unitTensor]
   rfl
 
 /-- Contracting a unit tensor with a vector returns the unit vector. -/
 lemma unitTensor_contr_vec_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![S.τ c1])) :
     {S.unitTensor c1 | ν μ ⊗ x | μ}ᵀ.tensor = ({x | ν}ᵀ |>
-    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor := by
+    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl))).tensor := by
   conv_lhs =>
     rw [contr_tensor_eq <| prod_comm _ _ _ _]
     rw [perm_contr_congr 2 0 (by simp; decide) (by simp; decide)]
