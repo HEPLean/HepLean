@@ -13,7 +13,7 @@ import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.ProdContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ProdAssoc
-import HepLean.Tensors.TensorSpecies.ContractLemmas
+import HepLean.Tensors.TensorSpecies.Contractions.Categorical
 /-!
 
 ## Specific associativity results for tensor trees

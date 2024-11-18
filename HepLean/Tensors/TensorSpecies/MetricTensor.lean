@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.TensorSpecies.UnitTensor
-import HepLean.Tensors.TensorSpecies.ContractLemmas
+import HepLean.Tensors.TensorSpecies.Contractions.Categorical
 import HepLean.Tensors.Tree.NodeIdentities.ProdComm
 import HepLean.Tensors.Tree.NodeIdentities.PermProd
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
