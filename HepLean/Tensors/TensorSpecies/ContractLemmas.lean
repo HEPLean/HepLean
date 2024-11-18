@@ -29,13 +29,11 @@ variable {S : TensorSpecies}
 def contrOneTwoLeft {c1 c2 : S.C}
     (x : S.F.obj (OverColor.mk ![c1])) (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) :
     S.F.obj (OverColor.mk ![c2]) :=
-  (S.F.map (OverColor.mkIso (by funext x; fin_cases x; rfl)).hom).hom <|
-  (OverColor.forgetLiftApp S.FD c2).inv.hom <|
+  (OverColor.forgetLiftAppCon S.FD c2).inv.hom <|
   (λ_ (S.FD.obj (Discrete.mk c2))).hom.hom <|
   ((S.contr.app (Discrete.mk c1)) ▷ (S.FD.obj (Discrete.mk (c2 )))).hom <|
   (α_ _ _ (S.FD.obj (Discrete.mk (c2 )))).inv.hom <|
-  (OverColor.forgetLiftApp S.FD c1).hom.hom ((S.F.map (OverColor.mkIso (by
-    funext x; fin_cases x; rfl)).hom).hom x) ⊗ₜ
+  (OverColor.forgetLiftAppCon S.FD c1).hom.hom (x) ⊗ₜ
   (OverColor.Discrete.pairIsoSep S.FD).inv.hom y
 
 @[simp]
@@ -72,19 +70,20 @@ lemma contrOneTwoLeft_tprod_eq {c1 c2 : S.C}
     (fy : (i : (𝟭 Type).obj (OverColor.mk ![S.τ c1, c2]).left)
       → CoeSort.coe (S.FD.obj { as := (OverColor.mk ![S.τ c1, c2]).hom i })) :
     contrOneTwoLeft (PiTensorProduct.tprod S.k fx) (PiTensorProduct.tprod S.k fy) =
-      (S.F.map (OverColor.mkIso (by funext x; fin_cases x; rfl)).hom).hom
-      ((OverColor.forgetLiftApp S.FD c2).inv.hom (
+      ((OverColor.forgetLiftAppCon S.FD c2).inv.hom (
      ((S.contr.app (Discrete.mk c1)).hom (fx (0 : Fin 1) ⊗ₜ fy (0 : Fin 2)) •
       fy (1 : Fin 2)))) := by
   rw [contrOneTwoLeft]
   apply congrArg
-  apply congrArg
-  rw [Discrete.pairIsoSep_inv_tprod S.FD fy]
+  rw [Discrete.pairIsoSep_inv_tprod S.FD fy, OverColor.forgetLiftAppCon]
   change (S.contr.app { as := c1 }).hom (_ ⊗ₜ[S.k] fy (0 : Fin 2)) • fy (1 : Fin 2) = _
   congr
-  simp
+  simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Nat.succ_eq_add_one, Nat.reduceAdd,
+    Iso.trans_hom, Functor.mapIso_hom, Action.comp_hom, mk_left, Functor.id_obj, mk_hom,
+    ModuleCat.coe_comp, Function.comp_apply, LinearMap.id_coe, id_eq, Fin.isValue]
   rw [forgetLiftApp_hom_hom_apply_eq]
-  simp [S.F_def]
+  simp only [mk_left, Functor.id_obj, Fin.isValue]
   erw [OverColor.lift.map_tprod]
   congr
   funext x
@@ -107,6 +106,7 @@ lemma contr_one_two_left_eq_contrOneTwoLeft_tprod {c1 c2 : S.C} (x : S.F.obj (Ov
   subst hy
   conv_rhs =>
     rw [contrOneTwoLeft_tprod_eq]
+    rw [OverColor.forgetLiftAppCon_inv_apply_expand]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero, mk_left,
     Functor.id_obj, mk_hom, contr_tensor, prod_tensor, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -183,7 +183,6 @@ lemma contr_one_two_left_eq_contrOneTwoLeft {c1 c2 : S.C} (x : S.F.obj (OverColo
   apply congrArg
   simpa using contr_one_two_left_eq_contrOneTwoLeft_tprod (PiTensorProduct.tprod S.k fx)
     (PiTensorProduct.tprod S.k fy) fx fy
-
 
 /-- Expands the inner contraction of two 2-tensors which are
   tprods in terms of basic categorical

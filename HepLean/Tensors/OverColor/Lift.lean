@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Basic
+import HepLean.Tensors.OverColor.Iso
 import HepLean.Mathematics.PiTensorProduct
 /-!
 
@@ -819,6 +820,23 @@ lemma forgetLiftApp_hom_hom_apply_eq (c : C)
     (forgetLiftApp F c).hom.hom x = y ↔ x = PiTensorProduct.tprod k (fun _ => y) := by
   rw [← forgetLiftAppV_symm_apply]
   erw [LinearEquiv.eq_symm_apply]
+  rfl
+
+def forgetLiftAppCon (c : C) : (lift.obj F).obj (OverColor.mk ![c])
+    ≅ F.obj (Discrete.mk c) := ((lift.obj F).mapIso (OverColor.mkIso (by
+  funext i
+  fin_cases i
+  rfl))).trans (forgetLiftApp F c)
+
+lemma forgetLiftAppCon_inv_apply_expand (c : C) (x : F.obj (Discrete.mk c)) :
+    (forgetLiftAppCon F c).inv.hom x =
+    ((lift.obj F).map (OverColor.mkIso (by
+    funext i
+    fin_cases i
+    rfl)).hom).hom ((forgetLiftApp F c).inv.hom x):= by
+  rw [forgetLiftAppCon]
+  simp_all only [Nat.succ_eq_add_one, Nat.reduceAdd, Iso.trans_inv, Functor.mapIso_inv, Action.comp_hom,
+    ModuleCat.coe_comp, Function.comp_apply]
   rfl
 
 informal_definition forgetLift where
