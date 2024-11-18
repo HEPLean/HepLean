@@ -50,6 +50,8 @@ lemma contractSelfField_equivariant  {S : TensorSpecies} {c : S.C} {g : S.G}
 informal_lemma contractSelfField_non_degenerate where
   math :≈ "The contraction of two vectors of the same color is non-degenerate.
     I.e. ⟪ψ, φ⟫ₜₛ = 0 for all φ implies ψ = 0."
+  proof :≈ "The basic idea is that being degenerate contradicts the assumption of having a unit
+    in the tensor species."
   deps :≈ [``contractSelfField]
 
 /-- A vector satisfies `IsNormOne` if it has norm equal to one, i.e. if `⟪ψ, ψ⟫ₜₛ = 1`. -/
