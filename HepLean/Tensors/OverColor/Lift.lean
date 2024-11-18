@@ -814,6 +814,20 @@ def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c
     erw [PiTensorProduct.subsingletonEquiv_apply_tprod]
     rfl)
 
+lemma forgetLiftApp_naturality_eqToHom (c c1 : C) (h : c = c1):
+    (forgetLiftApp F c).hom ≫ F.map (Discrete.eqToHom h) =
+    (lift.obj F).map (OverColor.mkIso (by rw [h])).hom ≫ (forgetLiftApp F c1).hom := by
+  subst h
+  simp [mkIso_refl_hom]
+
+lemma forgetLiftApp_naturality_eqToHom_apply (c c1 : C) (h : c = c1)
+    (x : (lift.obj F).obj (OverColor.mk  (fun (_ : Fin 1) => c))) :
+    (F.map (Discrete.eqToHom h)).hom ((forgetLiftApp F c).hom.hom x) =
+    (forgetLiftApp F c1).hom.hom (((lift.obj F).map (OverColor.mkIso (by rw [h])).hom).hom x) := by
+  change ((forgetLiftApp F c).hom ≫ F.map (Discrete.eqToHom h)).hom x = _
+  rw [forgetLiftApp_naturality_eqToHom]
+  rfl
+
 lemma forgetLiftApp_hom_hom_apply_eq (c : C)
     (x : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c)))
     (y : (F.obj (Discrete.mk c)).V) :
@@ -837,6 +851,20 @@ lemma forgetLiftAppCon_inv_apply_expand (c : C) (x : F.obj (Discrete.mk c)) :
   rw [forgetLiftAppCon]
   simp_all only [Nat.succ_eq_add_one, Nat.reduceAdd, Iso.trans_inv, Functor.mapIso_inv, Action.comp_hom,
     ModuleCat.coe_comp, Function.comp_apply]
+  rfl
+
+lemma forgetLiftAppCon_naturality_eqToHom (c c1 : C) (h : c = c1):
+    (forgetLiftAppCon F c).hom ≫ F.map (Discrete.eqToHom h) =
+    (lift.obj F).map (OverColor.mkIso (by rw [h])).hom ≫ (forgetLiftAppCon F c1).hom := by
+  subst h
+  simp [mkIso_refl_hom]
+
+lemma forgetLiftAppCon_naturality_eqToHom_apply (c c1 : C) (h : c = c1)
+    (x : (lift.obj F).obj (OverColor.mk ![c])) :
+    (F.map (Discrete.eqToHom h)).hom ((forgetLiftAppCon F c).hom.hom x) =
+    (forgetLiftAppCon F c1).hom.hom (((lift.obj F).map (OverColor.mkIso (by rw [h])).hom).hom x) := by
+  change ((forgetLiftAppCon F c).hom ≫ F.map (Discrete.eqToHom h)).hom x = _
+  rw [forgetLiftAppCon_naturality_eqToHom]
   rfl
 
 informal_definition forgetLift where

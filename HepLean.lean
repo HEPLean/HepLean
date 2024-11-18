@@ -126,12 +126,13 @@ import HepLean.Tensors.OverColor.Iso
 import HepLean.Tensors.OverColor.Lift
 import HepLean.Tensors.TensorSpecies.Basic
 import HepLean.Tensors.TensorSpecies.ContractLemmas
+import HepLean.Tensors.TensorSpecies.DualRepIso
 import HepLean.Tensors.TensorSpecies.MetricTensor
-import HepLean.Tensors.TensorSpecies.RepIso
 import HepLean.Tensors.TensorSpecies.UnitTensor
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
 import HepLean.Tensors.Tree.Elab
+import HepLean.Tensors.Tree.NodeIdentities.Assoc
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.Congr
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr

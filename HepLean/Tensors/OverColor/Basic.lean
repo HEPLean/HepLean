@@ -309,6 +309,19 @@ lemma whiskeringRight_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
   simp [MonoidalCategory.whiskerLeft]
   rfl
 
+@[simp]
+lemma α_hom_toEquiv (f : X → C) (g : Y → C) (h : Z → C) :
+    Hom.toEquiv (α_ (OverColor.mk f) (OverColor.mk g) (OverColor.mk h)).hom =
+    Equiv.sumAssoc X Y Z := by
+  rfl
+
+@[simp]
+lemma α_inv_toEquiv (f : X → C) (g : Y → C) (h : Z → C) :
+    Hom.toEquiv (α_ (OverColor.mk f) (OverColor.mk g) (OverColor.mk h)).inv =
+    (Equiv.sumAssoc X Y Z).symm := by
+  rfl
+
+
 end OverColor
 
 end IndexNotation
