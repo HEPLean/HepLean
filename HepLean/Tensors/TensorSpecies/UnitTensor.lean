@@ -6,6 +6,10 @@ Authors: Joseph Tooby-Smith
 import HepLean.Tensors.Tree.Elab
 import HepLean.Tensors.Tree.NodeIdentities.Basic
 import HepLean.Tensors.Tree.NodeIdentities.Congr
+import HepLean.Tensors.Tree.NodeIdentities.ProdComm
+import HepLean.Tensors.Tree.NodeIdentities.PermProd
+import HepLean.Tensors.Tree.NodeIdentities.PermContr
+import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.TensorSpecies.ContractLemmas
 /-!
 
@@ -38,6 +42,8 @@ lemma unitTensor_congr {c c' : S.C} (h : c = c') : {S.unitTensor c | μ ν}ᵀ.t
   change _ = (S.F.map (𝟙 _)).hom (S.unitTensor c)
   simp
 
+/-- Applying `Discrete.pairIsoSep` inv to `unitTensor` returns the unit natural transformation
+  evaluated at `1`. -/
 lemma pairIsoSep_inv_unitTensor (c : S.C) :
     (Discrete.pairIsoSep S.FD).inv.hom (S.unitTensor c) =
     (S.unit.app (Discrete.mk c)).hom (1 : S.k) := by
@@ -45,23 +51,19 @@ lemma pairIsoSep_inv_unitTensor (c : S.C) :
     unitTensor, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V]
   erw [Discrete.rep_iso_inv_hom_apply]
 
-lemma unitTensor_eq_dual_perm_eq (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
-    ![S.τ c, c] x = (![S.τ (S.τ c), S.τ c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by
-  fin_cases x
-  · rfl
-  · exact (S.τ_involution c).symm
-
 /-- The unit tensor is equal to a permutation of indices of the dual tensor. -/
 lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
-    (perm (OverColor.equivToHomEq (finMapToEquiv ![1,0] ![1, 0]) (unitTensor_eq_dual_perm_eq c))
-    {S.unitTensor (S.τ c) | ν μ }ᵀ).tensor := by
+    ({S.unitTensor (S.τ c) | ν μ }ᵀ |>
+    perm (OverColor.equivToHomEq (finMapToEquiv ![1,0] ![1, 0])
+    (fun x => match x with | 0 => by rfl | 1 => (S.τ_involution c).symm))).tensor := by
   simp [unitTensor, tensorNode_tensor, perm_tensor]
   have h1 := S.unit_symm c
   erw [h1]
   have hg : (Discrete.pairIsoSep S.FD).hom.hom ∘ₗ (S.FD.obj { as := S.τ c } ◁
       S.FD.map (Discrete.eqToHom (S.τ_involution c))).hom ∘ₗ
       (β_ (S.FD.obj { as := S.τ (S.τ c) }) (S.FD.obj { as := S.τ c })).hom.hom =
-      (S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) (unitTensor_eq_dual_perm_eq c))).hom
+      (S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
+      (fun x => match x with | 0 => by rfl | 1 => (S.τ_involution c).symm))).hom
       ∘ₗ (Discrete.pairIsoSep S.FD).hom.hom := by
     apply TensorProduct.ext'
     intro x y
@@ -95,15 +97,12 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
       rfl
   exact congrFun (congrArg (fun f => f.toFun) hg) _
 
-lemma dual_unitTensor_eq_perm_eq (c : S.C) : ∀ (x : Fin (Nat.succ 0).succ),
-    ![S.τ (S.τ c), S.τ c] x = (![S.τ c, c] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x := fun x => by
-  fin_cases x
-  · exact (S.τ_involution c)
-  · rfl
-
-lemma dual_unitTensor_eq_perm (c : S.C) : {S.unitTensor (S.τ c) | ν μ}ᵀ.tensor =
-    (perm (OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) (dual_unitTensor_eq_perm_eq c))
-    {S.unitTensor c | μ ν}ᵀ).tensor := by
+/-- The unit tensor of the dual of a color `c` is equal to the unit tensor of `c`
+  with indicees permuted. -/
+lemma dual_unitTensor_eq_perm (c : S.C) :
+    {S.unitTensor (S.τ c) | ν μ}ᵀ.tensor = ({S.unitTensor c | μ ν}ᵀ |>
+    perm (OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
+      (fun x => match x with | 0 => (S.τ_involution c) | 1 => by rfl))).tensor := by
   rw [unitTensor_eq_dual_perm]
   conv =>
     lhs
@@ -113,8 +112,8 @@ lemma dual_unitTensor_eq_perm (c : S.C) : {S.unitTensor (S.τ c) | ν μ}ᵀ.ten
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
   rfl
 
-lemma contrOneTwoLeft_unitTensor  {c1 : S.C}
-    (x : S.F.obj (OverColor.mk ![c1])) :
+/-- Applying `contrOneTwoLeft` with the unit tensor is the identity map. -/
+lemma contrOneTwoLeft_unitTensor  {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
     contrOneTwoLeft x (S.unitTensor c1) = x := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, contrOneTwoLeft,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -125,14 +124,38 @@ lemma contrOneTwoLeft_unitTensor  {c1 : S.C}
   erw [pairIsoSep_inv_unitTensor (S := S) (c := c1)]
   change (S.F.mapIso (mkIso _)).hom.hom _ = _
   rw [Discrete.rep_iso_apply_iff, Discrete.rep_iso_inv_apply_iff]
-  simpa using  S.contr_unit c1 ((OverColor.forgetLiftApp S.FD c1).hom.hom ((S.F.map (OverColor.mkIso (by
-    funext x; fin_cases x; rfl)).hom).hom x))
+  simpa using S.contr_unit c1 ((OverColor.forgetLiftApp S.FD c1).hom.hom ((S.F.map (OverColor.mkIso
+    (by funext x; fin_cases x; rfl)).hom).hom x))
 
-lemma one_contr_unitTensor_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
+/-- Contracting a vector with a unit tensor returns the vector. -/
+lemma vec_contr_unitTensor_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) :
     {x | μ ⊗ S.unitTensor c1 | μ ν}ᵀ.tensor = ({x | ν}ᵀ |>
     perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor  := by
   rw [contr_one_two_left_eq_contrOneTwoLeft, contrOneTwoLeft_unitTensor]
   rfl
+
+/-- Contracting a unit tensor with a vector returns the unit vector. -/
+lemma unitTensor_contr_vec_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![S.τ c1])) :
+    {S.unitTensor c1 | ν μ ⊗ x | μ}ᵀ.tensor = ({x | ν}ᵀ |>
+    perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor := by
+  conv_lhs =>
+    rw [contr_tensor_eq <| prod_comm _ _ _ _]
+    rw [perm_contr_congr 2 0 (by simp; decide) (by simp; decide)]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| unitTensor_eq_dual_perm _]
+    rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_right _ _ _ _]
+    rw [perm_tensor_eq <| perm_contr_congr 1 0 (by simp; decide) (by simp; decide)]
+    rw [perm_perm]
+    rw [perm_tensor_eq <| contr_swap _ _]
+    rw [perm_perm]
+    erw [perm_tensor_eq <| vec_contr_unitTensor_eq_self _]
+    rw [perm_perm]
+  refine perm_congr (OverColor.Hom.fin_ext _ _ fun i => ?_) rfl
+  simp only [mk_left, mk_hom, Function.comp_apply, equivToHomEq_toEquiv, Hom.hom_comp,
+    Over.comp_left, equivToHomEq_hom_left, types_comp_apply, ContrPair.contrSwapHom_hom_left_apply,
+    mkIso_hom_hom_left_apply, extractTwo_hom_left_apply, permProdRight_toEquiv,
+    finExtractOnePerm_apply, finExtractOne_symm_inr_apply, braidPerm_toEquiv]
+  fin_cases i
+  · decide
 
 end TensorSpecies
 
