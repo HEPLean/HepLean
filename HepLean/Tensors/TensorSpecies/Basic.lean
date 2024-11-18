@@ -538,6 +538,24 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
     LinearMap.id_coe, id_eq, TensorProduct.lid_tmul]
   rfl
 
+/-!
+
+## The equivalence turning vecs into tensors
+
+-/
+
+/-- The equivaelcne between tensors based on `![c]` and vectros in ` S.FD.obj (Discrete.mk c)`. -/
+def tensorToVec (c : S.C) : S.F.obj (OverColor.mk ![c]) ≅ S.FD.obj (Discrete.mk c) :=
+  OverColor.forgetLiftAppCon S.FD c
+
+lemma tensorToVec_inv_apply_expand (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
+    (S.tensorToVec c).inv.hom x =
+    ((lift.obj S.FD).map (OverColor.mkIso (by
+    funext i
+    fin_cases i
+    rfl)).hom).hom ((OverColor.forgetLiftApp S.FD c).inv.hom x) :=
+  forgetLiftAppCon_inv_apply_expand S.FD c x
+
 end TensorSpecies
 
 end

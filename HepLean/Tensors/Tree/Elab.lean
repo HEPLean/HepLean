@@ -195,8 +195,10 @@ def getNoIndicesExact (stx : Syntax) : TermElabM ℕ := do
         let a' ← whnf a
         match a' with
         | Expr.lit (Literal.natVal n) => return n
-        |_ => throwError "Could not extract number of indices from tensor (getNoIndicesExact). "
-      | _ => throwError "Could not extract number of indices from tensor (getNoIndicesExact). "
+        |_ => throwError s!"Could not extract number of indices from tensor
+          {stx} (getNoIndicesExact). "
+      | _ => throwError s!"Could not extract number of indices from tensor
+        {stx} (getNoIndicesExact). "
     | _ => return 1
   | k => return k
 

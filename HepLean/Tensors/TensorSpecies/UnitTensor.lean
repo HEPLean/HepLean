@@ -121,7 +121,7 @@ lemma contrOneTwoLeft_unitTensor  {c1 : S.C} (x : S.F.obj (OverColor.mk ![c1])) 
     Action.instMonoidalCategory_whiskerRight_hom, Functor.comp_obj, Discrete.functor_obj_eq_as,
     Function.comp_apply, Action.instMonoidalCategory_associator_inv_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    forgetLiftAppCon_inv_apply_expand]
+    tensorToVec_inv_apply_expand]
   erw [pairIsoSep_inv_unitTensor (S := S) (c := c1)]
   change (S.F.mapIso (mkIso _)).hom.hom _ = _
   rw [Discrete.rep_iso_apply_iff, Discrete.rep_iso_inv_apply_iff]

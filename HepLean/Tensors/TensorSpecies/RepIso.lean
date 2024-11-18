@@ -18,6 +18,7 @@ open MonoidalCategory
 noncomputable section
 
 namespace TensorSpecies
+open TensorTree
 variable (S : TensorSpecies)
 
 /-- The morphism from `S.FD.obj (Discrete.mk c)` to `S.FD.obj (Discrete.mk (S.τ c))`
@@ -43,8 +44,8 @@ def fromDualRep (c : S.C) : S.FD.obj (Discrete.mk (S.τ c)) ⟶ S.FD.obj (Discre
 
 /-- The rewriting of `toDualRep` in terms of `contrOneTwoLeft`. -/
 lemma toDualRep_apply_eq_contrOneTwoLeft (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
-    (S.toDualRep c).hom x = (OverColor.forgetLiftAppCon S.FD (S.τ c)).hom.hom
-    (contrOneTwoLeft (((OverColor.forgetLiftAppCon S.FD c).inv.hom x))
+    (S.toDualRep c).hom x = (S.tensorToVec (S.τ c)).hom.hom
+    (contrOneTwoLeft (((S.tensorToVec c).inv.hom x))
     (S.metricTensor (S.τ c))) := by
   simp only [toDualRep, Monoidal.tensorUnit_obj, Action.comp_hom,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -58,6 +59,29 @@ lemma toDualRep_apply_eq_contrOneTwoLeft (c : S.C) (x : S.FD.obj (Discrete.mk c)
   repeat apply congrArg
   erw [pairIsoSep_inv_metricTensor]
   rfl
+
+/-- Expansion of `toDualRep` is
+  `(S.tensorToVec c).inv.hom x | μ ⊗ S.metricTensor (S.τ c) | μ ν`. -/
+lemma toDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
+    let y : S.F.obj (OverColor.mk ![c]) := (S.tensorToVec c).inv.hom x
+    (S.toDualRep c).hom x = (S.tensorToVec (S.τ c)).hom.hom
+    ({y | μ ⊗ S.metricTensor (S.τ c) | μ ν}ᵀ
+    |> perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl ))).tensor := by
+  simp only
+  rw [toDualRep_apply_eq_contrOneTwoLeft]
+  apply congrArg
+  exact contrOneTwoLeft_tensorTree ((S.tensorToVec c).inv.hom x) (S.metricTensor (S.τ c))
+
+lemma fromDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
+    let y : S.F.obj (OverColor.mk ![S.τ c]) := (S.tensorToVec (S.τ c)).inv.hom x
+    (S.fromDualRep c).hom x = (S.tensorToVec c).hom.hom
+    ({y | μ ⊗ S.metricTensor (S.τ (S.τ c))| μ ν}ᵀ
+    |> perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; exact (S.τ_involution c).symm ))).tensor := by
+  simp only
+  rw [fromDualRep]
+  simp only [Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply, Nat.succ_eq_add_one,
+    Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero]
+  rw [toDualRep_tensorTree]
 
 end TensorSpecies
 
