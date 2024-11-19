@@ -97,7 +97,7 @@ lemma smul_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)}
 
 /-- If a vector is norm-zero, then any vector in the orbit of that vector is also norm-zero. -/
 @[simp]
-lemma action_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
+lemma action_isNormZero_iff_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
     S.IsNormZero ((S.FD.obj (Discrete.mk c)).ρ g ψ) ↔ S.IsNormZero ψ := by
   simp only [IsNormZero, contractSelfField_equivariant]
 
