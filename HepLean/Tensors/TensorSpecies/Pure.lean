@@ -7,6 +7,10 @@ import HepLean.Tensors.TensorSpecies.DualRepIso
 /-!
 
 # Pure tensors
+
+A pure tensor is one of the form `ψ1 ⊗ ψ2 ⊗ ... ⊗ ψn`.
+We say a tensor is pure if it is of this form.
+
 -/
 
 open IndexNotation
