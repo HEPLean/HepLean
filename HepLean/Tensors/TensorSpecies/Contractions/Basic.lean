@@ -54,11 +54,52 @@ informal_lemma contractSelfField_non_degenerate where
     in the tensor species."
   deps :≈ [``contractSelfField]
 
+informal_lemma contractSelfField_tensorTree where
+  math :≈ "The contraction ⟪ψ, φ⟫ₜₛ is related to the tensor tree
+    {ψ | μ ⊗ (S.dualRepIsoDiscrete c).hom φ | μ}ᵀ "
+  deps :≈ [``contractSelfField, ``TensorTree]
+
+/-!
+
+## IsNormOne
+
+-/
+
 /-- A vector satisfies `IsNormOne` if it has norm equal to one, i.e. if `⟪ψ, ψ⟫ₜₛ = 1`. -/
 def IsNormOne {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫ₜₛ = 1
 
+/-- If a vector is norm-one, then any vector in the orbit of that vector is also norm-one. -/
+@[simp]
+lemma action_isNormOne_of_isNormOne {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
+    S.IsNormOne ((S.FD.obj (Discrete.mk c)).ρ g ψ) ↔ S.IsNormOne ψ := by
+  simp only [IsNormOne, contractSelfField_equivariant]
+
+/-!
+
+## IsNormZero
+
+-/
+
 /-- A vector satisfies `IsNormZero` if it has norm equal to zero, i.e. if `⟪ψ, ψ⟫ₜₛ = 0`. -/
 def IsNormZero {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫ₜₛ = 0
+
+/-- The zero vector has norm equal to zero. -/
+@[simp]
+lemma zero_isNormZero {c : S.C}  : @IsNormZero S c 0 := by
+  simp only [IsNormZero, tmul_zero, map_zero]
+
+/-- If a vector is norm-zero, then any scalar multiple of that vector is also norm-zero. -/
+lemma smul_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)}
+    (h : S.IsNormZero ψ ) (a : S.k) : S.IsNormZero (a • ψ) := by
+  simp only [IsNormZero, tmul_smul, map_smul, smul_tmul]
+  rw [h]
+  simp only [smul_eq_mul, mul_zero]
+
+/-- If a vector is norm-zero, then any vector in the orbit of that vector is also norm-zero. -/
+@[simp]
+lemma action_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
+    S.IsNormZero ((S.FD.obj (Discrete.mk c)).ρ g ψ) ↔ S.IsNormZero ψ := by
+  simp only [IsNormZero, contractSelfField_equivariant]
 
 end TensorSpecies
 
