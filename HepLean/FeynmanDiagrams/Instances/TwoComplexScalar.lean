@@ -125,7 +125,8 @@ def halfEdgeType {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → Type := fun
   | join _ _ _ t => t.halfEdgeType
 
 /-- The map taking each half-edge to it's associated vertex. -/
-def halfEdgeToVertex {n : ℕ} {c : Fin n → 𝓔} : (T : FeynmanTree c) → T.halfEdgeType → T.vertexType := fun
+def halfEdgeToVertex {n : ℕ} {c : Fin n → 𝓔} : (T : FeynmanTree c) →
+    T.halfEdgeType → T.vertexType := fun
   | vertex v => fun _ => ()
   | union t1 t2 => Sum.map t1.halfEdgeToVertex t2.halfEdgeToVertex
   | join _ _ _ t => t.halfEdgeToVertex
