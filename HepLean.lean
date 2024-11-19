@@ -130,6 +130,7 @@ import HepLean.Tensors.TensorSpecies.Contractions.Categorical
 import HepLean.Tensors.TensorSpecies.Contractions.ContrMap
 import HepLean.Tensors.TensorSpecies.DualRepIso
 import HepLean.Tensors.TensorSpecies.MetricTensor
+import HepLean.Tensors.TensorSpecies.Pure
 import HepLean.Tensors.TensorSpecies.UnitTensor
 import HepLean.Tensors.Tree.Basic
 import HepLean.Tensors.Tree.Dot
