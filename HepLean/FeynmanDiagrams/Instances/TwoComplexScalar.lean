@@ -53,6 +53,7 @@ inductive 𝓥 where
   | φ₂φ₂φ₂φ₂ : 𝓥
 
 /-- To each vertex, the association of the number of edges. -/
+@[nolint unusedArguments]
 def 𝓥NoEdges : 𝓥 → ℕ := fun _ => 4
 
 /-- To each vertex, associates the indexing map of half-edges associated with that edge. -/
@@ -77,73 +78,209 @@ def 𝓥Edges (v : 𝓥) : Fin (𝓥NoEdges v) → 𝓔 :=
     | (2 : Fin 4) => 𝓔.complexScalarOut₂
     | (3 : Fin 4) => 𝓔.complexScalarIn₂
 
-/-- A Feynman tree is an similar to a Feynman diagram, except there is an
-  order to edges etc. It has a node for each vertex of a Feynman diagram,
-  the (disjoint) union of Feynman diagrams, and the joining of two half edges of
-  a Feynman diagram.
+inductive WickStringLast where
+  | incoming : WickStringLast
+  | vertex : WickStringLast
+  | outgoing : WickStringLast
+  | final : WickStringLast
 
-  To each Feynman tree is associated a Feynman diagram. But more then
-  one distinct Feynman tree can lead to the same Feynman diagram.  -/
-inductive FeynmanTree : {n : ℕ} → (c : Fin n → 𝓔) → Type where
-  | vertex (v : 𝓥) : FeynmanTree (𝓥Edges v)
-  | union {n m : ℕ} {c : Fin n → 𝓔} {c1 : Fin m → 𝓔} (t : FeynmanTree c) (t1 : FeynmanTree c1) :
-    FeynmanTree (Sum.elim c c1 ∘ finSumFinEquiv.symm)
-  | join {n : ℕ} {c : Fin n.succ.succ → 𝓔} : (i : Fin n.succ.succ) →
-    (j : Fin n.succ) → (h : c (i.succAbove j) = ξ (c i)) → FeynmanTree c →
-    FeynmanTree (c ∘ i.succAbove ∘ j.succAbove)
+open WickStringLast
 
-namespace FeynmanTree
+def FieldString (n : ℕ) : Type := Fin n → 𝓔
 
-/-- The number of nodes in a feynman tree. -/
-def size {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → ℕ := fun
-  | vertex _ => 1
-  | union t1 t2 => t1.size + t2.size + 1
-  | join _ _ _ t => t.size + 1
+inductive WickString : {n : ℕ} → (c : FieldString n) → WickStringLast → Type where
+  | empty : WickString Fin.elim0 incoming
+  | incoming {n : ℕ} {c : Fin n → 𝓔} (w : WickString c incoming) (e : 𝓔) :
+      WickString (Fin.cons e c) incoming
+  | endIncoming {n : ℕ} {c : Fin n → 𝓔} (w : WickString c incoming) : WickString c vertex
+  | vertex {n : ℕ} {c : Fin n → 𝓔} (w : WickString c vertex) (v : 𝓥) :
+      WickString (Fin.append (𝓥Edges v) c) vertex
+  | endVertex {n : ℕ} {c : Fin n → 𝓔} (w : WickString c vertex) : WickString c outgoing
+  | outgoing {n : ℕ} {c : Fin n → 𝓔} (w : WickString c outgoing) (e : 𝓔) :
+      WickString (Fin.cons e c) outgoing
+  | endOutgoing {n : ℕ} {c : Fin n → 𝓔} (w : WickString c outgoing) : WickString c final
 
-/-- The number of half-edges associated with a Feynman tree. -/
-def numHalfEdges {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → ℕ := fun
-  | vertex v => 𝓥NoEdges v
-  | union t1 t2 => t1.numHalfEdges + t2.numHalfEdges
-  | join _ _ _ t => t.numHalfEdges
+inductive WickContract : {n : ℕ} → (f : FieldString n) → {m : ℕ} → (ub : Fin m → Fin n) →
+    {k : ℕ} → (b1 : Fin k → Fin n) → Type where
+  | string {n : ℕ} {c : Fin n → 𝓔} : WickContract c id Fin.elim0
+  | contr {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
+    {b1 : Fin k → Fin n} : (i : Fin m.succ.succ) →
+    (j : Fin m.succ) → (h : c (ub (i.succAbove j)) = ξ (c (ub i))) →
+    (hilej : i < i.succAbove j) → (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i) →
+    (w : WickContract c ub b1) → WickContract c (ub ∘ i.succAbove ∘ j.succAbove) (Fin.snoc b1 (ub i))
 
-/-- The type of vertices of a Feynman tree. -/
-def vertexType {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → Type := fun
-  | vertex v => Unit
-  | union t1 t2 => Sum t1.vertexType t2.vertexType
-  | join _ _ _ t => t.vertexType
+namespace WickContract
+variable {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n}
 
-/-- Maps `vertexType` to `𝓥` taking each vertex to it's vertex color. -/
-def vertexTo𝓥 {n : ℕ} {c : Fin n → 𝓔} : (T : FeynmanTree c) → T.vertexType → 𝓥 := fun
-  | vertex v => fun _ => v
-  | union t1 t2 => Sum.elim t1.vertexTo𝓥 t2.vertexTo𝓥
-  | join _ _ _ t => t.vertexTo𝓥
+/-- The number of nodes of a Wick contraction. -/
+def size {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    WickContract c ub b1 → ℕ := fun
+  | string => 1
+  | contr _ _ _ _ _ w => w.size + 1
 
-/-- The type of half edges of a tensor tree. -/
-def halfEdgeType {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → Type := fun
-  | vertex v => Fin (𝓥NoEdges v)
-  | union t1 t2 => Sum t1.halfEdgeType t2.halfEdgeType
-  | join _ _ _ t => t.halfEdgeType
+def unbound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    WickContract c ub b1 → Fin m → Fin n := fun _ => ub
 
-/-- The map taking each half-edge to it's associated vertex. -/
-def halfEdgeToVertex {n : ℕ} {c : Fin n → 𝓔} : (T : FeynmanTree c) →
-    T.halfEdgeType → T.vertexType := fun
-  | vertex v => fun _ => ()
-  | union t1 t2 => Sum.map t1.halfEdgeToVertex t2.halfEdgeToVertex
-  | join _ _ _ t => t.halfEdgeToVertex
+@[simp]
+lemma unbound_contr {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
+    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
+    (j : Fin m.succ)
+    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
+    (hilej : i < i.succAbove j)
+    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
+    (w : WickContract c ub b1) (r : Fin m) :
+    (contr i j h hilej hlastlej w).unbound r = w.unbound (i.succAbove (j.succAbove r)) := rfl
 
-/-- The inclusion of external half-edges into all half-edges. -/
-def inclExternalEdges {n : ℕ} {c : Fin n → 𝓔} : (T : FeynmanTree c) →
-    Fin n → T.halfEdgeType := fun
-  | vertex v => fun i => i
-  | union t1 t2 => Sum.map t1.inclExternalEdges t2.inclExternalEdges ∘ finSumFinEquiv.symm
-  | join i j _ t => t.inclExternalEdges ∘ i.succAbove ∘ j.succAbove
+lemma unbound_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    (w : WickContract c ub b1) → StrictMono w.unbound := fun
+  | string => by exact fun ⦃a b⦄ a => a
+  | contr i j hij hilej hi w => by
+    intro r s hrs
+    refine w.unbound_strictMono ?_
+    refine Fin.strictMono_succAbove _ ?_
+    refine Fin.strictMono_succAbove _ hrs
 
-/-- The type of edges of a Feynman tree. -/
-def edgeType {n : ℕ} {c : Fin n → 𝓔} : FeynmanTree c → Type := fun
-  | vertex v => Empty
-  | union t1 t2 => Sum t1.edgeType t2.edgeType
-  | join _ _ _ t => Sum t.edgeType Unit
+def boundFst {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    WickContract c ub b1 → Fin k → Fin n := fun _ => b1
 
-end FeynmanTree
+@[simp]
+lemma boundFst_contr_castSucc {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
+    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
+    (j : Fin m.succ)
+    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
+    (hilej : i < i.succAbove j)
+    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
+    (w : WickContract c ub b1) (r : Fin k) :
+    (contr i j h hilej hlastlej w).boundFst r.castSucc = w.boundFst r := by
+  simp only [boundFst, Fin.snoc_castSucc]
+
+@[simp]
+lemma boundFst_contr_last {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
+    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
+    (j : Fin m.succ)
+    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
+    (hilej : i < i.succAbove j)
+    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
+    (w : WickContract c ub b1) :
+    (contr i j h hilej hlastlej w).boundFst (Fin.last k) = ub i := by
+  simp only [boundFst, Fin.snoc_last]
+
+lemma boundFst_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    (w : WickContract c ub b1) → StrictMono w.boundFst := fun
+  | string => fun k => Fin.elim0 k
+  | contr i j hij hilej hi w => by
+    intro r s hrs
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      rcases Fin.eq_castSucc_or_eq_last s with hs | hs
+      · obtain ⟨s, hs⟩ := hs
+        subst hs
+        simp
+        apply w.boundFst_strictMono _
+        simpa using hrs
+      · subst hs
+        simp
+        refine Fin.lt_of_le_of_lt ?_ (hi (Nat.zero_lt_of_lt hrs))
+        · refine (StrictMono.monotone w.boundFst_strictMono) ?_
+          rw [Fin.le_def]
+          simp
+          rw [Fin.lt_def] at hrs
+          omega
+    · subst hr
+      rcases Fin.eq_castSucc_or_eq_last s with hs | hs
+      · obtain ⟨s, hs⟩ := hs
+        subst hs
+        have hsp := s.prop
+        rw [Fin.lt_def] at hrs
+        simp at hrs
+        omega
+      · subst hs
+        simp at hrs
+
+def boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    WickContract c ub b1 → Fin k → Fin n := fun
+  | string => Fin.elim0
+  | contr i j _  _ _ w => Fin.snoc w.boundSnd (w.unbound (i.succAbove j))
+
+lemma boundFst_lt_boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    (w : WickContract c ub b1) → (i : Fin k) → w.boundFst i < w.boundSnd i := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j hij hilej hi w => fun r  => by
+    simp only [boundFst, boundSnd, Nat.succ_eq_add_one]
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      simpa using w.boundFst_lt_boundSnd r
+    · subst hr
+      simp
+      change w.unbound _ < _
+      apply w.unbound_strictMono hilej
+
+lemma boundFst_dual_eq_boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    (w : WickContract c ub b1) → (i : Fin k) → ξ (c (w.boundFst i)) = c (w.boundSnd i) := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j hij hilej hi w => fun r => by
+    simp only [boundFst, boundSnd, Nat.succ_eq_add_one]
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      simpa using w.boundFst_dual_eq_boundSnd r
+    · subst hr
+      simp only [Fin.snoc_last]
+      erw [hij]
+
+@[simp]
+lemma boundSnd_neq_unbound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} : (w : WickContract c ub b1) →  (i : Fin k) →  (j : Fin m) →
+     w.boundSnd i ≠ ub j := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j hij hilej hi w => fun r s => by
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      simp [boundSnd]
+      exact w.boundSnd_neq_unbound _ _
+    · subst hr
+      simp [boundSnd]
+      apply (StrictMono.injective w.unbound_strictMono).eq_iff.mp.mt
+      apply Fin.succAbove_right_injective.eq_iff.mp.mt
+      exact Fin.ne_succAbove j s
+
+lemma boundSnd_injective {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n}: (w : WickContract c ub b1) → Function.Injective w.boundSnd := fun
+  | string => by
+    intro i j _
+    exact Fin.elim0 i
+  | contr i j hij hilej hi w => by
+    intro r s hrs
+    simp [boundSnd] at hrs
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      rcases Fin.eq_castSucc_or_eq_last s with hs | hs
+      · obtain ⟨s, hs⟩ := hs
+        subst hs
+        simp at hrs
+        simpa using w.boundSnd_injective hrs
+      · subst hs
+        simp at hrs
+        exact False.elim (w.boundSnd_neq_unbound r (i.succAbove j) hrs)
+    · subst hr
+      simp at hrs
+      rcases Fin.eq_castSucc_or_eq_last s with hs | hs
+      · obtain ⟨s, hs⟩ := hs
+        subst hs
+        simp at hrs
+        exact False.elim (w.boundSnd_neq_unbound s (i.succAbove j) hrs.symm)
+      · subst hs
+        rfl
+
+lemma no_fields_eq_unbound_plus_two_bound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
+    (w : WickContract c ub b1) → n = m + 2 * k := fun
+  | string => rfl
+  | contr i j hij hilej hi w => by
+    rw [w.no_fields_eq_unbound_plus_two_bound]
+    omega
+
+end WickContract
 
 end TwoComplexScalar
