@@ -22,6 +22,9 @@ open CategoryTheory
 open FeynmanDiagram
 open PreFeynmanRule
 
+/-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
+  to be contracted, subject to ordering and subject to the condition that they can
+  be contracted (although this may need to be removed for full generality). -/
 inductive WickContract : {n : ℕ} → {c : Fin n → 𝓔} → (str : WickString c final) →
     {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
   | string {n : ℕ} {c : Fin n → 𝓔} {str : WickString c final} : WickContract str Fin.elim0 Fin.elim0
@@ -48,6 +51,7 @@ lemma size_eq_k {n k : ℕ} {c : Fin n → 𝓔} {str : WickString c final} {b1 
     simpa [size] using w.size_eq_k
 
 /-- The map giving the vertices on the left-hand-side of a contraction. -/
+@[nolint unusedArguments]
 def boundFst {n k : ℕ} {c : Fin n → 𝓔} {str : WickString c final} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → Fin k → Fin n := fun _ => b1
 
@@ -96,7 +100,6 @@ lemma boundFst_strictMono {n k : ℕ} {c : Fin n → 𝓔} {str : WickString c f
       rcases Fin.eq_castSucc_or_eq_last s with hs | hs
       · obtain ⟨s, hs⟩ := hs
         subst hs
-        have hsp := s.prop
         rw [Fin.lt_def] at hrs
         simp only [Fin.val_last, Fin.coe_castSucc] at hrs
         omega
@@ -104,6 +107,7 @@ lemma boundFst_strictMono {n k : ℕ} {c : Fin n → 𝓔} {str : WickString c f
         simp at hrs
 
 /-- The map giving the vertices on the right-hand-side of a contraction. -/
+@[nolint unusedArguments]
 def boundSnd {n k : ℕ} {c : Fin n → 𝓔} {str : WickString c final} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → Fin k → Fin n := fun _ => b2
 

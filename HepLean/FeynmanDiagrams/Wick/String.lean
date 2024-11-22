@@ -84,6 +84,8 @@ def 𝓥Edges (v : 𝓥) : Fin (𝓥NoEdges v) → 𝓔 :=
     | (2 : Fin 4) => 𝓔.complexScalarOut₂
     | (3 : Fin 4) => 𝓔.complexScalarIn₂
 
+/-- A helper function for `WickString`. It is used to seperate incoming, vertex, and
+  outgoing nodes. -/
 inductive WickStringLast where
   | incoming : WickStringLast
   | vertex : WickStringLast
