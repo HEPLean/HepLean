@@ -100,75 +100,55 @@ inductive WickString : {n : ℕ} → (c : FieldString n) → WickStringLast → 
       WickString (Fin.cons e c) outgoing
   | endOutgoing {n : ℕ} {c : Fin n → 𝓔} (w : WickString c outgoing) : WickString c final
 
-inductive WickContract : {n : ℕ} → (f : FieldString n) → {m : ℕ} → (ub : Fin m → Fin n) →
-    {k : ℕ} → (b1 : Fin k → Fin n) → Type where
-  | string {n : ℕ} {c : Fin n → 𝓔} : WickContract c id Fin.elim0
-  | contr {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
-    {b1 : Fin k → Fin n} : (i : Fin m.succ.succ) →
-    (j : Fin m.succ) → (h : c (ub (i.succAbove j)) = ξ (c (ub i))) →
-    (hilej : i < i.succAbove j) → (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i) →
-    (w : WickContract c ub b1) → WickContract c (ub ∘ i.succAbove ∘ j.succAbove) (Fin.snoc b1 (ub i))
+inductive WickContract : {n : ℕ} → (f : FieldString n) →
+    {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
+  | string {n : ℕ} {c : Fin n → 𝓔} : WickContract c Fin.elim0 Fin.elim0
+  | contr {n : ℕ} {c : Fin n → 𝓔}  {k : ℕ}
+    {b1 : Fin k → Fin n}  {b2 : Fin k → Fin n}: (i : Fin n) →
+    (j : Fin n) → (h : c j = ξ (c i)) →
+    (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
+    (w : WickContract c b1 b2) →
+    WickContract c (Fin.snoc b1 i) (Fin.snoc b2 j)
 
 namespace WickContract
-variable {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n}
 
 /-- The number of nodes of a Wick contraction. -/
-def size {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    WickContract c ub b1 → ℕ := fun
+def size {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    WickContract c b1 b2 → ℕ := fun
   | string => 1
-  | contr _ _ _ _ _ w => w.size + 1
+  | contr _ _ _ _ _ _ _ w => w.size + 1
 
-def unbound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    WickContract c ub b1 → Fin m → Fin n := fun _ => ub
-
-@[simp]
-lemma unbound_contr {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
-    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
-    (j : Fin m.succ)
-    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
-    (hilej : i < i.succAbove j)
-    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
-    (w : WickContract c ub b1) (r : Fin m) :
-    (contr i j h hilej hlastlej w).unbound r = w.unbound (i.succAbove (j.succAbove r)) := rfl
-
-lemma unbound_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    (w : WickContract c ub b1) → StrictMono w.unbound := fun
-  | string => by exact fun ⦃a b⦄ a => a
-  | contr i j hij hilej hi w => by
-    intro r s hrs
-    refine w.unbound_strictMono ?_
-    refine Fin.strictMono_succAbove _ ?_
-    refine Fin.strictMono_succAbove _ hrs
-
-def boundFst {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    WickContract c ub b1 → Fin k → Fin n := fun _ => b1
+def boundFst {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    WickContract c b1 b2 → Fin k → Fin n := fun _ => b1
 
 @[simp]
-lemma boundFst_contr_castSucc {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
-    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
-    (j : Fin m.succ)
-    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
-    (hilej : i < i.succAbove j)
-    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
-    (w : WickContract c ub b1) (r : Fin k) :
-    (contr i j h hilej hlastlej w).boundFst r.castSucc = w.boundFst r := by
+lemma boundFst_contr_castSucc {n k : ℕ} {c : Fin n → 𝓔}
+    {b1 b2 : Fin k → Fin n} (i j : Fin n)
+    (h : c j = ξ (c i))
+    (hilej : i < j)
+    (hb1 : ∀ r, b1 r < i)
+    (hb2i : ∀ r, b2 r ≠ i)
+    (hb2j : ∀ r, b2 r ≠ j)
+    (w : WickContract c b1 b2) (r : Fin k) :
+    (contr i j h hilej hb1 hb2i hb2j w).boundFst r.castSucc = w.boundFst r := by
   simp only [boundFst, Fin.snoc_castSucc]
 
 @[simp]
-lemma boundFst_contr_last {n : ℕ} {c : Fin n → 𝓔} {m : ℕ} {ub : Fin m.succ.succ → Fin n} {k : ℕ}
-    {b1 : Fin k → Fin n} (i : Fin m.succ.succ)
-    (j : Fin m.succ)
-    (h : c (ub (i.succAbove j)) = ξ (c (ub i)))
-    (hilej : i < i.succAbove j)
-    (hlastlej : (hk : 0 < k) → b1 ⟨k - 1,Nat.sub_one_lt_of_lt hk⟩ < ub i)
-    (w : WickContract c ub b1) :
-    (contr i j h hilej hlastlej w).boundFst (Fin.last k) = ub i := by
+lemma boundFst_contr_last {n k : ℕ} {c : Fin n → 𝓔}
+    {b1 b2 : Fin k → Fin n} (i j : Fin n)
+    (h : c j = ξ (c i))
+    (hilej : i < j)
+    (hb1 : ∀ r, b1 r < i)
+    (hb2i : ∀ r, b2 r ≠ i)
+    (hb2j : ∀ r, b2 r ≠ j)
+    (w : WickContract c b1 b2) :
+    (contr i j h hilej hb1 hb2i hb2j w).boundFst (Fin.last k) = i := by
   simp only [boundFst, Fin.snoc_last]
 
-lemma boundFst_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    (w : WickContract c ub b1) → StrictMono w.boundFst := fun
+lemma boundFst_strictMono {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    (w : WickContract c b1 b2) → StrictMono w.boundFst := fun
   | string => fun k => Fin.elim0 k
-  | contr i j hij hilej hi w => by
+  | contr i j _ _ hb1 _ _  w => by
     intro r s hrs
     rcases Fin.eq_castSucc_or_eq_last r with hr | hr
     · obtain ⟨r, hr⟩ := hr
@@ -181,12 +161,7 @@ lemma boundFst_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin
         simpa using hrs
       · subst hs
         simp
-        refine Fin.lt_of_le_of_lt ?_ (hi (Nat.zero_lt_of_lt hrs))
-        · refine (StrictMono.monotone w.boundFst_strictMono) ?_
-          rw [Fin.le_def]
-          simp
-          rw [Fin.lt_def] at hrs
-          omega
+        exact hb1 r
     · subst hr
       rcases Fin.eq_castSucc_or_eq_last s with hs | hs
       · obtain ⟨s, hs⟩ := hs
@@ -198,61 +173,40 @@ lemma boundFst_strictMono {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin
       · subst hs
         simp at hrs
 
-def boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    WickContract c ub b1 → Fin k → Fin n := fun
-  | string => Fin.elim0
-  | contr i j _  _ _ w => Fin.snoc w.boundSnd (w.unbound (i.succAbove j))
-
-lemma boundFst_lt_boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    (w : WickContract c ub b1) → (i : Fin k) → w.boundFst i < w.boundSnd i := fun
-  | string => fun i => Fin.elim0 i
-  | contr i j hij hilej hi w => fun r  => by
-    simp only [boundFst, boundSnd, Nat.succ_eq_add_one]
-    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
-    · obtain ⟨r, hr⟩ := hr
-      subst hr
-      simpa using w.boundFst_lt_boundSnd r
-    · subst hr
-      simp
-      change w.unbound _ < _
-      apply w.unbound_strictMono hilej
-
-lemma boundFst_dual_eq_boundSnd {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    (w : WickContract c ub b1) → (i : Fin k) → ξ (c (w.boundFst i)) = c (w.boundSnd i) := fun
-  | string => fun i => Fin.elim0 i
-  | contr i j hij hilej hi w => fun r => by
-    simp only [boundFst, boundSnd, Nat.succ_eq_add_one]
-    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
-    · obtain ⟨r, hr⟩ := hr
-      subst hr
-      simpa using w.boundFst_dual_eq_boundSnd r
-    · subst hr
-      simp only [Fin.snoc_last]
-      erw [hij]
+def boundSnd {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    WickContract c b1 b2 → Fin k → Fin n := fun _ => b2
 
 @[simp]
-lemma boundSnd_neq_unbound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} : (w : WickContract c ub b1) →  (i : Fin k) →  (j : Fin m) →
-     w.boundSnd i ≠ ub j := fun
-  | string => fun i => Fin.elim0 i
-  | contr i j hij hilej hi w => fun r s => by
-    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
-    · obtain ⟨r, hr⟩ := hr
-      subst hr
-      simp [boundSnd]
-      exact w.boundSnd_neq_unbound _ _
-    · subst hr
-      simp [boundSnd]
-      apply (StrictMono.injective w.unbound_strictMono).eq_iff.mp.mt
-      apply Fin.succAbove_right_injective.eq_iff.mp.mt
-      exact Fin.ne_succAbove j s
+lemma boundSnd_contr_castSucc {n k : ℕ} {c : Fin n → 𝓔}
+    {b1 b2 : Fin k → Fin n} (i j : Fin n)
+    (h : c j = ξ (c i))
+    (hilej : i < j)
+    (hb1 : ∀ r, b1 r < i)
+    (hb2i : ∀ r, b2 r ≠ i)
+    (hb2j : ∀ r, b2 r ≠ j)
+    (w : WickContract c b1 b2) (r : Fin k) :
+    (contr i j h hilej hb1 hb2i hb2j w).boundSnd r.castSucc = w.boundSnd r := by
+  simp only [boundSnd, Fin.snoc_castSucc]
 
-lemma boundSnd_injective {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n}: (w : WickContract c ub b1) → Function.Injective w.boundSnd := fun
+@[simp]
+lemma boundSnd_contr_last {n k : ℕ} {c : Fin n → 𝓔}
+    {b1 b2 : Fin k → Fin n} (i j : Fin n)
+    (h : c j = ξ (c i))
+    (hilej : i < j)
+    (hb1 : ∀ r, b1 r < i)
+    (hb2i : ∀ r, b2 r ≠ i)
+    (hb2j : ∀ r, b2 r ≠ j)
+    (w : WickContract c b1 b2) :
+    (contr i j h hilej hb1 hb2i hb2j w).boundSnd (Fin.last k) = j := by
+  simp only [boundSnd, Fin.snoc_last]
+
+lemma boundSnd_injective {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    (w : WickContract c b1 b2) → Function.Injective w.boundSnd := fun
   | string => by
     intro i j _
     exact Fin.elim0 i
-  | contr i j hij hilej hi w => by
+  | contr i j hij hilej hi h2i h2j w => by
     intro r s hrs
-    simp [boundSnd] at hrs
     rcases Fin.eq_castSucc_or_eq_last r with hr | hr
     · obtain ⟨r, hr⟩ := hr
       subst hr
@@ -263,23 +217,206 @@ lemma boundSnd_injective {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin 
         simpa using w.boundSnd_injective hrs
       · subst hs
         simp at hrs
-        exact False.elim (w.boundSnd_neq_unbound r (i.succAbove j) hrs)
+        exact False.elim (h2j r hrs)
     · subst hr
-      simp at hrs
       rcases Fin.eq_castSucc_or_eq_last s with hs | hs
       · obtain ⟨s, hs⟩ := hs
         subst hs
         simp at hrs
-        exact False.elim (w.boundSnd_neq_unbound s (i.succAbove j) hrs.symm)
+        exact False.elim (h2j s hrs.symm)
       · subst hs
         rfl
 
-lemma no_fields_eq_unbound_plus_two_bound {n m k : ℕ} {c : Fin n → 𝓔} {ub : Fin m → Fin n} {b1 : Fin k → Fin n} :
-    (w : WickContract c ub b1) → n = m + 2 * k := fun
-  | string => rfl
-  | contr i j hij hilej hi w => by
-    rw [w.no_fields_eq_unbound_plus_two_bound]
-    omega
+lemma color_boundSnd_eq_dual_boundFst {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    (w : WickContract c b1 b2) → (i : Fin k) → c (w.boundSnd i) = ξ (c (w.boundFst i)) := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j hij hilej hi _ _ w => fun r => by
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      simpa using w.color_boundSnd_eq_dual_boundFst r
+    · subst hr
+      simpa using hij
+
+lemma boundFst_lt_boundSnd {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    (w : WickContract c b1 b2) → (i : Fin k) → w.boundFst i < w.boundSnd i := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j hij hilej hi _ _ w => fun r => by
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+    · obtain ⟨r, hr⟩ := hr
+      subst hr
+      simpa using w.boundFst_lt_boundSnd r
+    · subst hr
+      simp
+      exact hilej
+
+lemma boundFst_neq_boundSnd {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    (w : WickContract c b1 b2) → (r1 r2 : Fin k) → b1 r1 ≠ b2 r2 := fun
+  | string => fun i => Fin.elim0 i
+  | contr i j _ hilej h1 h2i h2j w => fun r s => by
+    rcases Fin.eq_castSucc_or_eq_last r with hr | hr
+      <;> rcases Fin.eq_castSucc_or_eq_last s with hs | hs
+    · obtain ⟨r, hr⟩ := hr
+      obtain ⟨s, hs⟩ := hs
+      subst hr hs
+      simpa using w.boundFst_neq_boundSnd r s
+    · obtain ⟨r, hr⟩ := hr
+      subst hr hs
+      simp
+      have hn := h1 r
+      omega
+    · obtain ⟨s, hs⟩ := hs
+      subst hr hs
+      simp
+      exact (h2i s).symm
+    · subst hr hs
+      simp
+      omega
+
+def castMaps {n k k' : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} {b1' b2' : Fin k' → Fin n}
+    (hk : k = k')
+    (hb1 : b1 = b1' ∘ Fin.cast hk) (hb2 : b2 = b2' ∘ Fin.cast hk) (w : WickContract c b1 b2) :
+    WickContract c b1' b2' :=
+  cast (by subst hk; rfl) (hb2 ▸ hb1 ▸ w)
+
+@[simp]
+lemma castMaps_rfl {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} (w : WickContract c b1 b2) :
+    castMaps rfl rfl rfl w = w := rfl
+
+lemma mem_snoc' {n k : ℕ} {c : Fin n → 𝓔} {b1' b2' : Fin k → Fin n} :
+    (w : WickContract c b1' b2') →
+    {k' : ℕ} → (hk' : k'.succ = k ) →
+    (b1 b2 : Fin k' → Fin n) → (i j : Fin n) → (h : c j = ξ (c i)) →
+    (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
+    (hb1' : Fin.snoc b1 i  =  b1' ∘ Fin.cast hk') →
+    (hb2' : Fin.snoc b2 j  = b2' ∘ Fin.cast hk') →
+     ∃ (w' : WickContract c b1 b2), w = castMaps hk' hb1' hb2' (contr i j h hilej hb1 hb2i hb2j w')
+     := fun
+  | string => fun hk'  => by
+    simp at hk'
+  | contr i' j' h' hilej' hb1' hb2i' hb2j' w' => by
+    intro hk b1 b2 i j h hilej hb1 hb2i hb2j hb1' hb2'
+    rename_i k' k b1' b2' f
+    have hk2 : k' = k := Nat.succ_inj'.mp hk
+    subst hk2
+    simp_all
+    have hb2'' : b2 = b2' := by
+      funext k
+      trans (@Fin.snoc k' (fun _ => Fin n) b2 j) (Fin.castSucc k)
+      · simp
+      · rw [hb2']
+        simp
+    have hb1'' : b1 = b1' := by
+      funext k
+      trans (@Fin.snoc k' (fun _ => Fin n) b1 i) (Fin.castSucc k)
+      · simp
+      · rw [hb1']
+        simp
+    have hi : i = i' := by
+      trans  (@Fin.snoc k' (fun _ => Fin n) b1 i) (Fin.last k')
+      · simp
+      · rw [hb1']
+        simp
+    have hj : j = j' := by
+      trans  (@Fin.snoc k' (fun _ => Fin n) b2 j) (Fin.last k')
+      · simp
+      · rw [hb2']
+        simp
+    subst hb1'' hb2'' hi hj
+    simp
+
+
+lemma mem_snoc {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} (i j : Fin n)
+    (h : c j = ξ (c i))
+    (hilej : i < j)
+    (hb1 : ∀ r, b1 r < i)
+    (hb2i : ∀ r, b2 r ≠ i)
+    (hb2j : ∀ r, b2 r ≠ j)
+    (w : WickContract c (Fin.snoc b1 i) (Fin.snoc b2 j)) :
+    ∃ (w' : WickContract c b1 b2), w = contr i j h hilej hb1 hb2i hb2j w' := by
+  exact mem_snoc' w rfl b1 b2 i j h hilej hb1 hb2i hb2j rfl rfl
+
+lemma is_subsingleton {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n} :
+    Subsingleton (WickContract c b1 b2) := Subsingleton.intro fun w1 w2  => by
+  induction k with
+  | zero =>
+    have hb1 : b1 = Fin.elim0 := Subsingleton.elim _ _
+    have hb2 : b2 = Fin.elim0 := Subsingleton.elim _ _
+    subst hb1 hb2
+    match w1, w2 with
+    | string, string => rfl
+  | succ k hI =>
+    match w1, w2 with
+    | contr i j h hilej hb1 hb2i hb2j w, w2 =>
+      let ⟨w', hw'⟩ := mem_snoc i j h hilej hb1 hb2i hb2j w2
+      rw [hw']
+      apply congrArg (contr i j _ _ _ _ _) (hI w w')
+
+lemma eq_snoc_castSucc {k n : ℕ} (b1 : Fin k.succ → Fin n) :
+  b1 = Fin.snoc (b1 ∘ Fin.castSucc) (b1 (Fin.last k)) := by
+  funext i
+  rcases Fin.eq_castSucc_or_eq_last i with h1 | h1
+  · obtain ⟨i, rfl⟩ := h1
+    simp
+  · subst h1
+    simp
+
+def fromMaps {n k : ℕ} (c : Fin n → 𝓔) (b1 b2 : Fin k → Fin n)
+    (hi : ∀ i, c (b2 i) = ξ (c (b1 i)))
+    (hb1ltb2 : ∀ i, b1 i < b2 i)
+    (hb1 : StrictMono b1)
+    (hb1neb2 : ∀ r1 r2, b1 r1 ≠ b2 r2)
+    (hb2 : Function.Injective b2) :
+    WickContract c b1 b2 := by
+  match k with
+  | 0 =>
+    refine castMaps ?_ ?_ ?_ string
+    · rfl
+    · exact funext (fun i => Fin.elim0 i)
+    · exact funext (fun i => Fin.elim0 i)
+  | Nat.succ k =>
+    refine castMaps rfl (eq_snoc_castSucc b1).symm (eq_snoc_castSucc b2).symm
+      (contr (b1 (Fin.last k)) (b2 (Fin.last k)) (hi (Fin.last k)) (hb1ltb2 (Fin.last k)) (fun r => hb1 (Fin.castSucc_lt_last r)) ?_ ?_
+      (fromMaps c (b1 ∘ Fin.castSucc) (b2 ∘ Fin.castSucc) (fun i => hi (Fin.castSucc i))
+        (fun i => hb1ltb2 (Fin.castSucc i)) (StrictMono.comp hb1 Fin.strictMono_castSucc)
+        ?_ ?_
+      ))
+    · exact fun r a => hb1neb2 (Fin.last k) r.castSucc a.symm
+    · exact fun r => hb2.eq_iff.mp.mt (Fin.ne_last_of_lt (Fin.castSucc_lt_last r ))
+    · exact fun r1 r2 => hb1neb2 r1.castSucc r2.castSucc
+    · exact Function.Injective.comp hb2 (Fin.castSucc_injective k)
+
+lemma eq_from_maps {n k : ℕ} {c : Fin n → 𝓔} {b1 b2 : Fin k → Fin n}
+    (w : WickContract c b1 b2) :
+    w = fromMaps c w.boundFst w.boundSnd w.color_boundSnd_eq_dual_boundFst
+      w.boundFst_lt_boundSnd w.boundFst_strictMono w.boundFst_neq_boundSnd w.boundSnd_injective := by
+  exact is_subsingleton.allEq w _
+
+structure struc {n : ℕ} (c : Fin n → 𝓔) where
+  k : ℕ
+  b1 : Fin k ↪o Fin n
+  b2 : Fin k ↪ Fin n
+  b2_color_eq_dual_b1 : ∀ i, c (b2 i) = ξ (c (b1 i))
+  b1_lt_b2 : ∀ i, b1 i < b2 i
+  b1_neq_b2 : ∀ r1 r2, b1 r1 ≠ b2 r2
+
+def strucEquivSigma {n : ℕ} (c : Fin n → 𝓔) :
+    struc c ≃ Σ (k : ℕ) (b1 : Fin k → Fin n) (b2 : Fin k → Fin n), WickContract c b1 b2 where
+  toFun s := ⟨s.k, s.b1, s.b2, fromMaps c s.b1 s.b2 s.b2_color_eq_dual_b1
+    s.b1_lt_b2 s.b1.strictMono s.b1_neq_b2 s.b2.inj'⟩
+  invFun x :=
+    match x with
+    | ⟨k, b1, b2, w⟩ => ⟨k, OrderEmbedding.ofStrictMono b1 w.boundFst_strictMono,
+      ⟨b2, w.boundSnd_injective⟩,
+      w.color_boundSnd_eq_dual_boundFst, w.boundFst_lt_boundSnd, w.boundFst_neq_boundSnd⟩
+  left_inv s := rfl
+  right_inv w := by
+    match w with
+    | ⟨k, b1, b2, w⟩ =>
+      simp only [OrderEmbedding.coe_ofStrictMono, Function.Embedding.coeFn_mk, Sigma.mk.inj_iff,
+        heq_eq_eq, true_and]
+      exact (eq_from_maps w).symm
+
 
 end WickContract
 
