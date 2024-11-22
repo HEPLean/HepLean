@@ -48,7 +48,7 @@ lemma tprod_equivariant (g : S.G) (p : Pure S c) : (ρ g p).tprod = (S.F.obj c).
 
 end Pure
 
-/-- We say a tensor is pure if it is `⨂[S.k] i, p i` for some `p : Pure c`. -/
+/-- A tensor is pure if it is `⨂[S.k] i, p i` for some `p : Pure c`. -/
 def IsPure {c : OverColor S.C} (t : S.F.obj c) : Prop := ∃ p : Pure S c, t = p.tprod
 
 /-- As long as we are dealing with tensors with at least one index, then the zero

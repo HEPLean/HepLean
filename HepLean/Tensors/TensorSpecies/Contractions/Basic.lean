@@ -42,10 +42,10 @@ scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField 
 
 /-- The map `contractSelfField` is equivariant with respect to the group action. -/
 @[simp]
-lemma contractSelfField_equivariant  {S : TensorSpecies} {c : S.C} {g : S.G}
+lemma contractSelfField_equivariant {S : TensorSpecies} {c : S.C} {g : S.G}
     (ψ : S.FD.obj (Discrete.mk c)) (φ : S.FD.obj (Discrete.mk c)) :
     ⟪(S.FD.obj (Discrete.mk c)).ρ g ψ, (S.FD.obj (Discrete.mk c)).ρ g φ⟫ₜₛ = ⟪ψ, φ⟫ₜₛ := by
-  simpa using congrFun (congrArg (fun x => x.toFun) ((S.contractSelfHom c).comm g )) (ψ ⊗ₜ[S.k] φ)
+  simpa using congrFun (congrArg (fun x => x.toFun) ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
 
 informal_lemma contractSelfField_non_degenerate where
   math :≈ "The contraction of two vectors of the same color is non-degenerate.
@@ -85,12 +85,12 @@ def IsNormZero {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫�
 
 /-- The zero vector has norm equal to zero. -/
 @[simp]
-lemma zero_isNormZero {c : S.C}  : @IsNormZero S c 0 := by
+lemma zero_isNormZero {c : S.C} : @IsNormZero S c 0 := by
   simp only [IsNormZero, tmul_zero, map_zero]
 
 /-- If a vector is norm-zero, then any scalar multiple of that vector is also norm-zero. -/
 lemma smul_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)}
-    (h : S.IsNormZero ψ ) (a : S.k) : S.IsNormZero (a • ψ) := by
+    (h : S.IsNormZero ψ) (a : S.k) : S.IsNormZero (a • ψ) := by
   simp only [IsNormZero, tmul_smul, map_smul, smul_tmul]
   rw [h]
   simp only [smul_eq_mul, mul_zero]

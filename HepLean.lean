@@ -54,8 +54,9 @@ import HepLean.BeyondTheStandardModel.TwoHDM.GaugeOrbits
 import HepLean.FeynmanDiagrams.Basic
 import HepLean.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.FeynmanDiagrams.Instances.Phi4
-import HepLean.FeynmanDiagrams.Instances.TwoRealScalar
 import HepLean.FeynmanDiagrams.Momentum
+import HepLean.FeynmanDiagrams.Wick.Contract
+import HepLean.FeynmanDiagrams.Wick.String
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Invariants
 import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
