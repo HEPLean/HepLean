@@ -22,7 +22,6 @@ namespace TensorSpecies
 
 variable (S : TensorSpecies)
 
-
 /-- The isomorphism between the image of a map `Fin 1 ⊕ Fin 1 → S.C` contructed by `finExtractTwo`
   under `S.F.obj`, and an object in the image of `OverColor.Discrete.pairτ S.FD`. -/
 def contrFin1Fin1 {n : ℕ} (c : Fin n.succ.succ → S.C)
