@@ -359,7 +359,7 @@ def Level {n : ℕ} {c : Fin n → 𝓔} (str : WickString c final) (k : ℕ) : 
   Σ (b1 : Fin k → Fin n) (b2 : Fin k → Fin n), WickContract str b1 b2
 
 /-- There is a finite number of Wick contractions with no contractions. In particular,
-  this is just the original Wick string.  -/
+  this is just the original Wick string. -/
 instance levelZeroFintype {n : ℕ} {c : Fin n → 𝓔} (str : WickString c final) :
     Fintype (Level str 0) where
   elems := {⟨Fin.elim0, Fin.elim0, WickContract.string⟩}
