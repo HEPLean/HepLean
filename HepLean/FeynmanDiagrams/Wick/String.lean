@@ -94,6 +94,7 @@ inductive WickStringLast where
 
 open WickStringLast
 
+/-! TODO: This definition should be adapted to include the in and out going fields as inputs. -/
 /-- A wick string is a representation of a string of fields from a theory.
   E.g. `φ(x1) φ(x2) φ(y) φ(y) φ(y) φ(x3)`. The use of vertices in the Wick string
   allows us to identify which fields have the same space-time coordinate. -/
