@@ -55,8 +55,8 @@ import HepLean.FeynmanDiagrams.Basic
 import HepLean.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.FeynmanDiagrams.Instances.Phi4
 import HepLean.FeynmanDiagrams.Momentum
+import HepLean.FeynmanDiagrams.Wick.Algebra
 import HepLean.FeynmanDiagrams.Wick.Contract
-import HepLean.FeynmanDiagrams.Wick.Ring
 import HepLean.FeynmanDiagrams.Wick.String
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Invariants

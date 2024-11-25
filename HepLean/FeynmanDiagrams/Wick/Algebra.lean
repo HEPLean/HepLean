@@ -5,7 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.FeynmanDiagrams.Basic
 /-!
-# Operator ring
+
+# Operator algebra
 
 Currently this file is only for an example of Wick strings, correpsonding to a
 theory with two complex scalar fields. The concepts will however generalize.
