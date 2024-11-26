@@ -87,6 +87,8 @@ lemma contrMatrix_basis_expand : {η | μ ν}ᵀ.tensor =
       simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
+/-- The expansion of the Lorentz contrvariant metric in terms of basis vectors as
+  a structured tensor tree. -/
 lemma contrMatrix_basis_expand_tree : {η | μ ν}ᵀ.tensor =
     (TensorTree.add (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 0))) <|
     TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 1)))) <|
@@ -94,6 +96,7 @@ lemma contrMatrix_basis_expand_tree : {η | μ ν}ᵀ.tensor =
     (smul (-1) (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 3))))).tensor :=
   contrMatrix_basis_expand
 
+/-- The expansion of the Fermionic left metric in terms of basis vectors. -/
 lemma leftMetric_expand : {εL | α β}ᵀ.tensor =
     - basisVector ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1)
     + basisVector ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0) := by
@@ -112,12 +115,15 @@ lemma leftMetric_expand : {εL | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+/-- The expansion of the Fermionic left metric in terms of basis vectors as a structured
+  tensor tree. -/
 lemma leftMetric_expand_tree : {εL | α β}ᵀ.tensor =
     (TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.upL, Color.upL]
     (fun | 0 => 0 | 1 => 1)))) <|
     (tensorNode (basisVector ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0)))).tensor :=
   leftMetric_expand
 
+/-- The expansion of the Fermionic alt-left metric in terms of basis vectors. -/
 lemma altLeftMetric_expand : {εL' | α β}ᵀ.tensor =
     basisVector ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1)
     - basisVector ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0) := by
@@ -135,6 +141,8 @@ lemma altLeftMetric_expand : {εL' | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+/-- The expansion of the Fermionic alt-left metric in terms of basis vectors as a
+  structured tensor tree. -/
 lemma altLeftMetric_expand_tree : {εL' | α β}ᵀ.tensor =
     (TensorTree.add (tensorNode (basisVector ![Color.downL, Color.downL]
     (fun | 0 => 0 | 1 => 1))) <|
@@ -142,6 +150,7 @@ lemma altLeftMetric_expand_tree : {εL' | α β}ᵀ.tensor =
     (fun | 0 => 1 | 1 => 0))))).tensor :=
   altLeftMetric_expand
 
+/-- The expansion of the Fermionic right metric in terms of basis vectors. -/
 lemma rightMetric_expand : {εR | α β}ᵀ.tensor =
     - basisVector ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1)
     + basisVector ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0) := by
@@ -160,12 +169,15 @@ lemma rightMetric_expand : {εR | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+/-- The expansion of the Fermionic right metric in terms of basis vectors as a
+  structured tensor tree. -/
 lemma rightMetric_expand_tree : {εR | α β}ᵀ.tensor =
     (TensorTree.add (smul (-1) (tensorNode (basisVector ![Color.upR, Color.upR]
     (fun | 0 => 0 | 1 => 1)))) <|
     (tensorNode (basisVector ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0)))).tensor :=
   rightMetric_expand
 
+/-- The expansion of the Fermionic alt-right metric in terms of basis vectors. -/
 lemma altRightMetric_expand : {εR' | α β}ᵀ.tensor =
     basisVector ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1)
     - basisVector ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0) := by
@@ -183,6 +195,8 @@ lemma altRightMetric_expand : {εR' | α β}ᵀ.tensor =
     · rfl
     · rfl
 
+/-- The expansion of the Fermionic alt-right metric in terms of basis vectors as a
+  structured tensor tree. -/
 lemma altRightMetric_expand_tree : {εR' | α β}ᵀ.tensor =
     (TensorTree.add (tensorNode (basisVector
     ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1))) <|

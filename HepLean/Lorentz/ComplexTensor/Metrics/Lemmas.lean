@@ -101,7 +101,7 @@ informal_lemma altRightMetric_contr_rightMetric where
 def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL] ![Color.upR, Color.upR]) ∘
   finSumFinEquiv.symm
 
-/- Expansion of the product of `εL` and `εR` in terms of a basis. -/
+/-- Expansion of the product of `εL` and `εR` in terms of a basis. -/
 lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     - basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
@@ -134,7 +134,7 @@ lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     funext x
     fin_cases x <;> rfl
 
-/- Expansion of the product of `εL` and `εR` in terms of a basis, as a tensor tree. -/
+/-- Expansion of the product of `εL` and `εR` in terms of a basis, as a tensor tree. -/
 lemma leftMetric_prod_rightMetric_tree : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     = (TensorTree.add (tensorNode
         (basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1))) <|

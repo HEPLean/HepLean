@@ -30,6 +30,8 @@ open CategoryTheory.MonoidalCategory
 /-- The raw `2x2` matrix corresponding to the metric for fermions. -/
 def metricRaw : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -1, 0]
 
+/-- Multiplying an element of `SL(2, ℂ)` on the left with the metric `𝓔` is equivalent
+  to multiplying the inverse-transpose of that element on the right with the metric. -/
 lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)ᵀ := by
   rw [metricRaw]
   rw [Lorentz.SL2C.inverse_coe, eta_fin_two M.1]
