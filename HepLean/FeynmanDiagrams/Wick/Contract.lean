@@ -24,12 +24,12 @@ open PreFeynmanRule
 
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can
-  be contracted (although this may need to be removed for full generality). -/
+  be contracted. -/
 inductive WickContract : {n : ℕ} → {c : Fin n → 𝓔} → (str : WickString c final) →
     {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
   | string {n : ℕ} {c : Fin n → 𝓔} {str : WickString c final} : WickContract str Fin.elim0 Fin.elim0
   | contr {n : ℕ} {c : Fin n → 𝓔} {str : WickString c final} {k : ℕ}
-    {b1 : Fin k → Fin n} {b2 : Fin k → Fin n}: (i : Fin n) →
+    {b1 : Fin k → Fin n} {b2 : Fin k → Fin n} : (i : Fin n) →
     (j : Fin n) → (h : c j = ξ (c i)) →
     (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
     (w : WickContract str b1 b2) →
