@@ -30,11 +30,17 @@ namespace complexLorentzTensor
 
 /-- The colors associated with complex representations of SL(2, ℂ) of intrest to physics. -/
 inductive Color
+  /-- The color associated with Left handed fermions. -/
   | upL : Color
+  /-- The color associated with alt-Left handed fermions. -/
   | downL : Color
+  /-- The color associated with Right handed fermions. -/
   | upR : Color
+  /-- The color associated with alt-Right handed fermions. -/
   | downR : Color
+  /-- The color associated with contravariant Lorentz vectors. -/
   | up : Color
+  /-- The color associated with covariant Lorentz vectors. -/
   | down : Color
 
 /-- Color for complex Lorentz tensors is decidable. -/
