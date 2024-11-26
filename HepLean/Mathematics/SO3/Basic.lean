@@ -56,6 +56,7 @@ lemma subtype_val_eq_toGL : (Subtype.val : SO3 → Matrix (Fin 3) (Fin 3) ℝ) =
     Units.val ∘ toGL.toFun :=
   rfl
 
+/-- The inclusino of `SO(3)` into `GL(3,ℝ)` is an injection. -/
 lemma toGL_injective : Function.Injective toGL := by
   refine fun A B h ↦ Subtype.eq ?_
   rw [@Units.ext_iff] at h
@@ -116,6 +117,7 @@ lemma toGL_embedding : IsEmbedding toGL.toFun where
 instance : TopologicalGroup SO(3) :=
   IsInducing.topologicalGroup toGL toGL_embedding.toIsInducing
 
+/-- The determinant of an `SO(3)` matrix minus the identity is equal to zero. -/
 lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
   have h1 : det (A.1 - 1) = - det (A.1 - 1) :=
     calc
@@ -129,6 +131,7 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
       _ = - det (A.1 - 1) := by simp [pow_three]
   exact CharZero.eq_neg_self_iff.mp h1
 
+/-- The determinant of the identity minus an `SO(3)` matrix is zero. -/
 @[simp]
 lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
   have h1 : det (1 - A.1) = - det (A.1 - 1) := by
@@ -139,6 +142,7 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
   rw [h1, det_minus_id]
   exact neg_zero
 
+/-- For every matrix in `SO(3)`, the real number `1` is in its spectrum. -/
 @[simp]
 lemma one_in_spectrum (A : SO(3)) : 1 ∈ spectrum ℝ (A.1) := by
   rw [spectrum.mem_iff]
@@ -155,11 +159,14 @@ def toEnd (A : SO(3)) : End ℝ (EuclideanSpace ℝ (Fin 3)) :=
   Matrix.toLin (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis
   (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis A.1
 
+/-- Every `SO(3)` matrix has an eigenvalue equal to `1`. -/
 lemma one_is_eigenvalue (A : SO(3)) : A.toEnd.HasEigenvalue 1 := by
   rw [End.hasEigenvalue_iff_mem_spectrum]
   erw [AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis) A.1]
   exact one_in_spectrum A
 
+/-- For every element of `SO(3)` there exists a vector which remains unchanged under the
+  action of that `SO(3)` element. -/
 lemma exists_stationary_vec (A : SO(3)) :
     ∃ (v : EuclideanSpace ℝ (Fin 3)),
     Orthonormal ℝ (({0} : Set (Fin 3)).restrict (fun _ => v))
@@ -185,6 +192,8 @@ lemma exists_stationary_vec (A : SO(3)) :
   · rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1]
     simp
 
+/-- For every element of `SO(3)` there exists a basis indexed by `Fin 3` under which the first
+  element remains invariant. -/
 lemma exists_basis_preserved (A : SO(3)) :
     ∃ (b : OrthonormalBasis (Fin 3) ℝ (EuclideanSpace ℝ (Fin 3))), A.toEnd (b 0) = b 0 := by
   obtain ⟨v, hv⟩ := exists_stationary_vec A

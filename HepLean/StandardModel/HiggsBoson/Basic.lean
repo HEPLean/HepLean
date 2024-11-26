@@ -103,6 +103,8 @@ def HiggsVec.toField (φ : HiggsVec) : HiggsField where
     rw [Bundle.contMDiffAt_section]
     exact smoothAt_const
 
+/-- For all spacetime points, the constant Higgs field defined by a Higgs vector,
+  returns that Higgs Vector. -/
 @[simp]
 lemma HiggsVec.toField_apply (φ : HiggsVec) (x : SpaceTime) : (φ.toField x) = φ := rfl
 
