@@ -63,10 +63,14 @@ def repCharges {n : ℕ} : Representation ℚ (PermGroup n) (SMCharges n).Charge
     erw [toSMSpecies_toSpecies_inv]
     rfl
 
+/-- The species chages of a set of charges acted on by a family permutation is the permutation
+  of those species charges with the corresponding part of the family permutation. -/
 lemma repCharges_toSpecies (f : PermGroup n) (S : (SMCharges n).Charges) (j : Fin 5) :
     toSpecies j (repCharges f S) = toSpecies j S ∘ f⁻¹ j := by
   erw [toSMSpecies_toSpecies_inv]
 
+/-- The sum over every charge in any species to some power `m` is invariant under the group
+  action. -/
 lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Charges) (j : Fin 5) :
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j (repCharges f S)) i =
     ∑ i, ((fun a => a ^ m) ∘ toSpecies j S) i := by
@@ -74,31 +78,35 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Cha
   exact Fintype.sum_equiv (f⁻¹ j) (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S ∘ ⇑(f⁻¹ j)) x)
     (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
 
+/-- The gravitional anomaly equations is invariant under family permutations. -/
 lemma accGrav_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
-    accGrav (repCharges f S) = accGrav S :=
-  accGrav_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+    accGrav (repCharges f S) = accGrav S := accGrav_ext
+  (by simpa using toSpecies_sum_invariant 1 f S)
 
+/-- The `SU(2)` anomaly equation is invariant under family permutations. -/
 lemma accSU2_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
-    accSU2 (repCharges f S) = accSU2 S :=
-  accSU2_ext
-    (by simpa using toSpecies_sum_invariant 1 f S)
+    accSU2 (repCharges f S) = accSU2 S := accSU2_ext
+  (by simpa using toSpecies_sum_invariant 1 f S)
 
+/-- The `SU(3)` anomaly equation is invariant under family permutations. -/
 lemma accSU3_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accSU3 (repCharges f S) = accSU3 S :=
   accSU3_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
+/-- The `Y²` anomaly equation is invariant under family permutations. -/
 lemma accYY_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accYY (repCharges f S) = accYY S :=
   accYY_ext
     (by simpa using toSpecies_sum_invariant 1 f S)
 
+/-- The quadratic anomaly equation is invariant under family permutations. -/
 lemma accQuad_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accQuad (repCharges f S) = accQuad S :=
   accQuad_ext
     (toSpecies_sum_invariant 2 f S)
 
+/-- The cubic anomaly equation is invariant under family permutations. -/
 lemma accCube_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accCube (repCharges f S) = accCube S :=
   accCube_ext (fun j => toSpecies_sum_invariant 3 f S j)
