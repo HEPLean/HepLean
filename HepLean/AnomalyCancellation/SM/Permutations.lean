@@ -7,6 +7,7 @@ import HepLean.AnomalyCancellation.SM.Basic
 import Mathlib.Tactic.Polyrith
 import Mathlib.RepresentationTheory.Basic
 /-!
+
 # Permutations of SM with no RHN.
 
 We define the group of permutations for the SM charges with no RHN.
