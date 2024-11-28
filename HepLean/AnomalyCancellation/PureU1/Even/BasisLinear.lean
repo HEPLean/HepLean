@@ -30,24 +30,30 @@ lemma n_cond₂ (n : ℕ) : 1 + ((n + n) + 1) = 2 * n.succ := by
 
 section theδs
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n.succ` into `Fin (n.succ + n.succ)` via the first `n.succ`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ₁ (j : Fin n.succ) : Fin (2 * n.succ) := Fin.cast (split_equal n.succ) (Fin.castAdd n.succ j)
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n.succ` into `Fin (n.succ + n.succ)` via the second `n.succ`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ₂ (j : Fin n.succ) : Fin (2 * n.succ) := Fin.cast (split_equal n.succ) (Fin.natAdd n.succ j)
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin (1 + (n + n + 1))` via the first `n`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ!₁ (j : Fin n) : Fin (2 * n.succ) := Fin.cast (n_cond₂ n)
   (Fin.natAdd 1 (Fin.castAdd 1 (Fin.castAdd n j)))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin (1 + (n + n + 1))` via the second `n`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ!₂ (j : Fin n) : Fin (2 * n.succ) := Fin.cast (n_cond₂ n)
   (Fin.natAdd 1 (Fin.castAdd 1 (Fin.natAdd n j)))
 
-/-- A helper function for what follows. -/
+/-- The element of `Fin (1 + (n + n + 1))` corresponding to the first `1`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ!₃ : Fin (2 * n.succ) := (Fin.cast (n_cond₂ n) (Fin.castAdd ((n + n) + 1) 0))
 
-/-- A helper function for what follows. -/
+/-- The element of `Fin (1 + (n + n + 1))` corresponding to the second `1`,
+  casted into `Fin (2 * n.succ)`. -/
 def δ!₄ : Fin (2 * n.succ) := (Fin.cast (n_cond₂ n) (Fin.natAdd 1 (Fin.natAdd (n + n) 0)))
 
 lemma ext_δ (S T : Fin (2 * n.succ) → ℚ) (h1 : ∀ i, S (δ₁ i) = T (δ₁ i))
