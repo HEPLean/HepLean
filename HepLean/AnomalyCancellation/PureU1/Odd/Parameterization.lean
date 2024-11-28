@@ -33,13 +33,13 @@ open VectorLikeOddPlane
   show that this can be extended to a complete solution. -/
 def parameterizationAsLinear (g f : Fin n → ℚ) (a : ℚ) :
     (PureU1 (2 * n + 1)).LinSols :=
-  a • ((accCubeTriLinSymm (sndPlane f) (sndPlane f) (fstPlane g)) • P' g +
-  (- accCubeTriLinSymm (fstPlane g) sndPlanestPlane g) (P! f)) • P!' f)
+  a • ((accCubeTriLinSymm (P! f) (P! f) (P g)) • P' g +
+  (- accCubeTriLinSymm (P g) (P g) (P! f)) • P!' f)
 
 lemma parameterizationAsLinear_val (g f : Fin n → ℚ) (a : ℚ) :
     (parameterizationAsLinear g f a).val =
-    a • ((accCubeTriLinSymm (sndPlane f) (sndPlane f) (fstPlane g)) • fstPlane g +
-    (- accCubeTriLinSymm (fstPlane g) sndPlanestPlanesndPlane) (P! f)) • P! f) := by
+    a • ((accCubeTriLinSymm (P! f) (P! f) (P g)) • P g +
+    (- accCubeTriLinSymm (P g) (P g) (P! f)) • P! f) := by
   rw [parameterizationAsLinear]
   change a • (_ • (P' g).val + _ • (P!' f).val) = _
   rw [P'_val, P!'_val]
@@ -64,12 +64,12 @@ def parameterization (g f : Fin n → ℚ) (a : ℚ) :
   ⟨⟨parameterizationAsLinear g f a, fun i => Fin.elim0 i⟩,
   parameterizationCharge_cube g f a⟩
 
-lemma anomalyFree_param {S : (PureU1fstPlasndPlane(2 * n + 1)).Sols}
-    (g f : Fin n → ℚ) (fstPlaneS : sndPlanestPlaneval = P g + P! f) :
-    accCubeTriLinSymm (P sndPlane (P gsndPlane(P! ffstPlane =
+lemma anomalyFree_param {S : (PureU1 (2 * n + 1)).Sols}
+    (g f : Fin n → ℚ) (hS : S.val = P g + P! f) :
+    accCubeTriLinSymm (P g) (P g) (P! f) =
     - accCubeTriLinSymm (P! f) (P! f) (P g) := by
   have hC := S.cubicSol
-  rw [hS] at hCfstPlanesndPlane
+  rw [hS] at hC
   change (accCube (2 * n + 1)) (P g + P! f) = 0 at hC
   erw [TriLinearSymm.toCubic_add] at hC
   erw [P_accCube] at hC
@@ -78,12 +78,12 @@ lemma anomalyFree_param {S : (PureU1fstPlasndPlane(2 * n + 1)).Sols}
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠ 0`.
 In this case our parameterization above will be able to recover this point. -/
-def GenericCase (S : (PureU1 (2 * n.succfstPlasndPlane+ 1)).Sols) : Prop :=
-  ∀ (g f : Fin n.succfstPlane→ ℚ)sndPlanestPlane_ : S.val = P g + P! f),
+def GenericCase (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
+  ∀ (g f : Fin n.succ → ℚ) (_ : S.val = P g + P! f),
   accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0
 
-lemma genericCase_exists (S : (PureU1 (2 * nfstPlasndPlanesucc + 1)).Sols)
-    (hs : ∃ (g f : Fin fstPlane.sucsndPlanestPlane→ ℚ), S.val = P g + P! f ∧
+lemma genericCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
+    (hs : ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f ∧
     accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0) : GenericCase S := by
   intro g f hS hC
   obtain ⟨g', f', hS', hC'⟩ := hs
@@ -94,12 +94,12 @@ lemma genericCase_exists (S : (PureU1 (2 * nfstPlasndPlanesucc + 1)).Sols)
 
 /-- A proposition on a solution which is true if `accCubeTriLinSymm (P g, P g, P! f) ≠ 0`.
 In this case we will show that S is zero if it is true for all permutations. -/
-def SpecialCase (S : (PureU1 (2 * n.succfstPlasndPlane+ 1)).Sols) : Prop :=
-  ∀ (g f : Fin n.succfstPlane→ ℚ)sndPlanestPlane_ : S.val = P g + P! f),
+def SpecialCase (S : (PureU1 (2 * n.succ + 1)).Sols) : Prop :=
+  ∀ (g f : Fin n.succ → ℚ) (_ : S.val = P g + P! f),
   accCubeTriLinSymm (P g) (P g) (P! f) = 0
 
-lemma specialCase_exists (S : (PureU1 (2 * nfstPlasndPlanesucc + 1)).Sols)
-    (hs : ∃ (g f : Fin fstPlane.sucsndPlanestPlane→ ℚ), S.val = P g + P! f ∧
+lemma specialCase_exists (S : (PureU1 (2 * n.succ + 1)).Sols)
+    (hs : ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f ∧
     accCubeTriLinSymm (P g) (P g) (P! f) = 0) : SpecialCase S := by
   intro g f hS
   obtain ⟨g', f', hS', hC'⟩ := hs
@@ -110,8 +110,8 @@ lemma specialCase_exists (S : (PureU1 (2 * nfstPlasndPlanesucc + 1)).Sols)
 
 lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
     GenericCase S ∨ SpecialCase S := by
-  obtain ⟨g, f, h⟩ := span_basifstPlane S.1sndPlanestPlane
-  have h1 : accCubeTriLinfstPlaneymm sndPlanestPlane g) (P g) (P! f) ≠ 0 ∨
+  obtain ⟨g, f, h⟩ := span_basis S.1.1
+  have h1 : accCubeTriLinSymm (P g) (P g) (P! f) ≠ 0 ∨
       accCubeTriLinSymm (P g) (P g) (P! f) = 0 := by
     exact ne_or_eq _ _
   cases h1 <;> rename_i h1
@@ -120,11 +120,11 @@ lemma generic_or_special (S : (PureU1 (2 * n.succ + 1)).Sols) :
 
 theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
     ∃ g f a, S = parameterization g f a := by
-  obtain ⟨g, f, hS⟩ := span_basisndPlaneS.1.1sndPlanetPlane
+  obtain ⟨g, f, hS⟩ := span_basis S.1.1
   use g, f, (accCubeTriLinSymm (P! f) (P! f) (P g))⁻¹
   rw [parameterization]
   apply ACCSystem.Sols.ext
-  rw [parameterizationAsLifstPlaneesndPlane_val]
+  rw [parameterizationAsLinear_val]
   change S.val = _ • (_ • P g + _• P! f)
   rw [anomalyFree_param _ _ hS, neg_neg, ← smul_add, smul_smul, inv_mul_cancel₀, one_smul]
   · exact hS
@@ -143,7 +143,7 @@ lemma special_case_lineInCubic {S : (PureU1 (2 * n.succ + 1)).Sols}
     accCubeTriLinSymm.map_smul₃, accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂,
     accCubeTriLinSymm.map_smul₃, h]
   rw [anomalyFree_param _ _ hS] at h
-  simp only [Nat.succ_eq_addsndPlanene, asndPlaneCubeTfstPlaneiLinSymm_toFun_apply_apply, neg_eq_zero] at h
+  simp only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, neg_eq_zero] at h
   change accCubeTriLinSymm (P! f) (P! f) (P g) = 0 at h
   erw [h]
   simp
