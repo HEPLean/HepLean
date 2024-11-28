@@ -82,17 +82,17 @@ lemma lineInCubicPerm_permute {S : (PureU1 (2 * n + 1)).LinSols}
 lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) :
     ∀ (j : Fin n.succ) (g f : Fin n.succ → ℚ) (_ : S.val = Pa g f),
-      (S.val (δ!₂ j) - S.val (δ!₁ j))
+      (S.val (oddShiftSndEmbed j) - S.val (oddShiftFstEmbed j))
       * accCubeTriLinSymm (P g) (P g) (basis!AsCharges j) = 0 := by
   intro j g f h
   let S' := (FamilyPermutations (2 * n.succ + 1)).linSolRep
-    (pairSwap (δ!₁ j) (δ!₂ j)) S
+    (pairSwap (oddShiftFstEmbed j) (oddShiftSndEmbed j)) S
   have hSS' : ((FamilyPermutations (2 * n.succ + 1)).linSolRep
-    (pairSwap (δ!₁ j) (δ!₂ j))) S = S' := rfl
+    (pairSwap (oddShiftFstEmbed j) (oddShiftSndEmbed j))) S = S' := rfl
   obtain ⟨g', f', hall⟩ := span_basis_swap! j hSS' g f h
   have h1 := line_in_cubic_P_P_P! (lineInCubicPerm_self LIC) g f h
   have h2 := line_in_cubic_P_P_P!
-    (lineInCubicPerm_self (lineInCubicPerm_permute LIC (pairSwap (δ!₁ j) (δ!₂ j)))) g' f' hall.1
+    (lineInCubicPerm_self (lineInCubicPerm_permute LIC (pairSwap (oddShiftFstEmbed j) (δ!₂ j)))) g' f' hall.1
   rw [hall.2.1, hall.2.2] at h2
   rw [accCubeTriLinSymm.map_add₃, h1, accCubeTriLinSymm.map_smul₃] at h2
   simpa using h2
@@ -100,11 +100,11 @@ lemma lineInCubicPerm_swap {S : (PureU1 (2 * n.succ + 1)).LinSols}
 lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (f g : Fin n.succ.succ → ℚ) (hS : S.val = Pa f g) :
     accCubeTriLinSymm (P f) (P f) (basis!AsCharges 0) =
-    (S.val (δ!₁ 0) + S.val (δ!₂ 0)) * (2 * S.val δ!₃ + S.val (δ!₁ 0) + S.val (δ!₂ 0)) := by
+    (S.val (oddShiftFstEmbed 0) + S.val (oddShiftSndEmbed 0)) * (2 * S.val oddShiftZero + S.val (oddShiftFstEmbed 0) + S.val (oddShiftSndEmbed 0)) := by
   rw [P_P_P!_accCube f 0]
   rw [← Pa_δa₁ f g]
   rw [← hS]
-  have ht : δ!₁ (0 : Fin n.succ.succ) = δ₁ 1 := rfl
+  have ht : oddShiftFstEmbed (0 : Fin n.succ.succ) = oddFstEmbed 1 := rfl
   nth_rewrite 1 [ht]
   rw [P_δ₁]
   have h1 := Pa_δa₁ f g
@@ -119,7 +119,7 @@ lemma P_P_P!_accCube' {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
 
 lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
     (LIC : LineInCubicPerm S) :
-    LineInPlaneProp ((S.val (δ!₂ 0)), ((S.val (δ!₁ 0)), (S.val δ!₃))) := by
+    LineInPlaneProp ((S.val (oddShiftSndEmbed 0)), ((S.val (oddShiftFstEmbed 0)), (S.val oddShiftZero))) := by
   obtain ⟨g, f, hfg⟩ := span_basis S
   have h1 := lineInCubicPerm_swap LIC 0 g f hfg
   rw [P_P_P!_accCube' g f hfg] at h1
@@ -135,8 +135,8 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ+1)).LinSols}
 
 lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ + 1)).LinSols}
     (LIC : LineInCubicPerm S) : LineInPlaneCond S := by
-  refine @Prop_three (2 * n.succ.succ + 1) LineInPlaneProp S (δ!₂ 0) (δ!₁ 0)
-    δ!₃ ?_ ?_ ?_ ?_
+  refine @Prop_three (2 * n.succ.succ + 1) LineInPlaneProp S (oddShiftSndEmbed 0) (oddShiftFstEmbed 0)
+    oddShiftZero ?_ ?_ ?_ ?_
   · exact ne_of_beq_false rfl
   · exact ne_of_beq_false rfl
   · exact ne_of_beq_false rfl

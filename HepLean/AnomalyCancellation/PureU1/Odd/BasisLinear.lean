@@ -35,32 +35,32 @@ section theDeltas
 
 /-- The inclusion of `Fin n` into `Fin ((n + 1) + n)` via the first `n`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ₁ (j : Fin n) : Fin (2 * n + 1) :=
+def oddFstEmbed (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.castAdd n (Fin.castAdd 1 j))
 
 /-- The inclusion of `Fin n` into `Fin ((n + 1) + n)` via the second `n`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ₂ (j : Fin n) : Fin (2 * n + 1) :=
+def oddSndEmbed (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.natAdd (n+1) j)
 
 /-- The element representing `1` in `Fin ((n + 1) + n)`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ₃ : Fin (2 * n + 1) :=
+def oddMid : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.castAdd n (Fin.natAdd n 1))
 
 /-- The inclusion of `Fin n` into `Fin (1 + n + n)` via the first `n`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ!₁ (j : Fin n) : Fin (2 * n + 1) :=
+def oddShiftFstEmbed (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.castAdd n (Fin.natAdd 1 j))
 
 /-- The inclusion of `Fin n` into `Fin (1 + n + n)` via the second `n`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ!₂ (j : Fin n) : Fin (2 * n + 1) :=
+def oddShiftSndEmbed (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.natAdd (1 + n) j)
 
 /-- The element representing the `1` in `Fin (1 + n + n)`.
   This is then casted to `Fin (2 * n + 1)`. -/
-def δ!₃ : Fin (2 * n + 1) :=
+def oddShiftZero : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.castAdd n (Fin.castAdd n 1))
 
 /-- The element representing the first `1` in `Fin (1 + n + 1 + n.succ)` casted
@@ -83,43 +83,43 @@ def δa₃ : Fin (2 * n.succ + 1) :=
 def δa₄ (j : Fin n.succ) : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.natAdd ((1+n)+1) j)
 
-lemma δa₁_δ₁ : @δa₁ n = δ₁ 0 := Fin.rev_inj.mp rfl
+lemma δa₁_δ₁ : @δa₁ n = oddFstEmbed 0 := Fin.rev_inj.mp rfl
 
-lemma δa₁_δ!₃ : @δa₁ n = δ!₃ := rfl
+lemma δa₁_δ!₃ : @δa₁ n = oddShiftZero := rfl
 
-lemma δa₂_δ₁ (j : Fin n) : δa₂ j = δ₁ j.succ := by
+lemma δa₂_δ₁ (j : Fin n) : δa₂ j = oddFstEmbed j.succ := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, δa₂, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, δ₁, Fin.val_succ]
+  simp only [succ_eq_add_one, δa₂, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, oddFstEmbed, Fin.val_succ]
   exact Nat.add_comm 1 ↑j
 
-lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = δ!₁ j.castSucc := by
+lemma δa₂_δ!₁ (j : Fin n) : δa₂ j = oddShiftFstEmbed j.castSucc := by
   rfl
 
-lemma δa₃_δ₃ : @δa₃ n = δ₃ := by
+lemma δa₃_δ₃ : @δa₃ n = oddMid := by
   rw [Fin.ext_iff]
   simp only [succ_eq_add_one, δa₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd,
-    Fin.val_eq_zero, add_zero, δ₃]
+    Fin.val_eq_zero, add_zero, oddMid]
   exact Nat.add_comm 1 n
 
-lemma δa₃_δ!₁ : δa₃ = δ!₁ (Fin.last n) := by
+lemma δa₃_δ!₁ : δa₃ = oddShiftFstEmbed (Fin.last n) := by
   rfl
 
-lemma δa₄_δ₂ (j : Fin n.succ) : δa₄ j = δ₂ j := by
+lemma δa₄_δ₂ (j : Fin n.succ) : δa₄ j = oddSndEmbed j := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, δa₄, Fin.coe_cast, Fin.coe_natAdd, δ₂, add_left_inj]
+  simp only [succ_eq_add_one, δa₄, Fin.coe_cast, Fin.coe_natAdd, oddSndEmbed, add_left_inj]
   exact Nat.add_comm 1 n
 
-lemma δa₄_δ!₂ (j : Fin n.succ) : δa₄ j = δ!₂ j := by
+lemma δa₄_δ!₂ (j : Fin n.succ) : δa₄ j = oddShiftSndEmbed j := by
   rw [Fin.ext_iff]
   rfl
 
-lemma δ₂_δ!₂ (j : Fin n) : δ₂ j = δ!₂ j := by
+lemma δ₂_δ!₂ (j : Fin n) : oddSndEmbed j = oddShiftSndEmbed j := by
   rw [Fin.ext_iff]
-  simp only [δ₂, Fin.coe_cast, Fin.coe_natAdd, δ!₂, add_left_inj]
+  simp only [oddSndEmbed, Fin.coe_cast, Fin.coe_natAdd, oddShiftSndEmbed, add_left_inj]
   exact Nat.add_comm n 1
 
 lemma sum_δ (S : Fin (2 * n + 1) → ℚ) :
-    ∑ i, S i = S δ₃ + ∑ i : Fin n, ((S ∘ δ₁) i + (S ∘ δ₂) i) := by
+    ∑ i, S i = S oddMid + ∑ i : Fin n, ((S ∘ oddFstEmbed) i + (S ∘ oddSndEmbed) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin (n + 1 + n), S (Fin.cast (split_odd n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd n)).symm.toEquiv]
     · intro i
@@ -134,7 +134,7 @@ lemma sum_δ (S : Fin (2 * n + 1) → ℚ) :
   rfl
 
 lemma sum_δ! (S : Fin (2 * n + 1) → ℚ) :
-    ∑ i, S i = S δ!₃ + ∑ i : Fin n, ((S ∘ δ!₁) i + (S ∘ δ!₂) i) := by
+    ∑ i, S i = S oddShiftZero + ∑ i : Fin n, ((S ∘ oddShiftFstEmbed) i + (S ∘ oddShiftSndEmbed) i) := by
   have h1 : ∑ i, S i = ∑ i : Fin ((1+n)+n), S (Fin.cast (split_odd! n) i) := by
     rw [Finset.sum_equiv (Fin.castOrderIso (split_odd! n)).symm.toEquiv]
     · intro i
@@ -152,10 +152,10 @@ section theBasisVectors
 /-- The first part of the basis as charge assignments. -/
 def basisAsCharges (j : Fin n) : (PureU1 (2 * n + 1)).Charges :=
   fun i =>
-  if i = δ₁ j then
+  if i = oddFstEmbed j then
     1
   else
-    if i = δ₂ j then
+    if i = oddSndEmbed j then
       - 1
     else
       0
@@ -163,24 +163,24 @@ def basisAsCharges (j : Fin n) : (PureU1 (2 * n + 1)).Charges :=
 /-- The second part of the basis as charge assignments. -/
 def basis!AsCharges (j : Fin n) : (PureU1 (2 * n + 1)).Charges :=
   fun i =>
-  if i = δ!₁ j then
+  if i = oddShiftFstEmbed j then
     1
   else
-    if i = δ!₂ j then
+    if i = oddShiftSndEmbed j then
       - 1
     else
       0
 
-lemma basis_on_δ₁_self (j : Fin n) : basisAsCharges j (δ₁ j) = 1 := by
+lemma basis_on_δ₁_self (j : Fin n) : basisAsCharges j (oddFstEmbed j) = 1 := by
   simp [basisAsCharges]
 
-lemma basis!_on_δ!₁_self (j : Fin n) : basis!AsCharges j (δ!₁ j) = 1 := by
+lemma basis!_on_δ!₁_self (j : Fin n) : basis!AsCharges j (oddShiftFstEmbed j) = 1 := by
   simp [basis!AsCharges]
 
 lemma basis_on_δ₁_other {k j : Fin n} (h : k ≠ j) :
-    basisAsCharges k (δ₁ j) = 0 := by
+    basisAsCharges k (oddFstEmbed j) = 0 := by
   simp only [basisAsCharges, PureU1_numberCharges]
-  simp only [δ₁, δ₂]
+  simp only [oddFstEmbed, oddSndEmbed]
   split
   · rename_i h1
     rw [Fin.ext_iff] at h1
@@ -196,9 +196,9 @@ lemma basis_on_δ₁_other {k j : Fin n} (h : k ≠ j) :
     · rfl
 
 lemma basis!_on_δ!₁_other {k j : Fin n} (h : k ≠ j) :
-    basis!AsCharges k (δ!₁ j) = 0 := by
+    basis!AsCharges k (oddShiftFstEmbed j) = 0 := by
   simp only [basis!AsCharges, PureU1_numberCharges]
-  simp only [δ!₁, δ!₂]
+  simp only [oddShiftFstEmbed, oddShiftSndEmbed]
   split
   · rename_i h1
     rw [Fin.ext_iff] at h1
@@ -213,19 +213,19 @@ lemma basis!_on_δ!₁_other {k j : Fin n} (h : k ≠ j) :
       omega
     rfl
 
-lemma basis_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ₁ k) (h2 : j ≠ δ₂ k) :
+lemma basis_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ oddFstEmbed k) (h2 : j ≠ oddSndEmbed k) :
     basisAsCharges k j = 0 := by
   simp only [basisAsCharges, PureU1_numberCharges]
   simp_all only [ne_eq, ↓reduceIte]
 
-lemma basis!_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ δ!₁ k) (h2 : j ≠ δ!₂ k) :
+lemma basis!_on_other {k : Fin n} {j : Fin (2 * n + 1)} (h1 : j ≠ oddShiftFstEmbed k) (h2 : j ≠ oddShiftSndEmbed k) :
     basis!AsCharges k j = 0 := by
   simp only [basis!AsCharges, PureU1_numberCharges]
   simp_all only [ne_eq, ↓reduceIte]
 
 lemma basis_δ₂_eq_minus_δ₁ (j i : Fin n) :
-    basisAsCharges j (δ₂ i) = - basisAsCharges j (δ₁ i) := by
-  simp only [basisAsCharges, PureU1_numberCharges, δ₂, δ₁]
+    basisAsCharges j (oddSndEmbed i) = - basisAsCharges j (oddFstEmbed i) := by
+  simp only [basisAsCharges, PureU1_numberCharges, oddSndEmbed, oddFstEmbed]
   split <;> split
   any_goals split
   any_goals split
@@ -239,8 +239,8 @@ lemma basis_δ₂_eq_minus_δ₁ (j i : Fin n) :
   all_goals omega
 
 lemma basis!_δ!₂_eq_minus_δ!₁ (j i : Fin n) :
-    basis!AsCharges j (δ!₂ i) = - basis!AsCharges j (δ!₁ i) := by
-  simp only [basis!AsCharges, PureU1_numberCharges, δ!₂, δ!₁]
+    basis!AsCharges j (oddShiftSndEmbed i) = - basis!AsCharges j (oddShiftFstEmbed i) := by
+  simp only [basis!AsCharges, PureU1_numberCharges, oddShiftSndEmbed, oddShiftFstEmbed]
   split <;> split
   any_goals split
   any_goals split
@@ -255,44 +255,44 @@ lemma basis!_δ!₂_eq_minus_δ!₁ (j i : Fin n) :
   all_goals simp_all
   all_goals omega
 
-lemma basis_on_δ₂_self (j : Fin n) : basisAsCharges j (δ₂ j) = - 1 := by
+lemma basis_on_δ₂_self (j : Fin n) : basisAsCharges j (oddSndEmbed j) = - 1 := by
   rw [basis_δ₂_eq_minus_δ₁, basis_on_δ₁_self]
 
-lemma basis!_on_δ!₂_self (j : Fin n) : basis!AsCharges j (δ!₂ j) = - 1 := by
+lemma basis!_on_δ!₂_self (j : Fin n) : basis!AsCharges j (oddShiftSndEmbed j) = - 1 := by
   rw [basis!_δ!₂_eq_minus_δ!₁, basis!_on_δ!₁_self]
 
-lemma basis_on_δ₂_other {k j : Fin n} (h : k ≠ j) : basisAsCharges k (δ₂ j) = 0 := by
+lemma basis_on_δ₂_other {k j : Fin n} (h : k ≠ j) : basisAsCharges k (oddSndEmbed j) = 0 := by
   rw [basis_δ₂_eq_minus_δ₁, basis_on_δ₁_other h]
   rfl
 
-lemma basis!_on_δ!₂_other {k j : Fin n} (h : k ≠ j) : basis!AsCharges k (δ!₂ j) = 0 := by
+lemma basis!_on_δ!₂_other {k j : Fin n} (h : k ≠ j) : basis!AsCharges k (oddShiftSndEmbed j) = 0 := by
   rw [basis!_δ!₂_eq_minus_δ!₁, basis!_on_δ!₁_other h]
   rfl
 
-lemma basis_on_δ₃ (j : Fin n) : basisAsCharges j δ₃ = 0 := by
+lemma basis_on_δ₃ (j : Fin n) : basisAsCharges j oddMid = 0 := by
   simp only [basisAsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
-      add_zero, δ₁] at h
+    simp only [oddMid, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
+      add_zero, oddFstEmbed] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [δ₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
-        add_zero, δ₂] at h2
+      simp only [oddMid, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
+        add_zero, oddSndEmbed] at h2
       omega
     · rfl
 
-lemma basis!_on_δ!₃ (j : Fin n) : basis!AsCharges j δ!₃ = 0 := by
+lemma basis!_on_δ!₃ (j : Fin n) : basis!AsCharges j oddShiftZero = 0 := by
   simp only [basis!AsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, δ!₁,
+    simp only [oddShiftZero, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, oddShiftFstEmbed,
       Fin.coe_natAdd] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [δ!₃, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, δ!₂,
+      simp only [oddShiftZero, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, oddShiftSndEmbed,
         Fin.coe_natAdd] at h2
       omega
     · rfl
@@ -340,20 +340,20 @@ end theBasisVectors
 /-- Swapping the elements δ!₁ j and δ!₂ j is equivalent to adding a vector basis!AsCharges j. -/
 lemma swap!_as_add {S S' : (PureU1 (2 * n + 1)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n + 1)).linSolRep
-    (pairSwap (δ!₁ j) (δ!₂ j))) S = S') :
-    S'.val = S.val + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j := by
+    (pairSwap (oddShiftFstEmbed j) (oddShiftSndEmbed j))) S = S') :
+    S'.val = S.val + (S.val (oddShiftSndEmbed j) - S.val (oddShiftFstEmbed j)) • basis!AsCharges j := by
   funext i
   rw [← hS, FamilyPermutations_anomalyFreeLinear_apply]
-  by_cases hi : i = δ!₁ j
+  by_cases hi : i = oddShiftFstEmbed j
   · subst hi
     simp [HSMul.hSMul, basis!_on_δ!₁_self, pairSwap_inv_fst]
-  · by_cases hi2 : i = δ!₂ j
+  · by_cases hi2 : i = oddShiftSndEmbed j
     · subst hi2
       simp [HSMul.hSMul,basis!_on_δ!₂_self, pairSwap_inv_snd]
     · simp only [Equiv.invFun_as_coe, HSMul.hSMul, ACCSystemCharges.chargesAddCommMonoid_add,
       ACCSystemCharges.chargesModule_smul]
       rw [basis!_on_other hi hi2]
-      change S.val ((pairSwap (δ!₁ j) (δ!₂ j)).invFun i) =_
+      change S.val ((pairSwap (oddShiftFstEmbed j) (oddShiftSndEmbed j)).invFun i) =_
       erw [pairSwap_inv_other (Ne.symm hi) (Ne.symm hi2)]
       simp
 
@@ -366,7 +366,7 @@ def P! (f : Fin n → ℚ) : (PureU1 (2 * n + 1)).Charges := ∑ i, f i • basi
 /-- A point in the span of the basis as a charge. -/
 def Pa (f : Fin n → ℚ) (g : Fin n → ℚ) : (PureU1 (2 * n + 1)).Charges := P f + P! g
 
-lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (δ₁ j) = f j := by
+lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (oddFstEmbed j) = f j := by
   rw [P, sum_of_charges]
   simp only [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
@@ -377,7 +377,7 @@ lemma P_δ₁ (f : Fin n → ℚ) (j : Fin n) : P f (δ₁ j) = f j := by
     exact Rat.mul_zero (f k)
   · simp only [mem_univ, not_true_eq_false, _root_.mul_eq_zero, IsEmpty.forall_iff]
 
-lemma P!_δ!₁ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₁ j) = f j := by
+lemma P!_δ!₁ (f : Fin n → ℚ) (j : Fin n) : P! f (oddShiftFstEmbed j) = f j := by
   rw [P!, sum_of_charges]
   simp only [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
@@ -388,7 +388,7 @@ lemma P!_δ!₁ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₁ j) = f j := by
     exact Rat.mul_zero (f k)
   · simp only [mem_univ, not_true_eq_false, _root_.mul_eq_zero, IsEmpty.forall_iff]
 
-lemma P_δ₂ (f : Fin n → ℚ) (j : Fin n) : P f (δ₂ j) = - f j := by
+lemma P_δ₂ (f : Fin n → ℚ) (j : Fin n) : P f (oddSndEmbed j) = - f j := by
   rw [P, sum_of_charges]
   simp only [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
@@ -399,7 +399,7 @@ lemma P_δ₂ (f : Fin n → ℚ) (j : Fin n) : P f (δ₂ j) = - f j := by
     exact Rat.mul_zero (f k)
   · simp
 
-lemma P!_δ!₂ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₂ j) = - f j := by
+lemma P!_δ!₂ (f : Fin n → ℚ) (j : Fin n) : P! f (oddShiftSndEmbed j) = - f j := by
   rw [P!, sum_of_charges]
   simp only [HSMul.hSMul, SMul.smul]
   rw [Finset.sum_eq_single j]
@@ -410,11 +410,11 @@ lemma P!_δ!₂ (f : Fin n → ℚ) (j : Fin n) : P! f (δ!₂ j) = - f j := by
     exact Rat.mul_zero (f k)
   · simp
 
-lemma P_δ₃ (f : Fin n → ℚ) : P f (δ₃) = 0 := by
+lemma P_δ₃ (f : Fin n → ℚ) : P f (oddMid) = 0 := by
   rw [P, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul, basis_on_δ₃]
 
-lemma P!_δ!₃ (f : Fin n → ℚ) : P! f (δ!₃) = 0 := by
+lemma P!_δ!₃ (f : Fin n → ℚ) : P! f (oddShiftZero) = 0 := by
   rw [P!, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul, basis!_on_δ!₃]
 
@@ -479,7 +479,7 @@ lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P! f) = 0 := by
 
 lemma P_P_P!_accCube (g : Fin n → ℚ) (j : Fin n) :
     accCubeTriLinSymm (P g) (P g) (basis!AsCharges j)
-    = (P g (δ!₁ j))^2 - (g j)^2 := by
+    = (P g (oddShiftFstEmbed j))^2 - (g j)^2 := by
   simp only [accCubeTriLinSymm, PureU1Charges_numberCharges, TriLinearSymm.mk₃_toFun_apply_apply]
   rw [sum_δ!, basis!_on_δ!₃]
   simp only [mul_zero, Function.comp_apply, zero_add]
@@ -676,16 +676,16 @@ lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
 
 lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     (hS : ((FamilyPermutations (2 * n.succ + 1)).linSolRep
-    (pairSwap (δ!₁ j) (δ!₂ j))) S = S') (g f : Fin n.succ → ℚ) (hS1 : S.val = P g + P! f) :
+    (pairSwap (oddShiftFstEmbed j) (oddShiftSndEmbed j))) S = S') (g f : Fin n.succ → ℚ) (hS1 : S.val = P g + P! f) :
     ∃ (g' f' : Fin n.succ → ℚ),
     S'.val = P g' + P! f' ∧ P! f' = P! f +
-    (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∧ g' = g := by
-  let X := P! f + (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j
+    (S.val (oddShiftSndEmbed j) - S.val (oddShiftFstEmbed j)) • basis!AsCharges j ∧ g' = g := by
+  let X := P! f + (S.val (oddShiftSndEmbed j) - S.val (oddShiftFstEmbed j)) • basis!AsCharges j
   have hf : P! f ∈ Submodule.span ℚ (Set.range basis!AsCharges) := by
     rw [(mem_span_range_iff_exists_fun ℚ)]
     use f
     rfl
-  have hP : (S.val (δ!₂ j) - S.val (δ!₁ j)) • basis!AsCharges j ∈
+  have hP : (S.val (oddShiftSndEmbed j) - S.val (oddShiftFstEmbed j)) • basis!AsCharges j ∈
       Submodule.span ℚ (Set.range basis!AsCharges) := by
     apply Submodule.smul_mem
     apply SetLike.mem_of_subset
