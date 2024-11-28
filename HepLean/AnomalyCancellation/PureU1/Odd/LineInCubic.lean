@@ -40,6 +40,9 @@ def LineInCubic (S : (PureU1 (2 * n + 1)).LinSols) : Prop :=
   ∀ (g f : Fin n → ℚ) (_ : S.val = Pa g f) (a b : ℚ),
   accCube (2 * n + 1) (a • P g + b • P! f) = 0
 
+/-- The condition that a linear solution sits on a line between the two planes
+  within the cubic expands into a on `accCubeTriLinSymm` applied to the points
+  within the planes. -/
 lemma lineInCubic_expand {S : (PureU1 (2 * n + 1)).LinSols} (h : LineInCubic S) :
     ∀ (g : Fin n → ℚ) (f : Fin n → ℚ) (_ : S.val = P g + P! f) (a b : ℚ),
     3 * a * b * (a * accCubeTriLinSymm (P g) (P g) (P! f)

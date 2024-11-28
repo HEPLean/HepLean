@@ -33,51 +33,59 @@ lemma split_adda (n : ℕ) : ((1+n)+1) + n.succ = 2 * n.succ + 1 := by
 
 section theDeltas
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin ((n + 1) + n)` via the first `n`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ₁ (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.castAdd n (Fin.castAdd 1 j))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin ((n + 1) + n)` via the second `n`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ₂ (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.natAdd (n+1) j)
 
-/-- A helper function for what follows. -/
+/-- The element representing `1` in `Fin ((n + 1) + n)`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ₃ : Fin (2 * n + 1) :=
   Fin.cast (split_odd n) (Fin.castAdd n (Fin.natAdd n 1))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin (1 + n + n)` via the first `n`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ!₁ (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.castAdd n (Fin.natAdd 1 j))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin (1 + n + n)` via the second `n`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ!₂ (j : Fin n) : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.natAdd (1 + n) j)
 
-/-- A helper function for what follows. -/
+/-- The element representing the `1` in `Fin (1 + n + n)`.
+  This is then casted to `Fin (2 * n + 1)`. -/
 def δ!₃ : Fin (2 * n + 1) :=
   Fin.cast (split_odd! n) (Fin.castAdd n (Fin.castAdd n 1))
 
-/-- A helper function for what follows. -/
+/-- The element representing the first `1` in `Fin (1 + n + 1 + n.succ)` casted
+  to `Fin (2 * n.succ + 1)`. -/
 def δa₁ : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.castAdd n.succ (Fin.castAdd 1 (Fin.castAdd n 1)))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n` into `Fin (1 + n + 1 + n.succ)` via the first `n` and casted
+  to `Fin (2 * n.succ + 1)`. -/
 def δa₂ (j : Fin n) : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.castAdd n.succ (Fin.castAdd 1 (Fin.natAdd 1 j)))
 
-/-- A helper function for what follows. -/
+/-- The element representing the second `1` in `Fin (1 + n + 1 + n.succ)` casted
+  to `2 * n.succ + 1`. -/
 def δa₃ : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.castAdd n.succ (Fin.natAdd (1+n) 1))
 
-/-- A helper function for what follows. -/
+/-- The inclusion of `Fin n.succ` into `Fin (1 + n + 1 + n.succ)` via the `n.succ` and casted
+  to `Fin (2 * n.succ + 1)`. -/
 def δa₄ (j : Fin n.succ) : Fin (2 * n.succ + 1) :=
   Fin.cast (split_adda n) (Fin.natAdd ((1+n)+1) j)
 
-lemma δa₁_δ₁ : @δa₁ n = δ₁ 0 := by
-  exact Fin.rev_inj.mp rfl
+lemma δa₁_δ₁ : @δa₁ n = δ₁ 0 := Fin.rev_inj.mp rfl
 
-lemma δa₁_δ!₃ : @δa₁ n = δ!₃ := by
-  rfl
+lemma δa₁_δ!₃ : @δa₁ n = δ!₃ := rfl
 
 lemma δa₂_δ₁ (j : Fin n) : δa₂ j = δ₁ j.succ := by
   rw [Fin.ext_iff]
