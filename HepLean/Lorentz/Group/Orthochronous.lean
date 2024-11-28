@@ -29,24 +29,33 @@ open Lorentz.Contr
 /-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/
 def IsOrthochronous : Prop := 0 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0)
 
+/-- A Lorentz transformation is `orthochronous` if and only if its fist column is
+  future pointing. -/
 lemma IsOrthochronous_iff_futurePointing :
     IsOrthochronous Λ ↔ toNormOne Λ ∈ NormOne.FuturePointing d := by
   simp only [IsOrthochronous]
   rw [NormOne.FuturePointing.mem_iff_inl_nonneg, toNormOne_inl]
 
+/-- A Lorentz transformation is orthochronous if and only if its transpose is orthochronous. -/
 lemma IsOrthochronous_iff_transpose :
     IsOrthochronous Λ ↔ IsOrthochronous (transpose Λ) := by rfl
 
+/-- A Lorentz transformation is orthochronous if and only if its `0 0` element is greater
+  or equal to one. -/
 lemma IsOrthochronous_iff_ge_one :
     IsOrthochronous Λ ↔ 1 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0) := by
   rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.mem_iff_inl_one_le_inl,
     toNormOne_inl]
 
+/-- A Lorentz transformation is not orthochronous if and only if its `0 0` element is less then
+  or equal to minus one. -/
 lemma not_orthochronous_iff_le_neg_one :
     ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) ≤ -1 := by
   rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.not_mem_iff_inl_le_neg_one,
     toNormOne_inl]
 
+/-- A Lorentz transformation is not orthochronous if and only if its `0 0` element is
+  non-positive. -/
 lemma not_orthochronous_iff_le_zero : ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) ≤ 0 := by
   rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.not_mem_iff_inl_le_zero,
     toNormOne_inl]
@@ -55,11 +64,14 @@ lemma not_orthochronous_iff_le_zero : ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0)
 def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => Λ.1 (Sum.inl 0) (Sum.inl 0),
     Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
-/-- An auxillary function used in the definition of `orthchroMapReal`. -/
+/-- An auxillary function used in the definition of `orthchroMapReal`.
+  This function takes all elements of `ℝ` less then `-1` to `-1`,
+  all elements of `R` geater then `1` to `1` and peserves all other elements. -/
 def stepFunction : ℝ → ℝ := fun t =>
   if t ≤ -1 then -1 else
     if 1 ≤ t then 1 else t
 
+/-- The `stepFunction` is continuous. -/
 lemma stepFunction_continuous : Continuous stepFunction := by
   apply Continuous.if ?_ continuous_const (Continuous.if ?_ continuous_const continuous_id)
     <;> intro a ha
@@ -76,6 +88,7 @@ taking Orthochronous elements to `1` and non-orthochronous to `-1`. -/
 def orthchroMapReal : C(LorentzGroup d, ℝ) := ContinuousMap.comp
   ⟨stepFunction, stepFunction_continuous⟩ timeCompCont
 
+/-- A Lorentz transformation which is orthochronous maps under `orthchroMapReal` to `1`. -/
 lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMapReal Λ = 1 := by
   rw [IsOrthochronous_iff_ge_one] at h
@@ -83,6 +96,7 @@ lemma orthchroMapReal_on_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochron
   rw [stepFunction, if_pos h, if_neg]
   linarith
 
+/-- A Lorentz transformation which is not-orthochronous maps under `orthchroMapReal` to `- 1`. -/
 lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMapReal Λ = - 1 := by
   rw [not_orthochronous_iff_le_neg_one] at h
@@ -90,6 +104,7 @@ lemma orthchroMapReal_on_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrt
   rw [stepFunction, if_pos]
   exact h
 
+/-- Every Lorentz transformation maps under `orthchroMapReal` to either `1` or `-1`. -/
 lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
     orthchroMapReal Λ = -1 ∨ orthchroMapReal Λ = 1 := by
   by_cases h : IsOrthochronous Λ
@@ -104,10 +119,14 @@ def orthchroMap : C(LorentzGroup d, ℤ₂) :=
     toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,
     continuous_toFun := Continuous.subtype_mk (ContinuousMap.continuous orthchroMapReal) _}
 
+/-- A Lorentz transformation which is orthochronous maps under `orthchroMap` to `1`
+  in `ℤ₂` (the identity element). -/
 lemma orthchroMap_IsOrthochronous {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     orthchroMap Λ = 1 := by
   simp [orthchroMap, orthchroMapReal_on_IsOrthochronous h]
 
+/-- A Lorentz transformation which is not-orthochronous maps under `orthchroMap` to
+  the non-identity element of `ℤ₂`. -/
 lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochronous Λ) :
     orthchroMap Λ = Additive.toMul (1 : ZMod 2) := by
   simp only [orthchroMap, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
@@ -116,6 +135,7 @@ lemma orthchroMap_not_IsOrthochronous {Λ : LorentzGroup d} (h : ¬ IsOrthochron
   · rfl
   · linarith
 
+/-- The product of two orthochronous Lorentz transfomations is orthochronous. -/
 lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
@@ -123,6 +143,7 @@ lemma mul_othchron_of_othchron_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthoch
   rw [IsOrthochronous, LorentzGroup.inl_inl_mul]
   exact NormOne.FuturePointing.metric_reflect_mem_mem h h'
 
+/-- The product of two non-orthochronous Lorentz transfomations is orthochronous. -/
 lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : IsOrthochronous (Λ * Λ') := by
   rw [IsOrthochronous_iff_transpose] at h
@@ -130,6 +151,8 @@ lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : �
   rw [IsOrthochronous, LorentzGroup.inl_inl_mul]
   exact NormOne.FuturePointing.metric_reflect_not_mem_not_mem h h'
 
+/-- The product of an orthochronous Lorentz transfomations with a
+  non-orthchronous Loentz transformation is not orthochronous. -/
 lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
   rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]
@@ -137,6 +160,8 @@ lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : I
   rw [IsOrthochronous_iff_futurePointing] at h h'
   exact NormOne.FuturePointing.metric_reflect_mem_not_mem h h'
 
+/-- The product of a non-orthochronous Lorentz transfomations with an
+  orthchronous Loentz transformation is not orthochronous. -/
 lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
   rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]

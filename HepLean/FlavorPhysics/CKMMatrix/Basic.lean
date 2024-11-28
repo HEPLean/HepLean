@@ -29,6 +29,7 @@ leading diagonal. -/
 def phaseShiftMatrix (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
   ![![cexp (I * a), 0, 0], ![0, cexp (I * b), 0], ![0, 0, cexp (I * c)]]
 
+/-- The phase shift matrix for zero-phases is the identity. -/
 lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -41,6 +42,8 @@ lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
     Fin.isValue, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons, empty_val',
     cons_val_fin_one, head_fin_const, one_apply_eq]
 
+/-- The conjugate transpose of the phase shift matrix is the phase-shift matrix
+  with negated phases. -/
 lemma phaseShiftMatrix_star (a b c : ℝ) :
     (phaseShiftMatrix a b c)ᴴ = phaseShiftMatrix (- a) (- b) (- c) := by
   funext i j
@@ -53,6 +56,8 @@ lemma phaseShiftMatrix_star (a b c : ℝ) :
   · rfl
   · rfl
 
+/-- The multiple of two phase shift matrices is equal to the phase shift matrix with
+  added phases. -/
 lemma phaseShiftMatrix_mul (a b c d e f : ℝ) :
     phaseShiftMatrix a b c * phaseShiftMatrix d e f = phaseShiftMatrix (a + d) (b + e) (c + f) := by
   ext i j
@@ -76,12 +81,17 @@ def phaseShift (a b c : ℝ) : unitaryGroup (Fin 3) ℂ :=
     rw [phaseShiftMatrix_star, phaseShiftMatrix_mul, ← phaseShiftMatrix_one]
     simp only [phaseShiftMatrix, add_neg_cancel, ofReal_zero, mul_zero, exp_zero]⟩
 
+/-- The underlying matrix of the phase-shift element of the unitary group is the
+  phase-shift matrix. -/
 lemma phaseShift_coe_matrix (a b c : ℝ) : ↑(phaseShift a b c) = phaseShiftMatrix a b c := rfl
 
-/-- The equivalence relation between CKM matrices. -/
+/-- The relation on unitary matrices (CKM matrices) satisfied if two unitary matrices
+  are related by phase shifts of quarks. -/
 def PhaseShiftRelation (U V : unitaryGroup (Fin 3) ℂ) : Prop :=
   ∃ a b c e f g, U = phaseShift a b c * V * phaseShift e f g
 
+
+/-- The relation `PhaseShiftRelation` is reflective. -/
 lemma phaseShiftRelation_refl (U : unitaryGroup (Fin 3) ℂ) : PhaseShiftRelation U U := by
   use 0, 0, 0, 0, 0, 0
   rw [Subtype.ext_iff_val]
@@ -89,6 +99,7 @@ lemma phaseShiftRelation_refl (U : unitaryGroup (Fin 3) ℂ) : PhaseShiftRelatio
   rw [phaseShiftMatrix_one]
   simp only [one_mul, mul_one]
 
+/-- The relation `PhaseShiftRelation` is symmetric. -/
 lemma phaseShiftRelation_symm {U V : unitaryGroup (Fin 3) ℂ} :
     PhaseShiftRelation U V → PhaseShiftRelation V U := by
   intro h
@@ -103,6 +114,7 @@ lemma phaseShiftRelation_symm {U V : unitaryGroup (Fin 3) ℂ} :
   simp only [phaseShiftMatrix_mul, neg_add_cancel, phaseShiftMatrix_one, one_mul, add_neg_cancel,
     mul_one]
 
+/-- The relation `PhaseShiftRelation` is transitive. -/
 lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
     PhaseShiftRelation U V → PhaseShiftRelation V W → PhaseShiftRelation U W := by
   intro hUV hVW
@@ -114,6 +126,7 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   rw [mul_assoc, mul_assoc, phaseShiftMatrix_mul, ← mul_assoc, ← mul_assoc, phaseShiftMatrix_mul,
     add_comm k e, add_comm l f, add_comm m g]
 
+/-- The relation `PhaseShiftRelation` is an equivalence relation. -/
 lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
   refl := phaseShiftRelation_refl
   symm := phaseShiftRelation_symm
@@ -122,6 +135,7 @@ lemma phaseShiftRelation_equiv : Equivalence PhaseShiftRelation where
 /-- The type of CKM matrices. -/
 def CKMMatrix : Type := unitaryGroup (Fin 3) ℂ
 
+/-- Two CKM matrices are equal if their underlying unitary matrices are equal. -/
 lemma CKMMatrix_ext {U V : CKMMatrix} (h : U.val = V.val) : U = V := by
   cases U
   cases V
@@ -164,12 +178,15 @@ def phaseShiftApply (V : CKMMatrix) (a b c d e f : ℝ) : CKMMatrix :=
     phaseShift a b c * ↑V * phaseShift d e f
 
 namespace phaseShiftApply
+
+/-- A CKM matrix is equivalent to a phase-shift of itself. -/
 lemma equiv (V : CKMMatrix) (a b c d e f : ℝ) :
     V ≈ phaseShiftApply V a b c d e f := by
   symm
   use a, b, c, d, e, f
   rfl
 
+/-- The `ud` component of the CKM matrix obtained after applying a phase shift. -/
 lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 0 0 = cexp (a * I + d * I) * V.1 0 0 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -182,6 +199,7 @@ lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `us` component of the CKM matrix obtained after applying a phase shift. -/
 lemma us (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 0 1 = cexp (a * I + e * I) * V.1 0 1 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -193,6 +211,7 @@ lemma us (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `ub` component of the CKM matrix obtained after applying a phase shift. -/
 lemma ub (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 0 2 = cexp (a * I + f * I) * V.1 0 2 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -204,6 +223,7 @@ lemma ub (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `cd` component of the CKM matrix obtained after applying a phase shift. -/
 lemma cd (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 1 0= cexp (b * I + d * I) * V.1 1 0 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -216,6 +236,7 @@ lemma cd (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `cs` component of the CKM matrix obtained after applying a phase shift. -/
 lemma cs (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 1 1 = cexp (b * I + e * I) * V.1 1 1 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -227,6 +248,7 @@ lemma cs (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `cb` component of the CKM matrix obtained after applying a phase shift. -/
 lemma cb (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 1 2 = cexp (b * I + f * I) * V.1 1 2 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -238,6 +260,7 @@ lemma cb (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `td` component of the CKM matrix obtained after applying a phase shift. -/
 lemma td (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 2 0= cexp (c * I + d * I) * V.1 2 0 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -251,6 +274,7 @@ lemma td (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `ts` component of the CKM matrix obtained after applying a phase shift. -/
 lemma ts (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 2 1 = cexp (c * I + e * I) * V.1 2 1 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -263,6 +287,7 @@ lemma ts (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [exp_add]
   ring_nf
 
+/-- The `tb` component of the CKM matrix obtained after applying a phase shift. -/
 lemma tb (V : CKMMatrix) (a b c d e f : ℝ) :
     (phaseShiftApply V a b c d e f).1 2 2 = cexp (c * I + f * I) * V.1 2 2 := by
   simp only [Fin.isValue, phaseShiftApply_coe]
@@ -281,6 +306,8 @@ end phaseShiftApply
 @[simp]
 def VAbs' (V : unitaryGroup (Fin 3) ℂ) (i j : Fin 3) : ℝ := Complex.abs (V i j)
 
+/-- If two CKM matrices are equivalent (under phase shifts), then their absolute values
+  are the same. -/
 lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
     VAbs' V i j = VAbs' U i j := by
   simp only [VAbs']
@@ -396,6 +423,8 @@ def Rcscb (V : CKMMatrix) : ℂ := [V]cs / [V]cb
 /-- The ratio of the `cs` and `cb` elements of a CKM matrix. -/
 scoped[CKMMatrix] notation (name := cs_cb_ratio) "[" V "]cs|cb" => Rcscb V
 
+/-- Multiplicying the ratio of the `cs` by `cb` element of a CKM matriz by the `cb` element
+  returns the `cs` element, as long as the `cb` element is non-zero. -/
 lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0) : [V]cs = Rcscb V * [V]cb := by
   rw [Rcscb]
   exact (div_mul_cancel₀ [V]cs h).symm

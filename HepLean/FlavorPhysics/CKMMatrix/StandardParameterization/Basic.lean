@@ -36,6 +36,7 @@ def standParamAsMatrix (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : Matrix (Fin
 
 open CKMMatrix
 
+/-- The standard parameterization forms a unitary matrix. -/
 lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     ((standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃)ᴴ * standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃) = 1 := by
   funext j i
@@ -115,6 +116,9 @@ def standParam (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) : CKMMatrix :=
     exact standParamAsMatrix_unitary θ₁₂ θ₁₃ θ₂₃ δ₁₃⟩
 
 namespace standParam
+
+/-- The top-row of the standard parameterization is the cross product of the conjugate of the
+  up and charm rows. -/
 lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]t =
     (conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u ×₃ conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) := by
@@ -149,12 +153,16 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     rw [sin_sq]
     ring
 
+/-- A CKM matrix which has rows equal to that of a standard parameterisation is equal
+  to that standard parameterisation. -/
 lemma eq_rows (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : [U]u = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u)
     (hc : [U]c = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) (hU : [U]t = conj [U]u ×₃ conj [U]c) :
     U = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ := by
   apply ext_Rows hu hc
   rw [hU, cross_product_t, hu, hc]
 
+/-- Two standard parameterisations of CKM matrices are the same matrix if they have
+  the same angles and the exponential of their faces is equal. -/
 lemma eq_exp_of_phases (θ₁₂ θ₁₃ θ₂₃ δ₁₃ δ₁₃' : ℝ) (h : cexp (δ₁₃ * I) = cexp (δ₁₃' * I)) :
     standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃' := by
   simp only [standParam, standParamAsMatrix, ofReal_cos, ofReal_sin, neg_mul]

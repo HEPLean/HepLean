@@ -36,16 +36,19 @@ namespace SMNoGrav
 
 variable {n : ℕ}
 
+/-- The charges in `(SMNoGrav n).LinSols` satisfy the `SU(2)` anomaly-equation. -/
 lemma SU2Sol (S : (SMNoGrav n).LinSols) : accSU2 S.val = 0 := by
   have hS := S.linearSol
   simp only [SMNoGrav_numberLinear, SMNoGrav_linearACCs, Fin.isValue] at hS
   exact hS 0
 
+/-- The charges in `(SMNoGrav n).LinSols` satisfy the `SU(3)` anomaly-equation. -/
 lemma SU3Sol (S : (SMNoGrav n).LinSols) : accSU3 S.val = 0 := by
   have hS := S.linearSol
   simp only [SMNoGrav_numberLinear, SMNoGrav_linearACCs, Fin.isValue] at hS
   exact hS 1
 
+/-- The charges in `(SMNoGrav n).Sols` satisfy the cubic anomaly-equation. -/
 lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := by
   exact S.cubicSol
 

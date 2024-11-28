@@ -28,6 +28,7 @@ namespace Invariant
 def jarlskogℂCKM (V : CKMMatrix) : ℂ :=
   [V]us * [V]cb * conj [V]ub * conj [V]cs
 
+/-- The complex jarlskog invariant is equal for equivalent CKM matrices. -/
 lemma jarlskogℂCKM_equiv (V U : CKMMatrix) (h : V ≈ U) :
     jarlskogℂCKM V = jarlskogℂCKM U := by
   obtain ⟨a, b, c, e, f, g, h⟩ := h
@@ -50,7 +51,7 @@ def jarlskogℂ : Quotient CKMMatrixSetoid → ℂ :=
   Quotient.lift jarlskogℂCKM jarlskogℂCKM_equiv
 
 /-- An invariant for CKM mtrices corresponding to the square of the absolute values
-  of the `us`, `ub` and `cb` elements multipled together divied by `(VudAbs V ^ 2 + VusAbs V ^2)` .
+  of the `us`, `ub` and `cb` elements multipled together divided by `(VudAbs V ^ 2 + VusAbs V ^2)`.
 -/
 def VusVubVcdSq (V : Quotient CKMMatrixSetoid) : ℝ :=
     VusAbs V ^ 2 * VubAbs V ^ 2 * VcbAbs V ^2 / (VudAbs V ^ 2 + VusAbs V ^2)

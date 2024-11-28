@@ -16,6 +16,7 @@ import HepLean.Lorentz.PauliMatrices.Basic
 namespace PauliMatrix
 open Matrix
 
+/-- The trace of `σ0` multiplied by a self-adjiont `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
   rw [eta_fin_two A.1]
@@ -38,6 +39,7 @@ lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
     cons_val_fin_one, head_fin_const] at h11
   exact Complex.conj_eq_iff_re.mp h11
 
+/-- The trace of `σ1` multiplied by a self-adjiont `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ1 * A.1)).re = Matrix.trace (σ1 * A.1) := by
   rw [eta_fin_two A.1]
@@ -57,6 +59,7 @@ lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
   simp only [Fin.isValue, Complex.ofReal_mul, Complex.ofReal_ofNat]
   ring
 
+/-- The trace of `σ2` multiplied by a self-adjiont `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ2 * A.1)).re = Matrix.trace (σ2 * A.1) := by
   rw [eta_fin_two A.1]
@@ -80,6 +83,7 @@ lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
     simp
   · ring
 
+/-- The trace of `σ3` multiplied by a self-adjiont `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ3 * A.1)).re = Matrix.trace (σ3 * A.1) := by
   rw [eta_fin_two A.1]
@@ -100,8 +104,10 @@ lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
 
 open Complex
 
+/-- Two `2×2` self-adjiont matrices are equal if the (complex) traces of each matrix multiplied by
+  each of the Pauli-matrices are equal. -/
 lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
-    (h0 : ((Matrix.trace (PauliMatrix.σ0 * A.1)) = (Matrix.trace (PauliMatrix.σ0 * B.1))))
+    (h0 : Matrix.trace (PauliMatrix.σ0 * A.1) = Matrix.trace (PauliMatrix.σ0 * B.1))
     (h1 : Matrix.trace (PauliMatrix.σ1 * A.1) = Matrix.trace (PauliMatrix.σ1 * B.1))
     (h2 : Matrix.trace (PauliMatrix.σ2 * A.1) = Matrix.trace (PauliMatrix.σ2 * B.1))
     (h3 : Matrix.trace (PauliMatrix.σ3 * A.1) = Matrix.trace (PauliMatrix.σ3 * B.1)) : A = B := by
@@ -131,6 +137,8 @@ lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
   | 1, 1 =>
     linear_combination (norm := ring_nf) (h0 - h3) / 2
 
+/-- Two `2×2` self-adjiont matrices are equal if the real traces of each matrix multiplied by
+  each of the Pauli-matrices are equal. -/
 lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h0 : ((Matrix.trace (PauliMatrix.σ0 * A.1))).re = ((Matrix.trace (PauliMatrix.σ0 * B.1))).re)
     (h1 : ((Matrix.trace (PauliMatrix.σ1 * A.1))).re = ((Matrix.trace (PauliMatrix.σ1 * B.1))).re)
@@ -159,6 +167,7 @@ def σSA' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   | Sum.inr 1 => ⟨σ2, σ2_selfAdjoint⟩
   | Sum.inr 2 => ⟨σ3, σ3_selfAdjoint⟩
 
+/-- The Pauli matrices are linearly independent. -/
 lemma σSA_linearly_independent : LinearIndependent ℝ σSA' := by
   apply Fintype.linearIndependent_iff.mpr
   intro g hg
@@ -177,6 +186,7 @@ lemma σSA_linearly_independent : LinearIndependent ℝ σSA' := by
   | Sum.inr 2 =>
     simpa [mul_sub, mul_add] using congrArg (fun A => (Matrix.trace (PauliMatrix.σ3 * A.1))) hg
 
+/-- The Pauli matrices span all self-adjoint matrices. -/
 lemma σSA_span : ⊤ ≤ Submodule.span ℝ (Set.range σSA') := by
   refine (top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
   intro A
@@ -228,6 +238,7 @@ def σSAL' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   | Sum.inr 1 => ⟨-σ2, by rw [neg_mem_iff]; exact σ2_selfAdjoint⟩
   | Sum.inr 2 => ⟨-σ3, by rw [neg_mem_iff]; exact σ3_selfAdjoint⟩
 
+/-- The Pauli matrices where `σi` are negated are linearly independent. -/
 lemma σSAL_linearly_independent : LinearIndependent ℝ σSAL' := by
   apply Fintype.linearIndependent_iff.mpr
   intro g hg
@@ -246,6 +257,7 @@ lemma σSAL_linearly_independent : LinearIndependent ℝ σSAL' := by
   | Sum.inr 2 =>
     simpa [mul_sub, mul_add] using congrArg (fun A => (Matrix.trace (PauliMatrix.σ3 * A.1))) hg
 
+/-- The Pauli matrices where `σi` are negated span all Self-adjoint matrices. -/
 lemma σSAL_span : ⊤ ≤ Submodule.span ℝ (Set.range σSAL') := by
   refine (top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
   intro A
@@ -288,10 +300,12 @@ lemma σSAL_span : ⊤ ≤ Submodule.span ℝ (Set.range σSAL') := by
     ring
 
 /-- The basis of `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` formed by Pauli matrices
-where the `1, 2, 3` pauli matrices are negated. -/
+  where the `1, 2, 3` pauli matrices are negated. These can be thought of as the
+  covariant Pauli-matrices. -/
 def σSAL : Basis (Fin 1 ⊕ Fin 3) ℝ (selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :=
   Basis.mk σSAL_linearly_independent σSAL_span
 
+/-- The decomposition of a self-adjint matrix into the Pauli matrices (where `σi` are negated). -/
 lemma σSAL_decomp (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     M = (1/2 * (Matrix.trace (σ0 * M.1)).re) • σSAL (Sum.inl 0)
     + (-1/2 * (Matrix.trace (σ1 * M.1)).re) • σSAL (Sum.inr 0)
@@ -327,6 +341,8 @@ lemma σSAL_decomp (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
     ring
 
+/-- The component of a self-adjoint matrix in the direction `σ0` under
+ the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inl_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inl 0) = 1 / 2 * Matrix.trace (σ0 * M.1) := by
@@ -342,6 +358,8 @@ lemma σSAL_repr_inl_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   linear_combination (norm := ring_nf) -h0
   simp [σSAL]
 
+/-- The component of a self-adjoint matrix in the direction `-σ1` under
+ the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 0) = - 1 / 2 * Matrix.trace (σ1 * M.1) := by
@@ -357,6 +375,8 @@ lemma σSAL_repr_inr_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   linear_combination (norm := ring_nf) -h0
   simp [σSAL]
 
+/-- The component of a self-adjoint matrix in the direction `-σ2` under
+ the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_1 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 1) = - 1 / 2 * Matrix.trace (σ2 * M.1) := by
@@ -372,6 +392,8 @@ lemma σSAL_repr_inr_1 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   linear_combination (norm := ring_nf) -h0
   simp [σSAL]
 
+/-- The component of a self-adjoint matrix in the direction `-σ3` under
+ the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 2) = - 1 / 2 * Matrix.trace (σ3 * M.1) := by
@@ -387,8 +409,10 @@ lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   linear_combination (norm := ring_nf) -h0
   simp only [σSAL, Basis.mk_repr, Fin.isValue, sub_self]
 
+/-- The relationship between the basis `σSA` of contrvariant Pauli-matrices and the basis
+  `σSAL` of covariant Pauli matrices is by multiplication by the Minkowski matrix. -/
 lemma σSA_minkowskiMetric_σSAL (i : Fin 1 ⊕ Fin 3) :
-    (σSA i) = minkowskiMatrix i i • (σSAL i) := by
+    σSA i = minkowskiMatrix i i • σSAL i := by
   match i with
   | Sum.inl 0 =>
     simp [σSA, σSAL, σSA', σSAL', minkowskiMatrix.inl_0_inl_0]

@@ -63,6 +63,7 @@ lemma basis_eq_FD {n : ℕ} (c : Fin n → complexLorentzTensor.C)
   subst h'
   rfl
 
+/-- The `perm` node acting on basis vectors corresponds to a basis vector. -/
 lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ : OverColor.mk c ⟶ OverColor.mk c1)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
@@ -79,6 +80,8 @@ lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply]
   rw [basis_eq_FD]
 
+/-- The `perm` node acting on basis vectors corresponds to a basis vector, as a tensor tree
+  structue. -/
 lemma perm_basisVector_tree {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ : OverColor.mk c ⟶ OverColor.mk c1)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
@@ -168,6 +171,7 @@ def prodBasisVecEquiv {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   | Sum.inl _ => Equiv.refl _
   | Sum.inr _ => Equiv.refl _
 
+/-- The `prod` node acting on basis vectors corresponds to a basis vector. -/
 lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k)))
@@ -197,6 +201,7 @@ lemma prod_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   | Sum.inl k => rfl
   | Sum.inr k => rfl
 
+/-- The prod node acting on a basis vectors is a basis vector, as a tensor tree structure. -/
 lemma prod_basisVector_tree {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k)))
@@ -207,6 +212,7 @@ lemma prod_basisVector_tree {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     ((HepLean.PiTensorProduct.elimPureTensor b b1) (finSumFinEquiv.symm i))))).tensor := by
   exact prod_basisVector _ _
 
+/-- The `eval` node acting on basis vectors corresponds to a basis vector. -/
 lemma eval_basisVector {n : ℕ} {c : Fin n.succ → complexLorentzTensor.C}
     {i : Fin n.succ} (j : Fin (complexLorentzTensor.repDim (c i)))
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) :

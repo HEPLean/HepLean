@@ -71,9 +71,16 @@ informal_definition GaugeGroupℤ₃ where
 /-- Specifies the allowed quotients of `SU(3) x SU(2) x U(1)` which give a valid
   gauge group of the Standard Model. -/
 inductive GaugeGroupQuot : Type
+  /-- The element of `GaugeGroupQuot` corresponding to the quotient of the full SM gauge group
+    by the sub-group `ℤ₆`. -/
   | ℤ₆ : GaugeGroupQuot
+  /-- The element of `GaugeGroupQuot` corresponding to the quotient of the full SM gauge group
+    by the sub-group `ℤ₂`. -/
   | ℤ₂ : GaugeGroupQuot
+  /-- The element of `GaugeGroupQuot` corresponding to the quotient of the full SM gauge group
+    by the sub-group `ℤ₃`. -/
   | ℤ₃ : GaugeGroupQuot
+  /-- The element of `GaugeGroupQuot` corresponding to the full SM gauge group. -/
   | I : GaugeGroupQuot
 
 informal_definition GaugeGroup where
