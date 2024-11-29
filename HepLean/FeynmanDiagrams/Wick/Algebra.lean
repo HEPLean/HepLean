@@ -100,4 +100,5 @@ informal_lemma timeOrder_pair where
   deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder,
     ``contraction]
 
+/-! TODO: Need to set up data and structure for vaccum expectation values. -/
 end TwoComplexScalar
