@@ -3,8 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.FeynmanDiagrams.Basic
-import HepLean.Meta.Informal
+import HepLean.FeynmanDiagrams.Wick.Species
 /-!
 
 # Operator algebra
@@ -24,7 +23,7 @@ We will formally define the operator ring, in terms of the fields present in the
   https://physics.stackexchange.com/q/461929
 -/
 
-namespace TwoComplexScalar
+namespace Wick
 open CategoryTheory
 open FeynmanDiagram
 open PreFeynmanRule
@@ -102,4 +101,4 @@ informal_lemma timeOrder_pair where
 
 /-! TODO: Need to set up data and structure for vaccum expectation values. -/
 
-end TwoComplexScalar
+end Wick
