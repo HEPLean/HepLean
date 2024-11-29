@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.FeynmanDiagrams.Basic
+import HepLean.Meta.Informal
 /-!
 # Wick strings
 
@@ -153,6 +154,30 @@ def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no
   | endVertex w => vertices w
   | outgoing w e => vertices w
   | endOutgoing w => vertices w
+
+informal_definition exponentialPrefactor where
+  math :≈ "The combinatorical prefactor from the expansion of the
+    exponential associated with a Wick string."
+  deps :≈ [``vertices, ``WickString]
+
+informal_definition vertexPrefactor where
+  math :≈ "The prefactor arising from the coefficent of vertices in the
+    Lagrangian. This should not take account of the exponential prefactor."
+  deps :≈ [``vertices, ``WickString]
+
+informal_definition minNoLoops where
+  math :≈ "The minimum number of loops a Feynman diagram based on a given Wick string can have.
+    There should be a lemma proving this statement."
+  deps :≈ [``WickString]
+
+informal_definition LoopLevel where
+  math :≈ "The type of Wick strings for fixed input and output which may permit a Feynman diagram
+    which have a number of loops less than or equal to some number."
+  deps :≈ [``minNoLoops, ``WickString]
+
+informal_lemma loopLevel_fintype where
+  math :≈ "The instance of a finite type on `LoopLevel`."
+  deps :≈ [``LoopLevel]
 
 end WickString
 
