@@ -94,10 +94,12 @@ inductive WickStringLast where
 
 open WickStringLast
 
-/-! TODO: This definition should be adapted to include the in and out going fields as inputs. -/
 /-- A wick string is a representation of a string of fields from a theory.
   E.g. `φ(x1) φ(x2) φ(y) φ(y) φ(y) φ(x3)`. The use of vertices in the Wick string
-  allows us to identify which fields have the same space-time coordinate. -/
+  allows us to identify which fields have the same space-time coordinate.
+
+  Note: Fields are added to `c` from right to left - matching how we would write this on
+  pen and paper. -/
 inductive WickString : {ni : ℕ} → (i : Fin ni → 𝓔) → {n : ℕ} → (c : Fin n → 𝓔) →
   {no : ℕ} → (o : Fin no → 𝓔) → WickStringLast → Type where
   | empty : WickString Fin.elim0 Fin.elim0 Fin.elim0 incoming
@@ -140,6 +142,17 @@ def numVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {n
   | endVertex w => numVertex w
   | outgoing w e => numVertex w
   | endOutgoing w => numVertex w
+
+/-- The vertices present in a Wick string. -/
+def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numVertex → 𝓥 := fun
+  | empty => Fin.elim0
+  | incoming w e => vertices w
+  | endIncoming w => vertices w
+  | vertex w v => Fin.cons v (vertices w)
+  | endVertex w => vertices w
+  | outgoing w e => vertices w
+  | endOutgoing w => vertices w
 
 
 end WickString
