@@ -124,6 +124,7 @@ def asBasis : Basis (Fin n) ℚ ((PureU1 n.succ).LinSols) where
 instance : Module.Finite ℚ ((PureU1 n.succ).LinSols) :=
   Module.Finite.of_basis asBasis
 
+/-- The module of solutions to the linear pure-U(1) acc has rank equal to `n`. -/
 lemma finrank_AnomalyFreeLinear :
     Module.finrank ℚ (((PureU1 n.succ).LinSols)) = n := by
   have h := Module.mk_finrank_eq_card_basis (@asBasis n)

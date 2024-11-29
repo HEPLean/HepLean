@@ -30,7 +30,7 @@ variable {n : ℕ}
 open VectorLikeOddPlane
 
 /-- Given a `g f : Fin n → ℚ` and a `a : ℚ` we form a linear solution. We will later
-show that this can be extended to a complete solution. -/
+  show that this can be extended to a complete solution. -/
 def parameterizationAsLinear (g f : Fin n → ℚ) (a : ℚ) :
     (PureU1 (2 * n + 1)).LinSols :=
   a • ((accCubeTriLinSymm (P! f) (P! f) (P g)) • P' g +
@@ -44,8 +44,9 @@ lemma parameterizationAsLinear_val (g f : Fin n → ℚ) (a : ℚ) :
   change a • (_ • (P' g).val + _ • (P!' f).val) = _
   rw [P'_val, P!'_val]
 
+/-- The parameterization satisfies the cubic ACC. -/
 lemma parameterizationCharge_cube (g f : Fin n → ℚ) (a : ℚ) :
-    (accCube (2 * n + 1)) (parameterizationAsLinear g f a).val = 0 := by
+    accCube (2 * n + 1) (parameterizationAsLinear g f a).val = 0 := by
   change accCubeTriLinSymm.toCubic _ = 0
   rw [parameterizationAsLinear_val]
   rw [HomogeneousCubic.map_smul]

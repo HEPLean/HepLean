@@ -70,15 +70,15 @@ def accCubeTriLinSymm {n : ℕ} : TriLinearSymm (PureU1Charges n).Charges := Tri
 def accCube (n : ℕ) : HomogeneousCubic ((PureU1Charges n).Charges) :=
   (accCubeTriLinSymm).toCubic
 
+/-- The cubic ACC for the pure-`U(1)` anomaly equations is equal to the sum of the cubed
+  charges. -/
 lemma accCube_explicit (n : ℕ) (S : (PureU1Charges n).Charges) :
     accCube n S = ∑ i : Fin n, S i ^ 3:= by
   rw [accCube, TriLinearSymm.toCubic]
   change accCubeTriLinSymm S S S = _
   rw [accCubeTriLinSymm]
   simp only [PureU1Charges_numberCharges, TriLinearSymm.mk₃_toFun_apply_apply]
-  apply Finset.sum_congr
-  · rfl
-  · exact fun x _ => Eq.symm (pow_three' (S x))
+  exact Finset.sum_congr rfl fun x _ => Eq.symm (pow_three' (S x))
 
 end PureU1
 
@@ -105,18 +105,21 @@ def pureU1EqCharges {n m : ℕ} (h : n = m) :
 
 open BigOperators
 
-lemma pureU1_linear {n : ℕ} (S : (PureU1 n.succ).LinSols) :
+/-- A solution to the pure U(1) accs satisfies the linear ACCs. -/
+lemma pureU1_linear {n : ℕ} (S : (PureU1 n).LinSols) :
     ∑ i, S.val i = 0 := by
   have hS := S.linearSol
   simp only [succ_eq_add_one, PureU1_numberLinear, PureU1_linearACCs] at hS
   exact hS 0
 
-lemma pureU1_cube {n : ℕ} (S : (PureU1 n.succ).Sols) :
+/-- A solution to the pure U(1) accs satisfies the cubic ACCs. -/
+lemma pureU1_cube {n : ℕ} (S : (PureU1 n).Sols) :
     ∑ i, (S.val i) ^ 3 = 0 := by
-  have hS := S.cubicSol
-  erw [PureU1.accCube_explicit] at hS
-  exact hS
+  rw [← PureU1.accCube_explicit]
+  exact S.cubicSol
 
+/-- The last charge of a solution to the linear ACCs is equal to the negation of the sum
+  of the other charges. -/
 lemma pureU1_last {n : ℕ} (S : (PureU1 n.succ).LinSols) :
     S.val (Fin.last n) = - ∑ i : Fin n, S.val i.castSucc := by
   have hS := pureU1_linear S
@@ -124,43 +127,41 @@ lemma pureU1_last {n : ℕ} (S : (PureU1 n.succ).LinSols) :
   rw [Fin.sum_univ_castSucc] at hS
   linear_combination hS
 
+/-- Two solutions to the Linear ACCs for `n.succ` areq equal if their first `n` charges are
+  equal. -/
 lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
     (h : ∀ (i : Fin n), S.val i.castSucc = T.val i.castSucc) : S = T := by
   apply ACCSystemLinear.LinSols.ext
   funext i
-  by_cases hi : i ≠ Fin.last n
-  · have hiCast : ∃ j : Fin n, j.castSucc = i := by
-      exact Fin.exists_castSucc_eq.mpr hi
-    obtain ⟨j, hj⟩ := hiCast
-    rw [← hj]
+  rcases Fin.eq_castSucc_or_eq_last i with hi | hi
+  · obtain ⟨j, hj⟩ := hi
+    subst hj
     exact h j
-  · simp only [succ_eq_add_one, PureU1_numberCharges, ne_eq, Decidable.not_not] at hi
-    rw [hi, pureU1_last, pureU1_last]
-    simp only [neg_inj]
-    apply Finset.sum_congr
-    · rfl
-    · exact fun j _ => h j
+  · rw [hi, pureU1_last, pureU1_last]
+    exact neg_inj.mpr (Finset.sum_congr rfl fun j _ => h j)
 
 namespace PureU1
 
+/-- The `j`th charge of a sum of pure-`U(1)` charges is equal to the sum of
+  their `j`th charges. -/
 lemma sum_of_charges {n : ℕ} (f : Fin k → (PureU1 n).Charges) (j : Fin n) :
     (∑ i : Fin k, (f i)) j = ∑ i : Fin k, (f i) j := by
   induction k
   · rfl
   · rename_i k hl
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-    have hlt := hl (f ∘ Fin.castSucc)
-    erw [← hlt]
+    erw [← hl (f ∘ Fin.castSucc)]
     rfl
 
+/-- The `j`th charge of a sum of solutions to the linear ACC is equal to the sum of
+  their `j`th charges. -/
 lemma sum_of_anomaly_free_linear {n : ℕ} (f : Fin k → (PureU1 n).LinSols) (j : Fin n) :
     (∑ i : Fin k, (f i)).1 j = (∑ i : Fin k, (f i).1 j) := by
   induction k
   · rfl
   · rename_i k hl
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-    have hlt := hl (f ∘ Fin.castSucc)
-    erw [← hlt]
+    erw [← hl (f ∘ Fin.castSucc)]
     rfl
 
 end PureU1
