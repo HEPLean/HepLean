@@ -90,11 +90,13 @@ informal_lemma contraction_non_dual_is_zero where
 
 informal_lemma timeOrder_single where
   math :≈ "The time ordering of a single field is the normal ordering of that field."
+  proof :≈ "Follows from the definitions."
   deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder]
 
 informal_lemma timeOrder_pair where
   math :≈ "The time ordering of two fields is the normal ordering of the fields plus the
     contraction of the fields."
+  proof :≈ "Follows from the definition of contraction."
   deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder,
     ``contraction]
 
