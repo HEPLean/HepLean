@@ -35,13 +35,15 @@ informal_definition WickAlgebra where
     A structure with the following data:
     - A ℤ₂-graded algebra A.
     - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
-    - A map `ψ₊ :  𝓔 × SpaceTime → A`.
-    - A map `ψ₋ :  𝓔 × SpaceTime → A`.
+    - A map `ψ₊ : 𝓔 × SpaceTime → A`.
+    - A map `ψ₋ : 𝓔 × SpaceTime → A`.
     Subject to the conditions:
     - The sum of `ψ0` and `ψ1` is `ψ`.
     - Two fields super-commute if there colors are not dual to each other.
     - The super-commutator of two fields is always in the
       center of the algebra. "
+  physics :≈ "This is defined to be an
+    abstraction of the notion of an operator algebra."
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
 
 informal_definition WickMonomial where
@@ -55,13 +57,13 @@ informal_definition toWickAlgebra where
     returns the product of the fields in the monomial."
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
-informal_definition timeOrdering where
+informal_definition timeOrder where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the monomial with the fields time ordered, with the correct sign
     determined by the Koszul sign factor."
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
-informal_definition normalOrdering where
+informal_definition normalOrder where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the element in `WickAlgebra` defined as follows
     - The ψ₊ fields are move to the right.
@@ -77,5 +79,23 @@ informal_definition contraction where
     defined by subtracting the normal ordering of `ψ i ψ j` from the time-ordering of
     `ψ i ψ j`."
   deps :≈ [``WickAlgebra, ``WickMonomial]
+
+informal_lemma contraction_in_center where
+  math :≈ "The contraction of two fields is in the center of the algebra."
+  deps :≈ [``WickAlgebra, ``contraction]
+
+informal_lemma contraction_non_dual_is_zero where
+  math :≈ "The contraction of two fields is zero if the fields are not dual to each other."
+  deps :≈ [``WickAlgebra, ``contraction]
+
+informal_lemma timeOrder_single where
+  math :≈ "The time ordering of a single field is the normal ordering of that field."
+  deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder]
+
+informal_lemma timeOrder_pair where
+  math :≈ "The time ordering of two fields is the normal ordering of the fields plus the
+    contraction of the fields."
+  deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder,
+    ``contraction]
 
 end TwoComplexScalar
