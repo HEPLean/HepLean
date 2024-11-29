@@ -94,20 +94,66 @@ inductive WickStringLast where
 
 open WickStringLast
 
-/-! TODO: This definition should be adapted to include the in and out going fields as inputs. -/
 /-- A wick string is a representation of a string of fields from a theory.
   E.g. `φ(x1) φ(x2) φ(y) φ(y) φ(y) φ(x3)`. The use of vertices in the Wick string
-  allows us to identify which fields have the same space-time coordinate. -/
-inductive WickString : {n : ℕ} → (c : Fin n → 𝓔) → WickStringLast → Type where
-  | empty : WickString Fin.elim0 incoming
-  | incoming {n : ℕ} {c : Fin n → 𝓔} (w : WickString c incoming) (e : 𝓔) :
-      WickString (Fin.cons e c) incoming
-  | endIncoming {n : ℕ} {c : Fin n → 𝓔} (w : WickString c incoming) : WickString c vertex
-  | vertex {n : ℕ} {c : Fin n → 𝓔} (w : WickString c vertex) (v : 𝓥) :
-      WickString (Fin.append (𝓥Edges v) c) vertex
-  | endVertex {n : ℕ} {c : Fin n → 𝓔} (w : WickString c vertex) : WickString c outgoing
-  | outgoing {n : ℕ} {c : Fin n → 𝓔} (w : WickString c outgoing) (e : 𝓔) :
-      WickString (Fin.cons e c) outgoing
-  | endOutgoing {n : ℕ} {c : Fin n → 𝓔} (w : WickString c outgoing) : WickString c final
+  allows us to identify which fields have the same space-time coordinate.
+
+  Note: Fields are added to `c` from right to left - matching how we would write this on
+  pen and paper. -/
+inductive WickString : {ni : ℕ} → (i : Fin ni → 𝓔) → {n : ℕ} → (c : Fin n → 𝓔) →
+  {no : ℕ} → (o : Fin no → 𝓔) → WickStringLast → Type where
+  | empty : WickString Fin.elim0 Fin.elim0 Fin.elim0 incoming
+  | incoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o incoming) (e : 𝓔) :
+      WickString (Fin.cons e i) (Fin.cons e c) o incoming
+  | endIncoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o incoming) : WickString i c o vertex
+  | vertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o vertex) (v : 𝓥) :
+      WickString i (Fin.append (𝓥Edges v) c) o vertex
+  | endVertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o vertex) : WickString i c o outgoing
+  | outgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o outgoing) (e : 𝓔) :
+      WickString i (Fin.cons e c) (Fin.cons e o) outgoing
+  | endOutgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
+      {o : Fin no → 𝓔} (w : WickString i c o outgoing) : WickString i c o final
+
+namespace WickString
+
+/-- The number of nodes in a Wick string. This is used to help prove termination. -/
+def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+    {f : WickStringLast} : WickString i c o f → ℕ := fun
+  | empty => 0
+  | incoming w e => size w + 1
+  | endIncoming w => size w + 1
+  | vertex w v => size w + 1
+  | endVertex w => size w + 1
+  | outgoing w e => size w + 1
+  | endOutgoing w => size w + 1
+
+/-- The number of vertices in a Wick string. -/
+def numVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+    {f : WickStringLast} : WickString i c o f → ℕ := fun
+  | empty => 0
+  | incoming w e => numVertex w
+  | endIncoming w => numVertex w
+  | vertex w v => numVertex w + 1
+  | endVertex w => numVertex w
+  | outgoing w e => numVertex w
+  | endOutgoing w => numVertex w
+
+/-- The vertices present in a Wick string. -/
+def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numVertex → 𝓥 := fun
+  | empty => Fin.elim0
+  | incoming w e => vertices w
+  | endIncoming w => vertices w
+  | vertex w v => Fin.cons v (vertices w)
+  | endVertex w => vertices w
+  | outgoing w e => vertices w
+  | endOutgoing w => vertices w
+
+end WickString
 
 end TwoComplexScalar
