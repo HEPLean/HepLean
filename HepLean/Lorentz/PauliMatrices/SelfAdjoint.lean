@@ -342,7 +342,7 @@ lemma σSAL_decomp (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     ring
 
 /-- The component of a self-adjoint matrix in the direction `σ0` under
- the basis formed by the covaraiant Pauli matrices. -/
+  the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inl_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inl 0) = 1 / 2 * Matrix.trace (σ0 * M.1) := by
@@ -359,7 +359,7 @@ lemma σSAL_repr_inl_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp [σSAL]
 
 /-- The component of a self-adjoint matrix in the direction `-σ1` under
- the basis formed by the covaraiant Pauli matrices. -/
+  the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 0) = - 1 / 2 * Matrix.trace (σ1 * M.1) := by
@@ -376,7 +376,7 @@ lemma σSAL_repr_inr_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp [σSAL]
 
 /-- The component of a self-adjoint matrix in the direction `-σ2` under
- the basis formed by the covaraiant Pauli matrices. -/
+  the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_1 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 1) = - 1 / 2 * Matrix.trace (σ2 * M.1) := by
@@ -393,7 +393,7 @@ lemma σSAL_repr_inr_1 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp [σSAL]
 
 /-- The component of a self-adjoint matrix in the direction `-σ3` under
- the basis formed by the covaraiant Pauli matrices. -/
+  the basis formed by the covaraiant Pauli matrices. -/
 @[simp]
 lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     σSAL.repr M (Sum.inr 2) = - 1 / 2 * Matrix.trace (σ3 * M.1) := by
