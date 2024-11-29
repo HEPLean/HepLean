@@ -25,8 +25,7 @@ open PreFeynmanRule
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can
   be contracted. -/
-inductive WickContract :
-     {ni : ℕ} → {i : Fin ni → 𝓔} → {n : ℕ} → {c : Fin n → 𝓔} →
+inductive WickContract : {ni : ℕ} → {i : Fin ni → 𝓔} → {n : ℕ} → {c : Fin n → 𝓔} →
     {no : ℕ} → {o : Fin no → 𝓔} →
     (str : WickString i c o final) →
     {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
@@ -43,7 +42,7 @@ inductive WickContract :
 namespace WickContract
 
 /-- The number of nodes of a Wick contraction. -/
-def size  {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
+def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → ℕ := fun
   | string => 0
@@ -236,7 +235,7 @@ lemma boundFst_neq_boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin 
   proof that `b1 = b1'` and `b2 = b2'`, and that they are defined from the same `k = k'`. -/
 def castMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
-    {k k' : ℕ}  {b1 b2 : Fin k → Fin n} {b1' b2' : Fin k' → Fin n}
+    {k k' : ℕ} {b1 b2 : Fin k → Fin n} {b1' b2' : Fin k' → Fin n}
     (hk : k = k')
     (hb1 : b1 = b1' ∘ Fin.cast hk) (hb2 : b2 = b2' ∘ Fin.cast hk) (w : WickContract str b1 b2) :
     WickContract str b1' b2' :=
@@ -303,7 +302,7 @@ lemma mem_snoc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
 
 lemma is_subsingleton {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
-    {k : ℕ}  {b1 b2 : Fin k → Fin n} :
+    {k : ℕ} {b1 b2 : Fin k → Fin n} :
     Subsingleton (WickContract str b1 b2) := Subsingleton.intro fun w1 w2 => by
   induction k with
   | zero =>
@@ -364,7 +363,7 @@ def fromMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
   `k` contractions by dropping the last contraction (defined by the first index contracted). -/
 def dropLast {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
-    {k : ℕ}  {b1 b2 : Fin k.succ → Fin n}
+    {k : ℕ} {b1 b2 : Fin k.succ → Fin n}
     (w : WickContract str b1 b2) : WickContract str (b1 ∘ Fin.castSucc) (b2 ∘ Fin.castSucc) :=
   fromMaps (b1 ∘ Fin.castSucc) (b2 ∘ Fin.castSucc)
     (fun i => color_boundSnd_eq_dual_boundFst w i.castSucc)
@@ -375,7 +374,7 @@ def dropLast {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
 
 lemma eq_from_maps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
-    {k : ℕ}  {b1 b2 : Fin k → Fin n}
+    {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) :
     w = fromMaps w.boundFst w.boundSnd w.color_boundSnd_eq_dual_boundFst
       w.boundFst_lt_boundSnd w.boundFst_strictMono w.boundFst_neq_boundSnd

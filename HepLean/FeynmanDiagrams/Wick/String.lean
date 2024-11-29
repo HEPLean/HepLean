@@ -104,26 +104,26 @@ inductive WickString : {ni : ℕ} → (i : Fin ni → 𝓔) → {n : ℕ} → (c
   {no : ℕ} → (o : Fin no → 𝓔) → WickStringLast → Type where
   | empty : WickString Fin.elim0 Fin.elim0 Fin.elim0 incoming
   | incoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o incoming) (e : 𝓔) :
+      {o : Fin no → 𝓔} (w : WickString i c o incoming) (e : 𝓔) :
       WickString (Fin.cons e i) (Fin.cons e c) o incoming
   | endIncoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o incoming) : WickString i c o vertex
+      {o : Fin no → 𝓔} (w : WickString i c o incoming) : WickString i c o vertex
   | vertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o vertex) (v : 𝓥) :
+      {o : Fin no → 𝓔} (w : WickString i c o vertex) (v : 𝓥) :
       WickString i (Fin.append (𝓥Edges v) c) o vertex
   | endVertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o vertex) : WickString i c o outgoing
+      {o : Fin no → 𝓔} (w : WickString i c o vertex) : WickString i c o outgoing
   | outgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o outgoing) (e : 𝓔) :
+      {o : Fin no → 𝓔} (w : WickString i c o outgoing) (e : 𝓔) :
       WickString i (Fin.cons e c) (Fin.cons e o) outgoing
   | endOutgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-       {o : Fin no → 𝓔} (w : WickString i c o outgoing) : WickString i c o final
+      {o : Fin no → 𝓔} (w : WickString i c o outgoing) : WickString i c o final
 
 namespace WickString
 
 /-- The number of nodes in a Wick string. This is used to help prove termination. -/
 def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
-    {f : WickStringLast} : WickString i c o f →  ℕ := fun
+    {f : WickStringLast} : WickString i c o f → ℕ := fun
   | empty => 0
   | incoming w e => size w + 1
   | endIncoming w => size w + 1
@@ -153,7 +153,6 @@ def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no
   | endVertex w => vertices w
   | outgoing w e => vertices w
   | endOutgoing w => vertices w
-
 
 end WickString
 

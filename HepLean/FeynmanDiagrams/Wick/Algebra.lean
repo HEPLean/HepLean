@@ -19,7 +19,7 @@ We will formally define the operator ring, in terms of the fields present in the
 
 - https://physics.stackexchange.com/questions/258718/ and links therein
 - Ryan Thorngren (https://physics.stackexchange.com/users/10336/ryan-thorngren), Fermions,
-  different species and (anti-)commutation rules, URL (version: 2019-02-20):
+  different species and (anti-)commutation rules, URL (version: 2019-02-20) :
   https://physics.stackexchange.com/q/461929
 -/
 
