@@ -101,4 +101,5 @@ informal_lemma timeOrder_pair where
     ``contraction]
 
 /-! TODO: Need to set up data and structure for vaccum expectation values. -/
+
 end TwoComplexScalar
