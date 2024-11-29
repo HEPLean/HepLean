@@ -58,7 +58,13 @@ syntax (name := informalAssignmentDeps) ident ":≈" "[" sepBy(term, ",") "]" : 
 syntax (name := informal_definition) "informal_definition " ident
   " where " (colGt informalAssignment)* : command
 
-/-- The macro turning `informal_definition ... where ...` into a definition. -/
+/-- An informal definition is a definition which is not type checked, and is written
+  as a string literal. It can be used to plan out sections for future formalization, or to
+  include results which the formalization is not immediately known.
+  Each informal definition must included a
+  `math :≈ "..."`
+  entry, but can also include the following entries
+  `physics :≈ "..."`, `ref :≈ "..."`, and `deps :≈ [...]`. -/
 macro "informal_definition " name:ident " where " assignments:informalAssignment* : command => do
   let mut math_def? : Option (TSyntax `term) := none
   let mut physics_def? : Option (TSyntax `term) := none
@@ -94,7 +100,13 @@ def $name : InformalDefinition := {
 syntax (name := informal_lemma) "informal_lemma " ident " where "
   (colGt informalAssignment)* : command
 
-/-- The macro turning `informal_lemma ... where ...` into a definition. -/
+/-- An informal lemma is a lemma which is not type checked, and is written
+  as a string literal. It can be used to plan out sections for future formalization, or to
+  include results which the formalization is not immediately known.
+  Every informal lemma must included a
+  `math :≈ "..."`
+  entry, but can also include the following entries
+  `physics :≈ "..."`, `proof :≈ "..."`, `ref :≈ "..."`, and `deps :≈ [...]`. -/
 macro "informal_lemma " name:ident " where " assignments:informalAssignment* : command => do
   let mut math_def? : Option (TSyntax `term) := none
   let mut physics_def? : Option (TSyntax `term) := none
