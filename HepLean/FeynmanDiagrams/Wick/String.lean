@@ -3,8 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.FeynmanDiagrams.Basic
-import HepLean.Meta.Informal
+import HepLean.FeynmanDiagrams.Wick.Species
 /-!
 # Wick strings
 
@@ -133,7 +132,7 @@ def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : �
   | outgoing w e => size w + 1
   | endOutgoing w => size w + 1
 
-/-- The number of vertices in a Wick string. -/
+/-- The number of vertices in a Wick string. This does NOT include external vertices. -/
 def numVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
     {f : WickStringLast} : WickString i c o f → ℕ := fun
   | empty => 0
@@ -144,7 +143,7 @@ def numVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {n
   | outgoing w e => numVertex w
   | endOutgoing w => numVertex w
 
-/-- The vertices present in a Wick string. -/
+/-- The vertices present in a Wick string. This does NOT include external vertices. -/
 def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
     {f : WickStringLast} : (w : WickString i c o f) → Fin w.numVertex → 𝓥 := fun
   | empty => Fin.elim0
@@ -154,6 +153,11 @@ def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no
   | endVertex w => vertices w
   | outgoing w e => vertices w
   | endOutgoing w => vertices w
+
+informal_definition fieldToVertex where
+  math :≈ "A function which takes a field and returns the vertex it is associated with.
+    This is a map from `Fin n` to `Fin w.numVertex`"
+  deps :≈ [``WickString]
 
 informal_definition exponentialPrefactor where
   math :≈ "The combinatorical prefactor from the expansion of the
