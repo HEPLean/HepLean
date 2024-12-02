@@ -95,11 +95,15 @@ inductive WickStringLast where
 open WickStringLast
 
 /-- A wick string is a representation of a string of fields from a theory.
-  E.g. `φ(x1) φ(x2) φ(y) φ(y) φ(y) φ(x3)`. The use of vertices in the Wick string
+  The use of vertices in the Wick string
   allows us to identify which fields have the same space-time coordinate.
 
   Note: Fields are added to `c` from right to left - matching how we would write this on
-  pen and paper. -/
+  pen and paper.
+
+  The incoming and outgoing fields should be viewed as asymptotic fields.
+  While the internal fields associated with vertices are fields at fixed space-time points.
+  -/
 inductive WickString : {ni : ℕ} → (i : Fin ni → 𝓔) → {n : ℕ} → (c : Fin n → 𝓔) →
   {no : ℕ} → (o : Fin no → 𝓔) → WickStringLast → Type where
   | empty : WickString Fin.elim0 Fin.elim0 Fin.elim0 incoming

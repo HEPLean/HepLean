@@ -635,6 +635,10 @@ def unbound {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     · exact List.Sorted.get_strictMono w.unboundList_sorted
     · exact fun ⦃a b⦄ a => a
 
+informal_lemma level_fintype where
+  math :≈ "Level is a finite type, as there are only finitely many ways to contract a Wick string."
+  deps :≈ [``Level]
+
 informal_definition HasEqualTimeContractions where
   math :≈ "The condition for a Wick contraction to have two fields contracted
     which are of equal time, i.e. come from the same vertex."

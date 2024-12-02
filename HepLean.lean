@@ -57,6 +57,8 @@ import HepLean.FeynmanDiagrams.Instances.Phi4
 import HepLean.FeynmanDiagrams.Momentum
 import HepLean.FeynmanDiagrams.Wick.Algebra
 import HepLean.FeynmanDiagrams.Wick.Contract
+import HepLean.FeynmanDiagrams.Wick.MomentumSpace
+import HepLean.FeynmanDiagrams.Wick.PositionSpace
 import HepLean.FeynmanDiagrams.Wick.Species
 import HepLean.FeynmanDiagrams.Wick.String
 import HepLean.FeynmanDiagrams.Wick.Theorem
