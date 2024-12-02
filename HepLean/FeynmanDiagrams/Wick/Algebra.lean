@@ -115,4 +115,8 @@ informal_definition WickMap where
     the necessary properties for lots of theorems to hold."
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
+informal_lemma normalOrder_wickMap where
+  math :≈ "Any normal ordering maps to zero under a Wick map."
+  deps :≈ [``WickMap, ``WickMonomial.normalOrder]
+
 end Wick
