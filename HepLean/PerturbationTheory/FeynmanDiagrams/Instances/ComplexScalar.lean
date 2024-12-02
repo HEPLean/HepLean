@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PertubationTheory.FeynmanDiagrams.Basic
+import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 /-!
 # Feynman diagrams in a complex scalar field theory
 
