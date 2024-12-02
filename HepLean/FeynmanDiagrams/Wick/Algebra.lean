@@ -59,7 +59,16 @@ informal_definition toWickAlgebra where
 informal_definition timeOrder where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the monomial with the fields time ordered, with the correct sign
-    determined by the Koszul sign factor."
+    determined by the Koszul sign factor.
+
+    If two fields have the same time, then their order is preserved e.g.
+    T(ψ₁(t)ψ₂(t)) = ψ₁(t)ψ₂(t)
+    and
+    T(ψ₂(t)ψ₁(t)) = ψ₂(t)ψ₁(t).
+    This allows us to make sense of the construction in e.g.
+    https://www.physics.purdue.edu/~clarkt/Courses/Physics662/ps/qftch32.pdf
+    which permits normal-ordering within time-ordering.
+    "
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
 informal_definition normalOrder where
@@ -99,6 +108,15 @@ informal_lemma timeOrder_pair where
   deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder,
     ``contraction]
 
-/-! TODO: Need to set up data and structure for vaccum expectation values. -/
+informal_definition WickMap where
+  math :≈ "A linear map `vev` from the Wick algebra `A` to the underlying field such that
+   `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
+  physics :≈ "An abstraction of the notion of a vacuum expectation value, containing
+    the necessary properties for lots of theorems to hold."
+  deps :≈ [``WickAlgebra, ``WickMonomial]
+
+informal_lemma normalOrder_wickMap where
+  math :≈ "Any normal ordering maps to zero under a Wick map."
+  deps :≈ [``WickMap, ``WickMonomial.normalOrder]
 
 end Wick
