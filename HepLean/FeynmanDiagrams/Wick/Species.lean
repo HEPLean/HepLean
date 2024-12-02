@@ -22,7 +22,8 @@ namespace Wick
 /-- The basic structure needed to write down Wick contractions for a theory and
   calculate the corresponding Feynman diagrams.
 
-  WARNING: This definition is not yet complete. -/
+  WARNING: This definition is not yet complete.
+   -/
 structure Species where
   /-- The color of Field operators which appear in a theory. -/
   𝓕 : Type
@@ -32,7 +33,7 @@ structure Species where
   ξ_involutive : Function.Involutive ξ
   /-- The color of vertices which appear in a theory. -/
   𝓥 : Type
-  /-- The number of edges each vertex corresponds to. -/
+  /-- The edges each vertex corresponds to. -/
   𝓥Fields : 𝓥 → Σ n, Fin n → 𝓕
 
 end Wick

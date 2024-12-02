@@ -133,41 +133,45 @@ def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : �
   | endOutgoing w => size w + 1
 
 /-- The number of vertices in a Wick string. This does NOT include external vertices. -/
-def numVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+def numIntVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
     {f : WickStringLast} : WickString i c o f → ℕ := fun
   | empty => 0
-  | incoming w e => numVertex w
-  | endIncoming w => numVertex w
-  | vertex w v => numVertex w + 1
-  | endVertex w => numVertex w
-  | outgoing w e => numVertex w
-  | endOutgoing w => numVertex w
+  | incoming w e => numIntVertex w
+  | endIncoming w => numIntVertex w
+  | vertex w v => numIntVertex w + 1
+  | endVertex w => numIntVertex w
+  | outgoing w e => numIntVertex w
+  | endOutgoing w => numIntVertex w
 
 /-- The vertices present in a Wick string. This does NOT include external vertices. -/
-def vertices {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
-    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numVertex → 𝓥 := fun
+def intVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numIntVertex → 𝓥 := fun
   | empty => Fin.elim0
-  | incoming w e => vertices w
-  | endIncoming w => vertices w
-  | vertex w v => Fin.cons v (vertices w)
-  | endVertex w => vertices w
-  | outgoing w e => vertices w
-  | endOutgoing w => vertices w
+  | incoming w e => intVertex w
+  | endIncoming w => intVertex w
+  | vertex w v => Fin.cons v (intVertex w)
+  | endVertex w => intVertex w
+  | outgoing w e => intVertex w
+  | endOutgoing w => intVertex w
 
-informal_definition fieldToVertex where
-  math :≈ "A function which takes a field and returns the vertex it is associated with.
-    This is a map from `Fin n` to `Fin w.numVertex`"
+informal_definition intExtVertex where
+  math :≈ "The vertices present in a Wick string, including external vertices."
+  deps :≈ [``WickString]
+
+informal_definition fieldToIntExtVertex where
+  math :≈ "A function which takes a field and returns the internal or
+    external vertex it is associated with."
   deps :≈ [``WickString]
 
 informal_definition exponentialPrefactor where
   math :≈ "The combinatorical prefactor from the expansion of the
     exponential associated with a Wick string."
-  deps :≈ [``vertices, ``WickString]
+  deps :≈ [``intVertex, ``WickString]
 
 informal_definition vertexPrefactor where
   math :≈ "The prefactor arising from the coefficent of vertices in the
     Lagrangian. This should not take account of the exponential prefactor."
-  deps :≈ [``vertices, ``WickString]
+  deps :≈ [``intVertex, ``WickString]
 
 informal_definition minNoLoops where
   math :≈ "The minimum number of loops a Feynman diagram based on a given Wick string can have.

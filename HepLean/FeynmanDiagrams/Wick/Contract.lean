@@ -640,6 +640,15 @@ informal_definition HasEqualTimeContractions where
     which are of equal time, i.e. come from the same vertex."
   deps :≈ [``WickContract]
 
+informal_definition IsConnected where
+  math :≈ "The condition for a Wick contraction that for any two vertices
+    (including external vertices) are connected by contractions."
+  deps :≈ [``WickContract]
+
+informal_definition HasVacuumContributions where
+  math :≈ "The condition for a Wick contraction to have a vacuum contribution."
+  deps :≈ [``WickContract]
+
 end WickContract
 
 end TwoComplexScalar
