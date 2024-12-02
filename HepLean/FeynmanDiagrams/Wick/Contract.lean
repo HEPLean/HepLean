@@ -641,12 +641,16 @@ informal_definition HasEqualTimeContractions where
   deps :≈ [``WickContract]
 
 informal_definition IsConnected where
-  math :≈ "The condition for a Wick contraction that for any two vertices
+  math :≈ "The condition for a full Wick contraction that for any two vertices
     (including external vertices) are connected by contractions."
   deps :≈ [``WickContract]
 
 informal_definition HasVacuumContributions where
-  math :≈ "The condition for a Wick contraction to have a vacuum contribution."
+  math :≈ "The condition for a full Wick contraction to have a vacuum contribution."
+  deps :≈ [``WickContract]
+
+informal_definition IsOneParticleIrreducible where
+  math :≈ "The condition for a full Wick contraction to be one-particle irreducible."
   deps :≈ [``WickContract]
 
 end WickContract
