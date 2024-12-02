@@ -108,6 +108,11 @@ informal_lemma timeOrder_pair where
   deps :≈ [``WickAlgebra, ``WickMonomial.timeOrder, ``WickMonomial.normalOrder,
     ``contraction]
 
-/-! TODO: Need to set up data and structure for vaccum expectation values. -/
+informal_definition WickMap where
+  math :≈ "A linear map `vev` from the Wick algebra `A` to the underlying field such that
+   `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
+  physics :≈ "An abstraction of the notion of a vacuum expectation value, containing
+    the necessary properties for lots of theorems to hold."
+  deps :≈ [``WickAlgebra, ``WickMonomial]
 
 end Wick
