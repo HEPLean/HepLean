@@ -51,10 +51,6 @@ import HepLean.BeyondTheStandardModel.PatiSalam.Basic
 import HepLean.BeyondTheStandardModel.Spin10.Basic
 import HepLean.BeyondTheStandardModel.TwoHDM.Basic
 import HepLean.BeyondTheStandardModel.TwoHDM.GaugeOrbits
-import HepLean.FeynmanDiagrams.Basic
-import HepLean.FeynmanDiagrams.Instances.ComplexScalar
-import HepLean.FeynmanDiagrams.Instances.Phi4
-import HepLean.FeynmanDiagrams.Momentum
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Invariants
 import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
@@ -111,6 +107,10 @@ import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
 import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
+import HepLean.PertubationTheory.FeynmanDiagrams.Basic
+import HepLean.PertubationTheory.FeynmanDiagrams.Instances.ComplexScalar
+import HepLean.PertubationTheory.FeynmanDiagrams.Instances.Phi4
+import HepLean.PertubationTheory.FeynmanDiagrams.Momentum
 import HepLean.PertubationTheory.Wick.Algebra
 import HepLean.PertubationTheory.Wick.Contract
 import HepLean.PertubationTheory.Wick.MomentumSpace
