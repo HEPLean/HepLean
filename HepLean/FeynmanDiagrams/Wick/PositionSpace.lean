@@ -12,6 +12,11 @@ import HepLean.Meta.Informal
 Every complete Wick contraction leads to a function on positions, following
 the Feynman rules.
 
+## Further reading
+
+The following reference provides a good resource for Wick contractions of external fields.
+- http://www.dylanjtemples.com:82/solutions/QFT_Solution_I-6.pdf
+
 -/
 
 namespace Wick
