@@ -55,13 +55,6 @@ import HepLean.FeynmanDiagrams.Basic
 import HepLean.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.FeynmanDiagrams.Instances.Phi4
 import HepLean.FeynmanDiagrams.Momentum
-import HepLean.FeynmanDiagrams.Wick.Algebra
-import HepLean.FeynmanDiagrams.Wick.Contract
-import HepLean.FeynmanDiagrams.Wick.MomentumSpace
-import HepLean.FeynmanDiagrams.Wick.PositionSpace
-import HepLean.FeynmanDiagrams.Wick.Species
-import HepLean.FeynmanDiagrams.Wick.String
-import HepLean.FeynmanDiagrams.Wick.Theorem
 import HepLean.FlavorPhysics.CKMMatrix.Basic
 import HepLean.FlavorPhysics.CKMMatrix.Invariants
 import HepLean.FlavorPhysics.CKMMatrix.PhaseFreedom
@@ -118,6 +111,13 @@ import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
 import HepLean.Meta.Informal
 import HepLean.Meta.TransverseTactics
+import HepLean.PertubationTheory.Wick.Algebra
+import HepLean.PertubationTheory.Wick.Contract
+import HepLean.PertubationTheory.Wick.MomentumSpace
+import HepLean.PertubationTheory.Wick.PositionSpace
+import HepLean.PertubationTheory.Wick.Species
+import HepLean.PertubationTheory.Wick.String
+import HepLean.PertubationTheory.Wick.Theorem
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
 import HepLean.StandardModel.Basic
