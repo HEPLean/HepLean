@@ -124,7 +124,7 @@ informal_lemma timeOrder_pair where
 
 informal_definition WickMap where
   math :≈ "A linear map `vev` from the Wick algebra `A` to the underlying field such that
-    `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
+     `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
   physics :≈ "An abstraction of the notion of a vacuum expectation value, containing
     the necessary properties for lots of theorems to hold."
   deps :≈ [``WickAlgebra, ``WickMonomial]
