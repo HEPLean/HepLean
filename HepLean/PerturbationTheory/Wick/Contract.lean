@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Wick.String
+import Mathlib.Algebra.Order.Ring.Nat
+import Mathlib.Data.Fintype.Sum
+import Mathlib.Logic.Equiv.Fin
 /-!
 
 # Wick Contract
@@ -18,9 +21,6 @@ theory with two complex scalar fields. The concepts will however generalize.
 -/
 
 namespace TwoComplexScalar
-open CategoryTheory
-open FeynmanDiagram
-open PreFeynmanRule
 
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can

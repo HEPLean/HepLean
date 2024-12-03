@@ -13,9 +13,6 @@ Wick's theorem is related to a result in probability theory called Isserlis' the
 -/
 
 namespace Wick
-open CategoryTheory
-open FeynmanDiagram
-open PreFeynmanRule
 
 informal_lemma wicks_theorem where
   math :≈ "Wick's theorem for fields which are not normally ordered."

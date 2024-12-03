@@ -3,7 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Species
+import HepLean.Meta.Informal
+import Mathlib.Data.Fin.Tuple.Basic
 /-!
 # Wick strings
 
@@ -19,9 +20,6 @@ term in the ring of operators. This has yet to be implemented.
 -/
 
 namespace TwoComplexScalar
-open CategoryTheory
-open FeynmanDiagram
-open PreFeynmanRule
 
 /-- The colors of edges which one can associate with a vertex for a theory
   with two complex scalar fields. -/

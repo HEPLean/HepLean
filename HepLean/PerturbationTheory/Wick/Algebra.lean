@@ -23,9 +23,6 @@ We will formally define the operator ring, in terms of the fields present in the
 -/
 
 namespace Wick
-open CategoryTheory
-open FeynmanDiagram
-open PreFeynmanRule
 
 informal_definition WickAlgebra where
   math :≈ "
