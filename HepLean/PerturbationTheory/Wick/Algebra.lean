@@ -48,7 +48,7 @@ informal_definition WickAlgebra where
   physics :≈ "This is defined to be an
     abstraction of the notion of an operator algebra."
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
-  deps :≈ [``SuperAlgebra]
+  deps :≈ [``SuperAlgebra, ``SuperAlgebra.superCommuator]
 
 informal_definition WickMonomial where
   math :≈ "The type of elements of the Wick algebra which is a product of fields."
