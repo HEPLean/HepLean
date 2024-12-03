@@ -21,6 +21,7 @@ We will formally define the operator ring, in terms of the fields present in the
 - Ryan Thorngren (https://physics.stackexchange.com/users/10336/ryan-thorngren), Fermions,
   different species and (anti-)commutation rules, URL (version: 2019-02-20) :
   https://physics.stackexchange.com/q/461929
+- Tong, https://www.damtp.cam.ac.uk/user/tong/qft/qft.pdf
 -/
 
 namespace Wick
@@ -30,9 +31,7 @@ open PreFeynmanRule
 
 informal_definition WickAlgebra where
   math :≈ "
-    Modifications of this may be needed, in particular
-    need to add asympotic states.
-
+    Modifications of this may be needed.
     A structure with the following data:
     - A ℤ₂-graded algebra A.
     - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
@@ -40,9 +39,14 @@ informal_definition WickAlgebra where
     - A map `ψd : 𝓔 × SpaceTime → A`.
     Subject to the conditions:
     - The sum of `ψc` and `ψd` is `ψ`.
+    - All maps land on homogeneous elements.
     - Two fields super-commute if there colors are not dual to each other.
     - The super-commutator of two fields is always in the
-      center of the algebra. "
+      center of the algebra.
+    Asympotic states:
+    - `φc : 𝓔 × SpaceTime → A`. The creation asympotic state (incoming).
+    - `φd : 𝓔 × SpaceTime → A`. The destruction asympotic state (outgoing).
+      "
   physics :≈ "This is defined to be an
     abstraction of the notion of an operator algebra."
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
