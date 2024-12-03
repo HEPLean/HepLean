@@ -14,8 +14,9 @@ This file currently contains a lighter implmentation of Feynman digrams than can
 
 The implmentation here is done in conjunction with Wicks species etc.
 
-This file is currently a stub.
 -/
+/-! TODO Remove this namespace-/
+namespace LightFeynman
 
 informal_definition FeynmanDiagram where
   math :≈ "
@@ -31,3 +32,33 @@ informal_definition FeynmanDiagram where
     - For each vertex `ver : 𝓥` there exists an isomorphism between the object (roughly)
       `(𝓘Fields v).2` and the pullback of `v` along `ver`."
   deps :≈ [``Wick.Species]
+
+informal_definition _root_.Wick.Contract.toFeynmanDiagram where
+  math :≈ "The Feynman diagram constructed from a complete Wick contraction."
+  deps :≈ [``TwoComplexScalar.WickContract, ``FeynmanDiagram]
+
+informal_lemma _root_.Wick.Contract.toFeynmanDiagram_surj where
+  math :≈ "The map from Wick contractions to Feynman diagrams is surjective."
+  physics :≈ "Every Feynman digram corresponds to some Wick contraction."
+  deps :≈ [``TwoComplexScalar.WickContract, ``FeynmanDiagram]
+
+informal_definition FeynmanDiagram.toSimpleGraph where
+  math :≈ "The simple graph underlying a Feynman diagram."
+  deps :≈ [``FeynmanDiagram]
+
+informal_definition FeynmanDiagram.IsConnected where
+  math :≈ "A Feynman diagram is connected if its underlying simple graph is connected."
+  deps :≈ [``FeynmanDiagram]
+
+informal_definition _root_.Wick.Contract.toFeynmanDiagram_isConnected_iff where
+  math :≈ "The Feynman diagram corresponding to a Wick contraction is connected
+    if and only if the Wick contraction is connected."
+  deps :≈ [``TwoComplexScalar.WickContract.IsConnected, ``FeynmanDiagram.IsConnected]
+
+
+/-! TODO: Define an equivalence relation on Wick contracts related to the their underlying tensors
+  been equal after permutation. Show that two  Wick contractions are equal under this
+  equivalence relation if and only if they have the same Feynman diagram. First step
+  is to turn these statements into appropriate informal lemmas and definitions. -/
+
+end LightFeynman
