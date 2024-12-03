@@ -21,3 +21,11 @@ informal_definition SuperAlgebra where
   physics :≈ "A super algebra is used to model the commutator of fermionic operators among
     themselves, aswell as among bosonic operators."
   ref :≈ "https://en.wikipedia.org/wiki/Superalgebra"
+
+namespace SuperAlgebra
+
+informal_definition superCommuator where
+  math :≈ "The commutator which for `a ∈ Aᵢ` and `b ∈ Aⱼ` is defined as `ab - (-1)^(i * j) ba`."
+  deps :≈ [``SuperAlgebra]
+
+end SuperAlgebra

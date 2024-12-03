@@ -27,7 +27,8 @@ inductive WickContract : {ni : ℕ} → {i : Fin ni → S.𝓯} → {n : ℕ} �
     (str : WickString i c o final) →
     {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
   | string {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
-    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} : WickContract str Fin.elim0 Fin.elim0
+    {no : ℕ} {o : Fin no → S.𝓯}
+    {str : WickString i c o final} : WickContract str Fin.elim0 Fin.elim0
   | contr {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
     {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ}
     {b1 : Fin k → Fin n} {b2 : Fin k → Fin n} : (i : Fin n) →
