@@ -15,7 +15,7 @@ This file currently contains a lighter implmentation of Feynman digrams than can
 The implmentation here is done in conjunction with Wicks species etc.
 
 -/
-/-! TODO Remove this namespace-/
+/-! TODO: Remove this namespace-/
 namespace LightFeynman
 
 informal_definition FeynmanDiagram where
@@ -54,7 +54,6 @@ informal_definition _root_.Wick.Contract.toFeynmanDiagram_isConnected_iff where
   math :≈ "The Feynman diagram corresponding to a Wick contraction is connected
     if and only if the Wick contraction is connected."
   deps :≈ [``TwoComplexScalar.WickContract.IsConnected, ``FeynmanDiagram.IsConnected]
-
 
 /-! TODO: Define an equivalence relation on Wick contracts related to the their underlying tensors
   been equal after permutation. Show that two  Wick contractions are equal under this
