@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Wick.Species
+import HepLean.Mathematics.SuperAlgebra.Basic
 /-!
 
 # Operator algebra
@@ -28,7 +29,7 @@ informal_definition WickAlgebra where
   math :≈ "
     Modifications of this may be needed.
     A structure with the following data:
-    - A ℤ₂-graded algebra A.
+    - A super algebra A.
     - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
     - A map `ψc : 𝓔 × SpaceTime → A`.
     - A map `ψd : 𝓔 × SpaceTime → A`.
@@ -47,6 +48,7 @@ informal_definition WickAlgebra where
   physics :≈ "This is defined to be an
     abstraction of the notion of an operator algebra."
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
+  deps :≈ [``SuperAlgebra]
 
 informal_definition WickMonomial where
   math :≈ "The type of elements of the Wick algebra which is a product of fields."
