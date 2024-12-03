@@ -11,8 +11,6 @@ import HepLean.PerturbationTheory.Wick.Species
 Currently this file is only for an example of Wick strings, correpsonding to a
 theory with two complex scalar fields. The concepts will however generalize.
 
-This file is currently a stub.
-
 We will formally define the operator ring, in terms of the fields present in the theory.
 
 ## Futher reading
@@ -46,6 +44,8 @@ informal_definition WickAlgebra where
     Asympotic states:
     - `φc : 𝓔 × SpaceTime → A`. The creation asympotic state (incoming).
     - `φd : 𝓔 × SpaceTime → A`. The destruction asympotic state (outgoing).
+    Subject to the conditions:
+    ...
       "
   physics :≈ "This is defined to be an
     abstraction of the notion of an operator algebra."
@@ -87,6 +87,17 @@ informal_definition normalOrder where
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
 end WickMonomial
+
+informal_definition asymptoicContract where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [φd(i), ψ(j)]."
+  ref :≈ "See e.g. http://www.dylanjtemples.com:82/solutions/QFT_Solution_I-6.pdf"
+
+informal_definition contractAsymptotic where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [ψ(i), φc(j)]."
+
+informal_definition asymptoicContractAsymptotic where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator
+    [φd(i), φc(j)]."
 
 informal_definition contraction where
   math :≈ "Given two `i j : 𝓔 × SpaceTime`, the element of WickAlgebra
