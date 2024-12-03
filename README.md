@@ -42,6 +42,9 @@ __BSM physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/BeyondThe
 
 __Flavor physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html):__ Properties of the CKM matrix.
 
+__Perturbation Theory [🗂️](https://heplean.github.io/HepLean/docs/HepLean/PerturbationTheory/Wick/Species.html)[🚧](https://heplean.github.io/HepLean/InformalGraph.html):__ Informal statements relating to Feynman diagrams, Wick contractions, Operator
+algebras.
+
 ## Associated media and publications
 - [📄](https://arxiv.org/abs/2405.08863) Joseph Tooby-Smith, __HepLean: Digitalising high energy physics__, arXiv:2405.08863
 - [📄](https://arxiv.org/abs/2411.07667) Joseph Tooby-Smith, __Formalization of physics index notation in Lean 4__, arXiv:2411.07667
