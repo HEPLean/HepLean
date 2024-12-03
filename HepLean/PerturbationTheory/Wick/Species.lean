@@ -51,12 +51,6 @@ informal_definition 𝓕 where
   physics :≈ "The different types of fields present in a theory."
   deps :≈ [``Species]
 
-informal_definition 𝓕ToOver𝓯 where
-  math :≈ "The map from `S.𝓕` to functions `Fin 2 → S.𝓯` with this function
-    landing on orbits.
-    This may require an order on `S.𝓯`."
-  deps :≈ [``Species]
-
 end Species
 
 end Wick
