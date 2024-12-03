@@ -35,12 +35,12 @@ informal_definition FeynmanDiagram where
 
 informal_definition _root_.Wick.Contract.toFeynmanDiagram where
   math :≈ "The Feynman diagram constructed from a complete Wick contraction."
-  deps :≈ [``TwoComplexScalar.WickContract, ``FeynmanDiagram]
+  deps :≈ [``Wick.WickContract, ``FeynmanDiagram]
 
 informal_lemma _root_.Wick.Contract.toFeynmanDiagram_surj where
   math :≈ "The map from Wick contractions to Feynman diagrams is surjective."
   physics :≈ "Every Feynman digram corresponds to some Wick contraction."
-  deps :≈ [``TwoComplexScalar.WickContract, ``FeynmanDiagram]
+  deps :≈ [``Wick.WickContract, ``FeynmanDiagram]
 
 informal_definition FeynmanDiagram.toSimpleGraph where
   math :≈ "The simple graph underlying a Feynman diagram."
@@ -53,7 +53,7 @@ informal_definition FeynmanDiagram.IsConnected where
 informal_definition _root_.Wick.Contract.toFeynmanDiagram_isConnected_iff where
   math :≈ "The Feynman diagram corresponding to a Wick contraction is connected
     if and only if the Wick contraction is connected."
-  deps :≈ [``TwoComplexScalar.WickContract.IsConnected, ``FeynmanDiagram.IsConnected]
+  deps :≈ [``Wick.WickContract.IsConnected, ``FeynmanDiagram.IsConnected]
 
 /-! TODO: Define an equivalence relation on Wick contracts related to the their underlying tensors
   been equal after permutation. Show that two  Wick contractions are equal under this

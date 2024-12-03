@@ -30,9 +30,9 @@ informal_definition WickAlgebra where
     Modifications of this may be needed.
     A structure with the following data:
     - A super algebra A.
-    - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
-    - A map `ψc : 𝓔 × SpaceTime → A`.
-    - A map `ψd : 𝓔 × SpaceTime → A`.
+    - A map from `ψ : S.𝓯 × SpaceTime → A` where S.𝓯 are field colors.
+    - A map `ψc : S.𝓯 × SpaceTime → A`.
+    - A map `ψd : S.𝓯 × SpaceTime → A`.
     Subject to the conditions:
     - The sum of `ψc` and `ψd` is `ψ`.
     - All maps land on homogeneous elements.
@@ -40,8 +40,8 @@ informal_definition WickAlgebra where
     - The super-commutator of two fields is always in the
       center of the algebra.
     Asympotic states:
-    - `φc : 𝓔 × SpaceTime → A`. The creation asympotic state (incoming).
-    - `φd : 𝓔 × SpaceTime → A`. The destruction asympotic state (outgoing).
+    - `φc : S.𝓯 × SpaceTime → A`. The creation asympotic state (incoming).
+    - `φd : S.𝓯 × SpaceTime → A`. The destruction asympotic state (outgoing).
     Subject to the conditions:
     ...
       "
@@ -88,18 +88,18 @@ informal_definition normalOrder where
 end WickMonomial
 
 informal_definition asymptoicContract where
-  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [φd(i), ψ(j)]."
+  math :≈ "Given two `i j : S.𝓯 × SpaceTime`, the super-commutator [φd(i), ψ(j)]."
   ref :≈ "See e.g. http://www.dylanjtemples.com:82/solutions/QFT_Solution_I-6.pdf"
 
 informal_definition contractAsymptotic where
-  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [ψ(i), φc(j)]."
+  math :≈ "Given two `i j : S.𝓯 × SpaceTime`, the super-commutator [ψ(i), φc(j)]."
 
 informal_definition asymptoicContractAsymptotic where
-  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator
+  math :≈ "Given two `i j : S.𝓯 × SpaceTime`, the super-commutator
     [φd(i), φc(j)]."
 
 informal_definition contraction where
-  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the element of WickAlgebra
+  math :≈ "Given two `i j : S.𝓯 × SpaceTime`, the element of WickAlgebra
     defined by subtracting the normal ordering of `ψ i ψ j` from the time-ordering of
     `ψ i ψ j`."
   deps :≈ [``WickAlgebra, ``WickMonomial]
