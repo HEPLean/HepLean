@@ -256,8 +256,8 @@ lemma mem_snoc' {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
     (hb1' : Fin.snoc b1 i = b1' ∘ Fin.cast hk') →
     (hb2' : Fin.snoc b2 j = b2' ∘ Fin.cast hk') →
-    ∃ (w' : WickContract str b1 b2), w = castMaps hk' hb1' hb2' (
-      contr i j h hilej hb1 hb2i hb2j w') := fun
+    ∃ (w' : WickContract str b1 b2), w = castMaps hk' hb1' hb2'
+      (contr i j h hilej hb1 hb2i hb2j w') := fun
   | string => fun hk' => by
     simp at hk'
   | contr i' j' h' hilej' hb1' hb2i' hb2j' w' => by
