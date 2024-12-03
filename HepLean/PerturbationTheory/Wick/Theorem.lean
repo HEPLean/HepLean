@@ -24,4 +24,11 @@ informal_lemma wicks_theorem_normal_order where
   math :≈ "Wick's theorem for which fields at the same space-time point are normally ordered."
   ref :≈ "https://www.physics.purdue.edu/~clarkt/Courses/Physics662/ps/qftch32.pdf"
 
+informal_lemma wicks_theorem_vev where
+  math :≈ "Wick's theorem in a vev leaving only full contractions of Wick strings left."
+
+informal_lemma wicks_theorem_asymptotic_states where
+  math :≈ "Wick's theorem for a term in the Dyson series within asymptotic states
+    leaves only full contractions with the asymptotic states."
+
 end Wick

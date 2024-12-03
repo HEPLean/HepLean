@@ -30,7 +30,9 @@ open PreFeynmanRule
 
 informal_definition WickAlgebra where
   math :≈ "
-    Modifications of this may be needed.
+    Modifications of this may be needed, in particular
+    need to add asympotic states.
+
     A structure with the following data:
     - A ℤ₂-graded algebra A.
     - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
