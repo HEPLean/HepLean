@@ -110,6 +110,7 @@ import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
+import HepLean.PerturbationTheory.FeynmanDiagrams.Light
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.Wick.Algebra
 import HepLean.PerturbationTheory.Wick.Contract

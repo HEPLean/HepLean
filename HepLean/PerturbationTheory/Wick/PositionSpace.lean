@@ -21,5 +21,4 @@ The following reference provides a good resource for Wick contractions of extern
 
 namespace Wick
 
-
 end Wick

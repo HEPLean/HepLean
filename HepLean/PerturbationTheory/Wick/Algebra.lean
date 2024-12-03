@@ -11,8 +11,6 @@ import HepLean.PerturbationTheory.Wick.Species
 Currently this file is only for an example of Wick strings, correpsonding to a
 theory with two complex scalar fields. The concepts will however generalize.
 
-This file is currently a stub.
-
 We will formally define the operator ring, in terms of the fields present in the theory.
 
 ## Futher reading
@@ -21,18 +19,14 @@ We will formally define the operator ring, in terms of the fields present in the
 - Ryan Thorngren (https://physics.stackexchange.com/users/10336/ryan-thorngren), Fermions,
   different species and (anti-)commutation rules, URL (version: 2019-02-20) :
   https://physics.stackexchange.com/q/461929
+- Tong, https://www.damtp.cam.ac.uk/user/tong/qft/qft.pdf
 -/
 
 namespace Wick
-open CategoryTheory
-open FeynmanDiagram
-open PreFeynmanRule
 
 informal_definition WickAlgebra where
   math :≈ "
-    Modifications of this may be needed, in particular
-    need to add asympotic states.
-
+    Modifications of this may be needed.
     A structure with the following data:
     - A ℤ₂-graded algebra A.
     - A map from `ψ : 𝓔 × SpaceTime → A` where 𝓔 are field colors.
@@ -40,9 +34,16 @@ informal_definition WickAlgebra where
     - A map `ψd : 𝓔 × SpaceTime → A`.
     Subject to the conditions:
     - The sum of `ψc` and `ψd` is `ψ`.
+    - All maps land on homogeneous elements.
     - Two fields super-commute if there colors are not dual to each other.
     - The super-commutator of two fields is always in the
-      center of the algebra. "
+      center of the algebra.
+    Asympotic states:
+    - `φc : 𝓔 × SpaceTime → A`. The creation asympotic state (incoming).
+    - `φd : 𝓔 × SpaceTime → A`. The destruction asympotic state (outgoing).
+    Subject to the conditions:
+    ...
+      "
   physics :≈ "This is defined to be an
     abstraction of the notion of an operator algebra."
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
@@ -84,6 +85,17 @@ informal_definition normalOrder where
 
 end WickMonomial
 
+informal_definition asymptoicContract where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [φd(i), ψ(j)]."
+  ref :≈ "See e.g. http://www.dylanjtemples.com:82/solutions/QFT_Solution_I-6.pdf"
+
+informal_definition contractAsymptotic where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator [ψ(i), φc(j)]."
+
+informal_definition asymptoicContractAsymptotic where
+  math :≈ "Given two `i j : 𝓔 × SpaceTime`, the super-commutator
+    [φd(i), φc(j)]."
+
 informal_definition contraction where
   math :≈ "Given two `i j : 𝓔 × SpaceTime`, the element of WickAlgebra
     defined by subtracting the normal ordering of `ψ i ψ j` from the time-ordering of
@@ -112,7 +124,7 @@ informal_lemma timeOrder_pair where
 
 informal_definition WickMap where
   math :≈ "A linear map `vev` from the Wick algebra `A` to the underlying field such that
-   `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
+    `vev(...ψd(t)) = 0` and `vev(ψc(t)...) = 0`."
   physics :≈ "An abstraction of the notion of a vacuum expectation value, containing
     the necessary properties for lots of theorems to hold."
   deps :≈ [``WickAlgebra, ``WickMonomial]
