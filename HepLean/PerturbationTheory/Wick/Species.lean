@@ -22,8 +22,7 @@ namespace Wick
 /-- The basic structure needed to write down Wick contractions for a theory and
   calculate the corresponding Feynman diagrams.
 
-  WARNING: This definition is not yet complete.
-  -/
+  WARNING: This definition is not yet complete. -/
 structure Species where
   /-- The color of Field operators which appear in a theory.
     One may wish to call these `half-edges`, however we restrict this terminology

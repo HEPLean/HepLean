@@ -11,30 +11,28 @@ import Mathlib.Logic.Equiv.Fin
 
 # Wick Contract
 
-Currently this file is only for an example of Wick contracts, correpsonding to a
-theory with two complex scalar fields. The concepts will however generalize.
-
 ## Further reading
 
 - https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/theoretical-physics/msc/current/qft/handouts/qftwickstheorem.pdf
 
 -/
 
-namespace TwoComplexScalar
-
+namespace Wick
+variable {S : Species}
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can
   be contracted. -/
-inductive WickContract : {ni : ℕ} → {i : Fin ni → 𝓔} → {n : ℕ} → {c : Fin n → 𝓔} →
-    {no : ℕ} → {o : Fin no → 𝓔} →
+inductive WickContract : {ni : ℕ} → {i : Fin ni → S.𝓯} → {n : ℕ} → {c : Fin n → S.𝓯} →
+    {no : ℕ} → {o : Fin no → S.𝓯} →
     (str : WickString i c o final) →
     {k : ℕ} → (b1 : Fin k → Fin n) → (b2 : Fin k → Fin n) → Type where
-  | string {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final} : WickContract str Fin.elim0 Fin.elim0
-  | contr {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final} {k : ℕ}
+  | string {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯}
+    {str : WickString i c o final} : WickContract str Fin.elim0 Fin.elim0
+  | contr {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ}
     {b1 : Fin k → Fin n} {b2 : Fin k → Fin n} : (i : Fin n) →
-    (j : Fin n) → (h : c j = ξ (c i)) →
+    (j : Fin n) → (h : c j = S.ξ (c i)) →
     (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
     (w : WickContract str b1 b2) →
     WickContract str (Fin.snoc b1 i) (Fin.snoc b2 j)
@@ -42,15 +40,15 @@ inductive WickContract : {ni : ℕ} → {i : Fin ni → 𝓔} → {n : ℕ} → 
 namespace WickContract
 
 /-- The number of nodes of a Wick contraction. -/
-def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
+def size {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → ℕ := fun
   | string => 0
   | contr _ _ _ _ _ _ _ w => w.size + 1
 
 /-- The number of nodes in a wick contraction tree is the same as `k`. -/
-lemma size_eq_k {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
+lemma size_eq_k {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
     (w : WickContract str b1 b2) → w.size = k := fun
   | string => rfl
   | contr _ _ _ _ _ _ _ w => by
@@ -58,16 +56,16 @@ lemma size_eq_k {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
 
 /-- The map giving the vertices on the left-hand-side of a contraction. -/
 @[nolint unusedArguments]
-def boundFst {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def boundFst {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → Fin k → Fin n := fun _ => b1
 
 @[simp]
-lemma boundFst_contr_castSucc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundFst_contr_castSucc {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (i j : Fin n)
-    (h : c j = ξ (c i))
+    (h : c j = S.ξ (c i))
     (hilej : i < j)
     (hb1 : ∀ r, b1 r < i)
     (hb2i : ∀ r, b2 r ≠ i)
@@ -77,10 +75,10 @@ lemma boundFst_contr_castSucc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fi
   simp only [boundFst, Fin.snoc_castSucc]
 
 @[simp]
-lemma boundFst_contr_last {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundFst_contr_last {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (i j : Fin n)
-    (h : c j = ξ (c i))
+    (h : c j = S.ξ (c i))
     (hilej : i < j)
     (hb1 : ∀ r, b1 r < i)
     (hb2i : ∀ r, b2 r ≠ i)
@@ -89,8 +87,8 @@ lemma boundFst_contr_last {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n 
     (contr i j h hilej hb1 hb2i hb2j w).boundFst (Fin.last k) = i := by
   simp only [boundFst, Fin.snoc_last]
 
-lemma boundFst_strictMono {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundFst_strictMono {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} : (w : WickContract str b1 b2) → StrictMono w.boundFst := fun
   | string => fun k => Fin.elim0 k
   | contr i j _ _ hb1 _ _ w => by
@@ -119,16 +117,16 @@ lemma boundFst_strictMono {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n 
 
 /-- The map giving the vertices on the right-hand-side of a contraction. -/
 @[nolint unusedArguments]
-def boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def boundSnd {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → Fin k → Fin n := fun _ => b2
 
 @[simp]
-lemma boundSnd_contr_castSucc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundSnd_contr_castSucc {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (i j : Fin n)
-    (h : c j = ξ (c i))
+    (h : c j = S.ξ (c i))
     (hilej : i < j)
     (hb1 : ∀ r, b1 r < i)
     (hb2i : ∀ r, b2 r ≠ i)
@@ -138,10 +136,10 @@ lemma boundSnd_contr_castSucc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fi
   simp only [boundSnd, Fin.snoc_castSucc]
 
 @[simp]
-lemma boundSnd_contr_last {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundSnd_contr_last {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (i j : Fin n)
-    (h : c j = ξ (c i))
+    (h : c j = S.ξ (c i))
     (hilej : i < j)
     (hb1 : ∀ r, b1 r < i)
     (hb2i : ∀ r, b2 r ≠ i)
@@ -150,8 +148,8 @@ lemma boundSnd_contr_last {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n 
     (contr i j h hilej hb1 hb2i hb2j w).boundSnd (Fin.last k) = j := by
   simp only [boundSnd, Fin.snoc_last]
 
-lemma boundSnd_injective {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundSnd_injective {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
     (w : WickContract str b1 b2) → Function.Injective w.boundSnd := fun
   | string => by
@@ -179,10 +177,10 @@ lemma boundSnd_injective {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n �
       · subst hs
         rfl
 
-lemma color_boundSnd_eq_dual_boundFst {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma color_boundSnd_eq_dual_boundFst {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
-    (w : WickContract str b1 b2) → (i : Fin k) → c (w.boundSnd i) = ξ (c (w.boundFst i)) := fun
+    (w : WickContract str b1 b2) → (i : Fin k) → c (w.boundSnd i) = S.ξ (c (w.boundFst i)) := fun
   | string => fun i => Fin.elim0 i
   | contr i j hij hilej hi _ _ w => fun r => by
     rcases Fin.eq_castSucc_or_eq_last r with hr | hr
@@ -192,8 +190,8 @@ lemma color_boundSnd_eq_dual_boundFst {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ}
     · subst hr
       simpa using hij
 
-lemma boundFst_lt_boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundFst_lt_boundSnd {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} : (w : WickContract str b1 b2) → (i : Fin k) →
     w.boundFst i < w.boundSnd i := fun
   | string => fun i => Fin.elim0 i
@@ -206,8 +204,8 @@ lemma boundFst_lt_boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n
       simp only [boundFst_contr_last, boundSnd_contr_last]
       exact hilej
 
-lemma boundFst_neq_boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma boundFst_neq_boundSnd {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
     (w : WickContract str b1 b2) → (r1 r2 : Fin k) → b1 r1 ≠ b2 r2 := fun
   | string => fun i => Fin.elim0 i
@@ -233,8 +231,8 @@ lemma boundFst_neq_boundSnd {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin 
 
 /-- Casts a Wick contraction from `WickContract str b1 b2` to `WickContract str b1' b2'` with a
   proof that `b1 = b1'` and `b2 = b2'`, and that they are defined from the same `k = k'`. -/
-def castMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def castMaps {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k k' : ℕ} {b1 b2 : Fin k → Fin n} {b1' b2' : Fin k' → Fin n}
     (hk : k = k')
     (hb1 : b1 = b1' ∘ Fin.cast hk) (hb2 : b2 = b2' ∘ Fin.cast hk) (w : WickContract str b1 b2) :
@@ -242,17 +240,17 @@ def castMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
   cast (by subst hk; rfl) (hb2 ▸ hb1 ▸ w)
 
 @[simp]
-lemma castMaps_rfl {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma castMaps_rfl {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (w : WickContract str b1 b2) :
     castMaps rfl rfl rfl w = w := rfl
 
-lemma mem_snoc' {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma mem_snoc' {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1' b2' : Fin k → Fin n} :
     (w : WickContract str b1' b2') →
     {k' : ℕ} → (hk' : k'.succ = k) →
-    (b1 b2 : Fin k' → Fin n) → (i j : Fin n) → (h : c j = ξ (c i)) →
+    (b1 b2 : Fin k' → Fin n) → (i j : Fin n) → (h : c j = S.ξ (c i)) →
     (hilej : i < j) → (hb1 : ∀ r, b1 r < i) → (hb2i : ∀ r, b2 r ≠ i) → (hb2j : ∀ r, b2 r ≠ j) →
     (hb1' : Fin.snoc b1 i = b1' ∘ Fin.cast hk') →
     (hb2' : Fin.snoc b2 j = b2' ∘ Fin.cast hk') →
@@ -291,17 +289,17 @@ lemma mem_snoc' {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     subst hb1'' hb2'' hi hj
     simp
 
-lemma mem_snoc {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma mem_snoc {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
-    (i j : Fin n) (h : c j = ξ (c i)) (hilej : i < j) (hb1 : ∀ r, b1 r < i)
+    (i j : Fin n) (h : c j = S.ξ (c i)) (hilej : i < j) (hb1 : ∀ r, b1 r < i)
     (hb2i : ∀ r, b2 r ≠ i) (hb2j : ∀ r, b2 r ≠ j)
     (w : WickContract str (Fin.snoc b1 i) (Fin.snoc b2 j)) :
     ∃ (w' : WickContract str b1 b2), w = contr i j h hilej hb1 hb2i hb2j w' := by
   exact mem_snoc' w rfl b1 b2 i j h hilej hb1 hb2i hb2j rfl rfl
 
-lemma is_subsingleton {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma is_subsingleton {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} :
     Subsingleton (WickContract str b1 b2) := Subsingleton.intro fun w1 w2 => by
   induction k with
@@ -330,10 +328,10 @@ lemma eq_snoc_castSucc {k n : ℕ} (b1 : Fin k.succ → Fin n) :
 /-- The construction of a Wick contraction from maps `b1 b2 : Fin k → Fin n`, with the former
   giving the first index to be contracted, and the latter the second index. These
   maps must satisfy a series of conditions. -/
-def fromMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def fromMaps {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} (b1 b2 : Fin k → Fin n)
-    (hi : ∀ i, c (b2 i) = ξ (c (b1 i)))
+    (hi : ∀ i, c (b2 i) = S.ξ (c (b1 i)))
     (hb1ltb2 : ∀ i, b1 i < b2 i)
     (hb1 : StrictMono b1)
     (hb1neb2 : ∀ r1 r2, b1 r1 ≠ b2 r2)
@@ -361,8 +359,8 @@ def fromMaps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
 
 /-- Given a Wick contraction with `k.succ` contractions, returns the Wick contraction with
   `k` contractions by dropping the last contraction (defined by the first index contracted). -/
-def dropLast {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def dropLast {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k.succ → Fin n}
     (w : WickContract str b1 b2) : WickContract str (b1 ∘ Fin.castSucc) (b2 ∘ Fin.castSucc) :=
   fromMaps (b1 ∘ Fin.castSucc) (b2 ∘ Fin.castSucc)
@@ -372,16 +370,16 @@ def dropLast {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
     (fun r1 r2 => boundFst_neq_boundSnd w r1.castSucc r2.castSucc)
     (Function.Injective.comp w.boundSnd_injective (Fin.castSucc_injective k))
 
-lemma eq_from_maps {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma eq_from_maps {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) :
     w = fromMaps w.boundFst w.boundSnd w.color_boundSnd_eq_dual_boundFst
       w.boundFst_lt_boundSnd w.boundFst_strictMono w.boundFst_neq_boundSnd
       w.boundSnd_injective := is_subsingleton.allEq w _
 
-lemma eq_dropLast_contr {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma eq_dropLast_contr {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k.succ → Fin n} (w : WickContract str b1 b2) :
   w = castMaps rfl (eq_snoc_castSucc b1).symm (eq_snoc_castSucc b2).symm
     (contr (b1 (Fin.last k)) (b2 (Fin.last k))
@@ -395,14 +393,14 @@ lemma eq_dropLast_contr {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n �
   rfl
 
 /-- Wick contractions of a given Wick string with `k` different contractions. -/
-def Level {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} (str : WickString i c o final) (k : ℕ) : Type :=
+def Level {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} (str : WickString i c o final) (k : ℕ) : Type :=
   Σ (b1 : Fin k → Fin n) (b2 : Fin k → Fin n), WickContract str b1 b2
 
 /-- There is a finite number of Wick contractions with no contractions. In particular,
   this is just the original Wick string. -/
-instance levelZeroFintype {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} (str : WickString i c o final) :
+instance levelZeroFintype {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} (str : WickString i c o final) :
     Fintype (Level str 0) where
   elems := {⟨Fin.elim0, Fin.elim0, WickContract.string⟩}
   complete := by
@@ -416,15 +414,15 @@ instance levelZeroFintype {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n 
       rw [is_subsingleton.allEq w string]
 
 /-- The pairs of additional indices which can be contracted given a Wick contraction. -/
-structure ContrPair {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+structure ContrPair {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) where
   /-- The first index in the contraction pair. -/
   i : Fin n
   /-- The second index in the contraction pair. -/
   j : Fin n
-  h : c j = ξ (c i)
+  h : c j = S.ξ (c i)
   hilej : i < j
   hb1 : ∀ r, b1 r < i
   hb2i : ∀ r, b2 r ≠ i
@@ -433,10 +431,10 @@ structure ContrPair {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → �
 /-- The pairs of additional indices which can be contracted, given an existing wick contraction,
   is equivalent to the a subtype of `Fin n × Fin n` defined by certain conditions equivalent
   to the conditions appearing in `ContrPair`. -/
-def contrPairEquivSubtype {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def contrPairEquivSubtype {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (w : WickContract str b1 b2) :
-    ContrPair w ≃ {x : Fin n × Fin n // c x.2 = ξ (c x.1) ∧ x.1 < x.2 ∧
+    ContrPair w ≃ {x : Fin n × Fin n // c x.2 = S.ξ (c x.1) ∧ x.1 < x.2 ∧
       (∀ r, b1 r < x.1) ∧ (∀ r, b2 r ≠ x.1) ∧ (∀ r, b2 r ≠ x.2)} where
   toFun cp := ⟨⟨cp.i, cp.j⟩, ⟨cp.h, cp.hilej, cp.hb1, cp.hb2i, cp.hb2j⟩⟩
   invFun x :=
@@ -453,8 +451,8 @@ def contrPairEquivSubtype {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n 
     obtain ⟨left_3, right⟩ := right
     simp_all only [ne_eq]
 
-lemma heq_eq {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma heq_eq {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 b1' b2' : Fin k → Fin n}
     (w : WickContract str b1 b2)
     (w' : WickContract str b1' b2') (h1 : b1 = b1') (h2 : b2 = b2') : HEq w w':= by
@@ -464,8 +462,8 @@ lemma heq_eq {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
 
 /-- The equivalence between Wick contractions consisting of `k.succ` contractions and
   those with `k` contractions paired with a suitable contraction pair. -/
-def levelSuccEquiv {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} (str : WickString i c o final) (k : ℕ) :
+def levelSuccEquiv {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} (str : WickString i c o final) (k : ℕ) :
     Level str k.succ ≃ (w : Level str k) × ContrPair w.2.2 where
   toFun w :=
     match w with
@@ -517,28 +515,28 @@ def levelSuccEquiv {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → �
 
 /-- The sum of `boundFst` and `boundSnd`, giving on `Sum.inl k` the first index
   in the `k`th contraction, and on `Sum.inr k` the second index in the `k`th contraction. -/
-def bound {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def bound {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : Fin k ⊕ Fin k → Fin n :=
   Sum.elim w.boundFst w.boundSnd
 
 /-- On `Sum.inl k` the map `bound` acts via `boundFst`. -/
 @[simp]
-lemma bound_inl {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma bound_inl {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) (i : Fin k) : w.bound (Sum.inl i) = w.boundFst i := rfl
 
 /-- On `Sum.inr k` the map `bound` acts via `boundSnd`. -/
 @[simp]
-lemma bound_inr {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma bound_inr {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) (i : Fin k) : w.bound (Sum.inr i) = w.boundSnd i := rfl
 
-lemma bound_injection {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma bound_injection {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : Function.Injective w.bound := by
   intro x y h
@@ -556,8 +554,8 @@ lemma bound_injection {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 
     simp only [bound_inr, bound_inl] at h
     exact False.elim (w.boundFst_neq_boundSnd y x h.symm)
 
-lemma bound_le_total {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma bound_le_total {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : 2 * k ≤ n := by
   refine Fin.nonempty_embedding_iff.mp ⟨w.bound ∘ finSumFinEquiv.symm ∘ Fin.cast (Nat.two_mul k),
@@ -568,23 +566,23 @@ lemma bound_le_total {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → �
 
 /-- The list of fields (indexed by `Fin n`) in a Wick contraction which are not bound,
   i.e. which do not appear in any contraction. -/
-def unboundList {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def unboundList {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : List (Fin n) :=
   List.filter (fun i => decide (∀ r, w.bound r ≠ i)) (List.finRange n)
 
 /-- THe list of field positions which are not contracted has no duplicates. -/
-lemma unboundList_nodup {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma unboundList_nodup {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : (w.unboundList).Nodup :=
     List.Nodup.filter _ (List.nodup_finRange n)
 
 /-- The length of the `unboundList` is equal to `n - 2 * k`. That is
   the total number of fields minus the number of contracted fields. -/
-lemma unboundList_length {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma unboundList_length {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (w : WickContract str b1 b2) :
     w.unboundList.length = n - 2 * k := by
   rw [← List.Nodup.dedup w.unboundList_nodup]
@@ -610,16 +608,16 @@ lemma unboundList_length {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n �
     decide_eq_true_eq, Finset.mem_image, Finset.mem_univ, true_and, Sum.exists, not_or, not_exists]
   exact bound_injection w
 
-lemma unboundList_sorted {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+lemma unboundList_sorted {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n} (w : WickContract str b1 b2) :
     List.Sorted (fun i j => i < j) w.unboundList :=
   List.Pairwise.sublist (List.filter_sublist (List.finRange n)) (List.pairwise_lt_finRange n)
 
 /-- The ordered embedding giving the fields which are not bound in a contraction. These
   are the fields that will appear in a normal operator in Wick's theorem. -/
-def unbound {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
-    {no : ℕ} {o : Fin no → 𝓔} {str : WickString i c o final}
+def unbound {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final}
     {k : ℕ} {b1 b2 : Fin k → Fin n}
     (w : WickContract str b1 b2) : Fin (n - 2 * k) ↪o Fin n where
   toFun := w.unboundList.get ∘ Fin.cast w.unboundList_length.symm
@@ -659,4 +657,4 @@ informal_definition IsOneParticleIrreducible where
 
 end WickContract
 
-end TwoComplexScalar
+end Wick

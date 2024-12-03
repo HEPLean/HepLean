@@ -4,12 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Informal
+import HepLean.PerturbationTheory.Wick.Species
 import Mathlib.Data.Fin.Tuple.Basic
 /-!
 # Wick strings
-
-Currently this file is only for an example of Wick strings, correpsonding to a
-theory with two complex scalar fields. The concepts will however generalize.
 
 A wick string is defined to be a sequence of input fields,
 followed by a squence of vertices, followed by a sequence of output fields.
@@ -19,68 +17,9 @@ term in the ring of operators. This has yet to be implemented.
 
 -/
 
-namespace TwoComplexScalar
+namespace Wick
 
-/-- The colors of edges which one can associate with a vertex for a theory
-  with two complex scalar fields. -/
-inductive 𝓔 where
-  /-- Corresponds to the first complex scalar field flowing out of a vertex. -/
-  | complexScalarOut₁ : 𝓔
-  /-- Corresponds to the first complex scalar field flowing into a vertex. -/
-  | complexScalarIn₁ : 𝓔
-  /-- Corresponds to the second complex scalar field flowing out of a vertex. -/
-  | complexScalarOut₂ : 𝓔
-  /-- Corresponds to the second complex scalar field flowing into a vertex. -/
-  | complexScalarIn₂ : 𝓔
-
-/-- The map taking each color to it's dual, specifying how we can contract edges. -/
-def ξ : 𝓔 → 𝓔
-  | 𝓔.complexScalarOut₁ => 𝓔.complexScalarIn₁
-  | 𝓔.complexScalarIn₁ => 𝓔.complexScalarOut₁
-  | 𝓔.complexScalarOut₂ => 𝓔.complexScalarIn₂
-  | 𝓔.complexScalarIn₂ => 𝓔.complexScalarOut₂
-
-/-- The function `ξ` is an involution. -/
-lemma ξ_involutive : Function.Involutive ξ := by
-  intro x
-  match x with
-  | 𝓔.complexScalarOut₁ => rfl
-  | 𝓔.complexScalarIn₁ => rfl
-  | 𝓔.complexScalarOut₂ => rfl
-  | 𝓔.complexScalarIn₂ => rfl
-
-/-- The vertices associated with two complex scalars.
-  We call this type, the type of vertex colors. -/
-inductive 𝓥 where
-  | φ₁φ₁φ₂φ₂ : 𝓥
-  | φ₁φ₁φ₁φ₁ : 𝓥
-  | φ₂φ₂φ₂φ₂ : 𝓥
-
-/-- To each vertex, the association of the number of edges. -/
-@[nolint unusedArguments]
-def 𝓥NoEdges : 𝓥 → ℕ := fun _ => 4
-
-/-- To each vertex, associates the indexing map of half-edges associated with that edge. -/
-def 𝓥Edges (v : 𝓥) : Fin (𝓥NoEdges v) → 𝓔 :=
-  match v with
-  | 𝓥.φ₁φ₁φ₂φ₂ => fun i =>
-    match i with
-    | (0 : Fin 4)=> 𝓔.complexScalarOut₁
-    | (1 : Fin 4) => 𝓔.complexScalarIn₁
-    | (2 : Fin 4) => 𝓔.complexScalarOut₂
-    | (3 : Fin 4) => 𝓔.complexScalarIn₂
-  | 𝓥.φ₁φ₁φ₁φ₁ => fun i =>
-    match i with
-    | (0 : Fin 4)=> 𝓔.complexScalarOut₁
-    | (1 : Fin 4) => 𝓔.complexScalarIn₁
-    | (2 : Fin 4) => 𝓔.complexScalarOut₁
-    | (3 : Fin 4) => 𝓔.complexScalarIn₁
-  | 𝓥.φ₂φ₂φ₂φ₂ => fun i =>
-    match i with
-    | (0 : Fin 4)=> 𝓔.complexScalarOut₂
-    | (1 : Fin 4) => 𝓔.complexScalarIn₂
-    | (2 : Fin 4) => 𝓔.complexScalarOut₂
-    | (3 : Fin 4) => 𝓔.complexScalarIn₂
+variable {S : Species}
 
 /-- A helper function for `WickString`. It is used to seperate incoming, vertex, and
   outgoing nodes. -/
@@ -102,29 +41,29 @@ open WickStringLast
   The incoming and outgoing fields should be viewed as asymptotic fields.
   While the internal fields associated with vertices are fields at fixed space-time points.
   -/
-inductive WickString : {ni : ℕ} → (i : Fin ni → 𝓔) → {n : ℕ} → (c : Fin n → 𝓔) →
-  {no : ℕ} → (o : Fin no → 𝓔) → WickStringLast → Type where
+inductive WickString : {ni : ℕ} → (i : Fin ni → S.𝓯) → {n : ℕ} → (c : Fin n → S.𝓯) →
+  {no : ℕ} → (o : Fin no → S.𝓯) → WickStringLast → Type where
   | empty : WickString Fin.elim0 Fin.elim0 Fin.elim0 incoming
-  | incoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o incoming) (e : 𝓔) :
+  | incoming {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o incoming) (e : S.𝓯) :
       WickString (Fin.cons e i) (Fin.cons e c) o incoming
-  | endIncoming {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o incoming) : WickString i c o vertex
-  | vertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o vertex) (v : 𝓥) :
-      WickString i (Fin.append (𝓥Edges v) c) o vertex
-  | endVertex {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o vertex) : WickString i c o outgoing
-  | outgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o outgoing) (e : 𝓔) :
+  | endIncoming {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o incoming) : WickString i c o vertex
+  | vertex {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o vertex) (v : S.𝓘) :
+      WickString i (Fin.append (S.𝓘Fields v).2 c) o vertex
+  | endVertex {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o vertex) : WickString i c o outgoing
+  | outgoing {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o outgoing) (e : S.𝓯) :
       WickString i (Fin.cons e c) (Fin.cons e o) outgoing
-  | endOutgoing {n ni no : ℕ} {i : Fin ni → 𝓔} {c : Fin n → 𝓔}
-      {o : Fin no → 𝓔} (w : WickString i c o outgoing) : WickString i c o final
+  | endOutgoing {n ni no : ℕ} {i : Fin ni → S.𝓯} {c : Fin n → S.𝓯}
+      {o : Fin no → S.𝓯} (w : WickString i c o outgoing) : WickString i c o final
 
 namespace WickString
 
 /-- The number of nodes in a Wick string. This is used to help prove termination. -/
-def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+def size {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯} {no : ℕ} {o : Fin no → S.𝓯}
     {f : WickStringLast} : WickString i c o f → ℕ := fun
   | empty => 0
   | incoming w e => size w + 1
@@ -135,7 +74,7 @@ def size {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : �
   | endOutgoing w => size w + 1
 
 /-- The number of vertices in a Wick string. This does NOT include external vertices. -/
-def numIntVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
+def numIntVertex {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯} {no : ℕ} {o : Fin no → S.𝓯}
     {f : WickStringLast} : WickString i c o f → ℕ := fun
   | empty => 0
   | incoming w e => numIntVertex w
@@ -146,8 +85,8 @@ def numIntVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔}
   | endOutgoing w => numIntVertex w
 
 /-- The vertices present in a Wick string. This does NOT include external vertices. -/
-def intVertex {ni : ℕ} {i : Fin ni → 𝓔} {n : ℕ} {c : Fin n → 𝓔} {no : ℕ} {o : Fin no → 𝓔}
-    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numIntVertex → 𝓥 := fun
+def intVertex {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯} {no : ℕ} {o : Fin no → S.𝓯}
+    {f : WickStringLast} : (w : WickString i c o f) → Fin w.numIntVertex → S.𝓘 := fun
   | empty => Fin.elim0
   | incoming w e => intVertex w
   | endIncoming w => intVertex w
@@ -191,4 +130,4 @@ informal_lemma loopLevel_fintype where
 
 end WickString
 
-end TwoComplexScalar
+end Wick
