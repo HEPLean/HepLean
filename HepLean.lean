@@ -109,6 +109,7 @@ import HepLean.Meta.Basic
 import HepLean.Meta.Informal
 import HepLean.Meta.Notes.Basic
 import HepLean.Meta.Notes.HTMLNote
+import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
 import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic

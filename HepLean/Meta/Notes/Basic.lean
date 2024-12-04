@@ -10,7 +10,17 @@ import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
 /-!
 
-## Basic Lean meta programming commands
+## Underlying structure for notes
+
+This file contains the necessary structures that must be imported into a file
+for it to be turned into a Lean note.
+
+It allows for the
+- `note ...` command to be used to add notes to a Lean file
+- `note_attr` attribute to be used to display formally verified commands within a note.
+- `note_attr_informal` attribute to be used to display informal commands within a note.
+
+Other results relating to notes are in other files.
 
 -/
 
@@ -99,31 +109,5 @@ initialize noteInformalAttribute : Unit ←
     add := fun declName _ _ => do
       modifyEnv fun env => noteInformalDeclExtension.addEntry env declName
   }
-
-/-!
-
-## Notes
-
--/
-
-/-- A note consists of a title and a list of Lean files which make up the note. -/
-structure NoteFile where
-  /-- The overall title of the note. -/
-  title : String
-  /-- The abstract of the note. -/
-  abstract : String
-  /-- A list of authors. -/
-  authors : List String
-  /-- The files making up the note in the order in which they should appear. -/
-  files : List Name
-
-namespace NoteFile
-
-variable (N : NoteFile)
-
-/-- All imports associated to a note. -/
-def imports : Array Import := (N.files.map fun f => {module := f}).toArray
-
-end NoteFile
 
 end HepLean
