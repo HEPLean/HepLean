@@ -25,7 +25,7 @@ def pertubationTheory : NoteFile where
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let htmlString ← CoreM.withImportModules #[`HepLean] (pertubationTheory.toHTMLString).run'
-  let htmlFile : System.FilePath := {toString := "./docs/PertubationTheory.html"}
+  let htmlFile : System.FilePath := {toString := "./docs/PerturbationTheory.html"}
   IO.FS.writeFile htmlFile htmlString
   IO.println (s!"HTML file made.")
   pure 0
