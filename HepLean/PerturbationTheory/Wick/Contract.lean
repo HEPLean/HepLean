@@ -7,6 +7,7 @@ import HepLean.PerturbationTheory.Wick.String
 import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Fintype.Sum
 import Mathlib.Logic.Equiv.Fin
+import HepLean.Meta.Notes.Basic
 /-!
 
 # Wick Contract
@@ -40,6 +41,7 @@ inductive WickContract : {ni : ℕ} → {i : Fin ni → S.𝓯} → {n : ℕ} �
 namespace WickContract
 
 /-- The number of nodes of a Wick contraction. -/
+@[note_attr]
 def size {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
     {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
     WickContract str b1 b2 → ℕ := fun

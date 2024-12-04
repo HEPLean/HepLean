@@ -37,6 +37,7 @@ def Imports.NoDocStringLemma (imp : Import) : MetaM UInt32 := do
   pure 0
 
 unsafe def main (args : List String) : IO UInt32 := do
+  initSearchPath (← findSysroot)
   let imports ← allImports
   let _ ← CoreM.withImportModules #[`HepLean] (imports.mapM Imports.NoDocStringDef).run'
   if "--lemmas" ∈ args then

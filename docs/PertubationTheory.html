@@ -1,0 +1,78 @@
+---
+layout: default
+---
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <!-- Include Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Enable Highlight.js -->
+    <script>hljs.highlightAll();</script>
+    <script>
+      hljs.registerLanguage('lean', function(hljs) {
+          return {
+              keywords: 'def theorem axiomatic structure lemma informal_definition_note informal_lemma_note',
+              contains: [
+                  hljs.COMMENT('--', '$'),
+                  hljs.C_NUMBER_MODE,
+                  // Operators (custom definition)
+                {
+                    className: 'operator', // Define a class for styling
+                    begin: /[:=+\-*/<>|&!~^{}]/ // Regex for operators
+                }
+
+              ]
+          };
+      });
+      hljs.highlightAll();
+      </script>
+
+<style>
+        .informal-def {
+            position: relative; /* Establish a relative positioning context for the button */
+            background-color: #f8d7da; /* Light red background */
+            border: 2px solid #dc3545; /* Solid darker red border */
+            margin: 10px; /* Space outside the block */
+            padding: 20px; /* Space inside the block */
+        }
+
+        .informal-def .button {
+            position: absolute; /* Position relative to the parent */
+            top: 5px; /* Distance from the top of the block */
+            right: 5px; /* Distance from the right of the block */
+            background-color: rgba(220, 53, 69, 0.4);
+            color: white; /* White text */
+            border: none; /* No border for the button */
+            padding: 5px 10px; /* Padding for the button */
+            text-decoration: none; /* Remove underline from the link */
+            border-radius: 5px; /* Rounded corners for the button */
+            font-size: 12px; /* Smaller font size */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+
+        .informal-def .button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    body {
+            color: #000000; /* Change the default text color to dark gray */
+        }
+</style>
+</head>
+</head>
+<body><center><h1 style="font-size: 50px;">Notes on Perturbation Theory</h1></center>
+<center><b>Authors:</b> Joseph Tooby-Smith</center>
+<center><b>Abstract:</b> Notes on perturbation theory in quantum field theory.</center>
+  <h1>Operator algebra</h1>
+  This is a test note.
+<div class="informal-def"><a href="https://example.com" class="button">Improve/Formalize</a><b>Informal definition:</b> Wick.WickAlgebra<br><br>    Modifications of this may be needed.<br>    A structure with the following data:<br>    - A super algebra A.<br>    - A map from `ψ : S.𝓯 × SpaceTime → A` where S.𝓯 are field colors.<br>    - A map `ψc : S.𝓯 × SpaceTime → A`.<br>    - A map `ψd : S.𝓯 × SpaceTime → A`.<br>    Subject to the conditions:<br>    - The sum of `ψc` and `ψd` is `ψ`.<br>    - All maps land on homogeneous elements.<br>    - Two fields super-commute if there colors are not dual to each other.<br>    - The super-commutator of two fields is always in the<br>      center of the algebra.<br>    Asympotic states:<br>    - `φc : S.𝓯 × SpaceTime → A`. The creation asympotic state (incoming).<br>    - `φd : S.𝓯 × SpaceTime → A`. The destruction asympotic state (outgoing).<br>    Subject to the conditions:<br>    ...<br>      </div>
+<div class="informal-def"><a href="https://example.com" class="button">Improve/Formalize</a><b>Informal definition:</b> Wick.WickMonomial<br>The type of elements of the Wick algebra which is a product of fields.</div>
+<pre><code>def size {ni : ℕ} {i : Fin ni → S.𝓯} {n : ℕ} {c : Fin n → S.𝓯}
+    {no : ℕ} {o : Fin no → S.𝓯} {str : WickString i c o final} {k : ℕ} {b1 b2 : Fin k → Fin n} :
+    WickContract str b1 b2 → ℕ := fun
+  | string => 0
+  | contr _ _ _ _ _ _ _ w => w.size + 1</code></pre></body>
+</html>

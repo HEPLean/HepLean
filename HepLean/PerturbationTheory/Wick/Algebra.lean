@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Wick.Species
 import HepLean.Mathematics.SuperAlgebra.Basic
+import HepLean.Meta.Notes.Basic
 /-!
 
 # Operator algebra
@@ -23,9 +24,13 @@ We will formally define the operator ring, in terms of the fields present in the
 - Tong, https://www.damtp.cam.ac.uk/user/tong/qft/qft.pdf
 -/
 
+note "
+  <h1>Operator algebra</h1>
+  This is a test note."
+
 namespace Wick
 
-informal_definition WickAlgebra where
+informal_definition_note WickAlgebra where
   math :≈ "
     Modifications of this may be needed.
     A structure with the following data:
@@ -50,7 +55,7 @@ informal_definition WickAlgebra where
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
   deps :≈ [``SuperAlgebra, ``SuperAlgebra.superCommuator]
 
-informal_definition WickMonomial where
+informal_definition_note WickMonomial where
   math :≈ "The type of elements of the Wick algebra which is a product of fields."
   deps :≈ [``WickAlgebra]
 

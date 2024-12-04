@@ -86,6 +86,14 @@ def Name.lineNumber (c : Name) : MetaM Nat := do
   | some decl => pure decl.range.pos.line
   | none => panic! s!"{c} is a declaration without position"
 
+/-- Given a name, returns the file name corresponding to that declaration. -/
+def Name.fileName (c : Name) : MetaM Name := do
+  let env ← getEnv
+  let x := env.getModuleFor? c
+  match x with
+  | some c => pure c
+  | none => panic! s!"{c} is a declaration without position"
+
 /-- Returns the location of a name. -/
 def Name.location (c : Name) : MetaM String := do
   let env ← getEnv
@@ -108,6 +116,28 @@ def Name.hasDocString (c : Name) : MetaM Bool := do
   match doc with
   | some _ => pure true
   | none => pure false
+
+
+/-- Given a name, returns the source code defining that name. -/
+def Name.getDeclString (name : Name) : MetaM String := do
+  let env ← getEnv
+  let decl ← findDeclarationRanges? name
+  match decl with
+  | some decl =>
+    let startLine := decl.range.pos
+    let endLine := decl.range.endPos
+    let fileName? := env.getModuleFor? name
+    match fileName? with
+    | some fileName  =>
+      let fileContent ← IO.FS.readFile { toString := (← Name.toFile fileName)}
+      let fileMap := fileContent.toFileMap
+      let startPos := fileMap.ofPosition startLine
+      let endPos := fileMap.ofPosition endLine
+      let text := fileMap.source.extract startPos endPos
+      pure text
+    | none =>
+        pure ""
+  | none => pure ""
 
 /-- Number of definitions. -/
 def noDefs : MetaM Nat := do
