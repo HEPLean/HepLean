@@ -19,7 +19,7 @@ variable (N : NoteFile)
 
 /-- Sorts `NoteInfo`'s by file name then by line number. -/
 def sortLE (ni1 ni2 : HTMLNote) : Bool :=
-  if  N.files.indexOf ni1.fileName ≠  N.files.indexOf ni2.fileName
+  if N.files.indexOf ni1.fileName ≠ N.files.indexOf ni2.fileName
   then N.files.indexOf ni1.fileName ≤ N.files.indexOf ni2.fileName
   else
   ni1.line ≤ ni2.line
@@ -30,12 +30,13 @@ unsafe def getNodeInfo : MetaM (List HTMLNote) := do
   let allNotes := (noteExtension.getState env)
   let allDecl := (noteDeclExtension.getState env)
   let allInformalDecl := noteInformalDeclExtension.getState env
-  let allNoteInfo := (← allNotes.mapM noteInfoToHTMLNote) ++ (← allDecl.mapM formalToHTMLNote)
-    ++ (← allInformalDecl.mapM informalToHTMLNote)
+  let allNoteInfo := (← allNotes.mapM HTMLNote.ofNodeInfo) ++ (← allDecl.mapM HTMLNote.ofFormal)
+    ++ (← allInformalDecl.mapM HTMLNote.ofInformal)
   let noteInfo := allNoteInfo.filter (fun x => x.fileName ∈ N.files)
   let noteInfoSort := noteInfo.toList.mergeSort N.sortLE
   pure noteInfoSort
 
+/-- The HTML code needed to have syntax highlighting. -/
 def codeBlockHTML : String := "
 <meta charset=\"UTF-8\">
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
@@ -48,7 +49,7 @@ def codeBlockHTML : String := "
     <script>
       hljs.registerLanguage('lean', function(hljs) {
           return {
-              keywords: 'def theorem axiomatic structure lemma informal_definition_note informal_lemma_note',
+              keywords: 'def theorem axiomatic structure lemma',
               contains: [
                   hljs.COMMENT('--', '$'),
                   hljs.C_NUMBER_MODE,
@@ -56,15 +57,14 @@ def codeBlockHTML : String := "
                 {
                     className: 'operator', // Define a class for styling
                     begin: /[:=+\\-*/<>|&!~^{}]/ // Regex for operators
-                }
-
-              ]
+                }]
           };
       });
       hljs.highlightAll();
       </script>
 "
 
+/-- The html styles for informal definitions. -/
 def informalDefStyle : String :=
 "
 <style>
@@ -99,7 +99,8 @@ def informalDefStyle : String :=
 </style>
 "
 
-def headerHTML : String  :=
+/-- The header to the html code. -/
+def headerHTML : String :=
 "---
 layout: default
 ---
@@ -109,18 +110,21 @@ layout: default
 </head>
 <body>"
 
+/-- The html code corresponding to the title, abstract and authors. -/
 def titleHTML : String :=
 "<center><h1 style=\"font-size: 50px;\">" ++ N.title ++ "</h1></center>
 <center><b>Authors:</b> " ++ String.intercalate ", " N.authors ++ "</center>
 <center><b>Abstract:</b> " ++ N.abstract ++ "</center>"
 
+/-- The footor of the html file. -/
 def footerHTML : String :=
 "</body>
 </html>"
 
+/-- The html file associated to a NoteFile string. -/
 unsafe def toHTMLString : MetaM String := do
   let string := String.intercalate "\n" ((← N.getNodeInfo).map (fun x => x.content))
-  pure (headerHTML ++ N.titleHTML ++  string ++ footerHTML)
+  pure (headerHTML ++ N.titleHTML ++ string ++ footerHTML)
 
 end NoteFile
 end HepLean

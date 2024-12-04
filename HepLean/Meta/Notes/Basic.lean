@@ -17,30 +17,31 @@ import ImportGraph.RequiredModules
 namespace HepLean
 open Lean System Meta
 
--- Define the structure to hold note information, including module name
+/-- The information from a `note ...` command. To be used in a note file-/
 structure NoteInfo where
+  /-- The content of the note. -/
   content : String
+  /-- The file name where the note came from. -/
   fileName : Name
+  /-- The line from where the note came from. -/
   line : Nat
-  deriving Inhabited
 
--- Define the environment extension to store notes
+/-- Enviroment extention to store `note ...`. -/
 initialize noteExtension : SimplePersistentEnvExtension NoteInfo (Array NoteInfo) ←
   registerSimplePersistentEnvExtension {
-    name          := `noteExtension
-    addEntryFn    := fun arr nodeInfor => arr.push nodeInfor
-    addImportedFn := fun es => es.foldl (· ++ ·) #[]  -- Merge imported notes
+    name := `noteExtension
+    addEntryFn := fun arr nodeInfor => arr.push nodeInfor
+    addImportedFn := fun es => es.foldl (· ++ ·) #[]
   }
 
--- Define the syntax for the `note` command
+/-- Syntax for the `note ...` command -/
 syntax (name := note_comment) "note " str : command
 
--- Define the elaboration behavior (do nothing)
+/-- Elaborator for the `note ...` command -/
 @[command_elab note_comment]
 def elabNote : Lean.Elab.Command.CommandElab := fun stx =>
   match stx with
   | `(note $s) => do
-
     let str : String := s.getString
     let pos := stx.getPos?
     match pos with
@@ -56,43 +57,46 @@ def elabNote : Lean.Elab.Command.CommandElab := fun stx =>
     | none => throwError "Invalid syntax for `note` command"
   | _ => throwError "Invalid syntax for `note` command"
 
-
-
 /-!
 
 ## Note attribute
 
 -/
 
+/-- Enviroment extention to store `note_attr`. -/
 initialize noteDeclExtension : SimplePersistentEnvExtension Name (Array Name) ←
   registerSimplePersistentEnvExtension {
-    name          := `noteDeclExtension
-    addEntryFn    := fun arr nodeInfor => arr.push nodeInfor
-    addImportedFn := fun es => es.foldl (· ++ ·) #[]  -- Merge imported notes
+    name := `noteDeclExtension
+    addEntryFn := fun arr nodeInfor => arr.push nodeInfor
+    addImportedFn := fun es => es.foldl (· ++ ·) #[]
   }
 
+/-- The `note_attr` attribute is used to display formally verified commands within a note. -/
 initialize noteAttribute : Unit ←
   registerBuiltinAttribute {
-    name  := `note_attr
+    name := `note_attr
     descr := "Note attribute"
     applicationTime := AttributeApplicationTime.afterCompilation
-    add   := fun declName _ _ => do
+    add := fun declName _ _ => do
       modifyEnv fun env => noteDeclExtension.addEntry env declName
   }
 
+
+/-- Enviroment extention to store `note_attr_informal`. -/
 initialize noteInformalDeclExtension : SimplePersistentEnvExtension Name (Array Name) ←
   registerSimplePersistentEnvExtension {
-    name          := `noteInformalDeclExtension
-    addEntryFn    := fun arr nodeInfor => arr.push nodeInfor
-    addImportedFn := fun es => es.foldl (· ++ ·) #[]  -- Merge imported notes
+    name := `noteInformalDeclExtension
+    addEntryFn := fun arr nodeInfor => arr.push nodeInfor
+    addImportedFn := fun es => es.foldl (· ++ ·) #[]
   }
 
+/-- The `note_attr_informal` attribute is used to display informal commands within a note. -/
 initialize noteInformalAttribute : Unit ←
   registerBuiltinAttribute {
-    name  := `note_attr_informal
+    name := `note_attr_informal
     descr := "Informal note attribute"
     applicationTime := AttributeApplicationTime.afterCompilation
-    add   := fun declName _ _ => do
+    add := fun declName _ _ => do
       modifyEnv fun env => noteInformalDeclExtension.addEntry env declName
   }
 
@@ -104,9 +108,13 @@ initialize noteInformalAttribute : Unit ←
 
 /-- A note consists of a title and a list of Lean files which make up the note. -/
 structure NoteFile where
+  /-- The overall title of the note. -/
   title : String
+  /-- The abstract of the note. -/
   abstract : String
+  /-- A list of authors. -/
   authors : List String
+  /-- The files making up the note in the order in which they should appear. -/
   files : List Name
 
 namespace NoteFile

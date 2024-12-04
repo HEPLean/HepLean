@@ -105,7 +105,15 @@ def $name : InformalDefinition := {
 syntax (name := informal_definition_note) "informal_definition_note " ident
   " where " (colGt informalAssignment)* : command
 
-macro "informal_definition_note " name:ident " where " assignments:informalAssignment* : command => do
+/-- An informal definition is a definition which is not type checked, and is written
+  as a string literal. It can be used to plan out sections for future formalization, or to
+  include results which the formalization is not immediately known.
+  Each informal definition must included a
+  `math :≈ "..."`
+  entry, but can also include the following entries
+  `physics :≈ "..."`, `ref :≈ "..."`, and `deps :≈ [...]`. -/
+macro "informal_definition_note " name:ident " where " assignments:informalAssignment* :
+    command => do
   let mut math_def? : Option (TSyntax `term) := none
   let mut physics_def? : Option (TSyntax `term) := none
   let mut ref_def? : Option (TSyntax `term) := none
@@ -183,7 +191,6 @@ def $name : InformalLemma := {
   ref := $(ref_def?.getD (← `("No references provided"))),
   dependencies := $(dep_def?.getD (← `([])))
     })
-
 
 /-- The syntax for the command `informal_lemma`. -/
 syntax (name := informal_lemma_note) "informal_lemma_note " ident " where "

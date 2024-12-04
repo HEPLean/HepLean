@@ -117,7 +117,6 @@ def Name.hasDocString (c : Name) : MetaM Bool := do
   | some _ => pure true
   | none => pure false
 
-
 /-- Given a name, returns the source code defining that name. -/
 def Name.getDeclString (name : Name) : MetaM String := do
   let env ← getEnv
@@ -128,7 +127,7 @@ def Name.getDeclString (name : Name) : MetaM String := do
     let endLine := decl.range.endPos
     let fileName? := env.getModuleFor? name
     match fileName? with
-    | some fileName  =>
+    | some fileName =>
       let fileContent ← IO.FS.readFile { toString := (← Name.toFile fileName)}
       let fileMap := fileContent.toFileMap
       let startPos := fileMap.ofPosition startLine

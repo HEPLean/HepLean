@@ -15,29 +15,34 @@ import HepLean.Meta.Informal
 namespace HepLean
 open Lean System Meta
 
+/-- A `HTMLNote` is a structure containing the html information from
+  invidual contributions (commands, informal commands, note ..) etc. to a note file. -/
 structure HTMLNote where
+  /-- The name of the file the contribution came from. -/
   fileName : Name
+  /-- The html contribution of the content. -/
   content : String
+  /-- The line in the file where the contribution came from. -/
   line : Nat
 
-
-
-def noteInfoToHTMLNote (ni : NoteInfo) : MetaM HTMLNote := do
+/-- Converts a note infor into a HTMLNote. -/
+def HTMLNote.ofNodeInfo (ni : NoteInfo) : MetaM HTMLNote := do
   let line := ni.line
-  let decl :=  ni.content
+  let decl := ni.content
   let fileName := ni.fileName
   pure { content := decl, fileName := fileName, line := line }
 
-def formalToHTMLNote (name : Name) :  MetaM HTMLNote := do
+/-- An formal definition or lemma to html for a note. -/
+def HTMLNote.ofFormal (name : Name) : MetaM HTMLNote := do
   let line ← Name.lineNumber name
   let decl ← Name.getDeclString name
   let fileName ← Name.fileName name
   let content := "<pre><code>" ++ decl ++ "</code></pre>"
   pure { content := content, fileName := fileName, line := line }
 
-unsafe def informalToHTMLNote (name : Name) :  MetaM HTMLNote := do
+/-- An informal definition or lemma to html for a note. -/
+unsafe def HTMLNote.ofInformal (name : Name) : MetaM HTMLNote := do
   let line ← Name.lineNumber name
-  let decl ← Name.getDeclString name
   let fileName ← Name.fileName name
   let constInfo ← getConstInfo name
   let mut content := ""
