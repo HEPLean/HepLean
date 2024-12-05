@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Meta.Basic
+import HepLean.Meta.Informal.Post
 /-!
 
 # HepLean Stats

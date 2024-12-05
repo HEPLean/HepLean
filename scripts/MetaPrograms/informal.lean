@@ -7,7 +7,7 @@ import Batteries.Lean.HashSet
 import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Post
 import ImportGraph.RequiredModules
 /-!
 
@@ -59,36 +59,19 @@ def depToWebString (d : Name) : MetaM String := do
     (mod.toString.replace "." "/") ++ ".lean"
   pure s!"    * [{d}]({webPath}#L{lineNo})"
 
-/-- Takes a `ConstantInfo` corresponding to a `InformalLemma` and returns
-  the corresponding `InformalLemma`. -/
-unsafe def constantInfoToInformalLemma (c : ConstantInfo) : MetaM InformalLemma := do
-  match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalLemma ``InformalLemma c.value
-  | _ => panic! "Passed constantInfoToInformalLemma a `ConstantInfo` that is not a `InformalLemma`"
-
-/-- Takes a `ConstantInfo` corresponding to a `InformalDefinition` and returns
-  the corresponding `InformalDefinition`. -/
-unsafe def constantInfoToInformalDefinition (c : ConstantInfo) : MetaM InformalDefinition := do
-  match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalDefinition ``InformalDefinition c.value
-  | _ => panic! "Passed constantInfoToInformalDefinition a
-    `ConstantInfo` that is not a `InformalDefinition`"
-
 unsafe def informalDependencies (c : ConstantInfo) : MetaM (Array Name) := do
   if Informal.isInformalLemma c then
-    let informal ← constantInfoToInformalLemma c
+    let informal ← Informal.constantInfoToInformalLemma c
     pure informal.dependencies.toArray
   else if Informal.isInformalDef c then
-    let informal ← constantInfoToInformalDefinition c
+    let informal ← Informal.constantInfoToInformalDefinition c
     pure informal.dependencies.toArray
   else
     pure #[]
 
 unsafe def informalLemmaToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
-  let informalLemma ← constantInfoToInformalLemma c.2
+  let informalLemma ← Informal.constantInfoToInformalLemma c.2
   let dep ← informalLemma.dependencies.mapM fun d => depToString d
   pure s!"
 Informal lemma: {informalLemma.name}
@@ -101,7 +84,7 @@ Informal lemma: {informalLemma.name}
 
 unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
-  let informalLemma ← constantInfoToInformalLemma c.2
+  let informalLemma ← Informal.constantInfoToInformalLemma c.2
   let dep ← informalLemma.dependencies.mapM fun d => depToWebString d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
@@ -115,7 +98,7 @@ unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String 
 
 unsafe def informalDefToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
-  let informalDef ← constantInfoToInformalDefinition c.2
+  let informalDef ← Informal.constantInfoToInformalDefinition c.2
   let dep ← informalDef.dependencies.mapM fun d => depToString d
   pure s!"
 Informal def: {informalDef.name}
@@ -127,7 +110,7 @@ Informal def: {informalDef.name}
 
 unsafe def informalDefToWebString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
-  let informalDef ← constantInfoToInformalDefinition c.2
+  let informalDef ← Informal.constantInfoToInformalDefinition c.2
   let dep ← informalDef.dependencies.mapM fun d => depToWebString d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
@@ -168,7 +151,7 @@ There is an implicit invitation to the reader to contribute to the formalization
  background in Lean.
 
 "
-
+open Informal
 /-- Takes an import and outputs the list of `ConstantInfo` corresponding
   to an informal definition or lemma in that import, sorted by line number. -/
 def importToInformal (i : Import) : MetaM (Array (Import × ConstantInfo)) := do
@@ -223,7 +206,7 @@ unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × Constant
   let lineNo ← getLineNumber c.2.name
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
-  let informalLemma ← (constantInfoToInformalLemma c.2)
+  let informalLemma ← (Informal.constantInfoToInformalLemma c.2)
   let prefixName := if nameSpaces.contains c.2.name then c.2.name else
     c.2.name.getPrefix
   let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,

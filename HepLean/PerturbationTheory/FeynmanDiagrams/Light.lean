@@ -56,7 +56,7 @@ informal_definition _root_.Wick.Contract.toFeynmanDiagram_isConnected_iff where
   deps :≈ [``Wick.WickContract.IsConnected, ``FeynmanDiagram.IsConnected]
 
 /-! TODO: Define an equivalence relation on Wick contracts related to the their underlying tensors
-  been equal after permutation. Show that two  Wick contractions are equal under this
+  been equal after permutation. Show that two Wick contractions are equal under this
   equivalence relation if and only if they have the same Feynman diagram. First step
   is to turn these statements into appropriate informal lemmas and definitions. -/
 

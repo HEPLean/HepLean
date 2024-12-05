@@ -21,4 +21,10 @@
       <priority>0.8</priority>
    </url>
 
+   <!-- Pertubation Theory Notes -->
+   <url>
+      <loc>https://heplean.github.io/HepLean/PertubationTheory</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
 </urlset>

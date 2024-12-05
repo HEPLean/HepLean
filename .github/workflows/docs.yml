@@ -50,6 +50,9 @@ jobs:
       - name: make stats page
         run : lake exe stats mkHTML
 
+      - name: make notes
+        run : lake exe notes
+
       - name: Generate svg from dot
         run : dot -Tsvg -o ./docs/graph.svg ./docs/InformalDot.dot
 

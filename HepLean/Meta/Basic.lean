@@ -8,7 +8,7 @@ import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 
 ## Basic Lean meta programming commands
@@ -80,10 +80,25 @@ def Imports.getLines (imp : Import) : IO (Array String) := do
 def Name.toFile (c : Name) : MetaM String := do
   return s!"./{c.toString.replace "." "/" ++ ".lean"}"
 
+/-- Turns a name, which represents a module, into a link to github. -/
+def Name.toGitHubLink (c : Name) (l : Nat := 0) : MetaM String := do
+  let headerLink := "https://github.com/HEPLean/HepLean/blob/master/"
+  let filePart := (c.toString.replace "." "/") ++ ".lean"
+  let linePart := "#L" ++ toString l
+  return headerLink ++ filePart ++ linePart
+
 /-- Given a name, returns the line number. -/
 def Name.lineNumber (c : Name) : MetaM Nat := do
   match ← findDeclarationRanges? c with
   | some decl => pure decl.range.pos.line
+  | none => panic! s!"{c} is a declaration without position"
+
+/-- Given a name, returns the file name corresponding to that declaration. -/
+def Name.fileName (c : Name) : MetaM Name := do
+  let env ← getEnv
+  let x := env.getModuleFor? c
+  match x with
+  | some c => pure c
   | none => panic! s!"{c} is a declaration without position"
 
 /-- Returns the location of a name. -/
@@ -108,6 +123,27 @@ def Name.hasDocString (c : Name) : MetaM Bool := do
   match doc with
   | some _ => pure true
   | none => pure false
+
+/-- Given a name, returns the source code defining that name. -/
+def Name.getDeclString (name : Name) : MetaM String := do
+  let env ← getEnv
+  let decl ← findDeclarationRanges? name
+  match decl with
+  | some decl =>
+    let startLine := decl.range.pos
+    let endLine := decl.range.endPos
+    let fileName? := env.getModuleFor? name
+    match fileName? with
+    | some fileName =>
+      let fileContent ← IO.FS.readFile { toString := (← Name.toFile fileName)}
+      let fileMap := fileContent.toFileMap
+      let startPos := fileMap.ofPosition startLine
+      let endPos := fileMap.ofPosition endLine
+      let text := fileMap.source.extract startPos endPos
+      pure text
+    | none =>
+        pure ""
+  | none => pure ""
 
 /-- Number of definitions. -/
 def noDefs : MetaM Nat := do
@@ -154,24 +190,6 @@ def noLines : IO Nat := do
   let imports ← HepLean.allImports
   let x ← imports.mapM HepLean.Imports.getLines
   let x := x.flatten
-  pure x.toList.length
-
-/-- The number of informal lemmas in HepLean. -/
-def noInformalLemmas : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalLemma)
-  pure x.toList.length
-
-/-- The number of informal definitions in HepLean. -/
-def noInformalDefs : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalDef)
   pure x.toList.length
 
 /-- The number of TODO items. -/

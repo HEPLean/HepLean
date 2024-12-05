@@ -1,0 +1,26 @@
+/-
+Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license.
+Authors: Joseph Tooby-Smith
+-/
+import Batteries.Lean.HashSet
+import Lean
+import Mathlib.Lean.Expr.Basic
+import Mathlib.Lean.CoreM
+import HepLean.Meta.Informal.Post
+import ImportGraph.RequiredModules
+
+def main (_: List String) : IO UInt32 := do
+  println! "Building ... "
+  let build ← IO.Process.output {cmd := "lake", args := #["build"]}
+  println! build.stdout
+  println! "File imports ... "
+  let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
+  println! importCheck.stdout
+  println! "Style lint ... "
+  let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "hepLean_style_lint"]}
+  println! styleLint.stdout
+  println! "Doc check ..."
+  let docCheck ← IO.Process.output {cmd := "lake", args := #["exe", "no_docs"]}
+  println! docCheck.stdout
+  pure 0

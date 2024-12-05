@@ -7,7 +7,7 @@ import Mathlib.Data.Complex.Exponential
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.LinearAlgebra.Matrix.ToLin
 import HepLean.SpaceTime.Basic
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 # The Standard Model
 

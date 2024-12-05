@@ -8,7 +8,7 @@ import HepLean.Lorentz.RealVector.Basic
 import Mathlib.RepresentationTheory.Basic
 import HepLean.Lorentz.Group.Restricted
 import HepLean.Lorentz.PauliMatrices.SelfAdjoint
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
