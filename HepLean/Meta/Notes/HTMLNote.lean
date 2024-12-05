@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Basic
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Post
 /-!
 
 ## Turns a delaration into a html note structure.

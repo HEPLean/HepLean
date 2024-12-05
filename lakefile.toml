@@ -67,6 +67,11 @@ supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
+name = "lint_all"
+supportInterpreter = true
+srcDir = "scripts"
+
+[[lean_exe]]
 name = "free_simps"
 srcDir = "scripts/MetaPrograms"
 

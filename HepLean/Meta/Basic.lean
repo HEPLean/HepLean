@@ -8,7 +8,7 @@ import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 
 ## Basic Lean meta programming commands
@@ -183,24 +183,6 @@ def noLines : IO Nat := do
   let imports ← HepLean.allImports
   let x ← imports.mapM HepLean.Imports.getLines
   let x := x.flatten
-  pure x.toList.length
-
-/-- The number of informal lemmas in HepLean. -/
-def noInformalLemmas : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalLemma)
-  pure x.toList.length
-
-/-- The number of informal definitions in HepLean. -/
-def noInformalDefs : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalDef)
   pure x.toList.length
 
 /-- The number of TODO items. -/

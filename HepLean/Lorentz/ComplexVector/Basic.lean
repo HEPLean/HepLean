@@ -7,7 +7,7 @@ import Mathlib.Data.Complex.Exponential
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import HepLean.Lorentz.SL2C.Basic
 import HepLean.Lorentz.ComplexVector.Modules
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 import Mathlib.RepresentationTheory.Rep
 import HepLean.Lorentz.PauliMatrices.SelfAdjoint
 /-!

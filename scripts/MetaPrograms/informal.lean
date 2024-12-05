@@ -7,7 +7,7 @@ import Batteries.Lean.HashSet
 import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Post
 import ImportGraph.RequiredModules
 /-!
 

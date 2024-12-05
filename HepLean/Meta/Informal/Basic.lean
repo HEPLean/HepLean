@@ -8,10 +8,13 @@ import Lean
 
 ## Informal definitions and lemmas
 
+This file contains the necessary structures that must be imported into a file
+for it to contain informal definitions and lemmas.
+
+Everything else about informal definitions and lemmas are in the `Informal.Post` module.
+
 -/
 open Lean Elab System
-
-/-! TODO: Derive a means to extract informal definitions and informal lemmas. -/
 
 /-! TODO: Can likely make this a bona-fide command. -/
 
@@ -239,44 +242,5 @@ def $name : InformalLemma := {
   ref := $(ref_def?.getD (← `("No references provided"))),
   dependencies := $(dep_def?.getD (← `([])))
     })
-
-/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma` or a
-  `InformalDefinition`. -/
-def isInformal (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalDefinition ∨ c.type.isAppOf ``InformalLemma then true else false
-  | _ => false
-
-/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma`. -/
-def isInformalLemma (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalLemma then true else false
-  | _ => false
-
-/-- Is true if and only if a `ConstantInfo` corresponds to an `InformalDefinition`. -/
-def isInformalDef (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalDefinition then true else false
-  | _ => false
-
-/-- Takes a `ConstantInfo` corresponding to a `InformalLemma` and returns
-  the corresponding `InformalLemma`. -/
-unsafe def constantInfoToInformalLemma (c : ConstantInfo) : MetaM InformalLemma := do
-  match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalLemma ``InformalLemma c.value
-  | _ => panic! "Passed constantInfoToInformalLemma a `ConstantInfo` that is not a `InformalLemma`"
-
-/-- Takes a `ConstantInfo` corresponding to a `InformalDefinition` and returns
-  the corresponding `InformalDefinition`. -/
-unsafe def constantInfoToInformalDefinition (c : ConstantInfo) : MetaM InformalDefinition := do
-  match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalDefinition ``InformalDefinition c.value
-  | _ => panic! "Passed constantInfoToInformalDefinition a
-    `ConstantInfo` that is not a `InformalDefinition`"
 
 end Informal

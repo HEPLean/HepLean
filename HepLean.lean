@@ -106,7 +106,8 @@ import HepLean.Mathematics.SO3.Basic
 import HepLean.Mathematics.SuperAlgebra.Basic
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
+import HepLean.Meta.Informal.Post
 import HepLean.Meta.Notes.Basic
 import HepLean.Meta.Notes.HTMLNote
 import HepLean.Meta.Notes.NoteFile

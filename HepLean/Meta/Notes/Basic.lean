@@ -91,7 +91,6 @@ initialize noteAttribute : Unit ←
       modifyEnv fun env => noteDeclExtension.addEntry env declName
   }
 
-
 /-- Enviroment extention to store `note_attr_informal`. -/
 initialize noteInformalDeclExtension : SimplePersistentEnvExtension Name (Array Name) ←
   registerSimplePersistentEnvExtension {

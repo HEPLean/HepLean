@@ -11,7 +11,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.Product
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 
 # The Higgs field

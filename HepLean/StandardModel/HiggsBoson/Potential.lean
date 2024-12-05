@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Algebra.QuadraticDiscriminant
 import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 # The potential of the Higgs field
 

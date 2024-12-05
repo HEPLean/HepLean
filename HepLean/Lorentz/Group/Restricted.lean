@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Lorentz.Group.Basic
 import HepLean.Lorentz.Group.Proper
 import HepLean.Lorentz.Group.Orthochronous
-import HepLean.Meta.Informal
+import HepLean.Meta.Informal.Basic
 /-!
 # The Restricted Lorentz Group
 
