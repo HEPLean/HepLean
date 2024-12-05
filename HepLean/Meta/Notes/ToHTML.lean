@@ -124,6 +124,9 @@ def leanNote : String := "
   prover called Lean. Lean formally checks definitions, theorems and proofs for correctness.
   These notes are part of a much larger project called HepLean, which aims to digitalize
   high energy physics into Lean. Please consider contributing to this project.
+  <br>
+  Please provide feedback by creating a GitHub issue
+  <a href=\"https://github.com/HEPLean/HepLean/issues\">here</a>.
   </p>
 </div>
 "
