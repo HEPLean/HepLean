@@ -116,6 +116,17 @@ def titleHTML : String :=
 <center><b>Authors:</b> " ++ String.intercalate ", " N.authors ++ "</center>
 <center><b>Abstract:</b> " ++ N.abstract ++ "</center>"
 
+/-- The html code corresponding to a note about Lean and its use. -/
+def leanNote : String := "
+<br>
+<div style=\"border: 1px solid black; padding: 10px;\">
+  <p>Note: These are are not ordinary notes. They are created using an automated theorem
+  prover called Lean. Lean formally checks definitions, theorems and proofs for correctness.
+  These notes are part of a much larger project called HepLean, which aims to digitalize
+  high energy physics into Lean. Please consider contributing to this project.
+  </p>
+</div>
+"
 /-- The footor of the html file. -/
 def footerHTML : String :=
 "</body>
@@ -124,7 +135,7 @@ def footerHTML : String :=
 /-- The html file associated to a NoteFile string. -/
 unsafe def toHTMLString : MetaM String := do
   let string := String.intercalate "\n" ((← N.getNodeInfo).map (fun x => x.content))
-  pure (headerHTML ++ N.titleHTML ++ string ++ footerHTML)
+  pure (headerHTML ++ N.titleHTML ++ leanNote ++ string ++ footerHTML)
 
 end NoteFile
 end HepLean

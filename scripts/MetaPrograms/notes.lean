@@ -22,7 +22,7 @@ def pertubationTheory : NoteFile where
     `HepLean.PerturbationTheory.Wick.Contract
     ]
 
-unsafe def main (args : List String) : IO UInt32 := do
+unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let htmlString ← CoreM.withImportModules #[`HepLean] (pertubationTheory.toHTMLString).run'
   let htmlFile : System.FilePath := {toString := "./docs/PerturbationTheory.html"}
