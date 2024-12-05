@@ -45,11 +45,12 @@ unsafe def HTMLNote.ofInformal (name : Name) : MetaM HTMLNote := do
   let line ← Name.lineNumber name
   let fileName ← Name.fileName name
   let constInfo ← getConstInfo name
+  let webAddress : String ← Name.toGitHubLink fileName line
   let mut content := ""
   if Informal.isInformalDef constInfo then
     let X ← Informal.constantInfoToInformalDefinition constInfo
     content := "<div class=\"informal-def\">"
-      ++ "<a href=\"https://example.com\" class=\"button\">Improve/Formalize</a>"
+      ++ "<a href=\"" ++ webAddress ++ "\" class=\"button\">Improve/Formalize</a>"
       ++"<b>Informal definition:</b> " ++ name.toString ++ "<br>"
       ++ X.math.replace "\n" "<br>"
       ++ "</div>"

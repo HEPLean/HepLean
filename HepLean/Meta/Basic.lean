@@ -80,6 +80,13 @@ def Imports.getLines (imp : Import) : IO (Array String) := do
 def Name.toFile (c : Name) : MetaM String := do
   return s!"./{c.toString.replace "." "/" ++ ".lean"}"
 
+/-- Turns a name, which represents a module, into a link to github. -/
+def Name.toGitHubLink (c : Name) (l : Nat := 0) : MetaM String := do
+  let headerLink := "https://github.com/HEPLean/HepLean/blob/master/"
+  let filePart := (c.toString.replace "." "/") ++ ".lean"
+  let linePart := "#L" ++ toString l
+  return headerLink ++ filePart ++ linePart
+
 /-- Given a name, returns the line number. -/
 def Name.lineNumber (c : Name) : MetaM Nat := do
   match ← findDeclarationRanges? c with
