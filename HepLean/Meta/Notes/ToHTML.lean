@@ -99,6 +99,33 @@ def informalDefStyle : String :=
 </style>
 "
 
+/-- The html styles for code button. -/
+def codeButton : String := "
+<style>
+  .code-block-container {
+    position: relative;
+  }
+
+  .code-button {
+    position: absolute; /* Position relative to the parent */
+    top: 5px; /* Distance from the top of the block */
+    right: 5px; /* Distance from the right of the block */
+    background-color: rgba(220, 53, 69, 0.4);
+    color: white; /* White text */
+    border: none; /* No border for the button */
+    padding: 5px 10px; /* Padding for the button */
+    text-decoration: none; /* Remove underline from the link */
+    border-radius: 5px; /* Rounded corners for the button */
+    font-size: 12px; /* Smaller font size */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+
+  .code-button:hover {
+    background-color: #0056b3;
+  }
+</style>
+"
+
 /-- The header to the html code. -/
 def headerHTML : String :=
 "---
@@ -106,7 +133,7 @@ layout: default
 ---
 <!DOCTYPE html>
 <html>
-<head>" ++ codeBlockHTML ++ informalDefStyle ++ "</head>
+<head>" ++ codeBlockHTML ++ informalDefStyle ++ codeButton ++ "</head>
 </head>
 <body>"
 
@@ -120,11 +147,13 @@ def titleHTML : String :=
 def leanNote : String := "
 <br>
 <div style=\"border: 1px solid black; padding: 10px;\">
-  <p>Note: These are are not ordinary notes. They are created using an automated theorem
-  prover called Lean. Lean formally checks definitions, theorems and proofs for correctness.
-  These notes are part of a much larger project called HepLean, which aims to digitalize
+  <p>Note: These are are not ordinary notes. They are created using an interactive theorem
+  prover called <a href=\"https://lean-lang.org\">Lean</a>.
+  Lean formally checks definitions, theorems and proofs for correctness.
+  These notes are part of a much larger project called
+  <a href=\"https://github.com/HEPLean/HepLean\">HepLean</a>., which aims to digitalize
   high energy physics into Lean. Please consider contributing to this project.
-  <br>
+  <br><br>
   Please provide feedback or suggestions for improvements by creating a GitHub issue
   <a href=\"https://github.com/HEPLean/HepLean/issues\">here</a>.
   </p>

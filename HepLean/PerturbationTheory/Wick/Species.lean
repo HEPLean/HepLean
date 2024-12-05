@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Logic.Function.Basic
 import HepLean.Meta.Informal.Basic
+import HepLean.Meta.Notes.Basic
 /-!
 
 # Wick Species
@@ -19,10 +20,26 @@ for a theory, and calculate their corresponding Feynman diagrams.
 /-! TODO: There should be some sort of notion of a group action on a Wick Species. -/
 namespace Wick
 
+note "
+<h2>Wick Species</h2>
+
+To do perturbation theory for a quantum field theory, we need a quantum field theory, or
+at least enough data from a quantum field theory to write down necessary constructions.
+The first bit of data we need is a type of fields `𝓯`. We also need to know what fields
+are dual to what other fields, for example in a complex scalar theory `φ` is dual to `φ†`.
+We can encode this information in an involution `ξ : 𝓯 → 𝓯`.
+<br><br>
+...
+<br><br>
+This necessary information to do perturbation theory is encoded in a `Wick Species`, which
+we define as:
+"
+
 /-- The basic structure needed to write down Wick contractions for a theory and
   calculate the corresponding Feynman diagrams.
 
   WARNING: This definition is not yet complete. -/
+@[note_attr]
 structure Species where
   /-- The color of Field operators which appear in a theory.
     One may wish to call these `half-edges`, however we restrict this terminology
