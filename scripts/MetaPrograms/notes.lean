@@ -18,6 +18,7 @@ def pertubationTheory : NoteFile where
   abstract := "Notes on perturbation theory in quantum field theory."
   authors := ["Joseph Tooby-Smith"]
   files := [
+    `HepLean.PerturbationTheory.Wick.Species,
     `HepLean.PerturbationTheory.Wick.Algebra,
     `HepLean.PerturbationTheory.Wick.Contract
     ]

@@ -37,7 +37,13 @@ def HTMLNote.ofFormal (name : Name) : MetaM HTMLNote := do
   let line ← Name.lineNumber name
   let decl ← Name.getDeclString name
   let fileName ← Name.fileName name
-  let content := "<pre><code>" ++ decl ++ "</code></pre>"
+  let webAddress : String ← Name.toGitHubLink fileName line
+  let content :=
+    "<div class=\"code-block-container\">"
+    ++ "<a href=\"" ++ webAddress ++ "\" class=\"code-button\">View/Improve</a>"
+    ++"<pre><code>"
+    ++ decl ++
+    "</code></pre></div>"
   pure { content := content, fileName := fileName, line := line }
 
 /-- An informal definition or lemma to html for a note. -/
