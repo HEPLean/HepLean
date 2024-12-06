@@ -25,8 +25,12 @@ We will formally define the operator ring, in terms of the fields present in the
 -/
 
 note "
-  <h1>Operator algebra</h1>
-  This is a test note."
+<h2>Operator algebra</h2>
+The operator algebra is a super-algebra over the complex numbers, which acts on
+the Hilbert space of the theory. A super-algebra is an algebra with a Z/2 grading.
+To do pertubation theory in a QFT we need a need some basic properties of the operator algebra,
+$A$.
+  "
 
 namespace Wick
 
