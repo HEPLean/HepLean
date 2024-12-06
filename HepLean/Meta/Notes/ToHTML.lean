@@ -126,6 +126,22 @@ def codeButton : String := "
 </style>
 "
 
+/-- HTML allowing the use of mathjax. -/
+def mathJaxScript : String := "
+<!-- MathJax code -->
+<script type=\"text/javascript\">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']], // Use $...$ for inline math
+                displayMath: [['$$', '$$']] // Use $$...$$ for block math
+            }
+        };
+</script>
+<script type=\"text/javascript\" id=\"MathJax-script\" async
+    src=\"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js\">
+</script>
+"
+
 /-- The header to the html code. -/
 def headerHTML : String :=
 "---
@@ -133,7 +149,7 @@ layout: default
 ---
 <!DOCTYPE html>
 <html>
-<head>" ++ codeBlockHTML ++ informalDefStyle ++ codeButton ++ "</head>
+<head>" ++ codeBlockHTML ++ mathJaxScript ++ informalDefStyle ++ codeButton ++ "</head>
 </head>
 <body>"
 
@@ -147,11 +163,11 @@ def titleHTML : String :=
 def leanNote : String := "
 <br>
 <div style=\"border: 1px solid black; padding: 10px;\">
-  <p>Note: These are are not ordinary notes. They are created using an interactive theorem
+  <p>Note: These are not ordinary notes. They are created using an interactive theorem
   prover called <a href=\"https://lean-lang.org\">Lean</a>.
   Lean formally checks definitions, theorems and proofs for correctness.
   These notes are part of a much larger project called
-  <a href=\"https://github.com/HEPLean/HepLean\">HepLean</a>., which aims to digitalize
+  <a href=\"https://github.com/HEPLean/HepLean\">HepLean</a>, which aims to digitalize
   high energy physics into Lean. Please consider contributing to this project.
   <br><br>
   Please provide feedback or suggestions for improvements by creating a GitHub issue

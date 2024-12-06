@@ -29,7 +29,8 @@ The first bit of data we need is a type of fields `𝓯`. We also need to know w
 are dual to what other fields, for example in a complex scalar theory `φ` is dual to `φ†`.
 We can encode this information in an involution `ξ : 𝓯 → 𝓯`.
 <br><br>
-...
+The second bit of data we need is how the fields interact with each other. In other words,
+a list of interaction vertices `𝓘`, and the type of fields associated to each vertex.
 <br><br>
 This necessary information to do perturbation theory is encoded in a `Wick Species`, which
 we define as:

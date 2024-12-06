@@ -24,11 +24,41 @@ We will formally define the operator ring, in terms of the fields present in the
 - Tong, https://www.damtp.cam.ac.uk/user/tong/qft/qft.pdf
 -/
 
-note "
-  <h1>Operator algebra</h1>
-  This is a test note."
-
 namespace Wick
+
+note r"
+<h2>Operator algebra</h2>
+Given a Wick Species $S$, we can define the operator algebra of that theory.
+The operator algebra is a super-algebra over the complex numbers, which acts on
+the Hilbert space of the theory. A super-algebra is an algebra with a $\mathbb{Z}/2$ grading.
+To do pertubation theory in a QFT we need a need some basic properties of the operator algebra,
+$A$.
+<br><br>
+For every field $f ∈ \mathcal{f}$, we have a number of families of operators. For every
+space-time point $x ∈ \mathbb{R}^4$, we have the operators $ψ(f, x)$ which we decomponse into
+a creation and destruction part, $ψ_c(f, x)$ and $ψ_d(f, x)$ respectively. Thus
+$ψ(f, x) = ψ_c(f, x) + ψ_d(f, x)$.
+For each momentum $p$ we also have the asymptotic states $φ_c(f, p)$ and $φ_d(f, p)$.
+<br><br>
+If the field $f$ corresponds to a fermion, then all of these operators are homogeneous elements
+in the non-identity part of $A$. Conversely, if the field $f$ corresponds to a boson, then all
+of these operators are homogeneous elements in the module of $A$ corresponding to
+$0 ∈ \mathbb{Z}/2$.
+<br><br>
+The super-commutator of any of the operators above is in the center of the algebra. Moreover,
+the following super-commutators are zero:
+<ul>
+  <li>$[ψ_c(f, x), ψ_c(g, y)] = 0$</li>
+  <li>$[ψ_d(f, x), ψ_d(g, y)] = 0$</li>
+  <li>$[φ_c(f, p), φ_c(g, q)] = 0$</li>
+  <li>$[φ_d(f, p), φ_d(g, q)] = 0$</li>
+  <li>$[φ_c(f, p), φ_d(g, q)] = 0$ for $f \neq \xi g$</li>
+  <li>$[φ_d(f, p), ψ_c(g, y)] = 0$ for $f \neq \xi g$</li>
+  <li>$[φ_c(f, p), ψ_d(g, y)] = 0$ for $f \neq \xi g$</li>
+</ul>
+<br>
+This basic structure constitutes what we call a Wick Algebra:
+  "
 
 informal_definition_note WickAlgebra where
   math :≈ "
@@ -45,8 +75,8 @@ informal_definition_note WickAlgebra where
     - The super-commutator of two fields is always in the
       center of the algebra.
     Asympotic states:
-    - `φc : S.𝓯 × SpaceTime → A`. The creation asympotic state (incoming).
-    - `φd : S.𝓯 × SpaceTime → A`. The destruction asympotic state (outgoing).
+    - `φc : S.𝓯 × MomentumSpace → A`. The creation asympotic state (incoming).
+    - `φd : S.𝓯 × MomentumSpace → A`. The destruction asympotic state (outgoing).
     Subject to the conditions:
     ...
       "
@@ -55,7 +85,7 @@ informal_definition_note WickAlgebra where
   ref :≈ "https://physics.stackexchange.com/questions/24157/"
   deps :≈ [``SuperAlgebra, ``SuperAlgebra.superCommuator]
 
-informal_definition_note WickMonomial where
+informal_definition WickMonomial where
   math :≈ "The type of elements of the Wick algebra which is a product of fields."
   deps :≈ [``WickAlgebra]
 
@@ -66,7 +96,11 @@ informal_definition toWickAlgebra where
     returns the product of the fields in the monomial."
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
-informal_definition timeOrder where
+note r"
+<h2>Order</h2>
+  "
+
+informal_definition_note timeOrder where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the monomial with the fields time ordered, with the correct sign
     determined by the Koszul sign factor.
@@ -81,7 +115,7 @@ informal_definition timeOrder where
     "
   deps :≈ [``WickAlgebra, ``WickMonomial]
 
-informal_definition normalOrder where
+informal_definition_note normalOrder where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the element in `WickAlgebra` defined as follows
     - The ψd fields are move to the right.
