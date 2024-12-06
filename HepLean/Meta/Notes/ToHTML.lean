@@ -125,6 +125,8 @@ def codeButton : String := "
   }
 </style>
 "
+
+/-- HTML allowing the use of mathjax. -/
 def mathJaxScript : String := "
 <!-- MathJax code -->
 <script type=\"text/javascript\">

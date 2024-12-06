@@ -24,9 +24,7 @@ We will formally define the operator ring, in terms of the fields present in the
 - Tong, https://www.damtp.cam.ac.uk/user/tong/qft/qft.pdf
 -/
 
-
 namespace Wick
-
 
 note r"
 <h2>Operator algebra</h2>
@@ -97,7 +95,6 @@ informal_definition toWickAlgebra where
   math :≈ "A function from WickMonomial to WickAlgebra which takes a monomial and
     returns the product of the fields in the monomial."
   deps :≈ [``WickAlgebra, ``WickMonomial]
-
 
 note r"
 <h2>Order</h2>
