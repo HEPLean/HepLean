@@ -13,8 +13,11 @@ Wick's theorem is related to a result in probability theory called Isserlis' the
 -/
 
 namespace Wick
+note r"
+<h2>Wick's theorem</h2>
+  "
 
-informal_lemma wicks_theorem where
+informal_lemma_note wicks_theorem where
   math :≈ "Wick's theorem for fields which are not normally ordered."
 
 informal_lemma wicks_theorem_normal_order where

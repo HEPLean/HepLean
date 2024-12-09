@@ -20,6 +20,10 @@ import HepLean.Meta.Notes.Basic
 
 namespace Wick
 variable {S : Species}
+
+note r"
+<h2>Wick Contractions</h2>
+"
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can
   be contracted. -/
