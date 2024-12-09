@@ -20,7 +20,8 @@ def pertubationTheory : NoteFile where
   files := [
     `HepLean.PerturbationTheory.Wick.Species,
     `HepLean.PerturbationTheory.Wick.Algebra,
-    `HepLean.PerturbationTheory.Wick.Contract
+    `HepLean.PerturbationTheory.Wick.Contract,
+    `HepLean.PerturbationTheory.Wick.Theorem
     ]
 
 unsafe def main (_ : List String) : IO UInt32 := do

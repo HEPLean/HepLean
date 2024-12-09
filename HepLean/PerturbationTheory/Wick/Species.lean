@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Logic.Function.Basic
 import HepLean.Meta.Informal.Basic
 import HepLean.Meta.Notes.Basic
+import HepLean.Lorentz.RealVector.Basic
 /-!
 
 # Wick Species
@@ -56,10 +57,17 @@ structure Species where
   𝓘 : Type
   /-- The fields associated to each interaction term. -/
   𝓘Fields : 𝓘 → Σ n, Fin n → 𝓯
+  /-- The map taking a field to `0` if it is a boson and `1` if it is a fermion.
+    Note that this definition suffers a similar problem to Boolean Blindness. -/
+  grade : 𝓯 → Fin 2
 
 namespace Species
 
 variable (S : Species)
+
+/-- When commuting two fields `f` and `g`, in the super commuator which is sematically
+  `[f, g] = f g + c * g f`, this is `c`. -/
+def commFactor (f g : S.𝓯) : ℂ := - (- 1) ^ (S.grade f * S.grade g : ℕ)
 
 informal_definition 𝓕 where
   math :≈ "The orbits of the involution `ξ`.
