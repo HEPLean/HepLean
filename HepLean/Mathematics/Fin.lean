@@ -356,4 +356,57 @@ lemma finMapToEquiv_symm_eq {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
     (finMapToEquiv f1 f2 h h').symm = finMapToEquiv f2 f1 h' h := by
   rfl
 
+/-- Given an equivalence between `Fin n` and `Fin m`, the induced equivalence between
+  `Fin n.succ` and `Fin m.succ` derived by `Fin.cons`. -/
+def equivCons {n m : ℕ} (e : Fin n ≃ Fin m) : Fin n.succ ≃ Fin m.succ where
+  toFun := Fin.cons 0 (Fin.succ ∘ e.toFun)
+  invFun := Fin.cons 0 (Fin.succ ∘ e.invFun)
+  left_inv i := by
+    rcases Fin.eq_zero_or_eq_succ i with hi | hi
+    · subst hi
+      simp
+    · obtain ⟨j, hj⟩ := hi
+      subst hj
+      simp
+  right_inv i := by
+    rcases Fin.eq_zero_or_eq_succ i with hi | hi
+    · subst hi
+      simp
+    · obtain ⟨j, hj⟩ := hi
+      subst hj
+      simp
+
+@[simp]
+lemma equivCons_trans {n m k : ℕ} (e : Fin n ≃ Fin m) (f : Fin m ≃ Fin k) :
+    Fin.equivCons (e.trans f) = (Fin.equivCons e).trans (Fin.equivCons f) := by
+  refine Equiv.ext_iff.mpr ?_
+  intro x
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.coe_trans,
+    Equiv.invFun_as_coe, Equiv.coe_fn_mk, Equiv.trans_apply]
+  match x with
+  | ⟨0, h⟩ => rfl
+  | ⟨i + 1, h⟩ => rfl
+
+@[simp]
+lemma equivCons_castOrderIso {n m : ℕ} (h : n = m) :
+    (Fin.equivCons (Fin.castOrderIso h).toEquiv) = (Fin.castOrderIso (by simp [h])).toEquiv := by
+  refine Equiv.ext_iff.mpr ?_
+  intro x
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv,
+    Equiv.invFun_as_coe, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Equiv.coe_fn_mk,
+    Fin.castOrderIso_apply]
+  match x with
+  | ⟨0, h⟩ => rfl
+  | ⟨i + 1, h⟩ => rfl
+
+@[simp]
+lemma equivCons_symm_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 1 < m.succ) :
+    (Fin.equivCons e).symm ⟨i + 1, hi⟩ = (e.symm ⟨i, Nat.succ_lt_succ_iff.mp hi⟩).succ := by
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe,
+    Equiv.coe_fn_symm_mk]
+  have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
+  rw [hi]
+  rw [Fin.cons_succ]
+  simp
+
 end HepLean.Fin

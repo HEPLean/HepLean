@@ -62,8 +62,11 @@ unsafe def HTMLNote.ofInformal (name : Name) : MetaM HTMLNote := do
       ++ "</div>"
   else if Informal.isInformalLemma constInfo then
     let X ← Informal.constantInfoToInformalLemma constInfo
-    content := "Informal definition: " ++ name.toString ++ "\n" ++ X.math
-    content := "Informal lemma: " ++ name.toString
+    content := "<div class=\"informal-def\">"
+      ++ "<a href=\"" ++ webAddress ++ "\" class=\"button\">Improve/Formalize</a>"
+      ++"<b>Informal lemma:</b> " ++ name.toString ++ "<br>"
+      ++ X.math.replace "\n" "<br>"
+      ++ "</div>"
   pure { content := content, fileName := fileName, line := line }
 
 end HepLean

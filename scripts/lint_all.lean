@@ -23,4 +23,7 @@ def main (_: List String) : IO UInt32 := do
   println! "Doc check ..."
   let docCheck ← IO.Process.output {cmd := "lake", args := #["exe", "no_docs"]}
   println! docCheck.stdout
+  println! "Lean linter ..."
+  let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "HepLean"]}
+  println! leanCheck.stdout
   pure 0

@@ -101,6 +101,7 @@ import HepLean.Lorentz.Weyl.Two
 import HepLean.Lorentz.Weyl.Unit
 import HepLean.Mathematics.Fin
 import HepLean.Mathematics.LinearMaps
+import HepLean.Mathematics.List
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
 import HepLean.Mathematics.SuperAlgebra.Basic
