@@ -111,13 +111,17 @@ def F : Functor (OverColor S.C) (Rep S.k S.G) := ((OverColor.lift).obj S.FD).toF
 /- The definition of `F` as a lemma. -/
 lemma F_def : F S = ((OverColor.lift).obj S.FD).toFunctor := rfl
 
-instance F_monoidal : Functor.Monoidal S.F := lift.instMonoidalRepObjFunctorDiscreteLaxBraidedFunctor S.FD
+/-- The functor `F` is monoidal. -/
+instance F_monoidal : Functor.Monoidal S.F :=
+  lift.instMonoidalRepObjFunctorDiscreteLaxBraidedFunctor S.FD
 
-instance F_laxBraided : Functor.LaxBraided S.F := lift.instLaxBraidedRepObjFunctorDiscreteLaxBraidedFunctor S.FD
+/-- The functor `F` is lax-braided. -/
+instance F_laxBraided : Functor.LaxBraided S.F :=
+  lift.instLaxBraidedRepObjFunctorDiscreteLaxBraidedFunctor S.FD
 
+/-- The functor `F` is braided. -/
 instance F_braided : Functor.Braided S.F := Functor.Braided.mk
   (fun X Y => Functor.LaxBraided.braided X Y)
-
 
 lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}

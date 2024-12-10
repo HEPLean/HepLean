@@ -172,7 +172,8 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     (q' : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
       CoeSort.coe (S.FD.obj { as := (OverColor.mk c1).hom i })) :
     (S.F.map (equivToIso finSumFinEquiv).hom).hom
-    ((Functor.LaxMonoidal.μ S.F (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)) (OverColor.mk c1)).hom
+    ((Functor.LaxMonoidal.μ S.F
+    (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)) (OverColor.mk c1)).hom
     ((q.contrMap.hom (PiTensorProduct.tprod S.k p)) ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) q'))
     = (S.F.map (mkIso (by exact leftContr_map_eq q)).hom).hom
     (q.leftContr.contrMap.hom
@@ -288,7 +289,8 @@ lemma contr_prod
     q.leftContr.h
     (perm (OverColor.equivToIso ContrPair.leftContrEquivSuccSucc).hom (prod t t1)))).tensor) := by
   simp only [contr_tensor, perm_tensor, prod_tensor]
-  change ((q.contrMap ▷ S.F.obj (OverColor.mk c1)) ≫ (Functor.LaxMonoidal.μ S.F _ ((OverColor.mk c1))) ≫
+  change ((q.contrMap ▷ S.F.obj (OverColor.mk c1)) ≫
+    (Functor.LaxMonoidal.μ S.F _ ((OverColor.mk c1))) ≫
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom (t.tensor ⊗ₜ[S.k] t1.tensor) = _
   rw [contrMap_prod]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
@@ -405,7 +407,8 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
     (q' : (i : (𝟭 Type).obj (OverColor.mk c).left) →
       CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i })) :
     (S.F.map (equivToIso finSumFinEquiv).hom).hom
-    ((Functor.LaxMonoidal.μ S.F (OverColor.mk c1) (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove))).hom
+    ((Functor.LaxMonoidal.μ S.F (OverColor.mk c1)
+    (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove))).hom
     ((PiTensorProduct.tprod S.k) p ⊗ₜ[S.k] (q.contrMap.hom (PiTensorProduct.tprod S.k q')))) =
     (S.F.map (mkIso (by exact (rightContr_map_eq q))).hom).hom
     (q.rightContr.contrMap.hom
@@ -530,7 +533,8 @@ lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
     (contr (q.rightContrI n1) (q.rightContrJ n1)
     q.rightContr.h (prod t1 t))).tensor) := by
   simp only [contr_tensor, perm_tensor, prod_tensor]
-  change ((S.F.obj (OverColor.mk c1) ◁ q.contrMap) ≫ (Functor.LaxMonoidal.μ S.F ((OverColor.mk c1)) _) ≫
+  change ((S.F.obj (OverColor.mk c1) ◁ q.contrMap) ≫
+    (Functor.LaxMonoidal.μ S.F ((OverColor.mk c1)) _) ≫
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom (t1.tensor ⊗ₜ[S.k] t.tensor) = _
   rw [prod_contrMap]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,

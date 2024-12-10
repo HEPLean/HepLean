@@ -152,7 +152,8 @@ lemma contrIso_hom_hom {n : ℕ} {c1 : Fin n.succ.succ → S.C}
     (S.contrIso c1 i j h).hom.hom =
     (S.F.map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom ≫
     (S.F.map (mkSum (c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom ≫
-    (Functor.Monoidal.μIso S.F (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+    (Functor.Monoidal.μIso S.F
+    (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
     (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom ≫
     ((S.contrFin1Fin1 c1 i j h).hom.hom ⊗
     (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom) := by
@@ -192,8 +193,8 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     (((S.contr.app { as := c i }).hom ▷ ((lift.obj S.FD).obj
     (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove))).V)
     (((S.contrFin1Fin1 c i j h).hom.hom ⊗ ((lift.obj S.FD).map (mkIso _).hom).hom)
-    ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)
-    ∘ Sum.inl))
+    ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom
     (((lift.obj S.FD).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm)).hom).hom
     (((lift.obj S.FD).map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom

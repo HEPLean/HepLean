@@ -11,15 +11,15 @@ import HepLean.Meta.Informal.Post
 import ImportGraph.RequiredModules
 
 def main (_: List String) : IO UInt32 := do
+  println! "Style lint ... "
+  let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "hepLean_style_lint"]}
+  println! styleLint.stdout
   println! "Building ... "
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}
   println! build.stdout
   println! "File imports ... "
   let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
   println! importCheck.stdout
-  println! "Style lint ... "
-  let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "hepLean_style_lint"]}
-  println! styleLint.stdout
   println! "Doc check ..."
   let docCheck ← IO.Process.output {cmd := "lake", args := #["exe", "no_docs"]}
   println! docCheck.stdout

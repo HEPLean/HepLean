@@ -49,7 +49,8 @@ theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :
   rw [perm_tensor]
   nth_rewrite 2 [prod_tensor]
   change _ = (S.F.map (equivToIso finSumFinEquiv).hom ≫ S.F.map (braidPerm c c2)).hom
-    ((Functor.LaxMonoidal.μ S.F (OverColor.mk c2) (OverColor.mk c)).hom (t2.tensor ⊗ₜ[S.k] t.tensor))
+    ((Functor.LaxMonoidal.μ S.F (OverColor.mk c2) (OverColor.mk c)).hom
+    (t2.tensor ⊗ₜ[S.k] t.tensor))
   rw [← S.F.map_comp]
   rw [finSumFinEquiv_comp_braidPerm]
   rw [S.F.map_comp]

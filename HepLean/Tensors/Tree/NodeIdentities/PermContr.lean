@@ -117,14 +117,17 @@ lemma contrIso_comm_aux_2 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
     (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)).hom ≫
-    (Functor.Monoidal.μIso S.F (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+    (Functor.Monoidal.μIso S.F
+    (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
     (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv.hom =
     (Functor.Monoidal.μIso S.F _ _).inv.hom ≫
     (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)).hom := by
   have h1 : (S.F.map (extractTwoAux' i j σ ⊗ extractTwoAux i j σ)) ≫
-    (Functor.Monoidal.μIso S.F (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
+    (Functor.Monoidal.μIso S.F
+    (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl))
     (OverColor.mk ((c1 ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inr))).inv =
-    (Functor.Monoidal.μIso S.F _ _).inv ≫ (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)) := by
+    (Functor.Monoidal.μIso S.F _ _).inv ≫
+    (S.F.map (extractTwoAux' i j σ) ⊗ S.F.map (extractTwoAux i j σ)) := by
     erw [CategoryTheory.IsIso.comp_inv_eq, CategoryTheory.Category.assoc]
     erw [CategoryTheory.IsIso.eq_inv_comp]
     exact (Functor.LaxMonoidal.μ_natural S.F (extractTwoAux' i j σ) (extractTwoAux i j σ)).symm

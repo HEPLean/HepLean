@@ -551,13 +551,14 @@ lemma objMap'_comp {X Y Z : OverColor C} (f : X ⟶ Y) (g : Y ⟶ Z) :
   rw [discreteFun_hom_trans]
   rfl
 
-/-- The `BraidedFunctor (OverColor C) (Rep k G)` from a functor `Discrete C ⥤ Rep k G`. -/
+/-- The `Functor (OverColor C) (Rep k G)` from a functor `Discrete C ⥤ Rep k G`. -/
 def obj' : Functor (OverColor C) (Rep k G) where
   obj := objObj' F
   map := objMap' F
-  map_comp := fun  f g => objMap'_comp F f g
+  map_comp := fun f g => objMap'_comp F f g
   map_id := fun f => objMap'_id F f
 
+/-- The lift of a functor is lax braided. -/
 instance obj'_laxBraidedFunctor : Functor.LaxBraided (obj' F) where
   ε' := (ε F).hom
   μ' := fun X Y => (μ F X Y).hom
@@ -571,11 +572,16 @@ instance obj'_laxBraidedFunctor : Functor.LaxBraided (obj' F) where
     rw [braided F X Y]
     simp
 
+/-- The lift of a functor is monoidal. -/
 instance obj'_monoidalFunctor : Functor.Monoidal (obj' F) :=
   haveI : IsIso (Functor.LaxMonoidal.ε (obj' F)) := Action.isIso_of_hom_isIso (ε F).hom
   haveI : (∀ (X Y : OverColor C), IsIso (Functor.LaxMonoidal.μ (obj' F) X Y)) :=
     fun X Y => Action.isIso_of_hom_isIso ((μ F X Y).hom)
   Functor.Monoidal.ofLaxMonoidal _
+
+/-- The lift of a functor is braided. -/
+instance obj'_braided : Functor.Braided (obj' F) := Functor.Braided.mk (fun X Y =>
+  Functor.LaxBraided.braided X Y)
 
 variable {F F' : Discrete C ⥤ Rep k G} (η : F ⟶ F')
 
@@ -680,10 +686,11 @@ lemma mapApp'_tensor (X Y : OverColor C) :
 
 /-- Given a natural transformation between `F F' : Discrete C ⥤ Rep k G` the
   monoidal natural transformation between `obj' F` and `obj' F'`. -/
-def map' :  (obj' F) ⟶  (obj' F') where
+def map' : (obj' F) ⟶ (obj' F') where
   app := mapApp' η
   naturality _ _ f := mapApp'_naturality η f
 
+/-- The lift of a natural transformation is monoidal. -/
 instance map'_isMonoidal : NatTrans.IsMonoidal (map' η) where
   unit := mapApp'_unit η
   tensor := mapApp'_tensor η
@@ -736,10 +743,13 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ LaxBraidedFunctor (OverCol
 namespace lift
 variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
 
+/-- The lift of a functor is monoidal. -/
 noncomputable instance : (lift.obj F).Monoidal := obj'_monoidalFunctor F
 
+/-- The lift of a functor is lax-braided. -/
 noncomputable instance : (lift.obj F).LaxBraided := obj'_laxBraidedFunctor F
 
+/-- The lift of a functor is braided. -/
 noncomputable instance : (lift.obj F).Braided := Functor.Braided.mk (fun X Y =>
   Functor.LaxBraided.braided X Y)
 
@@ -754,7 +764,8 @@ lemma map_tprod (F : Discrete C ⥤ Rep k G) {X Y : OverColor C} (f : X ⟶ Y)
 lemma obj_μ_tprod_tmul (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (p : (i : X.left) → (F.obj (Discrete.mk <| X.hom i)))
     (q : (i : Y.left) → F.obj (Discrete.mk <| Y.hom i)) :
-    (Functor.LaxMonoidal.μ (lift.obj F).toFunctor X Y).hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
+    (Functor.LaxMonoidal.μ (lift.obj F).toFunctor X Y).hom
+    (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
     (PiTensorProduct.tprod k) fun i =>
     discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   exact μ_tmul_tprod F p q
@@ -764,12 +775,14 @@ lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (Functor.Monoidal.μIso (lift.obj F).toFunctor X Y).inv.hom (PiTensorProduct.tprod k p) =
     (PiTensorProduct.tprod k (fun i => p (Sum.inl i))) ⊗ₜ[k]
     (PiTensorProduct.tprod k (fun i => p (Sum.inr i))) := by
-  change ((Action.forget _ _).mapIso (Functor.Monoidal.μIso (lift.obj F).toFunctor  X Y)).inv (PiTensorProduct.tprod k p) = _
-  trans ((Action.forget _ _).mapIso (Functor.Monoidal.μIso (lift.obj F).toFunctor  X Y)).toLinearEquiv.symm
+  change ((Action.forget _ _).mapIso (Functor.Monoidal.μIso (lift.obj F).toFunctor X Y)).inv
+    (PiTensorProduct.tprod k p) = _
+  trans ((Action.forget _ _).mapIso
+    (Functor.Monoidal.μIso (lift.obj F).toFunctor X Y)).toLinearEquiv.symm
     (PiTensorProduct.tprod k p)
   · rfl
   erw [← LinearEquiv.eq_symm_apply]
-  change _ = (Functor.LaxMonoidal.μ (lift.obj F).toFunctor  X Y).hom _
+  change _ = (Functor.LaxMonoidal.μ (lift.obj F).toFunctor X Y).hom _
   erw [obj_μ_tprod_tmul]
   congr
   funext i
