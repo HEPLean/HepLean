@@ -286,10 +286,6 @@ def normalOrder (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.Const
 def contract (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.ConstDestAlgebra :=
   timeOrder q - normalOrder q
 
-informal_lemma timeOrder_comm_normalOrder where
-  math :≈ "time ordering and normal ordering commute."
-  deps :≈ [``timeOrder, ``normalOrder]
-
 end
 
 end ConstDestAlgebra
@@ -643,6 +639,11 @@ lemma timeOrder_comm_toConstDestAlgebra (q : index S → Fin 2) :
     rfl
   · simp only [mul_eq_mul_right_iff]
     exact Or.inl (listToConstDestList_koszulSign q l f)
+
+/-- The contraction of fields defined as the time order minus normal order once mapped down
+  to constructive and destructive fields. -/
+noncomputable def contract (q : index S → Fin 2) : FieldAlgebra S →ₗ[ℂ] ConstDestAlgebra S :=
+  ConstDestAlgebra.contract (fun i => q i.2) ∘ₗ toConstDestAlgebra.toLinearMap
 
 end FieldAlgebra
 
