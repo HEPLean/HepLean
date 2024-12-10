@@ -91,9 +91,9 @@ lemma innerProd_expand (φ1 φ2 : HiggsField) :
     RCLike.im_to_complex, I_sq, mul_neg, mul_one, neg_mul, sub_neg_eq_add, one_mul]
   ring
 
-lemma smooth_innerProd (φ1 φ2 : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) ⟪φ1, φ2⟫_H := by
+lemma smooth_innerProd (φ1 φ2 : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) ⊤ ⟪φ1, φ2⟫_H := by
   rw [innerProd_expand]
-  exact (ContinuousLinearMap.smooth (equivRealProdCLM.symm : ℝ × ℝ →L[ℝ] ℂ)).comp $
+  exact (ContinuousLinearMap.contMDiff (equivRealProdCLM.symm : ℝ × ℝ →L[ℝ] ℂ)).comp $
     (((((φ1.apply_re_smooth 0).smul (φ2.apply_re_smooth 0)).add
     ((φ1.apply_re_smooth 1).smul (φ2.apply_re_smooth 1))).add
     ((φ1.apply_im_smooth 0).smul (φ2.apply_im_smooth 0))).add
@@ -171,9 +171,9 @@ lemma normSq_zero (φ : HiggsField) (x : SpaceTime) : φ.normSq x = 0 ↔ φ x =
   simp [normSq, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, norm_eq_zero]
 
 /-- The norm squared of the Higgs field is a smooth function on space-time. -/
-lemma normSq_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) φ.normSq := by
+lemma normSq_smooth (φ : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ φ.normSq := by
   rw [normSq_expand]
-  refine Smooth.add ?_ ?_
+  refine ContMDiff.add ?_ ?_
   · simp only [mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add]
     exact ((φ.apply_re_smooth 0).smul (φ.apply_re_smooth 0)).add $
       (φ.apply_im_smooth 0).smul (φ.apply_im_smooth 0)

@@ -50,10 +50,10 @@ def toFun (φ : HiggsField) (x : SpaceTime) : ℝ :=
 
 /-- The potential is smooth. -/
 lemma toFun_smooth (φ : HiggsField) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (fun x => P.toFun φ x) := by
+    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (fun x => P.toFun φ x) := by
   simp only [toFun, normSq, neg_mul]
-  exact (smooth_const.smul φ.normSq_smooth).neg.add
-    ((smooth_const.smul φ.normSq_smooth).smul φ.normSq_smooth)
+  exact (contMDiff_const.smul φ.normSq_smooth).neg.add
+    ((contMDiff_const.smul φ.normSq_smooth).smul φ.normSq_smooth)
 
 /-- The Higgs potential formed by negating the mass squared and the quartic coupling. -/
 def neg : Potential where

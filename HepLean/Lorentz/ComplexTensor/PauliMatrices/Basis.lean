@@ -334,7 +334,7 @@ def pauliCoMap := ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Co
   ⇑finSumFinEquiv.symm) ∘ Fin.succAbove 1 ∘ Fin.succAbove 1)
 
 lemma pauliMatrix_contr_down_0 :
-    (contr 1 1 rfl (((tensorNode (basisVector ![Color.down, Color.down] fun x => 0)).prod
+    (contr 1 1 rfl (((tensorNode (basisVector ![Color.down, Color.down] fun _ => 0)).prod
     (tensorNode pauliContr)))).tensor
     = basisVector pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
     + basisVector pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1) := by
@@ -379,7 +379,7 @@ lemma pauliMatrix_contr_down_0 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_down_1 :
-    {(basisVector ![Color.down, Color.down] fun x => 1) | ν μ ⊗
+    {(basisVector ![Color.down, Color.down] fun _ => 1) | ν μ ⊗
       pauliContr | μ α β}ᵀ.tensor
     = basisVector pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)
     + basisVector pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0) := by
@@ -424,7 +424,7 @@ lemma pauliMatrix_contr_down_1 :
     fin_cases k <;> rfl
 
 lemma pauliMatrix_contr_down_2 :
-    {(basisVector ![Color.down, Color.down] fun x => 2) | μ ν ⊗
+    {(basisVector ![Color.down, Color.down] fun _ => 2) | μ ν ⊗
       pauliContr | ν α β}ᵀ.tensor
     = (- I) • basisVector pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)
     + (I) • basisVector pauliCoMap (fun | 0 => 2 | 1 => 1 | 2 => 0) := by
@@ -464,7 +464,7 @@ lemma pauliMatrix_contr_down_2 :
   · decide
 
 lemma pauliMatrix_contr_down_3 :
-    {(basisVector ![Color.down, Color.down] fun x => 3) | μ ν ⊗
+    {(basisVector ![Color.down, Color.down] fun _ => 3) | μ ν ⊗
     pauliContr | ν α β}ᵀ.tensor
     = basisVector pauliCoMap (fun | 0 => 3 | 1 => 0 | 2 => 0)
     + (- 1 : ℂ) • basisVector pauliCoMap (fun | 0 => 3 | 1 => 1 | 2 => 1) := by

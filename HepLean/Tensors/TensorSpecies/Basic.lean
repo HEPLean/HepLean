@@ -105,11 +105,19 @@ instance : Group S.G := S.G_group
 /-- The field `repDim` of a TensorSpecies is non-zero for all colors. -/
 instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 
-/-- The lift of the functor `S.F` to a monoidal functor. -/
-def F : BraidedFunctor (OverColor S.C) (Rep S.k S.G) := (OverColor.lift).obj S.FD
+/-- The lift of the functor `S.F` to functor. -/
+def F : Functor (OverColor S.C) (Rep S.k S.G) := ((OverColor.lift).obj S.FD).toFunctor
 
 /- The definition of `F` as a lemma. -/
-lemma F_def : F S = (OverColor.lift).obj S.FD := rfl
+lemma F_def : F S = ((OverColor.lift).obj S.FD).toFunctor := rfl
+
+instance F_monoidal : Functor.Monoidal S.F := lift.instMonoidalRepObjFunctorDiscreteLaxBraidedFunctor S.FD
+
+instance F_laxBraided : Functor.LaxBraided S.F := lift.instLaxBraidedRepObjFunctorDiscreteLaxBraidedFunctor S.FD
+
+instance F_braided : Functor.Braided S.F := Functor.Braided.mk
+  (fun X Y => Functor.LaxBraided.braided X Y)
+
 
 lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
@@ -158,7 +166,7 @@ def evalIso {n : ℕ} (c : Fin n.succ → S.C)
       (OverColor.lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove)) :=
   (S.F.mapIso (OverColor.equivToIso (HepLean.Fin.finExtractOne i))).trans <|
   (S.F.mapIso (OverColor.mkSum (c ∘ (HepLean.Fin.finExtractOne i).symm))).trans <|
-  (S.F.μIso _ _).symm.trans <|
+  (Functor.Monoidal.μIso S.F _ _).symm.trans <|
   tensorIso
     ((S.F.mapIso (OverColor.mkIso (by ext x; fin_cases x; rfl))).trans
     (OverColor.forgetLiftApp S.FD (c i))) (S.F.mapIso (OverColor.mkIso (by ext x; simp)))
@@ -174,7 +182,7 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
     ((lift.obj S.FD).map (mkIso _).hom).hom)
-    (((lift.obj S.FD).μIso
+    ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
     (((lift.obj S.FD).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
@@ -184,7 +192,7 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
     ((lift.obj S.FD).map (mkIso _).hom).hom)
-    (((lift.obj S.FD).μIso
+    ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
     (((lift.obj S.FD).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
@@ -193,7 +201,7 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
   change ((TensorProduct.map (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom)
     ((lift.obj S.FD).map (mkIso _).hom).hom))
-    (((lift.obj S.FD).μIso
+    ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
     ((((PiTensorProduct.tprod S.k) _)))) =_
@@ -247,7 +255,7 @@ def evalLinearMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (
   of representations. -/
 def evalMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i))) :
     (S.F.obj (OverColor.mk c)).V ⟶ (S.F.obj (OverColor.mk (c ∘ i.succAbove))).V :=
-  (S.evalIso c i).hom.hom ≫ ((Action.forgetMonoidal _ _).μIso _ _).inv
+  (S.evalIso c i).hom.hom ≫ (Functor.Monoidal.μIso (Action.forget _ _) _ _).inv
   ≫ ModuleCat.asHom (TensorProduct.map (S.evalLinearMap i e) LinearMap.id) ≫
   ModuleCat.asHom (TensorProduct.lid S.k _).toLinearMap
 
@@ -258,21 +266,21 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
     (PiTensorProduct.tprod S.k
     (fun k => x (i.succAbove k)) : S.F.obj (OverColor.mk (c ∘ i.succAbove))) := by
   rw [evalMap]
-  simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V,
-    Action.forgetMonoidal_toLaxMonoidalFunctor_toFunctor, Action.forget_obj, Functor.id_obj, mk_hom,
-    Function.comp_apply, ModuleCat.coe_comp]
+  simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.forget_obj,
+    Functor.Monoidal.μIso_inv, Functor.CoreMonoidal.toMonoidal_toOplaxMonoidal, Action.forget_δ,
+    mk_left, Functor.id_obj, mk_hom, Function.comp_apply, Category.id_comp, ModuleCat.coe_comp]
   erw [evalIso_tprod]
   change ((TensorProduct.lid S.k ↑((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove))).V))
     (((TensorProduct.map (S.evalLinearMap i e) LinearMap.id))
-    (((Action.forgetMonoidal (ModuleCat S.k) (MonCat.of S.G)).μIso (S.FD.obj { as := c i })
+    ((Functor.Monoidal.μIso (Action.forget (ModuleCat S.k) (MonCat.of S.G)) (S.FD.obj { as := c i })
     ((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove)))).inv
     (x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k) fun k => x (i.succAbove k)))) = _
-  simp only [Nat.succ_eq_add_one, Action.forgetMonoidal_toLaxMonoidalFunctor_toFunctor,
-    Action.forget_obj, Action.instMonoidalCategory_tensorObj_V, MonoidalFunctor.μIso,
-    Action.forgetMonoidal_toLaxMonoidalFunctor_μ, asIso_inv, IsIso.inv_id, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    Functor.id_obj, mk_hom, Function.comp_apply, ModuleCat.id_apply, TensorProduct.map_tmul,
-    LinearMap.id_coe, id_eq, TensorProduct.lid_tmul]
+  simp only [Nat.succ_eq_add_one, Action.forget_obj, Action.instMonoidalCategory_tensorObj_V,
+    Functor.Monoidal.μIso_inv, Functor.CoreMonoidal.toMonoidal_toOplaxMonoidal, Action.forget_δ,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, mk_left, Functor.id_obj, mk_hom,
+    Function.comp_apply, ModuleCat.id_apply, TensorProduct.map_tmul, LinearMap.id_coe, id_eq,
+    TensorProduct.lid_tmul]
   rfl
 
 /-!

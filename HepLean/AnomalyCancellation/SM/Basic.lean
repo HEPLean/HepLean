@@ -141,7 +141,7 @@ lemma accSU2_ext {S T : (SMCharges n).Charges}
     AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
-  exact Mathlib.Tactic.LinearCombination.add_pf (congrArg (HMul.hMul 3) (hj 0)) (hj 3)
+  exact Mathlib.Tactic.LinearCombination.add_eq_eq (congrArg (HMul.hMul 3) (hj 0)) (hj 3)
 
 /-- The `SU(3)` anomaly equations. -/
 @[simp]
