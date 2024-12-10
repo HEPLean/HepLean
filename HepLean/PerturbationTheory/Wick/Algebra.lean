@@ -287,6 +287,10 @@ def normalOrder (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.Const
 def contract (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.ConstDestAlgebra :=
   timeOrder q - normalOrder q
 
+informal_lemma timeOrder_comm_normalOrder where
+  math :≈ "time ordering and normal ordering commute."
+  deps :≈ [``timeOrder, ``normalOrder]
+
 end
 
 end ConstDestAlgebra
@@ -303,14 +307,16 @@ def toWickAlgebra : FieldAlgebra S →ₐ[ℂ] 𝓞.A :=
 lemma toWickAlgebra_ι (i : index S) : toWickAlgebra 𝓞 (FreeAlgebra.ι ℂ i) = 𝓞.ψ i.1 i.2 := by
   simp [toWickAlgebra]
 
-/-- The map from the field algebra to the algebra of constructive and destructive fields. -/
-def toConstDestAlgebra : FieldAlgebra S →ₐ[ℂ] ConstDestAlgebra S :=
-  FreeAlgebra.lift ℂ (fun i => FreeAlgebra.ι ℂ (0, i) + FreeAlgebra.ι ℂ (1, i))
+/-- The time ordering relation in the field algebra. -/
+def timeOrderRel : index S → index S → Prop := fun x y => x.2 0 ≤ y.2 0
 
-@[simp]
-lemma toConstDestAlgebra_ι (i : index S) : toConstDestAlgebra (FreeAlgebra.ι ℂ i) =
-    FreeAlgebra.ι ℂ (0, i) + FreeAlgebra.ι ℂ (1, i) := by
-  simp [toConstDestAlgebra]
+/-- The time ordering relation in the field algebra is decidable. -/
+noncomputable instance : DecidableRel (@timeOrderRel S) :=
+  fun a b => Real.decidableLE (a.2 0) (b.2 0)
+
+/-- The time ordering in the field algebra. -/
+noncomputable def timeOrder (q : index S → Fin 2) : S.FieldAlgebra →ₗ[ℂ] S.FieldAlgebra :=
+  koszulOrder timeOrderRel q
 
 /-- Given a list of fields and a map `f` tell us which field is constructive and
   which is destructive, a list of constructive and destructive fields. -/
@@ -329,6 +335,111 @@ lemma listToConstDestList_length (l : List (index S)) (f : Fin l.length → Fin 
     simp only [listToConstDestList, List.length_cons, Fin.zero_eta, Prod.mk.eta, add_left_inj]
     rw [ih]
 
+lemma listToConstDestList_insertionSortEquiv (l : List (index S))
+    (f : Fin l.length → Fin 2) :
+    (HepLean.List.insertionSortEquiv ConstDestAlgebra.timeOrderRel (listToConstDestList l f))
+    = (Fin.castOrderIso (by simp)).toEquiv.trans
+    ((HepLean.List.insertionSortEquiv timeOrderRel l).trans
+    (Fin.castOrderIso (by simp)).toEquiv) := by
+  induction l with
+  | nil =>
+    simp [listToConstDestList, HepLean.List.insertionSortEquiv]
+  | cons i l ih =>
+    simp only [listToConstDestList, List.length_cons, Fin.zero_eta, List.insertionSort]
+    conv_lhs => simp [HepLean.List.insertionSortEquiv]
+    have h1 (l' : List (ConstDestAlgebra.index S)) :
+        (HepLean.List.insertEquiv ConstDestAlgebra.timeOrderRel (f ⟨0, by simp⟩, i.1, i.2) l') =
+        (Fin.castOrderIso (by simp)).toEquiv.trans
+        ((HepLean.List.insertEquiv timeOrderRel (i.1, i.2) (l'.unzip).2).trans
+        (Fin.castOrderIso (by simp [List.orderedInsert_length])).toEquiv) := by
+      induction l' with
+      | nil =>
+        simp only [List.length_cons, Nat.add_zero, Nat.zero_eq, Fin.zero_eta, List.length_singleton,
+          List.orderedInsert, HepLean.List.insertEquiv, Fin.castOrderIso_refl,
+          OrderIso.refl_toEquiv, Equiv.trans_refl]
+        rfl
+      | cons j l' ih' =>
+        by_cases hr : ConstDestAlgebra.timeOrderRel (f ⟨0, by simp⟩, i) j
+        · rw [HepLean.List.insertEquiv_cons_pos]
+          · erw [HepLean.List.insertEquiv_cons_pos]
+            · rfl
+            · exact hr
+          · exact hr
+        · rw [HepLean.List.insertEquiv_cons_neg]
+          · erw [HepLean.List.insertEquiv_cons_neg]
+            · simp only [List.length_cons, Nat.add_zero, Nat.zero_eq, Fin.zero_eta,
+              List.orderedInsert, Prod.mk.eta, Fin.mk_one]
+              erw [ih']
+              ext x
+              simp only [Prod.mk.eta, List.length_cons, Nat.add_zero, Nat.zero_eq, Fin.zero_eta,
+                HepLean.Fin.equivCons_trans, Nat.succ_eq_add_one,
+                HepLean.Fin.equivCons_castOrderIso, Equiv.trans_apply, RelIso.coe_fn_toEquiv,
+                Fin.castOrderIso_apply, Fin.cast_trans, Fin.coe_cast]
+              congr 2
+              match x with
+              | ⟨0, h⟩ => rfl
+              | ⟨1, h⟩ => rfl
+              | ⟨Nat.succ (Nat.succ x), h⟩ => rfl
+            · exact hr
+          · exact hr
+    erw [h1]
+    rw [ih]
+    simp only [HepLean.Fin.equivCons_trans, Nat.succ_eq_add_one,
+      HepLean.Fin.equivCons_castOrderIso, List.length_cons, Nat.add_zero, Nat.zero_eq,
+      Fin.zero_eta]
+    ext x
+    conv_rhs => simp [HepLean.List.insertionSortEquiv]
+    simp only [Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.cast_trans,
+      Fin.coe_cast]
+    have h2' (i : ConstDestAlgebra.index S) (l' : List (ConstDestAlgebra.index S)) :
+      (List.orderedInsert ConstDestAlgebra.timeOrderRel i l').unzip.2 =
+      List.orderedInsert timeOrderRel i.2 l'.unzip.2 := by
+      induction l' with
+      | nil =>
+        simp [HepLean.List.insertEquiv]
+      | cons j l' ih' =>
+        by_cases hij : ConstDestAlgebra.timeOrderRel i j
+        · rw [List.orderedInsert_of_le]
+          · erw [List.orderedInsert_of_le]
+            · simp
+            · exact hij
+          · exact hij
+        · simp only [List.orderedInsert, hij, ↓reduceIte, List.unzip_snd, List.map_cons]
+          have hn : ¬ timeOrderRel i.2 j.2 := hij
+          simp only [hn, ↓reduceIte, List.cons.injEq, true_and]
+          simpa using ih'
+    have h2 (l' : List (ConstDestAlgebra.index S)) :
+        (List.insertionSort ConstDestAlgebra.timeOrderRel l').unzip.2 =
+        List.insertionSort timeOrderRel l'.unzip.2 := by
+      induction l' with
+      | nil =>
+        simp [HepLean.List.insertEquiv]
+      | cons i l' ih' =>
+        simp only [List.insertionSort, List.unzip_snd]
+        simp only [List.unzip_snd] at h2'
+        rw [h2']
+        congr
+        simpa using ih'
+    rw [HepLean.List.insertEquiv_congr _ _ _ (h2 _)]
+    simp only [List.length_cons, Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
+      Fin.cast_trans, Fin.coe_cast]
+    have h3 : (List.insertionSort timeOrderRel (listToConstDestList l (f ∘ Fin.succ)).unzip.2) =
+      List.insertionSort timeOrderRel l := by
+      congr
+      have h3' (l : List (index S)) (f : Fin l.length → Fin 2) :
+        (listToConstDestList l (f)).unzip.2 = l := by
+        induction l with
+        | nil => rfl
+        | cons i l ih' =>
+          simp only [listToConstDestList, List.length_cons, Fin.zero_eta, Prod.mk.eta,
+            List.unzip_snd, List.map_cons, List.cons.injEq, true_and]
+          simpa using ih' (f ∘ Fin.succ)
+      rw [h3']
+    rw [HepLean.List.insertEquiv_congr _ _ _ h3]
+    simp only [List.length_cons, Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
+      Fin.cast_trans, Fin.cast_eq_self, Fin.coe_cast]
+    rfl
+
 lemma listToConstDestList_get (l : List (index S)) (f : Fin l.length → Fin 2) :
     (listToConstDestList l f).get = (fun i => (f i, l.get i)) ∘ Fin.cast (by simp) := by
   induction l with
@@ -336,18 +447,84 @@ lemma listToConstDestList_get (l : List (index S)) (f : Fin l.length → Fin 2) 
     funext i
     exact Fin.elim0 i
   | cons i l ih =>
-    simp [listToConstDestList]
+    simp only [listToConstDestList, List.length_cons, Fin.zero_eta, List.get_eq_getElem]
     funext x
     match x with
-    | ⟨0, h⟩ =>  rfl
+    | ⟨0, h⟩ => rfl
     | ⟨x + 1, h⟩ =>
-      simp
+      simp only [List.length_cons, List.get_eq_getElem, Prod.mk.eta, List.getElem_cons_succ,
+        Function.comp_apply, Fin.cast_mk]
       change (listToConstDestList l _).get _ = _
       rw [ih]
       simp
 
+lemma listToConstDestList_timeOrder (l : List (index S)) (f : Fin l.length → Fin 2) :
+    List.insertionSort ConstDestAlgebra.timeOrderRel (listToConstDestList l f) =
+    listToConstDestList (List.insertionSort timeOrderRel l)
+    (f ∘ (HepLean.List.insertionSortEquiv (timeOrderRel) l).symm) := by
+  let l1 := List.insertionSort (ConstDestAlgebra.timeOrderRel) (listToConstDestList l f)
+  let l2 := listToConstDestList (List.insertionSort timeOrderRel l)
+    (f ∘ (HepLean.List.insertionSortEquiv (timeOrderRel) l).symm)
+  change l1 = l2
+  have hlen : l1.length = l2.length := by
+    simp [l1, l2]
+  have hget : l1.get = l2.get ∘ Fin.cast hlen := by
+    rw [← HepLean.List.insertionSortEquiv_get]
+    rw [listToConstDestList_get]
+    rw [listToConstDestList_get]
+    rw [← HepLean.List.insertionSortEquiv_get]
+    funext i
+    simp only [List.get_eq_getElem, Function.comp_apply, Fin.coe_cast, Fin.cast_trans]
+    congr 2
+    · rw [listToConstDestList_insertionSortEquiv]
+      simp
+    · rw [listToConstDestList_insertionSortEquiv]
+      simp
+  apply List.ext_get hlen
+  rw [hget]
+  simp
 
+lemma listToConstDestList_koszulSignInsert (q : index S → Fin 2) (l : List (index S)) (i : index S)
+    (f : Fin l.length → Fin 2) (a : Fin 2) :
+    koszulSignInsert ConstDestAlgebra.timeOrderRel (fun i => q i.2) (a, i)
+    (listToConstDestList l f) = koszulSignInsert timeOrderRel q i l := by
+  induction l with
+  | nil =>
+    simp [listToConstDestList, koszulSignInsert]
+  | cons j s ih =>
+    simp only [koszulSignInsert, List.length_cons, Fin.zero_eta, Prod.mk.eta, Fin.isValue]
+    by_cases hr : ConstDestAlgebra.timeOrderRel (a, i) (f ⟨0, by simp⟩, j)
+    · rw [if_pos]
+      · rw [if_pos]
+        · exact hr
+      · exact hr
+    · rw [if_neg]
+      · nth_rewrite 2 [if_neg]
+        · rw [ih (f ∘ Fin.succ)]
+        · exact hr
+      · exact hr
 
+lemma listToConstDestList_koszulSign (q : index S → Fin 2) (l : List (index S))
+    (f : Fin l.length → Fin 2) :
+    koszulSign ConstDestAlgebra.timeOrderRel (fun i => q i.2) (listToConstDestList l f) =
+    koszulSign timeOrderRel q l := by
+  induction l with
+  | nil => rfl
+  | cons i l ih =>
+    simp only [koszulSign, List.length_cons, Fin.zero_eta, Prod.mk.eta]
+    rw [ih]
+    simp only [mul_eq_mul_right_iff]
+    apply Or.inl
+    exact listToConstDestList_koszulSignInsert q l i _ _
+
+/-- The map from the field algebra to the algebra of constructive and destructive fields. -/
+def toConstDestAlgebra : FieldAlgebra S →ₐ[ℂ] ConstDestAlgebra S :=
+  FreeAlgebra.lift ℂ (fun i => FreeAlgebra.ι ℂ (0, i) + FreeAlgebra.ι ℂ (1, i))
+
+@[simp]
+lemma toConstDestAlgebra_ι (i : index S) : toConstDestAlgebra (FreeAlgebra.ι ℂ i) =
+    FreeAlgebra.ι ℂ (0, i) + FreeAlgebra.ι ℂ (1, i) := by
+  simp [toConstDestAlgebra]
 
 lemma toConstDestAlgebra_single (x : ℂ) : (l : FreeMonoid (index S)) →
     toConstDestAlgebra (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x))
@@ -379,7 +556,8 @@ lemma toConstDestAlgebra_single (x : ℂ) : (l : FreeMonoid (index S)) →
       congr
       simp only [FreeMonoid.lift, FreeMonoid.prodAux, FreeMonoid.toList, Equiv.coe_fn_mk,
         MonoidHom.coe_mk, OneHom.coe_mk]
-      change List.foldl (fun x1 x2 => x1 * x2) (FreeAlgebra.ι ℂ i) (List.map (FreeAlgebra.ι ℂ) l) = _
+      change List.foldl (fun x1 x2 => x1 * x2)
+        (FreeAlgebra.ι ℂ i) (List.map (FreeAlgebra.ι ℂ) l) = _
       match l with
       | [] =>
         simp only [List.map_nil, List.foldl_nil, ne_eq, FreeAlgebra.ι_ne_zero, not_false_eq_true,
@@ -438,144 +616,10 @@ lemma toWickAlgebra_factor_toConstDestAlgebra :
   subst left right
   exact Eq.symm (𝓞.ψc_ψd f x_1)
 
-/-- The time ordering relation in the field algebra. -/
-def timeOrderRel : index S → index S → Prop := fun x y => x.2 0 ≤ y.2 0
-
-noncomputable section
-
-/-- The time ordering relation in the field algebra is decidable. -/
-instance : DecidableRel (@timeOrderRel S) :=
-  fun a b => Real.decidableLE (a.2 0) (b.2 0)
-
-/-- The time ordering in the field algebra. -/
-def timeOrder (q : index S → Fin 2) : S.FieldAlgebra →ₗ[ℂ] S.FieldAlgebra :=
-  koszulOrder timeOrderRel q
-
-lemma listToConstDestList_insertionSortEquiv  (l : List (index S))
-    (f : Fin l.length → Fin 2) :
-    (HepLean.List.insertionSortEquiv ConstDestAlgebra.timeOrderRel (listToConstDestList l f))
-    = (Fin.castOrderIso (by simp)).toEquiv.trans ((HepLean.List.insertionSortEquiv timeOrderRel l).trans
-      (Fin.castOrderIso (by simp)).toEquiv) := by
-  induction l with
-  | nil =>
-    simp [listToConstDestList, HepLean.List.insertionSortEquiv]
-  | cons i l ih =>
-    simp [listToConstDestList]
-    conv_lhs => simp [HepLean.List.insertionSortEquiv]
-    have h1 (l' : List (ConstDestAlgebra.index S)) :
-        (HepLean.List.insertEquiv ConstDestAlgebra.timeOrderRel (f ⟨0, by simp⟩, i.1, i.2) l') =
-        (Fin.castOrderIso (by simp)).toEquiv.trans
-        ((HepLean.List.insertEquiv timeOrderRel (i.1, i.2) (l'.unzip).2).trans
-        (Fin.castOrderIso (by simp [List.orderedInsert_length])).toEquiv) := by
-      induction l' with
-      | nil =>
-        simp [HepLean.List.insertEquiv]
-        rfl
-      | cons j l' ih' =>
-        by_cases hr : ConstDestAlgebra.timeOrderRel (f ⟨0, by simp⟩, i) j
-        · rw [HepLean.List.insertEquiv_cons_pos]
-          · erw [HepLean.List.insertEquiv_cons_pos]
-            · rfl
-            · exact hr
-          · exact hr
-        · rw [HepLean.List.insertEquiv_cons_neg]
-          · erw [HepLean.List.insertEquiv_cons_neg]
-            · simp
-              erw [ih']
-              ext x
-              simp
-              congr 2
-              match x with
-              | ⟨0, h⟩ => rfl
-              | ⟨1, h⟩ => rfl
-              | ⟨Nat.succ (Nat.succ x), h⟩ => rfl
-            · exact hr
-          · exact hr
-    erw [h1]
-    rw [ih]
-    simp
-    ext x
-    conv_rhs => simp [HepLean.List.insertionSortEquiv]
-    simp
-    have h2' (i : ConstDestAlgebra.index S) (l' : List (ConstDestAlgebra.index S)) :
-      (List.orderedInsert ConstDestAlgebra.timeOrderRel i l').unzip.2 =
-      List.orderedInsert timeOrderRel i.2 l'.unzip.2 := by
-      induction l' with
-      | nil =>
-        simp [HepLean.List.insertEquiv]
-      | cons j l' ih' =>
-        by_cases hij : ConstDestAlgebra.timeOrderRel i j
-        · rw [List.orderedInsert_of_le]
-          · erw [List.orderedInsert_of_le]
-            · simp
-            · exact hij
-          · exact hij
-        · simp [hij]
-          have hn : ¬ timeOrderRel i.2 j.2  := hij
-          simp [hn]
-          simpa using ih'
-    have h2  (l' : List (ConstDestAlgebra.index S)) :
-        (List.insertionSort ConstDestAlgebra.timeOrderRel l').unzip.2 =
-        List.insertionSort timeOrderRel l'.unzip.2 := by
-      induction l' with
-      | nil =>
-        simp [HepLean.List.insertEquiv]
-      | cons i l' ih' =>
-        simp
-        simp at h2'
-        rw [h2']
-        congr
-        simpa using ih'
-    rw [HepLean.List.insertEquiv_congr _ _ _ (h2 _)]
-    simp
-    have h3 : (List.insertionSort timeOrderRel (listToConstDestList l (f ∘ Fin.succ)).unzip.2) =
-      List.insertionSort timeOrderRel l := by
-      congr
-      have h3' (l : List (index S)) (f : Fin l.length → Fin 2) :
-        (listToConstDestList l (f)).unzip.2 = l := by
-        induction l with
-        | nil => rfl
-        | cons i l ih' =>
-          simp [listToConstDestList]
-          simpa using ih' (f ∘ Fin.succ)
-      rw [h3']
-    rw [HepLean.List.insertEquiv_congr _ _ _ h3]
-    simp
-    rfl
-
-lemma listToConstDestList_timeOrder (l : List (index S))
-    (f : Fin l.length → Fin 2) :
-    List.insertionSort ConstDestAlgebra.timeOrderRel (listToConstDestList l f) =
-    listToConstDestList (List.insertionSort timeOrderRel l)
-    (f ∘ (HepLean.List.insertionSortEquiv (timeOrderRel) l).symm) := by
-  let l1 := List.insertionSort (ConstDestAlgebra.timeOrderRel) (listToConstDestList l f)
-  let l2 := listToConstDestList (List.insertionSort timeOrderRel l)
-    (f ∘ (HepLean.List.insertionSortEquiv (timeOrderRel) l).symm)
-  change l1 = l2
-  have hlen : l1.length = l2.length := by
-    simp [l1, l2]
-  have hget : l1.get = l2.get ∘ Fin.cast hlen := by
-    rw [← HepLean.List.insertionSortEquiv_get]
-    rw [listToConstDestList_get]
-    rw [listToConstDestList_get]
-    rw [← HepLean.List.insertionSortEquiv_get]
-    funext i
-    simp
-    congr 2
-    · rw [listToConstDestList_insertionSortEquiv]
-      simp
-    · rw [listToConstDestList_insertionSortEquiv]
-      simp
-  apply List.ext_get hlen
-  rw [hget]
-  simp
-
-
-/-f ∘ (HepLean.List.insertionSortEquiv (timeOrder q) l).symm.toFun-/
-/-
-lemma timeOrder_comm_toConstDestAlgebra (q : index S → Fin 2)
-    (q' : ConstDestAlgebra.index S → Fin 2) :
-    (ConstDestAlgebra.timeOrder q').comp toConstDestAlgebra.toLinearMap =
+/-- Time ordering fields and then mapping to constructive and destructive fields is the same as
+  mapping to constructive and destructive fields and then time ordering. -/
+lemma timeOrder_comm_toConstDestAlgebra (q : index S → Fin 2) :
+    (ConstDestAlgebra.timeOrder (fun i => q i.2)).comp toConstDestAlgebra.toLinearMap =
     toConstDestAlgebra.toLinearMap.comp (timeOrder q) := by
   let e : S.FieldAlgebra ≃ₗ[ℂ] MonoidAlgebra ℂ (FreeMonoid (index S)) :=
     FreeAlgebra.equivMonoidAlgebraFreeMonoid.toLinearEquiv
@@ -584,21 +628,22 @@ lemma timeOrder_comm_toConstDestAlgebra (q : index S → Fin 2)
   intro l
   apply LinearMap.ext
   intro x
-  simp [e, toConstDestAlgebra_single, timeOrder]
-  simp [FreeMonoid.length, List.length_insertionSort]
-  let ew := Equiv.piCongrLeft' (fun a => Fin 2)
-  (Fin.castOrderIso (List.length_insertionSort timeOrderRel l).symm).toEquiv
-  rw [← ew.sum_comp
-        (α := FreeAlgebra ℂ (ConstDestAlgebra.index S)) ]
+  simp only [AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_toLinearMap, LinearMap.coe_comp,
+    Function.comp_apply, MonoidAlgebra.lsingle_apply, AlgEquiv.toLinearMap_apply,
+    AlgHom.toLinearMap_apply, toConstDestAlgebra_single, map_sum, timeOrder, koszulOrder_single, e]
+  simp only [FreeMonoid.length]
+  let ew := Equiv.piCongrLeft' (fun _ => Fin 2)
+    (HepLean.List.insertionSortEquiv (timeOrderRel) l)
+  rw [← ew.sum_comp (α := FreeAlgebra ℂ (ConstDestAlgebra.index S))]
   congr
   funext f
-  simp [ConstDestAlgebra.timeOrder]
+  simp only [ConstDestAlgebra.timeOrder, koszulOrder_single, EmbeddingLike.apply_eq_iff_eq]
   congr 1
-  ·
-  · sorry
--/
-
-end
+  · rw [listToConstDestList_timeOrder]
+    simp only [ew]
+    rfl
+  · simp only [mul_eq_mul_right_iff]
+    exact Or.inl (listToConstDestList_koszulSign q l f)
 
 end FieldAlgebra
 
