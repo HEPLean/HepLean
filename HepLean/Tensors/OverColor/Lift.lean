@@ -707,7 +707,8 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ LaxBraidedFunctor (OverCol
     simp only [lift.map']
     refine LaxMonoidalFunctor.hom_ext ?_
     ext X : 2
-    simp
+    simp only [LaxBraidedFunctor.toLaxMonoidalFunctor_toFunctor, LaxBraidedFunctor.of_toFunctor,
+      LaxMonoidalFunctor.homMk_hom, LaxBraidedFunctor.id_hom, NatTrans.id_app]
     ext x
     refine PiTensorProduct.induction_on' x ?_ (by
         intro x y hx hy
