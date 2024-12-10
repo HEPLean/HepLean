@@ -131,5 +131,5 @@
    "inputRev": "v4.14.0",
    "inherited": true,
    "configFile": "lakefile.toml"}],
- "name": "hep_lean",
+ "name": "HepLean",
  "lakeDir": ".lake"}
