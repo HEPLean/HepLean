@@ -165,7 +165,6 @@ def koszulOrderMonoidAlgebra {I : Type} (r : I → I → Prop) [DecidableRel r] 
   Finsupp.lift (MonoidAlgebra ℂ (FreeMonoid I)) ℂ (List I)
     (fun i => Finsupp.lsingle (R := ℂ) (List.insertionSort r i) (koszulSign r q i))
 
-@[simp]
 lemma koszulOrderMonoidAlgebra_ofList {I : Type} (r : I → I → Prop) [DecidableRel r]
     (q : I → Fin 2) (i : List I) :
     koszulOrderMonoidAlgebra r q (MonoidAlgebra.of ℂ (FreeMonoid I) i) =

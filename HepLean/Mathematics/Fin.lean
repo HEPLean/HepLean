@@ -381,7 +381,8 @@ lemma equivCons_trans {n m k : ℕ} (e : Fin n ≃ Fin m) (f : Fin m ≃ Fin k) 
     Fin.equivCons (e.trans f) = (Fin.equivCons e).trans (Fin.equivCons f) := by
   refine Equiv.ext_iff.mpr ?_
   intro x
-  simp [Fin.equivCons]
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.coe_trans,
+    Equiv.invFun_as_coe, Equiv.coe_fn_mk, Equiv.trans_apply]
   match x with
   | ⟨0, h⟩ => rfl
   | ⟨i + 1, h⟩ => rfl
@@ -391,7 +392,9 @@ lemma equivCons_castOrderIso {n m : ℕ} (h : n = m) :
     (Fin.equivCons (Fin.castOrderIso h).toEquiv) = (Fin.castOrderIso (by simp [h])).toEquiv := by
   refine Equiv.ext_iff.mpr ?_
   intro x
-  simp [Fin.equivCons]
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv,
+    Equiv.invFun_as_coe, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Equiv.coe_fn_mk,
+    Fin.castOrderIso_apply]
   match x with
   | ⟨0, h⟩ => rfl
   | ⟨i + 1, h⟩ => rfl
@@ -399,7 +402,8 @@ lemma equivCons_castOrderIso {n m : ℕ} (h : n = m) :
 @[simp]
 lemma equivCons_symm_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 1 < m.succ) :
     (Fin.equivCons e).symm ⟨i + 1, hi⟩ = (e.symm ⟨i, Nat.succ_lt_succ_iff.mp hi⟩).succ := by
-  simp [Fin.equivCons]
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe,
+    Equiv.coe_fn_symm_mk]
   have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
   rw [hi]
   rw [Fin.cons_succ]

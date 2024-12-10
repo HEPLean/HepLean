@@ -80,12 +80,15 @@ lemma insertEquiv_get {α : Type} {r : α → α → Prop} [DecidableRel r] (a :
       trans (b :: List.orderedInsert r a l).get ∘ Fin.cast (by
         rw [List.orderedInsert_length]
         simp [List.orderedInsert_length])
-      · simp
+      · simp only [List.orderedInsert.eq_2, List.length_cons, Fin.zero_eta, Fin.mk_one]
         ext x
         match x with
         | ⟨0, h⟩ => rfl
         | ⟨Nat.succ x, h⟩ =>
-          simp
+          simp only [Nat.succ_eq_add_one, Function.comp_apply, Equiv.symm_trans_apply,
+            Equiv.symm_swap, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, RelIso.coe_fn_toEquiv,
+            Fin.castOrderIso_apply, Fin.cast_mk, equivCons_symm_succ, List.get_eq_getElem,
+            List.length_cons, List.getElem_cons_succ]
           have hswap (n : Fin (b :: a :: l).length) :
               (a :: b :: l).get (Equiv.swap ⟨0, by simp⟩ ⟨1, by simp⟩ n) = (b :: a :: l).get n := by
             match n with
