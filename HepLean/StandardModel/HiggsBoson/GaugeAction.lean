@@ -124,14 +124,21 @@ lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   erw [mul_fin_two, one_fin_two]
   have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   ext i j
-  fin_cases i <;> fin_cases j <;> field_simp
-  <;> rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  · simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
+  fin_cases i <;> fin_cases j
+  · field_simp
+    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
       Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
-  · ring_nf
-  · ring_nf
-  · simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
-      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
+  · simp only [Fin.isValue, Fin.zero_eta, Fin.mk_one, of_apply, cons_val', cons_val_one, head_cons,
+    empty_val', cons_val_fin_one, cons_val_zero]
+    ring_nf
+  · simp only [Fin.isValue, Fin.mk_one, Fin.zero_eta, of_apply, cons_val', cons_val_zero,
+    empty_val', cons_val_fin_one, cons_val_one, head_fin_const]
+    ring_nf
+  · field_simp
+    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    simp only [Fin.isValue, mul_comm, mul_conj, PiLp.inner_apply, Complex.inner, ofReal_re,
+    Fin.sum_univ_two, ofReal_add]
 
 /-- The `rotateMatrix` for a non-zero Higgs vector is special unitary. -/
 lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :

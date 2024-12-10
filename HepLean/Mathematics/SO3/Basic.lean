@@ -26,7 +26,10 @@ instance SO3Group : Group SO3 where
     by
       simp only [det_mul, A.2.1, B.2.1, mul_one],
     by
-      simp only [transpose_mul, ← Matrix.mul_assoc, Matrix.mul_assoc, B.2.2, mul_one, A.2.2]⟩
+      simp only [transpose_mul, ← Matrix.mul_assoc, Matrix.mul_assoc, B.2.2, mul_one, A.2.2]
+      trans A.1 * ((B.1 * (B.1)ᵀ) * (A.1)ᵀ)
+      · noncomm_ring
+      · simp [Matrix.mul_assoc, B.2.2, mul_one, A.2.2]⟩
   mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
   one := ⟨1, det_one, by rw [transpose_one, mul_one]⟩
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
@@ -81,16 +84,18 @@ lemma toProd_continuous : Continuous toProd :=
     Continuous.comp' (MulOpposite.continuous_op)
       (Continuous.matrix_transpose (continuous_iff_le_induced.mpr fun _ a ↦ a))⟩
 
+open Topology
+
 /-- The embedding of `SO(3)` into the monoid of matrices times the opposite of
   the monoid of matrices. -/
 lemma toProd_embedding : IsEmbedding toProd where
-  inj := toProd_injective
+  injective := toProd_injective
   eq_induced := (isInducing_iff ⇑toProd).mp (IsInducing.of_comp toProd_continuous
     continuous_fst ((isInducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
 
 /-- The embedding of `SO(3)` into `GL (Fin 3) ℝ`. -/
 lemma toGL_embedding : IsEmbedding toGL.toFun where
-  inj := toGL_injective
+  injective := toGL_injective
   eq_induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) ?_).symm
     intro s

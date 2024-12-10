@@ -38,12 +38,9 @@ def tprod (p : Pure S c) : S.F.obj c := PiTensorProduct.tprod S.k p
 
 /-- The map `tprod` is equivariant with respect to the group action. -/
 lemma tprod_equivariant (g : S.G) (p : Pure S c) : (ρ g p).tprod = (S.F.obj c).ρ g p.tprod := by
-  simp only [F_def, OverColor.lift, OverColor.lift.obj', OverColor.lift.objObj',
-    OverColor.instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_hom,
-    OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Rep.coe_of, tprod, Rep.of_ρ,
-    MonoidHom.coe_mk, OneHom.coe_mk, PiTensorProduct.map_tprod]
+  simp only [F_def, OverColor.lift, OverColor.lift.obj', LaxBraidedFunctor.of_toFunctor,
+    OverColor.lift.objObj', Functor.id_obj, Rep.coe_of, tprod, Rep.of_ρ, MonoidHom.coe_mk,
+    OneHom.coe_mk, PiTensorProduct.map_tprod]
   rfl
 
 end Pure

@@ -56,7 +56,9 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
     ({S.unitTensor (S.τ c) | ν μ }ᵀ |>
     perm (OverColor.equivToHomEq (finMapToEquiv ![1,0] ![1, 0])
     (fun x => match x with | 0 => by rfl | 1 => (S.τ_involution c).symm))).tensor := by
-  simp [unitTensor, tensorNode_tensor, perm_tensor]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, unitTensor,
+    Action.instMonoidalCategory_tensorObj_V, Monoidal.tensorUnit_obj,
+    Action.instMonoidalCategory_tensorUnit_V, tensorNode_tensor, Fin.isValue, perm_tensor]
   have h1 := S.unit_symm c
   erw [h1]
   have hg : (Discrete.pairIsoSep S.FD).hom.hom ∘ₗ (S.FD.obj { as := S.τ c } ◁

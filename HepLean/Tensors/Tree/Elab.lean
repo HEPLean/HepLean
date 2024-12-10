@@ -327,7 +327,7 @@ partial def getContrPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
   let ind ← getIndices stx
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
   let indEnum := indFilt.enum
-  let bind := List.bind indEnum (fun a => indEnum.map (fun b => (a, b)))
+  let bind := List.flatMap indEnum (fun a => indEnum.map (fun b => (a, b)))
   let filt ← bind.filterMapM (fun x => indexPosEq x.1 x.2)
   if ¬ ((filt.map Prod.fst).Nodup ∧ (filt.map Prod.snd).Nodup) then
     throwError "To many contractions"
@@ -352,7 +352,7 @@ def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   of elements before it in the list which are less then itself. This is used
   to form a list of pairs which can be used for contracting indices. -/
 def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
-  let l' := l.bind (fun p => [p.1, p.2])
+  let l' := l.flatMap (fun p => [p.1, p.2])
   let l'' := List.mapAccumr
     (fun x (prev : List ℕ) =>
       let e := prev.countP (fun y => y < x)
@@ -394,7 +394,7 @@ partial def getContrPos (stx : Syntax) : TermElabM (List (ℕ × ℕ)) := do
   let ind ← getIndices stx
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
   let indEnum := indFilt.enum
-  let bind := List.bind indEnum (fun a => indEnum.map (fun b => (a, b)))
+  let bind := List.flatMap indEnum (fun a => indEnum.map (fun b => (a, b)))
   let filt ← bind.filterMapM (fun x => indexPosEq x.1 x.2)
   if ¬ ((filt.map Prod.fst).Nodup ∧ (filt.map Prod.snd).Nodup) then
     throwError "To many contractions"

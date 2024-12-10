@@ -53,8 +53,8 @@ def toFin2ℂ : HiggsVec →L[ℝ] (Fin 2 → ℂ) where
   map_smul' a x := rfl
 
 /-- The map `toFin2ℂ` is smooth. -/
-lemma smooth_toFin2ℂ : Smooth 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) toFin2ℂ :=
-  ContinuousLinearMap.smooth toFin2ℂ
+lemma smooth_toFin2ℂ : ContMDiff 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) ⊤ toFin2ℂ :=
+  ContinuousLinearMap.contMDiff toFin2ℂ
 
 /-- An orthonormal basis of `HiggsVec`. -/
 def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
@@ -92,7 +92,7 @@ instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
   Bundle.Trivial.smoothVectorBundle HiggsVec
 
 /-- A Higgs field is a smooth section of the Higgs bundle. -/
-abbrev HiggsField : Type := SmoothSection SpaceTime.asSmoothManifold HiggsVec HiggsBundle
+abbrev HiggsField : Type := ContMDiffSection SpaceTime.asSmoothManifold HiggsVec ⊤ HiggsBundle
 
 /-- Given a vector in `HiggsVec` the constant Higgs field with value equal to that
 section. -/
@@ -101,7 +101,7 @@ def HiggsVec.toField (φ : HiggsVec) : HiggsField where
   contMDiff_toFun := by
     intro x
     rw [Bundle.contMDiffAt_section]
-    exact smoothAt_const
+    exact contMDiffAt_const
 
 /-- For all spacetime points, the constant Higgs field defined by a Higgs vector,
   returns that Higgs Vector. -/
@@ -120,7 +120,8 @@ open HiggsVec
 /-- Given a `HiggsField`, the corresponding map from `SpaceTime` to `HiggsVec`. -/
 def toHiggsVec (φ : HiggsField) : SpaceTime → HiggsVec := φ
 
-lemma toHiggsVec_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, HiggsVec) φ.toHiggsVec := by
+lemma toHiggsVec_smooth (φ : HiggsField) :
+    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, HiggsVec) ⊤ φ.toHiggsVec := by
   intro x0
   have h1 := φ.contMDiff x0
   rw [Bundle.contMDiffAt_section] at h1
@@ -138,20 +139,20 @@ lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
 
 -/
 
-lemma toVec_smooth (φ : HiggsField) : Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Fin 2 → ℂ) φ :=
+lemma toVec_smooth (φ : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Fin 2 → ℂ) ⊤ φ :=
   smooth_toFin2ℂ.comp φ.toHiggsVec_smooth
 
 lemma apply_smooth (φ : HiggsField) :
-    ∀ i, Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) (fun (x : SpaceTime) => (φ x i)) :=
-  (smooth_pi_space).mp (φ.toVec_smooth)
+    ∀ i, ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) ⊤ (fun (x : SpaceTime) => (φ x i)) :=
+  (contMDiff_pi_space).mp (φ.toVec_smooth)
 
 lemma apply_re_smooth (φ : HiggsField) (i : Fin 2) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (reCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
-  (ContinuousLinearMap.smooth reCLM).comp (φ.apply_smooth i)
+    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (reCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
+  (ContinuousLinearMap.contMDiff reCLM).comp (φ.apply_smooth i)
 
 lemma apply_im_smooth (φ : HiggsField) (i : Fin 2) :
-    Smooth 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) (imCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
-  (ContinuousLinearMap.smooth imCLM).comp (φ.apply_smooth i)
+    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (imCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
+  (ContinuousLinearMap.contMDiff imCLM).comp (φ.apply_smooth i)
 
 /-!
 

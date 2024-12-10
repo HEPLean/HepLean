@@ -70,7 +70,7 @@ def traverseForest (file : FilePath)
   let t := steps.map fun (env, infoState) ↦
     (infoState.trees.toList.map fun t ↦
       (Lean.Elab.InfoTree.foldInfo (visitInfo file env visitTacticInfo) [] t).reverse)
-  t.join.join
+  t.flatten.flatten
 
 end transverseTactics
 

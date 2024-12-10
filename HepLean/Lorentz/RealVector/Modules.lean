@@ -197,7 +197,7 @@ def toSpace (v : ContrMod d) : EuclideanSpace ℝ (Fin d) := v.val ∘ Sum.inr
 /-- The representation of the Lorentz group acting on `ContrℝModule d`. -/
 def rep : Representation ℝ (LorentzGroup d) (ContrMod d) where
   toFun g := Matrix.toLinAlgEquiv stdBasis g
-  map_one' := (MulEquivClass.map_eq_one_iff (Matrix.toLinAlgEquiv stdBasis)).mpr rfl
+  map_one' := EmbeddingLike.map_eq_one_iff.mpr rfl
   map_mul' x y := by
     simp only [lorentzGroupIsGroup_mul_coe, _root_.map_mul]
 
@@ -282,6 +282,8 @@ lemma toSelfAdjoint_symm_basis (i : Fin 1 ⊕ Fin 3) :
   it's equivalence to `Fin 1 ⊕ Fin d → ℝ`. -/
 instance : TopologicalSpace (ContrMod d) := TopologicalSpace.induced
   ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)
+
+open Topology
 
 lemma toFin1dℝEquiv_isInducing : IsInducing (@ContrMod.toFin1dℝEquiv d) := by
   exact { eq_induced := rfl }

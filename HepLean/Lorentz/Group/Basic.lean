@@ -241,17 +241,19 @@ lemma toProd_continuous : Continuous (@toProd d) := by
     MulOpposite.continuous_op.comp' ((continuous_const.matrix_mul (continuous_iff_le_induced.mpr
       fun U a => a).matrix_transpose).matrix_mul continuous_const)⟩
 
+open Topology
+
 /-- The embedding from the Lorentz Group into the monoid of matrices times the opposite of
   the monoid of matrices. -/
 lemma toProd_embedding : IsEmbedding (@toProd d) where
-  inj := toProd_injective
+  injective := toProd_injective
   eq_induced :=
     (isInducing_iff ⇑toProd).mp (IsInducing.of_comp toProd_continuous continuous_fst
       ((isInducing_iff (Prod.fst ∘ ⇑toProd)).mpr rfl))
 
 /-- The embedding from the Lorentz Group into `GL (Fin 4) ℝ`. -/
 lemma toGL_embedding : IsEmbedding (@toGL d).toFun where
-  inj := toGL_injective
+  injective := toGL_injective
   eq_induced := by
     refine ((fun {X} {t t'} => TopologicalSpace.ext_iff.mpr) fun _ ↦ ?_).symm
     rw [TopologicalSpace.ext_iff.mp toProd_embedding.eq_induced _, isOpen_induced_iff,

@@ -157,7 +157,7 @@ def tensor {n : ℕ} {c : Fin n → S.C} : TensorTree S c → S.F.obj (OverColor
   | action g t => (S.F.obj (OverColor.mk _)).ρ g t.tensor
   | perm σ t => (S.F.map σ).hom t.tensor
   | prod t1 t2 => (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
-    ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor))
+    ((Functor.LaxMonoidal.μ S.F _ _).hom (t1.tensor ⊗ₜ t2.tensor))
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' _ e)) t.tensor
 
@@ -192,7 +192,7 @@ lemma constThreeNode_tensor {c1 c2 c3 : S.C}
 lemma prod_tensor {c1 : Fin n → S.C} {c2 : Fin m → S.C} (t1 : TensorTree S c1)
     (t2 : TensorTree S c2) :
     (prod t1 t2).tensor = (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
-    ((S.F.μ _ _).hom (t1.tensor ⊗ₜ t2.tensor)) := rfl
+    ((Functor.LaxMonoidal.μ S.F _ _).hom (t1.tensor ⊗ₜ t2.tensor)) := rfl
 
 lemma add_tensor (t1 t2 : TensorTree S c) : (add t1 t2).tensor = t1.tensor + t2.tensor := rfl
 
