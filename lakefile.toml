@@ -1,4 +1,4 @@
-name = "hep_lean"
+name = "HepLean"
 defaultTargets = ["HepLean"]
 # -- Optional inclusion for LeanCopilot
 #moreLinkArgs = ["-L./.lake/packages/LeanCopilot/.lake/build/lib", "-lctranslate2"]
