@@ -8,6 +8,7 @@ import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Fintype.Sum
 import Mathlib.Logic.Equiv.Fin
 import HepLean.Meta.Notes.Basic
+import HepLean.Mathematics.Fin
 /-!
 
 # Wick Contract
@@ -27,6 +28,66 @@ note r"
 /-- A Wick contraction for a Wick string is a series of pairs `i` and `j` of indices
   to be contracted, subject to ordering and subject to the condition that they can
   be contracted. -/
+
+inductive PreContract {α : Type} : (l : List α) → Type where
+  | nil : PreContract []
+  | cons (φ : α) {l : List α} (i : Option (Fin l.length)) (p : PreContract l) : PreContract (φ :: l)
+
+namespace PreContract
+
+def example1 : PreContract [0, 1, 2, 3] :=
+  cons 0 none (cons 1 none (cons 2 (some ⟨0,Nat.zero_lt_succ [].length⟩) (cons 3 none nil)))
+
+def nonContracted {α : Type} : {l : List α} → PreContract l → List α := fun
+  | nil => []
+  | cons φ none p => φ :: p.nonContracted
+  | cons _ (some _) p => p.nonContracted
+
+def remove {α : Type} : {l : List α} → PreContract l → (i : Fin l.length) → PreContract (List.eraseIdx l i) := fun
+  | nil, i => Fin.elim0 i
+  | cons φ none p, ⟨0, h⟩ => p
+  | cons φ none p, ⟨i + 1, h⟩ => cons φ none (p.remove ⟨i,Nat.succ_lt_succ_iff.mp h⟩)
+  | cons φ (some i) p, ⟨0, h⟩ => p
+  | cons (l := a :: b :: l) φ (some i) p, ⟨j + 1, h⟩ =>
+    if ⟨j, Nat.succ_lt_succ_iff.mp h⟩ = i then
+      cons φ none (p.remove ⟨j, Nat.succ_lt_succ_iff.mp h⟩)
+    else
+      cons φ (some (Fin.cast (by
+        simp [List.length_eraseIdx, h]
+        rw [if_pos]
+        simpa using h) (HepLean.Fin.predAboveI ⟨j, Nat.succ_lt_succ_iff.mp h⟩ i ))) (p.remove ⟨j, Nat.succ_lt_succ_iff.mp h⟩)
+  | cons (l := b ::[ ]) φ (some i) p, ⟨j + 1, h⟩ => cons φ none (p.remove ⟨j, Nat.succ_lt_succ_iff.mp h⟩)
+
+@[nolint unusedArguments]
+def length {l : List α} (_ : PreContract l) : ℕ := l.length
+
+def dual : {l : List α} → PreContract l → List (Option (Fin l.length)) := fun
+  | nil => []
+  | cons (l := l) _ none p => none :: List.map (Option.map Fin.succ) p.dual
+  | cons (l := l) _ (some i) p => some (Fin.succ i) ::
+    List.set (List.map (Option.map (Fin.succ)) p.dual) i (some ⟨0, Nat.zero_lt_succ l.length⟩)
+
+lemma dual_length : {l : List α} → (p : PreContract l) → p.dual.length = l.length := fun
+  | nil => rfl
+  | cons _ none p => by
+    simp [dual, length, dual_length p]
+  | cons _ (some _) p => by simp [dual, dual_length p]
+
+def HasUniqueContr : {l : List α} → PreContract l → Bool
+  | _, nil => True
+  | _, cons _ none p => HasUniqueContr p
+  | _, cons _ (some i) p => p.dual.get ⟨i, by rw [dual_length]; exact i.isLt⟩ = none ∧ HasUniqueContr p
+
+#eval HasUniqueContr example1
+
+
+@[nolint unusedArguments]
+def consDual (φ : α) {l : List α} (p : PreContract l) (i : Option (Fin l.length))
+    (_ : (Option.map (dual p) i).isNone) : PreContract (φ :: l) := cons φ p i
+
+
+end PreContract
+
 inductive WickContract : {ni : ℕ} → {i : Fin ni → S.𝓯} → {n : ℕ} → {c : Fin n → S.𝓯} →
     {no : ℕ} → {o : Fin no → S.𝓯} →
     (str : WickString i c o final) →

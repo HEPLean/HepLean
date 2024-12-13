@@ -240,7 +240,8 @@ lemma toLorentzGroup_fst_col (M : SL(2, ℂ)) :
     | Sum.inr 2 => ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2)
   change (fun μ => (toLorentzGroup M).1 μ (Sum.inl 0)) = k
   have h1 : toSelfAdjointMap M (PauliMatrix.σSAL (Sum.inl 0)) = ∑ μ, k μ • PauliMatrix.σSAL μ := by
-    simp [Fin.sum_univ_three]
+    simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+      Finset.sum_singleton, Fin.sum_univ_three]
     rw [toSelfAdjointMap_apply_σSAL_inl]
     abel
   rw [toSelfAdjointMap_basis] at h1

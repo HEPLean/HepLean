@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Wick.Species
+import HepLean.PerturbationTheory.Wick.Koszul
 import HepLean.Lorentz.RealVector.Basic
 import HepLean.Mathematics.Fin
 import HepLean.SpaceTime.Basic
@@ -123,106 +124,6 @@ and $K(σ)$ is the Koszul sign factor. (see e.g. PSE:24157)
 There are two types $I$ we are intrested in.
 "
 
-/-- Gives a factor of `-1` when inserting `a` into a list `List I` in the ordered position
-  for each fermion-fermion cross. -/
-def koszulSignInsert {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I) :
-    List I → ℂ
-  | [] => 1
-  | b :: l => if r a b then 1 else
-    if q a = 1 ∧ q b = 1 then - koszulSignInsert r q a l else koszulSignInsert r q a l
-
-/-- When inserting a boson the `koszulSignInsert` is always `1`. -/
-lemma koszulSignInsert_boson {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I)
-    (ha : q a = 0) : (l : List I) → koszulSignInsert r q a l = 1
-  | [] => by
-    simp [koszulSignInsert]
-  | b :: l => by
-    simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
-    intro _
-    simp only [ha, Fin.isValue, zero_ne_one, false_and, ↓reduceIte]
-    exact koszulSignInsert_boson r q a ha l
-
-/-- Gives a factor of `- 1` for every fermion-fermion (`q` is `1`) crossing that occurs when sorting
-  a list of based on `r`. -/
-def koszulSign {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) :
-    List I → ℂ
-  | [] => 1
-  | a :: l => koszulSignInsert r q a l * koszulSign r q l
-
-@[simp]
-lemma koszulSign_freeMonoid_of {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
-    (i : I) : koszulSign r q (FreeMonoid.of i) = 1 := by
-  change koszulSign r q [i] = 1
-  simp only [koszulSign, mul_one]
-  rfl
-
-noncomputable section
-
-/-- Given a relation `r` on `I` sorts elements of `MonoidAlgebra ℂ (FreeMonoid I)` by `r` giving it
-  a signed dependent on `q`. -/
-def koszulOrderMonoidAlgebra {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) :
-    MonoidAlgebra ℂ (FreeMonoid I) →ₗ[ℂ] MonoidAlgebra ℂ (FreeMonoid I) :=
-  Finsupp.lift (MonoidAlgebra ℂ (FreeMonoid I)) ℂ (List I)
-    (fun i => Finsupp.lsingle (R := ℂ) (List.insertionSort r i) (koszulSign r q i))
-
-lemma koszulOrderMonoidAlgebra_ofList {I : Type} (r : I → I → Prop) [DecidableRel r]
-    (q : I → Fin 2) (i : List I) :
-    koszulOrderMonoidAlgebra r q (MonoidAlgebra.of ℂ (FreeMonoid I) i) =
-    (koszulSign r q i) • (MonoidAlgebra.of ℂ (FreeMonoid I) (List.insertionSort r i)) := by
-  simp only [koszulOrderMonoidAlgebra, Finsupp.lsingle_apply, MonoidAlgebra.of_apply,
-    MonoidAlgebra.smul_single', mul_one]
-  rw [MonoidAlgebra.ext_iff]
-  intro x
-  erw [Finsupp.lift_apply]
-  simp only [MonoidAlgebra.smul_single', zero_mul, Finsupp.single_zero, Finsupp.sum_single_index,
-    one_mul]
-
-@[simp]
-lemma koszulOrderMonoidAlgebra_single {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
-    (l : FreeMonoid I) (x : ℂ) :
-    koszulOrderMonoidAlgebra r q (MonoidAlgebra.single l x)
-    = (koszulSign r q l) • (MonoidAlgebra.single (List.insertionSort r l) x) := by
-  simp only [koszulOrderMonoidAlgebra, Finsupp.lsingle_apply, MonoidAlgebra.smul_single']
-  rw [MonoidAlgebra.ext_iff]
-  intro x'
-  erw [Finsupp.lift_apply]
-  simp only [MonoidAlgebra.smul_single', zero_mul, Finsupp.single_zero, Finsupp.sum_single_index,
-    one_mul, MonoidAlgebra.single]
-  congr 2
-  rw [NonUnitalNormedCommRing.mul_comm]
-
-/-- Given a relation `r` on `I` sorts elements of `FreeAlgebra ℂ I` by `r` giving it
-  a signed dependent on `q`. -/
-def koszulOrder {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) :
-    FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I :=
-  FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm.toAlgHom.toLinearMap
-  ∘ₗ koszulOrderMonoidAlgebra r q
-  ∘ₗ FreeAlgebra.equivMonoidAlgebraFreeMonoid.toAlgHom.toLinearMap
-
-lemma koszulOrder_ι {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (i : I) :
-    koszulOrder r q (FreeAlgebra.ι ℂ i) = FreeAlgebra.ι ℂ i := by
-  simp only [koszulOrder, AlgEquiv.toAlgHom_eq_coe, AlgEquiv.toAlgHom_toLinearMap,
-    koszulOrderMonoidAlgebra, Finsupp.lsingle_apply, LinearMap.coe_comp, Function.comp_apply,
-    AlgEquiv.toLinearMap_apply]
-  rw [AlgEquiv.symm_apply_eq]
-  simp only [FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
-    AlgEquiv.ofAlgHom_apply, FreeAlgebra.lift_ι_apply]
-  rw [@MonoidAlgebra.ext_iff]
-  intro x
-  erw [Finsupp.lift_apply]
-  simp only [MonoidAlgebra.smul_single', List.insertionSort, List.orderedInsert,
-    koszulSign_freeMonoid_of, mul_one, Finsupp.single_zero, Finsupp.sum_single_index]
-  rfl
-
-@[simp]
-lemma koszulOrder_single {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
-    (l : FreeMonoid I) :
-    koszulOrder r q (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x))
-    = FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm
-    (MonoidAlgebra.single (List.insertionSort r l) (koszulSign r q l * x)) := by
-  simp [koszulOrder]
-
-end
 
 /-- The indexing set of constructive and destructive position based operators. -/
 def ConstDestAlgebra.index : Type := Fin 2 × S.𝓯 × SpaceTime
@@ -259,7 +160,7 @@ lemma toWickAlgebra_ι_one (x : S.𝓯 × SpaceTime) :
   simp [toWickAlgebra]
 
 /-- The time ordering relation on constructive and destructive operators. -/
-def timeOrderRel : index S → index S → Prop := fun x y => x.2.2 0 ≤ y.2.2 0
+def timeOrderRel : index S → index S → Prop := fun x y => y.2.2 0 ≤ x.2.2 0
 
 /-- The normal ordering relation on constructive and destructive operators. -/
 def normalOrderRel : index S → index S → Prop := fun x y => x.1 ≤ y.1
@@ -271,7 +172,7 @@ noncomputable section
 
 /-- The time ordering relation of constructive and destructive operators is decidable. -/
 instance : DecidableRel (@timeOrderRel S) :=
-  fun a b => Real.decidableLE (a.2.2 0) (b.2.2 0)
+  fun a b => Real.decidableLE (b.2.2 0) (a.2.2 0)
 
 /-- The time ordering of constructive and destructive operators. -/
 def timeOrder (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.ConstDestAlgebra :=
@@ -280,6 +181,14 @@ def timeOrder (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.ConstDe
 /-- The normal ordering of constructive and destructive operators. -/
 def normalOrder (q : index S → Fin 2) : S.ConstDestAlgebra →ₗ[ℂ] S.ConstDestAlgebra :=
   koszulOrder normalOrderRel q
+
+lemma constructive_mul_normalOrder (q : index S → Fin 2) (i : FieldAlgebra.index S)
+    (A : S.ConstDestAlgebra) :
+    (FreeAlgebra.ι ℂ ((0, i) : index S) : S.ConstDestAlgebra) * normalOrder q A =
+    normalOrder q ((FreeAlgebra.ι ℂ (0, i) : S.ConstDestAlgebra) * A) := by
+  apply mul_koszulOrder_le
+  intro j
+  simp [normalOrderRel]
 
 /-- Contraction of constructive and destructive operators, defined as their time
   ordering minus their normal ordering. -/
@@ -303,11 +212,11 @@ lemma toWickAlgebra_ι (i : index S) : toWickAlgebra 𝓞 (FreeAlgebra.ι ℂ i)
   simp [toWickAlgebra]
 
 /-- The time ordering relation in the field algebra. -/
-def timeOrderRel : index S → index S → Prop := fun x y => x.2 0 ≤ y.2 0
+def timeOrderRel : index S → index S → Prop := fun x y => y.2 0 ≤ x.2 0
 
 /-- The time ordering relation in the field algebra is decidable. -/
 noncomputable instance : DecidableRel (@timeOrderRel S) :=
-  fun a b => Real.decidableLE (a.2 0) (b.2 0)
+  fun a b => Real.decidableLE (b.2 0) (a.2 0)
 
 /-- The time ordering in the field algebra. -/
 noncomputable def timeOrder (q : index S → Fin 2) : S.FieldAlgebra →ₗ[ℂ] S.FieldAlgebra :=
@@ -644,6 +553,67 @@ lemma timeOrder_comm_toConstDestAlgebra (q : index S → Fin 2) :
   to constructive and destructive fields. -/
 noncomputable def contract (q : index S → Fin 2) : FieldAlgebra S →ₗ[ℂ] ConstDestAlgebra S :=
   ConstDestAlgebra.contract (fun i => q i.2) ∘ₗ toConstDestAlgebra.toLinearMap
+
+lemma contract_timeOrderRel (q : index S → Fin 2) {i j : index S} (h : timeOrderRel i j) :
+    contract q (FreeAlgebra.ι ℂ i * FreeAlgebra.ι ℂ j) =
+    superCommute (fun i => q i.2) (FreeAlgebra.ι ℂ (1, i)) (FreeAlgebra.ι ℂ (0, j)) := by
+  simp only [contract, LinearMap.coe_comp, Function.comp_apply, AlgHom.toLinearMap_apply, map_mul,
+    toConstDestAlgebra_ι, Fin.isValue]
+  trans (ConstDestAlgebra.contract fun i => q i.2)
+    (FreeAlgebra.ι ℂ (0, i) * FreeAlgebra.ι ℂ (0, j)
+    + FreeAlgebra.ι ℂ (0, i) * FreeAlgebra.ι ℂ (1, j)
+    + FreeAlgebra.ι ℂ (1, i) * FreeAlgebra.ι ℂ (0, j)
+    + FreeAlgebra.ι ℂ (1, i) * FreeAlgebra.ι ℂ (1, j))
+  · congr
+    simp [mul_add, add_mul]
+    abel
+  simp only [ConstDestAlgebra.contract, ConstDestAlgebra.timeOrder, ConstDestAlgebra.normalOrder,
+    Fin.isValue, map_add, LinearMap.sub_apply, koszulOrder_ι_pair, ConstDestAlgebra.normalOrderRel,
+    le_refl, ↓reduceIte, Fin.zero_le, Fin.le_zero_iff, Nat.reduceAdd, one_ne_zero]
+  have h1 : ConstDestAlgebra.timeOrderRel (0, i) (0, j) := h
+  rw [if_pos h1]
+  repeat rw [if_pos]
+  abel_nf
+  simp [koszulSign, koszulSignInsert , ConstDestAlgebra.normalOrderRel]
+  · exact h1
+  · exact h1
+  · exact h1
+
+lemma contract_not_timeOrderRel (q : index S → Fin 2) {i j : index S} (h : ¬ timeOrderRel i j) :
+    contract q (FreeAlgebra.ι ℂ i * FreeAlgebra.ι ℂ j) = -
+      (superCommute (fun i => q i.2) (FreeAlgebra.ι ℂ (0, i)) (FreeAlgebra.ι ℂ (0, j)) +
+      superCommute (fun i => q i.2) (FreeAlgebra.ι ℂ (1, i)) (FreeAlgebra.ι ℂ (1, j)) +
+      superCommute (fun i => q i.2) (FreeAlgebra.ι ℂ (0, i)) (FreeAlgebra.ι ℂ (1, j))) := by
+  simp [contract]
+  trans (ConstDestAlgebra.contract fun i => q i.2)
+    (FreeAlgebra.ι ℂ (0, i) * FreeAlgebra.ι ℂ (0, j)
+    + FreeAlgebra.ι ℂ (0, i) * FreeAlgebra.ι ℂ (1, j)
+    + FreeAlgebra.ι ℂ (1, i) * FreeAlgebra.ι ℂ (0, j)
+    + FreeAlgebra.ι ℂ (1, i) * FreeAlgebra.ι ℂ (1, j))
+  · congr
+    simp [mul_add, add_mul]
+    abel
+  simp [ConstDestAlgebra.contract, ConstDestAlgebra.timeOrder,
+    ConstDestAlgebra.normalOrder, ConstDestAlgebra.normalOrderRel, ConstDestAlgebra.normalOrderRel]
+  rw [if_neg, if_neg, if_neg, if_neg]
+  simp [koszulSign, koszulSignInsert , ConstDestAlgebra.normalOrderRel]
+  rw [if_neg]
+  nth_rewrite 2 [if_neg]
+  nth_rewrite 3 [if_neg]
+  nth_rewrite 4 [if_neg]
+  by_cases hq : q i = 1 ∧ q j = 1
+  · simp [hq, superCommute]
+    abel
+  · simp [hq, superCommute]
+    abel
+  · exact h
+  · exact h
+  · exact h
+  · exact h
+  · exact h
+  · exact h
+  · exact h
+  · exact h
 
 end FieldAlgebra
 
