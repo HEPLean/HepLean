@@ -142,4 +142,16 @@ lemma insertionSort_eq_ofFn {α : Type} {r : α → α → Prop} [DecidableRel r
   rw [insertionSortEquiv_get (r := r)]
   exact Eq.symm (List.ofFn_get (List.insertionSort r l))
 
+lemma insertionSort_eraseIdx {α : Type} {r : α → α → Prop} [DecidableRel r] :
+    (l : List α) →
+    (i : Fin (List.insertionSort r l).length) →
+    List.eraseIdx (List.insertionSort r l) i =
+    List.insertionSort r (List.eraseIdx l ((insertionSortEquiv r l).symm i))
+  | [], i => by
+    simp
+  | a :: l, i => by
+    rw [insertionSortEquiv]
+    simp
+
+
 end HepLean.List
