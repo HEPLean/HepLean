@@ -103,7 +103,6 @@ lemma superCommuteTakeM_F {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
   congr
   exact Eq.symm (List.eraseIdx_eq_take_drop_succ r n)
 
-
 lemma superCommute_koszulOrder_le_ofList {I : Type}
     (q : I → Fin 2) (r : List I) (x : ℂ)
     (le1 :I → I → Prop) [DecidableRel le1]

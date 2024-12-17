@@ -107,6 +107,45 @@ lemma koszulSign_freeMonoid_of {I : Type} (r : I → I → Prop) [DecidableRel r
   simp only [koszulSign, mul_one]
   rfl
 
+
+lemma koszulSignInsert_erase_boson {I : Type} (q : I → Fin 2) (le1 :I → I → Prop)
+    [DecidableRel le1] (r0 : I)  :
+    (r : List I)  → (n : Fin r.length) →  (heq : q (r.get n) = 0)  →
+    koszulSignInsert le1 q r0 (r.eraseIdx n) = koszulSignInsert le1 q r0 r
+  | [], _, _ => by
+    simp
+  | r1 :: r, ⟨0, h⟩, hr => by
+    simp
+    simp at hr
+    rw [koszulSignInsert]
+    simp [hr]
+  | r1 :: r, ⟨n + 1, h⟩, hr => by
+    simp
+    rw [koszulSignInsert, koszulSignInsert]
+    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩ hr]
+
+lemma koszulSign_erase_boson {I : Type} (q : I → Fin 2) (le1 :I → I → Prop)
+    [DecidableRel le1]  :
+    (r : List I) → (n : Fin r.length) →  (heq : q (r.get n) = 0) →
+    koszulSign le1 q (r.eraseIdx n) = koszulSign le1 q r
+  | [], _ => by
+    simp
+  | r0 :: r, ⟨0, h⟩ => by
+    simp [koszulSign]
+    intro h
+    rw [koszulSignInsert_boson]
+    simp
+    exact h
+  | r0 :: r, ⟨n + 1, h⟩ => by
+    simp
+    intro h'
+    rw [koszulSign, koszulSign]
+    rw [koszulSign_erase_boson q le1 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩]
+    congr 1
+    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩ h']
+    exact h'
+
+
 noncomputable section
 
 /-- Given a relation `r` on `I` sorts elements of `MonoidAlgebra ℂ (FreeMonoid I)` by `r` giving it

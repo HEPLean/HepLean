@@ -245,6 +245,7 @@ def listMEraseEquiv {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     simp
     congr 1
     simp [Fin.succAbove]
+
     sorry
 
     ))
