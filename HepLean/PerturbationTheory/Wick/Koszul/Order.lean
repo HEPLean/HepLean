@@ -25,7 +25,7 @@ namespace Wick
 def koszulSignInsert {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I) :
     List I → ℂ
   | [] => 1
-  | b :: l => if r a b then 1 else
+  | b :: l => if r a b then koszulSignInsert r q a l else
     if q a = 1 ∧ q b = 1 then - koszulSignInsert r q a l else koszulSignInsert r q a l
 
 /-- When inserting a boson the `koszulSignInsert` is always `1`. -/
@@ -35,9 +35,49 @@ lemma koszulSignInsert_boson {I : Type} (r : I → I → Prop) [DecidableRel r] 
     simp [koszulSignInsert]
   | b :: l => by
     simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
-    intro _
-    simp only [ha, Fin.isValue, zero_ne_one, false_and, ↓reduceIte]
-    exact koszulSignInsert_boson r q a ha l
+    rw [koszulSignInsert_boson r q a ha l, ha]
+    simp only [Fin.isValue, zero_ne_one, false_and, ↓reduceIte, ite_self]
+
+@[simp]
+lemma koszulSignInsert_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I) :
+    (l : List I) → koszulSignInsert r q a l * koszulSignInsert r q a l = 1
+  | [] => by
+    simp [koszulSignInsert]
+  | b :: l => by
+    simp [koszulSignInsert]
+    by_cases hr : r a b
+    · simp [hr]
+      rw [koszulSignInsert_mul_self]
+    · simp [hr]
+      by_cases hq : q a = 1 ∧ q b = 1
+      · simp [hq]
+        rw [koszulSignInsert_mul_self]
+      · simp [hq]
+        rw [koszulSignInsert_mul_self]
+
+lemma koszulSignInsert_le_forall {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I)
+    (l : List I) (hi : ∀ b, r a b) :  koszulSignInsert r q a l = 1 := by
+  induction l with
+  | nil => rfl
+  | cons j l ih =>
+    simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
+    rw [ih]
+    simp only [Fin.isValue, ite_eq_left_iff, ite_eq_right_iff, and_imp]
+    intro h
+    exact False.elim (h (hi j))
+
+lemma koszulSignInsert_ge_forall_append  {I : Type} (r : I → I → Prop) [DecidableRel r]
+    (q : I → Fin 2) (l : List I) (j i : I) (hi : ∀ j, r j i) :
+    koszulSignInsert r q j l = koszulSignInsert r q j (l ++ [i]) := by
+  induction l with
+  | nil => simp [koszulSignInsert, hi]
+  | cons b l ih =>
+    simp only [koszulSignInsert, Fin.isValue, List.append_eq]
+    by_cases hr : r j b
+    · rw [if_pos hr, if_pos hr]
+      rw [ih]
+    · rw [if_neg hr, if_neg hr]
+      rw [ih]
 
 /-- Gives a factor of `- 1` for every fermion-fermion (`q` is `1`) crossing that occurs when sorting
   a list of based on `r`. -/
@@ -45,6 +85,20 @@ def koszulSign {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin
     List I → ℂ
   | [] => 1
   | a :: l => koszulSignInsert r q a l * koszulSign r q l
+
+def natTestQ : ℕ → Fin 2 := fun n => if n % 2 = 0 then 0 else 1
+
+lemma koszulSign_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
+    (l : List I) : koszulSign r q l * koszulSign r q l = 1 := by
+  induction l with
+  | nil => simp [koszulSign]
+  | cons a l ih =>
+    simp [koszulSign]
+    trans (koszulSignInsert r q a l * koszulSignInsert r q a l) * (koszulSign r q l * koszulSign r q l)
+    ring
+    rw [ih]
+    rw [koszulSignInsert_mul_self, mul_one]
+
 
 @[simp]
 lemma koszulSign_freeMonoid_of {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
@@ -209,12 +263,7 @@ lemma mul_koszulOrder_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
     · congr 1
       rw [koszulSign]
       have h1 (l : List I) : koszulSignInsert r q i l = 1  := by
-        induction l with
-        | nil => rfl
-        | cons j l ih =>
-          simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
-          intro h
-          exact False.elim (h (hi j))
+        exact koszulSignInsert_le_forall r q i l hi
       rw [h1]
       simp
   rw [h1]
@@ -285,16 +334,7 @@ lemma koszulOrder_mul_ge {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
           rw [ih]
           simp only [mul_eq_mul_right_iff]
           apply Or.inl
-          have hKI (l : List I) (j : I) : koszulSignInsert r q j l = koszulSignInsert r q j (l ++ [i]) := by
-            induction l with
-            | nil => simp [koszulSignInsert, hi]
-            | cons b l ih =>
-              simp only [koszulSignInsert, Fin.isValue, List.append_eq]
-              by_cases hr : r j b
-              · rw [if_pos hr, if_pos hr]
-              · rw [if_neg hr, if_neg hr]
-                rw [ih]
-          rw [hKI]
+          rw [koszulSignInsert_ge_forall_append r q l j i hi]
       rw [hI]
       rfl
   rw [h1]

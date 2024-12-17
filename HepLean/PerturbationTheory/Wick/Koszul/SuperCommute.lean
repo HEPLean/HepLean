@@ -161,35 +161,6 @@ lemma superCommute_one {I : Type} (q : I → Fin 2) (a : FreeAlgebra ℂ I) :
   rw [hf]
   simp
 
-def superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I) : ℂ :=
-  if grade q la = 1 ∧ grade q lb = 1 then - 1 else  1
-
-lemma superCommuteCoef_empty {I : Type} (q : I → Fin 2) (la : List I) :
-    superCommuteCoef q la [] = 1 := by
-  simp only [superCommuteCoef, Fin.isValue, grade_empty, zero_ne_one, and_false, ↓reduceIte]
-
-lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc  : List I) :
-    superCommuteCoef q la (lb ++ lc) = superCommuteCoef q la lb * superCommuteCoef q la lc := by
-  simp only [superCommuteCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
-    mul_ite, mul_neg, mul_one]
-  by_cases hla : grade q la = 1
-  · by_cases hlb : grade q lb = 1
-    · by_cases hlc : grade q lc = 1
-      · simp [hlc, hlb, hla]
-      · have hc : grade q lc = 0 := by
-          omega
-        simp [hc, hlb, hla]
-    · have hb : grade q lb = 0 := by
-        omega
-      by_cases hlc : grade q lc = 1
-      · simp [hlc, hb]
-      · have hc : grade q lc = 0 := by
-          omega
-        simp [hc, hb]
-  · have ha : grade q la = 0 := by
-      omega
-    simp [ha]
-
 lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (xa xb xc : ℂ) :
     superCommute q (ofList la xa) (ofList lb xb * ofList lc xc) =
     (superCommute q (ofList la xa) (ofList lb xb) * ofList lc xc +
@@ -278,6 +249,32 @@ lemma superCommute_ofList_sum  {I : Type} (q : I → Fin 2) (la lb : List I) (xa
       rfl
     · simp only [← mul_assoc, mul_eq_mul_right_iff]
       exact Or.inl (Or.inl (ofList_cons_eq_ofList (List.take (↑n) lb) b 1).symm)
+
+lemma superCommute_ofList_ofList_superCommuteCoef   {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
+    superCommute q (ofList la xa) (ofList lb xb) =
+    ofList la xa * ofList lb xb - superCommuteCoef q la lb • ofList lb xb * ofList la xa := by
+  rw [superCommute_ofList_ofList, superCommuteCoef]
+  by_cases hq : grade q la = 1 ∧ grade q lb = 1
+  · simp [hq, ofList_pair]
+  · simp [hq, ofList_pair]
+    abel
+
+lemma ofList_ofList_superCommute {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
+    ofList la xa * ofList lb xb = superCommuteCoef q la lb • ofList lb xb * ofList la xa
+    + superCommute q (ofList la xa) (ofList lb xb) := by
+  rw [superCommute_ofList_ofList_superCommuteCoef]
+  abel
+
+lemma ofListM_ofList_superCommute' {I : Type}
+    (q : I → Fin 2) (l : List I) (r : List I) (x y : ℂ) :
+  ofList r y * ofList l x = superCommuteCoef q l r • (ofList l x * ofList r y)
+    - superCommuteCoef q l r • superCommute q (ofList l x) (ofList r y) := by
+  nth_rewrite 2 [ofList_ofList_superCommute q]
+  rw [superCommuteCoef]
+  by_cases hq : grade q l = 1 ∧ grade q r = 1
+  · simp [hq, superCommuteCoef]
+  · simp [hq]
+
 
 lemma koszulOrder_superCommute_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
     (i j : I) (hle : r i j) (a1 a2 : FreeAlgebra ℂ I) :

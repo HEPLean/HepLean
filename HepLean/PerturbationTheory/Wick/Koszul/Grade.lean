@@ -21,8 +21,6 @@ import HepLean.PerturbationTheory.Wick.Koszul.Order
 
 namespace Wick
 
-noncomputable section
-
 def grade {I : Type} (q : I → Fin 2) : (l : List I) → Fin 2
   | [] => 0
   | a :: l => if q a = grade q l then 0 else 1
@@ -82,5 +80,75 @@ lemma grade_insertionSort {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) 
     simp [grade]
     rw [ih]
 
-end
+def superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I) : ℂ :=
+  if grade q la = 1 ∧ grade q lb = 1 then - 1 else  1
+
+lemma superCommuteCoef_empty {I : Type} (q : I → Fin 2) (la : List I) :
+    superCommuteCoef q la [] = 1 := by
+  simp only [superCommuteCoef, Fin.isValue, grade_empty, zero_ne_one, and_false, ↓reduceIte]
+
+lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc  : List I) :
+    superCommuteCoef q la (lb ++ lc) = superCommuteCoef q la lb * superCommuteCoef q la lc := by
+  simp only [superCommuteCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
+    mul_ite, mul_neg, mul_one]
+  by_cases hla : grade q la = 1
+  · by_cases hlb : grade q lb = 1
+    · by_cases hlc : grade q lc = 1
+      · simp [hlc, hlb, hla]
+      · have hc : grade q lc = 0 := by
+          omega
+        simp [hc, hlb, hla]
+    · have hb : grade q lb = 0 := by
+        omega
+      by_cases hlc : grade q lc = 1
+      · simp [hlc, hb]
+      · have hc : grade q lc = 0 := by
+          omega
+        simp [hc, hb]
+  · have ha : grade q la = 0 := by
+      omega
+    simp [ha]
+
+def superCommuteCoefM {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) : ℂ :=
+    (if grade (fun i => q i.fst) l = 1 ∧ grade q r = 1 then -1 else 1)
+
+lemma superCommuteCoefM_empty  {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)):
+    superCommuteCoefM q l [] = 1 := by
+  simp [superCommuteCoefM]
+
+def test {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+    [DecidableRel le1]  (n : Fin r.length) : ℂ  :=
+    if grade q (List.take n r) = grade q ((List.take (↑((HepLean.List.insertionSortEquiv le1 r) n))
+    (List.insertionSort le1 r))) then 1 else -1
+
+def superCommuteCoefLE  {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+    [DecidableRel le1] (i : I) (n : Fin r.length) : ℂ  :=
+  koszulSign le1 q r *
+  superCommuteCoef q [i] (List.take (↑((HepLean.List.insertionSortEquiv le1 r) n))
+    (List.insertionSort le1 r)) *
+  koszulSign le1 q (r.eraseIdx ↑n)
+
+lemma superCommuteCoefLE_zero {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) (r : List I)
+    (a : I)
+    [DecidableRel le1] (i : I) :
+    superCommuteCoefLE q le1 (a :: r) i ⟨0, Nat.zero_lt_succ r.length⟩ = 1 := by
+  simp [superCommuteCoefLE]
+  simp [koszulSign]
+  trans koszulSignInsert le1 q a r * (koszulSign le1 q r * koszulSign le1 q r) *
+      superCommuteCoef q [i]
+        (List.take (↑((HepLean.List.insertionSortEquiv le1 (a :: r)) ⟨0, Nat.zero_lt_succ r.length⟩))
+          (List.orderedInsert le1 a (List.insertionSort le1 r)))
+  · ring_nf
+    rfl
+  rw [koszulSign_mul_self]
+  simp
+  sorry
+
+
+lemma superCommuteCoefLE_eq_get {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+    [DecidableRel le1] (i : I) (n : Fin r.length) :
+    superCommuteCoefLE q le1 r i n =  superCommuteCoef q [r.get n] (r.take n) := by
+  sorry
 end Wick

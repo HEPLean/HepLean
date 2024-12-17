@@ -55,15 +55,6 @@ lemma superCommute_ofList_ofListM  {I : Type} {f : I → Type} [∀ i, Fintype (
   · rw [ofList_pair]
     simp only [neg_mul]
 
-def superCommuteCoefM {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) : ℂ :=
-    (if grade (fun i => q i.fst) l = 1 ∧ grade q r = 1 then -1 else 1)
-
-lemma superCommuteCoefM_empty  {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (l : List (Σ i, f i)):
-    superCommuteCoefM q l [] = 1 := by
-  simp [superCommuteCoefM]
-
 lemma superCommute_ofList_ofListM_superCommuteCoefM  {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
     superCommute (fun i => q i.1) (ofList l x) (ofListM f r y) =

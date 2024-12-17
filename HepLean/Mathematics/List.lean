@@ -137,21 +137,59 @@ lemma insertionSortEquiv_get {α : Type} {r : α → α → Prop} [DecidableRel 
     rw [insertEquiv_get (r := r) a (List.insertionSort r l)]
     rfl
 
+lemma insertionSort_get_comp_insertionSortEquiv  {α : Type} {r : α → α → Prop} [DecidableRel r] (l : List α)  :
+    (List.insertionSort r l).get ∘ (insertionSortEquiv r l) = l.get := by
+  rw [← insertionSortEquiv_get]
+  funext x
+  simp
+
 lemma insertionSort_eq_ofFn {α : Type} {r : α → α → Prop} [DecidableRel r] (l : List α) :
     List.insertionSort r l = List.ofFn (l.get ∘ (insertionSortEquiv r l).symm) := by
   rw [insertionSortEquiv_get (r := r)]
   exact Eq.symm (List.ofFn_get (List.insertionSort r l))
 
-lemma insertionSort_eraseIdx {α : Type} {r : α → α → Prop} [DecidableRel r] :
-    (l : List α) →
-    (i : Fin (List.insertionSort r l).length) →
-    List.eraseIdx (List.insertionSort r l) i =
-    List.insertionSort r (List.eraseIdx l ((insertionSortEquiv r l).symm i))
-  | [], i => by
-    simp
-  | a :: l, i => by
-    rw [insertionSortEquiv]
-    simp
 
+
+def optionErase {I : Type} (l : List I) (i : Option (Fin l.length)) : List I :=
+  match i with
+  | none => l
+  | some i => List.eraseIdx l i
+
+def optionEraseZ {I : Type} (l : List I) (a : I) (i : Option (Fin l.length)) : List I :=
+  match i with
+  | none => a :: l
+  | some i => List.eraseIdx l i
+
+lemma eraseIdx_length {I : Type} (l : List I) (i : Fin l.length) :
+    (List.eraseIdx l i).length + 1 = l.length := by
+  simp [List.length_eraseIdx]
+  have hi := i.prop
+  omega
+
+lemma eraseIdx_cons_length {I : Type} (a : I) (l : List I) (i : Fin (a :: l).length) :
+    (List.eraseIdx (a :: l) i).length= l.length := by
+  simp [List.length_eraseIdx]
+
+
+lemma eraseIdx_get {I : Type} (l : List I) (i : Fin l.length) :
+    (List.eraseIdx l i).get  = l.get ∘ (Fin.cast (eraseIdx_length l i)) ∘ i.succAbove := by
+  ext x
+  simp only [Function.comp_apply, List.get_eq_getElem, List.eraseIdx, List.getElem_eraseIdx]
+  simp [Fin.succAbove]
+  by_cases hi: x.1 < i.val
+  · have h0 : x.castSucc < ↑↑i  := by
+      simp [Fin.lt_def]
+      rw [Nat.mod_eq_of_lt]
+      exact hi
+      rw [eraseIdx_length]
+      exact i.prop
+    simp [h0, hi]
+  · have h0 : ¬ x.castSucc < ↑↑i  := by
+      simp [Fin.lt_def]
+      rw [Nat.mod_eq_of_lt]
+      exact Nat.le_of_not_lt hi
+      rw [eraseIdx_length]
+      exact i.prop
+    simp [h0, hi]
 
 end HepLean.List

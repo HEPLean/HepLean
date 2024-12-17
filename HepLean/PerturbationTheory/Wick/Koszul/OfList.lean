@@ -76,6 +76,14 @@ lemma koszulOrder_ofList {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
   conv_rhs => rw [ofList_eq_smul_one]
   rw [smul_smul]
 
+lemma ofList_insertionSort_eq_koszulOrder {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
+    (l : List I) (x : ℂ) :
+    ofList (List.insertionSort r l) x = (koszulSign r q l) • koszulOrder r q (ofList l x) := by
+  rw [koszulOrder_ofList]
+  rw [smul_smul]
+  rw [koszulSign_mul_self]
+  simp
+
 def freeAlgebraMap {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
     FreeAlgebra ℂ I →ₐ[ℂ] FreeAlgebra ℂ (Σ i, f i) :=
   FreeAlgebra.lift ℂ fun i => ∑ (j : f i), FreeAlgebra.ι ℂ ⟨i, j⟩
@@ -94,6 +102,13 @@ lemma ofListM_empty  {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
   rw [ofList_empty]
   exact map_one (freeAlgebraMap f)
 
+lemma ofListM_empty_smul  {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (x : ℂ) :
+  ofListM f [] x = x • 1 := by
+  simp only [ofListM, EmbeddingLike.map_eq_one_iff]
+  rw [ofList_eq_smul_one]
+  rw [ofList_empty]
+  simp
+
 lemma ofListM_cons {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) (r : List I)  (x : ℂ) :
     ofListM f (i :: r) x = (∑ j : f i, FreeAlgebra.ι ℂ ⟨i, j⟩) * (ofListM f r x) := by
   rw [ofListM, ofList_cons_eq_ofList, ofList_singleton, map_mul]
@@ -107,6 +122,14 @@ lemma ofListM_singleton {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : 
   rw [ofList_eq_smul_one, ofList_singleton, map_smul]
   rw [freeAlgebraMap_ι]
   rw [Finset.smul_sum]
+
+lemma ofListM_singleton_one {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I)  :
+    ofListM f [i] 1 = ∑ j : f i,  FreeAlgebra.ι ℂ ⟨i, j⟩ := by
+  simp only [ofListM]
+  rw [ofList_eq_smul_one, ofList_singleton, map_smul]
+  rw [freeAlgebraMap_ι]
+  rw [Finset.smul_sum]
+  simp
 
 lemma ofListM_cons_eq_ofListM {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) (r : List I)  (x : ℂ) :
     ofListM f (i :: r) x = ofListM f [i] 1 * ofListM f r x  := by
@@ -144,6 +167,10 @@ lemma liftM_get {I : Type} (f : I → Type) [∀ i, Fintype (f i)]  (r : List I)
       change (liftM f _ _).get _ = _
       rw [ih]
       simp
+
+def liftMCongrEquiv {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (r0 : I) (r : List I) (n : Fin (r0 :: r).length) :
+    (Π i, f ((r0 :: r).get i)) ≃ f ((r0 :: r).get n) ×  Π i, f ((r0 :: r).get (n.succAbove i)) :=
+  (Fin.insertNthEquiv _ _).symm
 
 lemma ofListM_expand {I : Type} (f : I → Type) [∀ i, Fintype (f i)]  (x : ℂ) :
     (l : List I) → ofListM f l x = ∑ (a : Π i, f (l.get i)), ofList (liftM f l a) x
@@ -192,6 +219,7 @@ lemma liftM_grade {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
         rw [h0, h0']
     rw [h1]
 
+@[simp]
 lemma liftM_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) : (r : List I) →  (a : Π i, f (r.get i)) → (n : ℕ) →
     grade (fun i => q i.fst) (List.take n (liftM f r a)) = grade q (List.take n r)
@@ -204,6 +232,85 @@ lemma liftM_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     have ih : grade (fun i => q i.fst) (List.take n (liftM f r fun i => a i.succ))  = grade q (List.take n r) := by
       refine (liftM_grade_take q r (fun i => a i.succ) n)
     rw [ih]
+
+open HepLean.List
+
+def listMEraseEquiv {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+      (q : I → Fin 2) {r0 : I} {r : List I} (n : Fin (r0 :: r).length) :
+    (Π (i :Fin ((r0 :: r).eraseIdx ↑n).length) , f (((r0 :: r).eraseIdx ↑n).get i))
+    ≃ Π (i : Fin r.length), f ((r0 :: r).get (n.succAbove i)) :=
+  Equiv.piCongr (Fin.castOrderIso (by rw [eraseIdx_cons_length])).toEquiv
+    fun x => Equiv.cast (congrArg f (by
+    rw [HepLean.List.eraseIdx_get]
+    simp
+    congr 1
+    simp [Fin.succAbove]
+    sorry
+
+    ))
+/-
+lemma liftM_eraseIdx {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+      (q : I → Fin 2) (r0 : I): (r : List I) → (n : Fin (r0 :: r).length) →  (a : Π i, f ((r0 :: r).get i))  →
+      (liftM f (r0 :: r) a).eraseIdx ↑n = liftM f (List.eraseIdx (r0 :: r) n) ((listMEraseEquiv q  n).symm a)
+  | r, ⟨0, h⟩, a => by
+    simp [List.eraseIdx]
+    rfl
+  | r, ⟨n + 1, h⟩, a => by
+      have hf : (r.eraseIdx n).length + 1 = r.length := by
+          rw [List.length_eraseIdx]
+          simp at h
+          simp [h]
+          omega
+      have hn : n < (r.eraseIdx n).length + 1 := by
+        simp at h
+        rw [hf]
+        exact h
+      simp [liftM]
+      apply And.intro
+      · refine eq_cast_iff_heq.mpr ?left.a
+        simp [Fin.cast]
+        rw [Fin.succAbove]
+        simp
+        rw [if_pos]
+        simp
+        simp
+        refine Fin.add_one_pos ↑n ?left.a.hc.h
+        simp at h
+        rw [Fin.lt_def]
+        conv_rhs => simp
+        rw [hf]
+        simp
+        rw [Nat.mod_eq_of_modEq rfl (Nat.le.step h)]
+        exact h
+      · have hl := liftM_eraseIdx q r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ (fun i => a i.succ)
+        rw [hl]
+        congr
+        funext i
+        rw [Equiv.apply_eq_iff_eq_symm_apply]
+        simp
+        refine eq_cast_iff_heq.mpr ?right.e_a.h.a
+        congr
+        rw [Fin.ext_iff]
+        simp [Fin.succAbove]
+        simp [Fin.lt_def]
+        rw [@Fin.val_add_one]
+        simp [hn]
+        rw [Nat.mod_eq_of_lt hn]
+        rw [Nat.mod_eq_of_lt]
+        have hnot :  ¬ ↑n = Fin.last ((r.eraseIdx n).length + 1) := by
+          rw [Fin.ext_iff]
+          simp
+          rw [Nat.mod_eq_of_lt]
+          omega
+          exact Nat.lt_add_right 1 hn
+        simp [hnot]
+        by_cases hi : i.val < n
+        · simp [hi]
+        · simp [hi]
+        · exact Nat.lt_add_right 1 hn
+
+
+-/
 
 
 lemma koszulSignInsert_liftM  {I : Type} {f : I → Type} [∀ i, Fintype (f i)]

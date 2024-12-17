@@ -23,16 +23,12 @@ namespace Wick
 
 noncomputable section
 
-def optionErase {I : Type} (l : List I) (i : Option (Fin l.length)) : List I :=
-  match i with
-  | none => l
-  | some i => List.eraseIdx l i
+open HepLean.List
 
 inductive ContractionsAux {I : Type} : (l : List I) → (aux : List I) → Type
   | nil : ContractionsAux [] []
-  | single {a : I} : ContractionsAux [a] [a]
-  | cons {l : List I} {aux : List I} {a b: I} (i : Option (Fin (b :: aux).length)) :
-    ContractionsAux (b :: l) aux → ContractionsAux (a :: b :: l) (optionErase (b :: aux) i)
+  | cons {l : List I} {aux : List I} {a : I} (i : Option (Fin aux.length)) :
+    ContractionsAux l aux → ContractionsAux (a :: l) (optionEraseZ aux a i)
 
 def Contractions {I : Type} (l : List I) : Type := Σ aux, ContractionsAux l aux
 
@@ -42,25 +38,6 @@ variable {I : Type} {l : List I} (c : Contractions l)
 
 def normalize : List I := c.1
 
-lemma normalize_length_le : c.normalize.length ≤ l.length := by
-  cases c
-  rename_i aux c
-  induction c with
-  | nil =>
-    simp [normalize]
-  | single =>
-    simp [normalize]
-  | cons i c ih =>
-    simp [normalize, optionErase]
-    match i with
-    | none =>
-      simpa using ih
-    | some i =>
-      simp
-      rw [List.length_eraseIdx]
-      simp [normalize] at ih
-      simp
-      exact Nat.le_add_right_of_le ih
 
 lemma contractions_nil (a : Contractions ([] : List I)) : a = ⟨[], ContractionsAux.nil⟩ := by
   cases a
@@ -68,21 +45,35 @@ lemma contractions_nil (a : Contractions ([] : List I)) : a = ⟨[], Contraction
   cases c
   rfl
 
-lemma contractions_single {i : I} (a : Contractions [i]) : a = ⟨[i], ContractionsAux.single⟩ := by
+lemma contractions_single {i : I} (a : Contractions [i]) : a =
+   ⟨[i], ContractionsAux.cons none  ContractionsAux.nil⟩ := by
   cases a
   rename_i aux c
   cases c
-  rfl
+  rename_i aux' c'
+  cases c'
+  cases aux'
+  simp [optionEraseZ]
+  rename_i x
+  exact Fin.elim0 x
 
-def consConsEquiv {a b : I} {l : List I} :
-    Contractions (a :: b :: l) ≃ (c : Contractions (b :: l)) × Option (Fin (b :: c.normalize).length) where
+def nilEquiv : Contractions ([] : List I) ≃ Unit where
+  toFun _ := ()
+  invFun _ := ⟨[], ContractionsAux.nil⟩
+  left_inv a := by
+    exact Eq.symm (contractions_nil a)
+  right_inv _ := by
+    rfl
+
+def consEquiv {a : I} {l : List I} :
+    Contractions (a :: l) ≃ (c : Contractions l) × Option (Fin (c.normalize).length) where
   toFun c :=
     match c with
     | ⟨aux, c⟩ =>
     match c with
     | ContractionsAux.cons (aux := aux') i c => ⟨⟨aux', c⟩, i⟩
   invFun ci :=
-    ⟨(optionErase (b :: ci.fst.normalize) ci.2), ContractionsAux.cons (a := a) ci.2 ci.1.2⟩
+    ⟨(optionEraseZ (ci.fst.normalize) a ci.2), ContractionsAux.cons (a := a) ci.2 ci.1.2⟩
   left_inv c := by
     match c with
     | ⟨aux, c⟩ =>
@@ -96,16 +87,11 @@ instance decidable : (l : List I) → DecidableEq (Contractions l)
     | ⟨_, a⟩, ⟨_, b⟩ =>
     match a, b with
     | ContractionsAux.nil , ContractionsAux.nil => isTrue rfl
-  | _ :: [] => fun a b =>
-    match a, b with
-    | ⟨_, a⟩, ⟨_, b⟩ =>
-    match a, b with
-    | ContractionsAux.single , ContractionsAux.single => isTrue rfl
-  | _ :: b :: l =>
-    haveI : DecidableEq (Contractions (b :: l)) := decidable (b :: l)
-    haveI : DecidableEq ((c : Contractions (b :: l)) × Option (Fin (b :: c.normalize).length)) :=
+  | _  :: l =>
+    haveI : DecidableEq (Contractions l) := decidable l
+    haveI : DecidableEq ((c : Contractions l) × Option (Fin (c.normalize).length)) :=
       Sigma.instDecidableEqSigma
-    Equiv.decidableEq consConsEquiv
+    Equiv.decidableEq consEquiv
 
 instance fintype  : (l : List I) → Fintype (Contractions l)
   | [] => {
@@ -114,102 +100,143 @@ instance fintype  : (l : List I) → Fintype (Contractions l)
       intro a
       rw [Finset.mem_singleton]
       exact contractions_nil a}
-  | a :: [] => {
-    elems := {⟨[a], ContractionsAux.single⟩}
-    complete := by
-      intro a
-      rw [Finset.mem_singleton]
-      exact contractions_single a}
-  | a :: b :: l =>
-    haveI : Fintype (Contractions (b :: l)) := fintype (b :: l)
-    haveI : Fintype ((c : Contractions (b :: l)) × Option (Fin (b :: c.normalize).length)) :=
+  | a  :: l =>
+    haveI : Fintype (Contractions l) := fintype l
+    haveI : Fintype ((c : Contractions l) × Option (Fin (c.normalize).length)) :=
       Sigma.instFintype
-    Fintype.ofEquiv _ consConsEquiv.symm
+    Fintype.ofEquiv _ consEquiv.symm
 
--- This definition is not correct.
-def superCommuteTermAux {l : List I} {aux : List I} : (c : ContractionsAux l aux)  → FreeAlgebra ℂ I
-  | ContractionsAux.nil => 1
-  | ContractionsAux.single => 1
-  | ContractionsAux.cons i c => superCommuteTermAux c
 
-def superCommuteTerm {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    {r : List I} (c : Contractions r) : FreeAlgebra ℂ (Σ i, f i) :=
-    freeAlgebraMap f (superCommuteTermAux c.2)
+structure Splitting {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1] where
+  𝓑n :  I → (Σ i, f i)
+  𝓑p :  I → (Σ i, f i)
+  𝓧n :  I → ℂ
+  𝓧p :  I → ℂ
+  h𝓑 : ∀ i, ofListM f [i] 1 = ofList [𝓑n i] (𝓧n i) + ofList [𝓑p i] (𝓧p i)
+  h𝓑n : ∀ i j, le1 (𝓑n i) j
+  h𝓑p : ∀ i j, le1 j (𝓑p i)
 
-lemma superCommuteTerm_center {f : I → Type} [∀ i, Fintype (f i)]
-    {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F] :
-    F (c.superCommuteTerm) ∈ Subalgebra.center ℂ A := by
-  sorry
-
-def toTerm {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+def toCenterTerm {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
     (q : I → Fin 2) {r : List I}
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-    (c : Contractions r) : FreeAlgebra ℂ (Σ i, f i) :=
-  c.superCommuteTerm * koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1)
+    {A : Type} [Semiring A] [Algebra ℂ A]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (c : Contractions r) (S : Splitting f le1) : A :=
+  match c with
+  | ⟨aux, c⟩ =>
+  match c with
+  | .nil => 1
+  | .cons (a := a) (l := l) (aux := aux') none c => toCenterTerm f q le1 F ⟨aux', c⟩ S
+  | .cons (a := a)  (l := l) (aux := aux') (some n) c =>
+    toCenterTerm f q le1 F ⟨aux', c⟩ S *
+    superCommuteCoef q [aux'.get n] (List.take (↑n) aux') •
+      F (((superCommute fun i => q i.fst) (ofList [S.𝓑p a] (S.𝓧p a))) (ofListM f [aux'.get n] 1))
 
-lemma toTerm_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-     : toTerm q le1 (⟨[], ContractionsAux.nil⟩ : Contractions [])  = 1 := by
-  simp [toTerm, normalize]
-  rw [ofListM_empty]
-  simp
+lemma toCenterTerm_none {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
+    (q : I → Fin 2) {r : List I}
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    {A : Type} [Semiring A] [Algebra ℂ A]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (S : Splitting f le1)  (a  : I) (c : Contractions r) :
+  toCenterTerm (r :=  a :: r) f q le1 F (Contractions.consEquiv.symm ⟨c, none⟩) S = toCenterTerm f q le1 F c S := by
+  rw [consEquiv]
+  simp [optionErase]
+  dsimp [toCenterTerm]
+  rfl
+
+lemma toCenterTerm_center {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
+    (q : I → Fin 2) {r : List I}
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    {A : Type} [Semiring A] [Algebra ℂ A]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (c : Contractions r) (S : Splitting f le1) :
+    (c.toCenterTerm f q le1 F S) ∈ Subalgebra.center ℂ A := by
   sorry
 
 end Contractions
 
-lemma wick_cons_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (r : List I)
+lemma static_wick_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-    (tle : I → I → Prop) [DecidableRel tle]
-    (i : (Σ i, f i)) (hi : ∀ j, le1 j i)
-    {A : Type} [Semiring A] [Algebra ℂ A] (r : List I) (b a : I)
+    {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
-    (bn bp : (Σ i, f i))
-    (hb : ofListM f [b] 1 = ofList [bn] 1 + ofList [bp] 1)
-    (ih : F (ofListM f (a :: r) 1) = ∑ c : Contractions (a :: r), F (c.toTerm q le1)) :
-    F (ofListM f (b :: a :: r) 1) =  ∑ c : Contractions (b :: a :: r),  F (c.toTerm q le1)  := by
-  rw [ofListM_cons_eq_ofListM, map_mul]
-  rw [ih]
-  rw [Finset.mul_sum]
-  rw  [← Contractions.consConsEquiv.symm.sum_comp]
-  simp
+    (S : Contractions.Splitting f le1) :
+    F (ofListM f [] 1) = ∑ c : Contractions [],
+    c.toCenterTerm f q le1 F S * F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1))  := by
+  rw [← Contractions.nilEquiv.symm.sum_comp]
+  simp [Contractions.nilEquiv]
+  dsimp [Contractions.normalize, Contractions.toCenterTerm]
+  simp [ofListM_empty]
+
+lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2)
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    {A : Type} [Semiring A] [Algebra ℂ A] (r : List I) (a : I)
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (S : Contractions.Splitting f le1)
+    (ih : F (ofListM f r 1) =
+    ∑ c : Contractions r, c.toCenterTerm f q le1 F S * F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1))) :
+    F (ofListM f (a :: r) 1) =  ∑ c : Contractions ( a :: r),
+      c.toCenterTerm f q le1 F S * F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1))  := by
+  rw [ofListM_cons_eq_ofListM, map_mul, ih, Finset.mul_sum,
+    ← Contractions.consEquiv.symm.sum_comp]
   erw [Finset.sum_sigma]
   congr
   funext c
-  rw [Contractions.toTerm]
-  rw [map_mul, ← mul_assoc]
-  have hi := c.superCommuteTerm_center F
+  have hb := S.h𝓑 a
+  rw [← mul_assoc]
+  have hi := c.toCenterTerm_center f q le1 F S
   rw [Subalgebra.mem_center_iff] at hi
-  rw [hi]
-  rw [mul_assoc]
-  rw [← map_mul]
-  rw [hb]
-  rw [add_mul]
-  rw [ofList_singleton, mul_koszulOrder_le, ← ofList_singleton]
-  rw [map_add]
+  rw [hi, mul_assoc, ← map_mul, hb, add_mul, map_add]
   conv_lhs =>
     rhs
-    rhs
+    lhs
+    rw [ofList_eq_smul_one]
+    rw [Algebra.smul_mul_assoc]
     rw [ofList_singleton]
-  rw [le_all_mul_koszulOrder]
-  rw [← add_assoc]
-  rw [← map_add, ← map_add]
+  rw [mul_koszulOrder_le]
   conv_lhs =>
     rhs
-    rw [← map_add]
-    rw [← add_mul]
-    rw [← ofList_singleton]
-    rw [← hb]
-    rw [map_add]
-  rw [mul_add]
+    lhs
+    rw [← map_smul, ← Algebra.smul_mul_assoc]
+    rw [← ofList_singleton, ← ofList_eq_smul_one]
   conv_lhs =>
     rhs
-    rw [superCommute_ofList_ofListM_sum]
+    rhs
+    rw [ofList_eq_smul_one, Algebra.smul_mul_assoc, map_smul]
+  rw [le_all_mul_koszulOrder_ofListM_expand]
+  conv_lhs =>
+    rhs
+    rhs
+    rw [smul_add, Finset.smul_sum]
+    rw [← map_smul, ← map_smul, ← Algebra.smul_mul_assoc, ← ofList_eq_smul_one]
+    rhs
+    rhs
+    intro n
+    rw [← Algebra.smul_mul_assoc, smul_comm, ← map_smul, ← LinearMap.map_smul₂, ← ofList_eq_smul_one]
+  rw [← add_assoc, ← map_add, ← map_add, ← add_mul, ← hb, ← ofListM_cons_eq_ofListM, mul_add]
+  rw [Fintype.sum_option]
+  congr 1
+  rw [Finset.mul_sum]
+  congr
+  funext n
+  rw [← mul_assoc]
+  rfl
+  exact S.h𝓑p a
+  exact S.h𝓑n a
 
-  sorry
-
-
+theorem static_wick_theorem {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2)
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    {A : Type} [Semiring A] [Algebra ℂ A] (r : List I)
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (S : Contractions.Splitting f le1) :
+    F (ofListM f r 1) = ∑ c : Contractions r, c.toCenterTerm f q le1 F S *
+      F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1)) := by
+  induction r with
+  | nil => exact static_wick_nil q le1 F S
+  | cons a r ih => exact static_wick_cons q le1 r a F S ih
 
 end
 end Wick
