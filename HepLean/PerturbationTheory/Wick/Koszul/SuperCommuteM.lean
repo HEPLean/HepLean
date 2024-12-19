@@ -48,10 +48,10 @@ lemma superCommute_ofList_ofListM  {I : Type} {f : I → Type} [∀ i, Fintype (
   funext a
   rw [superCommute_ofList_ofList]
   congr 1
-  · exact ofList_pair l (liftM f r a) x y
+  · exact ofList_pair l  a.toList x y
   congr 1
   · simp
-  · exact ofList_pair (liftM f r a) l y x
+  · exact ofList_pair a.toList l y x
   · rw [ofList_pair]
     simp only [neg_mul]
 
@@ -124,7 +124,7 @@ lemma superCommuteM_ofList_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i
     rw [ofListM_expand]
     rw [Finset.mul_sum]
   rw [map_sum]
-  trans ∑ n, ∑ j : f b1, ((superCommute fun i => q i.fst) (ofList l x)) (( FreeAlgebra.ι ℂ ⟨b1, j⟩) * ofList (liftM f r n) y)
+  trans ∑ (n : CreatAnnilateSect f r), ∑ j : f b1, ((superCommute fun i => q i.fst) (ofList l x)) (( FreeAlgebra.ι ℂ ⟨b1, j⟩) * ofList n.toList y)
   · apply congrArg
     funext n
     rw [← map_sum]
@@ -152,7 +152,7 @@ lemma superCommuteM_ofList_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i
   rw [← Finset.sum_add_distrib]
   congr
   funext b
-  trans ((superCommute fun i => q i.fst) (ofList l x)) (ofList (⟨b1, b⟩ :: liftM f r n) y)
+  trans ((superCommute fun i => q i.fst) (ofList l x)) (ofList (⟨b1, b⟩ :: n.toList) y)
   · congr
     rw [ofList_cons_eq_ofList]
     rw [ofList_singleton]

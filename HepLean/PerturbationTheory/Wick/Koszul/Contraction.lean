@@ -118,18 +118,14 @@ structure Splitting {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
   h𝓑p : ∀ i j, le1 j (𝓑p i)
 
 def toCenterTerm {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
-    (q : I → Fin 2) {r : List I}
+    (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
-    (c : Contractions r) (S : Splitting f le1) : A :=
-  match c with
-  | ⟨aux, c⟩ =>
-  match c with
-  | .nil => 1
-  | .cons (a := a) (l := l) (aux := aux') none c => toCenterTerm f q le1 F ⟨aux', c⟩ S
-  | .cons (a := a)  (l := l) (aux := aux') (some n) c =>
-    toCenterTerm f q le1 F ⟨aux', c⟩ S *
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
+     : {r : List I} → (c : Contractions r) →  (S : Splitting f le1) →  A
+  | [], ⟨[], .nil⟩, _ => 1
+  | _ :: _, ⟨_, .cons (aux := aux') none c⟩, S => toCenterTerm f q le1 F ⟨aux', c⟩ S
+  | a :: _, ⟨_, .cons  (aux := aux') (some n) c⟩, S => toCenterTerm f q le1 F ⟨aux', c⟩ S *
     superCommuteCoef q [aux'.get n] (List.take (↑n) aux') •
       F (((superCommute fun i => q i.fst) (ofList [S.𝓑p a] (S.𝓧p a))) (ofListM f [aux'.get n] 1))
 
@@ -137,7 +133,7 @@ lemma toCenterTerm_none {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
     (q : I → Fin 2) {r : List I}
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1  F]
     (S : Splitting f le1)  (a  : I) (c : Contractions r) :
   toCenterTerm (r :=  a :: r) f q le1 F (Contractions.consEquiv.symm ⟨c, none⟩) S = toCenterTerm f q le1 F c S := by
   rw [consEquiv]
@@ -146,13 +142,30 @@ lemma toCenterTerm_none {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
   rfl
 
 lemma toCenterTerm_center {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
-    (q : I → Fin 2) {r : List I}
+    (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
-    (c : Contractions r) (S : Splitting f le1) :
-    (c.toCenterTerm f q le1 F S) ∈ Subalgebra.center ℂ A := by
-  sorry
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
+     : {r : List I} → (c : Contractions r) →  (S : Splitting f le1) →
+    (c.toCenterTerm f q le1 F S) ∈ Subalgebra.center ℂ A
+  | [], ⟨[], .nil⟩, _ => by
+    dsimp [toCenterTerm]
+    exact Subalgebra.one_mem (Subalgebra.center ℂ A)
+  | _ :: _, ⟨_, .cons (aux := aux') none c⟩, S => by
+    dsimp [toCenterTerm]
+    exact toCenterTerm_center f q le1 F ⟨aux', c⟩ S
+  | a :: _, ⟨_, .cons  (aux := aux') (some n) c⟩, S => by
+    dsimp [toCenterTerm]
+    refine Subalgebra.mul_mem (Subalgebra.center ℂ A) ?hx ?hy
+    exact toCenterTerm_center f q le1 F ⟨aux', c⟩ S
+    apply Subalgebra.smul_mem
+    rw [ofListM_expand]
+    rw [map_sum, map_sum]
+    refine Subalgebra.sum_mem (Subalgebra.center ℂ A) ?hy.hx.h
+    intro x _
+    simp [CreatAnnilateSect.toList]
+    rw [ofList_singleton]
+    exact OperatorMap.superCommute_ofList_singleton_ι_center (q := fun i => q i.1) (le1 := le1) F (S.𝓑p a) ⟨aux'[↑n], x.head⟩
 
 end Contractions
 
@@ -160,7 +173,7 @@ lemma static_wick_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
     (S : Contractions.Splitting f le1) :
     F (ofListM f [] 1) = ∑ c : Contractions [],
     c.toCenterTerm f q le1 F S * F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1))  := by
@@ -172,8 +185,9 @@ lemma static_wick_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
 lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    [IsTrans ((i : I) × f i) le1] [IsTotal ((i : I) × f i) le1]
     {A : Type} [Semiring A] [Algebra ℂ A] (r : List I) (a : I)
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
     (S : Contractions.Splitting f le1)
     (ih : F (ofListM f r 1) =
     ∑ c : Contractions r, c.toCenterTerm f q le1 F S * F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1))) :
@@ -228,9 +242,9 @@ lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
 
 theorem static_wick_theorem {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2)
-    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1] [IsTrans ((i : I) × f i) le1] [IsTotal ((i : I) × f i) le1]
     {A : Type} [Semiring A] [Algebra ℂ A] (r : List I)
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [SuperCommuteCenterMap F]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
     (S : Contractions.Splitting f le1) :
     F (ofListM f r 1) = ∑ c : Contractions r, c.toCenterTerm f q le1 F S *
       F (koszulOrder le1 (fun i => q i.fst) (ofListM f c.normalize 1)) := by

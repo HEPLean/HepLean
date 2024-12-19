@@ -87,10 +87,6 @@ def koszulSign {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin
   | a :: l => koszulSignInsert r q a l * koszulSign r q l
 
 def natTestQ : ℕ → Fin 2 := fun n => if n % 2 = 0 then 0 else 1
-def natTest3 : ℕ × ℕ × ℕ → Fin 2 := fun ⟨a, b, c⟩ => if a % 2 = 0 then 0 else 1
-
-#eval List.insertionSort (fun i j => i.2 ≤ j.2) [(1, 1, 0), (1, 0, 3)]
-#eval koszulSign (fun i j => i.2 ≤ j.2) natTest3 [ (0, 0, 2), (1, 1, 0), (1, 1, 3)]
 
 lemma koszulSign_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
     (l : List I) : koszulSign r q l * koszulSign r q l = 1 := by

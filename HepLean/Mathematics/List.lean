@@ -484,6 +484,59 @@ lemma orderedInsertEquiv_sigma {I : Type} {f : I → Type} [∀ i, Fintype (f i)
     next h => simp_all only [not_lt]
 
 
+/-- This result is taken from:
+  https://github.com/leanprover/lean4/blob/master/src/Init/Data/List/Nat/InsertIdx.lean
+  with simple modification here to make it run.
+  The file it was taken from is licensed under the Apache License, Version 2.0.
+  and written by Parikshit Khanna, Jeremy Avigad, Leonardo de Moura,
+    Floris van Doorn, Mario Carneiro.
+
+  Once HepLean is updated to a more recent version of Lean this result will be removed.
+   -/
+theorem length_insertIdx' : ∀ n as, (List.insertIdx n a as).length = if n ≤ as.length then as.length + 1 else as.length
+  | 0, _ => by simp
+  | n + 1, [] => by simp
+  | n + 1, a :: as => by
+    simp only [List.insertIdx_succ_cons, List.length_cons, length_insertIdx', Nat.add_le_add_iff_right]
+    split <;> rfl
+
+/-- This result is taken from:
+  https://github.com/leanprover/lean4/blob/master/src/Init/Data/List/Nat/InsertIdx.lean
+  with simple modification here to make it run.
+  The file it was taken from is licensed under the Apache License, Version 2.0.
+  and written by Parikshit Khanna, Jeremy Avigad, Leonardo de Moura,
+    Floris van Doorn, Mario Carneiro.
+
+  Once HepLean is updated to that version of Lean this result will be removed.
+   -/
+theorem _root_.List.getElem_insertIdx_of_ge {l : List α} {x : α} {n k : Nat} (hn : n + 1 ≤ k)
+    (hk : k < (List.insertIdx n x l).length) :
+    (List.insertIdx n x l)[k] = l[k - 1]'(by simp [length_insertIdx'] at hk; split at hk <;> omega) := by
+  induction l generalizing n k with
+  | nil =>
+    cases n with
+    | zero =>
+      simp  [List.insertIdx_zero, List.length_singleton] at hk
+      omega
+    | succ n => simp at hk
+  | cons _ _ ih =>
+    cases n with
+    | zero =>
+      simp only [List.insertIdx_zero] at hk
+      cases k with
+      | zero => omega
+      | succ k => simp
+    | succ n =>
+      cases k with
+      | zero => simp
+      | succ k =>
+        simp only [List.insertIdx_succ_cons, List.getElem_cons_succ]
+        rw [ih (by omega)]
+        cases k with
+        | zero => omega
+        | succ k => simp
+
+
 lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
     (r : List I) (r0 : I) :
     List.orderedInsert le1 r0 r = List.insertIdx (orderedInsertPos le1 r r0).1 r0 r  := by
@@ -529,7 +582,9 @@ lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → 
       erw [List.getElem_insertIdx_of_lt]
       exact hn'
     · simp [hn']
-      sorry
+      rw [List.getElem_insertIdx_of_ge]
+      simp
+      omega
 
 /-- The equivalence between `Fin l.length ≃ Fin (List.insertionSort r l).length` induced by the
   sorting algorithm. -/

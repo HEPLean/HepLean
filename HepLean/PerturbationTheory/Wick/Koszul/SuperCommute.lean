@@ -275,12 +275,5 @@ lemma ofListM_ofList_superCommute' {I : Type}
   · simp [hq, superCommuteCoef]
   · simp [hq]
 
-
-lemma koszulOrder_superCommute_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
-    (i j : I) (hle : r i j) (a1 a2 : FreeAlgebra ℂ I) :
-    koszulOrder r q (a1 * superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j) * a2) =
-    0 := by
-  sorry
-
 end
 end Wick
