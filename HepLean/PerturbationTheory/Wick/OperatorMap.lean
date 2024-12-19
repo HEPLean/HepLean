@@ -16,6 +16,14 @@ namespace Wick
 
 noncomputable section
 
+/-- A map from the free algebra of fields `FreeAlgebra ℂ I` to an algebra `A`, to be
+  thought of as the operator algebra is said to be an operator map if
+  all super commutors of fields land in the center of `A`,
+  if two fields are of a different grade then their super commutor lands on zero,
+  and the `koszulOrder` (normal order) of any term with a super commutor of two fields present
+  is zero.
+  This can be thought as as a condtion on the operator algebra `A` as much as it can
+  on `F`. -/
 class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A] (q : I → Fin 2) (le1 : I → I → Prop)
     [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A) : Prop where
   superCommute_mem_center : ∀ i j, F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) ∈
@@ -135,9 +143,9 @@ lemma superCommute_koszulOrder_le_ofList {I : Type}
       rw [ofList_singleton, hn]
     simp
   · congr 1
-    trans superCommuteCoefLE q le1 r i n
-    · rw [superCommuteCoefLE, mul_assoc]
-    refine superCommuteCoefLE_eq_get q le1 r i n ?_
+    trans staticWickCoef q le1 r i n
+    · rw [staticWickCoef, mul_assoc]
+    refine staticWickCoef_eq_get q le1 r i n ?_
     simpa using hq
 
 lemma koszulOrder_of_le_all_ofList {I : Type}
@@ -199,6 +207,8 @@ lemma le_all_mul_koszulOrder_ofList {I : Type}
   · rw [map_smul, map_smul]
   · exact fun j => hi j
 
+/-- In the expansions of `F (FreeAlgebra.ι ℂ i * koszulOrder le1 q (ofList r x))`
+  the ter multiplying `F ((koszulOrder le1 q) (ofList (optionEraseZ r i n) x))`. -/
 def superCommuteCenterOrder {I : Type}
     (q : I → Fin 2) (r : List I) (i : I)
     {A : Type} [Semiring A] [Algebra ℂ A]

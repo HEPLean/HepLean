@@ -98,13 +98,12 @@ lemma koszulSignInsert_eq_filter {I : Type} (q : I → Fin 2) (le1 : I → I →
       simp
 
 lemma koszulSignInsert_eq_cons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I) :
+    [IsTotal I le1] (r0 : I) (r : List I) :
     koszulSignInsert le1 q r0 r = koszulSignInsert le1 q r0 (r0 :: r) := by
   simp only [koszulSignInsert, Fin.isValue, and_self]
   have h1 : le1 r0 r0 := by
     simpa using IsTotal.total (r := le1) r0 r0
   simp [h1]
-
 
 lemma koszulSignInsert_eq_grade {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
     (r0 : I) (r : List I) : koszulSignInsert le1 q r0 r = if grade q [r0] = 1 ∧
@@ -206,9 +205,39 @@ lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I
     · simp [orderedInsertPos]
 
 lemma koszulSignInsert_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (i j : I) [IsTotal I le1] [IsTrans I le1] (r : List I) (n : ℕ) (hn : n ≤ r.length) :
+    (i j : I) (r : List I) (n : ℕ) (hn : n ≤ r.length) :
     koszulSignInsert le1 q j (List.insertIdx n i r) = koszulSignInsert le1 q j (i :: r) := by
   apply koszulSignInsert_eq_perm
   exact List.perm_insertIdx i r hn
+
+/-- The difference in `koszulSignInsert` on inserting `r0` into `r` compared to
+  into `r1 :: r` for any `r`. -/
+def koszulSignCons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (r0 r1 : I) :
+    ℂ :=
+  if le1 r0 r1 then 1 else
+  if q r0 = 1 ∧ q r1 = 1 then -1 else 1
+
+lemma koszulSignCons_eq_superComuteCoef {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
+    [DecidableRel le1] (r0 r1 : I) : koszulSignCons q le1 r0 r1 =
+    if le1 r0 r1 then 1 else superCommuteCoef q [r0] [r1] := by
+  simp only [koszulSignCons, Fin.isValue, superCommuteCoef, grade, ite_eq_right_iff, zero_ne_one,
+    imp_false]
+  congr 1
+  by_cases h0 : q r0 = 1
+  · by_cases h1 : q r1 = 1
+    · simp [h0, h1]
+    · have h1 : q r1 = 0 := by omega
+      simp [h0, h1]
+  · have h0 : q r0 = 0 := by omega
+    by_cases h1 : q r1 = 1
+    · simp [h0, h1]
+    · have h1 : q r1 = 0 := by omega
+      simp [h0, h1]
+
+lemma koszulSignInsert_cons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
+    (r0 r1 : I) (r : List I) :
+    koszulSignInsert le1 q r0 (r1 :: r) = (koszulSignCons q le1 r0 r1) *
+    koszulSignInsert le1 q r0 r := by
+  simp [koszulSignInsert, koszulSignCons]
 
 end Wick

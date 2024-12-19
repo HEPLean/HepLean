@@ -24,7 +24,6 @@ def koszulSign {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin
   | [] => 1
   | a :: l => koszulSignInsert r q a l * koszulSign r q l
 
-
 lemma koszulSign_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
     (l : List I) : koszulSign r q l * koszulSign r q l = 1 := by
   induction l with
@@ -83,36 +82,6 @@ lemma koszulSign_erase_boson {I : Type} (q : I → Fin 2) (le1 :I → I → Prop
     congr 1
     rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ h']
     exact h'
-
-
-
-def koszulSignCons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (r0 r1 : I) :
-    ℂ :=
-  if le1 r0 r1 then 1 else
-  if q r0 = 1 ∧ q r1 = 1 then -1 else 1
-
-lemma koszulSignCons_eq_superComuteCoef {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
-    [DecidableRel le1] (r0 r1 : I) : koszulSignCons q le1 r0 r1 =
-    if le1 r0 r1 then 1 else superCommuteCoef q [r0] [r1] := by
-  simp only [koszulSignCons, Fin.isValue, superCommuteCoef, grade, ite_eq_right_iff, zero_ne_one,
-    imp_false]
-  congr 1
-  by_cases h0 : q r0 = 1
-  · by_cases h1 : q r1 = 1
-    · simp [h0, h1]
-    · have h1 : q r1 = 0 := by omega
-      simp [h0, h1]
-  · have h0 : q r0 = 0 := by omega
-    by_cases h1 : q r1 = 1
-    · simp [h0, h1]
-    · have h1 : q r1 = 0 := by omega
-      simp [h0, h1]
-
-lemma koszulSignInsert_cons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    [IsTotal I le1] [IsTrans I le1] (r0 r1 : I) (r : List I) :
-    koszulSignInsert le1 q r0 (r1 :: r) = (koszulSignCons q le1 r0 r1) *
-    koszulSignInsert le1 q r0 r := by
-  simp [koszulSignInsert, koszulSignCons]
 
 lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
     (i : I) [IsTotal I le1] [IsTrans I le1] : (r : List I) → (n : ℕ) → (hn : n ≤ r.length) →
@@ -199,8 +168,6 @@ lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
       rw [← insertionSortEquiv_get]
       simp only [Function.comp_apply, Equiv.symm_apply_apply, List.get_eq_getElem, ni]
       simp_all only [List.length_cons, add_le_add_iff_right, List.getElem_insertIdx_self]
-    have hms : (List.orderedInsert le1 r0 rs).get ⟨nro, by simp⟩ = r0 := by
-      simp [nro]
     have hc1 : ni.castSucc < nro → ¬ le1 r0 i := by
       intro hninro
       rw [← hns]
@@ -230,6 +197,5 @@ lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
       exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le1 rs r0)
     · exact Nat.le_of_lt_succ h
     · exact Nat.le_of_lt_succ h
-
 
 end Wick

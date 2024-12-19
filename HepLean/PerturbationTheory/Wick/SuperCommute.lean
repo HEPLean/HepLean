@@ -14,6 +14,10 @@ namespace Wick
 
 noncomputable section
 
+/-- Given a grading `q : I → Fin 2` and a list `l : List I` the super-commutor on the free algebra
+  `FreeAlgebra ℂ I` corresponding to commuting with `l`
+  as a linear map from `MonoidAlgebra ℂ (FreeMonoid I)` (the module of lists in `I`)
+  to itself. -/
 def superCommuteMonoidAlgebra {I : Type} (q : I → Fin 2) (l : List I) :
     MonoidAlgebra ℂ (FreeMonoid I) →ₗ[ℂ] MonoidAlgebra ℂ (FreeMonoid I) :=
   Finsupp.lift (MonoidAlgebra ℂ (FreeMonoid I)) ℂ (List I)
@@ -24,6 +28,9 @@ def superCommuteMonoidAlgebra {I : Type} (q : I → Fin 2) (l : List I) :
       else
         - Finsupp.lsingle (R := ℂ) (r ++ l) 1)
 
+/-- Given a grading `q : I → Fin 2` the super-commutor on the free algebra `FreeAlgebra ℂ I`
+  as a linear map from `MonoidAlgebra ℂ (FreeMonoid I)` (the module of lists in `I`)
+  to `FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I`. -/
 def superCommuteAlgebra {I : Type} (q : I → Fin 2) :
     MonoidAlgebra ℂ (FreeMonoid I) →ₗ[ℂ] FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I :=
   Finsupp.lift (FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I) ℂ (List I) fun l =>
@@ -31,6 +38,8 @@ def superCommuteAlgebra {I : Type} (q : I → Fin 2) :
     ∘ₗ superCommuteMonoidAlgebra q l
     ∘ₗ FreeAlgebra.equivMonoidAlgebraFreeMonoid.toAlgHom.toLinearMap)
 
+/-- Given a grading `q : I → Fin 2` the super-commutor on the free algebra `FreeAlgebra ℂ I`
+  as a bi-linear map. -/
 def superCommute {I : Type} (q : I → Fin 2) :
     FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I :=
   superCommuteAlgebra q
@@ -193,6 +202,11 @@ lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (
     mul_neg, smul_add, one_smul, smul_neg]
     abel
 
+/-- Given two lists `la lb : List I`, in the expansion of the supercommutor of `la` and `lb`
+  via elements of `lb`the term associated with the `n`th element.
+  E.g. in the commutator
+  `[a, bc] = [a, b] c + b [a, c] ` the `superCommuteSplit` for `n=0` is `[a, b] c`
+  and for `n=1` is `b [a, c]`. -/
 def superCommuteSplit {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) (n : ℕ)
   (hn : n < lb.length) : FreeAlgebra ℂ I :=
   superCommuteCoef q la (List.take n lb) •
@@ -268,7 +282,6 @@ lemma ofListLift_ofList_superCommute' {I : Type}
   · simp [hq, superCommuteCoef]
   · simp [hq]
 
-
 lemma superCommute_ofList_ofListLift {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
     superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) =
@@ -322,17 +335,19 @@ lemma ofList_ofListLift_superCommute {I : Type} {f : I → Type} [∀ i, Fintype
 lemma ofListLift_ofList_superCommute {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
   ofListLift f r y * ofList l x = superCommuteLiftCoef q l r • (ofList l x * ofListLift f r y)
-    - superCommuteLiftCoef q l r • superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
+    - superCommuteLiftCoef q l r •
+    superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
   rw [ofList_ofListLift_superCommute, superCommuteLiftCoef]
   by_cases hq : grade (fun i => q i.fst) l = 1 ∧ grade q r = 1
   · simp [hq]
   · simp [hq]
 
-lemma superCommuteLiftCoef_append {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma superCommuteLiftCoef_append {I : Type} {f : I → Type}
     (q : I → Fin 2) (l : List (Σ i, f i)) (r1 r2 : List I) :
-    superCommuteLiftCoef q l (r1 ++ r2) = superCommuteLiftCoef q l r1 * superCommuteLiftCoef q l r2 := by
-  simp only [superCommuteLiftCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
-    mul_ite, mul_neg, mul_one]
+    superCommuteLiftCoef q l (r1 ++ r2) =
+    superCommuteLiftCoef q l r1 * superCommuteLiftCoef q l r2 := by
+  simp only [superCommuteLiftCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one,
+    imp_false, mul_ite, mul_neg, mul_one]
   by_cases hla : grade (fun i => q i.1) l = 1
   · by_cases hlb : grade q r1 = 1
     · by_cases hlc : grade q r2 = 1
@@ -351,6 +366,12 @@ lemma superCommuteLiftCoef_append {I : Type} {f : I → Type} [∀ i, Fintype (f
       omega
     simp [ha]
 
+/-- Given two lists `l : List (Σ i, f i)` and `r : List I`, on
+  in the expansion of the supercommutor of `l` and the lift of `r`
+  via elements of `r`the term associated with the `n`th element.
+  E.g. in the commutator
+  `[a, bc] = [a, b] c + b [a, c] ` the `superCommuteSplit` for `n=0` is `[a, b] c`
+  and for `n=1` is `b [a, c]`. -/
 def superCommuteLiftSplit {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
     (hn : n < r.length) : FreeAlgebra ℂ (Σ i, f i) :=

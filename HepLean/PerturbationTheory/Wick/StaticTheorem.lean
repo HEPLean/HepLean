@@ -20,7 +20,7 @@ lemma static_wick_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A)
     (S : Contractions.Splitting f le1) :
     F (ofListLift f [] 1) = ∑ c : Contractions [],
     c.toCenterTerm f q le1 F S *

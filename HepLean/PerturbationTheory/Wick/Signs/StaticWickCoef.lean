@@ -17,23 +17,25 @@ namespace Wick
 
 open HepLean.List
 
-def superCommuteCoefLE {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+/-- The sign that appears in the static version of Wicks theorem.
+  This is actually equal to `superCommuteCoef q [r.get n] (r.take n)`, something
+  which will be proved in a lemma. -/
+def staticWickCoef {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
     [DecidableRel le1] (i : I) (n : Fin r.length) : ℂ :=
   koszulSign le1 q r *
   superCommuteCoef q [i] (List.take (↑((HepLean.List.insertionSortEquiv le1 r) n))
     (List.insertionSort le1 r)) *
   koszulSign le1 q (r.eraseIdx ↑n)
 
-lemma superCommuteCoefLE_eq_q {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+lemma staticWickCoef_eq_q {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
     [DecidableRel le1] (i : I) (n : Fin r.length)
     (hq : q i = q (r.get n)) :
-    superCommuteCoefLE q le1 r i n =
+    staticWickCoef q le1 r i n =
     koszulSign le1 q r *
     superCommuteCoef q [r.get n] (List.take (↑(insertionSortEquiv le1 r n))
       (List.insertionSort le1 r)) *
     koszulSign le1 q (r.eraseIdx ↑n) := by
-  simp [superCommuteCoefLE, superCommuteCoef, grade, hq]
-
+  simp [staticWickCoef, superCommuteCoef, grade, hq]
 
 lemma insertIdx_eraseIdx {I : Type} :
     (n : ℕ) → (r : List I) → (hn : n < r.length) →
@@ -47,11 +49,11 @@ lemma insertIdx_eraseIdx {I : Type} :
       List.eraseIdx_cons_succ, List.insertIdx_succ_cons, List.cons.injEq, true_and]
     exact insertIdx_eraseIdx n r _
 
-lemma superCommuteCoefLE_eq_get {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+lemma staticWickCoef_eq_get {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
     [DecidableRel le1] [IsTotal I le1] [IsTrans I le1] (i : I) (n : Fin r.length)
     (heq : q i = q (r.get n)) :
-    superCommuteCoefLE q le1 r i n = superCommuteCoef q [r.get n] (r.take n) := by
-  rw [superCommuteCoefLE_eq_q]
+    staticWickCoef q le1 r i n = superCommuteCoef q [r.get n] (r.take n) := by
+  rw [staticWickCoef_eq_q]
   let r' := r.eraseIdx ↑n
   have hr : List.insertIdx n (r.get n) (r.eraseIdx n) = r := by
     exact insertIdx_eraseIdx n.1 r n.prop

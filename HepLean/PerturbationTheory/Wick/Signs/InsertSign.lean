@@ -14,7 +14,8 @@ import HepLean.PerturbationTheory.Wick.Signs.SuperCommuteCoef
 namespace Wick
 open HepLean.List
 
-
+/-- The sign associated with inserting `r0` into `r` at the position `n`.
+  That is the sign associated with commuting `r0` with `List.take n r`. -/
 def insertSign {I : Type} (q : I → Fin 2) (n : ℕ) (r0 : I) (r : List I) : ℂ :=
   superCommuteCoef q [r0] (List.take n r)
 

@@ -13,25 +13,35 @@ import HepLean.PerturbationTheory.Wick.Signs.StaticWickCoef
 namespace Wick
 open HepLean.List
 
-def CreateAnnilateSect {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) : Type :=
+/-- The sections of `Σ i, f i` over a list `l : List I`.
+  In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
+  each field as a `creation` or an `annilation` operator. E.g. the number of terms
+  `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
+  operators at this point (e.g. ansymptotic states) this is accounted for. -/
+def CreateAnnilateSect {I : Type} (f : I → Type) (l : List I) : Type :=
   Π i, f (l.get i)
 
 namespace CreateAnnilateSect
 
 variable {I : Type} {f : I → Type} [∀ i, Fintype (f i)] {l : List I} (a : CreateAnnilateSect f l)
 
+/-- The type `CreateAnnilateSect f l` is finite. -/
 instance fintype : Fintype (CreateAnnilateSect f l) := Pi.fintype
 
+/-- The section got by dropping the first element of `l` if it exists. -/
 def tail : {l : List I} → (a : CreateAnnilateSect f l) → CreateAnnilateSect f l.tail
   | [], a => a
   | _ :: _, a => fun i => a (Fin.succ i)
 
+/-- For a list of fields `i :: l` the value of the section at the head `i`. -/
 def head {i : I} (a : CreateAnnilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
 
+/-- The list `List (Σ i, f i)` defined by `a`. -/
 def toList : {l : List I} → (a : CreateAnnilateSect f l) → List (Σ i, f i)
   | [], _ => []
   | i :: _, a => ⟨i, a.head⟩ :: toList a.tail
 
+omit [∀ i, Fintype (f i)] in
 @[simp]
 lemma toList_length : (toList a).length = l.length := by
   induction l with
@@ -40,15 +50,18 @@ lemma toList_length : (toList a).length = l.length := by
     simp only [toList, List.length_cons, Fin.zero_eta]
     rw [ih]
 
+omit [∀ i, Fintype (f i)] in
 lemma toList_tail : {l : List I} → (a : CreateAnnilateSect f l) → toList a.tail = (toList a).tail
   | [], _ => rfl
   | i :: l, a => by
     simp [toList]
 
+omit [∀ i, Fintype (f i)] in
 lemma toList_cons {i : I} (a : CreateAnnilateSect f (i :: l)) :
     (toList a) = ⟨i, a.head⟩ :: toList a.tail := by
   rfl
 
+omit [∀ i, Fintype (f i)] in
 lemma toList_get (a : CreateAnnilateSect f l) :
     (toList a).get = (fun i => ⟨l.get i, a i⟩) ∘ Fin.cast (by simp) := by
   induction l with
@@ -67,6 +80,7 @@ lemma toList_get (a : CreateAnnilateSect f l) :
       rw [ih]
       simp [tail]
 
+omit [∀ i, Fintype (f i)] in
 @[simp]
 lemma toList_grade (q : I → Fin 2) :
     grade (fun i => q i.fst) a.toList = 1 ↔ grade q l = 1 := by
@@ -90,7 +104,7 @@ lemma toList_grade (q : I → Fin 2) :
     rw [h1]
 
 @[simp]
-lemma toList_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma toList_grade_take {I : Type} {f : I → Type}
     (q : I → Fin 2) : (r : List I) → (a : CreateAnnilateSect f r) → (n : ℕ) →
     grade (fun i => q i.fst) (List.take n a.toList) = grade q (List.take n r)
   | [], _, _ => by
@@ -101,7 +115,10 @@ lemma toList_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     simp only [grade, Fin.isValue]
     rw [toList_grade_take q r a.tail n]
 
-def extractEquiv {I : Type} {f : I → Type} [(i : I) → Fintype (f i)] {l : List I}
+/-- The equivalence between `CreateAnnilateSect f l` and
+  `f (l.get n) × CreateAnnilateSect f (l.eraseIdx n)` obtained by extracting the `n`th field
+  from `l`. -/
+def extractEquiv {I : Type} {f : I → Type} {l : List I}
     (n : Fin l.length) : CreateAnnilateSect f l ≃
     f (l.get n) × CreateAnnilateSect f (l.eraseIdx n) := by
   match l with
@@ -136,7 +153,7 @@ def extractEquiv {I : Type} {f : I → Type} [(i : I) → Fintype (f i)] {l : Li
         next h_1 => simp_all only [not_lt, Fin.val_succ, Fin.coe_cast]))
     exact (Fin.insertNthEquiv _ _).symm.trans (Equiv.prodCongr (Equiv.refl _) e1.symm)
 
-lemma extractEquiv_symm_toList_get_same {I : Type} {f : I → Type} [(i : I) → Fintype (f i)]
+lemma extractEquiv_symm_toList_get_same {I : Type} {f : I → Type}
     {l : List I} (n : Fin l.length) (a0 : f (l.get n)) (a : CreateAnnilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).toList[n] = ⟨l[n], a0⟩ := by
   match l with
@@ -155,9 +172,11 @@ lemma extractEquiv_symm_toList_get_same {I : Type} {f : I → Type} [(i : I) →
     erw [Fin.insertNthEquiv_apply]
     simp only [Fin.insertNth_apply_same]
 
+/-- The section obtained by dropping the `n`th field. -/
 def eraseIdx (n : Fin l.length) : CreateAnnilateSect f (l.eraseIdx n) :=
   (extractEquiv n a).2
 
+omit [∀ i, Fintype (f i)] in
 @[simp]
 lemma eraseIdx_zero_tail {i : I} {l : List I} (a : CreateAnnilateSect f (i :: l)) :
     (eraseIdx a (@OfNat.ofNat (Fin (l.length + 1)) 0 Fin.instOfNat : Fin (l.length + 1))) =
@@ -168,6 +187,7 @@ lemma eraseIdx_zero_tail {i : I} {l : List I} (a : CreateAnnilateSect f (i :: l)
     Equiv.cast_refl, Equiv.trans_apply, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map_snd]
   rfl
 
+omit [∀ i, Fintype (f i)] in
 lemma eraseIdx_succ_head {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).length)
     (a : CreateAnnilateSect f (i :: l)) : (eraseIdx a ⟨n + 1, hn⟩).head = a.head := by
   rw [eraseIdx, extractEquiv]
@@ -189,6 +209,7 @@ lemma eraseIdx_succ_head {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).l
   congr
   simp [Fin.ext_iff]
 
+omit [∀ i, Fintype (f i)] in
 lemma eraseIdx_succ_tail {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).length)
     (a : CreateAnnilateSect f (i :: l)) :
     (eraseIdx a ⟨n + 1, hn⟩).tail = eraseIdx a.tail ⟨n, Nat.succ_lt_succ_iff.mp hn⟩ := by
@@ -250,6 +271,7 @@ lemma eraseIdx_succ_tail {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).l
       omega
     next h_1 => simp_all only [not_lt, Fin.val_succ, Fin.coe_cast]
 
+omit [∀ i, Fintype (f i)] in
 lemma eraseIdx_toList : {l : List I} → {n : Fin l.length} → (a : CreateAnnilateSect f l) →
     (eraseIdx a n).toList = a.toList.eraseIdx n
   | [], n, _ => Fin.elim0 n
@@ -263,7 +285,7 @@ lemma eraseIdx_toList : {l : List I} → {n : Fin l.length} → (a : CreateAnnil
     · conv_rhs => rw [← eraseIdx_toList (l := r) (n := ⟨n, Nat.succ_lt_succ_iff.mp h⟩) a.tail]
       rw [eraseIdx_succ_tail]
 
-lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type} [(i : I) → Fintype (f i)]
+lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type}
     {l : List I} (n : Fin l.length) (a0 : f l[↑n]) (a : CreateAnnilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).eraseIdx n = a := by
   match l with
@@ -272,7 +294,7 @@ lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type} [(i : I) → Fintyp
     rw [eraseIdx, extractEquiv]
     simp
 
-lemma toList_koszulSignInsert {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma toList_koszulSignInsert {I : Type} {f : I → Type}
     (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
     (l : List I) (a : CreateAnnilateSect f l) (x : (i : I) × f i) :
     koszulSignInsert (fun i j => le1 i.fst j.fst) (fun i => q i.fst) x a.toList =
@@ -283,7 +305,7 @@ lemma toList_koszulSignInsert {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     simp only [koszulSignInsert, List.tail_cons, Fin.isValue]
     rw [ih]
 
-lemma toList_koszulSign {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma toList_koszulSign {I : Type} {f : I → Type}
     (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
     (l : List I) (a : CreateAnnilateSect f l) :
     koszulSign (fun i j => le1 i.fst j.fst) (fun i => q i.fst) a.toList =
@@ -296,7 +318,7 @@ lemma toList_koszulSign {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     congr 1
     rw [toList_koszulSignInsert]
 
-lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma insertionSortEquiv_toList {I : Type} {f : I → Type}
     (le1 : I → I → Prop) [DecidableRel le1](l : List I)
       (a : CreateAnnilateSect f l) :
     insertionSortEquiv (fun i j => le1 i.fst j.fst) a.toList =
@@ -331,8 +353,7 @@ lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i
             · exact hij
           · exact hij
         · simp only [List.orderedInsert, hij, ↓reduceIte, List.unzip_snd, List.map_cons]
-          have hn : ¬ le1 i.1 j.1 := hij
-          simp only [hn, ↓reduceIte, List.cons.injEq, true_and]
+          simp only [↓reduceIte, List.cons.injEq, true_and]
           simpa using ih'
     have h2 (l' : List (Σ i, f i)) :
         List.map (fun i => i.1) (List.insertionSort (fun i j => le1 i.fst j.fst) l') =
@@ -366,13 +387,16 @@ lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i
       Fin.cast_trans, Fin.cast_eq_self, Fin.coe_cast]
     rfl
 
-def sort (le1 : I → I → Prop) [DecidableRel le1] : CreateAnnilateSect f (List.insertionSort le1 l) :=
+/-- Given a section for `l` the corresponding section
+  for `List.insertionSort le1 l`. -/
+def sort (le1 : I → I → Prop) [DecidableRel le1] :
+    CreateAnnilateSect f (List.insertionSort le1 l) :=
   Equiv.piCongr (HepLean.List.insertionSortEquiv le1 l) (fun i => (Equiv.cast (by
       congr 1
       rw [← HepLean.List.insertionSortEquiv_get]
       simp))) a
 
-lemma sort_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma sort_toList {I : Type} {f : I → Type}
     (le1 : I → I → Prop) [DecidableRel le1] (l : List I) (a : CreateAnnilateSect f l) :
     (a.sort le1).toList = List.insertionSort (fun i j => le1 i.fst j.fst) a.toList := by
   let l1 := List.insertionSort (fun i j => le1 i.fst j.fst) a.toList

@@ -14,6 +14,8 @@ import Mathlib.Analysis.Complex.Basic
 
 namespace Wick
 
+/-- Given a grading map `q : I → Fin 2` and a list `l : List I` counts the parity of the number of
+  elements in `l` which are of grade `1`. -/
 def grade {I : Type} (q : I → Fin 2) : (l : List I) → Fin 2
   | [] => 0
   | a :: l => if q a = grade q l then 0 else 1

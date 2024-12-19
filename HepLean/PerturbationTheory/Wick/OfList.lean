@@ -16,6 +16,7 @@ open HepLean.List
 
 noncomputable section
 
+/-- The element of the free algebra `FreeAlgebra ℂ I` associated with a `List I`. -/
 def ofList {I : Type} (l : List I) (x : ℂ) : FreeAlgebra ℂ I :=
   FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x)
 
@@ -76,6 +77,9 @@ lemma ofList_insertionSort_eq_koszulOrder {I : Type} (r : I → I → Prop) [Dec
   rw [koszulSign_mul_self]
   simp
 
+/-- The map of algebras from `FreeAlgebra ℂ I` to `FreeAlgebra ℂ (Σ i, f i)` taking
+  the monomial `i` to the sum of elements in `(Σ i, f i)` above `i`, i.e. the sum of the fiber
+  above `i`. -/
 def sumFiber {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
     FreeAlgebra ℂ I →ₐ[ℂ] FreeAlgebra ℂ (Σ i, f i) :=
   FreeAlgebra.lift ℂ fun i => ∑ (j : f i), FreeAlgebra.ι ℂ ⟨i, j⟩
@@ -84,6 +88,12 @@ lemma sumFiber_ι {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) :
     sumFiber f (FreeAlgebra.ι ℂ i) = ∑ (b : f i), FreeAlgebra.ι ℂ ⟨i, b⟩ := by
   simp [sumFiber]
 
+/-- Given a list `l : List I` the corresponding element of `FreeAlgebra ℂ (Σ i, f i)`
+  by mapping each `i : I` to the sum of it's fiber in `Σ i, f i` and taking the product of the
+  result.
+  For example, in terms of creation and annihlation opperators,
+  `[φ₁, φ₂, φ₃]` gets taken to `(φ₁⁰ + φ₁¹)(φ₂⁰ + φ₂¹)(φ₃⁰ + φ₃¹)`.
+  -/
 def ofListLift {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) (x : ℂ) :
     FreeAlgebra ℂ (Σ i, f i) :=
   sumFiber f (ofList l x)
@@ -155,7 +165,8 @@ lemma ofListLift_expand {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (x : 
 
 lemma koszulOrder_ofListLift {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (l : List I) (x : ℂ) : koszulOrder (fun i j => le1 i.1 j.1) (fun i => q i.fst) (ofListLift f l x) =
+    (l : List I) (x : ℂ) :
+    koszulOrder (fun i j => le1 i.1 j.1) (fun i => q i.fst) (ofListLift f l x) =
     sumFiber f (koszulOrder le1 q (ofList l x)) := by
   rw [koszulOrder_ofList]
   rw [map_smul]

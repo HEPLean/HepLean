@@ -14,6 +14,10 @@ import HepLean.PerturbationTheory.Wick.Signs.Grade
 namespace Wick
 open HepLean.List
 
+/-- Given two lists `la` and `lb` returns `-1` if they are both of grade `1` and
+  `1` otherwise. This corresponds to the sign associated with the super commutator
+  when commuting `la` and `lb` in the free algebra.
+  In terms of physics it is `-1` if commuting two fermionic operators and `1` otherwise. -/
 def superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I) : ℂ :=
   if grade q la = 1 ∧ grade q lb = 1 then - 1 else 1
 
@@ -23,11 +27,17 @@ lemma superCommuteCoef_comm {I : Type} (q : I → Fin 2) (la lb : List I) :
   congr 1
   exact Eq.propIntro (fun a => id (And.symm a)) fun a => id (And.symm a)
 
-def superCommuteLiftCoef {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+/-- Given a list `l : List (Σ i, f i)` and a list `r : List I` returns `-1` if the
+  grade of `l` is `1` and the grade of `r` is `1` and `1` otherwise. This corresponds
+  to the sign associated with the super commutator when commuting
+  the lift of `l` and `r` (by summing over fibers) in the
+  free algebra over `Σ i, f i`.
+  In terms of physics it is `-1` if commuting two fermionic operators and `1` otherwise. -/
+def superCommuteLiftCoef {I : Type} {f : I → Type}
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) : ℂ :=
     (if grade (fun i => q i.fst) l = 1 ∧ grade q r = 1 then -1 else 1)
 
-lemma superCommuteLiftCoef_empty {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma superCommuteLiftCoef_empty {I : Type} {f : I → Type}
     (q : I → Fin 2) (l : List (Σ i, f i)) :
     superCommuteLiftCoef q l [] = 1 := by
   simp [superCommuteLiftCoef]
@@ -78,6 +88,5 @@ lemma superCommuteCoef_cons {I : Type} (q : I → Fin 2) (i : I) (la lb : List I
   trans superCommuteCoef q la ([i] ++ lb)
   simp only [List.singleton_append]
   rw [superCommuteCoef_append]
-
 
 end Wick
