@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Koszul.SuperCommuteM
+import HepLean.PerturbationTheory.Wick.SuperCommute
 /-!
 
 # Koszul signs and ordering for lists and algebras
@@ -45,12 +45,12 @@ lemma superCommute_ofList_singleton_ι_center [OperatorMap q le1 F] (i j :I) :
 
 end OperatorMap
 
-lemma superCommuteTake_operatorMap {I : Type} (q : I → Fin 2)
+lemma superCommuteSplit_operatorMap {I : Type} (q : I → Fin 2)
     (le1 : I → I → Prop) [DecidableRel le1]
     (lb : List I) (xa xb : ℂ) (n : ℕ)
     (hn : n < lb.length) {A : Type} [Semiring A] [Algebra ℂ A] (f : FreeAlgebra ℂ I →ₐ[ℂ] A)
     [OperatorMap q le1 f] (i : I) :
-    f (superCommuteTake q [i] lb xa xb n hn) =
+    f (superCommuteSplit q [i] lb xa xb n hn) =
     f (superCommute q (ofList [i] xa) (FreeAlgebra.ι ℂ (lb.get ⟨n, hn⟩)))
     * (superCommuteCoef q [i] (List.take n lb) •
     f (ofList (List.eraseIdx lb n) xb)) := by
@@ -58,29 +58,29 @@ lemma superCommuteTake_operatorMap {I : Type} (q : I → Fin 2)
       Subalgebra.center ℂ A :=
     OperatorMap.superCommute_ofList_singleton_ι_center (le1 := le1) f i (lb.get ⟨n, hn⟩)
   rw [Subalgebra.mem_center_iff] at hn
-  rw [superCommuteTake, map_mul, map_mul, map_smul, hn, mul_assoc, smul_mul_assoc,
+  rw [superCommuteSplit, map_mul, map_mul, map_smul, hn, mul_assoc, smul_mul_assoc,
     ← map_mul, ← ofList_pair]
   congr
   · exact Eq.symm (List.eraseIdx_eq_take_drop_succ lb n)
   · exact one_mul xb
 
-lemma superCommuteTakeM_operatorMap {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma superCommuteLiftSplit_operatorMap {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (c : (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
     (hn : n < r.length)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A] (F : FreeAlgebra ℂ (Σ i, f i) →ₐ[ℂ] A)
     [OperatorMap (fun i => q i.1) le1 F] :
-    F (superCommuteTakeM q [c] r x y n hn) = superCommuteCoefM q [c] (List.take n r) •
+    F (superCommuteLiftSplit q [c] r x y n hn) = superCommuteLiftCoef q [c] (List.take n r) •
     (F (superCommute (fun i => q i.1) (ofList [c] x)
-    (freeAlgebraMap f (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩))))
-    * F (ofListM f (List.eraseIdx r n) y)) := by
-  rw [superCommuteTakeM]
+    (sumFiber f (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩))))
+    * F (ofListLift f (List.eraseIdx r n) y)) := by
+  rw [superCommuteLiftSplit]
   rw [map_smul]
   congr
   rw [map_mul, map_mul]
-  have h1 : F ((superCommute fun i => q i.fst) (ofList [c] x) ((freeAlgebraMap f)
+  have h1 : F ((superCommute fun i => q i.fst) (ofList [c] x) ((sumFiber f)
     (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩)))) ∈ Subalgebra.center ℂ A := by
-      rw [freeAlgebraMap_ι]
+      rw [sumFiber_ι]
       rw [map_sum, map_sum]
       refine Subalgebra.sum_mem _ ?_
       intro n
@@ -88,7 +88,7 @@ lemma superCommuteTakeM_operatorMap {I : Type} {f : I → Type} [∀ i, Fintype 
   rw [Subalgebra.mem_center_iff] at h1
   rw [h1, mul_assoc, ← map_mul]
   congr
-  rw [ofListM, ofListM, ofListM, ← map_mul]
+  rw [ofListLift, ofListLift, ofListLift, ← map_mul]
   congr
   rw [← ofList_pair, one_mul]
   congr
@@ -109,7 +109,7 @@ lemma superCommute_koszulOrder_le_ofList {I : Type}
   conv_lhs =>
     enter [2, 2]
     intro n
-    rw [superCommuteTake_operatorMap (le1 := le1)]
+    rw [superCommuteSplit_operatorMap (le1 := le1)]
     enter [1, 2, 2, 2]
     change ((List.insertionSort le1 r).get ∘ (HepLean.List.insertionSortEquiv le1 r)) n
     rw [HepLean.List.insertionSort_get_comp_insertionSortEquiv]
@@ -150,7 +150,7 @@ lemma koszulOrder_of_le_all_ofList {I : Type}
   conv_lhs =>
     enter [2, 2]
     rw [← ofList_singleton]
-    rw [ofListM_ofList_superCommute' q]
+    rw [ofListLift_ofList_superCommute' q]
   rw [map_sub]
   rw [sub_eq_add_neg]
   rw [map_add]
@@ -164,7 +164,7 @@ lemma koszulOrder_of_le_all_ofList {I : Type}
     rhs
     rw [superCommute_ofList_sum]
     rw [map_sum, map_sum]
-    dsimp [superCommuteTake]
+    dsimp [superCommuteSplit]
     rw [ofList_singleton]
     rhs
     intro n
@@ -243,29 +243,29 @@ lemma le_all_mul_koszulOrder_ofList_expand {I : Type}
     rfl
   exact fun j => hi j
 
-lemma le_all_mul_koszulOrder_ofListM_expand {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (r : List I) (x : ℂ) (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     [IsTotal (Σ i, f i) le1] [IsTrans (Σ i, f i) le1]
     (i : (Σ i, f i)) (hi : ∀ (j : (Σ i, f i)), le1 j i)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F] :
-    F (ofList [i] 1 * koszulOrder le1 (fun i => q i.1) (ofListM f r x)) =
-    F ((koszulOrder le1 fun i => q i.fst) (ofList [i] 1 * ofListM f r x)) +
+    F (ofList [i] 1 * koszulOrder le1 (fun i => q i.1) (ofListLift f r x)) =
+    F ((koszulOrder le1 fun i => q i.fst) (ofList [i] 1 * ofListLift f r x)) +
     ∑ n : (Fin r.length), superCommuteCoef q [r.get n] (List.take (↑n) r) •
-      F (((superCommute fun i => q i.fst) (ofList [i] 1)) (ofListM f [r.get n] 1)) *
-    F ((koszulOrder le1 fun i => q i.fst) (ofListM f (r.eraseIdx ↑n) x)) := by
+      F (((superCommute fun i => q i.fst) (ofList [i] 1)) (ofListLift f [r.get n] 1)) *
+    F ((koszulOrder le1 fun i => q i.fst) (ofListLift f (r.eraseIdx ↑n) x)) := by
   match r with
   | [] =>
     simp only [map_mul, List.length_nil, Finset.univ_eq_empty, List.get_eq_getElem, List.take_nil,
       List.eraseIdx_nil, Algebra.smul_mul_assoc, Finset.sum_empty, add_zero]
-    rw [ofListM_empty_smul]
+    rw [ofListLift_empty_smul]
     simp only [map_smul, koszulOrder_one, map_one, Algebra.mul_smul_comm, mul_one]
     rw [ofList_singleton, koszulOrder_ι]
   | r0 :: r =>
-  rw [ofListM_expand, map_sum, Finset.mul_sum, map_sum]
-  let e1 (a : CreatAnnilateSect f (r0 :: r)) :
+  rw [ofListLift_expand, map_sum, Finset.mul_sum, map_sum]
+  let e1 (a : CreateAnnilateSect f (r0 :: r)) :
         Option (Fin a.toList.length) ≃ Option (Fin (r0 :: r).length) :=
-      Equiv.optionCongr (Fin.castOrderIso (CreatAnnilateSect.toList_length a)).toEquiv
+      Equiv.optionCongr (Fin.castOrderIso (CreateAnnilateSect.toList_length a)).toEquiv
   conv_lhs =>
     rhs
     intro a
@@ -287,25 +287,25 @@ lemma le_all_mul_koszulOrder_ofListM_expand {I : Type} {f : I → Type} [∀ i, 
     rw [ofList_cons_eq_ofList]
   · congr
     funext n
-    rw [← (CreatAnnilateSect.extractEquiv n).symm.sum_comp]
+    rw [← (CreateAnnilateSect.extractEquiv n).symm.sum_comp]
     simp only [List.get_eq_getElem, List.length_cons, Equiv.optionCongr_symm, OrderIso.toEquiv_symm,
       Fin.symm_castOrderIso, Equiv.optionCongr_apply, RelIso.coe_fn_toEquiv, Option.map_some',
       Fin.castOrderIso_apply, Algebra.smul_mul_assoc, e1]
     erw [Finset.sum_product]
-    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreatAnnilateSect f ((r0 :: r).eraseIdx ↑n)) :
+    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreateAnnilateSect f ((r0 :: r).eraseIdx ↑n)) :
       superCommuteCenterOrder (fun i => q i.fst)
-        ((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList i F
+        ((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList i F
       (some (Fin.cast (by simp) n)) =
       superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) (r0 :: r)) •
       F (((superCommute fun i => q i.fst) (ofList [i] 1))
       (FreeAlgebra.ι ℂ ⟨(r0 :: r).get n, a0⟩)) := by
       simp only [superCommuteCenterOrder, List.get_eq_getElem, List.length_cons, Fin.coe_cast]
-      erw [CreatAnnilateSect.extractEquiv_symm_toList_get_same]
+      erw [CreateAnnilateSect.extractEquiv_symm_toList_get_same]
       have hsc : superCommuteCoef (fun i => q i.fst) [⟨(r0 :: r).get n, a0⟩]
-        (List.take (↑n) ((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList) =
+        (List.take (↑n) ((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList) =
         superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) ((r0 :: r))) := by
         simp only [superCommuteCoef, List.get_eq_getElem, List.length_cons, Fin.isValue,
-          CreatAnnilateSect.toList_grade_take]
+          CreateAnnilateSect.toList_grade_take]
         rfl
       erw [hsc]
       rfl
@@ -329,19 +329,19 @@ lemma le_all_mul_koszulOrder_ofListM_expand {I : Type} {f : I → Type} [∀ i, 
       rhs
       rhs
       lhs
-      rw [← CreatAnnilateSect.eraseIdx_toList]
-      erw [CreatAnnilateSect.extractEquiv_symm_eraseIdx]
+      rw [← CreateAnnilateSect.eraseIdx_toList]
+      erw [CreateAnnilateSect.extractEquiv_symm_eraseIdx]
     rw [← Finset.sum_mul]
     conv_lhs =>
       lhs
       rw [← Finset.smul_sum]
-      erw [← map_sum, ← map_sum, ← ofListM_singleton_one]
+      erw [← map_sum, ← map_sum, ← ofListLift_singleton_one]
     conv_lhs =>
       rhs
       rw [← map_sum, ← map_sum]
       simp only [List.get_eq_getElem, List.length_cons, Equiv.symm_apply_apply,
         Algebra.smul_mul_assoc]
-      erw [← ofListM_expand]
+      erw [← ofListLift_expand]
     simp only [List.get_eq_getElem, List.length_cons, Algebra.smul_mul_assoc]
 
 end

@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Koszul.OfList
+import HepLean.PerturbationTheory.Wick.OfList
 /-!
 
 # Koszul signs and ordering for lists and algebras
@@ -193,7 +193,7 @@ lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (
     mul_neg, smul_add, one_smul, smul_neg]
     abel
 
-def superCommuteTake {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) (n : ℕ)
+def superCommuteSplit {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) (n : ℕ)
   (hn : n < lb.length) : FreeAlgebra ℂ I :=
   superCommuteCoef q la (List.take n lb) •
   ofList (List.take n lb) 1 *
@@ -212,7 +212,7 @@ lemma superCommute_ofList_cons {I : Type} (q : I → Fin 2) (la lb : List I) (xa
 
 lemma superCommute_ofList_sum {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
     superCommute q (ofList la xa) (ofList lb xb) =
-    ∑ (n : Fin lb.length), superCommuteTake q la lb xa xb n n.prop := by
+    ∑ (n : Fin lb.length), superCommuteSplit q la lb xa xb n n.prop := by
   induction lb with
   | nil =>
     simp only [superCommute_ofList_ofList, List.append_nil, Fin.isValue, grade_empty, zero_ne_one,
@@ -223,8 +223,8 @@ lemma superCommute_ofList_sum {I : Type} (q : I → Fin 2) (la lb : List I) (xa 
   | cons b lb ih =>
     rw [superCommute_ofList_cons, ih]
     have h0 : ((superCommute q) (ofList la xa)) (FreeAlgebra.ι ℂ b) * ofList lb xb =
-        superCommuteTake q la (b :: lb) xa xb 0 (Nat.zero_lt_succ lb.length) := by
-      simp [superCommuteTake, superCommuteCoef_empty, ofList_empty]
+        superCommuteSplit q la (b :: lb) xa xb 0 (Nat.zero_lt_succ lb.length) := by
+      simp [superCommuteSplit, superCommuteCoef_empty, ofList_empty]
     rw [h0]
     have hf (f : Fin (b :: lb).length → FreeAlgebra ℂ I) : ∑ n, f n = f ⟨0,
         Nat.zero_lt_succ lb.length⟩ + ∑ n, f (Fin.succ n) := by
@@ -234,7 +234,7 @@ lemma superCommute_ofList_sum {I : Type} (q : I → Fin 2) (la lb : List I) (xa 
     rw [Finset.mul_sum]
     congr
     funext n
-    simp only [superCommuteTake, Fin.eta, List.get_eq_getElem, Algebra.smul_mul_assoc,
+    simp only [superCommuteSplit, Fin.eta, List.get_eq_getElem, Algebra.smul_mul_assoc,
       Algebra.mul_smul_comm, smul_smul, List.length_cons, Fin.val_succ, List.take_succ_cons,
       List.getElem_cons_succ, List.drop_succ_cons]
     congr 1
@@ -258,7 +258,7 @@ lemma ofList_ofList_superCommute {I : Type} (q : I → Fin 2) (la lb : List I) (
   rw [superCommute_ofList_ofList_superCommuteCoef]
   abel
 
-lemma ofListM_ofList_superCommute' {I : Type}
+lemma ofListLift_ofList_superCommute' {I : Type}
     (q : I → Fin 2) (l : List I) (r : List I) (x y : ℂ) :
   ofList r y * ofList l x = superCommuteCoef q l r • (ofList l x * ofList r y)
     - superCommuteCoef q l r • superCommute q (ofList l x) (ofList r y) := by
@@ -268,5 +268,186 @@ lemma ofListM_ofList_superCommute' {I : Type}
   · simp [hq, superCommuteCoef]
   · simp [hq]
 
+
+lemma superCommute_ofList_ofListLift {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
+    superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) =
+    ofList l x * ofListLift f r y +
+    (if grade (fun i => q i.1) l = 1 ∧ grade q r = 1 then
+    ofListLift f r y * ofList l x else - ofListLift f r y * ofList l x) := by
+  conv_lhs => rw [ofListLift_expand]
+  rw [map_sum]
+  conv_rhs =>
+    lhs
+    rw [ofListLift_expand, Finset.mul_sum]
+  conv_rhs =>
+    rhs
+    rhs
+    rw [ofListLift_expand, ← Finset.sum_neg_distrib, Finset.sum_mul]
+  conv_rhs =>
+    rhs
+    lhs
+    rw [ofListLift_expand, Finset.sum_mul]
+  rw [← Finset.sum_ite_irrel]
+  rw [← Finset.sum_add_distrib]
+  congr
+  funext a
+  rw [superCommute_ofList_ofList]
+  congr 1
+  · exact ofList_pair l a.toList x y
+  congr 1
+  · simp
+  · exact ofList_pair a.toList l y x
+  · rw [ofList_pair]
+    simp only [neg_mul]
+
+lemma superCommute_ofList_ofListLift_superCommuteLiftCoef {I : Type} {f : I → Type}
+    [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
+    superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) =
+    ofList l x * ofListLift f r y - superCommuteLiftCoef q l r • ofListLift f r y * ofList l x := by
+  rw [superCommute_ofList_ofListLift, superCommuteLiftCoef]
+  by_cases hq : grade (fun i => q i.fst) l = 1 ∧ grade q r = 1
+  · simp [hq]
+  · simp only [Fin.isValue, hq, ↓reduceIte, neg_mul, one_smul]
+    abel
+
+lemma ofList_ofListLift_superCommute {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
+    ofList l x * ofListLift f r y = superCommuteLiftCoef q l r • ofListLift f r y * ofList l x
+    + superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
+  rw [superCommute_ofList_ofListLift_superCommuteLiftCoef]
+  abel
+
+lemma ofListLift_ofList_superCommute {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
+  ofListLift f r y * ofList l x = superCommuteLiftCoef q l r • (ofList l x * ofListLift f r y)
+    - superCommuteLiftCoef q l r • superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
+  rw [ofList_ofListLift_superCommute, superCommuteLiftCoef]
+  by_cases hq : grade (fun i => q i.fst) l = 1 ∧ grade q r = 1
+  · simp [hq]
+  · simp [hq]
+
+lemma superCommuteLiftCoef_append {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r1 r2 : List I) :
+    superCommuteLiftCoef q l (r1 ++ r2) = superCommuteLiftCoef q l r1 * superCommuteLiftCoef q l r2 := by
+  simp only [superCommuteLiftCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
+    mul_ite, mul_neg, mul_one]
+  by_cases hla : grade (fun i => q i.1) l = 1
+  · by_cases hlb : grade q r1 = 1
+    · by_cases hlc : grade q r2 = 1
+      · simp [hlc, hlb, hla]
+      · have hc : grade q r2 = 0 := by
+          omega
+        simp [hc, hlb, hla]
+    · have hb : grade q r1 = 0 := by
+        omega
+      by_cases hlc : grade q r2 = 1
+      · simp [hlc, hb]
+      · have hc : grade q r2 = 0 := by
+          omega
+        simp [hc, hb]
+  · have ha : grade (fun i => q i.1) l = 0 := by
+      omega
+    simp [ha]
+
+def superCommuteLiftSplit {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
+    (hn : n < r.length) : FreeAlgebra ℂ (Σ i, f i) :=
+  superCommuteLiftCoef q l (List.take n r) •
+  (ofListLift f (List.take n r) 1 *
+  superCommute (fun i => q i.1) (ofList l x) (sumFiber f (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩)))
+  * ofListLift f (List.drop (n + 1) r) y)
+
+lemma superCommute_ofList_ofListLift_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) (b1 : I) :
+    superCommute (fun i => q i.1) (ofList l x) (ofListLift f (b1 :: r) y) =
+    superCommute (fun i => q i.1) (ofList l x) (sumFiber f (FreeAlgebra.ι ℂ b1))
+    * ofListLift f r y + superCommuteLiftCoef q l [b1] •
+    (ofListLift f [b1] 1) * superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
+  rw [ofListLift_cons]
+  conv_lhs =>
+    rhs
+    rw [ofListLift_expand]
+    rw [Finset.mul_sum]
+  rw [map_sum]
+  trans ∑ (n : CreateAnnilateSect f r), ∑ j : f b1, ((superCommute fun i => q i.fst) (ofList l x))
+    ((FreeAlgebra.ι ℂ ⟨b1, j⟩) * ofList n.toList y)
+  · apply congrArg
+    funext n
+    rw [← map_sum]
+    congr
+    rw [Finset.sum_mul]
+  conv_rhs =>
+    lhs
+    rw [ofListLift_expand, Finset.mul_sum]
+  conv_rhs =>
+    rhs
+    rhs
+    rw [ofListLift_expand]
+    rw [map_sum]
+  conv_rhs =>
+    rhs
+    rw [Finset.mul_sum]
+  rw [← Finset.sum_add_distrib]
+  congr
+  funext n
+  rw [sumFiber_ι, map_sum, Finset.sum_mul]
+  conv_rhs =>
+    rhs
+    rw [ofListLift_singleton]
+    rw [Finset.smul_sum, Finset.sum_mul]
+  rw [← Finset.sum_add_distrib]
+  congr
+  funext b
+  trans ((superCommute fun i => q i.fst) (ofList l x)) (ofList (⟨b1, b⟩ :: n.toList) y)
+  · congr
+    rw [ofList_cons_eq_ofList]
+    rw [ofList_singleton]
+  rw [superCommute_ofList_cons]
+  congr
+  rw [ofList_singleton]
+  simp
+
+lemma superCommute_ofList_ofListLift_sum {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) (x y : ℂ) :
+    superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) =
+    ∑ (n : Fin r.length), superCommuteLiftSplit q l r x y n n.prop := by
+  induction r with
+  | nil =>
+    simp only [superCommute_ofList_ofListLift, Fin.isValue, grade_empty, zero_ne_one, and_false,
+      ↓reduceIte, neg_mul, List.length_nil, Finset.univ_eq_empty, Finset.sum_empty]
+    rw [ofListLift, ofList_empty']
+    simp
+  | cons b r ih =>
+    rw [superCommute_ofList_ofListLift_cons]
+    have h0 : ((superCommute fun i => q i.fst) (ofList l x))
+        ((sumFiber f) (FreeAlgebra.ι ℂ b)) * ofListLift f r y =
+        superCommuteLiftSplit q l (b :: r) x y 0 (Nat.zero_lt_succ r.length) := by
+      simp [superCommuteLiftSplit, superCommuteLiftCoef_empty, ofListLift_empty]
+    rw [h0]
+    have hf (g : Fin (b :: r).length → FreeAlgebra ℂ ((i : I) × f i)) : ∑ n, g n = g ⟨0,
+        Nat.zero_lt_succ r.length⟩ + ∑ n, g (Fin.succ n) := by
+      exact Fin.sum_univ_succAbove g ⟨0, Nat.zero_lt_succ r.length⟩
+    rw [hf]
+    congr
+    rw [ih]
+    rw [Finset.mul_sum]
+    congr
+    funext n
+    simp only [superCommuteLiftSplit, Fin.eta, List.get_eq_getElem, Algebra.mul_smul_comm,
+      Algebra.smul_mul_assoc, smul_smul, List.length_cons, Fin.val_succ, List.take_succ_cons,
+      List.getElem_cons_succ, List.drop_succ_cons]
+    congr 1
+    · rw [mul_comm, ← superCommuteLiftCoef_append]
+      rfl
+    · simp only [← mul_assoc, mul_eq_mul_right_iff]
+      apply Or.inl
+      apply Or.inl
+      rw [ofListLift, ofListLift, ofListLift]
+      rw [← map_mul]
+      congr
+      rw [← ofList_pair, one_mul]
+      rfl
 end
 end Wick

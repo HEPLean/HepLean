@@ -3,147 +3,32 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Koszul.Grade
+import HepLean.PerturbationTheory.Wick.Signs.StaticWickCoef
 /-!
 
-# Koszul signs and ordering for lists and algebras
+# Create and annihilate sections (of bundles)
 
 -/
 
 namespace Wick
 open HepLean.List
 
-noncomputable section
-
-def ofList {I : Type} (l : List I) (x : ℂ) : FreeAlgebra ℂ I :=
-  FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x)
-
-lemma ofList_pair {I : Type} (l r : List I) (x y : ℂ) :
-    ofList (l ++ r) (x * y) = ofList l x * ofList r y := by
-  simp only [ofList, ← map_mul, MonoidAlgebra.single_mul_single, EmbeddingLike.apply_eq_iff_eq]
-  rfl
-
-lemma ofList_triple {I : Type} (la lb lc : List I) (xa xb xc : ℂ) :
-    ofList (la ++ lb ++ lc) (xa * xb * xc) = ofList la xa * ofList lb xb * ofList lc xc := by
-  rw [ofList_pair, ofList_pair]
-
-lemma ofList_triple_assoc {I : Type} (la lb lc : List I) (xa xb xc : ℂ) :
-    ofList (la ++ (lb ++ lc)) (xa * (xb * xc)) = ofList la xa * ofList lb xb * ofList lc xc := by
-  rw [ofList_pair, ofList_pair]
-  exact Eq.symm (mul_assoc (ofList la xa) (ofList lb xb) (ofList lc xc))
-
-lemma ofList_cons_eq_ofList {I : Type} (l : List I) (i : I) (x : ℂ) :
-    ofList (i :: l) x = ofList [i] 1 * ofList l x := by
-  simp only [ofList, ← map_mul, MonoidAlgebra.single_mul_single, one_mul,
-    EmbeddingLike.apply_eq_iff_eq]
-  rfl
-
-lemma ofList_singleton {I : Type} (i : I) :
-    ofList [i] 1 = FreeAlgebra.ι ℂ i := by
-  simp only [ofList, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
-    MonoidAlgebra.single, AlgEquiv.ofAlgHom_symm_apply, MonoidAlgebra.lift_single, one_smul]
-  rfl
-
-lemma ofList_eq_smul_one {I : Type} (l : List I) (x : ℂ) :
-    ofList l x = x • ofList l 1 := by
-  simp only [ofList]
-  rw [← map_smul]
-  simp
-
-lemma ofList_empty {I : Type} : ofList [] 1 = (1 : FreeAlgebra ℂ I) := by
-  simp only [ofList, EmbeddingLike.map_eq_one_iff]
-  rfl
-
-lemma ofList_empty' {I : Type} : ofList [] x = x • (1 : FreeAlgebra ℂ I) := by
-  rw [ofList_eq_smul_one, ofList_empty]
-
-lemma koszulOrder_ofList {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
-    (l : List I) (x : ℂ) :
-    koszulOrder r q (ofList l x) = (koszulSign r q l) • ofList (List.insertionSort r l) x := by
-  rw [ofList]
-  rw [koszulOrder_single]
-  change ofList (List.insertionSort r l) _ = _
-  rw [ofList_eq_smul_one]
-  conv_rhs => rw [ofList_eq_smul_one]
-  rw [smul_smul]
-
-lemma ofList_insertionSort_eq_koszulOrder {I : Type} (r : I → I → Prop) [DecidableRel r]
-    (q : I → Fin 2) (l : List I) (x : ℂ) :
-    ofList (List.insertionSort r l) x = (koszulSign r q l) • koszulOrder r q (ofList l x) := by
-  rw [koszulOrder_ofList]
-  rw [smul_smul]
-  rw [koszulSign_mul_self]
-  simp
-
-def freeAlgebraMap {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
-    FreeAlgebra ℂ I →ₐ[ℂ] FreeAlgebra ℂ (Σ i, f i) :=
-  FreeAlgebra.lift ℂ fun i => ∑ (j : f i), FreeAlgebra.ι ℂ ⟨i, j⟩
-
-lemma freeAlgebraMap_ι {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) :
-    freeAlgebraMap f (FreeAlgebra.ι ℂ i) = ∑ (b : f i), FreeAlgebra.ι ℂ ⟨i, b⟩ := by
-  simp [freeAlgebraMap]
-
-def ofListM {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) (x : ℂ) :
-    FreeAlgebra ℂ (Σ i, f i) :=
-  freeAlgebraMap f (ofList l x)
-
-lemma ofListM_empty {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
-  ofListM f [] 1 = 1 := by
-  simp only [ofListM, EmbeddingLike.map_eq_one_iff]
-  rw [ofList_empty]
-  exact map_one (freeAlgebraMap f)
-
-lemma ofListM_empty_smul {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (x : ℂ) :
-  ofListM f [] x = x • 1 := by
-  simp only [ofListM, EmbeddingLike.map_eq_one_iff]
-  rw [ofList_eq_smul_one]
-  rw [ofList_empty]
-  simp
-
-lemma ofListM_cons {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) (r : List I) (x : ℂ) :
-    ofListM f (i :: r) x = (∑ j : f i, FreeAlgebra.ι ℂ ⟨i, j⟩) * (ofListM f r x) := by
-  rw [ofListM, ofList_cons_eq_ofList, ofList_singleton, map_mul]
-  conv_lhs => lhs; rw [freeAlgebraMap]
-  rw [ofListM]
-  simp
-
-lemma ofListM_singleton {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) (x : ℂ) :
-    ofListM f [i] x = ∑ j : f i, x • FreeAlgebra.ι ℂ ⟨i, j⟩ := by
-  simp only [ofListM]
-  rw [ofList_eq_smul_one, ofList_singleton, map_smul]
-  rw [freeAlgebraMap_ι]
-  rw [Finset.smul_sum]
-
-lemma ofListM_singleton_one {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I) :
-    ofListM f [i] 1 = ∑ j : f i, FreeAlgebra.ι ℂ ⟨i, j⟩ := by
-  simp only [ofListM]
-  rw [ofList_eq_smul_one, ofList_singleton, map_smul]
-  rw [freeAlgebraMap_ι]
-  rw [Finset.smul_sum]
-  simp
-
-lemma ofListM_cons_eq_ofListM {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (i : I)
-    (r : List I) (x : ℂ) :
-    ofListM f (i :: r) x = ofListM f [i] 1 * ofListM f r x := by
-  rw [ofListM_cons, ofListM_singleton]
-  simp only [one_smul]
-
-def CreatAnnilateSect {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) : Type :=
+def CreateAnnilateSect {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) : Type :=
   Π i, f (l.get i)
 
-namespace CreatAnnilateSect
+namespace CreateAnnilateSect
 
-variable {I : Type} {f : I → Type} [∀ i, Fintype (f i)] {l : List I} (a : CreatAnnilateSect f l)
+variable {I : Type} {f : I → Type} [∀ i, Fintype (f i)] {l : List I} (a : CreateAnnilateSect f l)
 
-instance fintype : Fintype (CreatAnnilateSect f l) := Pi.fintype
+instance fintype : Fintype (CreateAnnilateSect f l) := Pi.fintype
 
-def tail : {l : List I} → (a : CreatAnnilateSect f l) → CreatAnnilateSect f l.tail
+def tail : {l : List I} → (a : CreateAnnilateSect f l) → CreateAnnilateSect f l.tail
   | [], a => a
   | _ :: _, a => fun i => a (Fin.succ i)
 
-def head {i : I} (a : CreatAnnilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
+def head {i : I} (a : CreateAnnilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
 
-def toList : {l : List I} → (a : CreatAnnilateSect f l) → List (Σ i, f i)
+def toList : {l : List I} → (a : CreateAnnilateSect f l) → List (Σ i, f i)
   | [], _ => []
   | i :: _, a => ⟨i, a.head⟩ :: toList a.tail
 
@@ -155,16 +40,16 @@ lemma toList_length : (toList a).length = l.length := by
     simp only [toList, List.length_cons, Fin.zero_eta]
     rw [ih]
 
-lemma toList_tail : {l : List I} → (a : CreatAnnilateSect f l) → toList a.tail = (toList a).tail
+lemma toList_tail : {l : List I} → (a : CreateAnnilateSect f l) → toList a.tail = (toList a).tail
   | [], _ => rfl
   | i :: l, a => by
     simp [toList]
 
-lemma toList_cons {i : I} (a : CreatAnnilateSect f (i :: l)) :
+lemma toList_cons {i : I} (a : CreateAnnilateSect f (i :: l)) :
     (toList a) = ⟨i, a.head⟩ :: toList a.tail := by
   rfl
 
-lemma toList_get (a : CreatAnnilateSect f l) :
+lemma toList_get (a : CreateAnnilateSect f l) :
     (toList a).get = (fun i => ⟨l.get i, a i⟩) ∘ Fin.cast (by simp) := by
   induction l with
   | nil =>
@@ -206,7 +91,7 @@ lemma toList_grade (q : I → Fin 2) :
 
 @[simp]
 lemma toList_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) : (r : List I) → (a : CreatAnnilateSect f r) → (n : ℕ) →
+    (q : I → Fin 2) : (r : List I) → (a : CreateAnnilateSect f r) → (n : ℕ) →
     grade (fun i => q i.fst) (List.take n a.toList) = grade q (List.take n r)
   | [], _, _ => by
     simp [toList]
@@ -217,12 +102,12 @@ lemma toList_grade_take {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     rw [toList_grade_take q r a.tail n]
 
 def extractEquiv {I : Type} {f : I → Type} [(i : I) → Fintype (f i)] {l : List I}
-    (n : Fin l.length) : CreatAnnilateSect f l ≃
-    f (l.get n) × CreatAnnilateSect f (l.eraseIdx n) := by
+    (n : Fin l.length) : CreateAnnilateSect f l ≃
+    f (l.get n) × CreateAnnilateSect f (l.eraseIdx n) := by
   match l with
   | [] => exact Fin.elim0 n
   | l0 :: l =>
-    let e1 : CreatAnnilateSect f ((l0 :: l).eraseIdx n) ≃ Π i, f ((l0 :: l).get (n.succAbove i)) :=
+    let e1 : CreateAnnilateSect f ((l0 :: l).eraseIdx n) ≃ Π i, f ((l0 :: l).get (n.succAbove i)) :=
       Equiv.piCongr (Fin.castOrderIso (by rw [eraseIdx_cons_length])).toEquiv
       fun x => Equiv.cast (congrArg f (by
       rw [HepLean.List.eraseIdx_get]
@@ -252,15 +137,15 @@ def extractEquiv {I : Type} {f : I → Type} [(i : I) → Fintype (f i)] {l : Li
     exact (Fin.insertNthEquiv _ _).symm.trans (Equiv.prodCongr (Equiv.refl _) e1.symm)
 
 lemma extractEquiv_symm_toList_get_same {I : Type} {f : I → Type} [(i : I) → Fintype (f i)]
-    {l : List I} (n : Fin l.length) (a0 : f (l.get n)) (a : CreatAnnilateSect f (l.eraseIdx n)) :
+    {l : List I} (n : Fin l.length) (a0 : f (l.get n)) (a : CreateAnnilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).toList[n] = ⟨l[n], a0⟩ := by
   match l with
   | [] => exact Fin.elim0 n
   | l0 :: l =>
-    trans (((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList).get (Fin.cast (by simp) n)
+    trans (((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList).get (Fin.cast (by simp) n)
     · simp only [List.length_cons, List.get_eq_getElem, Fin.coe_cast]
       rfl
-    rw [CreatAnnilateSect.toList_get]
+    rw [CreateAnnilateSect.toList_get]
     simp only [List.get_eq_getElem, List.length_cons, extractEquiv, RelIso.coe_fn_toEquiv,
       Fin.castOrderIso_apply, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.prodCongr_symm,
       Equiv.refl_symm, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map_apply, id_eq,
@@ -270,11 +155,11 @@ lemma extractEquiv_symm_toList_get_same {I : Type} {f : I → Type} [(i : I) →
     erw [Fin.insertNthEquiv_apply]
     simp only [Fin.insertNth_apply_same]
 
-def eraseIdx (n : Fin l.length) : CreatAnnilateSect f (l.eraseIdx n) :=
+def eraseIdx (n : Fin l.length) : CreateAnnilateSect f (l.eraseIdx n) :=
   (extractEquiv n a).2
 
 @[simp]
-lemma eraseIdx_zero_tail {i : I} {l : List I} (a : CreatAnnilateSect f (i :: l)) :
+lemma eraseIdx_zero_tail {i : I} {l : List I} (a : CreateAnnilateSect f (i :: l)) :
     (eraseIdx a (@OfNat.ofNat (Fin (l.length + 1)) 0 Fin.instOfNat : Fin (l.length + 1))) =
     a.tail := by
   simp only [List.length_cons, Fin.val_zero, List.eraseIdx_cons_zero, eraseIdx, List.get_eq_getElem,
@@ -284,7 +169,7 @@ lemma eraseIdx_zero_tail {i : I} {l : List I} (a : CreatAnnilateSect f (i :: l))
   rfl
 
 lemma eraseIdx_succ_head {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).length)
-    (a : CreatAnnilateSect f (i :: l)) : (eraseIdx a ⟨n + 1, hn⟩).head = a.head := by
+    (a : CreateAnnilateSect f (i :: l)) : (eraseIdx a ⟨n + 1, hn⟩).head = a.head := by
   rw [eraseIdx, extractEquiv]
   simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ, List.eraseIdx_cons_succ,
     RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Equiv.trans_apply, Equiv.prodCongr_apply,
@@ -305,7 +190,7 @@ lemma eraseIdx_succ_head {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).l
   simp [Fin.ext_iff]
 
 lemma eraseIdx_succ_tail {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).length)
-    (a : CreatAnnilateSect f (i :: l)) :
+    (a : CreateAnnilateSect f (i :: l)) :
     (eraseIdx a ⟨n + 1, hn⟩).tail = eraseIdx a.tail ⟨n, Nat.succ_lt_succ_iff.mp hn⟩ := by
   match l with
   | [] =>
@@ -365,7 +250,7 @@ lemma eraseIdx_succ_tail {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).l
       omega
     next h_1 => simp_all only [not_lt, Fin.val_succ, Fin.coe_cast]
 
-lemma eraseIdx_toList : {l : List I} → {n : Fin l.length} → (a : CreatAnnilateSect f l) →
+lemma eraseIdx_toList : {l : List I} → {n : Fin l.length} → (a : CreateAnnilateSect f l) →
     (eraseIdx a n).toList = a.toList.eraseIdx n
   | [], n, _ => Fin.elim0 n
   | r0 :: r, ⟨0, h⟩, a => by
@@ -379,7 +264,7 @@ lemma eraseIdx_toList : {l : List I} → {n : Fin l.length} → (a : CreatAnnila
       rw [eraseIdx_succ_tail]
 
 lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type} [(i : I) → Fintype (f i)]
-    {l : List I} (n : Fin l.length) (a0 : f l[↑n]) (a : CreatAnnilateSect f (l.eraseIdx n)) :
+    {l : List I} (n : Fin l.length) (a0 : f l[↑n]) (a : CreateAnnilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).eraseIdx n = a := by
   match l with
   | [] => exact Fin.elim0 n
@@ -389,7 +274,7 @@ lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type} [(i : I) → Fintyp
 
 lemma toList_koszulSignInsert {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (l : List I) (a : CreatAnnilateSect f l) (x : (i : I) × f i) :
+    (l : List I) (a : CreateAnnilateSect f l) (x : (i : I) × f i) :
     koszulSignInsert (fun i j => le1 i.fst j.fst) (fun i => q i.fst) x a.toList =
     koszulSignInsert le1 q x.1 l := by
   induction l with
@@ -400,7 +285,7 @@ lemma toList_koszulSignInsert {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
 
 lemma toList_koszulSign {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (l : List I) (a : CreatAnnilateSect f l) :
+    (l : List I) (a : CreateAnnilateSect f l) :
     koszulSign (fun i j => le1 i.fst j.fst) (fun i => q i.fst) a.toList =
     koszulSign le1 q l := by
   induction l with
@@ -413,7 +298,7 @@ lemma toList_koszulSign {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
 
 lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (le1 : I → I → Prop) [DecidableRel le1](l : List I)
-      (a : CreatAnnilateSect f l) :
+      (a : CreateAnnilateSect f l) :
     insertionSortEquiv (fun i j => le1 i.fst j.fst) a.toList =
     (Fin.castOrderIso (by simp)).toEquiv.trans ((insertionSortEquiv le1 l).trans
     (Fin.castOrderIso (by simp)).toEquiv) := by
@@ -466,7 +351,7 @@ lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i
     have h3 : (List.insertionSort le1 (List.map (fun i => i.1) a.tail.toList)) =
       List.insertionSort le1 l := by
       congr
-      have h3' (l : List I) (a : CreatAnnilateSect f l) :
+      have h3' (l : List I) (a : CreateAnnilateSect f l) :
         List.map (fun i => i.1) a.toList = l := by
         induction l with
         | nil => rfl
@@ -481,14 +366,14 @@ lemma insertionSortEquiv_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i
       Fin.cast_trans, Fin.cast_eq_self, Fin.coe_cast]
     rfl
 
-def sort (le1 : I → I → Prop) [DecidableRel le1] : CreatAnnilateSect f (List.insertionSort le1 l) :=
+def sort (le1 : I → I → Prop) [DecidableRel le1] : CreateAnnilateSect f (List.insertionSort le1 l) :=
   Equiv.piCongr (HepLean.List.insertionSortEquiv le1 l) (fun i => (Equiv.cast (by
       congr 1
       rw [← HepLean.List.insertionSortEquiv_get]
       simp))) a
 
 lemma sort_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (le1 : I → I → Prop) [DecidableRel le1] (l : List I) (a : CreatAnnilateSect f l) :
+    (le1 : I → I → Prop) [DecidableRel le1] (l : List I) (a : CreateAnnilateSect f l) :
     (a.sort le1).toList = List.insertionSort (fun i j => le1 i.fst j.fst) a.toList := by
   let l1 := List.insertionSort (fun i j => le1 i.fst j.fst) a.toList
   let l2 := (a.sort le1).toList
@@ -516,66 +401,6 @@ lemma sort_toList {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
   rw [hget]
   simp
 
-end CreatAnnilateSect
+end CreateAnnilateSect
 
-lemma ofListM_expand {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (x : ℂ) :
-    (l : List I) → ofListM f l x = ∑ (a : CreatAnnilateSect f l), ofList a.toList x
-  | [] => by
-    simp only [ofListM, CreatAnnilateSect, List.length_nil, List.get_eq_getElem, Finset.univ_unique,
-      CreatAnnilateSect.toList, Finset.sum_const, Finset.card_singleton, one_smul]
-    rw [ofList_eq_smul_one, map_smul, ofList_empty, ofList_eq_smul_one, ofList_empty, map_one]
-  | i :: l => by
-    rw [ofListM_cons, ofListM_expand f x l]
-    conv_rhs => rw [← (CreatAnnilateSect.extractEquiv
-        ⟨0, by exact Nat.zero_lt_succ l.length⟩).symm.sum_comp (α := FreeAlgebra ℂ _)]
-    erw [Finset.sum_product]
-    rw [Finset.sum_mul]
-    conv_lhs =>
-      rhs
-      intro n
-      rw [Finset.mul_sum]
-    congr
-    funext j
-    congr
-    funext n
-    rw [← ofList_singleton, ← ofList_pair, one_mul]
-    rfl
-
-lemma koszulOrder_ofListM {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (l : List I) (x : ℂ) : koszulOrder (fun i j => le1 i.1 j.1) (fun i => q i.fst) (ofListM f l x) =
-    freeAlgebraMap f (koszulOrder le1 q (ofList l x)) := by
-  rw [koszulOrder_ofList]
-  rw [map_smul]
-  change _ = _ • ofListM _ _ _
-  rw [ofListM_expand]
-  rw [map_sum]
-  conv_lhs =>
-    rhs
-    intro a
-    rw [koszulOrder_ofList]
-    rw [CreatAnnilateSect.toList_koszulSign]
-  rw [← Finset.smul_sum]
-  apply congrArg
-  conv_lhs =>
-    rhs
-    intro n
-    rw [← CreatAnnilateSect.sort_toList]
-  rw [ofListM_expand]
-  refine Fintype.sum_equiv
-    ((HepLean.List.insertionSortEquiv le1 l).piCongr fun i => Equiv.cast ?_) _ _ ?_
-  congr 1
-  · rw [← HepLean.List.insertionSortEquiv_get]
-    simp
-  · intro x
-    rfl
-
-lemma koszulOrder_ofListM_eq_ofListM {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (l : List I) (x : ℂ) : koszulOrder (fun i j => le1 i.1 j.1) (fun i => q i.fst) (ofListM f l x) =
-    koszulSign le1 q l • ofListM f (List.insertionSort le1 l) x := by
-  rw [koszulOrder_ofListM, koszulOrder_ofList, map_smul]
-  rfl
-
-end
 end Wick
