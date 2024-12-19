@@ -33,24 +33,24 @@ lemma koszulSignInsert_boson {I : Type} (r : I → I → Prop) [DecidableRel r] 
     simp only [Fin.isValue, zero_ne_one, false_and, ↓reduceIte, ite_self]
 
 @[simp]
-lemma koszulSignInsert_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I) :
-    (l : List I) → koszulSignInsert r q a l * koszulSignInsert r q a l = 1
+lemma koszulSignInsert_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
+    (a : I) : (l : List I) → koszulSignInsert r q a l * koszulSignInsert r q a l = 1
   | [] => by
     simp [koszulSignInsert]
   | b :: l => by
-    simp [koszulSignInsert]
+    simp only [koszulSignInsert, Fin.isValue, mul_ite, ite_mul, neg_mul, mul_neg]
     by_cases hr : r a b
-    · simp [hr]
+    · simp only [hr, ↓reduceIte]
       rw [koszulSignInsert_mul_self]
-    · simp [hr]
+    · simp only [hr, ↓reduceIte, Fin.isValue]
       by_cases hq : q a = 1 ∧ q b = 1
-      · simp [hq]
+      · simp only [hq, Fin.isValue, and_self, ↓reduceIte, neg_neg]
         rw [koszulSignInsert_mul_self]
-      · simp [hq]
+      · simp only [Fin.isValue, hq, ↓reduceIte]
         rw [koszulSignInsert_mul_self]
 
-lemma koszulSignInsert_le_forall {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (a : I)
-    (l : List I) (hi : ∀ b, r a b) :  koszulSignInsert r q a l = 1 := by
+lemma koszulSignInsert_le_forall {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
+    (a : I) (l : List I) (hi : ∀ b, r a b) : koszulSignInsert r q a l = 1 := by
   induction l with
   | nil => rfl
   | cons j l ih =>
@@ -60,7 +60,7 @@ lemma koszulSignInsert_le_forall {I : Type} (r : I → I → Prop) [DecidableRel
     intro h
     exact False.elim (h (hi j))
 
-lemma koszulSignInsert_ge_forall_append  {I : Type} (r : I → I → Prop) [DecidableRel r]
+lemma koszulSignInsert_ge_forall_append {I : Type} (r : I → I → Prop) [DecidableRel r]
     (q : I → Fin 2) (l : List I) (j i : I) (hi : ∀ j, r j i) :
     koszulSignInsert r q j l = koszulSignInsert r q j (l ++ [i]) := by
   induction l with
@@ -87,12 +87,12 @@ lemma koszulSign_mul_self {I : Type} (r : I → I → Prop) [DecidableRel r] (q 
   induction l with
   | nil => simp [koszulSign]
   | cons a l ih =>
-    simp [koszulSign]
-    trans (koszulSignInsert r q a l * koszulSignInsert r q a l) * (koszulSign r q l * koszulSign r q l)
+    simp only [koszulSign]
+    trans (koszulSignInsert r q a l * koszulSignInsert r q a l) *
+      (koszulSign r q l * koszulSign r q l)
     ring
     rw [ih]
     rw [koszulSignInsert_mul_self, mul_one]
-
 
 @[simp]
 lemma koszulSign_freeMonoid_of {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
@@ -101,44 +101,45 @@ lemma koszulSign_freeMonoid_of {I : Type} (r : I → I → Prop) [DecidableRel r
   simp only [koszulSign, mul_one]
   rfl
 
-
 lemma koszulSignInsert_erase_boson {I : Type} (q : I → Fin 2) (le1 :I → I → Prop)
-    [DecidableRel le1] (r0 : I)  :
-    (r : List I)  → (n : Fin r.length) →  (heq : q (r.get n) = 0)  →
+    [DecidableRel le1] (r0 : I) :
+    (r : List I) → (n : Fin r.length) → (heq : q (r.get n) = 0) →
     koszulSignInsert le1 q r0 (r.eraseIdx n) = koszulSignInsert le1 q r0 r
   | [], _, _ => by
     simp
   | r1 :: r, ⟨0, h⟩, hr => by
-    simp
-    simp at hr
+    simp only [List.eraseIdx_zero, List.tail_cons]
+    simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.val_zero,
+      List.getElem_cons_zero, Fin.isValue] at hr
     rw [koszulSignInsert]
     simp [hr]
   | r1 :: r, ⟨n + 1, h⟩, hr => by
-    simp
+    simp only [List.eraseIdx_cons_succ]
     rw [koszulSignInsert, koszulSignInsert]
-    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩ hr]
+    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ hr]
 
 lemma koszulSign_erase_boson {I : Type} (q : I → Fin 2) (le1 :I → I → Prop)
-    [DecidableRel le1]  :
-    (r : List I) → (n : Fin r.length) →  (heq : q (r.get n) = 0) →
+    [DecidableRel le1] :
+    (r : List I) → (n : Fin r.length) → (heq : q (r.get n) = 0) →
     koszulSign le1 q (r.eraseIdx n) = koszulSign le1 q r
   | [], _ => by
     simp
   | r0 :: r, ⟨0, h⟩ => by
-    simp [koszulSign]
+    simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.val_zero,
+      List.getElem_cons_zero, Fin.isValue, List.eraseIdx_zero, List.tail_cons, koszulSign]
     intro h
     rw [koszulSignInsert_boson]
-    simp
+    simp only [one_mul]
     exact h
   | r0 :: r, ⟨n + 1, h⟩ => by
-    simp
+    simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ, Fin.isValue,
+      List.eraseIdx_cons_succ]
     intro h'
     rw [koszulSign, koszulSign]
-    rw [koszulSign_erase_boson q le1 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩]
+    rw [koszulSign_erase_boson q le1 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
     congr 1
-    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n,  Nat.succ_lt_succ_iff.mp h⟩ h']
+    rw [koszulSignInsert_erase_boson q le1 r0 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ h']
     exact h'
-
 
 noncomputable section
 
@@ -199,7 +200,6 @@ lemma koszulOrder_ι {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I �
     koszulSign_freeMonoid_of, mul_one, Finsupp.single_zero, Finsupp.sum_single_index]
   rfl
 
-
 @[simp]
 lemma koszulOrder_single {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
     (l : FreeMonoid I) :
@@ -209,7 +209,7 @@ lemma koszulOrder_single {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
   simp [koszulOrder]
 
 @[simp]
-lemma koszulOrder_ι_pair  {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (i j : I) :
+lemma koszulOrder_ι_pair {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) (i j : I) :
     koszulOrder r q (FreeAlgebra.ι ℂ i * FreeAlgebra.ι ℂ j) =
     if r i j then FreeAlgebra.ι ℂ i * FreeAlgebra.ι ℂ j else
     (koszulSign r q [i, j]) • (FreeAlgebra.ι ℂ j * FreeAlgebra.ι ℂ i) := by
@@ -240,7 +240,7 @@ lemma koszulOrder_ι_pair  {I : Type} (r : I → I → Prop) [DecidableRel r] (q
     rfl
 
 @[simp]
-lemma koszulOrder_one  {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) :
+lemma koszulOrder_one {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2) :
     koszulOrder r q 1 = 1 := by
   trans koszulOrder r q (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single [] 1))
   congr
@@ -263,7 +263,8 @@ lemma mul_koszulOrder_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
       f ((FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x)))
       = (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single (i :: l) x)) := by
     simp only [LinearMap.coe_mk, AddHom.coe_mk, f]
-    have hf : FreeAlgebra.ι ℂ i = FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single [i] 1) := by
+    have hf : FreeAlgebra.ι ℂ i = FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm
+        (MonoidAlgebra.single [i] 1) := by
       simp only [FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
         AlgEquiv.ofAlgHom_symm_apply, MonoidAlgebra.lift_single, one_smul]
       rfl
@@ -295,7 +296,7 @@ lemma mul_koszulOrder_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
       exact hi _
     · congr 1
       rw [koszulSign]
-      have h1 (l : List I) : koszulSignInsert r q i l = 1  := by
+      have h1 (l : List I) : koszulSignInsert r q i l = 1 := by
         exact koszulSignInsert_le_forall r q i l hi
       rw [h1]
       simp
@@ -303,18 +304,20 @@ lemma mul_koszulOrder_le {I : Type} (r : I → I → Prop) [DecidableRel r] (q :
 
 lemma koszulOrder_mul_ge {I : Type} (r : I → I → Prop) [DecidableRel r] (q : I → Fin 2)
     (i : I) (A : FreeAlgebra ℂ I) (hi : ∀ j, r j i) :
-    koszulOrder r q A * FreeAlgebra.ι ℂ i  = koszulOrder r q (A * FreeAlgebra.ι ℂ i) := by
+    koszulOrder r q A * FreeAlgebra.ι ℂ i = koszulOrder r q (A * FreeAlgebra.ι ℂ i) := by
   let f : FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I := {
-    toFun := fun x => x * FreeAlgebra.ι ℂ i ,
+    toFun := fun x => x * FreeAlgebra.ι ℂ i,
     map_add' := fun x y => by
       simp [add_mul],
     map_smul' := by simp}
   change (f ∘ₗ koszulOrder r q) A = (koszulOrder r q ∘ₗ f) A
   have f_single (l : FreeMonoid I) (x : ℂ) :
       f ((FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single l x)))
-      = (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single (l.toList ++ [i]) x)) := by
+      = (FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm
+      (MonoidAlgebra.single (l.toList ++ [i]) x)) := by
     simp only [LinearMap.coe_mk, AddHom.coe_mk, f]
-    have hf : FreeAlgebra.ι ℂ i = FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single [i] 1) := by
+    have hf : FreeAlgebra.ι ℂ i = FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm
+        (MonoidAlgebra.single [i] 1) := by
       simp only [FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
         AlgEquiv.ofAlgHom_symm_apply, MonoidAlgebra.lift_single, one_smul]
       rfl

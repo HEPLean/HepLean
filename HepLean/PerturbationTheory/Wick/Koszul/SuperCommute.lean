@@ -36,12 +36,13 @@ def superCommute {I : Type} (q : I → Fin 2) :
   superCommuteAlgebra q
   ∘ₗ FreeAlgebra.equivMonoidAlgebraFreeMonoid.toAlgHom.toLinearMap
 
-lemma equivMonoidAlgebraFreeMonoid_freeAlgebra  {I : Type}  (i  : I) :
-    (FreeAlgebra.equivMonoidAlgebraFreeMonoid (FreeAlgebra.ι ℂ i)) = Finsupp.single (FreeMonoid.of i) 1  := by
+lemma equivMonoidAlgebraFreeMonoid_freeAlgebra {I : Type} (i : I) :
+    (FreeAlgebra.equivMonoidAlgebraFreeMonoid (FreeAlgebra.ι ℂ i)) =
+    Finsupp.single (FreeMonoid.of i) 1 := by
   simp [FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.single]
 
 @[simp]
-lemma superCommute_ι {I : Type} (q : I → Fin 2)  (i j  : I)  :
+lemma superCommute_ι {I : Type} (q : I → Fin 2) (i j : I) :
     superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j) =
     FreeAlgebra.ι ℂ i * FreeAlgebra.ι ℂ j +
     if q i = 1 ∧ q j = 1 then
@@ -72,7 +73,7 @@ lemma superCommute_ι {I : Type} (q : I → Fin 2)  (i j  : I)  :
     simp only [map_neg, MonoidAlgebra.lift_single, one_smul, neg_inj]
     rfl
 
-lemma superCommute_ofList_ofList  {I : Type} (q : I → Fin 2)  (l r  : List I) (x y : ℂ) :
+lemma superCommute_ofList_ofList {I : Type} (q : I → Fin 2) (l r : List I) (x y : ℂ) :
     superCommute q (ofList l x) (ofList r y) =
     ofList (l ++ r) (x * y) + (if grade q l = 1 ∧ grade q r = 1 then
     ofList (r ++ l) (y * x) else - ofList (r ++ l) (y * x)) := by
@@ -118,7 +119,8 @@ lemma superCommute_zero {I : Type} (q : I → Fin 2) (a : FreeAlgebra ℂ I) :
 lemma superCommute_one {I : Type} (q : I → Fin 2) (a : FreeAlgebra ℂ I) :
     superCommute q a 1 = 0 := by
   let f : FreeAlgebra ℂ I →ₗ[ℂ] FreeAlgebra ℂ I := (LinearMap.flip (superCommute q)) 1
-  have h1 : FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single [] 1) = (1 : FreeAlgebra ℂ I) := by
+  have h1 : FreeAlgebra.equivMonoidAlgebraFreeMonoid.symm (MonoidAlgebra.single [] 1) =
+      (1 : FreeAlgebra ℂ I) := by
     simp_all only [EmbeddingLike.map_eq_one_iff]
     rfl
   have f_single (l : FreeMonoid I) (x : ℂ) :
@@ -170,7 +172,7 @@ lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (
       · simp only [Fin.isValue, hlc, ↓reduceIte]
         simp only [mul_assoc, add_mul, mul_add]
         abel
-      · have hc : grade q lc  = 0 := by
+      · have hc : grade q lc = 0 := by
           omega
         simp only [Fin.isValue, hc, one_ne_zero, ↓reduceIte, zero_ne_one]
         simp only [mul_assoc, add_mul, mul_add, mul_neg, neg_add_rev, neg_neg]
@@ -182,7 +184,7 @@ lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (
       · simp only [Fin.isValue, hlc, zero_ne_one, ↓reduceIte]
         simp only [mul_assoc, add_mul, neg_mul, mul_add]
         abel
-      · have hc : grade q lc  = 0 := by
+      · have hc : grade q lc = 0 := by
           omega
         simp only [Fin.isValue, hc, ↓reduceIte, zero_ne_one]
         simp only [mul_assoc, add_mul, neg_mul, mul_add, mul_neg]
@@ -208,7 +210,7 @@ lemma superCommute_ofList_cons {I : Type} (q : I → Fin 2) (la lb : List I) (xa
   congr
   · exact ofList_singleton b1
 
-lemma superCommute_ofList_sum  {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
+lemma superCommute_ofList_sum {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
     superCommute q (ofList la xa) (ofList lb xb) =
     ∑ (n : Fin lb.length), superCommuteTake q la lb xa xb n n.prop := by
   induction lb with
@@ -220,11 +222,11 @@ lemma superCommute_ofList_sum  {I : Type} (q : I → Fin 2) (la lb : List I) (xa
     abel
   | cons b lb ih =>
     rw [superCommute_ofList_cons, ih]
-    have h0 :  ((superCommute q) (ofList la xa)) (FreeAlgebra.ι ℂ b) * ofList lb xb  =
+    have h0 : ((superCommute q) (ofList la xa)) (FreeAlgebra.ι ℂ b) * ofList lb xb =
         superCommuteTake q la (b :: lb) xa xb 0 (Nat.zero_lt_succ lb.length) := by
       simp [superCommuteTake, superCommuteCoef_empty, ofList_empty]
     rw [h0]
-    have hf (f : Fin (b :: lb).length → FreeAlgebra ℂ I) : ∑ n, f n =  f ⟨0,
+    have hf (f : Fin (b :: lb).length → FreeAlgebra ℂ I) : ∑ n, f n = f ⟨0,
         Nat.zero_lt_succ lb.length⟩ + ∑ n, f (Fin.succ n) := by
       exact Fin.sum_univ_succAbove f ⟨0, Nat.zero_lt_succ lb.length⟩
     rw [hf]
@@ -241,13 +243,13 @@ lemma superCommute_ofList_sum  {I : Type} (q : I → Fin 2) (la lb : List I) (xa
     · simp only [← mul_assoc, mul_eq_mul_right_iff]
       exact Or.inl (Or.inl (ofList_cons_eq_ofList (List.take (↑n) lb) b 1).symm)
 
-lemma superCommute_ofList_ofList_superCommuteCoef   {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :
-    superCommute q (ofList la xa) (ofList lb xb) =
+lemma superCommute_ofList_ofList_superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I)
+    (xa xb : ℂ) : superCommute q (ofList la xa) (ofList lb xb) =
     ofList la xa * ofList lb xb - superCommuteCoef q la lb • ofList lb xb * ofList la xa := by
   rw [superCommute_ofList_ofList, superCommuteCoef]
   by_cases hq : grade q la = 1 ∧ grade q lb = 1
   · simp [hq, ofList_pair]
-  · simp [hq, ofList_pair]
+  · simp only [ofList_pair, Fin.isValue, hq, ↓reduceIte, one_smul]
     abel
 
 lemma ofList_ofList_superCommute {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) :

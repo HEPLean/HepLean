@@ -244,7 +244,7 @@ lemma finExtractOne_apply_neq {n : ℕ} (i j : Fin n.succ.succ) (hij : i ≠ j) 
     finExtractOne i j = Sum.inr (predAboveI i j) := by
   symm
   apply (Equiv.symm_apply_eq _).mp ?_
-  simp
+  simp only [Nat.succ_eq_add_one, finExtractOne_symm_inr_apply]
   exact succsAbove_predAboveI hij
 
 /-- Given an equivalence `Fin n.succ.succ ≃ Fin n.succ.succ`, and an `i : Fin n.succ.succ`,
@@ -252,7 +252,8 @@ lemma finExtractOne_apply_neq {n : ℕ} (i j : Fin n.succ.succ) (hij : i ≠ j) 
 def finExtractOnPermHom {m : ℕ} (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin m.succ.succ) :
     Fin n.succ → Fin m.succ := fun x => predAboveI (σ i) (σ ((finExtractOne i).symm (Sum.inr x)))
 
-lemma finExtractOnPermHom_inv {m : ℕ} (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ Fin m.succ.succ) :
+lemma finExtractOnPermHom_inv {m : ℕ} (i : Fin n.succ.succ)
+    (σ : Fin n.succ.succ ≃ Fin m.succ.succ) :
     (finExtractOnPermHom (σ i) σ.symm) ∘ (finExtractOnPermHom i σ) = id := by
   funext x
   simp only [Nat.succ_eq_add_one, Function.comp_apply, finExtractOnPermHom, Equiv.symm_apply_apply,
@@ -287,13 +288,15 @@ def finExtractOnePerm {m : ℕ} (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ 
   right_inv x := by
     simpa using congrFun (finExtractOnPermHom_inv (σ i) σ.symm) x
 
-lemma finExtractOnePerm_equiv {n m : ℕ} (e : Fin n.succ.succ ≃ Fin m.succ.succ) (i : Fin n.succ.succ) :
-    e ∘ i.succAbove = (e i).succAbove ∘ finExtractOnePerm i e  := by
-  simp [finExtractOnePerm]
+lemma finExtractOnePerm_equiv {n m : ℕ} (e : Fin n.succ.succ ≃ Fin m.succ.succ)
+    (i : Fin n.succ.succ) :
+    e ∘ i.succAbove = (e i).succAbove ∘ finExtractOnePerm i e := by
+  simp only [Nat.succ_eq_add_one, finExtractOnePerm, Equiv.coe_fn_mk]
   funext x
-  simp [finExtractOnPermHom]
+  simp only [Function.comp_apply, finExtractOnPermHom, Nat.succ_eq_add_one,
+    finExtractOne_symm_inr_apply]
   rw [succsAbove_predAboveI]
-  simp
+  simp only [Nat.succ_eq_add_one, ne_eq, EmbeddingLike.apply_eq_iff_eq]
   exact Fin.ne_succAbove i x
 
 @[simp]
@@ -437,7 +440,7 @@ lemma equivCons_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 1 < n
   simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe,
     Equiv.coe_fn_symm_mk]
   have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
-  simp
+  simp only [Equiv.coe_fn_mk]
   rw [hi]
   rw [Fin.cons_succ]
   rfl

@@ -16,17 +16,18 @@ namespace Wick
 
 noncomputable section
 
-
-class OperatorMap {A :  Type} [Semiring A] [Algebra ℂ A]
-    (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A) : Prop where
-  superCommute_mem_center : ∀ i j, F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) ∈ Subalgebra.center ℂ A
-  superCommute_diff_grade_zero : ∀ i j, q i ≠ q j → F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) = 0
-  superCommute_ordered_zero : ∀ i j,  ∀ a b,
+class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A] (q : I → Fin 2) (le1 : I → I → Prop)
+    [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A) : Prop where
+  superCommute_mem_center : ∀ i j, F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) ∈
+    Subalgebra.center ℂ A
+  superCommute_diff_grade_zero : ∀ i j, q i ≠ q j →
+    F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) = 0
+  superCommute_ordered_zero : ∀ i j, ∀ a b,
     F (koszulOrder le1 q (a * superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j) * b)) = 0
 
 namespace OperatorMap
 
-variable {A :  Type} [Semiring A] [Algebra ℂ A] {q : I → Fin 2} {le1 : I → I → Prop}
+variable {A : Type} [Semiring A] [Algebra ℂ A] {q : I → Fin 2} {le1 : I → I → Prop}
   [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A)
 
 lemma superCommute_ofList_singleton_ι_center [OperatorMap q le1 F] (i j :I) :
@@ -42,21 +43,20 @@ lemma superCommute_ofList_singleton_ι_center [OperatorMap q le1 F] (i j :I) :
   refine Subalgebra.smul_mem (Subalgebra.center ℂ A) ?_ xa
   exact superCommute_mem_center (le1 := le1) i j
 
-
 end OperatorMap
-
 
 lemma superCommuteTake_operatorMap {I : Type} (q : I → Fin 2)
     (le1 : I → I → Prop) [DecidableRel le1]
     (lb : List I) (xa xb : ℂ) (n : ℕ)
-    (hn : n < lb.length) {A :  Type} [Semiring A] [Algebra ℂ A] (f : FreeAlgebra ℂ I →ₐ[ℂ] A)
+    (hn : n < lb.length) {A : Type} [Semiring A] [Algebra ℂ A] (f : FreeAlgebra ℂ I →ₐ[ℂ] A)
     [OperatorMap q le1 f] (i : I) :
     f (superCommuteTake q [i] lb xa xb n hn) =
     f (superCommute q (ofList [i] xa) (FreeAlgebra.ι ℂ (lb.get ⟨n, hn⟩)))
     * (superCommuteCoef q [i] (List.take n lb) •
     f (ofList (List.eraseIdx lb n) xb)) := by
   have hn : f ((superCommute q) (ofList [i] xa) (FreeAlgebra.ι ℂ (lb.get ⟨n, hn⟩))) ∈
-    Subalgebra.center ℂ A := OperatorMap.superCommute_ofList_singleton_ι_center (le1 := le1) f i (lb.get ⟨n, hn⟩)
+      Subalgebra.center ℂ A :=
+    OperatorMap.superCommute_ofList_singleton_ι_center (le1 := le1) f i (lb.get ⟨n, hn⟩)
   rw [Subalgebra.mem_center_iff] at hn
   rw [superCommuteTake, map_mul, map_mul, map_smul, hn, mul_assoc, smul_mul_assoc,
     ← map_mul, ← ofList_pair]
@@ -64,22 +64,22 @@ lemma superCommuteTake_operatorMap {I : Type} (q : I → Fin 2)
   · exact Eq.symm (List.eraseIdx_eq_take_drop_succ lb n)
   · exact one_mul xb
 
-
 lemma superCommuteTakeM_operatorMap {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (c :  (Σ i, f i)) (r : List I) (x y : ℂ)  (n : ℕ)
+    (q : I → Fin 2) (c : (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
     (hn : n < r.length)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-    {A :  Type} [Semiring A] [Algebra ℂ A] (F : FreeAlgebra ℂ (Σ i, f i) →ₐ[ℂ] A)
+    {A : Type} [Semiring A] [Algebra ℂ A] (F : FreeAlgebra ℂ (Σ i, f i) →ₐ[ℂ] A)
     [OperatorMap (fun i => q i.1) le1 F] :
     F (superCommuteTakeM q [c] r x y n hn) = superCommuteCoefM q [c] (List.take n r) •
-    (F (superCommute (fun i => q i.1) (ofList [c] x) (freeAlgebraMap f (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩))))
+    (F (superCommute (fun i => q i.1) (ofList [c] x)
+    (freeAlgebraMap f (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩))))
     * F (ofListM f (List.eraseIdx r n) y)) := by
   rw [superCommuteTakeM]
   rw [map_smul]
   congr
   rw [map_mul, map_mul]
-  have h1 : F ((superCommute fun i => q i.fst) (ofList [c] x) ((freeAlgebraMap f) (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩))))
-    ∈ Subalgebra.center ℂ A := by
+  have h1 : F ((superCommute fun i => q i.fst) (ofList [c] x) ((freeAlgebraMap f)
+    (FreeAlgebra.ι ℂ (r.get ⟨n, hn⟩)))) ∈ Subalgebra.center ℂ A := by
       rw [freeAlgebraMap_ι]
       rw [map_sum, map_sum]
       refine Subalgebra.sum_mem _ ?_
@@ -146,7 +146,7 @@ lemma koszulOrder_of_le_all_ofList {I : Type}
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ A) [OperatorMap q le1 F] :
     F (koszulOrder le1 q (ofList r x * FreeAlgebra.ι ℂ i))
-    = superCommuteCoef q [i] r • F (koszulOrder le1 q (FreeAlgebra.ι ℂ i * ofList  r x)) := by
+    = superCommuteCoef q [i] r • F (koszulOrder le1 q (FreeAlgebra.ι ℂ i * ofList r x)) := by
   conv_lhs =>
     enter [2, 2]
     rw [← ofList_singleton]
@@ -170,8 +170,8 @@ lemma koszulOrder_of_le_all_ofList {I : Type}
     intro n
     rw [Algebra.smul_mul_assoc, Algebra.smul_mul_assoc]
     rw [map_smul, map_smul]
-    rw [OperatorMap.superCommute_ordered_zero ]
-  simp
+    rw [OperatorMap.superCommute_ordered_zero]
+  simp only [smul_zero, Finset.sum_const_zero, add_zero]
   rw [ofList_singleton]
 
 lemma le_all_mul_koszulOrder_ofList {I : Type}
@@ -206,7 +206,8 @@ def superCommuteCenterOrder {I : Type}
     (n : Option (Fin r.length)) : A :=
   match n with
   | none => 1
-  | some n => superCommuteCoef q [r.get n] (r.take n) • F (((superCommute q) (ofList [i] 1)) (FreeAlgebra.ι ℂ (r.get n)))
+  | some n => superCommuteCoef q [r.get n] (r.take n) • F (((superCommute q) (ofList [i] 1))
+    (FreeAlgebra.ι ℂ (r.get n)))
 
 @[simp]
 lemma superCommuteCenterOrder_none {I : Type}
@@ -225,7 +226,8 @@ lemma le_all_mul_koszulOrder_ofList_expand {I : Type}
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ[ℂ] A) [OperatorMap q le1 F] :
     F (FreeAlgebra.ι ℂ i * koszulOrder le1 q (ofList r x)) =
-    ∑ n, superCommuteCenterOrder q r i F n * F ((koszulOrder le1 q) (ofList (optionEraseZ r i n) x))  := by
+    ∑ n, superCommuteCenterOrder q r i F n *
+    F ((koszulOrder le1 q) (ofList (optionEraseZ r i n) x)) := by
   rw [le_all_mul_koszulOrder_ofList]
   conv_lhs =>
     rhs
@@ -272,7 +274,7 @@ lemma le_all_mul_koszulOrder_ofListM_expand {I : Type} {f : I → Type} [∀ i, 
     rhs
     intro n
   rw [Finset.sum_comm]
-  simp only [ Fintype.sum_option]
+  simp only [Fintype.sum_option]
   congr 1
   · simp only [List.length_cons, List.get_eq_getElem, superCommuteCenterOrder,
     Equiv.optionCongr_symm, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Equiv.optionCongr_apply,
@@ -290,15 +292,18 @@ lemma le_all_mul_koszulOrder_ofListM_expand {I : Type} {f : I → Type} [∀ i, 
       Fin.symm_castOrderIso, Equiv.optionCongr_apply, RelIso.coe_fn_toEquiv, Option.map_some',
       Fin.castOrderIso_apply, Algebra.smul_mul_assoc, e1]
     erw [Finset.sum_product]
-    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreatAnnilateSect f ((r0 :: r).eraseIdx ↑n)):
-      superCommuteCenterOrder (fun i => q i.fst) ((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList i F
-      (some (Fin.cast (by simp) n)) = superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) (r0 :: r)) •
-        F (((superCommute fun i => q i.fst) (ofList [i] 1)) (FreeAlgebra.ι ℂ ⟨(r0 :: r).get n, a0⟩)) := by
+    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreatAnnilateSect f ((r0 :: r).eraseIdx ↑n)) :
+      superCommuteCenterOrder (fun i => q i.fst)
+        ((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList i F
+      (some (Fin.cast (by simp) n)) =
+      superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) (r0 :: r)) •
+      F (((superCommute fun i => q i.fst) (ofList [i] 1))
+      (FreeAlgebra.ι ℂ ⟨(r0 :: r).get n, a0⟩)) := by
       simp only [superCommuteCenterOrder, List.get_eq_getElem, List.length_cons, Fin.coe_cast]
       erw [CreatAnnilateSect.extractEquiv_symm_toList_get_same]
       have hsc : superCommuteCoef (fun i => q i.fst) [⟨(r0 :: r).get n, a0⟩]
         (List.take (↑n) ((CreatAnnilateSect.extractEquiv n).symm (a0, a)).toList) =
-        superCommuteCoef q [(r0 :: r).get n]  (List.take (↑n) ((r0 :: r))) := by
+        superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) ((r0 :: r))) := by
         simp only [superCommuteCoef, List.get_eq_getElem, List.length_cons, Fin.isValue,
           CreatAnnilateSect.toList_grade_take]
         rfl

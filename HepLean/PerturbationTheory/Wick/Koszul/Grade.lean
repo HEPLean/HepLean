@@ -19,7 +19,7 @@ def grade {I : Type} (q : I → Fin 2) : (l : List I) → Fin 2
   | a :: l => if q a = grade q l then 0 else 1
 
 @[simp]
-lemma grade_freeMonoid  {I : Type} (q : I → Fin 2) (i : I) : grade q (FreeMonoid.of i) = q i := by
+lemma grade_freeMonoid {I : Type} (q : I → Fin 2) (i : I) : grade q (FreeMonoid.of i) = q i := by
   simp only [grade, Fin.isValue]
   have ha (a : Fin 2) : (if a = 0 then 0 else 1) = a := by
     fin_cases a <;> rfl
@@ -42,12 +42,12 @@ lemma grade_append {I : Type} (q : I → Fin 2) (l r : List I) :
     simp only [grade, List.append_eq, Fin.isValue]
     erw [ih]
     have hab (a b c : Fin 2) : (if a = if b = c then 0 else 1 then (0 : Fin 2) else 1) =
-         if (if a = b then 0 else 1) = c then 0 else 1 := by
+        if (if a = b then 0 else 1) = c then 0 else 1 := by
       fin_cases a <;> fin_cases b <;> fin_cases c <;> rfl
     exact hab (q a) (grade q l) (grade q r)
 
-lemma grade_orderedInsert {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (l : List I) ( i : I ) :
-    grade q (List.orderedInsert le1 i l) = grade q (i :: l) := by
+lemma grade_orderedInsert {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
+    (l : List I) (i : I) : grade q (List.orderedInsert le1 i l) = grade q (i :: l) := by
   induction l with
   | nil => simp
   | cons j l ih =>
@@ -58,13 +58,14 @@ lemma grade_orderedInsert {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) 
       rw [grade]
       rw [ih]
       simp only [grade, Fin.isValue]
-      have h1 (a b c : Fin 2) : (if a = if b = c then 0 else 1 then (0 : Fin 2) else 1) = if b = if a = c then 0 else 1 then 0 else 1 := by
+      have h1 (a b c : Fin 2) : (if a = if b = c then 0 else 1 then (0 : Fin 2) else 1) =
+          if b = if a = c then 0 else 1 then 0 else 1 := by
         fin_cases a <;> fin_cases b <;> fin_cases c <;> rfl
       exact h1 _ _ _
 
 @[simp]
-lemma grade_insertionSort {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (l : List I) :
-    grade q (List.insertionSort le1 l) = grade q l := by
+lemma grade_insertionSort {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
+    (l : List I) : grade q (List.insertionSort le1 l) = grade q l := by
   induction l with
   | nil => simp
   | cons j l ih =>
@@ -74,7 +75,7 @@ lemma grade_insertionSort {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) 
     rw [ih]
 
 lemma grade_count {I : Type} (q : I → Fin 2) (l : List I) :
-    grade q l = if Nat.mod (List.countP (fun i => decide (q i = 1)) l) 2 = 0 then 0 else  1 := by
+    grade q l = if Nat.mod (List.countP (fun i => decide (q i = 1)) l) 2 = 0 then 0 else 1 := by
   induction l with
   | nil => simp
   | cons r0 r ih =>
@@ -100,7 +101,7 @@ lemma grade_count {I : Type} (q : I → Fin 2) (l : List I) :
         next h2 => simp_all only [Fin.isValue]
         next h2 =>
           simp_all only [Fin.isValue, zero_ne_one]
-          have ha (a : ℕ) (ha : ¬  a % 2 = 0) : (a + 1) % 2 = 0 := by
+          have ha (a : ℕ) (ha : ¬ a % 2 = 0) : (a + 1) % 2 = 0 := by
             omega
           exact h2 (ha (List.countP (fun i => decide (q i = 1)) r) h1)
     · have h0 : q r0 = 0 := by omega
@@ -114,9 +115,9 @@ lemma grade_perm {I : Type} (q : I → Fin 2) {l l' : List I} (h : l.Perm l') :
   rw [grade_count, grade_count, h.countP_eq]
 
 def superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I) : ℂ :=
-  if grade q la = 1 ∧ grade q lb = 1 then - 1 else  1
+  if grade q la = 1 ∧ grade q lb = 1 then - 1 else 1
 
-lemma superCommuteCoef_comm  {I : Type} (q : I → Fin 2) (la lb : List I) :
+lemma superCommuteCoef_comm {I : Type} (q : I → Fin 2) (la lb : List I) :
     superCommuteCoef q la lb = superCommuteCoef q lb la := by
   simp only [superCommuteCoef, Fin.isValue]
   congr 1
@@ -125,13 +126,13 @@ lemma superCommuteCoef_comm  {I : Type} (q : I → Fin 2) (la lb : List I) :
 lemma superCommuteCoef_perm_snd {I : Type} (q : I → Fin 2) (la lb lb' : List I)
     (h : lb.Perm lb') :
     superCommuteCoef q la lb = superCommuteCoef q la lb' := by
-  rw [superCommuteCoef, superCommuteCoef, grade_perm q h ]
+  rw [superCommuteCoef, superCommuteCoef, grade_perm q h]
 
 lemma superCommuteCoef_mul_self {I : Type} (q : I → Fin 2) (l lb : List I) :
-    superCommuteCoef q l lb * superCommuteCoef q l lb  = 1 := by
+    superCommuteCoef q l lb * superCommuteCoef q l lb = 1 := by
   simp only [superCommuteCoef, Fin.isValue, mul_ite, mul_neg, mul_one]
-  have ha (a b : Fin 2) :  (if a = 1 ∧ b = 1 then -if a = 1 ∧ b = 1 then -1 else 1
-    else if a = 1 ∧ b = 1 then -1 else 1)  = (1 : ℂ) := by
+  have ha (a b : Fin 2) : (if a = 1 ∧ b = 1 then -if a = 1 ∧ b = 1 then -1 else 1
+    else if a = 1 ∧ b = 1 then -1 else 1) = (1 : ℂ) := by
       fin_cases a <;> fin_cases b
       any_goals rfl
       simp
@@ -141,7 +142,7 @@ lemma superCommuteCoef_empty {I : Type} (q : I → Fin 2) (la : List I) :
     superCommuteCoef q la [] = 1 := by
   simp only [superCommuteCoef, Fin.isValue, grade_empty, zero_ne_one, and_false, ↓reduceIte]
 
-lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc  : List I) :
+lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc : List I) :
     superCommuteCoef q la (lb ++ lc) = superCommuteCoef q la lb * superCommuteCoef q la lc := by
   simp only [superCommuteCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
     mul_ite, mul_neg, mul_one]
@@ -163,7 +164,7 @@ lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc  : List I) 
       omega
     simp [ha]
 
-lemma superCommuteCoef_cons {I : Type} (q : I → Fin 2) (i : I) (la lb  : List I) :
+lemma superCommuteCoef_cons {I : Type} (q : I → Fin 2) (i : I) (la lb : List I) :
     superCommuteCoef q la (i :: lb) = superCommuteCoef q la [i] * superCommuteCoef q la lb := by
   trans superCommuteCoef q la ([i] ++ lb)
   simp only [List.singleton_append]
@@ -173,13 +174,13 @@ def superCommuteCoefM {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
     (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) : ℂ :=
     (if grade (fun i => q i.fst) l = 1 ∧ grade q r = 1 then -1 else 1)
 
-lemma superCommuteCoefM_empty  {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (l : List (Σ i, f i)):
+lemma superCommuteCoefM_empty {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
+    (q : I → Fin 2) (l : List (Σ i, f i)) :
     superCommuteCoefM q l [] = 1 := by
   simp [superCommuteCoefM]
 
-def superCommuteCoefLE  {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
-    [DecidableRel le1] (i : I) (n : Fin r.length) : ℂ  :=
+def superCommuteCoefLE {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
+    [DecidableRel le1] (i : I) (n : Fin r.length) : ℂ :=
   koszulSign le1 q r *
   superCommuteCoef q [i] (List.take (↑((HepLean.List.insertionSortEquiv le1 r) n))
     (List.insertionSort le1 r)) *
@@ -195,10 +196,10 @@ lemma superCommuteCoefLE_eq_q {I : Type} (q : I → Fin 2) (le1 :I → I → Pro
     koszulSign le1 q (r.eraseIdx ↑n) := by
   simp [superCommuteCoefLE, superCommuteCoef, grade, hq]
 
-
-lemma koszulSignInsert_eq_filter {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (r0 : I)
-     :  (r : List I) →
-    koszulSignInsert le1 q r0 r = koszulSignInsert le1 q r0 (List.filter (fun i => decide (¬ le1 r0 i)) r)
+lemma koszulSignInsert_eq_filter {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
+    (r0 : I) : (r : List I) →
+    koszulSignInsert le1 q r0 r =
+    koszulSignInsert le1 q r0 (List.filter (fun i => decide (¬ le1 r0 i)) r)
   | [] => by
     simp [koszulSignInsert]
   | r1 :: r => by
@@ -217,10 +218,9 @@ lemma koszulSignInsert_eq_filter {I : Type} (q : I → Fin 2) (le1 : I → I →
       simp only [decide_not]
       simp
 
-lemma koszulSignInsert_eq_grade {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (r0 : I)
-     (r : List I)  :
-    koszulSignInsert le1 q r0 r = if grade q [r0] = 1 ∧
-      grade q (List.filter (fun i => decide (¬ le1 r0 i)) r) = 1 then -1 else 1 := by
+lemma koszulSignInsert_eq_grade {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
+    (r0 : I) (r : List I) : koszulSignInsert le1 q r0 r = if grade q [r0] = 1 ∧
+    grade q (List.filter (fun i => decide (¬ le1 r0 i)) r) = 1 then -1 else 1 := by
   induction r with
   | nil =>
     simp [koszulSignInsert]
@@ -235,11 +235,11 @@ lemma koszulSignInsert_eq_grade {I : Type} (q : I → Fin 2) (le1 : I → I → 
         have ha (a b c : Fin 2) : (if a = 1 ∧ b = 1 then -if ¬a = 0 ∧
           c = 1 then -1 else (1 : ℂ)
           else if ¬a = 0 ∧ c = 1 then -1 else 1) =
-         if ¬a = 0 ∧ ¬b = c then -1 else 1:= by
+          if ¬a = 0 ∧ ¬b = c then -1 else 1 := by
           fin_cases a <;> fin_cases b <;> fin_cases c
           any_goals rfl
           simp
-        rw [← ha (q r0) (q r1) (grade q (List.filter (fun a => !decide (le1 r0 a)) r) )]
+        rw [← ha (q r0) (q r1) (grade q (List.filter (fun a => !decide (le1 r0 a)) r))]
         congr
         · rw [koszulSignInsert_eq_filter] at ih
           simpa [grade] using ih
@@ -252,7 +252,7 @@ lemma koszulSignInsert_eq_grade {I : Type} (q : I → Fin 2) (le1 : I → I → 
       simpa [grade] using ih
       simpa using hr1
 
-lemma koszulSignInsert_eq_perm  {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) (r r' : List I)
+lemma koszulSignInsert_eq_perm {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) (r r' : List I)
     (a : I) [DecidableRel le1] (h : r.Perm r') :
     koszulSignInsert le1 q a r = koszulSignInsert le1 q a r' := by
   rw [koszulSignInsert_eq_grade]
@@ -260,7 +260,7 @@ lemma koszulSignInsert_eq_perm  {I : Type} (q : I → Fin 2) (le1 : I → I → 
   congr 1
   simp only [Fin.isValue, decide_not, eq_iff_iff, and_congr_right_iff]
   intro h'
-  have hg : grade q (List.filter (fun i => !decide (le1 a i)) r)  =
+  have hg : grade q (List.filter (fun i => !decide (le1 a i)) r) =
       grade q (List.filter (fun i => !decide (le1 a i)) r') := by
     rw [grade_count, grade_count]
     rw [List.countP_filter, List.countP_filter]
@@ -273,25 +273,23 @@ lemma koszulSignInsert_eq_sort {I : Type} (q : I → Fin 2) (le1 : I → I → P
   apply koszulSignInsert_eq_perm
   exact List.Perm.symm (List.perm_insertionSort le1 r)
 
-
 lemma koszulSignInsert_eq_cons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-  [IsTotal I le1] [IsTrans I le1] (r0 : I)
-     (r : List I)  :
-    koszulSignInsert le1 q r0 r = koszulSignInsert le1 q r0 (r0 :: r):= by
+    [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I) :
+    koszulSignInsert le1 q r0 r = koszulSignInsert le1 q r0 (r0 :: r) := by
   simp only [koszulSignInsert, Fin.isValue, and_self]
   have h1 : le1 r0 r0 := by
     simpa using IsTotal.total (r := le1) r0 r0
   simp [h1]
 
 def insertSign {I : Type} (q : I → Fin 2) (n : ℕ)
-    (r0 : I) (r : List I)  : ℂ :=
+    (r0 : I) (r : List I) : ℂ :=
   superCommuteCoef q [r0] (List.take n r)
 
 lemma take_insert_same {I : Type} (i : I) :
-    (n : ℕ) → (r : List I)   →
+    (n : ℕ) → (r : List I) →
     List.take n (List.insertIdx n i r) = List.take n r
-  | 0,   _     => by simp
-  | _+1, []    => by simp
+  | 0, _ => by simp
+  | _+1, [] => by simp
   | n+1, a::as => by
     simp only [List.insertIdx_succ_cons, List.take_succ_cons, List.cons.injEq, true_and]
     exact take_insert_same i n as
@@ -303,10 +301,10 @@ lemma insertSign_insert {I : Type} (q : I → Fin 2) (n : ℕ)
   rw [take_insert_same]
 
 lemma take_eraseIdx_same {I : Type} :
-    (n : ℕ) → (r : List I)   →
+    (n : ℕ) → (r : List I) →
     List.take n (List.eraseIdx r n) = List.take n r
-  | 0,   _     => by simp
-  | _+1, []    => by simp
+  | 0, _ => by simp
+  | _+1, [] => by simp
   | n+1, a::as => by
     simp only [List.eraseIdx_cons_succ, List.take_succ_cons, List.cons.injEq, true_and]
     exact take_eraseIdx_same n as
@@ -328,15 +326,14 @@ lemma insertSign_succ_cons {I : Type} (q : I → Fin 2) (n : ℕ)
   rw [superCommuteCoef_cons]
 
 lemma take_insert_gt {I : Type} (i : I) :
-    (n m : ℕ) → (h : n < m) → (r : List I)   →
-    List.take n (List.insertIdx m i r) =  List.take n r
-  | 0,  0, _,  _     => by simp
-  | 0,  m + 1, _,  _     => by simp
-  | n+1, m + 1, _, []    => by simp
+    (n m : ℕ) → (h : n < m) → (r : List I) →
+    List.take n (List.insertIdx m i r) = List.take n r
+  | 0, 0, _, _ => by simp
+  | 0, m + 1, _, _ => by simp
+  | n+1, m + 1, _, [] => by simp
   | n+1, m + 1, h, a::as => by
     simp only [List.insertIdx_succ_cons, List.take_succ_cons, List.cons.injEq, true_and]
     refine take_insert_gt i n m (Nat.succ_lt_succ_iff.mp h) as
-
 
 lemma insertSign_insert_gt {I : Type} (q : I → Fin 2) (n m : ℕ)
     (r0 r1 : I) (r : List I) (hn : n < m) :
@@ -346,13 +343,13 @@ lemma insertSign_insert_gt {I : Type} (q : I → Fin 2) (n m : ℕ)
   exact take_insert_gt r1 n m hn r
 
 lemma take_insert_let {I : Type} (i : I) :
-    (n m : ℕ) → (h : m ≤  n) → (r : List I) → (hm : m ≤ r.length)   →
+    (n m : ℕ) → (h : m ≤ n) → (r : List I) → (hm : m ≤ r.length) →
     (List.take (n + 1) (List.insertIdx m i r)).Perm (i :: List.take n r)
-  | 0,  0, h,  _, _    => by simp
-  | m + 1,  0, h,  r, _     => by simp
-  | n + 1,  m + 1, h,  [], hm    => by
+  | 0, 0, h, _, _ => by simp
+  | m + 1, 0, h, r, _ => by simp
+  | n + 1, m + 1, h, [], hm => by
     simp at hm
-  | n + 1,  m + 1, h,  a::as, hm    => by
+  | n + 1, m + 1, h, a::as, hm => by
     simp only [List.insertIdx_succ_cons, List.take_succ_cons]
     have hp : (i :: a :: List.take n as).Perm (a :: i :: List.take n as) := by
       exact List.Perm.swap a i (List.take n as)
@@ -361,7 +358,7 @@ lemma take_insert_let {I : Type} (i : I) :
     exact take_insert_let i n m (Nat.le_of_succ_le_succ h) as (Nat.le_of_succ_le_succ hm)
 
 lemma insertSign_insert_lt_eq_insertSort {I : Type} (q : I → Fin 2) (n m : ℕ)
-    (r0 r1 : I) (r : List I) (hn :  m ≤  n) (hm : m ≤ r.length):
+    (r0 r1 : I) (r : List I) (hn : m ≤ n) (hm : m ≤ r.length) :
     insertSign q (n + 1) r0 (List.insertIdx m r1 r) = insertSign q (n + 1) r0 (r1 :: r) := by
   rw [insertSign, insertSign]
   apply superCommuteCoef_perm_snd
@@ -369,23 +366,21 @@ lemma insertSign_insert_lt_eq_insertSort {I : Type} (q : I → Fin 2) (n m : ℕ
   refine take_insert_let r1 n m hn r hm
 
 lemma insertSign_insert_lt {I : Type} (q : I → Fin 2) (n m : ℕ)
-    (r0 r1 : I) (r : List I) (hn :  m ≤  n) (hm : m ≤ r.length):
-    insertSign q (n + 1) r0 (List.insertIdx m r1 r) = superCommuteCoef q [r0] [r1] * insertSign q n r0 r := by
+    (r0 r1 : I) (r : List I) (hn : m ≤ n) (hm : m ≤ r.length) :
+    insertSign q (n + 1) r0 (List.insertIdx m r1 r) = superCommuteCoef q [r0] [r1] *
+    insertSign q n r0 r := by
   rw [insertSign_insert_lt_eq_insertSort, insertSign_succ_cons]
   exact hn
   exact hm
-
-
-
 
 def koszulSignCons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1] (r0 r1 : I) :
     ℂ :=
   if le1 r0 r1 then 1 else
   if q r0 = 1 ∧ q r1 = 1 then -1 else 1
 
-lemma koszulSignCons_eq_superComuteCoef {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (r0 r1 : I) : koszulSignCons q le1 r0 r1 =
-    if le1 r0 r1 then 1 else superCommuteCoef q [r0] [r1]  := by
+lemma koszulSignCons_eq_superComuteCoef {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
+    [DecidableRel le1] (r0 r1 : I) : koszulSignCons q le1 r0 r1 =
+    if le1 r0 r1 then 1 else superCommuteCoef q [r0] [r1] := by
   simp only [koszulSignCons, Fin.isValue, superCommuteCoef, grade, ite_eq_right_iff, zero_ne_one,
     imp_false]
   congr 1
@@ -402,11 +397,12 @@ lemma koszulSignCons_eq_superComuteCoef {I : Type} (q : I → Fin 2) (le1 : I �
 
 lemma koszulSignInsert_cons {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
     [IsTotal I le1] [IsTrans I le1] (r0 r1 : I) (r : List I) :
-    koszulSignInsert le1 q r0 (r1 :: r) = koszulSignCons q le1 r0 r1 * koszulSignInsert le1 q r0 r := by
+    koszulSignInsert le1 q r0 (r1 :: r) = koszulSignCons q le1 r0 r1 *
+    koszulSignInsert le1 q r0 r := by
   simp [koszulSignInsert, koszulSignCons]
 
-lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I)  :
+lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
+    [DecidableRel le1] [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I) :
     koszulSignInsert le1 q r0 r = insertSign q (orderedInsertPos le1 (List.insertionSort le1 r) r0)
       r0 (List.insertionSort le1 r) := by
   rw [koszulSignInsert_eq_cons, koszulSignInsert_eq_sort, koszulSignInsert_eq_filter,
@@ -416,8 +412,9 @@ lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I
   rw [List.insertionSort]
   nth_rewrite 1 [List.orderedInsert_eq_take_drop]
   rw [List.filter_append]
-  have h1 : List.filter (fun a => decide ¬le1 r0 a) (List.takeWhile (fun b => decide ¬le1 r0 b) (List.insertionSort le1 r))
-    =  (List.takeWhile (fun b => decide ¬le1 r0 b) (List.insertionSort le1 r)) := by
+  have h1 : List.filter (fun a => decide ¬le1 r0 a)
+    (List.takeWhile (fun b => decide ¬le1 r0 b) (List.insertionSort le1 r))
+    = (List.takeWhile (fun b => decide ¬le1 r0 b) (List.insertionSort le1 r)) := by
     induction r with
     | nil => simp
     | cons r1 r ih =>
@@ -435,7 +432,7 @@ lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I
     Bool.not_true, decide_eq_false_iff_not, Decidable.not_not]
   intro a ha
   refine List.Sorted.rel_of_mem_take_of_mem_drop
-    (k := (orderedInsertPos le1 (List.insertionSort le1 r) r0).1 + 1 )
+    (k := (orderedInsertPos le1 (List.insertionSort le1 r) r0).1 + 1)
     (List.sorted_insertionSort le1 (r0 :: r)) ?_ ?_
   · simp only [List.insertionSort, List.orderedInsert_eq_take_drop, decide_not]
     rw [List.take_append_eq_append_take]
@@ -449,12 +446,12 @@ lemma koszulSignInsert_eq_insertSign {I : Type} (q : I → Fin 2) (le1 : I → I
     · simp [orderedInsertPos]
 
 lemma koszulSignInsert_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (i j : I) [IsTotal I le1] [IsTrans I le1] (r : List I)  (n : ℕ) (hn : n ≤ r.length) :
-    koszulSignInsert le1 q j (List.insertIdx  n i r) = koszulSignInsert le1 q j (i :: r) := by
+    (i j : I) [IsTotal I le1] [IsTrans I le1] (r : List I) (n : ℕ) (hn : n ≤ r.length) :
+    koszulSignInsert le1 q j (List.insertIdx n i r) = koszulSignInsert le1 q j (i :: r) := by
   apply koszulSignInsert_eq_perm
   exact List.perm_insertIdx i r hn
 
-lemma take_insertIdx {I : Type} (i : I) : (r : List I) →  (n : ℕ) → (hn : n ≤ r.length) →
+lemma take_insertIdx {I : Type} (i : I) : (r : List I) → (n : ℕ) → (hn : n ≤ r.length) →
     List.take n (List.insertIdx n i r) = List.take n r
   | [], 0, h => by
     simp
@@ -466,12 +463,11 @@ lemma take_insertIdx {I : Type} (i : I) : (r : List I) →  (n : ℕ) → (hn : 
     simp only [List.insertIdx_succ_cons, List.take_succ_cons, List.cons.injEq, true_and]
     exact take_insertIdx i r n (Nat.le_of_lt_succ h)
 
-
 lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop) [DecidableRel le1]
-    (i : I) [IsTotal I le1] [IsTrans I le1] : (r : List I) →  (n : ℕ) → (hn : n ≤ r.length) →
+    (i : I) [IsTotal I le1] [IsTrans I le1] : (r : List I) → (n : ℕ) → (hn : n ≤ r.length) →
     koszulSign le1 q (List.insertIdx n i r) = insertSign q n i r
-       * koszulSign le1 q r
-       *  insertSign q (insertionSortEquiv le1 (List.insertIdx n i r) ⟨n, by
+      * koszulSign le1 q r
+      * insertSign q (insertionSortEquiv le1 (List.insertIdx n i r) ⟨n, by
         rw [List.length_insertIdx _ _ hn]
         omega⟩) i
         (List.insertionSort le1 (List.insertIdx n i r))
@@ -482,7 +478,7 @@ lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
   | r0 :: r, 0, h => by
     simp only [List.insertIdx_zero, List.insertionSort, List.length_cons, Fin.zero_eta]
     rw [koszulSign]
-    trans koszulSign le1 q (r0 :: r)  * koszulSignInsert le1 q i (r0 :: r)
+    trans koszulSign le1 q (r0 :: r) * koszulSignInsert le1 q i (r0 :: r)
     ring
     simp only [insertionSortEquiv, List.length_cons, Nat.succ_eq_add_one, List.insertionSort,
       orderedInsertEquiv, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, HepLean.Fin.equivCons_trans,
@@ -533,13 +529,14 @@ lemma koszulSign_insertIdx {I : Type} (q : I → Fin 2) (le1 : I → I → Prop)
       omega
       exact Nat.le_of_lt_succ h
     let ni : Fin rs.length := (insertionSortEquiv le1 (List.insertIdx n i r))
-      ⟨n,  hnsL⟩
-    let nro : Fin (rs.length + 1) := ⟨↑(orderedInsertPos le1 rs r0), orderedInsertPos_lt_length le1 rs r0⟩
+      ⟨n, hnsL⟩
+    let nro : Fin (rs.length + 1) :=
+      ⟨↑(orderedInsertPos le1 rs r0), orderedInsertPos_lt_length le1 rs r0⟩
     rw [koszulSignInsert_insertIdx, koszulSignInsert_cons]
-    trans koszulSignInsert le1 q r0 r * (koszulSignCons q le1 r0 i  *insertSign q ni i rs)
+    trans koszulSignInsert le1 q r0 r * (koszulSignCons q le1 r0 i *insertSign q ni i rs)
     · simp only [rs, ni]
       ring
-    trans koszulSignInsert le1 q r0 r  * (superCommuteCoef q [i] [r0] *
+    trans koszulSignInsert le1 q r0 r * (superCommuteCoef q [i] [r0] *
           insertSign q (nro.succAbove ni) i (List.insertIdx nro r0 rs))
     swap
     · simp only [rs, nro, ni]
@@ -596,7 +593,8 @@ lemma insertIdx_eraseIdx {I : Type} :
     exact insertIdx_eraseIdx n r _
 
 lemma superCommuteCoefLE_eq_get {I : Type} (q : I → Fin 2) (le1 :I → I → Prop) (r : List I)
-    [DecidableRel le1] [IsTotal I le1] [IsTrans I le1] (i : I) (n : Fin r.length) (heq : q i = q (r.get n)) :
+    [DecidableRel le1] [IsTotal I le1] [IsTrans I le1] (i : I) (n : Fin r.length)
+    (heq : q i = q (r.get n)) :
     superCommuteCoefLE q le1 r i n = superCommuteCoef q [r.get n] (r.take n) := by
   rw [superCommuteCoefLE_eq_q]
   let r' := r.eraseIdx ↑n
