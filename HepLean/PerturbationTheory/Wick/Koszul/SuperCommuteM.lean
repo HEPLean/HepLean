@@ -3,15 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Species
-import HepLean.Lorentz.RealVector.Basic
-import HepLean.Mathematics.Fin
-import HepLean.SpaceTime.Basic
-import HepLean.Mathematics.SuperAlgebra.Basic
-import HepLean.Mathematics.List
-import HepLean.Meta.Notes.Basic
-import Init.Data.List.Sort.Basic
-import Mathlib.Data.Fin.Tuple.Take
 import HepLean.PerturbationTheory.Wick.Koszul.SuperCommute
 /-!
 
@@ -203,3 +194,4 @@ lemma superCommute_ofList_ofListM_sum  {I : Type} {f : I → Type} [∀ i, Finty
 
 end
 end Wick
+#min_imports

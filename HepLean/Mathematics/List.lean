@@ -3,9 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.LinearAlgebra.PiTensorProduct
-import Mathlib.Tactic.Polyrith
-import Mathlib.Tactic.Linarith
 import HepLean.Mathematics.Fin
 /-!
 # List lemmas
