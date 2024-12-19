@@ -194,4 +194,3 @@ lemma superCommute_ofList_ofListM_sum  {I : Type} {f : I → Type} [∀ i, Finty
 
 end
 end Wick
-#min_imports
