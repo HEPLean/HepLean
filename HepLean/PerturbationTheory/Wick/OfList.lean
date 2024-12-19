@@ -99,13 +99,13 @@ def ofListLift {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (l : List I) (
   sumFiber f (ofList l x)
 
 lemma ofListLift_empty {I : Type} (f : I → Type) [∀ i, Fintype (f i)] :
-  ofListLift f [] 1 = 1 := by
+    ofListLift f [] 1 = 1 := by
   simp only [ofListLift, EmbeddingLike.map_eq_one_iff]
   rw [ofList_empty]
   exact map_one (sumFiber f)
 
 lemma ofListLift_empty_smul {I : Type} (f : I → Type) [∀ i, Fintype (f i)] (x : ℂ) :
-  ofListLift f [] x = x • 1 := by
+    ofListLift f [] x = x • 1 := by
   simp only [ofListLift, EmbeddingLike.map_eq_one_iff]
   rw [ofList_eq_smul_one]
   rw [ofList_empty]

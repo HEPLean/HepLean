@@ -230,7 +230,8 @@ lemma eraseIdx_succ_tail {i : I} {l : List I} (n : ℕ) (hn : n + 1 < (i :: l).l
   conv_rhs =>
     rhs
     rw [extractEquiv]
-    simp
+    simp only [List.get_eq_getElem, List.length_cons, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
+      Equiv.trans_apply, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map_snd]
     erw [Fin.insertNthEquiv_symm_apply]
   simp only [tail, List.tail_cons, Equiv.piCongr, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
     Equiv.piCongrRight, Equiv.cast_symm, Equiv.piCongrLeft, OrderIso.toEquiv_symm,

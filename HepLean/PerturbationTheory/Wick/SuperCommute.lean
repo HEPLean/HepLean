@@ -208,7 +208,7 @@ lemma superCommute_ofList_mul {I : Type} (q : I → Fin 2) (la lb lc : List I) (
   `[a, bc] = [a, b] c + b [a, c] ` the `superCommuteSplit` for `n=0` is `[a, b] c`
   and for `n=1` is `b [a, c]`. -/
 def superCommuteSplit {I : Type} (q : I → Fin 2) (la lb : List I) (xa xb : ℂ) (n : ℕ)
-  (hn : n < lb.length) : FreeAlgebra ℂ I :=
+    (hn : n < lb.length) : FreeAlgebra ℂ I :=
   superCommuteCoef q la (List.take n lb) •
   ofList (List.take n lb) 1 *
   superCommute q (ofList la xa) (FreeAlgebra.ι ℂ (lb.get ⟨n, hn⟩))
