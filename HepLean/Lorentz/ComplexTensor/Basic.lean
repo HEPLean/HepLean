@@ -3,15 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.OverColor.Basic
 import HepLean.Tensors.Tree.Dot
-import HepLean.Lorentz.Weyl.Contraction
 import HepLean.Lorentz.Weyl.Metric
-import HepLean.Lorentz.Weyl.Unit
-import HepLean.Lorentz.ComplexVector.Contraction
 import HepLean.Lorentz.ComplexVector.Metric
-import HepLean.Lorentz.ComplexVector.Unit
-import HepLean.Mathematics.PiTensorProduct
 import HepLean.Lorentz.PauliMatrices.AsTensor
 /-!
 

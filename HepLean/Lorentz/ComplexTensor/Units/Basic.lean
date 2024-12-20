@@ -9,7 +9,6 @@ import HepLean.Tensors.Tree.NodeIdentities.ProdContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.PermContr
-import HepLean.Tensors.Tree.NodeIdentities.Congr
 /-!
 
 ## Metrics as complex Lorentz tensors

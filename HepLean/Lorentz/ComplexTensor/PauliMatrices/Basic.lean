@@ -3,13 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.Tree.NodeIdentities.ProdAssoc
-import HepLean.Tensors.Tree.NodeIdentities.ProdComm
-import HepLean.Tensors.Tree.NodeIdentities.ProdContr
-import HepLean.Tensors.Tree.NodeIdentities.ContrContr
-import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
-import HepLean.Tensors.Tree.NodeIdentities.PermContr
-import HepLean.Tensors.Tree.NodeIdentities.Congr
 import HepLean.Lorentz.ComplexTensor.Metrics.Lemmas
 /-!
 
