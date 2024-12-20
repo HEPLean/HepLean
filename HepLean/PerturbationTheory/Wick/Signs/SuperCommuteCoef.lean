@@ -3,16 +3,16 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Mathematics.List
 import HepLean.PerturbationTheory.FieldStatistics
 /-!
 
-# Koszul signs and ordering for lists and algebras
+# Super commutation coefficent.
+
+This is a complex number which is `-1` when commuting two fermionic operators and `1` otherwise.
 
 -/
 
 namespace Wick
-open HepLean.List
 open FieldStatistic
 
 variable {𝓕 : Type} (q : 𝓕 → FieldStatistic)

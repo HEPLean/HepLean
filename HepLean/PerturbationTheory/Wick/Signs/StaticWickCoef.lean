@@ -9,7 +9,7 @@ import Mathlib.Analysis.Complex.Basic
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 /-!
 
-# Koszul sign insert
+# Static wick coefficent
 
 -/
 
