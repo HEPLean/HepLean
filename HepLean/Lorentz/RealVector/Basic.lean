@@ -3,11 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Complex.Exponential
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import HepLean.Lorentz.Group.Basic
-import HepLean.Meta.Informal.Basic
-import Mathlib.RepresentationTheory.Rep
 import HepLean.Lorentz.RealVector.Modules
 /-!
 

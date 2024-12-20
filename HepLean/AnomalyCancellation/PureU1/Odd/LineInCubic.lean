@@ -3,14 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.AnomalyCancellation.PureU1.Basic
-import HepLean.AnomalyCancellation.PureU1.Permutations
-import HepLean.AnomalyCancellation.PureU1.VectorLike
-import HepLean.AnomalyCancellation.PureU1.ConstAbs
 import HepLean.AnomalyCancellation.PureU1.LineInPlaneCond
 import HepLean.AnomalyCancellation.PureU1.Odd.BasisLinear
-import Mathlib.Tactic.Polyrith
-import Mathlib.RepresentationTheory.Basic
 /-!
 
 # Line In Cubic Odd case

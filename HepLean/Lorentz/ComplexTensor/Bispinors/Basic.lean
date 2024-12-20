@@ -4,14 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.ComplexTensor.PauliMatrices.Basic
-import HepLean.Tensors.Tree.NodeIdentities.ProdContr
-import HepLean.Tensors.Tree.NodeIdentities.PermContr
-import HepLean.Tensors.Tree.NodeIdentities.PermProd
-import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
-import HepLean.Tensors.Tree.NodeIdentities.ContrContr
-import HepLean.Tensors.Tree.NodeIdentities.ProdComm
-import HepLean.Tensors.Tree.NodeIdentities.Congr
-import HepLean.Tensors.Tree.NodeIdentities.ProdAssoc
 /-!
 
 ## Bispinors

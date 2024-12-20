@@ -4,10 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Tensors.OverColor.Basic
-import HepLean.Mathematics.PiTensorProduct
-import HepLean.Lorentz.ComplexVector.Basic
 import HepLean.Lorentz.Weyl.Two
-import HepLean.Lorentz.PauliMatrices.Basic
 /-!
 
 ## Pauli matrices

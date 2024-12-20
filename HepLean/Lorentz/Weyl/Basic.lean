@@ -3,11 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Meta.Informal.Basic
-import HepLean.Lorentz.SL2C.Basic
-import Mathlib.RepresentationTheory.Rep
 import HepLean.Lorentz.Weyl.Modules
-import Mathlib.Logic.Equiv.TransferInstance
 /-!
 
 # Weyl fermions

@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Group.Proper
-import Mathlib.Topology.Constructions
 import HepLean.Lorentz.RealVector.NormOne
 /-!
 # Boosts

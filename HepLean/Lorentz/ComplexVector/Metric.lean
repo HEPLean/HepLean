@@ -3,9 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Lorentz.ComplexVector.Two
-import HepLean.Lorentz.MinkowskiMatrix
-import HepLean.Lorentz.ComplexVector.Contraction
 import HepLean.Lorentz.ComplexVector.Unit
 /-!
 

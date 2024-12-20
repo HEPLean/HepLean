@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.ComplexTensor.PauliMatrices.Basic
-import HepLean.Lorentz.ComplexTensor.Basis
 /-!
 
 ## Pauli matrices and the basis of complex Lorentz tensors

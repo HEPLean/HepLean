@@ -4,9 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.Basic
-import Mathlib.Algebra.Module.Equiv.Basic
-import Mathlib.Algebra.BigOperators.Ring
-import Mathlib.Algebra.BigOperators.Fin
 /-!
 # Pure U(1) ACC system.
 

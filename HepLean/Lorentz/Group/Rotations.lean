@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Group.Basic
 import HepLean.Mathematics.SO3.Basic
-import Mathlib.Topology.Constructions
 /-!
 # Rotations
 

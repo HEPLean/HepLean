@@ -3,10 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.AnomalyCancellation.SM.Basic
-import HepLean.AnomalyCancellation.SM.NoGrav.Basic
 import HepLean.AnomalyCancellation.SM.NoGrav.One.LinearParameterization
-import Mathlib.NumberTheory.FLT.Three
 /-!
 # Lemmas for 1 family SM Accs
 

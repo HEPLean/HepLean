@@ -3,12 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.CategoryTheory.Category.Basic
-import Mathlib.CategoryTheory.Types
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Comma.Over
 import Mathlib.CategoryTheory.Core
-import Mathlib.CategoryTheory.Monoidal.Braided.Basic
 import HepLean.Lorentz.Weyl.Basic
 import HepLean.Lorentz.ComplexVector.Basic
 /-!

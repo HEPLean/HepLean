@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.ComplexTensor.Metrics.Basis
 import HepLean.Lorentz.ComplexTensor.Units.Basic
-import HepLean.Lorentz.ComplexTensor.Basis
 /-!
 
 ## Symmetry lemmas relating to units

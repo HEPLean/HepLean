@@ -3,13 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Tactic.FinCases
-import Mathlib.Algebra.Module.Basic
-import Mathlib.Tactic.Ring
-import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 import HepLean.AnomalyCancellation.Basic
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Logic.Equiv.Fin
 /-!
 # The MSSM with 3 families and RHNs
 

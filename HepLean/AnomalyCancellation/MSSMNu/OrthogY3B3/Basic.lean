@@ -3,10 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.AnomalyCancellation.MSSMNu.Basic
 import HepLean.AnomalyCancellation.MSSMNu.LineY3B3
-import Mathlib.Tactic.Polyrith
-import Mathlib.Tactic.Linarith
 /-!
 # The type of solutions perpendicular to `Y₃` and `B₃`
 

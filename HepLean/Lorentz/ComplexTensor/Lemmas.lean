@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.ComplexTensor.Basis
-import HepLean.Tensors.Tree.NodeIdentities.PermProd
 /-!
 
 ## Lemmas related to complex Lorentz tensors.

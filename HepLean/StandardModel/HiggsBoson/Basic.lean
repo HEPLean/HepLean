@@ -4,13 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.SpaceTime.Basic
-import Mathlib.Data.Complex.Exponential
 import Mathlib.Tactic.Polyrith
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Geometry.Manifold.ContMDiff.Product
 import HepLean.Meta.Informal.Basic
 /-!
 

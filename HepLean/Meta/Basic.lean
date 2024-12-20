@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Batteries.Lean.HashSet
-import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
