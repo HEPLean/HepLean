@@ -103,7 +103,6 @@ lemma insertSign_succ_cons (n : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) : insertSign
   simp only [insertSign, List.take_succ_cons]
   rw [superCommuteCoef_cons]
 
-
 lemma insertSign_insert_gt (n m : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) (hn : n < m) :
     insertSign q n r0 (List.insertIdx m r1 r) = insertSign q n r0 r := by
   rw [insertSign, insertSign]

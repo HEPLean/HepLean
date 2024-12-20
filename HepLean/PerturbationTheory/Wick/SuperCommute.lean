@@ -276,9 +276,8 @@ lemma ofList_ofList_superCommute (la lb : List 𝓕) (xa xb : ℂ) :
   rw [superCommute_ofList_ofList_superCommuteCoef]
   abel
 
-
 lemma ofListLift_ofList_superCommute' (l : List 𝓕) (r : List 𝓕) (x y : ℂ) :
-  ofList r y * ofList l x = superCommuteCoef q l r • (ofList l x * ofList r y)
+    ofList r y * ofList l x = superCommuteCoef q l r • (ofList l x * ofList r y)
     - superCommuteCoef q l r • superCommute q (ofList l x) (ofList r y) := by
   nth_rewrite 2 [ofList_ofList_superCommute q]
   rw [superCommuteCoef]
@@ -340,7 +339,7 @@ lemma ofList_ofListLift_superCommute (l : List (Σ i, f i)) (r : List 𝓕) (x y
   abel
 
 lemma ofListLift_ofList_superCommute (l : List (Σ i, f i)) (r : List 𝓕) (x y : ℂ) :
-  ofListLift f r y * ofList l x = superCommuteLiftCoef q l r • (ofList l x * ofListLift f r y)
+    ofListLift f r y * ofList l x = superCommuteLiftCoef q l r • (ofList l x * ofListLift f r y)
     - superCommuteLiftCoef q l r •
     superCommute (fun i => q i.1) (ofList l x) (ofListLift f r y) := by
   rw [ofList_ofListLift_superCommute, superCommuteLiftCoef]

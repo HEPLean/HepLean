@@ -87,7 +87,7 @@ lemma toList_get (a : CreateAnnilateSect f l) :
       simp [tail]
 
 @[simp]
-lemma toList_grade  :
+lemma toList_grade :
     FieldStatistic.ofList (fun i => q i.fst) a.toList = fermionic ↔
     FieldStatistic.ofList q l = fermionic := by
   induction l with
@@ -308,7 +308,7 @@ variable {𝓕 : Type} {f : 𝓕 → Type} (q : 𝓕 → FieldStatistic) (le : �
   {l : List 𝓕} (a : CreateAnnilateSect f l)
 
 lemma toList_koszulSignInsert (x : (i : 𝓕) × f i) :
-    koszulSignInsert (fun i => q i.fst)  (fun i j => le i.fst j.fst) x a.toList =
+    koszulSignInsert (fun i => q i.fst) (fun i j => le i.fst j.fst) x a.toList =
     koszulSignInsert q le x.1 l := by
   induction l with
   | nil => simp [koszulSignInsert]

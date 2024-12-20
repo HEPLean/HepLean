@@ -167,7 +167,7 @@ lemma ofListLift_expand (f : 𝓕 → Type) [∀ i, Fintype (f i)] (x : ℂ) :
 
 lemma koszulOrder_ofListLift {f : 𝓕 → Type} [∀ i, Fintype (f i)]
     (l : List 𝓕) (x : ℂ) :
-    koszulOrder (fun i => q i.fst) (fun i j => le i.1 j.1)  (ofListLift f l x) =
+    koszulOrder (fun i => q i.fst) (fun i j => le i.1 j.1) (ofListLift f l x) =
     sumFiber f (koszulOrder q le (ofList l x)) := by
   rw [koszulOrder_ofList]
   rw [map_smul]

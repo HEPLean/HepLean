@@ -24,7 +24,8 @@ open FieldStatistic
   is zero.
   This can be thought as as a condtion on the operator algebra `A` as much as it can
   on `F`. -/
-class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A] (q : I → FieldStatistic) (le1 : I → I → Prop)
+class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A]
+    (q : I → FieldStatistic) (le1 : I → I → Prop)
     [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A) : Prop where
   superCommute_mem_center : ∀ i j, F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) ∈
     Subalgebra.center ℂ A
@@ -255,7 +256,8 @@ lemma le_all_mul_koszulOrder_ofList_expand {I : Type}
   exact fun j => hi j
 
 lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → FieldStatistic) (r : List I) (x : ℂ) (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    (q : I → FieldStatistic) (r : List I) (x : ℂ)
+    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     [IsTotal (Σ i, f i) le1] [IsTrans (Σ i, f i) le1]
     (i : (Σ i, f i)) (hi : ∀ (j : (Σ i, f i)), le1 j i)
     {A : Type} [Semiring A] [Algebra ℂ A]
