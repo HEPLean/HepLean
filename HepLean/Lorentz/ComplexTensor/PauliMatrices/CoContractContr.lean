@@ -92,28 +92,28 @@ lemma pauliMatrix_contr_lower_0_1_1 :
     lhs
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 1, 1]
     rw [contrBasisVectorMul_pos (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_pos (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    enter [1, 1, 1, 1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; rhs; rhs; lhs
+    enter [1, 1, 1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; rhs; lhs;
+    enter [1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; rhs; rhs; lhs;
+    enter [1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
     lhs
@@ -122,11 +122,9 @@ lemma pauliMatrix_contr_lower_0_1_1 :
   /- Simplifying. -/
   congr 1
   · congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_lower_1_0_1 :
     {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)) | μ α β ⊗
@@ -212,12 +210,9 @@ lemma pauliMatrix_contr_lower_1_1_0 :
   /- Simplifying. -/
   congr 1
   · congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 1
-    funext k
-    fin_cases k <;> rfl
-
+    decide
 lemma pauliMatrix_contr_lower_2_0_1 :
     {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)) | μ α β ⊗
     pauliContr | μ α' β'}ᵀ.tensor =
@@ -258,11 +253,9 @@ lemma pauliMatrix_contr_lower_2_0_1 :
   /- Simplifying. -/
   congr 1
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_lower_2_1_0 :
     {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 1 | 2 => 0)) | μ α β ⊗
@@ -304,11 +297,9 @@ lemma pauliMatrix_contr_lower_2_1_0 :
   /- Simplifying. -/
   congr 1
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_lower_3_0_0 :
     {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 0 | 2 => 0)) | μ α β ⊗
@@ -350,11 +341,9 @@ lemma pauliMatrix_contr_lower_3_0_0 :
   /- Simplifying. -/
   congr 1
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_lower_3_1_1 :
     {(basisVector pauliCoMap (fun | 0 => 3 | 1 => 1 | 2 => 1)) | μ α β ⊗
@@ -396,11 +385,9 @@ lemma pauliMatrix_contr_lower_3_1_1 :
   /- Simplifying. -/
   congr 1
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 2
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 /-! TODO: Work out why `pauliCo_prod_basis_expand'` is needed. -/
 /-- This lemma is exactly the same as `pauliCo_prod_basis_expand`.
@@ -549,13 +536,9 @@ theorem pauliCo_contr_pauliContr :
       abel
   rw [h1]
   congr
-  · funext i
-    fin_cases i <;> rfl
-  · funext i
-    fin_cases i <;> rfl
-  · funext i
-    fin_cases i <;> rfl
-  · funext i
-    fin_cases i <;> rfl
+  · decide
+  · decide
+  · decide
+  · decide
 
 end complexLorentzTensor

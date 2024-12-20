@@ -342,28 +342,28 @@ lemma pauliMatrix_contr_down_0 :
     lhs
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 1, 1]
     rw [contrBasisVectorMul_pos (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_pos (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; rhs; lhs
+    enter [1, 1, 1, 1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; lhs; rhs; rhs; lhs
+    enter [1, 1, 1, 1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; lhs; rhs; rhs; lhs
+    enter [1, 1, 1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; lhs; rhs; lhs;
+    enter [1, 1, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
-    lhs; rhs; rhs; lhs;
+    enter [1, 2, 2, 1]
     rw [contrBasisVectorMul_neg (by decide)]
   conv =>
     lhs
@@ -416,12 +416,10 @@ lemma pauliMatrix_contr_down_1 :
   congr 1
   · rw [basisVectorContrPauli]
     congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
   · rw [basisVectorContrPauli]
     congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_down_2 :
     {(basisVector ![Color.down, Color.down] fun _ => 2) | μ ν ⊗

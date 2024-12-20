@@ -336,9 +336,7 @@ lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ 
       enter [2, 2]
       intro a
       simp [optionEraseZ]
-      rhs
-      rhs
-      lhs
+      enter [2, 2, 1]
       rw [← CreateAnnilateSect.eraseIdx_toList]
       erw [CreateAnnilateSect.extractEquiv_symm_eraseIdx]
     rw [← Finset.sum_mul]

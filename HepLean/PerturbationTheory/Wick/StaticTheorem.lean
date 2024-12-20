@@ -55,29 +55,22 @@ lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
   rw [Subalgebra.mem_center_iff] at hi
   rw [hi, mul_assoc, ← map_mul, hb, add_mul, map_add]
   conv_lhs =>
-    rhs
-    lhs
-    rw [ofList_eq_smul_one]
-    rw [Algebra.smul_mul_assoc]
-    rw [ofList_singleton]
+    enter [2, 1]
+    rw [ofList_eq_smul_one, Algebra.smul_mul_assoc, ofList_singleton]
   rw [mul_koszulOrder_le]
   conv_lhs =>
-    rhs
-    lhs
+    enter [2, 1]
     rw [← map_smul, ← Algebra.smul_mul_assoc]
     rw [← ofList_singleton, ← ofList_eq_smul_one]
   conv_lhs =>
-    rhs
-    rhs
+    enter [2, 2]
     rw [ofList_eq_smul_one, Algebra.smul_mul_assoc, map_smul]
   rw [le_all_mul_koszulOrder_ofListLift_expand]
   conv_lhs =>
-    rhs
-    rhs
+    enter [2, 2]
     rw [smul_add, Finset.smul_sum]
     rw [← map_smul, ← map_smul, ← Algebra.smul_mul_assoc, ← ofList_eq_smul_one]
-    rhs
-    rhs
+    enter [2, 2]
     intro n
     rw [← Algebra.smul_mul_assoc, smul_comm, ← map_smul, ← LinearMap.map_smul₂,
       ← ofList_eq_smul_one]

@@ -8,7 +8,9 @@ import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Analysis.Complex.Basic
 /-!
 
-# Koszul sign insert
+# Grade
+
+The grade `0` (for boson) or `1` (for fermion) of a list of fields.
 
 -/
 
