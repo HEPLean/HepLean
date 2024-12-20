@@ -61,7 +61,7 @@ lemma koszulSignInsert_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic)
     rw [koszulSignInsert, koszulSignInsert]
     rw [koszulSignInsert_erase_boson q le r0 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ hr]
 
-lemma koszulSign_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le :𝓕 → 𝓕 → Prop)
+lemma koszulSign_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop)
     [DecidableRel le] :
     (r : List 𝓕) → (n : Fin r.length) → (heq : q (r.get n) = bosonic) →
     koszulSign q le (r.eraseIdx n) = koszulSign q le r
@@ -78,20 +78,17 @@ lemma koszulSign_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le :�
     simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ, Fin.isValue,
       List.eraseIdx_cons_succ]
     intro h'
-    rw [koszulSign, koszulSign]
-    rw [koszulSign_erase_boson q le r ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
+    rw [koszulSign, koszulSign, koszulSign_erase_boson q le r ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
     congr 1
     rw [koszulSignInsert_erase_boson q le r0 r ⟨n, Nat.succ_lt_succ_iff.mp h⟩ h']
     exact h'
 
 lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (i : 𝓕) :
     (r : List 𝓕) → (n : ℕ) → (hn : n ≤ r.length) →
-    koszulSign q le (List.insertIdx n i r) = insertSign q n i r
-      * koszulSign q le r
-      * insertSign q (insertionSortEquiv le (List.insertIdx n i r) ⟨n, by
+    koszulSign q le (List.insertIdx n i r) = insertSign q n i r * koszulSign q le r *
+      insertSign q (insertionSortEquiv le (List.insertIdx n i r) ⟨n, by
         rw [List.length_insertIdx _ _ hn]
-        omega⟩) i
-        (List.insertionSort le (List.insertIdx n i r))
+        omega⟩) i (List.insertionSort le (List.insertIdx n i r))
   | [], 0, h => by
     simp [koszulSign, insertSign, superCommuteCoef, koszulSignInsert]
   | [], n + 1, h => by
@@ -188,11 +185,9 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (i : 𝓕) :
       simp only [hc1 hn, ↓reduceIte]
       rw [superCommuteCoef_comm]
     · simp only [hn, ↓reduceIte, Fin.val_succ]
-      rw [insertSign_insert_lt]
-      rw [← mul_assoc]
+      rw [insertSign_insert_lt, ← mul_assoc]
       congr 1
-      rw [superCommuteCoef_mul_self]
-      rw [koszulSignCons]
+      rw [superCommuteCoef_mul_self, koszulSignCons]
       simp only [hc2 hn, ↓reduceIte]
       exact Nat.le_of_not_lt hn
       exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le rs r0)
