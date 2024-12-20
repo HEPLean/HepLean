@@ -165,11 +165,9 @@ lemma pauliMatrix_contr_lower_1_0_1 :
   /- Simplifying. -/
   congr 1
   · congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
   · congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_lower_1_1_0 :
     {(basisVector pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0)) | μ α β ⊗
@@ -213,6 +211,7 @@ lemma pauliMatrix_contr_lower_1_1_0 :
     decide
   · congr 1
     decide
+
 lemma pauliMatrix_contr_lower_2_0_1 :
     {(basisVector pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)) | μ α β ⊗
     pauliContr | μ α' β'}ᵀ.tensor =
