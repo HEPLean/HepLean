@@ -152,21 +152,21 @@ lemma toCenterTerm_none (f : 𝓕 → Type) [∀ i, Fintype (f i)]
 
 lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     (q : 𝓕 → FieldStatistic)
-    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    (le : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le]
     {A : Type} [Semiring A] [Algebra ℂ A]
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F] :
-    {r : List 𝓕} → (c : Contractions r) → (S : Splitting f le1) →
-    (c.toCenterTerm f q le1 F S) ∈ Subalgebra.center ℂ A
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le F] :
+    {r : List 𝓕} → (c : Contractions r) → (S : Splitting f le) →
+    (c.toCenterTerm f q le F S) ∈ Subalgebra.center ℂ A
   | [], ⟨[], .nil⟩, _ => by
     dsimp [toCenterTerm]
     exact Subalgebra.one_mem (Subalgebra.center ℂ A)
   | _ :: _, ⟨_, .cons (aux := aux') none c⟩, S => by
     dsimp [toCenterTerm]
-    exact toCenterTerm_center f q le1 F ⟨aux', c⟩ S
+    exact toCenterTerm_center f q le F ⟨aux', c⟩ S
   | a :: _, ⟨_, .cons (aux := aux') (some n) c⟩, S => by
     dsimp [toCenterTerm]
     refine Subalgebra.mul_mem (Subalgebra.center ℂ A) ?hx ?hy
-    exact toCenterTerm_center f q le1 F ⟨aux', c⟩ S
+    exact toCenterTerm_center f q le F ⟨aux', c⟩ S
     apply Subalgebra.smul_mem
     rw [ofListLift_expand]
     rw [map_sum, map_sum]
@@ -175,7 +175,7 @@ lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     simp only [CreateAnnihilateSect.toList]
     rw [ofList_singleton]
     exact OperatorMap.superCommute_ofList_singleton_ι_center (q := fun i => q i.1)
-      (le1 := le1) F (S.𝓑p a) ⟨aux'[↑n], x.head⟩
+      (le := le) F (S.𝓑p a) ⟨aux'[↑n], x.head⟩
 
 end Contractions
 

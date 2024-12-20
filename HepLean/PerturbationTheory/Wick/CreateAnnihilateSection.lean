@@ -132,7 +132,8 @@ def extractEquiv (n : Fin l.length) : CreateAnnihilateSect f l ≃
   match l with
   | [] => exact Fin.elim0 n
   | l0 :: l =>
-    let e1 : CreateAnnihilateSect f ((l0 :: l).eraseIdx n) ≃ Π i, f ((l0 :: l).get (n.succAbove i)) :=
+    let e1 : CreateAnnihilateSect f ((l0 :: l).eraseIdx n) ≃
+        Π i, f ((l0 :: l).get (n.succAbove i)) :=
       Equiv.piCongr (Fin.castOrderIso (by rw [eraseIdx_cons_length])).toEquiv
       fun x => Equiv.cast (congrArg f (by
       rw [HepLean.List.eraseIdx_get]
