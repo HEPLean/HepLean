@@ -203,9 +203,7 @@ lemma eraseIdx_succ_head {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
     RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Equiv.trans_apply, Equiv.prodCongr_apply,
     Equiv.coe_refl, Prod.map_snd]
   conv_lhs =>
-    rhs
-    rhs
-    rhs
+    enter [1, 2, 1]
     erw [Fin.insertNthEquiv_symm_apply]
   simp only [head, Equiv.piCongr, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Equiv.piCongrRight,
     Equiv.cast_symm, Equiv.piCongrLeft, OrderIso.toEquiv_symm, OrderIso.symm_symm,
@@ -229,9 +227,7 @@ lemma eraseIdx_succ_tail {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
     List.getElem_cons_succ, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Equiv.trans_apply,
     Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map_snd, Nat.succ_eq_add_one]
   conv_lhs =>
-    rhs
-    rhs
-    rhs
+    enter [1, 2, 1]
     erw [Fin.insertNthEquiv_symm_apply]
   rw [eraseIdx]
   conv_rhs =>

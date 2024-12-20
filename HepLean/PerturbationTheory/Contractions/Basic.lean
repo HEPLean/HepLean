@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.Wick.OperatorMap
 /-!
 
-# Koszul signs and ordering for lists and algebras
+# Contractions of a list of fields
 
 -/
 
@@ -40,6 +40,8 @@ lemma contractions_nil (a : Contractions ([] : List 𝓕)) : a = ⟨[], Contract
   cases c
   rfl
 
+/-- Establishes uniqueness of contractions for a single field, showing that any contraction
+  of a single field must be equivalent to the trivial contraction with no pairing. -/
 lemma contractions_single {i : 𝓕} (a : Contractions [i]) : a =
     ⟨[i], ContractionsAux.cons none ContractionsAux.nil⟩ := by
   cases a
@@ -52,7 +54,10 @@ lemma contractions_single {i : 𝓕} (a : Contractions [i]) : a =
   rename_i x
   exact Fin.elim0 x
 
-/-- For the nil list of fields there is only one contraction. -/
+/--
+  This function provides an equivalence between the type of contractions for an empty list of fields
+  and the unit type, indicating that there is only one possible contraction for an empty list.
+-/
 def nilEquiv : Contractions ([] : List 𝓕) ≃ Unit where
   toFun _ := ()
   invFun _ := ⟨[], ContractionsAux.nil⟩
@@ -105,6 +110,16 @@ instance fintype : (l : List 𝓕) → Fintype (Contractions l)
       Sigma.instFintype
     Fintype.ofEquiv _ consEquiv.symm
 
+/-- A contraction is a full contraction if there normalizing list of fields is empty. -/
+def IsFull : Prop := c.normalize = []
+
+/-- Provides a decidable instance for determining if a contraction is full
+  (i.e., all fields are paired). -/
+instance isFull_decidable : Decidable c.IsFull := by
+  have hn : c.IsFull ↔ c.normalize.length = 0 := by
+    simp [IsFull]
+  apply decidable_of_decidable_of_iff hn.symm
+
 /-- A structure specifying when a type `I` and a map `f :I → Type` corresponds to
   the splitting of a fields `φ` into a creation `n` and annihlation part `p`. -/
 structure Splitting (f : 𝓕 → Type) [∀ i, Fintype (f i)]
@@ -137,6 +152,11 @@ noncomputable def toCenterTerm (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     superCommuteCoef q [aux'.get n] (List.take (↑n) aux') •
       F (((superCommute fun i => q i.fst) (ofList [S.𝓑p a] (S.𝓧p a))) (ofListLift f [aux'.get n] 1))
 
+/-- Shows that adding a field with no contractions (none) to an existing set of contractions
+  results in the same center term as the original contractions.
+
+  Physically, this represents that an uncontracted (free) field does not affect
+  the contraction structure of other fields in Wick's theorem. -/
 lemma toCenterTerm_none (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     (q : 𝓕 → FieldStatistic) {r : List 𝓕}
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
@@ -150,6 +170,8 @@ lemma toCenterTerm_none (f : 𝓕 → Type) [∀ i, Fintype (f i)]
   dsimp [toCenterTerm]
   rfl
 
+/-- Proves that the part of the term gained from Wick contractions is in
+  the center of the algebra. -/
 lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     (q : 𝓕 → FieldStatistic)
     (le : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le]
