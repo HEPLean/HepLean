@@ -118,12 +118,12 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
-import HepLean.PerturbationTheory.Wick.Contraction
-import HepLean.PerturbationTheory.Wick.CreateAnnilateSection
+import HepLean.PerturbationTheory.FieldStatistics
+import HepLean.PerturbationTheory.Wick.Contractions
+import HepLean.PerturbationTheory.Wick.CreateAnnihilateSection
 import HepLean.PerturbationTheory.Wick.KoszulOrder
 import HepLean.PerturbationTheory.Wick.OfList
 import HepLean.PerturbationTheory.Wick.OperatorMap
-import HepLean.PerturbationTheory.Wick.Signs.Grade
 import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSignInsert
