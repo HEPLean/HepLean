@@ -41,6 +41,9 @@ lemma fermionic_not_eq_bonsic : ¬ fermionic = bosonic := by
   intro h
   exact FieldStatistic.noConfusion h
 
+lemma bonsic_eq_fermionic_false : bosonic = fermionic ↔ false := by
+  simp only [reduceCtorEq, Bool.false_eq_true]
+
 @[simp]
 lemma neq_fermionic_iff_eq_bosonic (a : FieldStatistic) : ¬ a = fermionic ↔ a = bosonic := by
   fin_cases a
