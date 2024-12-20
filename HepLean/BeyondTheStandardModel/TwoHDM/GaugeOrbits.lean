@@ -7,7 +7,6 @@ import HepLean.BeyondTheStandardModel.TwoHDM.Basic
 import HepLean.StandardModel.HiggsBoson.GaugeAction
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.CStarAlgebra.Matrix
-import Mathlib.Analysis.Matrix
 /-!
 
 # Gauge orbits for the 2HDM

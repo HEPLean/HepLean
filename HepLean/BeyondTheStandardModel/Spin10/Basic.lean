@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.BeyondTheStandardModel.PatiSalam.Basic
 import HepLean.BeyondTheStandardModel.GeorgiGlashow.Basic
-import HepLean.Meta.Informal.Basic
 /-!
 
 # The Spin(10) Model

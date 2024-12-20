@@ -3,14 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.AnomalyCancellation.PureU1.Basic
-import HepLean.AnomalyCancellation.PureU1.ConstAbs
-import HepLean.AnomalyCancellation.PureU1.LineInPlaneCond
-import HepLean.AnomalyCancellation.PureU1.Even.BasisLinear
 import HepLean.AnomalyCancellation.PureU1.Even.LineInCubic
-import HepLean.AnomalyCancellation.PureU1.Permutations
-import Mathlib.RepresentationTheory.Basic
-import Mathlib.Tactic.Polyrith
 /-!
 # Parameterization in even case
 
