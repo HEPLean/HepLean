@@ -124,7 +124,6 @@ import HepLean.PerturbationTheory.Wick.CreateAnnilateSection
 import HepLean.PerturbationTheory.Wick.KoszulOrder
 import HepLean.PerturbationTheory.Wick.OfList
 import HepLean.PerturbationTheory.Wick.OperatorMap
-import HepLean.PerturbationTheory.Wick.Signs.Grade
 import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSignInsert

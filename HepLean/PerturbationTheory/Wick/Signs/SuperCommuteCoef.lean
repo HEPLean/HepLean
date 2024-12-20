@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.List
-import HepLean.PerturbationTheory.Wick.Signs.Grade
+import HepLean.PerturbationTheory.FieldStatistics
 /-!
 
 # Koszul signs and ordering for lists and algebras
@@ -13,15 +13,19 @@ import HepLean.PerturbationTheory.Wick.Signs.Grade
 
 namespace Wick
 open HepLean.List
+open FieldStatistic
+
+variable {𝓕 : Type} (q : 𝓕 → FieldStatistic)
 
 /-- Given two lists `la` and `lb` returns `-1` if they are both of grade `1` and
   `1` otherwise. This corresponds to the sign associated with the super commutator
   when commuting `la` and `lb` in the free algebra.
   In terms of physics it is `-1` if commuting two fermionic operators and `1` otherwise. -/
-def superCommuteCoef {I : Type} (q : I → Fin 2) (la lb : List I) : ℂ :=
-  if grade q la = 1 ∧ grade q lb = 1 then - 1 else 1
+def superCommuteCoef (la lb : List 𝓕) : ℂ :=
+  if FieldStatistic.ofList q la = fermionic ∧
+    FieldStatistic.ofList q lb = fermionic then - 1 else 1
 
-lemma superCommuteCoef_comm {I : Type} (q : I → Fin 2) (la lb : List I) :
+lemma superCommuteCoef_comm (la lb : List 𝓕) :
     superCommuteCoef q la lb = superCommuteCoef q lb la := by
   simp only [superCommuteCoef, Fin.isValue]
   congr 1
@@ -33,57 +37,57 @@ lemma superCommuteCoef_comm {I : Type} (q : I → Fin 2) (la lb : List I) :
   the lift of `l` and `r` (by summing over fibers) in the
   free algebra over `Σ i, f i`.
   In terms of physics it is `-1` if commuting two fermionic operators and `1` otherwise. -/
-def superCommuteLiftCoef {I : Type} {f : I → Type}
-    (q : I → Fin 2) (l : List (Σ i, f i)) (r : List I) : ℂ :=
-    (if grade (fun i => q i.fst) l = 1 ∧ grade q r = 1 then -1 else 1)
+def superCommuteLiftCoef {f : 𝓕 → Type} (l : List (Σ i, f i)) (r : List 𝓕) : ℂ :=
+    (if FieldStatistic.ofList (fun i => q i.fst) l = fermionic ∧
+      FieldStatistic.ofList q r = fermionic then -1 else 1)
 
-lemma superCommuteLiftCoef_empty {I : Type} {f : I → Type}
-    (q : I → Fin 2) (l : List (Σ i, f i)) :
+lemma superCommuteLiftCoef_empty {f : 𝓕 → Type} (l : List (Σ i, f i)) :
     superCommuteLiftCoef q l [] = 1 := by
   simp [superCommuteLiftCoef]
 
-lemma superCommuteCoef_perm_snd {I : Type} (q : I → Fin 2) (la lb lb' : List I)
+lemma superCommuteCoef_perm_snd (la lb lb' : List 𝓕)
     (h : lb.Perm lb') :
     superCommuteCoef q la lb = superCommuteCoef q la lb' := by
-  rw [superCommuteCoef, superCommuteCoef, grade_perm q h]
+  rw [superCommuteCoef, superCommuteCoef, FieldStatistic.ofList_perm q h]
 
-lemma superCommuteCoef_mul_self {I : Type} (q : I → Fin 2) (l lb : List I) :
+lemma superCommuteCoef_mul_self (l lb : List 𝓕) :
     superCommuteCoef q l lb * superCommuteCoef q l lb = 1 := by
   simp only [superCommuteCoef, Fin.isValue, mul_ite, mul_neg, mul_one]
-  have ha (a b : Fin 2) : (if a = 1 ∧ b = 1 then -if a = 1 ∧ b = 1 then -1 else 1
-    else if a = 1 ∧ b = 1 then -1 else 1) = (1 : ℂ) := by
+  have ha (a b : FieldStatistic) : (if a = fermionic ∧ b = fermionic then
+      -if a = fermionic ∧ b = fermionic then -1 else 1
+    else if a = fermionic ∧ b = fermionic then -1 else 1) = (1 : ℂ) := by
       fin_cases a <;> fin_cases b
       any_goals rfl
       simp
-  exact ha (grade q l) (grade q lb)
+  exact ha (FieldStatistic.ofList q l) (FieldStatistic.ofList q lb)
 
-lemma superCommuteCoef_empty {I : Type} (q : I → Fin 2) (la : List I) :
+lemma superCommuteCoef_empty (la : List 𝓕) :
     superCommuteCoef q la [] = 1 := by
-  simp only [superCommuteCoef, Fin.isValue, grade_empty, zero_ne_one, and_false, ↓reduceIte]
+  simp only [superCommuteCoef, ofList_empty, reduceCtorEq, and_false, ↓reduceIte]
 
-lemma superCommuteCoef_append {I : Type} (q : I → Fin 2) (la lb lc : List I) :
+lemma superCommuteCoef_append (la lb lc : List 𝓕) :
     superCommuteCoef q la (lb ++ lc) = superCommuteCoef q la lb * superCommuteCoef q la lc := by
-  simp only [superCommuteCoef, Fin.isValue, grade_append, ite_eq_right_iff, zero_ne_one, imp_false,
+  simp only [superCommuteCoef, Fin.isValue, ofList_append, ite_eq_right_iff, zero_ne_one, imp_false,
     mul_ite, mul_neg, mul_one]
-  by_cases hla : grade q la = 1
-  · by_cases hlb : grade q lb = 1
-    · by_cases hlc : grade q lc = 1
+  by_cases hla : ofList q la = fermionic
+  · by_cases hlb : ofList q lb = fermionic
+    · by_cases hlc : ofList q lc = fermionic
       · simp [hlc, hlb, hla]
-      · have hc : grade q lc = 0 := by
-          omega
+      · have hc : ofList q lc = bosonic := by
+          exact (neq_fermionic_iff_eq_bosonic (ofList q lc)).mp hlc
         simp [hc, hlb, hla]
-    · have hb : grade q lb = 0 := by
-        omega
-      by_cases hlc : grade q lc = 1
+    · have hb : ofList q lb = bosonic := by
+        exact (neq_fermionic_iff_eq_bosonic (ofList q lb)).mp hlb
+      by_cases hlc : ofList q lc = fermionic
       · simp [hlc, hb]
-      · have hc : grade q lc = 0 := by
-          omega
+      · have hc : ofList q lc = bosonic := by
+          exact (neq_fermionic_iff_eq_bosonic (ofList q lc)).mp hlc
         simp [hc, hb]
-  · have ha : grade q la = 0 := by
-      omega
+  · have ha : ofList q la = bosonic := by
+      exact (neq_fermionic_iff_eq_bosonic (ofList q la)).mp hla
     simp [ha]
 
-lemma superCommuteCoef_cons {I : Type} (q : I → Fin 2) (i : I) (la lb : List I) :
+lemma superCommuteCoef_cons (i : 𝓕) (la lb : List 𝓕) :
     superCommuteCoef q la (i :: lb) = superCommuteCoef q la [i] * superCommuteCoef q la lb := by
   trans superCommuteCoef q la ([i] ++ lb)
   simp only [List.singleton_append]
