@@ -74,10 +74,8 @@ lemma koszulSignInsert_ge_forall_append (l : List 𝓕) (j i : 𝓕) (hi : ∀ j
   | cons b l ih =>
     simp only [koszulSignInsert, Fin.isValue, List.append_eq]
     by_cases hr : le j b
-    · rw [if_pos hr, if_pos hr]
-      rw [ih]
-    · rw [if_neg hr, if_neg hr]
-      rw [ih]
+    · rw [if_pos hr, if_pos hr, ih]
+    · rw [if_neg hr, if_neg hr, ih]
 
 lemma koszulSignInsert_eq_filter (r0 : 𝓕) : (r : List 𝓕) →
     koszulSignInsert q le r0 r =

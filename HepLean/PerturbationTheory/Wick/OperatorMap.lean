@@ -6,15 +6,15 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.Wick.SuperCommute
 /-!
 
-# Koszul signs and ordering for lists and algebras
+# Operator map
 
-See e.g.
-- https://pcteserver.mi.infn.it/~molinari/NOTES/WICK23.pdf
 -/
 
 namespace Wick
 
 noncomputable section
+
+open FieldStatistic
 
 /-- A map from the free algebra of fields `FreeAlgebra ℂ I` to an algebra `A`, to be
   thought of as the operator algebra is said to be an operator map if
@@ -24,18 +24,19 @@ noncomputable section
   is zero.
   This can be thought as as a condtion on the operator algebra `A` as much as it can
   on `F`. -/
-class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A] (q : I → Fin 2) (le1 : I → I → Prop)
+class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A] (q : I → FieldStatistic) (le1 : I → I → Prop)
     [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A) : Prop where
   superCommute_mem_center : ∀ i j, F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) ∈
     Subalgebra.center ℂ A
   superCommute_diff_grade_zero : ∀ i j, q i ≠ q j →
     F (superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j)) = 0
   superCommute_ordered_zero : ∀ i j, ∀ a b,
-    F (koszulOrder le1 q (a * superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j) * b)) = 0
+    F (koszulOrder q le1 (a * superCommute q (FreeAlgebra.ι ℂ i) (FreeAlgebra.ι ℂ j) * b)) = 0
 
 namespace OperatorMap
 
-variable {A : Type} [Semiring A] [Algebra ℂ A] {q : I → Fin 2} {le1 : I → I → Prop}
+variable {I: Type} {A : Type} [Semiring A] [Algebra ℂ A]
+  {q : I → FieldStatistic} {le1 : I → I → Prop}
   [DecidableRel le1] (F : FreeAlgebra ℂ I →ₐ[ℂ] A)
 
 lemma superCommute_ofList_singleton_ι_center [OperatorMap q le1 F] (i j :I) :
@@ -53,7 +54,7 @@ lemma superCommute_ofList_singleton_ι_center [OperatorMap q le1 F] (i j :I) :
 
 end OperatorMap
 
-lemma superCommuteSplit_operatorMap {I : Type} (q : I → Fin 2)
+lemma superCommuteSplit_operatorMap {I : Type} (q : I → FieldStatistic)
     (le1 : I → I → Prop) [DecidableRel le1]
     (lb : List I) (xa xb : ℂ) (n : ℕ)
     (hn : n < lb.length) {A : Type} [Semiring A] [Algebra ℂ A] (f : FreeAlgebra ℂ I →ₐ[ℂ] A)
@@ -73,7 +74,7 @@ lemma superCommuteSplit_operatorMap {I : Type} (q : I → Fin 2)
   · exact one_mul xb
 
 lemma superCommuteLiftSplit_operatorMap {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (c : (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
+    (q : I → FieldStatistic) (c : (Σ i, f i)) (r : List I) (x y : ℂ) (n : ℕ)
     (hn : n < r.length)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A] (F : FreeAlgebra ℂ (Σ i, f i) →ₐ[ℂ] A)
@@ -103,15 +104,15 @@ lemma superCommuteLiftSplit_operatorMap {I : Type} {f : I → Type} [∀ i, Fint
   exact Eq.symm (List.eraseIdx_eq_take_drop_succ r n)
 
 lemma superCommute_koszulOrder_le_ofList {I : Type}
-    (q : I → Fin 2) (r : List I) (x : ℂ)
+    (q : I → FieldStatistic) (r : List I) (x : ℂ)
     (le1 :I → I → Prop) [DecidableRel le1] [IsTotal I le1] [IsTrans I le1]
     (i : I)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ A) [OperatorMap q le1 F] :
-    F ((superCommute q (FreeAlgebra.ι ℂ i) (koszulOrder le1 q (ofList r x)))) =
+    F ((superCommute q (FreeAlgebra.ι ℂ i) (koszulOrder q le1 (ofList r x)))) =
     ∑ n : Fin r.length, (superCommuteCoef q [r.get n] (r.take n)) •
     (F (((superCommute q) (ofList [i] 1)) (FreeAlgebra.ι ℂ (r.get n))) *
-    F ((koszulOrder le1 q) (ofList (r.eraseIdx ↑n) x))) := by
+    F ((koszulOrder q le1) (ofList (r.eraseIdx ↑n) x))) := by
   rw [koszulOrder_ofList, map_smul, map_smul, ← ofList_singleton, superCommute_ofList_sum]
   rw [map_sum, ← (HepLean.List.insertionSortEquiv le1 r).sum_comp]
   conv_lhs =>
@@ -125,7 +126,7 @@ lemma superCommute_koszulOrder_le_ofList {I : Type}
     enter [2, 2]
     intro n
     rw [HepLean.List.eraseIdx_insertionSort_fin le1 r n]
-    rw [ofList_insertionSort_eq_koszulOrder le1 q]
+    rw [ofList_insertionSort_eq_koszulOrder q le1]
   rw [Finset.smul_sum]
   conv_lhs =>
     rhs
@@ -149,12 +150,12 @@ lemma superCommute_koszulOrder_le_ofList {I : Type}
     simpa using hq
 
 lemma koszulOrder_of_le_all_ofList {I : Type}
-    (q : I → Fin 2) (r : List I) (x : ℂ) (le1 : I → I → Prop) [DecidableRel le1]
+    (q : I → FieldStatistic) (r : List I) (x : ℂ) (le1 : I → I → Prop) [DecidableRel le1]
     (i : I)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ A) [OperatorMap q le1 F] :
-    F (koszulOrder le1 q (ofList r x * FreeAlgebra.ι ℂ i))
-    = superCommuteCoef q [i] r • F (koszulOrder le1 q (FreeAlgebra.ι ℂ i * ofList r x)) := by
+    F (koszulOrder q le1 (ofList r x * FreeAlgebra.ι ℂ i))
+    = superCommuteCoef q [i] r • F (koszulOrder q le1 (FreeAlgebra.ι ℂ i * ofList r x)) := by
   conv_lhs =>
     enter [2, 2]
     rw [← ofList_singleton]
@@ -183,13 +184,13 @@ lemma koszulOrder_of_le_all_ofList {I : Type}
   rw [ofList_singleton]
 
 lemma le_all_mul_koszulOrder_ofList {I : Type}
-    (q : I → Fin 2) (r : List I) (x : ℂ) (le1 : I → I→ Prop) [DecidableRel le1]
+    (q : I → FieldStatistic) (r : List I) (x : ℂ) (le1 : I → I→ Prop) [DecidableRel le1]
     (i : I) (hi : ∀ (j : I), le1 j i)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ A) [OperatorMap q le1 F] :
-    F (FreeAlgebra.ι ℂ i * koszulOrder le1 q (ofList r x)) =
-    F ((koszulOrder le1 q) (FreeAlgebra.ι ℂ i * ofList r x)) +
-    F (((superCommute q) (ofList [i] 1)) ((koszulOrder le1 q) (ofList r x))) := by
+    F (FreeAlgebra.ι ℂ i * koszulOrder q le1 (ofList r x)) =
+    F ((koszulOrder q le1) (FreeAlgebra.ι ℂ i * ofList r x)) +
+    F (((superCommute q) (ofList [i] 1)) ((koszulOrder q le1) (ofList r x))) := by
   rw [koszulOrder_ofList, Algebra.mul_smul_comm, map_smul, ← ofList_singleton,
     ofList_ofList_superCommute q, map_add, smul_add, ← map_smul]
   conv_lhs =>
@@ -210,7 +211,7 @@ lemma le_all_mul_koszulOrder_ofList {I : Type}
 /-- In the expansions of `F (FreeAlgebra.ι ℂ i * koszulOrder le1 q (ofList r x))`
   the ter multiplying `F ((koszulOrder le1 q) (ofList (optionEraseZ r i n) x))`. -/
 def superCommuteCenterOrder {I : Type}
-    (q : I → Fin 2) (r : List I) (i : I)
+    (q : I → FieldStatistic) (r : List I) (i : I)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ[ℂ] A)
     (n : Option (Fin r.length)) : A :=
@@ -221,7 +222,7 @@ def superCommuteCenterOrder {I : Type}
 
 @[simp]
 lemma superCommuteCenterOrder_none {I : Type}
-    (q : I → Fin 2) (r : List I) (i : I)
+    (q : I → FieldStatistic) (r : List I) (i : I)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ[ℂ] A) :
     superCommuteCenterOrder q r i F none = 1 := by
@@ -230,14 +231,14 @@ lemma superCommuteCenterOrder_none {I : Type}
 open HepLean.List
 
 lemma le_all_mul_koszulOrder_ofList_expand {I : Type}
-    (q : I → Fin 2) (r : List I) (x : ℂ) (le1 : I → I→ Prop) [DecidableRel le1]
+    (q : I → FieldStatistic) (r : List I) (x : ℂ) (le1 : I → I→ Prop) [DecidableRel le1]
     [IsTotal I le1] [IsTrans I le1]
     (i : I) (hi : ∀ (j : I), le1 j i)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ I →ₐ[ℂ] A) [OperatorMap q le1 F] :
-    F (FreeAlgebra.ι ℂ i * koszulOrder le1 q (ofList r x)) =
+    F (FreeAlgebra.ι ℂ i * koszulOrder q le1 (ofList r x)) =
     ∑ n, superCommuteCenterOrder q r i F n *
-    F ((koszulOrder le1 q) (ofList (optionEraseZ r i n) x)) := by
+    F ((koszulOrder q le1) (ofList (optionEraseZ r i n) x)) := by
   rw [le_all_mul_koszulOrder_ofList]
   conv_lhs =>
     rhs
@@ -254,16 +255,16 @@ lemma le_all_mul_koszulOrder_ofList_expand {I : Type}
   exact fun j => hi j
 
 lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → Fin 2) (r : List I) (x : ℂ) (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
+    (q : I → FieldStatistic) (r : List I) (x : ℂ) (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     [IsTotal (Σ i, f i) le1] [IsTrans (Σ i, f i) le1]
     (i : (Σ i, f i)) (hi : ∀ (j : (Σ i, f i)), le1 j i)
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F] :
-    F (ofList [i] 1 * koszulOrder le1 (fun i => q i.1) (ofListLift f r x)) =
-    F ((koszulOrder le1 fun i => q i.fst) (ofList [i] 1 * ofListLift f r x)) +
+    F (ofList [i] 1 * koszulOrder (fun i => q i.1) le1 (ofListLift f r x)) =
+    F ((koszulOrder (fun i => q i.fst) le1) (ofList [i] 1 * ofListLift f r x)) +
     ∑ n : (Fin r.length), superCommuteCoef q [r.get n] (List.take (↑n) r) •
       F (((superCommute fun i => q i.fst) (ofList [i] 1)) (ofListLift f [r.get n] 1)) *
-    F ((koszulOrder le1 fun i => q i.fst) (ofListLift f (r.eraseIdx ↑n) x)) := by
+    F ((koszulOrder (fun i => q i.fst) le1) (ofListLift f (r.eraseIdx ↑n) x)) := by
   match r with
   | [] =>
     simp only [map_mul, List.length_nil, Finset.univ_eq_empty, List.get_eq_getElem, List.take_nil,

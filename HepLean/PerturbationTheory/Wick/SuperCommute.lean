@@ -276,6 +276,16 @@ lemma ofList_ofList_superCommute (la lb : List 𝓕) (xa xb : ℂ) :
   rw [superCommute_ofList_ofList_superCommuteCoef]
   abel
 
+
+lemma ofListLift_ofList_superCommute' (l : List 𝓕) (r : List 𝓕) (x y : ℂ) :
+  ofList r y * ofList l x = superCommuteCoef q l r • (ofList l x * ofList r y)
+    - superCommuteCoef q l r • superCommute q (ofList l x) (ofList r y) := by
+  nth_rewrite 2 [ofList_ofList_superCommute q]
+  rw [superCommuteCoef]
+  by_cases hq : FieldStatistic.ofList q l = fermionic ∧ FieldStatistic.ofList q r = fermionic
+  · simp [hq, superCommuteCoef]
+  · simp [hq]
+
 section lift
 
 variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] (q : 𝓕 → FieldStatistic)

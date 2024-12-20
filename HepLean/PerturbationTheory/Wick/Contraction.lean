@@ -15,6 +15,7 @@ namespace Wick
 noncomputable section
 
 open HepLean.List
+open FieldStatistic
 
 /-- Given a list of fields `l`, the type of pairwise-contractions associated with `l`
   which have the list `aux` uncontracted. -/
@@ -125,7 +126,7 @@ structure Splitting {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
 /-- In the static wick's theorem, the term associated with a contraction `c` containing
   the contractions. -/
 def toCenterTerm {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
-    (q : I → Fin 2)
+    (q : I → FieldStatistic)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ[ℂ] A) :
@@ -137,7 +138,7 @@ def toCenterTerm {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
       F (((superCommute fun i => q i.fst) (ofList [S.𝓑p a] (S.𝓧p a))) (ofListLift f [aux'.get n] 1))
 
 lemma toCenterTerm_none {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
-    (q : I → Fin 2) {r : List I}
+    (q : I → FieldStatistic) {r : List I}
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A)
@@ -150,7 +151,7 @@ lemma toCenterTerm_none {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
   rfl
 
 lemma toCenterTerm_center {I : Type} (f : I → Type) [∀ i, Fintype (f i)]
-    (q : I → Fin 2)
+    (q : I → FieldStatistic)
     (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
     {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F] :
