@@ -9,7 +9,6 @@ import HepLean.PerturbationTheory.Wick.SuperCommute
 # Operator map
 
 -/
-
 namespace Wick
 
 noncomputable section

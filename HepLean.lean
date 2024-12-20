@@ -115,6 +115,7 @@ import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
 import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.Contractions.Basic
+import HepLean.PerturbationTheory.Contractions.Involutions
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
