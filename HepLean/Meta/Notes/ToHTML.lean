@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Notes.HTMLNote
-import HepLean.Meta.Basic
 /-!
 
 ## Turns a delaration into a html note structure.

@@ -3,19 +3,11 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Logic.Equiv.Fin
 import Mathlib.Tactic.FinCases
-import Mathlib.Data.Finset.Card
-import Mathlib.CategoryTheory.IsomorphismClasses
-import Mathlib.CategoryTheory.Functor.Category
 import Mathlib.CategoryTheory.Comma.Over
-import Mathlib.Data.Fintype.Pi
 import Mathlib.CategoryTheory.Limits.Shapes.Terminal
-import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Perm
-import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.WalkCounting
-import Mathlib.SetTheory.Cardinal.Basic
 /-!
 # Feynman diagrams
 

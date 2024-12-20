@@ -3,9 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.QuadraticDiscriminant
 import HepLean.StandardModel.HiggsBoson.PointwiseInnerProd
-import HepLean.Meta.Informal.Basic
 /-!
 # The potential of the Higgs field
 

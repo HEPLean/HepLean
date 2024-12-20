@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.PiTensorProduct
 import Mathlib.RepresentationTheory.Rep
-import Mathlib.Logic.Equiv.TransferInstance
 import HepLean.Lorentz.Group.Basic
 /-!
 

@@ -3,9 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.FreeAlgebra
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.Complex.Basic
 import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 /-!
 

@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.MSSMNu.Basic
-import Mathlib.Tactic.Polyrith
 /-!
 # Hypercharge in MSSM.
 
