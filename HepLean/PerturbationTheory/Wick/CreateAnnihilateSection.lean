@@ -19,35 +19,35 @@ open FieldStatistic
   each field as a `creation` or an `annilation` operator. E.g. the number of terms
   `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
   operators at this point (e.g. ansymptotic states) this is accounted for. -/
-def CreateAnnilateSect {𝓕 : Type} (f : 𝓕 → Type) (l : List 𝓕) : Type :=
+def CreateAnnihilateSect {𝓕 : Type} (f : 𝓕 → Type) (l : List 𝓕) : Type :=
   Π i, f (l.get i)
 
-namespace CreateAnnilateSect
+namespace CreateAnnihilateSect
 
 section basic_defs
 
-variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {l : List 𝓕} (a : CreateAnnilateSect f l)
+variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {l : List 𝓕} (a : CreateAnnihilateSect f l)
 
-/-- The type `CreateAnnilateSect f l` is finite. -/
-instance fintype : Fintype (CreateAnnilateSect f l) := Pi.fintype
+/-- The type `CreateAnnihilateSect f l` is finite. -/
+instance fintype : Fintype (CreateAnnihilateSect f l) := Pi.fintype
 
 /-- The section got by dropping the first element of `l` if it exists. -/
-def tail : {l : List 𝓕} → (a : CreateAnnilateSect f l) → CreateAnnilateSect f l.tail
+def tail : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → CreateAnnihilateSect f l.tail
   | [], a => a
   | _ :: _, a => fun i => a (Fin.succ i)
 
 /-- For a list of fields `i :: l` the value of the section at the head `i`. -/
-def head {i : 𝓕} (a : CreateAnnilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
+def head {i : 𝓕} (a : CreateAnnihilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
 
 end basic_defs
 
 section toList_basic
 
 variable {𝓕 : Type} {f : 𝓕 → Type} (q : 𝓕 → FieldStatistic)
-  {l : List 𝓕} (a : CreateAnnilateSect f l)
+  {l : List 𝓕} (a : CreateAnnihilateSect f l)
 
 /-- The list `List (Σ i, f i)` defined by `a`. -/
-def toList : {l : List 𝓕} → (a : CreateAnnilateSect f l) → List (Σ i, f i)
+def toList : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → List (Σ i, f i)
   | [], _ => []
   | i :: _, a => ⟨i, a.head⟩ :: toList a.tail
 
@@ -59,16 +59,16 @@ lemma toList_length : (toList a).length = l.length := by
     simp only [toList, List.length_cons, Fin.zero_eta]
     rw [ih]
 
-lemma toList_tail : {l : List 𝓕} → (a : CreateAnnilateSect f l) → toList a.tail = (toList a).tail
+lemma toList_tail : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → toList a.tail = (toList a).tail
   | [], _ => rfl
   | i :: l, a => by
     simp [toList]
 
-lemma toList_cons {i : 𝓕} (a : CreateAnnilateSect f (i :: l)) :
+lemma toList_cons {i : 𝓕} (a : CreateAnnihilateSect f (i :: l)) :
     (toList a) = ⟨i, a.head⟩ :: toList a.tail := by
   rfl
 
-lemma toList_get (a : CreateAnnilateSect f l) :
+lemma toList_get (a : CreateAnnihilateSect f l) :
     (toList a).get = (fun i => ⟨l.get i, a i⟩) ∘ Fin.cast (by simp) := by
   induction l with
   | nil =>
@@ -108,7 +108,7 @@ lemma toList_grade :
 
 @[simp]
 lemma toList_grade_take (q : 𝓕 → FieldStatistic) :
-    (r : List 𝓕) → (a : CreateAnnilateSect f r) → (n : ℕ) →
+    (r : List 𝓕) → (a : CreateAnnihilateSect f r) → (n : ℕ) →
     ofList (fun i => q i.fst) (List.take n a.toList) = ofList q (List.take n r)
   | [], _, _ => by
     simp [toList]
@@ -124,15 +124,15 @@ section toList_erase
 
 variable {𝓕 : Type} {f : 𝓕 → Type} {l : List 𝓕}
 
-/-- The equivalence between `CreateAnnilateSect f l` and
-  `f (l.get n) × CreateAnnilateSect f (l.eraseIdx n)` obtained by extracting the `n`th field
+/-- The equivalence between `CreateAnnihilateSect f l` and
+  `f (l.get n) × CreateAnnihilateSect f (l.eraseIdx n)` obtained by extracting the `n`th field
   from `l`. -/
-def extractEquiv (n : Fin l.length) : CreateAnnilateSect f l ≃
-    f (l.get n) × CreateAnnilateSect f (l.eraseIdx n) := by
+def extractEquiv (n : Fin l.length) : CreateAnnihilateSect f l ≃
+    f (l.get n) × CreateAnnihilateSect f (l.eraseIdx n) := by
   match l with
   | [] => exact Fin.elim0 n
   | l0 :: l =>
-    let e1 : CreateAnnilateSect f ((l0 :: l).eraseIdx n) ≃ Π i, f ((l0 :: l).get (n.succAbove i)) :=
+    let e1 : CreateAnnihilateSect f ((l0 :: l).eraseIdx n) ≃ Π i, f ((l0 :: l).get (n.succAbove i)) :=
       Equiv.piCongr (Fin.castOrderIso (by rw [eraseIdx_cons_length])).toEquiv
       fun x => Equiv.cast (congrArg f (by
       rw [HepLean.List.eraseIdx_get]
@@ -162,15 +162,15 @@ def extractEquiv (n : Fin l.length) : CreateAnnilateSect f l ≃
     exact (Fin.insertNthEquiv _ _).symm.trans (Equiv.prodCongr (Equiv.refl _) e1.symm)
 
 lemma extractEquiv_symm_toList_get_same (n : Fin l.length) (a0 : f (l.get n))
-    (a : CreateAnnilateSect f (l.eraseIdx n)) :
+    (a : CreateAnnihilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).toList[n] = ⟨l[n], a0⟩ := by
   match l with
   | [] => exact Fin.elim0 n
   | l0 :: l =>
-    trans (((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList).get (Fin.cast (by simp) n)
+    trans (((CreateAnnihilateSect.extractEquiv n).symm (a0, a)).toList).get (Fin.cast (by simp) n)
     · simp only [List.length_cons, List.get_eq_getElem, Fin.coe_cast]
       rfl
-    rw [CreateAnnilateSect.toList_get]
+    rw [CreateAnnihilateSect.toList_get]
     simp only [List.get_eq_getElem, List.length_cons, extractEquiv, RelIso.coe_fn_toEquiv,
       Fin.castOrderIso_apply, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.prodCongr_symm,
       Equiv.refl_symm, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map_apply, id_eq,
@@ -181,12 +181,12 @@ lemma extractEquiv_symm_toList_get_same (n : Fin l.length) (a0 : f (l.get n))
     simp only [Fin.insertNth_apply_same]
 
 /-- The section obtained by dropping the `n`th field. -/
-def eraseIdx (a : CreateAnnilateSect f l) (n : Fin l.length) :
-    CreateAnnilateSect f (l.eraseIdx n) :=
+def eraseIdx (a : CreateAnnihilateSect f l) (n : Fin l.length) :
+    CreateAnnihilateSect f (l.eraseIdx n) :=
   (extractEquiv n a).2
 
 @[simp]
-lemma eraseIdx_zero_tail {i : 𝓕} (a : CreateAnnilateSect f (i :: l)) :
+lemma eraseIdx_zero_tail {i : 𝓕} (a : CreateAnnihilateSect f (i :: l)) :
     (eraseIdx a (@OfNat.ofNat (Fin (l.length + 1)) 0 Fin.instOfNat : Fin (l.length + 1))) =
     a.tail := by
   simp only [List.length_cons, Fin.val_zero, List.eraseIdx_cons_zero, eraseIdx, List.get_eq_getElem,
@@ -196,7 +196,7 @@ lemma eraseIdx_zero_tail {i : 𝓕} (a : CreateAnnilateSect f (i :: l)) :
   rfl
 
 lemma eraseIdx_succ_head {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
-    (a : CreateAnnilateSect f (i :: l)) : (eraseIdx a ⟨n + 1, hn⟩).head = a.head := by
+    (a : CreateAnnihilateSect f (i :: l)) : (eraseIdx a ⟨n + 1, hn⟩).head = a.head := by
   rw [eraseIdx, extractEquiv]
   simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ, List.eraseIdx_cons_succ,
     RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Equiv.trans_apply, Equiv.prodCongr_apply,
@@ -217,7 +217,7 @@ lemma eraseIdx_succ_head {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
   simp [Fin.ext_iff]
 
 lemma eraseIdx_succ_tail {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
-    (a : CreateAnnilateSect f (i :: l)) :
+    (a : CreateAnnihilateSect f (i :: l)) :
     (eraseIdx a ⟨n + 1, hn⟩).tail = eraseIdx a.tail ⟨n, Nat.succ_lt_succ_iff.mp hn⟩ := by
   match l with
   | [] =>
@@ -278,7 +278,7 @@ lemma eraseIdx_succ_tail {i : 𝓕} (n : ℕ) (hn : n + 1 < (i :: l).length)
       omega
     next h_1 => simp_all only [not_lt, Fin.val_succ, Fin.coe_cast]
 
-lemma eraseIdx_toList : {l : List 𝓕} → {n : Fin l.length} → (a : CreateAnnilateSect f l) →
+lemma eraseIdx_toList : {l : List 𝓕} → {n : Fin l.length} → (a : CreateAnnihilateSect f l) →
     (eraseIdx a n).toList = a.toList.eraseIdx n
   | [], n, _ => Fin.elim0 n
   | r0 :: r, ⟨0, h⟩, a => by
@@ -292,7 +292,7 @@ lemma eraseIdx_toList : {l : List 𝓕} → {n : Fin l.length} → (a : CreateAn
       rw [eraseIdx_succ_tail]
 
 lemma extractEquiv_symm_eraseIdx {I : Type} {f : I → Type}
-    {l : List I} (n : Fin l.length) (a0 : f l[↑n]) (a : CreateAnnilateSect f (l.eraseIdx n)) :
+    {l : List I} (n : Fin l.length) (a0 : f l[↑n]) (a : CreateAnnihilateSect f (l.eraseIdx n)) :
     ((extractEquiv n).symm (a0, a)).eraseIdx n = a := by
   match l with
   | [] => exact Fin.elim0 n
@@ -305,7 +305,7 @@ end toList_erase
 section toList_sign_conditions
 
 variable {𝓕 : Type} {f : 𝓕 → Type} (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop) [DecidableRel le]
-  {l : List 𝓕} (a : CreateAnnilateSect f l)
+  {l : List 𝓕} (a : CreateAnnihilateSect f l)
 
 lemma toList_koszulSignInsert (x : (i : 𝓕) × f i) :
     koszulSignInsert (fun i => q i.fst) (fun i j => le i.fst j.fst) x a.toList =
@@ -379,7 +379,7 @@ lemma insertionSortEquiv_toList :
     have h3 : (List.insertionSort le (List.map (fun i => i.1) a.tail.toList)) =
       List.insertionSort le l := by
       congr
-      have h3' (l : List 𝓕) (a : CreateAnnilateSect f l) :
+      have h3' (l : List 𝓕) (a : CreateAnnihilateSect f l) :
         List.map (fun i => i.1) a.toList = l := by
         induction l with
         | nil => rfl
@@ -397,7 +397,7 @@ lemma insertionSortEquiv_toList :
 /-- Given a section for `l` the corresponding section
   for `List.insertionSort le1 l`. -/
 def sort :
-    CreateAnnilateSect f (List.insertionSort le l) :=
+    CreateAnnihilateSect f (List.insertionSort le l) :=
   Equiv.piCongr (HepLean.List.insertionSortEquiv le l) (fun i => (Equiv.cast (by
       congr 1
       rw [← HepLean.List.insertionSortEquiv_get]
@@ -432,6 +432,6 @@ lemma sort_toList :
   simp
 
 end toList_sign_conditions
-end CreateAnnilateSect
+end CreateAnnihilateSect
 
 end Wick

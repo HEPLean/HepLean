@@ -276,9 +276,9 @@ lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ 
     rw [ofList_singleton, koszulOrder_ι]
   | r0 :: r =>
   rw [ofListLift_expand, map_sum, Finset.mul_sum, map_sum]
-  let e1 (a : CreateAnnilateSect f (r0 :: r)) :
+  let e1 (a : CreateAnnihilateSect f (r0 :: r)) :
         Option (Fin a.toList.length) ≃ Option (Fin (r0 :: r).length) :=
-      Equiv.optionCongr (Fin.castOrderIso (CreateAnnilateSect.toList_length a)).toEquiv
+      Equiv.optionCongr (Fin.castOrderIso (CreateAnnihilateSect.toList_length a)).toEquiv
   conv_lhs =>
     rhs
     intro a
@@ -300,25 +300,25 @@ lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ 
     rw [ofList_cons_eq_ofList]
   · congr
     funext n
-    rw [← (CreateAnnilateSect.extractEquiv n).symm.sum_comp]
+    rw [← (CreateAnnihilateSect.extractEquiv n).symm.sum_comp]
     simp only [List.get_eq_getElem, List.length_cons, Equiv.optionCongr_symm, OrderIso.toEquiv_symm,
       Fin.symm_castOrderIso, Equiv.optionCongr_apply, RelIso.coe_fn_toEquiv, Option.map_some',
       Fin.castOrderIso_apply, Algebra.smul_mul_assoc, e1]
     erw [Finset.sum_product]
-    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreateAnnilateSect f ((r0 :: r).eraseIdx ↑n)) :
+    have h1 (a0 : f (r0 :: r)[↑n]) (a : CreateAnnihilateSect f ((r0 :: r).eraseIdx ↑n)) :
       superCommuteCenterOrder (fun i => q i.fst)
-        ((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList i F
+        ((CreateAnnihilateSect.extractEquiv n).symm (a0, a)).toList i F
       (some (Fin.cast (by simp) n)) =
       superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) (r0 :: r)) •
       F (((superCommute fun i => q i.fst) (ofList [i] 1))
       (FreeAlgebra.ι ℂ ⟨(r0 :: r).get n, a0⟩)) := by
       simp only [superCommuteCenterOrder, List.get_eq_getElem, List.length_cons, Fin.coe_cast]
-      erw [CreateAnnilateSect.extractEquiv_symm_toList_get_same]
+      erw [CreateAnnihilateSect.extractEquiv_symm_toList_get_same]
       have hsc : superCommuteCoef (fun i => q i.fst) [⟨(r0 :: r).get n, a0⟩]
-        (List.take (↑n) ((CreateAnnilateSect.extractEquiv n).symm (a0, a)).toList) =
+        (List.take (↑n) ((CreateAnnihilateSect.extractEquiv n).symm (a0, a)).toList) =
         superCommuteCoef q [(r0 :: r).get n] (List.take (↑n) ((r0 :: r))) := by
         simp only [superCommuteCoef, List.get_eq_getElem, List.length_cons, Fin.isValue,
-          CreateAnnilateSect.toList_grade_take]
+          CreateAnnihilateSect.toList_grade_take]
         rfl
       erw [hsc]
       rfl
@@ -340,8 +340,8 @@ lemma le_all_mul_koszulOrder_ofListLift_expand {I : Type} {f : I → Type} [∀ 
       intro a
       simp [optionEraseZ]
       enter [2, 2, 1]
-      rw [← CreateAnnilateSect.eraseIdx_toList]
-      erw [CreateAnnilateSect.extractEquiv_symm_eraseIdx]
+      rw [← CreateAnnihilateSect.eraseIdx_toList]
+      erw [CreateAnnihilateSect.extractEquiv_symm_eraseIdx]
     rw [← Finset.sum_mul]
     conv_lhs =>
       lhs

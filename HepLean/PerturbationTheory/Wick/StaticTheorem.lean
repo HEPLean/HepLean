@@ -17,34 +17,31 @@ noncomputable section
 open HepLean.List
 open FieldStatistic
 
-lemma static_wick_nil {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → FieldStatistic)
-    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-    {A : Type} [Semiring A] [Algebra ℂ A]
+variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] (q : 𝓕 → FieldStatistic)
+  (le : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le]
+
+lemma static_wick_nil {A : Type} [Semiring A] [Algebra ℂ A]
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A)
-    (S : Contractions.Splitting f le1) :
+    (S : Contractions.Splitting f le) :
     F (ofListLift f [] 1) = ∑ c : Contractions [],
-    c.toCenterTerm f q le1 F S *
-    F (koszulOrder (fun i => q i.fst) le1 (ofListLift f c.normalize 1)) := by
+    c.toCenterTerm f q le F S *
+    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
   rw [← Contractions.nilEquiv.symm.sum_comp]
   simp only [Finset.univ_unique, PUnit.default_eq_unit, Contractions.nilEquiv, Equiv.coe_fn_symm_mk,
     Finset.sum_const, Finset.card_singleton, one_smul]
   dsimp [Contractions.normalize, Contractions.toCenterTerm]
   simp [ofListLift_empty]
 
-lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → FieldStatistic)
-    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1]
-    [IsTrans ((i : I) × f i) le1] [IsTotal ((i : I) × f i) le1]
-    {A : Type} [Semiring A] [Algebra ℂ A] (r : List I) (a : I)
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
-    (S : Contractions.Splitting f le1)
+lemma static_wick_cons [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕) × f i) le]
+    {A : Type} [Semiring A] [Algebra ℂ A] (r : List 𝓕) (a : 𝓕)
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le F]
+    (S : Contractions.Splitting f le)
     (ih : F (ofListLift f r 1) =
-    ∑ c : Contractions r, c.toCenterTerm f q le1 F S * F (koszulOrder (fun i => q i.fst) le1
+    ∑ c : Contractions r, c.toCenterTerm f q le F S * F (koszulOrder (fun i => q i.fst) le
       (ofListLift f c.normalize 1))) :
     F (ofListLift f (a :: r) 1) = ∑ c : Contractions (a :: r),
-      c.toCenterTerm f q le1 F S *
-      F (koszulOrder (fun i => q i.fst) le1 (ofListLift f c.normalize 1)) := by
+      c.toCenterTerm f q le F S *
+      F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
   rw [ofListLift_cons_eq_ofListLift, map_mul, ih, Finset.mul_sum,
     ← Contractions.consEquiv.symm.sum_comp]
   erw [Finset.sum_sigma]
@@ -52,7 +49,7 @@ lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
   funext c
   have hb := S.h𝓑 a
   rw [← mul_assoc]
-  have hi := c.toCenterTerm_center f q le1 F S
+  have hi := c.toCenterTerm_center f q le F S
   rw [Subalgebra.mem_center_iff] at hi
   rw [hi, mul_assoc, ← map_mul, hb, add_mul, map_add]
   conv_lhs =>
@@ -86,18 +83,15 @@ lemma static_wick_cons {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
   exact S.h𝓑p a
   exact S.h𝓑n a
 
-theorem static_wick_theorem {I : Type} {f : I → Type} [∀ i, Fintype (f i)]
-    (q : I → FieldStatistic)
-    (le1 : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le1] [IsTrans ((i : I) × f i) le1]
-    [IsTotal ((i : I) × f i) le1]
-    {A : Type} [Semiring A] [Algebra ℂ A] (r : List I)
-    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le1 F]
-    (S : Contractions.Splitting f le1) :
-    F (ofListLift f r 1) = ∑ c : Contractions r, c.toCenterTerm f q le1 F S *
-    F (koszulOrder (fun i => q i.fst) le1 (ofListLift f c.normalize 1)) := by
+theorem static_wick_theorem [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕) × f i) le]
+    {A : Type} [Semiring A] [Algebra ℂ A] (r : List 𝓕)
+    (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le F]
+    (S : Contractions.Splitting f le) :
+    F (ofListLift f r 1) = ∑ c : Contractions r, c.toCenterTerm f q le F S *
+    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
   induction r with
-  | nil => exact static_wick_nil q le1 F S
-  | cons a r ih => exact static_wick_cons q le1 r a F S ih
+  | nil => exact static_wick_nil q le F S
+  | cons a r ih => exact static_wick_cons q le r a F S ih
 
 end
 end Wick

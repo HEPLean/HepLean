@@ -396,7 +396,7 @@ lemma superCommute_ofList_ofListLift_cons (l : List (Σ i, f i)) (r : List 𝓕)
     rw [ofListLift_expand]
     rw [Finset.mul_sum]
   rw [map_sum]
-  trans ∑ (n : CreateAnnilateSect f r), ∑ j : f b1, ((superCommute fun i => q i.fst) (ofList l x))
+  trans ∑ (n : CreateAnnihilateSect f r), ∑ j : f b1, ((superCommute fun i => q i.fst) (ofList l x))
     ((FreeAlgebra.ι ℂ ⟨b1, j⟩) * ofList n.toList y)
   · apply congrArg
     funext n

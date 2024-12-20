@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.CreateAnnilateSection
+import HepLean.PerturbationTheory.Wick.CreateAnnihilateSection
 import HepLean.PerturbationTheory.Wick.KoszulOrder
 /-!
 
@@ -142,15 +142,15 @@ lemma ofListLift_cons_eq_ofListLift (f : 𝓕 → Type) [∀ i, Fintype (f i)] (
   simp only [one_smul]
 
 lemma ofListLift_expand (f : 𝓕 → Type) [∀ i, Fintype (f i)] (x : ℂ) :
-    (l : List 𝓕) → ofListLift f l x = ∑ (a : CreateAnnilateSect f l), ofList a.toList x
+    (l : List 𝓕) → ofListLift f l x = ∑ (a : CreateAnnihilateSect f l), ofList a.toList x
   | [] => by
-    simp only [ofListLift, CreateAnnilateSect, List.length_nil, List.get_eq_getElem,
-      Finset.univ_unique, CreateAnnilateSect.toList, Finset.sum_const, Finset.card_singleton,
+    simp only [ofListLift, CreateAnnihilateSect, List.length_nil, List.get_eq_getElem,
+      Finset.univ_unique, CreateAnnihilateSect.toList, Finset.sum_const, Finset.card_singleton,
       one_smul]
     rw [ofList_eq_smul_one, map_smul, ofList_empty, ofList_eq_smul_one, ofList_empty, map_one]
   | i :: l => by
     rw [ofListLift_cons, ofListLift_expand f x l]
-    conv_rhs => rw [← (CreateAnnilateSect.extractEquiv
+    conv_rhs => rw [← (CreateAnnihilateSect.extractEquiv
         ⟨0, by exact Nat.zero_lt_succ l.length⟩).symm.sum_comp (α := FreeAlgebra ℂ _)]
     erw [Finset.sum_product]
     rw [Finset.sum_mul]
@@ -178,13 +178,13 @@ lemma koszulOrder_ofListLift {f : 𝓕 → Type} [∀ i, Fintype (f i)]
     rhs
     intro a
     rw [koszulOrder_ofList]
-    rw [CreateAnnilateSect.toList_koszulSign]
+    rw [CreateAnnihilateSect.toList_koszulSign]
   rw [← Finset.smul_sum]
   apply congrArg
   conv_lhs =>
     rhs
     intro n
-    rw [← CreateAnnilateSect.sort_toList]
+    rw [← CreateAnnihilateSect.sort_toList]
   rw [ofListLift_expand]
   refine Fintype.sum_equiv
     ((HepLean.List.insertionSortEquiv le l).piCongr fun i => Equiv.cast ?_) _ _ ?_

@@ -172,7 +172,7 @@ lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     rw [map_sum, map_sum]
     refine Subalgebra.sum_mem (Subalgebra.center ℂ A) ?hy.hx.h
     intro x _
-    simp only [CreateAnnilateSect.toList]
+    simp only [CreateAnnihilateSect.toList]
     rw [ofList_singleton]
     exact OperatorMap.superCommute_ofList_singleton_ι_center (q := fun i => q i.1)
       (le1 := le1) F (S.𝓑p a) ⟨aux'[↑n], x.head⟩
