@@ -104,7 +104,6 @@ import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.List
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
-import HepLean.Mathematics.SuperAlgebra.Basic
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
 import HepLean.Meta.Informal.Basic
