@@ -78,51 +78,57 @@ section InsertSign
 
 variable {𝓕 : Type} (q : 𝓕 → FieldStatistic)
 
-/-- The sign associated with inserting `r0` into `r` at the position `n`.
-  That is the sign associated with commuting `r0` with `List.take n r`. -/
-def insertSign (n : ℕ) (r0 : 𝓕) (r : List 𝓕) : ℂ :=
-  superCommuteCoef q [r0] (List.take n r)
+/-- The sign associated with inserting a field `φ` into a list of fields `φs` at
+  the `n`th position. -/
+def insertSign (n : ℕ) (φ : 𝓕) (φs : List 𝓕) : ℂ :=
+  superCommuteCoef q [φ] (List.take n φs)
 
-lemma insertSign_insert (n : ℕ) (r0 : 𝓕) (r : List 𝓕) :
-    insertSign q n r0 r = insertSign q n r0 (List.insertIdx n r0 r) := by
+/-- If `φ` is bosonic, there is no sign associated with inserting it into a list of fields. -/
+lemma insertSign_bosonic (n : ℕ)  (φ : 𝓕) (φs : List 𝓕) (hφ : q φ = bosonic) :
+    insertSign q n φ φs = 1 := by
+  simp only [insertSign, superCommuteCoef, ofList_singleton, hφ, reduceCtorEq, false_and,
+    ↓reduceIte]
+
+lemma insertSign_insert (n : ℕ) (φ : 𝓕) (φs : List 𝓕) :
+    insertSign q n φ φs = insertSign q n φ (List.insertIdx n φ φs) := by
   simp only [insertSign]
   congr 1
   rw [take_insert_same]
 
-lemma insertSign_eraseIdx (n : ℕ) (r0 : 𝓕) (r : List 𝓕) :
-    insertSign q n r0 (r.eraseIdx n) = insertSign q n r0 r := by
+lemma insertSign_eraseIdx (n : ℕ) (φ : 𝓕) (φs : List 𝓕) :
+    insertSign q n φ (φs.eraseIdx n) = insertSign q n φ φs := by
   simp only [insertSign]
   congr 1
   rw [take_eraseIdx_same]
 
-lemma insertSign_zero (r0 : 𝓕) (r : List 𝓕) : insertSign q 0 r0 r = 1 := by
+lemma insertSign_zero (φ : 𝓕) (φs : List 𝓕) : insertSign q 0 φ φs = 1 := by
   simp [insertSign, superCommuteCoef]
 
-lemma insertSign_succ_cons (n : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) : insertSign q (n + 1) r0 (r1 :: r) =
-    superCommuteCoef q [r0] [r1] * insertSign q n r0 r := by
+lemma insertSign_succ_cons (n : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) : insertSign q (n + 1) φ0 (φ1 :: φs) =
+    superCommuteCoef q [φ0] [φ1] * insertSign q n φ0 φs := by
   simp only [insertSign, List.take_succ_cons]
   rw [superCommuteCoef_cons]
 
-lemma insertSign_insert_gt (n m : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) (hn : n < m) :
-    insertSign q n r0 (List.insertIdx m r1 r) = insertSign q n r0 r := by
+lemma insertSign_insert_gt (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : n < m) :
+    insertSign q n φ0 (List.insertIdx m φ1 φs) = insertSign q n φ0 φs := by
   rw [insertSign, insertSign]
   congr 1
-  exact take_insert_gt r1 n m hn r
+  exact take_insert_gt φ1 n m hn φs
 
-lemma insertSign_insert_lt_eq_insertSort (n m : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) (hn : m ≤ n)
-    (hm : m ≤ r.length) :
-    insertSign q (n + 1) r0 (List.insertIdx m r1 r) = insertSign q (n + 1) r0 (r1 :: r) := by
+lemma insertSign_insert_lt_eq_insertSort (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n)
+    (hm : m ≤ φs.length) :
+    insertSign q (n + 1) φ0 (List.insertIdx m φ1 φs) = insertSign q (n + 1) φ0 (φ1 :: φs) := by
   rw [insertSign, insertSign]
   apply superCommuteCoef_perm_snd
   simp only [List.take_succ_cons]
-  refine take_insert_let r1 n m hn r hm
+  refine take_insert_let φ1 n m hn φs hm
 
-lemma insertSign_insert_lt (n m : ℕ) (r0 r1 : 𝓕) (r : List 𝓕) (hn : m ≤ n) (hm : m ≤ r.length) :
-    insertSign q (n + 1) r0 (List.insertIdx m r1 r) = superCommuteCoef q [r0] [r1] *
-    insertSign q n r0 r := by
+lemma insertSign_insert_lt (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n) (hm : m ≤ φs.length) :
+    insertSign q (n + 1) φ0 (List.insertIdx m φ1 φs) = superCommuteCoef q [φ0] [φ1] *
+    insertSign q n φ0 φs := by
   rw [insertSign_insert_lt_eq_insertSort, insertSign_succ_cons]
-  exact hn
-  exact hm
+  · exact hn
+  · exact hm
 
 end InsertSign
 

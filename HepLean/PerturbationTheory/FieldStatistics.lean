@@ -89,9 +89,9 @@ lemma ofList_freeMonoid (s : 𝓕 → FieldStatistic) (φ : 𝓕) : ofList s (Fr
 lemma ofList_empty (s : 𝓕 → FieldStatistic) : ofList s [] = bosonic := rfl
 
 @[simp]
-lemma ofList_append (s : 𝓕 → FieldStatistic) (l r : List 𝓕) :
-    ofList s (l ++ r) = if ofList s l = ofList s r then bosonic else fermionic := by
-  induction l with
+lemma ofList_append (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
+    ofList s (φs ++ φs') = if ofList s φs = ofList s φs' then bosonic else fermionic := by
+  induction φs with
   | nil =>
     simp only [List.nil_append, ofList_empty, Fin.isValue, eq_self_if_bosonic_eq]
   | cons a l ih =>

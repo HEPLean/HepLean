@@ -37,12 +37,12 @@ lemma superCommuteCoef_comm (la lb : List 𝓕) :
   the lift of `l` and `r` (by summing over fibers) in the
   free algebra over `Σ i, f i`.
   In terms of physics it is `-1` if commuting two fermionic operators and `1` otherwise. -/
-def superCommuteLiftCoef {f : 𝓕 → Type} (l : List (Σ i, f i)) (r : List 𝓕) : ℂ :=
-    (if FieldStatistic.ofList (fun i => q i.fst) l = fermionic ∧
-      FieldStatistic.ofList q r = fermionic then -1 else 1)
+def superCommuteLiftCoef {f : 𝓕 → Type} (φs : List (Σ i, f i)) (φs' : List 𝓕) : ℂ :=
+    (if FieldStatistic.ofList (fun i => q i.fst) φs = fermionic ∧
+      FieldStatistic.ofList q φs' = fermionic then -1 else 1)
 
-lemma superCommuteLiftCoef_empty {f : 𝓕 → Type} (l : List (Σ i, f i)) :
-    superCommuteLiftCoef q l [] = 1 := by
+lemma superCommuteLiftCoef_empty {f : 𝓕 → Type} (φs : List (Σ i, f i)) :
+    superCommuteLiftCoef q φs [] = 1 := by
   simp [superCommuteLiftCoef]
 
 lemma superCommuteCoef_perm_snd (la lb lb' : List 𝓕)

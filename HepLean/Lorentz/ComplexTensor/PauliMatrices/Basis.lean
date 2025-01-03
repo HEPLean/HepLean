@@ -9,15 +9,11 @@ import HepLean.Lorentz.ComplexTensor.PauliMatrices.Basic
 ## Pauli matrices and the basis of complex Lorentz tensors
 
 -/
-open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 open Matrix
-open MatrixGroups
 open Complex
-open TensorProduct
 open IndexNotation
-open CategoryTheory
 open TensorTree
 open OverColor.Discrete
 noncomputable section
@@ -342,40 +338,38 @@ lemma pauliMatrix_contr_down_0 :
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
     enter [1, 1, 1, 1, 1, 1, 1, 1]
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     enter [1, 1, 1, 1, 1, 1, 1, 2, 1]
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     enter [1, 1, 1, 1, 1, 1, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     enter [1, 1, 1, 1, 1, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     enter [1, 1, 1, 1, 2, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     enter [1, 1, 1, 2, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     enter [1, 1, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     enter [1, 2, 2, 1]
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
   congr 1
   · rw [basisVectorContrPauli]
     congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
   · rw [basisVectorContrPauli]
     congr 1
-    funext k
-    fin_cases k <;> rfl
+    decide
 
 lemma pauliMatrix_contr_down_1 :
     {(basisVector ![Color.down, Color.down] fun _ => 1) | ν μ ⊗
@@ -386,29 +380,29 @@ lemma pauliMatrix_contr_down_1 :
     lhs
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 1, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_pos (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 2, 1]
+    rw [contrBasisVectorMul_pos _]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_pos (by decide)]
+    enter [1, 1, 1, 1, 1, 2, 1]
+    rw [contrBasisVectorMul_pos _]
   conv =>
-    lhs; lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 2, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 2, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; rhs; lhs;
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; rhs; rhs; lhs;
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 2, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
@@ -429,29 +423,29 @@ lemma pauliMatrix_contr_down_2 :
     lhs
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 1, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 1, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
-    lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    enter [1, 1, 1, 1, 1, 1, 2, 1]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     lhs; lhs; rhs; lhs;
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; rhs; rhs; lhs;
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
@@ -470,28 +464,28 @@ lemma pauliMatrix_contr_down_3 :
     rw [basis_contr_pauliMatrix_basis_tree_expand_tensor]
   conv =>
     lhs; lhs; lhs; lhs; lhs; lhs; lhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; lhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; lhs; rhs; rhs; lhs
-    rw [contrBasisVectorMul_neg (by decide)]
+    rw [contrBasisVectorMul_neg (Nat.ne_of_beq_eq_false _)]
   conv =>
     lhs; lhs; rhs; lhs;
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     lhs; rhs; rhs; lhs;
-    rw [contrBasisVectorMul_pos (by decide)]
+    rw [contrBasisVectorMul_pos  _]
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]
@@ -535,16 +529,16 @@ lemma pauliCo_basis_expand : pauliCo
     simp only [tensorNode_tensor, add_tensor, smul_tensor]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, neg_smul, one_smul]
   conv =>
-    lhs; lhs;
+    enter [1, 1]
     rw [pauliMatrix_contr_down_0]
   conv =>
-    lhs; rhs; lhs; rhs;
+    enter [1, 2, 1, 1]
     rw [pauliMatrix_contr_down_1]
   conv =>
-    lhs; rhs; rhs; lhs; rhs;
+    enter [1, 2, 2, 1, 1]
     rw [pauliMatrix_contr_down_2]
   conv =>
-    lhs; rhs; rhs; rhs; rhs;
+    enter [1, 2, 2, 2, 1]
     rw [pauliMatrix_contr_down_3]
   simp only [neg_smul, one_smul]
   abel

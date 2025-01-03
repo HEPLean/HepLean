@@ -126,10 +126,7 @@ lemma inclCongrRealLorentz_ρ (M : SL(2, ℂ)) (v : ContrMod 3) :
   apply Lorentz.ContrℂModule.ext
   rw [complexContrBasis_ρ_val, inclCongrRealLorentz_val, inclCongrRealLorentz_val]
   rw [LorentzGroup.toComplex_mulVec_ofReal]
-  apply congrArg
-  simp only [SL2C.toLorentzGroup_apply_coe]
-  change _ = ContrMod.toFin1dℝ ((SL2C.toLorentzGroup M) *ᵥ v)
-  simp only [SL2C.toLorentzGroup_apply_coe, ContrMod.mulVec_toFin1dℝ]
+  rfl
 
 /-! TODO: Rename. -/
 lemma SL2CRep_ρ_basis (M : SL(2, ℂ)) (i : Fin 1 ⊕ Fin 3) :
