@@ -273,8 +273,7 @@ lemma contr_contr (t : TensorTree S c) :
   rw [contrMapFst_contrMapSnd_swap]
   simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.coe_comp,
     Function.comp_apply, swap]
-  apply congrArg
-  apply congrArg
+  refine congrArg _ (congrArg _ ?_)
   apply congrArg
   rfl
 
