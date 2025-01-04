@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Wick.OperatorMap
+import Mathlib.Data.Nat.Factorial.DoubleFactorial
 /-!
 
 # Contractions of a list of fields
@@ -1014,6 +1015,329 @@ def equivInvolutions {φs : List 𝓕} :
   invFun := fromInvolution
   left_inv := toInvolution_fromInvolution
   right_inv := fromInvolution_toInvolution
+
+
+lemma isFull_iff_uncontractedFromInvolution_empty {φs : List 𝓕} (c : Contractions φs) :
+    IsFull c ↔ (uncontractedFromInvolution (equivInvolutions c)).1 = [] := by
+  let l := toInvolution' c
+  erw [l.2]
+  rfl
+
+lemma isFull_iff_filter_card_involution_zero  {φs : List 𝓕} (c : Contractions φs) :
+    IsFull c ↔ (Finset.univ.filter fun i => (equivInvolutions c).1 i = i).card = 0 := by
+  rw [isFull_iff_uncontractedFromInvolution_empty, List.ext_get_iff]
+  simp
+
+lemma isFull_iff_involution_no_fixed_points {φs : List 𝓕} (c : Contractions φs) :
+    IsFull c ↔ ∀ (i : Fin φs.length), (equivInvolutions c).1 i ≠ i := by
+  rw [isFull_iff_filter_card_involution_zero]
+  simp
+  rw [Finset.filter_eq_empty_iff]
+  apply Iff.intro
+  · intro h
+    intro i
+    refine h (Finset.mem_univ i)
+  · intro i h
+    exact fun a => i h
+
+def involutionNoFixed1 {n : ℕ} :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f
+    ∧ ∀ i, f i ≠ i} ≃ Σ (k : Fin (2 * n + 1)),
+     {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f
+    ∧ (∀ i, f i ≠ i) ∧ f 0 = k.succ} where
+  toFun f := ⟨(f.1 0).pred (f.2.2 0), ⟨f.1, f.2.1, by simpa using f.2.2⟩⟩
+  invFun f := ⟨f.2.1, ⟨f.2.2.1, f.2.2.2.1⟩⟩
+  left_inv f := by
+    rfl
+  right_inv f := by
+    simp
+    ext
+    · simp
+      rw [f.2.2.2.2]
+      simp
+    · simp
+
+def involutionNoFixed2 {n : ℕ} (k : Fin (2 * n + 1)) (e : Fin (2 * n.succ) ≃ Fin (2 * n.succ)) :
+     {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f
+    ∧ (∀ i, f i ≠ i) ∧ f 0 = k.succ} ≃
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive (e.symm ∘ f ∘ e) ∧
+      (∀ i, (e.symm ∘ f ∘ e) i ≠ i) ∧ (e.symm ∘ f ∘ e) 0 = k.succ} where
+  toFun f := ⟨e ∘ f.1 ∘ e.symm, by
+    intro i
+    simp
+    rw [f.2.1], by
+      simpa using f.2.2.1, by simpa using f.2.2.2⟩
+  invFun f := ⟨e.symm ∘ f.1 ∘ e, by
+    intro i
+    simp
+    have hf2 := f.2.1 i
+    simpa using hf2, by
+      simpa using f.2.2.1, by simpa using f.2.2.2⟩
+  left_inv f := by
+    ext i
+    simp
+  right_inv f := by
+    ext i
+    simp
+def involutionNoFixed3 {n : ℕ} (k : Fin (2 * n + 1)) (e : Fin (2 * n.succ) ≃ Fin (2 * n.succ)) :
+  {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive (e.symm ∘ f ∘ e) ∧
+      (∀ i, (e.symm ∘ f ∘ e) i ≠ i) ∧ (e.symm ∘ f ∘ e) 0 = k.succ} ≃
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  (e.symm ∘ f ∘ e) 0 = k.succ} := by
+  refine Equiv.subtypeEquivRight ?_
+  intro f
+  have h1 : Function.Involutive (⇑e.symm ∘ f ∘ ⇑e) ↔ Function.Involutive f := by
+    apply Iff.intro
+    · intro h i
+      have hi := h (e.symm i)
+      simpa using hi
+    · intro h i
+      have hi := h (e i)
+      simp [hi]
+  rw [h1]
+  simp
+  intro h1 h2
+  apply Iff.intro
+  · intro h i
+    have hi := h (e.symm i)
+    simpa using hi
+  · intro h i
+    have hi := h (e i)
+    by_contra hn
+    nth_rewrite 2 [← hn] at hi
+    simp at hi
+
+
+def involutionNoFixed4 {n : ℕ} (k : Fin (2 * n + 1)) (e : Fin (2 * n.succ) ≃ Fin (2 * n.succ)) :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  (e.symm ∘ f ∘ e) 0 = k.succ}
+      ≃ {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  f (e 0) = e k.succ} := by
+  refine Equiv.subtypeEquivRight ?_
+  simp
+  intro f hi h1
+  exact Equiv.symm_apply_eq e
+
+def involutionNoFixed5 {n : ℕ} (k : Fin (2 * n + 1)) :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  f 0 = k.succ}
+      ≃ {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  f 0 = 1} := by
+  refine Equiv.trans (involutionNoFixed2 k (Equiv.swap k.succ 1)) ?_
+  refine Equiv.trans (involutionNoFixed3 k (Equiv.swap k.succ 1)) ?_
+  refine Equiv.trans (involutionNoFixed4 k (Equiv.swap k.succ 1)) ?_
+  refine  Equiv.subtypeEquivRight ?_
+  simp
+  intro f hi h1
+  rw [Equiv.swap_apply_of_ne_of_ne]
+  · exact Ne.symm (Fin.succ_ne_zero k)
+  · exact Fin.zero_ne_one
+
+def involutionNoFixed6 {n : ℕ} :
+     {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  f 0 = 1} ≃
+      {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧
+      (∀ i, f i ≠ i)} where
+  toFun f := by
+    have hf1 : f.1 1 = 0 := by
+      have hf := f.2.2.2
+      simp [← hf]
+      rw [f.2.1]
+    let f' := f.1 ∘ Fin.succ ∘ Fin.succ
+    have hf' (i : Fin (2 * n)) : f' i ≠ 0 := by
+      simp [f']
+      simp [← hf1]
+      by_contra hn
+      have hn' := Function.Involutive.injective f.2.1 hn
+      simp [Fin.ext_iff] at hn'
+    let f'' := fun i => (f' i).pred (hf' i)
+    have hf'' (i : Fin (2 * n)) : f'' i ≠ 0 := by
+      simp [f'']
+      rw [@Fin.pred_eq_iff_eq_succ]
+      simp [f']
+      simp [← f.2.2.2 ]
+      by_contra hn
+      have hn' := Function.Involutive.injective f.2.1 hn
+      simp [Fin.ext_iff] at hn'
+    let f''' := fun i => (f'' i).pred (hf'' i)
+    refine ⟨f''', ?_, ?_⟩
+    · intro i
+      simp [f''', f'', f']
+      simp [f.2.1 i.succ.succ]
+    · intro i
+      simp [f''', f'', f']
+      rw [@Fin.pred_eq_iff_eq_succ]
+      rw [@Fin.pred_eq_iff_eq_succ]
+      exact f.2.2.1 i.succ.succ
+  invFun f := by
+    let f' := fun (i : Fin (2 * n.succ))=>
+      match i with
+      | ⟨0, h⟩ => 1
+      | ⟨1, h⟩ => 0
+      | ⟨(Nat.succ (Nat.succ n)), h⟩ => (f.1 ⟨n, by omega⟩).succ.succ
+    refine ⟨f', ?_, ?_, ?_⟩
+    · intro i
+      match i with
+      | ⟨0, h⟩ => rfl
+      | ⟨1, h⟩ => rfl
+      | ⟨(Nat.succ (Nat.succ m)), h⟩ =>
+        simp [f']
+        split
+        · rename_i h
+          simp at h
+          exact False.elim (Fin.succ_ne_zero (f.1 ⟨m, _⟩).succ h)
+        · rename_i h
+          simp [Fin.ext_iff] at h
+        · rename_i h
+          rename_i x r
+          simp_all [Fin.ext_iff]
+          have hfn {a b : ℕ} {ha : a < 2 * n} {hb : b < 2 * n}
+            (hab : ↑(f.1 ⟨a, ha⟩) = b): ↑(f.1 ⟨b, hb⟩) = a := by
+            have ht : f.1 ⟨a, ha⟩ = ⟨b, hb⟩ := by
+              simp [hab, Fin.ext_iff]
+            rw [← ht, f.2.1]
+          exact hfn h
+    · intro i
+      match i with
+      | ⟨0, h⟩ =>
+        simp [f']
+        split
+        · rename_i h
+          simp
+        · rename_i h
+          simp [Fin.ext_iff] at h
+        · rename_i h
+          simp [Fin.ext_iff] at h
+      | ⟨1, h⟩ =>
+        simp [f']
+        split
+        · rename_i h
+          simp at h
+        · rename_i h
+          simp
+        · rename_i h
+          simp [Fin.ext_iff] at h
+      | ⟨(Nat.succ (Nat.succ m)), h⟩ =>
+        simp [f', Fin.ext_iff]
+        have hf:= f.2.2 ⟨m, by exact Nat.add_lt_add_iff_right.mp h⟩
+        simp [Fin.ext_iff] at hf
+        omega
+    · simp [f']
+      split
+      · rename_i h
+        simp
+      · rename_i h
+        simp at h
+      · rename_i h
+        simp [Fin.ext_iff] at h
+  left_inv f := by
+    have hf1 : f.1 1 = 0 := by
+      have hf := f.2.2.2
+      simp [← hf]
+      rw [f.2.1]
+    simp
+    ext i
+    simp
+    split
+    · simp
+      rw [f.2.2.2]
+      simp
+    · simp
+      rw [hf1]
+      simp
+    · rfl
+  right_inv f := by
+    simp
+    ext i
+    simp
+    split
+    · rename_i h
+      simp [Fin.ext_iff]  at h
+    · rename_i h
+      simp [Fin.ext_iff] at h
+    · rename_i h
+      simp
+      congr
+      apply congrArg
+      simp_all [Fin.ext_iff]
+
+
+
+def involutionNoFixed7 {n : ℕ} (k : Fin (2 * n + 1)) :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧
+      (∀ i, f i ≠ i) ∧  f 0 = k.succ}
+      ≃ {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧ (∀ i, f i ≠ i)} := by
+  refine Equiv.trans (involutionNoFixed5 k) involutionNoFixed6
+
+def involutionNoFixed8 {n : ℕ} :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧ (∀ i, f i ≠ i)}
+    ≃  Σ (_ : Fin (2 * n + 1)), {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧ (∀ i, f i ≠ i)} := by
+  refine Equiv.trans involutionNoFixed1 ?_
+  refine Equiv.sigmaCongrRight involutionNoFixed7
+
+def involutionNoFixed9 {n : ℕ} :
+    {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧ (∀ i, f i ≠ i)}
+    ≃ Fin (2 * n + 1) × {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧ (∀ i, f i ≠ i)} := by
+  refine Equiv.trans involutionNoFixed8 ?_
+  exact Equiv.sigmaEquivProd (Fin (2 * n + 1))
+      { f // Function.Involutive f ∧ ∀ (i : Fin (2 * n)), f i ≠ i}
+
+instance {n : ℕ}  : Fintype { f // Function.Involutive f ∧ ∀ (i : Fin ( n)), f i ≠ i } := by
+  haveI : DecidablePred fun x => Function.Involutive x := by
+    intro f
+    apply Fintype.decidableForallFintype (α := Fin (n))
+  haveI : DecidablePred fun x => Function.Involutive x ∧ ∀ (i : Fin ( n)), x i ≠ i := by
+     intro x
+     apply instDecidableAnd
+  apply Subtype.fintype
+
+lemma involutionNoFixed_card_succ {n : ℕ} :
+   Fintype.card {f : Fin (2 * n.succ) → Fin (2 * n.succ) // Function.Involutive f ∧ (∀ i, f i ≠ i)}
+    = (2 * n + 1) * Fintype.card {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧ (∀ i, f i ≠ i)} := by
+  rw [Fintype.card_congr (involutionNoFixed9)]
+  rw [Fintype.card_prod ]
+  congr
+  exact Fintype.card_fin (2 * n + 1)
+
+
+open Nat
+
+
+lemma involutionNoFixed_card : (n : ℕ) →
+   Fintype.card {f : Fin (2 * n) → Fin (2 * n) // Function.Involutive f ∧ (∀ i, f i ≠ i)}
+    = (2 * n - 1)‼
+  | 0 => rfl
+  | Nat.succ n => by
+    rw [involutionNoFixed_card_succ]
+    rw [involutionNoFixed_card n]
+    exact Eq.symm (Nat.doubleFactorial_add_one (Nat.mul 2 n))
+
+lemma involutionNoFixed_even : (n : ℕ) → (he : Even n) →
+    Fintype.card {f : Fin n → Fin n  // Function.Involutive f ∧ (∀ i, f i ≠ i)} = (n - 1)‼ := by
+  intro n he
+  obtain ⟨r, hr⟩ := he
+  have hr' : n = 2 * r := by omega
+  subst hr'
+  exact involutionNoFixed_card r
+
+def isFullInvolutionEquiv {φs : List 𝓕} :
+    {c : Contractions φs // IsFull c} ≃ {f : Fin φs.length → Fin φs.length // Function.Involutive f ∧ (∀ i, f i ≠ i)} where
+  toFun c := ⟨equivInvolutions c.1, by
+    apply And.intro (equivInvolutions c.1).2
+    rw [← isFull_iff_involution_no_fixed_points]
+    exact c.2
+    ⟩
+  invFun f := ⟨equivInvolutions.symm ⟨f.1, f.2.1⟩, by
+    rw [isFull_iff_involution_no_fixed_points]
+    simpa using f.2.2⟩
+  left_inv c := by simp
+  right_inv f := by simp
+
+lemma card_of_full_contractions {φs : List 𝓕} (he : Even  φs.length ) :
+    Fintype.card {c : Contractions φs // IsFull c} = (φs.length - 1)‼ := by
+  rw [Fintype.card_congr (isFullInvolutionEquiv (φs := φs))]
+  exact involutionNoFixed_even φs.length he
+
 
 /-- A structure specifying when a type `I` and a map `f :I → Type` corresponds to
   the splitting of a fields `φ` into a creation `n` and annihlation part `p`. -/
