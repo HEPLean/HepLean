@@ -741,4 +741,14 @@ lemma optionEraseZ_some_length {I : Type} (l : List I) (a : I) (i : (Fin l.lengt
     (optionEraseZ l a (some i)).length = l.length - 1 := by
   simp [optionEraseZ, List.length_eraseIdx]
 
+lemma optionEraseZ_ext {I : Type} {l l' : List I} {a a' : I} {i : Option (Fin l.length)}
+    {i' : Option (Fin l'.length)} (hl : l = l') (ha : a = a')
+    (hi : Option.map (Fin.cast (by rw [hl])) i = i') :
+    optionEraseZ l a i =  optionEraseZ l' a' i' := by
+  subst hl
+  subst ha
+  cases hi
+  congr
+  simp
+
 end HepLean.List
