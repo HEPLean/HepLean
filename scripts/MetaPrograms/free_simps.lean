@@ -37,6 +37,8 @@ or is merely a tactic combinator (e.g. `by`, `;`, multiline tactics, parenthesiz
 def isSimp (t : TacticInfo) : Bool :=
   match t.name? with
   | some ``Lean.Parser.Tactic.simp => true
+  | some ``Lean.Parser.Tactic.dsimp => true
+  | some ``Lean.Parser.Tactic.simpAll => true
   | _ => false
 
 end Lean.Elab.TacticInfo

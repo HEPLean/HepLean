@@ -41,9 +41,9 @@ lemma auxCongr_ext {φs: List 𝓕} {c c2 : Contractions φs} (h : c.1 = c2.1)
     (hx : c.2 =  auxCongr h.symm c2.2) : c = c2 := by
   cases c
   cases c2
-  simp at h
+  simp only at h
   subst h
-  simp [auxCongr] at hx
+  simp only [auxCongr, Equiv.refl_apply] at hx
   subst hx
   rfl
 
@@ -97,11 +97,11 @@ lemma embedUncontracted_injective  {l : List 𝓕} (c : Contractions l) :
     Function.Injective c.embedUncontracted := by
   match l, c with
   | [], ⟨[], ContractionsAux.nil⟩ =>
-    dsimp [embedUncontracted]
+    dsimp only [List.length_nil, embedUncontracted]
     intro i
     exact Fin.elim0 i
   | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) none c⟩ =>
-    dsimp [embedUncontracted]
+    dsimp only [List.length_cons, embedUncontracted, Fin.zero_eta]
     refine Fin.cons_injective_iff.mpr ?_
     apply And.intro
     · simp only [Set.mem_range, Function.comp_apply, not_exists]
@@ -109,7 +109,7 @@ lemma embedUncontracted_injective  {l : List 𝓕} (c : Contractions l) :
     · exact Function.Injective.comp (Fin.succ_injective φs.length)
         (embedUncontracted_injective ⟨aux, c⟩)
   |  φ :: φs, ⟨_, .cons (φsᵤₙ := aux) (some i) c⟩ =>
-      dsimp [embedUncontracted]
+      dsimp only [List.length_cons, embedUncontracted]
       refine Function.Injective.comp (Fin.succ_injective φs.length) ?hf
       refine Function.Injective.comp (embedUncontracted_injective ⟨aux, c⟩) ?hf.hf
       refine Function.Injective.comp (Fin.cast_injective (embedUncontracted.proof_5 φ φs aux i c))
@@ -251,7 +251,7 @@ lemma toCenterTerm_none (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     toCenterTerm f q le F c S := by
   rw [consEquiv]
   simp only [Equiv.coe_fn_symm_mk]
-  dsimp [toCenterTerm]
+  dsimp only [toCenterTerm]
   rfl
 
 /-- Proves that the part of the term gained from Wick contractions is in
@@ -264,13 +264,13 @@ lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     {φs : List 𝓕} → (c : Contractions φs) → (S : Splitting f le) →
     (c.toCenterTerm f q le F S) ∈ Subalgebra.center ℂ A
   | [], ⟨[], .nil⟩, _ => by
-    dsimp [toCenterTerm]
+    dsimp only [toCenterTerm]
     exact Subalgebra.one_mem (Subalgebra.center ℂ A)
   | _ :: _, ⟨_, .cons (φsᵤₙ := aux') none c⟩, S => by
-    dsimp [toCenterTerm]
+    dsimp only [toCenterTerm]
     exact toCenterTerm_center f q le F ⟨aux', c⟩ S
   | a :: _, ⟨_, .cons (φsᵤₙ := aux') (some n) c⟩, S => by
-    dsimp [toCenterTerm]
+    dsimp only [toCenterTerm, List.get_eq_getElem]
     refine Subalgebra.mul_mem (Subalgebra.center ℂ A) ?hx ?hy
     exact toCenterTerm_center f q le F ⟨aux', c⟩ S
     apply Subalgebra.smul_mem

@@ -45,7 +45,7 @@ lemma takeWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
   | a :: b :: l, Nat.succ n, h => by
     simp only [Nat.succ_eq_add_one, List.eraseIdx_cons_succ]
     by_cases hPa : P a
-    · dsimp [List.takeWhile]
+    · dsimp only [List.takeWhile]
       simp only [hPa, decide_True, List.eraseIdx_cons_succ, List.cons.injEq, true_and]
       rw [takeWile_eraseIdx]
       rfl

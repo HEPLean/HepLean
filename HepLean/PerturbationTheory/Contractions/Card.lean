@@ -31,7 +31,7 @@ lemma card_of_full_contractions_odd {φs : List 𝓕} (ho : Odd φs.length ) :
   by_contra hn
   have hc := uncontracted_length_even_iff c
   rw [hn] at hc
-  simp at hc
+  simp only [List.length_nil, even_zero, iff_true] at hc
   rw [← Nat.not_odd_iff_even] at hc
   exact hc ho
 

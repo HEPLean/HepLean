@@ -101,7 +101,7 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
         · rw [Fin.succAbove_of_castSucc_lt _ _]
           exact hx1
         · rw [Fin.lt_def] at h1 hx1 ⊢
-          simp_all
+          simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc]
           omega
       · exact Nat.lt_trans hx1 h1
     · simp only [not_lt] at hx1
@@ -115,7 +115,7 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
           · rfl
           · exact hx1
         · rw [Fin.lt_def] at hx2 ⊢
-          simp_all
+          simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
           omega
       · simp only [Nat.succ_eq_add_one, not_lt] at hx2
         rw [Fin.succAbove_of_le_castSucc _ _ hx2]
@@ -135,12 +135,12 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
       · nth_rewrite 2 [Fin.succAbove_of_le_castSucc _ _]
         · rw [Fin.succAbove_of_le_castSucc _ _]
           rw [Fin.le_def] at hx1 ⊢
-          simp_all
+          simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ, add_le_add_iff_right]
         · rw [Fin.le_def] at h1 hx1 ⊢
-          simp_all
+          simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc]
           omega
       · rw [Fin.le_def] at hx1 h1 ⊢
-        simp_all
+        simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
         omega
     · simp only [Nat.succ_eq_add_one, not_le] at hx1
       rw [Fin.lt_def] at hx1
@@ -151,7 +151,7 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
         nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
         · rw [Fin.succAbove_of_castSucc_lt _ _]
           rw [Fin.lt_def] at hx2 ⊢
-          simp_all
+          simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
           omega
         · rw [Fin.lt_def] at hx2 ⊢
           simp_all
