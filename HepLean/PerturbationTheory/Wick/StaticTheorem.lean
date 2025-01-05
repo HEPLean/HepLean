@@ -29,7 +29,7 @@ lemma static_wick_nil {A : Type} [Semiring A] [Algebra ℂ A]
   rw [← Contractions.nilEquiv.symm.sum_comp]
   simp only [Finset.univ_unique, PUnit.default_eq_unit, Contractions.nilEquiv, Equiv.coe_fn_symm_mk,
     Finset.sum_const, Finset.card_singleton, one_smul]
-  dsimp [Contractions.uncontracted, Contractions.toCenterTerm]
+  dsimp only [Contractions.toCenterTerm, Contractions.uncontracted]
   simp [ofListLift_empty]
 
 lemma static_wick_cons [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕) × f i) le]

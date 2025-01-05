@@ -662,7 +662,6 @@ def optionErase {I : Type} (l : List I) (i : Option (Fin l.length)) : List I :=
   | none => l
   | some i => List.eraseIdx l i
 
-
 lemma eraseIdx_length {I : Type} (l : List I) (i : Fin l.length) :
     (List.eraseIdx l i).length + 1 = l.length := by
   simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
@@ -744,7 +743,7 @@ lemma optionEraseZ_some_length {I : Type} (l : List I) (a : I) (i : (Fin l.lengt
 lemma optionEraseZ_ext {I : Type} {l l' : List I} {a a' : I} {i : Option (Fin l.length)}
     {i' : Option (Fin l'.length)} (hl : l = l') (ha : a = a')
     (hi : Option.map (Fin.cast (by rw [hl])) i = i') :
-    optionEraseZ l a i =  optionEraseZ l' a' i' := by
+    optionEraseZ l a i = optionEraseZ l' a' i' := by
   subst hl
   subst ha
   cases hi

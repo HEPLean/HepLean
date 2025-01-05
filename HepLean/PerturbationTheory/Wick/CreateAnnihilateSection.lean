@@ -26,7 +26,8 @@ namespace CreateAnnihilateSect
 
 section basic_defs
 
-variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {φs : List 𝓕} (a : CreateAnnihilateSect f φs)
+variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {φs : List 𝓕}
+  (a : CreateAnnihilateSect f φs)
 
 /-- The type `CreateAnnihilateSect f φs` is finite. -/
 instance fintype : Fintype (CreateAnnihilateSect f φs) := Pi.fintype

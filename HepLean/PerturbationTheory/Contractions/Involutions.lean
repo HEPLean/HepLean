@@ -38,7 +38,7 @@ variable {l : List 𝓕}
 
 /-- Given an involution the uncontracted fields associated with it (corresponding
   to the fixed points of that involution). -/
-def uncontractedFromInvolution :  {φs : List 𝓕} →
+def uncontractedFromInvolution : {φs : List 𝓕} →
     (f : {f : Fin φs.length → Fin φs.length // Function.Involutive f}) →
     {l : List 𝓕 // l.length = (Finset.univ.filter fun i => f.1 i = i).card}
   | [], _ => ⟨[], by simp⟩
@@ -46,7 +46,7 @@ def uncontractedFromInvolution :  {φs : List 𝓕} →
     let luc := uncontractedFromInvolution (involutionCons φs.length f).fst
     let n' := involutionAddEquiv (involutionCons φs.length f).1 (involutionCons φs.length f).2
     let np : Option (Fin luc.1.length) := Option.map (finCongr luc.2.symm) n'
-    if  hn : n' = none then
+    if hn : n' = none then
       have hn' := involutionAddEquiv_none_image_zero (n := φs.length) (f := f) hn
       ⟨optionEraseZ luc φ none, by
         simp only [optionEraseZ, Nat.succ_eq_add_one, List.length_cons, Mathlib.Vector.length_val]
@@ -55,7 +55,7 @@ def uncontractedFromInvolution :  {φs : List 𝓕} →
         rw [Fin.sum_univ_succ]
         conv_rhs => erw [if_pos hn']
         ring_nf
-        simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val,  Nat.cast_id,
+        simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val, Nat.cast_id,
           add_right_inj]
         rw [Finset.card_filter]
         apply congrArg
@@ -72,17 +72,18 @@ def uncontractedFromInvolution :  {φs : List 𝓕} →
           Option.isSome_none, Equiv.trans_apply, Equiv.coe_fn_mk, Equiv.optionCongr_apply,
           Equiv.coe_trans, RelIso.coe_fn_toEquiv, Option.map_eq_none', n'] at hn
         split at hn
-        · simp_all only [reduceCtorEq, not_false_eq_true, Nat.succ_eq_add_one, Option.isSome_some, k']
+        · simp_all only [reduceCtorEq, not_false_eq_true, Nat.succ_eq_add_one,
+            Option.isSome_some, k']
         · simp_all only [not_true_eq_false]
       let k := k'.1.get hkIsSome
       rw [optionEraseZ_some_length]
       have hksucc : k.succ = f.1 ⟨0, Nat.zero_lt_succ φs.length⟩ := by
         simp [k, k', involutionCons]
-      have hzero : ⟨0, Nat.zero_lt_succ φs.length⟩  = f.1 k.succ := by
+      have hzero : ⟨0, Nat.zero_lt_succ φs.length⟩ = f.1 k.succ := by
         rw [hksucc, f.2]
       have hksuccNe : f.1 k.succ ≠ k.succ := by
         conv_rhs => rw [hksucc]
-        exact fun hn => Fin.succ_ne_zero k (Function.Involutive.injective f.2 hn )
+        exact fun hn => Fin.succ_ne_zero k (Function.Involutive.injective f.2 hn)
       have hluc : 1 ≤ luc.1.length := by
         simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val, Finset.one_le_card]
         use k
@@ -131,8 +132,8 @@ lemma uncontractedFromInvolution_cons {φs : List 𝓕} {φ : 𝓕}
     (involutionAddEquiv (involutionCons φs.length f).1 (involutionCons φs.length f).2)) := by
   let luc := uncontractedFromInvolution (involutionCons φs.length f).fst
   let n' := involutionAddEquiv (involutionCons φs.length f).1 (involutionCons φs.length f).2
-  change _ = optionEraseZ luc φ
-    (Option.map (finCongr ((uncontractedFromInvolution (involutionCons φs.length f).fst).2.symm)) n')
+  change _ = optionEraseZ luc φ (Option.map
+    (finCongr ((uncontractedFromInvolution (involutionCons φs.length f).fst).2.symm)) n')
   dsimp only [List.length_cons, uncontractedFromInvolution, Nat.succ_eq_add_one, Fin.zero_eta]
   by_cases hn : n' = none
   · have hn' := hn
@@ -165,10 +166,10 @@ lemma uncontractedFromInvolution_cons {φs : List 𝓕} {φ : 𝓕}
       simp_all only [Option.get_some]
 
 /-- The `ContractionsAux` associated to an involution. -/
-def fromInvolutionAux  : {l : List 𝓕} →
+def fromInvolutionAux : {l : List 𝓕} →
     (f : {f : Fin l.length → Fin l.length // Function.Involutive f}) →
     ContractionsAux l (uncontractedFromInvolution f)
-  | [] => fun _ =>  ContractionsAux.nil
+  | [] => fun _ => ContractionsAux.nil
   | _ :: φs => fun f =>
     let f' := involutionCons φs.length f
     let c' := fromInvolutionAux f'.1
@@ -177,8 +178,9 @@ def fromInvolutionAux  : {l : List 𝓕} →
     auxCongr (uncontractedFromInvolution_cons f).symm (ContractionsAux.cons n' c')
 
 /-- The contraction associated with an involution. -/
-def fromInvolution {φs : List 𝓕} (f : {f : Fin φs.length → Fin φs.length // Function.Involutive f}) :
-    Contractions φs := ⟨uncontractedFromInvolution f, fromInvolutionAux f⟩
+def fromInvolution {φs : List 𝓕}
+    (f : {f : Fin φs.length → Fin φs.length // Function.Involutive f}) : Contractions φs :=
+  ⟨uncontractedFromInvolution f, fromInvolutionAux f⟩
 
 lemma fromInvolution_cons {φs : List 𝓕} {φ : 𝓕}
       (f : {f : Fin (φ :: φs).length → Fin (φ :: φs).length // Function.Involutive f}) :
@@ -195,8 +197,8 @@ lemma fromInvolution_cons {φs : List 𝓕} {φ : 𝓕}
     rfl
 
 lemma fromInvolution_of_involutionCons {φs : List 𝓕} {φ : 𝓕}
-    (f : {f : Fin (φs ).length → Fin (φs).length // Function.Involutive f})
-    (n : { i : Option (Fin φs.length) // ∀ (h : i.isSome = true), f.1 (i.get h) = i.get h }):
+    (f : {f : Fin φs.length → Fin φs.length // Function.Involutive f})
+    (n : { i : Option (Fin φs.length) // ∀ (h : i.isSome = true), f.1 (i.get h) = i.get h }) :
     fromInvolution (φs := φ :: φs) ((involutionCons φs.length).symm ⟨f, n⟩) =
     consEquiv.symm ⟨fromInvolution f, Option.map (finCongr ((uncontractedFromInvolution f).2.symm))
       (involutionAddEquiv f n)⟩ := by
@@ -212,7 +214,7 @@ lemma fromInvolution_of_involutionCons {φs : List 𝓕} {φ : 𝓕}
 -/
 
 /-- The involution associated with a contraction. -/
-def toInvolution  : {φs : List 𝓕} →  (c : Contractions φs) →
+def toInvolution : {φs : List 𝓕} → (c : Contractions φs) →
     {f : {f : Fin φs.length → Fin φs.length // Function.Involutive f} //
     uncontractedFromInvolution f = c.1}
   | [], ⟨[], ContractionsAux.nil⟩ => ⟨⟨fun i => i, by
@@ -223,22 +225,23 @@ def toInvolution  : {φs : List 𝓕} →  (c : Contractions φs) →
     let n' : Option (Fin (uncontractedFromInvolution ⟨f', hf1⟩).1.length) :=
       Option.map (finCongr (by rw [hf2])) n
     let F := (involutionCons φs.length).symm ⟨⟨f', hf1⟩,
-       (involutionAddEquiv ⟨f', hf1⟩).symm
-       (Option.map (finCongr ((uncontractedFromInvolution ⟨f', hf1⟩).2))  n')⟩
+        (involutionAddEquiv ⟨f', hf1⟩).symm
+        (Option.map (finCongr ((uncontractedFromInvolution ⟨f', hf1⟩).2)) n')⟩
     refine ⟨F, ?_⟩
     have hF0 : ((involutionCons φs.length) F) = ⟨⟨f', hf1⟩,
-       (involutionAddEquiv  ⟨f', hf1⟩).symm
-       (Option.map (finCongr ((uncontractedFromInvolution ⟨f', hf1⟩).2))  n')⟩ := by
+        (involutionAddEquiv ⟨f', hf1⟩).symm
+        (Option.map (finCongr ((uncontractedFromInvolution ⟨f', hf1⟩).2)) n')⟩ := by
       simp [F]
     have hF1 : ((involutionCons φs.length) F).fst = ⟨f', hf1⟩ := by
       rw [hF0]
     have hF2L : ((uncontractedFromInvolution ⟨f', hf1⟩)).1.length =
       (Finset.filter (fun i => ((involutionCons φs.length) F).1.1 i = i) Finset.univ).card := by
-      apply  Eq.trans ((uncontractedFromInvolution ⟨f', hf1⟩)).2
+      apply Eq.trans ((uncontractedFromInvolution ⟨f', hf1⟩)).2
       congr
       rw [hF1]
-    have hF2 : ((involutionCons φs.length) F).snd = (involutionAddEquiv ((involutionCons φs.length) F).fst).symm
-      (Option.map (finCongr hF2L) n') := by
+    have hF2 : ((involutionCons φs.length) F).snd =
+        (involutionAddEquiv ((involutionCons φs.length) F).fst).symm
+        (Option.map (finCongr hF2L) n') := by
       rw [@Sigma.subtype_ext_iff] at hF0
       ext1
       rw [hF0.2]
@@ -314,8 +317,9 @@ lemma toInvolution_fromInvolution : {φs : List 𝓕} → (c : Contractions φs)
       simp only [Option.mem_def, Option.map_eq_some', Function.comp_apply, Fin.cast_trans,
         Fin.cast_eq_self, exists_eq_right]
 
-lemma fromInvolution_toInvolution : {φs : List 𝓕} →  (f : {f : Fin (φs ).length → Fin (φs).length // Function.Involutive f})
-    → toInvolution (fromInvolution f) = f
+lemma fromInvolution_toInvolution : {φs : List 𝓕} →
+    (f : {f : Fin φs.length → Fin φs.length // Function.Involutive f}) →
+    toInvolution (fromInvolution f) = f
   | [], _ => by
     ext x
     exact Fin.elim0 x
@@ -331,7 +335,7 @@ lemma fromInvolution_toInvolution : {φs : List 𝓕} →  (f : {f : Fin (φs ).
       rw [Equiv.symm_apply_eq]
       conv_rhs =>
         lhs
-        rw  [involutionAddEquiv_cast hx]
+        rw [involutionAddEquiv_cast hx]
       simp only [Nat.succ_eq_add_one, Equiv.trans_apply]
       rfl
 
@@ -339,7 +343,7 @@ lemma fromInvolution_toInvolution : {φs : List 𝓕} →  (f : {f : Fin (φs ).
   Note: This shows that the type of contractions only depends on the length of the list `φs`. -/
 def equivInvolutions {φs : List 𝓕} :
     Contractions φs ≃ {f : Fin φs.length → Fin φs.length // Function.Involutive f} where
-  toFun := fun c =>  toInvolution c
+  toFun := fun c => toInvolution c
   invFun := fromInvolution
   left_inv := toInvolution_fromInvolution
   right_inv := fromInvolution_toInvolution
@@ -355,7 +359,7 @@ lemma isFull_iff_uncontractedFromInvolution_empty {φs : List 𝓕} (c : Contrac
   erw [l.2]
   rfl
 
-lemma isFull_iff_filter_card_involution_zero  {φs : List 𝓕} (c : Contractions φs) :
+lemma isFull_iff_filter_card_involution_zero {φs : List 𝓕} (c : Contractions φs) :
     IsFull c ↔ (Finset.univ.filter fun i => (equivInvolutions c).1 i = i).card = 0 := by
   rw [isFull_iff_uncontractedFromInvolution_empty, List.ext_get_iff]
   simp
@@ -372,21 +376,18 @@ lemma isFull_iff_involution_no_fixed_points {φs : List 𝓕} (c : Contractions 
   · intro i h
     exact fun a => i h
 
-
 /-- The equivalence between full contractions and fixed-point free involutions. -/
 def isFullInvolutionEquiv {φs : List 𝓕} : {c : Contractions φs // IsFull c} ≃
     {f : Fin φs.length → Fin φs.length // Function.Involutive f ∧ (∀ i, f i ≠ i)} where
   toFun c := ⟨equivInvolutions c.1, by
     apply And.intro (equivInvolutions c.1).2
     rw [← isFull_iff_involution_no_fixed_points]
-    exact c.2
-    ⟩
+    exact c.2⟩
   invFun f := ⟨equivInvolutions.symm ⟨f.1, f.2.1⟩, by
     rw [isFull_iff_involution_no_fixed_points]
     simpa using f.2.2⟩
   left_inv c := by simp
   right_inv f := by simp
-
 
 end Contractions
 end Wick

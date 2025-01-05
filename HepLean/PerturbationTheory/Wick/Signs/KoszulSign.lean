@@ -160,10 +160,10 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       rw [← insertionSortEquiv_get]
       simp only [Function.comp_apply, Equiv.symm_apply_apply, List.get_eq_getElem, ni]
       simp_all only [List.length_cons, add_le_add_iff_right, List.getElem_insertIdx_self]
-    have hc1 (hninro : ni.castSucc < nro) :  ¬ le φ1 φ := by
+    have hc1 (hninro : ni.castSucc < nro) : ¬ le φ1 φ := by
       rw [← hns]
       exact lt_orderedInsertPos_rel le φ1 rs ni hninro
-    have hc2 (hninro : ¬ ni.castSucc < nro) :  le φ1 φ := by
+    have hc2 (hninro : ¬ ni.castSucc < nro) : le φ1 φ := by
       rw [← hns]
       refine gt_orderedInsertPos_rel le φ1 rs ?_ ni hninro
       exact List.sorted_insertionSort le (List.insertIdx n φ φs)

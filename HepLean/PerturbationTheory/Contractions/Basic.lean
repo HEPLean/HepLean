@@ -33,12 +33,12 @@ namespace Contractions
 
 variable {l : List 𝓕} (c : Contractions l)
 
-def auxCongr  : {φs: List 𝓕} →  {φsᵤₙ φsᵤₙ' : List 𝓕} → (h : φsᵤₙ = φsᵤₙ') →
+def auxCongr : {φs: List 𝓕} → {φsᵤₙ φsᵤₙ' : List 𝓕} → (h : φsᵤₙ = φsᵤₙ') →
     ContractionsAux φs φsᵤₙ ≃ ContractionsAux φs φsᵤₙ'
   | _, _, _, Eq.refl _ => Equiv.refl _
 
 lemma auxCongr_ext {φs: List 𝓕} {c c2 : Contractions φs} (h : c.1 = c2.1)
-    (hx : c.2 =  auxCongr h.symm c2.2) : c = c2 := by
+    (hx : c.2 = auxCongr h.symm c2.2) : c = c2 := by
   cases c
   cases c2
   simp only at h
@@ -50,7 +50,7 @@ lemma auxCongr_ext {φs: List 𝓕} {c c2 : Contractions φs} (h : c.1 = c2.1)
 /-- The list of uncontracted fields. -/
 def uncontracted : List 𝓕 := c.1
 
-lemma uncontracted_length_even_iff :  {l : List 𝓕} →  (c : Contractions l) →
+lemma uncontracted_length_even_iff : {l : List 𝓕} → (c : Contractions l) →
     Even l.length ↔ Even c.uncontracted.length
   | [], ⟨[], ContractionsAux.nil⟩ => by
     simp [uncontracted]
@@ -76,7 +76,8 @@ lemma contractions_nil (a : Contractions ([] : List 𝓕)) : a = ⟨[], Contract
   cases c
   rfl
 
-def embedUncontracted {l : List 𝓕} (c : Contractions l) : Fin c.uncontracted.length → Fin l.length :=
+def embedUncontracted {l : List 𝓕} (c : Contractions l) :
+    Fin c.uncontracted.length → Fin l.length :=
   match l, c with
   | [], ⟨[], ContractionsAux.nil⟩ => Fin.elim0
   | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) none c⟩ =>
@@ -93,7 +94,7 @@ def embedUncontracted {l : List 𝓕} (c : Contractions l) : Fin c.uncontracted.
       exact Fin.elim0 n
     omega
 
-lemma embedUncontracted_injective  {l : List 𝓕} (c : Contractions l) :
+lemma embedUncontracted_injective {l : List 𝓕} (c : Contractions l) :
     Function.Injective c.embedUncontracted := by
   match l, c with
   | [], ⟨[], ContractionsAux.nil⟩ =>
@@ -108,12 +109,12 @@ lemma embedUncontracted_injective  {l : List 𝓕} (c : Contractions l) :
       exact fun x => Fin.succ_ne_zero (embedUncontracted ⟨aux, c⟩ x)
     · exact Function.Injective.comp (Fin.succ_injective φs.length)
         (embedUncontracted_injective ⟨aux, c⟩)
-  |  φ :: φs, ⟨_, .cons (φsᵤₙ := aux) (some i) c⟩ =>
-      dsimp only [List.length_cons, embedUncontracted]
-      refine Function.Injective.comp (Fin.succ_injective φs.length) ?hf
-      refine Function.Injective.comp (embedUncontracted_injective ⟨aux, c⟩) ?hf.hf
-      refine Function.Injective.comp (Fin.cast_injective (embedUncontracted.proof_5 φ φs aux i c))
-        Fin.succAbove_right_injective
+  | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) (some i) c⟩ =>
+    dsimp only [List.length_cons, embedUncontracted]
+    refine Function.Injective.comp (Fin.succ_injective φs.length) ?hf
+    refine Function.Injective.comp (embedUncontracted_injective ⟨aux, c⟩) ?hf.hf
+    refine Function.Injective.comp (Fin.cast_injective (embedUncontracted.proof_5 φ φs aux i c))
+      Fin.succAbove_right_injective
 
 /-- Establishes uniqueness of contractions for a single field, showing that any contraction
   of a single field must be equivalent to the trivial contraction with no pairing. -/
@@ -161,7 +162,7 @@ def consEquiv {φ : 𝓕} {φs : List 𝓕} :
 lemma consEquiv_ext {φs : List 𝓕} {c1 c2 : Contractions φs}
     {n1 : Option (Fin c1.uncontracted.length)} {n2 : Option (Fin c2.uncontracted.length)}
     (hc : c1 = c2) (hn : Option.map (finCongr (by rw [hc])) n1 = n2) :
-    (⟨c1, n1⟩ :  (c : Contractions φs) × Option (Fin c.uncontracted.length)) = ⟨c2, n2⟩ := by
+    (⟨c1, n1⟩ : (c : Contractions φs) × Option (Fin c.uncontracted.length)) = ⟨c2, n2⟩ := by
   subst hc
   subst hn
   simp
