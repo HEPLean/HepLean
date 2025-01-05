@@ -100,6 +100,7 @@ import HepLean.Lorentz.Weyl.Modules
 import HepLean.Lorentz.Weyl.Two
 import HepLean.Lorentz.Weyl.Unit
 import HepLean.Mathematics.Fin
+import HepLean.Mathematics.Fin.Involutions
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.List
 import HepLean.Mathematics.PiTensorProduct
@@ -114,6 +115,7 @@ import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
 import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.Contractions.Basic
+import HepLean.PerturbationTheory.Contractions.Card
 import HepLean.PerturbationTheory.Contractions.Involutions
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar

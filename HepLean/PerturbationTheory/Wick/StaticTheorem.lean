@@ -25,11 +25,11 @@ lemma static_wick_nil {A : Type} [Semiring A] [Algebra ℂ A]
     (S : Contractions.Splitting f le) :
     F (ofListLift f [] 1) = ∑ c : Contractions [],
     c.toCenterTerm f q le F S *
-    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
+    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.uncontracted 1)) := by
   rw [← Contractions.nilEquiv.symm.sum_comp]
   simp only [Finset.univ_unique, PUnit.default_eq_unit, Contractions.nilEquiv, Equiv.coe_fn_symm_mk,
     Finset.sum_const, Finset.card_singleton, one_smul]
-  dsimp [Contractions.normalize, Contractions.toCenterTerm]
+  dsimp [Contractions.uncontracted, Contractions.toCenterTerm]
   simp [ofListLift_empty]
 
 lemma static_wick_cons [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕) × f i) le]
@@ -38,10 +38,10 @@ lemma static_wick_cons [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕) × 
     (S : Contractions.Splitting f le)
     (ih : F (ofListLift f φs 1) =
     ∑ c : Contractions φs, c.toCenterTerm f q le F S * F (koszulOrder (fun i => q i.fst) le
-      (ofListLift f c.normalize 1))) :
+      (ofListLift f c.uncontracted 1))) :
     F (ofListLift f (φ :: φs) 1) = ∑ c : Contractions (φ :: φs),
       c.toCenterTerm f q le F S *
-      F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
+      F (koszulOrder (fun i => q i.fst) le (ofListLift f c.uncontracted 1)) := by
   rw [ofListLift_cons_eq_ofListLift, map_mul, ih, Finset.mul_sum,
     ← Contractions.consEquiv.symm.sum_comp]
   erw [Finset.sum_sigma]
@@ -88,7 +88,7 @@ theorem static_wick_theorem [IsTrans ((i : 𝓕) × f i) le] [IsTotal ((i : 𝓕
     (F : FreeAlgebra ℂ (Σ i, f i) →ₐ A) [OperatorMap (fun i => q i.1) le F]
     (S : Contractions.Splitting f le) :
     F (ofListLift f φs 1) = ∑ c : Contractions φs, c.toCenterTerm f q le F S *
-    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.normalize 1)) := by
+    F (koszulOrder (fun i => q i.fst) le (ofListLift f c.uncontracted 1)) := by
   induction φs with
   | nil => exact static_wick_nil q le F S
   | cons a r ih => exact static_wick_cons q le r a F S ih
