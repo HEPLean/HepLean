@@ -33,11 +33,13 @@ namespace Contractions
 
 variable {l : List 𝓕} (c : Contractions l)
 
-def auxCongr : {φs: List 𝓕} → {φsᵤₙ φsᵤₙ' : List 𝓕} → (h : φsᵤₙ = φsᵤₙ') →
+/-- The equivalence between `ContractionsAux` based on the propositionally equivalent
+  uncontracted lists. -/
+def auxCongr : {φs : List 𝓕} → {φsᵤₙ φsᵤₙ' : List 𝓕} → (h : φsᵤₙ = φsᵤₙ') →
     ContractionsAux φs φsᵤₙ ≃ ContractionsAux φs φsᵤₙ'
   | _, _, _, Eq.refl _ => Equiv.refl _
 
-lemma auxCongr_ext {φs: List 𝓕} {c c2 : Contractions φs} (h : c.1 = c2.1)
+lemma auxCongr_ext {φs : List 𝓕} {c c2 : Contractions φs} (h : c.1 = c2.1)
     (hx : c.2 = auxCongr h.symm c2.2) : c = c2 := by
   cases c
   cases c2
@@ -76,6 +78,7 @@ lemma contractions_nil (a : Contractions ([] : List 𝓕)) : a = ⟨[], Contract
   cases c
   rfl
 
+/-- The embedding of the uncontracted fields into all fields. -/
 def embedUncontracted {l : List 𝓕} (c : Contractions l) :
     Fin c.uncontracted.length → Fin l.length :=
   match l, c with

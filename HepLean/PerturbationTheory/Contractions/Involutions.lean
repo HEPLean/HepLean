@@ -183,7 +183,7 @@ def fromInvolution {φs : List 𝓕}
   ⟨uncontractedFromInvolution f, fromInvolutionAux f⟩
 
 lemma fromInvolution_cons {φs : List 𝓕} {φ : 𝓕}
-      (f : {f : Fin (φ :: φs).length → Fin (φ :: φs).length // Function.Involutive f}) :
+    (f : {f : Fin (φ :: φs).length → Fin (φ :: φs).length // Function.Involutive f}) :
     let f' := involutionCons φs.length f
     fromInvolution f = consEquiv.symm
     ⟨fromInvolution f'.1, Option.map (finCongr ((uncontractedFromInvolution f'.fst).2.symm))
