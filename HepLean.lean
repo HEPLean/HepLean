@@ -117,11 +117,15 @@ import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.Contractions.Basic
 import HepLean.PerturbationTheory.Contractions.Card
 import HepLean.PerturbationTheory.Contractions.Involutions
+import HepLean.PerturbationTheory.CreateAnnihilate
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldStatistics
+import HepLean.PerturbationTheory.FieldStruct.Basic
+import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
+import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateSect
 import HepLean.PerturbationTheory.Wick.CreateAnnihilateSection
 import HepLean.PerturbationTheory.Wick.KoszulOrder
 import HepLean.PerturbationTheory.Wick.OfList
