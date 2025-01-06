@@ -77,7 +77,7 @@ def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃
   invFun ψ := ⟨[⟨φ, ψ⟩], by simp⟩
   left_inv ψs := by
     apply Subtype.ext
-    simp
+    simp only
     have h1 := eq_head_cons_tail (ψs := ψs)
     rw [h1]
     have h2 := ψs.tail.2
@@ -169,7 +169,7 @@ def appendEquiv {φs φs' : List 𝓕.States} : CreateAnnihilateSect (φs ++ φs
   right_inv ψsψs' := by
     match ψsψs' with
     | (ψs, ψs') =>
-    simp
+    simp only [take_left, drop_left, Prod.mk.injEq]
     refine And.intro (Subtype.ext ?_) (Subtype.ext ?_)
     · simp
     · simp

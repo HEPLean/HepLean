@@ -39,7 +39,7 @@ instance : ∀ i, DecidableEq (𝓕.statesToCreateAnnihilateType i) := fun i =>
 /-- The equivalence between `𝓕.statesToCreateAnnihilateType i` and
   `𝓕.statesToCreateAnnihilateType j` from an equality `i = j`. -/
 def statesToCreateAnnihilateTypeCongr : {i j : 𝓕.States} → i = j →
-  𝓕.statesToCreateAnnihilateType i ≃ 𝓕.statesToCreateAnnihilateType j
+    𝓕.statesToCreateAnnihilateType i ≃ 𝓕.statesToCreateAnnihilateType j
   | _, _, rfl => Equiv.refl _
 
 /-- A creation and annihlation state is a state plus an valid specification of the
@@ -52,7 +52,7 @@ def createAnnihilateStatesToStates : 𝓕.CreateAnnihilateStates → 𝓕.States
 
 @[simp]
 lemma createAnnihilateStatesToStates_prod (s : 𝓕.States) (t : 𝓕.statesToCreateAnnihilateType s) :
-  𝓕.createAnnihilateStatesToStates ⟨s, t⟩ = s := rfl
+    𝓕.createAnnihilateStatesToStates ⟨s, t⟩ = s := rfl
 
 /-- The map from creation and annihlation states to the type `CreateAnnihilate`
   specifying if a state is a creation or an annihilation state. -/
