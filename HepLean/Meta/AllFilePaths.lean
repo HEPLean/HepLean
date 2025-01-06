@@ -16,15 +16,15 @@ open Lean Elab System
 
 /-- The recursive function underlying `allFilePaths`. -/
 partial def allFilePaths.go (prev : Array FilePath)
-  (root : Name) (path : FilePath) : IO (Array FilePath) := do
+  (root : String) (path : FilePath) : IO (Array FilePath) := do
   let mut r := prev
   for entry in ← path.readDir do
     if ← entry.path.isDir then
-      r ← go r (root.mkStr entry.fileName) entry.path
+      r ← go r (root ++ "/" ++ entry.fileName) entry.path
     else
-      r := r.push (root.toString.replace "." "/" ++ "/" ++ entry.fileName)
+      r := r.push (root ++ "/" ++ entry.fileName)
   pure r
 
 /-- Gets an array of all file paths in `HepLean`. -/
 partial def allFilePaths : IO (Array FilePath) := do
-  allFilePaths.go (#[] : Array FilePath) `HepLean ("./HepLean" : FilePath)
+  allFilePaths.go (#[] : Array FilePath) "./HepLean" ("./HepLean" : FilePath)

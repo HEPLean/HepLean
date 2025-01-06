@@ -84,7 +84,7 @@ def insertSign (n : ℕ) (φ : 𝓕) (φs : List 𝓕) : ℂ :=
   superCommuteCoef q [φ] (List.take n φs)
 
 /-- If `φ` is bosonic, there is no sign associated with inserting it into a list of fields. -/
-lemma insertSign_bosonic (n : ℕ)  (φ : 𝓕) (φs : List 𝓕) (hφ : q φ = bosonic) :
+lemma insertSign_bosonic (n : ℕ) (φ : 𝓕) (φs : List 𝓕) (hφ : q φ = bosonic) :
     insertSign q n φ φs = 1 := by
   simp only [insertSign, superCommuteCoef, ofList_singleton, hφ, reduceCtorEq, false_and,
     ↓reduceIte]

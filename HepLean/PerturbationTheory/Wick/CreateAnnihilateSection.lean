@@ -14,37 +14,38 @@ namespace Wick
 open HepLean.List
 open FieldStatistic
 
-/-- The sections of `Σ i, f i` over a list `l : List 𝓕`.
+/-- The sections of `Σ i, f i` over a list `φs : List 𝓕`.
   In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
   each field as a `creation` or an `annilation` operator. E.g. the number of terms
   `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
   operators at this point (e.g. ansymptotic states) this is accounted for. -/
-def CreateAnnihilateSect {𝓕 : Type} (f : 𝓕 → Type) (l : List 𝓕) : Type :=
-  Π i, f (l.get i)
+def CreateAnnihilateSect {𝓕 : Type} (f : 𝓕 → Type) (φs : List 𝓕) : Type :=
+  Π i, f (φs.get i)
 
 namespace CreateAnnihilateSect
 
 section basic_defs
 
-variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {l : List 𝓕} (a : CreateAnnihilateSect f l)
+variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {φs : List 𝓕}
+  (a : CreateAnnihilateSect f φs)
 
-/-- The type `CreateAnnihilateSect f l` is finite. -/
-instance fintype : Fintype (CreateAnnihilateSect f l) := Pi.fintype
+/-- The type `CreateAnnihilateSect f φs` is finite. -/
+instance fintype : Fintype (CreateAnnihilateSect f φs) := Pi.fintype
 
-/-- The section got by dropping the first element of `l` if it exists. -/
-def tail : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → CreateAnnihilateSect f l.tail
+/-- The section got by dropping the first element of `φs` if it exists. -/
+def tail : {φs : List 𝓕} → (a : CreateAnnihilateSect f φs) → CreateAnnihilateSect f φs.tail
   | [], a => a
   | _ :: _, a => fun i => a (Fin.succ i)
 
 /-- For a list of fields `i :: l` the value of the section at the head `i`. -/
-def head {i : 𝓕} (a : CreateAnnihilateSect f (i :: l)) : f i := a ⟨0, Nat.zero_lt_succ l.length⟩
+def head {φ : 𝓕} (a : CreateAnnihilateSect f (φ :: φs)) : f φ := a ⟨0, Nat.zero_lt_succ φs.length⟩
 
 end basic_defs
 
 section toList_basic
 
 variable {𝓕 : Type} {f : 𝓕 → Type} (q : 𝓕 → FieldStatistic)
-  {l : List 𝓕} (a : CreateAnnihilateSect f l)
+  {φs : List 𝓕} (a : CreateAnnihilateSect f φs)
 
 /-- The list `List (Σ i, f i)` defined by `a`. -/
 def toList : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → List (Σ i, f i)
@@ -52,8 +53,8 @@ def toList : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → List (Σ i, 
   | i :: _, a => ⟨i, a.head⟩ :: toList a.tail
 
 @[simp]
-lemma toList_length : (toList a).length = l.length := by
-  induction l with
+lemma toList_length : (toList a).length = φs.length := by
+  induction φs with
   | nil => rfl
   | cons i l ih =>
     simp only [toList, List.length_cons, Fin.zero_eta]
@@ -64,13 +65,13 @@ lemma toList_tail : {l : List 𝓕} → (a : CreateAnnihilateSect f l) → toLis
   | i :: l, a => by
     simp [toList]
 
-lemma toList_cons {i : 𝓕} (a : CreateAnnihilateSect f (i :: l)) :
+lemma toList_cons {i : 𝓕} (a : CreateAnnihilateSect f (i :: φs)) :
     (toList a) = ⟨i, a.head⟩ :: toList a.tail := by
   rfl
 
-lemma toList_get (a : CreateAnnihilateSect f l) :
-    (toList a).get = (fun i => ⟨l.get i, a i⟩) ∘ Fin.cast (by simp) := by
-  induction l with
+lemma toList_get (a : CreateAnnihilateSect f φs) :
+    (toList a).get = (fun i => ⟨φs.get i, a i⟩) ∘ Fin.cast (by simp) := by
+  induction φs with
   | nil =>
     funext i
     exact Fin.elim0 i
@@ -89,8 +90,8 @@ lemma toList_get (a : CreateAnnihilateSect f l) :
 @[simp]
 lemma toList_grade :
     FieldStatistic.ofList (fun i => q i.fst) a.toList = fermionic ↔
-    FieldStatistic.ofList q l = fermionic := by
-  induction l with
+    FieldStatistic.ofList q φs = fermionic := by
+  induction φs with
   | nil =>
     simp [toList]
   | cons i r ih =>

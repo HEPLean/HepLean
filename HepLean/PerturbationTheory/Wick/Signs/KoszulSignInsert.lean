@@ -20,57 +20,57 @@ variable {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Pro
 /-- Gives a factor of `-1` when inserting `a` into a list `List I` in the ordered position
   for each fermion-fermion cross. -/
 def koszulSignInsert {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop)
-    [DecidableRel le] (a : 𝓕) : List 𝓕 → ℂ
+    [DecidableRel le] (φ : 𝓕) : List 𝓕 → ℂ
   | [] => 1
-  | b :: l => if le a b then koszulSignInsert q le a l else
-    if q a = fermionic ∧ q b = fermionic then - koszulSignInsert q le a l else
-      koszulSignInsert q le a l
+  | φ' :: φs => if le φ φ' then koszulSignInsert q le φ φs else
+    if q φ = fermionic ∧ q φ' = fermionic then - koszulSignInsert q le φ φs else
+      koszulSignInsert q le φ φs
 
 /-- When inserting a boson the `koszulSignInsert` is always `1`. -/
 lemma koszulSignInsert_boson (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop) [DecidableRel le]
-    (a : 𝓕) (ha : q a = bosonic) : (φs : List 𝓕) → koszulSignInsert q le a φs = 1
+    (φ : 𝓕) (ha : q φ = bosonic) : (φs : List 𝓕) → koszulSignInsert q le φ φs = 1
   | [] => by
     simp [koszulSignInsert]
-  | b :: l => by
+  | φ' :: φs => by
     simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
-    rw [koszulSignInsert_boson q le a ha l, ha]
+    rw [koszulSignInsert_boson q le φ ha φs, ha]
     simp only [reduceCtorEq, false_and, ↓reduceIte, ite_self]
 
 @[simp]
-lemma koszulSignInsert_mul_self (a : 𝓕) :
-    (φs : List 𝓕) → koszulSignInsert q le a φs * koszulSignInsert q le a φs = 1
+lemma koszulSignInsert_mul_self (φ : 𝓕) :
+    (φs : List 𝓕) → koszulSignInsert q le φ φs * koszulSignInsert q le φ φs = 1
   | [] => by
     simp [koszulSignInsert]
-  | b :: l => by
+  | φ' :: φs => by
     simp only [koszulSignInsert, Fin.isValue, mul_ite, ite_mul, neg_mul, mul_neg]
-    by_cases hr : le a b
+    by_cases hr : le φ φ'
     · simp only [hr, ↓reduceIte]
       rw [koszulSignInsert_mul_self]
     · simp only [hr, ↓reduceIte]
-      by_cases hq : q a = fermionic ∧ q b = fermionic
+      by_cases hq : q φ = fermionic ∧ q φ' = fermionic
       · simp only [hq, and_self, ↓reduceIte, neg_neg]
         rw [koszulSignInsert_mul_self]
       · simp only [hq, ↓reduceIte]
         rw [koszulSignInsert_mul_self]
 
-lemma koszulSignInsert_le_forall (a : 𝓕) (l : List 𝓕) (hi : ∀ b, le a b) :
-    koszulSignInsert q le a l = 1 := by
-  induction l with
+lemma koszulSignInsert_le_forall (φ : 𝓕) (φs : List 𝓕) (hi : ∀ φ', le φ φ') :
+    koszulSignInsert q le φ φs = 1 := by
+  induction φs with
   | nil => rfl
-  | cons j l ih =>
+  | cons φ' φs ih =>
     simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
     rw [ih]
     simp only [Fin.isValue, ite_eq_left_iff, ite_eq_right_iff, and_imp]
     intro h
-    exact False.elim (h (hi j))
+    exact False.elim (h (hi φ'))
 
-lemma koszulSignInsert_ge_forall_append (φs : List 𝓕) (j i : 𝓕) (hi : ∀ j, le j i) :
-    koszulSignInsert q le j φs = koszulSignInsert q le j (φs ++ [i]) := by
+lemma koszulSignInsert_ge_forall_append (φs : List 𝓕) (φ' φ : 𝓕) (hi : ∀ φ'', le φ'' φ) :
+    koszulSignInsert q le φ' φs = koszulSignInsert q le φ' (φs ++ [φ]) := by
   induction φs with
   | nil => simp [koszulSignInsert, hi]
-  | cons b l ih =>
+  | cons φ'' φs ih =>
     simp only [koszulSignInsert, Fin.isValue, List.append_eq]
-    by_cases hr : le j b
+    by_cases hr : le φ' φ''
     · rw [if_pos hr, if_pos hr, ih]
     · rw [if_neg hr, if_neg hr, ih]
 
@@ -136,20 +136,20 @@ lemma koszulSignInsert_eq_grade (φ : 𝓕) (φs : List 𝓕) :
       simpa [ofList] using ih
       simpa using hr1
 
-lemma koszulSignInsert_eq_perm (φs φs' : List 𝓕) (a : 𝓕) (h : φs.Perm φs') :
-    koszulSignInsert q le a φs = koszulSignInsert q le a φs' := by
+lemma koszulSignInsert_eq_perm (φs φs' : List 𝓕) (φ : 𝓕) (h : φs.Perm φs') :
+    koszulSignInsert q le φ φs = koszulSignInsert q le φ φs' := by
   rw [koszulSignInsert_eq_grade, koszulSignInsert_eq_grade]
   congr 1
   simp only [Fin.isValue, decide_not, eq_iff_iff, and_congr_right_iff]
   intro h'
-  have hg : ofList q (List.filter (fun i => !decide (le a i)) φs) =
-      ofList q (List.filter (fun i => !decide (le a i)) φs') := by
+  have hg : ofList q (List.filter (fun i => !decide (le φ i)) φs) =
+      ofList q (List.filter (fun i => !decide (le φ i)) φs') := by
     apply ofList_perm
-    exact List.Perm.filter (fun i => !decide (le a i)) h
+    exact List.Perm.filter (fun i => !decide (le φ i)) h
   rw [hg]
 
-lemma koszulSignInsert_eq_sort (φs : List 𝓕) (a : 𝓕) :
-    koszulSignInsert q le a φs = koszulSignInsert q le a (List.insertionSort le φs) := by
+lemma koszulSignInsert_eq_sort (φs : List 𝓕) (φ : 𝓕) :
+    koszulSignInsert q le φ φs = koszulSignInsert q le φ (List.insertionSort le φs) := by
   apply koszulSignInsert_eq_perm
   exact List.Perm.symm (List.perm_insertionSort le φs)
 

@@ -485,7 +485,7 @@ lemma pauliMatrix_contr_down_3 :
     rw [contrBasisVectorMul_pos _]
   conv =>
     lhs; rhs; rhs; lhs;
-    rw [contrBasisVectorMul_pos  _]
+    rw [contrBasisVectorMul_pos _]
   conv =>
     lhs
     simp only [_root_.zero_smul, one_smul, _root_.smul_zero, _root_.add_zero, _root_.zero_add]

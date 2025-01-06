@@ -45,7 +45,7 @@ lemma takeWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
   | a :: b :: l, Nat.succ n, h => by
     simp only [Nat.succ_eq_add_one, List.eraseIdx_cons_succ]
     by_cases hPa : P a
-    · dsimp [List.takeWhile]
+    · dsimp only [List.takeWhile]
       simp only [hPa, decide_True, List.eraseIdx_cons_succ, List.cons.injEq, true_and]
       rw [takeWile_eraseIdx]
       rfl
@@ -662,15 +662,6 @@ def optionErase {I : Type} (l : List I) (i : Option (Fin l.length)) : List I :=
   | none => l
   | some i => List.eraseIdx l i
 
-/-- Optional erase of an element in a list, with addition for `none`. For `none` adds `a` to the
-  front of the list, for `some i` removes the `i`th element of the list (does not add `a`).
-  E.g. `optionEraseZ [0, 1, 2] 4 none = [4, 0, 1, 2]` and
-  `optionEraseZ [0, 1, 2] 4 (some 1) = [0, 2]`. -/
-def optionEraseZ {I : Type} (l : List I) (a : I) (i : Option (Fin l.length)) : List I :=
-  match i with
-  | none => a :: l
-  | some i => List.eraseIdx l i
-
 lemma eraseIdx_length {I : Type} (l : List I) (i : Fin l.length) :
     (List.eraseIdx l i).length + 1 = l.length := by
   simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
@@ -734,5 +725,29 @@ lemma eraseIdx_insertionSort_fin {I : Type} (le1 : I → I → Prop) [DecidableR
     (List.insertionSort le1 r).eraseIdx ↑((HepLean.List.insertionSortEquiv le1 r) n)
     = List.insertionSort le1 (r.eraseIdx n) :=
   eraseIdx_insertionSort le1 n.val r (Fin.prop n)
+
+/-- Optional erase of an element in a list, with addition for `none`. For `none` adds `a` to the
+  front of the list, for `some i` removes the `i`th element of the list (does not add `a`).
+  E.g. `optionEraseZ [0, 1, 2] 4 none = [4, 0, 1, 2]` and
+  `optionEraseZ [0, 1, 2] 4 (some 1) = [0, 2]`. -/
+def optionEraseZ {I : Type} (l : List I) (a : I) (i : Option (Fin l.length)) : List I :=
+  match i with
+  | none => a :: l
+  | some i => List.eraseIdx l i
+
+@[simp]
+lemma optionEraseZ_some_length {I : Type} (l : List I) (a : I) (i : (Fin l.length)) :
+    (optionEraseZ l a (some i)).length = l.length - 1 := by
+  simp [optionEraseZ, List.length_eraseIdx]
+
+lemma optionEraseZ_ext {I : Type} {l l' : List I} {a a' : I} {i : Option (Fin l.length)}
+    {i' : Option (Fin l'.length)} (hl : l = l') (ha : a = a')
+    (hi : Option.map (Fin.cast (by rw [hl])) i = i') :
+    optionEraseZ l a i = optionEraseZ l' a' i' := by
+  subst hl
+  subst ha
+  cases hi
+  congr
+  simp
 
 end HepLean.List
