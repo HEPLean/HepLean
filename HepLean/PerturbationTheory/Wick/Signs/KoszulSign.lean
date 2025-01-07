@@ -24,6 +24,11 @@ def koszulSign (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop) [Deci
   | [] => 1
   | a :: l => koszulSignInsert q le a l * koszulSign q le l
 
+@[simp]
+lemma koszulSign_singleton (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop) [DecidableRel le] (φ : 𝓕) :
+    koszulSign q le [φ] = 1 := by
+  simp [koszulSign, koszulSignInsert]
+
 lemma koszulSign_mul_self (l : List 𝓕) : koszulSign q le l * koszulSign q le l = 1 := by
   induction l with
   | nil => simp [koszulSign]
@@ -185,5 +190,74 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le rs φ1)
     · exact Nat.le_of_lt_succ h
     · exact Nat.le_of_lt_succ h
+
+
+lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r.length) →
+    List.insertIdx n (r.get ⟨n, hn⟩) (r.eraseIdx n) = r
+  | n, [], hn => by
+    simp at hn
+  | 0, r0 :: r, hn => by
+    simp
+  | n + 1, r0 :: r, hn => by
+    simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ,
+      List.eraseIdx_cons_succ, List.insertIdx_succ_cons, List.cons.injEq, true_and]
+    exact insertIdx_eraseIdx n r _
+
+lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) (n : Fin φs.length) :
+    koszulSign q le (φs.eraseIdx n) = koszulSign q le φs *
+      superCommuteCoef q [φs.get n] (φs.take n) *
+      superCommuteCoef q [φs.get n] (List.take (↑(insertionSortEquiv le φs n))
+      (List.insertionSort le φs)) := by
+  let φs' := φs.eraseIdx ↑n
+  have hφs : List.insertIdx n (φs.get n) φs' = φs := by
+    exact insertIdx_eraseIdx n.1 φs n.prop
+  conv_rhs =>
+    lhs
+    lhs
+    rw [← hφs]
+    rw [koszulSign_insertIdx q le (φs.get n) ((φs.eraseIdx ↑n)) n (by
+      rw [List.length_eraseIdx]
+      simp only [Fin.is_lt, ↓reduceIte]
+      omega)]
+    rhs
+    rhs
+    rw [hφs]
+  conv_rhs =>
+    enter [1, 1, 2, 2, 1, 1]
+    rw [insertionSortEquiv_congr _ _ hφs]
+  simp
+  trans koszulSign q le (φs.eraseIdx ↑n) *
+        (insertSign q (↑n) φs[↑n] (φs.eraseIdx ↑n) * superCommuteCoef q [φs[↑n]] (List.take (↑n) φs))
+        *
+    (insertSign q (↑((insertionSortEquiv le φs) n)) φs[↑n] (List.insertionSort le φs) *
+    superCommuteCoef q [φs[↑n]] (List.take (↑((insertionSortEquiv le φs) n)) (List.insertionSort le φs)))
+  swap
+  · simp only [Fin.getElem_fin]
+    ring
+  conv_rhs =>
+    rhs
+    rw [insertSign]
+    rw [superCommuteCoef_mul_self]
+  simp
+  conv_rhs =>
+    rhs
+    rw [insertSign_eraseIdx]
+    rw [insertSign, superCommuteCoef_mul_self]
+  simp
+
+lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le]
+  (φ :  𝓕) (φs : List 𝓕) :
+  koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
+    * superCommuteCoef q [insertionSortMin le φ φs] ((φ :: φs).take (insertionSortMinPos le φ φs)) := by
+  rw [koszulSign_eraseIdx]
+  conv_lhs =>
+    rhs
+    rhs
+    lhs
+    simp [insertionSortMinPos]
+    erw [Equiv.apply_symm_apply]
+  simp [superCommuteCoef_empty]
+  apply Or.inl
+  rfl
 
 end Wick

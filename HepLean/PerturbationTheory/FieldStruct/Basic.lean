@@ -48,27 +48,6 @@ def statesToField : 𝓕.States → 𝓕.Fields
 /-- The statistics associated to a state. -/
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 
-/-- Returns true if `timeOrder a b` is true if `a` has time greater then or equal to `b`.
-  This will put the stats at the greatest time to left. -/
-def timeOrder : 𝓕.States → 𝓕.States → Prop
-  | States.posAsymp _, _ => True
-  | States.position φ0, States.position φ1 => φ1.2 0 ≤ φ0.2 0
-  | States.position _, States.negAsymp _ => True
-  | States.position _, States.posAsymp _ => False
-  | States.negAsymp _, States.posAsymp _ => False
-  | States.negAsymp _, States.position _ => False
-  | States.negAsymp _, States.negAsymp _ => True
-
-/-- Time ordering is total. -/
-instance : IsTotal 𝓕.States 𝓕.timeOrder where
-  total a b := by
-    cases a <;> cases b <;> simp [timeOrder]
-    exact LinearOrder.le_total _ _
-
-/-- Time ordering is transitive. -/
-instance : IsTrans 𝓕.States 𝓕.timeOrder where
-  trans a b c := by
-    cases a <;> cases b <;> cases c <;> simp [timeOrder]
-    exact fun h1 h2 => Preorder.le_trans _ _ _ h2 h1
+def listStatistics (φs : List 𝓕.States) : FieldStatistic := (List.map 𝓕.statesStatistic φs).prod
 
 end FieldStruct

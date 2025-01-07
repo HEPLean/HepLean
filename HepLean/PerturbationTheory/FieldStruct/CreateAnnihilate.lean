@@ -17,20 +17,20 @@ variable (𝓕 : FieldStruct)
 /-- To each state the specificaition of the type of creation and annihlation parts.
   For asymptotic staes there is only one allowed part, whilst for position states
   there is two. -/
-def statesToCreateAnnihilateType : 𝓕.States → Type
+def statesToCrAnType : 𝓕.States → Type
   | States.negAsymp _ => Unit
   | States.position _ => CreateAnnihilate
   | States.posAsymp _ => Unit
 
 /-- The instance of a finite type on `𝓕.statesToCreateAnnihilateType i`. -/
-instance : ∀ i, Fintype (𝓕.statesToCreateAnnihilateType i) := fun i =>
+instance : ∀ i, Fintype (𝓕.statesToCrAnType i) := fun i =>
   match i with
   | States.negAsymp _ => inferInstanceAs (Fintype Unit)
   | States.position _ => inferInstanceAs (Fintype CreateAnnihilate)
   | States.posAsymp _ => inferInstanceAs (Fintype Unit)
 
 /-- The instance of a decidable equality on `𝓕.statesToCreateAnnihilateType i`. -/
-instance : ∀ i, DecidableEq (𝓕.statesToCreateAnnihilateType i) := fun i =>
+instance : ∀ i, DecidableEq (𝓕.statesToCrAnType i) := fun i =>
   match i with
   | States.negAsymp _ => inferInstanceAs (DecidableEq Unit)
   | States.position _ => inferInstanceAs (DecidableEq CreateAnnihilate)
@@ -39,40 +39,33 @@ instance : ∀ i, DecidableEq (𝓕.statesToCreateAnnihilateType i) := fun i =>
 /-- The equivalence between `𝓕.statesToCreateAnnihilateType i` and
   `𝓕.statesToCreateAnnihilateType j` from an equality `i = j`. -/
 def statesToCreateAnnihilateTypeCongr : {i j : 𝓕.States} → i = j →
-    𝓕.statesToCreateAnnihilateType i ≃ 𝓕.statesToCreateAnnihilateType j
+    𝓕.statesToCrAnType i ≃ 𝓕.statesToCrAnType j
   | _, _, rfl => Equiv.refl _
 
 /-- A creation and annihlation state is a state plus an valid specification of the
   creation or annihliation part of that state. (For asympotic states there is only one valid
   choice). -/
-def CreateAnnihilateStates : Type := Σ (s : 𝓕.States), 𝓕.statesToCreateAnnihilateType s
+def CrAnStates : Type := Σ (s : 𝓕.States), 𝓕.statesToCrAnType s
 
 /-- The map from creation and annihlation states to their underlying states. -/
-def createAnnihilateStatesToStates : 𝓕.CreateAnnihilateStates → 𝓕.States := Sigma.fst
+def crAnStatesToStates : 𝓕.CrAnStates → 𝓕.States := Sigma.fst
 
 @[simp]
-lemma createAnnihilateStatesToStates_prod (s : 𝓕.States) (t : 𝓕.statesToCreateAnnihilateType s) :
-    𝓕.createAnnihilateStatesToStates ⟨s, t⟩ = s := rfl
+lemma crAnStatesToStates_prod (s : 𝓕.States) (t : 𝓕.statesToCrAnType s) :
+    𝓕.crAnStatesToStates ⟨s, t⟩ = s := rfl
 
 /-- The map from creation and annihlation states to the type `CreateAnnihilate`
   specifying if a state is a creation or an annihilation state. -/
-def createAnnihlateStatesToCreateAnnihilate : 𝓕.CreateAnnihilateStates → CreateAnnihilate
+def crAnStatesToCreateAnnihilate : 𝓕.CrAnStates → CreateAnnihilate
   | ⟨States.negAsymp _, _⟩ => CreateAnnihilate.create
   | ⟨States.position _, CreateAnnihilate.create⟩ => CreateAnnihilate.create
   | ⟨States.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
   | ⟨States.posAsymp _, _⟩ => CreateAnnihilate.annihilate
 
-/-- The normal ordering on creation and annihlation states. -/
-def normalOrder : 𝓕.CreateAnnihilateStates → 𝓕.CreateAnnihilateStates → Prop :=
-  fun a b => CreateAnnihilate.normalOrder (𝓕.createAnnihlateStatesToCreateAnnihilate a)
-    (𝓕.createAnnihlateStatesToCreateAnnihilate b)
+def crAnStatesStatistics : 𝓕.CrAnStates → FieldStatistic :=
+  𝓕.statesStatistic ∘ 𝓕.crAnStatesToStates
 
-/-- Normal ordering is total. -/
-instance : IsTotal 𝓕.CreateAnnihilateStates 𝓕.normalOrder where
-  total _ _ := total_of CreateAnnihilate.normalOrder _ _
-
-/-- Normal ordering is transitive. -/
-instance : IsTrans 𝓕.CreateAnnihilateStates 𝓕.normalOrder where
-  trans _ _ _ := fun h h' => IsTrans.trans (α := CreateAnnihilate) _ _ _ h h'
+def crAnListStatistics (φs : List 𝓕.CrAnStates) : FieldStatistic :=
+  (List.map 𝓕.crAnStatesStatistics φs).prod
 
 end FieldStruct

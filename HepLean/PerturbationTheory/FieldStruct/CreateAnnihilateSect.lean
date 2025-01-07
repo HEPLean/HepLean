@@ -14,14 +14,14 @@ import HepLean.PerturbationTheory.CreateAnnihilate
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
-/-- The sections in `𝓕.CreateAnnihilateStates` over a list `φs : List 𝓕.States`.
+/-- The sections in `𝓕.CrAnStates` over a list `φs : List 𝓕.States`.
   In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
   each field as a `creation` or an `annilation` operator. E.g. the number of terms
   `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
   operators at this point (e.g. ansymptotic states) this is accounted for. -/
 def CreateAnnihilateSect (φs : List 𝓕.States) : Type :=
-  {ψs : List 𝓕.CreateAnnihilateStates //
-    List.map 𝓕.createAnnihilateStatesToStates ψs = φs}
+  {ψs : List 𝓕.CrAnStates //
+    List.map 𝓕.crAnStatesToStates ψs = φs}
   -- Π i, 𝓕.statesToCreateAnnihilateType (φs.get i)
 
 namespace CreateAnnihilateSect
@@ -45,9 +45,15 @@ lemma head_state_eq {φ : 𝓕.States} : (ψs : CreateAnnihilateSect (φ :: φs)
     simp at h
     exact h.1
 
+lemma statistics_eq_state_statistics (ψs : CreateAnnihilateSect φs) :
+    𝓕.crAnListStatistics ψs.1 = 𝓕.listStatistics φs := by
+  dsimp [crAnListStatistics, crAnStatesStatistics]
+  rw [← List.map_comp_map, Function.comp_apply, ψs.2]
+  rfl
+
 /-- The head of a section for `φ :: φs` as an element in `𝓕.statesToCreateAnnihilateType φ`. -/
 def head : {φ : 𝓕.States} → (ψs : CreateAnnihilateSect (φ :: φs)) →
-    𝓕.statesToCreateAnnihilateType φ
+    𝓕.statesToCrAnType φ
   | φ, ⟨[], h⟩ => False.elim (by simp at h)
   | φ, ⟨ψ :: ψs, h⟩ => 𝓕.statesToCreateAnnihilateTypeCongr (by
     simpa using head_state_eq ⟨ψ :: ψs, h⟩) ψ.2
@@ -64,15 +70,26 @@ lemma eq_head_cons_tail {φ : 𝓕.States} {ψs : CreateAnnihilateSect (φ :: φ
 
 /-- The creation of a section from for `φ : φs` from a section for `φs` and a
   element of `𝓕.statesToCreateAnnihilateType φ`. -/
-def cons {φ : 𝓕.States} (ψ : 𝓕.statesToCreateAnnihilateType φ) (ψs : CreateAnnihilateSect φs) :
+def cons {φ : 𝓕.States} (ψ : 𝓕.statesToCrAnType φ) (ψs : CreateAnnihilateSect φs) :
     CreateAnnihilateSect (φ :: φs) := ⟨⟨φ, ψ⟩ :: ψs.1, by
   simp [List.map_cons, ψs.2]⟩
+
+def nilEquiv : CreateAnnihilateSect (𝓕 := 𝓕) [] ≃ Unit where
+  toFun _ := ()
+  invFun _ := ⟨[], rfl⟩
+  left_inv ψs := by
+    apply Subtype.ext
+    have h2 := ψs.2
+    simp at h2
+    simp [h2]
+  right_inv _ := by
+    simp
 
 /-- The creation and annihlation sections for a singleton list is given by
   a choice of `𝓕.statesToCreateAnnihilateType φ`. If `φ` is a asymptotic state
   there is no choice here, else there are two choices. -/
 def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃
-    𝓕.statesToCreateAnnihilateType φ where
+    𝓕.statesToCrAnType φ where
   toFun ψs := ψs.head
   invFun ψ := ⟨[⟨φ, ψ⟩], by simp⟩
   left_inv ψs := by
@@ -90,7 +107,7 @@ def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃
 /-- An equivalence seperating the head of a creation and annhilation section
   from the tail. -/
 def consEquiv {φ : 𝓕.States} {φs : List 𝓕.States} : CreateAnnihilateSect (φ :: φs) ≃
-    𝓕.statesToCreateAnnihilateType φ × CreateAnnihilateSect φs where
+    𝓕.statesToCrAnType φ × CreateAnnihilateSect φs where
   toFun ψs := ⟨ψs.head, ψs.tail⟩
   invFun ψψs :=
     match ψψs with
@@ -101,6 +118,26 @@ def consEquiv {φ : 𝓕.States} {φs : List 𝓕.States} : CreateAnnihilateSect
   right_inv ψψs := by
     match ψψs with
     | (ψ, ψs) => rfl
+
+instance fintype : (φs : List 𝓕.States) → Fintype (CreateAnnihilateSect φs)
+  | [] => Fintype.ofEquiv _ nilEquiv.symm
+  | _ :: φs =>
+    haveI : Fintype (CreateAnnihilateSect φs) := fintype φs
+    Fintype.ofEquiv _ consEquiv.symm
+
+@[simp]
+lemma sum_nil (f : CreateAnnihilateSect (𝓕 := 𝓕) [] → M) [AddCommMonoid M] :
+    ∑ (s : CreateAnnihilateSect []), f s = f ⟨[], rfl⟩ := by
+  rw [← nilEquiv.symm.sum_comp]
+  simp only [Finset.univ_unique, PUnit.default_eq_unit, Finset.sum_singleton]
+  rfl
+
+lemma sum_cons (f : CreateAnnihilateSect (φ :: φs) → M) [AddCommMonoid M] :
+    ∑ (s : CreateAnnihilateSect (φ :: φs)), f s = ∑ (a : 𝓕.statesToCrAnType φ),
+    ∑ (s : CreateAnnihilateSect φs), f (cons a s) := by
+  rw [← consEquiv.symm.sum_comp, Fintype.sum_prod_type]
+  rfl
+
 
 /-- The equivalence between `CreateAnnihilateSect φs` and
   `CreateAnnihilateSect φs'` induced by an equality `φs = φs'`. -/
@@ -189,7 +226,7 @@ def eraseIdx (n : ℕ) (ψs : CreateAnnihilateSect φs) : CreateAnnihilateSect (
 
 /-- The equivalence formed by extracting an element from a section. -/
 def eraseIdxEquiv (n : ℕ) (φs : List 𝓕.States) (hn : n < φs.length) :
-    CreateAnnihilateSect φs ≃ 𝓕.statesToCreateAnnihilateType φs[n] ×
+    CreateAnnihilateSect φs ≃ 𝓕.statesToCrAnType φs[n] ×
     CreateAnnihilateSect (φs.eraseIdx n) :=
   (congr (by simp only [List.take_concat_get', List.take_append_drop])).trans <|
   appendEquiv.trans <|

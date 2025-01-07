@@ -26,6 +26,41 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
+@[simp]
+instance : CommGroup FieldStatistic where
+  one := bosonic
+  mul a b :=
+    match a, b with
+    | bosonic, bosonic => bosonic
+    | bosonic, fermionic => fermionic
+    | fermionic, bosonic => fermionic
+    | fermionic, fermionic => bosonic
+  inv a := a
+  mul_assoc a b c := by
+    cases a <;> cases b <;> cases c <;>
+    dsimp [HMul.hMul]
+  one_mul a := by
+    cases a <;> dsimp [HMul.hMul]
+  mul_one a := by
+    cases a <;> dsimp [HMul.hMul]
+  inv_mul_cancel a := by
+    cases a <;> dsimp [HMul.hMul] <;> rfl
+  mul_comm a b := by
+    cases a <;> cases b <;> rfl
+
+@[simp]
+lemma bosonic_mul_bosonic : bosonic * bosonic = bosonic := rfl
+
+@[simp]
+lemma bosonic_mul_fermionic : bosonic * fermionic = fermionic := rfl
+
+@[simp]
+lemma fermionic_mul_bosonic : fermionic * bosonic = fermionic := rfl
+
+@[simp]
+lemma fermionic_mul_fermionic : fermionic * fermionic = bosonic := rfl
+
+
 /-- Field statics form a finite type. -/
 instance : Fintype FieldStatistic where
   elems := {bosonic, fermionic}
@@ -76,6 +111,18 @@ def ofList (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) → FieldStatistic
   | [] => bosonic
   | φ :: φs => if s φ = ofList s φs then bosonic else fermionic
 
+lemma ofList_cons_eq_mul (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
+    ofList s (φ :: φs) = s φ * ofList s φs := by
+  have ha (a b  : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
+    fin_cases a <;> fin_cases b <;> rfl
+  exact ha (s φ) (ofList s φs)
+
+lemma ofList_eq_prod (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) →
+    ofList s φs = (List.map s φs).prod
+  | [] => rfl
+  | φ :: φs => by
+    rw [ofList_cons_eq_mul, List.map_cons, List.prod_cons, ofList_eq_prod]
+
 @[simp]
 lemma ofList_singleton (s : 𝓕 → FieldStatistic) (φ : 𝓕) : ofList s [φ] = s φ := by
   simp only [ofList, Fin.isValue]
@@ -101,45 +148,17 @@ lemma ofList_append (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
       fin_cases a <;> fin_cases b <;> fin_cases c <;> rfl
     simp only [ofList, List.append_eq, Fin.isValue, ih, hab]
 
-lemma ofList_eq_countP (s : 𝓕 → FieldStatistic) (φs : List 𝓕) :
-    ofList s φs = if Nat.mod (List.countP (fun i => decide (s i = fermionic)) φs) 2 = 0 then
-      bosonic else fermionic := by
-  induction φs with
-  | nil => simp
-  | cons r0 r ih =>
-    simp only [ofList]
-    rw [List.countP_cons]
-    simp only [decide_eq_true_eq]
-    by_cases hr : s r0 = fermionic
-    · simp only [hr, ↓reduceIte]
-      simp_all only
-      split
-      next h =>
-        simp_all only [↓reduceIte, fermionic_not_eq_bonsic]
-        split
-        next h_1 =>
-          simp_all only [fermionic_not_eq_bonsic]
-          have ha (a : ℕ) (ha : a % 2 = 0) : (a + 1) % 2 ≠ 0 := by
-            omega
-          exact ha (List.countP (fun i => decide (s i = fermionic)) r) h h_1
-        next h_1 => simp_all only
-      next h =>
-        simp_all only [↓reduceIte]
-        split
-        next h_1 => rfl
-        next h_1 =>
-          simp_all only [reduceCtorEq]
-          have ha (a : ℕ) (ha : ¬ a % 2 = 0) : (a + 1) % 2 = 0 := by
-            omega
-          exact h_1 (ha (List.countP (fun i => decide (s i = fermionic)) r) h)
-    · simp only [neq_fermionic_iff_eq_bosonic] at hr
-      by_cases hx : (List.countP (fun i => decide (s i = fermionic)) r).mod 2 = 0
-      · simpa [hx, hr] using ih.symm
-      · simpa [hx, hr] using ih.symm
+lemma ofList_append_eq_mul (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
+    ofList s (φs ++ φs') = ofList s φs * ofList s φs' := by
+  rw [ofList_append]
+  have ha (a b  : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
+    fin_cases a <;> fin_cases b <;> rfl
+  exact ha _ _
 
 lemma ofList_perm (s : 𝓕 → FieldStatistic) {l l' : List 𝓕} (h : l.Perm l') :
     ofList s l = ofList s l' := by
-  rw [ofList_eq_countP, ofList_eq_countP, h.countP_eq]
+  rw [ofList_eq_prod, ofList_eq_prod]
+  exact List.Perm.prod_eq (List.Perm.map s h)
 
 lemma ofList_orderedInsert (s : 𝓕 → FieldStatistic) (le1 : 𝓕 → 𝓕 → Prop) [DecidableRel le1]
     (φs : List 𝓕) (φ : 𝓕) : ofList s (List.orderedInsert le1 φ φs) = ofList s (φ :: φs) :=
@@ -149,5 +168,48 @@ lemma ofList_orderedInsert (s : 𝓕 → FieldStatistic) (le1 : 𝓕 → 𝓕 �
 lemma ofList_insertionSort (s : 𝓕 → FieldStatistic) (le1 : 𝓕 → 𝓕 → Prop) [DecidableRel le1]
     (φs : List 𝓕) : ofList s (List.insertionSort le1 φs) = ofList s φs :=
   ofList_perm s (List.perm_insertionSort le1 φs)
+
+def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
+  toFun a :=
+    {
+      toFun := fun b =>
+        match a, b with
+        | bosonic, bosonic => 1
+        | bosonic, fermionic => 1
+        | fermionic, bosonic => 1
+        | fermionic, fermionic => -1
+      map_one' := by
+        fin_cases a
+        <;> simp
+      map_mul' := fun c b => by
+        fin_cases a <;>
+          fin_cases b <;>
+          fin_cases c <;>
+          simp
+    }
+  map_one' := by
+    ext b
+    fin_cases b
+    <;> simp
+  map_mul' c b := by
+    ext a
+    fin_cases a
+    <;> fin_cases b <;> fin_cases c
+    <;> simp
+
+lemma pairedSign_symm (a b : FieldStatistic) : pairedSign a b = pairedSign b a := by
+  fin_cases a <;> fin_cases b <;> rfl
+
+lemma pairedSign_eq_if (a b : FieldStatistic) :
+    pairedSign a b = if a = fermionic ∧ b = fermionic then - 1 else 1 := by
+  fin_cases a <;> fin_cases b <;> rfl
+
+lemma pairedSign_mul_self (a b : FieldStatistic) : pairedSign a b * pairedSign a b = 1 := by
+  fin_cases a <;> fin_cases b <;> simp [pairedSign]
+
+lemma pairedSign_ofList_cons (a : FieldStatistic)
+      (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
+    pairedSign a (ofList s (φ :: φs)) = pairedSign a (s φ) * pairedSign a (ofList s φs) := by
+  rw [ofList_cons_eq_mul, map_mul]
 
 end FieldStatistic

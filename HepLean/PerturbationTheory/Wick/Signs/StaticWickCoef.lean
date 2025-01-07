@@ -36,17 +36,7 @@ lemma staticWickCoef_eq_q (r : List 𝓕) (i : 𝓕) (n : Fin r.length)
     koszulSign q le (r.eraseIdx ↑n) := by
   simp [staticWickCoef, superCommuteCoef, ofList, hq]
 
-lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r.length) →
-    List.insertIdx n (r.get ⟨n, hn⟩) (r.eraseIdx n) = r
-  | n, [], hn => by
-    simp at hn
-  | 0, r0 :: r, hn => by
-    simp
-  | n + 1, r0 :: r, hn => by
-    simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ,
-      List.eraseIdx_cons_succ, List.insertIdx_succ_cons, List.cons.injEq, true_and]
-    exact insertIdx_eraseIdx n r _
-
+/- TODO: simplify proof using koszulSign_eraseIdx -/
 lemma staticWickCoef_eq_get [IsTotal 𝓕 le] [IsTrans 𝓕 le] (r : List 𝓕) (i : 𝓕) (n : Fin r.length)
     (heq : q i = q (r.get n)) :
     staticWickCoef q le r i n = superCommuteCoef q [r.get n] (r.take n) := by
@@ -86,5 +76,6 @@ lemma staticWickCoef_eq_get [IsTotal 𝓕 le] [IsTrans 𝓕 le] (r : List 𝓕) 
   rw [insertSign_eraseIdx]
   rfl
   exact heq
+
 
 end Wick
