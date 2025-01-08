@@ -52,15 +52,22 @@ lemma ofStateAlgebra_ofState (φ : 𝓕.States) :
     ofStateAlgebra (StateAlgebra.ofState φ) = ofState φ := by
   simp [ofStateAlgebra, StateAlgebra.ofState]
 
-def ofStateList : (φs : List 𝓕.States) → CrAnAlgebra 𝓕
-  | [] => 1
-  | φ :: φs => ofState φ * ofStateList φs
+def ofStateList (φs : List 𝓕.States) : CrAnAlgebra 𝓕 :=  (List.map ofState φs).prod
 
 @[simp]
 lemma ofStateList_nil : ofStateList ([] : List 𝓕.States) = 1 := rfl
 
 lemma ofStateList_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
     ofStateList (φ :: φs) = ofState φ * ofStateList φs := rfl
+
+lemma ofStateList_singleton (φ  :  𝓕.States) :
+    ofStateList [φ] = ofState φ  := by
+  simp [ofStateList]
+
+lemma ofStateList_append (φs φs' : List 𝓕.States) :
+    ofStateList (φs ++ φs') = ofStateList φs * ofStateList φs' := by
+  dsimp [ofStateList]
+  rw [List.map_append, List.prod_append]
 
 lemma ofStateAlgebra_ofList_eq_ofStateList : (φs : List 𝓕.States) →
     ofStateAlgebra (ofList φs) = ofStateList φs
@@ -197,7 +204,7 @@ noncomputable def smulLinearMap (c : ℂ) :  CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAl
 
 /-!
 
-## The super commutor on the state algebra.
+## The super commutor on the creation and annihlation algebra.
 
 -/
 
@@ -207,21 +214,35 @@ noncomputable def superCommute :
    𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   Basis.constr ofCrAnListBasis ℂ fun φs' =>
-  ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatesStatistics φs)
-    (FieldStatistic.ofList 𝓕.crAnStatesStatistics φs') • ofCrAnList (φs' ++ φs)
+  ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
+    (FieldStatistic.ofList 𝓕.crAnStatistics φs') • ofCrAnList (φs' ++ φs)
 
 local notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
 
 lemma superCommute_ofCrAnList (φs φs' : List 𝓕.CrAnStates) : ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
-    ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatesStatistics φs)
-    (FieldStatistic.ofList 𝓕.crAnStatesStatistics φs') • ofCrAnList (φs' ++ φs) := by
+    ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
+    (FieldStatistic.ofList 𝓕.crAnStatistics φs') • ofCrAnList (φs' ++ φs) := by
   rw [← ofListBasis_eq_ofList, ← ofListBasis_eq_ofList]
   simp only [superCommute, Basis.constr_basis]
 
+lemma superCommute_ofCrAnList_ofStatesList (φcas : List 𝓕.CrAnStates) (φs : List 𝓕.States) :
+    ⟨ofCrAnList φcas, ofStateList φs⟩ₛca = ofCrAnList φcas * ofStateList φs -
+    pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φcas)
+    (FieldStatistic.ofList 𝓕.statesStatistic φs) • ofStateList φs * ofCrAnList φcas := by
+  conv_lhs => rw [ofStateList_sum]
+  rw [map_sum]
+  conv_lhs =>
+    enter [2, x]
+    rw [superCommute_ofCrAnList, CreateAnnihilateSect.statistics_eq_state_statistics,
+      ofCrAnList_append, ofCrAnList_append]
+  rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.smul_sum,
+    ← Finset.sum_mul, ← ofStateList_sum]
+  simp
+
 
 lemma superCommute_ofCrAnState (φ φ' :  𝓕.CrAnStates) : ⟨ofCrAnState φ, ofCrAnState φ'⟩ₛca =
-    ofCrAnState φ * ofCrAnState φ'  - pairedSign (𝓕.crAnStatesStatistics φ)
-    (𝓕.crAnStatesStatistics φ') • ofCrAnState φ' * ofCrAnState φ := by
+    ofCrAnState φ * ofCrAnState φ'  - pairedSign (𝓕.crAnStatistics φ)
+    (𝓕.crAnStatistics φ') • ofCrAnState φ' * ofCrAnState φ := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
   rw [superCommute_ofCrAnList, ofCrAnList_append]
   congr
@@ -230,7 +251,7 @@ lemma superCommute_ofCrAnState (φ φ' :  𝓕.CrAnStates) : ⟨ofCrAnState φ, 
 
 lemma superCommute_ofCrAnState_symm (φ φ' :  𝓕.CrAnStates) :
     ⟨ofCrAnState φ, ofCrAnState φ'⟩ₛca =
-    (- pairedSign (𝓕.crAnStatesStatistics φ) (𝓕.crAnStatesStatistics φ')) •
+    (- pairedSign (𝓕.crAnStatistics φ) (𝓕.crAnStatistics φ')) •
     ⟨ofCrAnState φ', ofCrAnState φ⟩ₛca := by
   rw [superCommute_ofCrAnState, superCommute_ofCrAnState]
   rw [smul_sub]
@@ -241,6 +262,84 @@ lemma superCommute_ofCrAnState_symm (φ φ' :  𝓕.CrAnStates) :
     rw [pairedSign_symm, pairedSign_mul_self]
   simp
   abel
+
+lemma superCommute_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
+    ⟨ofCrAnList φs, ofCrAnList (φ :: φs')⟩ₛca =
+    ⟨ofCrAnList φs, ofCrAnState φ⟩ₛca * ofCrAnList φs' +
+    pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs) (𝓕.crAnStatistics φ)
+    • ofCrAnState φ * ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca := by
+  rw [superCommute_ofCrAnList]
+  conv_rhs =>
+    lhs
+    rw [← ofCrAnList_singleton, superCommute_ofCrAnList, sub_mul, ← ofCrAnList_append]
+    rhs
+    rw [FieldStatistic.ofList_singleton, ofCrAnList_append, ofCrAnList_singleton, smul_mul_assoc,
+      mul_assoc, ← ofCrAnList_append]
+  conv_rhs =>
+    rhs
+    rw [superCommute_ofCrAnList, mul_sub, smul_mul_assoc]
+  simp only [instCommGroup.eq_1, List.cons_append, List.append_assoc, List.nil_append,
+    Algebra.mul_smul_comm, Algebra.smul_mul_assoc, sub_add_sub_cancel, sub_right_inj]
+  rw [← ofCrAnList_cons, smul_smul, FieldStatistic.ofList_cons_eq_mul]
+  simp only [instCommGroup, map_mul, mul_comm]
+
+lemma superCommute_ofCrAnList_ofStateList_cons  (φ : 𝓕.States) (φs : List 𝓕.CrAnStates)
+    (φs' : List 𝓕.States) : ⟨ofCrAnList φs, ofStateList (φ :: φs')⟩ₛca =
+    ⟨ofCrAnList φs, ofState φ⟩ₛca * ofStateList φs' +
+    pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs) (𝓕.statesStatistic φ)
+    • ofState φ * ⟨ofCrAnList φs, ofStateList φs'⟩ₛca := by
+  rw [superCommute_ofCrAnList_ofStatesList]
+  conv_rhs =>
+    lhs
+    rw [← ofStateList_singleton, superCommute_ofCrAnList_ofStatesList, sub_mul, mul_assoc,
+      ← ofStateList_append]
+    rhs
+    rw [FieldStatistic.ofList_singleton, ofStateList_singleton, smul_mul_assoc,
+      smul_mul_assoc, mul_assoc]
+  conv_rhs =>
+    rhs
+    rw [superCommute_ofCrAnList_ofStatesList, mul_sub, smul_mul_assoc]
+  simp
+  rw [ofStateList_cons, mul_assoc, smul_smul, FieldStatistic.ofList_cons_eq_mul]
+  simp [mul_comm]
+
+
+lemma superCommute_ofCrAnList_ofCrAnList_eq_sum (φs  : List 𝓕.CrAnStates) :
+    (φs' : List 𝓕.CrAnStates) →
+    ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
+    ∑ (n : Fin φs'.length), pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
+    (FieldStatistic.ofList 𝓕.crAnStatistics (List.take n φs')) •
+    ofCrAnList (φs'.take n) * ⟨ofCrAnList φs, ofCrAnState (φs'.get n)⟩ₛca *
+    ofCrAnList (φs'.drop (n + 1))
+  | [] => by
+    simp [← ofCrAnList_nil, superCommute_ofCrAnList]
+  | φ :: φs' => by
+    rw [superCommute_ofCrAnList_ofCrAnList_cons, superCommute_ofCrAnList_ofCrAnList_eq_sum φs φs']
+    conv_rhs => erw [Fin.sum_univ_succ]
+    congr 1
+    · simp
+    · simp [Finset.mul_sum, smul_smul, ofCrAnList_cons, mul_assoc,
+        FieldStatistic.ofList_cons_eq_mul, mul_comm]
+
+lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs  : List 𝓕.CrAnStates) :
+    (φs' : List 𝓕.States) →
+    ⟨ofCrAnList φs, ofStateList φs'⟩ₛca =
+    ∑ (n : Fin φs'.length), pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
+      (FieldStatistic.ofList 𝓕.statesStatistic (List.take n φs')) •
+      ofStateList (φs'.take n) * ⟨ofCrAnList φs, ofState (φs'.get n)⟩ₛca *
+      ofStateList (φs'.drop (n + 1))
+  | [] => by
+    simp only [superCommute_ofCrAnList_ofStatesList, instCommGroup, ofList_empty,
+      pairedSign_bosonic, one_smul, List.length_nil, Finset.univ_eq_empty, List.take_nil,
+      List.get_eq_getElem, List.drop_nil, Finset.sum_empty]
+    simp
+  | φ :: φs' => by
+    rw [superCommute_ofCrAnList_ofStateList_cons, superCommute_ofCrAnList_ofStateList_eq_sum φs φs']
+    conv_rhs => erw [Fin.sum_univ_succ]
+    congr 1
+    · simp
+    · simp [Finset.mul_sum, smul_smul, ofStateList_cons, mul_assoc,
+        FieldStatistic.ofList_cons_eq_mul, mul_comm]
 
 
 end CrAnAlgebra

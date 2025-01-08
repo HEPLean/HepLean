@@ -62,10 +62,10 @@ def crAnStatesToCreateAnnihilate : 𝓕.CrAnStates → CreateAnnihilate
   | ⟨States.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
   | ⟨States.posAsymp _, _⟩ => CreateAnnihilate.annihilate
 
-def crAnStatesStatistics : 𝓕.CrAnStates → FieldStatistic :=
+def crAnStatistics : 𝓕.CrAnStates → FieldStatistic :=
   𝓕.statesStatistic ∘ 𝓕.crAnStatesToStates
 
 def crAnListStatistics (φs : List 𝓕.CrAnStates) : FieldStatistic :=
-  (List.map 𝓕.crAnStatesStatistics φs).prod
+  (List.map 𝓕.crAnStatistics φs).prod
 
 end FieldStruct

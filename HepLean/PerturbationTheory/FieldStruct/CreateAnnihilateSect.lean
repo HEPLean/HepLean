@@ -46,10 +46,9 @@ lemma head_state_eq {φ : 𝓕.States} : (ψs : CreateAnnihilateSect (φ :: φs)
     exact h.1
 
 lemma statistics_eq_state_statistics (ψs : CreateAnnihilateSect φs) :
-    𝓕.crAnListStatistics ψs.1 = 𝓕.listStatistics φs := by
-  dsimp [crAnListStatistics, crAnStatesStatistics]
+    FieldStatistic.ofList 𝓕.crAnStatistics ψs.1 = FieldStatistic.ofList 𝓕.statesStatistic φs := by
+  erw [FieldStatistic.ofList_eq_prod, FieldStatistic.ofList_eq_prod, crAnStatistics]
   rw [← List.map_comp_map, Function.comp_apply, ψs.2]
-  rfl
 
 /-- The head of a section for `φ :: φs` as an element in `𝓕.statesToCreateAnnihilateType φ`. -/
 def head : {φ : 𝓕.States} → (ψs : CreateAnnihilateSect (φ :: φs)) →

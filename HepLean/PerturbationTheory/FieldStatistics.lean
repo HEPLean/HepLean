@@ -174,9 +174,8 @@ def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
     {
       toFun := fun b =>
         match a, b with
-        | bosonic, bosonic => 1
-        | bosonic, fermionic => 1
-        | fermionic, bosonic => 1
+        | bosonic, _ => 1
+        | _, bosonic => 1
         | fermionic, fermionic => -1
       map_one' := by
         fin_cases a
@@ -196,6 +195,14 @@ def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
     fin_cases a
     <;> fin_cases b <;> fin_cases c
     <;> simp
+
+@[simp]
+lemma pairedSign_bosonic (a : FieldStatistic) : pairedSign a bosonic = 1 := by
+  fin_cases a <;> rfl
+
+@[simp]
+lemma bosonic_pairedSign (a : FieldStatistic) : pairedSign bosonic a = 1 := by
+  fin_cases a <;> rfl
 
 lemma pairedSign_symm (a b : FieldStatistic) : pairedSign a b = pairedSign b a := by
   fin_cases a <;> fin_cases b <;> rfl

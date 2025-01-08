@@ -40,11 +40,11 @@ instance (φ φ' : 𝓕.CrAnStates) :  Decidable (normalOrderProp φ φ') :=
 
 -/
 def normalOrderSign (φs : List 𝓕.CrAnStates) : ℂ :=
-  Wick.koszulSign 𝓕.crAnStatesStatistics 𝓕.normalOrderProp φs
+  Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderProp φs
 
 lemma koszulSignInsert_create  (φ : 𝓕.CrAnStates)
     (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.create) : (φs : List 𝓕.CrAnStates) →
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φ φs = 1
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ φs = 1
   | [] => rfl
   | φ' :: φs => by
     dsimp [Wick.koszulSignInsert]
@@ -74,8 +74,8 @@ lemma normalOrderSign_nil :
 lemma koszulSignInsert_append_annihilate (φ' φ : 𝓕.CrAnStates)
     (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.annihilate) :
     (φs : List 𝓕.CrAnStates) →
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φ' (φs ++ [φ]) =
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φ' φs
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ' (φs ++ [φ]) =
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ' φs
   | [] => by
     simp [Wick.koszulSignInsert, normalOrderProp, hφ]
   | φ'' :: φs => by
@@ -97,9 +97,9 @@ lemma koszulSignInsert_annihilate_cons_create (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) :
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φa (φc :: φs)
-    = FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) *
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φa φs := by
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φa (φc :: φs)
+    = FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φa φs := by
   rw [Wick.koszulSignInsert_cons]
   simp
   apply Or.inl
@@ -112,7 +112,7 @@ lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) :
     normalOrderSign (φc :: φa :: φs) =
-    FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) *
+    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
     normalOrderSign (φa :: φc :: φs) := by
   rw [normalOrderSign_cons_create φc hφc (φa :: φs)]
   conv_rhs =>
@@ -127,8 +127,8 @@ lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
 
 lemma koszulSignInsert_swap (φ φc φa : 𝓕.CrAnStates)
     : (φs φs' : List 𝓕.CrAnStates) →
-    Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φ (φs ++ φa :: φc :: φs')
-    = Wick.koszulSignInsert 𝓕.crAnStatesStatistics normalOrderProp φ  (φs ++ φc :: φa :: φs') := by
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ (φs ++ φa :: φc :: φs')
+    = Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ  (φs ++ φc :: φa :: φs') := by
   intro φs φs'
   apply Wick.koszulSignInsert_eq_perm
   refine List.Perm.append_left φs ?h.a
@@ -140,7 +140,7 @@ lemma normalOrderSign_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
      : (φs φs' : List 𝓕.CrAnStates) →
     normalOrderSign (φs ++ φc :: φa :: φs') =
-    FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) *
+    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
     normalOrderSign (φs ++ φa :: φc :: φs')
   | [], φs' => by
     exact normalOrderSign_swap_create_annihlate_fst φc φa hφc hφa φs'
@@ -523,7 +523,7 @@ lemma normalOrder_swap_create_annihlate_ofCrAnList_ofCrAnList (φc φa : 𝓕.Cr
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnStates) :
     normalOrder (ofCrAnList φs' * ofCrAnState φc * ofCrAnState φa * ofCrAnList φs) =
-    FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) •
+    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
     normalOrder (ofCrAnList φs' * ofCrAnState φa * ofCrAnState φc * ofCrAnList φs)  := by
   rw [mul_assoc, mul_assoc, ← ofCrAnList_cons, ← ofCrAnList_cons, ← ofCrAnList_append]
   rw [normalOrder_ofCrAnList, normalOrderSign_swap_create_annihlate φc φa hφc hφa]
@@ -538,7 +538,7 @@ lemma normalOrder_swap_create_annihlate_ofCrAnList (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) (a : 𝓕.CrAnAlgebra) :
     normalOrder (ofCrAnList φs * ofCrAnState φc * ofCrAnState φa * a) =
-    FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) •
+    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
     normalOrder (ofCrAnList φs * ofCrAnState φa * ofCrAnState φc * a)  := by
   change (normalOrder ∘ₗ mulLinearMap (ofCrAnList φs * ofCrAnState φc * ofCrAnState φa)) a =
     (smulLinearMap _ ∘ₗ normalOrder ∘ₗ mulLinearMap (ofCrAnList φs * ofCrAnState φa * ofCrAnState φc)) a
@@ -554,11 +554,11 @@ lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * ofCrAnState φc * ofCrAnState φa * b) =
-    FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa) •
+    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
     normalOrder (a * ofCrAnState φa * ofCrAnState φc * b)  := by
   rw [mul_assoc, mul_assoc, mul_assoc, mul_assoc]
   change (normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φc * (ofCrAnState φa * b))) a =
-    (smulLinearMap (FieldStatistic.pairedSign (𝓕.crAnStatesStatistics φc) (𝓕.crAnStatesStatistics φa)) ∘ₗ normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φa * (ofCrAnState φc * b))) a
+    (smulLinearMap (FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa)) ∘ₗ normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φa * (ofCrAnState φc * b))) a
   apply LinearMap.congr_fun
   apply ofCrAnListBasis.ext
   intro l
