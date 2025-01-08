@@ -32,6 +32,9 @@ def ofList (φs : List 𝓕.States) : StateAlgebra 𝓕 :=
 @[simp]
 lemma ofList_nil : ofList ([] : List 𝓕.States) = 1 := rfl
 
+lemma ofList_singleton (φ : 𝓕.States) : ofList [φ] = ofState φ := by
+  simp [ofList]
+
 lemma ofList_append (φs ψs : List 𝓕.States) :
     ofList (φs ++ ψs) = ofList φs * ofList ψs := by
   rw [ofList, List.map_append, List.prod_append]

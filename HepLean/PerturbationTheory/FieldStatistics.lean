@@ -214,6 +214,10 @@ lemma pairedSign_eq_if (a b : FieldStatistic) :
 lemma pairedSign_mul_self (a b : FieldStatistic) : pairedSign a b * pairedSign a b = 1 := by
   fin_cases a <;> fin_cases b <;> simp [pairedSign]
 
+@[simp]
+lemma pairedSign_mul_self_swap (a b : FieldStatistic) : pairedSign a b * pairedSign b a = 1 := by
+  fin_cases a <;> fin_cases b <;> simp [pairedSign]
+
 lemma pairedSign_ofList_cons (a : FieldStatistic)
       (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
     pairedSign a (ofList s (φ :: φs)) = pairedSign a (s φ) * pairedSign a (ofList s φs) := by

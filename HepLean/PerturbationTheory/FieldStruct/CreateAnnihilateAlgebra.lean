@@ -217,7 +217,7 @@ noncomputable def superCommute :
   ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
     (FieldStatistic.ofList 𝓕.crAnStatistics φs') • ofCrAnList (φs' ++ φs)
 
-local notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
+scoped[FieldStruct.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
 
 lemma superCommute_ofCrAnList (φs φs' : List 𝓕.CrAnStates) : ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
     ofCrAnList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.crAnStatistics φs)
@@ -239,6 +239,192 @@ lemma superCommute_ofCrAnList_ofStatesList (φcas : List 𝓕.CrAnStates) (φs :
     ← Finset.sum_mul, ← ofStateList_sum]
   simp
 
+
+lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
+    ⟨anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca =
+    anPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    crPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) := by
+  match φ, φ'  with
+  | States.negAsymp φ, _ =>
+    simp
+  | _, States.posAsymp φ =>
+    simp
+  | States.position φ, States.position φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+  | States.posAsymp φ, States.position φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+  | States.position φ, States.negAsymp φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+  | States.posAsymp φ, States.negAsymp φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+
+lemma superCommute_crPart_anPart (φ φ' : 𝓕.States) :
+    ⟨crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca =
+    crPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    anPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
+    match φ, φ' with
+    | States.posAsymp φ, _ =>
+    simp
+    | _, States.negAsymp φ =>
+    simp
+    | States.position φ, States.position φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+    | States.position φ, States.posAsymp φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+    | States.negAsymp φ, States.position φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+    | States.negAsymp φ, States.posAsymp φ' =>
+    simp
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
+
+lemma superCommute_crPart_crPart (φ φ' : 𝓕.States) :
+    ⟨crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca =
+    crPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    crPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
+  match φ, φ' with
+  | States.posAsymp φ, _ =>
+  simp
+  | _, States.posAsymp φ =>
+  simp
+  | States.position φ, States.position φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.position φ, States.negAsymp φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.negAsymp φ, States.position φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.negAsymp φ, States.negAsymp φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+
+lemma superCommute_anPart_anPart (φ φ' : 𝓕.States) :
+    ⟨anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca =
+    anPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    anPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) := by
+  match φ, φ' with
+  | States.negAsymp φ, _ =>
+  simp
+  | _, States.negAsymp φ =>
+  simp
+  | States.position φ, States.position φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.position φ, States.posAsymp φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.posAsymp φ, States.position φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+  | States.posAsymp φ, States.posAsymp φ' =>
+  simp
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+  simp [crAnStatistics, ← ofCrAnList_append]
+
+lemma crPart_anPart_eq_superCommute (φ φ' : 𝓕.States) :
+    crPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') =
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    anPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) +
+    ⟨crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca  := by
+  rw [superCommute_crPart_anPart]
+  simp
+
+lemma anPart_crPart_eq_superCommute (φ φ' : 𝓕.States) :
+    anPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') =
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    crPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) +
+    ⟨anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca  := by
+  rw [superCommute_anPart_crPart]
+  simp
+
+lemma crPart_crPart_eq_superCommute (φ φ' : 𝓕.States) :
+    crPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') =
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    crPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) +
+    ⟨crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca  := by
+  rw [superCommute_crPart_crPart]
+  simp
+
+lemma anPart_anPart_eq_superCommute (φ φ' : 𝓕.States) :
+    anPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') =
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    anPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) +
+    ⟨anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca  := by
+  rw [superCommute_anPart_anPart]
+  simp
+
+lemma superCommute_crPart_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.States) :
+    ⟨crPart (StateAlgebra.ofState φ), ofStateList φs⟩ₛca = crPart (StateAlgebra.ofState φ) * ofStateList φs -
+    pairedSign (𝓕.statesStatistic φ)
+    (FieldStatistic.ofList 𝓕.statesStatistic φs) • ofStateList φs * crPart (StateAlgebra.ofState φ) := by
+  match φ with
+  | States.negAsymp φ =>
+    simp
+    rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
+    simp [crAnStatistics]
+  | States.position φ =>
+    simp
+    rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
+    simp [crAnStatistics]
+  | States.posAsymp φ =>
+    simp
+
+lemma superCommute_anPart_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.States) :
+    ⟨anPart (StateAlgebra.ofState φ), ofStateList φs⟩ₛca = anPart (StateAlgebra.ofState φ) * ofStateList φs -
+    pairedSign (𝓕.statesStatistic φ)
+    (FieldStatistic.ofList 𝓕.statesStatistic φs) • ofStateList φs * anPart (StateAlgebra.ofState φ) := by
+  match φ with
+  | States.negAsymp φ =>
+    simp
+  | States.position φ =>
+    simp
+    rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
+    simp [crAnStatistics]
+  | States.posAsymp φ =>
+    simp
+    rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
+    simp [crAnStatistics]
+
+lemma superCommute_crPart_ofState (φ φ' : 𝓕.States) :
+    ⟨crPart (StateAlgebra.ofState φ), ofState φ'⟩ₛca = crPart (StateAlgebra.ofState φ) * ofState φ' -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    ofState φ' * crPart (StateAlgebra.ofState φ) := by
+  rw [← ofStateList_singleton, superCommute_crPart_ofStatesList]
+  simp
+
+lemma superCommute_anPart_ofState (φ φ' : 𝓕.States) :
+    ⟨anPart (StateAlgebra.ofState φ), ofState φ'⟩ₛca = anPart (StateAlgebra.ofState φ) * ofState φ' -
+    pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic φ') •
+    ofState φ' * anPart (StateAlgebra.ofState φ) := by
+  rw [← ofStateList_singleton, superCommute_anPart_ofStatesList]
+  simp
 
 lemma superCommute_ofCrAnState (φ φ' :  𝓕.CrAnStates) : ⟨ofCrAnState φ, ofCrAnState φ'⟩ₛca =
     ofCrAnState φ * ofCrAnState φ'  - pairedSign (𝓕.crAnStatistics φ)

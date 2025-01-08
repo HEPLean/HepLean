@@ -55,8 +55,29 @@ noncomputable section
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
   Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderProp φs
 
+lemma timeOrderSign_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ):
+    timeOrderSign [φ, ψ] = 1 := by
+  simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
+  exact fun h' => False.elim (h' h)
+
+lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ):
+    timeOrderSign [φ, ψ] = FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) := by
+  simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
+  rw [if_neg h]
+  simp [FieldStatistic.pairedSign_eq_if]
+
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
   List.insertionSort 𝓕.timeOrderProp φs
+
+lemma timeOrderList_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ):
+    timeOrderList [φ, ψ] = [φ, ψ] := by
+  simp [timeOrderList]
+  exact fun h' => False.elim (h' h)
+
+lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ):
+    timeOrderList [φ, ψ] = [ψ, φ] := by
+  simp [timeOrderList]
+  exact fun h' => False.elim (h h')
 
 @[simp]
 lemma timeOrderList_nil : timeOrderList (𝓕 := 𝓕) [] = [] := by
@@ -82,6 +103,34 @@ lemma timeOrder_ofList_nil : timeOrder (𝓕 := 𝓕) (ofList []) = 1 := by
 lemma timeOrder_ofList_singleton (φ : 𝓕.States) : timeOrder (ofList [φ]) = ofList [φ] := by
   rw [timeOrder_ofList]
   simp [timeOrderSign, timeOrderList]
+
+lemma timeOrder_ofState_ofState_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
+    timeOrder (ofState φ * ofState ψ) = ofState φ * ofState ψ := by
+  rw [← ofList_singleton, ← ofList_singleton, ← ofList_append]
+  rw [timeOrder_ofList]
+  simp
+  rw [timeOrderSign_pair_ordered h, timeOrderList_pair_ordered h]
+  simp
+
+lemma timeOrder_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h :¬ timeOrderProp φ ψ) :
+    timeOrder (ofState φ * ofState ψ) =
+    FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) •
+    ofState ψ * ofState φ := by
+  rw [← ofList_singleton, ← ofList_singleton, ← ofList_append]
+  rw [timeOrder_ofList]
+  simp
+  rw [timeOrderSign_pair_not_ordered h, timeOrderList_pair_not_ordered h]
+  simp [← ofList_append]
+
+lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (h :¬ timeOrderProp φ ψ) :
+    timeOrder (ofState φ * ofState ψ) =
+    FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) •
+    timeOrder (ofState ψ * ofState φ) := by
+  rw [timeOrder_ofState_ofState_not_ordered h]
+  rw [timeOrder_ofState_ofState_ordered ]
+  simp
+  have hx := IsTotal.total (r := timeOrderProp) ψ φ
+  simp_all
 
 end StateAlgebra
 end
