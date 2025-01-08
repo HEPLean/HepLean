@@ -25,7 +25,7 @@ def CreateAnnihilateSect (φs : List 𝓕.States) : Type :=
   -- Π i, 𝓕.statesToCreateAnnihilateType (φs.get i)
 
 namespace CreateAnnihilateSect
-
+open FieldStatistic
 variable {𝓕 : FieldStruct} {φs : List 𝓕.States}
 
 @[simp]
@@ -46,7 +46,7 @@ lemma head_state_eq {φ : 𝓕.States} : (ψs : CreateAnnihilateSect (φ :: φs)
     exact h.1
 
 lemma statistics_eq_state_statistics (ψs : CreateAnnihilateSect φs) :
-    FieldStatistic.ofList 𝓕.crAnStatistics ψs.1 = FieldStatistic.ofList 𝓕.statesStatistic φs := by
+    (𝓕 |>ₛ ψs.1) = FieldStatistic.ofList 𝓕.statesStatistic φs := by
   erw [FieldStatistic.ofList_eq_prod, FieldStatistic.ofList_eq_prod, crAnStatistics]
   rw [← List.map_comp_map, Function.comp_apply, ψs.2]
 

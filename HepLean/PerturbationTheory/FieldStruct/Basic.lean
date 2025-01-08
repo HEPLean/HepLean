@@ -48,6 +48,9 @@ def statesToField : 𝓕.States → 𝓕.Fields
 /-- The statistics associated to a state. -/
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 
-def listStatistics (φs : List 𝓕.States) : FieldStatistic := (List.map 𝓕.statesStatistic φs).prod
+scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => (statesStatistic 𝓕) φ
+
+scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => FieldStatistic.ofList
+    (statesStatistic 𝓕) φ
 
 end FieldStruct

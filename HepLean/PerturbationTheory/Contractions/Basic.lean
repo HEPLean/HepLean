@@ -287,6 +287,41 @@ lemma toCenterTerm_center (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     exact OperatorMap.superCommute_ofList_singleton_ι_center (q := fun i => q i.1)
       (le := le) F (S.𝓑p a) ⟨aux'[↑n], x.head⟩
 
+/-!
+
+## Inserting
+
+-/
+def eraseIdxFromUncontracted : {φs : List 𝓕} → Contractions φs → (n : ℕ) → List 𝓕
+  | [], ⟨[], ContractionsAux.nil⟩, _ => []
+  | _ :: _, ⟨_, .cons (φsᵤₙ := aux) n _⟩, 0 => aux
+  | φ :: _, ⟨_, .cons (φsᵤₙ := aux) none c⟩, n + 1 => φ :: eraseIdxFromUncontracted ⟨aux, c⟩ n
+  | φ :: _, ⟨_, .cons (φsᵤₙ := aux) (some m) c⟩, n + 1 =>
+    if m.val = n then
+      φ :: eraseIdxFromUncontracted ⟨aux, c⟩ n
+    else eraseIdxFromUncontracted ⟨aux, c⟩ n
+
+def eraseIdx : {φs : List 𝓕} →  Contractions φs → (n : ℕ) → Contractions (List.eraseIdx φs n)
+  | [], ⟨[], ContractionsAux.nil⟩, _ => ⟨[], ContractionsAux.nil⟩
+  | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) x c⟩, 0 => ⟨aux, c⟩
+  | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) none c⟩, n + 1 =>
+    ⟨φ :: (eraseIdx ⟨aux, c⟩ n).1, ContractionsAux.cons none (eraseIdx ⟨aux, c⟩ n).2⟩
+  | φ :: φs, ⟨_, .cons (φsᵤₙ := aux) (some m) c⟩, n + 1 =>
+    if m.val = n then
+      ⟨φ :: (eraseIdx ⟨aux, c⟩ n).1 , ContractionsAux.cons none (eraseIdx ⟨aux, c⟩ n).2⟩
+    else
+     let m' : Fin (eraseIdx ⟨aux, c⟩ n).fst.length := ⟨
+      if m.val < n then m.val else m.val - 1, by
+      simp
+      rw [ List.length_eraseIdx]
+      ⟩
+     ⟨(eraseIdx ⟨aux, c⟩ n).1, ContractionsAux.cons (some (by sorry)) (eraseIdx ⟨aux, c⟩ n).2⟩
+
+def insertIdxEquiv (φ : 𝓕) (φs : List 𝓕) (n : ℕ) :
+    Contractions (List.insertIdx n φ φs) ≃ (c : Contractions φs) × Option (Fin c.uncontracted.length) where
+  toFun c := ⟨List.insertIdx n φ φs, c.1⟩
+  invFun c := ⟨List.eraseIdx n c.uncontracted, c.1⟩
+
 end Contractions
 
 end Wick

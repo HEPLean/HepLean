@@ -30,6 +30,9 @@ structure OperatorAlgebra where
     (_ : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
     (_ : 𝓕.crAnStatesToCreateAnnihilate φa' = CreateAnnihilate.annihilate),
     crAnF (superCommute (ofCrAnState φa) (ofCrAnState φa')) = 0
+  superCommute_different_statistics : ∀ (φ φ' : 𝓕.CrAnStates)
+    (_ : ¬ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φ')),
+    crAnF (superCommute (ofCrAnState φ) (ofCrAnState φ')) = 0
 
 namespace OperatorAlgebra
 open FieldStatistic
@@ -113,7 +116,7 @@ lemma crAnF_superCommute_crPart_crPart (φ ψ : 𝓕.States) :
 lemma crAnF_superCommute_ofCrAnState_ofCrAnList_eq_sum (φ : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates) :
     𝓞.crAnF ⟨ofCrAnState φ, ofCrAnList φs⟩ₛca
     = 𝓞.crAnF (∑ (n : Fin φs.length), pairedSign (𝓕.crAnStatistics φ)
-    (FieldStatistic.ofList 𝓕.crAnStatistics (List.take n φs)) •
+    (𝓕 |>ₛ (List.take n φs)) •
     ⟨ofCrAnState φ, ofCrAnState (φs.get n)⟩ₛca * ofCrAnList (φs.eraseIdx n)) := by
   conv_lhs =>
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_eq_sum]

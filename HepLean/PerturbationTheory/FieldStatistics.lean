@@ -196,31 +196,34 @@ def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
     <;> fin_cases b <;> fin_cases c
     <;> simp
 
+scoped[FieldStatistic] notation "𝓢(" a "," b ")" => pairedSign a b
+
 @[simp]
-lemma pairedSign_bosonic (a : FieldStatistic) : pairedSign a bosonic = 1 := by
+lemma pairedSign_bosonic (a : FieldStatistic) : 𝓢(a, bosonic) = 1 := by
   fin_cases a <;> rfl
 
 @[simp]
-lemma bosonic_pairedSign (a : FieldStatistic) : pairedSign bosonic a = 1 := by
+lemma bosonic_pairedSign (a : FieldStatistic) : 𝓢(bosonic, a) = 1 := by
   fin_cases a <;> rfl
 
-lemma pairedSign_symm (a b : FieldStatistic) : pairedSign a b = pairedSign b a := by
+lemma pairedSign_symm (a b : FieldStatistic) : 𝓢(a, b) = 𝓢(b, a) := by
   fin_cases a <;> fin_cases b <;> rfl
 
 lemma pairedSign_eq_if (a b : FieldStatistic) :
-    pairedSign a b = if a = fermionic ∧ b = fermionic then - 1 else 1 := by
+    𝓢(a, b) = if a = fermionic ∧ b = fermionic then - 1 else 1 := by
   fin_cases a <;> fin_cases b <;> rfl
 
-lemma pairedSign_mul_self (a b : FieldStatistic) : pairedSign a b * pairedSign a b = 1 := by
+@[simp]
+lemma pairedSign_mul_self (a b : FieldStatistic) : 𝓢(a, b) * 𝓢(a, b) = 1 := by
   fin_cases a <;> fin_cases b <;> simp [pairedSign]
 
 @[simp]
-lemma pairedSign_mul_self_swap (a b : FieldStatistic) : pairedSign a b * pairedSign b a = 1 := by
+lemma pairedSign_mul_self_swap (a b : FieldStatistic) : 𝓢(a, b) * 𝓢(b, a) = 1 := by
   fin_cases a <;> fin_cases b <;> simp [pairedSign]
 
 lemma pairedSign_ofList_cons (a : FieldStatistic)
       (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
-    pairedSign a (ofList s (φ :: φs)) = pairedSign a (s φ) * pairedSign a (ofList s φs) := by
+    𝓢(a, ofList s (φ :: φs)) = 𝓢(a, s φ) * 𝓢(a, ofList s φs) := by
   rw [ofList_cons_eq_mul, map_mul]
 
 end FieldStatistic

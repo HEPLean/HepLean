@@ -37,7 +37,6 @@ noncomputable instance :  (φ φ' : 𝓕.States) → Decidable (timeOrderProp φ
   | States.negAsymp _, States.position _ => isFalse (fun a => a)
   | States.negAsymp _, States.negAsymp _ => isTrue True.intro
 
-
 /-- Time ordering is total. -/
 instance : IsTotal 𝓕.States 𝓕.timeOrderProp where
   total a b := by
@@ -52,6 +51,8 @@ instance : IsTrans 𝓕.States 𝓕.timeOrderProp where
 
 noncomputable section
 
+open FieldStatistic
+
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
   Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderProp φs
 
@@ -61,7 +62,7 @@ lemma timeOrderSign_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ)
   exact fun h' => False.elim (h' h)
 
 lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ):
-    timeOrderSign [φ, ψ] = FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) := by
+    timeOrderSign [φ, ψ] = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) := by
   simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
   rw [if_neg h]
   simp [FieldStatistic.pairedSign_eq_if]
@@ -127,7 +128,7 @@ lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (
     FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) •
     timeOrder (ofState ψ * ofState φ) := by
   rw [timeOrder_ofState_ofState_not_ordered h]
-  rw [timeOrder_ofState_ofState_ordered ]
+  rw [timeOrder_ofState_ofState_ordered]
   simp
   have hx := IsTotal.total (r := timeOrderProp) ψ φ
   simp_all
