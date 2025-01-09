@@ -251,6 +251,11 @@ def normalOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
 lemma normalOrderList_nil : normalOrderList (𝓕 := 𝓕) [] = [] := by
   simp [normalOrderList]
 
+@[simp]
+lemma normalOrderList_statistics (φs : List 𝓕.CrAnStates) :
+    (𝓕 |>ₛ (normalOrderList φs)) = 𝓕 |>ₛ φs := by
+  simp [normalOrderList, List.insertionSort]
+
 lemma orderedInsert_create (φ : 𝓕.CrAnStates)
     (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.create) :
     (φs : List 𝓕.CrAnStates) → List.orderedInsert normalOrderProp φ φs = φ :: φs
@@ -957,6 +962,58 @@ lemma normalOrder_ofState_mul_ofState (φ φ' : 𝓕.States) :
   simp
   abel
 
+lemma ofCrAnList_superCommute_normalOrder_ofCrAnList (φs φs' : List 𝓕.CrAnStates) :
+    ⟨ofCrAnList φs, normalOrder (ofCrAnList φs')⟩ₛca =
+    ofCrAnList φs * normalOrder (ofCrAnList φs') -
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • normalOrder (ofCrAnList φs') * ofCrAnList φs := by
+  simp [normalOrder_ofCrAnList, map_smul, superCommute_ofCrAnList, ofCrAnList_append,
+    smul_sub, smul_smul, mul_comm]
+
+lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs  : List 𝓕.CrAnStates)
+    (φs' : List 𝓕.States ): ⟨ofCrAnList φs, normalOrder (ofStateList φs')⟩ₛca =
+    ofCrAnList φs * normalOrder (ofStateList φs') -
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • normalOrder (ofStateList φs') * ofCrAnList φs := by
+  rw [ofStateList_sum, map_sum, Finset.mul_sum,  Finset.smul_sum, Finset.sum_mul,
+    ← Finset.sum_sub_distrib, map_sum]
+  congr
+  funext n
+  rw [ofCrAnList_superCommute_normalOrder_ofCrAnList,
+    CreateAnnihilateSect.statistics_eq_state_statistics]
+
+lemma ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute (φs  : List 𝓕.CrAnStates)
+    (φs' : List 𝓕.States ):
+    ofCrAnList φs * normalOrder (ofStateList φs') =
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • normalOrder (ofStateList φs') * ofCrAnList φs
+    + ⟨ofCrAnList φs, normalOrder (ofStateList φs')⟩ₛca  := by
+  rw [ofCrAnList_superCommute_normalOrder_ofStateList]
+  simp
+
+lemma ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.CrAnStates)
+    (φs' : List 𝓕.States ):
+    ofCrAnState φ * normalOrder (ofStateList φs') =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • normalOrder (ofStateList φs') * ofCrAnState φ
+    + ⟨ofCrAnState φ, normalOrder (ofStateList φs')⟩ₛca  := by
+  rw [← ofCrAnList_singleton, ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute]
+  simp [ofCrAnList_singleton]
+
+lemma anPart_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.States)
+    (φs' : List 𝓕.States ):
+    anPart (StateAlgebra.ofState φ) * normalOrder (ofStateList φs') =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • normalOrder (ofStateList φs' * anPart (StateAlgebra.ofState φ))
+    + ⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φs')⟩ₛca  := by
+  rw [normalOrder_mul_anPart]
+  match φ with
+  | .negAsymp φ =>
+    simp
+  | .position φ =>
+    simp
+    rw [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute]
+    simp [crAnStatistics]
+  | .posAsymp φ =>
+    simp
+    rw [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute]
+    simp [crAnStatistics]
+
 end
 
 end CrAnAlgebra
@@ -1146,7 +1203,7 @@ lemma crAnF_normalOrder_ofCrAnState_ofStatesList_swap (φ  : 𝓕.CrAnStates)
 lemma crAnF_normalOrder_anPart_ofStatesList_swap  (φ  : 𝓕.States)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) =
-    (FieldStatistic.pairedSign (𝓕.statesStatistic φ)) (FieldStatistic.ofList 𝓕.statesStatistic φ') •
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (ofStateList φ' * anPart (StateAlgebra.ofState φ))) := by
   match φ with
   | .negAsymp φ =>
@@ -1201,14 +1258,73 @@ lemma crAnF_ofCrAnState_superCommute_normalOrder_ofCrAnList_eq_sum (φ  : 𝓕.C
   · erw [𝓞.superCommute_different_statistics _ _ hs]
     simp
 
+lemma crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum (φ  : 𝓕.CrAnStates)
+      (φs : List 𝓕.States) : 𝓞.crAnF (⟨ofCrAnState φ, normalOrder (ofStateList φs)⟩ₛca) =
+      ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
+      𝓞.crAnF (⟨ofCrAnState φ, ofState φs[n]⟩ₛca)
+      * 𝓞.crAnF (normalOrder (ofStateList (φs.eraseIdx n))) := by
+  conv_lhs =>
+    rw [ofStateList_sum, map_sum, map_sum, map_sum]
+    enter [2, s]
+    rw [crAnF_ofCrAnState_superCommute_normalOrder_ofCrAnList_eq_sum,
+      CreateAnnihilateSect.sum_over_length]
+    enter [2, n]
+    rw [CreateAnnihilateSect.take_statistics_eq_take_state_statistics, smul_mul_assoc]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun n _ => ?_)
+  simp [← Finset.smul_sum, CreateAnnihilateSect.sum_eraseIdxEquiv n _ n.prop]
+  conv_lhs =>
+    enter [2, 2, n]
+    rw [← Finset.mul_sum]
+  rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofState, ← map_sum, ← map_sum, ← ofStateList_sum]
 
+
+lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ  : 𝓕.States)
+      (φs : List 𝓕.States) : 𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φs)⟩ₛca) =
+      ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
+      𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState φs[n]⟩ₛca)
+      * 𝓞.crAnF (normalOrder (ofStateList (φs.eraseIdx n))) := by
+  match φ with
+  | .negAsymp φ =>
+    simp
+  | .position φ =>
+    simp
+    rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
+    simp [crAnStatistics]
+  | .posAsymp φ =>
+    simp
+    rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
+    simp [crAnStatistics]
 
 lemma crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute (φ  : 𝓕.States)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (anPart (StateAlgebra.ofState φ) * normalOrder (ofStateList φ')) =
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) +
     𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φ')⟩ₛca) := by
-  sorry
+  rw [anPart_mul_normalOrder_ofStateList_eq_superCommute]
+  simp
+  congr
+  rw [crAnF_normalOrder_anPart_ofStatesList_swap]
+
+lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute (φ  : 𝓕.States)
+    (φ' : List 𝓕.States) :
+    𝓞.crAnF (ofState φ * normalOrder (ofStateList φ')) =
+    𝓞.crAnF (normalOrder (ofState φ * ofStateList φ')) +
+    𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φ')⟩ₛca) := by
+  conv_lhs => rw [ofState_eq_crPart_add_anPart]
+  rw [add_mul, map_add, crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute, ← add_assoc,
+    ← normalOrder_crPart_mul, ← map_add]
+  conv_lhs =>
+    lhs
+    rw [← map_add, ← add_mul, ← ofState_eq_crPart_add_anPart]
+
+
+lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ  : 𝓕.States)
+    (φ' : List 𝓕.States) :
+    𝓞.crAnF (ofState φ * normalOrder (ofStateList φ')) =
+    sorry := by
+  rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute]
+  rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
 
 end OperatorAlgebra
 

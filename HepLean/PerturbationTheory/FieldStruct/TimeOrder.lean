@@ -133,6 +133,7 @@ lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (
   have hx := IsTotal.total (r := timeOrderProp) ψ φ
   simp_all
 
+
 end StateAlgebra
 end
 end FieldStruct

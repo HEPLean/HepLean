@@ -41,6 +41,19 @@ lemma take_eraseIdx_same {I : Type} :
     simp only [List.eraseIdx_cons_succ, List.take_succ_cons, List.cons.injEq, true_and]
     exact take_eraseIdx_same n as
 
+lemma drop_eraseIdx_succ {I : Type} :
+    (n : ℕ) → (r : List I) → (hn : n < r.length) →
+    r[n] :: List.drop n (List.eraseIdx r n) = List.drop n r
+  | 0, _, _=>  by
+    simp
+    rw [@List.getElem_zero]
+    exact List.head_cons_tail _ _
+  | n+1, [], hn => by simp at hn
+  | n+1, a::as, hn => by
+    simp  [List.eraseIdx_cons_succ, List.drop_succ_cons, List.cons.injEq, true_and]
+    refine drop_eraseIdx_succ n as _
+
+
 lemma take_insert_gt {I : Type} (i : I) :
     (n m : ℕ) → (h : n < m) → (r : List I) →
     List.take n (List.insertIdx m i r) = List.take n r
