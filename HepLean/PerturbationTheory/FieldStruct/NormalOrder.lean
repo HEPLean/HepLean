@@ -1159,6 +1159,18 @@ lemma crAnF_normalOrder_superCommute_eq_zero_mul
   simp
 
 @[simp]
+lemma crAnF_normalOrder_superCommute_eq_zero_mul_right
+    (b c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (superCommute d c * b)) = 0 := by
+  rw [← crAnF_normalOrder_superCommute_eq_zero_mul 1 b c d]
+  simp
+
+@[simp]
+lemma crAnF_normalOrder_superCommute_eq_zero_mul_left
+    (a c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (a * superCommute d c)) = 0 := by
+  rw [← crAnF_normalOrder_superCommute_eq_zero_mul a 1 c d]
+  simp
+
+@[simp]
 lemma crAnF_normalOrder_superCommute_eq_zero
     (c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (superCommute d c)) = 0 := by
   rw [← crAnF_normalOrder_superCommute_eq_zero_mul 1 1 c d]
@@ -1319,12 +1331,36 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute (φ  : 𝓕.Sta
     rw [← map_add, ← add_mul, ← ofState_eq_crPart_add_anPart]
 
 
+noncomputable def contractMemList (φ  : 𝓕.States) (φs : List 𝓕.States) (n : Option (Fin φs.length))  :
+  𝓞.A :=
+  match n with
+  | none => 1
+  | some n => 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
+        𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState φs[n]⟩ₛca)
+
 lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ  : 𝓕.States)
-    (φ' : List 𝓕.States) :
-    𝓞.crAnF (ofState φ * normalOrder (ofStateList φ')) =
-    sorry := by
+    (φs : List 𝓕.States) :
+    𝓞.crAnF (ofState φ * normalOrder (ofStateList φs)) =
+    ∑ n : Option (Fin φs.length),
+      contractMemList φ φs n *
+      𝓞.crAnF (normalOrder (ofStateList (HepLean.List.optionEraseZ φs φ n))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute]
-  rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
+  rw [crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum]
+  simp [contractMemList]
+  rfl
+
+lemma crAnF_ofState_normalOrder_insert (φ  : 𝓕.States) (φs : List 𝓕.States) (k : Fin φs.length.succ) :
+    𝓞.crAnF (normalOrder (ofStateList (φ :: φs))) =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs.take k) • 𝓞.crAnF (normalOrder (ofStateList (φs.insertIdx k φ))) := by
+  have hl : φs.insertIdx k φ =  φs.take k ++ [φ] ++  φs.drop k := by
+    rw [Wick.insertIdx_eq_take_drop]
+    simp
+  rw [hl]
+  rw [ofStateList_append, ofStateList_append]
+  rw [ofStateList_mul_ofStateList_eq_superCommute, add_mul]
+  simp [smul_smul]
+  rw [← ofStateList_append, ← ofStateList_append]
+  simp
 
 end OperatorAlgebra
 

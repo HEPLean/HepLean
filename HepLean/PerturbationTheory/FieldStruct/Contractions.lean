@@ -3,9 +3,11 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.OperatorAlgebra
+import HepLean.PerturbationTheory.FieldStruct.NormalOrder
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
+import HepLean.Mathematics.List.InsertIdx
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Finset.Image
 /-!
 
 # Contractions
@@ -18,10 +20,11 @@ variable {𝓕 : FieldStruct}
 
 def ContractionsNat (n : ℕ) : Type :=
   {f : Finset ((Finset (Fin n))) // (∀ a ∈ f, a.card = 2) ∧
-    (∀ a ∈ f, ∀ b ∈ f, ∀ x (_ : x ∈ a) (_ : x ∈ b), a = b)}
+    (∀ a ∈ f, ∀ b ∈ f, a = b ∨ Disjoint a b)}
 
 namespace ContractionsNat
 variable {n : ℕ} (c : ContractionsNat n)
+open HepLean.List
 
 local instance : IsTotal (Fin n × Fin n) (fun a b => a.1 ≤ b.1) where
   total := by
@@ -32,6 +35,14 @@ local instance : IsTrans (Fin n × Fin n) (fun a b => a.1 ≤ b.1) where
   trans := by
     intro a b c ha hb
     exact Fin.le_trans ha hb
+
+def congr : {n m : ℕ} → (h : n = m) → ContractionsNat n ≃ ContractionsNat m
+  | n, .(n), rfl => Equiv.refl _
+
+@[simp]
+lemma congr_refl : c.congr rfl = c := by
+  cases c
+  rfl
 
 def getDual? (i : Fin n) : Option (Fin n) := Fin.find (fun j => {i, j} ∈ c.1)
 
@@ -45,7 +56,8 @@ lemma getDual?_eq_some_iff_mem (i j : Fin n) :
   · intro h
     simp [h]
     intro k hk
-    have hc := c.2.2 _ h _ hk i (by simp) (by simp)
+    have hc := c.2.2 _ h _ hk
+    simp at hc
     have hj : k ∈ ({i, j} : Finset (Fin n)):= by
       simp [hc]
     simp at hj
@@ -56,6 +68,20 @@ lemma getDual?_eq_some_iff_mem (i j : Fin n) :
       simp at hc
     · subst hj
       simp
+
+@[simp]
+lemma getDual?_one_eq_none (c : ContractionsNat 1) (i : Fin 1) : c.getDual? i = none := by
+  by_contra h
+  have hn : (c.getDual? i).isSome := by
+    rw [← Option.not_isSome_iff_eq_none] at h
+    simpa  [- Option.not_isSome, -Option.isNone_iff_eq_none] using h
+  rw [@Option.isSome_iff_exists] at hn
+  obtain ⟨a, hn⟩ := hn
+  rw [getDual?_eq_some_iff_mem] at hn
+  have hc := c.2.1 {i, a} hn
+  fin_cases i
+  fin_cases a
+  simp at hc
 
 @[simp]
 lemma getDual?_get_self_mem (i : Fin n) (h : (c.getDual? i).isSome) :
@@ -98,6 +124,26 @@ lemma getDual?_get_self_neq (i : Fin n) (h : (c.getDual? i).isSome) :
 
 def uncontracted : Finset (Fin n) := Finset.filter (fun i => c.getDual? i = none) (Finset.univ)
 
+lemma congr_uncontracted {n m : ℕ} (c : ContractionsNat n) (h : n = m) :
+    (c.congr h).uncontracted = Finset.map (Fin.castOrderIso h).toEmbedding c.uncontracted := by
+  subst h
+  simp
+
+def uncontractedCongr {c c': ContractionsNat n} (h : c = c') :
+    Option c.uncontracted ≃ Option c'.uncontracted :=
+    Equiv.optionCongr (Equiv.subtypeEquivRight (by rw [h]; simp))
+
+@[simp]
+lemma uncontractedCongr_none {c c': ContractionsNat n} (h : c = c') :
+    (uncontractedCongr h) none = none := by
+  simp [uncontractedCongr]
+
+@[simp]
+lemma uncontractedCongr_some {c c': ContractionsNat n} (h : c = c') (i : c.uncontracted) :
+    (uncontractedCongr h) (some i) = some (Equiv.subtypeEquivRight (by rw [h]; simp) i) := by
+  simp [uncontractedCongr]
+
+
 lemma mem_uncontracted_iff_not_contracted (i : Fin n)  :
     i ∈ c.uncontracted ↔ ∀ p ∈ c.1, i ∉ p := by
   simp [uncontracted, getDual?]
@@ -130,14 +176,10 @@ def erase (c : ContractionsNat n.succ) (i : Fin n.succ) : ContractionsNat n := b
   refine ⟨Finset.filter (fun x => Finset.map i.succAboveEmb x ∈ c.1) Finset.univ, ?_, ?_⟩
   · intro a ha
     simpa using c.2.1 (Finset.map i.succAboveEmb a) (by simpa using ha)
-  · intro a ha b hb x hxa hxb
+  · intro a ha b hb
     simp at ha hb
-    apply (Finset.map_injective i.succAboveEmb)
-    refine c.2.2 _ ha _ hb (i.succAbove x) ?_ ?_
-    · simp
-      use x
-    · simp
-      use x
+    rw [← Finset.disjoint_map i.succAboveEmb, ← (Finset.map_injective i.succAboveEmb).eq_iff]
+    exact c.2.2 _ ha _ hb
 
 lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (j : Fin n) :
     j ∈ (c.erase i).uncontracted ↔
@@ -163,7 +205,8 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
     rcases h with h | h
     · exact h (i.succAbove k)
     · by_contra hn
-      have hc := c.2.2 _ h _ hn (i.succAbove j) (by simp) (by simp)
+      have hc := c.2.2 _ h _ hn
+      simp at hc
       have hi : i ∈ ({i.succAbove j, i.succAbove k} : Finset (Fin n.succ)) := by
         simp [← hc]
       simp at hi
@@ -253,7 +296,7 @@ def insert (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncontracted)
         rw [Finset.mapEmbedding_apply]
         simp
         exact c.2.1 a ha
-  · intro a ha b hb x hxa hxb
+  · intro a ha b hb
     simp [f'] at ha hb
     match j with
     | none =>
@@ -263,78 +306,59 @@ def insert (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncontracted)
       subst ha''
       subst hb''
       simp
-      rw [Finset.mapEmbedding_apply] at hxa hxb
-      simp at hxa hxb
-      obtain ⟨x', hxa', hxa''⟩ := hxa
-      obtain ⟨x'', hxb', hxb''⟩ := hxb
-      have hx : x' = x'' := by
-        subst hxa''
-        exact Fin.succAbove_right_inj.mp (id (Eq.symm hxb''))
-      subst hx
-      exact c.2.2 a' ha' b' hb' x' hxa' hxb'
+      rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply, Finset.disjoint_map]
+      exact c.2.2 a' ha' b' hb'
     | some j =>
       simp_all
-      rcases ha with ha | ha <;>
-        rcases hb with hb | hb
-      · rw [ha, hb]
-      · subst ha
-        simp at hxa
-        rcases hxa with hxa | hxa
-        · subst hxa
-          simp [f] at hb
-          obtain ⟨a', hb', hb''⟩ := hb
-          rw [Finset.mapEmbedding_apply] at hb''
-          subst hb''
-          simp at hxb
-          obtain ⟨a, _, ha⟩ := hxb
-          exact False.elim (Fin.succAbove_ne x a ha)
-        · subst hxa
-          simp [f] at hb
-          obtain ⟨a', hb', hb''⟩ := hb
-          rw [Finset.mapEmbedding_apply] at hb''
-          subst hb''
-          simp at hxb
-          obtain ⟨a, ha2, ha⟩ := hxb
-          have hx : a = j := by exact Fin.succAbove_right_inj.mp ha
-          subst hx
-          exact False.elim (((c.mem_uncontracted_iff_not_contracted j.1).mp j.2) a' hb' ha2)
-      · subst hb
-        simp at hxb
-        rcases hxb with hxb | hxb
-        · subst hxb
-          simp [f] at ha
-          obtain ⟨a', ha', ha''⟩ := ha
-          rw [Finset.mapEmbedding_apply] at ha''
-          subst ha''
-          simp at hxa
-          obtain ⟨a, _, ha⟩ := hxa
-          exact False.elim (Fin.succAbove_ne x a ha)
-        · subst hxb
-          simp [f] at ha
-          obtain ⟨a', ha', ha''⟩ := ha
-          rw [Finset.mapEmbedding_apply] at ha''
-          subst ha''
-          simp at hxa
-          obtain ⟨a, ha2, ha⟩ := hxa
-          have hx : a = j := by exact Fin.succAbove_right_inj.mp ha
-          subst hx
-          exact False.elim (((c.mem_uncontracted_iff_not_contracted j.1).mp j.2) a' ha' ha2)
-      · /- Same as the proof in the none case. -/
+      match ha, hb with
+      | Or.inl ha, Or.inl hb =>
+        rw [ha, hb]
+        simp
+      | Or.inl ha, Or.inr hb =>
+        apply Or.inr
+        subst ha
+        simp
+        simp [f] at hb
+        obtain ⟨a', hb', hb''⟩ := hb
+        subst hb''
+        rw [Finset.mapEmbedding_apply]
+        apply And.intro
+        · simp
+          exact fun x _  => Fin.succAbove_ne i x
+        · simp
+          have hj := j.2
+          rw [mem_uncontracted_iff_not_contracted] at hj
+          intro a ha hja
+          rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at hja
+          subst hja
+          exact False.elim (hj a' hb' ha)
+      | Or.inr ha, Or.inl hb =>
+        apply Or.inr
+        subst hb
+        simp
+        simp [f] at ha
+        obtain ⟨a', ha', ha''⟩ := ha
+        subst ha''
+        rw [Finset.mapEmbedding_apply]
+        apply And.intro
+        · simp
+          exact fun x _ => Fin.succAbove_ne i x
+        · simp
+          have hj := j.2
+          rw [mem_uncontracted_iff_not_contracted] at hj
+          intro a ha hja
+          rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at hja
+          subst hja
+          exact False.elim (hj a' ha' ha)
+      | Or.inr ha, Or.inr hb =>
         simp_all [f]
         obtain ⟨a', ha', ha''⟩ := ha
         obtain ⟨b', hb', hb''⟩ := hb
         subst ha''
         subst hb''
         simp
-        rw [Finset.mapEmbedding_apply] at hxa hxb
-        simp at hxa hxb
-        obtain ⟨x', hxa', hxa''⟩ := hxa
-        obtain ⟨x'', hxb', hxb''⟩ := hxb
-        have hx : x' = x'' := by
-          subst hxa''
-          exact Fin.succAbove_right_inj.mp (id (Eq.symm hxb''))
-        subst hx
-        exact c.2.2 a' ha' b' hb' x' hxa' hxb'
+        rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply, Finset.disjoint_map]
+        exact c.2.2 a' ha' b' hb'
 
 lemma insert_of_isSome (c : ContractionsNat n) (i : Fin n.succ) (j : Option c.uncontracted) (hj : j.isSome) :
     (insert c i j).1 = Insert.insert {i, i.succAbove (j.get hj)}
@@ -344,6 +368,198 @@ lemma insert_of_isSome (c : ContractionsNat n) (i : Fin n.succ) (j : Option c.un
   obtain ⟨j, hj⟩ := hj
   subst hj
   simp
+
+@[simp]
+lemma self_mem_uncontracted_of_insert_none (c : ContractionsNat n) (i : Fin n.succ) :
+    i ∈ (insert c i none).uncontracted := by
+  rw [mem_uncontracted_iff_not_contracted]
+  intro p hp
+  simp [insert] at hp
+  obtain ⟨a, ha, ha'⟩ := hp
+  have hc := c.2.1 a ha
+  rw [@Finset.card_eq_two] at hc
+  obtain ⟨x, y, hxy, ha⟩ := hc
+  subst ha
+  subst ha'
+  rw [Finset.mapEmbedding_apply]
+  simp
+  apply And.intro
+  · exact Fin.ne_succAbove i x
+  · exact Fin.ne_succAbove i y
+
+
+lemma insert_none_getDual?_isNone (c : ContractionsNat n) (i : Fin n.succ) :
+    ((insert c i none).getDual? i).isNone := by
+  have hi : i ∈ (insert c i none).uncontracted := by
+    simp
+  simp [uncontracted] at hi
+  rw [hi]
+  simp
+
+@[simp]
+lemma self_not_mem_uncontracted_of_insert_some (c : ContractionsNat n) (i : Fin n.succ) (j : c.uncontracted) :
+    i ∉ (insert c i (some j)).uncontracted := by
+  rw [mem_uncontracted_iff_not_contracted]
+  simp [insert]
+
+@[simp]
+lemma insert_succAbove_mem_uncontracted_iff (c : ContractionsNat n) (i : Fin n.succ) (j : Fin n) :
+    (i.succAbove j) ∈ (insert c i none).uncontracted ↔ j ∈ c.uncontracted := by
+  rw [mem_uncontracted_iff_not_contracted, mem_uncontracted_iff_not_contracted]
+  simp [insert]
+  apply Iff.intro
+  · intro h p hp
+    have hp' := h p hp
+    have hc := c.2.1 p hp
+    rw [Finset.card_eq_two] at hc
+    obtain ⟨x, y, hxy, hp⟩ := hc
+    subst hp
+    rw [Finset.mapEmbedding_apply] at hp'
+    simp at hp'
+    simp
+    exact And.intro (fun a => hp'.1 (congrArg i.succAbove a))
+      (fun a => hp'.2 (congrArg i.succAbove a))
+  · intro h p hp
+    have hc := c.2.1 p hp
+    rw [Finset.card_eq_two] at hc
+    obtain ⟨x, y, hxy, hp⟩ := hc
+    subst hp
+    rw [Finset.mapEmbedding_apply]
+    simp
+    have hp' := h {x, y} hp
+    simp at hp'
+    apply And.intro
+      (fun a => hp'.1 (i.succAbove_right_injective a))
+      (fun a => hp'.2 (i.succAbove_right_injective a))
+
+@[simp]
+lemma mem_uncontracted_insert_none_iff (c : ContractionsNat n) (i : Fin n.succ) (k : Fin n.succ) :
+    k ∈ (insert c i none).uncontracted ↔
+    k = i ∨ ∃ j, k = i.succAbove j ∧ j ∈ c.uncontracted := by
+  by_cases hi : k = i
+  · subst hi
+    simp
+  · simp [← Fin.exists_succAbove_eq_iff] at hi
+    obtain ⟨z, hk⟩ := hi
+    subst hk
+    have hn :  ¬ i.succAbove z = i := by exact Fin.succAbove_ne i z
+    simp [hn]
+    apply Iff.intro
+    · intro h
+      exact  ⟨z, rfl, h⟩
+    · intro h
+      obtain ⟨j, hk⟩ := h
+      have hjk : z = j := Fin.succAbove_right_inj.mp hk.1
+      subst hjk
+      exact hk.2
+
+lemma insert_none_uncontracted (c : ContractionsNat n) (i : Fin n.succ) :
+    (insert c i none).uncontracted = Insert.insert i (c.uncontracted.map i.succAboveEmb) := by
+  ext a
+  simp
+  apply Iff.intro
+  · intro a_1
+    cases a_1 with
+    | inl h =>
+      subst h
+      simp_all only [true_or]
+    | inr h_1 =>
+      obtain ⟨w, h⟩ := h_1
+      obtain ⟨left, right⟩ := h
+      subst left
+      apply Or.inr
+      apply Exists.intro
+      · apply And.intro
+        on_goal 2 => {rfl
+        }
+        · simp_all only
+  · intro a_1
+    cases a_1 with
+    | inl h =>
+      subst h
+      simp_all only [true_or]
+    | inr h_1 =>
+      obtain ⟨w, h⟩ := h_1
+      obtain ⟨left, right⟩ := h
+      subst right
+      apply Or.inr
+      apply Exists.intro
+      · apply And.intro
+        on_goal 2 => {exact left
+        }
+        · simp_all only
+
+@[simp]
+lemma mem_uncontracted_insert_some_iff (c : ContractionsNat n) (i : Fin n.succ)
+    (k : Fin n.succ) (j : c.uncontracted) :
+    k ∈ (insert c i (some j)).uncontracted ↔
+    ∃ z, k = i.succAbove z ∧ z ∈ c.uncontracted ∧ z ≠ j := by
+  by_cases hki : k = i
+  · subst hki
+    simp
+    exact fun x hx => False.elim (Fin.ne_succAbove k x hx)
+  · simp [← Fin.exists_succAbove_eq_iff] at hki
+    obtain ⟨z, hk⟩ := hki
+    subst hk
+    by_cases hjz : j = z
+    · subst hjz
+      rw [mem_uncontracted_iff_not_contracted]
+      simp [insert]
+      intro x
+      rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)]
+      exact fun a _a => a.symm
+    · apply Iff.intro
+      · intro h
+        use z
+        simp
+        refine And.intro ?_ (fun a => hjz a.symm)
+        rw [mem_uncontracted_iff_not_contracted]
+        intro p hp
+        rw [mem_uncontracted_iff_not_contracted] at h
+        simp [insert] at h
+        have hc := h.2 p hp
+        rw [Finset.mapEmbedding_apply] at hc
+        exact (Finset.mem_map' (i.succAboveEmb)).mpr.mt hc
+      · intro h
+        obtain ⟨z', hz'1, hz'⟩ := h
+        rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at hz'1
+        subst hz'1
+        rw [mem_uncontracted_iff_not_contracted]
+        simp [insert]
+        apply And.intro
+        · rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)]
+          exact And.intro (Fin.succAbove_ne i z) (fun a => hjz a.symm)
+        · rw [mem_uncontracted_iff_not_contracted] at hz'
+          exact fun a ha hc => hz'.1 a ha ((Finset.mem_map' (i.succAboveEmb)).mp hc)
+
+lemma insert_some_uncontracted  (c : ContractionsNat n) (i : Fin n.succ) (j : c.uncontracted) :
+    (insert c i (some j)).uncontracted = (c.uncontracted.erase j).map i.succAboveEmb := by
+  ext a
+  simp
+  apply Iff.intro
+  · intro h
+    obtain ⟨z, h1, h2, h3⟩ := h
+    subst h1
+    rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)]
+    simp [h3]
+    use z
+  · intro h
+    obtain ⟨z, h1, h2⟩ := h.2
+    use z
+    subst h2
+    simp
+    obtain ⟨a, ha1 , ha2⟩ := h.2
+    rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at ha2
+    subst ha2
+    simp_all
+    rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at h
+    exact h.1
+
+@[simp]
+lemma insert_some_getDual?_eq (c : ContractionsNat n) (i : Fin n.succ) (j : c.uncontracted) :
+    (insert c i (some j)).getDual? i = some (i.succAbove j) := by
+  rw [getDual?_eq_some_iff_mem]
+  simp [insert]
 
 @[simp]
 lemma insert_erase (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncontracted)) :
@@ -392,8 +608,11 @@ lemma insert_erase (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncon
 
 open HepLean.Fin
 
-def getDualErase (c : ContractionsNat n.succ.succ) (i : Fin n.succ.succ) :
+def getDualErase {n : ℕ} (c : ContractionsNat n.succ) (i : Fin n.succ) :
     Option ((erase c i).uncontracted) := by
+  match n with
+  | 0 => exact none
+  | Nat.succ n =>
   refine if hj : (c.getDual? i).isSome then some ⟨(predAboveI i ((c.getDual? i).get hj)), ?_⟩
     else none
   rw [mem_erase_uncontracted_iff]
@@ -405,14 +624,68 @@ def getDualErase (c : ContractionsNat n.succ.succ) (i : Fin n.succ.succ) :
 
 
 @[simp]
-lemma getDualErase_isSome_iff_getDual?_isSome (c : ContractionsNat n.succ.succ) (i : Fin n.succ.succ) :
+lemma getDualErase_isSome_iff_getDual?_isSome (c : ContractionsNat n.succ) (i : Fin n.succ) :
      (c.getDualErase i).isSome ↔ (c.getDual? i).isSome := by
-  simp [getDualErase]
+  match n with
+  | 0 =>
+    fin_cases i
+    simp [getDualErase]
+
+  | Nat.succ n =>
+    simp [getDualErase]
 
 
 @[simp]
-lemma erase_insert (c : ContractionsNat n.succ.succ) (i : Fin n.succ.succ) :
+lemma getDualErase_one (c : ContractionsNat 1) (i : Fin 1) :
+    c.getDualErase i = none := by
+  fin_cases i
+  simp [getDualErase]
+
+lemma insert_getDualErase (c : ContractionsNat n) (i : Fin n.succ) (j : Option c.uncontracted) :
+    (insert c i j).getDualErase i = uncontractedCongr (c := c) (c' := (c.insert i j).erase i) (by simp) j := by
+  match n with
+  | 0 =>
+    simp [getDualErase, insert]
+    fin_cases j
+    simp
+  | Nat.succ n =>
+  match j with
+  | none =>
+    have hi := insert_none_getDual?_isNone c i
+    simp [getDualErase, hi]
+  | some j =>
+    simp only [Nat.succ_eq_add_one, getDualErase, insert_some_getDual?_eq, Option.isSome_some,
+      ↓reduceDIte, Option.get_some, predAboveI_succAbove, uncontractedCongr_some, Option.some.injEq]
+    rfl
+
+
+@[simp]
+lemma erase_insert (c : ContractionsNat n.succ) (i : Fin n.succ) :
     insert (erase c i) i (getDualErase c i) = c := by
+  match n with
+  | 0 =>
+    apply Subtype.eq
+    simp [getDualErase,  insert]
+    ext a
+    simp
+    apply Iff.intro
+    · intro h
+      simp only [erase, Nat.reduceAdd, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ,
+        true_and] at h
+      obtain ⟨a', ha', ha''⟩ := h
+      subst ha''
+      exact ha'
+    · intro ha
+      obtain ⟨a, ha⟩ := c.mem_not_eq_erase_of_isNone (a := a) i (by simp) ha
+      simp_all only [Nat.succ_eq_add_one, Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none]
+      obtain ⟨left, right⟩ := ha
+      subst right
+      apply Exists.intro
+      · apply And.intro
+        on_goal 2 => {rfl
+        }
+        · simp_all only
+  | Nat.succ n =>
   apply Subtype.eq
   by_cases hi : (c.getDual? i).isSome
   · rw [insert_of_isSome]
@@ -463,500 +736,428 @@ lemma erase_insert (c : ContractionsNat n.succ.succ) (i : Fin n.succ.succ) :
         }
         · simp_all only
 
-
-def length (l : ContractionsNat n) : ℕ := l.val.length
-
-def fstPart : List (Fin n) := (List.unzip c.1).1
-
-lemma fstPart_nodup : c.fstPart.Nodup := by
-  have h1 := c.2.2.2
-  rw [List.nodup_append] at h1
-  exact h1.1
-
-lemma fstPart_length : c.fstPart.length = c.1.length := by
-  simp [fstPart]
-
-lemma fstPart_length_le : c.fstPart.length ≤ n := by
-  rw [fstPart_length]
-  have h1 := List.Nodup.length_le_card c.fstPart_nodup
-  simpa [fstPart] using h1
-
-def sndPart : List (Fin n) := (List.unzip c.1).2
-
-lemma sndPart_nodup : c.sndPart.Nodup := by
-  have h1 := c.2.2.2
-  rw [List.nodup_append] at h1
-  exact h1.2.1
-
-lemma fstPart_disjoint_sndPart : c.fstPart.Disjoint c.sndPart := by
-  have h1 := c.2.2.2
-  rw [List.nodup_append] at h1
-  exact h1.2.2
-
-def flatten : List (Fin n) := c.fstPart ++ c.sndPart
-
-lemma eq_zip_fstPart_sndPart : c.1 = (c.fstPart.zip c.sndPart) := by
-  simp only [fstPart,  sndPart]
-  rw [List.zip_unzip]
-
-lemma fstPart_sorted : c.fstPart.Sorted (· ≤ ·) := by
-  have h1 := c.2.2.1
-  have hl (l : List (Fin n × Fin n)) (h : l.Sorted (fun a b => a.1 ≤ b.1)) :
-    (List.unzip l).1.Sorted (· ≤ ·) := by
-    induction l with
-    | nil => simp
-    | cons a l ih =>
-      simp [List.unzip]
-      simp at h
-      apply And.intro
-      · intro b x
-        exact h.1 b x
-      · simpa using ih h.2
-  exact hl c.1 h1
-
-
-lemma length_lt (l : ContractionsNat n) : l.val.length ≤ n := by
-  rw [← fstPart_length]
-  exact fstPart_length_le l
-
-def unconstrainedList : List (Fin n) :=
-  (List.finRange n).filter (fun i => i ∉ c.flatten)
-
-lemma mem_unconstrainedList_not_fst {i : Fin n} (hi : i ∈ c.unconstrainedList) :
-    ∀ x, (i, x) ∉ c.1:= by
-  simp [unconstrainedList, flatten] at hi
-  by_contra hx
-  simp at hx
-  obtain ⟨x, hx⟩ := hx
-  simp [fstPart] at hi
-  exact hi.1 x hx
-
-lemma mem_unconstrainedList_not_snd {i : Fin n} (hi : i ∈ c.unconstrainedList) :
-    ∀ x, (x, i) ∉ c.1:= by
-  simp [unconstrainedList, flatten] at hi
-  by_contra hx
-  simp at hx
-  obtain ⟨x, hx⟩ := hx
-  simp [sndPart] at hi
-  exact hi.2 x hx
-
-def unconstrainedMap : Fin c.unconstrainedList.length → Fin n :=
-  c.unconstrainedList.get
-
-
-lemma eq_of_mem_fst_eq {x y : Fin n × Fin n} (hi : x.1 = y.1) (hx : x ∈ c.1) (hy : y ∈ c.1) :
-    x = y := by
-  sorry
-
-lemma eq_of_mem_snd_eq {x y : Fin n × Fin n} (hi : x.2 = y.2) (hx : x ∈ c.1) (hy : y ∈ c.1) :
-    x = y := by
-  sorry
 /-!
 
-## getContrPartner
+## extractEquiv
 
 -/
 
-def getContrPartner (i : Fin n) : Option (Fin n) :=
-  let x1 := Option.map Prod.snd (c.1.find? (fun x => x.1 = i))
-  let x2 := Option.map Prod.fst (c.1.find? (fun x => x.2 = i))
-  Option.or x1 x2
-
-lemma getContrPartner_eq_some_of_fst_mem (i j : Fin n) (h : (i, j) ∈ c.1) :
-    c.getContrPartner i = some j := by
-  simp [getContrPartner]
-  apply Or.inl
-  use i
-  have hx : (List.find? (fun x => decide (x.1 = i)) c.1).isSome := by
-    rw [List.find?_isSome]
-    use (i , j)
+lemma extractEquiv_equiv {c1 c2 : (c : ContractionsNat n) × Option c.uncontracted}
+    (h : c1.1 = c2.1) (ho : c1.2 = uncontractedCongr (by rw [h]) c2.2) : c1 = c2 := by
+  cases c1
+  cases c2
+  simp_all
+  simp at h
+  subst h
+  simp [uncontractedCongr]
+  rename_i a
+  match a with
+  | none => simp
+  | some a =>
     simp
-    exact h
-  have hx1 : ∃ x, (List.find? (fun x => decide (x.1 = i)) c.1) = some x := by
-    exact Option.isSome_iff_exists.mp hx
-  obtain ⟨x, hx1⟩ := hx1
-  have hx2 : x.1 = i := by
-    rw [@List.find?_eq_some_iff_getElem] at hx1
-    simpa using hx1.1
-  rw [hx1]
-  simp
-  apply eq_of_mem_fst_eq c
-  simp [hx2]
-  exact List.mem_of_find?_eq_some hx1
-  exact h
+    ext
+    simp
 
-lemma getContrPartner_eq_some_of_snd_mem (i j : Fin n) (h : (i, j) ∈ c.1) :
-    c.getContrPartner j = some i := by
-  simp [getContrPartner]
-  sorry
 
+def extractEquiv (i : Fin n.succ) : ContractionsNat n.succ ≃
+    (c : ContractionsNat n) × Option c.uncontracted  where
+  toFun := fun c => ⟨erase c i, getDualErase c i⟩
+  invFun := fun ⟨c, j⟩ => insert c i j
+  left_inv f := by
+    simp
+  right_inv f := by
+    refine extractEquiv_equiv ?_ ?_
+    simp
+    simp
+    have h1 := insert_getDualErase f.fst i f.snd
+    exact insert_getDualErase _ i _
+
+lemma extractEquiv_symm_none_uncontracted (i : Fin n.succ)  (c : ContractionsNat n) :
+    ((extractEquiv i).symm ⟨c, none⟩).uncontracted =
+    (Insert.insert i (c.uncontracted.map i.succAboveEmb)) := by
+  exact insert_none_uncontracted c i
+
+def nil : ContractionsNat n := ⟨∅, by simp, by simp⟩
+
+instance fintype_zero : Fintype (ContractionsNat 0) where
+  elems := {nil}
+  complete := by
+    intro c
+    simp
+    apply Subtype.eq
+    simp [nil]
+    ext a
+    apply Iff.intro
+    · intro h
+      have hc := c.2.1 a h
+      rw [Finset.card_eq_two] at hc
+      obtain ⟨x, y, hxy, ha⟩ := hc
+      exact Fin.elim0 x
+    · simp
+
+instance fintype_succ : (n : ℕ) → Fintype (ContractionsNat n)
+  | 0 => fintype_zero
+  | Nat.succ n => by
+    letI := fintype_succ n
+    exact Fintype.ofEquiv _ (extractEquiv 0).symm
 
 /-!
 
-## inserting and erasing contractions
+## Uncontracted List
 
 -/
+def uncontractedList : List (Fin n) := List.filter (fun x => x ∈ c.uncontracted) (List.finRange n)
 
-def insertContrList (i j : Fin n) : List (Fin n × Fin n) :=
-  if i < j then
-  List.orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1
-  else
-  List.orderedInsert (fun a b => a.1 ≤ b.1) (j, i) c.1
+lemma uncontractedList_mem_iff (i : Fin n) :
+    i ∈ c.uncontractedList ↔  i ∈ c.uncontracted := by
+  simp [uncontractedList]
 
-lemma insertContrList_pairwise_ordered {i j : Fin n} {k : Fin n × Fin n} (hij : i ≠ j)
-    (hk : k ∈ c.insertContrList i j) : k.1 < k.2 := by
-  simp [insertContrList] at hk
-  split at hk
-  · simp at hk
-    rcases hk with hk | hk
-    · subst hk
-      simp_all
-    · apply c.2.1
-      exact hk
-  · simp at hk
-    rcases hk with hk | hk
-    · subst hk
-      simp_all
-      rename_i hn
-      exact lt_of_le_of_ne hn fun a => hij (id (Eq.symm a))
-    · apply c.2.1
-      exact hk
+lemma congr_uncontractedList {n m : ℕ} (h : n = m) (c : ContractionsNat n) :
+    ((congr h) c).uncontractedList = List.map (finCongr h) c.uncontractedList := by
+  subst h
+  simp [congr]
 
-lemma insertContrList_sorted (i j : Fin n) :
-    (c.insertContrList i j).Sorted (fun a b => a.1 ≤ b.1) := by
-  rw [insertContrList]
-  split
-  · apply List.Sorted.orderedInsert
-    exact c.2.2.1
-  · apply List.Sorted.orderedInsert
-    exact c.2.2.1
-
-lemma insertContrList_nodup_fst {i j : Fin n} (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) : ((List.unzip (c.insertContrList i j)).1).Nodup := by
-  simp [insertContrList]
-  split
-  · have h1 :  (List.map Prod.fst (List.orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1)).Perm
-      (List.map Prod.fst ((i,j)::c.1)) := by
-      refine List.Perm.map Prod.fst ?p
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1
-    apply List.Perm.nodup h1.symm
-    simp
-    apply And.intro
-    · intro x
-      exact mem_unconstrainedList_not_fst c hi x
-    · simpa [fstPart] using c.fstPart_nodup
-  · have h1 :  (List.map Prod.fst (List.orderedInsert (fun a b => a.1 ≤ b.1) (j, i) c.1)).Perm
-      (List.map Prod.fst ((j,i)::c.1)) := by
-      refine List.Perm.map Prod.fst ?_
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (j, i) c.1
-    apply List.Perm.nodup h1.symm
-    simp
-    apply And.intro
-    · intro x
-      exact mem_unconstrainedList_not_fst c hj x
-    · simpa [fstPart] using c.fstPart_nodup
-
-lemma insertContrList_nodup_snd {i j : Fin n} (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) : ((List.unzip (c.insertContrList i j)).2).Nodup := by
-  simp [insertContrList]
-  split
-  · have h1 :  (List.map Prod.snd (List.orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1)).Perm
-      (List.map Prod.snd ((i,j)::c.1)) := by
-      refine List.Perm.map Prod.snd ?p
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1
-    apply List.Perm.nodup h1.symm
-    simp
-    apply And.intro
-    · intro x
-      exact mem_unconstrainedList_not_snd c hj x
-    · simpa [sndPart] using c.sndPart_nodup
-  · have h1 :  (List.map Prod.snd (List.orderedInsert (fun a b => a.1 ≤ b.1) (j, i) c.1)).Perm
-      (List.map Prod.snd ((j,i)::c.1)) := by
-      refine List.Perm.map Prod.snd ?_
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (j, i) c.1
-    apply List.Perm.nodup h1.symm
-    simp
-    apply And.intro
-    · intro x
-      exact mem_unconstrainedList_not_snd c hi x
-    · simpa [sndPart] using c.sndPart_nodup
-
-lemma insertContrList_fst_disjoint_snd {i j : Fin n} (hij : i ≠ j) (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) : ((List.unzip (c.insertContrList i j)).1).Disjoint
-    ((List.unzip (c.insertContrList i j)).2) := by
-  simp [insertContrList]
-  have h1 {i j : Fin n}:  (List.map Prod.fst (List.orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1)).Perm
-      (List.map Prod.fst ((i,j)::c.1)) := by
-      refine List.Perm.map Prod.fst ?_
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1
-  have h2 {i j : Fin n} :  (List.map Prod.snd (List.orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1)).Perm
-      (List.map Prod.snd ((i,j)::c.1)) := by
-      refine List.Perm.map Prod.snd ?_
-      exact List.perm_orderedInsert (fun a b => a.1 ≤ b.1) (i, j) c.1
-  split
-  · apply (List.Perm.disjoint_left h1.symm).mp
-    apply (List.Perm.disjoint_right h2.symm).mp
-    simp
-    apply And.intro
-    · apply And.intro (id (Ne.symm hij))
-      exact fun x => mem_unconstrainedList_not_fst c hj x
-    · apply And.intro
-      · exact fun x => mem_unconstrainedList_not_snd c hi x
-      · simpa [fstPart, sndPart] using c.fstPart_disjoint_sndPart
-  · apply (List.Perm.disjoint_left h1.symm).mp
-    apply (List.Perm.disjoint_right h2.symm).mp
-    simp
-    apply And.intro
-    · apply And.intro hij
-      exact fun x => mem_unconstrainedList_not_fst c hi x
-    · apply And.intro
-      · exact fun x => mem_unconstrainedList_not_snd c hj x
-      · simpa [fstPart, sndPart] using c.fstPart_disjoint_sndPart
-
-lemma insertContrList_nodup {i j : Fin n} (hij : i ≠ j) (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) :
-    ((List.unzip (c.insertContrList i j)).1 ++ (List.unzip (c.insertContrList i j)).2).Nodup := by
-  rw [List.nodup_append]
-  apply And.intro
-  · exact insertContrList_nodup_fst c hi hj
-  · apply And.intro
-    · exact insertContrList_nodup_snd c hi hj
-    · exact insertContrList_fst_disjoint_snd c hij hi hj
-
-def insertContr (i j : Fin n) (hij : i ≠ j) (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) : ContractionsNat n :=
-  ⟨c.insertContrList i j, fun _ => c.insertContrList_pairwise_ordered hij,
-    c.insertContrList_sorted i j, c.insertContrList_nodup hij hi hj⟩
-
-lemma insertContr_symm (i j : Fin n) (hij : i ≠ j) (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) :
-    (c.insertContr i j hij hi hj) = (c.insertContr j i (Ne.symm hij) hj hi) := by
-  simp [insertContr]
-  apply Subtype.eq
-  simp [insertContrList]
-  split_ifs
-  · omega
-  · rfl
-  · rfl
-  · omega
-
-lemma insertContr_mem {i j : Fin n} (hij : i ≠ j) (hi : i ∈ c.unconstrainedList)
-    (hj : j ∈ c.unconstrainedList) :
-    (i, j) ∈ (c.insertContr i j hij hi hj).1 ∨ (j, i) ∈ (c.insertContr i j hij hi hj).1 := by
-  simp [insertContr, insertContrList]
-  split
-  simp
+lemma uncontractedList_get_mem_uncontracted (i : Fin c.uncontractedList.length) :
+    c.uncontractedList.get i ∈ c.uncontracted := by
+  rw [← uncontractedList_mem_iff]
   simp
 
-/-!
-
-## Erasing a contraction
-
--/
-def eraseContrList (i : Fin n) : List (Fin n × Fin n) :=
-  c.1.filter (fun x => x.1 ≠ i ∧ x.2 ≠ i)
-
-lemma eraseContrList_pairwise_ordered {i : Fin n} {j : Fin n × Fin n}
-    (hj : j ∈ c.eraseContrList i) : j.1 < j.2 := by
-  simp [eraseContrList] at hj
-  exact c.2.1 j hj.1
-
-lemma eraseContrList_sorted (i : Fin n) :
-    (c.eraseContrList i).Sorted (fun a b => a.1 ≤ b.1) := by
-  simp [eraseContrList]
+lemma uncontractedList_sorted : List.Sorted (· ≤ ·) c.uncontractedList := by
+  rw [uncontractedList]
   apply List.Sorted.filter
-  exact c.2.2.1
+  rw [← List.ofFn_id]
+  exact Monotone.ofFn_sorted fun ⦃a b⦄ a => a
 
-lemma filter_map_nodup (l : List α) (f : α → β) (h : (List.map f l).Nodup) (p : α → Bool) :
-    ((List.map f (l.filter p)).Nodup) := by
+lemma uncontractedList_nodup : c.uncontractedList.Nodup := by
+  rw [uncontractedList]
+  refine List.Nodup.filter (fun x => decide (x ∈ c.uncontracted)) ?_
+  exact List.nodup_finRange n
+
+lemma uncontractedList_toFinset (c : ContractionsNat n) :
+    c.uncontractedList.toFinset = c.uncontracted := by
+  simp [uncontractedList]
+
+lemma uncontractedList_eq_sort (c : ContractionsNat n) :
+    c.uncontractedList = c.uncontracted.sort (· ≤ ·) := by
+  symm
+  rw [← uncontractedList_toFinset]
+  refine (List.toFinset_sort (α := Fin n) (· ≤ ·) ?_).mpr ?_
+  · exact uncontractedList_nodup c
+  · exact uncontractedList_sorted c
+
+lemma uncontractedList_length_eq_card (c : ContractionsNat n) :
+    c.uncontractedList.length = c.uncontracted.card := by
+  rw [uncontractedList_eq_sort]
+  exact Finset.length_sort fun x1 x2 => x1 ≤ x2
+
+lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· ≤ ·)) (i : Fin n.succ)  :
+    ((List.map i.succAboveEmb l)).Sorted (· ≤ ·) := by
   induction l with
   | nil => simp
-  | cons i l ih =>
-    by_cases hp : p i
-    · rw [List.filter_cons_of_pos hp]
-      simp
-      apply And.intro
-      · intro x hx hf
-        simp at h
-        exact h.1 x hx
-      · simp at h
-        exact ih h.2
-    · rw [List.filter_cons_of_neg hp]
-      simp at h
-      exact ih h.2
+  | cons a l ih =>
+    simp
+    apply And.intro
+    · simp at hl
+      exact fun b hb => Fin.succAbove_le_succAbove_iff.mpr (hl.1 b hb )
+    · simp at hl
+      exact ih hl.2
 
+lemma uncontractedList_succAboveEmb_sorted (c : ContractionsNat n) (i : Fin n.succ) :
+    ((List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
+  apply fin_list_sorted_succAboveEmb_sorted
+  exact uncontractedList_sorted c
 
-lemma filter_map_disjoint (l1 l2 : List α) (f1 f2 : α → β) (h : (List.map f1 l1).Disjoint (List.map f2 l2)) (p : α → Bool) :
-    ((List.map f1 (l1.filter p)).Disjoint (List.map f2 (l2.filter p))) := by
-  induction l1 with
-  | nil => simp
-  | cons i l ih =>
-    by_cases hp : p i
-    · rw [List.filter_cons_of_pos hp]
-      simp
-      apply And.intro
-      · intro x hx hf
-        simp at h
-        exact h.1 x hx
-      · simp at h
-        exact ih h.2
-    · rw [List.filter_cons_of_neg hp]
-      simp at h
-      exact ih h.2
+lemma uncontractedList_succAboveEmb_nodup (c : ContractionsNat n) (i : Fin n.succ) :
+    ((List.map i.succAboveEmb c.uncontractedList)).Nodup := by
+  refine List.Nodup.map ?_ ?_
+  · exact Function.Embedding.injective i.succAboveEmb
+  · exact uncontractedList_nodup c
 
-lemma eraseContrList_nodup (i : Fin n) :
-    ((List.unzip (c.eraseContrList i)).1 ++ (List.unzip (c.eraseContrList i)).2).Nodup := by
-  rw [List.nodup_append]
-  apply And.intro
-  · simp [eraseContrList]
-    have h1 := c.fstPart_nodup
-    simp [fstPart] at h1
-    apply filter_map_nodup
-    exact h1
-  · apply And.intro
-    · simp [eraseContrList]
-      have h1 := c.sndPart_nodup
-      simp [sndPart] at h1
-      apply filter_map_nodup
-      exact h1
-    · simp [eraseContrList]
-      apply filter_map_disjoint
-      simpa [fstPart, sndPart] using c.fstPart_disjoint_sndPart
-
-def eraseContr (i : Fin n) : ContractionsNat n :=
-  ⟨c.eraseContrList i, fun _ => c.eraseContrList_pairwise_ordered,
-    c.eraseContrList_sorted i, c.eraseContrList_nodup i⟩
-
-/-!
-
-## succAbove
--/
-def succAboveList (m : Fin n.succ) : List (Fin n.succ × Fin n.succ) :=
-  List.map (fun (a, b) => (m.succAbove a, m.succAbove b)) c.1
-
-lemma succAboveList_pairwise_ordered {i : Fin n.succ × Fin n.succ}
-    {m : Fin n.succ} (hi : i ∈ c.succAboveList m) :
-    i.1 < i.2 := by
-  simp [succAboveList] at hi
-  obtain ⟨a, b, hab1, hab2⟩ := hi
-  subst hab2
+lemma uncontractedList_succAboveEmb_toFinset (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.map i.succAboveEmb c.uncontractedList).toFinset = (Finset.map i.succAboveEmb c.uncontracted) := by
+  ext a
   simp
-  refine Fin.succAbove_lt_succAbove_iff.mpr ?_
-  exact c.2.1 ⟨a, b⟩ hab1
-
-lemma succAboveList_sorted {m : Fin n.succ} :
-    (c.succAboveList m).Sorted (fun a b => a.1 ≤ b.1) := by
-  have hl (l : List (Fin n × Fin n)) (hl : l.Sorted (fun a b => a.1 ≤ b.1)) :
-    (List.map (fun (a, b) => (m.succAbove a, m.succAbove b)) l).Sorted (fun a b => a.1 ≤ b.1) := by
-    induction l with
-    | nil => simp
-    | cons a l ih =>
-      simp
-      simp at hl
-      apply And.intro
-      · intro x b c d h1 h2 h3
-        subst h2
-        apply Fin.succAbove_le_succAbove_iff.mpr (hl.1 c d h1)
-      · exact ih hl.2
-  exact hl c.1 c.2.2.1
-
-lemma succAboveList_nodup {m : Fin n.succ} :
-    ((List.unzip (c.succAboveList m)).1 ++ (List.unzip (c.succAboveList m)).2).Nodup := by
-  rw [@List.nodup_append]
-  simp [succAboveList]
-  have h1 : (List.map (Prod.fst ∘ fun x => (m.succAbove x.1, m.succAbove x.2)) c.1)
-        = List.map m.succAbove c.fstPart := by
-      simp [fstPart]
-  rw [h1]
-  have h2 : (List.map (Prod.snd ∘ fun x => (m.succAbove x.1, m.succAbove x.2)) c.1)
-        = List.map m.succAbove c.sndPart := by
-      simp [sndPart]
-  rw [h2]
-  apply And.intro
-  · apply List.Nodup.map
-    exact Fin.succAbove_right_injective
-    exact fstPart_nodup c
-  · apply And.intro
-    · apply List.Nodup.map
-      exact Fin.succAbove_right_injective
-      exact sndPart_nodup c
-    · apply List.disjoint_map
-      exact Fin.succAbove_right_injective
-      exact fstPart_disjoint_sndPart c
-
-/-- Adds `m` with no contractions. -/
-def succAbove (m : Fin n.succ) : ContractionsNat n.succ :=
-  ⟨c.succAboveList m, fun _ => c.succAboveList_pairwise_ordered,
-    c.succAboveList_sorted, c.succAboveList_nodup⟩
-
-def succAboveContrList (m : Fin n.succ) (i : Fin c.unconstrainedList.length) :
-    List (Fin n.succ × Fin n.succ) :=
-  if  m.succAbove (c.unconstrainedMap i) < m then
-    List.orderedInsert (fun a b => a.1 ≤ b.1) (m.succAbove (c.unconstrainedMap i), m)
-      (succAboveList c m)
-  else
-    List.orderedInsert (fun a b => a.1 ≤ b.1) (m, m.succAbove (c.unconstrainedMap i))
-      (succAboveList c m)
-
-lemma succAboveContrList_pairwise_ordered {m : Fin n.succ} {i : Fin c.unconstrainedList.length}
-    {j : Fin n.succ × Fin n.succ} (hj : j ∈ c.succAboveContrList m i) :
-    j.1 < j.2 := by
-  simp [succAboveContrList] at hj
-  split at hj
-  · rename_i hi
-    simp at hj
-    rcases hj with hj | hj
-    · subst hj
-      exact hi
-    · exact c.succAboveList_pairwise_ordered hj
-  · rename_i hi
-    simp at hj
-    rcases hj with hj | hj
-    · subst hj
-      simp
-      simp at hi
-      exact lt_of_le_of_ne hi (Fin.ne_succAbove m (c.unconstrainedMap i))
-    · exact c.succAboveList_pairwise_ordered hj
-
-lemma succAboveContrList_sorted {m : Fin n.succ} {i : Fin c.unconstrainedList.length} :
-    (c.succAboveContrList m i).Sorted (fun a b => a.1 ≤ b.1) := by
-  rw [succAboveContrList]
-  split
-  · apply List.Sorted.orderedInsert
-    exact succAboveList_sorted c
-  · apply List.Sorted.orderedInsert
-    exact succAboveList_sorted c
-
-lemma succAboveContrList_nodup_fst {m : Fin n.succ} {i : Fin c.unconstrainedList.length} :
-    ((List.unzip (c.succAboveContrList m i)).1).Nodup := by
-  rw [succAboveContrList]
-  split
+  rw [← c.uncontractedList_toFinset]
   simp
-  have h1 : ((List.map Prod.fst
-    (List.orderedInsert (fun a b => a.1 ≤ b.1) (m.succAbove (c.unconstrainedMap i), m) (c.succAboveList m)))).Perm
-    (List.map Prod.fst ((m.succAbove (c.unconstrainedMap i), m) :: c.succAboveList m)) := by
-    refine List.Perm.map Prod.fst ?p
-    exact List.perm_orderedInsert _ _ _
+
+lemma uncontractedList_succAboveEmb_eq_sort(c : ContractionsNat n) (i : Fin n.succ) :
+    (List.map i.succAboveEmb c.uncontractedList) =
+    (c.uncontracted.map i.succAboveEmb).sort (· ≤ ·)  := by
+  rw [← uncontractedList_succAboveEmb_toFinset]
+  symm
+  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
+  · exact uncontractedList_succAboveEmb_nodup c i
+  · exact uncontractedList_succAboveEmb_sorted c i
+
+lemma uncontractedList_succAboveEmb_eraseIdx_sorted (c : ContractionsNat n) (i : Fin n.succ) (k: ℕ) :
+    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Sorted (· ≤ ·) := by
+  apply HepLean.List.eraseIdx_sorted
+  exact uncontractedList_succAboveEmb_sorted c i
+
+lemma uncontractedList_succAboveEmb_eraseIdx_nodup (c : ContractionsNat n) (i : Fin n.succ) (k: ℕ) :
+    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Nodup := by
+  refine List.Nodup.eraseIdx k ?_
+  exact uncontractedList_succAboveEmb_nodup c i
+
+lemma uncontractedList_succAboveEmb_eraseIdx_toFinset (c : ContractionsNat n) (i : Fin n.succ) (k : ℕ)
+      (hk : k < c.uncontractedList.length) :
+    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).toFinset =
+    (c.uncontracted.map i.succAboveEmb).erase (i.succAboveEmb c.uncontractedList[k]) := by
+  ext a
+  simp
+  rw [mem_eraseIdx_nodup _ _ _ (by simpa using hk)]
+  simp_all only [List.mem_map, List.getElem_map, ne_eq]
+  apply Iff.intro
+  · intro a_1
+    simp_all only [not_false_eq_true, true_and]
+    obtain ⟨left, right⟩ := a_1
+    obtain ⟨w, h⟩ := left
+    obtain ⟨left, right_1⟩ := h
+    subst right_1
+    use w
+    simp_all [uncontractedList]
+  · intro a_1
+    simp_all only [not_false_eq_true, and_true]
+    obtain ⟨left, right⟩ := a_1
+    obtain ⟨w, h⟩ := right
+    obtain ⟨left_1, right⟩ := h
+    subst right
+    use w
+    simp_all [uncontractedList]
+  exact uncontractedList_succAboveEmb_nodup c i
+
+lemma uncontractedList_succAboveEmb_eraseIdx_eq_sort (c : ContractionsNat n) (i : Fin n.succ) (k : ℕ)
+      (hk : k < c.uncontractedList.length) :
+    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k) =
+    ((c.uncontracted.map i.succAboveEmb).erase (i.succAboveEmb c.uncontractedList[k])).sort (· ≤ ·) := by
+  rw [← uncontractedList_succAboveEmb_eraseIdx_toFinset]
+  symm
+  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
+  · exact uncontractedList_succAboveEmb_eraseIdx_nodup c i k
+  · exact uncontractedList_succAboveEmb_eraseIdx_sorted c i k
+
+lemma uncontractedList_succAbove_orderedInsert_sorted (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
+  refine List.Sorted.orderedInsert i (List.map (⇑i.succAboveEmb) c.uncontractedList) ?_
+  exact uncontractedList_succAboveEmb_sorted c i
+
+lemma uncontractedList_succAbove_orderedInsert_nodup (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Nodup := by
+  have h1 : (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Perm
+    (i :: List.map i.succAboveEmb c.uncontractedList) := by
+    exact List.perm_orderedInsert (fun x1 x2 => x1 ≤ x2) i _
   apply List.Perm.nodup h1.symm
-  simp
+  simp only [Nat.succ_eq_add_one, List.nodup_cons, List.mem_map, not_exists,
+    not_and]
   apply And.intro
-  · intro x
-    sorry
-  · have hi := c.succAboveList_nodup (m := m)
-    simp [List.nodup_append] at hi
-    exact hi.1
+  · intro x _
+    exact Fin.succAbove_ne i x
+  · exact uncontractedList_succAboveEmb_nodup c i
 
-section predAboveI
+lemma uncontractedList_succAbove_orderedInsert_toFinset (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).toFinset =
+    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)) := by
+  ext a
+  simp
+  rw [← uncontractedList_toFinset]
+  simp
 
-open HepLean.Fin
-variable {n : ℕ} (c : ContractionsNat n.succ.succ)
+lemma uncontractedList_succAbove_orderedInsert_eq_sort (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
+    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)).sort (· ≤ ·) := by
+  rw [← uncontractedList_succAbove_orderedInsert_toFinset]
+  symm
+  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
+  · exact uncontractedList_succAbove_orderedInsert_nodup c i
+  · exact uncontractedList_succAbove_orderedInsert_sorted c i
 
-def predAboveIList (m : Fin n.succ.succ) : List (Fin n.succ × Fin n.succ) :=
-  List.map (fun (a, b) => (predAboveI m a, predAboveI m b))
-  (List.filter (fun (a, b) => a.1 ≠ m ∧ b.1 ≠ m) c.1)
+lemma uncontractedList_extractEquiv_symm_none (c : ContractionsNat n) (i : Fin n.succ) :
+    ((extractEquiv i).symm ⟨c, none⟩).uncontractedList =
+    List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList) := by
+  rw [uncontractedList_eq_sort, extractEquiv_symm_none_uncontracted]
+  rw [uncontractedList_succAbove_orderedInsert_eq_sort]
 
 
-end predAboveI
+
+
+lemma fin_list_sorted_split  :
+    (l : List (Fin n)) → (hl : l.Sorted (· ≤ ·))  →  (i : ℕ) →
+    l = l.filter (fun x => x.1 < i) ++ l.filter (fun x => i ≤ x.1)
+  | [], _, _ => by simp
+  | a :: l, hl, i => by
+    simp at hl
+    by_cases ha : a < i
+    · conv_lhs => rw [fin_list_sorted_split l hl.2 i]
+      rw [← List.cons_append]
+      rw [List.filter_cons_of_pos, List.filter_cons_of_neg]
+      simp [ha]
+      simp [ha]
+    · have hx :  List.filter (fun x => decide (x.1 < i)) (a :: l) = [] := by
+        simp [ha]
+        intro b hb
+        have hb' := hl.1 b hb
+        omega
+      simp [hx]
+      rw [List.filter_cons_of_pos]
+      simp
+      have hl' := fin_list_sorted_split l hl.2 i
+      have hx :  List.filter (fun x => decide (x.1 < i)) (l) = [] := by
+        simp [ha]
+        intro b hb
+        have hb' := hl.1 b hb
+        omega
+      simp [hx] at hl'
+      conv_lhs => rw [hl']
+      simp [ha]
+      omega
+
+lemma orderedInsert_of_fin_list_sorted  :
+    (l : List (Fin n)) → (hl : l.Sorted (· ≤ ·))  →  (i : Fin n) →
+    List.orderedInsert (· ≤ ·) i l = l.filter (fun x => x.1 < i.1) ++ i :: l.filter (fun x => i.1 ≤ x.1)
+  | [], _, _ => by simp
+  | a :: l, hl, i => by
+    simp at hl
+    by_cases ha : i ≤ a
+    · simp [ha]
+      have h1 : List.filter (fun x => decide (↑x < ↑i)) l  = [] := by
+        simp
+        intro a ha
+        have ha' := hl.1 a ha
+        omega
+      have hl : l = List.filter (fun x => decide (i ≤ x)) l := by
+        conv_lhs => rw [fin_list_sorted_split l hl.2 i]
+        simp [h1]
+      simp [← hl, h1]
+    · simp [ha]
+      rw [List.filter_cons_of_pos]
+      rw [orderedInsert_of_fin_list_sorted l hl.2 i]
+      simp
+      simp
+      omega
+
+lemma orderedInsert_eq_insertIdx_of_fin_list_sorted  :  (l : List (Fin n)) → (hl : l.Sorted (· ≤ ·))  →  (i : Fin n) →
+    List.orderedInsert (· ≤ ·) i l = l.insertIdx (l.filter (fun x => x.1 < i.1)).length i := by
+  intro l hl i
+  let n : Fin l.length.succ := ⟨(List.filter (fun x => decide (x < i)) l).length, by
+    have h1 := l.length_filter_le (fun x => x.1 < i.1)
+    simp at h1
+    omega⟩
+  simp
+  conv_rhs => rw [insertIdx_eq_take_drop _ _ n]
+  rw [orderedInsert_of_fin_list_sorted]
+  congr
+  · conv_rhs =>
+      rhs
+      rw [fin_list_sorted_split l  hl i]
+    simp [n]
+  · conv_rhs =>
+      rhs
+      rw [fin_list_sorted_split l  hl i]
+    simp [n]
+  exact hl
+
+
+def uncontractedListOrderPos (c : ContractionsNat n)  (i : Fin n.succ) : ℕ :=
+  (List.filter (fun x => x.1 < i.1) c.uncontractedList).length
+
+@[simp]
+lemma uncontractedListOrderPos_lt_length_add_one (c : ContractionsNat n) (i : Fin n.succ) :
+    c.uncontractedListOrderPos i < c.uncontractedList.length + 1 := by
+  simp [uncontractedListOrderPos]
+  have h1 := c.uncontractedList.length_filter_le (fun x => x.1 < i.1)
+  omega
+
+lemma take_uncontractedListOrderPos_eq_filter (c : ContractionsNat n) (i : Fin n.succ) :
+    (c.uncontractedList.take (c.uncontractedListOrderPos i)) =
+    c.uncontractedList.filter (fun x => x.1 < i.1) := by
+  nth_rewrite 1 [fin_list_sorted_split c.uncontractedList _ i]
+  simp [uncontractedListOrderPos]
+  exact uncontractedList_sorted c
+
+
+lemma take_uncontractedListOrderPos_eq_filter_sort (c : ContractionsNat n) (i : Fin n.succ) :
+    (c.uncontractedList.take (c.uncontractedListOrderPos i)) =
+    (c.uncontracted.filter (fun x => x.1 < i.1)).sort (· ≤ ·) := by
+  rw [take_uncontractedListOrderPos_eq_filter]
+  have h1 : (c.uncontractedList.filter (fun x => x.1 < i.1)).Sorted (· ≤ ·) := by
+    apply List.Sorted.filter
+    exact uncontractedList_sorted c
+  have h2 : (c.uncontractedList.filter (fun x => x.1 < i.1)).Nodup := by
+    refine List.Nodup.filter _ ?_
+    exact uncontractedList_nodup c
+  have h3 : (c.uncontractedList.filter (fun x => x.1 < i.1)).toFinset =
+    (c.uncontracted.filter (fun x => x.1 < i.1)) := by
+    rw [uncontractedList_eq_sort]
+    simp
+  rw [← h3]
+  exact ((List.toFinset_sort (α := Fin n) (· ≤ ·) h2).mpr h1).symm
+
+lemma orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx (c : ContractionsNat n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
+    (List.map i.succAboveEmb c.uncontractedList).insertIdx (uncontractedListOrderPos c i) i := by
+  rw [orderedInsert_eq_insertIdx_of_fin_list_sorted]
+  swap
+  exact uncontractedList_succAboveEmb_sorted c i
+  congr 1
+  simp [uncontractedListOrderPos]
+  rw [List.filter_map]
+  simp
+  congr
+  funext x
+  simp [Fin.succAbove]
+  split
+  simp [Fin.lt_def]
+  rename_i h
+  simp_all [Fin.lt_def]
+  omega
+
+def uncontractedFinEquiv (c : ContractionsNat n) :
+    Fin (c.uncontractedList).length ≃ c.uncontracted where
+  toFun i := ⟨c.uncontractedList.get i, c.uncontractedList_get_mem_uncontracted i⟩
+  invFun i := ⟨List.indexOf i.1 c.uncontractedList,
+    List.indexOf_lt_length.mpr ((c.uncontractedList_mem_iff i.1).mpr i.2)⟩
+  left_inv i := by
+    ext
+    exact List.get_indexOf (uncontractedList_nodup c) _
+  right_inv i := by
+    ext
+    simp
+
+@[simp]
+lemma uncontractedList_getElem_uncontractedFinEquiv_symm (k : c.uncontracted) :
+    c.uncontractedList[(c.uncontractedFinEquiv.symm k).val] = k := by
+  simp [uncontractedFinEquiv]
+
+def uncontractedStatesEquiv (φs : List 𝓕.States) (c : ContractionsNat φs.length) :
+   Option c.uncontracted ≃ Option (Fin (c.uncontractedList.map φs.get).length):=
+  Equiv.optionCongr (c.uncontractedFinEquiv.symm.trans (finCongr (by simp)))
+
+@[simp]
+lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (c : ContractionsNat φs.length) :
+    (uncontractedStatesEquiv φs c).toFun none = none := by
+  simp [uncontractedStatesEquiv]
+
+lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.States)
+  (c : ContractionsNat φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
+    ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
+    ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
+  rw [(c.uncontractedStatesEquiv φs).sum_comp]
+
+lemma uncontractedList_extractEquiv_symm_some (c : ContractionsNat n) (i : Fin n.succ)
+  (k : c.uncontracted) :
+    ((extractEquiv i).symm ⟨c, some k⟩).uncontractedList =
+   ((c.uncontractedList).map i.succAboveEmb).eraseIdx (c.uncontractedFinEquiv.symm k) := by
+  rw [uncontractedList_eq_sort]
+  rw [uncontractedList_succAboveEmb_eraseIdx_eq_sort]
+  swap
+  simp
+  congr
+  simp [extractEquiv]
+  rw [insert_some_uncontracted]
+  ext a
+  simp
+
+
 end ContractionsNat
 
 end FieldStruct

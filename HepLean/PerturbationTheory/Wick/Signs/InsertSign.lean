@@ -79,6 +79,17 @@ lemma take_insert_let {I : Type} (i : I) :
     refine List.Perm.cons a ?_
     exact take_insert_let i n m (Nat.le_of_succ_le_succ h) as (Nat.le_of_succ_le_succ hm)
 
+lemma insertIdx_eq_take_drop {I : Type} (i : I) :
+     (r : List I) → (n : Fin r.length.succ) →
+    List.insertIdx n i r = List.take n r ++ i ::  r.drop n
+  | [], 0 => by simp
+  | a :: as, 0 => by
+    simp
+  | a :: as, ⟨n + 1, h⟩ => by
+    simp
+    exact insertIdx_eq_take_drop i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
+
+
 end
 
 /-!

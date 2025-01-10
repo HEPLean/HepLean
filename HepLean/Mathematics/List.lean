@@ -164,6 +164,7 @@ lemma orderedInsert_eraseIdx_orderedInsertPos {I : Type} (le1 : I → I → Prop
   · simp [orderedInsertPos]
   · rfl
 
+
 lemma orderedInsertPos_cons {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
     (r : List I) (r0 r1 : I) :
     (orderedInsertPos le1 (r1 ::r) r0).val =
@@ -669,8 +670,19 @@ def optionErase {I : Type} (l : List I) (i : Option (Fin l.length)) : List I :=
   | none => l
   | some i => List.eraseIdx l i
 
+lemma eraseIdx_length' {I : Type} (l : List I) (i : Fin l.length) :
+    (List.eraseIdx l i).length  = l.length - 1 := by
+  simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
+
 lemma eraseIdx_length {I : Type} (l : List I) (i : Fin l.length) :
     (List.eraseIdx l i).length + 1 = l.length := by
+  simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
+  have hi := i.prop
+  omega
+
+@[simp]
+lemma eraseIdx_length_succ {I : Type} (l : List I) (i : Fin l.length) :
+    (List.eraseIdx l i).length.succ = l.length := by
   simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
   have hi := i.prop
   omega

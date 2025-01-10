@@ -52,6 +52,16 @@ instance : IsTrans 𝓕.States 𝓕.timeOrderProp where
 noncomputable section
 
 open FieldStatistic
+open HepLean.List
+
+def maxTimeFieldPos (φ : 𝓕.States) (φs : List 𝓕.States) : ℕ :=
+  insertionSortMinPos timeOrderProp φ φs
+def maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : 𝓕.States :=
+  insertionSortMin timeOrderProp φ φs
+
+def eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : List 𝓕.States :=
+  insertionSortDropMinPos timeOrderProp φ φs
+
 
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
   Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderProp φs
@@ -66,6 +76,16 @@ lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp
   simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
   rw [if_neg h]
   simp [FieldStatistic.pairedSign_eq_if]
+
+lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) :
+    timeOrderSign (eraseMaxTimeField φ φs) = timeOrderSign (φ :: φs) *
+    𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ (φ :: φs).take (maxTimeFieldPos φ φs)) := by
+  rw [eraseMaxTimeField, insertionSortDropMinPos, timeOrderSign,
+    Wick.koszulSign_eraseIdx_insertionSortMinPos]
+  rw [← timeOrderSign, ← maxTimeField]
+  congr
+  rw [pairedSign_eq_if]
+  simp [Wick.superCommuteCoef, maxTimeFieldPos]
 
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
   List.insertionSort 𝓕.timeOrderProp φs
@@ -83,6 +103,11 @@ lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp
 @[simp]
 lemma timeOrderList_nil : timeOrderList (𝓕 := 𝓕) [] = [] := by
   simp [timeOrderList]
+
+
+lemma timeOrderList_eq_maxTimeField_timeOrderList  (φ : 𝓕.States) (φs : List 𝓕.States) :
+    timeOrderList (φ :: φs) = maxTimeField φ φs :: timeOrderList (eraseMaxTimeField φ φs) := by
+  exact insertionSort_eq_insertionSortMin_cons timeOrderProp φ φs
 
 namespace StateAlgebra
 
@@ -115,8 +140,7 @@ lemma timeOrder_ofState_ofState_ordered {φ ψ : 𝓕.States} (h : timeOrderProp
 
 lemma timeOrder_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h :¬ timeOrderProp φ ψ) :
     timeOrder (ofState φ * ofState ψ) =
-    FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) •
-    ofState ψ * ofState φ := by
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofState ψ * ofState φ := by
   rw [← ofList_singleton, ← ofList_singleton, ← ofList_append]
   rw [timeOrder_ofList]
   simp
@@ -125,13 +149,24 @@ lemma timeOrder_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h :¬ timeOrd
 
 lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (h :¬ timeOrderProp φ ψ) :
     timeOrder (ofState φ * ofState ψ) =
-    FieldStatistic.pairedSign (𝓕.statesStatistic φ) (𝓕.statesStatistic ψ) •
-    timeOrder (ofState ψ * ofState φ) := by
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • timeOrder (ofState ψ * ofState φ) := by
   rw [timeOrder_ofState_ofState_not_ordered h]
   rw [timeOrder_ofState_ofState_ordered]
   simp
   have hx := IsTotal.total (r := timeOrderProp) ψ φ
   simp_all
+
+def timeOrder_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) :
+    timeOrder (ofList (φ :: φs)) =
+    𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ (φ :: φs).take (maxTimeFieldPos φ φs)) •
+    ofState (maxTimeField φ φs) * timeOrder (ofList (eraseMaxTimeField φ φs)) := by
+  rw [timeOrder_ofList, timeOrderList_eq_maxTimeField_timeOrderList]
+  rw [ofList_cons, timeOrder_ofList]
+  simp [smul_smul]
+  congr
+  rw [timerOrderSign_of_eraseMaxTimeField, mul_assoc]
+  simp
+
 
 
 end StateAlgebra
