@@ -1,9 +1,7 @@
 
 on:
   push:
-    branches:
-      - master
-  pull_request_target:
+  pull_request:
 
 name: continuous integration
 
