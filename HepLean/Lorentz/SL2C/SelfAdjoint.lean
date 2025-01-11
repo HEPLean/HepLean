@@ -24,14 +24,16 @@ noncomputable def toSelfAdjointMap' (M : ℂ²ˣ²) : ℍ₂ →ₗ[ℝ] ℍ₂ 
   map_smul' | r, ⟨A, _⟩ => Subtype.ext <| by simp
 
 open Complex (I normSq) in
-theorem toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM : M.det = 1)
-    : LinearMap.det (toSelfAdjointMap' M) = 1 :=
+lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM : M.det = 1) :
+    LinearMap.det (toSelfAdjointMap' M) = 1 :=
   let b : Basis (Fin 2 ⊕ Fin 2) ℝ ℍ₂ := Basis.ofEquivFun {
     toFun := fun ⟨A, _⟩ => ![(A 0 0).re, (A 1 1).re] ⊕ᵥ ![(A 0 1).re, (A 0 1).im]
     map_add' := fun _ _ => funext fun | .inl 0 | .inl 1 | .inr 0 | .inr 1 => rfl
     map_smul' := fun _ _ => funext fun | .inl 0 | .inl 1 | .inr 0 | .inr 1 => by simp
     invFun := fun p => {
-      val := let z : ℂ := ⟨p (.inr 0), p (.inr 1)⟩ ; !![p (.inl 0), z; conj z, p (.inl 1)]
+      val :=
+        let z : ℂ := ⟨p (.inr 0), p (.inr 1)⟩
+        !![p (.inl 0), z; conj z, p (.inl 1)]
       property := Matrix.ext fun | 0, 0 | 0, 1 | 1, 0 | 1, 1 => by simp
     }
     left_inv := fun ⟨A, hA⟩ => Subtype.ext <| Matrix.ext fun
@@ -46,12 +48,11 @@ theorem toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (de
   let E₂ : ℂ²ˣ² := !![0, 1; conj 1, 0] -- b (.inr 0)
   let E₃ : ℂ²ˣ² := !![0, I; conj I, 0] -- b (.inr 1)
   let F : Matrix (Fin 2 ⊕ Fin 2) (Fin 2 ⊕ Fin 2) ℝ := LinearMap.toMatrix b b (toSelfAdjointMap' M)
-  let A := F.toBlocks₁₁ ; let B := F.toBlocks₁₂ ; let C := F.toBlocks₂₁ ; let D := F.toBlocks₂₂
-  let x := M 0 0 ; let y := M 1 1 ; have hM10 : M 1 0 = 0 := hM <| show 0 < 1 by decide
+  let A := F.toBlocks₁₁; let B := F.toBlocks₁₂; let C := F.toBlocks₂₁; let D := F.toBlocks₂₂
+  let x := M 0 0; let y := M 1 1; have hM10 : M 1 0 = 0 := hM <| show 0 < 1 by decide
   have he : M = !![x, _; 0, y] := Matrix.ext fun | 0, 0 | 0, 1 | 1, 1 => rfl | 1, 0 => hM10
   have he' : Mᴴ = !![conj x, 0; _, conj y] :=
     Matrix.ext fun | 0, 0 | 1, 0 | 1, 1 => rfl | 0, 1 => by simp [hM10]
-
   have detA_one : normSq x * normSq y = 1 := congrArg Complex.re <|
     calc ↑(normSq x * normSq y)
       _ = x * conj x * (y * conj y) := by simp [Complex.mul_conj]
@@ -64,10 +65,10 @@ theorem toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (de
           _ = 1 := detM
   have detD_one : D.det = 1 :=
     let z := x * conj y
-    have k₀ : (M * E₂ * Mᴴ) 0 1 = z := by rw [he', he] ; simp [E₂]
+    have k₀ : (M * E₂ * Mᴴ) 0 1 = z := by rw [he', he]; simp [E₂]
     have k₁ : (M * E₃ * Mᴴ) 0 1 = ⟨-z.im, z.re⟩ :=
       calc
-        _ = x * I * conj y := by rw [he', he] ; simp [E₃]
+        _ = x * I * conj y := by rw [he', he]; simp [E₃]
         _ = Complex.I * z := by ring
         _ = ⟨-z.im, z.re⟩ := z.I_mul
     have hD : D = !![z.re, -z.im; z.im, z.re] := Matrix.ext fun
@@ -81,33 +82,33 @@ theorem toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (de
   letI : Invertible D.det := detD_one ▸ invertibleOne
   letI : Invertible D := D.invertibleOfDetInvertible
   have hE : A - B * ⅟D * C = !![normSq x, _; 0, normSq y] :=
-    have k : (M * E₀ * Mᴴ) 0 1 = 0 := by rw [he', he] ; simp [E₀]
+    have k : (M * E₀ * Mᴴ) 0 1 = 0 := by rw [he', he]; simp [E₀]
     have hC00 : C 0 0 = 0 := congrArg Complex.re k
     have hC10 : C 1 0 = 0 := congrArg Complex.im k
     Matrix.ext fun
       | 0, 1 => rfl
       | 1, 0 =>
         have hA10 : A 1 0 = 0 := congrArg Complex.re <|
-          show (M * E₀ * Mᴴ) 1 1 = 0 by rw [he', he] ; simp [E₀]
+          show (M * E₀ * Mᴴ) 1 1 = 0 by rw [he', he]; simp [E₀]
         show A 1 0 - (B * ⅟D) 1 ⬝ᵥ (C · 0) = 0 by simp [hC00, hC10, hA10]
       | 0, 0 =>
         have hA00 : A 0 0 = normSq x := congrArg Complex.re <|
-          show (M * E₀ * Mᴴ) 0 0 = normSq x by rw [he', he] ; simp [E₀, x.mul_conj]
+          show (M * E₀ * Mᴴ) 0 0 = normSq x by rw [he', he]; simp [E₀, x.mul_conj]
         show A 0 0 - (B * ⅟D) 0 ⬝ᵥ (C · 0) = normSq x by simp [hC00, hC10, hA00]
       | 1, 1 =>
         have hA11 : A 1 1 = normSq y := congrArg Complex.re <|
-          show (M * E₁ * Mᴴ) 1 1 = normSq y by rw [he', he] ; simp [E₁, y.mul_conj]
+          show (M * E₁ * Mᴴ) 1 1 = normSq y by rw [he', he]; simp [E₁, y.mul_conj]
         have hB10 : B 1 0 = 0 := congrArg Complex.re <|
-          show (M * E₂ * Mᴴ) 1 1 = 0 by rw [he', he] ; simp [E₂]
+          show (M * E₂ * Mᴴ) 1 1 = 0 by rw [he', he]; simp [E₂]
         have hB11 : B 1 1 = 0 := congrArg Complex.re <|
-          show (M * E₃ * Mᴴ) 1 1 = 0 by rw [he', he] ; simp [E₃]
+          show (M * E₃ * Mᴴ) 1 1 = 0 by rw [he', he]; simp [E₃]
         calc A 1 1 - (B * ⅟D * C) 1 1
           _ = A 1 1 - B 1 ⬝ᵥ ((⅟D * C) · 1) := by noncomm_ring
           _ = normSq y := by simp [hB10, hB11, hA11]
   calc LinearMap.det (toSelfAdjointMap' M)
     _ = F.det := (LinearMap.det_toMatrix ..).symm
     _ = D.det * (A - B * ⅟D * C).det := F.fromBlocks_toBlocks ▸ Matrix.det_fromBlocks₂₂ ..
-    _ = 1 := by rw [hE] ; simp [detD_one, detA_one]
+    _ = 1 := by rw [hE]; simp [detD_one, detA_one]
 
 /-- This promotes `Lorentz.SL2C.toSelfAdjointMap M` and its definitional equivalence,
 `Lorentz.SL2C.toSelfAdjointMap' M`, to a linear equivalence by recognising the linear inverse to be
@@ -124,17 +125,17 @@ noncomputable def toSelfAdjointEquiv (M : ℂ²ˣ²) [Invertible M] : ℍ₂ ≃
       _ = M * M⁻¹ * A * (M * M⁻¹)ᴴ := by noncomm_ring [Matrix.conjTranspose_mul]
       _ = A := by simp
 
-theorem toSelfAdjointMap_mul (M N : ℂ²ˣ²)
-    : toSelfAdjointMap' (M * N) = toSelfAdjointMap' M ∘ₗ toSelfAdjointMap' N :=
+lemma toSelfAdjointMap_mul (M N : ℂ²ˣ²) :
+    toSelfAdjointMap' (M * N) = toSelfAdjointMap' M ∘ₗ toSelfAdjointMap' N :=
   LinearMap.ext fun A => Subtype.ext <|
     show M * N * A * (M * N)ᴴ = M * (N * A * Nᴴ) * Mᴴ by noncomm_ring [Matrix.conjTranspose_mul]
 
-theorem toSelfAdjointMap_similar_det (M N : ℂ²ˣ²) [Invertible M]
-    : LinearMap.det (toSelfAdjointMap' (M * N * M⁻¹)) = LinearMap.det (toSelfAdjointMap' N) :=
+lemma toSelfAdjointMap_similar_det (M N : ℂ²ˣ²) [Invertible M] :
+    LinearMap.det (toSelfAdjointMap' (M * N * M⁻¹)) = LinearMap.det (toSelfAdjointMap' N) :=
   let e := toSelfAdjointEquiv M
   let f := toSelfAdjointMap' N
   suffices toSelfAdjointMap' (M * N * M⁻¹) = e ∘ₗ f ∘ₗ e.symm from this ▸ f.det_conj e
-  by rw [toSelfAdjointMap_mul, toSelfAdjointMap_mul] ; rfl
+  by rw [toSelfAdjointMap_mul, toSelfAdjointMap_mul]; rfl
 
 end SL2C
 end Lorentz

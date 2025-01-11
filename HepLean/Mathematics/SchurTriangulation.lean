@@ -22,10 +22,10 @@ def finAddEquivSigmaCond : Fin (m + n) ≃ Σ b, cond b (Fin m) (Fin n) :=
 
 variable {i : Fin (m + n)}
 
-theorem finAddEquivSigmaCond_true (h : i < m) : finAddEquivSigmaCond i = ⟨true, i, h⟩ :=
+lemma finAddEquivSigmaCond_true (h : i < m) : finAddEquivSigmaCond i = ⟨true, i, h⟩ :=
   congrArg sumEquivSigmalCond <| finSumFinEquiv_symm_apply_castAdd ⟨i, h⟩
 
-theorem finAddEquivSigmaCond_false (h : ¬ i < m) : finAddEquivSigmaCond i = ⟨false, i.subNat' h⟩ :=
+lemma finAddEquivSigmaCond_false (h : ¬ i < m) : finAddEquivSigmaCond i = ⟨false, i.subNat' h⟩ :=
   let j : Fin n := i.subNat' h
   calc finAddEquivSigmaCond i
     _ = finAddEquivSigmaCond (Fin.natAdd m j) :=
@@ -66,15 +66,16 @@ variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 section
 variable [FiniteDimensional 𝕜 E] [Fintype n] [DecidableEq n]
 
-theorem toMatrixOrthonormal_apply_apply (b : OrthonormalBasis n 𝕜 E) (f : Module.End 𝕜 E) (i j : n)
-    : toMatrixOrthonormal b f i j = ⟪b i, f (b j)⟫_𝕜 :=
+lemma toMatrixOrthonormal_apply_apply (b : OrthonormalBasis n 𝕜 E) (f : Module.End 𝕜 E)
+    (i j : n) :
+    toMatrixOrthonormal b f i j = ⟪b i, f (b j)⟫_𝕜 :=
   calc
     _ = b.repr (f (b j)) i := f.toMatrix_apply ..
     _ = ⟪b i, f (b j)⟫_𝕜 := b.repr_apply_apply ..
 
-theorem toMatrixOrthonormal_reindex [Fintype m] [DecidableEq m]
-    (b : OrthonormalBasis m 𝕜 E) (e : m ≃ n) (f : Module.End 𝕜 E)
-    : toMatrixOrthonormal (b.reindex e) f = Matrix.reindex e e (toMatrixOrthonormal b f) :=
+lemma toMatrixOrthonormal_reindex [Fintype m] [DecidableEq m]
+    (b : OrthonormalBasis m 𝕜 E) (e : m ≃ n) (f : Module.End 𝕜 E) :
+    toMatrixOrthonormal (b.reindex e) f = Matrix.reindex e e (toMatrixOrthonormal b f) :=
   Matrix.ext fun i j =>
     calc toMatrixOrthonormal (b.reindex e) f i j
       _ = (b.reindex e).repr (f (b.reindex e j)) i := f.toMatrix_apply ..
@@ -101,8 +102,8 @@ variable [IsAlgClosed 𝕜]
 /-- **Don't use this definition directly.** This is the key algorithm behind
 `Matrix.schur_triangulation`. -/
 protected noncomputable def SchurTriangulationAux.of
-    [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [FiniteDimensional 𝕜 E] (f : Module.End 𝕜 E)
-    : SchurTriangulationAux f :=
+    [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [FiniteDimensional 𝕜 E] (f : Module.End 𝕜 E) :
+    SchurTriangulationAux f :=
   haveI : Decidable (Nontrivial E) := Classical.propDecidable _
   if hE : Nontrivial E then
     let μ : f.Eigenvalues := default
@@ -137,7 +138,9 @@ protected noncomputable def SchurTriangulationAux.of
             by simp
         have hf {bi i' bj j'} (hi : e i = ⟨bi, i'⟩) (hj : e j = ⟨bj, j'⟩) :=
           calc toMatrixOrthonormal basis f i j
-            _ = toMatrixOrthonormal bE f (e i) (e j) := by rw [f.toMatrixOrthonormal_reindex] ; rfl
+            _ = toMatrixOrthonormal bE f (e i) (e j) := by
+              rw [f.toMatrixOrthonormal_reindex]
+              rfl
             _ = ⟪bE (e i), f (bE (e j))⟫_𝕜 := f.toMatrixOrthonormal_apply_apply ..
             _ = ⟪(B bi i' : E), f (B bj j')⟫_𝕜 := by rw [hB, hB, hi, hj]
 
@@ -198,8 +201,8 @@ variable [RCLike 𝕜] [IsAlgClosed 𝕜] [Fintype n] [DecidableEq n] [LinearOrd
 `Matrix.schurTriangulationUnitary`, and `Matrix.schurTriangulation` for which this is their
 simultaneous definition. This is `LinearMap.SchurTriangulationAux` adapted for matrices in the
 Euclidean space. -/
-noncomputable def schurTriangulationAux
-    : OrthonormalBasis n 𝕜 (EuclideanSpace 𝕜 n) × UpperTriangular n 𝕜 :=
+noncomputable def schurTriangulationAux :
+    OrthonormalBasis n 𝕜 (EuclideanSpace 𝕜 n) × UpperTriangular n 𝕜 :=
   let f := toEuclideanLin A
   let ⟨d, hd, b, hut⟩ := LinearMap.SchurTriangulationAux.of f
   let e : Fin d ≃o n := Fintype.orderIsoFinOfCardEq n (finrank_euclideanSpace.symm.trans hd)
@@ -208,8 +211,9 @@ noncomputable def schurTriangulationAux
   suffices B.IsUpperTriangular from ⟨b', B, this⟩
   fun i j (hji : j < i) =>
     calc LinearMap.toMatrixOrthonormal b' f i j
-      _ = LinearMap.toMatrixOrthonormal b f (e.symm i) (e.symm j) :=
-        by rw [f.toMatrixOrthonormal_reindex] ; rfl
+      _ = LinearMap.toMatrixOrthonormal b f (e.symm i) (e.symm j) := by
+        rw [f.toMatrixOrthonormal_reindex]
+        rfl
       _ = 0 := hut (e.symm.lt_iff_lt.mpr hji)
 
 /-- The change of basis that induces the upper triangular form `A.schurTriangulation` of a matrix
@@ -231,8 +235,8 @@ noncomputable def schurTriangulation : UpperTriangular n 𝕜 :=
 /-- **Schur triangulation**, **Schur decomposition** for matrices over an algebraically closed
 field. In particular, a complex matrix can be converted to upper-triangular form by a change of
 basis. In other words, any complex matrix is unitarily similar to an upper triangular matrix. -/
-theorem schur_triangulation
-    : A = A.schurTriangulationUnitary * A.schurTriangulation * star A.schurTriangulationUnitary :=
+lemma schur_triangulation :
+    A = A.schurTriangulationUnitary * A.schurTriangulation * star A.schurTriangulationUnitary :=
   let U := A.schurTriangulationUnitary
   have h : U * A.schurTriangulation.val = A * U :=
     let b := A.schurTriangulationBasis.toBasis
@@ -243,6 +247,6 @@ theorem schur_triangulation
       _ = A * U := by simp
   calc A
     _ = A * U * star U := by simp [mul_assoc]
-    _ = U * A.schurTriangulation * star U := by rw [←h]
+    _ = U * A.schurTriangulation * star U := by rw [← h]
 
 end Matrix

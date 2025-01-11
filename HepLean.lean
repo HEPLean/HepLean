@@ -105,8 +105,8 @@ import HepLean.Mathematics.Fin.Involutions
 import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.List
 import HepLean.Mathematics.PiTensorProduct
-import HepLean.Mathematics.SchurTriangulation
 import HepLean.Mathematics.SO3.Basic
+import HepLean.Mathematics.SchurTriangulation
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
 import HepLean.Meta.Informal.Basic
