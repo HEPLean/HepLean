@@ -2,37 +2,38 @@ import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.LinearAlgebra.Matrix.Spectrum
 open scoped InnerProductSpace
 
-namespace Fin
+/-- `subNat' i h` subtracts `m` from `i`. This is an alternative form of `Fin.subNat`. -/
+@[inline] def Fin.subNat' (i : Fin (m + n)) (h : ¬ i < m) : Fin n :=
+  subNat m (Fin.cast (m.add_comm n) i) (Nat.ge_of_not_lt h)
+
+namespace Equiv
+
+/-- An alternative form of `Equiv.sumEquivSigmaBool` where `Bool.casesOn` is replaced by `cond`. -/
+def sumEquivSigmalCond : Fin m ⊕ Fin n ≃ Σ b, cond b (Fin m) (Fin n) :=
+  calc Fin m ⊕ Fin n
+    _ ≃ Fin n ⊕ Fin m := sumComm ..
+    _ ≃ Σ b, Bool.casesOn b (Fin n) (Fin m) := sumEquivSigmaBool ..
+    _ ≃ Σ b, cond b (Fin m) (Fin n) := sigmaCongrRight fun | true | false => Equiv.refl _
+
+/-- The composition of `finSumFinEquiv` and `Equiv.sumEquivSigmalCond` used by
+`LinearMap.SchurTriangulationAux.of`. -/
+def finAddEquivSigmaCond : Fin (m + n) ≃ Σ b, cond b (Fin m) (Fin n) :=
+  finSumFinEquiv.symm.trans sumEquivSigmalCond
+
 variable {i : Fin (m + n)}
 
-def toSigmaBool_neg (h : ¬ i < m) : Fin n := ⟨i - m, Nat.sub_lt_left_of_lt_add (Nat.ge_of_not_lt h) i.isLt⟩
-def toSigmaBool (i : Fin (m + n)) : Σ b, cond b (Fin m) (Fin n) :=
-  if h : i < m then ⟨true, i, h⟩ else ⟨false, toSigmaBool_neg h⟩
-theorem toSigmaBool_fst (h : i < m) : i.toSigmaBool = ⟨true, i, h⟩ := dif_pos h
-theorem toSigmaBool_snd (h : ¬ i < m) : i.toSigmaBool = ⟨false, toSigmaBool_neg h⟩ := dif_neg h
+theorem finAddEquivSigmaCond_true (h : i < m) : finAddEquivSigmaCond i = ⟨true, i, h⟩ :=
+  congrArg sumEquivSigmalCond <| finSumFinEquiv_symm_apply_castAdd ⟨i, h⟩
 
-def ofSigmaBool : (Σ b, cond b (Fin m) (Fin n)) → Fin (m + n)
-  | ⟨true, i⟩ => Fin.castAdd n i
-  | ⟨false, i⟩ => Fin.natAdd m i
+theorem finAddEquivSigmaCond_false (h : ¬ i < m) : finAddEquivSigmaCond i = ⟨false, i.subNat' h⟩ :=
+  let j : Fin n := i.subNat' h
+  calc finAddEquivSigmaCond i
+    _ = finAddEquivSigmaCond (Fin.natAdd m j) :=
+      suffices m + (i - m) = i from congrArg _ (Fin.ext this.symm)
+      Nat.add_sub_of_le (Nat.le_of_not_gt h)
+    _ = ⟨false, i.subNat' h⟩ := congrArg sumEquivSigmalCond <| finSumFinEquiv_symm_apply_natAdd j
 
-end Fin
-
-def Equiv.finAddEquivSigmaBool : Fin (m + n) ≃ Σ b, cond b (Fin m) (Fin n) where
-  toFun := Fin.toSigmaBool
-  invFun := Fin.ofSigmaBool
-  left_inv i :=
-    if h : i < m
-    then congrArg Fin.ofSigmaBool (dif_pos h)
-    else
-      calc  Fin.ofSigmaBool i.toSigmaBool
-        _ = ⟨m + (i - m), _⟩ := congrArg Fin.ofSigmaBool (dif_neg h)
-        _ = i := Fin.ext <| Nat.add_sub_of_le (Nat.le_of_not_gt h)
-  right_inv
-    | ⟨true, i⟩ => dif_pos i.isLt
-    | ⟨false, (i : Fin n)⟩ =>
-      calc  (Fin.natAdd m i).toSigmaBool
-        _ = ⟨false, m + i - m, _⟩ := dif_neg <| Nat.not_lt_of_le (Nat.le_add_right ..)
-        _ = ⟨false, i⟩ := Sigma.eq rfl <| Fin.ext (Nat.add_sub_cancel_left ..)
+end Equiv
 
 instance [M : Fintype m] [N : Fintype n] (b : Bool) : Fintype (cond b m n) := b.rec N M
 
@@ -103,8 +104,8 @@ protected noncomputable def SchurTriangulationAux.of
       (sup_eq_iSup V W).symm.trans Submodule.sup_orthogonal_of_completeSpace
     let B (b : Bool) : OrthonormalBasis (cond b (Fin m) (Fin n)) 𝕜 ↥(cond b V W) := b.rec bW bV
     let bE : OrthonormalBasis (Σ b, cond b (Fin m) (Fin n)) 𝕜 E := int.collectedOrthonormalBasis hV B
-    let e := Equiv.finAddEquivSigmaBool.symm
-    let basis := bE.reindex e
+    let e := Equiv.finAddEquivSigmaCond
+    let basis := bE.reindex e.symm
     {
       basis
       dim := m + n
@@ -115,17 +116,17 @@ protected noncomputable def SchurTriangulationAux.of
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨true, i⟩ = bV i by simp
           | ⟨false, j⟩ => show bE ⟨false, j⟩ = bW j from
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨false, j⟩ = bW j by simp
-        have hf {bi i' bj j'} (hi : i.toSigmaBool = ⟨bi, i'⟩) (hj : j.toSigmaBool = ⟨bj, j'⟩) :=
+        have hf {bi i' bj j'} (hi : e i = ⟨bi, i'⟩) (hj : e j = ⟨bj, j'⟩) :=
           calc  toMatrixOrthonormal basis f i j
-            _ = toMatrixOrthonormal bE f i.toSigmaBool j.toSigmaBool := by rw [f.toMatrixOrthonormal_reindex] ; rfl
-            _ = ⟪bE i.toSigmaBool, f (bE j.toSigmaBool)⟫_𝕜 := f.toMatrixOrthonormal_apply_apply ..
+            _ = toMatrixOrthonormal bE f (e i) (e j) := by rw [f.toMatrixOrthonormal_reindex] ; rfl
+            _ = ⟪bE (e i), f (bE (e j))⟫_𝕜 := f.toMatrixOrthonormal_apply_apply ..
             _ = ⟪(B bi i' : E), f (B bj j')⟫_𝕜 := by rw [hB, hB, hi, hj]
 
         if hj : j < m then
           let j' : Fin m := ⟨j, hj⟩
-          have hf' {bi i'} (hi : i.toSigmaBool = ⟨bi, i'⟩) (h0 : ⟪(B bi i' : E), bV j'⟫_𝕜 = 0) :=
+          have hf' {bi i'} (hi : e i = ⟨bi, i'⟩) (h0 : ⟪(B bi i' : E), bV j'⟫_𝕜 = 0) :=
             calc  toMatrixOrthonormal basis f i j
-              _ = ⟪(B bi i' : E), f _⟫_𝕜 := hf hi (Fin.toSigmaBool_fst hj)
+              _ = ⟪(B bi i' : E), f _⟫_𝕜 := hf hi (Equiv.finAddEquivSigmaCond_true hj)
               _ = ⟪_, f (bV j')⟫_𝕜 := rfl
               _ = 0 :=
                 suffices f (bV j') = μ.val • bV j' by rw [this, inner_smul_right, h0, mul_zero]
@@ -134,18 +135,19 @@ protected noncomputable def SchurTriangulationAux.of
 
           if hi : i < m then
             let i' : Fin m := ⟨i, hi⟩
-            suffices ⟪(bV i' : E), bV j'⟫_𝕜 = 0 from hf' (Fin.toSigmaBool_fst hi) this
+            suffices ⟪(bV i' : E), bV j'⟫_𝕜 = 0 from hf' (Equiv.finAddEquivSigmaCond_true hi) this
             bV.orthonormal.right (Fin.ne_of_gt hji)
           else
-            let i' : Fin n := Fin.toSigmaBool_neg hi
-            suffices ⟪(bW i' : E), bV j'⟫_𝕜 = 0 from hf' (Fin.toSigmaBool_snd hi) this
+            let i' : Fin n := i.subNat' hi
+            suffices ⟪(bW i' : E), bV j'⟫_𝕜 = 0 from hf' (Equiv.finAddEquivSigmaCond_false hi) this
             V.inner_left_of_mem_orthogonal (bV j').property (bW i').property
         else
           have hi (h : i < m) : False := hj (Nat.lt_trans hji h)
-          let i' : Fin n := Fin.toSigmaBool_neg hi
-          let j' : Fin n := Fin.toSigmaBool_neg hj
+          let i' : Fin n := i.subNat' hi
+          let j' : Fin n := j.subNat' hj
           calc  toMatrixOrthonormal basis f i j
-            _ = ⟪(bW i' : E), f (bW j')⟫_𝕜 := hf (Fin.toSigmaBool_snd hi) (Fin.toSigmaBool_snd hj)
+            _ = ⟪(bW i' : E), f (bW j')⟫_𝕜 :=
+              hf (Equiv.finAddEquivSigmaCond_false hi) (Equiv.finAddEquivSigmaCond_false hj)
             _ = ⟪bW i', g (bW j')⟫_𝕜 := by simp [g]
             _ = toMatrixOrthonormal bW g i' j' := (g.toMatrixOrthonormal_apply_apply ..).symm
             _ = 0 := hg (Nat.sub_lt_sub_right (Nat.le_of_not_lt hj) hji)
