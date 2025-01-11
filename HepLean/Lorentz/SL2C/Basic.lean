@@ -290,18 +290,18 @@ lemma toLorentzGroup_det_one (M : SL(2, ℂ)) : det (toLorentzGroup M).val = 1 :
   let N := M.val.schurTriangulation.val
   have h : M.val = U * N * star U := M.val.schur_triangulation
   haveI : Invertible U.val := ⟨star U.val, U.property.left, U.property.right⟩
-  calc  det (toLorentzGroup M).val
+  calc det (toLorentzGroup M).val
     _ = LinearMap.det (toSelfAdjointMap' M) := LinearMap.det_toMatrix ..
     _ = LinearMap.det (toSelfAdjointMap' (U * N * U.val⁻¹)) :=
       suffices star U = U.val⁻¹ by rw [h, this]
-      calc  star U.val
+      calc star U.val
         _ = star U.val * (U.val * U.val⁻¹) := by simp
         _ = star U.val * U.val * U.val⁻¹ := by noncomm_ring
         _ = U.val⁻¹ := by simp
     _ = LinearMap.det (toSelfAdjointMap' N) := toSelfAdjointMap_similar_det U N
     _ = 1 :=
       suffices N.det = 1 from toSelfAdjointMap_det_one' M.val.schurTriangulation.property this
-      calc  N.det
+      calc N.det
         _ = det ((U * star U).val * N) := by simp
         _ = det (U.val * N * star U.val) := det_mul_right_comm ..
         _ = M.val.det := congrArg det h.symm
