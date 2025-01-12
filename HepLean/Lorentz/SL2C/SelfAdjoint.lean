@@ -1,5 +1,26 @@
+/-
+Copyright (c) 2025 Gordon Hsu. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Gordon Hsu
+-/
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 import HepLean.Mathematics.SchurTriangulation
+
+/-! # Extra lemmas regarding `Lorentz.SL2C.toSelfAdjointMap`
+
+This file redefines `Lorentz.SL2C.toSelfAdjointMap` by dropping the special linear condition for its
+first argument `M`. Then, `Lorentz.SL2C.toSelfAdjointMap_det_one` is proved for `M` being upper
+triangular.
+
+## Main definitions
+
+- `Lorentz.SL2C.toSelfAdjointMap'`: definitionally equal to `Lorentz.SL2C.toSelfAdjointMap` but `M`
+is not required to be special linear.
+- `Lorentz.SL2C.toSelfAdjointMap_det_one'`: proves `Lorentz.SL2C.toSelfAdjointMap_det_one` with the
+additional requirement that `M` be upper triangular. The general case is reduced to this special
+case via `Matrix.schur_triangulation` in `Lorentz.SL2C.toSelfAdjointMap_det_one`.
+
+-/
 
 namespace Lorentz
 
@@ -15,13 +36,56 @@ noncomputable abbrev ℍ₂ := selfAdjoint ℂ²ˣ²
 
 namespace SL2C
 
-/-- Definitially equal to `Lorentz.SL2C.toSelfAdjointMap` but dropping the requirement that `M` be
+/-- Definitionally equal to `Lorentz.SL2C.toSelfAdjointMap` but dropping the requirement that `M` be
 special linear. -/
 noncomputable def toSelfAdjointMap' (M : ℂ²ˣ²) : ℍ₂ →ₗ[ℝ] ℍ₂ where
   toFun | ⟨A, hA⟩ => ⟨M * A * Mᴴ, hA.conjugate M⟩
   map_add' | ⟨A, _⟩, ⟨B, _⟩ => Subtype.ext <|
     show M * (A + B) * Mᴴ = M * A * Mᴴ + M * B * Mᴴ by noncomm_ring
   map_smul' | r, ⟨A, _⟩ => Subtype.ext <| by simp
+
+/-! ## Showing `Lorentz.SL2C.toSelfAdjointMap` has determinant 1
+
+Since `Lorentz.ℍ₂` as a real vector space has the 4 Pauli matrices as basis, we know that its vector
+representation consists of 4 real components. This makes the matrix representation of
+`toSelfAdjointMap M` a 4-by-4 real matrix `F`. To make the computation of `F.det` manageable, the
+following basis is used instead of the Pauli matrices to induce as many zeros as possible in `F`:
+$$
+E_0 = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix},
+E_1 = \begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix},
+E_2 = \sigma_1 = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix},
+E_3 = -\sigma_2 = \begin{bmatrix} 0 & i \\ -i & 0 \end{bmatrix},
+$$
+Suppose that $M = \begin{bmatrix} x & □ \\ 0 & y \end{bmatrix}$ is upper triangular, the basis
+$\{E_k\}_{k=0}^3$ induces the matrix representation
+$$
+F = \begin{bmatrix}
+  \lvert x\rvert^2 & □ & □ & □ \\
+  0 & \lvert y\rvert^2 & 0 & 0 \\
+  0 & □ & \operatorname{Re}(x\bar{y}) & -\operatorname{Im}(x\bar{y}) \\
+  0 & □ & \operatorname{Im}(x\bar{y}) & \operatorname{Re}(x\bar{y}) \\
+\end{bmatrix}.
+$$
+If $xy = 1$, the Schur complement formula `Matrix.det_fromBlocks₂₂` yields
+$$\begin{align}
+\det F &=
+\begin{vmatrix}
+  \operatorname{Re}(x\bar{y}) & -\operatorname{Im}(x\bar{y}) \\
+  \operatorname{Im}(x\bar{y}) & \operatorname{Re}(x\bar{y})
+\end{vmatrix} \det\left(
+  \begin{bmatrix} \lvert x\rvert^2 & □ \\ 0 & \lvert y\rvert^2 \end{bmatrix} -
+  \begin{bmatrix} □ & □ \\ 0 & 0 \end{bmatrix}
+  \begin{bmatrix} □ & □ \\ □ & □ \end{bmatrix}
+  \begin{bmatrix} 0 & □ \\ 0 & □ \end{bmatrix}
+\right) \\ &=
+\lvert x\bar{y}\rvert^2 \lvert x\rvert^2 \lvert y\rvert^2 = \lvert xy\rvert^4 = 1.
+\end{align}$$
+This concludes `Lorentz.SL2C.toSelfAdjointMap_det_one'`. To get
+`Lorentz.SL2C.toSelfAdjointMap_det_one`, triangulate the special linear matrix using
+`Matrix.schur_triangulation`, and observe that `Matrix.schurTriangulation` preserves the determinant
+which is 1.
+
+-/
 
 open Complex (I normSq) in
 lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM : M.det = 1) :
