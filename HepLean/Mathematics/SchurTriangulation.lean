@@ -5,8 +5,6 @@ Authors: Gordon Hsu
 -/
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.LinearAlgebra.Matrix.Spectrum
-open scoped InnerProductSpace
-
 /-! # Schur triangulation
 
 Schur triangulation is more commonly known as Schur decomposition or Schur triangularization, but
@@ -23,6 +21,8 @@ be decomposed as `A = U * T * star U` where `U` is unitary and `T` is upper tria
 `LinearMap.SchurTriangulationAux.of` contains the main algorithm for the triangulation procedure.
 
 -/
+
+open scoped InnerProductSpace
 
 /-- `subNat' i h` subtracts `m` from `i`. This is an alternative form of `Fin.subNat`. -/
 @[inline] def Fin.subNat' (i : Fin (m + n)) (h : ¬ i < m) : Fin n :=
