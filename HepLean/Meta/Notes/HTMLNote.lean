@@ -15,7 +15,7 @@ namespace HepLean
 open Lean System Meta
 
 /-- A `HTMLNote` is a structure containing the html information from
-  invidual contributions (commands, informal commands, note ..) etc. to a note file. -/
+  individual contributions (commands, informal commands, note ..) etc. to a note file. -/
 structure HTMLNote where
   /-- The name of the file the contribution came from. -/
   fileName : Name

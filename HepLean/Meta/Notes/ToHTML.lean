@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Meta.Notes.HTMLNote
 /-!
 
-## Turns a delaration into a html note structure.
+## Turns a declaration into a html note structure.
 
 -/
 
@@ -174,7 +174,7 @@ def leanNote : String := "
   </p>
 </div>
 "
-/-- The footor of the html file. -/
+/-- The footer of the html file. -/
 def footerHTML : String :=
 "</body>
 </html>"
