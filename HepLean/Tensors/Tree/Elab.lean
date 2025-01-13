@@ -43,7 +43,7 @@ import HepLean.Lorentz.ComplexTensor.Basic
   to Lean as `{T | α β ⊗ T3 | α β }ᵀ`.
 - Note that compared to ordinary index notation, we do not rise or lower the indices.
   This is for two reasons: 1) It is difficult to make this general for all tensor species,
-  2) It is a reduency in ordinary index notation, since the tensor `T` itself already tells you
+  2) It is a redundancy in ordinary index notation, since the tensor `T` itself already tells you
   this information.
 
 -/
@@ -74,7 +74,7 @@ syntax ident : indexExpr
 /-- An index can be a num, which will be used to evaluate the tensor. -/
 syntax num : indexExpr
 
-/-- Notation to discribe the jiggle of a tensor index. -/
+/-- Notation to describe the jiggle of a tensor index. -/
 syntax "τ(" ident ")" : indexExpr
 
 /-- Bool which is ture if an index is a num. -/
@@ -83,7 +83,7 @@ def indexExprIsNum (stx : Syntax) : Bool :=
   | `(indexExpr|$_:num) => true
   | _ => false
 
-/-- If an index is a num - the undelrying natural number. -/
+/-- If an index is a num - the underlying natural number. -/
 def indexToNum (stx : Syntax) : TermElabM Nat :=
   match stx with
   | `(indexExpr|$a:num) =>
@@ -295,7 +295,7 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
       return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
   | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
 
-/-- Adjusts a list `List ℕ` by subtracting from each natrual number the number
+/-- Adjusts a list `List ℕ` by subtracting from each natural number the number
   of elements before it in the list which are less then itself. This is used
   to form a list of pairs which can be used for evaluating indices. -/
 def evalAdjustPos (l : List ℕ) : List ℕ :=
@@ -337,7 +337,7 @@ def withoutContr (ind : List (TSyntax `indexExpr)) : TermElabM (List (TSyntax `i
 
 end TensorNode
 
-/-- Takes a list and puts conseutive elements into pairs.
+/-- Takes a list and puts consecutive elements into pairs.
   e.g. [0, 1, 2, 3] becomes [(0, 1), (2, 3)]. -/
 def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   match l with
@@ -345,7 +345,7 @@ def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   | [] => []
   | [x] => [(x, 0)]
 
-/-- Adjusts a list `List (ℕ × ℕ)` by subtracting from each natrual number the number
+/-- Adjusts a list `List (ℕ × ℕ)` by subtracting from each natural number the number
   of elements before it in the list which are less then itself. This is used
   to form a list of pairs which can be used for contracting indices. -/
 def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
