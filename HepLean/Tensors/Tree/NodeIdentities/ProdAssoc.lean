@@ -21,7 +21,7 @@ namespace TensorTree
 variable {S : TensorSpecies} {n n2 n3 : ℕ}
     (c : Fin n → S.C) (c2 : Fin n2 → S.C) (c3 : Fin n3 → S.C)
 
-/-- The permutation that arises from assocativity of `prod` node.
+/-- The permutation that arises from associativity of `prod` node.
   This permutation is defined using braiding and composition with `finSumFinEquiv`
   based-isomorphisms. -/
 def assocPerm : OverColor.mk
