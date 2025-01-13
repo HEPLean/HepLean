@@ -125,7 +125,7 @@ lemma getDual?_get_self_neq (i : Fin n) (h : (c.getDual? i).isSome) :
 def uncontracted : Finset (Fin n) := Finset.filter (fun i => c.getDual? i = none) (Finset.univ)
 
 lemma congr_uncontracted {n m : ℕ} (c : ContractionsNat n) (h : n = m) :
-    (c.congr h).uncontracted = Finset.map (Fin.castOrderIso h).toEmbedding c.uncontracted := by
+    (c.congr h).uncontracted = Finset.map (finCongr h).toEmbedding c.uncontracted := by
   subst h
   simp
 
@@ -850,17 +850,29 @@ lemma uncontractedList_length_eq_card (c : ContractionsNat n) :
   rw [uncontractedList_eq_sort]
   exact Finset.length_sort fun x1 x2 => x1 ≤ x2
 
-lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· ≤ ·)) (i : Fin n.succ)  :
-    ((List.map i.succAboveEmb l)).Sorted (· ≤ ·) := by
+
+
+lemma fin_list_sorted_monotone_sorted {n m : ℕ} (l: List (Fin n)) (hl : l.Sorted (· ≤ ·))
+   (f : Fin n → Fin m) (hf : StrictMono f) :
+    ((List.map f l)).Sorted (· ≤ ·) := by
   induction l with
   | nil => simp
   | cons a l ih =>
     simp
     apply And.intro
     · simp at hl
-      exact fun b hb => Fin.succAbove_le_succAbove_iff.mpr (hl.1 b hb )
+      intro b hb
+      have hl1 := hl.1 b hb
+      exact (StrictMono.le_iff_le hf).mpr hl1
     · simp at hl
       exact ih hl.2
+
+lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· ≤ ·)) (i : Fin n.succ)  :
+    ((List.map i.succAboveEmb l)).Sorted (· ≤ ·) := by
+  apply fin_list_sorted_monotone_sorted
+  exact hl
+  simp
+  exact Fin.strictMono_succAbove i
 
 lemma uncontractedList_succAboveEmb_sorted (c : ContractionsNat n) (i : Fin n.succ) :
     ((List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
@@ -1142,6 +1154,11 @@ lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.State
     ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
     ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
   rw [(c.uncontractedStatesEquiv φs).sum_comp]
+
+lemma uncontractedStatesEquiv_take (φs : List 𝓕.States) (c : ContractionsNat φs.length) (i : ℕ) :
+    (c.uncontractedList.map φs.val) (c.uncontractedStatesEquiv φs ) =
+    some (Fin.cast (List.length_map φs.get) (c.uncontractedList.take i).length) := by
+  sorry
 
 lemma uncontractedList_extractEquiv_symm_some (c : ContractionsNat n) (i : Fin n.succ)
   (k : c.uncontracted) :
