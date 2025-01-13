@@ -17,7 +17,7 @@ The way to describe color is through examples.
 Indices of real Lorentz tensors can either be up-colored or down-colored.
 On the other hand, indices of Einstein tensors can just down-colored.
 In the case of complex Lorentz tensors, indices can take one of six different colors,
-corresponding to up and down, dotted and undotted weyl fermion indcies and up and down
+corresponding to up and down, dotted and undotted weyl fermion indices and up and down
 Lorentz indices.
 
 -/
