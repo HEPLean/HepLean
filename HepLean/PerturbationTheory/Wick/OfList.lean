@@ -93,7 +93,7 @@ lemma sumFiber_ι (f : 𝓕 → Type) [∀ i, Fintype (f i)] (i : 𝓕) :
 /-- Given a list `l : List I` the corresponding element of `FreeAlgebra ℂ (Σ i, f i)`
   by mapping each `i : I` to the sum of it's fiber in `Σ i, f i` and taking the product of the
   result.
-  For example, in terms of creation and annihlation opperators,
+  For example, in terms of creation and annihilation opperators,
   `[φ₁, φ₂, φ₃]` gets taken to `(φ₁⁰ + φ₁¹)(φ₂⁰ + φ₂¹)(φ₃⁰ + φ₃¹)`.
   -/
 def ofListLift (f : 𝓕 → Type) [∀ i, Fintype (f i)] (l : List 𝓕) (x : ℂ) :

@@ -208,7 +208,7 @@ instance isFull_decidable : Decidable c.IsFull := by
   apply decidable_of_decidable_of_iff hn.symm
 
 /-- A structure specifying when a type `I` and a map `f :I → Type` corresponds to
-  the splitting of a fields `φ` into a creation `n` and annihlation part `p`. -/
+  the splitting of a fields `φ` into a creation `n` and annihilation part `p`. -/
 structure Splitting (f : 𝓕 → Type) [∀ i, Fintype (f i)]
     (le : (Σ i, f i) → (Σ i, f i) → Prop) [DecidableRel le] where
   /-- The creation part of the fields. The label `n` corresponds to the fact that
@@ -217,9 +217,9 @@ structure Splitting (f : 𝓕 → Type) [∀ i, Fintype (f i)]
   /-- The annhilation part of the fields. The label `p` corresponds to the fact that
     in normal ordering these feilds get pushed to the positive (right) direction. -/
   𝓑p : 𝓕 → (Σ i, f i)
-  /-- The complex coefficent of creation part of a field `i`. This is usually `0` or `1`. -/
+  /-- The complex coefficient of creation part of a field `i`. This is usually `0` or `1`. -/
   𝓧n : 𝓕 → ℂ
-  /-- The complex coefficent of annhilation part of a field `i`. This is usually `0` or `1`. -/
+  /-- The complex coefficient of annhilation part of a field `i`. This is usually `0` or `1`. -/
   𝓧p : 𝓕 → ℂ
   h𝓑 : ∀ i, ofListLift f [i] 1 = ofList [𝓑n i] (𝓧n i) + ofList [𝓑p i] (𝓧p i)
   h𝓑n : ∀ i j, le (𝓑n i) j

@@ -33,7 +33,7 @@ def AsymptoticPosTime : Type := 𝓕.Fields × Lorentz.Contr 4
 /-- States specified by a field and a space-time position. -/
 def PositionStates : Type := 𝓕.Fields × SpaceTime
 
-/-- The combintation of asymptotic states and position states. -/
+/-- The combination of asymptotic states and position states. -/
 inductive States (𝓕 : FieldStruct) where
   | negAsymp : 𝓕.AsymptoticNegTime → 𝓕.States
   | position : 𝓕.PositionStates → 𝓕.States

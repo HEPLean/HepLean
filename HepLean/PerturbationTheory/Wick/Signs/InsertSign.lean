@@ -20,7 +20,7 @@ section
 
 ## Basic properties of lists
 
-To be replaced with Mathlib or Lean definitions when/where appropraite.
+To be replaced with Mathlib or Lean definitions when/where appropriate.
 -/
 
 lemma take_insert_same {I : Type} (i : I) :

@@ -264,7 +264,7 @@ lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFu
 
 -/
 
-/-- The proposition on the coefficents for a potential to be bounded. -/
+/-- The proposition on the coefficients for a potential to be bounded. -/
 def IsBounded : Prop :=
   ∃ c, ∀ Φ x, c ≤ P.toFun Φ x
 

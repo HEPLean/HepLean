@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 /-!
 
-# Static wick coefficent
+# Static wick coefficient
 
 -/
 

@@ -7,15 +7,15 @@ import HepLean.PerturbationTheory.FieldStruct.Basic
 import HepLean.PerturbationTheory.CreateAnnihilate
 /-!
 
-# Creation and annihlation parts of fields
+# Creation and annihilation parts of fields
 
 -/
 
 namespace FieldStruct
 variable (𝓕 : FieldStruct)
 
-/-- To each state the specificaition of the type of creation and annihlation parts.
-  For asymptotic staes there is only one allowed part, whilst for position states
+/-- To each state the specification of the type of creation and annihilation parts.
+  For asymptotic states there is only one allowed part, whilst for position states
   there is two. -/
 def statesToCreateAnnihilateType : 𝓕.States → Type
   | States.negAsymp _ => Unit
@@ -42,19 +42,19 @@ def statesToCreateAnnihilateTypeCongr : {i j : 𝓕.States} → i = j →
     𝓕.statesToCreateAnnihilateType i ≃ 𝓕.statesToCreateAnnihilateType j
   | _, _, rfl => Equiv.refl _
 
-/-- A creation and annihlation state is a state plus an valid specification of the
+/-- A creation and annihilation state is a state plus an valid specification of the
   creation or annihliation part of that state. (For asympotic states there is only one valid
   choice). -/
 def CreateAnnihilateStates : Type := Σ (s : 𝓕.States), 𝓕.statesToCreateAnnihilateType s
 
-/-- The map from creation and annihlation states to their underlying states. -/
+/-- The map from creation and annihilation states to their underlying states. -/
 def createAnnihilateStatesToStates : 𝓕.CreateAnnihilateStates → 𝓕.States := Sigma.fst
 
 @[simp]
 lemma createAnnihilateStatesToStates_prod (s : 𝓕.States) (t : 𝓕.statesToCreateAnnihilateType s) :
     𝓕.createAnnihilateStatesToStates ⟨s, t⟩ = s := rfl
 
-/-- The map from creation and annihlation states to the type `CreateAnnihilate`
+/-- The map from creation and annihilation states to the type `CreateAnnihilate`
   specifying if a state is a creation or an annihilation state. -/
 def createAnnihlateStatesToCreateAnnihilate : 𝓕.CreateAnnihilateStates → CreateAnnihilate
   | ⟨States.negAsymp _, _⟩ => CreateAnnihilate.create
@@ -62,7 +62,7 @@ def createAnnihlateStatesToCreateAnnihilate : 𝓕.CreateAnnihilateStates → Cr
   | ⟨States.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
   | ⟨States.posAsymp _, _⟩ => CreateAnnihilate.annihilate
 
-/-- The normal ordering on creation and annihlation states. -/
+/-- The normal ordering on creation and annihilation states. -/
 def normalOrder : 𝓕.CreateAnnihilateStates → 𝓕.CreateAnnihilateStates → Prop :=
   fun a b => CreateAnnihilate.normalOrder (𝓕.createAnnihlateStatesToCreateAnnihilate a)
     (𝓕.createAnnihlateStatesToCreateAnnihilate b)

@@ -7,11 +7,11 @@ import Mathlib.Order.Defs.Unbundled
 import Mathlib.Data.Fintype.Basic
 /-!
 
-# Creation and annihlation parts of fields
+# Creation and annihilation parts of fields
 
 -/
 
-/-- The type specifing whether an operator is a creation or annihilation operator. -/
+/-- The type specifying whether an operator is a creation or annihilation operator. -/
 inductive CreateAnnihilate where
   | create : CreateAnnihilate
   | annihilate : CreateAnnihilate
@@ -29,7 +29,7 @@ instance : Fintype CreateAnnihilate where
     · refine Finset.insert_eq_self.mp ?_
       exact rfl
 
-/-- The normal ordering on creation and annihlation operators.
+/-- The normal ordering on creation and annihilation operators.
   Creation operators are put to the left. -/
 def normalOrder : CreateAnnihilate → CreateAnnihilate → Prop
   | create, create => True

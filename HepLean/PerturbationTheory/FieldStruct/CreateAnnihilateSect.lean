@@ -7,7 +7,7 @@ import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
 import HepLean.PerturbationTheory.CreateAnnihilate
 /-!
 
-# Creation and annihlation sections
+# Creation and annihilation sections
 
 -/
 
@@ -68,7 +68,7 @@ def cons {φ : 𝓕.States} (ψ : 𝓕.statesToCreateAnnihilateType φ) (ψs : C
     CreateAnnihilateSect (φ :: φs) := ⟨⟨φ, ψ⟩ :: ψs.1, by
   simp [List.map_cons, ψs.2]⟩
 
-/-- The creation and annihlation sections for a singleton list is given by
+/-- The creation and annihilation sections for a singleton list is given by
   a choice of `𝓕.statesToCreateAnnihilateType φ`. If `φ` is a asymptotic state
   there is no choice here, else there are two choices. -/
 def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃

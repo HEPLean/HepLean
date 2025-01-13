@@ -148,7 +148,7 @@ lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =
   See e.g. https://inspirehep.net/literature/201299 and
   https://arxiv.org/pdf/hep-ph/0605184. -/
 
-/-- The proposition on the coefficents for a potential to be bounded. -/
+/-- The proposition on the coefficients for a potential to be bounded. -/
 def IsBounded : Prop :=
   ∃ c, ∀ Φ1 Φ2 x, c ≤ P.toFun Φ1 Φ2 x
 
