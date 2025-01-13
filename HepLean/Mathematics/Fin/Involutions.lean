@@ -291,11 +291,11 @@ lemma involutionAddEquiv_isSome_image_zero {n : ℕ} :
 
 ## Equivalences of involutions with no fixed points.
 
-The main aim of thes equivalences is to define `involutionNoFixedZeroEquivProd`.
+The main aim of these equivalences is to define `involutionNoFixedZeroEquivProd`.
 
 -/
 
-/-- Fixed point free involutions of `Fin n.succ` can be seperated based on where they sent
+/-- Fixed point free involutions of `Fin n.succ` can be separated based on where they sent
   `0`. -/
 def involutionNoFixedEquivSum {n : ℕ} :
     {f : Fin n.succ → Fin n.succ // Function.Involutive f
@@ -544,7 +544,7 @@ def involutionNoFixedEquivSumSame {n : ℕ} :
   refine Equiv.trans involutionNoFixedEquivSum ?_
   refine Equiv.sigmaCongrRight involutionNoFixedZeroSetEquiv
 
-/-- Ever fixed-point free involutions of `Fin n.succ.succ` can be decomponsed into a
+/-- Ever fixed-point free involutions of `Fin n.succ.succ` can be decomposed into a
   element of `Fin n.succ` (where `0` is sent) and a fixed-point free involution of
   `Fin n`. -/
 def involutionNoFixedZeroEquivProd {n : ℕ} :

@@ -17,7 +17,7 @@ closed field, e.g., `ℂ`, is unitarily similar to an upper triangular matrix.
 be decomposed as `A = U * T * star U` where `U` is unitary and `T` is upper triangular.
 - `Matrix.schurTriangulationUnitary` : the unitary matrix `U` as previously stated.
 - `Matrix.schurTriangulation` : the upper triangular matrix `T` as previously stated.
-- Some auxilary definitions are not meant to be used directly, but
+- Some auxiliary definitions are not meant to be used directly, but
 `LinearMap.SchurTriangulationAux.of` contains the main algorithm for the triangulation procedure.
 
 -/
@@ -124,8 +124,8 @@ end
 Given a linear endomorphism `f` on a non-trivial finite-dimensional vector space `E` over an
 algebraically closed field `𝕜`, one can always pick an eigenvalue `μ` of `f` whose corresponding
 eigenspace `V` is non-trivial. Given that `E` is also an inner product space, let `bV` and `bW` be
-othonormal bases for `V` and `Vᗮ` respectively. Then, the collection of vectors in `bV` and `bW`
-forms an othornomal basis `bE` for `E`, as the direct sum of `V` and `Vᗮ` is an internal
+orthonormal bases for `V` and `Vᗮ` respectively. Then, the collection of vectors in `bV` and `bW`
+forms an orthonormal basis `bE` for `E`, as the direct sum of `V` and `Vᗮ` is an internal
 decomposition of `E`. The matrix representation of `f` with respect to `bE` satisfies
 $$
 \sideset{_\mathrm{bE}}{_\mathrm{bE}}{[f]} =
