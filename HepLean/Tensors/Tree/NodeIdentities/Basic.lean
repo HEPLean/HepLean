@@ -9,7 +9,7 @@ import HepLean.Tensors.Tree.Basic
 ## Basic node identities
 
 This file contains the basic node identities for tensor trees.
-More compliciated identities appear in there own files.
+More complicated identities appear in there own files.
 
 -/
 
@@ -54,7 +54,7 @@ lemma tensorNode_of_tree (t : TensorTree S c) : (tensorNode t.tensor).tensor = t
 
 -/
 
-/-- Two `neg` nodes of a tensor tree cancle. -/
+/-- Two `neg` nodes of a tensor tree cancel. -/
 @[simp]
 lemma neg_neg (t : TensorTree S c) : (neg (neg t)).tensor = t.tensor := by
   simp only [neg_tensor, _root_.neg_neg]
@@ -125,7 +125,7 @@ lemma perm_eq_id {n : ℕ} {c : Fin n → S.C} (σ : (OverColor.mk c) ⟶ (OverC
   simp [perm_tensor, h]
 
 /-- Given an equality of tensors corresponding to tensor trees where the tensor tree on the
-  left finishes with a permution node, this permutation node can be moved to the
+  left finishes with a premotion node, this permutation node can be moved to the
   tensor tree on the right. This lemma holds here for isomorphisms only, but holds in practice
   more generally. -/
 lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
