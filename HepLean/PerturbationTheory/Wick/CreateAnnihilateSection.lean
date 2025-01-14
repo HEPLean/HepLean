@@ -16,9 +16,9 @@ open FieldStatistic
 
 /-- The sections of `Σ i, f i` over a list `φs : List 𝓕`.
   In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
-  each field as a `creation` or an `annilation` operator. E.g. the number of terms
-  `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
-  operators at this point (e.g. ansymptotic states) this is accounted for. -/
+  each field as a `creation` or an `annihilation` operator. E.g. the number of terms
+  `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annihilation
+  operators at this point (e.g. asymptotic states) this is accounted for. -/
 def CreateAnnihilateSect {𝓕 : Type} (f : 𝓕 → Type) (φs : List 𝓕) : Type :=
   Π i, f (φs.get i)
 

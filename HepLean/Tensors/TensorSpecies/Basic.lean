@@ -11,7 +11,7 @@ import HepLean.Tensors.OverColor.Discrete
 - A tensor species is a structure including all of the ingredients needed to define a type of
   tensor.
 - Examples of tensor species will include real Lorentz tensors, complex Lorentz tensors, and
-  Einstien tensors.
+  Einstein tensors.
 - Tensor species are built upon symmetric monoidal categories.
 
 -/
@@ -93,7 +93,7 @@ open OverColor
 
 variable (S : TensorSpecies)
 
-/-- The field `k` of a TensorSpecies has the instance of a commuative ring. -/
+/-- The field `k` of a TensorSpecies has the instance of a commutative ring. -/
 instance : CommRing S.k := S.k_commRing
 
 /-- The field `G` of a TensorSpecies has the instance of a group. -/
@@ -290,7 +290,7 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
 
 -/
 
-/-- The equivaelcne between tensors based on `![c]` and vectros in ` S.FD.obj (Discrete.mk c)`. -/
+/-- The equivalence between tensors based on `![c]` and vectors in ` S.FD.obj (Discrete.mk c)`. -/
 def tensorToVec (c : S.C) : S.F.obj (OverColor.mk ![c]) ≅ S.FD.obj (Discrete.mk c) :=
   OverColor.forgetLiftAppCon S.FD c
 

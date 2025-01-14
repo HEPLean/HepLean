@@ -57,7 +57,7 @@ lemma subtype_val_eq_toGL : (Subtype.val : SO3 → Matrix (Fin 3) (Fin 3) ℝ) =
     Units.val ∘ toGL.toFun :=
   rfl
 
-/-- The inclusino of `SO(3)` into `GL(3,ℝ)` is an injection. -/
+/-- The inclusion of `SO(3)` into `GL(3,ℝ)` is an injection. -/
 lemma toGL_injective : Function.Injective toGL := by
   refine fun A B h ↦ Subtype.eq ?_
   rw [@Units.ext_iff] at h

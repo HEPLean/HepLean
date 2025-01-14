@@ -106,10 +106,10 @@ def preimageEdge {𝓔 𝓥 : Type} (v : 𝓔) :
 
 /-!
 
-## Finitness of pre-Feynman rules
+## Finiteness of pre-Feynman rules
 
 We define a class of `PreFeynmanRule` which have nice properties with regard to
-decidablity and finitness.
+decidability and finiteness.
 
 In practice, every pre-Feynman rule considered in the physics literature satisfies these
 properties.
@@ -307,7 +307,7 @@ lemma diagramEdgeProp_iff {𝓔 𝓥 : Type} (F : Over (P.HalfEdgeLabel × 𝓔 
     obtain ⟨fm, hf1, hf2⟩ := (isIso_of_reflects_iso _ (Over.forget P.HalfEdgeLabel) : IsIso f)
     exact ⟨f, fm, hf1, hf2⟩
 
-/-- The proposition `DiagramVertexProp` is decidable given various decidablity and finite
+/-- The proposition `DiagramVertexProp` is decidable given various decidability and finite
   conditions. -/
 instance diagramVertexPropDecidable
     [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓥] [DecidableEq 𝓥]
@@ -319,7 +319,7 @@ instance diagramVertexPropDecidable
     (fun _ => P.preFeynmanRuleDecEq𝓱𝓔) _ _ _)) _) _)
     (P.diagramVertexProp_iff F f).symm
 
-/-- The proposition `DiagramEdgeProp` is decidable given various decidablity and finite
+/-- The proposition `DiagramEdgeProp` is decidable given various decidability and finite
   conditions. -/
 instance diagramEdgePropDecidable
     [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type} [Fintype 𝓔] [DecidableEq 𝓔]
@@ -418,7 +418,7 @@ lemma mk'_self : mk' F.𝓔𝓞.hom F.𝓥𝓞.hom F.𝓱𝓔To𝓔𝓥.hom F.co
 
 /-!
 
-## Finitness of Feynman diagrams
+## Finiteness of Feynman diagrams
 
 As defined above our Feynman diagrams can have non-finite Types of half-edges etc.
 We define the class of those Feynman diagrams which are `finite` in the appropriate sense.
@@ -482,7 +482,7 @@ instance {F : FeynmanDiagram P} [IsFiniteDiagram F] : DecidableEq F.𝓱𝓔 :=
 instance {F : FeynmanDiagram P} [IsFiniteDiagram F] (i : F.𝓱𝓔) (j : F.𝓔) :
     Decidable (F.𝓱𝓔To𝓔.hom i = j) := IsFiniteDiagram.𝓔DecidableEq (F.𝓱𝓔To𝓔.hom i) j
 
-/-- For a finite feynman diagram, the type of half edge lables, edges and vertices
+/-- For a finite feynman diagram, the type of half edge labels, edges and vertices
   is decidable. -/
 instance fintypeProdHalfEdgeLabel𝓔𝓥 {F : FeynmanDiagram P} [IsFinitePreFeynmanRule P]
     [IsFiniteDiagram F] : DecidableEq (P.HalfEdgeLabel × F.𝓔 × F.𝓥) :=
@@ -596,14 +596,14 @@ lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.�
     exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
 
 /-- If `𝓔` is a map between the edges of one finite Feynman diagram and another Feynman diagram,
-  then deciding whether `𝓔` froms a morphism in `Over P.EdgeLabel` between the edge
+  then deciding whether `𝓔` from a morphism in `Over P.EdgeLabel` between the edge
   maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓔 : F.𝓔 → G.𝓔) : Decidable (∀ x, G.𝓔𝓞.hom (𝓔 x) = F.𝓔𝓞.hom x) :=
   @Fintype.decidableForallFintype _ _ (fun _ => preFeynmanRuleDecEq𝓔 P _ _) _
 
 /-- If `𝓥` is a map between the vertices of one finite Feynman diagram and another Feynman diagram,
-  then deciding whether `𝓥` froms a morphism in `Over P.VertexLabel` between the vertex
+  then deciding whether `𝓥` from a morphism in `Over P.VertexLabel` between the vertex
   maps is decidable. -/
 instance {F G : FeynmanDiagram P} [IsFiniteDiagram F] [IsFinitePreFeynmanRule P]
     (𝓥 : F.𝓥 → G.𝓥) : Decidable (∀ x, G.𝓥𝓞.hom (𝓥 x) = F.𝓥𝓞.hom x) :=
@@ -765,7 +765,7 @@ def AdjRelation : F.𝓥 → F.𝓥 → Prop := fun x y =>
   ∃ (a b : F.𝓱𝓔), ((F.𝓱𝓔To𝓔𝓥.hom a).2.1 = (F.𝓱𝓔To𝓔𝓥.hom b).2.1
   ∧ (F.𝓱𝓔To𝓔𝓥.hom a).2.2 = x ∧ (F.𝓱𝓔To𝓔𝓥.hom b).2.2 = y)
 
-/-- The condition on whether two vertices are adjacent is deciable. -/
+/-- The condition on whether two vertices are adjacent is decidable. -/
 instance [IsFiniteDiagram F] : DecidableRel F.AdjRelation := fun _ _ =>
   @instDecidableAnd _ _ _ $
   @Fintype.decidableExistsFintype _ _ (fun _ => @Fintype.decidableExistsFintype _ _
@@ -791,7 +791,7 @@ def toSimpleGraph : SimpleGraph F.𝓥 where
 instance [IsFiniteDiagram F] : DecidableRel F.toSimpleGraph.Adj :=
   instDecidableRel𝓥AdjRelationOfIsFiniteDiagram F
 
-/-- For a finite feynman diagram it is deciable whether it is preconnected and has
+/-- For a finite feynman diagram it is decidable whether it is preconnected and has
   the Feynman diagram has a non-empty type of vertices. -/
 instance [IsFiniteDiagram F] :
   Decidable (F.toSimpleGraph.Preconnected ∧ Nonempty F.𝓥) :=

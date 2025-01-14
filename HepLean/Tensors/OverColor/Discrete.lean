@@ -46,7 +46,7 @@ def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverCol
     rfl
 
 /-- The isomorphism between `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2)` and
-  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensorate. -/
+  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensor. -/
 def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ≅
     (lift.obj F).obj (OverColor.mk ![c1,c2]) := by
   symm
@@ -200,7 +200,7 @@ lemma pairIsoSep_β {c1 c2 : C} (x : ↑(F.obj { as := c1 } ⊗ F.obj { as := c2
 
 /-- The isomorphism between
   `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3)` and
-  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensorate. -/
+  `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensor. -/
 def tripleIsoSep {c1 c2 c3 : C} :
     F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ⊗ F.obj (Discrete.mk c3) ≅
     (lift.obj F).obj (OverColor.mk ![c1,c2,c3]) :=

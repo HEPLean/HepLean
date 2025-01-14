@@ -27,7 +27,7 @@ open TensorTree
 
 variable {S : TensorSpecies}
 
-/-- Th map built contracting a 1-tensor with a 2-tensor using basic categorical consstructions.s -/
+/-- Th map built contracting a 1-tensor with a 2-tensor using basic categorical constructions. -/
 def contrOneTwoLeft {c1 c2 : S.C}
     (x : S.F.obj (OverColor.mk ![c1])) (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) :
     S.F.obj (OverColor.mk ![c2]) :=

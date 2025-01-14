@@ -68,7 +68,7 @@ If you want permission to create a pull-request for this repository contact Jose
 
 ## Installation
 
-If you want to playaround with HepLean, but do not want to download Lean, then you can use [GitPod](https://gitpod.io/#https://github.com/HEPLean/HepLean).
+If you want to play around with HepLean, but do not want to download Lean, then you can use [GitPod](https://gitpod.io/#https://github.com/HEPLean/HepLean).
 
 ### Installing Lean 4
 

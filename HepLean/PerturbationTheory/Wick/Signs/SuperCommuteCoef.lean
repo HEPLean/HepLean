@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.FieldStatistics
 /-!
 
-# Super commutation coefficent.
+# Super commutation coefficient.
 
 This is a complex number which is `-1` when commuting two fermionic operators and `1` otherwise.
 
