@@ -51,7 +51,7 @@ lemma toDualRep_apply_eq_contrOneTwoLeft (c : S.C) (x : S.FD.obj (Discrete.mk c)
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
     Action.instMonoidalCategory_rightUnitor_inv_hom, Action.instMonoidalCategory_whiskerLeft_hom,
     Action.instMonoidalCategory_associator_inv_hom, Action.instMonoidalCategory_whiskerRight_hom,
-    Action.instMonoidalCategory_leftUnitor_hom_hom, ModuleCat.coe_comp, Function.comp_apply,
+    Action.instMonoidalCategory_leftUnitor_hom_hom, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.rightUnitor_inv_apply, ModuleCat.MonoidalCategory.whiskerLeft_apply,
     Nat.succ_eq_add_one, Nat.reduceAdd, contrOneTwoLeft, Functor.comp_obj,
     Discrete.functor_obj_eq_as, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -80,7 +80,7 @@ lemma fromDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
       (fun x => by fin_cases x; exact (S.τ_involution c).symm))).tensor := by
   simp only
   rw [fromDualRep]
-  simp only [Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply, Nat.succ_eq_add_one,
+  simp only [Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply, Nat.succ_eq_add_one,
     Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero]
   rw [toDualRep_tensorTree]
   rw [tensorToVec_naturality_eqToHom_apply]
@@ -216,7 +216,7 @@ lemma toDualRep_fromDualRep_eq_self (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
 lemma fromDualRep_toDualRep_eq_self (c : S.C) (x : S.FD.obj (Discrete.mk (S.τ c))) :
     (S.toDualRep c).hom ((S.fromDualRep c).hom x) = x := by
   rw [S.toDualRep_congr (S.τ_involution c).symm, fromDualRep]
-  simp only [Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
+  simp only [Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply]
   change (S.FD.map (Discrete.eqToHom _)).hom ((S.toDualRep (S.τ (S.τ c))).hom
     (((S.FD.map (Discrete.eqToHom _)) ≫ S.FD.map (Discrete.eqToHom _)).hom
     (((S.toDualRep (S.τ c)).hom x)))) = _

@@ -178,7 +178,7 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     x i ⊗ₜ[S.k] (PiTensorProduct.tprod S.k (fun k => x (i.succAbove k))) := by
   simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, F_def, evalIso,
     Iso.trans_hom, Functor.mapIso_hom, Iso.symm_hom, tensorIso_hom, Action.comp_hom,
-    Action.instMonoidalCategory_tensorHom_hom, Functor.id_obj, mk_hom, ModuleCat.coe_comp,
+    Action.instMonoidalCategory_tensorHom_hom, Functor.id_obj, mk_hom, ModuleCat.hom_comp,
     Function.comp_apply]
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
@@ -200,11 +200,11 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     (((PiTensorProduct.tprod S.k) _)))) =_
   rw [lift.map_tprod]
   change ((TensorProduct.map (((lift.obj S.FD).map (mkIso _).hom).hom ≫
-    (forgetLiftApp S.FD (c i)).hom.hom)
-    ((lift.obj S.FD).map (mkIso _).hom).hom))
+    (forgetLiftApp S.FD (c i)).hom.hom).hom
+    ((lift.obj S.FD).map (mkIso _).hom).hom.hom))
     ((Functor.Monoidal.μIso (lift.obj S.FD).toFunctor
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inl))
-    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
+    (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom.hom
     ((((PiTensorProduct.tprod S.k) _)))) =_
   rw [lift.μIso_inv_tprod]
   rw [TensorProduct.map_tmul]
@@ -257,8 +257,8 @@ def evalLinearMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (
 def evalMap {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i))) :
     (S.F.obj (OverColor.mk c)).V ⟶ (S.F.obj (OverColor.mk (c ∘ i.succAbove))).V :=
   (S.evalIso c i).hom.hom ≫ (Functor.Monoidal.μIso (Action.forget _ _) _ _).inv
-  ≫ ModuleCat.asHom (TensorProduct.map (S.evalLinearMap i e) LinearMap.id) ≫
-  ModuleCat.asHom (TensorProduct.lid S.k _).toLinearMap
+  ≫ ModuleCat.ofHom (TensorProduct.map (S.evalLinearMap i e) LinearMap.id) ≫
+  ModuleCat.ofHom (TensorProduct.lid S.k _).toLinearMap
 
 lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin (S.repDim (c i)))
     (x : (i : Fin n.succ) → S.FD.obj (Discrete.mk (c i))) :
@@ -269,7 +269,8 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
   rw [evalMap]
   simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Action.forget_obj,
     Functor.Monoidal.μIso_inv, Functor.CoreMonoidal.toMonoidal_toOplaxMonoidal, Action.forget_δ,
-    mk_left, Functor.id_obj, mk_hom, Function.comp_apply, Category.id_comp, ModuleCat.coe_comp]
+    mk_left, Functor.id_obj, mk_hom, Function.comp_apply, Category.id_comp, ModuleCat.hom_comp]
+  simp_rw [LinearMap.comp_apply]
   erw [evalIso_tprod]
   change ((TensorProduct.lid S.k ↑((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove))).V))
     (((TensorProduct.map (S.evalLinearMap i e) LinearMap.id))

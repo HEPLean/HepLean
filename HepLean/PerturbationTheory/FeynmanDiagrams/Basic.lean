@@ -213,7 +213,7 @@ instance preimageVertexMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
     [DecidableEq 𝓥] (v : 𝓥) (f : 𝓥 ⟶ P.VertexLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
     Fintype ((P.vertexLabelMap (f v)).left → ((P.preimageVertex v).obj F).left) :=
-  Pi.fintype
+  Pi.instFintype
 
 /-- Given an edge, there is a finite number of maps between the indexing set of the
   expected half-edges corresponding to that edges label, and the actual indexing
@@ -222,7 +222,7 @@ instance preimageEdgeMapFintype [IsFinitePreFeynmanRule P] {𝓔 𝓥 : Type}
     [DecidableEq 𝓔] (v : 𝓔) (f : 𝓔 ⟶ P.EdgeLabel) (F : Over (P.HalfEdgeLabel × 𝓔 × 𝓥))
     [Fintype F.left] :
     Fintype ((P.edgeLabelMap (f v)).left → ((P.preimageEdge v).obj F).left) :=
-  Pi.fintype
+  Pi.instFintype
 
 /-!
 

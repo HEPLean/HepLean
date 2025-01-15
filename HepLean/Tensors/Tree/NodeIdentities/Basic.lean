@@ -301,7 +301,7 @@ lemma contr_action {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
     {h : c (i.succAbove j) = S.τ (c i)} (g : S.G) (t : TensorTree S c) :
     (contr i j h (action g t)).tensor = (action g (contr i j h t)).tensor := by
   simp only [Nat.succ_eq_add_one, contr_tensor, action_tensor]
-  change ((S.F.obj (OverColor.mk c)).ρ g ≫ (S.contrMap c i j h).hom) t.tensor = _
+  change (ModuleCat.ofHom ((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.contrMap c i j h).hom) t.tensor = _
   erw [(S.contrMap c i j h).comm g]
   rfl
 
@@ -311,16 +311,16 @@ lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : S.
     (prod (action g t) (action g t1)).tensor = (action g (prod t t1)).tensor := by
   simp only [prod_tensor, action_tensor, map_tmul]
   change _ = ((S.F.map (equivToIso finSumFinEquiv).hom).hom ≫
-    (S.F.obj (OverColor.mk (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm))).ρ g)
+    ModuleCat.ofHom ((S.F.obj (OverColor.mk (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm))).ρ g))
     (((Functor.LaxMonoidal.μ S.F (OverColor.mk c) (OverColor.mk c1)).hom
     (t.tensor ⊗ₜ[S.k] t1.tensor)))
   erw [← (S.F.map (equivToIso finSumFinEquiv).hom).comm g]
   simp only [Action.forget_obj, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply]
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply]
   change _ = (S.F.map (equivToIso finSumFinEquiv).hom).hom
     (((Functor.LaxMonoidal.μ S.F (OverColor.mk c) (OverColor.mk c1)).hom ≫
-    (S.F.obj (OverColor.mk (Sum.elim c c1))).ρ g) (t.tensor ⊗ₜ[S.k] t1.tensor))
+    ModuleCat.ofHom ((S.F.obj (OverColor.mk (Sum.elim c c1))).ρ g)) (t.tensor ⊗ₜ[S.k] t1.tensor))
   erw [← (Functor.LaxMonoidal.μ S.F (OverColor.mk c) (OverColor.mk c1)).comm g]
   rfl
 
@@ -334,7 +334,7 @@ lemma perm_action {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (g : S.G) (t : TensorTree S c) :
     (perm σ (action g t)).tensor = (action g (perm σ t)).tensor := by
   simp only [perm_tensor, action_tensor]
-  change (((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.F.map σ).hom) t.tensor = _
+  change (ModuleCat.ofHom ((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.F.map σ).hom) t.tensor = _
   erw [(S.F.map σ).comm g]
   rfl
 
@@ -359,13 +359,14 @@ lemma action_constTwoNode {c1 c2 : S.C}
     (g : S.G) : (action g (constTwoNode v)).tensor = (constTwoNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constTwoNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
-  change ((Discrete.pairIsoSep S.FD).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2])).ρ g)
-    ((v.hom _)) = _
+  change ((Discrete.pairIsoSep S.FD).hom.hom ≫
+    ModuleCat.ofHom ((S.F.obj (OverColor.mk ![c1, c2])).ρ g)) (v.hom _) = _
   erw [← (Discrete.pairIsoSep S.FD).hom.comm g]
-  change ((v.hom ≫ (S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 }).ρ g) ≫
-    (Discrete.pairIsoSep S.FD).hom.hom) _ =_
+  change ((v.hom ≫ ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 }).ρ g)) ≫
+    (Discrete.pairIsoSep S.FD).hom.hom) _ = _
   erw [← v.comm g]
   simp
+  rfl
 
 /-- An `action` node on a `constThreeNode` leaves the tensor invariant. -/
 lemma action_constThreeNode {c1 c2 c3 : S.C}
@@ -374,12 +375,13 @@ lemma action_constThreeNode {c1 c2 c3 : S.C}
     (g : S.G) : (action g (constThreeNode v)).tensor = (constThreeNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constThreeNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
-  change ((Discrete.tripleIsoSep S.FD).hom.hom ≫ (S.F.obj (OverColor.mk ![c1, c2, c3])).ρ g)
-    ((v.hom _)) = _
+  change ((Discrete.tripleIsoSep S.FD).hom.hom ≫
+    ModuleCat.ofHom ((S.F.obj (OverColor.mk ![c1, c2, c3])).ρ g)) (v.hom _) = _
   erw [← (Discrete.tripleIsoSep S.FD).hom.comm g]
-  change ((v.hom ≫ (S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗
-    S.FD.obj { as := c3 }).ρ g) ≫ (Discrete.tripleIsoSep S.FD).hom.hom) _ =_
+  change ((v.hom ≫ ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗
+    S.FD.obj { as := c3 }).ρ g)) ≫ (Discrete.tripleIsoSep S.FD).hom.hom) _ = _
   erw [← v.comm g]
   simp
+  rfl
 
 end TensorTree

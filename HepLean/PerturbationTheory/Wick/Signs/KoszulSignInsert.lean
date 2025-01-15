@@ -83,11 +83,11 @@ lemma koszulSignInsert_eq_filter (φ : 𝓕) : (φs : List 𝓕) →
     dsimp only [koszulSignInsert, Fin.isValue]
     simp only [Fin.isValue, List.filter, decide_not]
     by_cases h : le φ φ1
-    · simp only [h, ↓reduceIte, decide_True, Bool.not_true]
+    · simp only [h, ↓reduceIte, decide_true, Bool.not_true]
       rw [koszulSignInsert_eq_filter]
       congr
       simp
-    · simp only [h, ↓reduceIte, Fin.isValue, decide_False, Bool.not_false]
+    · simp only [h, ↓reduceIte, Fin.isValue, decide_false, Bool.not_false]
       dsimp only [Fin.isValue, koszulSignInsert]
       simp only [Fin.isValue, h, ↓reduceIte]
       rw [koszulSignInsert_eq_filter]
@@ -176,7 +176,7 @@ lemma koszulSignInsert_eq_insertSign [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : �
       simp_all
   rw [h1]
   rw [List.filter_cons]
-  simp only [decide_not, (IsTotal.to_isRefl le).refl φ, not_true_eq_false, decide_False,
+  simp only [decide_not, (IsTotal.to_isRefl le).refl φ, not_true_eq_false, decide_false,
     Bool.false_eq_true, ↓reduceIte]
   rw [orderedInsertPos_take]
   simp only [decide_not, List.append_right_eq_self, List.filter_eq_nil_iff, Bool.not_eq_eq_eq_not,

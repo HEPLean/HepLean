@@ -49,13 +49,13 @@ def uncontractedFromInvolution : {φs : List 𝓕} →
     if hn : n' = none then
       have hn' := involutionAddEquiv_none_image_zero (n := φs.length) (f := f) hn
       ⟨optionEraseZ luc φ none, by
-        simp only [optionEraseZ, Nat.succ_eq_add_one, List.length_cons, Mathlib.Vector.length_val]
+        simp only [optionEraseZ, Nat.succ_eq_add_one, List.length_cons, List.Vector.length_val]
         rw [← luc.2]
         conv_rhs => rw [Finset.card_filter]
         rw [Fin.sum_univ_succ]
         conv_rhs => erw [if_pos hn']
         ring_nf
-        simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val, Nat.cast_id,
+        simp only [Nat.succ_eq_add_one, List.Vector.length_val, Nat.cast_id,
           add_right_inj]
         rw [Finset.card_filter]
         apply congrArg
@@ -85,7 +85,7 @@ def uncontractedFromInvolution : {φs : List 𝓕} →
         conv_rhs => rw [hksucc]
         exact fun hn => Fin.succ_ne_zero k (Function.Involutive.injective f.2 hn)
       have hluc : 1 ≤ luc.1.length := by
-        simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val, Finset.one_le_card]
+        simp only [Nat.succ_eq_add_one, List.Vector.length_val, Finset.one_le_card]
         use k
         simp only [involutionCons, Nat.succ_eq_add_one, Fin.cons_update, Equiv.coe_fn_mk,
           dite_eq_left_iff, Finset.mem_filter, Finset.mem_univ, true_and]
@@ -95,7 +95,7 @@ def uncontractedFromInvolution : {φs : List 𝓕} →
       conv_rhs =>
         rw [Finset.card_filter]
         erw [Fin.sum_univ_succ, if_neg (Option.isSome_dite'.mp hkIsSome)]
-      simp only [Nat.succ_eq_add_one, Mathlib.Vector.length_val, List.length_cons,
+      simp only [Nat.succ_eq_add_one, List.Vector.length_val, List.length_cons,
         Nat.cast_id, zero_add]
       conv_rhs => lhs; rw [Eq.symm (Fintype.sum_ite_eq' k fun j => 1)]
       rw [← Finset.sum_add_distrib, Finset.card_filter]
@@ -275,7 +275,7 @@ lemma toInvolution_length_uncontracted {φs φsᵤₙ : List 𝓕} {c : Contract
   have h2 := (toInvolution ⟨φsᵤₙ, c⟩).2
   simp only at h2
   conv_lhs => rw [← h2]
-  exact Mathlib.Vector.length_val (uncontractedFromInvolution (toInvolution ⟨φsᵤₙ, c⟩).1)
+  exact List.Vector.length_val (uncontractedFromInvolution (toInvolution ⟨φsᵤₙ, c⟩).1)
 
 lemma toInvolution_cons {φs φsᵤₙ : List 𝓕} {φ : 𝓕}
     (c : ContractionsAux φs φsᵤₙ) (n : Option (Fin (φsᵤₙ.length))) :

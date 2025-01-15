@@ -127,8 +127,8 @@ def altRightBi : altRightHanded →ₗ[ℂ] rightHanded →ₗ[ℂ] ℂ where
     Physically, the contraction of a left-handed Weyl fermion with a alt-left-handed Weyl fermion.
     In index notation this is ψ^a φ_a. -/
 def leftAltContraction : leftHanded ⊗ altLeftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift leftAltBi
-  comm M := TensorProduct.ext' fun ψ φ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift leftAltBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun ψ φ => by
     change (M.1 *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) = ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
     rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
     simp
@@ -153,8 +153,8 @@ lemma leftAltContraction_basis (i j : Fin 2) :
     Physically, the contraction of a alt-left-handed Weyl fermion with a left-handed Weyl fermion.
     In index notation this is φ_a ψ^a. -/
 def altLeftContraction : altLeftHanded ⊗ leftHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift altLeftBi
-  comm M := TensorProduct.ext' fun φ ψ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift altLeftBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun φ ψ => by
     change (M.1⁻¹ᵀ *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1 *ᵥ ψ.toFin2ℂ) = φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]
     simp
@@ -181,8 +181,8 @@ The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
   In index notation this is ψ^{dot a} φ_{dot a}.
 -/
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift rightAltBi
-  comm M := TensorProduct.ext' fun ψ φ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift rightAltBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun ψ φ => by
     change (M.1.map star *ᵥ ψ.toFin2ℂ) ⬝ᵥ (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) =
       ψ.toFin2ℂ ⬝ᵥ φ.toFin2ℂ
     have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl
@@ -221,8 +221,8 @@ lemma rightAltContraction_basis (i j : Fin 2) :
     In index notation this is φ_{dot a} ψ^{dot a}.
 -/
 def altRightContraction : altRightHanded ⊗ rightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift altRightBi
-  comm M := TensorProduct.ext' fun φ ψ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift altRightBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun φ ψ => by
     change (M.1⁻¹.conjTranspose *ᵥ φ.toFin2ℂ) ⬝ᵥ (M.1.map star *ᵥ ψ.toFin2ℂ) =
       φ.toFin2ℂ ⬝ᵥ ψ.toFin2ℂ
     have h1 : (M.1)⁻¹ᴴ = ((M.1)⁻¹.map star)ᵀ := by rfl

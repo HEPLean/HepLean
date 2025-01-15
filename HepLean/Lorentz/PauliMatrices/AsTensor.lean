@@ -101,7 +101,7 @@ lemma asTensor_expand : asTensor =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗ rightHanded` manifesting
   the invariance under the `SL(2,ℂ)` action. -/
 def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗ rightHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • asTensor,
@@ -111,14 +111,14 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • asTensor =
+    change x • asTensor =
       (TensorProduct.map (complexContr.ρ M)
-        (TensorProduct.map (leftHanded.ρ M) (rightHanded.ρ M))) (x' • asTensor)
+        (TensorProduct.map (leftHanded.ρ M) (rightHanded.ρ M))) (x • asTensor)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     nth_rewrite 2 [asTensor]
@@ -189,9 +189,8 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
 /-- The map `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗ rightHanded` corresponding
   to Pauli matrices, when evaluated on `1` corresponds to the tensor `PauliMatrix.asTensor`. -/
 lemma asConsTensor_apply_one : asConsTensor.hom (1 : ℂ) = asTensor := by
-  change asConsTensor.hom.toFun (1 : ℂ) = asTensor
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    asConsTensor, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change asConsTensor.hom.hom.toFun (1 : ℂ) = asTensor
+  simp only [asConsTensor, one_smul]
 
 end
 end PauliMatrix

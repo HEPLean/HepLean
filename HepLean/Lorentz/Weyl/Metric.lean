@@ -81,7 +81,7 @@ lemma leftMetricVal_expand_tmul : leftMetricVal =
 /-- The metric `εᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • leftMetricVal,
@@ -91,13 +91,13 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • leftMetricVal =
-      (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) (x' • leftMetricVal)
+    change x • leftMetricVal =
+      (TensorProduct.map (leftHanded.ρ M) (leftHanded.ρ M)) (x • leftMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, leftMetricVal, map_neg, neg_inj]
@@ -108,9 +108,8 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
       not_false_eq_true, mul_nonsing_inv, transpose_one, mul_one]
 
 lemma leftMetric_apply_one : leftMetric.hom (1 : ℂ) = leftMetricVal := by
-  change leftMetric.hom.toFun (1 : ℂ) = leftMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    leftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change leftMetric.hom.hom.toFun (1 : ℂ) = leftMetricVal
+  simp only [leftMetric, one_smul]
 
 /-- The metric `εₐₐ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
 def altLeftMetricVal : (altLeftHanded ⊗ altLeftHanded).V :=
@@ -129,7 +128,7 @@ lemma altLeftMetricVal_expand_tmul : altLeftMetricVal =
 /-- The metric `εₐₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • altLeftMetricVal,
@@ -139,13 +138,13 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • altLeftMetricVal =
-      (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) (x' • altLeftMetricVal)
+    change x • altLeftMetricVal =
+      (TensorProduct.map (altLeftHanded.ρ M) (altLeftHanded.ρ M)) (x • altLeftMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, altLeftMetricVal]
@@ -156,9 +155,8 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
       not_false_eq_true, mul_nonsing_inv, mul_one]
 
 lemma altLeftMetric_apply_one : altLeftMetric.hom (1 : ℂ) = altLeftMetricVal := by
-  change altLeftMetric.hom.toFun (1 : ℂ) = altLeftMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    altLeftMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change altLeftMetric.hom.hom.toFun (1 : ℂ) = altLeftMetricVal
+  simp only [altLeftMetric, one_smul]
 
 /-- The metric `ε^{dot a}^{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
 def rightMetricVal : (rightHanded ⊗ rightHanded).V :=
@@ -176,7 +174,7 @@ lemma rightMetricVal_expand_tmul : rightMetricVal =
 /-- The metric `ε^{dot a}^{dot a}` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • rightMetricVal,
@@ -186,13 +184,13 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • rightMetricVal =
-      (TensorProduct.map (rightHanded.ρ M) (rightHanded.ρ M)) (x' • rightMetricVal)
+    change x • rightMetricVal =
+      (TensorProduct.map (rightHanded.ρ M) (rightHanded.ρ M)) (x • rightMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, rightMetricVal, map_neg, neg_inj]
@@ -211,9 +209,8 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
       rfl
 
 lemma rightMetric_apply_one : rightMetric.hom (1 : ℂ) = rightMetricVal := by
-  change rightMetric.hom.toFun (1 : ℂ) = rightMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    rightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change rightMetric.hom.hom.toFun (1 : ℂ) = rightMetricVal
+  simp only [rightMetric, one_smul]
 
 /-- The metric `ε_{dot a}_{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
 def altRightMetricVal : (altRightHanded ⊗ altRightHanded).V :=
@@ -233,7 +230,7 @@ lemma altRightMetricVal_expand_tmul : altRightMetricVal =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
 def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • altRightMetricVal,
@@ -243,13 +240,13 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • altRightMetricVal =
-      (TensorProduct.map (altRightHanded.ρ M) (altRightHanded.ρ M)) (x' • altRightMetricVal)
+    change x • altRightMetricVal =
+      (TensorProduct.map (altRightHanded.ρ M) (altRightHanded.ρ M)) (x • altRightMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V]
@@ -270,9 +267,8 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
       rfl
 
 lemma altRightMetric_apply_one : altRightMetric.hom (1 : ℂ) = altRightMetricVal := by
-  change altRightMetric.hom.toFun (1 : ℂ) = altRightMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    altRightMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change altRightMetric.hom.hom.toFun (1 : ℂ) = altRightMetricVal
+  simp only [altRightMetric, one_smul]
 
 /-!
 

@@ -30,7 +30,7 @@ variable {𝓕 : Type} {f : 𝓕 → Type} [∀ i, Fintype (f i)] {φs : List �
   (a : CreateAnnihilateSect f φs)
 
 /-- The type `CreateAnnihilateSect f φs` is finite. -/
-instance fintype : Fintype (CreateAnnihilateSect f φs) := Pi.fintype
+instance fintype : Fintype (CreateAnnihilateSect f φs) := Pi.instFintype
 
 /-- The section got by dropping the first element of `φs` if it exists. -/
 def tail : {φs : List 𝓕} → (a : CreateAnnihilateSect f φs) → CreateAnnihilateSect f φs.tail

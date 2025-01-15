@@ -73,8 +73,8 @@ def contrContrCoBi : complexCo →ₗ[ℂ] complexContr →ₗ[ℂ] ℂ where
     standard basis (i.e. the dot product).
     In terms of index notation this is the contraction is ψⁱ φᵢ. -/
 def contrCoContraction : complexContr ⊗ complexCo ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift contrCoContrBi
-  comm M := TensorProduct.ext' fun ψ φ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift contrCoContrBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun ψ φ => by
     change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M)) *ᵥ ψ.toFin13ℂ) ⬝ᵥ
       ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ *ᵥ φ.toFin13ℂ) = ψ.toFin13ℂ ⬝ᵥ φ.toFin13ℂ
     rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec]
@@ -113,8 +113,8 @@ lemma contrCoContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
     standard basis (i.e. the dot product).
     In terms of index notation this is the contraction is φᵢ ψⁱ. -/
 def coContrContraction : complexCo ⊗ complexContr ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
-  hom := TensorProduct.lift contrContrCoBi
-  comm M := TensorProduct.ext' fun φ ψ => by
+  hom := ModuleCat.ofHom <| TensorProduct.lift contrContrCoBi
+  comm M := ModuleCat.hom_ext <| TensorProduct.ext' fun φ ψ => by
     change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ *ᵥ φ.toFin13ℂ) ⬝ᵥ
       ((LorentzGroup.toComplex (SL2C.toLorentzGroup M)) *ᵥ ψ.toFin13ℂ) = φ.toFin13ℂ ⬝ᵥ ψ.toFin13ℂ
     rw [dotProduct_mulVec, mulVec_transpose, vecMul_vecMul]

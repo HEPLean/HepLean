@@ -62,7 +62,7 @@ lemma contrFin1Fin1_inv_tmul {n : ℕ} (c : Fin n.succ.succ → S.C)
     Functor.mapIso_inv, Action.comp_hom, Action.instMonoidalCategory_tensorObj_V,
     Action.instMonoidalCategory_tensorHom_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, mk_left, Functor.id_obj, mk_hom, Fin.isValue]
+    ModuleCat.hom_comp, mk_left, Functor.id_obj, mk_hom, Fin.isValue]
   change (S.F.map (OverColor.mkSum ((c ∘ ⇑(HepLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
     ((S.F.map ((OverColor.mkIso _).hom ⊗ (OverColor.mkIso _).hom)).hom
       ((Functor.LaxMonoidal.μ S.F (OverColor.mk fun _ => c i) (OverColor.mk fun _ => S.τ (c i))).hom
@@ -70,7 +70,7 @@ lemma contrFin1Fin1_inv_tmul {n : ℕ} (c : Fin n.succ.succ → S.C)
         ((OverColor.forgetLiftApp S.FD (S.τ (c i))).inv.hom y))))) = _
   simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    forgetLiftApp, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv, Fin.isValue]
+    forgetLiftApp, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv_hom, Fin.isValue]
   erw [OverColor.forgetLiftAppV_symm_apply,
     OverColor.forgetLiftAppV_symm_apply S.FD (S.τ (c i))]
   change ((OverColor.lift.obj S.FD).map (OverColor.mkSum
@@ -186,7 +186,7 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     tensorIso_hom, Monoidal.tensorUnit_obj, tensorHom_id,
     Category.assoc, Action.comp_hom, Action.instMonoidalCategory_tensorObj_V,
     Action.instMonoidalCategory_tensorHom_hom, Action.instMonoidalCategory_tensorUnit_V,
-    Action.instMonoidalCategory_whiskerRight_hom, Functor.id_obj, mk_hom, ModuleCat.coe_comp,
+    Action.instMonoidalCategory_whiskerRight_hom, Functor.id_obj, mk_hom, ModuleCat.hom_comp,
     Function.comp_apply, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as]
   change (λ_ ((lift.obj S.FD).obj _)).hom.hom
@@ -205,8 +205,8 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
   change (λ_ ((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)))).hom.hom
     (((S.contr.app { as := c i }).hom ▷ ((lift.obj S.FD).obj
     (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove))).V)
-    ((TensorProduct.map (S.contrFin1Fin1 c i j h).hom.hom
-    ((lift.obj S.FD).map (mkIso _).hom).hom)
+    ((TensorProduct.map (S.contrFin1Fin1 c i j h).hom.hom.hom
+    ((lift.obj S.FD).map (mkIso _).hom).hom.hom)
     (((PiTensorProduct.tprod S.k) fun i_1 =>
     (lift.discreteFunctorMapEqIso S.FD _)
     ((lift.discreteFunctorMapEqIso S.FD _) (x

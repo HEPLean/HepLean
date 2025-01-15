@@ -75,11 +75,11 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     tensorIso_inv, Iso.trans_inv, Iso.symm_inv, Functor.mapIso_hom, tensor_comp,
     Functor.Monoidal.μIso_hom, Functor.CoreMonoidal.toMonoidal_toLaxMonoidal, Functor.mapIso_inv,
     Category.assoc, Functor.LaxMonoidal.μ_natural_assoc, Action.comp_hom,
-    Action.instMonoidalCategory_tensorHom_hom, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv,
+    Action.instMonoidalCategory_tensorHom_hom, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.tensorHom_tmul, mk_hom, mk_left, Functor.id_obj]
-  erw [forgetLiftAppV_symm_apply F c1, forgetLiftAppV_symm_apply F c2]
+  simp
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
       ((Functor.LaxMonoidal.μ (lift.obj F).toFunctor (mk fun _ => c1) (mk fun _ => c2)).hom
@@ -116,8 +116,9 @@ lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk 
     Iso.trans_symm, Iso.symm_symm_eq, Iso.trans_assoc, Iso.trans_inv, Iso.symm_inv,
     Functor.mapIso_hom, tensorIso_hom, Iso.trans_hom, Iso.symm_hom, Functor.mapIso_inv, tensor_comp,
     Category.assoc, Action.comp_hom, Action.instMonoidalCategory_tensorHom_hom, mk_left,
-    Functor.id_obj, mk_hom, ModuleCat.coe_comp, Function.comp_apply, Equivalence.symm_inverse,
+    Functor.id_obj, mk_hom, ModuleCat.hom_comp, Function.comp_apply, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
+  simp_rw [LinearMap.comp_apply]
   erw [lift.map_tprod]
   erw [lift.μIso_inv_tprod]
   change (((forgetLiftApp F c1).hom.hom (((lift.obj F).map (mkIso _).inv).hom
@@ -167,11 +168,11 @@ lemma pairIsoSep_β {c1 c2 : C} (x : ↑(F.obj { as := c1 } ⊗ F.obj { as := c2
     ((lift.obj F).map ((OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
     (pairIsoSep_β_perm_cond c1 c2)))).hom
     ((Discrete.pairIsoSep F).hom.hom x) := by
-  have h1 : (Discrete.pairIsoSep F).hom.hom ∘ₗ
-      (β_ (F.obj (Discrete.mk c1)) (F.obj (Discrete.mk c2))).hom.hom
+  have h1 : (Discrete.pairIsoSep F).hom.hom.hom ∘ₗ
+      (β_ (F.obj (Discrete.mk c1)) (F.obj (Discrete.mk c2))).hom.hom.hom
       = ((lift.obj F).map ((OverColor.equivToHomEq
-      (finMapToEquiv ![1, 0] ![1, 0]) (pairIsoSep_β_perm_cond c1 c2)))).hom ∘ₗ
-      (Discrete.pairIsoSep F).hom.hom := by
+      (finMapToEquiv ![1, 0] ![1, 0]) (pairIsoSep_β_perm_cond c1 c2)))).hom.hom ∘ₗ
+      (Discrete.pairIsoSep F).hom.hom.hom := by
     apply TensorProduct.ext'
     intro x y
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equivalence.symm_inverse,
@@ -218,9 +219,10 @@ lemma tripleIsoSep_tmul {c1 c2 c3 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (
     Iso.symm_hom, Functor.mapIso_inv, Action.comp_hom,
     Action.instMonoidalCategory_whiskerLeft_hom, Action.instMonoidalCategory_whiskerRight_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.whiskerLeft_apply, ModuleCat.MonoidalCategory.whiskerRight_apply,
     Functor.id_obj, mk_hom]
+  simp
   erw [pairIsoSep_tmul F y z]
   erw [forgetLiftAppV_symm_apply F c1]
   erw [lift.obj_μ_tprod_tmul F _ _]

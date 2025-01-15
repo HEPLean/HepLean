@@ -41,7 +41,7 @@ lemma contrCoUnitVal_expand_tmul : contrCoUnitVal =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo`, manifesting the invaraince under
   the `SL(2, ℂ)` action. -/
 def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • contrCoUnitVal,
@@ -51,13 +51,13 @@ def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • contrCoUnitVal =
-      (TensorProduct.map (complexContr.ρ M) (complexCo.ρ M)) (x' • contrCoUnitVal)
+    change x • contrCoUnitVal =
+      (TensorProduct.map (complexContr.ρ M) (complexCo.ρ M)) (x • contrCoUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, contrCoUnitVal]
@@ -66,9 +66,8 @@ def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
     simp
 
 lemma contrCoUnit_apply_one : contrCoUnit.hom (1 : ℂ) = contrCoUnitVal := by
-  change contrCoUnit.hom.toFun (1 : ℂ) = contrCoUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    contrCoUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change contrCoUnit.hom.hom.toFun (1 : ℂ) = contrCoUnitVal
+  simp only [contrCoUnit, one_smul]
 
 /-- The co-contra unit for complex lorentz vectors. Usually denoted `δᵢⁱ`. -/
 def coContrUnitVal : (complexCo ⊗ complexContr).V :=
@@ -92,7 +91,7 @@ lemma coContrUnitVal_expand_tmul : coContrUnitVal =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr`, manifesting the invaraince under
   the `SL(2, ℂ)` action. -/
 def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • coContrUnitVal,
@@ -102,13 +101,13 @@ def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • coContrUnitVal =
-      (TensorProduct.map (complexCo.ρ M) (complexContr.ρ M)) (x' • coContrUnitVal)
+    change x • coContrUnitVal =
+      (TensorProduct.map (complexCo.ρ M) (complexContr.ρ M)) (x • coContrUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, coContrUnitVal]
@@ -119,9 +118,8 @@ def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
     simp
 
 lemma coContrUnit_apply_one : coContrUnit.hom (1 : ℂ) = coContrUnitVal := by
-  change coContrUnit.hom.toFun (1 : ℂ) = coContrUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    coContrUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change coContrUnit.hom.hom.toFun (1 : ℂ) = coContrUnitVal
+  simp only [coContrUnit, one_smul]
 /-!
 
 ## Contraction of the units
@@ -153,7 +151,7 @@ lemma contr_contrCoUnit (x : complexCo) :
   repeat rw (config := { transparency := .instances }) [h1'']
   repeat rw [coContrContraction_basis']
   simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom_hom, ModuleCat.ofSelfIso_hom,
     CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, ↓reduceIte,
     reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero,
     Fin.reduceEq, zero_add, zero_ne_one]

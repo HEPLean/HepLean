@@ -187,12 +187,12 @@ def complexLorentzTensor : TensorSpecies where
     | Color.down => Lorentz.contrCoUnit_symm
   contr_metric := fun c =>
     match c with
-    | Color.upL => by simpa using Fermion.leftAltContraction_apply_metric
-    | Color.downL => by simpa using Fermion.altLeftContraction_apply_metric
-    | Color.upR => by simpa using Fermion.rightAltContraction_apply_metric
-    | Color.downR => by simpa using Fermion.altRightContraction_apply_metric
-    | Color.up => by simpa using Lorentz.contrCoContraction_apply_metric
-    | Color.down => by simpa using Lorentz.coContrContraction_apply_metric
+    | Color.upL => by simp ; exact Fermion.leftAltContraction_apply_metric
+    | Color.downL => by simp ; exact Fermion.altLeftContraction_apply_metric
+    | Color.upR => by simp ; exact Fermion.rightAltContraction_apply_metric
+    | Color.downR => by simp ; exact Fermion.altRightContraction_apply_metric
+    | Color.up => by simp ; exact Lorentz.contrCoContraction_apply_metric
+    | Color.down => by simp ; exact Lorentz.coContrContraction_apply_metric
 
 namespace complexLorentzTensor
 

@@ -296,7 +296,7 @@ lemma contr_prod
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
   apply congrArg
   rfl
@@ -540,7 +540,7 @@ lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
   apply congrArg
   rfl

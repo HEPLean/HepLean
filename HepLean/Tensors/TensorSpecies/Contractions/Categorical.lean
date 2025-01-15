@@ -83,8 +83,8 @@ lemma contrOneTwoLeft_tprod_eq {c1 c2 : S.C}
   simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Nat.succ_eq_add_one, Nat.reduceAdd,
     Iso.trans_hom, Functor.mapIso_hom, Action.comp_hom, mk_left, Functor.id_obj, mk_hom,
-    ModuleCat.coe_comp, Function.comp_apply, LinearMap.id_coe, id_eq, Fin.isValue]
-  rw [forgetLiftApp_hom_hom_apply_eq]
+    ModuleCat.hom_comp, Function.comp_apply, LinearMap.id_coe, id_eq, Fin.isValue]
+  rw [LinearMap.comp_apply, forgetLiftApp_hom_hom_apply_eq]
   simp only [mk_left, Functor.id_obj, Fin.isValue]
   erw [OverColor.lift.map_tprod]
   congr
