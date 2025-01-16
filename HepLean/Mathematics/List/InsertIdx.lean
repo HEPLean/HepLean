@@ -79,6 +79,59 @@ lemma insertIdx_eq_take_drop {I : Type} (i : I) :
     simp
     exact insertIdx_eq_take_drop i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
 
+@[simp]
+lemma insertIdx_length_fin {I : Type} (i : I) :
+    (r : List I) → (n : Fin r.length.succ) →
+    (List.insertIdx n i r).length = r.length.succ
+  | [], 0 => by simp
+  | a :: as, 0 => by simp
+  | a :: as, ⟨n + 1, h⟩ => by
+    simp
+    exact insertIdx_length_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
+
+@[simp]
+lemma insertIdx_getElem_fin {I : Type} (i : I) :
+    (r : List I) → (k : Fin r.length.succ) → (m : Fin r.length) →
+    (List.insertIdx k i r)[(k.succAbove m).val] = r[m.val]
+  | [], 0, m => by exact Fin.elim0 m
+  | a :: as, 0, m => by simp
+  | a :: as, ⟨n + 1, h⟩, ⟨0, h0⟩  => by
+    simp [Fin.succAbove, Fin.lt_def]
+  | a :: as, ⟨n + 1, h⟩, ⟨m+1, hm⟩  => by
+    simp
+    conv_rhs => rw [← insertIdx_getElem_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩ ⟨m, Nat.lt_of_succ_lt_succ hm⟩]
+    simp [Fin.succAbove, Fin.lt_def]
+    split
+    · simp_all only [List.getElem_cons_succ]
+    · simp_all only [List.getElem_cons_succ]
+
+@[simp]
+lemma insertIdx_getElem_self {I : Type} (i : I) :
+    (r : List I) → (k : Fin r.length.succ) →
+    (List.insertIdx k i r)[k.val] = i
+  | [], 0 => by simp
+  | a :: as, 0 => by simp
+  | a :: as, ⟨n + 1, h⟩ => by
+    simp
+    rw [insertIdx_getElem_self i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
+
+
+@[simp]
+lemma insertIdx_eraseIdx_fin {I : Type} :
+    (r : List I) → (k : Fin r.length) →
+    (List.eraseIdx r k).insertIdx k r[k] = r
+  | [], k => by exact Fin.elim0 k
+  | a :: as, ⟨0, h⟩ => by simp
+  | a :: as, ⟨n + 1, h⟩ => by
+    simp
+    exact insertIdx_eraseIdx_fin  as ⟨n, Nat.lt_of_succ_lt_succ h⟩
+
+lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
+    r.get = (List.insertIdx k i r).get ∘
+    (finCongr (insertIdx_length_fin i r k).symm) ∘ k.succAbove := by
+  funext i
+  simp
+
 
 
 end HepLean.List

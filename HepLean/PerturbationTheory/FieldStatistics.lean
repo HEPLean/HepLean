@@ -60,6 +60,9 @@ lemma fermionic_mul_bosonic : fermionic * bosonic = fermionic := rfl
 @[simp]
 lemma fermionic_mul_fermionic : fermionic * fermionic = bosonic := rfl
 
+@[simp]
+lemma mul_self (a : FieldStatistic) : a * a = 1 := by
+  cases a <;> rfl
 
 /-- Field statics form a finite type. -/
 instance : Fintype FieldStatistic where
@@ -105,6 +108,23 @@ lemma eq_self_if_bosonic_eq {a : FieldStatistic} :
     (if bosonic = a then bosonic else fermionic) = a := by
   fin_cases a <;> rfl
 
+lemma mul_eq_one_iff (a b : FieldStatistic) : a * b = 1 ↔ a = b := by
+  fin_cases a <;> fin_cases b <;> simp
+
+lemma one_eq_mul_iff (a b : FieldStatistic) : 1 = a * b ↔ a = b := by
+  fin_cases a <;> fin_cases b <;> simp
+
+lemma mul_eq_iff_eq_mul (a b c : FieldStatistic) : a * b = c ↔ a = b * c := by
+  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
+  rfl
+  rfl
+  rfl
+
+lemma mul_eq_iff_eq_mul' (a b c : FieldStatistic) : a * b = c ↔ b = a * c := by
+  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
+  rfl
+  rfl
+  rfl
 /-- The field statistics of a list of fields is fermionic if ther is an odd number of fermions,
   otherwise it is bosonic. -/
 def ofList (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) → FieldStatistic
@@ -168,6 +188,37 @@ lemma ofList_orderedInsert (s : 𝓕 → FieldStatistic) (le1 : 𝓕 → 𝓕 �
 lemma ofList_insertionSort (s : 𝓕 → FieldStatistic) (le1 : 𝓕 → 𝓕 → Prop) [DecidableRel le1]
     (φs : List 𝓕) : ofList s (List.insertionSort le1 φs) = ofList s φs :=
   ofList_perm s (List.perm_insertionSort le1 φs)
+
+lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
+    (φs : List 𝓕) → (l : List (Fin φs.length)) → (hl : l.Nodup) →
+    ofList s (l.map φs.get) = ∏ (i : Fin φs.length), if i ∈ l then s φs[i] else 1
+  | [], [], _ => rfl
+  | [], i :: l, hl => Fin.elim0 i
+  | φ :: φs, [], hl => by
+    simp
+    rfl
+  | φ :: φs, i :: l, hl => by
+    simp
+    rw [ofList_cons_eq_mul]
+    rw [ofList_map_eq_finset_prod s (φ :: φs) l]
+    have h1 : s (φ :: φs)[↑i] = ∏ (j : Fin ( φ :: φs).length),
+      if j = i then s (φ :: φs)[↑i] else 1 := by
+      rw [Fintype.prod_ite_eq']
+    erw [h1]
+    rw [← Finset.prod_mul_distrib]
+    congr
+    funext a
+    simp
+    by_cases ha : a = i
+    · simp [ha]
+      rw [if_neg]
+      rfl
+      simp at hl
+      exact hl.1
+    · simp [ha]
+      rfl
+    simp at hl
+    exact hl.2
 
 def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
   toFun a :=

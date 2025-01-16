@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldStruct.StateAlgebra
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
+import HepLean.Mathematics.List.InsertionSort
 /-!
 
 # State algebra
@@ -56,12 +57,42 @@ open HepLean.List
 
 def maxTimeFieldPos (φ : 𝓕.States) (φs : List 𝓕.States) : ℕ :=
   insertionSortMinPos timeOrderProp φ φs
+
+lemma maxTimeFieldPos_lt_length (φ : 𝓕.States) (φs : List 𝓕.States) :
+    maxTimeFieldPos φ φs < (φ :: φs).length := by
+  simp [maxTimeFieldPos]
+
 def maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : 𝓕.States :=
   insertionSortMin timeOrderProp φ φs
 
 def eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : List 𝓕.States :=
   insertionSortDropMinPos timeOrderProp φ φs
 
+@[simp]
+lemma eraseMaxTimeField_length (φ : 𝓕.States) (φs : List 𝓕.States) :
+    (eraseMaxTimeField φ φs).length = φs.length := by
+  simp [eraseMaxTimeField, insertionSortDropMinPos, eraseIdx_length']
+
+lemma maxTimeFieldPos_lt_eraseMaxTimeField_length_succ (φ : 𝓕.States) (φs : List 𝓕.States) :
+    maxTimeFieldPos φ φs < (eraseMaxTimeField φ φs).length.succ := by
+  simp
+  exact maxTimeFieldPos_lt_length φ φs
+
+
+def maxTimeFieldPosFin (φ : 𝓕.States) (φs : List 𝓕.States) :
+    Fin (eraseMaxTimeField φ φs).length.succ :=
+  insertionSortMinPosFin timeOrderProp φ φs
+
+lemma lt_maxTimeFieldPosFin_not_timeOrder (φ : 𝓕.States) (φs : List 𝓕.States)
+    (i : Fin (eraseMaxTimeField φ φs).length) (hi : (maxTimeFieldPosFin φ φs).succAbove i <
+     maxTimeFieldPosFin φ φs) :
+    ¬ timeOrderProp  ((eraseMaxTimeField φ φs)[i.val]) (maxTimeField φ φs) := by
+  exact insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt timeOrderProp φ φs i hi
+
+lemma timeOrder_maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States)
+    (i : Fin (eraseMaxTimeField φ φs).length)  :
+    timeOrderProp (maxTimeField φ φs) ((eraseMaxTimeField φ φs)[i.val])  := by
+  exact insertionSortMin_lt_mem_insertionSortDropMinPos timeOrderProp φ φs _
 
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
   Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderProp φs
@@ -156,7 +187,7 @@ lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (
   have hx := IsTotal.total (r := timeOrderProp) ψ φ
   simp_all
 
-def timeOrder_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) :
+lemma timeOrder_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrder (ofList (φ :: φs)) =
     𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ (φ :: φs).take (maxTimeFieldPos φ φs)) •
     ofState (maxTimeField φ φs) * timeOrder (ofList (eraseMaxTimeField φ φs)) := by
