@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.List
-import HepLean.PerturbationTheory.Wick.Signs.SuperCommuteCoef
+import HepLean.PerturbationTheory.FieldStatistics
 /-!
 
 # Insert sign
@@ -102,16 +102,17 @@ section InsertSign
 
 variable {𝓕 : Type} (q : 𝓕 → FieldStatistic)
 
+open FieldStatistic
+
 /-- The sign associated with inserting a field `φ` into a list of fields `φs` at
   the `n`th position. -/
 def insertSign (n : ℕ) (φ : 𝓕) (φs : List 𝓕) : ℂ :=
-  superCommuteCoef q [φ] (List.take n φs)
+  𝓢(q φ, ofList q (List.take n φs))
 
 /-- If `φ` is bosonic, there is no sign associated with inserting it into a list of fields. -/
 lemma insertSign_bosonic (n : ℕ) (φ : 𝓕) (φs : List 𝓕) (hφ : q φ = bosonic) :
     insertSign q n φ φs = 1 := by
-  simp only [insertSign, superCommuteCoef, ofList_singleton, hφ, reduceCtorEq, false_and,
-    ↓reduceIte]
+  simp only [insertSign, instCommGroup.eq_1, hφ, bosonic_pairedSign]
 
 lemma insertSign_insert (n : ℕ) (φ : 𝓕) (φs : List 𝓕) :
     insertSign q n φ φs = insertSign q n φ (List.insertIdx n φ φs) := by
@@ -126,29 +127,31 @@ lemma insertSign_eraseIdx (n : ℕ) (φ : 𝓕) (φs : List 𝓕) :
   rw [take_eraseIdx_same]
 
 lemma insertSign_zero (φ : 𝓕) (φs : List 𝓕) : insertSign q 0 φ φs = 1 := by
-  simp [insertSign, superCommuteCoef]
+  simp [insertSign]
 
 lemma insertSign_succ_cons (n : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) : insertSign q (n + 1) φ0 (φ1 :: φs) =
-    superCommuteCoef q [φ0] [φ1] * insertSign q n φ0 φs := by
-  simp only [insertSign, List.take_succ_cons]
-  rw [superCommuteCoef_cons]
+    𝓢(q φ0, q φ1) * insertSign q n φ0 φs := by
+  simp only [insertSign, instCommGroup.eq_1, List.take_succ_cons]
+  rw [ofList_cons_eq_mul]
+  simp
 
 lemma insertSign_insert_gt (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : n < m) :
     insertSign q n φ0 (List.insertIdx m φ1 φs) = insertSign q n φ0 φs := by
   rw [insertSign, insertSign]
-  congr 1
+  congr 2
   exact take_insert_gt φ1 n m hn φs
 
 lemma insertSign_insert_lt_eq_insertSort (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n)
     (hm : m ≤ φs.length) :
     insertSign q (n + 1) φ0 (List.insertIdx m φ1 φs) = insertSign q (n + 1) φ0 (φ1 :: φs) := by
   rw [insertSign, insertSign]
-  apply superCommuteCoef_perm_snd
+  congr 1
+  apply ofList_perm
   simp only [List.take_succ_cons]
   refine take_insert_let φ1 n m hn φs hm
 
 lemma insertSign_insert_lt (n m : ℕ) (φ0 φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n) (hm : m ≤ φs.length) :
-    insertSign q (n + 1) φ0 (List.insertIdx m φ1 φs) = superCommuteCoef q [φ0] [φ1] *
+    insertSign q (n + 1) φ0 (List.insertIdx m φ1 φs) = 𝓢(q φ0, q φ1) *
     insertSign q n φ0 φs := by
   rw [insertSign_insert_lt_eq_insertSort, insertSign_succ_cons]
   · exact hn

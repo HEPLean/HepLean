@@ -114,9 +114,7 @@ lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.St
   rw [eraseMaxTimeField, insertionSortDropMinPos, timeOrderSign,
     Wick.koszulSign_eraseIdx_insertionSortMinPos]
   rw [← timeOrderSign, ← maxTimeField]
-  congr
-  rw [pairedSign_eq_if]
-  simp [Wick.superCommuteCoef, maxTimeFieldPos]
+  rfl
 
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
   List.insertionSort 𝓕.timeOrderProp φs

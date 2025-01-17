@@ -146,7 +146,6 @@ import HepLean.PerturbationTheory.FieldStruct.WicksTheorem
 import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSignInsert
-import HepLean.PerturbationTheory.Wick.Signs.SuperCommuteCoef
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
 import HepLean.StandardModel.Basic

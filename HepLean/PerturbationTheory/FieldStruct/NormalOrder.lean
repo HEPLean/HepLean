@@ -362,14 +362,8 @@ lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnStates) (n : Fin φs.length)
     normalOrderSign (φs.eraseIdx n) = normalOrderSign φs *
     𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ (φs.take n)) *
     𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv n))) := by
-  rw [normalOrderSign, Wick.koszulSign_eraseIdx]
-  rw [← normalOrderSign]
-  congr
-  · rw [pairedSign_eq_if]
-    simp [Wick.superCommuteCoef]
-  · rw [pairedSign_eq_if]
-    simp [Wick.superCommuteCoef]
-    rfl
+  rw [normalOrderSign, Wick.koszulSign_eraseIdx, ← normalOrderSign]
+  rfl
 
 def createFilter (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
   List.filter (fun φ => 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.create) φs

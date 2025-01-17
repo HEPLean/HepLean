@@ -90,7 +90,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
         rw [List.length_insertIdx _ _ hn]
         omega⟩) φ (List.insertionSort le (List.insertIdx n φ φs))
   | [], 0, h => by
-    simp [koszulSign, insertSign, superCommuteCoef, koszulSignInsert]
+    simp [koszulSign, insertSign, koszulSignInsert]
   | [], n + 1, h => by
     simp at h
   | φ1 :: φs, 0, h => by
@@ -153,7 +153,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     trans koszulSignInsert q le φ1 φs * (koszulSignCons q le φ1 φ *insertSign q ni φ rs)
     · simp only [rs, ni]
       ring
-    trans koszulSignInsert q le φ1 φs * (superCommuteCoef q [φ] [φ1] *
+    trans koszulSignInsert q le φ1 φs * (𝓢(q φ, q φ1) *
           insertSign q (nro.succAbove ni) φ (List.insertIdx nro φ1 rs))
     swap
     · simp only [rs, nro, ni]
@@ -178,13 +178,13 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       swap
       · exact hn
       congr 1
-      rw [koszulSignCons_eq_superComuteCoef]
+      rw [koszulSignCons_eq_pairedSign]
       simp only [hc1 hn, ↓reduceIte]
-      rw [superCommuteCoef_comm]
+      rw [pairedSign_symm]
     · simp only [hn, ↓reduceIte, Fin.val_succ]
       rw [insertSign_insert_lt, ← mul_assoc]
       congr 1
-      rw [superCommuteCoef_mul_self, koszulSignCons]
+      rw [pairedSign_mul_self, koszulSignCons]
       simp only [hc2 hn, ↓reduceIte]
       exact Nat.le_of_not_lt hn
       exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le rs φ1)
@@ -205,9 +205,9 @@ lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r
 
 lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) (n : Fin φs.length) :
     koszulSign q le (φs.eraseIdx n) = koszulSign q le φs *
-      superCommuteCoef q [φs.get n] (φs.take n) *
-      superCommuteCoef q [φs.get n] (List.take (↑(insertionSortEquiv le φs n))
-      (List.insertionSort le φs)) := by
+      𝓢(q (φs.get n), ofList q (φs.take n)) *
+       𝓢(q (φs.get n), ofList q (List.take (↑(insertionSortEquiv le φs n))
+      (List.insertionSort le φs))) := by
   let φs' := φs.eraseIdx ↑n
   have hφs : List.insertIdx n (φs.get n) φs' = φs := by
     exact insertIdx_eraseIdx n.1 φs n.prop
@@ -227,36 +227,36 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     rw [insertionSortEquiv_congr _ _ hφs]
   simp
   trans koszulSign q le (φs.eraseIdx ↑n) *
-        (insertSign q (↑n) φs[↑n] (φs.eraseIdx ↑n) * superCommuteCoef q [φs[↑n]] (List.take (↑n) φs))
+        (insertSign q (↑n) φs[↑n] (φs.eraseIdx ↑n) * 𝓢(q φs[↑n], ofList q (List.take (↑n) φs)))
         *
     (insertSign q (↑((insertionSortEquiv le φs) n)) φs[↑n] (List.insertionSort le φs) *
-    superCommuteCoef q [φs[↑n]] (List.take (↑((insertionSortEquiv le φs) n)) (List.insertionSort le φs)))
+    𝓢(q φs[↑n], ofList q (List.take (↑((insertionSortEquiv le φs) n)) (List.insertionSort le φs))))
   swap
   · simp only [Fin.getElem_fin]
     ring
   conv_rhs =>
     rhs
     rw [insertSign]
-    rw [superCommuteCoef_mul_self]
+    rw [pairedSign_mul_self]
   simp
   conv_rhs =>
     rhs
     rw [insertSign_eraseIdx]
-    rw [insertSign, superCommuteCoef_mul_self]
+    rw [insertSign, pairedSign_mul_self]
   simp
 
 lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le]
   (φ :  𝓕) (φs : List 𝓕) :
   koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
-    * superCommuteCoef q [insertionSortMin le φ φs] ((φ :: φs).take (insertionSortMinPos le φ φs)) := by
+    * 𝓢(q (insertionSortMin le φ φs), ofList q ((φ :: φs).take (insertionSortMinPos le φ φs))) := by
   rw [koszulSign_eraseIdx]
   conv_lhs =>
     rhs
     rhs
     lhs
     simp [insertionSortMinPos]
-    erw [Equiv.apply_symm_apply]
-  simp [superCommuteCoef_empty]
+  erw [Equiv.apply_symm_apply]
+  simp
   apply Or.inl
   rfl
 
