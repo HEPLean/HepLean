@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldStruct.NormalOrder
 import HepLean.PerturbationTheory.FieldStruct.TimeOrder
-import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 /-!
 
 # Time contractions

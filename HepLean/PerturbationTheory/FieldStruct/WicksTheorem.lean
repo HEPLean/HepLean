@@ -3,17 +3,13 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.Contractions
-import HepLean.PerturbationTheory.FieldStruct.TimeOrder
-import HepLean.PerturbationTheory.FieldStruct.Contractions.Sign
 import HepLean.PerturbationTheory.FieldStruct.Contractions.TimeContract
-import HepLean.Mathematics.List.InsertIdx
 /-!
 
 # Wick's theorem
 
-
-
+This file contrains the time-dependent version of Wick's theorem
+for lists of fields containing both fermions and bosons.
 
 -/
 
@@ -546,7 +542,11 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
-theorem wicks_theorem  : (φs : List 𝓕.States) →
+/--
+Wick's theorem for time-ordered products of bosonic and fermionic fields.
+
+-/
+theorem wicks_theorem : (φs : List 𝓕.States) →
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) = ∑ (c : ContractionsNat φs.length),
       (c.sign φs • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))
   | [] =>  wicks_theorem_nil

@@ -4,10 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldStruct.Contractions.Involutions
-import HepLean.PerturbationTheory.FieldStruct.TimeOrder
-import HepLean.PerturbationTheory.FieldStruct.TimeContraction
-import HepLean.PerturbationTheory.FieldStruct.Contractions
-import HepLean.Mathematics.Fin.Involutions
 /-!
 
 # Full contraction
