@@ -133,7 +133,6 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldStatistics
 import HepLean.PerturbationTheory.FieldStruct.Basic
-import HepLean.PerturbationTheory.FieldStruct.Contractions
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateAlgebra
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateSect

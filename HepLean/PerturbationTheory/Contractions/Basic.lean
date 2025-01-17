@@ -23,15 +23,8 @@ namespace ContractionsNat
 variable {n : ℕ} (c : ContractionsNat n)
 open HepLean.List
 
-local instance : IsTotal (Fin n × Fin n) (fun a b => a.1 ≤ b.1) where
-  total := by
-    intro a b
-    exact le_total a.1 b.1
-
-local instance : IsTrans (Fin n × Fin n) (fun a b => a.1 ≤ b.1) where
-  trans := by
-    intro a b c ha hb
-    exact Fin.le_trans ha hb
+/-- The contraction consisting of no contracted pairs. -/
+def nil : ContractionsNat n := ⟨∅, by simp, by simp⟩
 
 def congr : {n m : ℕ} → (h : n = m) → ContractionsNat n ≃ ContractionsNat m
   | n, .(n), rfl => Equiv.refl _

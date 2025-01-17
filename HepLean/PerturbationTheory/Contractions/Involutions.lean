@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.Contractions.Uncontracted
 import HepLean.PerturbationTheory.FieldStruct.TimeOrder
 import HepLean.PerturbationTheory.FieldStruct.TimeContraction
-import HepLean.PerturbationTheory.FieldStruct.Contractions
+import HepLean.PerturbationTheory.Contractions.InsertList
 /-!
 
 # Involution associated with a contraction
