@@ -118,6 +118,12 @@ import HepLean.Meta.Notes.HTMLNote
 import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
 import HepLean.Meta.TransverseTactics
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
+import HepLean.PerturbationTheory.Algebras.StateAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.NormalOrder
+import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
 import HepLean.PerturbationTheory.Contractions.Basic
 import HepLean.PerturbationTheory.Contractions.Erase
 import HepLean.PerturbationTheory.Contractions.ExtractEquiv
@@ -137,13 +143,9 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldStatistics
 import HepLean.PerturbationTheory.FieldStruct.Basic
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
-import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateAlgebra
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateSect
 import HepLean.PerturbationTheory.FieldStruct.NormalOrder
-import HepLean.PerturbationTheory.FieldStruct.OperatorAlgebra
 import HepLean.PerturbationTheory.FieldStruct.StatOfFinset
-import HepLean.PerturbationTheory.FieldStruct.StateAlgebra
-import HepLean.PerturbationTheory.FieldStruct.TimeContraction
 import HepLean.PerturbationTheory.FieldStruct.TimeOrder
 import HepLean.PerturbationTheory.FieldStruct.WicksTheorem
 import HepLean.PerturbationTheory.Koszul.KoszulSign

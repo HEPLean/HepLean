@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.NormalOrder
-import HepLean.PerturbationTheory.FieldStruct.TimeOrder
+import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.NormalOrder
+import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
 /-!
 
 # Time contractions

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Contractions.Sign
-import HepLean.PerturbationTheory.FieldStruct.TimeContraction
+import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
 /-!
 
 # Time contractions
