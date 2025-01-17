@@ -10,7 +10,9 @@ import HepLean.PerturbationTheory.FieldStruct.Contractions.TimeContract
 import HepLean.Mathematics.List.InsertIdx
 /-!
 
-# Contractions
+# Wick's theorem
+
+
 
 
 -/
@@ -23,82 +25,6 @@ open OperatorAlgebra
 open HepLean.List
 open ContractionsNat
 open FieldStatistic
-
-
-lemma coeff_rewrite (φs : List 𝓕.States)  (k : Fin φs.length)
-    (c : ContractionsNat (φs.eraseIdx k).length) :
-    let c' : ContractionsNat φs.length := congr (by simp [eraseIdx_length]) (
-          ((extractEquiv (finCongr (by simp [eraseIdx_length]) k)).symm ⟨c, none⟩))
-    (List.take (c.uncontractedListOrderPos (finCongr (by simp [eraseIdx_length]) k))
-    (List.map (φs.eraseIdx ↑k).get c.uncontractedList)) =
-    (List.take (c'.uncontractedListOrderPos k.castSucc)
-    (List.map φs.get c'.uncontractedList)) := by
-  simp
-  rw [← List.map_take, ← List.map_take]
-  have h1 : (φs.eraseIdx ↑k).get = φs.get ∘ finCongr (by simp [eraseIdx_length])  ∘
-      (finCongr (by simp [eraseIdx_length]) k).succAbove := by
-    funext x
-    simp [Fin.succAbove, Fin.lt_def, List.getElem_eraseIdx]
-    split
-    · simp
-    · simp
-  rw [h1]
-  rw [← List.map_map]
-  apply congrArg
-  rw [take_uncontractedListOrderPos_eq_filter_sort]
-  simp
-  trans (Finset.sort (fun x1 x2 => x1 ≤ x2) (Finset.filter (fun x => ↑x < k.1)
-    (c.uncontracted.map ((finCongr (by simp [eraseIdx_length]) k).succAboveEmb.trans
-    (finCongr (by simp [eraseIdx_length])).toEmbedding))))
-  · let l : List (Fin φs.length) := (Finset.sort (fun x1 x2 => x1 ≤ x2) (Finset.filter (fun x => x.1 < k.1) c.uncontracted)).map
-       ((finCongr (by simp [eraseIdx_length])) ∘ (Fin.cast (by  simp [eraseIdx_length]) k).succAbove)
-    have l_sorted : List.Sorted (fun x1 x2 => x1 ≤ x2) l := by
-      apply fin_list_sorted_monotone_sorted
-      exact Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) _
-      refine StrictMono.comp (fun ⦃a b⦄ a => a) ?hf.hf
-      exact Fin.strictMono_succAbove _
-    have l_nodup : l.Nodup := by
-      refine List.Nodup.map ?_ ?_
-      · refine (Equiv.comp_injective _ (finCongr _)).mpr ?_
-        exact Fin.succAbove_right_injective
-      · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) _
-    have hl : l = (Finset.sort (fun x1 x2 => x1 ≤ x2) l.toFinset) := by
-      symm
-      rw [List.toFinset_sort]
-      exact l_sorted
-      exact l_nodup
-    change l = _
-    rw [hl]
-    apply congrArg
-    ext a
-    simp [l]
-    apply Iff.intro
-    · intro ha
-      obtain ⟨b, ⟨hb1, hb2⟩, hb3⟩ := ha
-      apply And.intro
-      · use b
-      · rw [Fin.lt_def]
-        simp [Fin.ext_iff, Fin.succAbove, Fin.lt_def, hb2] at hb3
-        omega
-    · intro ha
-      obtain ⟨⟨b, hb1, hb2⟩, hb3⟩ := ha
-      use b
-      simp [hb1, hb2]
-      simp [Fin.ext_iff, Fin.succAbove, Fin.lt_def, hb2] at hb2
-      split at hb2
-      · omega
-      · simp at hb2
-        omega
-  · rw [take_uncontractedListOrderPos_eq_filter_sort]
-    apply congrArg
-    rw [congr_uncontracted, extractEquiv]
-    simp
-    rw [insert_none_uncontracted]
-    simp
-    rw [Finset.filter_insert]
-    simp
-    apply congrArg
-    simp [Finset.map_map]
 
 
 lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -620,8 +546,6 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
-
-
 theorem wicks_theorem  : (φs : List 𝓕.States) →
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) = ∑ (c : ContractionsNat φs.length),
       (c.sign φs • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))
@@ -646,18 +570,14 @@ theorem wicks_theorem  : (φs : List 𝓕.States) →
       ← map_mul]
     have hx := mul_sum_contractions (𝓞 := 𝓞) (maxTimeField φ φs) (eraseMaxTimeField φ φs) (maxTimeFieldPosFin φ φs) c
     rw [ofStateAlgebra_ofState, hx]
-
     trans (1 : ℂ) •  ∑ k : Option { x // x ∈ c.uncontracted },
       sign (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs))
           (insertList (maxTimeField φ φs) (eraseMaxTimeField φ φs) c (maxTimeFieldPosFin φ φs) k) •
         ↑(ContractionsNat.timeContract 𝓞
             (insertList (maxTimeField φ φs) (eraseMaxTimeField φ φs) c (maxTimeFieldPosFin φ φs) k)) *
-      𝓞.crAnF
-        (normalOrder
-          (ofStateList
-            (List.map (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs)).get
-              (insertList (maxTimeField φ φs) (eraseMaxTimeField φ φs) c (maxTimeFieldPosFin φ φs)
-                  k).uncontractedList)))
+      𝓞.crAnF (normalOrder (ofStateList
+        (List.map (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs)).get
+        (insertList (maxTimeField φ φs) (eraseMaxTimeField φ φs) c (maxTimeFieldPosFin φ φs) k).uncontractedList)))
     swap
     · simp
     rw [smul_smul]

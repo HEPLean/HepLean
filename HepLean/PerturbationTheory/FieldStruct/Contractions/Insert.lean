@@ -30,7 +30,7 @@ def insert (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncontracted)
   let f := Finset.map (Finset.mapEmbedding i.succAboveEmb).toEmbedding c.1
   let f' := match j with | none => f | some j => Insert.insert {i, i.succAbove j} f
   refine ⟨f', ?_, ?_⟩
-  · simp [f']
+  · simp only [Nat.succ_eq_add_one, f']
     match j with
     | none =>
       simp [f', f]
@@ -46,7 +46,8 @@ def insert (c : ContractionsNat n) (i : Fin n.succ) (j : Option (c.uncontracted)
         use (i.succAbove j)
         simp
         exact Fin.ne_succAbove i j
-      · simp [f]
+      · simp only [Finset.le_eq_subset, Finset.mem_map, RelEmbedding.coe_toEmbedding,
+        forall_exists_index, and_imp, forall_apply_eq_imp_iff₂, f]
         intro a ha
         rw [Finset.mapEmbedding_apply]
         simp
@@ -638,21 +639,21 @@ lemma insertLiftSome_injective {c : ContractionsNat n} (i : Fin n.succ) (j : c.u
   match a, b with
   | Sum.inl (), Sum.inl () => rfl
   | Sum.inl (), Sum.inr a =>
-    simp [insertLiftSome, insertLift] at hab
+    simp only [Nat.succ_eq_add_one, insertLiftSome, insertLift, Subtype.mk.injEq] at hab
     rw [finset_eq_fstFieldOfContract_sndFieldOfContract] at hab
-    simp at hab
+    simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton] at hab
     have hi : i ∈ ({i.succAbove (c.fstFieldOfContract a),
         i.succAbove (c.sndFieldOfContract a)} : Finset (Fin (n + 1))) := by
       rw [← hab]
       simp
-    simp at hi
+    simp only [Nat.succ_eq_add_one, Finset.mem_insert, Finset.mem_singleton] at hi
     rcases hi with hi | hi
     · exact False.elim (Fin.ne_succAbove _ _ hi)
     · exact False.elim (Fin.ne_succAbove _ _ hi)
   | Sum.inr a, Sum.inl () =>
-    simp [insertLiftSome, insertLift] at hab
+    simp only [Nat.succ_eq_add_one, insertLiftSome, insertLift, Subtype.mk.injEq] at hab
     rw [finset_eq_fstFieldOfContract_sndFieldOfContract] at hab
-    simp at hab
+    simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton] at hab
     have hi : i ∈ ({i.succAbove (c.fstFieldOfContract a),
         i.succAbove (c.sndFieldOfContract a)} : Finset (Fin (n + 1))) := by
       rw [hab]
@@ -750,7 +751,8 @@ lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
 lemma insertList_none_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ)  :
     (insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i) = none := by
-  simp [insertList, getDual?_congr]
+  simp only [Nat.succ_eq_add_one, insertList, getDual?_congr, finCongr_apply, Fin.cast_trans,
+    Fin.cast_eq_self, Option.map_eq_none']
   have h1 := c.insert_none_getDual?_isNone i
   simpa using h1
 
@@ -799,7 +801,8 @@ lemma insertList_some_succAbove_getDual?_eq_option (φ : 𝓕.States) (φs : Lis
     (k : c.uncontracted) (hkj : j ≠ k.1) :
     (insertList φ φs c i (some k)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
       (i.succAbove j)) = Option.map (Fin.cast (insertIdx_length_fin φ φs i).symm ∘ i.succAbove ) (c.getDual? j) := by
-  simp [insertList, getDual?_congr, hkj]
+  simp only [Nat.succ_eq_add_one, insertList, getDual?_congr, finCongr_apply, Fin.cast_trans,
+    Fin.cast_eq_self, ne_eq, hkj, not_false_eq_true, insert_some_getDual?_of_neq, Option.map_map]
   rfl
 
 
@@ -915,7 +918,7 @@ lemma insert_fin_eq_self (φ : 𝓕.States) {φs : List 𝓕.States}
   subst hk
   by_cases hi : k = i
   · simp [hi]
-  · simp [← Fin.exists_succAbove_eq_iff] at hi
+  · simp only [Nat.succ_eq_add_one, ← Fin.exists_succAbove_eq_iff] at hi
     obtain ⟨z, hk⟩ := hi
     subst hk
     right

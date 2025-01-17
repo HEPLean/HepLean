@@ -16,6 +16,7 @@ namespace Contractions
 open HepLean.Fin
 open Nat
 
+
 /-- There are `(φs.length - 1)‼` full contractions of a list `φs` with an even number of fields. -/
 lemma card_of_full_contractions_even {φs : List 𝓕} (he : Even φs.length) :
     Fintype.card {c : Contractions φs // IsFull c} = (φs.length - 1)‼ := by

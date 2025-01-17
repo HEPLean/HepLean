@@ -9,6 +9,29 @@ import HepLean.PerturbationTheory.CreateAnnihilate
 
 # Creation and annihlation sections
 
+This module defines creation and annihilation sections, which represent different ways to associate
+fields with creation or annihilation operators.
+
+## Main definitions
+
+- `CreateAnnihilateSect φs` : Represents sections in `𝓕.CrAnStates` over a list of states `φs`.
+  Given fields `φ₁...φₙ`, this captures all possible ways to assign each field as either a creation
+  or annihilation operator.
+
+- `head`, `tail` : Access the first element and remaining elements of a section
+
+- `cons` : Constructs a new section by prepending a creation/annihilation state
+
+- Various equivalences:
+  * `nilEquiv` : Empty sections
+  * `singletonEquiv` : Sections over single elements
+  * `consEquiv` : Separates head and tail
+  * `appendEquiv` : Splits sections at a given point
+
+
+All sections form finite types and support operations like taking/dropping elements and concatenation
+while preserving the relationship between states and their operator assignments.
+
 -/
 
 namespace FieldStruct
@@ -103,7 +126,7 @@ def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃
     have h1 := eq_head_cons_tail (ψs := ψs)
     rw [h1]
     have h2 := ψs.tail.2
-    simp at h2
+    simp only [List.tail_cons, List.map_eq_nil_iff] at h2
     simp [h2]
   right_inv ψ := by
     simp [head]
@@ -327,9 +350,13 @@ lemma eraseIdxEquiv_symm_eq_take_cons_drop  {n : ℕ} (φs : List 𝓕.States) (
     congr (by
     rw [Wick.take_eraseIdx_same, Wick.drop_eraseIdx_succ]
     conv_rhs => rw [← List.take_append_drop n φs]) (append (take n s) (cons a (drop n s))) := by
-  simp [eraseIdxEquiv, appendEquiv]
+  simp only [eraseIdxEquiv, appendEquiv, Equiv.symm_trans_apply, congr_symm, Equiv.prodCongr_symm,
+    Equiv.refl_symm, Equiv.prodCongr_apply, Prod.map_apply, Equiv.symm_symm, Equiv.coe_fn_mk,
+    take_congr, congr_trans_apply, drop_congr, Equiv.prodAssoc_symm_apply, Equiv.coe_refl,
+    Equiv.prodComm_symm, Equiv.prodComm_apply, Prod.swap_prod_mk, Equiv.coe_fn_symm_mk,
+    congr_fst_append, id_eq, congr_snd_append]
   rw [append_assoc', singletonEquiv_append_eq_cons]
-  simp
+  simp only [List.singleton_append, congr_trans_apply]
   apply Subtype.ext
   simp
   have hn : (List.take n φs).length = n := by

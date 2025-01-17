@@ -246,7 +246,8 @@ lemma superCommute_ofStateList_ofStatesList (φ : List 𝓕.States) (φs : List 
   conv_lhs =>
     enter [2, x]
     rw [superCommute_ofCrAnList_ofStatesList]
-  simp [CreateAnnihilateSect.statistics_eq_state_statistics]
+  simp only [instCommGroup.eq_1, CreateAnnihilateSect.statistics_eq_state_statistics,
+    Algebra.smul_mul_assoc, Finset.sum_sub_distrib]
   rw [← Finset.sum_mul, ← Finset.smul_sum, ← Finset.mul_sum, ← ofStateList_sum]
 
 lemma superCommute_ofState_ofStatesList (φ :  𝓕.States) (φs : List 𝓕.States) :
@@ -303,21 +304,24 @@ lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
   | States.negAsymp φ, _ =>
     simp
   | _, States.posAsymp φ =>
-    simp
+    simp only [crPart_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
+      sub_self]
   | States.position φ, States.position φ' =>
-    simp
+    simp only [anPart_position, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.posAsymp φ, States.position φ' =>
-    simp
+    simp only [anPart_posAsymp, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.negAsymp φ' =>
-    simp
+    simp only [anPart_position, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    simp only [List.singleton_append, instCommGroup.eq_1, crAnStatistics,
+      FieldStatistic.ofList_singleton, Function.comp_apply, crAnStatesToStates_prod, ←
+      ofCrAnList_append]
   | States.posAsymp φ, States.negAsymp φ' =>
-    simp
+    simp only [anPart_posAsymp, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
 
@@ -328,23 +332,25 @@ lemma superCommute_crPart_anPart (φ φ' : 𝓕.States) :
     anPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
     match φ, φ' with
     | States.posAsymp φ, _ =>
-    simp
+    simp only [crPart_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
+      mul_zero, sub_self]
     | _, States.negAsymp φ =>
-    simp
+    simp only [anPart_negAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
+      sub_self]
     | States.position φ, States.position φ' =>
-    simp
+    simp only [crPart_position, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.position φ, States.posAsymp φ' =>
-    simp
+    simp only [crPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.negAsymp φ, States.position φ' =>
-    simp
+    simp only [crPart_negAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.negAsymp φ, States.posAsymp φ' =>
-    simp
+    simp only [crPart_negAsymp, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
 
@@ -355,23 +361,24 @@ lemma superCommute_crPart_crPart (φ φ' : 𝓕.States) :
     crPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
   match φ, φ' with
   | States.posAsymp φ, _ =>
-  simp
+  simp only [crPart_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
+    mul_zero, sub_self]
   | _, States.posAsymp φ =>
-  simp
+  simp only [crPart_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul, sub_self]
   | States.position φ, States.position φ' =>
-  simp
+  simp only [crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.negAsymp φ' =>
-  simp
+  simp only [crPart_position, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.negAsymp φ, States.position φ' =>
-  simp
+  simp only [crPart_negAsymp, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.negAsymp φ, States.negAsymp φ' =>
-  simp
+  simp only [crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
 
@@ -386,19 +393,19 @@ lemma superCommute_anPart_anPart (φ φ' : 𝓕.States) :
   | _, States.negAsymp φ =>
   simp
   | States.position φ, States.position φ' =>
-  simp
+  simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.posAsymp φ' =>
-  simp
+  simp only [anPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.posAsymp φ, States.position φ' =>
-  simp
+  simp only [anPart_posAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.posAsymp φ, States.posAsymp φ' =>
-  simp
+  simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
 
@@ -440,11 +447,11 @@ lemma superCommute_crPart_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.State
     (FieldStatistic.ofList 𝓕.statesStatistic φs) • ofStateList φs * crPart (StateAlgebra.ofState φ) := by
   match φ with
   | States.negAsymp φ =>
-    simp
+    simp only [crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.position φ =>
-    simp
+    simp only [crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.posAsymp φ =>
@@ -458,7 +465,7 @@ lemma superCommute_anPart_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.State
   | States.negAsymp φ =>
     simp
   | States.position φ =>
-    simp
+    simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.posAsymp φ =>
@@ -500,7 +507,7 @@ lemma superCommute_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) :
   conv_rhs =>
     rhs
     rw [pairedSign_symm, pairedSign_mul_self]
-  simp
+  simp only [one_smul]
   abel
 
 lemma superCommute_ofCrAnState_symm (φ φ' :  𝓕.CrAnStates) :
@@ -509,12 +516,12 @@ lemma superCommute_ofCrAnState_symm (φ φ' :  𝓕.CrAnStates) :
     ⟨ofCrAnState φ', ofCrAnState φ⟩ₛca := by
   rw [superCommute_ofCrAnState, superCommute_ofCrAnState]
   rw [smul_sub]
-  simp
+  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, neg_smul, sub_neg_eq_add]
   rw [smul_smul]
   conv_rhs =>
     rhs
     rw [pairedSign_symm, pairedSign_mul_self]
-  simp
+  simp only [one_smul]
   abel
 
 lemma superCommute_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
@@ -552,7 +559,8 @@ lemma superCommute_ofCrAnList_ofStateList_cons  (φ : 𝓕.States) (φs : List �
   conv_rhs =>
     rhs
     rw [superCommute_ofCrAnList_ofStatesList, mul_sub, smul_mul_assoc]
-  simp
+  simp only [instCommGroup, Algebra.smul_mul_assoc, List.singleton_append, Algebra.mul_smul_comm,
+    sub_add_sub_cancel, sub_right_inj]
   rw [ofStateList_cons, mul_assoc, smul_smul, FieldStatistic.ofList_cons_eq_mul]
   simp [mul_comm]
 
