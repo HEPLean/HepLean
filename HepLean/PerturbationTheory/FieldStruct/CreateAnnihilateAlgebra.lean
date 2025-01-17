@@ -500,9 +500,8 @@ lemma superCommute_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) :
     ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
     (- pairedSign (𝓕 |>ₛ φs) (𝓕 |>ₛ φs')) •
     ⟨ofCrAnList φs', ofCrAnList φs⟩ₛca := by
-  rw [superCommute_ofCrAnList, superCommute_ofCrAnList]
-  rw [smul_sub]
-  simp
+  rw [superCommute_ofCrAnList, superCommute_ofCrAnList, smul_sub]
+  simp only [instCommGroup.eq_1, neg_smul, sub_neg_eq_add]
   rw [smul_smul]
   conv_rhs =>
     rhs

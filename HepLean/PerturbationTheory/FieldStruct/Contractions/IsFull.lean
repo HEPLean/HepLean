@@ -10,8 +10,9 @@ import HepLean.PerturbationTheory.FieldStruct.Contractions
 import HepLean.Mathematics.Fin.Involutions
 /-!
 
-# Full involutions
+# Full contraction
 
+We say that a contraction is full if it has no uncontracted fields.
 
 -/
 
@@ -22,9 +23,12 @@ variable {n : ℕ} (c : ContractionsNat n)
 open HepLean.List
 open FieldStatistic
 
+/-- A contraction is full if there are no uncontracted fields, i.e. the finite set
+  of uncontracted fields is empty. -/
 def IsFull : Prop := c.uncontracted = ∅
 
-instance : Decidable (IsFull c) :=  decEq c.uncontracted ∅
+/-- The condition on whether or not a contraction is full is decidable. -/
+instance : Decidable (IsFull c) := decEq c.uncontracted ∅
 
 lemma isFull_iff_equivInvolution_no_fixed_point :
     IsFull c ↔ ∀ (i : Fin n), (equivInvolution c).1 i ≠ i := by
@@ -55,7 +59,6 @@ theorem card_of_isfull_odd (ho : Odd n) :
     Fintype.card  {c : ContractionsNat n // IsFull c} = 0 := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]
   exact HepLean.Fin.involutionNoFixed_card_odd n ho
-
 
 end ContractionsNat
 
