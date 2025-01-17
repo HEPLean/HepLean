@@ -16,7 +16,7 @@ import HepLean.SpaceTime.Basic
 /-- A field structure is a type of fields plus a specification of the
   statistics (fermionic or bosonic) of each field. -/
 structure FieldStruct where
-  /-- The type of fields. -/
+  /-- The type of fields. This also includes anti-states. -/
   Fields : Type
   /-- The specification if a field is bosonic or fermionic. -/
   statistics : 𝓕 → FieldStatistic
@@ -48,8 +48,10 @@ def statesToField : 𝓕.States → 𝓕.Fields
 /-- The statistics associated to a state. -/
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 
-scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => (statesStatistic 𝓕) φ
+/-- The field statistics associated with a state. -/
+scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
 
+/-- The field statistics associated with a list states. -/
 scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
 
