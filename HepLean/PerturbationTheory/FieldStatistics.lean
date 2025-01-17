@@ -277,4 +277,8 @@ lemma pairedSign_ofList_cons (a : FieldStatistic)
     𝓢(a, ofList s (φ :: φs)) = 𝓢(a, s φ) * 𝓢(a, ofList s φs) := by
   rw [ofList_cons_eq_mul, map_mul]
 
+lemma pairedSign_cocycle (a b c : FieldStatistic) :
+    𝓢(a, b * c) * 𝓢(b, c) =  𝓢(a, b) * 𝓢(a * b, c)  := by
+  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
+
 end FieldStatistic
