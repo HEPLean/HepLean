@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
 
 name: Build and deploy documentation
 
@@ -98,7 +99,7 @@ jobs:
         run: JEKYLL_ENV=production bundle exec jekyll build
 
       - name: Upload docs & blueprint artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path:  docs/_site
 
