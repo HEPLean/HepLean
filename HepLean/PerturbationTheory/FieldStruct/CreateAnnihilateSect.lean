@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
-import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 /-!
 
 # Creation and annihlation sections
@@ -348,7 +347,7 @@ lemma eraseIdxEquiv_symm_eq_take_cons_drop  {n : ℕ} (φs : List 𝓕.States) (
     (a : 𝓕.statesToCrAnType φs[n]) (s : CreateAnnihilateSect (φs.eraseIdx n)) :
     (eraseIdxEquiv n φs hn).symm ⟨a, s⟩ =
     congr (by
-    rw [Wick.take_eraseIdx_same, Wick.drop_eraseIdx_succ]
+    rw [HepLean.List.take_eraseIdx_same, HepLean.List.drop_eraseIdx_succ]
     conv_rhs => rw [← List.take_append_drop n φs]) (append (take n s) (cons a (drop n s))) := by
   simp only [eraseIdxEquiv, appendEquiv, Equiv.symm_trans_apply, congr_symm, Equiv.prodCongr_symm,
     Equiv.refl_symm, Equiv.prodCongr_apply, Prod.map_apply, Equiv.symm_symm, Equiv.coe_fn_mk,

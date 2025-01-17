@@ -143,7 +143,6 @@ import HepLean.PerturbationTheory.FieldStruct.StateAlgebra
 import HepLean.PerturbationTheory.FieldStruct.TimeContraction
 import HepLean.PerturbationTheory.FieldStruct.TimeOrder
 import HepLean.PerturbationTheory.FieldStruct.WicksTheorem
-import HepLean.PerturbationTheory.Wick.Signs.InsertSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSignInsert
 import HepLean.SpaceTime.Basic

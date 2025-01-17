@@ -1351,7 +1351,7 @@ lemma crAnF_ofState_normalOrder_insert (φ  : 𝓕.States) (φs : List 𝓕.Stat
     𝓞.crAnF (normalOrder (ofStateList (φ :: φs))) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs.take k) • 𝓞.crAnF (normalOrder (ofStateList (φs.insertIdx k φ))) := by
   have hl : φs.insertIdx k φ =  φs.take k ++ [φ] ++  φs.drop k := by
-    rw [Wick.insertIdx_eq_take_drop]
+    rw [HepLean.List.insertIdx_eq_take_drop]
     simp
   rw [hl]
   rw [ofStateList_append, ofStateList_append]

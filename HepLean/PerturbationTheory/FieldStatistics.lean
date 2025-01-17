@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Algebra.FreeAlgebra
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Analysis.Complex.Basic
+import HepLean.Mathematics.List.InsertIdx
 /-!
 
 # Field statistics
@@ -220,6 +221,59 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
     simp at hl
     exact hl.2
 
+/-!
+
+## ofList and take
+
+-/
+
+section ofListTake
+open HepLean.List
+variable (q : 𝓕 → FieldStatistic)
+lemma ofList_take_insert (n : ℕ) (φ : 𝓕) (φs : List 𝓕) :
+    ofList q (List.take n φs) = ofList q (List.take n (List.insertIdx n φ φs)) := by
+  congr 1
+  rw [take_insert_same]
+
+lemma ofList_take_eraseIdx (n : ℕ) (φs : List 𝓕) :
+    ofList q (List.take n (φs.eraseIdx n)) = ofList q (List.take n φs) := by
+  congr 1
+  rw [take_eraseIdx_same]
+
+lemma ofList_take_zero (φs : List 𝓕) :
+    ofList q (List.take 0 φs) = 1 := by
+  simp
+  rfl
+
+lemma ofList_take_succ_cons (n : ℕ) ( φ1 : 𝓕) (φs : List 𝓕) :
+    ofList q ((φ1 :: φs).take (n + 1)) = q φ1 * ofList q (φs.take n) := by
+  simp
+  rw [ofList_cons_eq_mul]
+
+lemma ofList_take_insertIdx_gt (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : n < m) :
+    ofList q ((List.insertIdx m φ1 φs).take n) = ofList q (φs.take n) := by
+  rw [take_insert_gt φ1 n m hn φs]
+
+lemma ofList_insert_lt_eq  (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n)
+    (hm : m ≤ φs.length) :
+    ofList q ((List.insertIdx m φ1 φs).take (n + 1)) =
+    ofList q ((φ1 :: φs).take (n + 1)) := by
+  apply ofList_perm
+  simp only [List.take_succ_cons]
+  refine take_insert_let φ1 n m hn φs hm
+
+lemma ofList_take_insertIdx_le (n m : ℕ) ( φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n) (hm : m ≤ φs.length) :
+    ofList q ((List.insertIdx m φ1 φs).take (n + 1)) = q φ1 * ofList q (φs.take n) := by
+  rw [ofList_insert_lt_eq, ofList_take_succ_cons]
+  · exact hn
+  · exact hm
+
+end ofListTake
+/-!
+
+## Paired Signs
+
+-/
 def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
   toFun a :=
     {
