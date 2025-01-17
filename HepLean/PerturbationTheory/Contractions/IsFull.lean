@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.Fin.Involutions
-import HepLean.PerturbationTheory.FieldStruct.Contractions.Involutions
+import HepLean.PerturbationTheory.Contractions.Involutions
 /-!
 
 # Full contraction

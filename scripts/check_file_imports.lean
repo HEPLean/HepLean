@@ -53,12 +53,21 @@ def expectedHepLeanImports : IO (Array Name) := do
         needed.push root
   pure needed
 
+def listDif : (a: List String) → (b : List String) → (List String × List String)
+  | [], [] => ([], [])
+  | a :: as, [] => (a :: as, [])
+  | [], b :: bs => ([], b :: bs)
+  | a :: as, b :: bs =>
+    if a = b then listDif as bs
+    else (a :: (listDif as bs).1, b :: (listDif as bs).2)
+
 /-- Checks whether an array `imports` is sorted after `Init` is removed.  -/
 def arrayImportSorted (imports : Array Import) : IO Bool :=  do
   let X := (imports.map (fun x => x.module.toString)).filter (fun x => x != "Init")
   let mut warned := false
   if ! X = X.qsort (· < ·) then
     IO.print s!"Import file is not sorted. \n"
+    println! listDif X.toList (X.qsort (· < ·)).toList
     warned := true
   pure warned
 
