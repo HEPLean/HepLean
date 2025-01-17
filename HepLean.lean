@@ -118,9 +118,6 @@ import HepLean.Meta.Notes.HTMLNote
 import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
 import HepLean.Meta.TransverseTactics
-import HepLean.PerturbationTheory.Contractions.Basic
-import HepLean.PerturbationTheory.Contractions.Card
-import HepLean.PerturbationTheory.Contractions.Involutions
 import HepLean.PerturbationTheory.CreateAnnihilate
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
@@ -156,7 +153,6 @@ import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
 import HepLean.PerturbationTheory.Wick.Signs.KoszulSignInsert
 import HepLean.PerturbationTheory.Wick.Signs.StaticWickCoef
 import HepLean.PerturbationTheory.Wick.Signs.SuperCommuteCoef
-import HepLean.PerturbationTheory.Wick.StaticTheorem
 import HepLean.PerturbationTheory.Wick.SuperCommute
 import HepLean.SpaceTime.Basic
 import HepLean.SpaceTime.CliffordAlgebra
