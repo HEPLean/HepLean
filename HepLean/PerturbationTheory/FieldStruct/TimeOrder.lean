@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.List.InsertionSort
 import HepLean.PerturbationTheory.FieldStruct.StateAlgebra
-import HepLean.PerturbationTheory.Wick.Signs.KoszulSign
+import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
 
 # State algebra
