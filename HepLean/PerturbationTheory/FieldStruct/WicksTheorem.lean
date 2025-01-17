@@ -166,129 +166,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       congr 1
       rw [mul_assoc, mul_comm (sign φs c), ← mul_assoc]
       congr 1
-      rw [signInsertSome]
-      rw [signInsertSomeProd_eq_finset, signInsertSomeCoef_eq_finset]
-      rw [if_neg]
-      rw [← map_mul, ← map_mul]
-      congr 1
-      rw [mul_eq_iff_eq_mul]
-      rw [fieldStatOfFinset_union_disjoint]
-      swap
-      · rw [Finset.disjoint_filter]
-        intro j _ h
-        simp
-        intro h1
-        use h1
-        intro hj
-        omega
-      trans fieldStatOfFinset φs.get (Finset.filter (fun x =>
-          (↑k < x ∧ i.succAbove x < i ∧ (c.getDual? x = none ∨
-          ∀ (h : (c.getDual? x).isSome = true), ↑k < (c.getDual? x).get h))
-          ∨ ((c.getDual? x).isSome = true ∧
-          ∀ (h : (c.getDual? x).isSome = true), x < ↑k ∧
-          (i.succAbove x < i ∧ i < i.succAbove ((c.getDual? x).get h) ∨
-          ↑k < (c.getDual? x).get h ∧ ¬i.succAbove x < i))) Finset.univ)
-      · congr
-        ext j
-        simp
-      rw [fieldStatOfFinset_union]
-      rw [← mul_eq_one_iff]
-      rw [fieldStatOfFinset_union]
-      simp
-      apply fieldStatOfFinset_eq_one_of_isGradedObeying
-      · exact hg.1
-      /- the getDual? is none case-/
-      · intro j hn
-        simp [hn, uncontracted]
-        intro h
-        rcases h with h | h
-        · simp [h]
-        · simp [h, h.2]
-          refine And.intro ?_ (And.intro ?_ h.2)
-          · by_contra hkj
-            simp at hkj
-            have h2 := h.2 hkj
-            apply Fin.ne_succAbove i j
-            have hij : i.succAbove j ≤ i.succAbove k.1 :=
-              Fin.succAbove_le_succAbove_iff.mpr hkj
-            omega
-          · have h1' := h.1
-            rcases h1' with h1' | h1'
-            · have hl := h.2 h1'
-              have hij : i.succAbove j ≤ i.succAbove k.1 :=
-              Fin.succAbove_le_succAbove_iff.mpr h1'
-              by_contra hn
-              apply Fin.ne_succAbove i j
-              omega
-            · exact h1'
-      /- the getDual? is some case-/
-      · intro j hj
-        have hn : ¬ c.getDual? j = none := by exact Option.isSome_iff_ne_none.mp hj
-        simp [hj, uncontracted, hn]
-        intro h1 h2
-        have hijsucc : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
-        have hijsucc' : i.succAbove ((c.getDual? j).get hj) ≠ i := by exact Fin.succAbove_ne i _
-        have hkneqj : ↑k ≠ j := by
-          by_contra hkj
-          have hl := congrArg (fun x => (c.getDual? x).isSome) hkj
-          simp at hl
-          have hk := k.prop
-          simp  [uncontracted, - Finset.coe_mem] at hk
-          simp_all
-        have hkneqgetdual : k.1 ≠ ( c.getDual? j).get hj := by
-          by_contra hkj
-          have hl := congrArg (fun x => (c.getDual? x).isSome) hkj
-          simp at hl
-          have hk := k.prop
-          simp [uncontracted, - Finset.coe_mem] at hk
-          simp_all
-        by_cases hik : ↑k < j
-        · have hn : ¬ j < ↑k := by omega
-          simp [hik, hn] at h1 h2 ⊢
-          have hir :  i.succAbove j < i := by
-            rcases h1 with h1 | h1
-            · simp [h1]
-            · simp [h1]
-          have hirn : ¬  i < i.succAbove j  := by omega
-          simp [hir, hirn] at h1 h2
-          have hnkdual : ¬ ↑k < (c.getDual? j).get hj := by
-            by_contra hn
-            have h2 := h2 hn
-            apply Fin.ne_succAbove i j
-            omega
-          simp [hnkdual] at h2 ⊢
-          have hnkdual :  (c.getDual? j).get hj < ↑k := by omega
-          have hi : i.succAbove ((c.getDual? j).get hj) < i.succAbove k := by
-            rw [@Fin.succAbove_lt_succAbove_iff]
-            omega
-          simp [hnkdual, hir]
-          apply And.intro
-          · apply Or.inr
-            omega
-          · intro h
-            omega
-        · have ht :  j < ↑k  := by omega
-          have ht' : i.succAbove j < i.succAbove k := by
-            rw [@Fin.succAbove_lt_succAbove_iff]
-            omega
-          simp [hik, ht] at h1 h2 ⊢
-          by_cases hik : i.succAbove j < i
-          · simp_all [hik]
-            have hn : ¬ i ≤ i.succAbove j := by omega
-            simp_all [hn]
-            apply And.intro
-            · apply Or.inr
-              omega
-            · intro h1 h2 h3
-              omega
-          · simp_all [hik]
-            have hl : i < i.succAbove j := by omega
-            simp [hl]
-            omega
-      · omega
-      · exact hg.2
-      · exact hg.2
-      · exact hg.1
+      exact signInsertSome_mul_filter_contracted_of_lt φ φs c i k hk hg
       · omega
     · have hik : i.succAbove ↑k ≠ i := by exact Fin.succAbove_ne i ↑k
       rw [ContractionsNat.timeConract_insertList_some_eq_mul_contractMemList_lt]
@@ -300,111 +178,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       congr 1
       rw [mul_assoc, mul_comm (sign φs c), ← mul_assoc]
       congr 1
-      rw [signInsertSome]
-      rw [signInsertSomeProd_eq_finset, signInsertSomeCoef_eq_finset]
-      rw [if_pos (by omega)]
-      rw [← map_mul, ← map_mul]
-      congr 1
-      rw [mul_eq_iff_eq_mul]
-      rw [fieldStatOfFinset_union, fieldStatOfFinset_union]
-      apply (mul_eq_one_iff _ _).mp
-      rw [fieldStatOfFinset_union]
-      simp
-      apply fieldStatOfFinset_eq_one_of_isGradedObeying
-      · exact hg.1
-      · intro j hj
-        have hijsucc : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
-        simp [hj, uncontracted]
-        intro h
-        have hij : i < i.succAbove j := by
-          rcases h with h | h
-          · exact h.1
-          · have h1 := h.1
-            rcases h1 with h1 | h1
-            · have h2 := h.2 h1
-              omega
-            · have h2 := h.2.mt (by omega)
-              simp at h2
-              have hik : i.succAbove k.1 ≤ i.succAbove j := by
-                rw [Fin.succAbove_le_succAbove_iff]
-                omega
-              omega
-        simp [hij] at h ⊢
-        have hjk :  j < ↑k := by
-          rcases h with h | h
-          · exact h
-          · have h1 := h.1
-            rcases h1 with h1 | h1
-            · omega
-            · omega
-        simp [hjk]
-        omega
-      · intro j hj
-        have hn : ¬ c.getDual? j = none := by exact Option.isSome_iff_ne_none.mp hj
-        have hijSuc :  i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
-        have hkneqj : ↑k ≠ j := by
-          by_contra hkj
-          have hl := congrArg (fun x => (c.getDual? x).isSome) hkj
-          simp at hl
-          have hk := k.prop
-          simp  [uncontracted, - Finset.coe_mem] at hk
-          simp_all
-        have hkneqgetdual : k.1 ≠ ( c.getDual? j).get hj := by
-          by_contra hkj
-          have hl := congrArg (fun x => (c.getDual? x).isSome) hkj
-          simp at hl
-          have hk := k.prop
-          simp [uncontracted, - Finset.coe_mem] at hk
-          simp_all
-        simp [hj, uncontracted, hn]
-        by_cases hik : ↑k < j
-        · have hikn : ¬ j < k.1 := by omega
-          have hksucc : i.succAbove k.1 < i.succAbove j := by
-            rw [Fin.succAbove_lt_succAbove_iff]
-            omega
-          have hkn : i < i.succAbove j := by omega
-          have hl : ¬ i.succAbove j < i := by omega
-          simp [hik, hikn, hkn, hl]
-        · have hikn : j < k.1 := by omega
-          have hksucc : i.succAbove j < i.succAbove k.1 := by
-            rw [Fin.succAbove_lt_succAbove_iff]
-            omega
-          simp [hik, hikn]
-          by_cases hij: i < i.succAbove j
-          · simp [hij]
-            have hijn : ¬ i.succAbove j < i := by omega
-            simp [hijn]
-            have hijle :  i ≤ i.succAbove j := by omega
-            simp [hijle]
-            intro h1 h2
-            apply And.intro
-            · rcases h1 with h1 | h1
-              · simp [h1]
-                have h2 := h2 h1
-                apply Or.inl
-                omega
-              · apply Or.inl
-                have hi : i.succAbove k.1 < i.succAbove ((c.getDual? j).get hj) := by
-                  rw [Fin.succAbove_lt_succAbove_iff]
-                  omega
-                apply And.intro
-                · apply Or.inr
-                  apply And.intro
-                  · omega
-                  · omega
-                · omega
-            · intro h3 h4
-              omega
-          · simp [hij]
-            have hijn : i.succAbove j < i := by omega
-            have hijn' : ¬ i ≤ i.succAbove j := by omega
-            simp [hijn, hijn']
-            intro h
-            have hij : i.succAbove ((c.getDual? j).get hj) ≠ i :=  Fin.succAbove_ne i ((c.getDual? j).get hj)
-            exact lt_of_le_of_ne h hij
-      · exact hg.2
-      · exact hg.2
-      · exact hg.1
+      exact signInsertSome_mul_filter_contracted_of_not_lt φ φs c i k hk hg
       · omega
   · rw [timeConract_insertList_some]
     simp at hg
@@ -438,10 +212,8 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
     𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (Finset.univ.filter (fun x => i.succAbove x < i))) • ∑ (k : Option (c.uncontracted)),
     ((c.insertList φ φs i k).sign • (c.insertList φ φs i k).timeContract 𝓞
     * 𝓞.crAnF (normalOrder (ofStateList ((c.insertList φ φs i k).uncontractedList.map (φs.insertIdx i φ).get)))) := by
-  rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum]
-  rw [Finset.mul_sum]
-  rw [uncontractedStatesEquiv_list_sum]
-  rw [Finset.smul_sum]
+  rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum, Finset.mul_sum,
+    uncontractedStatesEquiv_list_sum, Finset.smul_sum]
   simp only [Finset.univ_eq_attach, instCommGroup.eq_1,
     Nat.succ_eq_add_one, timeContract_insertList_none]
   congr 1
@@ -449,25 +221,24 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
   match n with
   | none =>
     rw [sign_timeContract_normalOrder_insertList_none]
-    simp [smul_smul, contractMemList, uncontractedStatesEquiv]
+    simp only [contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans,
+      Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
-    rw [← mul_assoc]
-    rw [pairedSign_mul_self]
+    rw [← mul_assoc, pairedSign_mul_self]
     simp
   | some n =>
-    rw [sign_timeContract_normalOrder_insertList_some]
-    simp [smul_smul, uncontractedStatesEquiv]
+    rw [sign_timeContract_normalOrder_insertList_some _ _ _ _ _
+      (fun k => hlt k) (fun k a => hn k a)]
+    simp only [uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some',
+      Function.comp_apply, finCongr_apply, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
-    rw [← mul_assoc]
-    rw [pairedSign_mul_self]
-    simp
-    rw [← mul_assoc]
-    congr 1
-    have ht := (ContractionsNat.timeContract 𝓞 c).prop
-    rw [@Subalgebra.mem_center_iff] at ht
-    rw [ht]
-    exact fun k => hlt k
-    exact fun k a => hn k a
+    · rw [← mul_assoc, pairedSign_mul_self]
+      rw [one_mul]
+    · rw [← mul_assoc]
+      congr 1
+      have ht := (ContractionsNat.timeContract 𝓞 c).prop
+      rw [@Subalgebra.mem_center_iff] at ht
+      rw [ht]
 
 lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs'):
     ∑ (c : ContractionsNat φs.length),
@@ -477,15 +248,14 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs'):
   subst h
   simp
 
-
+/-- Wick's theorem for the empty list. -/
 lemma wicks_theorem_nil  :
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : ContractionsNat [].length),
       (c.sign [] • c.timeContract 𝓞) *
       𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
   rw [timeOrder_ofList_nil]
-  simp
-  rw [sum_contractionsNat_nil]
-  rw [nil_zero_uncontractedList]
+  simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+  rw [sum_contractionsNat_nil, nil_zero_uncontractedList]
   simp only [List.map_nil]
   have h1 : ofStateList (𝓕 := 𝓕) [] = CrAnAlgebra.ofCrAnList [] := by simp
   rw [h1, normalOrder_ofCrAnList]
@@ -542,19 +312,14 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
-/--
-Wick's theorem for time-ordered products of bosonic and fermionic fields.
-
--/
+/-- Wick's theorem for time-ordered products of bosonic and fermionic fields. -/
 theorem wicks_theorem : (φs : List 𝓕.States) →
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) = ∑ (c : ContractionsNat φs.length),
       (c.sign φs • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))
   | [] =>  wicks_theorem_nil
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
-    rw [timeOrder_eq_maxTimeField_mul_finset]
-    rw [map_mul, map_mul, ih]
-    rw [Finset.mul_sum]
+    rw [timeOrder_eq_maxTimeField_mul_finset, map_mul, map_mul, ih, Finset.mul_sum]
     have h1 : φ :: φs = (eraseMaxTimeField φ φs).insertIdx (maxTimeFieldPosFin φ φs) (maxTimeField φ φs) := by
       simp [eraseMaxTimeField, insertionSortDropMinPos, maxTimeFieldPos, maxTimeField, insertionSortMin]
       erw [insertIdx_eraseIdx_fin]

@@ -32,6 +32,7 @@ lemma isFull_iff_equivInvolution_no_fixed_point :
   rw [Finset.eq_empty_iff_forall_not_mem]
   simp [equivInvolution, toInvolution, uncontracted]
 
+/-- The equivalence between full contractions and fixed-point free involutions. -/
 def isFullInvolutionEquiv : {c : ContractionsNat n // IsFull c} ≃
     {f : Fin n → Fin n // Function.Involutive f ∧ (∀ i, f i ≠ i)} where
   toFun c := ⟨equivInvolution c.1, by
@@ -46,11 +47,14 @@ def isFullInvolutionEquiv : {c : ContractionsNat n // IsFull c} ≃
 
 open Nat
 
+/-- If `n` is even then the number of full contractions is `(n-1)!!`. -/
 theorem card_of_isfull_even (he : Even n) :
     Fintype.card {c : ContractionsNat n // IsFull c} = (n - 1)‼ := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]
   exact HepLean.Fin.involutionNoFixed_card_even n he
 
+/-- If `n` is odd then there are no full contractions. This is because
+  there will always be at least one element unpaired. -/
 theorem card_of_isfull_odd (ho : Odd n) :
     Fintype.card  {c : ContractionsNat n // IsFull c} = 0 := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]

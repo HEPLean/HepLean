@@ -143,6 +143,7 @@ import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateSect
 import HepLean.PerturbationTheory.FieldStruct.NormalOrder
 import HepLean.PerturbationTheory.FieldStruct.OperatorAlgebra
 import HepLean.PerturbationTheory.FieldStruct.StateAlgebra
+import HepLean.PerturbationTheory.FieldStruct.StatOfFinset
 import HepLean.PerturbationTheory.FieldStruct.TimeContraction
 import HepLean.PerturbationTheory.FieldStruct.TimeOrder
 import HepLean.PerturbationTheory.FieldStruct.WicksTheorem
