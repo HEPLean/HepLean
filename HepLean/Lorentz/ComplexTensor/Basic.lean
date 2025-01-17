@@ -22,7 +22,7 @@ open MonoidalCategory
 
 namespace complexLorentzTensor
 
-/-- The colors associated with complex representations of SL(2, ℂ) of intrest to physics. -/
+/-- The colors associated with complex representations of SL(2, ℂ) of interest to physics. -/
 inductive Color
   /-- The color associated with Left handed fermions. -/
   | upL : Color

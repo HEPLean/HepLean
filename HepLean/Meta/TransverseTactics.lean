@@ -25,13 +25,13 @@ open Lean Elab System
 namespace transverseTactics
 
 /-- Takes in a file and returns the infostates of commands and the corresponding
-  enviroment before the command is processed. -/
+  environment before the command is processed. -/
 partial def processCommands : Frontend.FrontendM (List (Environment × InfoState)) := do
   /- Very roughly, `Frontend.FrontendM (List (Environment × InfoState))` is equivalent
     to `Frontend.Context → Frontend.state → List (Environment × InfoState)`.
 
     The `←get` here is returning the inputted value of `Frontend.state`,
-    from which we get the enviroment.
+    from which we get the environment.
     -/
   let env := (← get).commandState.env
   /- Processes a single command, adding it to `env`. This is done using
@@ -46,7 +46,7 @@ partial def processCommands : Frontend.FrontendM (List (Environment × InfoState
   if done
   then return [(env, infoState)]
   else
-    /- For each command, we return the enviroment before the command is processed,
+    /- For each command, we return the environment before the command is processed,
       and the `infoState` associated with that command. -/
     return (env, infoState) :: (← processCommands)
 
@@ -74,7 +74,7 @@ def traverseForest (file : FilePath)
 
 end transverseTactics
 
-/-! TODO: Find a way to free the enviroment `env` in `transverseTactics`.
+/-! TODO: Find a way to free the environment `env` in `transverseTactics`.
   This leads to memory problems when using `transverseTactics` directly in loops. -/
 open transverseTactics in
 /-- Applies `visitTacticInfo` to each tactic in a file. -/
@@ -89,8 +89,8 @@ unsafe def transverseTactics (file : FilePath)
   /- We parse the header. Recall that the parser is takes a string and
     outputs a Lean syntax object. -/
   let (header, parserState, messages) ← Parser.parseHeader inputCtx
-  /- Recall that the elborator turns a Lean syntax object into a Lean Expr object.
-    In the below, we process the header, creating an enviroment with the relevent imports.
+  /- Recall that the elaborator turns a Lean syntax object into a Lean Expr object.
+    In the below, we process the header, creating an environment with the relevant imports.
     This can be thought of as creating an import only file. -/
   if messages.hasErrors then
     for msg in messages.toList do
@@ -105,10 +105,10 @@ unsafe def transverseTactics (file : FilePath)
       if msg.severity == .error then
         println! "ERROR: {← msg.toString}"
     throw $ IO.userError "Errors during import; aborting"
-  /- As part of the enviroment header is the module name. This is not included
+  /- As part of the environment header is the module name. This is not included
     in our current `env`. So we include it now. -/
   let env1 := env.setMainModule (← moduleNameOfFileName file none)
-  /- From the enviroment, we create a state of the `Command` monad. -/
+  /- From the environment, we create a state of the `Command` monad. -/
   let commandState := {Command.mkState env1 messages {} with infoState.enabled := true}
   /- We create a state of the `Frontend` monad-/
   /- Runs the `processCommands` function on the context defined by `inputCtx`, and the

@@ -245,7 +245,7 @@ namespace TensorTree
 variable {S : TensorSpecies}
 
 /-- Permuting indices, and then contracting is equivalent to contracting and then permuting,
-  once care is taking about ensuring one is contracting the same idices. -/
+  once care is taking about ensuring one is contracting the same indices. -/
 lemma perm_contr {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     {h : c1 (i.succAbove j) = S.τ (c1 i)} (t : TensorTree S c)

@@ -93,6 +93,7 @@ import HepLean.Lorentz.RealVector.Contraction
 import HepLean.Lorentz.RealVector.Modules
 import HepLean.Lorentz.RealVector.NormOne
 import HepLean.Lorentz.SL2C.Basic
+import HepLean.Lorentz.SL2C.SelfAdjoint
 import HepLean.Lorentz.Weyl.Basic
 import HepLean.Lorentz.Weyl.Contraction
 import HepLean.Lorentz.Weyl.Metric
@@ -105,6 +106,7 @@ import HepLean.Mathematics.LinearMaps
 import HepLean.Mathematics.List
 import HepLean.Mathematics.PiTensorProduct
 import HepLean.Mathematics.SO3.Basic
+import HepLean.Mathematics.SchurTriangulation
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.Basic
 import HepLean.Meta.Informal.Basic

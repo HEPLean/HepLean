@@ -41,4 +41,4 @@ Mathematicians and people with a Lean background can contribute in a number of w
 - Help by golfing and refactoring code.
 
 ## Computer scientists with a Lean background
-There are a number of metaprograms and infastructure projects which would improve HepLean. If you need help in this direction, please get in touch.
+There are a number of metaprograms and infrastructure projects which would improve HepLean. If you need help in this direction, please get in touch.

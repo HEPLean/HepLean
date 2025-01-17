@@ -16,7 +16,7 @@ sense that it is a section of the forgetful functor
 
 Functors in `Discrete C ⥤ Rep k G` form the basic building blocks of tensor structures.
 The fact that they extend to monoidal functors `OverColor C ⥤ Rep k G` allows us to
-interfact more generally with tensors.
+interact more generally with tensors.
 
 -/
 
@@ -30,7 +30,7 @@ variable {C k : Type} [CommRing k] {G : Type} [Group G]
 
 namespace Discrete
 
-/-- Takes a homorphism in `Discrete C` to an isomorphism built on the same objects. -/
+/-- Takes a homomorphism in `Discrete C` to an isomorphism built on the same objects. -/
 def homToIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) : c1 ≅ c2 :=
   Discrete.eqToIso (Discrete.eq_of_hom h)
 
@@ -40,7 +40,7 @@ namespace lift
 noncomputable section
 variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
 
-/-- Takes a homorphisms of `Discrete C` to an isomorphism `F.obj c1 ≅ F.obj c2`. -/
+/-- Takes a homomorphism of `Discrete C` to an isomorphism `F.obj c1 ≅ F.obj c2`. -/
 def discreteFunctorMapIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) :
     F.obj c1 ≅ F.obj c2 := F.mapIso (Discrete.homToIso h)
 
@@ -83,7 +83,7 @@ lemma discreteFunctorMapEqIso_comm_ρ {c1 c2 : Discrete C} (h : c1.as = c2.as) (
     Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
   rfl
 
-/-- Given a object in `OverColor Color` the correpsonding tensor product of representations. -/
+/-- Given a object in `OverColor Color` the corresponding tensor product of representations. -/
 def objObj' (f : OverColor C) : Rep k G := Rep.of {
   toFun := fun M => PiTensorProduct.map (fun x =>
     (F.obj (Discrete.mk (f.hom x))).ρ M),
@@ -127,7 +127,7 @@ open TensorProduct in
 lemma objObj'_V_carrier (f : OverColor C) :
     (objObj' F f).V = ⨂[k] (i : f.left), F.obj (Discrete.mk (f.hom i)) := rfl
 
-/-- Given a morphism in `OverColor C` the corresopnding linear equivalence between `obj' _`
+/-- Given a morphism in `OverColor C` the corresponding linear equivalence between `obj' _`
   induced by reindexing. -/
 def mapToLinearEquiv' {f g : OverColor C} (m : f ⟶ g) : (objObj' F f).V ≃ₗ[k] (objObj' F g).V :=
   (PiTensorProduct.reindex k (fun x => (F.obj (Discrete.mk (f.hom x))))
@@ -148,7 +148,7 @@ lemma mapToLinearEquiv'_tprod {f g : OverColor C} (m : f ⟶ g)
   rw [PiTensorProduct.reindex_tprod, PiTensorProduct.congr_tprod]
   rfl
 
-/-- Given a morphism in `OverColor C` the corresopnding map of representations induced by
+/-- Given a morphism in `OverColor C` the corresponding map of representations induced by
   reindexing. -/
 def objMap' {f g : OverColor C} (m : f ⟶ g) : objObj' F f ⟶ objObj' F g where
   hom := (mapToLinearEquiv' F m).toLinearMap
@@ -198,7 +198,7 @@ def ε : 𝟙_ (Rep k G) ≅ objObj' F (𝟙_ (OverColor C)) :=
     erw [objObj'_ρ_empty F g]
     rfl)
 
-/-- An auxillary equivalence, and trivial, of modules needed to define `μModEquiv`. -/
+/-- An auxiliary equivalence, and trivial, of modules needed to define `μModEquiv`. -/
 def discreteSumEquiv {X Y : OverColor C} (i : X.left ⊕ Y.left) :
     Sum.elim (fun i => F.obj (Discrete.mk (X.hom i)))
     (fun i => F.obj (Discrete.mk (Y.hom i))) i ≃ₗ[k] F.obj (Discrete.mk ((X ⊗ Y).hom i)) :=
@@ -215,7 +215,7 @@ def discreteSumEquiv' {X Y : Type} {cX : X → C} {cY : Y → C} (i : X ⊕ Y) :
   | Sum.inl _ => LinearEquiv.refl _ _
   | Sum.inr _ => LinearEquiv.refl _ _
 
-/-- The equivalence of modules corresonding to the tensorate. -/
+/-- The equivalence of modules corresponding to the tensor. -/
 def μModEquiv (X Y : OverColor C) :
     (objObj' F X ⊗ objObj' F Y).V ≃ₗ[k] objObj' F (X ⊗ Y) :=
   HepLean.PiTensorProduct.tmulEquiv ≪≫ₗ PiTensorProduct.congr (discreteSumEquiv F)
@@ -238,7 +238,7 @@ lemma μModEquiv_tmul_tprod {X Y : OverColor C}
   rw [PiTensorProduct.congr_tprod]
   rfl
 
-/-- The natural isomorphism corresponding to the tensorate. -/
+/-- The natural isomorphism corresponding to the tensor. -/
 def μ (X Y : OverColor C) : objObj' F X ⊗ objObj' F Y ≅ objObj' F (X ⊗ Y) :=
   Action.mkIso (μModEquiv F X Y).toModuleIso
   (fun M => by

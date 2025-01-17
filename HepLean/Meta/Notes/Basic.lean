@@ -35,7 +35,7 @@ structure NoteInfo where
   /-- The line from where the note came from. -/
   line : Nat
 
-/-- Enviroment extention to store `note ...`. -/
+/-- Environment extension to store `note ...`. -/
 initialize noteExtension : SimplePersistentEnvExtension NoteInfo (Array NoteInfo) ←
   registerSimplePersistentEnvExtension {
     name := `noteExtension
@@ -72,7 +72,7 @@ def elabNote : Lean.Elab.Command.CommandElab := fun stx =>
 
 -/
 
-/-- Enviroment extention to store `note_attr`. -/
+/-- Environment extension to store `note_attr`. -/
 initialize noteDeclExtension : SimplePersistentEnvExtension Name (Array Name) ←
   registerSimplePersistentEnvExtension {
     name := `noteDeclExtension
@@ -90,7 +90,7 @@ initialize noteAttribute : Unit ←
       modifyEnv fun env => noteDeclExtension.addEntry env declName
   }
 
-/-- Enviroment extention to store `note_attr_informal`. -/
+/-- Environment extension to store `note_attr_informal`. -/
 initialize noteInformalDeclExtension : SimplePersistentEnvExtension Name (Array Name) ←
   registerSimplePersistentEnvExtension {
     name := `noteInformalDeclExtension

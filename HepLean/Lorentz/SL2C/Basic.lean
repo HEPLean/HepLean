@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Group.Restricted
+import HepLean.Lorentz.SL2C.SelfAdjoint
+import Mathlib.Analysis.Complex.Polynomial.Basic -- Complex.isAlgClosed
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
@@ -282,9 +284,28 @@ In this section we will define this homomorphism.
 
 -/
 
-informal_lemma toLorentzGroup_det_one where
-  math :≈ "The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one."
-  deps :≈ [``toLorentzGroup]
+/-- The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one. -/
+lemma toLorentzGroup_det_one (M : SL(2, ℂ)) : det (toLorentzGroup M).val = 1 :=
+  let U := M.val.schurTriangulationUnitary
+  let N := M.val.schurTriangulation.val
+  have h : M.val = U * N * star U := M.val.schur_triangulation
+  haveI : Invertible U.val := ⟨star U.val, U.property.left, U.property.right⟩
+  calc det (toLorentzGroup M).val
+    _ = LinearMap.det (toSelfAdjointMap' M) := LinearMap.det_toMatrix ..
+    _ = LinearMap.det (toSelfAdjointMap' (U * N * U.val⁻¹)) :=
+      suffices star U = U.val⁻¹ by rw [h, this]
+      calc star U.val
+        _ = star U.val * (U.val * U.val⁻¹) := by simp
+        _ = star U.val * U.val * U.val⁻¹ := by noncomm_ring
+        _ = U.val⁻¹ := by simp
+    _ = LinearMap.det (toSelfAdjointMap' N) := toSelfAdjointMap_similar_det U N
+    _ = 1 :=
+      suffices N.det = 1 from toSelfAdjointMap_det_one' M.val.schurTriangulation.property this
+      calc N.det
+        _ = det ((U * star U).val * N) := by simp
+        _ = det (U.val * N * star U.val) := det_mul_right_comm ..
+        _ = M.val.det := congrArg det h.symm
+        _ = 1 := M.property
 
 informal_lemma toRestrictedLorentzGroup where
   math :≈ "The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group."

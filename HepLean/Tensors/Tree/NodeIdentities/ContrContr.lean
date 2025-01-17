@@ -148,7 +148,7 @@ noncomputable section
 /-- The contraction map for the first pair of indices. -/
 def contrMapFst := S.contrMap c q.i q.j q.hij
 
-/-- The contractoin map for the second pair of indices. -/
+/-- The contraction map for the second pair of indices. -/
 def contrMapSnd := S.contrMap (c ∘ q.i.succAbove ∘ q.j.succAbove) q.k q.l q.hkl
 
 /-- The homomorphism one must apply on swapping the order of contractions. -/

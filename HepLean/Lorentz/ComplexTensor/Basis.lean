@@ -77,7 +77,7 @@ lemma perm_basisVector {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   rw [basis_eq_FD]
 
 /-- The `perm` node acting on basis vectors corresponds to a basis vector, as a tensor tree
-  structue. -/
+  structure. -/
 lemma perm_basisVector_tree {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ : OverColor.mk c ⟶ OverColor.mk c1)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :

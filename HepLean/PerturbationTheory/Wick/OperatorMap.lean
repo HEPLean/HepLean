@@ -23,7 +23,7 @@ variable {𝓕 : Type}
   if two fields are of a different grade then their super commutor lands on zero,
   and the `koszulOrder` (normal order) of any term with a super commutor of two fields present
   is zero.
-  This can be thought as as a condtion on the operator algebra `A` as much as it can
+  This can be thought as as a condition on the operator algebra `A` as much as it can
   on `F`. -/
 class OperatorMap {A : Type} [Semiring A] [Algebra ℂ A]
     (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 → Prop)
