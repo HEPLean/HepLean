@@ -22,12 +22,12 @@ structure OperatorAlgebra where
     crAnF (superCommute (ofCrAnState φ) (ofCrAnState ψ))
     ∈ Subalgebra.center ℂ A
   superCommute_create_create : ∀ (φc φc' : 𝓕.CrAnStates)
-    (_ : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (_ : 𝓕.crAnStatesToCreateAnnihilate φc' = CreateAnnihilate.create),
+    (_ : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (_ : 𝓕 |>ᶜ φc' = CreateAnnihilate.create),
     crAnF (superCommute (ofCrAnState φc) (ofCrAnState φc')) = 0
   superCommute_annihilate_annihilate : ∀ (φa φa' : 𝓕.CrAnStates)
-    (_ : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
-    (_ : 𝓕.crAnStatesToCreateAnnihilate φa' = CreateAnnihilate.annihilate),
+    (_ : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
+    (_ : 𝓕 |>ᶜ φa' = CreateAnnihilate.annihilate),
     crAnF (superCommute (ofCrAnState φa) (ofCrAnState φa')) = 0
   superCommute_different_statistics : ∀ (φ φ' : 𝓕.CrAnStates)
     (_ : ¬ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φ')),

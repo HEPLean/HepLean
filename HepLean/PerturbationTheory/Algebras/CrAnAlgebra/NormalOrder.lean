@@ -53,7 +53,7 @@ lemma normalOrder_one : normalOrder (𝓕 := 𝓕) 1 = 1 := by
   simp
 
 lemma normalOrder_ofCrAnList_cons_create (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
+    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
     normalOrder (ofCrAnList (φ :: φs)) =
     ofCrAnState φ * normalOrder (ofCrAnList φs) := by
   rw [normalOrder_ofCrAnList]
@@ -61,7 +61,7 @@ lemma normalOrder_ofCrAnList_cons_create (φ : 𝓕.CrAnStates)
   rw [ofCrAnList_cons, normalOrder_ofCrAnList, mul_smul_comm]
 
 lemma normalOrder_create_mul  (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.create)
+    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create)
     (a : CrAnAlgebra 𝓕) :
     normalOrder (ofCrAnState φ * a) = ofCrAnState φ * normalOrder a := by
   change (normalOrder ∘ₗ mulLinearMap (ofCrAnState φ)) a =
@@ -74,7 +74,7 @@ lemma normalOrder_create_mul  (φ : 𝓕.CrAnStates)
   rw [normalOrder_ofCrAnList_cons_create φ hφ]
 
 lemma normalOrder_ofCrAnList_append_annihilate (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnStates) :
+    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnStates) :
     normalOrder (ofCrAnList (φs ++ [φ])) =
     normalOrder (ofCrAnList φs) * ofCrAnState φ := by
   rw [normalOrder_ofCrAnList]
@@ -82,7 +82,7 @@ lemma normalOrder_ofCrAnList_append_annihilate (φ : 𝓕.CrAnStates)
   rw [ofCrAnList_append, ofCrAnList_singleton, normalOrder_ofCrAnList, smul_mul_assoc]
 
 lemma normalOrder_mul_annihilate  (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕.crAnStatesToCreateAnnihilate φ = CreateAnnihilate.annihilate)
+    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate)
     (a : CrAnAlgebra 𝓕) :
     normalOrder (a * ofCrAnState φ) = normalOrder a * ofCrAnState φ := by
   change (normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φ)) a =
@@ -95,8 +95,8 @@ lemma normalOrder_mul_annihilate  (φ : 𝓕.CrAnStates)
   rw [normalOrder_ofCrAnList_append_annihilate φ hφ]
 
 lemma normalOrder_swap_create_annihlate_ofCrAnList_ofCrAnList (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnStates) :
     normalOrder (ofCrAnList φs' * ofCrAnState φc * ofCrAnState φa * ofCrAnList φs) =
     FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
@@ -110,8 +110,8 @@ lemma normalOrder_swap_create_annihlate_ofCrAnList_ofCrAnList (φc φa : 𝓕.Cr
   noncomm_ring
 
 lemma normalOrder_swap_create_annihlate_ofCrAnList (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) (a : 𝓕.CrAnAlgebra) :
     normalOrder (ofCrAnList φs * ofCrAnState φc * ofCrAnState φa * a) =
     FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
@@ -126,8 +126,8 @@ lemma normalOrder_swap_create_annihlate_ofCrAnList (φc φa : 𝓕.CrAnStates)
   rfl
 
 lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * ofCrAnState φc * ofCrAnState φa * b) =
     FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) •
@@ -144,8 +144,8 @@ lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
   rfl
 
 lemma normalOrder_superCommute_create_annihilate (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * superCommute (ofCrAnState φc) (ofCrAnState φa) * b) = 0 := by
   rw [superCommute_ofCrAnState]
@@ -157,8 +157,8 @@ lemma normalOrder_superCommute_create_annihilate (φc φa : 𝓕.CrAnStates)
     map_smul, sub_self]
 
 lemma normalOrder_superCommute_annihilate_create (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * superCommute (ofCrAnState φa) (ofCrAnState φc) * b) = 0 := by
   rw [superCommute_ofCrAnState_symm]
@@ -286,8 +286,8 @@ lemma normalOrder_superCommute_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnA
 
 lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφc' : 𝓕.crAnStatesToCreateAnnihilate φc' = CreateAnnihilate.create)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφc' : 𝓕 |>ᶜ φc' = CreateAnnihilate.create)
     (φs φs' : List 𝓕.CrAnStates) :
      (normalOrder (ofCrAnList φs * superCommute (ofCrAnState φc) (ofCrAnState φc') * ofCrAnList φs')) =
      normalOrderSign (φs ++ φc' :: φc :: φs') •
@@ -357,8 +357,8 @@ lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
 
 lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
     (φa φa' : 𝓕.CrAnStates)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
-    (hφa' : 𝓕.crAnStatesToCreateAnnihilate φa' = CreateAnnihilate.annihilate)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
+    (hφa' : 𝓕 |>ᶜ φa' = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnStates) :
      (normalOrder (ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa') * ofCrAnList φs')) =
      normalOrderSign (φs ++ φa' :: φa :: φs') •

@@ -26,8 +26,8 @@ open CrAnAlgebra
 
 lemma crAnF_normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates)
-    (hφc : 𝓕.crAnStatesToCreateAnnihilate φc = CreateAnnihilate.create)
-    (hφc' : 𝓕.crAnStatesToCreateAnnihilate φc' = CreateAnnihilate.create)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
+    (hφc' : 𝓕 |>ᶜ φc' = CreateAnnihilate.create)
     (φs φs' : List 𝓕.CrAnStates) :
     𝓞.crAnF (normalOrder (ofCrAnList φs * superCommute (ofCrAnState φc) (ofCrAnState φc') * ofCrAnList φs'))
     = 0 := by
@@ -37,8 +37,8 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
 
 lemma crAnF_normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
     (φa φa' : 𝓕.CrAnStates)
-    (hφa : 𝓕.crAnStatesToCreateAnnihilate φa = CreateAnnihilate.annihilate)
-    (hφa' : 𝓕.crAnStatesToCreateAnnihilate φa' = CreateAnnihilate.annihilate)
+    (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
+    (hφa' : 𝓕 |>ᶜ φa' = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnStates) :
     𝓞.crAnF (normalOrder (ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa') * ofCrAnList φs'))
     = 0 := by
@@ -50,8 +50,8 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero
     (φa φa' : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
     𝓞.crAnF (normalOrder (ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa') * ofCrAnList φs'))
     = 0 := by
-  rcases CreateAnnihilate.eq_create_or_annihilate (𝓕.crAnStatesToCreateAnnihilate φa) with hφa | hφa
-  <;> rcases CreateAnnihilate.eq_create_or_annihilate (𝓕.crAnStatesToCreateAnnihilate φa') with hφa' | hφa'
+  rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa) with hφa | hφa
+  <;> rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa') with hφa' | hφa'
   · rw [normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList φa φa' hφa hφa' φs φs']
     rw [map_smul, map_mul, map_mul, map_mul, 𝓞.superCommute_create_create φa φa' hφa hφa']
     simp

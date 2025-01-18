@@ -6,9 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.FieldStatistics.Basic
 /-!
 
-# Field statistics
-
-Basic properties related to whether a field, or list of fields, is bosonic or fermionic.
+# Field statistics of a finite set.
 
 -/
 
@@ -107,6 +105,5 @@ lemma ofFinset_union_disjoint (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a
   rw [ofFinset_union]
   rw [Finset.disjoint_iff_inter_eq_empty.mp h]
   simp
-
 
 end FieldStatistic
