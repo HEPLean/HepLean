@@ -26,7 +26,7 @@ open FieldStatistic
 lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : ContractionsNat φs.length) :
      𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get (c.insertList φ φs i none).uncontractedList)))
-     = 𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (c.uncontracted.filter (fun x => i.succAbove x < i))) •
+     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, c.uncontracted.filter (fun x => i.succAbove x < i)⟩) •
     𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ none))) := by
   simp [optionEraseZ]
   rw [crAnF_ofState_normalOrder_insert φ (c.uncontractedList.map φs.get)
@@ -39,9 +39,9 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
   simp
   rw [← List.map_take]
   rw [take_uncontractedListOrderPos_eq_filter]
-  have h1 : (𝓕 |>ₛ  (List.map φs.get (List.filter (fun x => decide (↑x < i.1)) c.uncontractedList)))
-        = fieldStatOfFinset φs.get (c.uncontracted.filter (fun x => x.val  < i.1)):= by
-      simp [fieldStatOfFinset]
+  have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) c.uncontractedList))
+        = 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x.val  < i.1))⟩ := by
+      simp [ofFinset]
       congr
       rw [uncontractedList_eq_sort]
       have hdup : (List.filter (fun x => decide (x.1 < i.1)) (Finset.sort (fun x1 x2 => x1 ≤ x2) c.uncontracted)).Nodup := by
@@ -104,10 +104,10 @@ lemma insertList_some_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
 
 lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : ContractionsNat φs.length) :
-    (c.insertList φ φs i none).sign  • (c.insertList φ φs i none).timeContract 𝓞
+    (c.insertList φ φs i none).sign • (c.insertList φ φs i none).timeContract 𝓞
     * 𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
       (c.insertList φ φs i none).uncontractedList))) =
-    𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (Finset.univ.filter (fun k => i.succAbove k < i)))
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun k => i.succAbove k < i))⟩)
     • (c.sign • c.timeContract 𝓞 * 𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ none)))) := by
   by_cases hg : IsGradedObeying φs c
   · rw [insertList_none_normalOrder]
@@ -119,7 +119,7 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
     rw [signInsertNone_eq_filterset _ _ _ _ hg]
     rw [← map_mul]
     congr
-    rw [fieldStatOfFinset_union]
+    rw [ofFinset_union]
     congr
     ext a
     simp
@@ -150,7 +150,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
     (c.insertList φ φs i (some k)).sign • (c.insertList φ φs i (some k)).timeContract 𝓞
     * 𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
       (c.insertList φ φs i (some k)).uncontractedList))) =
-    𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (Finset.univ.filter (fun x => i.succAbove x < i)))
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩)
     • (c.sign •
     (𝓞.contractMemList φ (List.map φs.get c.uncontractedList) ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞)
     * 𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ
@@ -209,7 +209,7 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
     (hlt : ∀ (k : Fin φs.length), timeOrderProp φ φs[k])
     (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderProp φs[k] φ):
     (c.sign • c.timeContract 𝓞) * 𝓞.crAnF ((CrAnAlgebra.ofState φ) * normalOrder (ofStateList (c.uncontractedList.map φs.get))) =
-    𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (Finset.univ.filter (fun x => i.succAbove x < i))) • ∑ (k : Option (c.uncontracted)),
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩) • ∑ (k : Option (c.uncontracted)),
     ((c.insertList φ φs i k).sign • (c.insertList φ φs i k).timeContract 𝓞
     * 𝓞.crAnF (normalOrder (ofStateList ((c.insertList φ φs i k).uncontractedList.map (φs.insertIdx i φ).get)))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum, Finset.mul_sum,
@@ -244,12 +244,12 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs'):
     ∑ (c : ContractionsNat φs.length),
       (c.sign • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))
     = ∑ (c : ContractionsNat φs'.length),
-       (c.sign • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs'.get))) := by
+      (c.sign • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs'.get))) := by
   subst h
   simp
 
 /-- Wick's theorem for the empty list. -/
-lemma wicks_theorem_nil  :
+lemma wicks_theorem_nil :
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : ContractionsNat [].length),
       (c.sign [] • c.timeContract 𝓞) *
       𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
@@ -263,8 +263,8 @@ lemma wicks_theorem_nil  :
 
 lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrder (ofList (φ :: φs)) =
-    𝓢(𝓕 |>ₛ maxTimeField φ φs, fieldStatOfFinset (eraseMaxTimeField φ φs).get
-        (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)) •
+    𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
+        (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
     StateAlgebra.ofState (maxTimeField φ φs) * timeOrder (ofList (eraseMaxTimeField φ φs)) := by
   rw [timeOrder_eq_maxTimeField_mul]
   congr 3
@@ -283,7 +283,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
     apply Iff.intro
     · intro hi
       have h2 := (maxTimeFieldPosFin φ φs).2
-      simp  [eraseMaxTimeField, Nat.succ_eq_add_one, -Fin.is_lt, insertionSortDropMinPos, maxTimeFieldPosFin, insertionSortMinPosFin] at h2
+      simp [eraseMaxTimeField, Nat.succ_eq_add_one, -Fin.is_lt, insertionSortDropMinPos, maxTimeFieldPosFin, insertionSortMinPosFin] at h2
       use ⟨i, by omega⟩
       apply And.intro
       · simp [Fin.succAbove, maxTimeFieldPosFin, insertionSortMinPosFin]
@@ -316,7 +316,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
 theorem wicks_theorem : (φs : List 𝓕.States) →
       𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) = ∑ (c : ContractionsNat φs.length),
       (c.sign φs • c.timeContract 𝓞) * 𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))
-  | [] =>  wicks_theorem_nil
+  | [] => wicks_theorem_nil
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
     rw [timeOrder_eq_maxTimeField_mul_finset, map_mul, map_mul, ih, Finset.mul_sum]
@@ -335,7 +335,7 @@ theorem wicks_theorem : (φs : List 𝓕.States) →
       ← map_mul]
     have hx := mul_sum_contractions (𝓞 := 𝓞) (maxTimeField φ φs) (eraseMaxTimeField φ φs) (maxTimeFieldPosFin φ φs) c
     rw [ofStateAlgebra_ofState, hx]
-    trans (1 : ℂ) •  ∑ k : Option { x // x ∈ c.uncontracted },
+    trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted },
       sign (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs))
           (insertList (maxTimeField φ φs) (eraseMaxTimeField φ φs) c (maxTimeFieldPosFin φ φs) k) •
         ↑(ContractionsNat.timeContract 𝓞
@@ -347,8 +347,8 @@ theorem wicks_theorem : (φs : List 𝓕.States) →
     · simp
     rw [smul_smul]
     simp [pairedSign_mul_self]
-    · exact fun k =>  timeOrder_maxTimeField _ _ k
-    · exact fun k =>  lt_maxTimeFieldPosFin_not_timeOrder _ _ k
+    · exact fun k => timeOrder_maxTimeField _ _ k
+    · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length
 
 

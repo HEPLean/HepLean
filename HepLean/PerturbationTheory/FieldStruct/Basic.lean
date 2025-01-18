@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.RealVector.Basic
-import HepLean.PerturbationTheory.FieldStatistics
+import HepLean.PerturbationTheory.FieldStatistics.Basic
 import HepLean.SpaceTime.Basic
+import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 /-!
 
 # Field structures
@@ -53,5 +54,9 @@ scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
 /-- The field statistics associated with a list states. -/
 scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
+
+/-- The field statistic associated with a finite set-/
+scoped[FieldStruct] notation  𝓕 "|>ₛ ⟨" f ","a "⟩"=> FieldStatistic.ofFinset
+    (statesStatistic 𝓕) f a
 
 end FieldStruct

@@ -131,7 +131,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       simp [orderedInsert_eq_insertIdx_orderedInsertPos]
     conv_rhs =>
       lhs
-      rw [ofList_take_succ_cons, map_mul,  koszulSign]
+      rw [ofList_take_succ_cons, map_mul, koszulSign]
     ring_nf
     conv_lhs =>
       lhs
@@ -156,7 +156,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     · simp only [rs, ni]
       ring
     trans koszulSignInsert q le φ1 φs * (𝓢(q φ, q φ1) *
-          𝓢(q φ,  ofList q ((List.insertIdx nro φ1 rs).take (nro.succAbove ni))))
+          𝓢(q φ, ofList q ((List.insertIdx nro φ1 rs).take (nro.succAbove ni))))
     swap
     · simp only [rs, nro, ni]
       ring
@@ -247,7 +247,7 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
   simp
 
 lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le]
-  (φ :  𝓕) (φs : List 𝓕) :
+  (φ : 𝓕) (φs : List 𝓕) :
   koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
     * 𝓢(q (insertionSortMin le φ φs), ofList q ((φ :: φs).take (insertionSortMinPos le φ φs))) := by
   rw [koszulSign_eraseIdx]

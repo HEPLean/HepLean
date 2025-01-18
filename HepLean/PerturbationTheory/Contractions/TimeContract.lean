@@ -66,7 +66,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : 𝓕.timeOrderProp φ φs[k.1]) (hik : i < i.succAbove k):
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
-    𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (c.uncontracted.filter (fun x => x < k)) )
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x < k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞):= by
   rw [timeConract_insertList_some]
@@ -79,8 +79,8 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     simp only [smul_smul]
     congr
     have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k)) (List.map φs.get c.uncontractedList))
-        = (fieldStatOfFinset φs.get (Finset.filter (fun x =>  x < k) c.uncontracted)) := by
-      simp [fieldStatOfFinset]
+        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x =>  x < k) c.uncontracted)⟩) := by
+      simp [ofFinset]
       congr
       rw [← List.map_take]
       congr
@@ -95,7 +95,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : ¬ 𝓕.timeOrderProp φs[k.1] φ) (hik : ¬ i < i.succAbove k):
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
-    𝓢(𝓕 |>ₛ φ, fieldStatOfFinset φs.get (c.uncontracted.filter (fun x => x ≤ k)) )
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞):= by
   rw [timeConract_insertList_some]
@@ -105,21 +105,21 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
   simp [smul_smul]
   congr
   have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k)) (List.map φs.get c.uncontractedList))
-        = (fieldStatOfFinset φs.get (Finset.filter (fun x =>  x < k) c.uncontracted)) := by
-      simp [fieldStatOfFinset]
+        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x =>  x < k) c.uncontracted)⟩) := by
+      simp [ofFinset]
       congr
       rw [← List.map_take]
       congr
       rw [take_uncontractedFinEquiv_symm]
       rw [filter_uncontractedList]
   rw [h1]
-  trans (pairedSign (𝓕.statesStatistic φ)) (fieldStatOfFinset φs.get {k.1})
+  trans (pairedSign (𝓕.statesStatistic φ)) (𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
   · rw [pairedSign_symm]
-    rw [fieldStatOfFinset_singleton]
+    rw [ofFinset_singleton]
     simp
   rw [← map_mul]
   congr
-  rw [fieldStatOfFinset_union]
+  rw [ofFinset_union]
   congr
   ext a
   simp

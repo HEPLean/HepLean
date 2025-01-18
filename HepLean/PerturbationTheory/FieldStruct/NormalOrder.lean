@@ -249,7 +249,6 @@ open FieldStatistic
 def normalOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
   List.insertionSort 𝓕.normalOrderProp φs
 
-
 @[simp]
 lemma normalOrderList_nil : normalOrderList (𝓕 := 𝓕) [] = [] := by
   simp [normalOrderList]

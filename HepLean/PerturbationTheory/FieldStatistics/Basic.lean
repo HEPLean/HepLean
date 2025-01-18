@@ -126,6 +126,7 @@ lemma mul_eq_iff_eq_mul' (a b c : FieldStatistic) : a * b = c ↔ b = a * c := b
   rfl
   rfl
   rfl
+
 /-- The field statistics of a list of fields is fermionic if ther is an odd number of fermions,
   otherwise it is bosonic. -/
 def ofList (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) → FieldStatistic
@@ -274,6 +275,7 @@ end ofListTake
 ## Paired Signs
 
 -/
+
 def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
   toFun a :=
     {
