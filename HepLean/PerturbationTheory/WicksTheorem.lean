@@ -28,20 +28,18 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
      𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get (c.insertList φ φs i none).uncontractedList)))
      = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, c.uncontracted.filter (fun x => i.succAbove x < i)⟩) •
     𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ none))) := by
-  simp [optionEraseZ]
+  simp only [Nat.succ_eq_add_one, instCommGroup.eq_1, optionEraseZ]
   rw [crAnF_ofState_normalOrder_insert φ (c.uncontractedList.map φs.get)
-    ⟨(c.uncontractedListOrderPos i), by simp⟩]
-  rw [smul_smul]
+    ⟨(c.uncontractedListOrderPos i), by simp⟩, smul_smul]
   trans (1 : ℂ) • 𝓞.crAnF
     (normalOrder (ofStateList (List.map (List.insertIdx (↑i) φ φs).get (insertList φ φs c i none).uncontractedList)))
   · simp
   congr 1
-  simp
-  rw [← List.map_take]
-  rw [take_uncontractedListOrderPos_eq_filter]
+  simp only [instCommGroup.eq_1]
+  rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
   have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) c.uncontractedList))
-        = 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x.val  < i.1))⟩ := by
-      simp [ofFinset]
+        = 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x.val < i.1))⟩ := by
+      simp only [Nat.succ_eq_add_one, ofFinset]
       congr
       rw [uncontractedList_eq_sort]
       have hdup : (List.filter (fun x => decide (x.1 < i.1)) (Finset.sort (fun x1 x2 => x1 ≤ x2) c.uncontracted)).Nodup := by
@@ -53,13 +51,13 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
       ext a
       simp
   rw [h1]
-  simp
+  simp only [Nat.succ_eq_add_one]
   have h2 : (Finset.filter (fun x => x.1 < i.1) c.uncontracted) =
     (Finset.filter (fun x => i.succAbove x < i) c.uncontracted) := by
     ext a
-    simp
+    simp only [Nat.succ_eq_add_one, Finset.mem_filter, and_congr_right_iff]
     intro ha
-    simp [Fin.succAbove]
+    simp only [Fin.succAbove]
     split
     · apply Iff.intro
       · intro h
@@ -83,9 +81,9 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
         simp at h
         omega
   rw [h2]
-  simp
+  simp only [pairedSign_mul_self]
   congr
-  simp
+  simp only [Nat.succ_eq_add_one]
   rw [insertList_uncontractedList_none_map]
 
 lemma insertList_some_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -94,11 +92,13 @@ lemma insertList_some_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
       (c.insertList φ φs i (some k)).uncontractedList)))
      = 𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ
     ((uncontractedStatesEquiv φs c) k)))) := by
-  simp [optionEraseZ, uncontractedStatesEquiv, insertList]
+  simp only [Nat.succ_eq_add_one, insertList, optionEraseZ, uncontractedStatesEquiv,
+    Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+    Fin.coe_cast]
   congr
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_some]
-  simp
+  simp only [Fin.coe_succAboveEmb, List.map_eraseIdx, List.map_map]
   congr
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
 
@@ -110,19 +110,19 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun k => i.succAbove k < i))⟩)
     • (c.sign • c.timeContract 𝓞 * 𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ none)))) := by
   by_cases hg : IsGradedObeying φs c
-  · rw [insertList_none_normalOrder]
-    rw [sign_insert_none]
-    simp [smul_smul]
+  · rw [insertList_none_normalOrder, sign_insert_none]
+    simp only [Nat.succ_eq_add_one, timeContract_insertList_none, instCommGroup.eq_1,
+      Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
     congr 1
     rw [← mul_assoc]
     congr 1
-    rw [signInsertNone_eq_filterset _ _ _ _ hg]
-    rw [← map_mul]
+    rw [signInsertNone_eq_filterset _ _ _ _ hg, ← map_mul]
     congr
     rw [ofFinset_union]
     congr
     ext a
-    simp
+    simp only [Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and,
+      Finset.mem_inter, not_and, not_lt, and_imp]
     apply Iff.intro
     · intro ha
       have ha1 := ha.1
@@ -130,16 +130,18 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
       · exact ha1.2
       · exact ha1.2
     · intro ha
-      simp [ha, uncontracted]
+      simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and, ha, and_true,
+        forall_const]
       have hx : c.getDual? a = none ↔ ¬ (c.getDual? a).isSome := by
         simp
       rw [hx]
       simp only [Bool.not_eq_true, Bool.eq_false_or_eq_true_self, true_and]
       intro h1 h2
       simp_all
-  · simp
+  · simp only [Nat.succ_eq_add_one, timeContract_insertList_none, Algebra.smul_mul_assoc,
+    instCommGroup.eq_1]
     rw [timeContract_of_not_isGradedObeying]
-    simp
+    simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
     exact hg
 
 
@@ -160,9 +162,8 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
     · rw [ContractionsNat.timeConract_insertList_some_eq_mul_contractMemList_not_lt]
       swap
       · exact hn _ hk
-      rw [insertList_some_normalOrder]
-      rw [sign_insert_some]
-      simp [smul_smul]
+      rw [insertList_some_normalOrder, sign_insert_some]
+      simp only [instCommGroup.eq_1, smul_smul, Algebra.smul_mul_assoc]
       congr 1
       rw [mul_assoc, mul_comm (sign φs c), ← mul_assoc]
       congr 1
@@ -269,46 +270,42 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
   rw [timeOrder_eq_maxTimeField_mul]
   congr 3
   apply FieldStatistic.ofList_perm
-  have h1 : (φ :: φs) = (List.finRange (φ :: φs).length).map (φ :: φs).get := by
-    exact Eq.symm (List.finRange_map_get (φ :: φs))
-  nth_rewrite 1 [h1]
-  simp [eraseMaxTimeField, insertionSortDropMinPos]
-  rw [eraseIdx_get]
-  rw [← List.map_take, ← List.map_map]
+  nth_rewrite 1 [← List.finRange_map_get (φ :: φs)]
+  simp only [List.length_cons, eraseMaxTimeField, insertionSortDropMinPos]
+  rw [eraseIdx_get, ← List.map_take, ← List.map_map]
   refine List.Perm.map (φ :: φs).get ?_
   apply (List.perm_ext_iff_of_nodup _ _).mpr
   · intro i
-    rw [mem_take_finrange]
-    simp [maxTimeFieldPos]
-    apply Iff.intro
-    · intro hi
-      have h2 := (maxTimeFieldPosFin φ φs).2
-      simp [eraseMaxTimeField, Nat.succ_eq_add_one, -Fin.is_lt, insertionSortDropMinPos, maxTimeFieldPosFin, insertionSortMinPosFin] at h2
+    simp only [List.length_cons, maxTimeFieldPos, mem_take_finrange, Fin.val_fin_lt, List.mem_map,
+      Finset.mem_sort, Finset.mem_filter, Finset.mem_univ, true_and, Function.comp_apply]
+    refine Iff.intro (fun hi => ?_) (fun h => ?_)
+    · have h2 := (maxTimeFieldPosFin φ φs).2
+      simp only [eraseMaxTimeField, insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
+        maxTimeFieldPosFin, insertionSortMinPosFin] at h2
       use ⟨i, by omega⟩
       apply And.intro
-      · simp [Fin.succAbove, maxTimeFieldPosFin, insertionSortMinPosFin]
+      · simp only [Fin.succAbove, List.length_cons, Fin.castSucc_mk, maxTimeFieldPosFin,
+        insertionSortMinPosFin, Nat.succ_eq_add_one, Fin.mk_lt_mk, Fin.val_fin_lt, Fin.succ_mk]
         rw [Fin.lt_def]
         split
-        · simp
+        · simp only [Fin.val_fin_lt]
           omega
         · omega
-      · simp [Fin.succAbove, maxTimeFieldPosFin, insertionSortMinPosFin, Fin.ext_iff]
+      · simp only [Fin.succAbove, List.length_cons, Fin.castSucc_mk, Fin.succ_mk, Fin.ext_iff,
+        Fin.coe_cast]
         split
         · simp
         · simp_all [Fin.lt_def]
-    · intro h
-      obtain ⟨j, h1, h2⟩ := h
+    · obtain ⟨j, h1, h2⟩ := h
       subst h2
-      simp [Fin.lt_def]
+      simp only [Fin.lt_def, Fin.coe_cast]
       exact h1
-  · refine List.Sublist.nodup (List.take_sublist _ _) ?_
-    exact List.nodup_finRange (φs.length + 1)
-  · refine List.Nodup.map ?hf ?_
-    refine Function.Injective.comp ?hf.hg ?hf.hf
-    exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderProp φ φs))
-    exact Fin.succAbove_right_injective
-    exact
-      Finset.sort_nodup (fun x1 x2 => x1 ≤ x2)
+  · exact List.Sublist.nodup (List.take_sublist _ _) <|
+      List.nodup_finRange (φs.length + 1)
+  · refine List.Nodup.map ?_ ?_
+    · refine Function.Injective.comp ?hf.hg Fin.succAbove_right_injective
+      exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderProp φ φs))
+    · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2)
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
@@ -346,7 +343,8 @@ theorem wicks_theorem : (φs : List 𝓕.States) →
     swap
     · simp
     rw [smul_smul]
-    simp [pairedSign_mul_self]
+    simp only [instCommGroup.eq_1, pairedSign_mul_self, Nat.succ_eq_add_one, Algebra.smul_mul_assoc,
+      Fintype.sum_option, timeContract_insertList_none, Finset.univ_eq_attach, smul_add, one_smul]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length

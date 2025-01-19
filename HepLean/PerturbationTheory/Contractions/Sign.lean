@@ -142,12 +142,12 @@ lemma stat_ofFinset_eq_one_of_isGradedObeying (φs : List 𝓕.States)
     simp [e2]
     rw [if_neg (hnon x.1 (by simpa using x.2))]
   simp [e2]
-  rw [← c.sigmaConstrainedEquiv.prod_comp]
+  rw [← c.sigmaContractedEquiv.prod_comp]
   erw [Finset.prod_sigma]
   apply Fintype.prod_eq_one _
   intro x
   rw [prod_finset_eq_mul_fst_snd]
-  simp [sigmaConstrainedEquiv]
+  simp [sigmaContractedEquiv]
   split
   · split
     erw [hg x]
@@ -378,7 +378,7 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States) 
   trans  ∏ (x : (a : c.1) × a), (if i.succAbove x.2 < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.2.1]) else 1)
   · rw [Finset.prod_sigma']
     rfl
-  rw [← c.sigmaConstrainedEquiv.symm.prod_comp]
+  rw [← c.sigmaContractedEquiv.symm.prod_comp]
   let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x //  ¬ (c.getDual? x).isSome}  := by
     exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
   rw [← e2.symm.prod_comp]
@@ -583,7 +583,7 @@ lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.States) (φs : List 𝓕.States)
       else 1 := by
   rw [signInsertSomeProd_eq_prod_prod]
   rw [Finset.prod_sigma']
-  erw [← c.sigmaConstrainedEquiv.symm.prod_comp]
+  erw [← c.sigmaContractedEquiv.symm.prod_comp]
   let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x //  ¬ (c.getDual? x).isSome}  := by
     exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
   rw [← e2.symm.prod_comp]

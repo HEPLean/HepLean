@@ -58,10 +58,8 @@ instance : IsTrans CreateAnnihilate normalOrder where
 lemma not_normalOrder_annihilate_iff_false (a : CreateAnnihilate) :
     (¬ normalOrder a annihilate) ↔ False := by
   cases a
-  · dsimp [normalOrder]
-    simp
-  · dsimp [normalOrder]
-    simp
+  · simp [normalOrder]
+  · simp [normalOrder]
 
 lemma sum_eq {M : Type} [AddCommMonoid M] (f : CreateAnnihilate → M) :
     ∑ i, f i = f create + f annihilate := by

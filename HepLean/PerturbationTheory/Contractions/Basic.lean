@@ -465,41 +465,42 @@ def IsGradedObeying (φs : List 𝓕.States) (c : ContractionsNat φs.length) :=
   ∀ (a : c.1), (𝓕 |>ₛ φs[c.fstFieldOfContract a]) = (𝓕 |>ₛ φs[c.sndFieldOfContract a])
 
 
-def sigmaConstrainedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSome} where
-    toFun := fun x => ⟨x.2, getDual?_isSome_of_mem c x.fst x.snd⟩
-    invFun := fun x => ⟨
-      ⟨{x.1, (c.getDual? x.1).get x.2}, self_getDual?_get_mem c (↑x) x.prop⟩,
-      ⟨x.1, by simp⟩⟩
-    left_inv x := by
-      have hxa (x1 x2 : (a : c.1) × a) (h1 : x1.1 = x2.1)
-        (h2 : x1.2.val = x2.2.val) : x1 = x2 := by
-        cases x1
-        cases x2
-        simp_all
-        subst h1
-        rename_i fst snd snd_1
-        simp_all only [heq_eq_eq]
-        obtain ⟨val, property⟩ := fst
-        obtain ⟨val_2, property_2⟩ := snd
-        subst h2
-        simp_all only
-      match x with
-      | ⟨a, i⟩ =>
-      apply hxa
-      · have hc := c.2.2 a.1 a.2 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)}
-          (self_getDual?_get_mem c (↑i) (getDual?_isSome_of_mem c a i))
-        have hn : ¬ Disjoint a.1 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)} := by
-          rw [Finset.disjoint_iff_inter_eq_empty]
-          rw [@Finset.eq_empty_iff_forall_not_mem]
-          simp
-          use i
-          simp
-        simp_all
-        exact Subtype.eq (id (Eq.symm hc))
-      · simp
-    right_inv := by
-      intro x
-      cases x
-      rfl
+def sigmaContractedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSome} where
+  toFun := fun x => ⟨x.2, getDual?_isSome_of_mem c x.fst x.snd⟩
+  invFun := fun x => ⟨
+    ⟨{x.1, (c.getDual? x.1).get x.2}, self_getDual?_get_mem c (↑x) x.prop⟩,
+    ⟨x.1, by simp⟩⟩
+  left_inv x := by
+    have hxa (x1 x2 : (a : c.1) × a) (h1 : x1.1 = x2.1)
+      (h2 : x1.2.val = x2.2.val) : x1 = x2 := by
+      cases x1
+      cases x2
+      simp_all
+      subst h1
+      rename_i fst snd snd_1
+      simp_all only [heq_eq_eq]
+      obtain ⟨val, property⟩ := fst
+      obtain ⟨val_2, property_2⟩ := snd
+      subst h2
+      simp_all only
+    match x with
+    | ⟨a, i⟩ =>
+    apply hxa
+    · have hc := c.2.2 a.1 a.2 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)}
+        (self_getDual?_get_mem c (↑i) (getDual?_isSome_of_mem c a i))
+      have hn : ¬ Disjoint a.1 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)} := by
+        rw [Finset.disjoint_iff_inter_eq_empty]
+        rw [@Finset.eq_empty_iff_forall_not_mem]
+        simp
+        use i
+        simp
+      simp_all
+      exact Subtype.eq (id (Eq.symm hc))
+    · simp
+  right_inv := by
+    intro x
+    cases x
+    rfl
+
 end ContractionsNat
 end FieldStruct

@@ -29,7 +29,7 @@ def timeOrderProp : 𝓕.States → 𝓕.States → Prop
   | States.negAsymp _, States.position _ => False
   | States.negAsymp _, States.negAsymp _ => True
 
-noncomputable instance :  (φ φ' : 𝓕.States) → Decidable (timeOrderProp φ φ')
+noncomputable instance : (φ φ' : 𝓕.States) → Decidable (timeOrderProp φ φ')
   | States.posAsymp _, _ => isTrue True.intro
   | States.position φ0, States.position φ1 => inferInstanceAs (Decidable (φ1.2 0 ≤ φ0.2 0))
   | States.position _, States.negAsymp _ => isTrue True.intro
@@ -86,12 +86,12 @@ def maxTimeFieldPosFin (φ : 𝓕.States) (φs : List 𝓕.States) :
 lemma lt_maxTimeFieldPosFin_not_timeOrder (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin (eraseMaxTimeField φ φs).length) (hi : (maxTimeFieldPosFin φ φs).succAbove i <
      maxTimeFieldPosFin φ φs) :
-    ¬ timeOrderProp  ((eraseMaxTimeField φ φs)[i.val]) (maxTimeField φ φs) := by
+    ¬ timeOrderProp ((eraseMaxTimeField φ φs)[i.val]) (maxTimeField φ φs) := by
   exact insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt timeOrderProp φ φs i hi
 
 lemma timeOrder_maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States)
-    (i : Fin (eraseMaxTimeField φ φs).length)  :
-    timeOrderProp (maxTimeField φ φs) ((eraseMaxTimeField φ φs)[i.val])  := by
+    (i : Fin (eraseMaxTimeField φ φs).length) :
+    timeOrderProp (maxTimeField φ φs) ((eraseMaxTimeField φ φs)[i.val]) := by
   exact insertionSortMin_lt_mem_insertionSortDropMinPos timeOrderProp φ φs _
 
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
@@ -134,7 +134,7 @@ lemma timeOrderList_nil : timeOrderList (𝓕 := 𝓕) [] = [] := by
   simp [timeOrderList]
 
 
-lemma timeOrderList_eq_maxTimeField_timeOrderList  (φ : 𝓕.States) (φs : List 𝓕.States) :
+lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrderList (φ :: φs) = maxTimeField φ φs :: timeOrderList (eraseMaxTimeField φ φs) := by
   exact insertionSort_eq_insertionSortMin_cons timeOrderProp φ φs
 
