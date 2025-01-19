@@ -71,7 +71,7 @@ lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · simp [congrLift]
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
-      simp_all
+      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
       have hi : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
       omega
 
@@ -261,7 +261,7 @@ lemma insertList_uncontractedList_none_map (φ : 𝓕.States) {φs : List 𝓕.S
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) :
     List.map (List.insertIdx (↑i) φ φs).get (insertList φ φs c i none).uncontractedList =
     List.insertIdx (c.uncontractedListOrderPos i) φ (List.map φs.get c.uncontractedList) := by
-  simp [insertList]
+  simp only [Nat.succ_eq_add_one, insertList]
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_none]
   rw [orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx]

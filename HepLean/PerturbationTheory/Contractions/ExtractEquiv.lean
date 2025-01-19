@@ -22,15 +22,15 @@ lemma extractEquiv_equiv {c1 c2 : (c : ContractionsNat n) × Option c.uncontract
     (h : c1.1 = c2.1) (ho : c1.2 = uncontractedCongr (by rw [h]) c2.2) : c1 = c2 := by
   cases c1
   cases c2
-  simp_all
-  simp at h
+  simp_all only [Sigma.mk.inj_iff]
+  simp only at h
   subst h
-  simp [uncontractedCongr]
+  simp only [uncontractedCongr, Equiv.optionCongr_apply, heq_eq_eq, true_and]
   rename_i a
   match a with
   | none => simp
   | some a =>
-    simp
+    simp only [Option.map_some', Option.some.injEq]
     ext
     simp
 
@@ -42,8 +42,8 @@ def extractEquiv (i : Fin n.succ) : ContractionsNat n.succ ≃
     simp
   right_inv f := by
     refine extractEquiv_equiv ?_ ?_
-    simp
-    simp
+    simp only [insert_erase]
+    simp only [Nat.succ_eq_add_one]
     have h1 := insert_getDualErase f.fst i f.snd
     exact insert_getDualErase _ i _
 
@@ -64,9 +64,9 @@ instance fintype_zero : Fintype (ContractionsNat 0) where
   elems := {nil}
   complete := by
     intro c
-    simp
+    simp only [Finset.mem_singleton]
     apply Subtype.eq
-    simp [nil]
+    simp only [nil]
     ext a
     apply Iff.intro
     · intro h
@@ -79,7 +79,7 @@ instance fintype_zero : Fintype (ContractionsNat 0) where
 lemma sum_contractionsNat_nil (f : ContractionsNat 0 → M) [AddCommMonoid M] :
     ∑ c, f c = f nil := by
   rw [Finset.sum_eq_single_of_mem]
-  simp
+  simp only [Finset.mem_univ]
   intro b hb
   fin_cases b
   simp
