@@ -78,14 +78,13 @@ lemma maxTimeFieldPos_lt_eraseMaxTimeField_length_succ (φ : 𝓕.States) (φs :
   simp
   exact maxTimeFieldPos_lt_length φ φs
 
-
 def maxTimeFieldPosFin (φ : 𝓕.States) (φs : List 𝓕.States) :
     Fin (eraseMaxTimeField φ φs).length.succ :=
   insertionSortMinPosFin timeOrderProp φ φs
 
 lemma lt_maxTimeFieldPosFin_not_timeOrder (φ : 𝓕.States) (φs : List 𝓕.States)
-    (i : Fin (eraseMaxTimeField φ φs).length) (hi : (maxTimeFieldPosFin φ φs).succAbove i <
-     maxTimeFieldPosFin φ φs) :
+    (i : Fin (eraseMaxTimeField φ φs).length)
+    (hi : (maxTimeFieldPosFin φ φs).succAbove i < maxTimeFieldPosFin φ φs) :
     ¬ timeOrderProp ((eraseMaxTimeField φ φs)[i.val]) (maxTimeField φ φs) := by
   exact insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt timeOrderProp φ φs i hi
 
@@ -97,12 +96,12 @@ lemma timeOrder_maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States)
 def timeOrderSign (φs : List 𝓕.States) : ℂ :=
   Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderProp φs
 
-lemma timeOrderSign_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ):
+lemma timeOrderSign_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
     timeOrderSign [φ, ψ] = 1 := by
   simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
   exact fun h' => False.elim (h' h)
 
-lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ):
+lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ) :
     timeOrderSign [φ, ψ] = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) := by
   simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
   rw [if_neg h]
@@ -119,12 +118,12 @@ lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.St
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
   List.insertionSort 𝓕.timeOrderProp φs
 
-lemma timeOrderList_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ):
+lemma timeOrderList_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
     timeOrderList [φ, ψ] = [φ, ψ] := by
   simp [timeOrderList]
   exact fun h' => False.elim (h' h)
 
-lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ):
+lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ) :
     timeOrderList [φ, ψ] = [ψ, φ] := by
   simp [timeOrderList]
   exact fun h' => False.elim (h h')
@@ -132,7 +131,6 @@ lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp
 @[simp]
 lemma timeOrderList_nil : timeOrderList (𝓕 := 𝓕) [] = [] := by
   simp [timeOrderList]
-
 
 lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrderList (φ :: φs) = maxTimeField φ φs :: timeOrderList (eraseMaxTimeField φ φs) := by

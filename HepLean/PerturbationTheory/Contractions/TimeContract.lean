@@ -9,7 +9,6 @@ import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
 
 # Time contractions
 
-
 -/
 
 namespace FieldStruct
@@ -19,19 +18,17 @@ namespace ContractionsNat
 variable {n : ℕ} (c : ContractionsNat n)
 open HepLean.List
 
-
 /-!
 
 ## Time contract.
 
 -/
 
-
 noncomputable def timeContract (𝓞 : 𝓕.OperatorAlgebra) {φs : List 𝓕.States}
     (c : ContractionsNat φs.length) :
     Subalgebra.center ℂ 𝓞.A :=
   ∏ (a : c.1), ⟨𝓞.timeContract (φs.get (c.fstFieldOfContract a)) (φs.get (c.sndFieldOfContract a)),
-     𝓞.timeContract_mem_center _ _⟩
+    𝓞.timeContract_mem_center _ _⟩
 
 @[simp]
 lemma timeContract_insertList_none (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -47,8 +44,7 @@ lemma timeConract_insertList_some (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.State
     (c.insertList φ φs i (some j)).timeContract 𝓞 =
     (if i < i.succAbove j then
       ⟨𝓞.timeContract φ φs[j.1], 𝓞.timeContract_mem_center _ _⟩
-    else ⟨𝓞.timeContract φs[j.1] φ , 𝓞.timeContract_mem_center _ _⟩)
-     * c.timeContract 𝓞 := by
+    else ⟨𝓞.timeContract φs[j.1] φ, 𝓞.timeContract_mem_center _ _⟩) * c.timeContract 𝓞 := by
   rw [timeContract, insertList_some_prod_contractions]
   congr 1
   · simp
@@ -64,22 +60,24 @@ open FieldStatistic
 lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (ht : 𝓕.timeOrderProp φ φs[k.1]) (hik : i < i.succAbove k):
+    (ht : 𝓕.timeOrderProp φ φs[k.1]) (hik : i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x < k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
-    ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞):= by
+    ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
   simp [OperatorAlgebra.contractMemList, uncontractedStatesEquiv]
   · simp [hik]
-    rw [𝓞.timeContract_of_timeOrderProp ]
-    trans (1 :  ℂ) •  (𝓞.crAnF ((CrAnAlgebra.superCommute (CrAnAlgebra.anPart (StateAlgebra.ofState φ))) (CrAnAlgebra.ofState φs[k.1])) *
-    ↑(timeContract 𝓞 c))
+    rw [𝓞.timeContract_of_timeOrderProp]
+    trans (1 : ℂ) • (𝓞.crAnF ((CrAnAlgebra.superCommute
+      (CrAnAlgebra.anPart (StateAlgebra.ofState φ))) (CrAnAlgebra.ofState φs[k.1])) *
+      ↑(timeContract 𝓞 c))
     · simp
     simp only [smul_smul]
     congr
-    have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k)) (List.map φs.get c.uncontractedList))
-        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x =>  x < k) c.uncontracted)⟩) := by
+    have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
+        (List.map φs.get c.uncontractedList))
+        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) c.uncontracted)⟩) := by
       simp [ofFinset]
       congr
       rw [← List.map_take]
@@ -93,36 +91,40 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
 lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (ht : ¬ 𝓕.timeOrderProp φs[k.1] φ) (hik : ¬ i < i.succAbove k):
+    (ht : ¬ 𝓕.timeOrderProp φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
-    ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞):= by
+    ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
-  simp [OperatorAlgebra.contractMemList, uncontractedStatesEquiv]
-  simp [hik]
-  rw [𝓞.timeContract_of_not_timeOrderProp, 𝓞.timeContract_of_timeOrderProp ]
-  simp [smul_smul]
+  simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
+    OperatorAlgebra.contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
+    Algebra.smul_mul_assoc]
+  simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
+  rw [𝓞.timeContract_of_not_timeOrderProp, 𝓞.timeContract_of_timeOrderProp]
+  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
   congr
-  have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k)) (List.map φs.get c.uncontractedList))
-        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x =>  x < k) c.uncontracted)⟩) := by
-      simp [ofFinset]
-      congr
-      rw [← List.map_take]
-      congr
-      rw [take_uncontractedFinEquiv_symm]
-      rw [filter_uncontractedList]
+  have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
+      (List.map φs.get c.uncontractedList))
+      = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) c.uncontracted)⟩) := by
+    simp only [ofFinset]
+    congr
+    rw [← List.map_take]
+    congr
+    rw [take_uncontractedFinEquiv_symm, filter_uncontractedList]
   rw [h1]
   trans (pairedSign (𝓕.statesStatistic φ)) (𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
-  · rw [pairedSign_symm]
-    rw [ofFinset_singleton]
+  · rw [pairedSign_symm, ofFinset_singleton]
     simp
   rw [← map_mul]
   congr
   rw [ofFinset_union]
   congr
   ext a
-  simp
+  simp only [Finset.mem_singleton, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter,
+    Finset.mem_inter, not_and, not_lt, and_imp]
   apply Iff.intro
   · intro h
     subst h
@@ -146,12 +148,11 @@ lemma timeContract_of_not_isGradedObeying (𝓞 : 𝓕.OperatorAlgebra) (φs : L
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)
-  simp
+  simp only [Finset.univ_eq_attach, Finset.mem_attach]
   apply Subtype.eq
-  simp
+  simp only [List.get_eq_getElem, ZeroMemClass.coe_zero]
   rw [OperatorAlgebra.timeContract_zero_of_diff_grade]
   simp [ha2]
-
 
 end ContractionsNat
 

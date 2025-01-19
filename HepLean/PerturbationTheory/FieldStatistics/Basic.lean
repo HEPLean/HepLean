@@ -135,7 +135,7 @@ def ofList (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) → FieldStatistic
 
 lemma ofList_cons_eq_mul (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
     ofList s (φ :: φs) = s φ * ofList s φs := by
-  have ha (a b  : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
+  have ha (a b : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
     fin_cases a <;> fin_cases b <;> rfl
   exact ha (s φ) (ofList s φs)
 
@@ -173,7 +173,7 @@ lemma ofList_append (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
 lemma ofList_append_eq_mul (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
     ofList s (φs ++ φs') = ofList s φs * ofList s φs' := by
   rw [ofList_append]
-  have ha (a b  : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
+  have ha (a b : FieldStatistic) : (if a = b then bosonic else fermionic) = a * b := by
     fin_cases a <;> fin_cases b <;> rfl
   exact ha _ _
 
@@ -203,7 +203,7 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
     simp
     rw [ofList_cons_eq_mul]
     rw [ofList_map_eq_finset_prod s (φ :: φs) l]
-    have h1 : s (φ :: φs)[↑i] = ∏ (j : Fin ( φ :: φs).length),
+    have h1 : s (φ :: φs)[↑i] = ∏ (j : Fin (φ :: φs).length),
       if j = i then s (φ :: φs)[↑i] else 1 := by
       rw [Fintype.prod_ite_eq']
     erw [h1]
@@ -246,7 +246,7 @@ lemma ofList_take_zero (φs : List 𝓕) :
   simp
   rfl
 
-lemma ofList_take_succ_cons (n : ℕ) ( φ1 : 𝓕) (φs : List 𝓕) :
+lemma ofList_take_succ_cons (n : ℕ) (φ1 : 𝓕) (φs : List 𝓕) :
     ofList q ((φ1 :: φs).take (n + 1)) = q φ1 * ofList q (φs.take n) := by
   simp
   rw [ofList_cons_eq_mul]
@@ -255,7 +255,7 @@ lemma ofList_take_insertIdx_gt (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : 
     ofList q ((List.insertIdx m φ1 φs).take n) = ofList q (φs.take n) := by
   rw [take_insert_gt φ1 n m hn φs]
 
-lemma ofList_insert_lt_eq  (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n)
+lemma ofList_insert_lt_eq (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n)
     (hm : m ≤ φs.length) :
     ofList q ((List.insertIdx m φ1 φs).take (n + 1)) =
     ofList q ((φ1 :: φs).take (n + 1)) := by
@@ -263,7 +263,7 @@ lemma ofList_insert_lt_eq  (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : m �
   simp only [List.take_succ_cons]
   refine take_insert_let φ1 n m hn φs hm
 
-lemma ofList_take_insertIdx_le (n m : ℕ) ( φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n) (hm : m ≤ φs.length) :
+lemma ofList_take_insertIdx_le (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : m ≤ n) (hm : m ≤ φs.length) :
     ofList q ((List.insertIdx m φ1 φs).take (n + 1)) = q φ1 * ofList q (φs.take n) := by
   rw [ofList_insert_lt_eq, ofList_take_succ_cons]
   · exact hn
@@ -334,7 +334,7 @@ lemma pairedSign_ofList_cons (a : FieldStatistic)
   rw [ofList_cons_eq_mul, map_mul]
 
 lemma pairedSign_cocycle (a b c : FieldStatistic) :
-    𝓢(a, b * c) * 𝓢(b, c) =  𝓢(a, b) * 𝓢(a * b, c)  := by
+    𝓢(a, b * c) * 𝓢(b, c) = 𝓢(a, b) * 𝓢(a * b, c) := by
   fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
 
 end FieldStatistic

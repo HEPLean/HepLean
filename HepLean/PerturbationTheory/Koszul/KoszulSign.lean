@@ -193,7 +193,6 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     · exact Nat.le_of_lt_succ h
     · exact Nat.le_of_lt_succ h
 
-
 lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r.length) →
     List.insertIdx n (r.get ⟨n, hn⟩) (r.eraseIdx n) = r
   | n, [], hn => by
@@ -206,10 +205,9 @@ lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r
     exact insertIdx_eraseIdx n r _
 
 lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) (n : Fin φs.length) :
-    koszulSign q le (φs.eraseIdx n) = koszulSign q le φs *
-      𝓢(q (φs.get n), ofList q (φs.take n)) *
-       𝓢(q (φs.get n), ofList q (List.take (↑(insertionSortEquiv le φs n))
-      (List.insertionSort le φs))) := by
+    koszulSign q le (φs.eraseIdx n) = koszulSign q le φs * 𝓢(q (φs.get n), ofList q (φs.take n)) *
+    𝓢(q (φs.get n), ofList q (List.take (↑(insertionSortEquiv le φs n))
+    (List.insertionSort le φs))) := by
   let φs' := φs.eraseIdx ↑n
   have hφs : List.insertIdx n (φs.get n) φs' = φs := by
     exact insertIdx_eraseIdx n.1 φs n.prop
@@ -229,10 +227,8 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     rw [insertionSortEquiv_congr _ _ hφs]
   simp
   trans koszulSign q le (φs.eraseIdx ↑n) *
-        (𝓢(q φs[↑n], ofList q ((φs.eraseIdx ↑n).take n)) * 𝓢(q φs[↑n], ofList q (List.take (↑n) φs)))
-        *
-
-    (𝓢(q φs[↑n], ofList q ((List.insertionSort le φs).take (↑((insertionSortEquiv le φs) n))))  *
+    (𝓢(q φs[↑n], ofList q ((φs.eraseIdx ↑n).take n)) * 𝓢(q φs[↑n], ofList q (List.take (↑n) φs))) *
+    (𝓢(q φs[↑n], ofList q ((List.insertionSort le φs).take (↑((insertionSortEquiv le φs) n)))) *
     𝓢(q φs[↑n], ofList q (List.take (↑((insertionSortEquiv le φs) n)) (List.insertionSort le φs))))
   swap
   · simp only [Fin.getElem_fin]

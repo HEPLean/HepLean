@@ -22,7 +22,7 @@ namespace StateAlgebra
 
 open FieldStatistic
 
-def timeOrder : StateAlgebra 𝓕 →ₗ[ℂ] StateAlgebra 𝓕  :=
+def timeOrder : StateAlgebra 𝓕 →ₗ[ℂ] StateAlgebra 𝓕 :=
   Basis.constr ofListBasis ℂ fun φs =>
   timeOrderSign φs • ofList (timeOrderList φs)
 

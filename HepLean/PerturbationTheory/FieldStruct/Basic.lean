@@ -49,14 +49,14 @@ def statesToField : 𝓕.States → 𝓕.Fields
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 
 /-- The field statistics associated with a state. -/
-scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
+scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
 
 /-- The field statistics associated with a list states. -/
-scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => FieldStatistic.ofList
+scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
 
 /-- The field statistic associated with a finite set-/
-scoped[FieldStruct] notation  𝓕 "|>ₛ ⟨" f ","a "⟩"=> FieldStatistic.ofFinset
+scoped[FieldStruct] notation 𝓕 "|>ₛ ⟨" f ","a "⟩"=> FieldStatistic.ofFinset
     (statesStatistic 𝓕) f a
 
 end FieldStruct

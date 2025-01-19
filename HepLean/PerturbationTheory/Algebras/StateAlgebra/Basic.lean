@@ -64,9 +64,7 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.States) :
 
 -/
 
-
-noncomputable def superCommute :
-   𝓕.StateAlgebra →ₗ[ℂ] 𝓕.StateAlgebra →ₗ[ℂ] 𝓕.StateAlgebra :=
+noncomputable def superCommute : 𝓕.StateAlgebra →ₗ[ℂ] 𝓕.StateAlgebra →ₗ[ℂ] 𝓕.StateAlgebra :=
   Basis.constr ofListBasis ℂ fun φs =>
   Basis.constr ofListBasis ℂ fun φs' =>
   ofList (φs ++ φs') - pairedSign (FieldStatistic.ofList 𝓕.statesStatistic φs)

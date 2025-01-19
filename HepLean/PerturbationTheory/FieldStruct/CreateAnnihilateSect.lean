@@ -27,9 +27,8 @@ fields with creation or annihilation operators.
   * `consEquiv` : Separates head and tail
   * `appendEquiv` : Splits sections at a given point
 
-
-All sections form finite types and support operations like taking/dropping elements and concatenation
-while preserving the relationship between states and their operator assignments.
+All sections form finite types and support operations like taking/dropping elements and
+concatenation while preserving the relationship between states and their operator assignments.
 
 -/
 
@@ -165,12 +164,11 @@ lemma sum_cons (f : CreateAnnihilateSect (φ :: φs) → M) [AddCommMonoid M] :
   rw [← consEquiv.symm.sum_comp, Fintype.sum_prod_type]
   rfl
 
-lemma sum_over_length {s : CreateAnnihilateSect φs} (f : Fin s.1.length  → M)
+lemma sum_over_length {s : CreateAnnihilateSect φs} (f : Fin s.1.length → M)
     [AddCommMonoid M] : ∑ (n : Fin s.1.length), f n =
     ∑ (n : Fin φs.length), f (Fin.cast (length_eq s).symm n) := by
   rw [← (finCongr (length_eq s)).sum_comp]
   rfl
-
 
 /-- The equivalence between `CreateAnnihilateSect φs` and
   `CreateAnnihilateSect φs'` induced by an equality `φs = φs'`. -/
@@ -232,13 +230,13 @@ lemma append_assoc {φs φs' φs'' : List 𝓕.States} (ψs : CreateAnnihilateSe
 
 lemma append_assoc' {φs φs' φs'' : List 𝓕.States} (ψs : CreateAnnihilateSect φs)
     (ψs' : CreateAnnihilateSect φs') (ψs'' : CreateAnnihilateSect φs'') :
-    (append (append ψs ψs') ψs'') = congr (by simp) (append ψs (append ψs' ψs'')):= by
+    (append (append ψs ψs') ψs'') = congr (by simp) (append ψs (append ψs' ψs'')) := by
   apply Subtype.ext
   simp [append]
 
-lemma singletonEquiv_append_eq_cons {φs : List 𝓕.States} {φ : 𝓕.States} (ψs : CreateAnnihilateSect φs)
-    (ψ : 𝓕.statesToCrAnType φ) :
-    append  (singletonEquiv.symm ψ) ψs = cons ψ ψs := by
+lemma singletonEquiv_append_eq_cons {φs : List 𝓕.States} {φ : 𝓕.States}
+    (ψs : CreateAnnihilateSect φs) (ψ : 𝓕.statesToCrAnType φ) :
+    append (singletonEquiv.symm ψ) ψs = cons ψ ψs := by
   apply Subtype.ext
   simp [append, cons, singletonEquiv]
 
@@ -249,27 +247,24 @@ lemma take_append_drop {n : ℕ} (ψs : CreateAnnihilateSect φs) :
   simp [take, drop, append]
 
 @[simp]
-lemma congr_append {φs1 φs1' φs2 φs2' : List 𝓕.States}
-    (h1 : φs1 = φs1') (h2 : φs2 = φs2')
+lemma congr_append {φs1 φs1' φs2 φs2' : List 𝓕.States} (h1 : φs1 = φs1') (h2 : φs2 = φs2')
     (ψs1 : CreateAnnihilateSect φs1) (ψs2 : CreateAnnihilateSect φs2) :
     (append (congr h1 ψs1) (congr h2 ψs2)) = congr (by rw [h1, h2]) (append ψs1 ψs2) := by
   subst h1 h2
   rfl
 
 @[simp]
-lemma congr_fst_append {φs1 φs1' φs2  : List 𝓕.States}
-    (h1 : φs1 = φs1')
+lemma congr_fst_append {φs1 φs1' φs2 : List 𝓕.States} (h1 : φs1 = φs1')
     (ψs1 : CreateAnnihilateSect φs1) (ψs2 : CreateAnnihilateSect φs2) :
     (append (congr h1 ψs1) (ψs2)) = congr (by rw [h1]) (append ψs1 ψs2) := by
   subst h1
   rfl
 
 @[simp]
-lemma congr_snd_append {φs1  φs2 φs2' : List 𝓕.States}
-     (h2 : φs2 = φs2')
+lemma congr_snd_append {φs1 φs2 φs2' : List 𝓕.States} (h2 : φs2 = φs2')
     (ψs1 : CreateAnnihilateSect φs1) (ψs2 : CreateAnnihilateSect φs2) :
-    (append ( ψs1) (congr h2 ψs2)) = congr (by rw [h2]) (append ψs1 ψs2) := by
-  subst  h2
+    (append ψs1 (congr h2 ψs2)) = congr (by rw [h2]) (append ψs1 ψs2) := by
+  subst h2
   rfl
 
 @[simp]
@@ -342,8 +337,7 @@ lemma eraseIdxEquiv_apply_snd {n : ℕ} (ψs : CreateAnnihilateSect φs) (hn : n
   simp only [Nat.succ_eq_add_one, le_add_iff_nonneg_right, zero_le, inf_of_le_left]
   exact Eq.symm (List.eraseIdx_eq_take_drop_succ ψs.1 n)
 
-
-lemma eraseIdxEquiv_symm_eq_take_cons_drop  {n : ℕ} (φs : List 𝓕.States) (hn : n < φs.length)
+lemma eraseIdxEquiv_symm_eq_take_cons_drop {n : ℕ} (φs : List 𝓕.States) (hn : n < φs.length)
     (a : 𝓕.statesToCrAnType φs[n]) (s : CreateAnnihilateSect (φs.eraseIdx n)) :
     (eraseIdxEquiv n φs hn).symm ⟨a, s⟩ =
     congr (by
@@ -367,7 +361,8 @@ lemma eraseIdxEquiv_symm_eq_take_cons_drop  {n : ℕ} (φs : List 𝓕.States) (
 @[simp]
 lemma eraseIdxEquiv_symm_getElem {n : ℕ} (φs : List 𝓕.States) (hn : n < φs.length)
     (a : 𝓕.statesToCrAnType φs[n]) (s : CreateAnnihilateSect (φs.eraseIdx n)) :
-    getElem ((eraseIdxEquiv n φs hn).symm ⟨a,s⟩).1 n (by rw [length_eq]; exact hn) = ⟨φs[n], a⟩ := by
+    getElem ((eraseIdxEquiv n φs hn).symm ⟨a,s⟩).1 n
+    (by rw [length_eq]; exact hn) = ⟨φs[n], a⟩ := by
   rw [eraseIdxEquiv_symm_eq_take_cons_drop]
   simp [take, append, cons, drop]
   rw [List.getElem_append]
@@ -386,14 +381,13 @@ lemma eraseIdxEquiv_symm_getElem {n : ℕ} (φs : List 𝓕.States) (hn : n < φ
 lemma eraseIdxEquiv_symm_eraseIdx {n : ℕ} (φs : List 𝓕.States) (hn : n < φs.length)
     (a : 𝓕.statesToCrAnType φs[n]) (s : CreateAnnihilateSect (φs.eraseIdx n)) :
     ((eraseIdxEquiv n φs hn).symm ⟨a, s⟩).1.eraseIdx n = s.1 := by
-  change (((eraseIdxEquiv n φs hn).symm ⟨a, s⟩).eraseIdx n).1  = _
+  change (((eraseIdxEquiv n φs hn).symm ⟨a, s⟩).eraseIdx n).1 = _
   rw [← eraseIdxEquiv_apply_snd _ hn]
   simp
 
-
-lemma sum_eraseIdxEquiv (n : ℕ) (φs : List 𝓕.States) (hn : n < φs.length) (f : CreateAnnihilateSect φs → M)
-  [AddCommMonoid M] : ∑ (s : CreateAnnihilateSect φs), f s =
-   ∑ (a : 𝓕.statesToCrAnType φs[n]), ∑ (s : CreateAnnihilateSect (φs.eraseIdx n)),
+lemma sum_eraseIdxEquiv (n : ℕ) (φs : List 𝓕.States) (hn : n < φs.length)
+    (f : CreateAnnihilateSect φs → M) [AddCommMonoid M] : ∑ (s : CreateAnnihilateSect φs), f s =
+    ∑ (a : 𝓕.statesToCrAnType φs[n]), ∑ (s : CreateAnnihilateSect (φs.eraseIdx n)),
     f ((eraseIdxEquiv n φs hn).symm ⟨a, s⟩) := by
   rw [← (eraseIdxEquiv n φs hn).symm.sum_comp]
   rw [Fintype.sum_prod_type]

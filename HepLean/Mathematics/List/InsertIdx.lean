@@ -14,7 +14,7 @@ open Fin
 open HepLean
 variable {n : Nat}
 
-lemma insertIdx_map {I J : Type} (f : I → J) : (i : ℕ) →  (r : List I) →  (r0 : I) →
+lemma insertIdx_map {I J : Type} (f : I → J) : (i : ℕ) → (r : List I) → (r0 : I) →
     (List.insertIdx i r0 r).map f = List.insertIdx i (f r0) (r.map f)
   | 0, [], r0 => by simp
   | n+1, [], r0 => by simp
@@ -40,7 +40,7 @@ lemma eraseIdx_sorted {I : Type} (le : I → I → Prop) :
     exact List.mem_of_mem_eraseIdx hb
 
 lemma mem_eraseIdx_nodup {I : Type} (i : I) :
-    (l : List I) →  (n : ℕ) →  (hn : n < l.length) →  (h : List.Nodup l) →
+    (l : List I) → (n : ℕ) → (hn : n < l.length) → (h : List.Nodup l) →
     i ∈ l.eraseIdx n ↔ i ∈ l ∧ i ≠ l[n]
   | [], _, _, _ => by simp
   | a1 :: as, 0, _, h => by
@@ -69,9 +69,8 @@ lemma mem_eraseIdx_nodup {I : Type} (i : I) :
     · intro a
       simp_all only [not_false_eq_true, and_true]
 
-lemma insertIdx_eq_take_drop {I : Type} (i : I) :
-     (r : List I) → (n : Fin r.length.succ) →
-    List.insertIdx n i r = List.take n r ++ i ::  r.drop n
+lemma insertIdx_eq_take_drop {I : Type} (i : I) : (r : List I) → (n : Fin r.length.succ) →
+    List.insertIdx n i r = List.take n r ++ i :: r.drop n
   | [], 0 => by simp
   | a :: as, 0 => by
     simp
@@ -95,11 +94,12 @@ lemma insertIdx_getElem_fin {I : Type} (i : I) :
     (List.insertIdx k i r)[(k.succAbove m).val] = r[m.val]
   | [], 0, m => by exact Fin.elim0 m
   | a :: as, 0, m => by simp
-  | a :: as, ⟨n + 1, h⟩, ⟨0, h0⟩  => by
+  | a :: as, ⟨n + 1, h⟩, ⟨0, h0⟩ => by
     simp [Fin.succAbove, Fin.lt_def]
-  | a :: as, ⟨n + 1, h⟩, ⟨m+1, hm⟩  => by
+  | a :: as, ⟨n + 1, h⟩, ⟨m+1, hm⟩ => by
     simp
-    conv_rhs => rw [← insertIdx_getElem_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩ ⟨m, Nat.lt_of_succ_lt_succ hm⟩]
+    conv_rhs => rw [← insertIdx_getElem_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
+      ⟨m, Nat.lt_of_succ_lt_succ hm⟩]
     simp [Fin.succAbove, Fin.lt_def]
     split
     · simp_all only [List.getElem_cons_succ]
@@ -115,7 +115,6 @@ lemma insertIdx_getElem_self {I : Type} (i : I) :
     simp
     rw [insertIdx_getElem_self i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
 
-
 @[simp]
 lemma insertIdx_eraseIdx_fin {I : Type} :
     (r : List I) → (k : Fin r.length) →
@@ -124,14 +123,13 @@ lemma insertIdx_eraseIdx_fin {I : Type} :
   | a :: as, ⟨0, h⟩ => by simp
   | a :: as, ⟨n + 1, h⟩ => by
     simp
-    exact insertIdx_eraseIdx_fin  as ⟨n, Nat.lt_of_succ_lt_succ h⟩
+    exact insertIdx_eraseIdx_fin as ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
 lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
     r.get = (List.insertIdx k i r).get ∘
     (finCongr (insertIdx_length_fin i r k).symm) ∘ k.succAbove := by
   funext i
   simp
-
 
 lemma take_insert_same {I : Type} (i : I) :
     (n : ℕ) → (r : List I) →
@@ -154,15 +152,14 @@ lemma take_eraseIdx_same {I : Type} :
 lemma drop_eraseIdx_succ {I : Type} :
     (n : ℕ) → (r : List I) → (hn : n < r.length) →
     r[n] :: List.drop n (List.eraseIdx r n) = List.drop n r
-  | 0, _, _=>  by
+  | 0, _, _=> by
     simp
     rw [@List.getElem_zero]
     exact List.head_cons_tail _ _
   | n+1, [], hn => by simp at hn
   | n+1, a::as, hn => by
-    simp  [List.eraseIdx_cons_succ, List.drop_succ_cons, List.cons.injEq, true_and]
+    simp [List.eraseIdx_cons_succ, List.drop_succ_cons, List.cons.injEq, true_and]
     refine drop_eraseIdx_succ n as _
-
 
 lemma take_insert_gt {I : Type} (i : I) :
     (n m : ℕ) → (h : n < m) → (r : List I) →
@@ -188,6 +185,5 @@ lemma take_insert_let {I : Type} (i : I) :
     refine List.Perm.trans ?_ hp.symm
     refine List.Perm.cons a ?_
     exact take_insert_let i n m (Nat.le_of_succ_le_succ h) as (Nat.le_of_succ_le_succ hm)
-
 
 end HepLean.List

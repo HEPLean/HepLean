@@ -11,7 +11,6 @@ import HepLean.PerturbationTheory.Contractions.InsertList
 
 # Involution associated with a contraction
 
-
 -/
 
 namespace FieldStruct
@@ -64,14 +63,14 @@ def fromInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) : Contra
           exact Function.Involutive.injective f.2⟩
 
 @[simp]
-lemma fromInvolution_getDual?_isSome (f : {f : Fin n → Fin n // Function.Involutive f}) (i : Fin n) :
-  ((fromInvolution f).getDual? i).isSome ↔ f.1 i ≠ i := by
+lemma fromInvolution_getDual?_isSome (f : {f : Fin n → Fin n // Function.Involutive f})
+    (i : Fin n) : ((fromInvolution f).getDual? i).isSome ↔ f.1 i ≠ i := by
   rw [getDual?_isSome_iff]
   apply Iff.intro
   · intro h
     obtain ⟨a, ha⟩ := h
     have ha2 := a.2
-    simp  [fromInvolution, -Finset.coe_mem] at ha2
+    simp [fromInvolution, -Finset.coe_mem] at ha2
     obtain ⟨j, h⟩ := ha2.2
     rw [← h] at ha
     have hj : f.1 j ≠ j := by
@@ -84,7 +83,7 @@ lemma fromInvolution_getDual?_isSome (f : {f : Fin n → Fin n // Function.Invol
     · subst ha
       exact hj
     · subst ha
-      rw [f.2 ]
+      rw [f.2]
       exact id (Ne.symm hj)
   · intro hi
     use ⟨{i, f.1 i}, by
@@ -94,7 +93,7 @@ lemma fromInvolution_getDual?_isSome (f : {f : Fin n → Fin n // Function.Invol
 
 lemma fromInvolution_getDual?_eq_some (f : {f : Fin n → Fin n // Function.Involutive f}) (i : Fin n)
     (h : ((fromInvolution f).getDual? i).isSome) :
-   ((fromInvolution f).getDual? i) = some (f.1 i)  := by
+    ((fromInvolution f).getDual? i) = some (f.1 i) := by
   rw [@getDual?_eq_some_iff_mem]
   simp [fromInvolution]
   apply Finset.card_pair
@@ -104,11 +103,11 @@ lemma fromInvolution_getDual?_eq_some (f : {f : Fin n → Fin n // Function.Invo
 @[simp]
 lemma fromInvolution_getDual?_get (f : {f : Fin n → Fin n // Function.Involutive f}) (i : Fin n)
     (h : ((fromInvolution f).getDual? i).isSome) :
-   ((fromInvolution f).getDual? i).get h =  (f.1 i)  := by
+    ((fromInvolution f).getDual? i).get h = (f.1 i) := by
   have h1 := fromInvolution_getDual?_eq_some f i h
   exact Option.get_of_mem h h1
 
-lemma toInvolution_fromInvolution : fromInvolution c.toInvolution = c :=  by
+lemma toInvolution_fromInvolution : fromInvolution c.toInvolution = c := by
   apply Subtype.eq
   simp [fromInvolution, toInvolution]
   ext a
@@ -129,11 +128,11 @@ lemma toInvolution_fromInvolution : fromInvolution c.toInvolution = c :=  by
     change _ = (⟨a, ha⟩ : c.1).1
     conv_rhs => rw [finset_eq_fstFieldOfContract_sndFieldOfContract]
 
-lemma fromInvolution_toInvolution  (f : {f : Fin n → Fin n // Function.Involutive f}) :
-    (fromInvolution f).toInvolution = f :=  by
+lemma fromInvolution_toInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) :
+    (fromInvolution f).toInvolution = f := by
   apply Subtype.eq
   funext i
-  simp only [toInvolution,  ne_eq, dite_not]
+  simp only [toInvolution, ne_eq, dite_not]
   split
   · rename_i h
     simp
@@ -146,7 +145,6 @@ def equivInvolution : ContractionsNat n ≃ {f : Fin n → Fin n // Function.Inv
   invFun := fromInvolution
   left_inv := toInvolution_fromInvolution
   right_inv := fromInvolution_toInvolution
-
 
 end ContractionsNat
 

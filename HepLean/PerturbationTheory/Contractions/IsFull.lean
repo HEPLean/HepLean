@@ -57,7 +57,7 @@ theorem card_of_isfull_even (he : Even n) :
 /-- If `n` is odd then there are no full contractions. This is because
   there will always be at least one element unpaired. -/
 theorem card_of_isfull_odd (ho : Odd n) :
-    Fintype.card  {c : ContractionsNat n // IsFull c} = 0 := by
+    Fintype.card {c : ContractionsNat n // IsFull c} = 0 := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]
   exact HepLean.Fin.involutionNoFixed_card_odd n ho
 

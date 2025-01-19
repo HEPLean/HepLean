@@ -29,7 +29,7 @@ lemma ofFinset_singleton {n : ℕ} (q : 𝓕 → FieldStatistic) (f : Fin n → 
     ofFinset q f {i} = q (f i) := by
   simp [ofFinset]
 
-lemma ofFinset_finset_map  {n m : ℕ}
+lemma ofFinset_finset_map {n m : ℕ}
     (q : 𝓕 → FieldStatistic) (i : Fin m → Fin n) (hi : Function.Injective i)
     (f : Fin n → 𝓕) (a : Finset (Fin m)) :
     ofFinset q (f ∘ i) a = ofFinset q f (a.map ⟨i, hi⟩) := by
@@ -66,7 +66,7 @@ lemma ofFinset_insert (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finse
   simp
 
 lemma ofFinset_erase (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finset (Fin φs.length))
-    (i : Fin φs.length) (h : i ∈  a) :
+    (i : Fin φs.length) (h : i ∈ a) :
     ofFinset q φs.get (a.erase i) = (q φs[i]) * ofFinset q φs.get a := by
   have ha : a = Insert.insert i (a.erase i) := by
     exact Eq.symm (Finset.insert_erase h)

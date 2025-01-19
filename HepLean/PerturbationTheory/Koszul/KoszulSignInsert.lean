@@ -154,15 +154,15 @@ lemma koszulSignInsert_eq_sort (φs : List 𝓕) (φ : 𝓕) :
   exact List.Perm.symm (List.perm_insertionSort le φs)
 
 lemma koszulSignInsert_eq_pairedSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
-    koszulSignInsert q le φ φs =
-     𝓢(q φ, ofList q
-     ((List.insertionSort le φs).take (orderedInsertPos le (List.insertionSort le φs) φ))) := by
+    koszulSignInsert q le φ φs = 𝓢(q φ, ofList q
+    ((List.insertionSort le φs).take (orderedInsertPos le (List.insertionSort le φs) φ))) := by
   rw [koszulSignInsert_eq_cons, koszulSignInsert_eq_sort, koszulSignInsert_eq_filter,
     koszulSignInsert_eq_grade]
   have hx : (pairedSign (q φ))
-    (ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ)) (List.insertionSort le φs)))
-     = if FieldStatistic.ofList q [φ] = fermionic ∧
-      FieldStatistic.ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ)) (List.insertionSort le φs)) = fermionic then - 1 else 1 := by
+      (ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ))
+      (List.insertionSort le φs))) = if FieldStatistic.ofList q [φ] = fermionic ∧
+      FieldStatistic.ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ))
+      (List.insertionSort le φs)) = fermionic then - 1 else 1 := by
     rw [pairedSign_eq_if]
     simp
   rw [hx]

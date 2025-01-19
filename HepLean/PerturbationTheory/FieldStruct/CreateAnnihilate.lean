@@ -65,13 +65,13 @@ def crAnStatesToCreateAnnihilate : 𝓕.CrAnStates → CreateAnnihilate
 def crAnStatistics : 𝓕.CrAnStates → FieldStatistic :=
   𝓕.statesStatistic ∘ 𝓕.crAnStatesToStates
 
-scoped[FieldStruct] notation  𝓕 "|>ₛ" φ =>
+scoped[FieldStruct] notation 𝓕 "|>ₛ" φ =>
     (crAnStatistics 𝓕) φ
 
-scoped[FieldStruct] notation  𝓕 "|>ₛ" φ => FieldStatistic.ofList
+scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (crAnStatistics 𝓕) φ
 
-scoped[FieldStruct] infixl:80 "|>ᶜ"  =>
+scoped[FieldStruct] infixl:80 "|>ᶜ" =>
     crAnStatesToCreateAnnihilate
 
 end FieldStruct

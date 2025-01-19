@@ -28,9 +28,10 @@ def timeContract (φ ψ : 𝓕.States) : 𝓞.A :=
   𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
   - normalOrder (ofState φ * ofState ψ))
 
-lemma timeContract_eq_smul  (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
-   𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
-   + (-1 : ℂ) • normalOrder (ofState φ * ofState ψ)) := by rfl
+lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
+    𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder
+    (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
+    + (-1 : ℂ) • normalOrder (ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderProp (φ ψ : 𝓕.States) (h : timeOrderProp φ ψ) :
     𝓞.timeContract φ ψ = 𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState ψ⟩ₛca) := by
@@ -49,7 +50,7 @@ lemma timeContract_of_timeOrderProp (φ ψ : 𝓕.States) (h : timeOrderProp φ 
 lemma timeContract_of_not_timeOrderProp (φ ψ : 𝓕.States) (h : ¬ timeOrderProp φ ψ) :
     𝓞.timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓞.timeContract ψ φ := by
   rw [timeContract_eq_smul]
-  simp only [Int.reduceNeg,  one_smul, map_add]
+  simp only [Int.reduceNeg, one_smul, map_add]
   rw [map_smul]
   rw [crAnF_normalOrder_ofState_ofState_swap]
   rw [StateAlgebra.timeOrder_ofState_ofState_not_ordered_eq_timeOrder h]
@@ -76,7 +77,7 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
     rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
     exact h
   · rw [timeContract_of_not_timeOrderProp _ _ _ h1]
-    rw [timeContract_of_timeOrderProp _ _ _ ]
+    rw [timeContract_of_timeOrderProp _ _ _]
     rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
     simp
     exact h.symm

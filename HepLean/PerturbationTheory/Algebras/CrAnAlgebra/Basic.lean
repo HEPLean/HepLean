@@ -31,7 +31,6 @@ super commutation relations between creation and annihilation operators.
 
 -/
 
-
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
@@ -52,7 +51,7 @@ def ofCrAnState (φ : 𝓕.CrAnStates) : CrAnAlgebra 𝓕 :=
 
 /-- Maps a list creation and annihlation state to the creation and annihlation free-algebra
   by taking their product. -/
-def ofCrAnList  (φs : List 𝓕.CrAnStates) :  CrAnAlgebra 𝓕 := (List.map ofCrAnState φs).prod
+def ofCrAnList (φs : List 𝓕.CrAnStates) : CrAnAlgebra 𝓕 := (List.map ofCrAnState φs).prod
 
 @[simp]
 lemma ofCrAnList_nil : ofCrAnList ([] : List 𝓕.CrAnStates) = 1 := rfl
@@ -85,8 +84,8 @@ lemma ofStateAlgebra_ofState (φ : 𝓕.States) :
 
 /-- Maps a list of states to the creation and annihilation free-algebra by taking
   the product of their sums of creation and annihlation operators.
-  Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc.  -/
-def ofStateList (φs : List 𝓕.States) : CrAnAlgebra 𝓕 :=  (List.map ofState φs).prod
+  Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
+def ofStateList (φs : List 𝓕.States) : CrAnAlgebra 𝓕 := (List.map ofState φs).prod
 
 @[simp]
 lemma ofStateList_nil : ofStateList ([] : List 𝓕.States) = 1 := rfl
@@ -94,8 +93,8 @@ lemma ofStateList_nil : ofStateList ([] : List 𝓕.States) = 1 := rfl
 lemma ofStateList_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
     ofStateList (φ :: φs) = ofState φ * ofStateList φs := rfl
 
-lemma ofStateList_singleton (φ  :  𝓕.States) :
-    ofStateList [φ] = ofState φ  := by
+lemma ofStateList_singleton (φ : 𝓕.States) :
+    ofStateList [φ] = ofState φ := by
   simp [ofStateList]
 
 lemma ofStateList_append (φs φs' : List 𝓕.States) :
@@ -132,7 +131,7 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 
 -/
 
-def crPart  : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
+def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
   | States.negAsymp φ => ofCrAnState ⟨States.negAsymp φ, ()⟩
@@ -158,7 +157,7 @@ lemma crPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
   dsimp [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
-def anPart  : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
+def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
   | States.negAsymp _ => 0
@@ -227,7 +226,7 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnStates) :
 
 -/
 
-noncomputable def mulLinearMap  : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
+noncomputable def mulLinearMap : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
   toFun a := {
     toFun := fun b => a * b,
     map_add' := fun c d => by
@@ -241,11 +240,10 @@ noncomputable def mulLinearMap  : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 
     ext c
     simp [smul_mul']
 
-
 lemma mulLinearMap_apply (a b : CrAnAlgebra 𝓕) :
     mulLinearMap a b = a * b := by rfl
 
-noncomputable def smulLinearMap (c : ℂ) :  CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
+noncomputable def smulLinearMap (c : ℂ) : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
   toFun a := c • a
   map_add' := by simp
   map_smul' m x := by

@@ -8,7 +8,6 @@ import HepLean.PerturbationTheory.Contractions.Basic
 
 # Uncontracted elements
 
-
 -/
 
 namespace FieldStruct
@@ -39,8 +38,7 @@ lemma uncontractedCongr_some {c c': ContractionsNat n} (h : c = c') (i : c.uncon
     (uncontractedCongr h) (some i) = some (Equiv.subtypeEquivRight (by rw [h]; simp) i) := by
   simp [uncontractedCongr]
 
-
-lemma mem_uncontracted_iff_not_contracted (i : Fin n)  :
+lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     i ∈ c.uncontracted ↔ ∀ p ∈ c.1, i ∉ p := by
   simp [uncontracted, getDual?]
   apply Iff.intro

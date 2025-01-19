@@ -8,7 +8,6 @@ import HepLean.PerturbationTheory.Contractions.Uncontracted
 
 # Erasing an element from a contraction
 
-
 -/
 
 namespace FieldStruct
@@ -30,7 +29,7 @@ def erase (c : ContractionsNat n.succ) (i : Fin n.succ) : ContractionsNat n := b
 
 lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (j : Fin n) :
     j ∈ (c.erase i).uncontracted ↔
-    i.succAbove j ∈ c.uncontracted ∨ c.getDual? (i.succAbove j) = some i  := by
+    i.succAbove j ∈ c.uncontracted ∨ c.getDual? (i.succAbove j) = some i := by
   rw [getDual?_eq_some_iff_mem]
   simp [uncontracted,erase, getDual?]
   rw [Fin.find_eq_none_iff, Fin.find_eq_none_iff]
@@ -61,10 +60,9 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
 
-
-lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ) (h : (c.getDual? i).isSome)
-    (ha : a ∈ c.1) (ha2 : a ≠ {i, (c.getDual? i).get h}) :
-    ∃ a', a' ∈ (c.erase i).1  ∧ a = Finset.map i.succAboveEmb a' := by
+lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ)
+    (h : (c.getDual? i).isSome) (ha : a ∈ c.1) (ha2 : a ≠ {i, (c.getDual? i).get h}) :
+    ∃ a', a' ∈ (c.erase i).1 ∧ a = Finset.map i.succAboveEmb a' := by
   have h2a := c.2.1 a ha
   rw [@Finset.card_eq_two] at h2a
   obtain ⟨x, y, hx,hy⟩ := h2a
@@ -90,9 +88,9 @@ lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ) (
   simp [erase]
   exact ha
 
-lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ) (h : (c.getDual? i).isNone)
-    (ha : a ∈ c.1)  :
-    ∃ a', a' ∈ (c.erase i).1  ∧ a = Finset.map i.succAboveEmb a' := by
+lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
+    (h : (c.getDual? i).isNone) (ha : a ∈ c.1) :
+    ∃ a', a' ∈ (c.erase i).1 ∧ a = Finset.map i.succAboveEmb a' := by
   have h2a := c.2.1 a ha
   rw [@Finset.card_eq_two] at h2a
   obtain ⟨x, y, hx,hy⟩ := h2a
@@ -133,7 +131,7 @@ def getDualErase {n : ℕ} (c : ContractionsNat n.succ) (i : Fin n.succ) :
 
 @[simp]
 lemma getDualErase_isSome_iff_getDual?_isSome (c : ContractionsNat n.succ) (i : Fin n.succ) :
-     (c.getDualErase i).isSome ↔ (c.getDual? i).isSome := by
+    (c.getDualErase i).isSome ↔ (c.getDual? i).isSome := by
   match n with
   | 0 =>
     fin_cases i
