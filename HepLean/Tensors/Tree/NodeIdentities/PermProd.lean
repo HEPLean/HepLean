@@ -57,7 +57,7 @@ theorem prod_perm_left (t : TensorTree S c) (t2 : TensorTree S c2) :
   rw [Functor.LaxMonoidal.μ_natural_left]
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply]
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply]
   change (S.F.map (σ ▷ OverColor.mk c2) ≫ S.F.map (equivToIso finSumFinEquiv).hom).hom _ = _
   rw [← S.F.map_comp, ← (Iso.hom_inv_id_assoc (equivToIso finSumFinEquiv)
       (σ ▷ OverColor.mk c2 ≫ (equivToIso finSumFinEquiv).hom)), S.F.map_comp]
@@ -77,7 +77,7 @@ theorem prod_perm_right (t2 : TensorTree S c2) (t : TensorTree S c) :
   rw [Functor.LaxMonoidal.μ_natural_right]
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply]
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply]
   change (S.F.map (OverColor.mk c2 ◁ σ) ≫ S.F.map (equivToIso finSumFinEquiv).hom).hom _ = _
   rw [← S.F.map_comp]
   have hx : OverColor.mk c2 ◁ σ ≫ (equivToIso finSumFinEquiv).hom =

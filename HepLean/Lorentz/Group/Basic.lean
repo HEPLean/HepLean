@@ -236,7 +236,6 @@ lemma toProd_injective : Function.Injective (@toProd d) := by
   exact Subtype.eq h.1
 
 lemma toProd_continuous : Continuous (@toProd d) := by
-  change Continuous (fun A => (A.1, ⟨dual A.1⟩))
   refine continuous_prod_mk.mpr ⟨continuous_iff_le_induced.mpr fun U a ↦ a,
     MulOpposite.continuous_op.comp' ((continuous_const.matrix_mul (continuous_iff_le_induced.mpr
       fun U a => a).matrix_transpose).matrix_mul continuous_const)⟩

@@ -17,6 +17,7 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.NumberTheory.FLT.Basic
 import Mathlib.Algebra.QuadraticDiscriminant
+import Mathlib.Tactic.LinearCombination'
 /-!
 DO NOT USE THIS FILE AS AN IMPORT.
 
@@ -81,7 +82,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
       intro T1 T2
       simp only
       rw [swap, map_add]
-      exact Mathlib.Tactic.LinearCombination.add_pf (swap T1 S) (swap T2 S)
+      exact Mathlib.Tactic.LinearCombination'.add_pf (swap T1 S) (swap T2 S)
     map_smul' := by
       intro a T
       simp only [eq_ratCast, Rat.cast_eq_id, id_eq, smul_eq_mul]
@@ -625,7 +626,6 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
     rw [asLinear_val]
     funext j
     have hj : j = (0 : Fin 1) := by
-      simp only [Fin.isValue]
       ext
       simp
     subst hj
@@ -784,13 +784,13 @@ lemma cubic_v_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.
   have h' : (S.w + 1) * (1 * S.w * S.w + (-1) * S.w + 1) = 0 := by
     ring_nf
     exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
-  have h'' : (1 * S.w * S.w + (-1) * S.w + 1) ≠ 0 := by
+  have h'' : (1 * (S.w * S.w) + (-1) * S.w + 1) ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.w
     intro s
     by_contra hn
     have h : s ^ 2 < 0 := by
       rw [← hn]
-      rfl
+      decide +kernel
     nlinarith
   simp_all
   exact eq_neg_of_add_eq_zero_left h'
@@ -802,13 +802,13 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
   have h' : (S.v + 1) * (1 * S.v * S.v + (-1) * S.v + 1) = 0 := by
     ring_nf
     exact add_eq_zero_iff_neg_eq.mpr (id (Eq.symm h))
-  have h'' : (1 * S.v * S.v + (-1) * S.v + 1) ≠ 0 := by
+  have h'' : (1 * (S.v * S.v) + (-1) * S.v + 1) ≠ 0 := by
     refine quadratic_ne_zero_of_discrim_ne_sq ?_ S.v
     intro s
     by_contra hn
     have h : s ^ 2 < 0 := by
       rw [← hn]
-      rfl
+      decide +kernel
     nlinarith
   simp_all
   exact eq_neg_of_add_eq_zero_left h'

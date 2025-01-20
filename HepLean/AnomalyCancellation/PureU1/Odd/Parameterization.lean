@@ -118,7 +118,6 @@ theorem generic_case {S : (PureU1 (2 * n.succ + 1)).Sols} (h : GenericCase S) :
   rw [parameterization]
   apply ACCSystem.Sols.ext
   rw [parameterizationAsLinear_val]
-  change S.val = _ • (_ • P g + _• P! f)
   rw [anomalyFree_param _ _ hS, neg_neg, ← smul_add, smul_smul, inv_mul_cancel₀, one_smul]
   · exact hS
   · simpa only [Nat.succ_eq_add_one, accCubeTriLinSymm_toFun_apply_apply, ne_eq,

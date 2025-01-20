@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.PlusU1.BMinusL
+import Mathlib.Tactic.FieldSimp
 /-!
 # Solutions from quad solutions
 

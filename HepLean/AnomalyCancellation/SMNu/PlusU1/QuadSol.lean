@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.SMNu.PlusU1.Basic
+import Mathlib.Tactic.FieldSimp
 /-!
 # Properties of Quad Sols for SM with RHN
 

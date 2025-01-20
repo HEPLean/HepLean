@@ -108,7 +108,7 @@ def involutionCons (n : ℕ) : {f : Fin n.succ → Fin n.succ // Function.Involu
     · rw [if_neg h0]
       by_cases hf' : i = f 0
       · subst hf'
-        simp only [Function.update_same, Fin.val_zero]
+        simp only [Function.update_self, Fin.val_zero]
         rw [hf]
         simp
       · rw [Function.update_apply, if_neg hf']
@@ -135,7 +135,7 @@ def involutionCons (n : ℕ) : {f : Fin n.succ → Fin n.succ // Function.Involu
         by_cases hi : i = f0.get hs
         · simp only [Function.update_apply, hi, ↓reduceIte, ↓reduceDIte]
           exact Eq.symm (Fin.val_eq_of_eq (hf0 hs))
-        · simp only [ne_eq, Fin.succ_inj, hi, not_false_eq_true, Function.update_noteq,
+        · simp only [ne_eq, Fin.succ_inj, hi, not_false_eq_true, Function.update_of_ne,
           Fin.cons_succ, Function.comp_apply, Fin.pred_succ, dite_eq_ite]
           split
           · rename_i h
