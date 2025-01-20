@@ -278,6 +278,8 @@ end ofListTake
 
 -/
 
+/-- The paired sign of two field statistics is `-1` if both field statistics are `fermionic`
+  and `1` otherwise. -/
 def pairedSign : FieldStatistic →* FieldStatistic →* ℂ where
   toFun a :=
     {

@@ -62,15 +62,20 @@ def crAnStatesToCreateAnnihilate : 𝓕.CrAnStates → CreateAnnihilate
   | ⟨States.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
   | ⟨States.posAsymp _, _⟩ => CreateAnnihilate.annihilate
 
+/-- Takes a `CrAnStates` state to its corresponding fields statistic (bosonic or fermionic). -/
 def crAnStatistics : 𝓕.CrAnStates → FieldStatistic :=
   𝓕.statesStatistic ∘ 𝓕.crAnStatesToStates
 
+/-- The field statistic of a `CrAnState`. -/
 scoped[FieldStruct] notation 𝓕 "|>ₛ" φ =>
     (crAnStatistics 𝓕) φ
 
+/-- The field statistic of a list of `CrAnState`s. -/
 scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (crAnStatistics 𝓕) φ
 
+/-- The `CreateAnnihilate` value of a `CrAnState`s, i.e. whether it is a creation or
+  annihilation operator. -/
 scoped[FieldStruct] infixl:80 "|>ᶜ" =>
     crAnStatesToCreateAnnihilate
 

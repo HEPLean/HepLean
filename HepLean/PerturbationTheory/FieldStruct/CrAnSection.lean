@@ -100,11 +100,12 @@ def cons {φ : 𝓕.States} (ψ : 𝓕.statesToCrAnType φ) (ψs : CrAnSection �
     CrAnSection (φ :: φs) := ⟨⟨φ, ψ⟩ :: ψs.1, by
   simp [List.map_cons, ψs.2]⟩
 
+/-- For the empty list of states there is only one `CrAnSection`. Corresponding to the
+  empty list of `CrAnStates`. -/
 def nilEquiv : CrAnSection (𝓕 := 𝓕) [] ≃ Unit where
   toFun _ := ()
   invFun _ := ⟨[], rfl⟩
-  left_inv ψs := by
-    apply Subtype.ext
+  left_inv ψs := Subtype.ext <| by
     have h2 := ψs.2
     simp only [List.map_eq_nil_iff] at h2
     simp [h2]
@@ -145,6 +146,8 @@ def consEquiv {φ : 𝓕.States} {φs : List 𝓕.States} : CrAnSection (φ :: �
     match ψψs with
     | (ψ, ψs) => rfl
 
+/-- The instance of a finite type on `CrAnSection`s defined recursively through
+  `consEquiv`. -/
 instance fintype : (φs : List 𝓕.States) → Fintype (CrAnSection φs)
   | [] => Fintype.ofEquiv _ nilEquiv.symm
   | _ :: φs =>
