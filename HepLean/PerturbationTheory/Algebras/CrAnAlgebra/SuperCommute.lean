@@ -204,25 +204,25 @@ lemma superCommute_anPart_anPart (φ φ' : 𝓕.States) :
     anPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) := by
   match φ, φ' with
   | States.negAsymp φ, _ =>
-  simp
+    simp
   | _, States.negAsymp φ =>
-  simp
+    simp
   | States.position φ, States.position φ' =>
-  simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+    simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.posAsymp φ' =>
-  simp only [anPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+    simp only [anPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
   | States.posAsymp φ, States.position φ' =>
-  simp only [anPart_posAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+    simp only [anPart_posAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
   | States.posAsymp φ, States.posAsymp φ' =>
-  simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+    simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommute_ofCrAnList]
+    simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma crPart_anPart_eq_superCommute (φ φ' : 𝓕.States) :
     crPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') =

@@ -14,7 +14,6 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
-
 /-- The echange sign of two field statistics.
   Defined to be `-1` if both field statistics are `fermionic` and `1` otherwise. -/
 def exchangeSign : FieldStatistic →* FieldStatistic →* ℂ where
@@ -72,7 +71,7 @@ lemma exchangeSign_mul_self_swap (a b : FieldStatistic) : 𝓢(a, b) * 𝓢(b, a
   fin_cases a <;> fin_cases b <;> simp [exchangeSign]
 
 lemma exchangeSign_ofList_cons (a : FieldStatistic)
-      (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
+    (s : 𝓕 → FieldStatistic) (φ : 𝓕) (φs : List 𝓕) :
     𝓢(a, ofList s (φ :: φs)) = 𝓢(a, s φ) * 𝓢(a, ofList s φs) := by
   rw [ofList_cons_eq_mul, map_mul]
 

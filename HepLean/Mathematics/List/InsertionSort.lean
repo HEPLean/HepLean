@@ -15,7 +15,7 @@ open HepLean
 variable {n : Nat}
 
 lemma insertionSortMin_lt_length_succ {α : Type} (r : α → α → Prop) [DecidableRel r]
-    [IsTotal α r] [IsTrans α r] (i : α) (l : List α) :
+    (i : α) (l : List α) :
     insertionSortMinPos r i l < (insertionSortDropMinPos r i l).length.succ := by
   rw [insertionSortMinPos]
   simp only [List.length_cons, List.insertionSort.eq_2, insertionSortDropMinPos,
@@ -25,8 +25,7 @@ lemma insertionSortMin_lt_length_succ {α : Type} (r : α → α → Prop) [Deci
 
 /-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`
   as an element of `Fin (insertionSortDropMinPos r i l).length.succ`. -/
-def insertionSortMinPosFin {α : Type} (r : α → α → Prop) [DecidableRel r]
-    [IsTotal α r] [IsTrans α r] (i : α) (l : List α) :
+def insertionSortMinPosFin {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     Fin (insertionSortDropMinPos r i l).length.succ :=
   ⟨insertionSortMinPos r i l, insertionSortMin_lt_length_succ r i l⟩
 
@@ -42,9 +41,8 @@ lemma insertionSortMin_lt_mem_insertionSortDropMinPos {α : Type} (r : α → α
   apply hl1.1 ((insertionSortDropMinPos r a l)[i])
   simp
 
-@[simp]
 lemma insertionSortMinPos_insertionSortEquiv {α : Type} (r : α → α → Prop) [DecidableRel r]
-    [IsTotal α r] [IsTrans α r] (a : α) (l : List α) :
+    (a : α) (l : List α) :
     insertionSortEquiv r (a ::l) (insertionSortMinPos r a l) =
     ⟨0, by simp [List.orderedInsert_length]⟩ := by
   rw [insertionSortMinPos]
@@ -52,7 +50,7 @@ lemma insertionSortMinPos_insertionSortEquiv {α : Type} (r : α → α → Prop
     Equiv.apply_symm_apply (insertionSortEquiv r (a :: l)) ⟨0, insertionSortMinPos.proof_1 r a l⟩
 
 lemma insertionSortEquiv_gt_zero_of_ne_insertionSortMinPos {α : Type} (r : α → α → Prop)
-    [DecidableRel r] [IsTotal α r] [IsTrans α r] (a : α) (l : List α) (k : Fin (a :: l).length)
+    [DecidableRel r] (a : α) (l : List α) (k : Fin (a :: l).length)
     (hk : k ≠ insertionSortMinPos r a l) :
     ⟨0, by simp [List.orderedInsert_length]⟩ < insertionSortEquiv r (a :: l) k := by
   by_contra hn
@@ -63,7 +61,7 @@ lemma insertionSortEquiv_gt_zero_of_ne_insertionSortMinPos {α : Type} (r : α �
   omega
 
 lemma insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt {α : Type} (r : α → α → Prop)
-    [DecidableRel r] [IsTotal α r] [IsTrans α r] (a : α) (l : List α)
+    [DecidableRel r] (a : α) (l : List α)
     (i : Fin (insertionSortDropMinPos r a l).length)
     (h : (insertionSortMinPosFin r a l).succAbove i < insertionSortMinPosFin r a l) :
     ¬ r ((insertionSortDropMinPos r a l)[i]) (insertionSortMin r a l) := by

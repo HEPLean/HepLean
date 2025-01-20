@@ -249,7 +249,6 @@ lemma take_append_drop {n : ℕ} (ψs : CrAnSection φs) :
   apply Subtype.ext
   simp [take, drop, append]
 
-@[simp]
 lemma congr_append {φs1 φs1' φs2 φs2' : List 𝓕.States} (h1 : φs1 = φs1') (h2 : φs2 = φs2')
     (ψs1 : CrAnSection φs1) (ψs2 : CrAnSection φs2) :
     (append (congr h1 ψs1) (congr h2 ψs2)) = congr (by rw [h1, h2]) (append ψs1 ψs2) := by
@@ -369,10 +368,6 @@ lemma eraseIdxEquiv_symm_getElem {n : ℕ} (φs : List 𝓕.States) (hn : n < φ
   rw [eraseIdxEquiv_symm_eq_take_cons_drop]
   simp only [append, take, cons, drop, congr_fst]
   rw [List.getElem_append]
-  have hn' : (List.take n φs).length = n := by
-    rw [@List.length_take]
-    simp only [inf_eq_left]
-    exact Nat.le_of_succ_le hn
   simp only [List.length_take, length_eq, lt_inf_iff, lt_self_iff_false, false_and, ↓reduceDIte]
   have h0 : n ⊓ (φs.eraseIdx n).length = n := by
     simp only [inf_eq_left]

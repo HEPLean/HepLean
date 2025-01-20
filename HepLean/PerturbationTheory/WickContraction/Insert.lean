@@ -158,7 +158,6 @@ lemma self_not_mem_uncontracted_of_insert_some (c : WickContraction n) (i : Fin 
   rw [mem_uncontracted_iff_not_contracted]
   simp [insert]
 
-@[simp]
 lemma insert_succAbove_mem_uncontracted_iff (c : WickContraction n) (i : Fin n.succ) (j : Fin n) :
     (i.succAbove j) ∈ (insert c i none).uncontracted ↔ j ∈ c.uncontracted := by
   rw [mem_uncontracted_iff_not_contracted, mem_uncontracted_iff_not_contracted]
@@ -657,7 +656,7 @@ lemma insert_sndFieldOfContract (c : WickContraction n) (i : Fin n.succ)
 
 /-- Given a contracted pair for a Wick contraction `WickContraction n`, the
   corresponding contracted pair of a wick contraction `(c.insert i (some j))` formed
-  by inserting an element `i` into the contraction.-/
+  by inserting an element `i` into the contraction. -/
 def insertLiftSome {c : WickContraction n} (i : Fin n.succ) (j : c.uncontracted)
     (a : Unit ⊕ c.1) : (c.insert i (some j)).1 :=
   match a with

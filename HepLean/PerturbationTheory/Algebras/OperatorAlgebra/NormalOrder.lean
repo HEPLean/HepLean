@@ -346,8 +346,8 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.Stat
 
 /-- In the expansion of `ofState φ * normalOrder (ofStateList φs)` the element
   of `𝓞.A` associated with contracting `φ` with the (optional) `n`th element of `φs`. -/
-noncomputable def contractStateAtIndex (φ : 𝓕.States) (φs : List 𝓕.States) (n : Option (Fin φs.length)) :
-  𝓞.A :=
+noncomputable def contractStateAtIndex (φ : 𝓕.States) (φs : List 𝓕.States)
+    (n : Option (Fin φs.length)) : 𝓞.A :=
   match n with
   | none => 1
   | some n => 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •

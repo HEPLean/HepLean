@@ -108,16 +108,6 @@ lemma insertIdx_getElem_fin {I : Type} (i : I) :
     · simp_all only [List.getElem_cons_succ]
     · simp_all only [List.getElem_cons_succ]
 
-@[simp]
-lemma insertIdx_getElem_self {I : Type} (i : I) :
-    (r : List I) → (k : Fin r.length.succ) →
-    (List.insertIdx k i r)[k.val] = i
-  | [], 0 => by simp
-  | a :: as, 0 => by simp
-  | a :: as, ⟨n + 1, h⟩ => by
-    simp
-
-@[simp]
 lemma insertIdx_eraseIdx_fin {I : Type} :
     (r : List I) → (k : Fin r.length) →
     (List.eraseIdx r k).insertIdx k r[k] = r

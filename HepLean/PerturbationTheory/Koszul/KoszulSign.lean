@@ -88,7 +88,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     koszulSign q le (List.insertIdx n φ φs) = 𝓢(q φ, ofList q (φs.take n)) * koszulSign q le φs *
       𝓢(q φ, ofList q ((List.insertionSort le (List.insertIdx n φ φs)).take
       (insertionSortEquiv le (List.insertIdx n φ φs) ⟨n, by
-        rw [List.length_insertIdx _ _ ]
+        rw [List.length_insertIdx _ _]
         simp only [hn, ↓reduceIte]
         omega⟩)))
   | [], 0, h => by
@@ -244,9 +244,8 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     rw [ofList_take_eraseIdx, exchangeSign_mul_self]
   simp
 
-lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le]
-  (φ : 𝓕) (φs : List 𝓕) :
-  koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
+lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
+    koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
     * 𝓢(q (insertionSortMin le φ φs), ofList q ((φ :: φs).take (insertionSortMinPos le φ φs))) := by
   rw [koszulSign_eraseIdx]
   conv_lhs =>

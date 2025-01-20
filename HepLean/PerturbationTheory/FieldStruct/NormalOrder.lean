@@ -123,7 +123,8 @@ lemma koszulSignInsert_annihilate_cons_create (φc φa : 𝓕.CrAnStates)
   rw [Wick.koszulSignInsert_cons]
   simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_right_iff]
   apply Or.inl
-  rw [Wick.koszulSignCons, if_neg, FieldStatistic.exchangeSign_symm, FieldStatistic.exchangeSign_eq_if]
+  rw [Wick.koszulSignCons, if_neg, FieldStatistic.exchangeSign_symm,
+    FieldStatistic.exchangeSign_eq_if]
   rw [normalOrderRel, hφa, hφc]
   simp [CreateAnnihilate.normalOrder]
 
@@ -330,7 +331,7 @@ lemma normalOrderList_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
   to it's corresponding position in the normal ordered list. This assumes that
   we are using the insertion sort method.
   For example:
-  - For  `[φ1c, φ1a, φ2c, φ2a]` this equivalence sends `0 ↦ 0`, `1 ↦ 2`, `2 ↦ 1`, `3 ↦ 3`.
+  - For `[φ1c, φ1a, φ2c, φ2a]` this equivalence sends `0 ↦ 0`, `1 ↦ 2`, `2 ↦ 1`, `3 ↦ 3`.
 -/
 def normalOrderEquiv {φs : List 𝓕.CrAnStates} : Fin φs.length ≃ Fin (normalOrderList φs).length :=
   HepLean.List.insertionSortEquiv 𝓕.normalOrderRel φs

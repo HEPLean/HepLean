@@ -28,7 +28,7 @@ open HepLean.Fin
   a position `i : Fin n.succ`, an element `φ`, and an optional uncontracted element
   `j : Option (c.uncontracted)` of `c`.
   The Wick contraction associated with `(φs.insertIdx i φ).length` formed by 'inserting' `φ`
-  into `φs` after the first `i` elements and contracting it optionally with j.-/
+  into `φs` after the first `i` elements and contracting it optionally with j. -/
 def insertList (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Option (c.uncontracted)) :
     WickContraction (φs.insertIdx i φ).length :=
@@ -94,14 +94,12 @@ lemma insertList_none_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
   have h1 := c.insert_none_getDual?_isNone i
   simpa using h1
 
-@[simp]
 lemma insertList_isSome_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
     ((insertList φ φs c i (some j)).getDual?
     (Fin.cast (insertIdx_length_fin φ φs i).symm i)).isSome := by
   simp [insertList, getDual?_congr]
 
-@[simp]
 lemma insertList_some_getDual?_self_not_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
     ¬ ((insertList φ φs c i (some j)).getDual?
@@ -154,12 +152,12 @@ lemma insertList_none_succAbove_getDual?_isSome_iff (φ : 𝓕.States) (φs : Li
 
 @[simp]
 lemma insertList_none_getDual?_get_eq (φ : 𝓕.States) (φs : List 𝓕.States)
-      (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length)
-      (h : ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
-      (i.succAbove j))).isSome) :
-      ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
-      (i.succAbove j))).get h = Fin.cast (insertIdx_length_fin φ φs i).symm
-      (i.succAbove ((c.getDual? j).get (by simpa using h))) := by
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length)
+    (h : ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (i.succAbove j))).isSome) :
+    ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (i.succAbove j))).get h = Fin.cast (insertIdx_length_fin φ φs i).symm
+    (i.succAbove ((c.getDual? j).get (by simpa using h))) := by
   simp [insertList, getDual?_congr_get]
 
 /-........................................... -/
@@ -222,7 +220,7 @@ lemma insertList_some_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.Stat
   rfl
 
 /-- Given a finite set of `Fin φs.length` the finite set of `(φs.insertIdx i φ).length`
-  formed by mapping elements using `i.succAboveEmb` and `finCongr`.  -/
+  formed by mapping elements using `i.succAboveEmb` and `finCongr`. -/
 def insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
     Finset (Fin (φs.insertIdx i φ).length) :=

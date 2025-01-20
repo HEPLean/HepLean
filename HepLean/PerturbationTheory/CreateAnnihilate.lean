@@ -32,7 +32,7 @@ lemma eq_create_or_annihilate (φ : CreateAnnihilate) : φ = create ∨ φ = ann
   cases φ <;> simp
 
 /-- The normal ordering on creation and annihlation operators.
-  Under this relation, `normalOrder a b` is false only if `a` is annihlate and `b` is create.  -/
+  Under this relation, `normalOrder a b` is false only if `a` is annihlate and `b` is create. -/
 def normalOrder : CreateAnnihilate → CreateAnnihilate → Prop
   | create, _ => True
   | annihilate, annihilate => True

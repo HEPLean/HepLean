@@ -54,8 +54,8 @@ lemma ofFinset_insert (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finse
   simp only [ofFinset, instCommGroup, Fin.getElem_fin]
   rw [← ofList_cons_eq_mul]
   have h1 : (φs[↑i] :: List.map φs.get (Finset.sort (fun x1 x2 => x1 ≤ x2) a))
-     = List.map φs.get (i :: Finset.sort (fun x1 x2 => x1 ≤ x2) a) := by
-     simp
+      = List.map φs.get (i :: Finset.sort (fun x1 x2 => x1 ≤ x2) a) := by
+      simp
   erw [h1]
   apply ofList_perm
   refine List.Perm.map φs.get ?_

@@ -122,7 +122,6 @@ lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
         simpa using h (Fin.succ i) (Fin.succ j) (by simpa using hij) (by simpa using hP)
       · simp [hPa]
 
-@[simp]
 lemma insertionSort_length {I : Type} (le1 : I → I → Prop) [DecidableRel le1] (l : List I) :
     (List.insertionSort le1 l).length = l.length := by
   apply List.Perm.length_eq
@@ -692,7 +691,6 @@ lemma eraseIdx_length {I : Type} (l : List I) (i : Fin l.length) :
   have hi := i.prop
   omega
 
-@[simp]
 lemma eraseIdx_length_succ {I : Type} (l : List I) (i : Fin l.length) :
     (List.eraseIdx l i).length.succ = l.length := by
   simp only [List.length_eraseIdx, Fin.is_lt, ↓reduceIte]
@@ -757,16 +755,17 @@ lemma eraseIdx_insertionSort_fin {I : Type} (le1 : I → I → Prop) [DecidableR
     = List.insertionSort le1 (r.eraseIdx n) :=
   eraseIdx_insertionSort le1 n.val r (Fin.prop n)
 
-/-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`. That is the first position
+/-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`.
+  That is the first position
   of `l` such that for every element `(i :: l)[b]` before that position
-  `r ((i :: l)[b])  ((i :: l)[a])` is not true. The use of `i :: l` here
+  `r ((i :: l)[b]) ((i :: l)[a])` is not true. The use of `i :: l` here
   rather then just `l` is to ensure that such a position exists. . -/
 def insertionSortMinPos {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     Fin (i :: l).length := (insertionSortEquiv r (i :: l)).symm ⟨0, by
     rw [insertionSort_length]
     exact Nat.zero_lt_succ l.length⟩
 
-/-- The element of `i :: l` at  `insertionSortMinPos`. -/
+/-- The element of `i :: l` at `insertionSortMinPos`. -/
 def insertionSortMin {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     α := (i :: l).get (insertionSortMinPos r i l)
 

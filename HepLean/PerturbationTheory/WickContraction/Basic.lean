@@ -116,7 +116,7 @@ lemma eq_filter_mem_self : c.1 = Finset.filter (fun x => x ∈ c.1) Finset.univ 
   exact Eq.symm (Finset.filter_univ_mem c.1)
 
 /-- For a contraction `c : WickContraction n` and `i : Fin n` the `j` such that
- `{i, j}` is a contracted pair in `c`. If such an `j` does not exist, this returns `none`. -/
+  `{i, j}` is a contracted pair in `c`. If such an `j` does not exist, this returns `none`. -/
 def getDual? (i : Fin n) : Option (Fin n) := Fin.find (fun j => {i, j} ∈ c.1)
 
 lemma getDual?_congr {n m : ℕ} (h : n = m) (c : WickContraction n) (i : Fin m) :
@@ -364,7 +364,6 @@ lemma fstFieldOfContract_mem (c : WickContraction n) (a : c.1) :
   rw [finset_eq_fstFieldOfContract_sndFieldOfContract]
   simp
 
-@[simp]
 lemma fstFieldOfContract_getDual?_isSome (c : WickContraction n) (a : c.1) :
     (c.getDual? (c.fstFieldOfContract a)).isSome := by
   rw [getDual?_isSome_iff]
@@ -384,7 +383,6 @@ lemma sndFieldOfContract_mem (c : WickContraction n) (a : c.1) :
   rw [finset_eq_fstFieldOfContract_sndFieldOfContract]
   simp
 
-@[simp]
 lemma sndFieldOfContract_getDual?_isSome (c : WickContraction n) (a : c.1) :
     (c.getDual? (c.sndFieldOfContract a)).isSome := by
   rw [getDual?_isSome_iff]
@@ -430,7 +428,6 @@ lemma eq_sndFieldOfContract_of_mem (c : WickContraction n) (a : c.1) (i j : Fin 
     simp at hij
   | Or.inl hi, Or.inr hj =>
     subst hi hj
-    have hn := fstFieldOfContract_lt_sndFieldOfContract c a
     omega
   | Or.inr hi, Or.inl hj =>
     subst hi hj
@@ -473,7 +470,7 @@ def contractEquivFinTwo (c : WickContraction n) (a : c.1) :
       exact (Ne.symm h)
 
 lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
-  (f : a.1 → M) [CommMonoid M] :
+    (f : a.1 → M) [CommMonoid M] :
     ∏ (x : a), f x = f (⟨c.fstFieldOfContract a, fstFieldOfContract_mem c a⟩)
     * f (⟨c.sndFieldOfContract a, sndFieldOfContract_mem c a⟩) := by
   rw [← (c.contractEquivFinTwo a).symm.prod_comp]

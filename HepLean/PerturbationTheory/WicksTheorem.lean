@@ -232,8 +232,9 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
   match n with
   | none =>
     rw [sign_timeContract_normalOrder_insertList_none]
-    simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans,
-      Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
+    simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+      Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1,
+      smul_smul]
     congr 1
     rw [← mul_assoc, exchangeSign_mul_self]
     simp
@@ -261,9 +262,9 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs') :
 
 /-- Wick's theorem for the empty list. -/
 lemma wicks_theorem_nil :
-      𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : WickContraction [].length),
-      (c.sign [] • c.timeContract 𝓞) *
-      𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
+    𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : WickContraction [].length),
+    (c.sign [] • c.timeContract 𝓞) *
+    𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
   rw [timeOrder_ofList_nil]
   simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
   rw [sum_WickContraction_nil, nil_zero_uncontractedList]
@@ -353,8 +354,9 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra 
     swap
     · simp
     rw [smul_smul]
-    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one, Algebra.smul_mul_assoc,
-      Fintype.sum_option, timeContract_insertList_none, Finset.univ_eq_attach, smul_add, one_smul]
+    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one,
+      Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insertList_none,
+      Finset.univ_eq_attach, smul_add, one_smul]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length

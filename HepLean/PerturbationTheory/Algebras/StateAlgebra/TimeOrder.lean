@@ -35,7 +35,6 @@ lemma timeOrder_ofList (φs : List 𝓕.States) :
   rw [← ofListBasis_eq_ofList]
   simp only [timeOrder, Basis.constr_basis]
 
-@[simp]
 lemma timeOrder_ofList_nil : timeOrder (𝓕 := 𝓕) (ofList []) = 1 := by
   rw [timeOrder_ofList]
   simp [timeOrderSign, Wick.koszulSign, timeOrderList]
@@ -78,7 +77,6 @@ lemma timeOrder_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) 
   congr
   rw [timerOrderSign_of_eraseMaxTimeField, mul_assoc]
   simp
-
 
 end StateAlgebra
 end

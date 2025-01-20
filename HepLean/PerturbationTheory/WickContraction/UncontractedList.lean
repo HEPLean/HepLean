@@ -451,7 +451,7 @@ lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (c : WickContraction
   simp [uncontractedStatesEquiv]
 
 lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.States)
-  (c : WickContraction φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
+    (c : WickContraction φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
     ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
     ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
   rw [(c.uncontractedStatesEquiv φs).sum_comp]
