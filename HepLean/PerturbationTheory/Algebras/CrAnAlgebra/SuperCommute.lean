@@ -24,11 +24,17 @@ open StateAlgebra
 
 open FieldStatistic
 
+/-- The super commutor on the creation and annihlation algebra. For two bosonic operators
+  or a bosonic and fermionic operator this corresponds to the usual commutator
+  whilst for two fermionic operators this corresponds to the anti-commutator. -/
 noncomputable def superCommute : 𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   Basis.constr ofCrAnListBasis ℂ fun φs' =>
   ofCrAnList (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList (φs' ++ φs)
 
+/-- The super commutor on the creation and annihlation algebra. For two bosonic operators
+  or a bosonic and fermionic operator this corresponds to the usual commutator
+  whilst for two fermionic operators this corresponds to the anti-commutator. -/
 scoped[FieldStruct.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
 
 lemma superCommute_ofCrAnList (φs φs' : List 𝓕.CrAnStates) : ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =

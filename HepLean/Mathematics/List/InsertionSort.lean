@@ -23,6 +23,8 @@ lemma insertionSortMin_lt_length_succ {α : Type} (r : α → α → Prop) [Deci
   rw [eraseIdx_length']
   simp
 
+/-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`
+  as an element of `Fin (insertionSortDropMinPos r i l).length.succ`. -/
 def insertionSortMinPosFin {α : Type} (r : α → α → Prop) [DecidableRel r]
     [IsTotal α r] [IsTrans α r] (i : α) (l : List α) :
     Fin (insertionSortDropMinPos r i l).length.succ :=

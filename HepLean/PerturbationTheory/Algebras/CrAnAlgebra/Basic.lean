@@ -131,6 +131,9 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 
 -/
 
+/-- The algebra map taking an element of the free-state algbra to
+  the part of it in the creation and annihlation free algebra
+  spanned by creation operators. -/
 def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
@@ -157,6 +160,9 @@ lemma crPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
   dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
+/-- The algebra map taking an element of the free-state algbra to
+  the part of it in the creation and annihilation free algebra
+  spanned by annihilation operators. -/
 def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
@@ -204,6 +210,7 @@ lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
 
 -/
 
+/-- The basis of the free creation and annihilation algebra formed by lists of CrAnStates. -/
 noncomputable def ofCrAnListBasis : Basis (List 𝓕.CrAnStates) ℂ (CrAnAlgebra 𝓕) where
   repr := FreeAlgebra.equivMonoidAlgebraFreeMonoid.toLinearEquiv
 
@@ -228,6 +235,7 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnStates) :
 
 -/
 
+/-- The bi-linear map associated with multiplication in `CrAnAlgebra`. -/
 noncomputable def mulLinearMap : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
   toFun a := {
     toFun := fun b => a * b,
@@ -245,6 +253,7 @@ noncomputable def mulLinearMap : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 �
 lemma mulLinearMap_apply (a b : CrAnAlgebra 𝓕) :
     mulLinearMap a b = a * b := by rfl
 
+/-- The linear map associated with scalar-multiplication in `CrAnAlgebra`. -/
 noncomputable def smulLinearMap (c : ℂ) : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 where
   toFun a := c • a
   map_add' := by simp

@@ -14,9 +14,19 @@ namespace FieldStruct
 variable (𝓕 : FieldStruct)
 open CrAnAlgebra
 
+/-- The structure of an algebra with properties necessary for that algebra
+  to be isomorphic to the actual operator algebra of a field theory.
+  These properties are sufficent to prove certain theorems about the Operator algebra
+  in particular Wick's theorem. -/
 structure OperatorAlgebra where
+  /-- The algebra representing the operator algebra. -/
   A : Type
-  [A_semiRing : Semiring A] [A_algebra : Algebra ℂ A]
+  /-- The instance of the type `A` as a semi-ring. -/
+  [A_semiRing : Semiring A]
+  /-- The instance of the type `A` as an algebra. -/
+  [A_algebra : Algebra ℂ A]
+  /-- An algebra map from the creation and annihilation free algebra to the
+    algebra A. -/
   crAnF : 𝓕.CrAnAlgebra →ₐ[ℂ] A
   superCommute_crAn_center : ∀ (φ ψ : 𝓕.CrAnStates),
     crAnF (superCommute (ofCrAnState φ) (ofCrAnState ψ))
@@ -37,8 +47,10 @@ namespace OperatorAlgebra
 open FieldStatistic
 variable {𝓕 : FieldStruct} (𝓞 : 𝓕.OperatorAlgebra)
 
+/-- The algebra `𝓞.A` carries the instance of a semi-ring induced via `A_seimRing`. -/
 instance : Semiring 𝓞.A := 𝓞.A_semiRing
 
+/-- The algebra `𝓞.A` carries the instance of aan algebra over `ℂ` induced via `A_algebra`. -/
 instance : Algebra ℂ 𝓞.A := 𝓞.A_algebra
 
 lemma crAnF_superCommute_ofCrAnState_ofState_mem_center (φ : 𝓕.CrAnStates) (ψ : 𝓕.States) :

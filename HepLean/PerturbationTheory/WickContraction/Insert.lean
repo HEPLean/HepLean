@@ -24,6 +24,10 @@ open HepLean.Fin
 
 -/
 
+/-- Given a Wick contraction `c` for `n`, a position `i : Fin n.succ` and
+  an optional uncontracted element `j : Option (c.uncontracted)` of `c`.
+  The Wick contraction for `n.succ` formed by 'inserting' `i` into `Fin n`
+  and contracting it optionally with `j`. -/
 def insert (c : WickContraction n) (i : Fin n.succ) (j : Option (c.uncontracted)) :
     WickContraction n.succ := by
   let f := Finset.map (Finset.mapEmbedding i.succAboveEmb).toEmbedding c.1
@@ -651,6 +655,9 @@ lemma insert_sndFieldOfContract (c : WickContraction n) (i : Fin n.succ)
   · refine Fin.succAbove_lt_succAbove_iff.mpr ?_
     exact fstFieldOfContract_lt_sndFieldOfContract c a
 
+/-- Given a contracted pair for a Wick contraction `WickContraction n`, the
+  corresponding contracted pair of a wick contraction `(c.insert i (some j))` formed
+  by inserting an element `i` into the contraction.-/
 def insertLiftSome {c : WickContraction n} (i : Fin n.succ) (j : c.uncontracted)
     (a : Unit ⊕ c.1) : (c.insert i (some j)).1 :=
   match a with

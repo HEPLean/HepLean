@@ -24,6 +24,9 @@ namespace OperatorAlgebra
 variable (𝓞 : 𝓕.OperatorAlgebra)
 open FieldStatistic
 
+/-- The time contraction of two States as an element of `𝓞.A` defined
+  as their time ordering in the state algebra minus their normal ordering in the
+  creation and annihlation algebra, both mapped to `𝓞.A`.. -/
 def timeContract (φ ψ : 𝓕.States) : 𝓞.A :=
   𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
   - normalOrder (ofState φ * ofState ψ))

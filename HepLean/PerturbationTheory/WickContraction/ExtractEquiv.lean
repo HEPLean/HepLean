@@ -34,6 +34,9 @@ lemma extractEquiv_equiv {c1 c2 : (c : WickContraction n) × Option c.uncontract
     ext
     simp
 
+/-- The equivalence between `WickContraction n.succ` and the sigma type
+  `(c : WickContraction n) × Option c.uncontracted` formed by inserting
+  and erasing elements from a contraction. -/
 def extractEquiv (i : Fin n.succ) : WickContraction n.succ ≃
     (c : WickContraction n) × Option c.uncontracted where
   toFun := fun c => ⟨erase c i, getDualErase c i⟩
@@ -60,13 +63,15 @@ lemma extractEquiv_apply_congr_symm_apply {n m : ℕ} (k : ℕ)
   subst hnm
   simp
 
+/-- The fintype instance of `WickContraction 0` defined through its single
+  element `empty`. -/
 instance fintype_zero : Fintype (WickContraction 0) where
-  elems := {nil}
+  elems := {empty}
   complete := by
     intro c
     simp only [Finset.mem_singleton]
     apply Subtype.eq
-    simp only [nil]
+    simp only [empty]
     ext a
     apply Iff.intro
     · intro h
@@ -77,13 +82,15 @@ instance fintype_zero : Fintype (WickContraction 0) where
     · simp
 
 lemma sum_WickContraction_nil (f : WickContraction 0 → M) [AddCommMonoid M] :
-    ∑ c, f c = f nil := by
+    ∑ c, f c = f empty := by
   rw [Finset.sum_eq_single_of_mem]
   simp only [Finset.mem_univ]
   intro b hb
   fin_cases b
   simp
 
+/-- The fintype instance of `WickContraction n`, for `n.succ` this is defined
+  through the equivalence `extractEquiv`. -/
 instance fintype_succ : (n : ℕ) → Fintype (WickContraction n)
   | 0 => fintype_zero
   | Nat.succ n => by

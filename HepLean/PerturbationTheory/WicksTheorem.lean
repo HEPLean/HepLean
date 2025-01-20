@@ -114,7 +114,7 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun k => i.succAbove k < i))⟩)
     • (c.sign • c.timeContract 𝓞 * 𝓞.crAnF (normalOrder
       (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ none)))) := by
-  by_cases hg : IsGradedObeying φs c
+  by_cases hg : GradingCompliant φs c
   · rw [insertList_none_normalOrder, sign_insert_none]
     simp only [Nat.succ_eq_add_one, timeContract_insertList_none, instCommGroup.eq_1,
       Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
@@ -145,7 +145,7 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
       simp_all
   · simp only [Nat.succ_eq_add_one, timeContract_insertList_none, Algebra.smul_mul_assoc,
     instCommGroup.eq_1]
-    rw [timeContract_of_not_isGradedObeying]
+    rw [timeContract_of_not_gradingCompliant]
     simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
     exact hg
 
@@ -157,13 +157,13 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
     * 𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
       (c.insertList φ φs i (some k)).uncontractedList))) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩)
-    • (c.sign • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
+    • (c.sign • (𝓞.contractStateAtIndex φ (List.map φs.get c.uncontractedList)
       ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞)
     * 𝓞.crAnF (normalOrder (ofStateList (optionEraseZ (c.uncontractedList.map φs.get) φ
       ((uncontractedStatesEquiv φs c) k))))) := by
-  by_cases hg : IsGradedObeying φs c ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
+  by_cases hg : GradingCompliant φs c ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
   · by_cases hk : i.succAbove k < i
-    · rw [WickContraction.timeConract_insertList_some_eq_mul_contractMemList_not_lt]
+    · rw [WickContraction.timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt]
       swap
       · exact hn _ hk
       rw [insertList_some_normalOrder, sign_insert_some]
@@ -174,7 +174,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       exact signInsertSome_mul_filter_contracted_of_lt φ φs c i k hk hg
       · omega
     · have hik : i.succAbove ↑k ≠ i := by exact Fin.succAbove_ne i ↑k
-      rw [WickContraction.timeConract_insertList_some_eq_mul_contractMemList_lt]
+      rw [WickContraction.timeConract_insertList_some_eq_mul_contractStateAtIndex_lt]
       swap
       · exact hlt _
       rw [insertList_some_normalOrder]
@@ -187,10 +187,10 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       · omega
   · rw [timeConract_insertList_some]
     simp only [Fin.getElem_fin, not_and] at hg
-    by_cases hg' : IsGradedObeying φs c
+    by_cases hg' : GradingCompliant φs c
     · have hg := hg hg'
       simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, Algebra.smul_mul_assoc,
-        instCommGroup.eq_1, contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+        instCommGroup.eq_1, contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
         Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
         List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem]
       by_cases h1 : i < i.succAbove ↑k
@@ -208,7 +208,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
         simp only [zero_mul, smul_zero]
         exact hg
         exact fun a => hg (id (Eq.symm a))
-    · rw [timeContract_of_not_isGradedObeying]
+    · rw [timeContract_of_not_gradingCompliant]
       simp only [Nat.succ_eq_add_one, Fin.getElem_fin, mul_zero, ZeroMemClass.coe_zero, smul_zero,
         zero_mul, instCommGroup.eq_1]
       exact hg'
@@ -232,7 +232,7 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
   match n with
   | none =>
     rw [sign_timeContract_normalOrder_insertList_none]
-    simp only [contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans,
+    simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans,
       Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
     rw [← mul_assoc, exchangeSign_mul_self]
@@ -270,7 +270,7 @@ lemma wicks_theorem_nil :
   simp only [List.map_nil]
   have h1 : ofStateList (𝓕 := 𝓕) [] = CrAnAlgebra.ofCrAnList [] := by simp
   rw [h1, normalOrder_ofCrAnList]
-  simp [WickContraction.timeContract, nil, sign]
+  simp [WickContraction.timeContract, empty, sign]
 
 lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrder (ofList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,

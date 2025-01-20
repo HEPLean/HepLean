@@ -18,6 +18,9 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open HepLean.Fin
 
+/-- Given a Wick contraction `WickContraction n.succ` and a `i : Fin n.succ` the
+  Wick contraction associated with `n` obtained by removing `i`.
+  If `i` is contracted with `j` in the new Wick contraction `j` will be uncontracted. -/
 def erase (c : WickContraction n.succ) (i : Fin n.succ) : WickContraction n := by
   refine ⟨Finset.filter (fun x => Finset.map i.succAboveEmb x ∈ c.1) Finset.univ, ?_, ?_⟩
   · intro a ha
@@ -120,6 +123,9 @@ lemma mem_not_eq_erase_of_isNone (c : WickContraction n.succ) (i : Fin n.succ)
     Fin.succAboveEmb_apply, Finset.map_singleton, true_and, and_true]
   exact ha
 
+/-- Given a Wick contraction `c : WickContraction n.succ` and a `i : Fin n.succ` the (optional)
+  element of `(erase c i).uncontracted` which comes from the element in `c` contracted
+  with `i`.  -/
 def getDualErase {n : ℕ} (c : WickContraction n.succ) (i : Fin n.succ) :
     Option ((erase c i).uncontracted) := by
   match n with

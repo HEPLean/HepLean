@@ -24,6 +24,11 @@ open HepLean.Fin
 
 -/
 
+/-- Given a Wick contraction `c` associated to a list `φs`,
+  a position `i : Fin n.succ`, an element `φ`, and an optional uncontracted element
+  `j : Option (c.uncontracted)` of `c`.
+  The Wick contraction associated with `(φs.insertIdx i φ).length` formed by 'inserting' `φ`
+  into `φs` after the first `i` elements and contracting it optionally with j.-/
 def insertList (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Option (c.uncontracted)) :
     WickContraction (φs.insertIdx i φ).length :=
@@ -216,11 +221,12 @@ lemma insertList_some_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.Stat
     Finset.univ_eq_attach]
   rfl
 
+/-- Given a finite set of `Fin φs.length` the finite set of `(φs.insertIdx i φ).length`
+  formed by mapping elements using `i.succAboveEmb` and `finCongr`.  -/
 def insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
     Finset (Fin (φs.insertIdx i φ).length) :=
-    (a.map (Fin.succAboveEmb i)).map
-      (finCongr (insertIdx_length_fin φ φs i).symm).toEmbedding
+    (a.map i.succAboveEmb).map (finCongr (insertIdx_length_fin φ φs i).symm).toEmbedding
 
 @[simp]
 lemma self_not_mem_insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}

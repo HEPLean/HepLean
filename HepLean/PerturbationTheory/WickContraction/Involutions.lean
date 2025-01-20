@@ -20,6 +20,9 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
+/-- The involution of `Fin n` associated with a Wick contraction `c : WickContraction n` as follows.
+  If `i : Fin n` is contracted in `c` then it is taken to its dual, otherwise
+  it is taken to itself. -/
 def toInvolution : {f : Fin n → Fin n // Function.Involutive f} :=
   ⟨fun i => if h : (c.getDual? i).isSome then (c.getDual? i).get h else i, by
     intro i
@@ -27,6 +30,8 @@ def toInvolution : {f : Fin n → Fin n // Function.Involutive f} :=
     · simp [h]
     · simp [h]⟩
 
+/-- The Wick contraction formed by an involution `f` of `Fin n` by taking as the contracted
+  sets of the contraction the orbits of `f` of cardinality `2`. -/
 def fromInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) : WickContraction n :=
   ⟨Finset.univ.filter (fun a => a.card = 2 ∧ ∃ i, {i, f.1 i} = a), by
   intro a
@@ -144,6 +149,10 @@ lemma fromInvolution_toInvolution (f : {f : Fin n → Fin n // Function.Involuti
     simp only [fromInvolution_getDual?_isSome, ne_eq, Decidable.not_not] at h
     exact id (Eq.symm h)
 
+/-- The equivalence btween Wick contractions for `n` and involutions of `Fin n`.
+  The involution of `Fin n` associated with a Wick contraction `c : WickContraction n` as follows.
+  If `i : Fin n` is contracted in `c` then it is taken to its dual, otherwise
+  it is taken to itself. -/
 def equivInvolution : WickContraction n ≃ {f : Fin n → Fin n // Function.Involutive f} where
   toFun := toInvolution
   invFun := fromInvolution

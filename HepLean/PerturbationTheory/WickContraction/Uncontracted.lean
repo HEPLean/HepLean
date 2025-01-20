@@ -16,6 +16,7 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
+/-- Given a Wick contraction, the finset of elements of `Fin n` which are not contracted. -/
 def uncontracted : Finset (Fin n) := Finset.filter (fun i => c.getDual? i = none) (Finset.univ)
 
 lemma congr_uncontracted {n m : ℕ} (c : WickContraction n) (h : n = m) :
@@ -23,6 +24,7 @@ lemma congr_uncontracted {n m : ℕ} (c : WickContraction n) (h : n = m) :
   subst h
   simp
 
+/-- The equivalence of `Option c.uncontracted` for two propositionally equal Wick contractions. -/
 def uncontractedCongr {c c': WickContraction n} (h : c = c') :
     Option c.uncontracted ≃ Option c'.uncontracted :=
     Equiv.optionCongr (Equiv.subtypeEquivRight (by rw [h]; simp))

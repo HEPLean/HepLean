@@ -24,6 +24,9 @@ open HepLean.List
 
 -/
 
+/-- Given a Wick contraction `c` associated with a list `φs`, the
+  product of all time-contractions of pairs of contracted elements in `φs`,
+  as a member of the center of `𝓞.A`. -/
 noncomputable def timeContract (𝓞 : 𝓕.OperatorAlgebra) {φs : List 𝓕.States}
     (c : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓞.A :=
@@ -58,17 +61,17 @@ lemma timeConract_insertList_some (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.State
 
 open FieldStatistic
 
-lemma timeConract_insertList_some_eq_mul_contractMemList_lt
+lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x < k))⟩)
-    • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
+    • (𝓞.contractStateAtIndex φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    OperatorAlgebra.contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
@@ -93,17 +96,17 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
-lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
+lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x ≤ k))⟩)
-    • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
+    • (𝓞.contractStateAtIndex φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    OperatorAlgebra.contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
@@ -145,11 +148,11 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
   simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
   exact ht
 
-lemma timeContract_of_not_isGradedObeying (𝓞 : 𝓕.OperatorAlgebra) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (h : ¬ IsGradedObeying φs c) :
+lemma timeContract_of_not_gradingCompliant (𝓞 : 𝓕.OperatorAlgebra) (φs : List 𝓕.States)
+    (c : WickContraction φs.length) (h : ¬ GradingCompliant φs c) :
     c.timeContract 𝓞 = 0 := by
   rw [timeContract]
-  simp only [IsGradedObeying, Fin.getElem_fin, Subtype.forall, not_forall] at h
+  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall, not_forall] at h
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)

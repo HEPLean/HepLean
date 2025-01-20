@@ -757,11 +757,16 @@ lemma eraseIdx_insertionSort_fin {I : Type} (le1 : I → I → Prop) [DecidableR
     = List.insertionSort le1 (r.eraseIdx n) :=
   eraseIdx_insertionSort le1 n.val r (Fin.prop n)
 
+/-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`. That is the first position
+  of `l` such that for every element `(i :: l)[b]` before that position
+  `r ((i :: l)[b])  ((i :: l)[a])` is not true. The use of `i :: l` here
+  rather then just `l` is to ensure that such a position exists. . -/
 def insertionSortMinPos {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     Fin (i :: l).length := (insertionSortEquiv r (i :: l)).symm ⟨0, by
     rw [insertionSort_length]
     exact Nat.zero_lt_succ l.length⟩
 
+/-- The element of `i :: l` at  `insertionSortMinPos`. -/
 def insertionSortMin {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     α := (i :: l).get (insertionSortMinPos r i l)
 
@@ -779,6 +784,8 @@ lemma insertionSortMin_eq_insertionSort_head {α : Type} (r : α → α → Prop
       (Eq.mpr (id (congrArg (fun _a => 0 < _a) (insertionSort_length r (i :: l))))
         (Nat.zero_lt_succ l.length))
 
+/-- The list remaining after dropping the element at the position determined by
+  `insertionSortMinPos`. -/
 def insertionSortDropMinPos {α : Type} (r : α → α → Prop) [DecidableRel r] (i : α) (l : List α) :
     List α := (i :: l).eraseIdx (insertionSortMinPos r i l)
 

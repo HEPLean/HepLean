@@ -14,6 +14,22 @@ open FieldStruct
 
 variable {𝓕 : FieldStruct}
 
+/--
+Given a natural number `n` corresponding to the number of fields, a Wick contraction
+is a finite set of pairs of `Fin n`, such that no element of `Fin n` occurs in more then one pair.
+For example for `n = 3` there are `4` Wick contractions:
+- `∅`, corresponding to the case where no fields are contracted.
+- `{{0, 1}}`, corresponding to the case where the field at position `0` and `1` are contracted.
+- `{{0, 2}}`, corresponding to the case where the field at position `0` and `2` are contracted.
+- `{{1, 2}}`, corresponding to the case where the field at position `1` and `2` are contracted.
+For `n=4` some possible Wick contractions are
+- `∅`, corresponding to the case where no fields are contracted.
+- `{{0, 1}, {2, 3}}`, corresponding to the case where the field at position `0` and `1` are
+  contracted and the field at position `2` and `3` are contracted.
+- `{{0, 2}, {1, 3}}`, corresponding to the case where the field at position `0` and `2` are
+  contracted and the field at position `1` and `3` are contracted.
+  etc.
+-/
 def WickContraction (n : ℕ) : Type :=
   {f : Finset ((Finset (Fin n))) // (∀ a ∈ f, a.card = 2) ∧
     (∀ a ∈ f, ∀ b ∈ f, a = b ∨ Disjoint a b)}
@@ -23,8 +39,10 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
 /-- The contraction consisting of no contracted pairs. -/
-def nil : WickContraction n := ⟨∅, by simp, by simp⟩
+def empty : WickContraction n := ⟨∅, by simp, by simp⟩
 
+/-- The equivalence between `WickContraction n` and `WickContraction m`
+  derived from a propositional equality of `n` and `m`. -/
 def congr : {n m : ℕ} → (h : n = m) → WickContraction n ≃ WickContraction m
   | n, .(n), rfl => Equiv.refl _
 
@@ -65,8 +83,10 @@ lemma congr_trans_apply {n m o : ℕ} (h1 : n = m) (h2 : m = o) (c : WickContrac
   subst h1 h2
   simp
 
-def congrLift {n m : ℕ} (h : n = m) {c : WickContraction n} (a : c.1) :
-    (congr h c).1 := ⟨a.1.map (finCongr h).toEmbedding, by
+/-- Given a contracted pair in `c : WickContraction n` the contracted pair
+  in `congr h c`. -/
+def congrLift {n m : ℕ} (h : n = m) {c : WickContraction n} (a : c.1) : (congr h c).1 :=
+  ⟨a.1.map (finCongr h).toEmbedding, by
     subst h
     simp⟩
 
@@ -95,6 +115,8 @@ lemma congrLift_bijective {n m : ℕ} {c : WickContraction n} (h : n = m) :
 lemma eq_filter_mem_self : c.1 = Finset.filter (fun x => x ∈ c.1) Finset.univ := by
   exact Eq.symm (Finset.filter_univ_mem c.1)
 
+/-- For a contraction `c : WickContraction n` and `i : Fin n` the `j` such that
+ `{i, j}` is a contracted pair in `c`. If such an `j` does not exist, this returns `none`. -/
 def getDual? (i : Fin n) : Option (Fin n) := Fin.find (fun j => {i, j} ∈ c.1)
 
 lemma getDual?_congr {n m : ℕ} (h : n = m) (c : WickContraction n) (i : Fin m) :
@@ -243,6 +265,7 @@ lemma getDual?_getDual?_get_not_none (i : Fin n) (h : (c.getDual? i).isSome) :
 
 -/
 
+/-- The smallest of the two positions in a contracted pair given a Wick contraction. -/
 def fstFieldOfContract (c : WickContraction n) (a : c.1) : Fin n :=
   (a.1.sort (· ≤ ·)).head (by
     have hx : (Finset.sort (fun x1 x2 => x1 ≤ x2) a.1).length = a.1.card := by
@@ -257,6 +280,7 @@ lemma fstFieldOfContract_congr {n m : ℕ} (h : n = m) (c : WickContraction n) (
   subst h
   simp [congr]
 
+/-- The largest of the two positions in a contracted pair given a Wick contraction. -/
 def sndFieldOfContract (c : WickContraction n) (a : c.1) : Fin n :=
   (a.1.sort (· ≤ ·)).tail.head (by
     have hx : (Finset.sort (fun x1 x2 => x1 ≤ x2) a.1).length = a.1.card := by
@@ -416,6 +440,9 @@ lemma eq_sndFieldOfContract_of_mem (c : WickContraction n) (a : c.1) (i j : Fin 
     subst hi hj
     simp at hij
 
+/-- As a type, any pair of contractions is equivalent to `Fin 2`
+  with `0` being associated with `c.fstFieldOfContract a` and `1` being associated with
+  `c.sndFieldOfContract`. -/
 def contractEquivFinTwo (c : WickContraction n) (a : c.1) :
     a ≃ Fin 2 where
   toFun i := if i = c.fstFieldOfContract a then 0 else 1
@@ -452,9 +479,13 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
   rw [← (c.contractEquivFinTwo a).symm.prod_comp]
   simp [contractEquivFinTwo]
 
-def IsGradedObeying (φs : List 𝓕.States) (c : WickContraction φs.length) :=
+/-- A Wick contraction associated with a list of states is said to be `GradingCompliant` if in any
+  contracted pair of states they are either both fermionic or both bosonic. -/
+def GradingCompliant (φs : List 𝓕.States) (c : WickContraction φs.length) :=
   ∀ (a : c.1), (𝓕 |>ₛ φs[c.fstFieldOfContract a]) = (𝓕 |>ₛ φs[c.sndFieldOfContract a])
 
+/-- An equivalence from the sigma type `(a : c.1) × a` to the subtype of `Fin n` consisting of
+  those positions which are contracted. -/
 def sigmaContractedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSome} where
   toFun := fun x => ⟨x.2, getDual?_isSome_of_mem c x.fst x.snd⟩
   invFun := fun x => ⟨

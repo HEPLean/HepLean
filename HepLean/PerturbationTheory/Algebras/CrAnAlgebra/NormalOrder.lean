@@ -30,7 +30,11 @@ namespace CrAnAlgebra
 
 noncomputable section
 
-/-- The normal ordering of elements of `CrAnAlgebra` as a linear map. -/
+/-- The linear map on the free creation and annihlation
+  algebra defined as the map taking
+  a list of CrAnStates to the normal-ordered list of states multiplied by
+  the sign corresponding to the number of fermionic-fermionic
+  exchanges done in ordering. -/
 def normalOrder : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   normalOrderSign φs • ofCrAnList (normalOrderList φs)

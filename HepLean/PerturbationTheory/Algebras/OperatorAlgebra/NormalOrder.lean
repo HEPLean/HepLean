@@ -344,7 +344,9 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.Stat
     lhs
     rw [← map_add, ← add_mul, ← ofState_eq_crPart_add_anPart]
 
-noncomputable def contractMemList (φ : 𝓕.States) (φs : List 𝓕.States) (n : Option (Fin φs.length)) :
+/-- In the expansion of `ofState φ * normalOrder (ofStateList φs)` the element
+  of `𝓞.A` associated with contracting `φ` with the (optional) `n`th element of `φs`. -/
+noncomputable def contractStateAtIndex (φ : 𝓕.States) (φs : List 𝓕.States) (n : Option (Fin φs.length)) :
   𝓞.A :=
   match n with
   | none => 1
@@ -355,11 +357,11 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ : 𝓕.States)
     (φs : List 𝓕.States) :
     𝓞.crAnF (ofState φ * normalOrder (ofStateList φs)) =
     ∑ n : Option (Fin φs.length),
-      contractMemList φ φs n *
+      contractStateAtIndex φ φs n *
       𝓞.crAnF (normalOrder (ofStateList (HepLean.List.optionEraseZ φs φ n))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute]
   rw [crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum]
-  simp only [instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc, contractMemList,
+  simp only [instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc, contractStateAtIndex,
     Fintype.sum_option, one_mul]
   rfl
 

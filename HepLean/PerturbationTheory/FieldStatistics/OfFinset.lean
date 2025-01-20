@@ -14,7 +14,8 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
-
+/-- The field statistic associated with a map `f : Fin n → 𝓕` (usually `.get` of a list)
+  and a finite set of elements of `Fin n`. -/
 def ofFinset {n : ℕ} (q : 𝓕 → FieldStatistic) (f : Fin n → 𝓕) (a : Finset (Fin n)) :
     FieldStatistic :=
   ofList q ((a.sort (· ≤ ·)).map f)

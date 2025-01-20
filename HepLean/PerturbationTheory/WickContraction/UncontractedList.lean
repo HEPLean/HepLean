@@ -169,6 +169,8 @@ lemma orderedInsert_eq_insertIdx_of_fin_list_sorted (l : List (Fin n)) (hl : l.S
 
 -/
 
+/-- Given a Wick contraction `c`, the ordered list of elements of `Fin n` which are not contracted,
+  i.e. do not appera anywhere in `c.1`. -/
 def uncontractedList : List (Fin n) := List.filter (fun x => x ∈ c.uncontracted) (List.finRange n)
 
 lemma uncontractedList_mem_iff (i : Fin n) :
@@ -176,8 +178,8 @@ lemma uncontractedList_mem_iff (i : Fin n) :
   simp [uncontractedList]
 
 @[simp]
-lemma nil_zero_uncontractedList : (nil (n := 0)).uncontractedList = [] := by
-  simp [nil, uncontractedList]
+lemma nil_zero_uncontractedList : (empty (n := 0)).uncontractedList = [] := by
+  simp [empty, uncontractedList]
 
 lemma congr_uncontractedList {n m : ℕ} (h : n = m) (c : WickContraction n) :
     ((congr h) c).uncontractedList = List.map (finCongr h) c.uncontractedList := by
@@ -338,6 +340,10 @@ lemma uncontractedList_extractEquiv_symm_none (c : WickContraction n) (i : Fin n
   rw [uncontractedList_eq_sort, extractEquiv_symm_none_uncontracted]
   rw [uncontractedList_succAbove_orderedInsert_eq_sort]
 
+/-- Given a Wick contraction `c : WickContraction n` and a `Fin n.succ`, the number of elements
+  of `c.uncontractedList` which are less then `i`.
+  Suppose we want to insert into `c` at position `i`, then this is the position we would
+  need to insert into `c.uncontractedList`. -/
 def uncontractedListOrderPos (c : WickContraction n) (i : Fin n.succ) : ℕ :=
   (List.filter (fun x => x.1 < i.1) c.uncontractedList).length
 
@@ -392,6 +398,9 @@ lemma orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx (c : WickContract
   simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
   omega
 
+/-- The equivalence between the positions of `c.uncontractedList` i.e. elements of
+  `Fin (c.uncontractedList).length` and the finite set `c.uncontracted` considered as a finite type.
+-/
 def uncontractedFinEquiv (c : WickContraction n) :
     Fin (c.uncontractedList).length ≃ c.uncontracted where
   toFun i := ⟨c.uncontractedList.get i, c.uncontractedList_get_mem_uncontracted i⟩
@@ -429,6 +438,9 @@ lemma take_uncontractedFinEquiv_symm (k : c.uncontracted) :
   rw [uncontractedFinEquiv_symm_eq_filter_length]
   simp
 
+/-- The equivalence between the type `Option c.uncontracted` for `WickContraction φs.length` and
+  `Option (Fin (c.uncontractedList.map φs.get).length)`, that is optional positions of
+  `c.uncontractedList.map φs.get` induced by `uncontractedFinEquiv`. -/
 def uncontractedStatesEquiv (φs : List 𝓕.States) (c : WickContraction φs.length) :
     Option c.uncontracted ≃ Option (Fin (c.uncontractedList.map φs.get).length) :=
   Equiv.optionCongr (c.uncontractedFinEquiv.symm.trans (finCongr (by simp)))

@@ -22,6 +22,10 @@ namespace StateAlgebra
 
 open FieldStatistic
 
+/-- The linear map on the free state algebra defined as the map taking
+  a list of states to the time-ordered list of states multiplied by
+  the sign corresponding to the number of fermionic-fermionic
+  exchanges done in ordering. -/
 def timeOrder : StateAlgebra 𝓕 →ₗ[ℂ] StateAlgebra 𝓕 :=
   Basis.constr ofListBasis ℂ fun φs =>
   timeOrderSign φs • ofList (timeOrderList φs)
