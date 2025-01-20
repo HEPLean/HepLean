@@ -141,6 +141,7 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldStatistics.Basic
+import HepLean.PerturbationTheory.FieldStatistics.ExchangeSign
 import HepLean.PerturbationTheory.FieldStruct.Basic
 import HepLean.PerturbationTheory.FieldStruct.CrAnSection
 import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate

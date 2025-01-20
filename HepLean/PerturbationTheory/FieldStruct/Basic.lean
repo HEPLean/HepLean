@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.RealVector.Basic
-import HepLean.PerturbationTheory.FieldStatistics.Basic
+import HepLean.PerturbationTheory.FieldStatistics.ExchangeSign
 import HepLean.SpaceTime.Basic
 import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 /-!

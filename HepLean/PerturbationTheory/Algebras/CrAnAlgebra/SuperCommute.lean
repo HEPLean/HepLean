@@ -315,7 +315,7 @@ lemma superCommute_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) :
   rw [smul_smul]
   conv_rhs =>
     rhs
-    rw [pairedSign_symm, pairedSign_mul_self]
+    rw [exchangeSign_symm, exchangeSign_mul_self]
   simp only [one_smul]
   abel
 
@@ -328,7 +328,7 @@ lemma superCommute_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
   rw [smul_smul]
   conv_rhs =>
     rhs
-    rw [pairedSign_symm, pairedSign_mul_self]
+    rw [exchangeSign_symm, exchangeSign_mul_self]
   simp only [one_smul]
   abel
 
@@ -402,7 +402,7 @@ lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) :
       ofStateList (φs'.drop (n + 1))
   | [] => by
     simp only [superCommute_ofCrAnList_ofStatesList, instCommGroup, ofList_empty,
-      pairedSign_bosonic, one_smul, List.length_nil, Finset.univ_eq_empty, List.take_nil,
+      exchangeSign_bosonic, one_smul, List.length_nil, Finset.univ_eq_empty, List.take_nil,
       List.get_eq_getElem, List.drop_nil, Finset.sum_empty]
     simp
   | φ :: φs' => by

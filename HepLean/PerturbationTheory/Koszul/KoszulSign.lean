@@ -113,7 +113,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       rw [← ofList_take_insert]
       change 𝓢(q φ, ofList q ((List.insertionSort le (φ1 :: φs)).take
         (↑(orderedInsertPos le ((List.insertionSort le (φ1 :: φs))) φ))))
-      rw [← koszulSignInsert_eq_pairedSign_take q le]
+      rw [← koszulSignInsert_eq_exchangeSign_take q le]
     rw [ofList_take_zero]
     simp
   | φ1 :: φs, n + 1, h => by
@@ -181,13 +181,13 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       swap
       · exact hn
       congr 1
-      rw [koszulSignCons_eq_pairedSign]
+      rw [koszulSignCons_eq_exchangeSign]
       simp only [hc1 hn, ↓reduceIte]
-      rw [pairedSign_symm]
+      rw [exchangeSign_symm]
     · simp only [hn, ↓reduceIte, Fin.val_succ]
       rw [ofList_take_insertIdx_le, map_mul, ← mul_assoc]
       congr 1
-      rw [pairedSign_mul_self, koszulSignCons]
+      rw [exchangeSign_mul_self, koszulSignCons]
       simp only [hc2 hn, ↓reduceIte]
       exact Nat.le_of_not_lt hn
       exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le rs φ1)
@@ -237,11 +237,11 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     ring
   conv_rhs =>
     rhs
-    rw [pairedSign_mul_self]
+    rw [exchangeSign_mul_self]
   simp only [instCommGroup.eq_1, Fin.getElem_fin, mul_one]
   conv_rhs =>
     rhs
-    rw [ofList_take_eraseIdx, pairedSign_mul_self]
+    rw [ofList_take_eraseIdx, exchangeSign_mul_self]
   simp
 
 lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le]
@@ -256,7 +256,7 @@ lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le
     simp [insertionSortMinPos]
   erw [Equiv.apply_symm_apply]
   simp only [instCommGroup.eq_1, List.get_eq_getElem, List.length_cons, List.insertionSort,
-    List.take_zero, ofList_empty, pairedSign_bosonic, mul_one, mul_eq_mul_left_iff]
+    List.take_zero, ofList_empty, exchangeSign_bosonic, mul_one, mul_eq_mul_left_iff]
   apply Or.inl
   rfl
 

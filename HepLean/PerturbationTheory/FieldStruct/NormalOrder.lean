@@ -118,12 +118,12 @@ lemma koszulSignInsert_annihilate_cons_create (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) :
     Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φa (φc :: φs)
-    = FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
+    = FieldStatistic.exchangeSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
     Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φa φs := by
   rw [Wick.koszulSignInsert_cons]
   simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_right_iff]
   apply Or.inl
-  rw [Wick.koszulSignCons, if_neg, FieldStatistic.pairedSign_symm, FieldStatistic.pairedSign_eq_if]
+  rw [Wick.koszulSignCons, if_neg, FieldStatistic.exchangeSign_symm, FieldStatistic.exchangeSign_eq_if]
   rw [normalOrderRel, hφa, hφc]
   simp [CreateAnnihilate.normalOrder]
 
@@ -132,13 +132,13 @@ lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) :
     normalOrderSign (φc :: φa :: φs) =
-    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
+    FieldStatistic.exchangeSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
     normalOrderSign (φa :: φc :: φs) := by
   rw [normalOrderSign_cons_create φc hφc (φa :: φs)]
   conv_rhs =>
     rw [normalOrderSign, Wick.koszulSign, ← normalOrderSign]
     rw [koszulSignInsert_annihilate_cons_create φc φa hφc hφa φs]
-  rw [← mul_assoc, ← mul_assoc, FieldStatistic.pairedSign_mul_self]
+  rw [← mul_assoc, ← mul_assoc, FieldStatistic.exchangeSign_mul_self]
   rw [one_mul, normalOrderSign_cons_create φc hφc φs]
   rfl
 
@@ -152,14 +152,14 @@ lemma koszulSignInsert_swap (φ φc φa : 𝓕.CrAnStates) (φs φs' : List 𝓕
 lemma normalOrderSign_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate) :
     (φs φs' : List 𝓕.CrAnStates) → normalOrderSign (φs ++ φc :: φa :: φs') =
-    FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
+    FieldStatistic.exchangeSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
     normalOrderSign (φs ++ φa :: φc :: φs')
   | [], φs' => normalOrderSign_swap_create_annihlate_fst φc φa hφc hφa φs'
   | φ :: φs, φs' => by
     rw [normalOrderSign]
     dsimp only [List.cons_append, Wick.koszulSign, FieldStatistic.instCommGroup.eq_1]
     rw [← normalOrderSign, normalOrderSign_swap_create_annihlate φc φa hφc hφa φs φs']
-    rw [← mul_assoc, mul_comm _ (FieldStatistic.pairedSign _ _), mul_assoc]
+    rw [← mul_assoc, mul_comm _ (FieldStatistic.exchangeSign _ _), mul_assoc]
     simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_left_iff]
     apply Or.inl
     conv_rhs =>

@@ -136,7 +136,7 @@ lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderRel 
     timeOrderSign [φ, ψ] = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) := by
   simp only [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert, mul_one, instCommGroup.eq_1]
   rw [if_neg h]
-  simp [FieldStatistic.pairedSign_eq_if]
+  simp [FieldStatistic.exchangeSign_eq_if]
 
 lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrderSign (eraseMaxTimeField φ φs) = timeOrderSign (φ :: φs) *

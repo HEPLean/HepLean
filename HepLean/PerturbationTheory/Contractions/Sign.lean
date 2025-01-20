@@ -344,7 +344,7 @@ lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
     simp only [instCommGroup, Nat.succ_eq_add_one, finCongr_apply, Fin.getElem_fin, Fin.coe_cast,
       insertIdx_getElem_self, map_mul]
     rw [stat_ofFinset_of_insertListLiftFinset]
-    simp only [pairedSign_symm, instCommGroup.eq_1]
+    simp only [exchangeSign_symm, instCommGroup.eq_1]
     simp
   · rw [stat_ofFinset_of_insertListLiftFinset]
 
@@ -360,7 +360,7 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
   funext a
   split
   · rename_i h
-    simp only [instCommGroup.eq_1, Fin.getElem_fin, h.1, ↓reduceIte, mul_ite, pairedSign_mul_self,
+    simp only [instCommGroup.eq_1, Fin.getElem_fin, h.1, ↓reduceIte, mul_ite, exchangeSign_mul_self,
       mul_one]
     rw [if_neg]
     omega
@@ -368,7 +368,7 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
     simp only [Nat.succ_eq_add_one, not_and, not_lt] at h
     split <;> rename_i h1
     · simp_all only [forall_const, instCommGroup.eq_1, Fin.getElem_fin, mul_ite,
-      pairedSign_mul_self, mul_one]
+      exchangeSign_mul_self, mul_one]
       rw [if_pos]
       have h1 :i.succAbove (c.sndFieldOfContract a) ≠ i :=
         Fin.succAbove_ne i (c.sndFieldOfContract a)
@@ -517,7 +517,7 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
     rw [ofFinset_insert]
     simp only [instCommGroup, Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_self, map_mul]
     rw [stat_ofFinset_of_insertListLiftFinset]
-    simp only [pairedSign_symm, instCommGroup.eq_1]
+    simp only [exchangeSign_symm, instCommGroup.eq_1]
     simp
   · rename_i h
     split
@@ -527,7 +527,7 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
       rw [ofFinset_erase]
       simp only [instCommGroup, Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, map_mul]
       rw [stat_ofFinset_of_insertListLiftFinset]
-      simp only [pairedSign_symm, instCommGroup.eq_1]
+      simp only [exchangeSign_symm, instCommGroup.eq_1]
       · rw [succAbove_mem_insertListLiftFinset]
         simp only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and]
         simp_all only [Nat.succ_eq_add_one, and_true, false_and, not_false_eq_true, not_lt,
@@ -565,7 +565,7 @@ lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
       simp only [instCommGroup.eq_1, Fin.getElem_fin, h1, Nat.succ_eq_add_one, false_and,
         not_false_eq_true, and_self, or_true, ↓reduceIte]
       congr 1
-      exact congrArg (⇑pairedSign) (id (Eq.symm hφj))
+      exact congrArg (⇑exchangeSign) (id (Eq.symm hφj))
     · rename_i h1
       simp only [Nat.succ_eq_add_one, not_lt, instCommGroup.eq_1, Fin.getElem_fin]
       rw [if_neg]

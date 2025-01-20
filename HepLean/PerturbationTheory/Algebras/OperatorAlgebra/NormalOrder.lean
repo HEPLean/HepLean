@@ -203,7 +203,7 @@ lemma crAnF_normalOrder_ofState_ofState_swap (φ φ' : 𝓕.States) :
   rw [normalOrder_ofState_mul_ofState]
   simp only [FieldStatistic.instCommGroup.eq_1, map_add, map_mul, map_smul, smul_add]
   rw [smul_smul]
-  simp only [FieldStatistic.pairedSign_mul_self_swap, one_smul]
+  simp only [FieldStatistic.exchangeSign_mul_self_swap, one_smul]
   abel
 
 open FieldStatistic
@@ -245,7 +245,7 @@ lemma crAnF_normalOrder_ofStatesList_anPart_swap (φ : 𝓕.States) (φ' : List 
     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) := by
   rw [crAnF_normalOrder_anPart_ofStatesList_swap]
-  simp [smul_smul, FieldStatistic.pairedSign_mul_self]
+  simp [smul_smul, FieldStatistic.exchangeSign_mul_self]
 
 lemma crAnF_normalOrder_ofStatesList_mul_anPart_swap (φ : 𝓕.States)
     (φ' : List 𝓕.States) :
@@ -375,7 +375,7 @@ lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
   rw [ofStateList_mul_ofStateList_eq_superCommute, add_mul]
   simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
     map_add, map_smul, crAnF_normalOrder_superCommute_eq_zero_mul_right, add_zero, smul_smul,
-    pairedSign_mul_self_swap, one_smul]
+    exchangeSign_mul_self_swap, one_smul]
   rw [← ofStateList_append, ← ofStateList_append]
   simp
 

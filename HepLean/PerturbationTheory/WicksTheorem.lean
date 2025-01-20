@@ -83,7 +83,7 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
         simp only [Fin.val_succ] at h
         omega
   rw [h2]
-  simp only [pairedSign_mul_self]
+  simp only [exchangeSign_mul_self]
   congr
   simp only [Nat.succ_eq_add_one]
   rw [insertList_uncontractedList_none_map]
@@ -233,7 +233,7 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
     simp only [contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans,
       Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
-    rw [← mul_assoc, pairedSign_mul_self]
+    rw [← mul_assoc, exchangeSign_mul_self]
     simp
   | some n =>
     rw [sign_timeContract_normalOrder_insertList_some _ _ _ _ _
@@ -241,7 +241,7 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
     simp only [uncontractedStatesEquiv, Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some',
       Function.comp_apply, finCongr_apply, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
-    · rw [← mul_assoc, pairedSign_mul_self]
+    · rw [← mul_assoc, exchangeSign_mul_self]
       rw [one_mul]
     · rw [← mul_assoc]
       congr 1
@@ -351,7 +351,7 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra 
     swap
     · simp
     rw [smul_smul]
-    simp only [instCommGroup.eq_1, pairedSign_mul_self, Nat.succ_eq_add_one, Algebra.smul_mul_assoc,
+    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one, Algebra.smul_mul_assoc,
       Fintype.sum_option, timeContract_insertList_none, Finset.univ_eq_attach, smul_add, one_smul]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k

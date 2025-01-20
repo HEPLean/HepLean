@@ -244,7 +244,7 @@ lemma normalOrder_swap_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra �
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     normalOrder (a * (crPart (StateAlgebra.ofState φ')) * (anPart (StateAlgebra.ofState φ)) * b) := by
   rw [normalOrder_swap_crPart_anPart]
-  rw [smul_smul, FieldStatistic.pairedSign_symm, FieldStatistic.pairedSign_mul_self]
+  rw [smul_smul, FieldStatistic.exchangeSign_symm, FieldStatistic.exchangeSign_mul_self]
   simp
 
 lemma normalOrder_superCommute_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
