@@ -440,8 +440,7 @@ lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
     simp only [h, true_and]
     split
     · rfl
-    · change _ = (pairedSign (𝓕.statesStatistic φ)) bosonic
-      rw [pairedSign_bosonic]
+    · simp only [map_one]
   · rename_i h
     simp [h]
   · refine List.Nodup.filter _ ?_
@@ -462,8 +461,7 @@ lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
     simp only [h, true_and]
     split
     · rfl
-    · change _ = (pairedSign (𝓕.statesStatistic φ)) bosonic
-      rw [pairedSign_bosonic]
+    · simp only [map_one]
   · rename_i h
     simp [h]
   · exact hG

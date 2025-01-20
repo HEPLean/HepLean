@@ -23,6 +23,7 @@ variable {𝓕 : FieldStruct}
 namespace OperatorAlgebra
 variable {𝓞 : OperatorAlgebra 𝓕}
 open CrAnAlgebra
+open FieldStatistic
 
 lemma crAnF_normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates)
@@ -187,7 +188,7 @@ lemma crAnF_normalOrder_superCommute_eq_zero
 
 lemma crAnF_normalOrder_ofState_ofState_swap (φ φ' : 𝓕.States) :
     𝓞.crAnF (normalOrder (ofState φ * ofState φ')) =
-    (FieldStatistic.pairedSign (𝓕.statesStatistic φ)) (𝓕.statesStatistic φ') •
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (ofState φ' * ofState φ)) := by
   conv_lhs =>
     rhs
@@ -217,7 +218,7 @@ lemma crAnF_normalOrder_ofCrAnState_ofCrAnList_swap (φ : 𝓕.CrAnStates)
 lemma crAnF_normalOrder_ofCrAnState_ofStatesList_swap (φ : 𝓕.CrAnStates)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (normalOrder (ofCrAnState φ * ofStateList φ')) =
-    (FieldStatistic.pairedSign (𝓕.crAnStatistics φ)) (FieldStatistic.ofList 𝓕.statesStatistic φ') •
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (ofStateList φ' * ofCrAnState φ)) := by
   rw [← ofCrAnList_singleton, ofCrAnList_mul_ofStateList_eq_superCommute]
   simp
@@ -241,8 +242,7 @@ lemma crAnF_normalOrder_anPart_ofStatesList_swap (φ : 𝓕.States)
 
 lemma crAnF_normalOrder_ofStatesList_anPart_swap (φ : 𝓕.States) (φ' : List 𝓕.States) :
     𝓞.crAnF (normalOrder (ofStateList φ' * anPart (StateAlgebra.ofState φ)))
-    = (FieldStatistic.pairedSign (𝓕.statesStatistic φ))
-    (FieldStatistic.ofList 𝓕.statesStatistic φ') •
+    = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) := by
   rw [crAnF_normalOrder_anPart_ofStatesList_swap]
   simp [smul_smul, FieldStatistic.pairedSign_mul_self]
@@ -250,8 +250,7 @@ lemma crAnF_normalOrder_ofStatesList_anPart_swap (φ : 𝓕.States) (φ' : List 
 lemma crAnF_normalOrder_ofStatesList_mul_anPart_swap (φ : 𝓕.States)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (normalOrder (ofStateList φ') * anPart (StateAlgebra.ofState φ)) =
-    (FieldStatistic.pairedSign (𝓕.statesStatistic φ))
-    (FieldStatistic.ofList 𝓕.statesStatistic φ') •
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) := by
   rw [← normalOrder_mul_anPart]
   rw [crAnF_normalOrder_ofStatesList_anPart_swap]

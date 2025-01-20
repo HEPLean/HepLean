@@ -120,7 +120,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     congr
     rw [take_uncontractedFinEquiv_symm, filter_uncontractedList]
   rw [h1]
-  trans (pairedSign (𝓕.statesStatistic φ)) (𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
+  trans 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
   · rw [pairedSign_symm, ofFinset_singleton]
     simp
   rw [← map_mul]

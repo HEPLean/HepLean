@@ -63,8 +63,7 @@ lemma timeContract_mem_center (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ �
   · rw [timeContract_of_timeOrderProp _ _ _ h]
     exact 𝓞.crAnF_superCommute_anPart_ofState_mem_center _ _
   · rw [timeContract_of_not_timeOrderProp _ _ _ h]
-    refine Subalgebra.smul_mem (Subalgebra.center ℂ 𝓞.A) ?_
-      ((pairedSign (𝓕.statesStatistic φ)) (𝓕.statesStatistic ψ))
+    refine Subalgebra.smul_mem (Subalgebra.center ℂ 𝓞.A) ?_ 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ)
     rw [timeContract_of_timeOrderProp]
     exact 𝓞.crAnF_superCommute_anPart_ofState_mem_center _ _
     have h1 := IsTotal.total (r := 𝓕.timeOrderProp) φ ψ
