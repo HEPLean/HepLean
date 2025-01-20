@@ -113,7 +113,6 @@ lemma insertIdx_getElem_self {I : Type} (i : I) :
   | a :: as, 0 => by simp
   | a :: as, ⟨n + 1, h⟩ => by
     simp
-    rw [insertIdx_getElem_self i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩]
 
 @[simp]
 lemma insertIdx_eraseIdx_fin {I : Type} :

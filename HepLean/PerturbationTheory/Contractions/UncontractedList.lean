@@ -59,7 +59,7 @@ lemma fin_list_sorted_split :
       simp only [decide_eq_true_eq, not_le, ha]
       simp [ha]
     · have hx : List.filter (fun x => decide (x.1 < i)) (a :: l) = [] := by
-        simp only [ha, decide_False, Bool.false_eq_true, not_false_eq_true, List.filter_cons_of_neg,
+        simp only [ha, decide_false, Bool.false_eq_true, not_false_eq_true, List.filter_cons_of_neg,
           List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
         intro b hb
         have hb' := hl.1 b hb
@@ -86,7 +86,7 @@ lemma fin_list_sorted_indexOf_filter_le_mem :
   | a :: l, hl, i, hi => by
     simp only [List.sorted_cons] at hl
     by_cases ha : i ≤ a
-    · simp only [ha, decide_True, List.filter_cons_of_pos]
+    · simp only [ha, decide_true, List.filter_cons_of_pos]
       have ha : a = i := by
         simp at hi
         rcases hi with hi | hi
@@ -124,7 +124,7 @@ lemma orderedInsert_of_fin_list_sorted :
     simp only [List.sorted_cons] at hl
     by_cases ha : i ≤ a
     · simp only [List.orderedInsert, ha, ↓reduceIte, Fin.val_fin_lt, decide_eq_true_eq, not_lt,
-      List.filter_cons_of_neg, Fin.val_fin_le, decide_True, List.filter_cons_of_pos]
+      List.filter_cons_of_neg, Fin.val_fin_le, decide_true, List.filter_cons_of_pos]
       have h1 : List.filter (fun x => decide (↑x < ↑i)) l = [] := by
         simp only [List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
         intro a ha
@@ -134,7 +134,7 @@ lemma orderedInsert_of_fin_list_sorted :
         conv_lhs => rw [fin_list_sorted_split l hl.2 i]
         simp [h1]
       simp [← hl, h1]
-    · simp only [List.orderedInsert, ha, ↓reduceIte, Fin.val_fin_lt, Fin.val_fin_le, decide_False,
+    · simp only [List.orderedInsert, ha, ↓reduceIte, Fin.val_fin_lt, Fin.val_fin_le, decide_false,
       Bool.false_eq_true, not_false_eq_true, List.filter_cons_of_neg]
       rw [List.filter_cons_of_pos]
       rw [orderedInsert_of_fin_list_sorted l hl.2 i]

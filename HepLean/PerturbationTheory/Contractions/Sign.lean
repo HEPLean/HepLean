@@ -81,7 +81,7 @@ lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
 
 lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
-    𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, insertListLiftFinset φ i a⟩ =
+    (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, insertListLiftFinset φ i a⟩) =
     𝓕 |>ₛ ⟨φs.get, a⟩ := by
   simp only [ofFinset, Nat.succ_eq_add_one]
   congr 1
@@ -142,7 +142,7 @@ lemma stat_ofFinset_eq_one_of_isGradedObeying (φs : List 𝓕.States)
     (a : Finset (Fin φs.length)) (c : ContractionsNat φs.length) (hg : IsGradedObeying φs c)
     (hnon : ∀ i, c.getDual? i = none → i ∉ a)
     (hsom : ∀ i, (h : (c.getDual? i).isSome) → i ∈ a → (c.getDual? i).get h ∈ a) :
-    𝓕 |>ₛ ⟨φs.get, a⟩ = 1 := by
+    (𝓕 |>ₛ ⟨φs.get, a⟩) = 1 := by
   rw [ofFinset_eq_prod]
   let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x // ¬ (c.getDual? x).isSome} := by
     exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
@@ -725,9 +725,9 @@ lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : Con
 lemma stat_signFinset_insert_some_self_fst
     (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) :
-  𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
+  (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
     (signFinset (c.insertList φ φs i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩ =
+      (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩) =
   𝓕 |>ₛ ⟨φs.get,
     (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((c.getDual? x = none) ∨
       ∀ (h : (c.getDual? x).isSome), i < i.succAbove ((c.getDual? x).get h))))⟩ := by
@@ -802,10 +802,10 @@ lemma stat_signFinset_insert_some_self_fst
 lemma stat_signFinset_insert_some_self_snd
   (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) :
-  𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
+  (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
     (signFinset (c.insertList φ φs i (some j))
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
-      (finCongr (insertIdx_length_fin φ φs i).symm i))⟩ =
+      (finCongr (insertIdx_length_fin φ φs i).symm i))⟩) =
   𝓕 |>ₛ ⟨φs.get,
     (Finset.univ.filter (fun x => j < x ∧ i.succAbove x < i ∧ ((c.getDual? x = none) ∨
       ∀ (h : (c.getDual? x).isSome), j < ((c.getDual? x).get h))))⟩ := by

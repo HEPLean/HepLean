@@ -451,11 +451,11 @@ lemma normalOrderList_eq_createFilter_append_annihilateFilter : (φs : List 𝓕
       dsimp only [createFilter]
       rw [List.filter_cons_of_pos]
       swap
-      simp only [hφ, decide_True]
+      simp only [hφ, decide_true]
       dsimp only [annihilateFilter, List.cons_append]
       rw [List.filter_cons_of_neg]
       swap
-      simp only [hφ, reduceCtorEq, decide_False, Bool.false_eq_true, not_false_eq_true]
+      simp only [hφ, reduceCtorEq, decide_false, Bool.false_eq_true, not_false_eq_true]
       rw [normalOrderList_eq_createFilter_append_annihilateFilter φs]
       rfl
     · dsimp only [normalOrderList, List.insertionSort]

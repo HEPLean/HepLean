@@ -56,7 +56,7 @@ scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
 
 /-- The field statistic associated with a finite set-/
-scoped[FieldStruct] notation 𝓕 "|>ₛ ⟨" f ","a "⟩"=> FieldStatistic.ofFinset
+scoped[FieldStruct] notation 𝓕 "|>ₛ" "⟨" f ","a "⟩"=> FieldStatistic.ofFinset
     (statesStatistic 𝓕) f a
 
 end FieldStruct

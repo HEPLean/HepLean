@@ -88,7 +88,8 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     koszulSign q le (List.insertIdx n φ φs) = 𝓢(q φ, ofList q (φs.take n)) * koszulSign q le φs *
       𝓢(q φ, ofList q ((List.insertionSort le (List.insertIdx n φ φs)).take
       (insertionSortEquiv le (List.insertIdx n φ φs) ⟨n, by
-        rw [List.length_insertIdx _ _ hn]
+        rw [List.length_insertIdx _ _ ]
+        simp only [hn, ↓reduceIte]
         omega⟩)))
   | [], 0, h => by
     simp [koszulSign, koszulSignInsert]
@@ -144,8 +145,8 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     have hnsL : n < (List.insertIdx n φ φs).length := by
       rw [List.length_insertIdx _ _]
       simp only [List.length_cons, add_le_add_iff_right] at h
+      simp only [h, ↓reduceIte]
       omega
-      exact Nat.le_of_lt_succ h
     let ni : Fin rs.length := (insertionSortEquiv le (List.insertIdx n φ φs))
       ⟨n, hnsL⟩
     let nro : Fin (rs.length + 1) :=
