@@ -96,6 +96,7 @@ lemma contrOneTwoLeft_tprod_eq {c1 c2 : S.C}
       Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
     rfl
 
+set_option maxHeartbeats 0 in
 lemma contr_one_two_left_eq_contrOneTwoLeft_tprod {c1 c2 : S.C} (x : S.F.obj (OverColor.mk ![c1]))
     (y : S.F.obj (OverColor.mk ![S.τ c1, c2]))
     (fx : (i : (𝟭 Type).obj (OverColor.mk ![c1]).left) →
@@ -275,6 +276,7 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     | (0 : Fin 2) => rfl
     | (1 : Fin 2) => rfl
 
+set_option maxHeartbeats 0 in
 /-- Expands the inner contraction of two 2-tensors in terms of basic categorical
   constructions and fields of the tensor species. -/
 lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))

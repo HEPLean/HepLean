@@ -200,14 +200,14 @@ def discreteSumEquiv' {X Y : Type} {cX : X → C} {cY : Y → C} (i : X ⊕ Y) :
 /-- The equivalence of modules corresonding to the tensorate. -/
 def μModEquiv (X Y : OverColor C) :
     (objObj' F X ⊗ objObj' F Y).V ≃ₗ[k] objObj' F (X ⊗ Y) :=
-  HepLean.PiTensorProduct.tmulEquiv ≪≫ₗ PiTensorProduct.congr (discreteSumEquiv F)
+  HepLean.PiTensorProduct.tmulEquiv ≪≫ₗ PiTensorProduct.congr (discreteSumEquiv' F)
 
 lemma μModEquiv_tmul_tprod {X Y : OverColor C}
     (p : (i : X.left) → F.obj (Discrete.mk (X.hom i)))
     (q : (i : Y.left) → F.obj (Discrete.mk (Y.hom i))) :
     μModEquiv F X Y (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
     PiTensorProduct.tprod k fun i =>
-    (discreteSumEquiv F i) (HepLean.PiTensorProduct.elimPureTensor p q i) := by
+    (discreteSumEquiv' F i) (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   rw [μModEquiv]
   simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
     OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
@@ -215,10 +215,9 @@ lemma μModEquiv_tmul_tprod {X Y : OverColor C}
     Action.FunctorCategoryEquivalence.functor_obj_obj]
   rw [LinearEquiv.trans_apply]
   erw [HepLean.PiTensorProduct.tmulEquiv_tmul_tprod]
-  change PiTensorProduct.congr (discreteSumEquiv F)
+  change PiTensorProduct.congr (discreteSumEquiv' F)
     (PiTensorProduct.tprod k (HepLean.PiTensorProduct.elimPureTensor p q)) = _
   rw [PiTensorProduct.congr_tprod]
-  rfl
 
 /-- The natural isomorphism corresponding to the tensorate. -/
 def μ (X Y : OverColor C) : objObj' F X ⊗ objObj' F Y ≅ objObj' F (X ⊗ Y) :=
@@ -249,7 +248,7 @@ lemma μ_tmul_tprod {X Y : OverColor C} (p : (i : X.left) → F.obj (Discrete.mk
     (q : (i : Y.left) → (F.obj <| Discrete.mk (Y.hom i))) :
     (μ F X Y).hom.hom (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
     (PiTensorProduct.tprod k) fun i =>
-    discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) :=
+    discreteSumEquiv' F i (HepLean.PiTensorProduct.elimPureTensor p q i) :=
   μModEquiv_tmul_tprod F p q
 
 lemma μ_tmul_tprod_mk {X Y : Type} {cX : X → C} {cY : Y → C}
@@ -288,7 +287,7 @@ lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
     ((μ F X Z).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
   change _ = (objMap' F (f ▷ Z)).hom
-    (PiTensorProduct.tprod k fun i => discreteSumEquiv F i
+    (PiTensorProduct.tprod k fun i => discreteSumEquiv' F i
     (HepLean.PiTensorProduct.elimPureTensor p q i))
   rw [objMap'_tprod]
   have h1 : (((objMap' F f).hom ▷ (objObj' F Z).V) (PiTensorProduct.tprod k p ⊗ₜ[k]
@@ -326,7 +325,7 @@ lemma μ_natural_right {X Y : OverColor C} (X' : OverColor C) (f : X ⟶ Y) :
     ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
   change _ = (objMap' F (X' ◁ f)).hom ((PiTensorProduct.tprod k) fun i =>
-    (discreteSumEquiv F i) (HepLean.PiTensorProduct.elimPureTensor p q i))
+    (discreteSumEquiv' F i) (HepLean.PiTensorProduct.elimPureTensor p q i))
   rw [objMap'_tprod]
   have h1 : (((objObj' F X').V ◁ (objMap' F f).hom)
       ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
@@ -368,10 +367,10 @@ lemma associativity (X Y Z : OverColor C) :
     ((PiTensorProduct.tprod k) q ⊗ₜ[k] (PiTensorProduct.tprod k) m)))))
   rw [μ_tmul_tprod, μ_tmul_tprod]
   change (objMap' F (α_ X Y Z).hom).hom ((μ F (X ⊗ Y) Z).hom.hom
-    (((PiTensorProduct.tprod k) fun i => (discreteSumEquiv F i)
+    (((PiTensorProduct.tprod k) fun i => (discreteSumEquiv' F i)
     (HepLean.PiTensorProduct.elimPureTensor p q i)) ⊗ₜ[k] (PiTensorProduct.tprod k) m)) =
     (μ F X (Y ⊗ Z)).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) fun i =>
-    (discreteSumEquiv F i) (HepLean.PiTensorProduct.elimPureTensor q m i))
+    (discreteSumEquiv' F i) (HepLean.PiTensorProduct.elimPureTensor q m i))
   rw [μ_tmul_tprod, μ_tmul_tprod]
   erw [objMap'_tprod]
   apply congrArg
@@ -758,7 +757,7 @@ lemma obj_μ_tprod_tmul (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
     (Functor.LaxMonoidal.μ (lift.obj F).toFunctor X Y).hom
     (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q) =
     (PiTensorProduct.tprod k) fun i =>
-    discreteSumEquiv F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
+    discreteSumEquiv' F i (HepLean.PiTensorProduct.elimPureTensor p q i) := by
   exact μ_tmul_tprod F p q
 
 lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
