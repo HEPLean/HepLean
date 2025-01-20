@@ -75,7 +75,7 @@ lemma eraseMaxTimeField_length (φ : 𝓕.States) (φs : List 𝓕.States) :
 
 lemma maxTimeFieldPos_lt_eraseMaxTimeField_length_succ (φ : 𝓕.States) (φs : List 𝓕.States) :
     maxTimeFieldPos φ φs < (eraseMaxTimeField φ φs).length.succ := by
-  simp
+  simp only [eraseMaxTimeField_length, Nat.succ_eq_add_one]
   exact maxTimeFieldPos_lt_length φ φs
 
 def maxTimeFieldPosFin (φ : 𝓕.States) (φs : List 𝓕.States) :
@@ -98,12 +98,13 @@ def timeOrderSign (φs : List 𝓕.States) : ℂ :=
 
 lemma timeOrderSign_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
     timeOrderSign [φ, ψ] = 1 := by
-  simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
+  simp only [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert, mul_one, ite_eq_left_iff,
+    ite_eq_right_iff, and_imp]
   exact fun h' => False.elim (h' h)
 
 lemma timeOrderSign_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ) :
     timeOrderSign [φ, ψ] = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) := by
-  simp [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert]
+  simp only [timeOrderSign, Wick.koszulSign, Wick.koszulSignInsert, mul_one, instCommGroup.eq_1]
   rw [if_neg h]
   simp [FieldStatistic.pairedSign_eq_if]
 
@@ -120,12 +121,14 @@ def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
 
 lemma timeOrderList_pair_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
     timeOrderList [φ, ψ] = [φ, ψ] := by
-  simp [timeOrderList]
+  simp only [timeOrderList, List.insertionSort, List.orderedInsert, ite_eq_left_iff,
+    List.cons.injEq, and_true]
   exact fun h' => False.elim (h' h)
 
 lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderProp φ ψ) :
     timeOrderList [φ, ψ] = [ψ, φ] := by
-  simp [timeOrderList]
+  simp only [timeOrderList, List.insertionSort, List.orderedInsert, ite_eq_right_iff,
+    List.cons.injEq, and_true]
   exact fun h' => False.elim (h h')
 
 @[simp]

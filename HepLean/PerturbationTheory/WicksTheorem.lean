@@ -67,20 +67,20 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
       · intro h
         rename_i h
         rw [Fin.lt_def] at h
-        simp at h
+        simp only [Fin.coe_castSucc] at h
         omega
     · apply Iff.intro
       · intro h
         rename_i h'
         rw [Fin.lt_def]
-        simp
+        simp only [Fin.val_succ]
         rw [Fin.lt_def] at h'
-        simp at h'
+        simp only [Fin.coe_castSucc, not_lt] at h'
         omega
       · intro h
         rename_i h
         rw [Fin.lt_def] at h
-        simp at h
+        simp only [Fin.val_succ] at h
         omega
   rw [h2]
   simp only [pairedSign_mul_self]
@@ -177,34 +177,38 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       · exact hlt _
       rw [insertList_some_normalOrder]
       rw [sign_insert_some]
-      simp [smul_smul]
+      simp only [instCommGroup.eq_1, smul_smul, Algebra.smul_mul_assoc]
       congr 1
       rw [mul_assoc, mul_comm (sign φs c), ← mul_assoc]
       congr 1
       exact signInsertSome_mul_filter_contracted_of_not_lt φ φs c i k hk hg
       · omega
   · rw [timeConract_insertList_some]
-    simp at hg
+    simp only [Fin.getElem_fin, not_and] at hg
     by_cases hg' : IsGradedObeying φs c
     · have hg := hg hg'
-      simp [contractMemList, uncontractedStatesEquiv]
+      simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, Algebra.smul_mul_assoc,
+        instCommGroup.eq_1, contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+        Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+        List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem]
       by_cases h1 : i < i.succAbove ↑k
-      · simp [h1]
+      · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
-        simp
+        simp only [zero_mul, smul_zero]
         rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
-        simp
+        simp only [zero_mul, smul_zero]
         exact hg
         exact hg
-      · simp [h1]
+      · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
-        simp
+        simp only [zero_mul, smul_zero]
         rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
-        simp
+        simp only [zero_mul, smul_zero]
         exact hg
         exact fun a => hg (id (Eq.symm a))
     · rw [timeContract_of_not_isGradedObeying]
-      simp
+      simp only [Nat.succ_eq_add_one, Fin.getElem_fin, mul_zero, ZeroMemClass.coe_zero, smul_zero,
+        zero_mul, instCommGroup.eq_1]
       exact hg'
 
 lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin φs.length.succ)

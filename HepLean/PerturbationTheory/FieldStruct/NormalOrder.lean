@@ -177,7 +177,7 @@ lemma normalOrderSign_swap_create_create (φc φc' : 𝓕.CrAnStates)
     rw [normalOrderSign]
     dsimp only [List.cons_append, Wick.koszulSign]
     rw [← normalOrderSign, normalOrderSign_swap_create_create φc φc' hφc hφc']
-    dsimp [normalOrderSign, Wick.koszulSign]
+    dsimp only [normalOrderSign, Wick.koszulSign]
     rw [← normalOrderSign]
     simp only [mul_eq_mul_right_iff]
     apply Or.inl (Wick.koszulSignInsert_eq_perm _ _ _ _ _ _)
@@ -451,7 +451,7 @@ lemma normalOrderList_eq_createFilter_append_annihilateFilter : (φs : List 𝓕
       dsimp only [createFilter]
       rw [List.filter_cons_of_pos]
       swap
-      simp [hφ]
+      simp only [hφ, decide_True]
       dsimp only [annihilateFilter, List.cons_append]
       rw [List.filter_cons_of_neg]
       swap

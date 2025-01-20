@@ -22,7 +22,7 @@ def ofFinset {n : ℕ} (q : 𝓕 → FieldStatistic) (f : Fin n → 𝓕) (a : F
 @[simp]
 lemma ofFinset_empty (q : 𝓕 → FieldStatistic) (f : Fin n → 𝓕) :
     ofFinset q f ∅ = 1 := by
-  simp [ofFinset]
+  simp only [ofFinset, Finset.sort_empty, List.map_nil, ofList_empty]
   rfl
 
 lemma ofFinset_singleton {n : ℕ} (q : 𝓕 → FieldStatistic) (f : Fin n → 𝓕) (i : Fin n) :
@@ -50,7 +50,7 @@ lemma ofFinset_finset_map {n m : ℕ}
 lemma ofFinset_insert (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finset (Fin φs.length))
     (i : Fin φs.length) (h : i ∉ a) :
     ofFinset q φs.get (Insert.insert i a) = (q φs[i]) * ofFinset q φs.get a := by
-  simp [ofFinset]
+  simp only [ofFinset, instCommGroup, Fin.getElem_fin]
   rw [← ofList_cons_eq_mul]
   have h1 : (φs[↑i] :: List.map φs.get (Finset.sort (fun x1 x2 => x1 ≤ x2) a))
      = List.map φs.get (i :: Finset.sort (fun x1 x2 => x1 ≤ x2) a) := by
@@ -60,7 +60,7 @@ lemma ofFinset_insert (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finse
   refine List.Perm.map φs.get ?_
   refine (List.perm_ext_iff_of_nodup ?_ ?_).mpr ?_
   · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) (Insert.insert i a)
-  · simp
+  · simp only [List.nodup_cons, Finset.mem_sort, Finset.sort_nodup, and_true]
     exact h
   intro a
   simp
@@ -73,7 +73,7 @@ lemma ofFinset_erase (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finset
   conv_rhs => rw [ha]
   rw [ofFinset_insert]
   rw [← mul_assoc]
-  simp
+  simp only [instCommGroup, Fin.getElem_fin, mul_self, one_mul]
   simp
 
 lemma ofFinset_eq_prod (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finset (Fin φs.length)) :
@@ -82,7 +82,7 @@ lemma ofFinset_eq_prod (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Fins
   rw [ofList_map_eq_finset_prod]
   congr
   funext i
-  simp
+  simp only [Finset.mem_sort, Fin.getElem_fin]
   exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) a
 
 lemma ofFinset_union (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a b : Finset (Fin φs.length)) :

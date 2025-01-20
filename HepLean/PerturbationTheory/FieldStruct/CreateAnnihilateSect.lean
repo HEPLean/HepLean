@@ -63,7 +63,7 @@ lemma head_state_eq {φ : 𝓕.States} : (ψs : CreateAnnihilateSect (φ :: φs)
     (ψs.1.head (by simp [← List.length_pos_iff_ne_nil])).1 = φ
   | ⟨[], h⟩ => False.elim (by simp at h)
   | ⟨ψ :: ψs, h⟩ => by
-    simp at h
+    simp only [List.map_cons, List.cons.injEq] at h
     exact h.1
 
 lemma statistics_eq_state_statistics (ψs : CreateAnnihilateSect φs) :
@@ -74,7 +74,7 @@ lemma statistics_eq_state_statistics (ψs : CreateAnnihilateSect φs) :
 lemma take_statistics_eq_take_state_statistics (ψs : CreateAnnihilateSect φs) n :
     (𝓕 |>ₛ (ψs.1.take n)) = 𝓕 |>ₛ (φs.take n) := by
   erw [FieldStatistic.ofList_eq_prod, FieldStatistic.ofList_eq_prod, crAnStatistics]
-  simp
+  simp only [instCommGroup, List.map_take]
   rw [← List.map_comp_map, Function.comp_apply, ψs.2]
 
 /-- The head of a section for `φ :: φs` as an element in `𝓕.statesToCreateAnnihilateType φ`. -/
@@ -90,7 +90,7 @@ lemma eq_head_cons_tail {φ : 𝓕.States} {ψs : CreateAnnihilateSect (φ :: φ
   | ⟨[], h⟩ => exact False.elim (by simp at h)
   | ⟨ψ :: ψs, h⟩ =>
     have h2 := head_state_eq ⟨ψ :: ψs, h⟩
-    simp at h2
+    simp only [List.head_cons] at h2
     subst h2
     rfl
 
@@ -106,7 +106,7 @@ def nilEquiv : CreateAnnihilateSect (𝓕 := 𝓕) [] ≃ Unit where
   left_inv ψs := by
     apply Subtype.ext
     have h2 := ψs.2
-    simp at h2
+    simp only [List.map_eq_nil_iff] at h2
     simp [h2]
   right_inv _ := by
     simp
@@ -127,7 +127,7 @@ def singletonEquiv {φ : 𝓕.States} : CreateAnnihilateSect [φ] ≃
     simp only [List.tail_cons, List.map_eq_nil_iff] at h2
     simp [h2]
   right_inv ψ := by
-    simp [head]
+    simp only [head]
     rfl
 
 /-- An equivalence seperating the head of a creation and annhilation section
@@ -351,10 +351,10 @@ lemma eraseIdxEquiv_symm_eq_take_cons_drop {n : ℕ} (φs : List 𝓕.States) (h
   rw [append_assoc', singletonEquiv_append_eq_cons]
   simp only [List.singleton_append, congr_trans_apply]
   apply Subtype.ext
-  simp
+  simp only [congr_fst]
   have hn : (List.take n φs).length = n := by
     rw [@List.length_take]
-    simp [hn]
+    simp only [inf_eq_left]
     exact Nat.le_of_succ_le hn
   rw [hn]
 
@@ -364,15 +364,15 @@ lemma eraseIdxEquiv_symm_getElem {n : ℕ} (φs : List 𝓕.States) (hn : n < φ
     getElem ((eraseIdxEquiv n φs hn).symm ⟨a,s⟩).1 n
     (by rw [length_eq]; exact hn) = ⟨φs[n], a⟩ := by
   rw [eraseIdxEquiv_symm_eq_take_cons_drop]
-  simp [take, append, cons, drop]
+  simp only [append, take, cons, drop, congr_fst]
   rw [List.getElem_append]
   have hn' : (List.take n φs).length = n := by
     rw [@List.length_take]
-    simp [hn]
+    simp only [inf_eq_left]
     exact Nat.le_of_succ_le hn
-  simp [hn']
+  simp only [List.length_take, length_eq, lt_inf_iff, lt_self_iff_false, false_and, ↓reduceDIte]
   have h0 : n ⊓ (φs.eraseIdx n).length = n := by
-    simp
+    simp only [inf_eq_left]
     rw [← HepLean.List.eraseIdx_length _ ⟨n, hn⟩] at hn
     exact Nat.le_of_lt_succ hn
   simp [h0]
