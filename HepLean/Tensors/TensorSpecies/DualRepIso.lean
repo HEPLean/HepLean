@@ -42,7 +42,6 @@ lemma toDualRep_congr {c c' : S.C} (h : c = c') : S.toDualRep c = S.FD.map (Disc
 def fromDualRep (c : S.C) : S.FD.obj (Discrete.mk (S.τ c)) ⟶ S.FD.obj (Discrete.mk c) :=
   S.toDualRep (S.τ c) ≫ S.FD.map (Discrete.eqToHom (S.τ_involution c))
 
-set_option maxHeartbeats 0 in
 /-- The rewriting of `toDualRep` in terms of `contrOneTwoLeft`. -/
 lemma toDualRep_apply_eq_contrOneTwoLeft (c : S.C) (x : S.FD.obj (Discrete.mk c)) :
     (S.toDualRep c).hom x = (S.tensorToVec (S.τ c)).hom.hom
@@ -57,7 +56,9 @@ lemma toDualRep_apply_eq_contrOneTwoLeft (c : S.C) (x : S.FD.obj (Discrete.mk c)
     Nat.succ_eq_add_one, Nat.reduceAdd, contrOneTwoLeft, Functor.comp_obj,
     Discrete.functor_obj_eq_as, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, OverColor.Discrete.rep_iso_hom_inv_apply]
-  erw [pairIsoSep_inv_metricTensor]
+  conv_rhs =>
+    enter [2, 2, 2, 3]
+    erw [pairIsoSep_inv_metricTensor (S.τ c)]
   rfl
 
 /-- Expansion of `toDualRep` is
