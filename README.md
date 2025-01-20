@@ -42,8 +42,7 @@ __BSM physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/BeyondThe
 
 __Flavor physics [🗂️](https://heplean.github.io/HepLean/docs/HepLean/FlavorPhysics/CKMMatrix/Basic.html):__ Properties of the CKM matrix.
 
-__Perturbation Theory [🗂️](https://heplean.github.io/HepLean/docs/HepLean/PerturbationTheory/Wick/Species.html) [🚧](https://heplean.github.io/HepLean/InformalGraph.html):__ Informal statements relating to Feynman diagrams, Wick contractions, Operator
-algebras.
+__Perturbation Theory [🗂️](https://heplean.github.io/HepLean/docs/HepLean/PerturbationTheory/WicksTheorem.html):__ Time-dependent version of Wick's theorem for both fermions and bosons.
 
 ## Associated media and publications
 - [📄](https://arxiv.org/abs/2405.08863) Joseph Tooby-Smith,
