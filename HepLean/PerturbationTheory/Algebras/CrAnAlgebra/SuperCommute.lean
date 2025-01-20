@@ -55,7 +55,8 @@ lemma superCommute_ofStateList_ofStatesList (φ : List 𝓕.States) (φs : List 
     ⟨ofStateList φ, ofStateList φs⟩ₛca = ofStateList φ * ofStateList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs * ofStateList φ := by
   conv_lhs => rw [ofStateList_sum]
-  simp
+  simp only [map_sum, LinearMap.coeFn_sum, Finset.sum_apply, instCommGroup.eq_1,
+    Algebra.smul_mul_assoc]
   conv_lhs =>
     enter [2, x]
     rw [superCommute_ofCrAnList_ofStatesList]
@@ -283,7 +284,7 @@ lemma superCommute_anPart_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.State
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.posAsymp φ =>
-    simp
+    simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
 

@@ -38,13 +38,13 @@ lemma timeContract_of_timeOrderProp (φ ψ : 𝓕.States) (h : timeOrderProp φ 
   conv_rhs =>
     rw [ofState_eq_crPart_add_anPart]
     rw [map_add, map_add, crAnF_superCommute_anPart_anPart, superCommute_anPart_crPart]
-  simp [timeContract]
+  simp only [timeContract, instCommGroup.eq_1, Algebra.smul_mul_assoc, add_zero]
   rw [StateAlgebra.timeOrder_ofState_ofState_ordered h]
   rw [normalOrder_ofState_mul_ofState]
   rw [map_mul]
-  simp
+  simp only [ofStateAlgebra_ofState, instCommGroup.eq_1]
   rw [ofState_eq_crPart_add_anPart, ofState_eq_crPart_add_anPart]
-  simp [mul_add, smul_add, add_mul]
+  simp only [mul_add, add_mul]
   abel_nf
 
 lemma timeContract_of_not_timeOrderProp (φ ψ : 𝓕.States) (h : ¬ timeOrderProp φ ψ) :
@@ -79,7 +79,7 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
   · rw [timeContract_of_not_timeOrderProp _ _ _ h1]
     rw [timeContract_of_timeOrderProp _ _ _]
     rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
-    simp
+    simp only [instCommGroup.eq_1, smul_zero]
     exact h.symm
     have ht := IsTotal.total (r := 𝓕.timeOrderProp) φ ψ
     simp_all

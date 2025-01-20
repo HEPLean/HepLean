@@ -61,7 +61,7 @@ lemma ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates) :
 
 lemma ofCrAnList_append (φs φs' : List 𝓕.CrAnStates) :
     ofCrAnList (φs ++ φs') = ofCrAnList φs * ofCrAnList φs' := by
-  dsimp [ofCrAnList]
+  dsimp only [ofCrAnList]
   rw [List.map_append, List.prod_append]
 
 lemma ofCrAnList_singleton (φ : 𝓕.CrAnStates) :
@@ -99,7 +99,7 @@ lemma ofStateList_singleton (φ : 𝓕.States) :
 
 lemma ofStateList_append (φs φs' : List 𝓕.States) :
     ofStateList (φs ++ φs') = ofStateList φs * ofStateList φs' := by
-  dsimp [ofStateList]
+  dsimp only [ofStateList]
   rw [List.map_append, List.prod_append]
 
 lemma ofStateAlgebra_ofList_eq_ofStateList : (φs : List 𝓕.States) →
@@ -118,7 +118,7 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
   | nil => simp
   | cons φ φs ih =>
     rw [CreateAnnihilateSect.sum_cons]
-    dsimp [CreateAnnihilateSect.cons, ofCrAnList_cons]
+    dsimp only [CreateAnnihilateSect.cons, ofCrAnList_cons]
     conv_rhs =>
       enter [2, x]
       rw [← Finset.mul_sum]
@@ -141,20 +141,20 @@ def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
 @[simp]
 lemma crPart_negAsymp (φ : 𝓕.AsymptoticNegTime) :
     crPart (StateAlgebra.ofState (States.negAsymp φ)) = ofCrAnState ⟨States.negAsymp φ, ()⟩ := by
-  dsimp [crPart, StateAlgebra.ofState]
+  dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
 lemma crPart_position (φ : 𝓕.PositionStates) :
     crPart (StateAlgebra.ofState (States.position φ)) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩ := by
-  dsimp [crPart, StateAlgebra.ofState]
+  dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
 lemma crPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
     crPart (StateAlgebra.ofState (States.posAsymp φ)) = 0 := by
-  dsimp [crPart, StateAlgebra.ofState]
+  dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
@@ -167,20 +167,20 @@ def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
 @[simp]
 lemma anPart_negAsymp (φ : 𝓕.AsymptoticNegTime) :
     anPart (StateAlgebra.ofState (States.negAsymp φ)) = 0 := by
-  dsimp [anPart, StateAlgebra.ofState]
+  dsimp only [anPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
 lemma anPart_position (φ : 𝓕.PositionStates) :
     anPart (StateAlgebra.ofState (States.position φ)) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
-  dsimp [anPart, StateAlgebra.ofState]
+  dsimp only [anPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
 lemma anPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
     anPart (StateAlgebra.ofState (States.posAsymp φ)) = ofCrAnState ⟨States.posAsymp φ, ()⟩ := by
-  dsimp [anPart, StateAlgebra.ofState]
+  dsimp only [anPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
 lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
@@ -188,14 +188,14 @@ lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
   rw [ofState]
   cases φ with
   | negAsymp φ =>
-    dsimp [statesToCrAnType]
+    dsimp only [statesToCrAnType]
     simp
   | position φ =>
-    dsimp [statesToCrAnType]
+    dsimp only [statesToCrAnType]
     rw [CreateAnnihilate.sum_eq]
     simp
   | posAsymp φ =>
-    dsimp [statesToCrAnType]
+    dsimp only [statesToCrAnType]
     simp
 
 /-!
@@ -210,11 +210,13 @@ noncomputable def ofCrAnListBasis : Basis (List 𝓕.CrAnStates) ℂ (CrAnAlgebr
 @[simp]
 lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnStates) :
     ofCrAnListBasis φs = ofCrAnList φs := by
-  simp [ofCrAnListBasis, ofCrAnList, FreeAlgebra.equivMonoidAlgebraFreeMonoid]
+  simp only [ofCrAnListBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
+    Basis.coe_ofRepr, AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_apply,
+    AlgEquiv.ofAlgHom_symm_apply, ofCrAnList]
   erw [MonoidAlgebra.lift_apply]
-  simp
+  simp only [zero_smul, Finsupp.sum_single_index, one_smul]
   rw [@FreeMonoid.lift_apply]
-  simp [List.prod]
+  simp only [List.prod]
   match φs with
   | [] => rfl
   | φ :: φs =>
@@ -247,7 +249,7 @@ noncomputable def smulLinearMap (c : ℂ) : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlg
   toFun a := c • a
   map_add' := by simp
   map_smul' m x := by
-    simp [smul_smul]
+    simp only [smul_smul, RingHom.id_apply]
     rw [NonUnitalNormedCommRing.mul_comm]
 
 end CrAnAlgebra

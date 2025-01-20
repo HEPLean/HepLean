@@ -48,11 +48,13 @@ noncomputable def ofListBasis : Basis (List 𝓕.States) ℂ (StateAlgebra 𝓕)
 @[simp]
 lemma ofListBasis_eq_ofList (φs : List 𝓕.States) :
     ofListBasis φs = ofList φs := by
-  simp [ofListBasis, ofList, FreeAlgebra.equivMonoidAlgebraFreeMonoid]
+  simp only [ofListBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
+    Basis.coe_ofRepr, AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_apply,
+    AlgEquiv.ofAlgHom_symm_apply, ofList]
   erw [MonoidAlgebra.lift_apply]
-  simp
+  simp only [zero_smul, Finsupp.sum_single_index, one_smul]
   rw [@FreeMonoid.lift_apply]
-  simp [List.prod]
+  simp only [List.prod]
   match φs with
   | [] => rfl
   | φ :: φs =>

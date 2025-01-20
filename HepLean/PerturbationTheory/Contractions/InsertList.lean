@@ -184,7 +184,7 @@ lemma insertList_sndFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · simp [congrLift]
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
-      simp_all
+      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
       have hi : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
       omega
 
@@ -212,7 +212,8 @@ lemma insertList_some_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.Stat
   let e1 := Equiv.ofBijective (c.insertLiftSome i j) (insertLiftSome_bijective i j)
   erw [← e1.prod_comp]
   rw [Fintype.prod_sum_type]
-  simp
+  simp only [Finset.univ_unique, PUnit.default_eq_unit, Nat.succ_eq_add_one, Finset.prod_singleton,
+    Finset.univ_eq_attach]
   rfl
 
 def insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}
@@ -225,7 +226,9 @@ def insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}
 lemma self_not_mem_insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.States}
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
     Fin.cast (insertIdx_length_fin φ φs i).symm i ∉ insertListLiftFinset φ i a := by
-  simp [insertListLiftFinset]
+  simp only [Nat.succ_eq_add_one, insertListLiftFinset, Finset.mem_map_equiv, finCongr_symm,
+    finCongr_apply, Fin.cast_trans, Fin.cast_eq_self]
+  simp only [Finset.mem_map, Fin.succAboveEmb_apply, not_exists, not_and]
   intro x
   exact fun a => Fin.succAbove_ne i x
 
@@ -233,7 +236,9 @@ lemma succAbove_mem_insertListLiftFinset (φ : 𝓕.States) {φs : List 𝓕.Sta
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) (j : Fin φs.length) :
     Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove j) ∈ insertListLiftFinset φ i a ↔
     j ∈ a := by
-  simp [insertListLiftFinset]
+  simp only [insertListLiftFinset, Finset.mem_map_equiv, finCongr_symm, finCongr_apply,
+    Fin.cast_trans, Fin.cast_eq_self]
+  simp only [Finset.mem_map, Fin.succAboveEmb_apply]
   apply Iff.intro
   · intro h
     obtain ⟨x, hx1, hx2⟩ := h

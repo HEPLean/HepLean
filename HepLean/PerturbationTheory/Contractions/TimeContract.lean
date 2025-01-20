@@ -47,7 +47,8 @@ lemma timeConract_insertList_some (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.State
     else ⟨𝓞.timeContract φs[j.1] φ, 𝓞.timeContract_mem_center _ _⟩) * c.timeContract 𝓞 := by
   rw [timeContract, insertList_some_prod_contractions]
   congr 1
-  · simp
+  · simp only [Nat.succ_eq_add_one, insertList_fstFieldOfContract_some_incl, finCongr_apply,
+    List.get_eq_getElem, insertList_sndFieldOfContract_some_incl, Fin.getElem_fin]
     split
     · simp
     · simp
@@ -66,8 +67,12 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
-  simp [OperatorAlgebra.contractMemList, uncontractedStatesEquiv]
-  · simp [hik]
+  simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
+    OperatorAlgebra.contractMemList, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
+    Algebra.smul_mul_assoc]
+  · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
     rw [𝓞.timeContract_of_timeOrderProp]
     trans (1 : ℂ) • (𝓞.crAnF ((CrAnAlgebra.superCommute
       (CrAnAlgebra.anPart (StateAlgebra.ofState φ))) (CrAnAlgebra.ofState φs[k.1])) *
@@ -78,14 +83,14 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
         (List.map φs.get c.uncontractedList))
         = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) c.uncontracted)⟩) := by
-      simp [ofFinset]
+      simp only [ofFinset]
       congr
       rw [← List.map_take]
       congr
       rw [take_uncontractedFinEquiv_symm]
       rw [filter_uncontractedList]
     rw [h1]
-    simp
+    simp only [pairedSign_mul_self]
     · exact ht
 
 lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
@@ -137,14 +142,14 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     · have h2' := h.2 h1.1 (by omega) h1.1
       omega
   have ht := IsTotal.total (r := timeOrderProp) φs[k.1] φ
-  simp_all
+  simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
   exact ht
 
 lemma timeContract_of_not_isGradedObeying (𝓞 : 𝓕.OperatorAlgebra) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (h : ¬ IsGradedObeying φs c) :
     c.timeContract 𝓞 = 0 := by
   rw [timeContract]
-  simp [IsGradedObeying] at h
+  simp only [IsGradedObeying, Fin.getElem_fin, Subtype.forall, not_forall] at h
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)

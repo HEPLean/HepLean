@@ -88,7 +88,7 @@ lemma fin_list_sorted_indexOf_filter_le_mem :
     by_cases ha : i ≤ a
     · simp only [ha, decide_true, List.filter_cons_of_pos]
       have ha : a = i := by
-        simp at hi
+        simp only [List.mem_cons] at hi
         rcases hi with hi | hi
         · subst hi
           rfl

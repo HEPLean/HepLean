@@ -40,7 +40,7 @@ lemma uncontractedCongr_some {c c': ContractionsNat n} (h : c = c') (i : c.uncon
 
 lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     i ∈ c.uncontracted ↔ ∀ p ∈ c.1, i ∉ p := by
-  simp [uncontracted, getDual?]
+  simp only [uncontracted, getDual?, Finset.mem_filter, Finset.mem_univ, true_and]
   apply Iff.intro
   · intro h p hp
     have hp := c.2.1 p hp
@@ -48,7 +48,7 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     obtain ⟨a, b, ha, hb, hab⟩ := hp
     rw [Fin.find_eq_none_iff] at h
     by_contra hn
-    simp at hn
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hn
     rcases hn with hn | hn
     · subst hn
       exact h b hp
@@ -58,7 +58,7 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
   · intro h
     rw [Fin.find_eq_none_iff]
     by_contra hn
-    simp at hn
+    simp only [not_forall, Decidable.not_not] at hn
     obtain ⟨j, hj⟩ := hn
     apply h {i, j} hj
     simp

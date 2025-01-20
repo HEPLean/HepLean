@@ -45,7 +45,7 @@ instance : CommGroup FieldStatistic where
   mul_one a := by
     cases a <;> dsimp [HMul.hMul]
   inv_mul_cancel a := by
-    cases a <;> dsimp [HMul.hMul] <;> rfl
+    cases a <;> dsimp only [HMul.hMul, Nat.succ_eq_add_one] <;> rfl
   mul_comm a b := by
     cases a <;> cases b <;> rfl
 
@@ -116,16 +116,16 @@ lemma one_eq_mul_iff (a b : FieldStatistic) : 1 = a * b ↔ a = b := by
   fin_cases a <;> fin_cases b <;> simp
 
 lemma mul_eq_iff_eq_mul (a b c : FieldStatistic) : a * b = c ↔ a = b * c := by
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
-  rfl
-  rfl
-  rfl
+  fin_cases a <;> fin_cases b <;> fin_cases c <;>
+    simp only [bosonic_mul_fermionic, fermionic_not_eq_bonsic, mul_self,
+      reduceCtorEq, fermionic_mul_bosonic, true_iff, iff_true]
+  all_goals rfl
 
 lemma mul_eq_iff_eq_mul' (a b c : FieldStatistic) : a * b = c ↔ b = a * c := by
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp
-  rfl
-  rfl
-  rfl
+  fin_cases a <;> fin_cases b <;> fin_cases c <;>
+    simp only [bosonic_mul_fermionic, fermionic_not_eq_bonsic, mul_self,
+      reduceCtorEq, fermionic_mul_bosonic, true_iff, iff_true]
+  all_goals rfl
 
 /-- The field statistics of a list of fields is fermionic if ther is an odd number of fermions,
   otherwise it is bosonic. -/
@@ -197,10 +197,12 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
   | [], [], _ => rfl
   | [], i :: l, hl => Fin.elim0 i
   | φ :: φs, [], hl => by
-    simp
+    simp only [List.length_cons, List.map_nil, ofList_empty, List.not_mem_nil, ↓reduceIte,
+      Finset.prod_const_one]
     rfl
   | φ :: φs, i :: l, hl => by
-    simp
+    simp only [List.length_cons, List.map_cons, List.get_eq_getElem, List.mem_cons, instCommGroup,
+      Fin.getElem_fin]
     rw [ofList_cons_eq_mul]
     rw [ofList_map_eq_finset_prod s (φ :: φs) l]
     have h1 : s (φ :: φs)[↑i] = ∏ (j : Fin (φ :: φs).length),
@@ -210,16 +212,16 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
     rw [← Finset.prod_mul_distrib]
     congr
     funext a
-    simp
+    simp only [instCommGroup, List.length_cons, mul_ite, ite_mul, one_mul, mul_one]
     by_cases ha : a = i
-    · simp [ha]
+    · simp only [ha, ↓reduceIte, mul_self, true_or]
       rw [if_neg]
       rfl
-      simp at hl
+      simp only [List.length_cons, List.nodup_cons] at hl
       exact hl.1
-    · simp [ha]
+    · simp only [ha, ↓reduceIte, false_or]
       rfl
-    simp at hl
+    simp only [List.length_cons, List.nodup_cons] at hl
     exact hl.2
 
 /-!
@@ -243,12 +245,12 @@ lemma ofList_take_eraseIdx (n : ℕ) (φs : List 𝓕) :
 
 lemma ofList_take_zero (φs : List 𝓕) :
     ofList q (List.take 0 φs) = 1 := by
-  simp
+  simp only [List.take_zero, ofList_empty]
   rfl
 
 lemma ofList_take_succ_cons (n : ℕ) (φ1 : 𝓕) (φs : List 𝓕) :
     ofList q ((φ1 :: φs).take (n + 1)) = q φ1 * ofList q (φs.take n) := by
-  simp
+  simp only [List.take_succ_cons, instCommGroup]
   rw [ofList_cons_eq_mul]
 
 lemma ofList_take_insertIdx_gt (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : n < m) :

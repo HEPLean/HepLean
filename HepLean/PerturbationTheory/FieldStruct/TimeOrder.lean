@@ -41,13 +41,16 @@ noncomputable instance : (φ φ' : 𝓕.States) → Decidable (timeOrderProp φ 
 /-- Time ordering is total. -/
 instance : IsTotal 𝓕.States 𝓕.timeOrderProp where
   total a b := by
-    cases a <;> cases b <;> simp [timeOrderProp]
+    cases a <;> cases b <;>
+      simp only [or_self, or_false, or_true, timeOrderProp, Fin.isValue, implies_true, imp_self,
+        IsEmpty.forall_iff]
     exact LinearOrder.le_total _ _
 
 /-- Time ordering is transitive. -/
 instance : IsTrans 𝓕.States 𝓕.timeOrderProp where
   trans a b c := by
-    cases a <;> cases b <;> cases c <;> simp [timeOrderProp]
+    cases a <;> cases b <;> cases c <;>
+      simp only [timeOrderProp, Fin.isValue, implies_true, imp_self, IsEmpty.forall_iff]
     exact fun h1 h2 => Preorder.le_trans _ _ _ h2 h1
 
 noncomputable section

@@ -52,13 +52,13 @@ lemma crAnF_superCommute_anPart_ofState_mem_center (φ ψ : 𝓕.States) :
     𝓞.crAnF ⟨anPart (StateAlgebra.ofState φ), ofState ψ⟩ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
   match φ with
   | States.negAsymp _ =>
-    simp
+    simp only [anPart_negAsymp, map_zero, LinearMap.zero_apply]
     exact Subalgebra.zero_mem (Subalgebra.center ℂ 𝓞.A)
   | States.position φ =>
-    simp
+    simp only [anPart_position]
     exact 𝓞.crAnF_superCommute_ofCrAnState_ofState_mem_center _ _
   | States.posAsymp _ =>
-    simp
+    simp only [anPart_posAsymp]
     exact 𝓞.crAnF_superCommute_ofCrAnState_ofState_mem_center _ _
 
 lemma crAnF_superCommute_ofCrAnState_ofState_diff_grade_zero (φ : 𝓕.CrAnStates) (ψ : 𝓕.States)
@@ -77,11 +77,11 @@ lemma crAnF_superCommute_anPart_ofState_diff_grade_zero (φ ψ : 𝓕.States)
   | States.negAsymp _ =>
     simp
   | States.position φ =>
-    simp
+    simp only [anPart_position]
     apply 𝓞.crAnF_superCommute_ofCrAnState_ofState_diff_grade_zero _ _ _
     simpa [crAnStatistics] using h
   | States.posAsymp _ =>
-    simp
+    simp only [anPart_posAsymp]
     apply 𝓞.crAnF_superCommute_ofCrAnState_ofState_diff_grade_zero _ _
     simpa [crAnStatistics] using h
 
@@ -101,22 +101,22 @@ lemma crAnF_superCommute_anPart_anPart (φ ψ : 𝓕.States) :
   | States.negAsymp _, _ =>
     simp
   | States.position φ, States.position ψ =>
-    simp
+    simp only [anPart_position]
     rw [𝓞.superCommute_annihilate_annihilate]
     rfl
     rfl
   | States.position φ, States.posAsymp _ =>
-    simp
+    simp only [anPart_position, anPart_posAsymp]
     rw [𝓞.superCommute_annihilate_annihilate]
     rfl
     rfl
   | States.posAsymp _, States.posAsymp _ =>
-    simp
+    simp only [anPart_posAsymp]
     rw [𝓞.superCommute_annihilate_annihilate]
     rfl
     rfl
   | States.posAsymp _, States.position _ =>
-    simp
+    simp only [anPart_posAsymp, anPart_position]
     rw [𝓞.superCommute_annihilate_annihilate]
     rfl
     rfl
@@ -129,22 +129,22 @@ lemma crAnF_superCommute_crPart_crPart (φ ψ : 𝓕.States) :
   | States.posAsymp _, _ =>
     simp
   | States.position φ, States.position ψ =>
-    simp
+    simp only [crPart_position]
     rw [𝓞.superCommute_create_create]
     rfl
     rfl
   | States.position φ, States.negAsymp _ =>
-    simp
+    simp only [crPart_position, crPart_negAsymp]
     rw [𝓞.superCommute_create_create]
     rfl
     rfl
   | States.negAsymp _, States.negAsymp _ =>
-    simp
+    simp only [crPart_negAsymp]
     rw [𝓞.superCommute_create_create]
     rfl
     rfl
   | States.negAsymp _, States.position _ =>
-    simp
+    simp only [crPart_negAsymp, crPart_position]
     rw [𝓞.superCommute_create_create]
     rfl
     rfl

@@ -43,7 +43,7 @@ lemma timeOrder_ofList_singleton (φ : 𝓕.States) : timeOrder (ofList [φ]) = 
 lemma timeOrder_ofState_ofState_ordered {φ ψ : 𝓕.States} (h : timeOrderProp φ ψ) :
     timeOrder (ofState φ * ofState ψ) = ofState φ * ofState ψ := by
   rw [← ofList_singleton, ← ofList_singleton, ← ofList_append, timeOrder_ofList]
-  simp
+  simp only [List.singleton_append]
   rw [timeOrderSign_pair_ordered h, timeOrderList_pair_ordered h]
   simp
 
@@ -51,7 +51,7 @@ lemma timeOrder_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h :¬ timeOrd
     timeOrder (ofState φ * ofState ψ) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofState ψ * ofState φ := by
   rw [← ofList_singleton, ← ofList_singleton, ← ofList_append, timeOrder_ofList]
-  simp
+  simp only [List.singleton_append, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [timeOrderSign_pair_not_ordered h, timeOrderList_pair_not_ordered h]
   simp [← ofList_append]
 
@@ -60,7 +60,7 @@ lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • timeOrder (ofState ψ * ofState φ) := by
   rw [timeOrder_ofState_ofState_not_ordered h]
   rw [timeOrder_ofState_ofState_ordered]
-  simp
+  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc]
   have hx := IsTotal.total (r := timeOrderProp) ψ φ
   simp_all
 
@@ -70,7 +70,7 @@ lemma timeOrder_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) 
     ofState (maxTimeField φ φs) * timeOrder (ofList (eraseMaxTimeField φ φs)) := by
   rw [timeOrder_ofList, timeOrderList_eq_maxTimeField_timeOrderList]
   rw [ofList_cons, timeOrder_ofList]
-  simp [smul_smul]
+  simp only [instCommGroup.eq_1, Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
   congr
   rw [timerOrderSign_of_eraseMaxTimeField, mul_assoc]
   simp

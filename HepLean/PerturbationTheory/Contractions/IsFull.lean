@@ -29,7 +29,7 @@ instance : Decidable (IsFull c) := decEq c.uncontracted ∅
 
 lemma isFull_iff_equivInvolution_no_fixed_point :
     IsFull c ↔ ∀ (i : Fin n), (equivInvolution c).1 i ≠ i := by
-  simp [IsFull]
+  simp only [IsFull, ne_eq]
   rw [Finset.eq_empty_iff_forall_not_mem]
   simp [equivInvolution, toInvolution, uncontracted]
 

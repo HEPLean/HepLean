@@ -23,7 +23,7 @@ def erase (c : ContractionsNat n.succ) (i : Fin n.succ) : ContractionsNat n := b
   · intro a ha
     simpa using c.2.1 (Finset.map i.succAboveEmb a) (by simpa using ha)
   · intro a ha b hb
-    simp at ha hb
+    simp only [Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
     rw [← Finset.disjoint_map i.succAboveEmb, ← (Finset.map_injective i.succAboveEmb).eq_iff]
     exact c.2.2 _ ha _ hb
 
@@ -31,7 +31,8 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
     j ∈ (c.erase i).uncontracted ↔
     i.succAbove j ∈ c.uncontracted ∨ c.getDual? (i.succAbove j) = some i := by
   rw [getDual?_eq_some_iff_mem]
-  simp [uncontracted,erase, getDual?]
+  simp only [uncontracted, getDual?, erase, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ,
+    Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton, true_and]
   rw [Fin.find_eq_none_iff, Fin.find_eq_none_iff]
   apply Iff.intro
   · intro h
@@ -42,7 +43,7 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
       by_cases hi' : k = i
       · subst hi'
         exact hi
-      · simp [← Fin.exists_succAbove_eq_iff] at hi'
+      · simp only [← Fin.exists_succAbove_eq_iff] at hi'
         obtain ⟨z, hz⟩ := hi'
         subst hz
         exact h z
@@ -52,10 +53,12 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
     · exact h (i.succAbove k)
     · by_contra hn
       have hc := c.2.2 _ h _ hn
-      simp at hc
+      simp only [Nat.succ_eq_add_one, Finset.disjoint_insert_right, Finset.mem_insert,
+        Finset.mem_singleton, true_or, not_true_eq_false, Finset.disjoint_singleton_right, not_or,
+        false_and, or_false] at hc
       have hi : i ∈ ({i.succAbove j, i.succAbove k} : Finset (Fin n.succ)) := by
         simp [← hc]
-      simp at hi
+      simp only [Nat.succ_eq_add_one, Finset.mem_insert, Finset.mem_singleton] at hi
       rcases hi with hi | hi
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
@@ -80,12 +83,13 @@ lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ)
     rw [← @getDual?_eq_some_iff_mem] at ha
     rw [(Option.get_of_mem h ha)] at ha2
     simp [Finset.pair_comm] at ha2
-  simp [← Fin.exists_succAbove_eq_iff] at hxn hyn
+  simp only [Nat.succ_eq_add_one, ← Fin.exists_succAbove_eq_iff] at hxn hyn
   obtain ⟨x', hx'⟩ := hxn
   obtain ⟨y', hy'⟩ := hyn
   use {x', y'}
   subst hx' hy'
-  simp [erase]
+  simp only [erase, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, Finset.map_insert,
+    Fin.succAboveEmb_apply, Finset.map_singleton, true_and, and_true]
   exact ha
 
 lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
@@ -96,7 +100,7 @@ lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
   obtain ⟨x, y, hx,hy⟩ := h2a
   subst hy
   have hi : i ∈ c.uncontracted := by
-    simp [uncontracted, h]
+    simp only [Nat.succ_eq_add_one, uncontracted, Finset.mem_filter, Finset.mem_univ, true_and]
     simp_all only [Nat.succ_eq_add_one, Option.isNone_iff_eq_none, ne_eq]
   rw [@mem_uncontracted_iff_not_contracted] at hi
   have hxn : ¬ x = i := by
@@ -107,12 +111,13 @@ lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
     by_contra hy
     subst hy
     exact hi {x, y} ha (by simp)
-  simp [← Fin.exists_succAbove_eq_iff] at hxn hyn
+  simp only [Nat.succ_eq_add_one, ← Fin.exists_succAbove_eq_iff] at hxn hyn
   obtain ⟨x', hx'⟩ := hxn
   obtain ⟨y', hy'⟩ := hyn
   use {x', y'}
   subst hx' hy'
-  simp [erase]
+  simp only [erase, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, Finset.map_insert,
+    Fin.succAboveEmb_apply, Finset.map_singleton, true_and, and_true]
   exact ha
 
 def getDualErase {n : ℕ} (c : ContractionsNat n.succ) (i : Fin n.succ) :

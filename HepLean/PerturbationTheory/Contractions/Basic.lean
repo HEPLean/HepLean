@@ -46,7 +46,7 @@ lemma congr_contractions {n m : ℕ} (h : n = m) (c : ContractionsNat n) :
     rw [Finset.mapEmbedding_apply]
     simp
   · intro ha
-    simp at ha
+    simp only [Finset.mem_map, RelEmbedding.coe_toEmbedding] at ha
     obtain ⟨b, hb, hab⟩ := ha
     rw [Finset.mapEmbedding_apply] at hab
     simp only [Finset.map_refl] at hab

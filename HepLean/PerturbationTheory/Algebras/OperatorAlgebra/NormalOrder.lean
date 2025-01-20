@@ -75,7 +75,8 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero
       mulLinearMap ((ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa'))) = 0 := by
     apply ofCrAnListBasis.ext
     intro l
-    simp
+    simp only [ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
+      AlgHom.toLinearMap_apply, LinearMap.zero_apply]
     exact crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero φa φa' φs l
   rw [hf]
   simp
@@ -90,7 +91,9 @@ lemma crAnF_normalOrder_superCommute_ofCrAnState_eq_zero_mul (φa φa' : 𝓕.Cr
       ((superCommute (ofCrAnState φa) (ofCrAnState φa') * b))) = 0 := by
     apply ofCrAnListBasis.ext
     intro l
-    simp [mulLinearMap]
+    simp only [mulLinearMap, ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
+      LinearMap.flip_apply, LinearMap.coe_mk, AddHom.coe_mk, AlgHom.toLinearMap_apply,
+      LinearMap.zero_apply]
     rw [← mul_assoc]
     exact crAnF_normalOrder_superCommute_ofCrAnList_eq_zero φa φa' _ _
   rw [hf]
@@ -141,7 +144,9 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero_mul
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute (ofCrAnList φs)) = 0 := by
     apply ofCrAnListBasis.ext
     intro φs'
-    simp [mulLinearMap]
+    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, ofListBasis_eq_ofList,
+      LinearMap.coe_comp, Function.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
+      LinearMap.zero_apply]
     rw [crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero_mul]
   rw [hf]
   simp
@@ -155,7 +160,9 @@ lemma crAnF_normalOrder_superCommute_eq_zero_mul
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute.flip c) = 0 := by
     apply ofCrAnListBasis.ext
     intro φs
-    simp [mulLinearMap]
+    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, ofListBasis_eq_ofList,
+      LinearMap.coe_comp, Function.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
+      LinearMap.zero_apply]
     rw [crAnF_normalOrder_superCommute_ofCrAnList_eq_zero_mul]
   rw [hf]
   simp
@@ -193,9 +200,9 @@ lemma crAnF_normalOrder_ofState_ofState_swap (φ φ' : 𝓕.States) :
     normalOrder_crPart_mul_crPart, normalOrder_crPart_mul_anPart, normalOrder_anPart_mul_crPart,
     normalOrder_anPart_mul_anPart, map_mul, crAnF_normalOrder_superCommute_eq_zero, add_zero]
   rw [normalOrder_ofState_mul_ofState]
-  simp
+  simp only [FieldStatistic.instCommGroup.eq_1, map_add, map_mul, map_smul, smul_add]
   rw [smul_smul]
-  simp
+  simp only [FieldStatistic.pairedSign_mul_self_swap, one_smul]
   abel
 
 open FieldStatistic
@@ -224,11 +231,11 @@ lemma crAnF_normalOrder_anPart_ofStatesList_swap (φ : 𝓕.States)
   | .negAsymp φ =>
     simp
   | .position φ =>
-    simp
+    simp only [anPart_position, instCommGroup.eq_1]
     rw [crAnF_normalOrder_ofCrAnState_ofStatesList_swap]
     rfl
   | .posAsymp φ =>
-    simp
+    simp only [anPart_posAsymp, instCommGroup.eq_1]
     rw [crAnF_normalOrder_ofCrAnState_ofStatesList_swap]
     rfl
 
@@ -256,7 +263,9 @@ lemma crAnF_ofCrAnState_superCommute_normalOrder_ofCrAnList_eq_sum (φ : 𝓕.Cr
       * 𝓞.crAnF (normalOrder (ofCrAnList (φs.eraseIdx n))) := by
   rw [normalOrder_ofCrAnList, map_smul, map_smul]
   rw [crAnF_superCommute_ofCrAnState_ofCrAnList_eq_sum, sum_normalOrderList_length]
-  simp [Finset.smul_sum]
+  simp only [instCommGroup.eq_1, List.get_eq_getElem, normalOrderList_get_normalOrderEquiv,
+    normalOrderList_eraseIdx_normalOrderEquiv, Algebra.smul_mul_assoc, map_sum, map_smul, map_mul,
+    Finset.smul_sum, Fin.getElem_fin]
   congr
   funext n
   rw [ofCrAnList_eq_normalOrder, map_smul, mul_smul_comm, smul_smul, smul_smul]
@@ -288,7 +297,10 @@ lemma crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.C
     rw [CreateAnnihilateSect.take_statistics_eq_take_state_statistics, smul_mul_assoc]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun n _ => ?_)
-  simp [← Finset.smul_sum, CreateAnnihilateSect.sum_eraseIdxEquiv n _ n.prop]
+  simp only [instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin,
+    CreateAnnihilateSect.sum_eraseIdxEquiv n _ n.prop,
+    CreateAnnihilateSect.eraseIdxEquiv_symm_getElem,
+    CreateAnnihilateSect.eraseIdxEquiv_symm_eraseIdx, ← Finset.smul_sum, Algebra.smul_mul_assoc]
   conv_lhs =>
     enter [2, 2, n]
     rw [← Finset.mul_sum]
@@ -303,11 +315,11 @@ lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.States
   | .negAsymp φ =>
     simp
   | .position φ =>
-    simp
+    simp only [anPart_position, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
     simp [crAnStatistics]
   | .posAsymp φ =>
-    simp
+    simp only [anPart_posAsymp, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
     simp [crAnStatistics]
 
@@ -317,7 +329,7 @@ lemma crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.State
     𝓞.crAnF (normalOrder (anPart (StateAlgebra.ofState φ) * ofStateList φ')) +
     𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φ')⟩ₛca) := by
   rw [anPart_mul_normalOrder_ofStateList_eq_superCommute]
-  simp
+  simp only [instCommGroup.eq_1, map_add, map_smul]
   congr
   rw [crAnF_normalOrder_anPart_ofStatesList_swap]
 
@@ -348,7 +360,8 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ : 𝓕.States)
       𝓞.crAnF (normalOrder (ofStateList (HepLean.List.optionEraseZ φs φ n))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute]
   rw [crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum]
-  simp [contractMemList]
+  simp only [instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc, contractMemList,
+    Fintype.sum_option, one_mul]
   rfl
 
 lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -361,7 +374,9 @@ lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
   rw [hl]
   rw [ofStateList_append, ofStateList_append]
   rw [ofStateList_mul_ofStateList_eq_superCommute, add_mul]
-  simp [smul_smul]
+  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
+    map_add, map_smul, crAnF_normalOrder_superCommute_eq_zero_mul_right, add_zero, smul_smul,
+    pairedSign_mul_self_swap, one_smul]
   rw [← ofStateList_append, ← ofStateList_append]
   simp
 
