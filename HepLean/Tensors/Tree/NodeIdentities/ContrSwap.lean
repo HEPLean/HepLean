@@ -85,12 +85,12 @@ lemma contrSwapHom_hom_left_apply (x : Fin n) : q.contrSwapHom.hom.left x = x :=
 lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom := by
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
-      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.hom_comp,
         Function.comp_apply, hy]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod,
-    map_smul, Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
+    map_smul, Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
-  rw [contrMap, contrMap]
+  rw [contrMap, contrMap, LinearMap.comp_apply]
   erw [TensorSpecies.contrMap_tprod, TensorSpecies.contrMap_tprod]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Function.comp_apply,
     Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
@@ -150,7 +150,7 @@ lemma contr_swap (t : TensorTree S c) :
   simp only [contr_tensor, perm_tensor]
   change (q.contrMap).hom t.tensor = _
   rw [contrMap_swap]
-  simp only [Nat.succ_eq_add_one, Action.comp_hom, ModuleCat.coe_comp, Function.comp_apply]
+  simp only [Nat.succ_eq_add_one, Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
   apply congrArg
   rfl

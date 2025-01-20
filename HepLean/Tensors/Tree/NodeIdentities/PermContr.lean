@@ -43,6 +43,7 @@ lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     rw [CategoryTheory.Category.assoc]
     erw [← CategoryTheory.Iso.inv_comp_eq]
     ext1
+    apply ModuleCat.hom_ext
     apply TensorProduct.ext'
     intro x y
     simp only [Nat.succ_eq_add_one, Equivalence.symm_inverse,
@@ -109,7 +110,7 @@ lemma contrIso_comm_aux_1 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   rw [← Functor.map_comp, ← Functor.map_comp]
   erw [extractTwo_finExtractTwo]
   simp only [Nat.succ_eq_add_one, extractOne_homToEquiv, Functor.map_comp, Action.comp_hom,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   rfl
 
 lemma contrIso_comm_aux_2 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}

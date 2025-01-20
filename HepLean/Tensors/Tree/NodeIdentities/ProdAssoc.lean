@@ -68,7 +68,7 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
   simp only [Functor.id_obj, mk_hom, whiskerRightIso_hom, Iso.symm_hom, whiskerLeftIso_hom,
     Functor.map_comp, Action.comp_hom, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply]
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply]
   rw [prod_tensor]
   apply congrArg
   change _ = (S.F.map (OverColor.mk c ◁ (equivToIso finSumFinEquiv).hom)).hom
@@ -81,7 +81,7 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Action.comp_hom,
-    Action.instMonoidalCategory_whiskerRight_hom, ModuleCat.coe_comp, Function.comp_apply,
+    Action.instMonoidalCategory_whiskerRight_hom, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.whiskerRight_apply]
   nth_rewrite 2 [prod_tensor]
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
@@ -106,7 +106,7 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     Action.instMonoidalCategory_associator_hom_hom, Action.instMonoidalCategory_whiskerLeft_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.coe_comp, Function.comp_apply,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.associator_hom_apply]
   rw [prod_tensor]
   change ((_ ◁ (S.F.map (equivToIso finSumFinEquiv).hom)) ≫
@@ -118,7 +118,7 @@ theorem prod_assoc (t : TensorTree S c) (t2 : TensorTree S c2) (t3 : TensorTree 
   rw [Functor.LaxMonoidal.μ_natural_right]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   rfl
 
 /-- The alternative version of associativity for `prod` where the permutation is on the opposite

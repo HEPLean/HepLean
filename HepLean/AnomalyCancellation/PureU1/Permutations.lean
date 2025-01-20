@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.Basic
 import HepLean.AnomalyCancellation.GroupActions
+import Mathlib.Logic.Equiv.Fintype
 /-!
 # Permutations of Pure U(1) ACC
 

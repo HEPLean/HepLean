@@ -42,7 +42,7 @@ lemma contrMetricVal_expand_tmul : contrMetricVal =
 /-- The metric `ηᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr`,
   making its invariance under the action of `SL(2,ℂ)`. -/
 def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • contrMetricVal,
@@ -52,13 +52,13 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • contrMetricVal =
-      (TensorProduct.map (complexContr.ρ M) (complexContr.ρ M)) (x' • contrMetricVal)
+    change x • contrMetricVal =
+      (TensorProduct.map (complexContr.ρ M) (complexContr.ρ M)) (x • contrMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, contrMetricVal]
@@ -67,9 +67,8 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
     simp only [LorentzGroup.toComplex_mul_minkowskiMatrix_mul_transpose]
 
 lemma contrMetric_apply_one : contrMetric.hom (1 : ℂ) = contrMetricVal := by
-  change contrMetric.hom.toFun (1 : ℂ) = contrMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    contrMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change contrMetric.hom.hom.toFun (1 : ℂ) = contrMetricVal
+  simp only [contrMetric, one_smul]
 
 /-- The metric `ηᵢᵢ` as an element of `(complexCo ⊗ complexCo).V`. -/
 def coMetricVal : (complexCo ⊗ complexCo).V :=
@@ -95,7 +94,7 @@ lemma coMetricVal_expand_tmul : coMetricVal =
 /-- The metric `ηᵢᵢ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo`,
   making its invariance under the action of `SL(2,ℂ)`. -/
 def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • coMetricVal,
@@ -105,13 +104,13 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • coMetricVal =
-      (TensorProduct.map (complexCo.ρ M) (complexCo.ρ M)) (x' • coMetricVal)
+    change x • coMetricVal =
+      (TensorProduct.map (complexCo.ρ M) (complexCo.ρ M)) (x • coMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, coMetricVal]
@@ -122,9 +121,8 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
       LorentzGroup.toComplex_transpose_mul_minkowskiMatrix_mul_self]
 
 lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
-  change coMetric.hom.toFun (1 : ℂ) = coMetricVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    coMetric, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change coMetric.hom.hom.toFun (1 : ℂ) = coMetricVal
+  simp only [coMetric, one_smul]
 
 /-!
 

@@ -57,7 +57,7 @@ theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :
   simp only [Category.assoc, Action.comp_hom,
     Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   rw [prod_tensor]
   apply congrArg
   apply congrArg

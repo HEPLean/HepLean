@@ -115,7 +115,7 @@ lemma smooth_innerProd (φ1 φ2 : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) �
 def normSq (φ : HiggsField) : SpaceTime → ℝ := fun x => ‖φ x‖ ^ 2
 
 /-- Notation for the norm squared of a Higgs field. -/
-scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H ^ 2" => normSq φ1
+scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H^2" => normSq φ1
 
 /-!
 
@@ -125,7 +125,7 @@ scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H ^ 2" => normSq φ1
 
 @[simp]
 lemma innerProd_self_eq_normSq (φ : HiggsField) (x : SpaceTime) :
-    ⟪φ, φ⟫_H x = ‖φ‖_H ^ 2 x := by
+    ⟪φ, φ⟫_H x = ‖φ‖_H^2 x := by
   erw [normSq, @PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
   simp only [innerProd, PiLp.inner_apply, RCLike.inner_apply, conj_mul', norm_eq_abs,
     Fin.sum_univ_two, ofReal_add, ofReal_pow]

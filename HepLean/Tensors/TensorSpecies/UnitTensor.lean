@@ -58,22 +58,22 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
     Action.instMonoidalCategory_tensorUnit_V, tensorNode_tensor, Fin.isValue, perm_tensor]
   have h1 := S.unit_symm c
   erw [h1]
-  have hg : (Discrete.pairIsoSep S.FD).hom.hom ∘ₗ (S.FD.obj { as := S.τ c } ◁
-      S.FD.map (Discrete.eqToHom (S.τ_involution c))).hom ∘ₗ
-      (β_ (S.FD.obj { as := S.τ (S.τ c) }) (S.FD.obj { as := S.τ c })).hom.hom =
+  have hg : (Discrete.pairIsoSep S.FD).hom.hom.hom ∘ₗ (S.FD.obj { as := S.τ c } ◁
+      S.FD.map (Discrete.eqToHom (S.τ_involution c))).hom.hom ∘ₗ
+      (β_ (S.FD.obj { as := S.τ (S.τ c) }) (S.FD.obj { as := S.τ c })).hom.hom.hom =
       (S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])
-      (fun x => match x with | 0 => by rfl | 1 => (S.τ_involution c).symm))).hom
-      ∘ₗ (Discrete.pairIsoSep S.FD).hom.hom := by
+      (fun x => match x with | 0 => by rfl | 1 => (S.τ_involution c).symm))).hom.hom
+      ∘ₗ (Discrete.pairIsoSep S.FD).hom.hom.hom := by
     apply TensorProduct.ext'
     intro x y
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
       Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_whiskerLeft_hom,
       LinearMap.coe_comp, Function.comp_apply, Fin.isValue]
-    change (Discrete.pairIsoSep S.FD).hom.hom
+    change (Discrete.pairIsoSep S.FD).hom.hom.hom
       (((y ⊗ₜ[S.k] ((S.FD.map (Discrete.eqToHom _)).hom x)))) =
-      ((S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) _)).hom ∘ₗ
-      (Discrete.pairIsoSep S.FD).hom.hom) (x ⊗ₜ[S.k] y)
+      ((S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) _)).hom.hom ∘ₗ
+      (Discrete.pairIsoSep S.FD).hom.hom.hom) (x ⊗ₜ[S.k] y)
     rw [Discrete.pairIsoSep_tmul]
     conv_rhs =>
       simp [Discrete.pairIsoSep_tmul]

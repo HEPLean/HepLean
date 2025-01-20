@@ -83,8 +83,8 @@ lemma contrOneTwoLeft_tprod_eq {c1 c2 : S.C}
   simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Nat.succ_eq_add_one, Nat.reduceAdd,
     Iso.trans_hom, Functor.mapIso_hom, Action.comp_hom, mk_left, Functor.id_obj, mk_hom,
-    ModuleCat.coe_comp, Function.comp_apply, LinearMap.id_coe, id_eq, Fin.isValue]
-  rw [forgetLiftApp_hom_hom_apply_eq]
+    ModuleCat.hom_comp, Function.comp_apply, LinearMap.id_coe, id_eq, Fin.isValue]
+  rw [LinearMap.comp_apply, forgetLiftApp_hom_hom_apply_eq]
   simp only [mk_left, Functor.id_obj, Fin.isValue]
   erw [OverColor.lift.map_tprod]
   congr
@@ -119,10 +119,12 @@ lemma contr_one_two_left_eq_contrOneTwoLeft_tprod {c1 c2 : S.C} (x : S.F.obj (Ov
     Action.instMonoidalCategory_tensorUnit_V, Matrix.cons_val_one, Matrix.head_cons,
     Functor.comp_obj, Discrete.functor_obj_eq_as, Function.comp_apply, map_smul]
   conv_lhs =>
+    enter [2, 2]
     erw [OverColor.lift.μ_tmul_tprod S.FD]
-    simp only [S.F_def]
+  conv_lhs =>
+    enter [2]
     erw [OverColor.lift.map_tprod]
-    erw [contrMap_tprod]
+  conv_lhs => erw [contrMap_tprod]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero, mk_left,
     Functor.id_obj, mk_hom, Function.comp_apply, Monoidal.tensorUnit_obj,
     Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
@@ -149,8 +151,8 @@ lemma contr_one_two_left_eq_contrOneTwoLeft_tprod {c1 c2 : S.C} (x : S.F.obj (Ov
   /- The tensor. -/
   · symm
     rw [OverColor.Discrete.rep_iso_apply_iff]
-    erw [OverColor.lift.map_tprod]
-    erw [OverColor.lift.map_tprod]
+    conv_lhs => erw [OverColor.lift.map_tprod]
+    conv_rhs => erw [OverColor.lift.map_tprod]
     apply congrArg
     funext x
     match x with
@@ -291,7 +293,7 @@ lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
       (S.FD.obj (Discrete.mk (S.τ c)) ⊗ S.FD.obj (Discrete.mk (S.τ c)))).hom.hom
     (((OverColor.Discrete.pairIsoSep S.FD).inv.hom x ⊗ₜ
     (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))) := by
-  simp only [Nat.reduceAdd, Fin.isValue, contr_tensor, prod_tensor, Functor.id_obj, mk_hom,
+  simp only [contr_tensor, prod_tensor, Functor.id_obj, mk_hom,
     Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     tensorNode_tensor, Action.instMonoidalCategory_tensorUnit_V,
@@ -300,12 +302,12 @@ lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     Action.instMonoidalCategory_associator_inv_hom, Action.instMonoidalCategory_associator_hom_hom]
   refine PiTensorProduct.induction_on' x ?_ (by
     intro a b hx hy
-    simp only [Fin.isValue, Nat.reduceAdd, Functor.id_obj, mk_hom, add_tmul,
+    simp only [Fin.isValue, Functor.id_obj, mk_hom, add_tmul,
       map_add, hx, hy])
   intro rx fx
   refine PiTensorProduct.induction_on' y ?_ (by
       intro a b hx hy
-      simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Functor.id_obj, mk_hom,
+      simp_all only [Functor.id_obj, mk_hom,
         PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul, map_add, tmul_add])
   intro ry fy
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, LinearMapClass.map_smul]

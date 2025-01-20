@@ -35,7 +35,7 @@ open TensorProduct
   map to the underlying field. -/
 def contractSelfField {S : TensorSpecies} {c : S.C} :
     S.FD.obj (Discrete.mk c) ⊗[S.k] S.FD.obj (Discrete.mk c) →ₗ[S.k] S.k :=
-  (S.contractSelfHom c).hom
+  (S.contractSelfHom c).hom.hom
 
 /-- Notation for `coCoContract` acting on a tmul. -/
 scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField (ψ ⊗ₜ φ)
@@ -45,7 +45,8 @@ scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField 
 lemma contractSelfField_equivariant {S : TensorSpecies} {c : S.C} {g : S.G}
     (ψ : S.FD.obj (Discrete.mk c)) (φ : S.FD.obj (Discrete.mk c)) :
     ⟪(S.FD.obj (Discrete.mk c)).ρ g ψ, (S.FD.obj (Discrete.mk c)).ρ g φ⟫ₜₛ = ⟪ψ, φ⟫ₜₛ := by
-  simpa using congrFun (congrArg (fun x => x.toFun) ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
+  simpa using congrFun (congrArg (fun x => x.hom.toFun)
+    ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
 
 informal_lemma contractSelfField_non_degenerate where
   math :≈ "The contraction of two vectors of the same color is non-degenerate.

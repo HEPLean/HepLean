@@ -149,11 +149,13 @@ lemma contrMap_prod_tprod_aux
       CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i }))
     (q' : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
       CoeSort.coe (S.FD.obj { as := (OverColor.mk c1).hom i })) :
-    (lift.discreteSumEquiv S.FD l)
+    (lift.discreteSumEquiv' S.FD l)
     (HepLean.PiTensorProduct.elimPureTensor
     (fun k => p (q.i.succAbove (q.j.succAbove k))) q' l) =
-    (S.FD.map (eqToHom (by simp [h]))).hom
-    ((lift.discreteSumEquiv S.FD l')
+    (S.FD.map (eqToHom (by
+      simp only [mk_hom, h, mk_left, Discrete.mk.injEq]
+      rfl))).hom
+    ((lift.discreteSumEquiv' S.FD l')
     (HepLean.PiTensorProduct.elimPureTensor p q' l')) := by
   subst h'
   match l with
@@ -166,6 +168,18 @@ lemma contrMap_prod_tprod_aux
     simp only [instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inr, Functor.id_obj,
       Function.comp_apply, Sum.map_inr, Discrete.functor_map_id, Action.id_hom]
     rfl
+
+lemma contrMap_prod_tprod_aux_2 (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
+    CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i }))
+    (a : Fin n.succ.succ) (b : Fin (n + 1 + 1) ⊕ Fin n1)
+    (h : b = Sum.inl a) : p a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom
+    ((lift.discreteSumEquiv' S.FD b)
+    (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
+  subst h
+  simp only [Nat.succ_eq_add_one, mk_hom, instMonoidalCategoryStruct_tensorObj_hom,
+    Sum.elim_inl, eqToHom_refl, Discrete.functor_map_id, Action.id_hom, Functor.id_obj,
+    ModuleCat.id_apply]
+  rfl
 
 lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i }))
@@ -202,15 +216,6 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
       ((PiTensorProduct.tprod S.k) _))
   conv_rhs => rw [contrMap, TensorSpecies.contrMap_tprod]
   simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul]
-  have hL (a : Fin n.succ.succ) {b : Fin (n + 1 + 1) ⊕ Fin n1}
-          (h : b = Sum.inl a) : p a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom
-          ((lift.discreteSumEquiv S.FD b)
-          (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
-        subst h
-        simp only [Nat.succ_eq_add_one, mk_hom, instMonoidalCategoryStruct_tensorObj_hom,
-          Sum.elim_inl, eqToHom_refl, Discrete.functor_map_id, Action.id_hom, Functor.id_obj,
-          ModuleCat.id_apply]
-        rfl
   congr 1
   · apply congrArg
     simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
@@ -233,7 +238,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply]
       simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, equivToIso_homToEquiv,
         LinearEquiv.coe_coe]
-      apply hL
+      apply contrMap_prod_tprod_aux_2
       exact Eq.symm ((fun f => (Equiv.apply_eq_iff_eq_symm_apply f).mp) finSumFinEquiv rfl)
     · simp only [Discrete.functor_obj_eq_as, Function.comp_apply, AddHom.toFun_eq_coe,
         LinearMap.coe_toAddHom, equivToIso_homToEquiv]
@@ -245,7 +250,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
           (h1' : b = Sum.inl a) (h2' : c a = S.τ (c d)) :
           (S.FD.map (Discrete.eqToHom h2')).hom (p a) =
           (S.FD.map (eqToHom (by subst h1'; simpa using h2'))).hom
-          ((lift.discreteSumEquiv S.FD b)
+          ((lift.discreteSumEquiv' S.FD b)
           (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
         subst h1'
         rfl
@@ -280,6 +285,7 @@ lemma contrMap_prod :
     S.F.map (OverColor.equivToIso leftContrEquivSuccSucc).hom ≫ q.leftContr.contrMap
     ≫ S.F.map (OverColor.mkIso (q.leftContr_map_eq)).hom := by
   ext1
+  refine ModuleCat.hom_ext ?_
   exact HepLean.PiTensorProduct.induction_tmul (fun p q' => q.contrMap_prod_tprod p q')
 
 lemma contr_prod
@@ -296,7 +302,7 @@ lemma contr_prod
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
   apply congrArg
   rfl
@@ -448,7 +454,7 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
         LinearEquiv.coe_coe]
       have hL (a : Fin n.succ.succ) {b : Fin n1 ⊕ Fin n.succ.succ}
           (h : b = Sum.inr a) : q' a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom
-          ((lift.discreteSumEquiv S.FD b)
+          ((lift.discreteSumEquiv' S.FD b)
           (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
         subst h
         simp only [Nat.succ_eq_add_one, mk_hom, instMonoidalCategoryStruct_tensorObj_hom,
@@ -468,7 +474,7 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
           (h1' : b = Sum.inr a) (h2' : c a = S.τ (c d)) :
           (S.FD.map (Discrete.eqToHom h2')).hom (q' a) =
           (S.FD.map (eqToHom (by subst h1'; simpa using h2'))).hom
-          ((lift.discreteSumEquiv S.FD b)
+          ((lift.discreteSumEquiv' S.FD b)
           (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
         subst h1'
         rfl
@@ -492,11 +498,13 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
         (l' :Fin n1 ⊕ Fin n.succ.succ)
         (h : Sum.elim c1 c l' = Sum.elim c1 (c ∘ q.i.succAbove ∘ q.j.succAbove) l)
         (h' : l' = (Sum.map id (q.i.succAbove ∘ q.j.succAbove) l)) :
-        (lift.discreteSumEquiv S.FD l)
+        (lift.discreteSumEquiv' S.FD l)
         (HepLean.PiTensorProduct.elimPureTensor p
         (fun k => q' (q.i.succAbove (q.j.succAbove k))) l) =
-        (S.FD.map (eqToHom (by simp [h]))).hom
-        ((lift.discreteSumEquiv S.FD l')
+        (S.FD.map (eqToHom (by
+          simp only [mk_hom, h, mk_left, Discrete.mk.injEq]
+          rfl))).hom
+        ((lift.discreteSumEquiv' S.FD l')
         (HepLean.PiTensorProduct.elimPureTensor p q' l')) := by
       subst h'
       match l with
@@ -526,6 +534,7 @@ lemma prod_contrMap :
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom ≫
     q.rightContr.contrMap ≫ S.F.map (OverColor.mkIso (q.rightContr_map_eq)).hom := by
   ext1
+  refine ModuleCat.hom_ext ?_
   exact HepLean.PiTensorProduct.induction_tmul (fun p q' => q.prod_contrMap_tprod p q')
 
 lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
@@ -540,7 +549,7 @@ lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
   simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.coe_comp, Function.comp_apply]
+    ModuleCat.hom_comp, Function.comp_apply]
   apply congrArg
   apply congrArg
   rfl

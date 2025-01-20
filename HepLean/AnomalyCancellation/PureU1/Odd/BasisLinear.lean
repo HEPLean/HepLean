@@ -515,7 +515,6 @@ lemma Pa_zero (f g : Fin n.succ → ℚ) (h : Pa f g = 0) :
   have h₃ := Pa_oddShiftShiftZero f g
   rw [h] at h₃
   change 0 = _ at h₃
-  simp only at h₃
   intro i
   have hinduc (iv : ℕ) (hiv : iv < n.succ) : f ⟨iv, hiv⟩ = 0 := by
     induction iv

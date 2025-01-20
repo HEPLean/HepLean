@@ -204,7 +204,7 @@ lemma contrMapFst_contrMapSnd_swap :
   change q.contrMapSnd.hom (q.contrMapFst.hom x) = (S.F.map q.contrSwapHom).hom
     (q.swap.contrMapSnd.hom (q.swap.contrMapFst.hom x))
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
-      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.coe_comp,
+      simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.hom_comp,
         Function.comp_apply, hy]
   simp only [Nat.succ_eq_add_one, Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
     map_smul]
@@ -268,14 +268,16 @@ lemma contr_contr (t : TensorTree S c) :
     (contr q.swapK q.swapL q.swap.hkl (contr q.swapI q.swapJ q.swap.hij t))).tensor := by
   simp only [contr_tensor, perm_tensor]
   trans (q.contrMapFst ≫ q.contrMapSnd).hom t.tensor
-  simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.coe_comp,
+  · simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.hom_comp,
     Function.comp_apply]
-  rw [contrMapFst_contrMapSnd_swap]
-  simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.coe_comp,
-    Function.comp_apply, swap]
-  refine congrArg _ (congrArg _ ?_)
-  apply congrArg
-  rfl
+    simp [contrMapFst_contrMapSnd_swap]
+  · rw [contrMapFst_contrMapSnd_swap]
+    simp only [Nat.succ_eq_add_one, contrMapFst, contrMapSnd, Action.comp_hom, ModuleCat.hom_comp,
+      Function.comp_apply, swap]
+    simp_rw [LinearMap.comp_apply]
+    refine congrArg _ (congrArg _ ?_)
+    apply congrArg
+    rfl
 
 end
 end ContrQuartet

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.AnomalyCancellation.PureU1.ConstAbs
+import Mathlib.Tactic.FieldSimp
 /-!
 # Line in plane condition
 

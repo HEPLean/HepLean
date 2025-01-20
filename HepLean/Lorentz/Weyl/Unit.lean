@@ -36,7 +36,7 @@ lemma leftAltLeftUnitVal_expand_tmul : leftAltLeftUnitVal =
 /-- The left-alt-left unit `δᵃₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded `,
   manifesting the invariance under the `SL(2,ℂ)` action. -/
 def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • leftAltLeftUnitVal,
@@ -46,13 +46,13 @@ def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • leftAltLeftUnitVal =
-      (TensorProduct.map (leftHanded.ρ M) (altLeftHanded.ρ M)) (x' • leftAltLeftUnitVal)
+    change x • leftAltLeftUnitVal =
+      (TensorProduct.map (leftHanded.ρ M) (altLeftHanded.ρ M)) (x • leftAltLeftUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, leftAltLeftUnitVal]
@@ -61,9 +61,8 @@ def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded
     simp
 
 lemma leftAltLeftUnit_apply_one : leftAltLeftUnit.hom (1 : ℂ) = leftAltLeftUnitVal := by
-  change leftAltLeftUnit.hom.toFun (1 : ℂ) = leftAltLeftUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    leftAltLeftUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change leftAltLeftUnit.hom.hom.toFun (1 : ℂ) = leftAltLeftUnitVal
+  simp only [leftAltLeftUnit, one_smul]
 
 /-- The alt-left-left unit `δₐᵃ` as an element of `(altLeftHanded ⊗ leftHanded).V`. -/
 def altLeftLeftUnitVal : (altLeftHanded ⊗ leftHanded).V :=
@@ -80,7 +79,7 @@ lemma altLeftLeftUnitVal_expand_tmul : altLeftLeftUnitVal =
 /-- The alt-left-left unit `δₐᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded `,
   manifesting the invariance under the `SL(2,ℂ)` action. -/
 def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • altLeftLeftUnitVal,
@@ -90,13 +89,13 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • altLeftLeftUnitVal =
-      (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) (x' • altLeftLeftUnitVal)
+    change x • altLeftLeftUnitVal =
+      (TensorProduct.map (altLeftHanded.ρ M) (leftHanded.ρ M)) (x • altLeftLeftUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, altLeftLeftUnitVal]
@@ -107,9 +106,8 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
 
 /-- Applying the morphism `altLeftLeftUnit` to `1` returns `altLeftLeftUnitVal`. -/
 lemma altLeftLeftUnit_apply_one : altLeftLeftUnit.hom (1 : ℂ) = altLeftLeftUnitVal := by
-  change altLeftLeftUnit.hom.toFun (1 : ℂ) = altLeftLeftUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    altLeftLeftUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change altLeftLeftUnit.hom.hom.toFun (1 : ℂ) = altLeftLeftUnitVal
+  simp only [altLeftLeftUnit, one_smul]
 
 /-- The right-alt-right unit `δ^{dot a}_{dot a}` as an element of
   `(rightHanded ⊗ altRightHanded).V`. -/
@@ -128,7 +126,7 @@ lemma rightAltRightUnitVal_expand_tmul : rightAltRightUnitVal =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHanded`, manifesting
   the invariance under the `SL(2,ℂ)` action. -/
 def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • rightAltRightUnitVal,
@@ -138,13 +136,13 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • rightAltRightUnitVal =
-      (TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M)) (x' • rightAltRightUnitVal)
+    change x • rightAltRightUnitVal =
+      (TensorProduct.map (rightHanded.ρ M) (altRightHanded.ρ M)) (x • rightAltRightUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, rightAltRightUnitVal]
@@ -159,9 +157,8 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
     simp
 
 lemma rightAltRightUnit_apply_one : rightAltRightUnit.hom (1 : ℂ) = rightAltRightUnitVal := by
-  change rightAltRightUnit.hom.toFun (1 : ℂ) = rightAltRightUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    rightAltRightUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change rightAltRightUnit.hom.hom.toFun (1 : ℂ) = rightAltRightUnitVal
+  simp only [rightAltRightUnit, one_smul]
 
 /-- The alt-right-right unit `δ_{dot a}^{dot a}` as an element of
   `(rightHanded ⊗ altRightHanded).V`. -/
@@ -180,7 +177,7 @@ lemma altRightRightUnitVal_expand_tmul : altRightRightUnitVal =
   `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHanded`, manifesting
   the invariance under the `SL(2,ℂ)` action. -/
 def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHanded where
-  hom := {
+  hom := ModuleCat.ofHom {
     toFun := fun a =>
       let a' : ℂ := a
       a' • altRightRightUnitVal,
@@ -190,13 +187,13 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
       simp only [smul_smul]
       rfl}
   comm M := by
-    ext x : 2
+    refine ModuleCat.hom_ext ?_
+    refine LinearMap.ext fun x : ℂ => ?_
     simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.coe_comp,
+      Action.tensorUnit_ρ', CategoryTheory.Category.id_comp, Action.tensor_ρ', ModuleCat.hom_comp,
       Function.comp_apply]
-    let x' : ℂ := x
-    change x' • altRightRightUnitVal =
-      (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) (x' • altRightRightUnitVal)
+    change x • altRightRightUnitVal =
+      (TensorProduct.map (altRightHanded.ρ M) (rightHanded.ρ M)) (x • altRightRightUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
     simp only [Action.instMonoidalCategory_tensorObj_V, altRightRightUnitVal]
@@ -209,9 +206,8 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
     simp
 
 lemma altRightRightUnit_apply_one : altRightRightUnit.hom (1 : ℂ) = altRightRightUnitVal := by
-  change altRightRightUnit.hom.toFun (1 : ℂ) = altRightRightUnitVal
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    altRightRightUnit, AddHom.toFun_eq_coe, AddHom.coe_mk, one_smul]
+  change altRightRightUnit.hom.hom.toFun (1 : ℂ) = altRightRightUnitVal
+  simp only [altRightRightUnit, one_smul]
 
 /-!
 
@@ -240,7 +236,7 @@ lemma contr_altLeftLeftUnit (x : leftHanded) :
   erw [h1, h1, h1, h1]
   repeat rw [leftAltContraction_basis]
   simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom_hom, ModuleCat.ofSelfIso_hom,
     CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero,
     ↓reduceIte, Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one,
     zero_add]
