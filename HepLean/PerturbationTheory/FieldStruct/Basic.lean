@@ -19,7 +19,7 @@ structure FieldStruct where
   /-- The type of fields. This also includes anti-states. -/
   Fields : Type
   /-- The specification if a field is bosonic or fermionic. -/
-  statistics : 𝓕 → FieldStatistic
+  statistics : Fields → FieldStatistic
 
 namespace FieldStruct
 variable (𝓕 : FieldStruct)
