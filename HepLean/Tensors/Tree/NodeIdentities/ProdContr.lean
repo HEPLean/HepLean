@@ -169,7 +169,7 @@ lemma contrMap_prod_tprod_aux
       Function.comp_apply, Sum.map_inr, Discrete.functor_map_id, Action.id_hom]
     rfl
 
-lemma contrMap_prod_tprod_aux_2  (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
+lemma contrMap_prod_tprod_aux_2 (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i }))
     (a : Fin n.succ.succ) (b : Fin (n + 1 + 1) ⊕ Fin n1)
     (h : b = Sum.inl a) : p a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom

@@ -55,8 +55,8 @@ lemma discreteFun_hom_trans {c1 c2 c3 : Discrete C} (h1 : c1 = c2) (h2 : c2 = c3
 def discreteFunctorMapEqIso {c1 c2 : Discrete C} (h : c1.as = c2.as) :
     (F.obj c1).V ≃ₗ[k] (F.obj c2).V := LinearEquiv.ofLinear
   (F.mapIso (Discrete.eqToIso h)).hom.hom.hom (F.mapIso (Discrete.eqToIso h)).inv.hom.hom
-  (by rw [←ModuleCat.hom_id, ←ModuleCat.hom_comp, Action.inv_hom_hom])
-  (by rw [←ModuleCat.hom_id, ←ModuleCat.hom_comp, Action.hom_inv_hom])
+  (by rw [← ModuleCat.hom_id, ← ModuleCat.hom_comp, Action.inv_hom_hom])
+  (by rw [← ModuleCat.hom_id, ← ModuleCat.hom_comp, Action.hom_inv_hom])
 
 lemma discreteFunctorMapEqIso_comm_ρ {c1 c2 : Discrete C} (h : c1.as = c2.as) (M : G)
     (x : F.obj c1) : discreteFunctorMapEqIso F h ((F.obj c1).ρ M x) =

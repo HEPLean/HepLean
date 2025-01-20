@@ -75,11 +75,12 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     tensorIso_inv, Iso.trans_inv, Iso.symm_inv, Functor.mapIso_hom, tensor_comp,
     Functor.Monoidal.μIso_hom, Functor.CoreMonoidal.toMonoidal_toLaxMonoidal, Functor.mapIso_inv,
     Category.assoc, Functor.LaxMonoidal.μ_natural_assoc, Action.comp_hom,
-    Action.instMonoidalCategory_tensorHom_hom, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv_hom,
+    Action.instMonoidalCategory_tensorHom_hom, Action.mkIso_inv_hom, ModuleCat.hom_comp,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
-    ModuleCat.MonoidalCategory.tensorHom_tmul, mk_hom, mk_left, Functor.id_obj]
-  simp
+    Action.FunctorCategoryEquivalence.functor_obj_obj, mk_hom, mk_left, Functor.id_obj]
+  simp only [LinearMap.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.tensorHom_tmul,
+    LinearEquiv.toModuleIso_inv_hom, LinearEquiv.coe_coe, forgetLiftAppV_symm_apply, mk_left,
+    Functor.id_obj]
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
       ((Functor.LaxMonoidal.μ (lift.obj F).toFunctor (mk fun _ => c1) (mk fun _ => c2)).hom
@@ -222,10 +223,14 @@ lemma tripleIsoSep_tmul {c1 c2 c3 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (
     Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.whiskerLeft_apply, ModuleCat.MonoidalCategory.whiskerRight_apply,
     Functor.id_obj, mk_hom]
-  simp
+  simp only [Functor.Monoidal.μIso_hom, Functor.CoreMonoidal.toMonoidal_toLaxMonoidal,
+    LinearMap.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.whiskerLeft_apply,
+    ModuleCat.MonoidalCategory.whiskerRight_apply, mk_left]
   erw [pairIsoSep_tmul F y z]
   erw [forgetLiftAppV_symm_apply F c1]
-  erw [lift.obj_μ_tprod_tmul F _ _]
+  conv_lhs =>
+    enter [2]
+    erw [lift.obj_μ_tprod_tmul F _ _]
   erw [lift.map_tprod]
   apply congrArg
   funext i

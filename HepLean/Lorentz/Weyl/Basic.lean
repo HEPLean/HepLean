@@ -255,7 +255,8 @@ def leftHandedAltEquiv : leftHanded ≅ altLeftHanded where
   inv := leftHandedAltTo
   hom_inv_id := by
     ext ψ
-    simp
+    simp only [Action.comp_hom, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply,
+      Action.id_hom, ModuleCat.hom_id, LinearMap.id_coe, id_eq]
     rw [leftHandedAltTo_hom_apply, leftHandedToAlt_hom_apply]
     rw [AltLeftHandedModule.toFin2ℂ, LinearEquiv.apply_symm_apply, mulVec_mulVec]
     rw [show (!![0, -1; (1 : ℂ), 0] * !![0, 1; -1, 0]) = 1 by simpa using Eq.symm one_fin_two]
@@ -263,7 +264,8 @@ def leftHandedAltEquiv : leftHanded ≅ altLeftHanded where
     rfl
   inv_hom_id := by
     ext ψ
-    simp
+    simp only [Action.comp_hom, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply,
+      Action.id_hom, ModuleCat.hom_id, LinearMap.id_coe, id_eq]
     rw [leftHandedAltTo_hom_apply, leftHandedToAlt_hom_apply, LeftHandedModule.toFin2ℂ,
       LinearEquiv.apply_symm_apply, mulVec_mulVec]
     rw [show (!![0, (1 : ℂ); -1, 0] * !![0, -1; 1, 0]) = 1 by simpa using Eq.symm one_fin_two]

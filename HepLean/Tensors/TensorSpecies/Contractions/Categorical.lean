@@ -307,7 +307,7 @@ lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
   intro rx fx
   refine PiTensorProduct.induction_on' y ?_ (by
       intro a b hx hy
-      simp_all only [ Functor.id_obj, mk_hom,
+      simp_all only [Functor.id_obj, mk_hom,
         PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul, map_add, tmul_add])
   intro ry fy
   simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, LinearMapClass.map_smul]

@@ -45,7 +45,8 @@ scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField 
 lemma contractSelfField_equivariant {S : TensorSpecies} {c : S.C} {g : S.G}
     (ψ : S.FD.obj (Discrete.mk c)) (φ : S.FD.obj (Discrete.mk c)) :
     ⟪(S.FD.obj (Discrete.mk c)).ρ g ψ, (S.FD.obj (Discrete.mk c)).ρ g φ⟫ₜₛ = ⟪ψ, φ⟫ₜₛ := by
-  simpa using congrFun (congrArg (fun x => x.hom.toFun) ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
+  simpa using congrFun (congrArg (fun x => x.hom.toFun)
+    ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
 
 informal_lemma contractSelfField_non_degenerate where
   math :≈ "The contraction of two vectors of the same color is non-degenerate.

@@ -187,12 +187,66 @@ def complexLorentzTensor : TensorSpecies where
     | Color.down => Lorentz.contrCoUnit_symm
   contr_metric := fun c =>
     match c with
-    | Color.upL => by simp ; exact Fermion.leftAltContraction_apply_metric
-    | Color.downL => by simp ; exact Fermion.altLeftContraction_apply_metric
-    | Color.upR => by simp ; exact Fermion.rightAltContraction_apply_metric
-    | Color.downR => by simp ; exact Fermion.altRightContraction_apply_metric
-    | Color.up => by simp ; exact Lorentz.contrCoContraction_apply_metric
-    | Color.down => by simp ; exact Lorentz.coContrContraction_apply_metric
+    | Color.upL => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Fermion.leftAltContraction_apply_metric
+    | Color.downL => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Fermion.altLeftContraction_apply_metric
+    | Color.upR => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Fermion.rightAltContraction_apply_metric
+    | Color.downR => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Fermion.altRightContraction_apply_metric
+    | Color.up => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Lorentz.contrCoContraction_apply_metric
+    | Color.down => by
+      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
+        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
+        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
+        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
+        Action.instMonoidalCategory_associator_inv_hom,
+        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
+        Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj]
+      exact Lorentz.coContrContraction_apply_metric
 
 namespace complexLorentzTensor
 
