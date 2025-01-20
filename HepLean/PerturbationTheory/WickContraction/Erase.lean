@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Contractions.Uncontracted
+import HepLean.PerturbationTheory.WickContraction.Uncontracted
 /-!
 
 # Erasing an element from a contraction
@@ -13,12 +13,12 @@ import HepLean.PerturbationTheory.Contractions.Uncontracted
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
-namespace ContractionsNat
-variable {n : ℕ} (c : ContractionsNat n)
+namespace WickContraction
+variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open HepLean.Fin
 
-def erase (c : ContractionsNat n.succ) (i : Fin n.succ) : ContractionsNat n := by
+def erase (c : WickContraction n.succ) (i : Fin n.succ) : WickContraction n := by
   refine ⟨Finset.filter (fun x => Finset.map i.succAboveEmb x ∈ c.1) Finset.univ, ?_, ?_⟩
   · intro a ha
     simpa using c.2.1 (Finset.map i.succAboveEmb a) (by simpa using ha)
@@ -27,7 +27,7 @@ def erase (c : ContractionsNat n.succ) (i : Fin n.succ) : ContractionsNat n := b
     rw [← Finset.disjoint_map i.succAboveEmb, ← (Finset.map_injective i.succAboveEmb).eq_iff]
     exact c.2.2 _ ha _ hb
 
-lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (j : Fin n) :
+lemma mem_erase_uncontracted_iff (c : WickContraction n.succ) (i : Fin n.succ) (j : Fin n) :
     j ∈ (c.erase i).uncontracted ↔
     i.succAbove j ∈ c.uncontracted ∨ c.getDual? (i.succAbove j) = some i := by
   rw [getDual?_eq_some_iff_mem]
@@ -63,7 +63,7 @@ lemma mem_erase_uncontracted_iff (c : ContractionsNat n.succ) (i : Fin n.succ) (
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
       · exact False.elim (Fin.succAbove_ne _ _ hi.symm)
 
-lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ)
+lemma mem_not_eq_erase_of_isSome (c : WickContraction n.succ) (i : Fin n.succ)
     (h : (c.getDual? i).isSome) (ha : a ∈ c.1) (ha2 : a ≠ {i, (c.getDual? i).get h}) :
     ∃ a', a' ∈ (c.erase i).1 ∧ a = Finset.map i.succAboveEmb a' := by
   have h2a := c.2.1 a ha
@@ -92,7 +92,7 @@ lemma mem_not_eq_erase_of_isSome (c : ContractionsNat n.succ) (i : Fin n.succ)
     Fin.succAboveEmb_apply, Finset.map_singleton, true_and, and_true]
   exact ha
 
-lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
+lemma mem_not_eq_erase_of_isNone (c : WickContraction n.succ) (i : Fin n.succ)
     (h : (c.getDual? i).isNone) (ha : a ∈ c.1) :
     ∃ a', a' ∈ (c.erase i).1 ∧ a = Finset.map i.succAboveEmb a' := by
   have h2a := c.2.1 a ha
@@ -120,7 +120,7 @@ lemma mem_not_eq_erase_of_isNone (c : ContractionsNat n.succ) (i : Fin n.succ)
     Fin.succAboveEmb_apply, Finset.map_singleton, true_and, and_true]
   exact ha
 
-def getDualErase {n : ℕ} (c : ContractionsNat n.succ) (i : Fin n.succ) :
+def getDualErase {n : ℕ} (c : WickContraction n.succ) (i : Fin n.succ) :
     Option ((erase c i).uncontracted) := by
   match n with
   | 0 => exact none
@@ -135,7 +135,7 @@ def getDualErase {n : ℕ} (c : ContractionsNat n.succ) (i : Fin n.succ) :
     simp
 
 @[simp]
-lemma getDualErase_isSome_iff_getDual?_isSome (c : ContractionsNat n.succ) (i : Fin n.succ) :
+lemma getDualErase_isSome_iff_getDual?_isSome (c : WickContraction n.succ) (i : Fin n.succ) :
     (c.getDualErase i).isSome ↔ (c.getDual? i).isSome := by
   match n with
   | 0 =>
@@ -146,11 +146,11 @@ lemma getDualErase_isSome_iff_getDual?_isSome (c : ContractionsNat n.succ) (i : 
     simp [getDualErase]
 
 @[simp]
-lemma getDualErase_one (c : ContractionsNat 1) (i : Fin 1) :
+lemma getDualErase_one (c : WickContraction 1) (i : Fin 1) :
     c.getDualErase i = none := by
   fin_cases i
   simp [getDualErase]
 
-end ContractionsNat
+end WickContraction
 
 end FieldStruct

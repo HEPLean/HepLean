@@ -3,10 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Contractions.Uncontracted
+import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
 import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
-import HepLean.PerturbationTheory.Contractions.InsertList
+import HepLean.PerturbationTheory.WickContraction.InsertList
 /-!
 
 # Involution associated with a contraction
@@ -15,8 +15,8 @@ import HepLean.PerturbationTheory.Contractions.InsertList
 
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
-namespace ContractionsNat
-variable {n : ℕ} (c : ContractionsNat n)
+namespace WickContraction
+variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
@@ -27,7 +27,7 @@ def toInvolution : {f : Fin n → Fin n // Function.Involutive f} :=
     · simp [h]
     · simp [h]⟩
 
-def fromInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) : ContractionsNat n :=
+def fromInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) : WickContraction n :=
   ⟨Finset.univ.filter (fun a => a.card = 2 ∧ ∃ i, {i, f.1 i} = a), by
   intro a
   simp only [Finset.mem_filter, Finset.mem_univ, true_and, and_imp, forall_exists_index]
@@ -144,12 +144,12 @@ lemma fromInvolution_toInvolution (f : {f : Fin n → Fin n // Function.Involuti
     simp only [fromInvolution_getDual?_isSome, ne_eq, Decidable.not_not] at h
     exact id (Eq.symm h)
 
-def equivInvolution : ContractionsNat n ≃ {f : Fin n → Fin n // Function.Involutive f} where
+def equivInvolution : WickContraction n ≃ {f : Fin n → Fin n // Function.Involutive f} where
   toFun := toInvolution
   invFun := fromInvolution
   left_inv := toInvolution_fromInvolution
   right_inv := fromInvolution_toInvolution
 
-end ContractionsNat
+end WickContraction
 
 end FieldStruct

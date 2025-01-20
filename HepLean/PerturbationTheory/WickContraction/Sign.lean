@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Contractions.InsertList
+import HepLean.PerturbationTheory.WickContraction.InsertList
 
 /-!
 
@@ -14,17 +14,17 @@ import HepLean.PerturbationTheory.Contractions.InsertList
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
-namespace ContractionsNat
-variable {n : ℕ} (c : ContractionsNat n)
+namespace WickContraction
+variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
-def signFinset (c : ContractionsNat n) (i1 i2 : Fin n) : Finset (Fin n) :=
+def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   Finset.univ.filter (fun i => i1 < i ∧ i < i2 ∧
   (c.getDual? i = none ∨ ∀ (h : (c.getDual? i).isSome), i1 < (c.getDual? i).get h))
 
 lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
       (c.insertList φ φs i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
       (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
@@ -139,7 +139,7 @@ lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.
   rw [(List.toFinset_sort (· ≤ ·) h2).mpr h1]
 
 lemma stat_ofFinset_eq_one_of_isGradedObeying (φs : List 𝓕.States)
-    (a : Finset (Fin φs.length)) (c : ContractionsNat φs.length) (hg : IsGradedObeying φs c)
+    (a : Finset (Fin φs.length)) (c : WickContraction φs.length) (hg : IsGradedObeying φs c)
     (hnon : ∀ i, c.getDual? i = none → i ∉ a)
     (hsom : ∀ i, (h : (c.getDual? i).isSome) → i ∈ a → (c.getDual? i).get h ∈ a) :
     (𝓕 |>ₛ ⟨φs.get, a⟩) = 1 := by
@@ -175,7 +175,7 @@ lemma stat_ofFinset_eq_one_of_isGradedObeying (φs : List 𝓕.States)
     rfl
 
 lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)
     (j : c.uncontracted) :
     (c.insertList φ φs i (some j)).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
     (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
@@ -311,7 +311,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
         simp only [Fin.coe_cast, Option.get_map, Function.comp_apply, Fin.val_fin_lt]
         rw [Fin.succAbove_lt_succAbove_iff]
 
-def sign (φs : List 𝓕.States) (c : ContractionsNat φs.length) : ℂ :=
+def sign (φs : List 𝓕.States) (c : WickContraction φs.length) : ℂ :=
   ∏ (a : c.1), 𝓢(𝓕 |>ₛ φs[c.sndFieldOfContract a],
     𝓕 |>ₛ ⟨φs.get, c.signFinset (c.fstFieldOfContract a) (c.sndFieldOfContract a)⟩)
 
@@ -320,14 +320,14 @@ def sign (φs : List 𝓕.States) (c : ContractionsNat φs.length) : ℂ :=
 ## Sign insert
 -/
 
-def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) : ℂ :=
   ∏ (a : c.1),
     if i.succAbove (c.fstFieldOfContract a) < i ∧ i < i.succAbove (c.sndFieldOfContract a) then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
     else 1
 
-lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) :
     (c.insertList φ φs i none).sign = (c.signInsertNone φ φs i) * c.sign := by
   rw [sign]
@@ -349,7 +349,7 @@ lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
   · rw [stat_ofFinset_of_insertListLiftFinset]
 
 lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) :
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) :
   c.signInsertNone φ φs i = ∏ (a : c.1),
     (if i.succAbove (c.fstFieldOfContract a) < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
     else 1) *
@@ -382,7 +382,7 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
       omega
 
 lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
     c.signInsertNone φ φs i = ∏ (a : c.1), ∏ (x : a),
       (if i.succAbove x < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1]) else 1) := by
   rw [signInsertNone_eq_mul_fst_snd]
@@ -397,7 +397,7 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
   rfl
 
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
     c.signInsertNone φ φs i = ∏ (x : Fin φs.length),
       if (c.getDual? x).isSome then
         (if i.succAbove x < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1]) else 1)
@@ -424,7 +424,7 @@ lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.S
   exact hG
 
 lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
     c.signInsertNone φ φs i =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ((List.filter (fun x => (c.getDual? x).isSome ∧ i.succAbove x < i)
     (List.finRange φs.length)).map φs.get)) := by
@@ -448,7 +448,7 @@ lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
   · exact hG
 
 lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (hG : IsGradedObeying φs c) :
     c.signInsertNone φ φs i = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
     (fun x => (c.getDual? x).isSome ∧ i.succAbove x < i)⟩) := by
@@ -472,7 +472,7 @@ lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
 
 -/
 
-def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
   ∏ (a : c.1),
     if i.succAbove (c.fstFieldOfContract a) < i ∧ i < i.succAbove (c.sndFieldOfContract a) ∧
@@ -485,7 +485,7 @@ def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
     else
       1
 
-def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
   let a : (c.insertList φ φs i (some j)).1 :=
     congrLift (insertIdx_length_fin φ φs i).symm
@@ -495,11 +495,11 @@ def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
     (c.insertList φ φs i (some j)) ((c.insertList φ φs i (some j)).fstFieldOfContract a)
     ((c.insertList φ φs i (some j)).sndFieldOfContract a)⟩)
 
-def signInsertSome (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+def signInsertSome (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
   signInsertSomeCoef φ φs c i j * signInsertSomeProd φ φs c i j
 
-lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) :
     (c.insertList φ φs i (some j)).sign = (c.signInsertSome φ φs i j) * c.sign := by
   rw [sign]
@@ -541,7 +541,7 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : Contract
       simp_all
 
 lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
   c.signInsertSomeProd φ φs i j =
   ∏ (a : c.1),
@@ -574,7 +574,7 @@ lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
       omega
 
 lemma signInsertSomeProd_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
     (hg : IsGradedObeying φs c) :
   c.signInsertSomeProd φ φs i j =
@@ -608,7 +608,7 @@ lemma signInsertSomeProd_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States
   simp [hφj]
 
 lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
     (hg : IsGradedObeying φs c) :
   c.signInsertSomeProd φ φs i j =
@@ -641,7 +641,7 @@ lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.States) (φs : List 𝓕.States)
   exact hg
 
 lemma signInsertSomeProd_eq_list (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
     (hg : IsGradedObeying φs c) :
     c.signInsertSomeProd φ φs i j =
@@ -674,7 +674,7 @@ lemma signInsertSomeProd_eq_list (φ : 𝓕.States) (φs : List 𝓕.States)
   exact hg
 
 lemma signInsertSomeProd_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
     (hg : IsGradedObeying φs c) :
     c.signInsertSomeProd φ φs i j =
@@ -701,7 +701,7 @@ lemma signInsertSomeProd_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
   simp only [hφj, Fin.getElem_fin]
   exact hg
 
-lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
     c.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
@@ -721,7 +721,7 @@ lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : Con
   · simp [hφj]
 
 lemma stat_signFinset_insert_some_self_fst
-    (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+    (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) :
   (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
     (signFinset (c.insertList φ φs i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
@@ -798,7 +798,7 @@ lemma stat_signFinset_insert_some_self_fst
             simpa [Option.get_map] using hy2
 
 lemma stat_signFinset_insert_some_self_snd
-  (φ : 𝓕.States) (φs : List 𝓕.States) (c : ContractionsNat φs.length)
+  (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
       (i : Fin φs.length.succ) (j : c.uncontracted) :
   (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
     (signFinset (c.insertList φ φs i (some j))
@@ -880,7 +880,7 @@ lemma stat_signFinset_insert_some_self_snd
             exact Fin.succAbove_lt_succAbove_iff.mpr hy2
 
 lemma signInsertSomeCoef_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length)
+    (c : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
     c.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
@@ -896,7 +896,7 @@ lemma signInsertSomeCoef_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
   simp [hφj]
 
 lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (hk : i.succAbove k < i)
     (hg : IsGradedObeying φs c ∧ 𝓕.statesStatistic φ = 𝓕.statesStatistic φs[k.1]) :
     signInsertSome φ φs c i k *
@@ -1019,7 +1019,7 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 
   · exact hg.1
 
 lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
+    (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (hk : ¬ i.succAbove k < i)
     (hg : IsGradedObeying φs c ∧ 𝓕.statesStatistic φ = 𝓕.statesStatistic φs[k.1]) :
     signInsertSome φ φs c i k *
@@ -1125,6 +1125,6 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
   · exact hg.2
   · exact hg.1
 
-end ContractionsNat
+end WickContraction
 
 end FieldStruct

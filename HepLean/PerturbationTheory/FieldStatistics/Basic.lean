@@ -27,6 +27,7 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
+/-- Field statistics form a commuative group equivalent to `ℤ₂`. -/
 @[simp]
 instance : CommGroup FieldStatistic where
   one := bosonic

@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Contractions.Basic
+import HepLean.PerturbationTheory.WickContraction.Basic
 /-!
 
 # Uncontracted elements
@@ -13,28 +13,28 @@ import HepLean.PerturbationTheory.Contractions.Basic
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
-namespace ContractionsNat
-variable {n : ℕ} (c : ContractionsNat n)
+namespace WickContraction
+variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
 def uncontracted : Finset (Fin n) := Finset.filter (fun i => c.getDual? i = none) (Finset.univ)
 
-lemma congr_uncontracted {n m : ℕ} (c : ContractionsNat n) (h : n = m) :
+lemma congr_uncontracted {n m : ℕ} (c : WickContraction n) (h : n = m) :
     (c.congr h).uncontracted = Finset.map (finCongr h).toEmbedding c.uncontracted := by
   subst h
   simp
 
-def uncontractedCongr {c c': ContractionsNat n} (h : c = c') :
+def uncontractedCongr {c c': WickContraction n} (h : c = c') :
     Option c.uncontracted ≃ Option c'.uncontracted :=
     Equiv.optionCongr (Equiv.subtypeEquivRight (by rw [h]; simp))
 
 @[simp]
-lemma uncontractedCongr_none {c c': ContractionsNat n} (h : c = c') :
+lemma uncontractedCongr_none {c c': WickContraction n} (h : c = c') :
     (uncontractedCongr h) none = none := by
   simp [uncontractedCongr]
 
 @[simp]
-lemma uncontractedCongr_some {c c': ContractionsNat n} (h : c = c') (i : c.uncontracted) :
+lemma uncontractedCongr_some {c c': WickContraction n} (h : c = c') (i : c.uncontracted) :
     (uncontractedCongr h) (some i) = some (Equiv.subtypeEquivRight (by rw [h]; simp) i) := by
   simp [uncontractedCongr]
 
@@ -63,6 +63,6 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     apply h {i, j} hj
     simp
 
-end ContractionsNat
+end WickContraction
 
 end FieldStruct

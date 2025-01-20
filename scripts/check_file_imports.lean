@@ -67,7 +67,10 @@ def arrayImportSorted (imports : Array Import) : IO Bool :=  do
   let mut warned := false
   if ! X = X.qsort (· < ·) then
     IO.print s!"Import file is not sorted. \n"
-    println! listDif X.toList (X.qsort (· < ·)).toList
+    let ldif := listDif X.toList (X.qsort (· < ·)).toList
+    let lzip := List.zip ldif.1 ldif.2
+    let lstring := String.intercalate "\n" (lzip.map (fun x => s!"{x.1} > {x.2}"))
+    println! lstring
     warned := true
   pure warned
 

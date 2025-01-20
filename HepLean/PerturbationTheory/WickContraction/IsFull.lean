@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.Fin.Involutions
-import HepLean.PerturbationTheory.Contractions.Involutions
+import HepLean.PerturbationTheory.WickContraction.Involutions
 /-!
 
 # Full contraction
@@ -15,8 +15,8 @@ We say that a contraction is full if it has no uncontracted fields.
 
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
-namespace ContractionsNat
-variable {n : ℕ} (c : ContractionsNat n)
+namespace WickContraction
+variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
@@ -34,7 +34,7 @@ lemma isFull_iff_equivInvolution_no_fixed_point :
   simp [equivInvolution, toInvolution, uncontracted]
 
 /-- The equivalence between full contractions and fixed-point free involutions. -/
-def isFullInvolutionEquiv : {c : ContractionsNat n // IsFull c} ≃
+def isFullInvolutionEquiv : {c : WickContraction n // IsFull c} ≃
     {f : Fin n → Fin n // Function.Involutive f ∧ (∀ i, f i ≠ i)} where
   toFun c := ⟨equivInvolution c.1, by
     apply And.intro (equivInvolution c.1).2
@@ -50,17 +50,17 @@ open Nat
 
 /-- If `n` is even then the number of full contractions is `(n-1)!!`. -/
 theorem card_of_isfull_even (he : Even n) :
-    Fintype.card {c : ContractionsNat n // IsFull c} = (n - 1)‼ := by
+    Fintype.card {c : WickContraction n // IsFull c} = (n - 1)‼ := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]
   exact HepLean.Fin.involutionNoFixed_card_even n he
 
 /-- If `n` is odd then there are no full contractions. This is because
   there will always be at least one element unpaired. -/
 theorem card_of_isfull_odd (ho : Odd n) :
-    Fintype.card {c : ContractionsNat n // IsFull c} = 0 := by
+    Fintype.card {c : WickContraction n // IsFull c} = 0 := by
   rw [Fintype.card_congr (isFullInvolutionEquiv)]
   exact HepLean.Fin.involutionNoFixed_card_odd n ho
 
-end ContractionsNat
+end WickContraction
 
 end FieldStruct

@@ -38,6 +38,7 @@ def normalOrder : CreateAnnihilate → CreateAnnihilate → Prop
   | annihilate, annihilate => True
   | annihilate, create => False
 
+/-- The normal ordering on `CreateAnnihilate` is decidable. -/
 instance : (φ φ' : CreateAnnihilate) → Decidable (normalOrder φ φ')
   | create, create => isTrue True.intro
   | annihilate, annihilate => isTrue True.intro
