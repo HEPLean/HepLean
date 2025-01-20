@@ -20,7 +20,7 @@ lemma insertIdx_map {I J : Type} (f : I → J) : (i : ℕ) → (r : List I) → 
   | n+1, [], r0 => by simp
   | 0, a::as, r0 => by simp
   | n+1, a::as, r0 => by
-    simp
+    simp only [List.insertIdx_succ_cons, List.map_cons, List.cons.injEq, true_and]
     exact insertIdx_map f n as r0
 
 lemma eraseIdx_sorted {I : Type} (le : I → I → Prop) :
@@ -28,12 +28,12 @@ lemma eraseIdx_sorted {I : Type} (le : I → I → Prop) :
     List.Sorted le r → List.Sorted le (r.eraseIdx n)
   | [], _, _ => by simp
   | a::as, 0, h => by
-    simp [List.eraseIdx]
-    simp at h
+    simp only [List.eraseIdx]
+    simp only [List.sorted_cons] at h
     exact h.2
   | a::as, n+1, h => by
-    simp
-    simp at h
+    simp only [List.eraseIdx_cons_succ, List.sorted_cons]
+    simp only [List.sorted_cons] at h
     refine And.intro ?_ (eraseIdx_sorted le as n h.2)
     intro b hb
     refine h.1 _ ?_
@@ -44,15 +44,15 @@ lemma mem_eraseIdx_nodup {I : Type} (i : I) :
     i ∈ l.eraseIdx n ↔ i ∈ l ∧ i ≠ l[n]
   | [], _, _, _ => by simp
   | a1 :: as, 0, _, h => by
-    simp
+    simp only [List.eraseIdx_zero, List.tail_cons, List.mem_cons, List.getElem_cons_zero, ne_eq]
     by_cases hi : i = a1
     · subst hi
-      simp at h
+      simp only [List.nodup_cons] at h
       simp [h]
     · simp [hi]
   | a1 :: as, n+1, hn, h => by
-    simp
-    simp at h
+    simp only [List.eraseIdx_cons_succ, List.mem_cons, List.getElem_cons_succ, ne_eq]
+    simp only [List.nodup_cons] at h
     rw [mem_eraseIdx_nodup i as n (Nat.succ_lt_succ_iff.mp hn) h.2]
     simp_all only [ne_eq]
     obtain ⟨left, right⟩ := h
@@ -75,7 +75,8 @@ lemma insertIdx_eq_take_drop {I : Type} (i : I) : (r : List I) → (n : Fin r.le
   | a :: as, 0 => by
     simp
   | a :: as, ⟨n + 1, h⟩ => by
-    simp
+    simp only [List.insertIdx_succ_cons, List.take_succ_cons, List.drop_succ_cons, List.cons_append,
+      List.cons.injEq, true_and]
     exact insertIdx_eq_take_drop i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
 
 @[simp]
@@ -85,7 +86,7 @@ lemma insertIdx_length_fin {I : Type} (i : I) :
   | [], 0 => by simp
   | a :: as, 0 => by simp
   | a :: as, ⟨n + 1, h⟩ => by
-    simp
+    simp only [List.insertIdx_succ_cons, List.length_cons, Nat.succ_eq_add_one, add_left_inj]
     exact insertIdx_length_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
 
 @[simp]
@@ -97,10 +98,12 @@ lemma insertIdx_getElem_fin {I : Type} (i : I) :
   | a :: as, ⟨n + 1, h⟩, ⟨0, h0⟩ => by
     simp [Fin.succAbove, Fin.lt_def]
   | a :: as, ⟨n + 1, h⟩, ⟨m+1, hm⟩ => by
-    simp
+    simp only [List.insertIdx_succ_cons, List.length_cons, Nat.succ_eq_add_one,
+      List.getElem_cons_succ]
     conv_rhs => rw [← insertIdx_getElem_fin i as ⟨n, Nat.succ_lt_succ_iff.mp h⟩
       ⟨m, Nat.lt_of_succ_lt_succ hm⟩]
-    simp [Fin.succAbove, Fin.lt_def]
+    simp only [Fin.succAbove, Fin.castSucc_mk, Fin.lt_def, add_lt_add_iff_right, Fin.succ_mk,
+      Nat.succ_eq_add_one]
     split
     · simp_all only [List.getElem_cons_succ]
     · simp_all only [List.getElem_cons_succ]
@@ -121,7 +124,8 @@ lemma insertIdx_eraseIdx_fin {I : Type} :
   | [], k => by exact Fin.elim0 k
   | a :: as, ⟨0, h⟩ => by simp
   | a :: as, ⟨n + 1, h⟩ => by
-    simp
+    simp only [List.length_cons, Fin.getElem_fin, List.getElem_cons_succ, List.eraseIdx_cons_succ,
+      List.insertIdx_succ_cons, List.cons.injEq, true_and]
     exact insertIdx_eraseIdx_fin as ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
 lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
@@ -152,12 +156,12 @@ lemma drop_eraseIdx_succ {I : Type} :
     (n : ℕ) → (r : List I) → (hn : n < r.length) →
     r[n] :: List.drop n (List.eraseIdx r n) = List.drop n r
   | 0, _, _=> by
-    simp
+    simp only [List.eraseIdx_zero, List.drop_tail, zero_add, List.drop_one, List.drop_zero]
     rw [@List.getElem_zero]
     exact List.head_cons_tail _ _
   | n+1, [], hn => by simp at hn
   | n+1, a::as, hn => by
-    simp [List.eraseIdx_cons_succ, List.drop_succ_cons, List.cons.injEq, true_and]
+    simp only [List.getElem_cons_succ, List.eraseIdx_cons_succ, List.drop_succ_cons]
     refine drop_eraseIdx_succ n as _
 
 lemma take_insert_gt {I : Type} (i : I) :

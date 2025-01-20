@@ -278,7 +278,8 @@ lemma lt_orderedInsertPos_rel_fin {I : Type} (le1 : I → I → Prop) [Decidable
     rw [orderedInsertPos_take_eq_orderedInsert]
     rw [List.mem_take_iff_getElem]
     use n
-    simp
+    simp only [List.get_eq_getElem, Fin.is_le', inf_of_le_left, Fin.val_fin_lt, exists_prop,
+      and_true]
     exact hn
   rw [orderedInsertPos_take] at htake
   have htake' := List.mem_takeWhile_imp htake
@@ -410,7 +411,7 @@ lemma orderedInsertEquiv_monotone_fin_succ {I : Type}
     n < m := by
   rw [orderedInsertEquiv_fin_succ, orderedInsertEquiv_fin_succ] at hx
   rw [Fin.lt_def] at hx
-  simp at hx
+  simp only [Fin.eta, Fin.coe_cast, Fin.val_fin_lt] at hx
   rw [Fin.succAbove_lt_succAbove_iff] at hx
   exact hx
 
@@ -648,11 +649,13 @@ lemma insertionSortEquiv_order {α : Type} {r : α → α → Prop} [DecidableRe
     ¬ r l[i] l[j]
   | [], i, _, _, _ => Fin.elim0 i
   | a :: as, ⟨0, hi⟩, ⟨j + 1, hj⟩, hij, hij' => by
-    simp
+    simp only [List.length_cons, Fin.zero_eta, Fin.getElem_fin, Fin.val_zero,
+      List.getElem_cons_zero, List.getElem_cons_succ]
     nth_rewrite 2 [insertionSortEquiv] at hij'
-    simp at hij'
+    simp only [List.insertionSort.eq_2, List.length_cons, Nat.succ_eq_add_one, Fin.zero_eta,
+      Equiv.trans_apply, equivCons_zero] at hij'
     have hx := orderedInsertEquiv_zero r (List.insertionSort r as) a
-    simp at hx
+    simp only [List.length_cons, Fin.zero_eta] at hx
     rw [hx] at hij'
     have h1 := lt_orderedInsertPos_rel_fin r a (List.insertionSort r as) _ hij'
     rw [insertionSortEquiv] at h1
@@ -665,7 +668,8 @@ lemma insertionSortEquiv_order {α : Type} {r : α → α → Prop} [DecidableRe
     rw [← insertionSortEquiv_get] at h1
     simpa using h1
   | a :: as, ⟨i + 1, hi⟩, ⟨j + 1, hj⟩, hij, hij' => by
-    simp [insertionSortEquiv] at hij'
+    simp only [List.insertionSort.eq_2, List.length_cons, insertionSortEquiv, Nat.succ_eq_add_one,
+      Equiv.trans_apply, equivCons_succ] at hij'
     have h1 := orderedInsertEquiv_monotone_fin_succ _ _ _ _ _ hij'
     have h2 := insertionSortEquiv_order as ⟨i, Nat.succ_lt_succ_iff.mp hi⟩
       ⟨j, Nat.succ_lt_succ_iff.mp hj⟩ (by simpa using hij) h1
@@ -788,7 +792,7 @@ lemma insertionSort_eq_insertionSortMin_cons {α : Type} (r : α → α → Prop
     rhs
     rw [insertionSortMinPos]
     rw [Equiv.apply_symm_apply]
-  simp
+  simp only [List.insertionSort, List.eraseIdx_zero]
   rw [insertionSortMin_eq_insertionSort_head]
   exact (List.head_cons_tail _ _).symm
 
@@ -823,7 +827,8 @@ lemma mem_take_finrange : (n m : ℕ) → (a : Fin n) → a ∈ List.take m (Lis
   | n +1, m + 1, ⟨0, h⟩ => by
     simp [List.finRange_succ]
   | n +1, m + 1, ⟨i + 1, h⟩ => by
-    simp [List.finRange_succ, Fin.ext_iff]
+    simp only [List.finRange_succ, List.take_succ_cons, List.mem_cons, Fin.ext_iff, Fin.val_zero,
+      AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, false_or, add_lt_add_iff_right]
     rw [← List.map_take]
     rw [@List.mem_map]
     apply Iff.intro
@@ -831,11 +836,11 @@ lemma mem_take_finrange : (n m : ℕ) → (a : Fin n) → a ∈ List.take m (Lis
       obtain ⟨a, ha⟩ := h
       rw [mem_take_finrange n m a] at ha
       rw [Fin.ext_iff] at ha
-      simp_all
+      simp_all only [Fin.val_succ, add_left_inj]
       omega
     · intro h1
       use ⟨i, Nat.succ_lt_succ_iff.mp h⟩
-      simp
+      simp only [Fin.succ_mk, and_true]
       rw [mem_take_finrange n m ⟨i, Nat.succ_lt_succ_iff.mp h⟩]
       exact h1
 
