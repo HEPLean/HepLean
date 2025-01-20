@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.StateAlgebra.Basic
-import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilateSect
+import HepLean.PerturbationTheory.FieldStruct.CrAnSection
 /-!
 
 # Creation and annihlation free-algebra
@@ -113,12 +113,12 @@ lemma ofStateAlgebra_ofList_eq_ofStateList : (φs : List 𝓕.States) →
     apply Or.inl (ofStateAlgebra_ofList_eq_ofStateList φs)
 
 lemma ofStateList_sum (φs : List 𝓕.States) :
-    ofStateList φs = ∑ (s : CreateAnnihilateSect φs), ofCrAnList s.1 := by
+    ofStateList φs = ∑ (s : CrAnSection φs), ofCrAnList s.1 := by
   induction φs with
   | nil => simp
   | cons φ φs ih =>
-    rw [CreateAnnihilateSect.sum_cons]
-    dsimp only [CreateAnnihilateSect.cons, ofCrAnList_cons]
+    rw [CrAnSection.sum_cons]
+    dsimp only [CrAnSection.cons, ofCrAnList_cons]
     conv_rhs =>
       enter [2, x]
       rw [← Finset.mul_sum]

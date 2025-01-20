@@ -43,7 +43,7 @@ lemma superCommute_ofCrAnList_ofStatesList (φcas : List 𝓕.CrAnStates) (φs :
   rw [map_sum]
   conv_lhs =>
     enter [2, x]
-    rw [superCommute_ofCrAnList, CreateAnnihilateSect.statistics_eq_state_statistics,
+    rw [superCommute_ofCrAnList, CrAnSection.statistics_eq_state_statistics,
       ofCrAnList_append, ofCrAnList_append]
   rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.smul_sum,
     ← Finset.sum_mul, ← ofStateList_sum]
@@ -58,7 +58,7 @@ lemma superCommute_ofStateList_ofStatesList (φ : List 𝓕.States) (φs : List 
   conv_lhs =>
     enter [2, x]
     rw [superCommute_ofCrAnList_ofStatesList]
-  simp only [instCommGroup.eq_1, CreateAnnihilateSect.statistics_eq_state_statistics,
+  simp only [instCommGroup.eq_1, CrAnSection.statistics_eq_state_statistics,
     Algebra.smul_mul_assoc, Finset.sum_sub_distrib]
   rw [← Finset.sum_mul, ← Finset.smul_sum, ← Finset.mul_sum, ← ofStateList_sum]
 

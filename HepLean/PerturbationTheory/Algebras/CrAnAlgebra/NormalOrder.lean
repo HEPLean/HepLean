@@ -504,7 +504,7 @@ lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs : List 𝓕.CrAnState
   congr
   funext n
   rw [ofCrAnList_superCommute_normalOrder_ofCrAnList,
-    CreateAnnihilateSect.statistics_eq_state_statistics]
+    CrAnSection.statistics_eq_state_statistics]
 
 lemma ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute (φs : List 𝓕.CrAnStates)
     (φs' : List 𝓕.States ):

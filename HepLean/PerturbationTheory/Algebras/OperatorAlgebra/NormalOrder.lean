@@ -291,15 +291,15 @@ lemma crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.C
     rw [ofStateList_sum, map_sum, map_sum, map_sum]
     enter [2, s]
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofCrAnList_eq_sum,
-      CreateAnnihilateSect.sum_over_length]
+      CrAnSection.sum_over_length]
     enter [2, n]
-    rw [CreateAnnihilateSect.take_statistics_eq_take_state_statistics, smul_mul_assoc]
+    rw [CrAnSection.take_statistics_eq_take_state_statistics, smul_mul_assoc]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun n _ => ?_)
   simp only [instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin,
-    CreateAnnihilateSect.sum_eraseIdxEquiv n _ n.prop,
-    CreateAnnihilateSect.eraseIdxEquiv_symm_getElem,
-    CreateAnnihilateSect.eraseIdxEquiv_symm_eraseIdx, ← Finset.smul_sum, Algebra.smul_mul_assoc]
+    CrAnSection.sum_eraseIdxEquiv n _ n.prop,
+    CrAnSection.eraseIdxEquiv_symm_getElem,
+    CrAnSection.eraseIdxEquiv_symm_eraseIdx, ← Finset.smul_sum, Algebra.smul_mul_assoc]
   conv_lhs =>
     enter [2, 2, n]
     rw [← Finset.mul_sum]
