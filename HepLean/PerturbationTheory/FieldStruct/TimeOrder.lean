@@ -30,6 +30,8 @@ def timeOrderRel : 𝓕.States → 𝓕.States → Prop
   | States.negAsymp _, States.position _ => False
   | States.negAsymp _, States.negAsymp _ => True
 
+/-- The relation `timeOrderRel` is decidable, but not computablly so due to
+  `Real.decidableLE`. -/
 noncomputable instance : (φ φ' : 𝓕.States) → Decidable (timeOrderRel φ φ')
   | States.posAsymp _, _ => isTrue True.intro
   | States.position φ0, States.position φ1 => inferInstanceAs (Decidable (φ1.2 0 ≤ φ0.2 0))
@@ -59,6 +61,11 @@ noncomputable section
 open FieldStatistic
 open HepLean.List
 
+/-- Given a list `φ :: φs` of states, the (zero-based) position of the state which is
+  of maximum time. For example
+  - for the list `[φ1(t = 4), φ2(t = 5),  φ3(t = 3),  φ4(t = 5)]` this would return `1`.
+  This is defined for a list `φ :: φs` instead of `φs` to ensure that such a position exists.
+-/
 def maxTimeFieldPos (φ : 𝓕.States) (φs : List 𝓕.States) : ℕ :=
   insertionSortMinPos timeOrderRel φ φs
 
@@ -66,9 +73,20 @@ lemma maxTimeFieldPos_lt_length (φ : 𝓕.States) (φs : List 𝓕.States) :
     maxTimeFieldPos φ φs < (φ :: φs).length := by
   simp [maxTimeFieldPos]
 
+/-- Given a list `φ :: φs` of states, the left-most state of maximum time, if there are more. For example
+  As an example:
+  - for the list `[φ1(t = 4), φ2(t = 5),  φ3(t = 3),  φ4(t = 5)]` this would return `φ2(t = 5)`.
+  It is the state at the position `maxTimeFieldPos φ φs`.
+-/
 def maxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : 𝓕.States :=
   insertionSortMin timeOrderRel φ φs
 
+/-- Given a list `φ :: φs` of states, the list with the left-most state of maximum
+  time removed.
+  As an example:
+  - for the list `[φ1(t = 4), φ2(t = 5),  φ3(t = 3),  φ4(t = 5)]` this would return
+    `[φ1(t = 4), φ3(t = 3),  φ4(t = 5)]`.
+-/
 def eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.States) : List 𝓕.States :=
   insertionSortDropMinPos timeOrderRel φ φs
 
@@ -82,6 +100,11 @@ lemma maxTimeFieldPos_lt_eraseMaxTimeField_length_succ (φ : 𝓕.States) (φs :
   simp only [eraseMaxTimeField_length, Nat.succ_eq_add_one]
   exact maxTimeFieldPos_lt_length φ φs
 
+/-- Given a list `φ :: φs` of states, the position of the left-most state of maximum
+  time as an eement of `Fin (eraseMaxTimeField φ φs).length.succ`.
+  As an example:
+  - for the list `[φ1(t = 4), φ2(t = 5),  φ3(t = 3),  φ4(t = 5)]` this would return `⟨1,...⟩`.
+-/
 def maxTimeFieldPosFin (φ : 𝓕.States) (φs : List 𝓕.States) :
     Fin (eraseMaxTimeField φ φs).length.succ :=
   insertionSortMinPosFin timeOrderRel φ φs
@@ -123,6 +146,10 @@ lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.St
   rw [← timeOrderSign, ← maxTimeField]
   rfl
 
+/-- The time ordering of a list of states.
+  A schematic example is:
+  - `normalOrderList [φ1(t = 4), φ2(t = 5),  φ3(t = 3),  φ4(t = 5)]`  is equal to
+    `[φ2(t = 5), φ4(t = 5), φ1(t = 4), φ3(t = 3)]` -/
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
   List.insertionSort 𝓕.timeOrderRel φs
 

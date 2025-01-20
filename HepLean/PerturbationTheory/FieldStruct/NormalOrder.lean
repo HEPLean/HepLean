@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.Basic
 import HepLean.PerturbationTheory.Koszul.KoszulSign
+import HepLean.PerturbationTheory.FieldStruct.Filters
 /-!
 
 # Normal Ordering
@@ -22,7 +23,11 @@ variable {𝓕 : FieldStruct}
 
 /-- The normal ordering relation on creation and annihlation operators.
   For a list of creation and annihlation states, this relation is designed
-  to move all creation states to the left, and all annihlation operators to the right. -/
+  to move all creation states to the left, and all annihlation operators to the right.
+  We have that `normalOrderRel φ1 φ2` is true if
+  - `φ1` is a creation operator
+  or
+  - `φ2` is an annihlate operator. -/
 def normalOrderRel : 𝓕.CrAnStates → 𝓕.CrAnStates → Prop :=
   fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)
 
@@ -34,15 +39,19 @@ instance : IsTotal 𝓕.CrAnStates 𝓕.normalOrderRel where
 instance : IsTrans 𝓕.CrAnStates 𝓕.normalOrderRel where
   trans _ _ _ := fun h h' => IsTrans.trans (α := CreateAnnihilate) _ _ _ h h'
 
+/-- A decidable instance on the normal ordering relation. -/
 instance (φ φ' : 𝓕.CrAnStates) : Decidable (normalOrderRel φ φ') :=
-  CreateAnnihilate.instDecidableNormalOrder (𝓕 |>ᶜ φ)
-    (𝓕 |>ᶜ φ')
+  CreateAnnihilate.instDecidableNormalOrder (𝓕 |>ᶜ φ) (𝓕 |>ᶜ φ')
 
 /-!
 
 ## Normal order sign.
 
 -/
+
+/-- The sign associated with putting a list of creation and annihlation states into normal order
+  (with the creation operators on the left).
+  We pick up a minus sign for every fermion paired crossed. -/
 def normalOrderSign (φs : List 𝓕.CrAnStates) : ℂ :=
   Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderRel φs
 
@@ -228,6 +237,10 @@ open FieldStatistic
 
 -/
 
+/-- The normal ordering of a list of creation and annihilation states.
+  To give some schematic. For example:
+  - `normalOrderList [φ1c, φ1a, φ2c, φ2a] = [φ1c, φ2c, φ1a, φ2a]`
+-/
 def normalOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
   List.insertionSort 𝓕.normalOrderRel φs
 
@@ -312,7 +325,13 @@ lemma normalOrderList_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     dsimp only [normalOrderList] at hi
     rw [hi]
 
--- HepLean.List.insertionSortEquiv
+/-- For a list of creation and annihlation states, the equivalence between
+  `Fin φs.length` and `Fin (normalOrderList φs).length` taking each position in `φs`
+  to it's corresponding position in the normal ordered list. This assumes that
+  we are using the insertion sort method.
+  For example:
+  - For  `[φ1c, φ1a, φ2c, φ2a]` this equivalence sends `0 ↦ 0`, `1 ↦ 2`, `2 ↦ 1`, `3 ↦ 3`.
+-/
 def normalOrderEquiv {φs : List 𝓕.CrAnStates} : Fin φs.length ≃ Fin (normalOrderList φs).length :=
   HepLean.List.insertionSortEquiv 𝓕.normalOrderRel φs
 
@@ -342,69 +361,6 @@ lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnStates) (n : Fin φs.length)
     𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv n))) := by
   rw [normalOrderSign, Wick.koszulSign_eraseIdx, ← normalOrderSign]
   rfl
-
-def createFilter (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
-  List.filter (fun φ => 𝓕 |>ᶜ φ = CreateAnnihilate.create) φs
-
-lemma createFilter_cons_create {φ : 𝓕.CrAnStates}
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
-    createFilter (φ :: φs) = φ :: createFilter φs := by
-  simp only [createFilter]
-  rw [List.filter_cons_of_pos]
-  simp [hφ]
-
-lemma createFilter_cons_annihilate {φ : 𝓕.CrAnStates}
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnStates) :
-    createFilter (φ :: φs) = createFilter φs := by
-  simp only [createFilter]
-  rw [List.filter_cons_of_neg]
-  simp [hφ]
-
-lemma createFilter_append (φs φs' : List 𝓕.CrAnStates) :
-    createFilter (φs ++ φs') = createFilter φs ++ createFilter φs' := by
-  rw [createFilter, List.filter_append]
-  rfl
-
-lemma createFilter_singleton_create (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) :
-    createFilter [φ] = [φ] := by
-  simp [createFilter, hφ]
-
-lemma createFilter_singleton_annihilate (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) : createFilter [φ] = [] := by
-  simp [createFilter, hφ]
-
-def annihilateFilter (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
-  List.filter (fun φ => 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) φs
-
-lemma annihilateFilter_cons_create {φ : 𝓕.CrAnStates}
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
-    annihilateFilter (φ :: φs) = annihilateFilter φs := by
-  simp only [annihilateFilter]
-  rw [List.filter_cons_of_neg]
-  simp [hφ]
-
-lemma annihilateFilter_cons_annihilate {φ : 𝓕.CrAnStates}
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnStates) :
-    annihilateFilter (φ :: φs) = φ :: annihilateFilter φs := by
-  simp only [annihilateFilter]
-  rw [List.filter_cons_of_pos]
-  simp [hφ]
-
-lemma annihilateFilter_append (φs φs' : List 𝓕.CrAnStates) :
-    annihilateFilter (φs ++ φs') = annihilateFilter φs ++ annihilateFilter φs' := by
-  rw [annihilateFilter, List.filter_append]
-  rfl
-
-lemma annihilateFilter_singleton_create (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) :
-    annihilateFilter [φ] = [] := by
-  simp [annihilateFilter, hφ]
-
-lemma annihilateFilter_singleton_annihilate (φ : 𝓕.CrAnStates)
-    (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) :
-    annihilateFilter [φ] = [φ] := by
-  simp [annihilateFilter, hφ]
 
 lemma orderedInsert_createFilter_append_annihilate (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) : (φs φs' : List 𝓕.CrAnStates) →
