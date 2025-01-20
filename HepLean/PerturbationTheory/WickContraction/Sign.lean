@@ -11,7 +11,7 @@ import HepLean.PerturbationTheory.WickContraction.InsertList
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -1126,5 +1126,3 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
   · exact hg.1
 
 end WickContraction
-
-end FieldStruct

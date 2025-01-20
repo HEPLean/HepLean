@@ -10,7 +10,7 @@ import HepLean.PerturbationTheory.WickContraction.Erase
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -710,5 +710,3 @@ lemma insertLiftSome_bijective {c : WickContraction n} (i : Fin n.succ) (j : c.u
   ⟨insertLiftSome_injective i j, insertLiftSome_surjective i j⟩
 
 end WickContraction
-
-end FieldStruct

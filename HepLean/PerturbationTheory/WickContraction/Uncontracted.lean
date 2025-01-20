@@ -9,8 +9,7 @@ import HepLean.PerturbationTheory.WickContraction.Basic
 # Uncontracted elements
 
 -/
-
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -64,5 +63,3 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     simp
 
 end WickContraction
-
-end FieldStruct

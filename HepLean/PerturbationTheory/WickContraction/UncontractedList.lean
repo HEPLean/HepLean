@@ -10,7 +10,7 @@ import HepLean.PerturbationTheory.WickContraction.ExtractEquiv
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -476,5 +476,3 @@ lemma filter_uncontractedList (c : WickContraction n) (p : Fin n → Prop) [Deci
   rw [← hx, h3]
 
 end WickContraction
-
-end FieldStruct

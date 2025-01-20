@@ -10,7 +10,7 @@ import HepLean.PerturbationTheory.WickContraction.Uncontracted
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -152,5 +152,3 @@ lemma getDualErase_one (c : WickContraction 1) (i : Fin 1) :
   simp [getDualErase]
 
 end WickContraction
-
-end FieldStruct

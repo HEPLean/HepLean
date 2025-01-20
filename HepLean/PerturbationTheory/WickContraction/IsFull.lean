@@ -13,7 +13,7 @@ We say that a contraction is full if it has no uncontracted fields.
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
@@ -62,5 +62,3 @@ theorem card_of_isfull_odd (ho : Odd n) :
   exact HepLean.Fin.involutionNoFixed_card_odd n ho
 
 end WickContraction
-
-end FieldStruct

@@ -10,7 +10,7 @@ import HepLean.PerturbationTheory.WickContraction.UncontractedList
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -287,5 +287,3 @@ lemma insertLift_sum (φ : 𝓕.States) {φs : List 𝓕.States}
   rfl
 
 end WickContraction
-
-end FieldStruct

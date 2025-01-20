@@ -13,7 +13,7 @@ import HepLean.PerturbationTheory.WickContraction.InsertList
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
@@ -151,5 +151,3 @@ def equivInvolution : WickContraction n ≃ {f : Fin n → Fin n // Function.Inv
   right_inv := fromInvolution_toInvolution
 
 end WickContraction
-
-end FieldStruct

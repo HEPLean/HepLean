@@ -11,7 +11,7 @@ import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -160,5 +160,3 @@ lemma timeContract_of_not_isGradedObeying (𝓞 : 𝓕.OperatorAlgebra) (φs : L
   simp [ha2]
 
 end WickContraction
-
-end FieldStruct

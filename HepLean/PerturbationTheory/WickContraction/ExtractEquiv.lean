@@ -10,7 +10,7 @@ import HepLean.PerturbationTheory.WickContraction.Insert
 
 -/
 
-namespace FieldStruct
+open FieldStruct
 variable {𝓕 : FieldStruct}
 
 namespace WickContraction
@@ -101,5 +101,3 @@ lemma sum_extractEquiv_congr [AddCommMonoid M] {n m : ℕ} (i : Fin n) (f : Wick
   rfl
 
 end WickContraction
-
-end FieldStruct

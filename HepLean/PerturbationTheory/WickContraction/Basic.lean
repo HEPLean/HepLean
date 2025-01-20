@@ -10,8 +10,8 @@ import HepLean.Mathematics.List.InsertIdx
 # Contractions
 
 -/
+open FieldStruct
 
-namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
 def WickContraction (n : ℕ) : Type :=
@@ -495,4 +495,3 @@ def sigmaContractedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSom
     rfl
 
 end WickContraction
-end FieldStruct
