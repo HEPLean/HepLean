@@ -146,8 +146,7 @@ lemma timerOrderSign_of_eraseMaxTimeField (φ : 𝓕.States) (φs : List 𝓕.St
   rw [← timeOrderSign, ← maxTimeField]
   rfl
 
-/-- The time ordering of a list of states.
-  A schematic example is:
+/-- The time ordering of a list of states. A schematic example is:
   - `normalOrderList [φ1(t = 4), φ2(t = 5), φ3(t = 3), φ4(t = 5)]` is equal to
     `[φ2(t = 5), φ4(t = 5), φ1(t = 4), φ3(t = 3)]` -/
 def timeOrderList (φs : List 𝓕.States) : List 𝓕.States :=
