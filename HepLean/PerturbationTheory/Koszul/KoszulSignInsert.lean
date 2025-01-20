@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Wick.Signs.InsertSign
+import HepLean.PerturbationTheory.FieldStatistics.ExchangeSign
 /-!
 
 # Koszul sign insert
@@ -153,11 +153,19 @@ lemma koszulSignInsert_eq_sort (φs : List 𝓕) (φ : 𝓕) :
   apply koszulSignInsert_eq_perm
   exact List.Perm.symm (List.perm_insertionSort le φs)
 
-lemma koszulSignInsert_eq_insertSign [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
-    koszulSignInsert q le φ φs = insertSign q (orderedInsertPos le (List.insertionSort le φs) φ)
-      φ (List.insertionSort le φs) := by
+lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
+    koszulSignInsert q le φ φs = 𝓢(q φ, ofList q
+    ((List.insertionSort le φs).take (orderedInsertPos le (List.insertionSort le φs) φ))) := by
   rw [koszulSignInsert_eq_cons, koszulSignInsert_eq_sort, koszulSignInsert_eq_filter,
-    koszulSignInsert_eq_grade, insertSign, superCommuteCoef]
+    koszulSignInsert_eq_grade]
+  have hx : (exchangeSign (q φ))
+      (ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ))
+      (List.insertionSort le φs))) = if FieldStatistic.ofList q [φ] = fermionic ∧
+      FieldStatistic.ofList q (List.take (↑(orderedInsertPos le (List.insertionSort le φs) φ))
+      (List.insertionSort le φs)) = fermionic then - 1 else 1 := by
+    rw [exchangeSign_eq_if]
+    simp
+  rw [hx]
   congr
   simp only [List.filter_filter, Bool.and_self]
   rw [List.insertionSort]
@@ -206,14 +214,14 @@ def koszulSignCons (φ0 φ1 : 𝓕) : ℂ :=
   if le φ0 φ1 then 1 else
   if q φ0 = fermionic ∧ q φ1 = fermionic then -1 else 1
 
-lemma koszulSignCons_eq_superComuteCoef (φ0 φ1 : 𝓕) : koszulSignCons q le φ0 φ1 =
-    if le φ0 φ1 then 1 else superCommuteCoef q [φ0] [φ1] := by
-  simp only [koszulSignCons, Fin.isValue, superCommuteCoef, ofList, ite_eq_right_iff, zero_ne_one,
+lemma koszulSignCons_eq_exchangeSign (φ0 φ1 : 𝓕) : koszulSignCons q le φ0 φ1 =
+    if le φ0 φ1 then 1 else 𝓢(q φ0, q φ1) := by
+  simp only [koszulSignCons, Fin.isValue, ofList, ite_eq_right_iff, zero_ne_one,
     imp_false]
   congr 1
   by_cases h0 : q φ0 = fermionic
   · by_cases h1 : q φ1 = fermionic
-    · simp [h0, h1]
+    · simp [h0, h1, exchangeSign]
     · have h1 : q φ1 = bosonic := (neq_fermionic_iff_eq_bosonic (q φ1)).mp h1
       simp [h0, h1]
   · have h0 : q φ0 = bosonic := (neq_fermionic_iff_eq_bosonic (q φ0)).mp h0
