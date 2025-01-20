@@ -137,7 +137,8 @@ lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     normalOrder (a * ofCrAnState φa * ofCrAnState φc * b) := by
   rw [mul_assoc, mul_assoc, mul_assoc, mul_assoc]
   change (normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φc * (ofCrAnState φa * b))) a =
-    (smulLinearMap (𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa)) ∘ₗ normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φa * (ofCrAnState φc * b))) a
+    (smulLinearMap (𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa)) ∘ₗ
+    normalOrder ∘ₗ mulLinearMap.flip (ofCrAnState φa * (ofCrAnState φc * b))) a
   apply LinearMap.congr_fun
   apply ofCrAnListBasis.ext
   intro l

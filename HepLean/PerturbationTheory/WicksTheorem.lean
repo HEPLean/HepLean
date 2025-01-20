@@ -149,8 +149,8 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
 
 lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : ContractionsNat φs.length) (k : c.uncontracted)
-    (hlt : ∀ (k : Fin φs.length), timeOrderProp φ φs[k])
-    (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬ timeOrderProp φs[k] φ) :
+    (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
+    (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬ timeOrderRel φs[k] φ) :
     (c.insertList φ φs i (some k)).sign • (c.insertList φ φs i (some k)).timeContract 𝓞
     * 𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
       (c.insertList φ φs i (some k)).uncontractedList))) =
@@ -212,8 +212,8 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       exact hg'
 
 lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin φs.length.succ)
-    (c : ContractionsNat φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderProp φ φs[k])
-    (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderProp φs[k] φ) :
+    (c : ContractionsNat φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
+    (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderRel φs[k] φ) :
     (c.sign • c.timeContract 𝓞) * 𝓞.crAnF ((CrAnAlgebra.ofState φ) *
       normalOrder (ofStateList (c.uncontractedList.map φs.get))) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩) •
@@ -312,7 +312,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
       List.nodup_finRange (φs.length + 1)
   · refine List.Nodup.map ?_ ?_
     · refine Function.Injective.comp ?hf.hg Fin.succAbove_right_injective
-      exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderProp φ φs))
+      exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderRel φ φs))
     · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2)
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)

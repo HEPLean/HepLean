@@ -61,7 +61,7 @@ open FieldStatistic
 lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (ht : 𝓕.timeOrderProp φ φs[k.1]) (hik : i < i.succAbove k) :
+    (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x < k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
@@ -73,7 +73,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
     List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
-    rw [𝓞.timeContract_of_timeOrderProp]
+    rw [𝓞.timeContract_of_timeOrderRel]
     trans (1 : ℂ) • (𝓞.crAnF ((CrAnAlgebra.superCommute
       (CrAnAlgebra.anPart (StateAlgebra.ofState φ))) (CrAnAlgebra.ofState φs[k.1])) *
       ↑(timeContract 𝓞 c))
@@ -96,7 +96,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_lt
 lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : ContractionsNat φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (ht : ¬ 𝓕.timeOrderProp φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
+    (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractMemList φ (List.map φs.get c.uncontractedList)
@@ -108,7 +108,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
     List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
   simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
-  rw [𝓞.timeContract_of_not_timeOrderProp, 𝓞.timeContract_of_timeOrderProp]
+  rw [𝓞.timeContract_of_not_timeOrderRel, 𝓞.timeContract_of_timeOrderRel]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
   congr
   have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
@@ -141,7 +141,7 @@ lemma timeConract_insertList_some_eq_mul_contractMemList_not_lt
       omega
     · have h2' := h.2 h1.1 (by omega) h1.1
       omega
-  have ht := IsTotal.total (r := timeOrderProp) φs[k.1] φ
+  have ht := IsTotal.total (r := timeOrderRel) φs[k.1] φ
   simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
   exact ht
 

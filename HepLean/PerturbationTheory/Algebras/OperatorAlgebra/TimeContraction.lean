@@ -33,7 +33,7 @@ lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
     (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
     + (-1 : ℂ) • normalOrder (ofState φ * ofState ψ)) := by rfl
 
-lemma timeContract_of_timeOrderProp (φ ψ : 𝓕.States) (h : timeOrderProp φ ψ) :
+lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
     𝓞.timeContract φ ψ = 𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState ψ⟩ₛca) := by
   conv_rhs =>
     rw [ofState_eq_crPart_add_anPart]
@@ -47,7 +47,7 @@ lemma timeContract_of_timeOrderProp (φ ψ : 𝓕.States) (h : timeOrderProp φ 
   simp only [mul_add, add_mul]
   abel_nf
 
-lemma timeContract_of_not_timeOrderProp (φ ψ : 𝓕.States) (h : ¬ timeOrderProp φ ψ) :
+lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.States) (h : ¬ timeOrderRel φ ψ) :
     𝓞.timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓞.timeContract ψ φ := by
   rw [timeContract_eq_smul]
   simp only [Int.reduceNeg, one_smul, map_add]
@@ -59,28 +59,28 @@ lemma timeContract_of_not_timeOrderProp (φ ψ : 𝓕.States) (h : ¬ timeOrderP
   rw [smul_smul, smul_smul, mul_comm]
 
 lemma timeContract_mem_center (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ ∈ Subalgebra.center ℂ 𝓞.A := by
-  by_cases h : timeOrderProp φ ψ
-  · rw [timeContract_of_timeOrderProp _ _ _ h]
+  by_cases h : timeOrderRel φ ψ
+  · rw [timeContract_of_timeOrderRel _ _ _ h]
     exact 𝓞.crAnF_superCommute_anPart_ofState_mem_center _ _
-  · rw [timeContract_of_not_timeOrderProp _ _ _ h]
+  · rw [timeContract_of_not_timeOrderRel _ _ _ h]
     refine Subalgebra.smul_mem (Subalgebra.center ℂ 𝓞.A) ?_ 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ)
-    rw [timeContract_of_timeOrderProp]
+    rw [timeContract_of_timeOrderRel]
     exact 𝓞.crAnF_superCommute_anPart_ofState_mem_center _ _
-    have h1 := IsTotal.total (r := 𝓕.timeOrderProp) φ ψ
+    have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
 lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) :
     𝓞.timeContract φ ψ = 0 := by
-  by_cases h1 : timeOrderProp φ ψ
-  · rw [timeContract_of_timeOrderProp _ _ _ h1]
+  by_cases h1 : timeOrderRel φ ψ
+  · rw [timeContract_of_timeOrderRel _ _ _ h1]
     rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
     exact h
-  · rw [timeContract_of_not_timeOrderProp _ _ _ h1]
-    rw [timeContract_of_timeOrderProp _ _ _]
+  · rw [timeContract_of_not_timeOrderRel _ _ _ h1]
+    rw [timeContract_of_timeOrderRel _ _ _]
     rw [crAnF_superCommute_anPart_ofState_diff_grade_zero]
     simp only [instCommGroup.eq_1, smul_zero]
     exact h.symm
-    have ht := IsTotal.total (r := 𝓕.timeOrderProp) φ ψ
+    have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
 end OperatorAlgebra

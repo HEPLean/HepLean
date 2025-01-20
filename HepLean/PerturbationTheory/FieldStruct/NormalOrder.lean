@@ -20,20 +20,21 @@ algebra 𝓞.A.
 namespace FieldStruct
 variable {𝓕 : FieldStruct}
 
-/-- The normal ordering on creation and annihlation states. -/
-def normalOrderProp : 𝓕.CrAnStates → 𝓕.CrAnStates → Prop :=
-  fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a)
-    (𝓕 |>ᶜ b)
+/-- The normal ordering relation on creation and annihlation operators.
+  For a list of creation and annihlation states, this relation is designed
+  to move all creation states to the left, and all annihlation operators to the right. -/
+def normalOrderRel : 𝓕.CrAnStates → 𝓕.CrAnStates → Prop :=
+  fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)
 
 /-- Normal ordering is total. -/
-instance : IsTotal 𝓕.CrAnStates 𝓕.normalOrderProp where
+instance : IsTotal 𝓕.CrAnStates 𝓕.normalOrderRel where
   total _ _ := total_of CreateAnnihilate.normalOrder _ _
 
 /-- Normal ordering is transitive. -/
-instance : IsTrans 𝓕.CrAnStates 𝓕.normalOrderProp where
+instance : IsTrans 𝓕.CrAnStates 𝓕.normalOrderRel where
   trans _ _ _ := fun h h' => IsTrans.trans (α := CreateAnnihilate) _ _ _ h h'
 
-instance (φ φ' : 𝓕.CrAnStates) : Decidable (normalOrderProp φ φ') :=
+instance (φ φ' : 𝓕.CrAnStates) : Decidable (normalOrderRel φ φ') :=
   CreateAnnihilate.instDecidableNormalOrder (𝓕 |>ᶜ φ)
     (𝓕 |>ᶜ φ')
 
@@ -43,7 +44,7 @@ instance (φ φ' : 𝓕.CrAnStates) : Decidable (normalOrderProp φ φ') :=
 
 -/
 def normalOrderSign (φs : List 𝓕.CrAnStates) : ℂ :=
-  Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderProp φs
+  Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderRel φs
 
 @[simp]
 lemma normalOrderSign_mul_self (φs : List 𝓕.CrAnStates) :
@@ -52,13 +53,13 @@ lemma normalOrderSign_mul_self (φs : List 𝓕.CrAnStates) :
 
 lemma koszulSignInsert_create (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) : (φs : List 𝓕.CrAnStates) →
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ φs = 1
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ φs = 1
   | [] => rfl
   | φ' :: φs => by
     dsimp only [Wick.koszulSignInsert]
     rw [if_pos]
     · exact koszulSignInsert_create φ hφ φs
-    · dsimp only [normalOrderProp]
+    · dsimp only [normalOrderRel]
       rw [hφ]
       dsimp [CreateAnnihilate.normalOrder]
 
@@ -82,10 +83,10 @@ lemma normalOrderSign_nil :
 lemma koszulSignInsert_append_annihilate (φ' φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) :
     (φs : List 𝓕.CrAnStates) →
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ' (φs ++ [φ]) =
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ' φs
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ' (φs ++ [φ]) =
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ' φs
   | [] => by
-    simp only [Wick.koszulSignInsert, normalOrderProp, hφ, ite_eq_left_iff,
+    simp only [Wick.koszulSignInsert, normalOrderRel, hφ, ite_eq_left_iff,
       CreateAnnihilate.not_normalOrder_annihilate_iff_false, ite_eq_right_iff, and_imp,
       IsEmpty.forall_iff]
   | φ'' :: φs => by
@@ -107,14 +108,14 @@ lemma koszulSignInsert_annihilate_cons_create (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnStates) :
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φa (φc :: φs)
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φa (φc :: φs)
     = FieldStatistic.pairedSign (𝓕.crAnStatistics φc) (𝓕.crAnStatistics φa) *
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φa φs := by
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φa φs := by
   rw [Wick.koszulSignInsert_cons]
   simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_right_iff]
   apply Or.inl
   rw [Wick.koszulSignCons, if_neg, FieldStatistic.pairedSign_symm, FieldStatistic.pairedSign_eq_if]
-  rw [normalOrderProp, hφa, hφc]
+  rw [normalOrderRel, hφa, hφc]
   simp [CreateAnnihilate.normalOrder]
 
 lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
@@ -133,8 +134,8 @@ lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
   rfl
 
 lemma koszulSignInsert_swap (φ φc φa : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
-    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ (φs ++ φa :: φc :: φs')
-    = Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderProp φ (φs ++ φc :: φa :: φs') := by
+    Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ (φs ++ φa :: φc :: φs')
+    = Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ (φs ++ φc :: φa :: φs') := by
   apply Wick.koszulSignInsert_eq_perm
   refine List.Perm.append_left φs ?h.a
   exact List.Perm.swap φc φa φs'
@@ -197,8 +198,8 @@ lemma normalOrderSign_swap_annihilate_annihilate_fst (φa φa' : 𝓕.CrAnStates
   congr 1
   · dsimp only [Wick.koszulSignCons]
     rw [if_pos, if_pos]
-    · simp [normalOrderProp, hφa, hφa', CreateAnnihilate.normalOrder]
-    · simp [normalOrderProp, hφa, hφa', CreateAnnihilate.normalOrder]
+    · simp [normalOrderRel, hφa, hφa', CreateAnnihilate.normalOrder]
+    · simp [normalOrderRel, hφa, hφa', CreateAnnihilate.normalOrder]
   · rw [NonUnitalNormedCommRing.mul_comm]
 
 lemma normalOrderSign_swap_annihilate_annihilate (φa φa' : 𝓕.CrAnStates)
@@ -228,7 +229,7 @@ open FieldStatistic
 -/
 
 def normalOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
-  List.insertionSort 𝓕.normalOrderProp φs
+  List.insertionSort 𝓕.normalOrderRel φs
 
 @[simp]
 lemma normalOrderList_nil : normalOrderList (𝓕 := 𝓕) [] = [] := by
@@ -241,12 +242,12 @@ lemma normalOrderList_statistics (φs : List 𝓕.CrAnStates) :
 
 lemma orderedInsert_create (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) :
-    (φs : List 𝓕.CrAnStates) → List.orderedInsert normalOrderProp φ φs = φ :: φs
+    (φs : List 𝓕.CrAnStates) → List.orderedInsert normalOrderRel φ φs = φ :: φs
   | [] => rfl
   | φ' :: φs => by
     dsimp only [List.orderedInsert.eq_2]
     rw [if_pos]
-    dsimp only [normalOrderProp]
+    dsimp only [normalOrderRel]
     rw [hφ]
     dsimp [CreateAnnihilate.normalOrder]
 
@@ -258,10 +259,10 @@ lemma normalOrderList_cons_create (φ : 𝓕.CrAnStates)
 
 lemma orderedInsert_append_annihilate (φ' φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) :
-    (φs : List 𝓕.CrAnStates) → List.orderedInsert normalOrderProp φ' (φs ++ [φ]) =
-    List.orderedInsert normalOrderProp φ' φs ++ [φ]
+    (φs : List 𝓕.CrAnStates) → List.orderedInsert normalOrderRel φ' (φs ++ [φ]) =
+    List.orderedInsert normalOrderRel φ' φs ++ [φ]
   | [] => by
-    simp [Wick.koszulSignInsert, normalOrderProp, hφ]
+    simp [Wick.koszulSignInsert, normalOrderRel, hφ]
   | φ'' :: φs => by
     dsimp only [List.cons_append, List.orderedInsert.eq_2]
     have hi := orderedInsert_append_annihilate φ' φ hφ φs
@@ -295,7 +296,7 @@ lemma normalOrder_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
   dsimp only [List.orderedInsert.eq_2]
   split
   · rename_i h
-    rw [normalOrderProp, hφa, hφc] at h
+    rw [normalOrderRel, hφa, hφc] at h
     dsimp [CreateAnnihilate.normalOrder] at h
   · rfl
 
@@ -313,7 +314,7 @@ lemma normalOrderList_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
 
 -- HepLean.List.insertionSortEquiv
 def normalOrderEquiv {φs : List 𝓕.CrAnStates} : Fin φs.length ≃ Fin (normalOrderList φs).length :=
-  HepLean.List.insertionSortEquiv 𝓕.normalOrderProp φs
+  HepLean.List.insertionSortEquiv 𝓕.normalOrderRel φs
 
 lemma sum_normalOrderList_length {M : Type} [AddCommMonoid M]
     (φs : List 𝓕.CrAnStates) (f : Fin (normalOrderList φs).length → M) :
@@ -407,19 +408,19 @@ lemma annihilateFilter_singleton_annihilate (φ : 𝓕.CrAnStates)
 
 lemma orderedInsert_createFilter_append_annihilate (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) : (φs φs' : List 𝓕.CrAnStates) →
-    List.orderedInsert normalOrderProp φ (createFilter φs ++ φs') =
-    createFilter φs ++ List.orderedInsert normalOrderProp φ φs'
+    List.orderedInsert normalOrderRel φ (createFilter φs ++ φs') =
+    createFilter φs ++ List.orderedInsert normalOrderRel φ φs'
   | [], φs' => by simp [createFilter]
   | φ' :: φs, φs' => by
     rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φ') with hφ' | hφ'
     · rw [createFilter_cons_create hφ']
       dsimp only [List.cons_append, List.orderedInsert.eq_2]
       rw [if_neg, orderedInsert_createFilter_append_annihilate φ hφ φs φs']
-      simp [normalOrderProp, hφ, hφ', CreateAnnihilate.normalOrder]
+      simp [normalOrderRel, hφ, hφ', CreateAnnihilate.normalOrder]
     · rw [createFilter_cons_annihilate hφ', orderedInsert_createFilter_append_annihilate φ hφ φs]
 
 lemma orderedInsert_annihilateFilter (φ : 𝓕.CrAnStates) : (φs : List 𝓕.CrAnStates) →
-    List.orderedInsert normalOrderProp φ (annihilateFilter φs) =
+    List.orderedInsert normalOrderRel φ (annihilateFilter φs) =
     φ :: annihilateFilter φs
   | [] => by simp [annihilateFilter]
   | φ' :: φs => by
@@ -428,7 +429,7 @@ lemma orderedInsert_annihilateFilter (φ : 𝓕.CrAnStates) : (φs : List 𝓕.C
     · rw [annihilateFilter_cons_annihilate hφ']
       dsimp only [List.orderedInsert.eq_2]
       rw [if_pos]
-      dsimp only [normalOrderProp]
+      dsimp only [normalOrderRel]
       rw [hφ']
       rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φ) with hφ | hφ
       · rw [hφ]
@@ -438,7 +439,7 @@ lemma orderedInsert_annihilateFilter (φ : 𝓕.CrAnStates) : (φs : List 𝓕.C
 
 lemma orderedInsert_createFilter_append_annihilateFilter_annihilate (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnStates) :
-    List.orderedInsert normalOrderProp φ (createFilter φs ++ annihilateFilter φs) =
+    List.orderedInsert normalOrderRel φ (createFilter φs ++ annihilateFilter φs) =
     createFilter φs ++ φ :: annihilateFilter φs := by
   rw [orderedInsert_createFilter_append_annihilate φ hφ, orderedInsert_annihilateFilter]
 
