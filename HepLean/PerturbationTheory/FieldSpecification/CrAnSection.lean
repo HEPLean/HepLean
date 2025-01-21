@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.CreateAnnihilate
+import HepLean.PerturbationTheory.FieldSpecification.CreateAnnihilate
 /-!
 
 # Creation and annihlation sections
@@ -32,8 +32,8 @@ concatenation while preserving the relationship between states and their operato
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 /-- The sections in `𝓕.CrAnStates` over a list `φs : List 𝓕.States`.
   In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
@@ -47,7 +47,7 @@ def CrAnSection (φs : List 𝓕.States) : Type :=
 
 namespace CrAnSection
 open FieldStatistic
-variable {𝓕 : FieldStruct} {φs : List 𝓕.States}
+variable {𝓕 : FieldSpecification} {φs : List 𝓕.States}
 
 @[simp]
 lemma length_eq (ψs : CrAnSection φs) : ψs.1.length = φs.length := by
@@ -392,4 +392,4 @@ lemma sum_eraseIdxEquiv (n : ℕ) (φs : List 𝓕.States) (hn : n < φs.length)
 
 end CrAnSection
 
-end FieldStruct
+end FieldSpecification

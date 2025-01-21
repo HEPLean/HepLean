@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.NormalOrder
+import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
@@ -18,8 +18,8 @@ algebra 𝓞.A.
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 open FieldStatistic
 /-!
 
@@ -552,4 +552,4 @@ end
 
 end CrAnAlgebra
 
-end FieldStruct
+end FieldSpecification

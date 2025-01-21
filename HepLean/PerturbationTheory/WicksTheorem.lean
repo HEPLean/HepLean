@@ -15,8 +15,8 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct} {𝓞 : 𝓕.OperatorAlgebra}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.OperatorAlgebra}
 open CrAnAlgebra
 open StateAlgebra
 open OperatorAlgebra
@@ -361,4 +361,4 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra 
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length
 
-end FieldStruct
+end FieldSpecification

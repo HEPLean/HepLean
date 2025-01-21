@@ -10,9 +10,9 @@ import HepLean.Mathematics.List.InsertIdx
 # Contractions
 
 -/
-open FieldStruct
+open FieldSpecification
 
-variable {𝓕 : FieldStruct}
+variable {𝓕 : FieldSpecification}
 
 /--
 Given a natural number `n` corresponding to the number of fields, a Wick contraction

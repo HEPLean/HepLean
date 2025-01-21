@@ -9,8 +9,8 @@ import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic
 # Super Commute
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace CrAnAlgebra
 
@@ -35,7 +35,7 @@ noncomputable def superCommute : 𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra �
 /-- The super commutor on the creation and annihlation algebra. For two bosonic operators
   or a bosonic and fermionic operator this corresponds to the usual commutator
   whilst for two fermionic operators this corresponds to the anti-commutator. -/
-scoped[FieldStruct.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
+scoped[FieldSpecification.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
 
 lemma superCommute_ofCrAnList (φs φs' : List 𝓕.CrAnStates) : ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
     ofCrAnList (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList (φs' ++ φs) := by
@@ -421,4 +421,4 @@ lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) :
 
 end CrAnAlgebra
 
-end FieldStruct
+end FieldSpecification

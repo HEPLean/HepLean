@@ -13,8 +13,8 @@ We say that a contraction is full if it has no uncontracted fields.
 
 -/
 
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List

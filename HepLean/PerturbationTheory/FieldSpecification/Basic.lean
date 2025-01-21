@@ -15,14 +15,14 @@ import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 
 /-- A field structure is a type of fields plus a specification of the
   statistics (fermionic or bosonic) of each field. -/
-structure FieldStruct where
+structure FieldSpecification where
   /-- The type of fields. This also includes anti-states. -/
   Fields : Type
   /-- The specification if a field is bosonic or fermionic. -/
   statistics : Fields → FieldStatistic
 
-namespace FieldStruct
-variable (𝓕 : FieldStruct)
+namespace FieldSpecification
+variable (𝓕 : FieldSpecification)
 
 /-- Negative asymptotic states are specified by a field and a momentum. -/
 def AsymptoticNegTime : Type := 𝓕.Fields × Lorentz.Contr 4
@@ -34,7 +34,7 @@ def AsymptoticPosTime : Type := 𝓕.Fields × Lorentz.Contr 4
 def PositionStates : Type := 𝓕.Fields × SpaceTime
 
 /-- The combination of asymptotic states and position states. -/
-inductive States (𝓕 : FieldStruct) where
+inductive States (𝓕 : FieldSpecification) where
   | negAsymp : 𝓕.AsymptoticNegTime → 𝓕.States
   | position : 𝓕.PositionStates → 𝓕.States
   | posAsymp : 𝓕.AsymptoticPosTime → 𝓕.States
@@ -49,14 +49,14 @@ def statesToField : 𝓕.States → 𝓕.Fields
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 
 /-- The field statistics associated with a state. -/
-scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
 
 /-- The field statistics associated with a list states. -/
-scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
 
 /-- The field statistic associated with a finite set-/
-scoped[FieldStruct] notation 𝓕 "|>ₛ" "⟨" f ","a "⟩"=> FieldStatistic.ofFinset
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" "⟨" f ","a "⟩"=> FieldStatistic.ofFinset
     (statesStatistic 𝓕) f a
 
-end FieldStruct
+end FieldSpecification

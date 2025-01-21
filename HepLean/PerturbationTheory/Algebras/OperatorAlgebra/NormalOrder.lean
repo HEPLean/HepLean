@@ -17,8 +17,8 @@ algebra 𝓞.A.
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace OperatorAlgebra
 variable {𝓞 : OperatorAlgebra 𝓕}
@@ -383,4 +383,4 @@ lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
 
 end OperatorAlgebra
 
-end FieldStruct
+end FieldSpecification

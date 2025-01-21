@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.Basic
+import HepLean.PerturbationTheory.FieldSpecification.Basic
 import HepLean.PerturbationTheory.CreateAnnihilate
 /-!
 
@@ -11,8 +11,8 @@ import HepLean.PerturbationTheory.CreateAnnihilate
 
 -/
 
-namespace FieldStruct
-variable (𝓕 : FieldStruct)
+namespace FieldSpecification
+variable (𝓕 : FieldSpecification)
 
 /-- To each state the specificaition of the type of creation and annihlation parts.
   For asymptotic staes there is only one allowed part, whilst for position states
@@ -67,16 +67,16 @@ def crAnStatistics : 𝓕.CrAnStates → FieldStatistic :=
   𝓕.statesStatistic ∘ 𝓕.crAnStatesToStates
 
 /-- The field statistic of a `CrAnState`. -/
-scoped[FieldStruct] notation 𝓕 "|>ₛ" φ =>
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ =>
     (crAnStatistics 𝓕) φ
 
 /-- The field statistic of a list of `CrAnState`s. -/
-scoped[FieldStruct] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (crAnStatistics 𝓕) φ
 
 /-- The `CreateAnnihilate` value of a `CrAnState`s, i.e. whether it is a creation or
   annihilation operator. -/
-scoped[FieldStruct] infixl:80 "|>ᶜ" =>
+scoped[FieldSpecification] infixl:80 "|>ᶜ" =>
     crAnStatesToCreateAnnihilate
 
-end FieldStruct
+end FieldSpecification

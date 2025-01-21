@@ -13,8 +13,8 @@ import HepLean.PerturbationTheory.WickContraction.InsertList
 
 -/
 
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
