@@ -7,10 +7,30 @@ import HepLean.PerturbationTheory.FieldSpecification.Basic
 import HepLean.PerturbationTheory.CreateAnnihilate
 /-!
 
-# Creation and annihlation parts of fields
+# Creation and annihlation states
+
+Called `CrAnStates` for short here.
+
+Given a field specification, in addition to defining states
+(see: `HepLean.PerturbationTheory.FieldSpecification.Basic`),
+we can also define creation and annihilation states.
+These are similar to states but come with an additional specification of whether they correspond to
+creation or annihilation operators.
+
+In particular we have the following creation and annihilation states for each field:
+- Negative asymptotic states - with the implicit specification that it is a creation state.
+- Position states with a creation specification.
+- Position states with an annihilation specification.
+- Positive asymptotic states - with the implicit specification that it is an annihilation state.
+
+In this module in addition to defining `CrAnStates` we also define some maps:
+- The map `crAnStatesToStates` takes a `CrAnStates` to its state in `States`.
+- The map `crAnStatesToCreateAnnihilate` takes a `CrAnStates` to its corresponding
+`CreateAnnihilate` value.
+- The map `crAnStatistics` takes a `CrAnStates` to its corresponding `FieldStatistic`
+(bosonic or fermionic).
 
 -/
-
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
