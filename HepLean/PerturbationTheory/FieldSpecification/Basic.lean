@@ -12,6 +12,15 @@ import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 # Field specification
 
 In this module is the definition of a field specification.
+A field specification is a structure consisting of a type of fields and a
+the field statistics of each field.
+
+From each field we can create three different types of `States`.
+- Negative asymptotic states.
+- Position states.
+- Positive asymptotic states.
+
+These states carry the same field statistic as the field they are derived from.
 
 -/
 

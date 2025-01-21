@@ -18,7 +18,7 @@ open StateAlgebra
 
 /-!
 
-## The super commutor on the creation and annihlation algebra.
+## The super commutor on the CrAnAlgebra.
 
 -/
 

@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.FieldSpecification.Basic
 /-!
 
-# Field specification
+# Specific examples of field specifications
 
 
 -/

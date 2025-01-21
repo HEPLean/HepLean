@@ -7,7 +7,7 @@ import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.NormalOrder
 import HepLean.Mathematics.List.InsertIdx
 /-!
 
-# Contractions
+# Wick contractions
 
 -/
 open FieldSpecification

@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.FieldStatistics.Basic
 /-!
 
-# Exchange sign
+# Exchange sign for field statistics
 
 -/
 

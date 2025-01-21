@@ -8,13 +8,8 @@ import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
 
-# Normal Ordering
+# Normal Ordering in the CrAnAlgebra
 
-The normal ordering puts all creation operators to the left and all annihilation operators to the
-right. It acts on `CrAnStates` and defines a linear map from the `CrAnAlgebra` to itself.
-
-The normal ordering satisfies a number of nice properties with relation to the operator
-algebra 𝓞.A.
 
 -/
 

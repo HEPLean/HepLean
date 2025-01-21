@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.WickContraction.UncontractedList
 /-!
 
-# Inserting an element into a contraction
+# Inserting an element into a contraction based on a list
 
 -/
 
