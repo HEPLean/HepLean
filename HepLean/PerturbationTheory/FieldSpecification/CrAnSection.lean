@@ -8,27 +8,23 @@ import HepLean.PerturbationTheory.FieldSpecification.CrAnStates
 
 # Creation and annihlation sections
 
-This module defines creation and annihilation sections, which represent different ways to associate
-fields with creation or annihilation operators.
+In the module
+`HepLean.PerturbationTheory.FieldSpecification.Basic`
+we defined states for a field specification, and in the module
+`HepLean.PerturbationTheory.FieldStatistics.CrAnStates`
+we defined a refinement of states called `CrAnStates` which distinquishes between the
+creation and annihilation components of states.
+There exists, in particular, a map from `CrAnStates` to `States` called `crAnStatesToStates`.
 
-## Main definitions
+Given a list of `States`, `φs`, in this module we define a section of `φs` to be a list of
+`CrAnStates`, `ψs`, such that under the map `crAnStatesToStates`, `ψs` is mapped to `φs`.
+That is to say, the states underlying `ψs` are the states in `φs`.
+We denote these sections as `CrAnSection φs`.
 
-- `CrAnSection φs` : Represents sections in `𝓕.CrAnStates` over a list of states `φs`.
-  Given fields `φ₁...φₙ`, this captures all possible ways to assign each field as either a creation
-  or annihilation operator.
+Looking forward the main consequence of this definition is the lemma
+`FieldSpecification.CrAnAlgebra.ofStateList_sum`.
 
-- `head`, `tail` : Access the first element and remaining elements of a section
-
-- `cons` : Constructs a new section by prepending a creation/annihilation state
-
-- Various equivalences:
-  * `nilEquiv` : Empty sections
-  * `singletonEquiv` : Sections over single elements
-  * `consEquiv` : Separates head and tail
-  * `appendEquiv` : Splits sections at a given point
-
-All sections form finite types and support operations like taking/dropping elements and
-concatenation while preserving the relationship between states and their operator assignments.
+In this module we define various properties of `CrAnSection`.
 
 -/
 
@@ -41,8 +37,7 @@ variable {𝓕 : FieldSpecification}
   `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
   operators at this point (e.g. ansymptotic states) this is accounted for. -/
 def CrAnSection (φs : List 𝓕.States) : Type :=
-  {ψs : List 𝓕.CrAnStates //
-    List.map 𝓕.crAnStatesToStates ψs = φs}
+  {ψs : List 𝓕.CrAnStates // ψs.map 𝓕.crAnStatesToStates = φs}
   -- Π i, 𝓕.statesToCreateAnnihilateType (φs.get i)
 
 namespace CrAnSection

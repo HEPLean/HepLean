@@ -7,7 +7,7 @@ import HepLean.PerturbationTheory.FieldSpecification.Basic
 import HepLean.PerturbationTheory.CreateAnnihilate
 /-!
 
-# Creation and annihlation states
+# Creation and annihilation states
 
 Called `CrAnStates` for short here.
 
