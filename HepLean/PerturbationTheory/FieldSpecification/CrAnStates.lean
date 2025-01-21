@@ -31,10 +31,6 @@ In this module in addition to defining `CrAnStates` we also define some maps:
 (bosonic or fermionic).
 
 -/
-<<<<<<<< HEAD:HepLean/PerturbationTheory/FieldSpecification/CrAnStates.lean
-========
-
->>>>>>>> master:HepLean/PerturbationTheory/FieldSpecification/CreateAnnihilate.lean
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
