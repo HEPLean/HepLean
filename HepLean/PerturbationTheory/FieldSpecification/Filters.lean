@@ -11,8 +11,8 @@ import HepLean.PerturbationTheory.Koszul.KoszulSign
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 /-- Given a list of creation and annihilation states, the filtered list only containing
   the creation states. As a schematic example, for the list:
@@ -86,4 +86,4 @@ lemma annihilateFilter_singleton_annihilate (φ : 𝓕.CrAnStates)
     annihilateFilter [φ] = [φ] := by
   simp [annihilateFilter, hφ]
 
-end FieldStruct
+end FieldSpecification

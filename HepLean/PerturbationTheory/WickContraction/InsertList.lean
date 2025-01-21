@@ -6,12 +6,12 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.WickContraction.UncontractedList
 /-!
 
-# Inserting an element into a contraction
+# Inserting an element into a contraction based on a list
 
 -/
 
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)

@@ -9,8 +9,8 @@ import HepLean.PerturbationTheory.WickContraction.Basic
 # Uncontracted elements
 
 -/
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)

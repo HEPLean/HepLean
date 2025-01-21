@@ -5,21 +5,17 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.Basic
 import HepLean.PerturbationTheory.Koszul.KoszulSign
-import HepLean.PerturbationTheory.FieldStruct.Filters
+import HepLean.PerturbationTheory.FieldSpecification.Filters
 /-!
 
-# Normal Ordering
+# Normal Ordering of states
 
-The normal ordering puts all creation operators to the left and all annihilation operators to the
-right. It acts on `CrAnStates` and defines a linear map from the `CrAnAlgebra` to itself.
 
-The normal ordering satisfies a number of nice properties with relation to the operator
-algebra 𝓞.A.
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 /-- The normal ordering relation on creation and annihlation operators.
   For a list of creation and annihlation states, this relation is designed
@@ -425,4 +421,4 @@ lemma normalOrderList_eq_createFilter_append_annihilateFilter : (φs : List 𝓕
       rw [orderedInsert_createFilter_append_annihilateFilter_annihilate φ hφ']
       rw [createFilter_cons_annihilate hφ', annihilateFilter_cons_annihilate hφ']
 
-end FieldStruct
+end FieldSpecification

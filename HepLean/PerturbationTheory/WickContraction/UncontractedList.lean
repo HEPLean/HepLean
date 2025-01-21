@@ -6,12 +6,12 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.WickContraction.ExtractEquiv
 /-!
 
-# List of uncontracted elements
+# List of uncontracted elements of a Wick contraction
 
 -/
 
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)

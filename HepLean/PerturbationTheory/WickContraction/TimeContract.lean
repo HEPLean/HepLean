@@ -11,8 +11,8 @@ import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
 
 -/
 
-open FieldStruct
-variable {𝓕 : FieldStruct}
+open FieldSpecification
+variable {𝓕 : FieldSpecification}
 
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)

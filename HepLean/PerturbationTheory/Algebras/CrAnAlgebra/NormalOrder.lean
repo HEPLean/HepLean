@@ -3,23 +3,18 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldStruct.NormalOrder
+import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
 
-# Normal Ordering
+# Normal Ordering in the CrAnAlgebra
 
-The normal ordering puts all creation operators to the left and all annihilation operators to the
-right. It acts on `CrAnStates` and defines a linear map from the `CrAnAlgebra` to itself.
-
-The normal ordering satisfies a number of nice properties with relation to the operator
-algebra 𝓞.A.
 
 -/
 
-namespace FieldStruct
-variable {𝓕 : FieldStruct}
+namespace FieldSpecification
+variable {𝓕 : FieldSpecification}
 open FieldStatistic
 /-!
 
@@ -552,4 +547,4 @@ end
 
 end CrAnAlgebra
 
-end FieldStruct
+end FieldSpecification

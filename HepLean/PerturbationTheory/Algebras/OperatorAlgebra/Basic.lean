@@ -10,8 +10,8 @@ import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
 
 -/
 
-namespace FieldStruct
-variable (𝓕 : FieldStruct)
+namespace FieldSpecification
+variable (𝓕 : FieldSpecification)
 open CrAnAlgebra
 
 /-- The structure of an algebra with properties necessary for that algebra
@@ -45,7 +45,7 @@ structure OperatorAlgebra where
 
 namespace OperatorAlgebra
 open FieldStatistic
-variable {𝓕 : FieldStruct} (𝓞 : 𝓕.OperatorAlgebra)
+variable {𝓕 : FieldSpecification} (𝓞 : 𝓕.OperatorAlgebra)
 
 /-- The algebra `𝓞.A` carries the instance of a semi-ring induced via `A_seimRing`. -/
 instance : Semiring 𝓞.A := 𝓞.A_semiRing
@@ -199,4 +199,4 @@ lemma crAnF_superCommute_ofCrAnState_ofStateList_eq_sum (φ : 𝓕.CrAnStates) (
     rw [← map_mul, ← ofStateList_append, ← List.eraseIdx_eq_take_drop_succ]
 
 end OperatorAlgebra
-end FieldStruct
+end FieldSpecification
