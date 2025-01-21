@@ -9,11 +9,13 @@ import HepLean.SpaceTime.Basic
 import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 /-!
 
-# Field structures
+# Field specification
+
+In this module is the definition of a field specification.
 
 -/
 
-/-- A field structure is a type of fields plus a specification of the
+/-- A field specification is a type of fields plus a specification of the
   statistics (fermionic or bosonic) of each field. -/
 structure FieldSpecification where
   /-- The type of fields. This also includes anti-states. -/
