@@ -153,7 +153,7 @@ lemma normalOrder_superCommute_create_annihilate (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * superCommute (ofCrAnState φc) (ofCrAnState φa) * b) = 0 := by
-  rw [superCommute_ofCrAnState]
+  rw [superCommute_ofCrAnState_ofCrAnState]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [mul_sub, sub_mul, map_sub, ← smul_mul_assoc]
   rw [← mul_assoc, ← mul_assoc]
@@ -166,7 +166,7 @@ lemma normalOrder_superCommute_annihilate_create (φc φa : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * superCommute (ofCrAnState φa) (ofCrAnState φc) * b) = 0 := by
-  rw [superCommute_ofCrAnState_symm]
+  rw [superCommute_ofCrAnState_ofCrAnState_symm]
   simp only [instCommGroup.eq_1, neg_smul, mul_neg, Algebra.mul_smul_comm, neg_mul,
     Algebra.smul_mul_assoc, map_neg, map_smul, neg_eq_zero, smul_eq_zero]
   apply Or.inr
@@ -298,7 +298,7 @@ lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
       normalOrderSign (φs ++ φc' :: φc :: φs') •
     (ofCrAnList (createFilter φs) * superCommute (ofCrAnState φc) (ofCrAnState φc') *
       ofCrAnList (createFilter φs') * ofCrAnList (annihilateFilter (φs ++ φs'))) := by
-  rw [superCommute_ofCrAnState]
+  rw [superCommute_ofCrAnState_ofCrAnState]
   rw [mul_sub, sub_mul, map_sub]
   conv_lhs =>
     lhs
@@ -372,7 +372,7 @@ lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
     (ofCrAnList (createFilter (φs ++ φs'))
       * ofCrAnList (annihilateFilter φs) * superCommute (ofCrAnState φa) (ofCrAnState φa')
       * ofCrAnList (annihilateFilter φs')) := by
-  rw [superCommute_ofCrAnState]
+  rw [superCommute_ofCrAnState_ofCrAnState]
   rw [mul_sub, sub_mul, map_sub]
   conv_lhs =>
     lhs
@@ -495,7 +495,7 @@ lemma ofCrAnList_superCommute_normalOrder_ofCrAnList (φs φs' : List 𝓕.CrAnS
     ⟨ofCrAnList φs, normalOrder (ofCrAnList φs')⟩ₛca =
     ofCrAnList φs * normalOrder (ofCrAnList φs') -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • normalOrder (ofCrAnList φs') * ofCrAnList φs := by
-  simp [normalOrder_ofCrAnList, map_smul, superCommute_ofCrAnList, ofCrAnList_append,
+  simp [normalOrder_ofCrAnList, map_smul, superCommute_ofCrAnList_ofCrAnList, ofCrAnList_append,
     smul_sub, smul_smul, mul_comm]
 
 lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs : List 𝓕.CrAnStates)

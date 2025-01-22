@@ -111,7 +111,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnState_eq_zero_mul (φa : �
     (φs : List 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
     𝓞.crAnF (normalOrder (a * superCommute (ofCrAnList φs) (ofCrAnState φa) * b)) = 0 := by
-  rw [← ofCrAnList_singleton, superCommute_ofCrAnList_symm, ofCrAnList_singleton]
+  rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_symm, ofCrAnList_singleton]
   simp only [FieldStatistic.instCommGroup.eq_1, FieldStatistic.ofList_singleton, mul_neg,
     Algebra.mul_smul_comm, neg_mul, Algebra.smul_mul_assoc, map_neg, map_smul]
   rw [crAnF_normalOrder_superCommute_ofCrAnState_ofCrAnList_eq_zero_mul]
@@ -189,8 +189,8 @@ lemma crAnF_normalOrder_ofState_ofState_swap (φ φ' : 𝓕.States) :
     rhs
     rw [ofState_eq_crPart_add_anPart, ofState_eq_crPart_add_anPart]
     rw [mul_add, add_mul, add_mul]
-    rw [crPart_crPart_eq_superCommute, crPart_anPart_eq_superCommute,
-      anPart_anPart_eq_superCommute, anPart_crPart_eq_superCommute]
+    rw [crPart_mul_crPart_eq_superCommute, crPart_mul_anPart_eq_superCommute,
+      anPart_mul_anPart_eq_superCommute, anPart_mul_crPart_eq_superCommute]
   simp only [FieldStatistic.instCommGroup.eq_1, Algebra.smul_mul_assoc, map_add, map_smul,
     normalOrder_crPart_mul_crPart, normalOrder_crPart_mul_anPart, normalOrder_anPart_mul_crPart,
     normalOrder_anPart_mul_anPart, map_mul, crAnF_normalOrder_superCommute_eq_zero, add_zero]
