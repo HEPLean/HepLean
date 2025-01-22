@@ -8,6 +8,7 @@ import HepLean.Tensors.Tree.NodeIdentities.PermContr
 import HepLean.Tensors.Tree.NodeIdentities.ProdComm
 import HepLean.Tensors.Tree.NodeIdentities.ContrSwap
 import HepLean.Tensors.Tree.NodeIdentities.ContrContr
+import HepLean.Meta.TODO.Basic
 /-!
 
 ## Basis vectors associated with complex Lorentz tensors
@@ -47,7 +48,7 @@ lemma perm_basisVector_cast {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   simp only [Functor.const_obj_obj, OverColor.mk_hom] at h1
   rw [h1]
 
-/-! TODO: Generalize `basis_eq_FD`. -/
+TODO "Generalize `basis_eq_FD`."
 lemma basis_eq_FD {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) (i : Fin n)
     (h : { as := c i } = { as := c1 }) :

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.StandardModel.HiggsBoson.Potential
+import HepLean.Meta.TODO.Basic
 /-!
 
 # The Two Higgs Doublet Model
@@ -144,9 +145,9 @@ lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =
 
 -/
 
-/-! TODO: Prove bounded properties of the 2HDM potential.
+TODO "Prove bounded properties of the 2HDM potential.
   See e.g. https://inspirehep.net/literature/201299 and
-  https://arxiv.org/pdf/hep-ph/0605184. -/
+  https://arxiv.org/pdf/hep-ph/0605184."
 
 /-- The proposition on the coefficients for a potential to be bounded. -/
 def IsBounded : Prop :=

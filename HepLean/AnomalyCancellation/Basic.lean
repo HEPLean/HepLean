@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Mathematics.LinearMaps
+import HepLean.Meta.TODO.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 /-!
 # Basic set up for anomaly cancellation conditions
@@ -13,9 +14,9 @@ This file defines the basic structures for the anomaly cancellation conditions.
 It defines a module structure on the charges, and the solutions to the linear ACCs.
 
 -/
-/-! TODO: Derive an ACC system from a guage algebra and fermionic representations. -/
-/-! TODO: Relate ACC Systems to algebraic varieties. -/
-/-! TODO: Refactor whole file, and dependent files. -/
+TODO "Derive an ACC system from a guage algebra and fermionic representations."
+TODO "Relate ACC Systems to algebraic varieties."
+TODO "Refactor whole file, and dependent files."
 
 /-- A system of charges, specified by the number of charges. -/
 structure ACCSystemCharges where

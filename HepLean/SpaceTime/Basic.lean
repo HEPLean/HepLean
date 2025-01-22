@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Geometry.Manifold.SmoothManifoldWithCorners
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import HepLean.Meta.TODO.Basic
 /-!
 # Space time
 
@@ -14,7 +15,7 @@ This file introduce 4d Minkowski spacetime.
 
 noncomputable section
 
-/-! TODO: SpaceTime should be refactored into a structure, to prevent casting. -/
+TODO "SpaceTime should be refactored into a structure, to prevent casting."
 
 /-- The space-time -/
 def SpaceTime : Type := Fin 4 → ℝ

@@ -371,7 +371,7 @@ lemma normalOrder_ofState_mul_ofState (φ φ' : 𝓕.States) :
 
 -/
 
-/-! TODO: Split the following two lemmas up into smaller parts. -/
+TODO "Split the following two lemmas up into smaller parts."
 
 lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates) (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)

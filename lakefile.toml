@@ -67,6 +67,11 @@ supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
+name = "TODO_to_yml"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
 name = "lint_all"
 supportInterpreter = true
 srcDir = "scripts"

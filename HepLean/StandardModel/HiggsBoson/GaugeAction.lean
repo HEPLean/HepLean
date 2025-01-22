@@ -13,7 +13,7 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 # The action of the gauge group on the Higgs field
 
 -/
-/-! TODO: Currently this only contains the action of the global gauge group. Generalize. -/
+TODO "Currently this only contains the action of the global gauge group. Generalize."
 noncomputable section
 
 namespace StandardModel
@@ -236,9 +236,9 @@ informal_lemma stability_group where
 
 end HiggsVec
 
-/-! TODO: Define the global gauge action on HiggsField. -/
-/-! TODO: Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary) -/
-/-! TODO: Prove invariance of potential under global gauge action. -/
+TODO "Define the global gauge action on HiggsField."
+TODO "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
+TODO "Prove invariance of potential under global gauge action."
 
 namespace HiggsField
 

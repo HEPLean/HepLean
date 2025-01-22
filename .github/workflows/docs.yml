@@ -42,7 +42,7 @@ jobs:
         run: lake -Kenv=dev build HepLean
 
       - name: make TODO list
-        run : lake exe find_TODOs mkFile
+        run : lake exe TODO_to_yml mkFile
 
       - name: make list of informal proofs and lemmas
         run : lake exe informal mkFile mkDot mkHTML
