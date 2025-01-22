@@ -200,7 +200,7 @@ lemma mem_uncontracted_insert_none_iff (c : WickContraction n) (i : Fin n.succ) 
   · simp only [Nat.succ_eq_add_one, ← Fin.exists_succAbove_eq_iff] at hi
     obtain ⟨z, hk⟩ := hi
     subst hk
-    have hn : ¬ i.succAbove z = i := by exact Fin.succAbove_ne i z
+    have hn : ¬ i.succAbove z = i := Fin.succAbove_ne i z
     simp only [Nat.succ_eq_add_one, insert_succAbove_mem_uncontracted_iff, hn, false_or]
     apply Iff.intro
     · intro h
