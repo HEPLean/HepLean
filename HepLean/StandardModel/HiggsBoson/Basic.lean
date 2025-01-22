@@ -79,7 +79,7 @@ end HiggsVec
 We also define the Higgs bundle.
 -/
 
-/-! TODO: Make `HiggsBundle` an associated bundle. -/
+TODO "Make `HiggsBundle` an associated bundle."
 /-- The trivial vector bundle 𝓡² × ℂ². -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 

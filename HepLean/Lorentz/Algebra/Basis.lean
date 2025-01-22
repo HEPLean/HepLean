@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Algebra.Basic
+import HepLean.Meta.TODO.Basic
 /-!
 # Basis of the Lorentz Algebra
 
@@ -15,4 +16,4 @@ This file is waiting for Lorentz Tensors to be done formally, before
 it can be completed.
 
 -/
-/-! TODO: Define the standard basis of the Lorentz algebra. -/
+TODO "Define the standard basis of the Lorentz algebra."

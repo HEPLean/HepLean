@@ -156,7 +156,7 @@ lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk 
 
 open HepLean.Fin
 
-/-! TODO: Find a better place for this. -/
+TODO "Find a better place for this."
 lemma pairIsoSep_β_perm_cond (c1 c2 : C) : ∀ (x : Fin (Nat.succ 0).succ), ![c2, c1] x =
     (![c1, c2] ∘ ⇑(finMapToEquiv ![1, 0] ![1, 0]).symm) x:= by
   intro x

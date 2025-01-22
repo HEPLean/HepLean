@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.ComplexVector.Modules
+import HepLean.Meta.TODO.Basic
 /-!
 
 # Complex Lorentz vectors
@@ -128,7 +129,7 @@ lemma inclCongrRealLorentz_ρ (M : SL(2, ℂ)) (v : ContrMod 3) :
   rw [LorentzGroup.toComplex_mulVec_ofReal]
   rfl
 
-/-! TODO: Rename. -/
+TODO "Rename."
 lemma SL2CRep_ρ_basis (M : SL(2, ℂ)) (i : Fin 1 ⊕ Fin 3) :
     (complexContr.ρ M) (complexContrBasis i) =
     ∑ j, (SL2C.toLorentzGroup M).1 j i •
@@ -140,6 +141,6 @@ lemma SL2CRep_ρ_basis (M : SL(2, ℂ)) (i : Fin 1 ⊕ Fin 3) :
   simp only [LinearMap.map_smulₛₗ, ofRealHom_eq_coe, coe_smul]
   rw [complexContrBasis_of_real]
 
-/-! TODO: Include relation to real Lorentz vectors. -/
+TODO "Include relation to real Lorentz vectors."
 end Lorentz
 end

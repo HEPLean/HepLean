@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Lean
+import HepLean.Meta.TODO.Basic
 /-!
 
 This file enables us to transverse tactics and test for conditions.
@@ -74,8 +75,8 @@ def traverseForest (file : FilePath)
 
 end transverseTactics
 
-/-! TODO: Find a way to free the environment `env` in `transverseTactics`.
-  This leads to memory problems when using `transverseTactics` directly in loops. -/
+TODO "Find a way to free the environment `env` in `transverseTactics`.
+  This leads to memory problems when using `transverseTactics` directly in loops."
 open transverseTactics in
 /-- Applies `visitTacticInfo` to each tactic in a file. -/
 unsafe def transverseTactics (file : FilePath)

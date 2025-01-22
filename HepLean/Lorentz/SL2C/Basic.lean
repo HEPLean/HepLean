@@ -312,7 +312,7 @@ informal_lemma toRestrictedLorentzGroup where
   deps :≈ [``toLorentzGroup, ``toLorentzGroup_det_one, ``toLorentzGroup_isOrthochronous,
     ``LorentzGroup.Restricted]
 
-/-! TODO: Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. -/
+TODO "Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group."
 end
 end SL2C
 

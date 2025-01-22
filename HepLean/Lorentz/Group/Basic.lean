@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.MinkowskiMatrix
+import HepLean.Meta.TODO.Basic
 /-!
 # The Lorentz Group
 
@@ -14,7 +15,7 @@ We define the Lorentz group.
 - http://home.ku.edu.tr/~amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf
 
 -/
-/-! TODO: Show that the Lorentz is a Lie group. -/
+TODO "Show that the Lorentz group is a Lie group."
 
 noncomputable section
 

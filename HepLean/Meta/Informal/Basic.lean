@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Lean
+import HepLean.Meta.TODO.Basic
 /-!
 
 ## Informal definitions and lemmas
@@ -16,7 +17,7 @@ Everything else about informal definitions and lemmas are in the `Informal.Post`
 -/
 open Lean Elab System
 
-/-! TODO: Can likely make this a bona-fide command. -/
+TODO "Can likely make this a bona-fide command."
 
 /-- The structure representing an informal definition. -/
 structure InformalDefinition where

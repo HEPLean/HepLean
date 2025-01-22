@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Lean
+import HepLean.Meta.TODO.Basic
 /-!
 
 ## Getting an array of all file paths in HepLean.
@@ -12,7 +13,7 @@ import Lean
 
 open Lean Elab System
 
-/-! TODO: Make this definition more functional in style. -/
+TODO "Make this definition more functional in style."
 
 /-- The recursive function underlying `allFilePaths`. -/
 partial def allFilePaths.go (prev : Array FilePath)

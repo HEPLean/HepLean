@@ -12,7 +12,7 @@ import HepLean.Meta.Informal.Basic
 This file defines the basic properties of the standard model in particle physics.
 
 -/
-/-! TODO: Redefine the gauge group as a quotient of SU(3) x SU(2) x U(1) by a subgroup of ℤ₆. -/
+TODO "Redefine the gauge group as a quotient of SU(3) x SU(2) x U(1) by a subgroup of ℤ₆."
 universe v u
 namespace StandardModel
 

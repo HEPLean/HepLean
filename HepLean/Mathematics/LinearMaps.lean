@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Tactic.Polyrith
 import Mathlib.Algebra.Module.LinearMap.Defs
 import Mathlib.Data.Fintype.BigOperators
+import HepLean.Meta.TODO.Basic
 /-!
 # Linear maps
 
@@ -13,7 +14,7 @@ Some definitions and properties of linear, bilinear, and trilinear maps, along w
 quadratic and cubic equations.
 
 -/
-/-! TODO: Replace the definitions in this file with Mathlib definitions. -/
+TODO "Replace the definitions in this file with Mathlib definitions."
 
 /-- The structure defining a homogeneous quadratic equation. -/
 @[simp]

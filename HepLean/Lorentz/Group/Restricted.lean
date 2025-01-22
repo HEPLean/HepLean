@@ -10,9 +10,9 @@ import HepLean.Lorentz.Group.Orthochronous
 This file is currently a stub.
 
 -/
-/-! TODO: Add definition of the restricted Lorentz group. -/
-/-! TODO: Prove member of the restricted Lorentz group is combo of boost and rotation. -/
-/-! TODO: Prove restricted Lorentz group equivalent to connected component of identity. -/
+TODO "Add definition of the restricted Lorentz group."
+TODO "Prove member of the restricted Lorentz group is combo of boost and rotation."
+TODO "Prove restricted Lorentz group equivalent to connected component of identity."
 
 noncomputable section
 

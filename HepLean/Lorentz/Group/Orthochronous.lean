@@ -12,7 +12,7 @@ We define the give a series of lemmas related to the orthochronous property of l
 matrices.
 
 -/
-/-! TODO: Prove topological properties of the Orthochronous Lorentz Group. -/
+TODO "Prove topological properties of the Orthochronous Lorentz Group."
 
 noncomputable section
 

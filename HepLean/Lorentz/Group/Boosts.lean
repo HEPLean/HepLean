@@ -21,7 +21,7 @@ A boost is the special case of a generalised boost when `u = stdBasis 0`.
   https://diposit.ub.edu/dspace/bitstream/2445/68763/2/memoria.pdf
 
 -/
-/-! TODO: Show that generalised boosts are in the restricted Lorentz group. -/
+TODO "Show that generalised boosts are in the restricted Lorentz group."
 noncomputable section
 
 namespace LorentzGroup
