@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.Sign
-import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
+import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.TimeContraction
 /-!
 
 # Time contractions
@@ -27,14 +27,14 @@ open HepLean.List
 /-- Given a Wick contraction `c` associated with a list `φs`, the
   product of all time-contractions of pairs of contracted elements in `φs`,
   as a member of the center of `𝓞.A`. -/
-noncomputable def timeContract (𝓞 : 𝓕.OperatorAlgebra) {φs : List 𝓕.States}
+noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List 𝓕.States}
     (c : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓞.A :=
   ∏ (a : c.1), ⟨𝓞.timeContract (φs.get (c.fstFieldOfContract a)) (φs.get (c.sndFieldOfContract a)),
     𝓞.timeContract_mem_center _ _⟩
 
 @[simp]
-lemma timeContract_insertList_none (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeContract_insertList_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) :
     (c.insertList φ φs i none).timeContract 𝓞 = c.timeContract 𝓞 := by
   rw [timeContract, insertList_none_prod_contractions]
@@ -42,7 +42,7 @@ lemma timeContract_insertList_none (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.Stat
   ext a
   simp
 
-lemma timeConract_insertList_some (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeConract_insertList_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
     (c.insertList φ φs i (some j)).timeContract 𝓞 =
     (if i < i.succAbove j then
@@ -62,7 +62,7 @@ lemma timeConract_insertList_some (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.State
 open FieldStatistic
 
 lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
-    (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+    (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
@@ -71,7 +71,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
@@ -97,7 +97,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     · exact ht
 
 lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
-    (𝓞 : 𝓕.OperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+    (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
     (c.insertList φ φs i (some k)).timeContract 𝓞 =
@@ -106,7 +106,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
   rw [timeConract_insertList_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
@@ -148,7 +148,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
   simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
   exact ht
 
-lemma timeContract_of_not_gradingCompliant (𝓞 : 𝓕.OperatorAlgebra) (φs : List 𝓕.States)
+lemma timeContract_of_not_gradingCompliant (𝓞 : 𝓕.ProtoOperatorAlgebra) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (h : ¬ GradingCompliant φs c) :
     c.timeContract 𝓞 = 0 := by
   rw [timeContract]
@@ -159,7 +159,7 @@ lemma timeContract_of_not_gradingCompliant (𝓞 : 𝓕.OperatorAlgebra) (φs : 
   simp only [Finset.univ_eq_attach, Finset.mem_attach]
   apply Subtype.eq
   simp only [List.get_eq_getElem, ZeroMemClass.coe_zero]
-  rw [OperatorAlgebra.timeContract_zero_of_diff_grade]
+  rw [ProtoOperatorAlgebra.timeContract_zero_of_diff_grade]
   simp [ha2]
 
 end WickContraction

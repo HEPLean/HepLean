@@ -497,19 +497,18 @@ lemma orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx (c : WickContract
     (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
     (List.map i.succAboveEmb c.uncontractedList).insertIdx (uncontractedListOrderPos c i) i := by
   rw [orderedInsert_eq_insertIdx_of_fin_list_sorted]
-  swap
-  exact uncontractedList_succAboveEmb_sorted c i
-  congr 1
-  simp only [Nat.succ_eq_add_one, Fin.val_fin_lt, Fin.coe_succAboveEmb, uncontractedListOrderPos]
-  rw [List.filter_map]
-  simp only [List.length_map]
-  congr
-  funext x
-  simp only [Function.comp_apply, Fin.succAbove, decide_eq_decide]
-  split
-  simp only [Fin.lt_def, Fin.coe_castSucc]
-  rename_i h
-  simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
-  omega
+  · congr 1
+    simp only [Nat.succ_eq_add_one, Fin.val_fin_lt, Fin.coe_succAboveEmb, uncontractedListOrderPos]
+    rw [List.filter_map]
+    simp only [List.length_map]
+    congr
+    funext x
+    simp only [Function.comp_apply, Fin.succAbove, decide_eq_decide]
+    split
+    · simp only [Fin.lt_def, Fin.coe_castSucc]
+    · rename_i h
+      simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
+      omega
+  · exact uncontractedList_succAboveEmb_sorted c i
 
 end WickContraction

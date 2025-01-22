@@ -16,10 +16,10 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 -/
 
 namespace FieldSpecification
-variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.OperatorAlgebra}
+variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.ProtoOperatorAlgebra}
 open CrAnAlgebra
 open StateAlgebra
-open OperatorAlgebra
+open ProtoOperatorAlgebra
 open HepLean.List
 open WickContraction
 open FieldStatistic

@@ -14,8 +14,8 @@ import HepLean.PerturbationTheory.Koszul.KoszulSign
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 
-namespace OperatorAlgebra
-variable {𝓞 : OperatorAlgebra 𝓕}
+namespace ProtoOperatorAlgebra
+variable {𝓞 : ProtoOperatorAlgebra 𝓕}
 open CrAnAlgebra
 open FieldStatistic
 
@@ -390,6 +390,6 @@ lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
   rw [← ofStateList_append, ← ofStateList_append]
   simp
 
-end OperatorAlgebra
+end ProtoOperatorAlgebra
 
 end FieldSpecification
