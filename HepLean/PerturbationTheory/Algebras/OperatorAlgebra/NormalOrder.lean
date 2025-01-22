@@ -19,6 +19,14 @@ variable {𝓞 : OperatorAlgebra 𝓕}
 open CrAnAlgebra
 open FieldStatistic
 
+/-!
+
+## Normal order of super-commutators.
+
+The main result of this section is
+`crAnF_normalOrder_superCommute_eq_zero_mul`.
+
+-/
 lemma crAnF_normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
@@ -180,27 +188,18 @@ lemma crAnF_normalOrder_superCommute_eq_zero
   rw [← crAnF_normalOrder_superCommute_eq_zero_mul 1 1 c d]
   simp
 
+/-!
+
+## Swapping terms in a normal order.
+
+-/
+
 lemma crAnF_normalOrder_ofState_ofState_swap (φ φ' : 𝓕.States) :
     𝓞.crAnF (normalOrder (ofState φ * ofState φ')) =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    𝓞.crAnF (normalOrder (ofState φ' * ofState φ)) := by
-  conv_lhs =>
-    rhs
-    rhs
-    rw [ofState_eq_crPart_add_anPart, ofState_eq_crPart_add_anPart]
-    rw [mul_add, add_mul, add_mul]
-    rw [crPart_mul_crPart_eq_superCommute, crPart_mul_anPart_eq_superCommute,
-      anPart_mul_anPart_eq_superCommute, anPart_mul_crPart_eq_superCommute]
-  simp only [FieldStatistic.instCommGroup.eq_1, Algebra.smul_mul_assoc, map_add, map_smul,
-    normalOrder_crPart_mul_crPart, normalOrder_crPart_mul_anPart, normalOrder_anPart_mul_crPart,
-    normalOrder_anPart_mul_anPart, map_mul, crAnF_normalOrder_superCommute_eq_zero, add_zero]
-  rw [normalOrder_ofState_mul_ofState]
-  simp only [FieldStatistic.instCommGroup.eq_1, map_add, map_mul, map_smul, smul_add]
-  rw [smul_smul]
-  simp only [FieldStatistic.exchangeSign_mul_self_swap, one_smul]
-  abel
-
-open FieldStatistic
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • 𝓞.crAnF (normalOrder (ofState φ' * ofState φ)) := by
+  rw [← ofStateList_singleton, ← ofStateList_singleton,
+    ofStateList_mul_ofStateList_eq_superCommute]
+  simp
 
 lemma crAnF_normalOrder_ofCrAnState_ofCrAnList_swap (φ : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates) :
@@ -249,6 +248,11 @@ lemma crAnF_normalOrder_ofStatesList_mul_anPart_swap (φ : 𝓕.States)
   rw [← normalOrder_mul_anPart]
   rw [crAnF_normalOrder_ofStatesList_anPart_swap]
 
+/-!
+
+## Super commutators with a normal ordered term as sums
+
+-/
 lemma crAnF_ofCrAnState_superCommute_normalOrder_ofCrAnList_eq_sum (φ : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates) : 𝓞.crAnF (⟨ofCrAnState φ, normalOrder (ofCrAnList φs)⟩ₛca) =
     ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
@@ -316,6 +320,11 @@ lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.States
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
     simp [crAnStatistics]
 
+/-!
+
+## Multiplying with normal ordered terms
+
+-/
 lemma crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.States)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (anPart (StateAlgebra.ofState φ) * normalOrder (ofStateList φ')) =
@@ -358,6 +367,12 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ : 𝓕.States)
   simp only [instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc, contractStateAtIndex,
     Fintype.sum_option, one_mul]
   rfl
+
+/-!
+
+## Cons vs insertIdx for a normal ordered term.
+
+-/
 
 lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.States)
     (k : Fin φs.length.succ) :
