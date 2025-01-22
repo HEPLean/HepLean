@@ -73,7 +73,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
-    List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
+    List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
     rw [𝓞.timeContract_of_timeOrderRel]
@@ -83,14 +83,14 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     · simp
     simp only [smul_smul]
     congr
-    have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
+    have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedIndexEquiv.symm k))
         (List.map φs.get c.uncontractedList))
         = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) c.uncontracted)⟩) := by
       simp only [ofFinset]
       congr
       rw [← List.map_take]
       congr
-      rw [take_uncontractedFinEquiv_symm]
+      rw [take_uncontractedIndexEquiv_symm]
       rw [filter_uncontractedList]
     rw [h1]
     simp only [exchangeSign_mul_self]
@@ -108,20 +108,20 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     OperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
-    List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem,
+    List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc]
   simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
   rw [𝓞.timeContract_of_not_timeOrderRel, 𝓞.timeContract_of_timeOrderRel]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
   congr
-  have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedFinEquiv.symm k))
+  have h1 : ofList 𝓕.statesStatistic (List.take (↑(c.uncontractedIndexEquiv.symm k))
       (List.map φs.get c.uncontractedList))
       = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) c.uncontracted)⟩) := by
     simp only [ofFinset]
     congr
     rw [← List.map_take]
     congr
-    rw [take_uncontractedFinEquiv_symm, filter_uncontractedList]
+    rw [take_uncontractedIndexEquiv_symm, filter_uncontractedList]
   rw [h1]
   trans 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
   · rw [exchangeSign_symm, ofFinset_singleton]
