@@ -707,7 +707,7 @@ lemma eraseIdx_get {I : Type} (l : List I) (i : Fin l.length) :
   ext x
   simp only [Function.comp_apply, List.get_eq_getElem, List.eraseIdx, List.getElem_eraseIdx]
   simp only [Fin.succAbove, Fin.coe_cast]
-  by_cases hi: x.castSucc < Fin.cast (by exact Eq.symm (eraseIdx_length l i)) i
+  by_cases hi: x.castSucc < Fin.cast (Eq.symm (eraseIdx_length l i)) i
   · simp only [hi, ↓reduceIte, Fin.coe_castSucc, dite_eq_left_iff, not_lt]
     intro h
     rw [Fin.lt_def] at hi
