@@ -9,16 +9,28 @@
 
 # What is HepLean?
 
-HepLean is an open-source project to digitalise definitions, theorems, proofs, and calculations in high energy physics using the interactive theorem prover Lean 4.
+HepLean is an open-source project to digitalise definitions, theorems, proofs, and calculations in physics using the interactive theorem prover Lean 4.
 
-HepLean has the potential to benefit the high energy physics community in four ways:
+## Scope of HepLean
+
+Currently the scope of HepLean includes the results and foundations of the following arXiv categories:
+
+*hep-th, hep-ph, hep-ex, hep-lat, gr-qc, and math-ph.*
+
+In particular, the current scope of HepLean includes (but is not limited to) the following foundational areas:
+
+*special and general relativity, quantum mechanics, quantum field theory, particle physics, classical mechanics and field theory, cosmology, thermodynamics*
+
+Once the foundations are in place, and HepLean has a large enough active community behind it, the scope of HepLean will naturally increase to include other areas of physics (and it most likely will undergo a name change).
+
+# Why formalize physics?
+
+HepLean has the potential to benefit the physics community in four ways:
 - Make it easier to find results.
 - Make it easier to automate the creation of new results using e.g. machine learning methods.
 - Make it easier to check papers and results for mathematical correctness.
-- Create new avenues through which high energy physics can be taught.
-
-HepLean is a connection between high energy physics (both formal and phenomenological),
-computer science, and mathematics.
+- Create new avenues through which physics can be taught.
+- Opens up new ways to interface between theory and computer programs.
 
 # How to get involved?
 
