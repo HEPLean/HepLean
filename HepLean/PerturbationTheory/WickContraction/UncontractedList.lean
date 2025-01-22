@@ -219,7 +219,6 @@ lemma uncontractedList_length_eq_card (c : WickContraction n) :
   rw [uncontractedList_eq_sort]
   exact Finset.length_sort fun x1 x2 => x1 ≤ x2
 
-
 lemma filter_uncontractedList (c : WickContraction n) (p : Fin n → Prop) [DecidablePred p] :
     (c.uncontractedList.filter p) = (c.uncontracted.filter p).sort (· ≤ ·) := by
   have h1 : (c.uncontractedList.filter p).Sorted (· ≤ ·) := by
@@ -237,13 +236,11 @@ lemma filter_uncontractedList (c : WickContraction n) (p : Fin n → Prop) [Deci
   have hx := (List.toFinset_sort (· ≤ ·) h2).mpr h1
   rw [← hx, h3]
 
-
 /-!
 
 ## uncontractedIndexEquiv
 
 -/
-
 
 /-- The equivalence between the positions of `c.uncontractedList` i.e. elements of
   `Fin (c.uncontractedList).length` and the finite set `c.uncontracted` considered as a finite type.
@@ -314,7 +311,6 @@ lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.State
 ## Uncontracted List for extractEquiv symm none
 
 -/
-
 
 lemma uncontractedList_succAboveEmb_sorted (c : WickContraction n) (i : Fin n.succ) :
     ((List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by

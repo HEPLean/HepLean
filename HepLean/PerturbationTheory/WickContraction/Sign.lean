@@ -903,7 +903,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
 
 lemma signInsertSomeCoef_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted)
-    (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :  c.signInsertSomeCoef φ φs i j =
+    (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) : c.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get,
       (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((c.getDual? x = none) ∨

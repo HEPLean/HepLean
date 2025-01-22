@@ -18,12 +18,6 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
-/-!
-
-## Time contract.
-
--/
-
 /-- Given a Wick contraction `c` associated with a list `φs`, the
   product of all time-contractions of pairs of contracted elements in `φs`,
   as a member of the center of `𝓞.A`. -/

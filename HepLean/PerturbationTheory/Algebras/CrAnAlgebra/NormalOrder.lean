@@ -175,7 +175,7 @@ lemma normalOrder_swap_create_annihlate_ofCrAnList (φc φa : 𝓕.CrAnStates)
   rfl
 
 lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
-    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)  (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
+    (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     normalOrder (a * ofCrAnState φc * ofCrAnState φa * b) =
     𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa) •
@@ -257,7 +257,6 @@ lemma normalOrder_swap_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra �
 Using the results from above.
 
 -/
-
 
 lemma normalOrder_swap_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
     normalOrder (a * (anPart (StateAlgebra.ofState φ)) * (crPart (StateAlgebra.ofState φ')) * b) =

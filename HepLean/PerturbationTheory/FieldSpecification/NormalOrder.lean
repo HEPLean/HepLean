@@ -10,8 +10,6 @@ import HepLean.PerturbationTheory.FieldSpecification.Filters
 
 # Normal Ordering of states
 
-
-
 -/
 
 namespace FieldSpecification
