@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
-import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.TimeContraction
+import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.TimeContraction
 import HepLean.PerturbationTheory.WickContraction.InsertList
 /-!
 

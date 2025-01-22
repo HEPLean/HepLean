@@ -219,6 +219,99 @@ lemma uncontractedList_length_eq_card (c : WickContraction n) :
   rw [uncontractedList_eq_sort]
   exact Finset.length_sort fun x1 x2 => x1 ≤ x2
 
+lemma filter_uncontractedList (c : WickContraction n) (p : Fin n → Prop) [DecidablePred p] :
+    (c.uncontractedList.filter p) = (c.uncontracted.filter p).sort (· ≤ ·) := by
+  have h1 : (c.uncontractedList.filter p).Sorted (· ≤ ·) := by
+    apply List.Sorted.filter
+    exact uncontractedList_sorted c
+  have h2 : (c.uncontractedList.filter p).Nodup := by
+    refine List.Nodup.filter _ ?_
+    exact uncontractedList_nodup c
+  have h3 : (c.uncontractedList.filter p).toFinset = (c.uncontracted.filter p) := by
+    ext a
+    simp only [List.toFinset_filter, decide_eq_true_eq, Finset.mem_filter, List.mem_toFinset,
+      and_congr_left_iff]
+    rw [uncontractedList_mem_iff]
+    simp
+  have hx := (List.toFinset_sort (· ≤ ·) h2).mpr h1
+  rw [← hx, h3]
+
+/-!
+
+## uncontractedIndexEquiv
+
+-/
+
+/-- The equivalence between the positions of `c.uncontractedList` i.e. elements of
+  `Fin (c.uncontractedList).length` and the finite set `c.uncontracted` considered as a finite type.
+-/
+def uncontractedIndexEquiv (c : WickContraction n) :
+    Fin (c.uncontractedList).length ≃ c.uncontracted where
+  toFun i := ⟨c.uncontractedList.get i, c.uncontractedList_get_mem_uncontracted i⟩
+  invFun i := ⟨List.indexOf i.1 c.uncontractedList,
+    List.indexOf_lt_length.mpr ((c.uncontractedList_mem_iff i.1).mpr i.2)⟩
+  left_inv i := by
+    ext
+    exact List.get_indexOf (uncontractedList_nodup c) _
+  right_inv i := by
+    ext
+    simp
+
+@[simp]
+lemma uncontractedList_getElem_uncontractedIndexEquiv_symm (k : c.uncontracted) :
+    c.uncontractedList[(c.uncontractedIndexEquiv.symm k).val] = k := by
+  simp [uncontractedIndexEquiv]
+
+lemma uncontractedIndexEquiv_symm_eq_filter_length (k : c.uncontracted) :
+    (c.uncontractedIndexEquiv.symm k).val =
+    (List.filter (fun i => i < k.val) c.uncontractedList).length := by
+  simp only [uncontractedIndexEquiv, List.get_eq_getElem, Equiv.coe_fn_symm_mk]
+  rw [fin_list_sorted_indexOf_mem]
+  · simp
+  · exact uncontractedList_sorted c
+  · rw [uncontractedList_mem_iff]
+    exact k.2
+
+lemma take_uncontractedIndexEquiv_symm (k : c.uncontracted) :
+    c.uncontractedList.take (c.uncontractedIndexEquiv.symm k).val =
+    c.uncontractedList.filter (fun i => i < k.val) := by
+  have hl := fin_list_sorted_split c.uncontractedList (uncontractedList_sorted c) k.val
+  conv_lhs =>
+    rhs
+    rw [hl]
+  rw [uncontractedIndexEquiv_symm_eq_filter_length]
+  simp
+
+/-!
+
+## uncontractedStatesEquiv
+
+-/
+
+/-- The equivalence between the type `Option c.uncontracted` for `WickContraction φs.length` and
+  `Option (Fin (c.uncontractedList.map φs.get).length)`, that is optional positions of
+  `c.uncontractedList.map φs.get` induced by `uncontractedIndexEquiv`. -/
+def uncontractedStatesEquiv (φs : List 𝓕.States) (c : WickContraction φs.length) :
+    Option c.uncontracted ≃ Option (Fin (c.uncontractedList.map φs.get).length) :=
+  Equiv.optionCongr (c.uncontractedIndexEquiv.symm.trans (finCongr (by simp)))
+
+@[simp]
+lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (c : WickContraction φs.length) :
+    (uncontractedStatesEquiv φs c).toFun none = none := by
+  simp [uncontractedStatesEquiv]
+
+lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.States)
+    (c : WickContraction φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
+    ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
+    ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
+  rw [(c.uncontractedStatesEquiv φs).sum_comp]
+
+/-!
+
+## Uncontracted List for extractEquiv symm none
+
+-/
+
 lemma uncontractedList_succAboveEmb_sorted (c : WickContraction n) (i : Fin n.succ) :
     ((List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
   apply fin_list_sorted_succAboveEmb_sorted
@@ -230,33 +323,54 @@ lemma uncontractedList_succAboveEmb_nodup (c : WickContraction n) (i : Fin n.suc
   · exact Function.Embedding.injective i.succAboveEmb
   · exact uncontractedList_nodup c
 
-lemma uncontractedList_succAboveEmb_toFinset (c : WickContraction n) (i : Fin n.succ) :
-    (List.map i.succAboveEmb c.uncontractedList).toFinset =
-    (Finset.map i.succAboveEmb c.uncontracted) := by
-  ext a
-  simp only [Fin.coe_succAboveEmb, List.mem_toFinset, List.mem_map, Finset.mem_map,
-    Fin.succAboveEmb_apply]
-  rw [← c.uncontractedList_toFinset]
-  simp
-
-lemma uncontractedList_succAboveEmb_eq_sort(c : WickContraction n) (i : Fin n.succ) :
-    (List.map i.succAboveEmb c.uncontractedList) =
-    (c.uncontracted.map i.succAboveEmb).sort (· ≤ ·) := by
-  rw [← uncontractedList_succAboveEmb_toFinset]
-  symm
-  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
+lemma uncontractedList_succAbove_orderedInsert_nodup (c : WickContraction n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Nodup := by
+  have h1 : (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Perm
+    (i :: List.map i.succAboveEmb c.uncontractedList) := by
+    exact List.perm_orderedInsert (fun x1 x2 => x1 ≤ x2) i _
+  apply List.Perm.nodup h1.symm
+  simp only [Nat.succ_eq_add_one, List.nodup_cons, List.mem_map, not_exists,
+    not_and]
+  apply And.intro
+  · intro x _
+    exact Fin.succAbove_ne i x
   · exact uncontractedList_succAboveEmb_nodup c i
-  · exact uncontractedList_succAboveEmb_sorted c i
 
-lemma uncontractedList_succAboveEmb_eraseIdx_sorted (c : WickContraction n) (i : Fin n.succ)
-    (k: ℕ) : ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Sorted (· ≤ ·) := by
-  apply HepLean.List.eraseIdx_sorted
+lemma uncontractedList_succAbove_orderedInsert_sorted (c : WickContraction n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i
+      (List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
+  refine List.Sorted.orderedInsert i (List.map (⇑i.succAboveEmb) c.uncontractedList) ?_
   exact uncontractedList_succAboveEmb_sorted c i
 
-lemma uncontractedList_succAboveEmb_eraseIdx_nodup (c : WickContraction n) (i : Fin n.succ) (k: ℕ) :
-    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Nodup := by
-  refine List.Nodup.eraseIdx k ?_
-  exact uncontractedList_succAboveEmb_nodup c i
+lemma uncontractedList_succAbove_orderedInsert_toFinset (c : WickContraction n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).toFinset =
+    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)) := by
+  ext a
+  simp only [Nat.succ_eq_add_one, Fin.coe_succAboveEmb, List.mem_toFinset, List.mem_orderedInsert,
+    List.mem_map, Finset.mem_insert, Finset.mem_map, Fin.succAboveEmb_apply]
+  rw [← uncontractedList_toFinset]
+  simp
+
+lemma uncontractedList_succAbove_orderedInsert_eq_sort (c : WickContraction n) (i : Fin n.succ) :
+    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
+    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)).sort (· ≤ ·) := by
+  rw [← uncontractedList_succAbove_orderedInsert_toFinset]
+  symm
+  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
+  · exact uncontractedList_succAbove_orderedInsert_nodup c i
+  · exact uncontractedList_succAbove_orderedInsert_sorted c i
+
+lemma uncontractedList_extractEquiv_symm_none (c : WickContraction n) (i : Fin n.succ) :
+    ((extractEquiv i).symm ⟨c, none⟩).uncontractedList =
+    List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList) := by
+  rw [uncontractedList_eq_sort, extractEquiv_symm_none_uncontracted]
+  rw [uncontractedList_succAbove_orderedInsert_eq_sort]
+
+/-!
+
+## Uncontracted List for extractEquiv symm some
+
+-/
 
 lemma uncontractedList_succAboveEmb_eraseIdx_toFinset (c : WickContraction n) (i : Fin n.succ)
     (k : ℕ) (hk : k < c.uncontractedList.length) :
@@ -286,6 +400,16 @@ lemma uncontractedList_succAboveEmb_eraseIdx_toFinset (c : WickContraction n) (i
     simp_all [uncontractedList]
   exact uncontractedList_succAboveEmb_nodup c i
 
+lemma uncontractedList_succAboveEmb_eraseIdx_sorted (c : WickContraction n) (i : Fin n.succ)
+    (k: ℕ) : ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Sorted (· ≤ ·) := by
+  apply HepLean.List.eraseIdx_sorted
+  exact uncontractedList_succAboveEmb_sorted c i
+
+lemma uncontractedList_succAboveEmb_eraseIdx_nodup (c : WickContraction n) (i : Fin n.succ) (k: ℕ) :
+    ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Nodup := by
+  refine List.Nodup.eraseIdx k ?_
+  exact uncontractedList_succAboveEmb_nodup c i
+
 lemma uncontractedList_succAboveEmb_eraseIdx_eq_sort (c : WickContraction n) (i : Fin n.succ)
     (k : ℕ) (hk : k < c.uncontractedList.length) :
     ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k) =
@@ -297,48 +421,34 @@ lemma uncontractedList_succAboveEmb_eraseIdx_eq_sort (c : WickContraction n) (i 
   · exact uncontractedList_succAboveEmb_eraseIdx_nodup c i k
   · exact uncontractedList_succAboveEmb_eraseIdx_sorted c i k
 
-lemma uncontractedList_succAbove_orderedInsert_sorted (c : WickContraction n) (i : Fin n.succ) :
-    (List.orderedInsert (· ≤ ·) i
-      (List.map i.succAboveEmb c.uncontractedList)).Sorted (· ≤ ·) := by
-  refine List.Sorted.orderedInsert i (List.map (⇑i.succAboveEmb) c.uncontractedList) ?_
-  exact uncontractedList_succAboveEmb_sorted c i
-
-lemma uncontractedList_succAbove_orderedInsert_nodup (c : WickContraction n) (i : Fin n.succ) :
-    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Nodup := by
-  have h1 : (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).Perm
-    (i :: List.map i.succAboveEmb c.uncontractedList) := by
-    exact List.perm_orderedInsert (fun x1 x2 => x1 ≤ x2) i _
-  apply List.Perm.nodup h1.symm
-  simp only [Nat.succ_eq_add_one, List.nodup_cons, List.mem_map, not_exists,
-    not_and]
-  apply And.intro
-  · intro x _
-    exact Fin.succAbove_ne i x
-  · exact uncontractedList_succAboveEmb_nodup c i
-
-lemma uncontractedList_succAbove_orderedInsert_toFinset (c : WickContraction n) (i : Fin n.succ) :
-    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)).toFinset =
-    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)) := by
+lemma uncontractedList_extractEquiv_symm_some (c : WickContraction n) (i : Fin n.succ)
+    (k : c.uncontracted) : ((extractEquiv i).symm ⟨c, some k⟩).uncontractedList =
+    ((c.uncontractedList).map i.succAboveEmb).eraseIdx (c.uncontractedIndexEquiv.symm k) := by
+  rw [uncontractedList_eq_sort]
+  rw [uncontractedList_succAboveEmb_eraseIdx_eq_sort]
+  swap
+  simp only [Fin.is_lt]
+  congr
+  simp only [Nat.succ_eq_add_one, extractEquiv, Equiv.coe_fn_symm_mk,
+    uncontractedList_getElem_uncontractedIndexEquiv_symm, Fin.succAboveEmb_apply]
+  rw [insert_some_uncontracted]
   ext a
-  simp only [Nat.succ_eq_add_one, Fin.coe_succAboveEmb, List.mem_toFinset, List.mem_orderedInsert,
-    List.mem_map, Finset.mem_insert, Finset.mem_map, Fin.succAboveEmb_apply]
-  rw [← uncontractedList_toFinset]
   simp
 
-lemma uncontractedList_succAbove_orderedInsert_eq_sort (c : WickContraction n) (i : Fin n.succ) :
-    (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
-    (Insert.insert i (Finset.map i.succAboveEmb c.uncontracted)).sort (· ≤ ·) := by
-  rw [← uncontractedList_succAbove_orderedInsert_toFinset]
-  symm
-  refine (List.toFinset_sort (α := Fin n.succ) (· ≤ ·) ?_).mpr ?_
-  · exact uncontractedList_succAbove_orderedInsert_nodup c i
-  · exact uncontractedList_succAbove_orderedInsert_sorted c i
+lemma uncontractedList_succAboveEmb_toFinset (c : WickContraction n) (i : Fin n.succ) :
+    (List.map i.succAboveEmb c.uncontractedList).toFinset =
+    (Finset.map i.succAboveEmb c.uncontracted) := by
+  ext a
+  simp only [Fin.coe_succAboveEmb, List.mem_toFinset, List.mem_map, Finset.mem_map,
+    Fin.succAboveEmb_apply]
+  rw [← c.uncontractedList_toFinset]
+  simp
 
-lemma uncontractedList_extractEquiv_symm_none (c : WickContraction n) (i : Fin n.succ) :
-    ((extractEquiv i).symm ⟨c, none⟩).uncontractedList =
-    List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList) := by
-  rw [uncontractedList_eq_sort, extractEquiv_symm_none_uncontracted]
-  rw [uncontractedList_succAbove_orderedInsert_eq_sort]
+/-!
+
+## uncontractedListOrderPos
+
+-/
 
 /-- Given a Wick contraction `c : WickContraction n` and a `Fin n.succ`, the number of elements
   of `c.uncontractedList` which are less then `i`.
@@ -383,108 +493,18 @@ lemma orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx (c : WickContract
     (List.orderedInsert (· ≤ ·) i (List.map i.succAboveEmb c.uncontractedList)) =
     (List.map i.succAboveEmb c.uncontractedList).insertIdx (uncontractedListOrderPos c i) i := by
   rw [orderedInsert_eq_insertIdx_of_fin_list_sorted]
-  swap
-  exact uncontractedList_succAboveEmb_sorted c i
-  congr 1
-  simp only [Nat.succ_eq_add_one, Fin.val_fin_lt, Fin.coe_succAboveEmb, uncontractedListOrderPos]
-  rw [List.filter_map]
-  simp only [List.length_map]
-  congr
-  funext x
-  simp only [Function.comp_apply, Fin.succAbove, decide_eq_decide]
-  split
-  simp only [Fin.lt_def, Fin.coe_castSucc]
-  rename_i h
-  simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
-  omega
-
-/-- The equivalence between the positions of `c.uncontractedList` i.e. elements of
-  `Fin (c.uncontractedList).length` and the finite set `c.uncontracted` considered as a finite type.
--/
-def uncontractedFinEquiv (c : WickContraction n) :
-    Fin (c.uncontractedList).length ≃ c.uncontracted where
-  toFun i := ⟨c.uncontractedList.get i, c.uncontractedList_get_mem_uncontracted i⟩
-  invFun i := ⟨List.indexOf i.1 c.uncontractedList,
-    List.indexOf_lt_length.mpr ((c.uncontractedList_mem_iff i.1).mpr i.2)⟩
-  left_inv i := by
-    ext
-    exact List.get_indexOf (uncontractedList_nodup c) _
-  right_inv i := by
-    ext
-    simp
-
-@[simp]
-lemma uncontractedList_getElem_uncontractedFinEquiv_symm (k : c.uncontracted) :
-    c.uncontractedList[(c.uncontractedFinEquiv.symm k).val] = k := by
-  simp [uncontractedFinEquiv]
-
-lemma uncontractedFinEquiv_symm_eq_filter_length (k : c.uncontracted) :
-    (c.uncontractedFinEquiv.symm k).val =
-    (List.filter (fun i => i < k.val) c.uncontractedList).length := by
-  simp only [uncontractedFinEquiv, List.get_eq_getElem, Equiv.coe_fn_symm_mk]
-  rw [fin_list_sorted_indexOf_mem]
-  · simp
-  · exact uncontractedList_sorted c
-  · rw [uncontractedList_mem_iff]
-    exact k.2
-
-lemma take_uncontractedFinEquiv_symm (k : c.uncontracted) :
-    c.uncontractedList.take (c.uncontractedFinEquiv.symm k).val =
-    c.uncontractedList.filter (fun i => i < k.val) := by
-  have hl := fin_list_sorted_split c.uncontractedList (uncontractedList_sorted c) k.val
-  conv_lhs =>
-    rhs
-    rw [hl]
-  rw [uncontractedFinEquiv_symm_eq_filter_length]
-  simp
-
-/-- The equivalence between the type `Option c.uncontracted` for `WickContraction φs.length` and
-  `Option (Fin (c.uncontractedList.map φs.get).length)`, that is optional positions of
-  `c.uncontractedList.map φs.get` induced by `uncontractedFinEquiv`. -/
-def uncontractedStatesEquiv (φs : List 𝓕.States) (c : WickContraction φs.length) :
-    Option c.uncontracted ≃ Option (Fin (c.uncontractedList.map φs.get).length) :=
-  Equiv.optionCongr (c.uncontractedFinEquiv.symm.trans (finCongr (by simp)))
-
-@[simp]
-lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (c : WickContraction φs.length) :
-    (uncontractedStatesEquiv φs c).toFun none = none := by
-  simp [uncontractedStatesEquiv]
-
-lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
-    ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
-    ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
-  rw [(c.uncontractedStatesEquiv φs).sum_comp]
-
-lemma uncontractedList_extractEquiv_symm_some (c : WickContraction n) (i : Fin n.succ)
-    (k : c.uncontracted) : ((extractEquiv i).symm ⟨c, some k⟩).uncontractedList =
-    ((c.uncontractedList).map i.succAboveEmb).eraseIdx (c.uncontractedFinEquiv.symm k) := by
-  rw [uncontractedList_eq_sort]
-  rw [uncontractedList_succAboveEmb_eraseIdx_eq_sort]
-  swap
-  simp only [Fin.is_lt]
-  congr
-  simp only [Nat.succ_eq_add_one, extractEquiv, Equiv.coe_fn_symm_mk,
-    uncontractedList_getElem_uncontractedFinEquiv_symm, Fin.succAboveEmb_apply]
-  rw [insert_some_uncontracted]
-  ext a
-  simp
-
-lemma filter_uncontractedList (c : WickContraction n) (p : Fin n → Prop) [DecidablePred p] :
-    (c.uncontractedList.filter p) = (c.uncontracted.filter p).sort (· ≤ ·) := by
-  have h1 : (c.uncontractedList.filter p).Sorted (· ≤ ·) := by
-    apply List.Sorted.filter
-    exact uncontractedList_sorted c
-  have h2 : (c.uncontractedList.filter p).Nodup := by
-    refine List.Nodup.filter _ ?_
-    exact uncontractedList_nodup c
-  have h3 : (c.uncontractedList.filter p).toFinset = (c.uncontracted.filter p) := by
-    ext a
-    simp only [List.toFinset_filter, decide_eq_true_eq, Finset.mem_filter, List.mem_toFinset,
-      and_congr_left_iff]
-    rw [uncontractedList_mem_iff]
-    simp
-  have hx := (List.toFinset_sort (· ≤ ·) h2).mpr h1
-  rw [← hx, h3]
+  · congr 1
+    simp only [Nat.succ_eq_add_one, Fin.val_fin_lt, Fin.coe_succAboveEmb, uncontractedListOrderPos]
+    rw [List.filter_map]
+    simp only [List.length_map]
+    congr
+    funext x
+    simp only [Function.comp_apply, Fin.succAbove, decide_eq_decide]
+    split
+    · simp only [Fin.lt_def, Fin.coe_castSucc]
+    · rename_i h
+      simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
+      omega
+  · exact uncontractedList_succAboveEmb_sorted c i
 
 end WickContraction

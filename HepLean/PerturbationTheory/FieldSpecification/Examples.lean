@@ -8,7 +8,6 @@ import HepLean.PerturbationTheory.FieldSpecification.Basic
 
 # Specific examples of field specifications
 
-
 -/
 
 namespace FieldSpecification

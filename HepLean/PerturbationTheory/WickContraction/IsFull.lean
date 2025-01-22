@@ -19,6 +19,7 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
+open Nat
 
 /-- A contraction is full if there are no uncontracted fields, i.e. the finite set
   of uncontracted fields is empty. -/
@@ -45,8 +46,6 @@ def isFullInvolutionEquiv : {c : WickContraction n // IsFull c} ≃
     simpa using f.2.2⟩
   left_inv c := by simp
   right_inv f := by simp
-
-open Nat
 
 /-- If `n` is even then the number of full contractions is `(n-1)!!`. -/
 theorem card_of_isfull_even (he : Even n) :

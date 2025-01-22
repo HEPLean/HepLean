@@ -16,10 +16,10 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 -/
 
 namespace FieldSpecification
-variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.OperatorAlgebra}
+variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.ProtoOperatorAlgebra}
 open CrAnAlgebra
 open StateAlgebra
-open OperatorAlgebra
+open ProtoOperatorAlgebra
 open HepLean.List
 open WickContraction
 open FieldStatistic
@@ -192,7 +192,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, Algebra.smul_mul_assoc,
         instCommGroup.eq_1, contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
         Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
-        List.getElem_map, uncontractedList_getElem_uncontractedFinEquiv_symm, List.get_eq_getElem]
+        List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem]
       by_cases h1 : i < i.succAbove ↑k
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]

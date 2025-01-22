@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.OperatorAlgebra.NormalOrder
+import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.NormalOrder
 import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
 /-!
 
@@ -19,9 +19,9 @@ variable {𝓕 : FieldSpecification}
 open CrAnAlgebra
 noncomputable section
 
-namespace OperatorAlgebra
+namespace ProtoOperatorAlgebra
 
-variable (𝓞 : 𝓕.OperatorAlgebra)
+variable (𝓞 : 𝓕.ProtoOperatorAlgebra)
 open FieldStatistic
 
 /-- The time contraction of two States as an element of `𝓞.A` defined
@@ -86,7 +86,7 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
     have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
-end OperatorAlgebra
+end ProtoOperatorAlgebra
 
 end
 end FieldSpecification

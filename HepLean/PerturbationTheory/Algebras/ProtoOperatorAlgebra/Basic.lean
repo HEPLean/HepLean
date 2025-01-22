@@ -18,7 +18,7 @@ open CrAnAlgebra
   to be isomorphic to the actual operator algebra of a field theory.
   These properties are sufficent to prove certain theorems about the Operator algebra
   in particular Wick's theorem. -/
-structure OperatorAlgebra where
+structure ProtoOperatorAlgebra where
   /-- The algebra representing the operator algebra. -/
   A : Type
   /-- The instance of the type `A` as a semi-ring. -/
@@ -43,9 +43,9 @@ structure OperatorAlgebra where
     (_ : ¬ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φ')),
     crAnF (superCommute (ofCrAnState φ) (ofCrAnState φ')) = 0
 
-namespace OperatorAlgebra
+namespace ProtoOperatorAlgebra
 open FieldStatistic
-variable {𝓕 : FieldSpecification} (𝓞 : 𝓕.OperatorAlgebra)
+variable {𝓕 : FieldSpecification} (𝓞 : 𝓕.ProtoOperatorAlgebra)
 
 /-- The algebra `𝓞.A` carries the instance of a semi-ring induced via `A_seimRing`. -/
 instance : Semiring 𝓞.A := 𝓞.A_semiRing
@@ -198,5 +198,5 @@ lemma crAnF_superCommute_ofCrAnState_ofStateList_eq_sum (φ : 𝓕.CrAnStates) (
   · congr
     rw [← map_mul, ← ofStateList_append, ← List.eraseIdx_eq_take_drop_succ]
 
-end OperatorAlgebra
+end ProtoOperatorAlgebra
 end FieldSpecification
