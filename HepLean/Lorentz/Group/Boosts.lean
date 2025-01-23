@@ -150,7 +150,7 @@ lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
     Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Pi.smul_apply, smul_eq_mul, Pi.sub_apply, Pi.neg_apply]
-  apply Or.inl
+  left
   ring
 
 open minkowskiMatrix in
