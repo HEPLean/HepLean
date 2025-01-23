@@ -25,6 +25,11 @@ open HepLean.List
 open WickContraction
 open FieldStatistic
 
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+We have  (roughly) `N(c.insertList φ φs i none).uncontractedList = s • N(φ * c.uncontractedList)`
+Where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀φ₁…φᵢ`.
+-/
 lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : WickContraction φs.length) :
     𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
@@ -91,6 +96,12 @@ lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
   simp only [Nat.succ_eq_add_one]
   rw [insertList_uncontractedList_none_map]
 
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+We have (roughly) `N(c.insertList φ φs i k).uncontractedList`
+is equal to `N((c.uncontractedList).eraseIdx k')`
+where `k'` is the position in `c.uncontractedList` corresponding to `k`.
+-/
 lemma insertList_some_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : WickContraction φs.length) (k : c.uncontracted) :
     𝓞.crAnF (normalOrder (ofStateList (List.map (φs.insertIdx i φ).get
@@ -107,6 +118,12 @@ lemma insertList_some_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
   congr
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
 
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+This lemma states that `(c.sign • c.timeContract 𝓞) * N(c.uncontracted)`
+for `c` equal to `c.insertList φ φs i none` is equal to that for just `c`
+mulitiplied by the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`.
+-/
 lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : WickContraction φs.length) :
     (c.insertList φ φs i none).sign • (c.insertList φ φs i none).timeContract 𝓞
@@ -150,6 +167,13 @@ lemma sign_timeContract_normalOrder_insertList_none (φ : 𝓕.States) (φs : Li
     simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
     exact hg
 
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+This lemma states that
+`(c.sign • c.timeContract 𝓞) * N(c.uncontracted)`
+for `c` equal to `c.insertList φ φs i (some k)` is equal to that for just `c`
+mulitiplied by the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`.
+-/
 lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (c : WickContraction φs.length) (k : c.uncontracted)
     (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
@@ -214,6 +238,15 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
         zero_mul, instCommGroup.eq_1]
       exact hg'
 
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+This lemma states that
+`(c.sign • c.timeContract 𝓞) * N(c.uncontracted)`
+is equal to the sum of
+`(c'.sign • c'.timeContract 𝓞) * N(c'.uncontracted)`
+for all `c' = (c.insertList φ φs i k)` for `k : Option (c.uncontracted)`, multiplied by
+the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`.
+-/
 lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin φs.length.succ)
     (c : WickContraction φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
     (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderRel φs[k] φ) :
@@ -226,8 +259,7 @@ lemma mul_sum_contractions (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin 
       (ofStateList ((c.insertList φ φs i k).uncontractedList.map (φs.insertIdx i φ).get)))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum, Finset.mul_sum,
     uncontractedStatesEquiv_list_sum, Finset.smul_sum]
-  simp only [Finset.univ_eq_attach, instCommGroup.eq_1,
-    Nat.succ_eq_add_one, timeContract_insertList_none]
+  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one]
   congr 1
   funext n
   match n with
@@ -261,54 +293,6 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs') :
   subst h
   simp
 
-lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
-    timeOrder (ofList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
-      (Finset.filter (fun x =>
-        (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
-    StateAlgebra.ofState (maxTimeField φ φs) * timeOrder (ofList (eraseMaxTimeField φ φs)) := by
-  rw [timeOrder_eq_maxTimeField_mul]
-  congr 3
-  apply FieldStatistic.ofList_perm
-  nth_rewrite 1 [← List.finRange_map_get (φ :: φs)]
-  simp only [List.length_cons, eraseMaxTimeField, insertionSortDropMinPos]
-  rw [eraseIdx_get, ← List.map_take, ← List.map_map]
-  refine List.Perm.map (φ :: φs).get ?_
-  apply (List.perm_ext_iff_of_nodup _ _).mpr
-  · intro i
-    simp only [List.length_cons, maxTimeFieldPos, mem_take_finrange, Fin.val_fin_lt, List.mem_map,
-      Finset.mem_sort, Finset.mem_filter, Finset.mem_univ, true_and, Function.comp_apply]
-    refine Iff.intro (fun hi => ?_) (fun h => ?_)
-    · have h2 := (maxTimeFieldPosFin φ φs).2
-      simp only [eraseMaxTimeField, insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
-        maxTimeFieldPosFin, insertionSortMinPosFin] at h2
-      use ⟨i, by omega⟩
-      apply And.intro
-      · simp only [Fin.succAbove, List.length_cons, Fin.castSucc_mk, maxTimeFieldPosFin,
-        insertionSortMinPosFin, Nat.succ_eq_add_one, Fin.mk_lt_mk, Fin.val_fin_lt, Fin.succ_mk]
-        rw [Fin.lt_def]
-        split
-        · simp only [Fin.val_fin_lt]
-          omega
-        · omega
-      · simp only [Fin.succAbove, List.length_cons, Fin.castSucc_mk, Fin.succ_mk, Fin.ext_iff,
-        Fin.coe_cast]
-        split
-        · simp
-        · simp_all [Fin.lt_def]
-    · obtain ⟨j, h1, h2⟩ := h
-      subst h2
-      simp only [Fin.lt_def, Fin.coe_cast]
-      exact h1
-  · exact List.Sublist.nodup (List.take_sublist _ _) <|
-      List.nodup_finRange (φs.length + 1)
-  · refine List.Nodup.map ?_ ?_
-    · refine Function.Injective.comp ?hf.hg Fin.succAbove_right_injective
-      exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderRel φ φs))
-    · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2)
-        (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
-          Finset.univ)
-
-
 /-!
 
 ## Wick's theorem
@@ -335,7 +319,15 @@ remark wicks_theorem_context := "
   the remaining fields. Wick's theorem is also the precursor to the diagrammatic
   approach to quantum field theory called Feynman diagrams."
 
-/-- Wick's theorem for time-ordered products of bosonic and fermionic fields. -/
+/-- Wick's theorem for time-ordered products of bosonic and fermionic fields.
+  The time ordered product `T(φ₀φ₁…φₙ)` is equal to the sum of terms,
+  for all possible Wick contractions `c` of the list of fields `φs := φ₀φ₁…φₙ`, given by
+  the multiple of:
+- The sign corresponding to the number of fermionic-fermionic exchanges one must do
+    to put  elements in contracted pairs of `c` next to each other.
+- The product of time-contractions of the contracted pairs of `c`.
+- The normal-ordering of the uncontracted fields in `c`.
+-/
 theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) =
     ∑ (c : WickContraction φs.length), (c.sign φs • c.timeContract 𝓞) *
       𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map φs.get)))

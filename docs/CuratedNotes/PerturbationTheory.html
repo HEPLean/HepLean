@@ -54,12 +54,13 @@ layout: default
   {% if entry.type == "name" %}
 
   <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px;">
-    <p>{{ entry.name }}: {{ entry.docString }}</p>
+    <p> <a href = "{{ entry.link }}" style="font-weight: bold; color: #2c5282;">{{ entry.name }}</a>: {{ entry.docString | markdownify}}</p>
     <details class="code-block-container">
     <summary>Show Lean code:</summary>
     <pre style="background: none; margin: 0;"><code class="language-lean">{{ entry.declString }}</code></pre>
     </details>
   </div>
+  <br>
 
   {% endif %}
   {% if entry.type == "remark" %}

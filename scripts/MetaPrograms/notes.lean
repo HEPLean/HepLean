@@ -39,14 +39,18 @@ def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
     declString := declString,
     docString := docString}
 
-def DeclInfo.toYML (d : DeclInfo) : String :=
+def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
-  s!"
+  let docStringIndent := d.docString.replace "\n" "\n      "
+  let link ←  Name.toGitHubLink d.fileName d.line
+  return s!"
   - type: name
     name: {d.name}
     line: {d.line}
     fileName: {d.fileName}
-    docString: \"{d.docString}\"
+    link: \"{link}\"
+    docString: |
+      {docStringIndent}
     declString: |
       {declStringIndent}"
 
@@ -82,7 +86,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
       {contentIndent}"
     return ⟨x.1 ++ [newString], x.2⟩
   | false =>
-  let newString :=  (← DeclInfo.ofName n).toYML
+  let newString ← (← DeclInfo.ofName n).toYML
   return ⟨x.1 ++ [newString], x.2⟩
 
 structure Note where
@@ -126,15 +130,40 @@ def perturbationTheory : Note where
     .h2 "Field specifications",
     .name `fieldSpecification_intro,
     .name `FieldSpecification,
+    .p "Some examples of `FieldSpecification`s are given below:",
+    .name `FieldSpecification.singleBoson,
+    .name `FieldSpecification.singleFermion,
+    .name `FieldSpecification.doubleBosonDoubleFermion,
     .h2 "States",
+    .p "Given a field, there are three common states (or operators) of that field that we work with.
+      These are the in and out asymptotic states and the position states.",
+    .p "For a field structure `𝓕` these states are defined as:",
+    .name `FieldSpecification.IncomingAsymptotic,
+    .name `FieldSpecification.OutgoingAsymptotic,
+    .name `FieldSpecification.PositionStates,
+    .p "We will want to consider all three of these types of states simultanously so we define
+      and inductive type `States` which is the disjoint union of these three types of states.",
+    .name `FieldSpecification.States,
+    .name `FieldSpecification.StateAlgebra,
     .h2 "Time ordering",
+    .name `FieldSpecification.timeOrderRel,
+    .name `FieldSpecification.timeOrderSign,
+    .name `FieldSpecification.StateAlgebra.timeOrder,
+    .name `FieldSpecification.StateAlgebra.timeOrder_eq_maxTimeField_mul_finset,
     .h2 "Creation and annihilation states",
     .h2 "Normal ordering",
-    .h1 "Algebras",
-    .h2 "State free-algebra",
-    .h2 "CrAnState free-algebra",
-    .h2 "Proto operator algebra",
-    .h1 "Contractions"
+    .h2 "Proto-operator algebra",
+    .h1 "Wick Contractions",
+    .h1 "Proof of Wick's theorem",
+    .h2 "The case of the nil list",
+    .p "Our proof of Wick's theorem will be via induction on the number of fields that
+      are in the time-ordered product. The base case is when there are no files.
+      The proof of Wick's theorem follows from definitions and simple lemmas.",
+    .name `FieldSpecification.wicks_theorem_nil,
+    .name `FieldSpecification.ProtoOperatorAlgebra.crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum,
+    .name `FieldSpecification.ProtoOperatorAlgebra.crAnF_ofState_normalOrder_insert,
+    .name `FieldSpecification.mul_sum_contractions,
+    .name `FieldSpecification.wicks_theorem,
     ]
 
 unsafe def main (_ : List String) : IO UInt32 := do

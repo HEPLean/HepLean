@@ -356,6 +356,11 @@ noncomputable def contractStateAtIndex (φ : 𝓕.States) (φs : List 𝓕.State
   | some n => 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
         𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState φs[n]⟩ₛca)
 
+/--
+Within a proto-operator algebra,
+`φ * N(φ₀φ₁…φₙ) = N(φφ₀φ₁…φₙ) + ∑ i, (sᵢ • [anPart φ, φᵢ]ₛ) * N(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`,
+where `sₙ` is the exchange sign for `φ` and `φ₀φ₁…φᵢ₋₁`.
+-/
 lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ : 𝓕.States)
     (φs : List 𝓕.States) :
     𝓞.crAnF (ofState φ * normalOrder (ofStateList φs)) =
@@ -374,6 +379,10 @@ lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum (φ : 𝓕.States)
 
 -/
 
+/--
+Within a proto-operator algebra, `N(φφ₀φ₁…φₙ) = s • N(φ₀…φₖ₋₁φφₖ…φₙ)`, where
+`s` is the exchange sign for `φ` and `φ₀…φₖ₋₁`.
+-/
 lemma crAnF_ofState_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.States)
     (k : Fin φs.length.succ) :
     𝓞.crAnF (normalOrder (ofStateList (φ :: φs))) =

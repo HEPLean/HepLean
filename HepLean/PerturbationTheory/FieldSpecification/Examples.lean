@@ -13,18 +13,23 @@ import HepLean.PerturbationTheory.FieldSpecification.Basic
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- The Field specification corresponding to a single bosonic field. -/
+/-- The Field specification corresponding to a single bosonic field.
+  The type of fields is the unit type, and the statistic of the unique element of the unit
+  type is bosonic. -/
 def singleBoson : FieldSpecification where
   Fields := Unit
   statistics := fun _ => FieldStatistic.bosonic
 
-/-- The Field specification corresponding to a single fermionic field. -/
+/-- The Field specification corresponding to a single fermionic field.
+  The type of fields is the unit type, and the statistic of the unique element of the unit
+  type is fermionic. -/
 def singleFermion : FieldSpecification where
   Fields := Unit
   statistics := fun _ => FieldStatistic.fermionic
 
-/-- The Field specification corresponding to a two bosonic field and
-  two fermionic fields. -/
+/-- The Field specification corresponding to two bosonic fields and two fermionic fields.
+  The type of fields is `Fin 2 ⊕ Fin 2`, and the statistic of the two `.inl` (left) elements
+  is bosonic and the statistic of the two `.inr` (right) elements is fermionic. -/
 def doubleBosonDoubleFermion : FieldSpecification where
   Fields := Fin 2 ⊕ Fin 2
   statistics := fun b =>
