@@ -34,7 +34,7 @@ lemma insertionSortMin_lt_mem_insertionSortDropMinPos {α : Type} (r : α → α
     (i : Fin (insertionSortDropMinPos r a l).length) :
     r (insertionSortMin r a l) ((insertionSortDropMinPos r a l)[i]) := by
   let l1 := List.insertionSort r (a :: l)
-  have hl1 : l1.Sorted r := by exact List.sorted_insertionSort r (a :: l)
+  have hl1 : l1.Sorted r := List.sorted_insertionSort r (a :: l)
   simp only [l1] at hl1
   rw [insertionSort_eq_insertionSortMin_cons r a l] at hl1
   simp only [List.sorted_cons, List.mem_insertionSort] at hl1
