@@ -7,6 +7,7 @@ import HepLean.Lorentz.RealVector.Basic
 import HepLean.PerturbationTheory.FieldStatistics.ExchangeSign
 import HepLean.SpaceTime.Basic
 import HepLean.PerturbationTheory.FieldStatistics.OfFinset
+import HepLean.Meta.Remark.Basic
 /-!
 
 # Field specification
@@ -23,6 +24,14 @@ From each field we can create three different types of `States`.
 These states carry the same field statistic as the field they are derived from.
 
 -/
+
+remark fieldSpecification_intro := "The raw ingredients of a field theory are:
+  - The specification of the fields.
+  - Whether each field is a boson or a fermion.
+  - Vertices present.
+  - Coefficents of each vertex.
+
+  We call the first two of these ingredients the `FieldSpecification` of the theory. "
 
 /-- A field specification is a type of fields plus a specification of the
   statistics (fermionic or bosonic) of each field. -/

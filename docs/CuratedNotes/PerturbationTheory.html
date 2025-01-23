@@ -1,0 +1,42 @@
+---
+layout: default
+---
+<center><h1 style="font-size: 50px;">{{ site.data.perturbationTheory.title }}</h1></center>
+<br>
+<div style="border: 1px solid black; padding: 10px;">
+  <p>Note:
+  These notes are created using an interactive theorem
+  prover called <a href="https://lean-lang.org">Lean</a>.
+  Lean formally checks definitions, theorems and proofs for correctness.
+  These notes are part of a much larger project called
+  <a href="https://github.com/HEPLean/HepLean">HepLean</a>, which aims to digitalize
+  high energy physics into Lean. Please consider contributing to this project.
+  <br><br>
+  Please provide feedback or suggestions for improvements by creating a GitHub issue
+  <a href="https://github.com/HEPLean/HepLean/issues">here</a>.
+  </p>
+</div>
+<br>
+{% for entry in site.data.perturbationTheory.parts %}
+  {% if entry.type == "h1" %}
+    <h1>{{ entry.content }}</h1>
+  {% endif %}
+  {% if entry.type == "h2" %}
+    <h2>{{ entry.content }}</h2>
+  {% endif %}
+  {% if entry.type == "p" %}
+    <p>{{ entry.content }}</p>
+  {% endif %}
+  {% if entry.type == "name" %}
+    <div class="code-block-container">
+      <pre><code>
+{{ entry.content }}
+      </code></pre>
+    </div>
+  {% endif %}
+  {% if entry.type == "remark" %}
+    <p><i>Remark:</i>
+    {{ entry.content|markdownify }}
+    </p>
+  {% endif %}
+{% endfor %}
