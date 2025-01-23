@@ -386,7 +386,8 @@ lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     rhs; rhs
     rw [ofCrAnList_append, ofCrAnList_append, ofCrAnList_append]
     rw [← smul_mul_assoc, ← smul_mul_assoc, ← Algebra.mul_smul_comm]
-  rw [← sub_mul, ← sub_mul, ← mul_sub, ofCrAnList_append, ofCrAnList_singleton, ofCrAnList_singleton]
+  rw [← sub_mul, ← sub_mul, ← mul_sub, ofCrAnList_append, ofCrAnList_singleton,
+    ofCrAnList_singleton]
   rw [ofCrAnList_append, ofCrAnList_singleton, ofCrAnList_singleton, smul_mul_assoc]
 
 lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList

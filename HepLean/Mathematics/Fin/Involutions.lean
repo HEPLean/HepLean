@@ -259,7 +259,8 @@ lemma involutionAddEquiv_none_succ {n : ℕ}
     (x : Fin n) : f.1 x.succ = x.succ ↔ (involutionCons n f).1.1 x = x := by
   simp only [succ_eq_add_one, involutionCons, Fin.cons_update, Equiv.coe_fn_mk, dite_eq_left_iff]
   have hx : ¬ f.1 x.succ = ⟨0, Nat.zero_lt_succ n⟩:=
-    involutionAddEquiv_none_image_zero h ▸ fun hn => Fin.succ_ne_zero x (Function.Involutive.injective f.2 hn)
+    involutionAddEquiv_none_image_zero h ▸
+      fun hn => Fin.succ_ne_zero x (Function.Involutive.injective f.2 hn)
   exact Iff.intro (fun h2 ↦ by simp [h2]) (fun h2 ↦ (Fin.pred_eq_iff_eq_succ hx).mp (h2 hx))
 
 lemma involutionAddEquiv_isSome_image_zero {n : ℕ} :
