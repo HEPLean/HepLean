@@ -37,7 +37,7 @@ initialize remarkExtension : SimplePersistentEnvExtension RemarkInfo (Array Rema
   }
 
 /-- A remark is a string used for important information. -/
-syntax (name := remark_syntax) "remark " ident  ":=" str : command
+syntax (name := remark_syntax) "remark " ident ":=" str : command
 
 /-- Elaborator for the `note ...` command -/
 @[command_elab remark_syntax]

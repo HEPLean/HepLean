@@ -117,6 +117,8 @@ import HepLean.Meta.Notes.Basic
 import HepLean.Meta.Notes.HTMLNote
 import HepLean.Meta.Notes.NoteFile
 import HepLean.Meta.Notes.ToHTML
+import HepLean.Meta.Remark.Basic
+import HepLean.Meta.Remark.Properties
 import HepLean.Meta.TODO.Basic
 import HepLean.Meta.TransverseTactics
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic

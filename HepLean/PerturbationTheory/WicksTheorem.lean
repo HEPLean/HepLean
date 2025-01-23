@@ -27,7 +27,7 @@ open FieldStatistic
 
 /--
 Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
-We have  (roughly) `N(c.insertList φ φs i none).uncontractedList = s • N(φ * c.uncontractedList)`
+We have (roughly) `N(c.insertList φ φs i none).uncontractedList = s • N(φ * c.uncontractedList)`
 Where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀φ₁…φᵢ`.
 -/
 lemma insertList_none_normalOrder (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -324,7 +324,7 @@ remark wicks_theorem_context := "
   for all possible Wick contractions `c` of the list of fields `φs := φ₀φ₁…φₙ`, given by
   the multiple of:
 - The sign corresponding to the number of fermionic-fermionic exchanges one must do
-    to put  elements in contracted pairs of `c` next to each other.
+    to put elements in contracted pairs of `c` next to each other.
 - The product of time-contractions of the contracted pairs of `c`.
 - The normal-ordering of the uncontracted fields in `c`.
 -/
