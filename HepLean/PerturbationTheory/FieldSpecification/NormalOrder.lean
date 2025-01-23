@@ -149,7 +149,7 @@ lemma normalOrderSign_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     rw [← normalOrderSign, normalOrderSign_swap_create_annihlate φc φa hφc hφa φs φs']
     rw [← mul_assoc, mul_comm _ (FieldStatistic.exchangeSign _ _), mul_assoc]
     simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_left_iff]
-    left
+    apply Or.inl
     conv_rhs => rw [normalOrderSign, Wick.koszulSign, ← normalOrderSign]
     simp only [mul_eq_mul_right_iff]
     left
