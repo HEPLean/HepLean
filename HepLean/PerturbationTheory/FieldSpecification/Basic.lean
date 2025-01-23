@@ -7,6 +7,7 @@ import HepLean.Lorentz.RealVector.Basic
 import HepLean.PerturbationTheory.FieldStatistics.ExchangeSign
 import HepLean.SpaceTime.Basic
 import HepLean.PerturbationTheory.FieldStatistics.OfFinset
+import HepLean.Meta.Remark.Basic
 /-!
 
 # Field specification
@@ -24,6 +25,14 @@ These states carry the same field statistic as the field they are derived from.
 
 -/
 
+remark fieldSpecification_intro := "The raw ingredients of a field theory are:
+  - The specification of the fields.
+  - Whether each field is a boson or a fermion.
+  - Vertices present.
+  - Coefficents of each vertex.
+
+  We call the first two of these ingredients the `FieldSpecification` of the theory. "
+
 /-- A field specification is a type of fields plus a specification of the
   statistics (fermionic or bosonic) of each field. -/
 structure FieldSpecification where
@@ -35,26 +44,26 @@ structure FieldSpecification where
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- Negative asymptotic states are specified by a field and a momentum. -/
-def AsymptoticNegTime : Type := 𝓕.Fields × Lorentz.Contr 4
+/-- Incoming asymptotic states are specified by a field and a momentum. -/
+def IncomingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 
-/-- Positive asymptotic states are specified by a field and a momentum. -/
-def AsymptoticPosTime : Type := 𝓕.Fields × Lorentz.Contr 4
+/-- Outgoing asymptotic states are specified by a field and a momentum. -/
+def OutgoingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 
 /-- States specified by a field and a space-time position. -/
 def PositionStates : Type := 𝓕.Fields × SpaceTime
 
 /-- The combination of asymptotic states and position states. -/
 inductive States (𝓕 : FieldSpecification) where
-  | negAsymp : 𝓕.AsymptoticNegTime → 𝓕.States
+  | inAsymp : 𝓕.IncomingAsymptotic → 𝓕.States
   | position : 𝓕.PositionStates → 𝓕.States
-  | posAsymp : 𝓕.AsymptoticPosTime → 𝓕.States
+  | outAsymp : 𝓕.OutgoingAsymptotic → 𝓕.States
 
 /-- Taking a state to its underlying field. -/
 def statesToField : 𝓕.States → 𝓕.Fields
-  | States.negAsymp φ => φ.1
+  | States.inAsymp φ => φ.1
   | States.position φ => φ.1
-  | States.posAsymp φ => φ.1
+  | States.outAsymp φ => φ.1
 
 /-- The statistics associated to a state. -/
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField

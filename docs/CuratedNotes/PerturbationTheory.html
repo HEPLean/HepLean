@@ -1,0 +1,70 @@
+---
+layout: default
+---
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script type="text/javascript" charset="UTF-8"
+  src="../assets/css/lean.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- Note header (title, curators, notice etc.). -->
+<center><h1 style="font-size: 50px;">{{ site.data.perturbationTheory.title }}</h1></center>
+<center><h2 style="font-size: 20px;">Note Curators: {{ site.data.perturbationTheory.curators }}</h2></center>
+
+<br>
+<div style="border: 1px solid black; padding: 10px;">
+  <p>Note:
+  These notes are created using an interactive theorem
+  prover called <a href="https://lean-lang.org">Lean</a>.
+  Lean formally checks definitions, theorems and proofs for correctness.
+  These notes are part of a much larger project called
+  <a href="https://github.com/HEPLean/HepLean">HepLean</a>, which aims to digitalize
+  high energy physics into Lean. Please consider contributing to this project.
+  <br><br>
+  Please provide feedback or suggestions for improvements by creating a GitHub issue
+  <a href="https://github.com/HEPLean/HepLean/issues">here</a>.
+  </p>
+</div>
+<!-- Table of content. -->
+<hr>
+<center><h2 style="font-size: 30px;">Table of content</h2></center>
+<p>
+{% for entry in site.data.perturbationTheory.parts %}
+{% if entry.type == "h1" %}
+  {{ entry.sectionNo }}. {{ entry.content }}<br>
+{% endif %}
+{% if entry.type == "h2" %}
+  - {{ entry.sectionNo }}. {{ entry.content }}<br>
+{% endif %}
+{% endfor %}
+</p>
+<hr>
+<!-- Main body. -->
+<br>
+{% for entry in site.data.perturbationTheory.parts %}
+  {% if entry.type == "h1" %}
+    <h1>{{ entry.sectionNo }}. {{ entry.content }}</h1>
+  {% endif %}
+  {% if entry.type == "h2" %}
+    <h2>{{ entry.sectionNo }}. {{ entry.content }}</h2>
+  {% endif %}
+  {% if entry.type == "p" %}
+    <p>{{ entry.content }}</p>
+  {% endif %}
+  {% if entry.type == "name" %}
+
+  <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px;">
+    <p> <a href = "{{ entry.link }}" style="font-weight: bold; color: #2c5282;">{{ entry.name }}</a>: {{ entry.docString | markdownify}}</p>
+    <details class="code-block-container">
+    <summary>Show Lean code:</summary>
+    <pre style="background: none; margin: 0;"><code class="language-lean">{{ entry.declString }}</code></pre>
+    </details>
+  </div>
+  <br>
+
+  {% endif %}
+  {% if entry.type == "remark" %}
+  <p><i>Remark:</i>{{ entry.content|markdownify }}
+  </p>
+  {% endif %}
+{% endfor %}

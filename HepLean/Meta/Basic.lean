@@ -123,6 +123,14 @@ def Name.hasDocString (c : Name) : MetaM Bool := do
   | some _ => pure true
   | none => pure false
 
+/-- The doc string from a name. -/
+def Name.getDocString (c : Name) : MetaM String := do
+  let env ← getEnv
+  let doc ← Lean.findDocString? env c
+  match doc with
+  | some doc => pure doc
+  | none => pure ""
+
 /-- Given a name, returns the source code defining that name. -/
 def Name.getDeclString (name : Name) : MetaM String := do
   let env ← getEnv

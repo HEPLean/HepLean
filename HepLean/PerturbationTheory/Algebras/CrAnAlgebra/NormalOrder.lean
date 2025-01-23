@@ -97,23 +97,23 @@ lemma normalOrder_crPart_mul (φ : 𝓕.States) (a : CrAnAlgebra 𝓕) :
     normalOrder (crPart (StateAlgebra.ofState φ) * a) =
     crPart (StateAlgebra.ofState φ) * normalOrder a := by
   match φ with
-  | .negAsymp φ =>
+  | .inAsymp φ =>
     rw [crPart, StateAlgebra.ofState, FreeAlgebra.lift_ι_apply]
-    exact normalOrder_create_mul ⟨States.negAsymp φ, ()⟩ rfl a
+    exact normalOrder_create_mul ⟨States.inAsymp φ, ()⟩ rfl a
   | .position φ =>
     rw [crPart, StateAlgebra.ofState, FreeAlgebra.lift_ι_apply]
     exact normalOrder_create_mul _ rfl _
-  | .posAsymp φ => simp
+  | .outAsymp φ => simp
 
 lemma normalOrder_mul_anPart (φ : 𝓕.States) (a : CrAnAlgebra 𝓕) :
     normalOrder (a * anPart (StateAlgebra.ofState φ)) =
     normalOrder a * anPart (StateAlgebra.ofState φ) := by
   match φ with
-  | .negAsymp φ => simp
+  | .inAsymp φ => simp
   | .position φ =>
     rw [anPart, StateAlgebra.ofState, FreeAlgebra.lift_ι_apply]
     exact normalOrder_mul_annihilate _ rfl _
-  | .posAsymp φ =>
+  | .outAsymp φ =>
     rw [anPart, StateAlgebra.ofState, FreeAlgebra.lift_ι_apply]
     refine normalOrder_mul_annihilate _ rfl _
 
@@ -191,24 +191,24 @@ lemma normalOrder_swap_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra �
     normalOrder (a * (anPart (StateAlgebra.ofState φ')) *
       (crPart (StateAlgebra.ofState φ)) * b) := by
   match φ, φ' with
-  | _, .negAsymp φ' => simp
-  | .posAsymp φ, _ => simp
+  | _, .inAsymp φ' => simp
+  | .outAsymp φ, _ => simp
   | .position φ, .position φ' =>
     simp only [crPart_position, anPart_position, instCommGroup.eq_1]
     rw [normalOrder_swap_create_annihlate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnStatesToStates_prod]
     rfl; rfl
-  | .negAsymp φ, .posAsymp φ' =>
+  | .inAsymp φ, .outAsymp φ' =>
     simp only [crPart_negAsymp, anPart_posAsymp, instCommGroup.eq_1]
     rw [normalOrder_swap_create_annihlate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnStatesToStates_prod]
     rfl; rfl
-  | .negAsymp φ, .position φ' =>
+  | .inAsymp φ, .position φ' =>
     simp only [crPart_negAsymp, anPart_position, instCommGroup.eq_1]
     rw [normalOrder_swap_create_annihlate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnStatesToStates_prod]
     rfl; rfl
-  | .position φ, .posAsymp φ' =>
+  | .position φ, .outAsymp φ' =>
     simp only [crPart_position, anPart_posAsymp, instCommGroup.eq_1]
     rw [normalOrder_swap_create_annihlate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnStatesToStates_prod]
@@ -232,18 +232,18 @@ lemma normalOrder_superCommute_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnA
     normalOrder (a * superCommute
     (crPart (StateAlgebra.ofState φ)) (anPart (StateAlgebra.ofState φ')) * b) = 0 := by
   match φ, φ' with
-  | _, .negAsymp φ' => simp
-  | .posAsymp φ', _ => simp
+  | _, .inAsymp φ' => simp
+  | .outAsymp φ', _ => simp
   | .position φ, .position φ' =>
     rw [crPart_position, anPart_position]
     exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
-  | .negAsymp φ, .posAsymp φ' =>
+  | .inAsymp φ, .outAsymp φ' =>
     rw [crPart_negAsymp, anPart_posAsymp]
     exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
-  | .negAsymp φ, .position φ' =>
+  | .inAsymp φ, .position φ' =>
     rw [crPart_negAsymp, anPart_position]
     exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
-  | .position φ, .posAsymp φ' =>
+  | .position φ, .outAsymp φ' =>
     rw [crPart_position, anPart_posAsymp]
     exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
 
@@ -251,18 +251,18 @@ lemma normalOrder_superCommute_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnA
     normalOrder (a * superCommute
     (anPart (StateAlgebra.ofState φ)) (crPart (StateAlgebra.ofState φ')) * b) = 0 := by
   match φ, φ' with
-  | .negAsymp φ', _ => simp
-  | _, .posAsymp φ' => simp
+  | .inAsymp φ', _ => simp
+  | _, .outAsymp φ' => simp
   | .position φ, .position φ' =>
     rw [anPart_position, crPart_position]
     exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
-  | .posAsymp φ', .negAsymp φ =>
+  | .outAsymp φ', .inAsymp φ =>
     simp only [anPart_posAsymp, crPart_negAsymp]
     exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
-  | .position φ', .negAsymp φ =>
+  | .position φ', .inAsymp φ =>
     simp only [anPart_position, crPart_negAsymp]
     exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
-  | .posAsymp φ, .position φ' =>
+  | .outAsymp φ, .position φ' =>
     simp only [anPart_posAsymp, crPart_position]
     exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
 
@@ -510,9 +510,9 @@ lemma anPart_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.States)
     + ⟨anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φs')⟩ₛca := by
   rw [normalOrder_mul_anPart]
   match φ with
-  | .negAsymp φ => simp
+  | .inAsymp φ => simp
   | .position φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute, crAnStatistics]
-  | .posAsymp φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute, crAnStatistics]
+  | .outAsymp φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute, crAnStatistics]
 
 end
 

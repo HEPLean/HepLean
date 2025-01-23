@@ -19,24 +19,24 @@ variable {𝓕 : FieldSpecification}
   if and only if `φ1` has a time less-then or equal to `φ0`, or `φ1` is a negative
   asymptotic state, or `φ0` is a positive asymptotic state. -/
 def timeOrderRel : 𝓕.States → 𝓕.States → Prop
-  | States.posAsymp _, _ => True
+  | States.outAsymp _, _ => True
   | States.position φ0, States.position φ1 => φ1.2 0 ≤ φ0.2 0
-  | States.position _, States.negAsymp _ => True
-  | States.position _, States.posAsymp _ => False
-  | States.negAsymp _, States.posAsymp _ => False
-  | States.negAsymp _, States.position _ => False
-  | States.negAsymp _, States.negAsymp _ => True
+  | States.position _, States.inAsymp _ => True
+  | States.position _, States.outAsymp _ => False
+  | States.inAsymp _, States.outAsymp _ => False
+  | States.inAsymp _, States.position _ => False
+  | States.inAsymp _, States.inAsymp _ => True
 
 /-- The relation `timeOrderRel` is decidable, but not computablly so due to
   `Real.decidableLE`. -/
 noncomputable instance : (φ φ' : 𝓕.States) → Decidable (timeOrderRel φ φ')
-  | States.posAsymp _, _ => isTrue True.intro
+  | States.outAsymp _, _ => isTrue True.intro
   | States.position φ0, States.position φ1 => inferInstanceAs (Decidable (φ1.2 0 ≤ φ0.2 0))
-  | States.position _, States.negAsymp _ => isTrue True.intro
-  | States.position _, States.posAsymp _ => isFalse (fun a => a)
-  | States.negAsymp _, States.posAsymp _ => isFalse (fun a => a)
-  | States.negAsymp _, States.position _ => isFalse (fun a => a)
-  | States.negAsymp _, States.negAsymp _ => isTrue True.intro
+  | States.position _, States.inAsymp _ => isTrue True.intro
+  | States.position _, States.outAsymp _ => isFalse (fun a => a)
+  | States.inAsymp _, States.outAsymp _ => isFalse (fun a => a)
+  | States.inAsymp _, States.position _ => isFalse (fun a => a)
+  | States.inAsymp _, States.inAsymp _ => isTrue True.intro
 
 /-- Time ordering is total. -/
 instance : IsTotal 𝓕.States 𝓕.timeOrderRel where
