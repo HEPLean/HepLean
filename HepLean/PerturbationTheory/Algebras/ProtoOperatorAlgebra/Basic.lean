@@ -61,7 +61,7 @@ lemma crAnF_superCommute_ofCrAnState_ofState_mem_center (φ : 𝓕.CrAnStates) (
   exact 𝓞.superCommute_crAn_center φ ⟨ψ, x⟩
 
 lemma crAnF_superCommute_anPart_ofState_mem_center (φ ψ : 𝓕.States) :
-    𝓞.crAnF ⟨anPart (StateAlgebra.ofState φ), ofState ψ⟩ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
+    𝓞.crAnF [anPart (StateAlgebra.ofState φ), ofState ψ]ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
   match φ with
   | States.inAsymp _ =>
     simp only [anPart_negAsymp, map_zero, LinearMap.zero_apply]
@@ -106,7 +106,7 @@ lemma crAnF_superCommute_ofState_ofState_mem_center (φ ψ : 𝓕.States) :
   exact crAnF_superCommute_ofCrAnState_ofState_mem_center 𝓞 ⟨φ, x⟩ ψ
 
 lemma crAnF_superCommute_anPart_anPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF ⟨anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState ψ)⟩ₛca = 0 := by
+    𝓞.crAnF [anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState ψ)]ₛca = 0 := by
   match φ, ψ with
   | _, States.inAsymp _ =>
     simp
@@ -134,7 +134,7 @@ lemma crAnF_superCommute_anPart_anPart (φ ψ : 𝓕.States) :
     rfl
 
 lemma crAnF_superCommute_crPart_crPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF ⟨crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState ψ)⟩ₛca = 0 := by
+    𝓞.crAnF [crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState ψ)]ₛca = 0 := by
   match φ, ψ with
   | _, States.outAsymp _ =>
     simp
@@ -162,9 +162,9 @@ lemma crAnF_superCommute_crPart_crPart (φ ψ : 𝓕.States) :
     rfl
 
 lemma crAnF_superCommute_ofCrAnState_ofCrAnList_eq_sum (φ : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates) :
-    𝓞.crAnF ⟨ofCrAnState φ, ofCrAnList φs⟩ₛca
+    𝓞.crAnF [ofCrAnState φ, ofCrAnList φs]ₛca
     = 𝓞.crAnF (∑ (n : Fin φs.length), 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (List.take n φs)) •
-    ⟨ofCrAnState φ, ofCrAnState (φs.get n)⟩ₛca * ofCrAnList (φs.eraseIdx n)) := by
+    [ofCrAnState φ, ofCrAnState (φs.get n)]ₛca * ofCrAnList (φs.eraseIdx n)) := by
   conv_lhs =>
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_eq_sum]
   rw [map_sum, map_sum]
@@ -180,9 +180,9 @@ lemma crAnF_superCommute_ofCrAnState_ofCrAnList_eq_sum (φ : 𝓕.CrAnStates) (�
     rw [← map_mul, ← ofCrAnList_append, ← List.eraseIdx_eq_take_drop_succ]
 
 lemma crAnF_superCommute_ofCrAnState_ofStateList_eq_sum (φ : 𝓕.CrAnStates) (φs : List 𝓕.States) :
-    𝓞.crAnF ⟨ofCrAnState φ, ofStateList φs⟩ₛca
+    𝓞.crAnF [ofCrAnState φ, ofStateList φs]ₛca
     = 𝓞.crAnF (∑ (n : Fin φs.length), 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (List.take n φs)) •
-    ⟨ofCrAnState φ, ofState (φs.get n)⟩ₛca * ofStateList (φs.eraseIdx n)) := by
+    [ofCrAnState φ, ofState (φs.get n)]ₛca * ofStateList (φs.eraseIdx n)) := by
   conv_lhs =>
     rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofStateList_eq_sum]
   rw [map_sum, map_sum]

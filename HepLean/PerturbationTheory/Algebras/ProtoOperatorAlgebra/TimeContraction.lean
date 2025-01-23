@@ -37,7 +37,7 @@ lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
     + (-1 : ℂ) • normalOrder (ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
-    𝓞.timeContract φ ψ = 𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState ψ⟩ₛca) := by
+    𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart (StateAlgebra.ofState φ), ofState ψ]ₛca) := by
   conv_rhs =>
     rw [ofState_eq_crPart_add_anPart]
     rw [map_add, map_add, crAnF_superCommute_anPart_anPart, superCommute_anPart_crPart]
