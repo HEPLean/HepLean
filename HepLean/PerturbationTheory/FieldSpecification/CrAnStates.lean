@@ -38,23 +38,23 @@ variable (𝓕 : FieldSpecification)
   For asymptotic staes there is only one allowed part, whilst for position states
   there is two. -/
 def statesToCrAnType : 𝓕.States → Type
-  | States.negAsymp _ => Unit
+  | States.inAsymp _ => Unit
   | States.position _ => CreateAnnihilate
-  | States.posAsymp _ => Unit
+  | States.outAsymp _ => Unit
 
 /-- The instance of a finite type on `𝓕.statesToCreateAnnihilateType i`. -/
 instance : ∀ i, Fintype (𝓕.statesToCrAnType i) := fun i =>
   match i with
-  | States.negAsymp _ => inferInstanceAs (Fintype Unit)
+  | States.inAsymp _ => inferInstanceAs (Fintype Unit)
   | States.position _ => inferInstanceAs (Fintype CreateAnnihilate)
-  | States.posAsymp _ => inferInstanceAs (Fintype Unit)
+  | States.outAsymp _ => inferInstanceAs (Fintype Unit)
 
 /-- The instance of a decidable equality on `𝓕.statesToCreateAnnihilateType i`. -/
 instance : ∀ i, DecidableEq (𝓕.statesToCrAnType i) := fun i =>
   match i with
-  | States.negAsymp _ => inferInstanceAs (DecidableEq Unit)
+  | States.inAsymp _ => inferInstanceAs (DecidableEq Unit)
   | States.position _ => inferInstanceAs (DecidableEq CreateAnnihilate)
-  | States.posAsymp _ => inferInstanceAs (DecidableEq Unit)
+  | States.outAsymp _ => inferInstanceAs (DecidableEq Unit)
 
 /-- The equivalence between `𝓕.statesToCreateAnnihilateType i` and
   `𝓕.statesToCreateAnnihilateType j` from an equality `i = j`. -/
@@ -77,10 +77,10 @@ lemma crAnStatesToStates_prod (s : 𝓕.States) (t : 𝓕.statesToCrAnType s) :
 /-- The map from creation and annihlation states to the type `CreateAnnihilate`
   specifying if a state is a creation or an annihilation state. -/
 def crAnStatesToCreateAnnihilate : 𝓕.CrAnStates → CreateAnnihilate
-  | ⟨States.negAsymp _, _⟩ => CreateAnnihilate.create
+  | ⟨States.inAsymp _, _⟩ => CreateAnnihilate.create
   | ⟨States.position _, CreateAnnihilate.create⟩ => CreateAnnihilate.create
   | ⟨States.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
-  | ⟨States.posAsymp _, _⟩ => CreateAnnihilate.annihilate
+  | ⟨States.outAsymp _, _⟩ => CreateAnnihilate.annihilate
 
 /-- Takes a `CrAnStates` state to its corresponding fields statistic (bosonic or fermionic). -/
 def crAnStatistics : 𝓕.CrAnStates → FieldStatistic :=

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.TimeContract
+import HepLean.Meta.Remark.Basic
 /-!
 
 # Wick's theorem
@@ -260,19 +261,6 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs') :
   subst h
   simp
 
-/-- Wick's theorem for the empty list. -/
-lemma wicks_theorem_nil :
-    𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : WickContraction [].length),
-    (c.sign [] • c.timeContract 𝓞) *
-    𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
-  rw [timeOrder_ofList_nil]
-  simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
-  rw [sum_WickContraction_nil, nil_zero_uncontractedList]
-  simp only [List.map_nil]
-  have h1 : ofStateList (𝓕 := 𝓕) [] = CrAnAlgebra.ofCrAnList [] := by simp
-  rw [h1, normalOrder_ofCrAnList]
-  simp [WickContraction.timeContract, empty, sign]
-
 lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
     timeOrder (ofList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
       (Finset.filter (fun x =>
@@ -319,6 +307,33 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
     · exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2)
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
+
+
+/-!
+
+## Wick's theorem
+
+-/
+
+/-- Wick's theorem for the empty list. -/
+lemma wicks_theorem_nil :
+    𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (c : WickContraction [].length),
+    (c.sign [] • c.timeContract 𝓞) *
+    𝓞.crAnF (normalOrder (ofStateList (c.uncontractedList.map [].get))) := by
+  rw [timeOrder_ofList_nil]
+  simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+  rw [sum_WickContraction_nil, nil_zero_uncontractedList]
+  simp only [List.map_nil]
+  have h1 : ofStateList (𝓕 := 𝓕) [] = CrAnAlgebra.ofCrAnList [] := by simp
+  rw [h1, normalOrder_ofCrAnList]
+  simp [WickContraction.timeContract, empty, sign]
+
+remark wicks_theorem_context := "
+  Wick's theorem is one of the most important results in perturbative quantum field theory.
+  It expresses a time-ordered product of fields as a sum of terms consisting of
+  time-contractions of pairs of fields multiplied by the normal-ordered product of
+  the remaining fields. Wick's theorem is also the precursor to the diagrammatic
+  approach to quantum field theory called Feynman diagrams."
 
 /-- Wick's theorem for time-ordered products of bosonic and fermionic fields. -/
 theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) =

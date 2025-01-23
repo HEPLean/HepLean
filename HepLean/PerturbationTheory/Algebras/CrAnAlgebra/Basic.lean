@@ -137,13 +137,13 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
-  | States.negAsymp φ => ofCrAnState ⟨States.negAsymp φ, ()⟩
+  | States.inAsymp φ => ofCrAnState ⟨States.inAsymp φ, ()⟩
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩
-  | States.posAsymp _ => 0
+  | States.outAsymp _ => 0
 
 @[simp]
-lemma crPart_negAsymp (φ : 𝓕.AsymptoticNegTime) :
-    crPart (StateAlgebra.ofState (States.negAsymp φ)) = ofCrAnState ⟨States.negAsymp φ, ()⟩ := by
+lemma crPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    crPart (StateAlgebra.ofState (States.inAsymp φ)) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
   dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
@@ -155,8 +155,8 @@ lemma crPart_position (φ : 𝓕.PositionStates) :
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
-lemma crPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
-    crPart (StateAlgebra.ofState (States.posAsymp φ)) = 0 := by
+lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    crPart (StateAlgebra.ofState (States.outAsymp φ)) = 0 := by
   dsimp only [crPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
@@ -166,13 +166,13 @@ lemma crPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
 def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
   FreeAlgebra.lift ℂ fun φ =>
   match φ with
-  | States.negAsymp _ => 0
+  | States.inAsymp _ => 0
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩
-  | States.posAsymp φ => ofCrAnState ⟨States.posAsymp φ, ()⟩
+  | States.outAsymp φ => ofCrAnState ⟨States.outAsymp φ, ()⟩
 
 @[simp]
-lemma anPart_negAsymp (φ : 𝓕.AsymptoticNegTime) :
-    anPart (StateAlgebra.ofState (States.negAsymp φ)) = 0 := by
+lemma anPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    anPart (StateAlgebra.ofState (States.inAsymp φ)) = 0 := by
   dsimp only [anPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
@@ -184,8 +184,8 @@ lemma anPart_position (φ : 𝓕.PositionStates) :
   rw [FreeAlgebra.lift_ι_apply]
 
 @[simp]
-lemma anPart_posAsymp (φ : 𝓕.AsymptoticPosTime) :
-    anPart (StateAlgebra.ofState (States.posAsymp φ)) = ofCrAnState ⟨States.posAsymp φ, ()⟩ := by
+lemma anPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    anPart (StateAlgebra.ofState (States.outAsymp φ)) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
   dsimp only [anPart, StateAlgebra.ofState]
   rw [FreeAlgebra.lift_ι_apply]
 
@@ -193,14 +193,14 @@ lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
     ofState φ = crPart (StateAlgebra.ofState φ) + anPart (StateAlgebra.ofState φ) := by
   rw [ofState]
   cases φ with
-  | negAsymp φ =>
+  | inAsymp φ =>
     dsimp only [statesToCrAnType]
     simp
   | position φ =>
     dsimp only [statesToCrAnType]
     rw [CreateAnnihilate.sum_eq]
     simp
-  | posAsymp φ =>
+  | outAsymp φ =>
     dsimp only [statesToCrAnType]
     simp
 

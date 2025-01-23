@@ -24,8 +24,10 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
-/-- The echange sign of two field statistics.
-  Defined to be `-1` if both field statistics are `fermionic` and `1` otherwise. -/
+/-- The exchange sign of two field statistics is defined to be
+  `-1` if both field statistics are `fermionic` and `1` otherwise.
+  It is a group homomorphism from `FieldStatistic` to the group of homomorphisms from
+  `FieldStatistic` to `ℂ`. -/
 def exchangeSign : FieldStatistic →* FieldStatistic →* ℂ where
   toFun a :=
     {

@@ -20,43 +20,70 @@ inductive NotePart
   | p : String → NotePart
   | name : Name → NotePart
 
-def formalContent (name : Name) : MetaM String := do
-  let line ← Name.lineNumber name
-  let decl ← Name.getDeclString name
-  let fileName ← Name.fileName name
-  let webAddress : String ← Name.toGitHubLink fileName line
-  pure decl
+structure DeclInfo where
+  line : Nat
+  fileName : Name
+  name : Name
+  declString : String
+  docString : String
 
+def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
+  let line ← Name.lineNumber n
+  let fileName ← Name.fileName n
+  let declString ← Name.getDeclString n
+  let docString ← Name.getDocString n
+  pure {
+    line := line,
+    fileName := fileName,
+    name := n,
+    declString := declString,
+    docString := docString}
 
-def NotePart.toYMLM : NotePart →  MetaM String
-  | NotePart.h1 s => pure s!"
+def DeclInfo.toYML (d : DeclInfo) : String :=
+  let declStringIndent := d.declString.replace "\n" "\n      "
+  s!"
+  - type: name
+    name: {d.name}
+    line: {d.line}
+    fileName: {d.fileName}
+    docString: \"{d.docString}\"
+    declString: |
+      {declStringIndent}"
+
+def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((List String) × Nat × Nat)
+  | x, NotePart.h1 s =>
+    let newString := s!"
   - type: h1
+    sectionNo: {x.2.1.succ}
     content: \"{s}\""
-  | NotePart.h2 s => pure s!"
+    return ⟨x.1 ++ [newString], ⟨Nat.succ x.2.1, 0⟩⟩
+  | x, NotePart.h2 s =>
+    let newString := s!"
   - type: h2
+    sectionNo: \"{x.2.1}.{x.2.2.succ}\"
     content: \"{s}\""
-  | NotePart.p s => pure s!"
+    return ⟨x.1 ++ [newString], ⟨x.2.1, Nat.succ x.2.2⟩⟩
+  | x, NotePart.p s =>
+    let newString := s!"
   - type: p
     content: \"{s}\""
-  | NotePart.name n => do
+    return ⟨x.1 ++ [newString], x.2⟩
+  | x, NotePart.name n => do
   match (← RemarkInfo.IsRemark n) with
   | true =>
     let remarkInfo ← RemarkInfo.getRemarkInfo n
     let content := remarkInfo.content
     let contentIndent := content.replace "\n" "\n      "
     let shortName := remarkInfo.name.toString
-    return s!"
+    let newString := s!"
   - type: remark
     name: \"{shortName}\"
     content: |
       {contentIndent}"
+    return ⟨x.1 ++ [newString], x.2⟩
   | false =>
-  let content ← formalContent n
-  let contentIndent := content.replace "\n" "\n      "
-  return s!"
-  - type: name
-    content: |
-      {contentIndent}"
+  let newString :=  (← DeclInfo.ofName n).toYML
+  return ⟨x.1 ++ [newString], x.2⟩
 
 structure Note where
   title : String
@@ -66,23 +93,49 @@ structure Note where
   parts : List NotePart
 
 def Note.toYML : Note → MetaM String
-  | ⟨title, curators, parts⟩ => return s!"
+  | ⟨title, curators, parts⟩ => do
+  let parts ← parts.foldlM NotePart.toYMLM ([], ⟨0, 0⟩)
+  return s!"
 title: \"{title}\"
-curators: {curators}
+curators: {String.intercalate "," curators}
 parts:
-  {String.intercalate "\n" (← parts.mapM NotePart.toYMLM)}"
+  {String.intercalate "\n" parts.1}"
 
 def perturbationTheory : Note where
   title := "Proof of Wick's theorem"
   curators := ["Joseph Tooby-Smith"]
   parts := [
-    .h1 "Field statistics",
+    .h1 "Introduction",
+    .name `FieldSpecification.wicks_theorem_context,
+    .p "In this note we walk through the important parts of the proof of Wick's theorem
+      for both fermions and bosons,
+      as it appears in HepLean. We start with some basic definitions.",
+    .h1 "Preliminary definitions",
+    .h2 "Field statistics",
     .p "A quantum field can either be a bosonic or fermionic. This information is
       contained in the inductive type `FieldStatistic`. This is defined as follows:",
     .name `FieldStatistic,
-    .h1 "Field specifications",
+    .p "Field statistics form a commuative group isomorphic to ℤ₂, with
+      the bosonic element of `FieldStatistic` being the identity element.",
+    .p "Most of our use of field statistics will come by comparing two field statistics
+      and picking up a minus sign when they are both fermionic. This concept is
+      made precise using the notion of an exchange sign, defined as:",
+    .name `FieldStatistic.exchangeSign,
+    .p "We use the notation `𝓢(a,b)` as shorthand for the exchange sign of
+      `a` and `b`.",
+    .h2 "Field specifications",
     .name `fieldSpecification_intro,
-    .name `FieldSpecification]
+    .name `FieldSpecification,
+    .h2 "States",
+    .h2 "Time ordering",
+    .h2 "Creation and annihilation states",
+    .h2 "Normal ordering",
+    .h1 "Algebras",
+    .h2 "State free-algebra",
+    .h2 "CrAnState free-algebra",
+    .h2 "Proto operator algebra",
+    .h1 "Contractions"
+    ]
 
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)

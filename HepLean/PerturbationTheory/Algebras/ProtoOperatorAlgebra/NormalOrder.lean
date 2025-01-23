@@ -222,13 +222,13 @@ lemma crAnF_normalOrder_anPart_ofStatesList_swap (φ : 𝓕.States)
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓞.crAnF (normalOrder (ofStateList φ' * anPart (StateAlgebra.ofState φ))) := by
   match φ with
-  | .negAsymp φ =>
+  | .inAsymp φ =>
     simp
   | .position φ =>
     simp only [anPart_position, instCommGroup.eq_1]
     rw [crAnF_normalOrder_ofCrAnState_ofStatesList_swap]
     rfl
-  | .posAsymp φ =>
+  | .outAsymp φ =>
     simp only [anPart_posAsymp, instCommGroup.eq_1]
     rw [crAnF_normalOrder_ofCrAnState_ofStatesList_swap]
     rfl
@@ -309,13 +309,13 @@ lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.States
     𝓞.crAnF (⟨anPart (StateAlgebra.ofState φ), ofState φs[n]⟩ₛca)
     * 𝓞.crAnF (normalOrder (ofStateList (φs.eraseIdx n))) := by
   match φ with
-  | .negAsymp φ =>
+  | .inAsymp φ =>
     simp
   | .position φ =>
     simp only [anPart_position, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
     simp [crAnStatistics]
-  | .posAsymp φ =>
+  | .outAsymp φ =>
     simp only [anPart_posAsymp, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
     rw [crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum]
     simp [crAnStatistics]
