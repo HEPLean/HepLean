@@ -198,7 +198,7 @@ lemma sign_timeContract_normalOrder_insertList_some (φ : 𝓕.States) (φs : Li
       congr 1
       exact signInsertSome_mul_filter_contracted_of_lt φ φs c i k hk hg
       · omega
-    · have hik : i.succAbove ↑k ≠ i := by exact Fin.succAbove_ne i ↑k
+    · have hik : i.succAbove ↑k ≠ i := Fin.succAbove_ne i ↑k
       rw [WickContraction.timeConract_insertList_some_eq_mul_contractStateAtIndex_lt]
       swap
       · exact hlt _

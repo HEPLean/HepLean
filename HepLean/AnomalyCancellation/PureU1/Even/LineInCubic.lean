@@ -136,7 +136,7 @@ lemma lineInCubicPerm_last_cond {S : (PureU1 (2 * n.succ.succ)).LinSols}
   rw [P_P_P!_accCube' g f hfg] at h1
   simp only [Nat.succ_eq_add_one, neg_add_rev, mul_eq_zero] at h1
   cases h1 <;> rename_i h1
-  · apply Or.inl
+  · left
     linear_combination h1
   · cases h1 <;> rename_i h1
     · refine Or.inr (Or.inl ?_)

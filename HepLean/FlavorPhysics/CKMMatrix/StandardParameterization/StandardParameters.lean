@@ -69,8 +69,7 @@ section sines
 /-- For a CKM matrix `sin θ₁₂` is non-negative. -/
 lemma S₁₂_nonneg (V : Quotient CKMMatrixSetoid) : 0 ≤ S₁₂ V := by
   rw [S₁₂, div_nonneg_iff]
-  apply Or.inl
-  apply (And.intro (VAbs_ge_zero 0 1 V) (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2)))
+  exact .inl (.intro (VAbs_ge_zero 0 1 V) (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2)))
 
 /-- For a CKM matrix `sin θ₁₃` is non-negative. -/
 lemma S₁₃_nonneg (V : Quotient CKMMatrixSetoid) : 0 ≤ S₁₃ V :=
@@ -82,8 +81,7 @@ lemma S₂₃_nonneg (V : Quotient CKMMatrixSetoid) : 0 ≤ S₂₃ V := by
   · rw [S₂₃, if_pos ha]
     exact VAbs_ge_zero 1 0 V
   · rw [S₂₃, if_neg ha, @div_nonneg_iff]
-    apply Or.inl
-    apply And.intro (VAbs_ge_zero 1 2 V) (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2))
+    exact .inl (.intro (VAbs_ge_zero 1 2 V) (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2)))
 
 /-- For a CKM matrix `sin θ₁₂` is less then or equal to 1. -/
 lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
@@ -95,7 +93,7 @@ lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
       cases' h2 with h2 h2
       simp_all
       exact h2
-    apply Or.inl
+    left
     simp_all only [VudAbs, VusAbs, or_true, Real.sqrt_pos, true_and]
     rw [Real.le_sqrt (VAbs_ge_zero 0 1 V) (le_of_lt h3)]
     simp only [Fin.isValue, le_add_iff_nonneg_left]

@@ -240,7 +240,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
         simp_all only [and_true, Finset.mem_insert]
         rw [succAbove_mem_insertListLiftFinset]
         simp only [Fin.ext_iff, Fin.coe_cast]
-        have h1 : ¬ (i.succAbove ↑j) = i := by exact Fin.succAbove_ne i ↑j
+        have h1 : ¬ (i.succAbove ↑j) = i := Fin.succAbove_ne i ↑j
         simp only [Fin.val_eq_val, h1, signFinset, Finset.mem_filter, Finset.mem_univ, true_and,
           false_or]
         rw [Fin.succAbove_lt_succAbove_iff, Fin.succAbove_lt_succAbove_iff]
@@ -284,7 +284,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
           intro h
           simp only [Fin.ext_iff, Fin.coe_cast] at h
           simp only [Fin.val_eq_val] at h
-          have hn : ¬ i.succAbove k = i := by exact Fin.succAbove_ne i k
+          have hn : ¬ i.succAbove k = i := Fin.succAbove_ne i k
           exact False.elim (hn h)
         · split
           simp only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_erase, ne_eq,
@@ -807,7 +807,7 @@ lemma stat_signFinset_insert_some_self_fst
         obtain ⟨y, hy1, hy2⟩ := h
         simp only [Fin.ext_iff, Fin.coe_cast] at hy2
         simp only [Fin.val_eq_val] at hy2
-        rw [Function.Injective.eq_iff (by exact Fin.succAbove_right_injective)] at hy2
+        rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at hy2
         subst hy2
         simp only [hy1, true_and]
         apply And.intro
@@ -885,7 +885,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
         obtain ⟨y, hy1, hy2⟩ := h
         simp only [Fin.ext_iff, Fin.coe_cast] at hy2
         simp only [Fin.val_eq_val] at hy2
-        rw [Function.Injective.eq_iff (by exact Fin.succAbove_right_injective)] at hy2
+        rw [Function.Injective.eq_iff (Fin.succAbove_right_injective)] at hy2
         subst hy2
         simp only [hy1, true_and]
         apply And.intro
@@ -965,13 +965,13 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 
         · exact h1'
   · /- The `(c.getDual? i).isSome` case for `stat_ofFinset_eq_one_of_gradingCompliant`. -/
     intro j hj
-    have hn : ¬ c.getDual? j = none := by exact Option.isSome_iff_ne_none.mp hj
+    have hn : ¬ c.getDual? j = none := Option.isSome_iff_ne_none.mp hj
     simp only [uncontracted, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter, Finset.mem_univ,
       hn, hj, forall_true_left, false_or, true_and, and_false, false_and, Finset.mem_inter,
       not_false_eq_true, and_true, not_and, not_lt, getDual?_getDual?_get_get, reduceCtorEq,
       Option.isSome_some, Option.get_some, forall_const, and_imp]
     intro h1 h2
-    have hijsucc' : i.succAbove ((c.getDual? j).get hj) ≠ i := by exact Fin.succAbove_ne i _
+    have hijsucc' : i.succAbove ((c.getDual? j).get hj) ≠ i := Fin.succAbove_ne i _
     have hkneqj : ↑k ≠ j := by
       by_contra hkj
       have hk := k.prop
@@ -1025,7 +1025,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
     signInsertSome φ φs c i k *
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, c.uncontracted.filter (fun x => x < ↑k)⟩)
     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩) := by
-  have hik : i.succAbove ↑k ≠ i := by exact Fin.succAbove_ne i ↑k
+  have hik : i.succAbove ↑k ≠ i := Fin.succAbove_ne i ↑k
   rw [signInsertSome, signInsertSomeProd_eq_finset (hφj := hg.2) (hg := hg.1),
     signInsertSomeCoef_eq_finset (hφj := hg.2), if_pos (by omega), ← map_mul, ← map_mul]
   congr 1
@@ -1036,7 +1036,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
   apply stat_ofFinset_eq_one_of_gradingCompliant _ _ _ hg.1
   · /- The `c.getDual? i = none` case for `stat_ofFinset_eq_one_of_gradingCompliant`. -/
     intro j hj
-    have hijsucc : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
+    have hijsucc : i.succAbove j ≠ i := Fin.succAbove_ne i j
     simp only [uncontracted, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter, Finset.mem_univ,
       hj, Option.isSome_none, Bool.false_eq_true, IsEmpty.forall_iff, or_self, and_true, true_and,
       and_false, or_false, Finset.mem_inter, not_false_eq_true, and_self, not_and, not_lt,
@@ -1055,8 +1055,8 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
     omega
   · /- The `(c.getDual? i).isSome` case for `stat_ofFinset_eq_one_of_gradingCompliant`. -/
     intro j hj
-    have hn : ¬ c.getDual? j = none := by exact Option.isSome_iff_ne_none.mp hj
-    have hijSuc : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
+    have hn : ¬ c.getDual? j = none := Option.isSome_iff_ne_none.mp hj
+    have hijSuc : i.succAbove j ≠ i := Fin.succAbove_ne i j
     have hkneqj : ↑k ≠ j := by
       by_contra hkj
       have hk := k.prop

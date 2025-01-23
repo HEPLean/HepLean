@@ -286,11 +286,8 @@ lemma inLineEqToSol_proj (T : InLineEqSol) : inLineEqToSol (inLineEqProj T) = T.
 /-- Given an element of `inQuad × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
 def inQuadToSol : InQuad × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, a₁, a₂, a₃) =>
   AnomalyFreeMk' (lineCube R.val.val a₁ a₂ a₃)
-    (by
-      erw [planeY₃B₃_quad]
-      rw [R.prop.1, R.prop.2.1, R.prop.2.2]
-      simp)
-    (lineCube_cube R.val.val a₁ a₂ a₃)
+    (by erw [planeY₃B₃_quad, R.prop.1, R.prop.2.1, R.prop.2.2]; simp)
+      (lineCube_cube R.val.val a₁ a₂ a₃)
 
 lemma inQuadToSol_smul (R : InQuad) (c₁ c₂ c₃ d : ℚ) :
     inQuadToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadToSol (R, c₁, c₂, c₃) := by
@@ -314,9 +311,7 @@ lemma inQuadToSol_proj (T : InQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
   rw [inQuadProj, inQuadToSol_smul]
   apply ACCSystem.Sols.ext
   change _ • (planeY₃B₃ _ _ _ _).val = _
-  rw [planeY₃B₃_val]
-  rw [Y₃_plus_B₃_plus_proj]
-  rw [cube_proj, cube_proj_proj_B₃, cube_proj_proj_Y₃]
+  rw [planeY₃B₃_val, Y₃_plus_B₃_plus_proj, cube_proj, cube_proj_proj_B₃, cube_proj_proj_Y₃]
   ring_nf
   simp only [zero_smul, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add]
   have h1 : (cubeTriLin T.val.val T.val.val Y₃.val ^ 2 * dot Y₃.val B₃.val ^ 3 * 3 +
@@ -331,14 +326,8 @@ lemma inQuadToSol_proj (T : InQuadSol) : inQuadToSol (inQuadProj T) = T.val := b
 /-- Given a element of `inQuadCube × ℚ × ℚ × ℚ`, a solution to the ACCs. -/
 def inQuadCubeToSol : InQuadCube × ℚ × ℚ × ℚ → MSSMACC.Sols := fun (R, b₁, b₂, b₃) =>
   AnomalyFreeMk' (planeY₃B₃ R.val.val.val b₁ b₂ b₃)
-  (by
-    rw [planeY₃B₃_quad]
-    rw [R.val.prop.1, R.val.prop.2.1, R.val.prop.2.2]
-    simp)
-  (by
-    rw [planeY₃B₃_cubic]
-    rw [R.prop.1, R.prop.2.1, R.prop.2.2]
-    simp)
+  (by rw [planeY₃B₃_quad, R.val.prop.1, R.val.prop.2.1, R.val.prop.2.2]; simp)
+  (by rw [planeY₃B₃_cubic, R.prop.1, R.prop.2.1, R.prop.2.2]; simp)
 
 lemma inQuadCubeToSol_smul (R : InQuadCube) (c₁ c₂ c₃ d : ℚ) :
     inQuadCubeToSol (R, (d * c₁), (d * c₂), (d * c₃)) = d • inQuadCubeToSol (R, c₁, c₂, c₃) := by
@@ -361,8 +350,7 @@ lemma inQuadCubeToSol_proj (T : InQuadCubeSol) :
   rw [inQuadCubeProj, inQuadCubeToSol_smul]
   apply ACCSystem.Sols.ext
   change _ • (planeY₃B₃ _ _ _ _).val = _
-  rw [planeY₃B₃_val]
-  rw [Y₃_plus_B₃_plus_proj]
+  rw [planeY₃B₃_val, Y₃_plus_B₃_plus_proj]
   ring_nf
   simp only [Fin.isValue, Fin.reduceFinMk, zero_smul, add_zero, zero_add]
   rw [← MulAction.mul_smul, mul_comm, mul_inv_cancel₀]
@@ -389,8 +377,7 @@ lemma toSol_toSolNSProj (T : NotInLineEqSol) :
   use toSolNSProj T.val
   have h1 : ¬ LineEqProp (toSolNSProj T.val).1 :=
     (linEqPropSol_iff_proj_linEqProp T.val).mpr.mt T.prop
-  rw [toSol]
-  simp_all
+  simp_rw [toSol, h1]
   exact toSolNS_proj T
 
 lemma toSol_inLineEq (T : InLineEqSol) : ∃ X, toSol X = T.val := by
@@ -398,8 +385,7 @@ lemma toSol_inLineEq (T : InLineEqSol) : ∃ X, toSol X = T.val := by
   use ⟨X.1.val, X.2.1, X.2.2⟩
   have : ¬ InQuadProp X.1.val := (inQuadSolProp_iff_proj_inQuadProp T.val).mpr.mt T.prop.2
   have : LineEqProp X.1.val := (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1
-  rw [toSol]
-  simp_all
+  simp_all only [toSol]
   exact inLineEqToSol_proj T
 
 lemma toSol_inQuad (T : InQuadSol) : ∃ X, toSol X = T.val := by
@@ -408,8 +394,7 @@ lemma toSol_inQuad (T : InQuadSol) : ∃ X, toSol X = T.val := by
   have : ¬ InCubeProp X.1.val.val := (inCubeSolProp_iff_proj_inCubeProp T.val).mpr.mt T.prop.2.2
   have : InQuadProp X.1.val.val := (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1
   have : LineEqProp X.1.val.val := (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1
-  rw [toSol]
-  simp_all
+  simp_all only [toSol]
   exact inQuadToSol_proj T
 
 lemma toSol_inQuadCube (T : InQuadCubeSol) : ∃ X, toSol X = T.val := by
@@ -418,8 +403,7 @@ lemma toSol_inQuadCube (T : InQuadCubeSol) : ∃ X, toSol X = T.val := by
   have : InCubeProp X.1.val.val.val := (inCubeSolProp_iff_proj_inCubeProp T.val).mp T.prop.2.2
   have : InQuadProp X.1.val.val.val := (inQuadSolProp_iff_proj_inQuadProp T.val).mp T.prop.2.1
   have : LineEqProp X.1.val.val.val := (linEqPropSol_iff_proj_linEqProp T.val).mp T.prop.1
-  rw [toSol]
-  simp_all
+  simp_all only [toSol]
   exact inQuadCubeToSol_proj T
 
 theorem toSol_surjective : Function.Surjective toSol := by

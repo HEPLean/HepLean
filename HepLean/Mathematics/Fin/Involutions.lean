@@ -208,8 +208,7 @@ def involutionAddEquiv {n : ℕ} (f : {f : Fin n → Fin n // Function.Involutiv
         simp_all only [Subtype.coe_eta] }
   let s : Finset (Fin n) := Finset.univ.filter fun i => f.1 i = i
   let e2' : { i : Fin n // f.1 i = i} ≃ {i // i ∈ s} := by
-    refine Equiv.subtypeEquivProp ?h
-    funext i
+    apply Equiv.subtypeEquivProp
     simp [s]
   let e2 : {i // i ∈ s} ≃ Fin (Finset.card s) := by
     refine (Finset.orderIsoOfFin _ ?_).symm.toEquiv
@@ -242,7 +241,7 @@ lemma involutionAddEquiv_cast {n : ℕ} {f1 f2 : {f : Fin n → Fin n // Functio
     involutionAddEquiv f1 = (Equiv.subtypeEquivRight (by rw [hf]; simp)).trans
       ((involutionAddEquiv f2).trans (Equiv.optionCongr (finCongr (by rw [hf])))) := by
   subst hf
-  simp only [finCongr_refl, Equiv.optionCongr_refl, Equiv.trans_refl]
+  rw [finCongr_refl, Equiv.optionCongr_refl]
   rfl
 
 lemma involutionAddEquiv_cast' {m : ℕ} {f1 f2 : {f : Fin m → Fin m // Function.Involutive f}}
@@ -259,33 +258,18 @@ lemma involutionAddEquiv_none_succ {n : ℕ}
     (h : involutionAddEquiv (involutionCons n f).1 (involutionCons n f).2 = none)
     (x : Fin n) : f.1 x.succ = x.succ ↔ (involutionCons n f).1.1 x = x := by
   simp only [succ_eq_add_one, involutionCons, Fin.cons_update, Equiv.coe_fn_mk, dite_eq_left_iff]
-  have hn' := involutionAddEquiv_none_image_zero h
-  have hx : ¬ f.1 x.succ = ⟨0, Nat.zero_lt_succ n⟩:= by
-    rw [← hn']
-    exact fun hn => Fin.succ_ne_zero x (Function.Involutive.injective f.2 hn)
-  apply Iff.intro
-  · intro h2 h3
-    rw [Fin.ext_iff]
-    simp [h2]
-  · intro h2
-    have h2' := h2 hx
-    conv_rhs => rw [← h2']
-    simp
+  have hx : ¬ f.1 x.succ = ⟨0, Nat.zero_lt_succ n⟩:=
+    involutionAddEquiv_none_image_zero h ▸
+      fun hn => Fin.succ_ne_zero x (Function.Involutive.injective f.2 hn)
+  exact Iff.intro (fun h2 ↦ by simp [h2]) (fun h2 ↦ (Fin.pred_eq_iff_eq_succ hx).mp (h2 hx))
 
 lemma involutionAddEquiv_isSome_image_zero {n : ℕ} :
     {f : {f : Fin n.succ → Fin n.succ // Function.Involutive f}}
     → (involutionAddEquiv (involutionCons n f).1 (involutionCons n f).2).isSome
     → ¬ f.1 ⟨0, Nat.zero_lt_succ n⟩ = ⟨0, Nat.zero_lt_succ n⟩ := by
-  intro f hf
-  simp only [succ_eq_add_one, involutionCons, Equiv.coe_fn_mk, involutionAddEquiv,
-    Option.isSome_some, Option.get_some, Option.isSome_none, Equiv.trans_apply,
-    Equiv.optionCongr_apply, Equiv.coe_trans, RelIso.coe_fn_toEquiv, Option.isSome_map'] at hf
-  simp_all only [List.length_cons, Fin.zero_eta]
-  obtain ⟨val, property⟩ := f
-  simp_all only [List.length_cons]
-  apply Aesop.BuiltinRules.not_intro
-  intro a
-  simp_all only [↓reduceDIte, Option.isSome_none, Bool.false_eq_true]
+  intro f hf a
+  simp only [succ_eq_add_one, involutionCons, Equiv.coe_fn_mk, involutionAddEquiv] at hf
+  simp_all
 
 /-!
 
@@ -303,15 +287,11 @@ def involutionNoFixedEquivSum {n : ℕ} :
     ∧ (∀ i, f i ≠ i) ∧ f 0 = k.succ} where
   toFun f := ⟨(f.1 0).pred (f.2.2 0), ⟨f.1, f.2.1, by simpa using f.2.2⟩⟩
   invFun f := ⟨f.2.1, ⟨f.2.2.1, f.2.2.2.1⟩⟩
-  left_inv f := by
-    rfl
+  left_inv f := rfl
   right_inv f := by
-    simp only [succ_eq_add_one, ne_eq, mul_eq]
     ext
-    · simp only [Fin.coe_pred]
-      rw [f.2.2.2.2]
-      simp
-    · simp
+    · simp [f.2.2.2.2]
+    · rfl
 
 /-- The condition on fixed point free involutions of `Fin n.succ` for a fixed value of `f 0`,
   can be modified by conjugation with an equivalence. -/
@@ -329,8 +309,7 @@ def involutionNoFixedZeroSetEquivEquiv {n : ℕ}
     intro i
     simp only [succ_eq_add_one, Function.comp_apply, ne_eq, Equiv.apply_symm_apply]
     have hf2 := f.2.1 i
-    simpa using hf2, by
-      simpa using f.2.2.1, by simpa using f.2.2.2⟩
+    simpa using hf2, by simpa using f.2.2.1, by simpa using f.2.2.2⟩
   left_inv f := by
     ext i
     simp
@@ -485,7 +464,7 @@ def involutionNoFixedSetOne {n : ℕ} :
           simp [Fin.ext_iff] at h
       | ⟨(Nat.succ (Nat.succ m)), h⟩ =>
         simp only [succ_eq_add_one, ne_eq, Fin.ext_iff, Fin.val_succ, add_left_inj, f']
-        have hf:= f.2.2 ⟨m, by exact Nat.add_lt_add_iff_right.mp h⟩
+        have hf:= f.2.2 ⟨m, Nat.add_lt_add_iff_right.mp h⟩
         simp only [ne_eq, Fin.ext_iff] at hf
         omega
     · simp only [succ_eq_add_one, ne_eq, f']
@@ -505,13 +484,9 @@ def involutionNoFixedSetOne {n : ℕ} :
     ext i
     simp only
     split
-    · simp only [Fin.val_one, succ_eq_add_one, Fin.zero_eta]
-      rw [f.2.2.2]
-      simp
-    · simp only [Fin.val_zero, succ_eq_add_one, Fin.mk_one]
-      rw [hf1]
-      simp
-    · rfl
+    · simp [Fin.val_one, succ_eq_add_one, Fin.zero_eta, f.2.2.2]
+    · exact congrArg Fin.val (id (Eq.symm hf1))
+    · exact rfl
   right_inv f := by
     simp only [ne_eq, mul_eq, succ_eq_add_one, Function.comp_apply]
     ext i
@@ -521,8 +496,7 @@ def involutionNoFixedSetOne {n : ℕ} :
       simp [Fin.ext_iff] at h
     · rename_i h
       simp [Fin.ext_iff] at h
-    · rename_i h
-      simp only [Fin.val_succ, add_tsub_cancel_right]
+    · simp only [Fin.val_succ, add_tsub_cancel_right]
       congr
       apply congrArg
       simp_all [Fin.ext_iff]
@@ -552,8 +526,7 @@ def involutionNoFixedZeroEquivProd {n : ℕ} :
     ≃ Fin n.succ ×
     {f : Fin n → Fin n // Function.Involutive f ∧ (∀ i, f i ≠ i)} := by
   refine Equiv.trans involutionNoFixedEquivSumSame ?_
-  exact Equiv.sigmaEquivProd (Fin n.succ)
-      { f // Function.Involutive f ∧ ∀ (i : Fin n), f i ≠ i}
+  exact Equiv.sigmaEquivProd (Fin n.succ) { f // Function.Involutive f ∧ ∀ (i : Fin n), f i ≠ i }
 
 /-!
 

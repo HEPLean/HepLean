@@ -77,7 +77,7 @@ lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
       simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
-      have hi : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
+      have hi : i.succAbove j ≠ i := Fin.succAbove_ne i j
       omega
 
 /-!
@@ -188,7 +188,7 @@ lemma insertList_sndFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
       simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
-      have hi : i.succAbove j ≠ i := by exact Fin.succAbove_ne i j
+      have hi : i.succAbove j ≠ i := Fin.succAbove_ne i j
       omega
 
 lemma insertList_none_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.States)

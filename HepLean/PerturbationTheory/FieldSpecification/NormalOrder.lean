@@ -69,19 +69,14 @@ lemma koszulSignInsert_create (φ : 𝓕.CrAnStates)
 lemma normalOrderSign_cons_create (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
     normalOrderSign (φ :: φs) = normalOrderSign φs := by
-  dsimp only [normalOrderSign, Wick.koszulSign]
-  rw [koszulSignInsert_create φ hφ φs]
-  simp
+  simp [normalOrderSign, Wick.koszulSign, koszulSignInsert_create φ hφ φs]
 
 @[simp]
-lemma normalOrderSign_singleton (φ : 𝓕.CrAnStates) :
-    normalOrderSign [φ] = 1 := by
+lemma normalOrderSign_singleton (φ : 𝓕.CrAnStates) : normalOrderSign [φ] = 1 := by
   simp [normalOrderSign]
 
 @[simp]
-lemma normalOrderSign_nil :
-    normalOrderSign (𝓕 := 𝓕) [] = 1 := by
-  simp [normalOrderSign, Wick.koszulSign]
+lemma normalOrderSign_nil : normalOrderSign (𝓕 := 𝓕) [] = 1 := rfl
 
 lemma koszulSignInsert_append_annihilate (φ' φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) :
@@ -139,10 +134,8 @@ lemma normalOrderSign_swap_create_annihlate_fst (φc φa : 𝓕.CrAnStates)
 
 lemma koszulSignInsert_swap (φ φc φa : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
     Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ (φs ++ φa :: φc :: φs')
-    = Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ (φs ++ φc :: φa :: φs') := by
-  apply Wick.koszulSignInsert_eq_perm
-  refine List.Perm.append_left φs ?h.a
-  exact List.Perm.swap φc φa φs'
+    = Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ (φs ++ φc :: φa :: φs') :=
+  Wick.koszulSignInsert_eq_perm _ _ _ _ _ (List.Perm.append_left φs (List.Perm.swap φc φa φs'))
 
 lemma normalOrderSign_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate) :
@@ -157,12 +150,9 @@ lemma normalOrderSign_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
     rw [← mul_assoc, mul_comm _ (FieldStatistic.exchangeSign _ _), mul_assoc]
     simp only [FieldStatistic.instCommGroup.eq_1, mul_eq_mul_left_iff]
     apply Or.inl
-    conv_rhs =>
-      rw [normalOrderSign]
-      dsimp [Wick.koszulSign]
-      rw [← normalOrderSign]
+    conv_rhs => rw [normalOrderSign, Wick.koszulSign, ← normalOrderSign]
     simp only [mul_eq_mul_right_iff]
-    apply Or.inl
+    left
     rw [koszulSignInsert_swap]
 
 lemma normalOrderSign_swap_create_create_fst (φc φc' : 𝓕.CrAnStates)

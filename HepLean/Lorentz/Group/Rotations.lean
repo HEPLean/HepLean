@@ -11,7 +11,7 @@ import HepLean.Mathematics.SO3.Basic
 This file describes the embedding of `SO(3)` into `LorentzGroup 3`.
 
 -/
-TODO "Generalize the inclusion of rotations into LorentzGroup to abitary dimension."
+TODO "Generalize the inclusion of rotations into LorentzGroup to arbitrary dimension."
 noncomputable section
 
 namespace LorentzGroup
