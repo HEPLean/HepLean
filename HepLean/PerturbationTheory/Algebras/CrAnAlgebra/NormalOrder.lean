@@ -36,6 +36,7 @@ def normalOrder : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   normalOrderSign φs • ofCrAnList (normalOrderList φs)
 
+@[inherit_doc normalOrder]
 scoped[FieldSpecification.CrAnAlgebra] notation "𝓝(" a ")" => normalOrder a
 
 lemma normalOrder_ofCrAnList (φs : List 𝓕.CrAnStates) :

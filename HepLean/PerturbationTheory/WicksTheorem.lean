@@ -263,7 +263,7 @@ lemma wick_term_some_eq_wick_term_optionEraseZ (φ : 𝓕.States) (φs : List �
       exact hg'
 
 /--
-Given a Wick contraction `φsΛ` of `φs =  φ₀φ₁…φₙ` and an `i`, we have that
+Given a Wick contraction `φsΛ` of `φs = φ₀φ₁…φₙ` and an `i`, we have that
 `(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF (φ * 𝓝([φsΛ]ᵘᶜ))`
 is equal to the product of
 - the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`,
@@ -309,7 +309,6 @@ lemma wick_term_cons_eq_sum_wick_term (φ : 𝓕.States) (φs : List 𝓕.States
       have ht := (WickContraction.timeContract 𝓞 φsΛ).prop
       rw [@Subalgebra.mem_center_iff] at ht
       rw [ht]
-
 
 /-!
 

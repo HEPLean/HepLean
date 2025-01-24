@@ -85,6 +85,7 @@ lemma ofStateAlgebra_ofState (φ : 𝓕.States) :
   Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
 def ofStateList (φs : List 𝓕.States) : CrAnAlgebra 𝓕 := (List.map ofState φs).prod
 
+/-- Coercion from `List 𝓕.States` to `CrAnAlgebra 𝓕` through `ofStateList`. -/
 instance : Coe (List 𝓕.States) (CrAnAlgebra 𝓕) := ⟨ofStateList⟩
 
 @[simp]

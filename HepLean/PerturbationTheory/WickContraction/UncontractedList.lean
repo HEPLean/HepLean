@@ -287,10 +287,13 @@ lemma take_uncontractedIndexEquiv_symm (k : c.uncontracted) :
 
 -/
 
+/-- Given a Wick Contraction `φsΛ` for a list of states `φs`. The list of uncontracted
+  states in `φs`. -/
 def uncontractedListGet {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
     List 𝓕.States := φsΛ.uncontractedList.map φs.get
 
-scoped[WickContraction] notation  "[" φsΛ "]ᵘᶜ" => uncontractedListGet φsΛ
+@[inherit_doc uncontractedListGet]
+scoped[WickContraction] notation "[" φsΛ "]ᵘᶜ" => uncontractedListGet φsΛ
 /-!
 
 ## uncontractedStatesEquiv

@@ -34,7 +34,8 @@ noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List �
 This result follows from the fact that `timeContract` only depends on contracted pairs,
 and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
 @[simp]
-lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra)
+    (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).timeContract 𝓞 = φsΛ.timeContract 𝓞 := by
   rw [timeContract, insertAndContract_none_prod_contractions]
@@ -42,7 +43,8 @@ lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ
   ext a
   simp
 
-lemma timeConract_insertAndContract_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeConract_insertAndContract_some (𝓞 : 𝓕.ProtoOperatorAlgebra)
+    (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).timeContract 𝓞 =
     (if i < i.succAbove j then

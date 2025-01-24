@@ -20,7 +20,7 @@ is a generalization of the operator algebra of a field theory with field specifi
 It is an algebra `A` with a map `crAnF` from the creation and annihilation free algebra
 satisfying a number of conditions with respect to super commutators.
 The true operator algebra of a field theory with field specification `𝓕`is an
-example of a proto-operator algebra.-/
+example of a proto-operator algebra. -/
 structure ProtoOperatorAlgebra where
   /-- The algebra representing the operator algebra. -/
   A : Type
