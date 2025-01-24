@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.WickContraction.Insert
+import HepLean.PerturbationTheory.WickContraction.InsertAndContractNat
 /-!
 
 # Equivalence extracting element from contraction
@@ -40,20 +40,20 @@ lemma extractEquiv_equiv {c1 c2 : (c : WickContraction n) × Option c.uncontract
 def extractEquiv (i : Fin n.succ) : WickContraction n.succ ≃
     (c : WickContraction n) × Option c.uncontracted where
   toFun := fun c => ⟨erase c i, getDualErase c i⟩
-  invFun := fun ⟨c, j⟩ => insert c i j
+  invFun := fun ⟨c, j⟩ => insertAndContractNat c i j
   left_inv f := by
     simp
   right_inv f := by
     refine extractEquiv_equiv ?_ ?_
-    simp only [insert_erase]
+    simp only [insertAndContractNat_erase]
     simp only [Nat.succ_eq_add_one]
-    have h1 := insert_getDualErase f.fst i f.snd
-    exact insert_getDualErase _ i _
+    have h1 := insertAndContractNat_getDualErase f.fst i f.snd
+    exact insertAndContractNat_getDualErase _ i _
 
 lemma extractEquiv_symm_none_uncontracted (i : Fin n.succ) (c : WickContraction n) :
     ((extractEquiv i).symm ⟨c, none⟩).uncontracted =
     (Insert.insert i (c.uncontracted.map i.succAboveEmb)) := by
-  exact insert_none_uncontracted c i
+  exact insertAndContractNat_none_uncontracted c i
 
 @[simp]
 lemma extractEquiv_apply_congr_symm_apply {n m : ℕ} (k : ℕ)

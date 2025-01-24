@@ -29,24 +29,24 @@ noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List �
     𝓞.timeContract_mem_center _ _⟩
 
 @[simp]
-lemma timeContract_insertList_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
-    (φsΛ.insertList φ i none).timeContract 𝓞 = φsΛ.timeContract 𝓞 := by
-  rw [timeContract, insertList_none_prod_contractions]
+    (φsΛ.insertAndContract φ i none).timeContract 𝓞 = φsΛ.timeContract 𝓞 := by
+  rw [timeContract, insertAndContract_none_prod_contractions]
   congr
   ext a
   simp
 
-lemma timeConract_insertList_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma timeConract_insertAndContract_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
-    (φsΛ.insertList φ i (some j)).timeContract 𝓞 =
+    (φsΛ.insertAndContract φ i (some j)).timeContract 𝓞 =
     (if i < i.succAbove j then
       ⟨𝓞.timeContract φ φs[j.1], 𝓞.timeContract_mem_center _ _⟩
     else ⟨𝓞.timeContract φs[j.1] φ, 𝓞.timeContract_mem_center _ _⟩) * φsΛ.timeContract 𝓞 := by
-  rw [timeContract, insertList_some_prod_contractions]
+  rw [timeContract, insertAndContract_some_prod_contractions]
   congr 1
-  · simp only [Nat.succ_eq_add_one, insertList_fstFieldOfContract_some_incl, finCongr_apply,
-    List.get_eq_getElem, insertList_sndFieldOfContract_some_incl, Fin.getElem_fin]
+  · simp only [Nat.succ_eq_add_one, insertAndContract_fstFieldOfContract_some_incl, finCongr_apply,
+    List.get_eq_getElem, insertAndContract_sndFieldOfContract_some_incl, Fin.getElem_fin]
     split
     · simp
     · simp
@@ -56,15 +56,15 @@ lemma timeConract_insertList_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.
 
 open FieldStatistic
 
-lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
+lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
-    (φsΛ.insertList φ i (some k)).timeContract 𝓞 =
+    (φsΛ.insertAndContract φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
     • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ
     ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞) := by
-  rw [timeConract_insertList_some]
+  rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
@@ -91,15 +91,15 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
-lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
+lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
     (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
-    (φsΛ.insertList φ i (some k)).timeContract 𝓞 =
+    (φsΛ.insertAndContract φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ
     ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞) := by
-  rw [timeConract_insertList_some]
+  rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,

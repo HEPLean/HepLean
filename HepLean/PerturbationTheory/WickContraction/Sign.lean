@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.WickContraction.InsertList
+import HepLean.PerturbationTheory.WickContraction.InsertAndContract
 
 /-!
 
@@ -27,26 +27,26 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   Finset.univ.filter (fun i => i1 < i ∧ i < i2 ∧
   (c.getDual? i = none ∨ ∀ (h : (c.getDual? i).isSome), i1 < (c.getDual? i).get h))
 
-lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signFinset_insertAndContract_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
-      (φsΛ.insertList φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
+      (φsΛ.insertAndContract φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
       (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
+      (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
     else
-      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
+      (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
   ext k
   rcases insert_fin_eq_self φ i k with hk | hk
   · subst hk
     conv_lhs => simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter,
       Finset.mem_univ,
-      insertList_none_getDual?_self, Option.isSome_none, Bool.false_eq_true, IsEmpty.forall_iff,
+      insertAndContract_none_getDual?_self, Option.isSome_none, Bool.false_eq_true, IsEmpty.forall_iff,
       or_self, and_true, true_and]
     by_cases h : i.succAbove i1 < i ∧ i < i.succAbove i2
     · simp [h, Fin.lt_def]
-    · simp only [Nat.succ_eq_add_one, h, ↓reduceIte, self_not_mem_insertListLiftFinset, iff_false]
+    · simp only [Nat.succ_eq_add_one, h, ↓reduceIte, self_not_mem_insertAndContractLiftFinset, iff_false]
       rw [Fin.lt_def, Fin.lt_def] at h ⊢
       simp_all
   · obtain ⟨k, hk⟩ := hk
@@ -54,10 +54,10 @@ lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
     have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
       (if i.succAbove i1 < i ∧ i < i.succAbove i2 then
         Insert.insert ((finCongr (insertIdx_length_fin φ φs i).symm) i)
-        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
-      else insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) ↔
+        (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
+      else insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)) ↔
       Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
-        insertListLiftFinset φ i (φsΛ.signFinset i1 i2) := by
+        insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2) := by
       split
       · simp only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert, Fin.ext_iff,
         Fin.coe_cast, or_iff_right_iff_imp]
@@ -67,10 +67,10 @@ lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
         omega
       · simp
     rw [h1]
-    rw [succAbove_mem_insertListLiftFinset]
+    rw [succAbove_mem_insertAndContractLiftFinset]
     simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter, Finset.mem_univ,
-      insertList_none_succAbove_getDual?_eq_none_iff, insertList_none_succAbove_getDual?_isSome_iff,
-      insertList_none_getDual?_get_eq, true_and]
+      insertAndContract_none_succAbove_getDual?_eq_none_iff, insertAndContract_none_succAbove_getDual?_isSome_iff,
+      insertAndContract_none_getDual?_get_eq, true_and]
     rw [Fin.lt_def, Fin.lt_def, Fin.lt_def, Fin.lt_def]
     simp only [Fin.coe_cast, Fin.val_fin_lt]
     rw [Fin.succAbove_lt_succAbove_iff, Fin.succAbove_lt_succAbove_iff]
@@ -83,9 +83,9 @@ lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
       simp only [Fin.coe_cast, Fin.val_fin_lt]
       rw [Fin.succAbove_lt_succAbove_iff]
 
-lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
-    (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, insertListLiftFinset φ i a⟩) = 𝓕 |>ₛ ⟨φs.get, a⟩ := by
+    (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, insertAndContractLiftFinset φ i a⟩) = 𝓕 |>ₛ ⟨φs.get, a⟩ := by
   simp only [ofFinset, Nat.succ_eq_add_one]
   congr 1
   rw [get_eq_insertIdx_succAbove φ _ i]
@@ -109,13 +109,13 @@ lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.
     exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) a
   have h3 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))
       (List.map i.succAbove (Finset.sort (fun x1 x2 => x1 ≤ x2) a))).toFinset
-      = (insertListLiftFinset φ i a) := by
+      = (insertAndContractLiftFinset φ i a) := by
     ext b
     simp only [Nat.succ_eq_add_one, List.map_map, List.mem_toFinset, List.mem_map, Finset.mem_sort,
       Function.comp_apply, finCongr_apply]
     rcases insert_fin_eq_self φ i b with hk | hk
     · subst hk
-      simp only [Nat.succ_eq_add_one, self_not_mem_insertListLiftFinset, iff_false, not_exists,
+      simp only [Nat.succ_eq_add_one, self_not_mem_insertAndContractLiftFinset, iff_false, not_exists,
         not_and]
       intro x hx
       refine Fin.ne_of_val_ne ?h.inl.h
@@ -125,7 +125,7 @@ lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.
     · obtain ⟨k, hk⟩ := hk
       subst hk
       simp only [Nat.succ_eq_add_one]
-      rw [succAbove_mem_insertListLiftFinset]
+      rw [succAbove_mem_insertAndContractLiftFinset]
       apply Iff.intro
       · intro h
         obtain ⟨x, hx⟩ := h
@@ -177,46 +177,46 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.States)
     exact False.elim (h1 hsom')
     rfl
 
-lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signFinset_insertAndContract_some (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)
     (j : φsΛ.uncontracted) :
-    (φsΛ.insertList φ i (some j)).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
+    (φsΛ.insertAndContract φ i (some j)).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
     (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
+      (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
     else
       if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
+        (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
         (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       else
-        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
+        (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
   ext k
   rcases insert_fin_eq_self φ i k with hk | hk
   · subst hk
     have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm i ∈
       (if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
+      (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
       else
         if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
+          (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
           (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
         else
-          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
+          (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
           i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) := by
         split
         simp_all only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert,
-          self_not_mem_insertListLiftFinset, or_false, and_self]
+          self_not_mem_insertAndContractLiftFinset, or_false, and_self]
         rename_i h
         simp only [Nat.succ_eq_add_one, not_lt, finCongr_apply, h, iff_false]
         split
-        simp only [Finset.mem_erase, ne_eq, self_not_mem_insertListLiftFinset, and_false,
+        simp only [Finset.mem_erase, ne_eq, self_not_mem_insertAndContractLiftFinset, and_false,
           not_false_eq_true]
         simp
     rw [h1]
     simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter, Finset.mem_univ,
-      insertList_some_getDual?_self_eq, reduceCtorEq, Option.isSome_some, Option.get_some,
+      insertAndContract_some_getDual?_self_eq, reduceCtorEq, Option.isSome_some, Option.get_some,
       forall_const, false_or, true_and]
     rw [Fin.lt_def, Fin.lt_def, Fin.lt_def, Fin.lt_def]
     simp only [Fin.coe_cast, Fin.val_fin_lt, and_congr_right_iff]
@@ -227,7 +227,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
     by_cases hkj : k = j.1
     · subst hkj
       conv_lhs=> simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter,
-        Finset.mem_univ, insertList_some_getDual?_some_eq, reduceCtorEq, Option.isSome_some,
+        Finset.mem_univ, insertAndContract_some_getDual?_some_eq, reduceCtorEq, Option.isSome_some,
         Option.get_some, forall_const, false_or, true_and, not_lt]
       rw [Fin.lt_def, Fin.lt_def]
       simp only [Fin.coe_cast, Fin.val_fin_lt, Nat.succ_eq_add_one, finCongr_apply, not_lt]
@@ -238,7 +238,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
       split
       · rename_i h
         simp_all only [and_true, Finset.mem_insert]
-        rw [succAbove_mem_insertListLiftFinset]
+        rw [succAbove_mem_insertAndContractLiftFinset]
         simp only [Fin.ext_iff, Fin.coe_cast]
         have h1 : ¬ (i.succAbove ↑j) = i := Fin.succAbove_ne i ↑j
         simp only [Fin.val_eq_val, h1, signFinset, Finset.mem_filter, Finset.mem_univ, true_and,
@@ -259,7 +259,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
           intro h1 h2
           omega
         · rename_i h1
-          rw [succAbove_mem_insertListLiftFinset]
+          rw [succAbove_mem_insertAndContractLiftFinset]
           simp only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and, and_congr_right_iff]
           intro h1 h2
           have hj:= j.2
@@ -270,15 +270,15 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
     · have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
         (if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
         Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
+        (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
         else
         if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
+          (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
           (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
         else
-          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
+          (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
           Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
-          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
+          (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
         split
         · simp only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert, or_iff_right_iff_imp]
           intro h
@@ -297,7 +297,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
           exact Fin.succAbove_right_injective
           · simp
       rw [h1]
-      rw [succAbove_mem_insertListLiftFinset]
+      rw [succAbove_mem_insertAndContractLiftFinset]
       simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter,
         Finset.mem_univ, true_and]
       rw [Fin.lt_def, Fin.lt_def, Fin.lt_def, Fin.lt_def]
@@ -305,7 +305,7 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
       rw [Fin.succAbove_lt_succAbove_iff, Fin.succAbove_lt_succAbove_iff]
       simp only [and_congr_right_iff]
       intro h1 h2
-      simp only [ne_eq, hkj, not_false_eq_true, insertList_some_succAbove_getDual?_eq_option,
+      simp only [ne_eq, hkj, not_false_eq_true, insertAndContract_some_succAbove_getDual?_eq_option,
         Nat.succ_eq_add_one, Option.map_eq_none', Option.isSome_map']
       conv_lhs =>
         rhs
@@ -341,24 +341,24 @@ def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickCont
 
 lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) :
-    (φsΛ.insertList φ i none).sign = (φsΛ.signInsertNone φ φs i) * φsΛ.sign := by
+    (φsΛ.insertAndContract φ i none).sign = (φsΛ.signInsertNone φ φs i) * φsΛ.sign := by
   rw [sign]
   rw [signInsertNone, sign, ← Finset.prod_mul_distrib]
-  rw [insertList_none_prod_contractions]
+  rw [insertAndContract_none_prod_contractions]
   congr
   funext a
-  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, insertList_sndFieldOfContract, finCongr_apply,
-    Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, insertList_fstFieldOfContract, ite_mul,
+  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, insertAndContract_sndFieldOfContract, finCongr_apply,
+    Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, insertAndContract_fstFieldOfContract, ite_mul,
     one_mul]
-  erw [signFinset_insertList_none]
+  erw [signFinset_insertAndContract_none]
   split
   · rw [ofFinset_insert]
     simp only [instCommGroup, Nat.succ_eq_add_one, finCongr_apply, Fin.getElem_fin, Fin.coe_cast,
       List.getElem_insertIdx_self, map_mul]
-    rw [stat_ofFinset_of_insertListLiftFinset]
+    rw [stat_ofFinset_of_insertAndContractLiftFinset]
     simp only [exchangeSign_symm, instCommGroup.eq_1]
     simp
-  · rw [stat_ofFinset_of_insertListLiftFinset]
+  · rw [stat_ofFinset_of_insertAndContractLiftFinset]
 
 lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
@@ -508,13 +508,13 @@ def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : Wick
   coming from putting `i` next to `j`. -/
 def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
-  let a : (φsΛ.insertList φ i (some j)).1 :=
+  let a : (φsΛ.insertAndContract φ i (some j)).1 :=
     congrLift (insertIdx_length_fin φ φs i).symm
-    ⟨{i, i.succAbove j}, by simp [insert]⟩;
-  𝓢(𝓕 |>ₛ (φs.insertIdx i φ)[(φsΛ.insertList φ i (some j)).sndFieldOfContract a],
+    ⟨{i, i.succAbove j}, by simp [insertAndContractNat]⟩;
+  𝓢(𝓕 |>ₛ (φs.insertIdx i φ)[(φsΛ.insertAndContract φ i (some j)).sndFieldOfContract a],
     𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, signFinset
-    (φsΛ.insertList φ i (some j)) ((φsΛ.insertList φ i (some j)).fstFieldOfContract a)
-    ((φsΛ.insertList φ i (some j)).sndFieldOfContract a)⟩)
+    (φsΛ.insertAndContract φ i (some j)) ((φsΛ.insertAndContract φ i (some j)).fstFieldOfContract a)
+    ((φsΛ.insertAndContract φ i (some j)).sndFieldOfContract a)⟩)
 
 /-- Given a Wick contraction `c` associated with a list of states `φs`
   and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
@@ -525,22 +525,22 @@ def signInsertSome (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickCont
 
 lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
-    (φsΛ.insertList φ i (some j)).sign = (φsΛ.signInsertSome φ φs i j) * φsΛ.sign := by
+    (φsΛ.insertAndContract φ i (some j)).sign = (φsΛ.signInsertSome φ φs i j) * φsΛ.sign := by
   rw [sign]
   rw [signInsertSome, signInsertSomeProd, sign, mul_assoc, ← Finset.prod_mul_distrib]
-  rw [insertList_some_prod_contractions]
+  rw [insertAndContract_some_prod_contractions]
   congr
   funext a
-  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, insertList_sndFieldOfContract, finCongr_apply,
-    Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, insertList_fstFieldOfContract, not_lt,
+  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, insertAndContract_sndFieldOfContract, finCongr_apply,
+    Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, insertAndContract_fstFieldOfContract, not_lt,
     ite_mul, one_mul]
-  erw [signFinset_insertList_some]
+  erw [signFinset_insertAndContract_some]
   split
   · rename_i h
     simp only [Nat.succ_eq_add_one, finCongr_apply]
     rw [ofFinset_insert]
     simp only [instCommGroup, Fin.getElem_fin, Fin.coe_cast, List.getElem_insertIdx_self, map_mul]
-    rw [stat_ofFinset_of_insertListLiftFinset]
+    rw [stat_ofFinset_of_insertAndContractLiftFinset]
     simp only [exchangeSign_symm, instCommGroup.eq_1]
     simp
   · rename_i h
@@ -550,9 +550,9 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : Wick
       rw [if_pos]
       rw [ofFinset_erase]
       simp only [instCommGroup, Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin, map_mul]
-      rw [stat_ofFinset_of_insertListLiftFinset]
+      rw [stat_ofFinset_of_insertAndContractLiftFinset]
       simp only [exchangeSign_symm, instCommGroup.eq_1]
-      · rw [succAbove_mem_insertListLiftFinset]
+      · rw [succAbove_mem_insertAndContractLiftFinset]
         simp only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and]
         simp_all only [Nat.succ_eq_add_one, and_true, false_and, not_false_eq_true, not_lt,
           true_and]
@@ -561,7 +561,7 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : Wick
       · simp_all
     · rename_i h1
       rw [if_neg]
-      rw [stat_ofFinset_of_insertListLiftFinset]
+      rw [stat_ofFinset_of_insertAndContractLiftFinset]
       simp_all
 
 lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
@@ -731,16 +731,16 @@ lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ :
     φsΛ.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-      (signFinset (φsΛ.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
+      (signFinset (φsΛ.insertAndContract φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩)
     else
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-      signFinset (φsΛ.insertList φ i (some j))
+      signFinset (φsΛ.insertAndContract φ i (some j))
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (finCongr (insertIdx_length_fin φ φs i).symm i)⟩) := by
   simp only [signInsertSomeCoef, instCommGroup.eq_1, Nat.succ_eq_add_one,
-    insertList_sndFieldOfContract_some_incl, finCongr_apply, Fin.getElem_fin,
-    insertList_fstFieldOfContract_some_incl]
+    insertAndContract_sndFieldOfContract_some_incl, finCongr_apply, Fin.getElem_fin,
+    insertAndContract_fstFieldOfContract_some_incl]
   split
   · simp [hφj]
   · simp [hφj]
@@ -749,7 +749,7 @@ lemma stat_signFinset_insert_some_self_fst
     (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
   (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-    (signFinset (φsΛ.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
+    (signFinset (φsΛ.insertAndContract φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩) =
   𝓕 |>ₛ ⟨φs.get,
     (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((φsΛ.getDual? x = none) ∨
@@ -766,7 +766,7 @@ lemma stat_signFinset_insert_some_self_fst
     true_and, Finset.mem_map, Function.Embedding.coeFn_mk, Function.comp_apply]
   rcases insert_fin_eq_self φ i x with hx | hx
   · subst hx
-    simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertList_some_getDual?_self_eq,
+    simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, forall_const, false_or, and_self,
       false_and, false_iff, not_exists, not_and, and_imp]
     intro x hi hx
@@ -778,7 +778,7 @@ lemma stat_signFinset_insert_some_self_fst
     subst hx
     by_cases h : x = j.1
     · subst h
-      simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertList_some_getDual?_some_eq,
+      simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_some_eq,
         reduceCtorEq, Option.isSome_some, Option.get_some, imp_false, not_true_eq_false, or_self,
         and_self, and_false, false_iff, not_exists, not_and, and_imp]
       intro x hi hx h0
@@ -788,7 +788,7 @@ lemma stat_signFinset_insert_some_self_fst
       omega
       exact Fin.succAbove_right_injective
     · simp only [Nat.succ_eq_add_one, ne_eq, h, not_false_eq_true,
-      insertList_some_succAbove_getDual?_eq_option, Option.map_eq_none', Option.isSome_map']
+      insertAndContract_some_succAbove_getDual?_eq_option, Option.map_eq_none', Option.isSome_map']
       rw [Fin.lt_def, Fin.lt_def]
       simp only [Fin.coe_cast, Fin.val_fin_lt]
       apply Iff.intro
@@ -825,7 +825,7 @@ lemma stat_signFinset_insert_some_self_fst
 lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-    (signFinset (φsΛ.insertList φ i (some j))
+    (signFinset (φsΛ.insertAndContract φ i (some j))
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (finCongr (insertIdx_length_fin φ φs i).symm i))⟩) =
     𝓕 |>ₛ ⟨φs.get,
@@ -842,7 +842,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
     true_and, Finset.mem_map, Function.Embedding.coeFn_mk, Function.comp_apply]
   rcases insert_fin_eq_self φ i x with hx | hx
   · subst hx
-    simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertList_some_getDual?_self_eq,
+    simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, imp_false, not_true_eq_false, or_self,
       and_self, and_false, false_iff, not_exists, not_and, and_imp]
     intro x hi hx
@@ -854,7 +854,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
     subst hx
     by_cases h : x = j.1
     · subst h
-      simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertList_some_getDual?_some_eq,
+      simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_some_eq,
         reduceCtorEq, Option.isSome_some, Option.get_some, forall_const, false_or, and_self,
         false_and, false_iff, not_exists, not_and, and_imp]
       intro x hi hx h0
@@ -864,7 +864,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
       omega
       exact Fin.succAbove_right_injective
     · simp only [Nat.succ_eq_add_one, ne_eq, h, not_false_eq_true,
-      insertList_some_succAbove_getDual?_eq_option, Option.map_eq_none', Option.isSome_map']
+      insertAndContract_some_succAbove_getDual?_eq_option, Option.map_eq_none', Option.isSome_map']
       rw [Fin.lt_def, Fin.lt_def]
       simp only [Fin.coe_cast, Fin.val_fin_lt]
       apply Iff.intro

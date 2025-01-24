@@ -441,7 +441,7 @@ lemma uncontractedList_extractEquiv_symm_some (c : WickContraction n) (i : Fin n
   congr
   simp only [Nat.succ_eq_add_one, extractEquiv, Equiv.coe_fn_symm_mk,
     uncontractedList_getElem_uncontractedIndexEquiv_symm, Fin.succAboveEmb_apply]
-  rw [insert_some_uncontracted]
+  rw [insertAndContractNat_some_uncontracted]
   ext a
   simp
 
