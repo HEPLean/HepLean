@@ -14,10 +14,13 @@ namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 open CrAnAlgebra
 
-/-- The structure of an algebra with properties necessary for that algebra
-  to be isomorphic to the actual operator algebra of a field theory.
-  These properties are sufficent to prove certain theorems about the Operator algebra
-  in particular Wick's theorem. -/
+/--
+A proto-operator algebra for a field specification `𝓕`
+is a generalization of the operator algebra of a field theory with field specification `𝓕`.
+It is an algebra `A` with a map `crAnF` from the creation and annihilation free algebra
+satisfying a number of conditions with respect to super commutators.
+The true operator algebra of a field theory with field specification `𝓕`is an
+example of a proto-operator algebra.-/
 structure ProtoOperatorAlgebra where
   /-- The algebra representing the operator algebra. -/
   A : Type

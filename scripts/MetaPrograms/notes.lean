@@ -153,6 +153,7 @@ def perturbationTheory : Note where
     .h2 "Creation and annihilation states",
     .h2 "Normal ordering",
     .h2 "Proto-operator algebra",
+    .name `FieldSpecification.ProtoOperatorAlgebra,
     .h1 "Wick Contractions",
     .h1 "Proof of Wick's theorem",
     .h2 "The case of the nil list",
