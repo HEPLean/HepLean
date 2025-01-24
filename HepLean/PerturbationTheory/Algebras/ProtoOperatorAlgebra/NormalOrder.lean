@@ -47,7 +47,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
 lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero
     (φa φa' : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
     𝓞.crAnF (normalOrder
-      (ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa') * ofCrAnList φs')) = 0 := by
+      (ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * ofCrAnList φs')) = 0 := by
   rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa) with hφa | hφa
   <;> rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa') with hφa' | hφa'
   · rw [normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList φa φa' hφa hφa' φs φs']
@@ -66,11 +66,11 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero
 lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero
     (φa φa' : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates)
     (a : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (ofCrAnList φs *
-    superCommute (ofCrAnState φa) (ofCrAnState φa') * a)) = 0 := by
+    [ofCrAnState φa, ofCrAnState φa']ₛca * a)) = 0 := by
   change (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
-    mulLinearMap ((ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa')))) a = 0
+    mulLinearMap ((ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca))) a = 0
   have hf : 𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
-      mulLinearMap ((ofCrAnList φs * superCommute (ofCrAnState φa) (ofCrAnState φa'))) = 0 := by
+      mulLinearMap (ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca) = 0 := by
     apply ofCrAnListBasis.ext
     intro l
     simp only [ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
@@ -81,12 +81,12 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero
 
 lemma crAnF_normalOrder_superCommute_ofCrAnState_eq_zero_mul (φa φa' : 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    𝓞.crAnF (normalOrder (a * superCommute (ofCrAnState φa) (ofCrAnState φa') * b)) = 0 := by
+    𝓞.crAnF (normalOrder (a * [ofCrAnState φa, ofCrAnState φa']ₛca * b)) = 0 := by
   rw [mul_assoc]
   change (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ mulLinearMap.flip
-    ((superCommute (ofCrAnState φa) (ofCrAnState φa') * b))) a = 0
-  have hf : (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ mulLinearMap.flip
-      ((superCommute (ofCrAnState φa) (ofCrAnState φa') * b))) = 0 := by
+    ([ofCrAnState φa, ofCrAnState φa']ₛca * b)) a = 0
+  have hf : 𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ mulLinearMap.flip
+      ([ofCrAnState φa, ofCrAnState φa']ₛca * b) = 0 := by
     apply ofCrAnListBasis.ext
     intro l
     simp only [mulLinearMap, ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
@@ -100,7 +100,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnState_eq_zero_mul (φa φa' : 𝓕.Cr
 lemma crAnF_normalOrder_superCommute_ofCrAnState_ofCrAnList_eq_zero_mul (φa : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    𝓞.crAnF (normalOrder (a * superCommute (ofCrAnState φa) (ofCrAnList φs) * b)) = 0 := by
+    𝓞.crAnF (normalOrder (a * [ofCrAnState φa, ofCrAnList φs]ₛca * b)) = 0 := by
   rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_eq_sum]
   rw [Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
@@ -113,7 +113,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnState_ofCrAnList_eq_zero_mul (φa : �
 lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnState_eq_zero_mul (φa : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    𝓞.crAnF (normalOrder (a * superCommute (ofCrAnList φs) (ofCrAnState φa) * b)) = 0 := by
+    𝓞.crAnF (normalOrder (a * [ofCrAnList φs, ofCrAnState φa]ₛca * b)) = 0 := by
   rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_symm, ofCrAnList_singleton]
   simp only [FieldStatistic.instCommGroup.eq_1, FieldStatistic.ofList_singleton, mul_neg,
     Algebra.mul_smul_comm, neg_mul, Algebra.smul_mul_assoc, map_neg, map_smul]
@@ -123,7 +123,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnState_eq_zero_mul (φa : �
 lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero_mul
     (φs φs' : List 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    𝓞.crAnF (normalOrder (a * superCommute (ofCrAnList φs) (ofCrAnList φs') * b)) = 0 := by
+    𝓞.crAnF (normalOrder (a * [ofCrAnList φs, ofCrAnList φs']ₛca * b)) = 0 := by
   rw [superCommute_ofCrAnList_ofCrAnList_eq_sum, Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
   apply Fintype.sum_eq_zero
@@ -135,7 +135,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero_mul
 lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero_mul
     (φs : List 𝓕.CrAnStates)
     (a b c : 𝓕.CrAnAlgebra) :
-    𝓞.crAnF (normalOrder (a * superCommute (ofCrAnList φs) c * b)) = 0 := by
+    𝓞.crAnF (normalOrder (a * [ofCrAnList φs, c]ₛca * b)) = 0 := by
   change (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute (ofCrAnList φs)) c = 0
   have hf : (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
@@ -151,7 +151,7 @@ lemma crAnF_normalOrder_superCommute_ofCrAnList_eq_zero_mul
 
 @[simp]
 lemma crAnF_normalOrder_superCommute_eq_zero_mul
-    (a b c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (a * superCommute d c * b)) = 0 := by
+    (a b c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (a * [d, c]ₛca * b)) = 0 := by
   change (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute.flip c) d = 0
   have hf : (𝓞.crAnF.toLinearMap ∘ₗ normalOrder ∘ₗ
@@ -167,19 +167,19 @@ lemma crAnF_normalOrder_superCommute_eq_zero_mul
 
 @[simp]
 lemma crAnF_normalOrder_superCommute_eq_zero_mul_right
-    (b c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (superCommute d c * b)) = 0 := by
+    (b c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder ([d, c]ₛca * b)) = 0 := by
   rw [← crAnF_normalOrder_superCommute_eq_zero_mul 1 b c d]
   simp
 
 @[simp]
 lemma crAnF_normalOrder_superCommute_eq_zero_mul_left
-    (a c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (a * superCommute d c)) = 0 := by
+    (a c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (a * [d, c]ₛca)) = 0 := by
   rw [← crAnF_normalOrder_superCommute_eq_zero_mul a 1 c d]
   simp
 
 @[simp]
 lemma crAnF_normalOrder_superCommute_eq_zero
-    (c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder (superCommute d c)) = 0 := by
+    (c d : 𝓕.CrAnAlgebra) : 𝓞.crAnF (normalOrder [d, c]ₛca) = 0 := by
   rw [← crAnF_normalOrder_superCommute_eq_zero_mul 1 1 c d]
   simp
 

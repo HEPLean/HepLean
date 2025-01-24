@@ -29,12 +29,12 @@ open FieldStatistic
   creation and annihlation algebra, both mapped to `𝓞.A`.. -/
 def timeContract (φ ψ : 𝓕.States) : 𝓞.A :=
   𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
-  - normalOrder (ofState φ * ofState ψ))
+  - 𝓝(ofState φ * ofState ψ))
 
 lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
     𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder
     (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
-    + (-1 : ℂ) • normalOrder (ofState φ * ofState ψ)) := by rfl
+    + (-1 : ℂ) • 𝓝(ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
     𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart (StateAlgebra.ofState φ), ofState ψ]ₛca) := by

@@ -30,7 +30,7 @@ noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List �
 @[simp]
 lemma timeContract_insertList_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) :
-    (c.insertList φ φs i none).timeContract 𝓞 = c.timeContract 𝓞 := by
+    (c.insertList φ i none).timeContract 𝓞 = c.timeContract 𝓞 := by
   rw [timeContract, insertList_none_prod_contractions]
   congr
   ext a
@@ -38,7 +38,7 @@ lemma timeContract_insertList_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕
 
 lemma timeConract_insertList_some (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    (c.insertList φ φs i (some j)).timeContract 𝓞 =
+    (c.insertList φ i (some j)).timeContract 𝓞 =
     (if i < i.succAbove j then
       ⟨𝓞.timeContract φ φs[j.1], 𝓞.timeContract_mem_center _ _⟩
     else ⟨𝓞.timeContract φs[j.1] φ, 𝓞.timeContract_mem_center _ _⟩) * c.timeContract 𝓞 := by
@@ -59,7 +59,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_lt
     (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
-    (c.insertList φ φs i (some k)).timeContract 𝓞 =
+    (c.insertList φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x < k))⟩)
     • (𝓞.contractStateAtIndex φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by
@@ -94,7 +94,7 @@ lemma timeConract_insertList_some_eq_mul_contractStateAtIndex_not_lt
     (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
-    (c.insertList φ φs i (some k)).timeContract 𝓞 =
+    (c.insertList φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (c.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractStateAtIndex φ (List.map φs.get c.uncontractedList)
     ((uncontractedStatesEquiv φs c) (some k)) * c.timeContract 𝓞) := by

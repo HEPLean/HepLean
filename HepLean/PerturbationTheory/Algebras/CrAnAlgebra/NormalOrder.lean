@@ -391,7 +391,7 @@ lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
     𝓝(ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * ofCrAnList φs') =
       normalOrderSign (φs ++ φa' :: φa :: φs') •
     (ofCrAnList (createFilter (φs ++ φs'))
-      * ofCrAnList (annihilateFilter φs) * superCommute (ofCrAnState φa) (ofCrAnState φa')
+      * ofCrAnList (annihilateFilter φs) * [ofCrAnState φa, ofCrAnState φa']ₛca
       * ofCrAnList (annihilateFilter φs')) := by
   rw [superCommute_ofCrAnState_ofCrAnState, mul_sub, sub_mul, map_sub]
   conv_lhs =>

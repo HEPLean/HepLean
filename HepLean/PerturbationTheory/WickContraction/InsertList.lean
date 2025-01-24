@@ -29,7 +29,7 @@ open HepLean.Fin
   `j : Option (c.uncontracted)` of `c`.
   The Wick contraction associated with `(φs.insertIdx i φ).length` formed by 'inserting' `φ`
   into `φs` after the first `i` elements and contracting it optionally with j. -/
-def insertList (φ : 𝓕.States) (φs : List 𝓕.States)
+def insertList (φ : 𝓕.States) {φs : List 𝓕.States}
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Option (c.uncontracted)) :
     WickContraction (φs.insertIdx i φ).length :=
     congr (by simp) (c.insert i j)
@@ -37,7 +37,7 @@ def insertList (φ : 𝓕.States) (φs : List 𝓕.States)
 @[simp]
 lemma insertList_fstFieldOfContract (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Option (c.uncontracted))
-    (a : c.1) : (insertList φ φs c i j).fstFieldOfContract
+    (a : c.1) : (c.insertList φ i j).fstFieldOfContract
     (congrLift (insertIdx_length_fin φ φs i).symm (insertLift i j a)) =
     finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove (c.fstFieldOfContract a)) := by
   simp [insertList]
@@ -45,7 +45,7 @@ lemma insertList_fstFieldOfContract (φ : 𝓕.States) (φs : List 𝓕.States)
 @[simp]
 lemma insertList_sndFieldOfContract (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Option (c.uncontracted))
-    (a : c.1) : (insertList φ φs c i j).sndFieldOfContract
+    (a : c.1) : (c.insertList φ i j).sndFieldOfContract
     (congrLift (insertIdx_length_fin φ φs i).symm (insertLift i j a)) =
     finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove (c.sndFieldOfContract a)) := by
   simp [insertList]
@@ -53,14 +53,14 @@ lemma insertList_sndFieldOfContract (φ : 𝓕.States) (φs : List 𝓕.States)
 @[simp]
 lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-      (insertList φ φs c i (some j)).fstFieldOfContract
+      (insertList φ c i (some j)).fstFieldOfContract
       (congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩) =
       if i < i.succAbove j.1 then
       finCongr (insertIdx_length_fin φ φs i).symm i else
       finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j.1) := by
   split
   · rename_i h
-    refine (insertList φ φs c i (some j)).eq_fstFieldOfContract_of_mem
+    refine (insertList φ c i (some j)).eq_fstFieldOfContract_of_mem
       (a := congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩)
       (i := finCongr (insertIdx_length_fin φ φs i).symm i) (j :=
         finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)) ?_ ?_ ?_
@@ -69,7 +69,7 @@ lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · rw [Fin.lt_def] at h ⊢
       simp_all
   · rename_i h
-    refine (insertList φ φs c i (some j)).eq_fstFieldOfContract_of_mem
+    refine (insertList φ c i (some j)).eq_fstFieldOfContract_of_mem
       (a := congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩)
       (i := finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (j := finCongr (insertIdx_length_fin φ φs i).symm i) ?_ ?_ ?_
@@ -88,7 +88,7 @@ lemma insertList_fstFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
 @[simp]
 lemma insertList_none_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) :
-    (insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i) = none := by
+    (insertList φ c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i) = none := by
   simp only [Nat.succ_eq_add_one, insertList, getDual?_congr, finCongr_apply, Fin.cast_trans,
     Fin.cast_eq_self, Option.map_eq_none']
   have h1 := c.insert_none_getDual?_isNone i
@@ -96,27 +96,27 @@ lemma insertList_none_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
 
 lemma insertList_isSome_getDual?_self (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    ((insertList φ φs c i (some j)).getDual?
+    ((insertList φ c i (some j)).getDual?
     (Fin.cast (insertIdx_length_fin φ φs i).symm i)).isSome := by
   simp [insertList, getDual?_congr]
 
 lemma insertList_some_getDual?_self_not_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    ¬ ((insertList φ φs c i (some j)).getDual?
+    ¬ ((insertList φ c i (some j)).getDual?
     (Fin.cast (insertIdx_length_fin φ φs i).symm i)) = none := by
   simp [insertList, getDual?_congr]
 
 @[simp]
 lemma insertList_some_getDual?_self_eq (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    ((insertList φ φs c i (some j)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i))
+    ((insertList φ c i (some j)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i))
     = some (Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove j)) := by
   simp [insertList, getDual?_congr]
 
 @[simp]
 lemma insertList_some_getDual?_some_eq (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    ((insertList φ φs c i (some j)).getDual?
+    ((insertList φ c i (some j)).getDual?
       (Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove j)))
     = some (Fin.cast (insertIdx_length_fin φ φs i).symm i) := by
   rw [getDual?_eq_some_iff_mem]
@@ -127,7 +127,7 @@ lemma insertList_some_getDual?_some_eq (φ : 𝓕.States) (φs : List 𝓕.State
 @[simp]
 lemma insertList_none_succAbove_getDual?_eq_none_iff (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length) :
-    (insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (insertList φ c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
       (i.succAbove j)) = none ↔ c.getDual? j = none := by
   simp [insertList, getDual?_congr]
 
@@ -135,7 +135,7 @@ lemma insertList_none_succAbove_getDual?_eq_none_iff (φ : 𝓕.States) (φs : L
 lemma insertList_some_succAbove_getDual?_eq_option (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length)
     (k : c.uncontracted) (hkj : j ≠ k.1) :
-    (insertList φ φs c i (some k)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (insertList φ c i (some k)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
     (i.succAbove j)) = Option.map (Fin.cast (insertIdx_length_fin φ φs i).symm ∘ i.succAbove)
     (c.getDual? j) := by
   simp only [Nat.succ_eq_add_one, insertList, getDual?_congr, finCongr_apply, Fin.cast_trans,
@@ -145,7 +145,7 @@ lemma insertList_some_succAbove_getDual?_eq_option (φ : 𝓕.States) (φs : Lis
 @[simp]
 lemma insertList_none_succAbove_getDual?_isSome_iff (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length) :
-    ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    ((insertList φ c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
       (i.succAbove j))).isSome ↔ (c.getDual? j).isSome := by
   rw [← not_iff_not]
   simp
@@ -153,9 +153,9 @@ lemma insertList_none_succAbove_getDual?_isSome_iff (φ : 𝓕.States) (φs : Li
 @[simp]
 lemma insertList_none_getDual?_get_eq (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : Fin φs.length)
-    (h : ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (h : ((insertList φ c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
     (i.succAbove j))).isSome) :
-    ((insertList φ φs c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
+    ((insertList φ c i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
     (i.succAbove j))).get h = Fin.cast (insertIdx_length_fin φ φs i).symm
     (i.succAbove ((c.getDual? j).get (by simpa using h))) := by
   simp [insertList, getDual?_congr_get]
@@ -164,14 +164,14 @@ lemma insertList_none_getDual?_get_eq (φ : 𝓕.States) (φs : List 𝓕.States
 @[simp]
 lemma insertList_sndFieldOfContract_some_incl (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
-    (insertList φ φs c i (some j)).sndFieldOfContract
+    (insertList φ c i (some j)).sndFieldOfContract
     (congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩) =
     if i < i.succAbove j.1 then
     finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j.1) else
     finCongr (insertIdx_length_fin φ φs i).symm i := by
   split
   · rename_i h
-    refine (insertList φ φs c i (some j)).eq_sndFieldOfContract_of_mem
+    refine (insertList φ c i (some j)).eq_sndFieldOfContract_of_mem
       (a := congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩)
       (i := finCongr (insertIdx_length_fin φ φs i).symm i) (j :=
         finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)) ?_ ?_ ?_
@@ -180,7 +180,7 @@ lemma insertList_sndFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
     · rw [Fin.lt_def] at h ⊢
       simp_all
   · rename_i h
-    refine (insertList φ φs c i (some j)).eq_sndFieldOfContract_of_mem
+    refine (insertList φ c i (some j)).eq_sndFieldOfContract_of_mem
       (a := congrLift (insertIdx_length_fin φ φs i).symm ⟨{i, i.succAbove j}, by simp [insert]⟩)
       (i := finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (j := finCongr (insertIdx_length_fin φ φs i).symm i) ?_ ?_ ?_
@@ -193,7 +193,7 @@ lemma insertList_sndFieldOfContract_some_incl (φ : 𝓕.States) (φs : List �
 
 lemma insertList_none_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ)
-    (f : (c.insertList φ φs i none).1 → M) [CommMonoid M] :
+    (f : (c.insertList φ i none).1 → M) [CommMonoid M] :
     ∏ a, f a = ∏ (a : c.1), f (congrLift (insertIdx_length_fin φ φs i).symm
       (insertLift i none a)) := by
   let e1 := Equiv.ofBijective (c.insertLift i none) (insertLift_none_bijective i)
@@ -205,7 +205,7 @@ lemma insertList_none_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.Stat
 
 lemma insertList_some_prod_contractions (φ : 𝓕.States) (φs : List 𝓕.States)
     (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted)
-    (f : (c.insertList φ φs i (some j)).1 → M) [CommMonoid M] :
+    (f : (c.insertList φ i (some j)).1 → M) [CommMonoid M] :
     ∏ a, f a = f (congrLift (insertIdx_length_fin φ φs i).symm
       ⟨{i, i.succAbove j}, by simp [insert]⟩) *
     ∏ (a : c.1), f (congrLift (insertIdx_length_fin φ φs i).symm (insertLift i (some j) a)) := by
@@ -268,7 +268,7 @@ lemma insert_fin_eq_self (φ : 𝓕.States) {φs : List 𝓕.States}
 
 lemma insertList_uncontractedList_none_map (φ : 𝓕.States) {φs : List 𝓕.States}
     (c : WickContraction φs.length) (i : Fin φs.length.succ) :
-    List.map (List.insertIdx (↑i) φ φs).get (insertList φ φs c i none).uncontractedList =
+    List.map (List.insertIdx (↑i) φ φs).get (insertList φ c i none).uncontractedList =
     List.insertIdx (c.uncontractedListOrderPos i) φ (List.map φs.get c.uncontractedList) := by
   simp only [Nat.succ_eq_add_one, insertList]
   rw [congr_uncontractedList]
@@ -285,7 +285,7 @@ lemma insertList_uncontractedList_none_map (φ : 𝓕.States) {φs : List 𝓕.S
 lemma insertLift_sum (φ : 𝓕.States) {φs : List 𝓕.States}
     (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
     ∑ c, f c = ∑ (c : WickContraction φs.length), ∑ (k : Option (c.uncontracted)),
-      f (insertList φ φs c i k) := by
+      f (insertList φ c i k) := by
   rw [sum_extractEquiv_congr (finCongr (insertIdx_length_fin φ φs i).symm i) f
     (insertIdx_length_fin φ φs i)]
   rfl
