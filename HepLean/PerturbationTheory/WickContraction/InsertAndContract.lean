@@ -268,6 +268,20 @@ lemma insert_fin_eq_self (φ : 𝓕.States) {φs : List 𝓕.States}
     use z
     rfl
 
+
+lemma insertLift_sum (φ : 𝓕.States) {φs : List 𝓕.States}
+    (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
+    ∑ c, f c =
+    ∑ (φsΛ : WickContraction φs.length), ∑ (k : Option φsΛ.uncontracted), f (φsΛ ↩Λ φ i k) := by
+  rw [sum_extractEquiv_congr (finCongr (insertIdx_length_fin φ φs i).symm i) f
+    (insertIdx_length_fin φ φs i)]
+  rfl
+
+/-!
+
+## Uncontracted list
+
+-/
 lemma insertAndContract_uncontractedList_none_map (φ : 𝓕.States) {φs : List 𝓕.States}
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     [φsΛ ↩Λ φ i none]ᵘᶜ = List.insertIdx (φsΛ.uncontractedListOrderPos i) φ [φsΛ]ᵘᶜ := by
@@ -281,14 +295,6 @@ lemma insertAndContract_uncontractedList_none_map (φ : 𝓕.States) {φs : List
   rw [List.map_map, List.map_map]
   congr
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
-  rfl
-
-lemma insertLift_sum (φ : 𝓕.States) {φs : List 𝓕.States}
-    (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
-    ∑ c, f c =
-    ∑ (φsΛ : WickContraction φs.length), ∑ (k : Option φsΛ.uncontracted), f (φsΛ ↩Λ φ i k) := by
-  rw [sum_extractEquiv_congr (finCongr (insertIdx_length_fin φ φs i).symm i) f
-    (insertIdx_length_fin φ φs i)]
   rfl
 
 end WickContraction

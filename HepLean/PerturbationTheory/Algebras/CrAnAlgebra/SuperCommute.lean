@@ -404,10 +404,14 @@ lemma superCommute_ofCrAnList_ofStateList_cons (φ : 𝓕.States) (φs : List �
   rw [ofStateList_cons, mul_assoc, smul_smul, FieldStatistic.ofList_cons_eq_mul]
   simp [mul_comm]
 
+/--
+Within the creation and annihilation algebra, we have that
+`[φᶜᵃs, φᶜᵃ₀ … φᶜᵃₙ]ₛca = ∑ i, sᵢ • φᶜᵃs₀ … φᶜᵃᵢ₋₁ * [φᶜᵃs, φᶜᵃᵢ]ₛca *  φᶜᵃᵢ₊₁ … φᶜᵃₙ`
+where `sᵢ` is the exchange sign for `φᶜᵃs` and `φᶜᵃs₀ … φᶜᵃᵢ₋₁`.
+-/
 lemma superCommute_ofCrAnList_ofCrAnList_eq_sum (φs : List 𝓕.CrAnStates) :
-    (φs' : List 𝓕.CrAnStates) →
-    [ofCrAnList φs, ofCrAnList φs']ₛca =
-    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ (List.take n φs')) •
+    (φs' : List 𝓕.CrAnStates) → [ofCrAnList φs, ofCrAnList φs']ₛca =
+    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
     ofCrAnList (φs'.take n) * [ofCrAnList φs, ofCrAnState (φs'.get n)]ₛca *
     ofCrAnList (φs'.drop (n + 1))
   | [] => by
@@ -422,7 +426,7 @@ lemma superCommute_ofCrAnList_ofCrAnList_eq_sum (φs : List 𝓕.CrAnStates) :
 
 lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) : (φs' : List 𝓕.States) →
     [ofCrAnList φs, ofStateList φs']ₛca =
-    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ List.take n φs') •
+    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
       ofStateList (φs'.take n) * [ofCrAnList φs, ofState (φs'.get n)]ₛca *
       ofStateList (φs'.drop (n + 1))
   | [] => by

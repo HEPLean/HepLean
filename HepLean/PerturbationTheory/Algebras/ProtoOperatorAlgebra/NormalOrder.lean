@@ -298,11 +298,18 @@ lemma crAnF_ofCrAnState_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.C
     rw [← Finset.mul_sum]
   rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofState, ← map_sum, ← map_sum, ← ofStateList_sum]
 
+/--
+Within a proto-operator algebra we have that
+`[anPart φ, 𝓝(φs)] = ∑ i, sᵢ • [anPart φ, φᵢ]ₛca * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`
+where `sᵢ` is the exchange sign for `φ` and `φ₀…φᵢ₋₁`.
+
+The origin of this result is
+- `superCommute_ofCrAnList_ofCrAnList_eq_sum`
+-/
 lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.States) (φs : List 𝓕.States) :
-    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φs)]ₛca) =
+    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), 𝓝(φs)]ₛca) =
     ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
-    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), ofState φs[n]]ₛca)
-    * 𝓞.crAnF (normalOrder (ofStateList (φs.eraseIdx n))) := by
+    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), ofState φs[n]]ₛca) * 𝓞.crAnF 𝓝(φs.eraseIdx n) := by
   match φ with
   | .inAsymp φ =>
     simp
@@ -320,6 +327,10 @@ lemma crAnF_anPart_superCommute_normalOrder_ofStateList_eq_sum (φ : 𝓕.States
 ## Multiplying with normal ordered terms
 
 -/
+/--
+Within a proto-operator algebra we have that
+`anPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝((anPart φ)φ₀φ₁…φₙ) + [anpart φ, 𝓝(φ₀φ₁…φₙ)]ₛca`.
+-/
 lemma crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.States)
     (φ' : List 𝓕.States) :
     𝓞.crAnF (anPart (StateAlgebra.ofState φ) * normalOrder (ofStateList φ')) =
@@ -330,11 +341,14 @@ lemma crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.State
   congr
   rw [crAnF_normalOrder_anPart_ofStatesList_swap]
 
+/--
+Within a proto-operator algebra we have that
+`φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(φφ₀φ₁…φₙ) + [anpart φ, 𝓝(φ₀φ₁…φₙ)]ₛca`.
+-/
 lemma crAnF_ofState_mul_normalOrder_ofStatesList_eq_superCommute (φ : 𝓕.States)
-    (φ' : List 𝓕.States) :
-    𝓞.crAnF (ofState φ * normalOrder (ofStateList φ')) =
-    𝓞.crAnF (normalOrder (ofState φ * ofStateList φ')) +
-    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), normalOrder (ofStateList φ')]ₛca) := by
+    (φs : List 𝓕.States) : 𝓞.crAnF (ofState φ * 𝓝(φs)) =
+    𝓞.crAnF (normalOrder (ofState φ * ofStateList φs)) +
+    𝓞.crAnF ([anPart (StateAlgebra.ofState φ), 𝓝(φs)]ₛca) := by
   conv_lhs => rw [ofState_eq_crPart_add_anPart]
   rw [add_mul, map_add, crAnF_anPart_mul_normalOrder_ofStatesList_eq_superCommute, ← add_assoc,
     ← normalOrder_crPart_mul, ← map_add]

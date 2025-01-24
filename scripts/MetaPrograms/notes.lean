@@ -154,18 +154,22 @@ def perturbationTheory : Note where
     .h2 "Normal ordering",
     .h2 "Proto-operator algebra",
     .name `FieldSpecification.ProtoOperatorAlgebra,
-    .h1 "Wick Contractions",
-    .h1 "Proof of Wick's theorem",
-    .h2 "The case of the nil list",
-    .p "Our proof of Wick's theorem will be via induction on the number of fields that
-      are in the time-ordered product. The base case is when there are no files.
-      The proof of Wick's theorem follows from definitions and simple lemmas.",
-    .name `FieldSpecification.wicks_theorem_nil,
     .name `FieldSpecification.ProtoOperatorAlgebra.crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum,
     .name `FieldSpecification.ProtoOperatorAlgebra.crAnF_ofState_normalOrder_insert,
-    .name `FieldSpecification.mul_sum_contractions,
-    .name `FieldSpecification.wicks_theorem,
-    ]
+    .h1 "Wick Contractions",
+    .h1 "Proof of Wick's theorem",
+    .h2 "Wick terms",
+    .name `FieldSpecification.wick_term_terminology,
+    .name `FieldSpecification.wick_term_none_eq_wick_term_cons,
+    .name `FieldSpecification.wick_term_some_eq_wick_term_optionEraseZ,
+    .name `FieldSpecification.wick_term_cons_eq_sum_wick_term,
+    .h2 "The case of the nil list",
+    .p "Our proof of Wick's theorem will be via induction on the number of fields that
+      are in the time-ordered product. The base case is when there are no fields.
+      The proof of Wick's theorem follows from definitions and simple lemmas.",
+    .name `FieldSpecification.wicks_theorem_nil,
+    .h2 "Wick's theorems",
+    .name `FieldSpecification.wicks_theorem]
 
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)

@@ -18,7 +18,7 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
-/-- Given a Wick contraction `c` associated with a list `φs`, the
+/-- Given a Wick contraction `φsΛ` associated with a list `φs`, the
   product of all time-contractions of pairs of contracted elements in `φs`,
   as a member of the center of `𝓞.A`. -/
 noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List 𝓕.States}
@@ -28,6 +28,11 @@ noncomputable def timeContract (𝓞 : 𝓕.ProtoOperatorAlgebra) {φs : List �
     (φs.get (φsΛ.fstFieldOfContract a)) (φs.get (φsΛ.sndFieldOfContract a)),
     𝓞.timeContract_mem_center _ _⟩
 
+/-- For `φsΛ` a Wick contraction for `φs`, the time contraction `(φsΛ ↩Λ φ i none).timeContract 𝓞`
+  is equal to `φsΛ.timeContract 𝓞`.
+
+This result follows from the fact that `timeContract` only depends on contracted pairs,
+and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
 @[simp]
 lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra) (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
