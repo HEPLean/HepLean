@@ -43,6 +43,14 @@ lemma timeContract_insertAndContract_none (𝓞 : 𝓕.ProtoOperatorAlgebra)
   ext a
   simp
 
+/-- For `φsΛ` a Wick contraction for `φs = φ₀…φₙ`, the time contraction
+  `(φsΛ ↩Λ φ i (some j)).timeContract 𝓞` is equal to the multiple of
+- the time contraction of `φ` with `φⱼ` if `i < i.succAbove j` else
+    `φⱼ` with `φ`.
+- `φsΛ.timeContract 𝓞`.
+This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contracted pair than `φsΛ`,
+corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
+or after `φⱼ`. -/
 lemma timeConract_insertAndContract_some (𝓞 : 𝓕.ProtoOperatorAlgebra)
     (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
@@ -69,8 +77,8 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
     (φsΛ ↩Λ φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
-    • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ
-    ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞) := by
+    • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedStatesEquiv φs φsΛ) (some k)) *
+      φsΛ.timeContract 𝓞) := by
   rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
@@ -105,7 +113,7 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
     (φsΛ ↩Λ φ i (some k)).timeContract 𝓞 =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x ≤ k))⟩)
     • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ
-    ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞) := by
+      ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞) := by
   rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     ProtoOperatorAlgebra.contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,

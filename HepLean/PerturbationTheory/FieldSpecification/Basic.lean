@@ -28,13 +28,14 @@ These states carry the same field statistic as the field they are derived from.
 remark fieldSpecification_intro := "The raw ingredients of a field theory are:
   - The specification of the fields.
   - Whether each field is a boson or a fermion.
-  - Vertices present.
-  - Coefficents of each vertex.
+  - Vertices present in the Lagrangian.
+  - The coefficent of each vertex.
 
   We call the first two of these ingredients the `FieldSpecification` of the theory. "
 
-/-- A field specification is a type of fields plus a specification of the
-  statistics (fermionic or bosonic) of each field. -/
+/-- A field specification is a type, `Fields`, elements of which are fields
+  present in a theory, and a map `statistics` from `Fields` to `FieldStatistic` which
+  identifies each field as a boson or a fermion. -/
 structure FieldSpecification where
   /-- The type of fields. This also includes anti-states. -/
   Fields : Type
@@ -44,16 +45,16 @@ structure FieldSpecification where
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- Incoming asymptotic states are specified by a field and a momentum. -/
+/-- An incoming asymptotic state is a field and a momentum. -/
 def IncomingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 
-/-- Outgoing asymptotic states are specified by a field and a momentum. -/
+/-- An outgoing asymptotic states is a field and a momentum. -/
 def OutgoingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 
-/-- States specified by a field and a space-time position. -/
+/-- A position state is a field and a space-time position. -/
 def PositionStates : Type := 𝓕.Fields × SpaceTime
 
-/-- The combination of asymptotic states and position states. -/
+/-- The type States is the inductive type combining the asymptotic states and position states. -/
 inductive States (𝓕 : FieldSpecification) where
   | inAsymp : 𝓕.IncomingAsymptotic → 𝓕.States
   | position : 𝓕.PositionStates → 𝓕.States

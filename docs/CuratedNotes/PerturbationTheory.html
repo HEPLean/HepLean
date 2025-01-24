@@ -64,7 +64,10 @@ layout: default
 
   {% endif %}
   {% if entry.type == "remark" %}
-  <p><i>Remark:</i>{{ entry.content|markdownify }}
-  </p>
+  <div style="padding: 10px; border-radius: 4px; border: 1px solid #e8e6e6;">
+    <a href = "{{ entry.link }}" style="color: #2c5282;">Remark: {{ entry.name}} </a>
+  {{ entry.content|markdownify }}
+  </div>
+  <br>
   {% endif %}
 {% endfor %}
