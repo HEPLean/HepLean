@@ -388,7 +388,11 @@ lemma pauliMatrix_contr_lower_3_1_1 :
   · congr 2
     decide
 
-TODO "Work out why `pauliCo_prod_basis_expand'` is needed."
+TODO "Work out why `pauliCo_prod_basis_expand'` is needed, since it is exactly the same
+  as `pauliCo_prod_basis_expand` which is defined in another file. One will see that
+  replacing instances of `pauliCo_prod_basis_expand'` with `pauliCo_prod_basis_expand`
+  does not work."
+
 /-- This lemma is exactly the same as `pauliCo_prod_basis_expand`.
   It is needed here for `pauliMatrix_contract_pauliMatrix_aux`. It is unclear why
   `pauliMatrix_lower_basis_expand_prod` does not work. -/

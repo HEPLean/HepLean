@@ -15,7 +15,7 @@ This file introduce 4d Minkowski spacetime.
 
 noncomputable section
 
-TODO "SpaceTime should be refactored into a structure, to prevent casting."
+TODO "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
 /-- The space-time -/
 def SpaceTime : Type := Fin 4 → ℝ
