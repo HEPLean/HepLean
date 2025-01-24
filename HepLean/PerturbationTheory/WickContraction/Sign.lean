@@ -28,15 +28,15 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   (c.getDual? i = none ∨ ∀ (h : (c.getDual? i).isSome), i1 < (c.getDual? i).get h))
 
 lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
+    (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
-      (c.insertList φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
+      (φsΛ.insertList φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
       (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (c.signFinset i1 i2))
+      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
     else
-      (insertListLiftFinset φ i (c.signFinset i1 i2)) := by
+      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
   ext k
   rcases insert_fin_eq_self φ i k with hk | hk
   · subst hk
@@ -54,10 +54,10 @@ lemma signFinset_insertList_none (φ : 𝓕.States) (φs : List 𝓕.States)
     have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
       (if i.succAbove i1 < i ∧ i < i.succAbove i2 then
         Insert.insert ((finCongr (insertIdx_length_fin φ φs i).symm) i)
-        (insertListLiftFinset φ i (c.signFinset i1 i2))
-      else insertListLiftFinset φ i (c.signFinset i1 i2)) ↔
+        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
+      else insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) ↔
       Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
-        insertListLiftFinset φ i (c.signFinset i1 i2) := by
+        insertListLiftFinset φ i (φsΛ.signFinset i1 i2) := by
       split
       · simp only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert, Fin.ext_iff,
         Fin.coe_cast, or_iff_right_iff_imp]
@@ -142,13 +142,13 @@ lemma stat_ofFinset_of_insertListLiftFinset (φ : 𝓕.States) (φs : List 𝓕.
   rw [(List.toFinset_sort (· ≤ ·) h2).mpr h1]
 
 lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.States)
-    (a : Finset (Fin φs.length)) (c : WickContraction φs.length) (hg : GradingCompliant φs c)
-    (hnon : ∀ i, c.getDual? i = none → i ∉ a)
-    (hsom : ∀ i, (h : (c.getDual? i).isSome) → i ∈ a → (c.getDual? i).get h ∈ a) :
+    (a : Finset (Fin φs.length)) (φsΛ : WickContraction φs.length) (hg : GradingCompliant φs φsΛ)
+    (hnon : ∀ i, φsΛ.getDual? i = none → i ∉ a)
+    (hsom : ∀ i, (h : (φsΛ.getDual? i).isSome) → i ∈ a → (φsΛ.getDual? i).get h ∈ a) :
     (𝓕 |>ₛ ⟨φs.get, a⟩) = 1 := by
   rw [ofFinset_eq_prod]
-  let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x // ¬ (c.getDual? x).isSome} := by
-    exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
+  let e2 : Fin φs.length ≃ {x // (φsΛ.getDual? x).isSome} ⊕ {x // ¬ (φsΛ.getDual? x).isSome} := by
+    exact (Equiv.sumCompl fun a => (φsΛ.getDual? a).isSome = true).symm
   rw [← e2.symm.prod_comp]
   simp only [Fin.getElem_fin, Fintype.prod_sum_type, instCommGroup]
   conv_lhs =>
@@ -156,7 +156,7 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.States)
     simp only [Equiv.symm_symm, Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, e2]
     rw [if_neg (hnon x.1 (by simpa using x.2))]
   simp only [Equiv.symm_symm, Equiv.sumCompl_apply_inl, Finset.prod_const_one, mul_one, e2]
-  rw [← c.sigmaContractedEquiv.prod_comp]
+  rw [← φsΛ.sigmaContractedEquiv.prod_comp]
   erw [Finset.prod_sigma]
   apply Fintype.prod_eq_one _
   intro x
@@ -167,43 +167,43 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.States)
     erw [hg x]
     simp only [Fin.getElem_fin, mul_self]
     rename_i h1 h2
-    have hsom' := hsom (c.sndFieldOfContract x) (by simp) h1
+    have hsom' := hsom (φsΛ.sndFieldOfContract x) (by simp) h1
     simp only [sndFieldOfContract_getDual?, Option.get_some] at hsom'
     exact False.elim (h2 hsom')
   · split
     rename_i h1 h2
-    have hsom' := hsom (c.fstFieldOfContract x) (by simp) h2
+    have hsom' := hsom (φsΛ.fstFieldOfContract x) (by simp) h2
     simp only [fstFieldOfContract_getDual?, Option.get_some] at hsom'
     exact False.elim (h1 hsom')
     rfl
 
 lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)
-    (j : c.uncontracted) :
-    (c.insertList φ i (some j)).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)
+    (j : φsΛ.uncontracted) :
+    (φsΛ.insertList φ i (some j)).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
     (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (c.signFinset i1 i2))
+      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
     else
       if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-        (insertListLiftFinset φ i (c.signFinset i1 i2)).erase
+        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
         (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       else
-        (insertListLiftFinset φ i (c.signFinset i1 i2)) := by
+        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
   ext k
   rcases insert_fin_eq_self φ i k with hk | hk
   · subst hk
     have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm i ∈
       (if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-      (insertListLiftFinset φ i (c.signFinset i1 i2))
+      (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
       else
         if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-          (insertListLiftFinset φ i (c.signFinset i1 i2)).erase
+          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
           (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
         else
-          (insertListLiftFinset φ i (c.signFinset i1 i2))) ↔
+          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
           i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) := by
         split
         simp_all only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert,
@@ -270,15 +270,15 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
     · have h1 : Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
         (if i.succAbove i1 < i ∧ i < i.succAbove i2 ∧ (i1 < j) then
         Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
-        (insertListLiftFinset φ i (c.signFinset i1 i2))
+        (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))
         else
         if i1 < j ∧ j < i2 ∧ ¬ i.succAbove i1 < i then
-          (insertListLiftFinset φ i (c.signFinset i1 i2)).erase
+          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)).erase
           (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
         else
-          (insertListLiftFinset φ i (c.signFinset i1 i2))) ↔
+          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2))) ↔
           Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) ∈
-          (insertListLiftFinset φ i (c.signFinset i1 i2)) := by
+          (insertListLiftFinset φ i (φsΛ.signFinset i1 i2)) := by
         split
         · simp only [Nat.succ_eq_add_one, finCongr_apply, Finset.mem_insert, or_iff_right_iff_imp]
           intro h
@@ -320,9 +320,9 @@ lemma signFinset_insertList_some (φ : 𝓕.States) (φs : List 𝓕.States)
   of `c` next to each other.
   It is important to note that this sign does not depend on any ordering
   placed on `φs` other then the order of the list itself. -/
-def sign (φs : List 𝓕.States) (c : WickContraction φs.length) : ℂ :=
-  ∏ (a : c.1), 𝓢(𝓕 |>ₛ φs[c.sndFieldOfContract a],
-    𝓕 |>ₛ ⟨φs.get, c.signFinset (c.fstFieldOfContract a) (c.sndFieldOfContract a)⟩)
+def sign (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) : ℂ :=
+  ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],
+    𝓕 |>ₛ ⟨φs.get, φsΛ.signFinset (φsΛ.fstFieldOfContract a) (φsΛ.sndFieldOfContract a)⟩)
 
 /-!
 
@@ -332,16 +332,16 @@ def sign (φs : List 𝓕.States) (c : WickContraction φs.length) : ℂ :=
 /-- Given a Wick contraction `c` associated with a list of states `φs`
   and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
   inserting `φ` into `φs` at position `i` without contracting it. -/
-def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
+def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) : ℂ :=
-  ∏ (a : c.1),
-    if i.succAbove (c.fstFieldOfContract a) < i ∧ i < i.succAbove (c.sndFieldOfContract a) then
-      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+  ∏ (a : φsΛ.1),
+    if i.succAbove (φsΛ.fstFieldOfContract a) < i ∧ i < i.succAbove (φsΛ.sndFieldOfContract a) then
+      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else 1
 
-lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
+lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) :
-    (c.insertList φ i none).sign = (c.signInsertNone φ φs i) * c.sign := by
+    (φsΛ.insertList φ i none).sign = (φsΛ.signInsertNone φ φs i) * φsΛ.sign := by
   rw [sign]
   rw [signInsertNone, sign, ← Finset.prod_mul_distrib]
   rw [insertList_none_prod_contractions]
@@ -361,11 +361,11 @@ lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickCont
   · rw [stat_ofFinset_of_insertListLiftFinset]
 
 lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) :
-  c.signInsertNone φ φs i = ∏ (a : c.1),
-    (if i.succAbove (c.fstFieldOfContract a) < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
+  φsΛ.signInsertNone φ φs i = ∏ (a : φsΛ.1),
+    (if i.succAbove (φsΛ.fstFieldOfContract a) < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else 1) *
-    (if i.succAbove (c.sndFieldOfContract a) < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+    (if i.succAbove (φsΛ.sndFieldOfContract a) < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else 1) := by
   rw [signInsertNone]
   congr
@@ -382,20 +382,20 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
     · simp_all only [forall_const, instCommGroup.eq_1, Fin.getElem_fin, mul_ite,
       exchangeSign_mul_self, mul_one]
       rw [if_pos]
-      have h1 :i.succAbove (c.sndFieldOfContract a) ≠ i :=
-        Fin.succAbove_ne i (c.sndFieldOfContract a)
+      have h1 :i.succAbove (φsΛ.sndFieldOfContract a) ≠ i :=
+        Fin.succAbove_ne i (φsΛ.sndFieldOfContract a)
       omega
     · simp only [not_lt] at h1
       rw [if_neg]
       simp only [mul_one]
-      have hn := fstFieldOfContract_lt_sndFieldOfContract c a
-      have hx : i.succAbove (c.fstFieldOfContract a) < i.succAbove (c.sndFieldOfContract a) := by
+      have hn := fstFieldOfContract_lt_sndFieldOfContract φsΛ a
+      have hx : i.succAbove (φsΛ.fstFieldOfContract a) < i.succAbove (φsΛ.sndFieldOfContract a) := by
         exact Fin.succAbove_lt_succAbove_iff.mpr hn
       omega
 
 lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs c) :
-    c.signInsertNone φ φs i = ∏ (a : c.1), ∏ (x : a),
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertNone φ φs i = ∏ (a : φsΛ.1), ∏ (x : a),
       (if i.succAbove x < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1]) else 1) := by
   rw [signInsertNone_eq_mul_fst_snd]
   congr
@@ -409,18 +409,18 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
   rfl
 
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs c) :
-    c.signInsertNone φ φs i = ∏ (x : Fin φs.length),
-      if (c.getDual? x).isSome then
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertNone φ φs i = ∏ (x : Fin φs.length),
+      if (φsΛ.getDual? x).isSome then
         (if i.succAbove x < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1]) else 1)
       else 1 := by
   rw [signInsertNone_eq_prod_prod]
-  trans ∏ (x : (a : c.1) × a), (if i.succAbove x.2 < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.2.1]) else 1)
+  trans ∏ (x : (a : φsΛ.1) × a), (if i.succAbove x.2 < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.2.1]) else 1)
   · rw [Finset.prod_sigma']
     rfl
-  rw [← c.sigmaContractedEquiv.symm.prod_comp]
-  let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x // ¬ (c.getDual? x).isSome} := by
-    exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
+  rw [← φsΛ.sigmaContractedEquiv.symm.prod_comp]
+  let e2 : Fin φs.length ≃ {x // (φsΛ.getDual? x).isSome} ⊕ {x // ¬ (φsΛ.getDual? x).isSome} := by
+    exact (Equiv.sumCompl fun a => (φsΛ.getDual? a).isSome = true).symm
   rw [← e2.symm.prod_comp]
   simp only [instCommGroup.eq_1, Fin.getElem_fin, Fintype.prod_sum_type]
   conv_rhs =>
@@ -436,9 +436,9 @@ lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.S
   exact hG
 
 lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs c) :
-    c.signInsertNone φ φs i =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ((List.filter (fun x => (c.getDual? x).isSome ∧ i.succAbove x < i)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertNone φ φs i =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ((List.filter (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)
     (List.finRange φs.length)).map φs.get)) := by
   rw [signInsertNone_eq_prod_getDual?_Some]
   rw [FieldStatistic.ofList_map_eq_finset_prod]
@@ -460,10 +460,10 @@ lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
   · exact hG
 
 lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (hG : GradingCompliant φs c) :
-    c.signInsertNone φ φs i = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
-    (fun x => (c.getDual? x).isSome ∧ i.succAbove x < i)⟩) := by
+    (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertNone φ φs i = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
+    (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)⟩) := by
   rw [ofFinset_eq_prod, signInsertNone_eq_prod_getDual?_Some, map_prod]
   congr
   funext a
@@ -489,16 +489,16 @@ lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
   inserting `φ` into `φs` at position `i` and contracting it with `j : c.uncontracted`
   coming from contractions other then the `i` and `j` contraction but which
   are effected by this new contraction. -/
-def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
-  ∏ (a : c.1),
-    if i.succAbove (c.fstFieldOfContract a) < i ∧ i < i.succAbove (c.sndFieldOfContract a) ∧
-      ((c.fstFieldOfContract a) < j) then
-      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
+  ∏ (a : φsΛ.1),
+    if i.succAbove (φsΛ.fstFieldOfContract a) < i ∧ i < i.succAbove (φsΛ.sndFieldOfContract a) ∧
+      ((φsΛ.fstFieldOfContract a) < j) then
+      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else
-    if (c.fstFieldOfContract a) < j ∧ j < (c.sndFieldOfContract a) ∧
-        ¬ i.succAbove (c.fstFieldOfContract a) < i then
-      𝓢(𝓕 |>ₛ φs[j.1], 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+    if (φsΛ.fstFieldOfContract a) < j ∧ j < (φsΛ.sndFieldOfContract a) ∧
+        ¬ i.succAbove (φsΛ.fstFieldOfContract a) < i then
+      𝓢(𝓕 |>ₛ φs[j.1], 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else
       1
 
@@ -506,26 +506,26 @@ def signInsertSomeProd (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickCont
   and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
   inserting `φ` into `φs` at position `i` and contracting it with `j : c.uncontracted`
   coming from putting `i` next to `j`. -/
-def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
-  let a : (c.insertList φ i (some j)).1 :=
+def signInsertSomeCoef (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
+  let a : (φsΛ.insertList φ i (some j)).1 :=
     congrLift (insertIdx_length_fin φ φs i).symm
     ⟨{i, i.succAbove j}, by simp [insert]⟩;
-  𝓢(𝓕 |>ₛ (φs.insertIdx i φ)[(c.insertList φ i (some j)).sndFieldOfContract a],
+  𝓢(𝓕 |>ₛ (φs.insertIdx i φ)[(φsΛ.insertList φ i (some j)).sndFieldOfContract a],
     𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, signFinset
-    (c.insertList φ i (some j)) ((c.insertList φ i (some j)).fstFieldOfContract a)
-    ((c.insertList φ i (some j)).sndFieldOfContract a)⟩)
+    (φsΛ.insertList φ i (some j)) ((φsΛ.insertList φ i (some j)).fstFieldOfContract a)
+    ((φsΛ.insertList φ i (some j)).sndFieldOfContract a)⟩)
 
 /-- Given a Wick contraction `c` associated with a list of states `φs`
   and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
   inserting `φ` into `φs` at position `i` and contracting it with `j : c.uncontracted`. -/
-def signInsertSome (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) : ℂ :=
-  signInsertSomeCoef φ φs c i j * signInsertSomeProd φ φs c i j
+def signInsertSome (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
+  signInsertSomeCoef φ φs φsΛ i j * signInsertSomeProd φ φs φsΛ i j
 
-lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) :
-    (c.insertList φ i (some j)).sign = (c.signInsertSome φ φs i j) * c.sign := by
+lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
+    (φsΛ.insertList φ i (some j)).sign = (φsΛ.signInsertSome φ φs i j) * φsΛ.sign := by
   rw [sign]
   rw [signInsertSome, signInsertSomeProd, sign, mul_assoc, ← Finset.prod_mul_distrib]
   rw [insertList_some_prod_contractions]
@@ -565,15 +565,15 @@ lemma sign_insert_some (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickCont
       simp_all
 
 lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted)
     (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
-  c.signInsertSomeProd φ φs i j =
-  ∏ (a : c.1),
-    if (c.fstFieldOfContract a) < j
-      ∧ (i.succAbove (c.fstFieldOfContract a) < i ∧ i < i.succAbove (c.sndFieldOfContract a)
-      ∨ j < (c.sndFieldOfContract a) ∧ ¬ i.succAbove (c.fstFieldOfContract a) < i)
+  φsΛ.signInsertSomeProd φ φs i j =
+  ∏ (a : φsΛ.1),
+    if (φsΛ.fstFieldOfContract a) < j
+      ∧ (i.succAbove (φsΛ.fstFieldOfContract a) < i ∧ i < i.succAbove (φsΛ.sndFieldOfContract a)
+      ∨ j < (φsΛ.sndFieldOfContract a) ∧ ¬ i.succAbove (φsΛ.fstFieldOfContract a) < i)
     then
-      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[c.sndFieldOfContract a])
+      𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else
       1 := by
   rw [signInsertSomeProd]
@@ -598,13 +598,14 @@ lemma signInsertSomeProd_eq_one_if (φ : 𝓕.States) (φs : List 𝓕.States)
       omega
 
 lemma signInsertSomeProd_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
-    (hg : GradingCompliant φs c) :
-  c.signInsertSomeProd φ φs i j =
-  ∏ (a : c.1), ∏ (x : a.1), if x.1 < j
-      ∧ (i.succAbove x.1 < i ∧ i < i.succAbove ((c.getDual? x.1).get (getDual?_isSome_of_mem c a x))
-      ∨ j < ((c.getDual? x.1).get (getDual?_isSome_of_mem c a x)) ∧ ¬ i.succAbove x < i)
+    (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
+    (hg : GradingCompliant φs φsΛ) :
+  φsΛ.signInsertSomeProd φ φs i j =
+  ∏ (a : φsΛ.1), ∏ (x : a.1), if x.1 < j
+      ∧ (i.succAbove x.1 < i ∧
+      i < i.succAbove ((φsΛ.getDual? x.1).get (getDual?_isSome_of_mem φsΛ a x))
+      ∨ j < ((φsΛ.getDual? x.1).get (getDual?_isSome_of_mem φsΛ a x)) ∧ ¬ i.succAbove x < i)
     then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1])
     else
@@ -622,32 +623,32 @@ lemma signInsertSomeProd_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States
   · simp only [Nat.succ_eq_add_one, sndFieldOfContract_getDual?, Option.get_some, not_lt, not_and,
     not_or, not_le]
     intro h1
-    have ha := fstFieldOfContract_lt_sndFieldOfContract c a
+    have ha := fstFieldOfContract_lt_sndFieldOfContract φsΛ a
     apply And.intro
     · intro hi
-      have hx : i.succAbove (c.fstFieldOfContract a) < i.succAbove (c.sndFieldOfContract a) := by
+      have hx : i.succAbove (φsΛ.fstFieldOfContract a) < i.succAbove (φsΛ.sndFieldOfContract a) := by
         exact Fin.succAbove_lt_succAbove_iff.mpr ha
       omega
     · omega
   simp [hφj]
 
 lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
-    (hg : GradingCompliant φs c) :
-  c.signInsertSomeProd φ φs i j =
+    (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
+    (hg : GradingCompliant φs φsΛ) :
+  φsΛ.signInsertSomeProd φ φs i j =
     ∏ (x : Fin φs.length),
-      if h : (c.getDual? x).isSome then
-          if x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((c.getDual? x).get h)
-            ∨ j < ((c.getDual? x).get h) ∧ ¬ i.succAbove x < i)
+      if h : (φsΛ.getDual? x).isSome then
+          if x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((φsΛ.getDual? x).get h)
+            ∨ j < ((φsΛ.getDual? x).get h) ∧ ¬ i.succAbove x < i)
           then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1])
           else 1
       else 1 := by
   rw [signInsertSomeProd_eq_prod_prod]
   rw [Finset.prod_sigma']
-  erw [← c.sigmaContractedEquiv.symm.prod_comp]
-  let e2 : Fin φs.length ≃ {x // (c.getDual? x).isSome} ⊕ {x // ¬ (c.getDual? x).isSome} := by
-    exact (Equiv.sumCompl fun a => (c.getDual? a).isSome = true).symm
+  erw [← φsΛ.sigmaContractedEquiv.symm.prod_comp]
+  let e2 : Fin φs.length ≃ {x // (φsΛ.getDual? x).isSome} ⊕ {x // ¬ (φsΛ.getDual? x).isSome} := by
+    exact (Equiv.sumCompl fun a => (φsΛ.getDual? a).isSome = true).symm
   rw [← e2.symm.prod_comp]
   simp only [instCommGroup.eq_1, Fin.getElem_fin, Fintype.prod_sum_type]
   conv_rhs =>
@@ -665,13 +666,13 @@ lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.States) (φs : List 𝓕.States)
   exact hg
 
 lemma signInsertSomeProd_eq_list (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
-    (hg : GradingCompliant φs c) :
-    c.signInsertSomeProd φ φs i j =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (List.filter (fun x => (c.getDual? x).isSome ∧ ∀ (h : (c.getDual? x).isSome),
-      x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((c.getDual? x).get h)
-      ∨ j < ((c.getDual? x).get h) ∧ ¬ i.succAbove x < i))
+    (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
+    (hg : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertSomeProd φ φs i j =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (List.filter (fun x => (φsΛ.getDual? x).isSome ∧ ∀ (h : (φsΛ.getDual? x).isSome),
+      x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((φsΛ.getDual? x).get h)
+      ∨ j < ((φsΛ.getDual? x).get h) ∧ ¬ i.succAbove x < i))
     (List.finRange φs.length)).map φs.get) := by
   rw [signInsertSomeProd_eq_prod_fin]
   rw [FieldStatistic.ofList_map_eq_finset_prod]
@@ -698,14 +699,14 @@ lemma signInsertSomeProd_eq_list (φ : 𝓕.States) (φs : List 𝓕.States)
   exact hg
 
 lemma signInsertSomeProd_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
-    (hg : GradingCompliant φs c) :
-    c.signInsertSomeProd φ φs i j =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => (c.getDual? x).isSome ∧
-      ∀ (h : (c.getDual? x).isSome),
-      x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((c.getDual? x).get h)
-      ∨ j < ((c.getDual? x).get h) ∧ ¬ i.succAbove x < i)))⟩) := by
+    (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
+    (hg : GradingCompliant φs φsΛ) :
+    φsΛ.signInsertSomeProd φ φs i j =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => (φsΛ.getDual? x).isSome ∧
+      ∀ (h : (φsΛ.getDual? x).isSome),
+      x < j ∧ (i.succAbove x < i ∧ i < i.succAbove ((φsΛ.getDual? x).get h)
+      ∨ j < ((φsΛ.getDual? x).get h) ∧ ¬ i.succAbove x < i)))⟩) := by
   rw [signInsertSomeProd_eq_prod_fin]
   rw [ofFinset_eq_prod]
   rw [map_prod]
@@ -725,16 +726,16 @@ lemma signInsertSomeProd_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
   simp only [hφj, Fin.getElem_fin]
   exact hg
 
-lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
-    c.signInsertSomeCoef φ φs i j =
+lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) :
+    φsΛ.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-      (signFinset (c.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
+      (signFinset (φsΛ.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩)
     else
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-      signFinset (c.insertList φ i (some j))
+      signFinset (φsΛ.insertList φ i (some j))
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (finCongr (insertIdx_length_fin φ φs i).symm i)⟩) := by
   simp only [signInsertSomeCoef, instCommGroup.eq_1, Nat.succ_eq_add_one,
@@ -745,14 +746,14 @@ lemma signInsertSomeCoef_if (φ : 𝓕.States) (φs : List 𝓕.States) (c : Wic
   · simp [hφj]
 
 lemma stat_signFinset_insert_some_self_fst
-    (φ : 𝓕.States) (φs : List 𝓕.States) (c : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : c.uncontracted) :
+    (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
   (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-    (signFinset (c.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
+    (signFinset (φsΛ.insertList φ i (some j)) (finCongr (insertIdx_length_fin φ φs i).symm i)
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j)))⟩) =
   𝓕 |>ₛ ⟨φs.get,
-    (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((c.getDual? x = none) ∨
-      ∀ (h : (c.getDual? x).isSome), i < i.succAbove ((c.getDual? x).get h))))⟩ := by
+    (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((φsΛ.getDual? x = none) ∨
+      ∀ (h : (φsΛ.getDual? x).isSome), i < i.succAbove ((φsΛ.getDual? x).get h))))⟩ := by
   rw [get_eq_insertIdx_succAbove φ _ i]
   rw [ofFinset_finset_map]
   swap
@@ -822,14 +823,14 @@ lemma stat_signFinset_insert_some_self_fst
             simpa [Option.get_map] using hy2
 
 lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted) :
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get,
-    (signFinset (c.insertList φ i (some j))
+    (signFinset (φsΛ.insertList φ i (some j))
       (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove j))
       (finCongr (insertIdx_length_fin φ φs i).symm i))⟩) =
     𝓕 |>ₛ ⟨φs.get,
-    (Finset.univ.filter (fun x => j < x ∧ i.succAbove x < i ∧ ((c.getDual? x = none) ∨
-      ∀ (h : (c.getDual? x).isSome), j < ((c.getDual? x).get h))))⟩ := by
+    (Finset.univ.filter (fun x => j < x ∧ i.succAbove x < i ∧ ((φsΛ.getDual? x = none) ∨
+      ∀ (h : (φsΛ.getDual? x).isSome), j < ((φsΛ.getDual? x).get h))))⟩ := by
   rw [get_eq_insertIdx_succAbove φ _ i, ofFinset_finset_map]
   swap
   refine
@@ -902,25 +903,25 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.States) (φs : List 𝓕.S
             exact Fin.succAbove_lt_succAbove_iff.mpr hy2
 
 lemma signInsertSomeCoef_eq_finset (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (j : c.uncontracted)
-    (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) : c.signInsertSomeCoef φ φs i j =
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted)
+    (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1])) : φsΛ.signInsertSomeCoef φ φs i j =
     if i < i.succAbove j then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get,
-      (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((c.getDual? x = none) ∨
-        ∀ (h : (c.getDual? x).isSome), i < i.succAbove ((c.getDual? x).get h))))⟩)
+      (Finset.univ.filter (fun x => i < i.succAbove x ∧ x < j ∧ ((φsΛ.getDual? x = none) ∨
+        ∀ (h : (φsΛ.getDual? x).isSome), i < i.succAbove ((φsΛ.getDual? x).get h))))⟩)
     else
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get,
-        (Finset.univ.filter (fun x => j < x ∧ i.succAbove x < i ∧ ((c.getDual? x = none) ∨
-        ∀ (h : (c.getDual? x).isSome), j < ((c.getDual? x).get h))))⟩) := by
+        (Finset.univ.filter (fun x => j < x ∧ i.succAbove x < i ∧ ((φsΛ.getDual? x = none) ∨
+        ∀ (h : (φsΛ.getDual? x).isSome), j < ((φsΛ.getDual? x).get h))))⟩) := by
   rw [signInsertSomeCoef_if, stat_signFinset_insert_some_self_snd,
     stat_signFinset_insert_some_self_fst]
   simp [hφj]
 
 lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (hk : i.succAbove k < i) (hg : GradingCompliant φs c ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
-    signInsertSome φ φs c i k *
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, c.uncontracted.filter (fun x => x ≤ ↑k)⟩)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+    (hk : i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+    signInsertSome φ φs φsΛ i k *
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x ≤ ↑k)⟩)
     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩) := by
   rw [signInsertSome, signInsertSomeProd_eq_finset (hφj := hg.2) (hg := hg.1),
     signInsertSomeCoef_eq_finset (hφj := hg.2), if_neg (by omega), ← map_mul, ← map_mul]
@@ -965,19 +966,19 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 
         · exact h1'
   · /- The `(c.getDual? i).isSome` case for `stat_ofFinset_eq_one_of_gradingCompliant`. -/
     intro j hj
-    have hn : ¬ c.getDual? j = none := Option.isSome_iff_ne_none.mp hj
+    have hn : ¬ φsΛ.getDual? j = none := Option.isSome_iff_ne_none.mp hj
     simp only [uncontracted, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter, Finset.mem_univ,
       hn, hj, forall_true_left, false_or, true_and, and_false, false_and, Finset.mem_inter,
       not_false_eq_true, and_true, not_and, not_lt, getDual?_getDual?_get_get, reduceCtorEq,
       Option.isSome_some, Option.get_some, forall_const, and_imp]
     intro h1 h2
-    have hijsucc' : i.succAbove ((c.getDual? j).get hj) ≠ i := Fin.succAbove_ne i _
+    have hijsucc' : i.succAbove ((φsΛ.getDual? j).get hj) ≠ i := Fin.succAbove_ne i _
     have hkneqj : ↑k ≠ j := by
       by_contra hkj
       have hk := k.prop
       simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and] at hk
       simp_all
-    have hkneqgetdual : k.1 ≠ (c.getDual? j).get hj := by
+    have hkneqgetdual : k.1 ≠ (φsΛ.getDual? j).get hj := by
       by_contra hkj
       have hk := k.prop
       simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and] at hk
@@ -990,14 +991,14 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 
         · simp [h1]
         · simp [h1]
       simp only [hir, true_and, or_true, forall_const] at h1 h2
-      have hnkdual : ¬ ↑k < (c.getDual? j).get hj := by
+      have hnkdual : ¬ ↑k < (φsΛ.getDual? j).get hj := by
         by_contra hn
         have h2 := h2 hn
         apply Fin.ne_succAbove i j
         omega
       simp only [hnkdual, IsEmpty.forall_iff, false_and, false_or, and_imp] at h2 ⊢
-      have hnkdual : (c.getDual? j).get hj < ↑k := by omega
-      have hi : i.succAbove ((c.getDual? j).get hj) < i.succAbove k := by
+      have hnkdual : (φsΛ.getDual? j).get hj < ↑k := by omega
+      have hi : i.succAbove ((φsΛ.getDual? j).get hj) < i.succAbove k := by
         rw [@Fin.succAbove_lt_succAbove_iff]
         omega
       omega
@@ -1020,10 +1021,10 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.States) (φs : List 
         omega
 
 lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (i : Fin φs.length.succ) (k : c.uncontracted)
-    (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs c ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
-    signInsertSome φ φs c i k *
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, c.uncontracted.filter (fun x => x < ↑k)⟩)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+    (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+    signInsertSome φ φs φsΛ i k *
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x < ↑k)⟩)
     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩) := by
   have hik : i.succAbove ↑k ≠ i := Fin.succAbove_ne i ↑k
   rw [signInsertSome, signInsertSomeProd_eq_finset (hφj := hg.2) (hg := hg.1),
@@ -1055,14 +1056,14 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
     omega
   · /- The `(c.getDual? i).isSome` case for `stat_ofFinset_eq_one_of_gradingCompliant`. -/
     intro j hj
-    have hn : ¬ c.getDual? j = none := Option.isSome_iff_ne_none.mp hj
+    have hn : ¬ φsΛ.getDual? j = none := Option.isSome_iff_ne_none.mp hj
     have hijSuc : i.succAbove j ≠ i := Fin.succAbove_ne i j
     have hkneqj : ↑k ≠ j := by
       by_contra hkj
       have hk := k.prop
       simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and] at hk
       simp_all
-    have hkneqgetdual : k.1 ≠ (c.getDual? j).get hj := by
+    have hkneqgetdual : k.1 ≠ (φsΛ.getDual? j).get hj := by
       by_contra hkj
       have hk := k.prop
       simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and] at hk
@@ -1100,7 +1101,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
           · apply Or.inl
             omega
           · apply Or.inl
-            have hi : i.succAbove k.1 < i.succAbove ((c.getDual? j).get hj) := by
+            have hi : i.succAbove k.1 < i.succAbove ((φsΛ.getDual? j).get hj) := by
               rw [Fin.succAbove_lt_succAbove_iff]
               omega
             apply And.intro
@@ -1117,6 +1118,6 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.States) (φs : L
         have hijn' : ¬ i ≤ i.succAbove j := by omega
         simp only [hijn, true_and, hijn', and_false, or_false, or_true, imp_false, not_lt,
           forall_const]
-        exact fun h => lt_of_le_of_ne h (Fin.succAbove_ne i ((c.getDual? j).get hj))
+        exact fun h => lt_of_le_of_ne h (Fin.succAbove_ne i ((φsΛ.getDual? j).get hj))
 
 end WickContraction
