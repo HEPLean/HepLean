@@ -478,8 +478,8 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
 
 /-- A Wick contraction associated with a list of states is said to be `GradingCompliant` if in any
   contracted pair of states they are either both fermionic or both bosonic. -/
-def GradingCompliant (φs : List 𝓕.States) (c : WickContraction φs.length) :=
-  ∀ (a : c.1), (𝓕 |>ₛ φs[c.fstFieldOfContract a]) = (𝓕 |>ₛ φs[c.sndFieldOfContract a])
+def GradingCompliant (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :=
+  ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
 
 /-- An equivalence from the sigma type `(a : c.1) × a` to the subtype of `Fin n` consisting of
   those positions which are contracted. -/

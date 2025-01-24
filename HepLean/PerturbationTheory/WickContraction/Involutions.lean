@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
 import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.TimeContraction
-import HepLean.PerturbationTheory.WickContraction.InsertList
+import HepLean.PerturbationTheory.WickContraction.InsertAndContract
 /-!
 
 # Involution associated with a contraction

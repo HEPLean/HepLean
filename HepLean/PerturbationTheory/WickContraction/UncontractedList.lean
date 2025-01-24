@@ -281,7 +281,19 @@ lemma take_uncontractedIndexEquiv_symm (k : c.uncontracted) :
     rw [hl]
   rw [uncontractedIndexEquiv_symm_eq_filter_length]
   simp
+/-!
 
+## Uncontracted List get
+
+-/
+
+/-- Given a Wick Contraction `φsΛ` for a list of states `φs`. The list of uncontracted
+  states in `φs`. -/
+def uncontractedListGet {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+    List 𝓕.States := φsΛ.uncontractedList.map φs.get
+
+@[inherit_doc uncontractedListGet]
+scoped[WickContraction] notation "[" φsΛ "]ᵘᶜ" => uncontractedListGet φsΛ
 /-!
 
 ## uncontractedStatesEquiv
@@ -291,20 +303,21 @@ lemma take_uncontractedIndexEquiv_symm (k : c.uncontracted) :
 /-- The equivalence between the type `Option c.uncontracted` for `WickContraction φs.length` and
   `Option (Fin (c.uncontractedList.map φs.get).length)`, that is optional positions of
   `c.uncontractedList.map φs.get` induced by `uncontractedIndexEquiv`. -/
-def uncontractedStatesEquiv (φs : List 𝓕.States) (c : WickContraction φs.length) :
-    Option c.uncontracted ≃ Option (Fin (c.uncontractedList.map φs.get).length) :=
-  Equiv.optionCongr (c.uncontractedIndexEquiv.symm.trans (finCongr (by simp)))
+def uncontractedStatesEquiv (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
+    Option φsΛ.uncontracted ≃ Option (Fin [φsΛ]ᵘᶜ.length) :=
+  Equiv.optionCongr (φsΛ.uncontractedIndexEquiv.symm.trans
+    (finCongr (by simp [uncontractedListGet])))
 
 @[simp]
-lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (c : WickContraction φs.length) :
-    (uncontractedStatesEquiv φs c).toFun none = none := by
+lemma uncontractedStatesEquiv_none (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
+    (uncontractedStatesEquiv φs φsΛ).toFun none = none := by
   simp [uncontractedStatesEquiv]
 
 lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.States)
-    (c : WickContraction φs.length) (f : Option (Fin (c.uncontractedList.map φs.get).length) → α) :
-    ∑ (i : Option (Fin (c.uncontractedList.map φs.get).length)), f i =
-    ∑ (i : Option c.uncontracted), f (c.uncontractedStatesEquiv φs i) := by
-  rw [(c.uncontractedStatesEquiv φs).sum_comp]
+    (φsΛ : WickContraction φs.length) (f : Option (Fin [φsΛ]ᵘᶜ.length) → α) :
+    ∑ (i : Option (Fin [φsΛ]ᵘᶜ.length)), f i =
+    ∑ (i : Option φsΛ.uncontracted), f (φsΛ.uncontractedStatesEquiv φs i) := by
+  rw [(φsΛ.uncontractedStatesEquiv φs).sum_comp]
 
 /-!
 
@@ -431,7 +444,7 @@ lemma uncontractedList_extractEquiv_symm_some (c : WickContraction n) (i : Fin n
   congr
   simp only [Nat.succ_eq_add_one, extractEquiv, Equiv.coe_fn_symm_mk,
     uncontractedList_getElem_uncontractedIndexEquiv_symm, Fin.succAboveEmb_apply]
-  rw [insert_some_uncontracted]
+  rw [insertAndContractNat_some_uncontracted]
   ext a
   simp
 

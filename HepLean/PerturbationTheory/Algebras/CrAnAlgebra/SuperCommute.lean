@@ -35,7 +35,7 @@ noncomputable def superCommute : 𝓕.CrAnAlgebra →ₗ[ℂ] 𝓕.CrAnAlgebra �
 /-- The super commutor on the creation and annihlation algebra. For two bosonic operators
   or a bosonic and fermionic operator this corresponds to the usual commutator
   whilst for two fermionic operators this corresponds to the anti-commutator. -/
-scoped[FieldSpecification.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" => superCommute φs φs'
+scoped[FieldSpecification.CrAnAlgebra] notation "[" φs "," φs' "]ₛca" => superCommute φs φs'
 
 /-!
 
@@ -44,13 +44,13 @@ scoped[FieldSpecification.CrAnAlgebra] notation "⟨" φs "," φs' "⟩ₛca" =>
 -/
 
 lemma superCommute_ofCrAnList_ofCrAnList (φs φs' : List 𝓕.CrAnStates) :
-    ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
+    [ofCrAnList φs, ofCrAnList φs']ₛca =
     ofCrAnList (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList (φs' ++ φs) := by
   rw [← ofListBasis_eq_ofList, ← ofListBasis_eq_ofList]
   simp only [superCommute, Basis.constr_basis]
 
 lemma superCommute_ofCrAnState_ofCrAnState (φ φ' : 𝓕.CrAnStates) :
-    ⟨ofCrAnState φ, ofCrAnState φ'⟩ₛca =
+    [ofCrAnState φ, ofCrAnState φ']ₛca =
     ofCrAnState φ * ofCrAnState φ' - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofCrAnState φ' * ofCrAnState φ := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
   rw [superCommute_ofCrAnList_ofCrAnList, ofCrAnList_append]
@@ -59,7 +59,7 @@ lemma superCommute_ofCrAnState_ofCrAnState (φ φ' : 𝓕.CrAnStates) :
   rw [FieldStatistic.ofList_singleton, FieldStatistic.ofList_singleton, smul_mul_assoc]
 
 lemma superCommute_ofCrAnList_ofStatesList (φcas : List 𝓕.CrAnStates) (φs : List 𝓕.States) :
-    ⟨ofCrAnList φcas, ofStateList φs⟩ₛca = ofCrAnList φcas * ofStateList φs -
+    [ofCrAnList φcas, ofStateList φs]ₛca = ofCrAnList φcas * ofStateList φs -
     𝓢(𝓕 |>ₛ φcas, 𝓕 |>ₛ φs) • ofStateList φs * ofCrAnList φcas := by
   conv_lhs => rw [ofStateList_sum]
   rw [map_sum]
@@ -72,7 +72,7 @@ lemma superCommute_ofCrAnList_ofStatesList (φcas : List 𝓕.CrAnStates) (φs :
   simp
 
 lemma superCommute_ofStateList_ofStatesList (φ : List 𝓕.States) (φs : List 𝓕.States) :
-    ⟨ofStateList φ, ofStateList φs⟩ₛca = ofStateList φ * ofStateList φs -
+    [ofStateList φ, ofStateList φs]ₛca = ofStateList φ * ofStateList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs * ofStateList φ := by
   conv_lhs => rw [ofStateList_sum]
   simp only [map_sum, LinearMap.coeFn_sum, Finset.sum_apply, instCommGroup.eq_1,
@@ -85,19 +85,19 @@ lemma superCommute_ofStateList_ofStatesList (φ : List 𝓕.States) (φs : List 
   rw [← Finset.sum_mul, ← Finset.smul_sum, ← Finset.mul_sum, ← ofStateList_sum]
 
 lemma superCommute_ofState_ofStatesList (φ : 𝓕.States) (φs : List 𝓕.States) :
-    ⟨ofState φ, ofStateList φs⟩ₛca = ofState φ * ofStateList φs -
+    [ofState φ, ofStateList φs]ₛca = ofState φ * ofStateList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs * ofState φ := by
   rw [← ofStateList_singleton, superCommute_ofStateList_ofStatesList, ofStateList_singleton]
   simp
 
 lemma superCommute_ofStateList_ofState (φs : List 𝓕.States) (φ : 𝓕.States) :
-    ⟨ofStateList φs, ofState φ⟩ₛca = ofStateList φs * ofState φ -
+    [ofStateList φs, ofState φ]ₛca = ofStateList φs * ofState φ -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofState φ * ofStateList φs := by
   rw [← ofStateList_singleton, superCommute_ofStateList_ofStatesList, ofStateList_singleton]
   simp
 
 lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
-    ⟨anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca =
+    [anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')]ₛca =
     anPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) := by
   match φ, φ' with
@@ -126,7 +126,7 @@ lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
     simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommute_crPart_anPart (φ φ' : 𝓕.States) :
-    ⟨crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca =
+    [crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')]ₛca =
     crPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     anPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
@@ -155,7 +155,7 @@ lemma superCommute_crPart_anPart (φ φ' : 𝓕.States) :
     simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommute_crPart_crPart (φ φ' : 𝓕.States) :
-    ⟨crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca =
+    [crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')]ₛca =
     crPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     crPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) := by
@@ -183,7 +183,7 @@ lemma superCommute_crPart_crPart (φ φ' : 𝓕.States) :
   simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommute_anPart_anPart (φ φ' : 𝓕.States) :
-    ⟨anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca =
+    [anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')]ₛca =
     anPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     anPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) := by
@@ -210,7 +210,7 @@ lemma superCommute_anPart_anPart (φ φ' : 𝓕.States) :
     simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommute_crPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
-    ⟨crPart (StateAlgebra.ofState φ), ofStateList φs⟩ₛca =
+    [crPart (StateAlgebra.ofState φ), ofStateList φs]ₛca =
     crPart (StateAlgebra.ofState φ) * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs *
     crPart (StateAlgebra.ofState φ) := by
   match φ with
@@ -226,7 +226,7 @@ lemma superCommute_crPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States
     simp
 
 lemma superCommute_anPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
-    ⟨anPart (StateAlgebra.ofState φ), ofStateList φs⟩ₛca =
+    [anPart (StateAlgebra.ofState φ), ofStateList φs]ₛca =
     anPart (StateAlgebra.ofState φ) * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) •
     ofStateList φs * anPart (StateAlgebra.ofState φ) := by
   match φ with
@@ -242,14 +242,14 @@ lemma superCommute_anPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States
     simp [crAnStatistics]
 
 lemma superCommute_crPart_ofState (φ φ' : 𝓕.States) :
-    ⟨crPart (StateAlgebra.ofState φ), ofState φ'⟩ₛca =
+    [crPart (StateAlgebra.ofState φ), ofState φ']ₛca =
     crPart (StateAlgebra.ofState φ) * ofState φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * crPart (StateAlgebra.ofState φ) := by
   rw [← ofStateList_singleton, superCommute_crPart_ofStateList]
   simp
 
 lemma superCommute_anPart_ofState (φ φ' : 𝓕.States) :
-    ⟨anPart (StateAlgebra.ofState φ), ofState φ'⟩ₛca =
+    [anPart (StateAlgebra.ofState φ), ofState φ']ₛca =
     anPart (StateAlgebra.ofState φ) * ofState φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * anPart (StateAlgebra.ofState φ) := by
   rw [← ofStateList_singleton, superCommute_anPart_ofStateList]
@@ -265,38 +265,38 @@ multiplication with a sign plus the super commutor.
 -/
 lemma ofCrAnList_mul_ofCrAnList_eq_superCommute (φs φs' : List 𝓕.CrAnStates) :
     ofCrAnList φs * ofCrAnList φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList φs' * ofCrAnList φs
-    + ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca := by
+    + [ofCrAnList φs, ofCrAnList φs']ₛca := by
   rw [superCommute_ofCrAnList_ofCrAnList]
   simp [ofCrAnList_append]
 
 lemma ofCrAnState_mul_ofCrAnList_eq_superCommute (φ : 𝓕.CrAnStates) (φs' : List 𝓕.CrAnStates) :
     ofCrAnState φ * ofCrAnList φs' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • ofCrAnList φs' * ofCrAnState φ
-    + ⟨ofCrAnState φ, ofCrAnList φs'⟩ₛca := by
+    + [ofCrAnState φ, ofCrAnList φs']ₛca := by
   rw [← ofCrAnList_singleton, ofCrAnList_mul_ofCrAnList_eq_superCommute]
   simp
 
 lemma ofStateList_mul_ofStateList_eq_superCommute (φs φs' : List 𝓕.States) :
     ofStateList φs * ofStateList φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofStateList φs' * ofStateList φs
-    + ⟨ofStateList φs, ofStateList φs'⟩ₛca := by
+    + [ofStateList φs, ofStateList φs']ₛca := by
   rw [superCommute_ofStateList_ofStatesList]
   simp
 
 lemma ofState_mul_ofStateList_eq_superCommute (φ : 𝓕.States) (φs' : List 𝓕.States) :
     ofState φ * ofStateList φs' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • ofStateList φs' * ofState φ
-    + ⟨ofState φ, ofStateList φs'⟩ₛca := by
+    + [ofState φ, ofStateList φs']ₛca := by
   rw [superCommute_ofState_ofStatesList]
   simp
 
 lemma ofStateList_mul_ofState_eq_superCommute (φs : List 𝓕.States) (φ : 𝓕.States) :
     ofStateList φs * ofState φ = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofState φ * ofStateList φs
-    + ⟨ofStateList φs, ofState φ⟩ₛca := by
+    + [ofStateList φs, ofState φ]ₛca := by
   rw [superCommute_ofStateList_ofState]
   simp
 
 lemma crPart_mul_anPart_eq_superCommute (φ φ' : 𝓕.States) :
     crPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) +
-    ⟨crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca := by
+    [crPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')]ₛca := by
   rw [superCommute_crPart_anPart]
   simp
 
@@ -304,27 +304,27 @@ lemma anPart_mul_crPart_eq_superCommute (φ φ' : 𝓕.States) :
     anPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     crPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) +
-    ⟨anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca := by
+    [anPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')]ₛca := by
   rw [superCommute_anPart_crPart]
   simp
 
 lemma crPart_mul_crPart_eq_superCommute (φ φ' : 𝓕.States) :
     crPart (StateAlgebra.ofState φ) * crPart (StateAlgebra.ofState φ') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPart (StateAlgebra.ofState φ') * crPart (StateAlgebra.ofState φ) +
-    ⟨crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')⟩ₛca := by
+    [crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState φ')]ₛca := by
   rw [superCommute_crPart_crPart]
   simp
 
 lemma anPart_mul_anPart_eq_superCommute (φ φ' : 𝓕.States) :
     anPart (StateAlgebra.ofState φ) * anPart (StateAlgebra.ofState φ') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPart (StateAlgebra.ofState φ') * anPart (StateAlgebra.ofState φ) +
-    ⟨anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')⟩ₛca := by
+    [anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState φ')]ₛca := by
   rw [superCommute_anPart_anPart]
   simp
 
 lemma ofCrAnList_mul_ofStateList_eq_superCommute (φs : List 𝓕.CrAnStates) (φs' : List 𝓕.States) :
     ofCrAnList φs * ofStateList φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofStateList φs' * ofCrAnList φs
-    + ⟨ofCrAnList φs, ofStateList φs'⟩ₛca := by
+    + [ofCrAnList φs, ofStateList φs']ₛca := by
   rw [superCommute_ofCrAnList_ofStatesList]
   simp
 
@@ -335,8 +335,8 @@ lemma ofCrAnList_mul_ofStateList_eq_superCommute (φs : List 𝓕.CrAnStates) (�
 -/
 
 lemma superCommute_ofCrAnList_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) :
-    ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
-    (- 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs')) • ⟨ofCrAnList φs', ofCrAnList φs⟩ₛca := by
+    [ofCrAnList φs, ofCrAnList φs']ₛca =
+    (- 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs')) • [ofCrAnList φs', ofCrAnList φs]ₛca := by
   rw [superCommute_ofCrAnList_ofCrAnList, superCommute_ofCrAnList_ofCrAnList, smul_sub]
   simp only [instCommGroup.eq_1, neg_smul, sub_neg_eq_add]
   rw [smul_smul]
@@ -347,8 +347,8 @@ lemma superCommute_ofCrAnList_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) 
   abel
 
 lemma superCommute_ofCrAnState_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
-    ⟨ofCrAnState φ, ofCrAnState φ'⟩ₛca =
-    (- 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ')) • ⟨ofCrAnState φ', ofCrAnState φ⟩ₛca := by
+    [ofCrAnState φ, ofCrAnState φ']ₛca =
+    (- 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ')) • [ofCrAnState φ', ofCrAnState φ]ₛca := by
   rw [superCommute_ofCrAnState_ofCrAnState, superCommute_ofCrAnState_ofCrAnState]
   rw [smul_sub]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, neg_smul, sub_neg_eq_add]
@@ -365,10 +365,10 @@ lemma superCommute_ofCrAnState_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
 
 -/
 lemma superCommute_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
-    ⟨ofCrAnList φs, ofCrAnList (φ :: φs')⟩ₛca =
-    ⟨ofCrAnList φs, ofCrAnState φ⟩ₛca * ofCrAnList φs' +
+    [ofCrAnList φs, ofCrAnList (φ :: φs')]ₛca =
+    [ofCrAnList φs, ofCrAnState φ]ₛca * ofCrAnList φs' +
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ)
-    • ofCrAnState φ * ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca := by
+    • ofCrAnState φ * [ofCrAnList φs, ofCrAnList φs']ₛca := by
   rw [superCommute_ofCrAnList_ofCrAnList]
   conv_rhs =>
     lhs
@@ -385,9 +385,9 @@ lemma superCommute_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' :
   simp only [instCommGroup, map_mul, mul_comm]
 
 lemma superCommute_ofCrAnList_ofStateList_cons (φ : 𝓕.States) (φs : List 𝓕.CrAnStates)
-    (φs' : List 𝓕.States) : ⟨ofCrAnList φs, ofStateList (φ :: φs')⟩ₛca =
-    ⟨ofCrAnList φs, ofState φ⟩ₛca * ofStateList φs' +
-    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofState φ * ⟨ofCrAnList φs, ofStateList φs'⟩ₛca := by
+    (φs' : List 𝓕.States) : [ofCrAnList φs, ofStateList (φ :: φs')]ₛca =
+    [ofCrAnList φs, ofState φ]ₛca * ofStateList φs' +
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofState φ * [ofCrAnList φs, ofStateList φs']ₛca := by
   rw [superCommute_ofCrAnList_ofStatesList]
   conv_rhs =>
     lhs
@@ -404,11 +404,15 @@ lemma superCommute_ofCrAnList_ofStateList_cons (φ : 𝓕.States) (φs : List �
   rw [ofStateList_cons, mul_assoc, smul_smul, FieldStatistic.ofList_cons_eq_mul]
   simp [mul_comm]
 
+/--
+Within the creation and annihilation algebra, we have that
+`[φᶜᵃs, φᶜᵃ₀ … φᶜᵃₙ]ₛca = ∑ i, sᵢ • φᶜᵃs₀ … φᶜᵃᵢ₋₁ * [φᶜᵃs, φᶜᵃᵢ]ₛca * φᶜᵃᵢ₊₁ … φᶜᵃₙ`
+where `sᵢ` is the exchange sign for `φᶜᵃs` and `φᶜᵃs₀ … φᶜᵃᵢ₋₁`.
+-/
 lemma superCommute_ofCrAnList_ofCrAnList_eq_sum (φs : List 𝓕.CrAnStates) :
-    (φs' : List 𝓕.CrAnStates) →
-    ⟨ofCrAnList φs, ofCrAnList φs'⟩ₛca =
-    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ (List.take n φs')) •
-    ofCrAnList (φs'.take n) * ⟨ofCrAnList φs, ofCrAnState (φs'.get n)⟩ₛca *
+    (φs' : List 𝓕.CrAnStates) → [ofCrAnList φs, ofCrAnList φs']ₛca =
+    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
+    ofCrAnList (φs'.take n) * [ofCrAnList φs, ofCrAnState (φs'.get n)]ₛca *
     ofCrAnList (φs'.drop (n + 1))
   | [] => by
     simp [← ofCrAnList_nil, superCommute_ofCrAnList_ofCrAnList]
@@ -421,9 +425,9 @@ lemma superCommute_ofCrAnList_ofCrAnList_eq_sum (φs : List 𝓕.CrAnStates) :
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
 
 lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) : (φs' : List 𝓕.States) →
-    ⟨ofCrAnList φs, ofStateList φs'⟩ₛca =
-    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ List.take n φs') •
-      ofStateList (φs'.take n) * ⟨ofCrAnList φs, ofState (φs'.get n)⟩ₛca *
+    [ofCrAnList φs, ofStateList φs']ₛca =
+    ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
+      ofStateList (φs'.take n) * [ofCrAnList φs, ofState (φs'.get n)]ₛca *
       ofStateList (φs'.drop (n + 1))
   | [] => by
     simp only [superCommute_ofCrAnList_ofStatesList, instCommGroup, ofList_empty,

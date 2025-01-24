@@ -149,8 +149,8 @@ import HepLean.PerturbationTheory.Koszul.KoszulSignInsert
 import HepLean.PerturbationTheory.WickContraction.Basic
 import HepLean.PerturbationTheory.WickContraction.Erase
 import HepLean.PerturbationTheory.WickContraction.ExtractEquiv
-import HepLean.PerturbationTheory.WickContraction.Insert
-import HepLean.PerturbationTheory.WickContraction.InsertList
+import HepLean.PerturbationTheory.WickContraction.InsertAndContract
+import HepLean.PerturbationTheory.WickContraction.InsertAndContractNat
 import HepLean.PerturbationTheory.WickContraction.Involutions
 import HepLean.PerturbationTheory.WickContraction.IsFull
 import HepLean.PerturbationTheory.WickContraction.Sign
