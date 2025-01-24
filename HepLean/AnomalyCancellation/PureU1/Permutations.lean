@@ -89,7 +89,7 @@ lemma FamilyPermutations_anomalyFreeLinear_apply (S : (PureU1 n).LinSols)
     ((FamilyPermutations n).linSolRep f S).val i = S.val (f.invFun i) := by
   rfl
 
-TODO "Replace the definition of `pairSwap` with `Equiv.swap`."
+TODO "Remove `pairSwap`, and use the Mathlib defined function `Equiv.swap` instead."
 /-- The permutation which swaps i and j. -/
 def pairSwap {n : ℕ} (i j : Fin n) : (FamilyPermutations n).group where
   toFun s :=

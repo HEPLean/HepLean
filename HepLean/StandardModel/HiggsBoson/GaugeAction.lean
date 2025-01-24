@@ -13,7 +13,8 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 # The action of the gauge group on the Higgs field
 
 -/
-TODO "Currently this only contains the action of the global gauge group. Generalize."
+TODO "Currently this only contains the action of the global gauge group. Generalize
+  to include the full action of the gauge group."
 noncomputable section
 
 namespace StandardModel
