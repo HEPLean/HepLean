@@ -3,10 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.WickContraction.Uncontracted
-import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
-import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.TimeContraction
-import HepLean.PerturbationTheory.WickContraction.InsertAndContract
+import HepLean.PerturbationTheory.WickContraction.Basic
 /-!
 
 # Involution associated with a contraction

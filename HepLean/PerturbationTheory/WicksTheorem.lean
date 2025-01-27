@@ -19,7 +19,6 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification} {𝓞 : 𝓕.ProtoOperatorAlgebra}
 open CrAnAlgebra
-open StateAlgebra
 open ProtoOperatorAlgebra
 open HepLean.List
 open WickContraction
@@ -318,9 +317,9 @@ lemma wick_term_cons_eq_sum_wick_term (φ : 𝓕.States) (φs : List 𝓕.States
 
 /-- Wick's theorem for the empty list. -/
 lemma wicks_theorem_nil :
-    𝓞.crAnF (ofStateAlgebra (timeOrder (ofList []))) = ∑ (nilΛ : WickContraction [].length),
+    𝓞.crAnF (𝓣ᶠ(ofStateList [])) = ∑ (nilΛ : WickContraction [].length),
     (nilΛ.sign • nilΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝([nilΛ]ᵘᶜ) := by
-  rw [timeOrder_ofList_nil]
+  rw [timeOrder_ofStateList_nil]
   simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
   simp only [List.map_nil]
@@ -352,12 +351,12 @@ remark wicks_theorem_context := "
 - The product of time-contractions of the contracted pairs of `c`.
 - The normal-ordering of the uncontracted fields in `c`.
 -/
-theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra (timeOrder (ofList φs))) =
+theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (𝓣ᶠ(ofStateList φs)) =
     ∑ (φsΛ : WickContraction φs.length), (φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝([φsΛ]ᵘᶜ)
   | [] => wicks_theorem_nil
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
-    rw [timeOrder_eq_maxTimeField_mul_finset, map_mul, map_mul, ih, Finset.mul_sum]
+    rw [timeOrder_eq_maxTimeField_mul_finset, map_mul, ih, Finset.mul_sum]
     have h1 : φ :: φs =
         (eraseMaxTimeField φ φs).insertIdx (maxTimeFieldPosFin φ φs) (maxTimeField φ φs) := by
       simp only [eraseMaxTimeField, insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
@@ -369,8 +368,8 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (ofStateAlgebra 
     funext c
     have ht := Subalgebra.mem_center_iff.mp (Subalgebra.smul_mem (Subalgebra.center ℂ 𝓞.A)
       (WickContraction.timeContract 𝓞 c).2 (sign (eraseMaxTimeField φ φs) c))
-    rw [map_smul, map_smul, Algebra.smul_mul_assoc, ← mul_assoc, ht, mul_assoc, ← map_mul]
-    rw [ofStateAlgebra_ofState, wick_term_cons_eq_sum_wick_term (𝓞 := 𝓞)
+    rw [map_smul, Algebra.smul_mul_assoc, ← mul_assoc, ht, mul_assoc, ← map_mul]
+    rw [wick_term_cons_eq_sum_wick_term (𝓞 := 𝓞)
       (maxTimeField φ φs) (eraseMaxTimeField φ φs) (maxTimeFieldPosFin φ φs) c]
     trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted }, sign
       (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs))

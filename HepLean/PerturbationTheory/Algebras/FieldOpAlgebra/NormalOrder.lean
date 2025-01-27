@@ -12,7 +12,6 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 
 namespace FieldSpecification
 open CrAnAlgebra
-open StateAlgebra
 open ProtoOperatorAlgebra
 open HepLean.List
 open WickContraction

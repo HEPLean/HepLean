@@ -67,4 +67,8 @@ lemma sum_eq {M : Type} [AddCommMonoid M] (f : CreateAnnihilate → M) :
   change ∑ i in {create, annihilate}, f i = f create + f annihilate
   simp
 
+@[simp]
+lemma CreateAnnihilate_card_eq_two : Fintype.card CreateAnnihilate = 2 := by
+  rfl
+
 end CreateAnnihilate

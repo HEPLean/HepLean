@@ -150,6 +150,44 @@ instance fintype : (φs : List 𝓕.States) → Fintype (CrAnSection φs)
     Fintype.ofEquiv _ consEquiv.symm
 
 @[simp]
+lemma card_nil_eq : Fintype.card (CrAnSection (𝓕 := 𝓕) []) = 1 := by
+  rw [Fintype.ofEquiv_card nilEquiv.symm]
+  simp
+
+lemma card_cons_eq {φ : 𝓕.States} {φs : List 𝓕.States} :
+    Fintype.card (CrAnSection (φ :: φs)) = Fintype.card (𝓕.statesToCrAnType φ) *
+    Fintype.card (CrAnSection φs) := by
+  rw [Fintype.ofEquiv_card consEquiv.symm]
+  simp
+
+lemma card_eq_mul : {φs : List 𝓕.States} → Fintype.card (CrAnSection φs) =
+    2 ^ (List.countP 𝓕.statesIsPosition φs)
+  | [] => by
+    simp
+  | States.position _ :: φs => by
+      simp only [statesIsPosition, List.countP_cons_of_pos]
+      rw [card_cons_eq]
+      rw [card_eq_mul]
+      simp only [statesToCrAnType, CreateAnnihilate.CreateAnnihilate_card_eq_two]
+      ring
+  | States.inAsymp x_ :: φs => by
+      simp only [statesIsPosition, Bool.false_eq_true, not_false_eq_true, List.countP_cons_of_neg]
+      rw [card_cons_eq]
+      rw [card_eq_mul]
+      simp [statesToCrAnType]
+  | States.outAsymp _ :: φs => by
+      simp only [statesIsPosition, Bool.false_eq_true, not_false_eq_true, List.countP_cons_of_neg]
+      rw [card_cons_eq]
+      rw [card_eq_mul]
+      simp [statesToCrAnType]
+
+lemma card_perm_eq {φs φs' : List 𝓕.States} (h : φs.Perm φs') :
+    Fintype.card (CrAnSection φs) = Fintype.card (CrAnSection φs') := by
+  rw [card_eq_mul, card_eq_mul]
+  congr 1
+  exact List.Perm.countP_congr h fun x => congrFun rfl
+
+@[simp]
 lemma sum_nil (f : CrAnSection (𝓕 := 𝓕) [] → M) [AddCommMonoid M] :
     ∑ (s : CrAnSection []), f s = f ⟨[], rfl⟩ := by
   rw [← nilEquiv.symm.sum_comp]

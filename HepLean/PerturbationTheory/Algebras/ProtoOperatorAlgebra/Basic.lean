@@ -60,7 +60,7 @@ lemma crAnF_superCommute_ofCrAnState_ofState_mem_center (φ : 𝓕.CrAnStates) (
   exact 𝓞.superCommute_crAn_center φ ⟨ψ, x⟩
 
 lemma crAnF_superCommute_anPart_ofState_mem_center (φ ψ : 𝓕.States) :
-    𝓞.crAnF [anPart (StateAlgebra.ofState φ), ofState ψ]ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
+    𝓞.crAnF [anPart φ, ofState ψ]ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
   match φ with
   | States.inAsymp _ =>
     simp only [anPart_negAsymp, map_zero, LinearMap.zero_apply]
@@ -83,7 +83,7 @@ lemma crAnF_superCommute_ofCrAnState_ofState_diff_grade_zero (φ : 𝓕.CrAnStat
 
 lemma crAnF_superCommute_anPart_ofState_diff_grade_zero (φ ψ : 𝓕.States)
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) :
-    𝓞.crAnF [anPart (StateAlgebra.ofState φ), ofState ψ]ₛca = 0 := by
+    𝓞.crAnF [anPart φ, ofState ψ]ₛca = 0 := by
   match φ with
   | States.inAsymp _ =>
     simp
@@ -105,7 +105,7 @@ lemma crAnF_superCommute_ofState_ofState_mem_center (φ ψ : 𝓕.States) :
   exact crAnF_superCommute_ofCrAnState_ofState_mem_center 𝓞 ⟨φ, x⟩ ψ
 
 lemma crAnF_superCommute_anPart_anPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF [anPart (StateAlgebra.ofState φ), anPart (StateAlgebra.ofState ψ)]ₛca = 0 := by
+    𝓞.crAnF [anPart φ, anPart ψ]ₛca = 0 := by
   match φ, ψ with
   | _, States.inAsymp _ =>
     simp
@@ -133,7 +133,7 @@ lemma crAnF_superCommute_anPart_anPart (φ ψ : 𝓕.States) :
     rfl
 
 lemma crAnF_superCommute_crPart_crPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF [crPart (StateAlgebra.ofState φ), crPart (StateAlgebra.ofState ψ)]ₛca = 0 := by
+    𝓞.crAnF [crPart φ, crPart ψ]ₛca = 0 := by
   match φ, ψ with
   | _, States.outAsymp _ =>
     simp

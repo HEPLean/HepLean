@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.StateAlgebra.Basic
+import HepLean.PerturbationTheory.FieldSpecification.CrAnStates
 import HepLean.PerturbationTheory.FieldSpecification.CrAnSection
 /-!
 
@@ -43,8 +43,6 @@ abbrev CrAnAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 𝓕.Cr
 
 namespace CrAnAlgebra
 
-open StateAlgebra
-
 /-- Maps a creation and annihlation state to the creation and annihlation free-algebra. -/
 def ofCrAnState (φ : 𝓕.CrAnStates) : CrAnAlgebra 𝓕 :=
   FreeAlgebra.ι ℂ φ
@@ -71,15 +69,6 @@ lemma ofCrAnList_singleton (φ : 𝓕.CrAnStates) :
 def ofState (φ : 𝓕.States) : CrAnAlgebra 𝓕 :=
   ∑ (i : 𝓕.statesToCrAnType φ), ofCrAnState ⟨φ, i⟩
 
-/-- The algebra map from the state free-algebra to the creation and annihlation free-algebra. -/
-def ofStateAlgebra : StateAlgebra 𝓕 →ₐ[ℂ] CrAnAlgebra 𝓕 :=
-  FreeAlgebra.lift ℂ ofState
-
-@[simp]
-lemma ofStateAlgebra_ofState (φ : 𝓕.States) :
-    ofStateAlgebra (StateAlgebra.ofState φ) = ofState φ := by
-  simp [ofStateAlgebra, StateAlgebra.ofState]
-
 /-- Maps a list of states to the creation and annihilation free-algebra by taking
   the product of their sums of creation and annihlation operators.
   Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
@@ -101,14 +90,6 @@ lemma ofStateList_append (φs φs' : List 𝓕.States) :
     ofStateList (φs ++ φs') = ofStateList φs * ofStateList φs' := by
   dsimp only [ofStateList]
   rw [List.map_append, List.prod_append]
-
-lemma ofStateAlgebra_ofList_eq_ofStateList : (φs : List 𝓕.States) →
-    ofStateAlgebra (ofList φs) = ofStateList φs
-  | [] => by simp [ofStateList]
-  | φ :: φs => by
-    rw [ofStateList_cons, StateAlgebra.ofList_cons, map_mul, ofStateAlgebra_ofState,
-      mul_eq_mul_left_iff]
-    exact .inl (ofStateAlgebra_ofList_eq_ofStateList φs)
 
 lemma ofStateList_sum (φs : List 𝓕.States) :
     ofStateList φs = ∑ (s : CrAnSection φs), ofCrAnList s.1 := by
@@ -132,8 +113,7 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 /-- The algebra map taking an element of the free-state algbra to
   the part of it in the creation and annihlation free algebra
   spanned by creation operators. -/
-def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
-  FreeAlgebra.lift ℂ fun φ =>
+def crPart : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
   match φ with
   | States.inAsymp φ => ofCrAnState ⟨States.inAsymp φ, ()⟩
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩
@@ -141,25 +121,24 @@ def crPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
 
 @[simp]
 lemma crPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
-    crPart (StateAlgebra.ofState (States.inAsymp φ)) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
-  simp [crPart, StateAlgebra.ofState]
+    crPart (States.inAsymp φ) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
+  simp [crPart]
 
 @[simp]
 lemma crPart_position (φ : 𝓕.PositionStates) :
-    crPart (StateAlgebra.ofState (States.position φ)) =
+    crPart (States.position φ) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩ := by
-  simp [crPart, StateAlgebra.ofState]
+  simp [crPart]
 
 @[simp]
 lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
-    crPart (StateAlgebra.ofState (States.outAsymp φ)) = 0 := by
-  simp [crPart, StateAlgebra.ofState]
+    crPart (States.outAsymp φ) = 0 := by
+  simp [crPart]
 
 /-- The algebra map taking an element of the free-state algbra to
   the part of it in the creation and annihilation free algebra
   spanned by annihilation operators. -/
-def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
-  FreeAlgebra.lift ℂ fun φ =>
+def anPart : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
   match φ with
   | States.inAsymp _ => 0
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩
@@ -167,22 +146,22 @@ def anPart : 𝓕.StateAlgebra →ₐ[ℂ] 𝓕.CrAnAlgebra :=
 
 @[simp]
 lemma anPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
-    anPart (StateAlgebra.ofState (States.inAsymp φ)) = 0 := by
-  simp [anPart, StateAlgebra.ofState]
+    anPart (States.inAsymp φ) = 0 := by
+  simp [anPart]
 
 @[simp]
 lemma anPart_position (φ : 𝓕.PositionStates) :
-    anPart (StateAlgebra.ofState (States.position φ)) =
+    anPart (States.position φ) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
-  simp [anPart, StateAlgebra.ofState]
+  simp [anPart]
 
 @[simp]
 lemma anPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
-    anPart (StateAlgebra.ofState (States.outAsymp φ)) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
-  simp [anPart, StateAlgebra.ofState]
+    anPart (States.outAsymp φ) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
+  simp [anPart]
 
 lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
-    ofState φ = crPart (StateAlgebra.ofState φ) + anPart (StateAlgebra.ofState φ) := by
+    ofState φ = crPart φ + anPart φ := by
   rw [ofState]
   cases φ with
   | inAsymp φ => simp [statesToCrAnType]
