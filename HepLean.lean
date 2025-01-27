@@ -129,8 +129,6 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.NormalOrder
 import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.Basic
 import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.NormalOrder
 import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.TimeContraction
-import HepLean.PerturbationTheory.Algebras.StateAlgebra.Basic
-import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
 import HepLean.PerturbationTheory.CreateAnnihilate
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar

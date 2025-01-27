@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.ProtoOperatorAlgebra.NormalOrder
-import HepLean.PerturbationTheory.Algebras.StateAlgebra.TimeOrder
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.TimeOrder
 /-!
 
 # Time contractions
@@ -28,24 +28,21 @@ open FieldStatistic
   as their time ordering in the state algebra minus their normal ordering in the
   creation and annihlation algebra, both mapped to `𝓞.A`.. -/
 def timeContract (φ ψ : 𝓕.States) : 𝓞.A :=
-  𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
-  - 𝓝(ofState φ * ofState ψ))
+  𝓞.crAnF (𝓣ᶠ(ofState φ * ofState ψ) - 𝓝(ofState φ * ofState ψ))
 
 lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
-    𝓞.crAnF (ofStateAlgebra (StateAlgebra.timeOrder
-    (StateAlgebra.ofState φ * StateAlgebra.ofState ψ))
+    𝓞.crAnF (𝓣ᶠ(ofState φ * ofState ψ)
     + (-1 : ℂ) • 𝓝(ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
-    𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart (StateAlgebra.ofState φ), ofState ψ]ₛca) := by
+    𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart φ, ofState ψ]ₛca) := by
   conv_rhs =>
     rw [ofState_eq_crPart_add_anPart]
     rw [map_add, map_add, crAnF_superCommute_anPart_anPart, superCommute_anPart_crPart]
   simp only [timeContract, instCommGroup.eq_1, Algebra.smul_mul_assoc, add_zero]
-  rw [StateAlgebra.timeOrder_ofState_ofState_ordered h]
+  rw [timeOrder_ofState_ofState_ordered h]
   rw [normalOrder_ofState_mul_ofState]
-  rw [map_mul]
-  simp only [ofStateAlgebra_ofState, instCommGroup.eq_1]
+  simp only [instCommGroup.eq_1]
   rw [ofState_eq_crPart_add_anPart, ofState_eq_crPart_add_anPart]
   simp only [mul_add, add_mul]
   abel_nf
@@ -56,9 +53,9 @@ lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.States) (h : ¬ timeOrderRe
   simp only [Int.reduceNeg, one_smul, map_add]
   rw [map_smul]
   rw [crAnF_normalOrder_ofState_ofState_swap]
-  rw [StateAlgebra.timeOrder_ofState_ofState_not_ordered_eq_timeOrder h]
+  rw [timeOrder_ofState_ofState_not_ordered_eq_timeOrder h]
   rw [timeContract_eq_smul]
-  simp only [FieldStatistic.instCommGroup.eq_1, map_smul, one_smul, map_add, smul_add]
+  simp only [instCommGroup.eq_1, map_smul, map_add, smul_add]
   rw [smul_smul, smul_smul, mul_comm]
 
 lemma timeContract_mem_center (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ ∈ Subalgebra.center ℂ 𝓞.A := by

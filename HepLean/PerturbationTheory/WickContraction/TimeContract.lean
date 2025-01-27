@@ -88,7 +88,7 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
     rw [𝓞.timeContract_of_timeOrderRel]
     trans (1 : ℂ) • (𝓞.crAnF ((CrAnAlgebra.superCommute
-      (CrAnAlgebra.anPart (StateAlgebra.ofState φ))) (CrAnAlgebra.ofState φs[k.1])) *
+      (CrAnAlgebra.anPart φ)) (CrAnAlgebra.ofState φs[k.1])) *
       ↑(timeContract 𝓞 φsΛ))
     · simp
     simp only [smul_smul]

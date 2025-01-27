@@ -66,6 +66,9 @@ def statesToField : 𝓕.States → 𝓕.Fields
   | States.position φ => φ.1
   | States.outAsymp φ => φ.1
 
+def statesIsPosition : 𝓕.States → Bool
+  | States.position _ => true
+  | _ => false
 /-- The statistics associated to a state. -/
 def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
 

@@ -15,7 +15,6 @@ import Mathlib.Algebra.RingQuot
 
 namespace FieldSpecification
 open CrAnAlgebra
-open StateAlgebra
 open ProtoOperatorAlgebra
 open HepLean.List
 open WickContraction
@@ -76,7 +75,7 @@ lemma ι_of_mem_fieldOpIdealSet (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpI
   simpa using hx
 
 lemma ι_superCommute_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnStates) :
-    ι [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
+    ι [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
   rw [Subalgebra.mem_center_iff]
   intro b
   obtain ⟨b, rfl⟩ := ι_surjective b
