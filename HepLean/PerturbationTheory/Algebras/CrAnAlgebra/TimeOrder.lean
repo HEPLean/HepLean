@@ -52,7 +52,6 @@ lemma timeOrder_ofStateList (φs : List 𝓕.States) :
   rw [ofStateList_sum, sum_crAnSections_timeOrder]
   rfl
 
-
 lemma timeOrder_ofStateList_nil : timeOrder (𝓕 := 𝓕) (ofStateList []) = 1 := by
   rw [timeOrder_ofStateList]
   simp [timeOrderSign, Wick.koszulSign, timeOrderList]
@@ -149,16 +148,6 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
-
-/-!
-
-## Norm-time order
-
--/
-/-- The normal-time ordering on `CrAnAlgebra`. -/
-def normTimeOrder : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
-  normTimeOrderSign φs • ofCrAnList (normTimeOrderList φs)
 end
 
 end CrAnAlgebra

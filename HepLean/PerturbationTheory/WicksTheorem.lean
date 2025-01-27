@@ -32,18 +32,18 @@ open FieldStatistic
 
 /--
 Let `c` be a Wick Contraction for `φs := φ₀φ₁…φₙ`.
-We have (roughly) `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝(φ :: [φsΛ]ᵘᶜ)`
+We have (roughly) `𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)`
 Where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀φ₁…φᵢ₋₁`.
 -/
 lemma normalOrder_uncontracted_none (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
-    𝓞.crAnF (𝓝([φsΛ ↩Λ φ i none]ᵘᶜ))
+    𝓞.crAnF (𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ))
     = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => i.succAbove x < i)⟩) •
-    𝓞.crAnF 𝓝(φ :: [φsΛ]ᵘᶜ) := by
+    𝓞.crAnF 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ) := by
   simp only [Nat.succ_eq_add_one, instCommGroup.eq_1]
   rw [crAnF_ofState_normalOrder_insert φ [φsΛ]ᵘᶜ
     ⟨(φsΛ.uncontractedListOrderPos i), by simp [uncontractedListGet]⟩, smul_smul]
-  trans (1 : ℂ) • 𝓞.crAnF (𝓝(ofStateList [φsΛ ↩Λ φ i none]ᵘᶜ))
+  trans (1 : ℂ) • 𝓞.crAnF (𝓝ᶠ(ofStateList [φsΛ ↩Λ φ i none]ᵘᶜ))
   · simp
   congr 1
   simp only [instCommGroup.eq_1, uncontractedListGet]
@@ -107,8 +107,8 @@ where `k'` is the position in `c.uncontractedList` corresponding to `k`.
 -/
 lemma normalOrder_uncontracted_some (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted) :
-    𝓞.crAnF 𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ)
-    = 𝓞.crAnF 𝓝((optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedStatesEquiv φs φsΛ) k))) := by
+    𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i (some k)]ᵘᶜ)
+    = 𝓞.crAnF 𝓝ᶠ((optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedStatesEquiv φs φsΛ) k))) := by
   simp only [Nat.succ_eq_add_one, insertAndContract, optionEraseZ, uncontractedStatesEquiv,
     Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
     Fin.coe_cast, uncontractedListGet]
@@ -127,24 +127,24 @@ lemma normalOrder_uncontracted_some (φ : 𝓕.States) (φs : List 𝓕.States)
 
 remark wick_term_terminology := "
   Let `φsΛ` be a Wick contraction. We informally call the term
-  `(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝([φsΛ]ᵘᶜ)` the Wick term
+  `(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([φsΛ]ᵘᶜ)` the Wick term
   associated with `φsΛ`. We do not make this a fully-fledge definition, as
   in most cases we want to consider slight modifications of this term."
 
 /--
 Let `φsΛ` be a Wick Contraction for `φs = φ₀φ₁…φₙ`. Then the wick-term of ` (φsΛ ↩Λ φ i none)`
 
-```(φsΛ ↩Λ φ i none).sign • (φsΛ ↩Λ φ i none).timeContract 𝓞 * 𝓞.crAnF 𝓝([φsΛ ↩Λ φ i none]ᵘᶜ)```
+```(φsΛ ↩Λ φ i none).sign • (φsΛ ↩Λ φ i none).timeContract 𝓞 * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ)```
 
 is equal to
 
-`s • (φsΛ.sign • φsΛ.timeContract 𝓞 * 𝓞.crAnF 𝓝(φ :: [φsΛ]ᵘᶜ))`
+`s • (φsΛ.sign • φsΛ.timeContract 𝓞 * 𝓞.crAnF 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ))`
 
 where `s` is the exchange sign of `φ` and the uncontracted fields in `φ₀φ₁…φᵢ₋₁`.
 
 The proof of this result relies primarily on:
-- `normalOrder_uncontracted_none` which replaces `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ)` with
-  `𝓝(φ :: [φsΛ]ᵘᶜ)` up to a sign.
+- `normalOrder_uncontracted_none` which replaces `𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ)` with
+  `𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)` up to a sign.
 - `timeContract_insertAndContract_none` which replaces `(φsΛ ↩Λ φ i none).timeContract 𝓞` with
   `φsΛ.timeContract 𝓞`.
 - `sign_insert_none` and `signInsertNone_eq_filterset` which are used to take account of
@@ -153,9 +153,9 @@ The proof of this result relies primarily on:
 lemma wick_term_none_eq_wick_term_cons (φ : 𝓕.States) (φs : List 𝓕.States)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
     (φsΛ ↩Λ φ i none).sign • (φsΛ ↩Λ φ i none).timeContract 𝓞
-    * 𝓞.crAnF 𝓝([φsΛ ↩Λ φ i none]ᵘᶜ) =
+    * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun k => i.succAbove k < i))⟩)
-    • (φsΛ.sign • φsΛ.timeContract 𝓞 * 𝓞.crAnF 𝓝(φ :: [φsΛ]ᵘᶜ)) := by
+    • (φsΛ.sign • φsΛ.timeContract 𝓞 * 𝓞.crAnF 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)) := by
   by_cases hg : GradingCompliant φs φsΛ
   · rw [normalOrder_uncontracted_none, sign_insert_none]
     simp only [Nat.succ_eq_add_one, timeContract_insertAndContract_none, instCommGroup.eq_1,
@@ -203,11 +203,11 @@ lemma wick_term_some_eq_wick_term_optionEraseZ (φ : 𝓕.States) (φs : List �
     (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
     (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬ timeOrderRel φs[k] φ) :
     (φsΛ ↩Λ φ i (some k)).sign • (φsΛ ↩Λ φ i (some k)).timeContract 𝓞
-      * 𝓞.crAnF 𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ) =
+      * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i (some k)]ᵘᶜ) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩)
     • (φsΛ.sign • (𝓞.contractStateAtIndex φ [φsΛ]ᵘᶜ
       ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract 𝓞)
-    * 𝓞.crAnF 𝓝((optionEraseZ [φsΛ]ᵘᶜ φ (uncontractedStatesEquiv φs φsΛ k)))) := by
+    * 𝓞.crAnF 𝓝ᶠ((optionEraseZ [φsΛ]ᵘᶜ φ (uncontractedStatesEquiv φs φsΛ k)))) := by
   by_cases hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
   · by_cases hk : i.succAbove k < i
     · rw [WickContraction.timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt]
@@ -263,24 +263,24 @@ lemma wick_term_some_eq_wick_term_optionEraseZ (φ : 𝓕.States) (φs : List �
 
 /--
 Given a Wick contraction `φsΛ` of `φs = φ₀φ₁…φₙ` and an `i`, we have that
-`(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF (φ * 𝓝([φsΛ]ᵘᶜ))`
+`(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
 is equal to the product of
 - the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`,
-- the sum of `((φsΛ ↩Λ φ i k).sign • (φsΛ ↩Λ φ i k).timeContract 𝓞) * 𝓞.crAnF 𝓝([φsΛ ↩Λ φ i k]ᵘᶜ)`
+- the sum of `((φsΛ ↩Λ φ i k).sign • (φsΛ ↩Λ φ i k).timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i k]ᵘᶜ)`
   over all `k` in `Option φsΛ.uncontracted`.
 
 The proof of this result primarily depends on
-- `crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝([φsΛ]ᵘᶜ))`
+- `crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
 - `wick_term_none_eq_wick_term_cons`
 - `wick_term_some_eq_wick_term_optionEraseZ`
 -/
 lemma wick_term_cons_eq_sum_wick_term (φ : 𝓕.States) (φs : List 𝓕.States) (i : Fin φs.length.succ)
     (φsΛ : WickContraction φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
     (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderRel φs[k] φ) :
-    (φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF ((CrAnAlgebra.ofState φ) * 𝓝([φsΛ]ᵘᶜ)) =
+    (φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF ((CrAnAlgebra.ofState φ) * 𝓝ᶠ([φsΛ]ᵘᶜ)) =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩) •
     ∑ (k : Option φsΛ.uncontracted), ((φsΛ ↩Λ φ i k).sign •
-    (φsΛ ↩Λ φ i k).timeContract 𝓞 * 𝓞.crAnF (𝓝([φsΛ ↩Λ φ i k]ᵘᶜ))) := by
+    (φsΛ ↩Λ φ i k).timeContract 𝓞 * 𝓞.crAnF (𝓝ᶠ([φsΛ ↩Λ φ i k]ᵘᶜ))) := by
   rw [crAnF_ofState_mul_normalOrder_ofStatesList_eq_sum, Finset.mul_sum,
     uncontractedStatesEquiv_list_sum, Finset.smul_sum]
   simp only [instCommGroup.eq_1, Nat.succ_eq_add_one]
@@ -318,7 +318,7 @@ lemma wick_term_cons_eq_sum_wick_term (φ : 𝓕.States) (φs : List 𝓕.States
 /-- Wick's theorem for the empty list. -/
 lemma wicks_theorem_nil :
     𝓞.crAnF (𝓣ᶠ(ofStateList [])) = ∑ (nilΛ : WickContraction [].length),
-    (nilΛ.sign • nilΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝([nilΛ]ᵘᶜ) := by
+    (nilΛ.sign • nilΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([nilΛ]ᵘᶜ) := by
   rw [timeOrder_ofStateList_nil]
   simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
@@ -329,9 +329,9 @@ lemma wicks_theorem_nil :
 
 lemma wicks_theorem_congr {φs φs' : List 𝓕.States} (h : φs = φs') :
     ∑ (φsΛ : WickContraction φs.length), (φsΛ.sign • φsΛ.timeContract 𝓞) *
-      𝓞.crAnF 𝓝([φsΛ]ᵘᶜ)
+      𝓞.crAnF 𝓝ᶠ([φsΛ]ᵘᶜ)
     = ∑ (φs'Λ : WickContraction φs'.length), (φs'Λ.sign • φs'Λ.timeContract 𝓞) *
-      𝓞.crAnF 𝓝([φs'Λ]ᵘᶜ) := by
+      𝓞.crAnF 𝓝ᶠ([φs'Λ]ᵘᶜ) := by
   subst h
   simp
 
@@ -352,7 +352,7 @@ remark wicks_theorem_context := "
 - The normal-ordering of the uncontracted fields in `c`.
 -/
 theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (𝓣ᶠ(ofStateList φs)) =
-    ∑ (φsΛ : WickContraction φs.length), (φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝([φsΛ]ᵘᶜ)
+    ∑ (φsΛ : WickContraction φs.length), (φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([φsΛ]ᵘᶜ)
   | [] => wicks_theorem_nil
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
@@ -375,7 +375,7 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (𝓣ᶠ(ofState
       (List.insertIdx (↑(maxTimeFieldPosFin φ φs)) (maxTimeField φ φs) (eraseMaxTimeField φ φs))
       (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k) •
       ↑((c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).timeContract 𝓞) *
-      𝓞.crAnF 𝓝(ofStateList (List.map (List.insertIdx (↑(maxTimeFieldPosFin φ φs))
+      𝓞.crAnF 𝓝ᶠ(ofStateList (List.map (List.insertIdx (↑(maxTimeFieldPosFin φ φs))
       (maxTimeField φ φs) (eraseMaxTimeField φ φs)).get
         (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).uncontractedList))
     swap

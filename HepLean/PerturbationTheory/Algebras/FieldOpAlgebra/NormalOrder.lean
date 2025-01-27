@@ -33,7 +33,7 @@ is zero.
 
 lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero
     (φa φa' : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
-    ι 𝓝(ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * ofCrAnList φs') = 0 := by
+    ι 𝓝ᶠ(ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * ofCrAnList φs') = 0 := by
   rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa) with hφa | hφa
   <;> rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa') with hφa' | hφa'
   · rw [normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList φa φa' hφa hφa' φs φs']
@@ -52,7 +52,7 @@ lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero
 
 lemma ι_normalOrder_superCommute_ofCrAnList_eq_zero
     (φa φa' : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates)
-    (a : 𝓕.CrAnAlgebra) : ι 𝓝(ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * a) = 0 := by
+    (a : 𝓕.CrAnAlgebra) : ι 𝓝ᶠ(ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca * a) = 0 := by
   have hf : ι.toLinearMap ∘ₗ normalOrder ∘ₗ
       mulLinearMap (ofCrAnList φs * [ofCrAnState φa, ofCrAnState φa']ₛca) = 0 := by
     apply ofCrAnListBasis.ext
@@ -67,7 +67,7 @@ lemma ι_normalOrder_superCommute_ofCrAnList_eq_zero
 
 lemma ι_normalOrder_superCommute_ofCrAnState_eq_zero_mul (φa φa' : 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [ofCrAnState φa, ofCrAnState φa']ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnState φa, ofCrAnState φa']ₛca * b) = 0 := by
   rw [mul_assoc]
   change (ι.toLinearMap ∘ₗ normalOrder ∘ₗ mulLinearMap.flip
     ([ofCrAnState φa, ofCrAnState φa']ₛca * b)) a = 0
@@ -86,7 +86,7 @@ lemma ι_normalOrder_superCommute_ofCrAnState_eq_zero_mul (φa φa' : 𝓕.CrAnS
 lemma ι_normalOrder_superCommute_ofCrAnState_ofCrAnList_eq_zero_mul (φa : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates)
     (a b : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [ofCrAnState φa, ofCrAnList φs]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnState φa, ofCrAnList φs]ₛca * b) = 0 := by
   rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_eq_sum]
   rw [Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
@@ -98,7 +98,7 @@ lemma ι_normalOrder_superCommute_ofCrAnState_ofCrAnList_eq_zero_mul (φa : 𝓕
 
 lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnState_eq_zero_mul (φa : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates) (a b : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [ofCrAnList φs, ofCrAnState φa]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnList φs, ofCrAnState φa]ₛca * b) = 0 := by
   rw [← ofCrAnList_singleton, superCommute_ofCrAnList_ofCrAnList_symm, ofCrAnList_singleton]
   simp only [FieldStatistic.instCommGroup.eq_1, FieldStatistic.ofList_singleton, mul_neg,
     Algebra.mul_smul_comm, neg_mul, Algebra.smul_mul_assoc, map_neg, map_smul]
@@ -107,7 +107,7 @@ lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnState_eq_zero_mul (φa : 𝓕
 
 lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero_mul
     (φs φs' : List 𝓕.CrAnStates) (a b : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [ofCrAnList φs, ofCrAnList φs']ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnList φs, ofCrAnList φs']ₛca * b) = 0 := by
   rw [superCommute_ofCrAnList_ofCrAnList_eq_sum, Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
   apply Fintype.sum_eq_zero
@@ -119,7 +119,7 @@ lemma ι_normalOrder_superCommute_ofCrAnList_ofCrAnList_eq_zero_mul
 lemma ι_normalOrder_superCommute_ofCrAnList_eq_zero_mul
     (φs : List 𝓕.CrAnStates)
     (a b c : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [ofCrAnList φs, c]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnList φs, c]ₛca * b) = 0 := by
   change (ι.toLinearMap ∘ₗ normalOrder ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute (ofCrAnList φs)) c = 0
   have hf : (ι.toLinearMap ∘ₗ normalOrder ∘ₗ
@@ -135,7 +135,7 @@ lemma ι_normalOrder_superCommute_ofCrAnList_eq_zero_mul
 
 @[simp]
 lemma ι_normalOrder_superCommute_eq_zero_mul
-    (a b c d : 𝓕.CrAnAlgebra) : ι 𝓝(a * [d, c]ₛca * b) = 0 := by
+    (a b c d : 𝓕.CrAnAlgebra) : ι 𝓝ᶠ(a * [d, c]ₛca * b) = 0 := by
   change (ι.toLinearMap ∘ₗ normalOrder ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommute.flip c) d = 0
   have hf : (ι.toLinearMap ∘ₗ normalOrder ∘ₗ
@@ -151,25 +151,25 @@ lemma ι_normalOrder_superCommute_eq_zero_mul
 
 @[simp]
 lemma ι_normalOrder_superCommute_eq_zero_mul_right (b c d : 𝓕.CrAnAlgebra) :
-    ι 𝓝([d, c]ₛca * b) = 0 := by
+    ι 𝓝ᶠ([d, c]ₛca * b) = 0 := by
   rw [← ι_normalOrder_superCommute_eq_zero_mul 1 b c d]
   simp
 
 @[simp]
 lemma ι_normalOrder_superCommute_eq_zero_mul_left (a c d : 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [d, c]ₛca) = 0 := by
+    ι 𝓝ᶠ(a * [d, c]ₛca) = 0 := by
   rw [← ι_normalOrder_superCommute_eq_zero_mul a 1 c d]
   simp
 
 @[simp]
 lemma ι_normalOrder_superCommute_eq_zero_mul_mul_right (a b1 b2 c d: 𝓕.CrAnAlgebra) :
-    ι 𝓝(a * [d, c]ₛca * b1 * b2) = 0 := by
+    ι 𝓝ᶠ(a * [d, c]ₛca * b1 * b2) = 0 := by
   rw [← ι_normalOrder_superCommute_eq_zero_mul a (b1 * b2) c d]
   congr 2
   noncomm_ring
 
 @[simp]
-lemma ι_normalOrder_superCommute_eq_zero (c d : 𝓕.CrAnAlgebra) : ι 𝓝([d, c]ₛca) = 0 := by
+lemma ι_normalOrder_superCommute_eq_zero (c d : 𝓕.CrAnAlgebra) : ι 𝓝ᶠ([d, c]ₛca) = 0 := by
   rw [← ι_normalOrder_superCommute_eq_zero_mul 1 1 c d]
   simp
 
@@ -180,9 +180,9 @@ lemma ι_normalOrder_superCommute_eq_zero (c d : 𝓕.CrAnAlgebra) : ι 𝓝([d,
 -/
 
 lemma ι_normalOrder_zero_of_mem_ideal (a : 𝓕.CrAnAlgebra)
-    (h : a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι 𝓝(a) = 0 := by
+    (h : a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι 𝓝ᶠ(a) = 0 := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at h
-  let p {k : Set 𝓕.CrAnAlgebra} (a : CrAnAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓝(a) = 0
+  let p {k : Set 𝓕.CrAnAlgebra} (a : CrAnAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓝ᶠ(a) = 0
   change p a h
   apply AddSubgroup.closure_induction
   · intro x hx
@@ -212,7 +212,7 @@ lemma ι_normalOrder_zero_of_mem_ideal (a : 𝓕.CrAnAlgebra)
     simp [p]
 
 lemma ι_normalOrder_eq_of_equiv (a b : 𝓕.CrAnAlgebra) (h : a ≈ b) :
-    ι 𝓝(a) = ι 𝓝(b) := by
+    ι 𝓝ᶠ(a) = ι 𝓝ᶠ(b) := by
   rw [equiv_iff_sub_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
   simp only [LinearMap.mem_ker, ← map_sub]
