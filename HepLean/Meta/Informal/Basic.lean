@@ -3,6 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
+import Batteries.Tactic.Lint.Misc
 import Lake.DSL.DeclUtil
 /-!
 
@@ -65,7 +66,9 @@ informal definition as a note.
 elab (name := informalDefDecl)
 attrs?:optional(Term.attributes)
 kw:"informal_definition " sig:Lake.DSL.structDeclSig : command => withRef kw do
-  Lake.DSL.elabConfigDecl ``InformalDefinition sig none (Lake.DSL.expandAttrs attrs?)
+  let attr ← `(Term.attrInstance| nolint docBlame)
+  let attrs := #[attr] ++ Lake.DSL.expandAttrs attrs?
+  Lake.DSL.elabConfigDecl ``InformalDefinition sig none attrs
 
 /-- An informal lemma is a lemma which is not type checked, and is written as a string literal.
 It can be used to plan out sections for future formalization, or to include results which
@@ -77,6 +80,8 @@ informal lemma as a note.
 elab (name := informalLemmaDecl)
 attrs?:optional(Term.attributes)
 kw:"informal_lemma " sig:Lake.DSL.structDeclSig : command => withRef kw do
-  Lake.DSL.elabConfigDecl ``InformalLemma sig none (Lake.DSL.expandAttrs attrs?)
+  let attr ← `(Term.attrInstance| nolint docBlame)
+  let attrs := #[attr] ++ Lake.DSL.expandAttrs attrs?
+  Lake.DSL.elabConfigDecl ``InformalLemma sig none attrs
 
 end Informal
