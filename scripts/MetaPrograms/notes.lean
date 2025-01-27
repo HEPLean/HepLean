@@ -144,12 +144,9 @@ def perturbationTheory : Note where
     .p "We will want to consider all three of these types of states simultanously so we define
       and inductive type `States` which is the disjoint union of these three types of states.",
     .name `FieldSpecification.States,
-    .name `FieldSpecification.StateAlgebra,
     .h2 "Time ordering",
     .name `FieldSpecification.timeOrderRel,
     .name `FieldSpecification.timeOrderSign,
-    .name `FieldSpecification.StateAlgebra.timeOrder,
-    .name `FieldSpecification.StateAlgebra.timeOrder_eq_maxTimeField_mul_finset,
     .h2 "Creation and annihilation states",
     .h2 "Normal ordering",
     .h2 "Proto-operator algebra",

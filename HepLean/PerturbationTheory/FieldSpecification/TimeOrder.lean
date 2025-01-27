@@ -203,7 +203,7 @@ noncomputable instance (φ φ' : 𝓕.CrAnStates) : Decidable (crAnTimeOrderRel 
 instance : IsTotal 𝓕.CrAnStates 𝓕.crAnTimeOrderRel where
   total a b := IsTotal.total (r := 𝓕.timeOrderRel) a.1 b.1
 
-/-- Time ordering of `CrAnStates`  is transitive. -/
+/-- Time ordering of `CrAnStates` is transitive. -/
 instance : IsTrans 𝓕.CrAnStates 𝓕.crAnTimeOrderRel where
   trans a b c := IsTrans.trans (r := 𝓕.timeOrderRel) a.1 b.1 c.1
 
@@ -231,7 +231,6 @@ lemma crAnTimeOrderList_nil : crAnTimeOrderList (𝓕 := 𝓕) [] = [] := by
 ## Relationship to sections
 -/
 
-
 lemma koszulSignInsert_crAnTimeOrderRel_crAnSection {φ : 𝓕.States} {ψ : 𝓕.CrAnStates}
     (h : ψ.1 = φ) : {φs : List 𝓕.States} → (ψs : CrAnSection φs) →
     Wick.koszulSignInsert 𝓕.crAnStatistics 𝓕.crAnTimeOrderRel ψ ψs.1 =
@@ -239,15 +238,15 @@ lemma koszulSignInsert_crAnTimeOrderRel_crAnSection {φ : 𝓕.States} {ψ : �
   | [], ⟨[], h⟩ => by
     simp [Wick.koszulSignInsert]
   | φ' :: φs, ⟨ψ' :: ψs, h1⟩ => by
-    simp [Wick.koszulSignInsert, crAnTimeOrderRel, h]
-    simp at h1
+    simp only [Wick.koszulSignInsert, crAnTimeOrderRel, h]
+    simp only [List.map_cons, List.cons.injEq] at h1
     have hi := koszulSignInsert_crAnTimeOrderRel_crAnSection h (φs := φs) ⟨ψs, h1.2⟩
     rw [hi]
     congr
     · exact h1.1
-    · simp [crAnStatistics, crAnStatesToStates, h1.1 ]
+    · simp only [crAnStatistics, crAnStatesToStates, Function.comp_apply]
       congr
-    · simp [crAnStatistics, crAnStatesToStates, h1.1 ]
+    · simp only [crAnStatistics, crAnStatesToStates, Function.comp_apply]
       congr
       exact h1.1
 
@@ -265,24 +264,24 @@ lemma crAnTimeOrderSign_crAnSection : {φs : List 𝓕.States} → (ψs : CrAnSe
 
 lemma orderedInsert_crAnTimeOrderRel_crAnSection {φ : 𝓕.States} {ψ : 𝓕.CrAnStates}
     (h : ψ.1 = φ) : {φs : List 𝓕.States} → (ψs : CrAnSection φs) →
-    (List.orderedInsert 𝓕.crAnTimeOrderRel ψ ψs.1).map  𝓕.crAnStatesToStates  =
+    (List.orderedInsert 𝓕.crAnTimeOrderRel ψ ψs.1).map 𝓕.crAnStatesToStates =
     List.orderedInsert 𝓕.timeOrderRel φ φs
   | [], ⟨[], _⟩ => by
-    simp [Wick.koszulSignInsert]
+    simp only [List.orderedInsert, List.map_cons, List.map_nil, List.cons.injEq, and_true]
     exact h
   | φ' :: φs, ⟨ψ' :: ψs, h1⟩ => by
-    simp [Wick.koszulSignInsert, crAnTimeOrderRel, h]
-    simp at h1
+    simp only [List.orderedInsert, crAnTimeOrderRel, h]
+    simp only [List.map_cons, List.cons.injEq] at h1
     by_cases hr : timeOrderRel φ φ'
-    · simp [hr]
+    · simp only [hr, ↓reduceIte]
       rw [← h1.1] at hr
-      simp [crAnStatesToStates] at hr
-      simp [hr]
+      simp only [crAnStatesToStates] at hr
+      simp only [hr, ↓reduceIte, List.map_cons, List.cons.injEq]
       exact And.intro h (And.intro h1.1 h1.2)
-    · simp [hr]
+    · simp only [hr, ↓reduceIte]
       rw [← h1.1] at hr
-      simp [crAnStatesToStates] at hr
-      simp [hr]
+      simp only [crAnStatesToStates] at hr
+      simp only [hr, ↓reduceIte, List.map_cons, List.cons.injEq]
       apply And.intro h1.1
       exact orderedInsert_crAnTimeOrderRel_crAnSection h ⟨ψs, h1.2⟩
 
@@ -291,65 +290,65 @@ lemma crAnTimeOrderList_crAnSection_is_crAnSection : {φs : List 𝓕.States} �
   | [], ⟨[], h⟩ => by
     simp
   | φ :: φs, ⟨ψ :: ψs, h⟩ => by
-    simp [timeOrderList, crAnTimeOrderList]
-    simp at h
+    simp only [crAnTimeOrderList, List.insertionSort, timeOrderList]
+    simp only [List.map_cons, List.cons.injEq] at h
     exact orderedInsert_crAnTimeOrderRel_crAnSection h.1 ⟨(List.insertionSort crAnTimeOrderRel ψs),
       crAnTimeOrderList_crAnSection_is_crAnSection ⟨ψs, h.2⟩⟩
 
+/-- Time ordering of sections of a list of states. -/
 def crAnSectionTimeOrder (φs : List 𝓕.States) (ψs : CrAnSection φs) :
     CrAnSection (timeOrderList φs) :=
   ⟨crAnTimeOrderList ψs.1, crAnTimeOrderList_crAnSection_is_crAnSection ψs⟩
 
 lemma orderedInsert_crAnTimeOrderRel_injective {ψ ψ' : 𝓕.CrAnStates} (h : ψ.1 = ψ'.1) :
-    {φs : List 𝓕.States} →  (ψs ψs' : 𝓕.CrAnSection φs) →
-    (ho : List.orderedInsert crAnTimeOrderRel ψ ψs.1 =  List.orderedInsert crAnTimeOrderRel ψ' ψs'.1) →
-    ψ = ψ' ∧ ψs = ψs'
+    {φs : List 𝓕.States} → (ψs ψs' : 𝓕.CrAnSection φs) →
+    (ho : List.orderedInsert crAnTimeOrderRel ψ ψs.1 =
+    List.orderedInsert crAnTimeOrderRel ψ' ψs'.1) → ψ = ψ' ∧ ψs = ψs'
   | [], ⟨[], _⟩, ⟨[], _⟩, h => by
-    simp at h
+    simp only [List.orderedInsert, List.cons.injEq, and_true] at h
     simpa using h
   | φ :: φs, ⟨ψ1 :: ψs, h1⟩, ⟨ψ1' :: ψs', h1'⟩, ho => by
-    simp at h1 h1'
+    simp only [List.map_cons, List.cons.injEq] at h1 h1'
     have ih := orderedInsert_crAnTimeOrderRel_injective h ⟨ψs, h1.2⟩ ⟨ψs', h1'.2⟩
-    simp at ho
+    simp only [List.orderedInsert] at ho
     by_cases hr : crAnTimeOrderRel ψ ψ1
-    · simp_all
+    · simp_all only [ite_true]
       by_cases hr2 : crAnTimeOrderRel ψ' ψ1'
       · simp_all
-      · simp [crAnTimeOrderRel] at hr hr2
-        simp_all
+      · simp only [crAnTimeOrderRel] at hr hr2
+        simp_all only
         rw [crAnStatesToStates] at h1 h1'
         rw [h1.1] at hr
         rw [h1'.1] at hr2
         exact False.elim (hr2 hr)
-    · simp_all
+    · simp_all only [ite_false]
       by_cases hr2 : crAnTimeOrderRel ψ' ψ1'
-      · simp [crAnTimeOrderRel] at hr hr2
-        simp_all
+      · simp only [crAnTimeOrderRel] at hr hr2
+        simp_all only
         rw [crAnStatesToStates] at h1 h1'
         rw [h1.1] at hr
         rw [h1'.1] at hr2
         exact False.elim (hr hr2)
-      · simp [hr2] at ho
+      · simp only [hr2, ↓reduceIte, List.cons.injEq] at ho
         have ih' := ih ho.2
-        simp_all
+        simp_all only [and_self, implies_true, not_false_eq_true, true_and]
         apply Subtype.ext
-        simp
+        simp only [List.cons.injEq, true_and]
         rw [Subtype.eq_iff] at ih'
         exact ih'.2
 
-lemma crAnSectionTimeOrder_injective : {φs : List 𝓕.States}  →
+lemma crAnSectionTimeOrder_injective : {φs : List 𝓕.States} →
     Function.Injective (𝓕.crAnSectionTimeOrder φs)
   | [], ⟨[], _⟩, ⟨[], _⟩ => by
     simp
   | φ :: φs, ⟨ψ :: ψs, h⟩, ⟨ψ' :: ψs', h'⟩ => by
     intro h1
     apply Subtype.ext
-    simp
-    simp [crAnSectionTimeOrder] at h1
+    simp only [List.cons.injEq]
+    simp only [crAnSectionTimeOrder] at h1
     rw [Subtype.eq_iff] at h1
-    simp [crAnTimeOrderList] at h1
-    simp at h h'
-    have hi := crAnSectionTimeOrder_injective (φs := φs) (a₁ := ⟨ψs, h.2⟩) (a₂ := ⟨ψs', h'.2⟩)
+    simp only [crAnTimeOrderList, List.insertionSort] at h1
+    simp only [List.map_cons, List.cons.injEq] at h h'
     rw [crAnStatesToStates] at h h'
     have hin := orderedInsert_crAnTimeOrderRel_injective (by rw [h.1, h'.1])
       (𝓕.crAnSectionTimeOrder φs ⟨ψs, h.2⟩)
@@ -364,7 +363,7 @@ lemma crAnSectionTimeOrder_bijective (φs : List 𝓕.States) :
   rw [Fintype.bijective_iff_injective_and_card]
   apply And.intro crAnSectionTimeOrder_injective
   apply CrAnSection.card_perm_eq
-  simp [timeOrderList]
+  simp only [timeOrderList]
   exact List.Perm.symm (List.perm_insertionSort timeOrderRel φs)
 
 lemma sum_crAnSections_timeOrder {φs : List 𝓕.States} [AddCommMonoid M]
@@ -392,15 +391,15 @@ instance : IsTotal 𝓕.CrAnStates 𝓕.normTimeOrderRel where
   total a b := by
     simp only [normTimeOrderRel]
     match IsTotal.total (r := 𝓕.crAnTimeOrderRel) a b,
-      IsTotal.total (r := 𝓕.normalOrderRel) a b  with
+      IsTotal.total (r := 𝓕.normalOrderRel) a b with
     | Or.inl h1, Or.inl h2 => simp [h1, h2]
-    | Or.inr h1, Or.inl h2  =>
-      simp [h1, h2]
+    | Or.inr h1, Or.inl h2 =>
+      simp only [h1, h2, imp_self, and_true, true_and]
       by_cases hn : crAnTimeOrderRel a b
       · simp [hn]
       · simp [hn]
     | Or.inl h1, Or.inr h2 =>
-      simp [h1, h2]
+      simp only [h1, true_and, h2, imp_self, and_true]
       by_cases hn : crAnTimeOrderRel b a
       · simp [hn]
       · simp [hn]
@@ -410,7 +409,7 @@ instance : IsTotal 𝓕.CrAnStates 𝓕.normTimeOrderRel where
 instance : IsTrans 𝓕.CrAnStates 𝓕.normTimeOrderRel where
   trans a b c := by
     intro h1 h2
-    simp_all [normTimeOrderRel]
+    simp_all only [normTimeOrderRel]
     apply And.intro
     · exact IsTrans.trans _ _ _ h1.1 h2.1
     · intro hc

@@ -113,7 +113,7 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 /-- The algebra map taking an element of the free-state algbra to
   the part of it in the creation and annihlation free algebra
   spanned by creation operators. -/
-def crPart : 𝓕.States →  𝓕.CrAnAlgebra := fun φ =>
+def crPart : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
   match φ with
   | States.inAsymp φ => ofCrAnState ⟨States.inAsymp φ, ()⟩
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩

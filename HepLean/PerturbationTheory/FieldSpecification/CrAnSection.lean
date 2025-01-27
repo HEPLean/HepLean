@@ -160,23 +160,23 @@ lemma card_cons_eq {φ : 𝓕.States} {φs : List 𝓕.States} :
   rw [Fintype.ofEquiv_card consEquiv.symm]
   simp
 
-lemma card_eq_mul : {φs : List 𝓕.States} →  Fintype.card (CrAnSection φs) =
+lemma card_eq_mul : {φs : List 𝓕.States} → Fintype.card (CrAnSection φs) =
     2 ^ (List.countP 𝓕.statesIsPosition φs)
   | [] => by
     simp
   | States.position _ :: φs => by
-      simp [statesIsPosition]
+      simp only [statesIsPosition, List.countP_cons_of_pos]
       rw [card_cons_eq]
       rw [card_eq_mul]
-      simp [statesToCrAnType]
+      simp only [statesToCrAnType, CreateAnnihilate.CreateAnnihilate_card_eq_two]
       ring
   | States.inAsymp x_ :: φs => by
-      simp [statesIsPosition]
+      simp only [statesIsPosition, Bool.false_eq_true, not_false_eq_true, List.countP_cons_of_neg]
       rw [card_cons_eq]
       rw [card_eq_mul]
       simp [statesToCrAnType]
   | States.outAsymp _ :: φs => by
-      simp [statesIsPosition]
+      simp only [statesIsPosition, Bool.false_eq_true, not_false_eq_true, List.countP_cons_of_neg]
       rw [card_cons_eq]
       rw [card_eq_mul]
       simp [statesToCrAnType]

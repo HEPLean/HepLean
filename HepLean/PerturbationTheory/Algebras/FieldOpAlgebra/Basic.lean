@@ -42,6 +42,7 @@ abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCo
 namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
+/-- The instance of a setoid on `CrAnAlgebra` from the ideal `TwoSidedIdeal`. -/
 instance : Setoid (CrAnAlgebra 𝓕) := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.toSetoid
 
 lemma equiv_iff_sub_mem_ideal (x y : CrAnAlgebra 𝓕) :

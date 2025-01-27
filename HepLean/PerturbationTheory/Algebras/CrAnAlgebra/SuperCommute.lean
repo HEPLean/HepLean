@@ -14,7 +14,6 @@ variable {𝓕 : FieldSpecification}
 
 namespace CrAnAlgebra
 
-
 /-!
 
 ## The super commutor on the CrAnAlgebra.
