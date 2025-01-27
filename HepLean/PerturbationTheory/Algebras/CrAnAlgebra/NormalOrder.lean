@@ -490,8 +490,8 @@ lemma ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute (φs : List 𝓕.Cr
   simp [ofCrAnList_superCommute_normalOrder_ofStateList]
 
 lemma ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.CrAnStates)
-    (φs' : List 𝓕.States) :
-    ofCrAnState φ * 𝓝ᶠ(ofStateList φs') = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnState φ
+    (φs' : List 𝓕.States) : ofCrAnState φ * 𝓝ᶠ(ofStateList φs') =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnState φ
     + [ofCrAnState φ, 𝓝ᶠ(ofStateList φs')]ₛca := by
   simp [← ofCrAnList_singleton, ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute]
 
