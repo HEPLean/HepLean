@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Lorentz.Group.Orthochronous
+import HepLean.Meta.Informal.Basic
 /-!
 # The Restricted Lorentz Group
 
@@ -25,8 +26,8 @@ open ComplexConjugate
 namespace LorentzGroup
 
 informal_definition Restricted where
-  math :≈ "The subgroup of the Lorentz group consisting of elements which
+  math := "The subgroup of the Lorentz group consisting of elements which
     are proper and orthochronous."
-  deps :≈ [``LorentzGroup, ``IsProper, ``IsOrthochronous]
+  deps := [``LorentzGroup, ``IsProper, ``IsOrthochronous]
 
 end LorentzGroup

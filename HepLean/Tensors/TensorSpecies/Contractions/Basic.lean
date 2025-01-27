@@ -49,16 +49,16 @@ lemma contractSelfField_equivariant {S : TensorSpecies} {c : S.C} {g : S.G}
     ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
 
 informal_lemma contractSelfField_non_degenerate where
-  math :≈ "The contraction of two vectors of the same color is non-degenerate.
+  math := "The contraction of two vectors of the same color is non-degenerate.
     I.e. ⟪ψ, φ⟫ₜₛ = 0 for all φ implies ψ = 0."
-  proof :≈ "The basic idea is that being degenerate contradicts the assumption of having a unit
+  proof := "The basic idea is that being degenerate contradicts the assumption of having a unit
     in the tensor species."
-  deps :≈ [``contractSelfField]
+  deps := [``contractSelfField]
 
 informal_lemma contractSelfField_tensorTree where
-  math :≈ "The contraction ⟪ψ, φ⟫ₜₛ is related to the tensor tree
+  math := "The contraction ⟪ψ, φ⟫ₜₛ is related to the tensor tree
     {ψ | μ ⊗ (S.dualRepIsoDiscrete c).hom φ | μ}ᵀ "
-  deps :≈ [``contractSelfField, ``TensorTree]
+  deps := [``contractSelfField, ``TensorTree]
 
 /-!
 

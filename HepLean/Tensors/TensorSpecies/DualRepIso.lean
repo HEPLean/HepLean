@@ -242,26 +242,26 @@ def dualRepIsoDiscrete (c : S.C) : S.FD.obj (Discrete.mk c) ≅ S.FD.obj (Discre
     exact S.fromDualRep_toDualRep_eq_self c x
 
 informal_definition dualRepIso where
-  math :≈ "Given a `i : Fin n` the isomorphism between `S.F.obj (OverColor.mk c)` and
+  math := "Given a `i : Fin n` the isomorphism between `S.F.obj (OverColor.mk c)` and
     `S.F.obj (OverColor.mk (Function.update c i (S.τ (c i))))` induced by `dualRepIsoDiscrete`
     acting on the `i`-th component of the color."
-  deps :≈ [``dualRepIsoDiscrete]
+  deps := [``dualRepIsoDiscrete]
 
 informal_lemma dualRepIso_unitTensor_fst where
-  math :≈ "Acting with `dualRepIso` on the fst component of a `unitTensor` returns a metric."
-  deps :≈ [``dualRepIso, ``unitTensor, ``metricTensor]
+  math := "Acting with `dualRepIso` on the fst component of a `unitTensor` returns a metric."
+  deps := [``dualRepIso, ``unitTensor, ``metricTensor]
 
 informal_lemma dualRepIso_unitTensor_snd where
-  math :≈ "Acting with `dualRepIso` on the snd component of a `unitTensor` returns a metric."
-  deps :≈ [``dualRepIso, ``unitTensor, ``metricTensor]
+  math := "Acting with `dualRepIso` on the snd component of a `unitTensor` returns a metric."
+  deps := [``dualRepIso, ``unitTensor, ``metricTensor]
 
 informal_lemma dualRepIso_metricTensor_fst where
-  math :≈ "Acting with `dualRepIso` on the fst component of a `metricTensor` returns a unitTensor."
-  deps :≈ [``dualRepIso, ``unitTensor, ``metricTensor]
+  math := "Acting with `dualRepIso` on the fst component of a `metricTensor` returns a unitTensor."
+  deps := [``dualRepIso, ``unitTensor, ``metricTensor]
 
 informal_lemma dualRepIso_metricTensor_snd where
-  math :≈ "Acting with `dualRepIso` on the snd component of a `metricTensor` returns a unitTensor."
-  deps :≈ [``dualRepIso, ``unitTensor, ``metricTensor]
+  math := "Acting with `dualRepIso` on the snd component of a `metricTensor` returns a unitTensor."
+  deps := [``dualRepIso, ``unitTensor, ``metricTensor]
 
 end TensorSpecies
 

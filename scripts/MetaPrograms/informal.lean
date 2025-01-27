@@ -62,17 +62,17 @@ def depToWebString (d : Name) : MetaM String := do
 unsafe def informalDependencies (c : ConstantInfo) : MetaM (Array Name) := do
   if Informal.isInformalLemma c then
     let informal ← Informal.constantInfoToInformalLemma c
-    pure informal.dependencies.toArray
+    pure informal.deps.toArray
   else if Informal.isInformalDef c then
     let informal ← Informal.constantInfoToInformalDefinition c
-    pure informal.dependencies.toArray
+    pure informal.deps.toArray
   else
     pure #[]
 
 unsafe def informalLemmaToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalLemma ← Informal.constantInfoToInformalLemma c.2
-  let dep ← informalLemma.dependencies.mapM fun d => depToString d
+  let dep ← informalLemma.deps.mapM fun d => depToString d
   pure s!"
 Informal lemma: {informalLemma.name}
 - ./{c.1.module.toString.replace "." "/" ++ ".lean"}:{lineNo}
@@ -85,7 +85,7 @@ Informal lemma: {informalLemma.name}
 unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalLemma ← Informal.constantInfoToInformalLemma c.2
-  let dep ← informalLemma.dependencies.mapM fun d => depToWebString d
+  let dep ← informalLemma.deps.mapM fun d => depToWebString d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   pure s!"
@@ -99,7 +99,7 @@ unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String 
 unsafe def informalDefToString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalDef ← Informal.constantInfoToInformalDefinition c.2
-  let dep ← informalDef.dependencies.mapM fun d => depToString d
+  let dep ← informalDef.deps.mapM fun d => depToString d
   pure s!"
 Informal def: {informalDef.name}
 - ./{c.1.module.toString.replace "." "/" ++ ".lean"}:{lineNo}
@@ -111,7 +111,7 @@ Informal def: {informalDef.name}
 unsafe def informalDefToWebString (c : Import × ConstantInfo) : MetaM String := do
   let lineNo ← getLineNumber c.2.name
   let informalDef ← Informal.constantInfoToInformalDefinition c.2
-  let dep ← informalDef.dependencies.mapM fun d => depToWebString d
+  let dep ← informalDef.deps.mapM fun d => depToWebString d
   let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
     (c.1.module.toString.replace "." "/") ++ ".lean"
   pure s!"
@@ -188,10 +188,6 @@ section dotFile
 
 /-- Turns a formal definition or lemma into a node of a dot graph. -/
 def formalToNode (nameSpaces : Array Name) (d : Name) : MetaM String := do
-  let lineNo ← getLineNumber d
-  let mod ← getModule d
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (mod.toString.replace "." "/") ++ ".lean"
   let docstring ← getDocString d
   let prefixName := if nameSpaces.contains d then d else
     d.getPrefix
@@ -203,9 +199,6 @@ def formalToNode (nameSpaces : Array Name) (d : Name) : MetaM String := do
     pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
 
 unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalLemma ← (Informal.constantInfoToInformalLemma c.2)
   let prefixName := if nameSpaces.contains c.2.name then c.2.name else
     c.2.name.getPrefix
@@ -217,9 +210,6 @@ unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × Constant
     pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
 
 unsafe def informalDefToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
   let informalDef ← (constantInfoToInformalDefinition c.2)
   let prefixName := if nameSpaces.contains c.2.name then c.2.name else
     c.2.name.getPrefix
@@ -241,14 +231,12 @@ unsafe def informalToNode (nameSpaces : Array Name) (c : Import × ConstantInfo)
 
 unsafe def informalLemmaToEdges (c : Import × ConstantInfo) : MetaM (String) := do
   let informalLemma ← constantInfoToInformalLemma c.2
-  let deps := informalLemma.dependencies
-  let edge := deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
+  let edge := informalLemma.deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
   pure (String.intercalate "\n" edge)
 
 unsafe def informalDefToEdges (c : Import × ConstantInfo) : MetaM (String) := do
   let informalDef ← constantInfoToInformalDefinition c.2
-  let deps := informalDef.dependencies
-  let edge := deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
+  let edge := informalDef.deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
   pure (String.intercalate "\n" edge)
 
 unsafe def informalToEdges (c : Import × ConstantInfo) : MetaM (String) := do

@@ -32,31 +32,31 @@ namespace complexLorentzTensor
 -/
 
 informal_lemma coContrUnit_symm where
-  math :≈ "Swapping indices of coContrUnit returns contrCoUnit, i.e. {δ' | μ ν = δ | ν μ}.ᵀ"
-  deps :≈ [``coContrUnit, ``contrCoUnit]
+  math := "Swapping indices of coContrUnit returns contrCoUnit, i.e. {δ' | μ ν = δ | ν μ}.ᵀ"
+  deps := [``coContrUnit, ``contrCoUnit]
 
 informal_lemma contrCoUnit_symm where
-  math :≈ "Swapping indices of contrCoUnit returns coContrUnit, i.e. {δ | μ ν = δ' | ν μ}ᵀ"
-  deps :≈ [``contrCoUnit, ``coContrUnit]
+  math := "Swapping indices of contrCoUnit returns coContrUnit, i.e. {δ | μ ν = δ' | ν μ}ᵀ"
+  deps := [``contrCoUnit, ``coContrUnit]
 
 informal_lemma altLeftLeftUnit_symm where
-  math :≈ "Swapping indices of altLeftLeftUnit returns leftAltLeftUnit, i.e.
+  math := "Swapping indices of altLeftLeftUnit returns leftAltLeftUnit, i.e.
     {δL' | α α' = δL | α' α}ᵀ"
-  deps :≈ [``altLeftLeftUnit, ``leftAltLeftUnit]
+  deps := [``altLeftLeftUnit, ``leftAltLeftUnit]
 
 informal_lemma leftAltLeftUnit_symm where
-  math :≈ "Swapping indices of leftAltLeftUnit returns altLeftLeftUnit, i.e.
+  math := "Swapping indices of leftAltLeftUnit returns altLeftLeftUnit, i.e.
     {δL | α α' = δL' | α' α}ᵀ"
-  deps :≈ [``leftAltLeftUnit, ``altLeftLeftUnit]
+  deps := [``leftAltLeftUnit, ``altLeftLeftUnit]
 
 informal_lemma altRightRightUnit_symm where
-  math :≈ "Swapping indices of altRightRightUnit returns rightAltRightUnit, i.e.
+  math := "Swapping indices of altRightRightUnit returns rightAltRightUnit, i.e.
     {δR' | β β' = δR | β' β}ᵀ"
-  deps :≈ [``altRightRightUnit, ``rightAltRightUnit]
+  deps := [``altRightRightUnit, ``rightAltRightUnit]
 
 informal_lemma rightAltRightUnit_symm where
-  math :≈ "Swapping indices of rightAltRightUnit returns altRightRightUnit, i.e.
+  math := "Swapping indices of rightAltRightUnit returns altRightRightUnit, i.e.
     {δR | β β' = δR' | β' β}ᵀ"
-  deps :≈ [``rightAltRightUnit, ``altRightRightUnit]
+  deps := [``rightAltRightUnit, ``altRightRightUnit]
 
 end complexLorentzTensor

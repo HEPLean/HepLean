@@ -32,28 +32,28 @@ namespace complexLorentzTensor
 -/
 
 informal_lemma coMetric_symm where
-  math :≈ "The covariant metric is symmetric {η' | μ ν = η' | ν μ}ᵀ"
-  deps :≈ [``coMetric]
+  math := "The covariant metric is symmetric {η' | μ ν = η' | ν μ}ᵀ"
+  deps := [``coMetric]
 
 informal_lemma contrMetric_symm where
-  math :≈ "The contravariant metric is symmetric {η | μ ν = η | ν μ}ᵀ"
-  deps :≈ [``contrMetric]
+  math := "The contravariant metric is symmetric {η | μ ν = η | ν μ}ᵀ"
+  deps := [``contrMetric]
 
 informal_lemma leftMetric_antisymm where
-  math :≈ "The left metric is antisymmetric {εL | α α' = - εL | α' α}ᵀ"
-  deps :≈ [``leftMetric]
+  math := "The left metric is antisymmetric {εL | α α' = - εL | α' α}ᵀ"
+  deps := [``leftMetric]
 
 informal_lemma rightMetric_antisymm where
-  math :≈ "The right metric is antisymmetric {εR | β β' = - εR | β' β}ᵀ"
-  deps :≈ [``rightMetric]
+  math := "The right metric is antisymmetric {εR | β β' = - εR | β' β}ᵀ"
+  deps := [``rightMetric]
 
 informal_lemma altLeftMetric_antisymm where
-  math :≈ "The alt-left metric is antisymmetric {εL' | α α' = - εL' | α' α}ᵀ"
-  deps :≈ [``altLeftMetric]
+  math := "The alt-left metric is antisymmetric {εL' | α α' = - εL' | α' α}ᵀ"
+  deps := [``altLeftMetric]
 
 informal_lemma altRightMetric_antisymm where
-  math :≈ "The alt-right metric is antisymmetric {εR' | β β' = - εR' | β' β}ᵀ"
-  deps :≈ [``altRightMetric]
+  math := "The alt-right metric is antisymmetric {εR' | β β' = - εR' | β' β}ᵀ"
+  deps := [``altRightMetric]
 
 /-!
 
@@ -62,34 +62,34 @@ informal_lemma altRightMetric_antisymm where
 -/
 
 informal_lemma coMetric_contr_contrMetric where
-  math :≈ "The contraction of the covariant metric with the contravariant metric is the unit
+  math := "The contraction of the covariant metric with the contravariant metric is the unit
         {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ"
-  deps :≈ [``coMetric, ``contrMetric, ``coContrUnit]
+  deps := [``coMetric, ``contrMetric, ``coContrUnit]
 
 informal_lemma contrMetric_contr_coMetric where
-  math :≈ "The contraction of the contravariant metric with the covariant metric is the unit
+  math := "The contraction of the contravariant metric with the covariant metric is the unit
         {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ"
-  deps :≈ [``contrMetric, ``coMetric, ``contrCoUnit]
+  deps := [``contrMetric, ``coMetric, ``contrCoUnit]
 
 informal_lemma leftMetric_contr_altLeftMetric where
-  math :≈ "The contraction of the left metric with the alt-left metric is the unit
+  math := "The contraction of the left metric with the alt-left metric is the unit
         {εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ"
-  deps :≈ [``leftMetric, ``altLeftMetric, ``leftAltLeftUnit]
+  deps := [``leftMetric, ``altLeftMetric, ``leftAltLeftUnit]
 
 informal_lemma rightMetric_contr_altRightMetric where
-  math :≈ "The contraction of the right metric with the alt-right metric is the unit
+  math := "The contraction of the right metric with the alt-right metric is the unit
         {εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ"
-  deps :≈ [``rightMetric, ``altRightMetric, ``rightAltRightUnit]
+  deps := [``rightMetric, ``altRightMetric, ``rightAltRightUnit]
 
 informal_lemma altLeftMetric_contr_leftMetric where
-  math :≈ "The contraction of the alt-left metric with the left metric is the unit
+  math := "The contraction of the alt-left metric with the left metric is the unit
         {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ"
-  deps :≈ [``altLeftMetric, ``leftMetric, ``altLeftLeftUnit]
+  deps := [``altLeftMetric, ``leftMetric, ``altLeftLeftUnit]
 
 informal_lemma altRightMetric_contr_rightMetric where
-  math :≈ "The contraction of the alt-right metric with the right metric is the unit
+  math := "The contraction of the alt-right metric with the right metric is the unit
         {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ"
-  deps :≈ [``altRightMetric, ``rightMetric, ``altRightRightUnit]
+  deps := [``altRightMetric, ``rightMetric, ``altRightRightUnit]
 
 /-!
 

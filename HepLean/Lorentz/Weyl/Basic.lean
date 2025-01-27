@@ -285,14 +285,14 @@ lemma leftHandedAltEquiv_inv_hom_apply (ψ : altLeftHanded) :
     LeftHandedModule.toFin2ℂEquiv.symm (!![0, -1; 1, 0] *ᵥ ψ.toFin2ℂ) := rfl
 
 informal_definition rightHandedWeylAltEquiv where
-  math :≈ "The linear equiv between rightHandedWeyl and altRightHandedWeyl given
+  math := "The linear equiv between rightHandedWeyl and altRightHandedWeyl given
     by multiplying an element of rightHandedWeyl by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`"
-  deps :≈ [``rightHanded, ``altRightHanded]
+  deps := [``rightHanded, ``altRightHanded]
 
 informal_lemma rightHandedWeylAltEquiv_equivariant where
-  math :≈ "The linear equiv rightHandedWeylAltEquiv is equivariant with respect to the
+  math := "The linear equiv rightHandedWeylAltEquiv is equivariant with respect to the
     action of SL(2,C) on rightHandedWeyl and altRightHandedWeyl."
-  deps :≈ [``rightHandedWeylAltEquiv]
+  deps := [``rightHandedWeylAltEquiv]
 
 end
 

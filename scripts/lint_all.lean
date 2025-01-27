@@ -7,7 +7,6 @@ import Batteries.Lean.HashSet
 import Lean
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
-import HepLean.Meta.Informal.Post
 import ImportGraph.RequiredModules
 
 def main (_: List String) : IO UInt32 := do

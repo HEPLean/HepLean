@@ -85,16 +85,16 @@ lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
       empty_val', cons_val_fin_one] using smooth_innerProd _ _
 
 informal_lemma prodMatrix_invariant where
-  math :≈ "The map ``prodMatrix is invariant under the simultanous action of ``gaugeAction
+  math := "The map ``prodMatrix is invariant under the simultanous action of ``gaugeAction
     on the two Higgs fields."
-  deps :≈ [``prodMatrix, ``gaugeAction]
+  deps := [``prodMatrix, ``gaugeAction]
 
 informal_lemma prodMatrix_to_higgsField where
-  math :≈ "Given any smooth map ``f from spacetime to 2 x 2 complex matrices landing on positive
+  math := "Given any smooth map ``f from spacetime to 2 x 2 complex matrices landing on positive
     semi-definite matrices, there exist smooth Higgs fields ``Φ1 and ``Φ2 such that
     ``f is equal to ``prodMatrix Φ1 Φ2."
-  deps :≈ [``prodMatrix, ``HiggsField, ``prodMatrix_smooth]
-  ref :≈ "https://arxiv.org/pdf/hep-ph/0605184"
+  deps := [``prodMatrix, ``HiggsField, ``prodMatrix_smooth]
+  ref := "https://arxiv.org/pdf/hep-ph/0605184"
 
 end
 end TwoHDM

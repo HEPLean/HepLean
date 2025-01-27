@@ -7,7 +7,6 @@ import Batteries.Lean.HashSet
 import Mathlib.Lean.Expr.Basic
 import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
-import HepLean.Meta.Informal.Basic
 /-!
 
 ## Basic Lean meta programming commands
@@ -58,7 +57,6 @@ def Imports.getUserConsts (imp : Import) : MetaM (Array ConstantInfo) := do
   let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.belowSuffix)
   let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.ibelowSuffix)
   /- Removing syntax category declarations. -/
-  let x := x.filter (fun c => ¬ c.name.toString = "Informal.informalAssignment.quot")
   let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.indexExpr.quot")
   let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.tensorExpr.quot")
   pure x

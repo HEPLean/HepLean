@@ -81,14 +81,14 @@ lemma tensorNode_coBispinorDown (p : complexCo) :
 -/
 
 informal_lemma contrBispinorUp_eq_metric_contr_contrBispinorDown where
-  math :≈ "{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀ"
-  proof :≈ "Expand `contrBispinorDown` and use fact that metrics contract to the identity."
-  deps :≈ [``contrBispinorUp, ``contrBispinorDown, ``leftMetric, ``rightMetric]
+  math := "{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀ"
+  proof := "Expand `contrBispinorDown` and use fact that metrics contract to the identity."
+  deps := [``contrBispinorUp, ``contrBispinorDown, ``leftMetric, ``rightMetric]
 
 informal_lemma coBispinorUp_eq_metric_contr_coBispinorDown where
-  math :≈ "{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ"
-  proof :≈ "Expand `coBispinorDown` and use fact that metrics contract to the identity."
-  deps :≈ [``coBispinorUp, ``coBispinorDown, ``leftMetric, ``rightMetric]
+  math := "{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ"
+  proof := "Expand `coBispinorDown` and use fact that metrics contract to the identity."
+  deps := [``coBispinorUp, ``coBispinorDown, ``leftMetric, ``rightMetric]
 
 lemma contrBispinorDown_expand (p : complexContr) :
     {contrBispinorDown p | α β}ᵀ.tensor =

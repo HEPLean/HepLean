@@ -216,24 +216,24 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
       tail_cons, smul_zero]
 
 informal_lemma guage_orbit where
-  math :≈ "There exists a `g` in ``GaugeGroupI such that `rep g φ = φ'` if and only if
+  math := "There exists a `g` in ``GaugeGroupI such that `rep g φ = φ'` if and only if
     ‖φ‖ = ‖φ'‖."
-  deps :≈ [``rotate_fst_zero_snd_real]
+  deps := [``rotate_fst_zero_snd_real]
 
 informal_lemma stability_group_single where
-  physics :≈ "The Higgs boson breaks electroweak symmetry down to the electromagnetic force."
-  math :≈ "The stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`,
+  physics := "The Higgs boson breaks electroweak symmetry down to the electromagnetic force."
+  math := "The stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`,
     for non-zero `‖φ‖` is the `SU(3) x U(1)` subgroup of
     `gaugeGroup := SU(3) x SU(2) x U(1)` with the embedding given by
     `(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`."
-  deps :≈ [``StandardModel.HiggsVec, ``StandardModel.HiggsVec.rep]
+  deps := [``StandardModel.HiggsVec, ``StandardModel.HiggsVec.rep]
 
 informal_lemma stability_group where
-  math :≈ "The subgroup of `gaugeGroup := SU(3) x SU(2) x U(1)` which preserves every `HiggsVec`
+  math := "The subgroup of `gaugeGroup := SU(3) x SU(2) x U(1)` which preserves every `HiggsVec`
     by the action of ``StandardModel.HiggsVec.rep is given by `SU(3) x ℤ₆` where ℤ₆
     is the subgroup of `SU(2) x U(1)` with elements `(α^(-3) * I₂, α)` where
     α is a sixth root of unity."
-  deps :≈ [``HiggsVec, ``rep]
+  deps := [``HiggsVec, ``rep]
 
 end HiggsVec
 
@@ -250,19 +250,19 @@ namespace HiggsField
 -/
 
 informal_definition gaugeAction where
-  math :≈ "The action of ``gaugeTransformI on ``HiggsField acting pointwise through
+  math := "The action of ``gaugeTransformI on ``HiggsField acting pointwise through
     ``HiggsVec.rep."
-  deps :≈ [``HiggsVec.rep, ``gaugeTransformI]
+  deps := [``HiggsVec.rep, ``gaugeTransformI]
 
 informal_lemma guage_orbit where
-  math :≈ "There exists a `g` in ``gaugeTransformI such that `gaugeAction g φ = φ'` if and only if
+  math := "There exists a `g` in ``gaugeTransformI such that `gaugeAction g φ = φ'` if and only if
     φ(x)^† φ(x) = φ'(x)^† φ'(x)."
-  deps :≈ [``gaugeAction]
+  deps := [``gaugeAction]
 
 informal_lemma gauge_orbit_surject where
-  math :≈ "For every smooth map f from ``SpaceTime to ℝ such that `f` is positive semidefinite,
+  math := "For every smooth map f from ``SpaceTime to ℝ such that `f` is positive semidefinite,
     there exists a Higgs field φ such that `f = φ^† φ`."
-  deps :≈ [``HiggsField, ``SpaceTime]
+  deps := [``HiggsField, ``SpaceTime]
 
 end HiggsField
 

@@ -31,12 +31,12 @@ variable {S : TensorSpecies}
 -/
 
 informal_lemma constVecNode_eq_vecNode where
-  math :≈ "A constVecNode has equal tensor to the vecNode with the map evaluated at 1."
-  deps :≈ [``constVecNode, ``vecNode]
+  math := "A constVecNode has equal tensor to the vecNode with the map evaluated at 1."
+  deps := [``constVecNode, ``vecNode]
 
 informal_lemma constTwoNode_eq_twoNode where
-  math :≈ "A constTwoNode has equal tensor to the twoNode with the map evaluated at 1."
-  deps :≈ [``constTwoNode, ``twoNode]
+  math := "A constTwoNode has equal tensor to the twoNode with the map evaluated at 1."
+  deps := [``constTwoNode, ``twoNode]
 
 /-!
 
