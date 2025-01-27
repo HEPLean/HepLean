@@ -82,6 +82,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     let newString := s!"
   - type: remark
     name: \"{shortName}\"
+    link: \"{← Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
     content: |
       {contentIndent}"
     return ⟨x.1 ++ [newString], x.2⟩
@@ -125,8 +126,7 @@ def perturbationTheory : Note where
       and picking up a minus sign when they are both fermionic. This concept is
       made precise using the notion of an exchange sign, defined as:",
     .name `FieldStatistic.exchangeSign,
-    .p "We use the notation `𝓢(a,b)` as shorthand for the exchange sign of
-      `a` and `b`.",
+    .p "We use the notation `𝓢(a,b)` as shorthand for the exchange sign of `a` and `b`.",
     .h2 "Field specifications",
     .name `fieldSpecification_intro,
     .name `FieldSpecification,
