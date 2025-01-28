@@ -300,5 +300,8 @@ instance : AddMonoid FieldStatistic where
     simp only [instCommGroup, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     rfl
 
+@[simp]
+lemma add_eq_mul (a b : FieldStatistic) : a + b = a * b := rfl
+
 end ofListTake
 end FieldStatistic

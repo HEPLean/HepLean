@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Grading
 /-!
 
 # Super Commute
@@ -438,6 +439,349 @@ lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) : 
     · simp
     · simp [Finset.mul_sum, smul_smul, ofStateList_cons, mul_assoc,
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
+/-!
+
+## Interaction with grading.
+
+-/
+
+lemma superCommute_grade {a b : 𝓕.CrAnAlgebra} {f1 f2 : FieldStatistic}
+    (ha : a ∈ statisticSubmodule f1) (hb : b ∈ statisticSubmodule f2) :
+    [a, b]ₛca ∈ statisticSubmodule (f1 + f2) := by
+  let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
+       [a, a2]ₛca ∈ statisticSubmodule (f1 + f2)
+  change p b hb
+  apply Submodule.span_induction (p := p)
+  · intro x hx
+    obtain ⟨φs, rfl, hφs⟩ := hx
+    simp [p]
+    let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f1) : Prop :=
+        [a2 , ofCrAnList φs]ₛca ∈ statisticSubmodule (f1 + f2)
+    change p a ha
+    apply Submodule.span_induction (p := p)
+    · intro x hx
+      obtain ⟨φs', rfl, hφs'⟩ := hx
+      simp [p]
+      rw [superCommute_ofCrAnList_ofCrAnList]
+      apply Submodule.sub_mem _
+      · apply ofCrAnList_mem_statisticSubmodule_of
+        rw [ofList_append_eq_mul, hφs, hφs']
+      · apply Submodule.smul_mem
+        apply ofCrAnList_mem_statisticSubmodule_of
+        rw [ofList_append_eq_mul, hφs, hφs']
+        rw [mul_comm]
+    · simp [p]
+    · intro x y hx hy hp1 hp2
+      simp [p]
+      exact Submodule.add_mem _ hp1 hp2
+    · intro c x hx hp1
+      simp [p]
+      exact Submodule.smul_mem _ c hp1
+    · exact ha
+  · simp [p]
+  · intro x y hx hy hp1 hp2
+    simp [p]
+    exact Submodule.add_mem _ hp1 hp2
+  · intro c x hx hp1
+    simp [p]
+    exact Submodule.smul_mem _ c hp1
+  · exact hb
+
+lemma superCommute_bosonic_bosonic {a b : 𝓕.CrAnAlgebra}
+    (ha : a ∈ statisticSubmodule bosonic) (hb : b ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = a * b - b * a := by
+  let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
+       [a, a2]ₛca = a * a2 - a2 * a
+  change p b hb
+  apply Submodule.span_induction (p := p)
+  · intro x hx
+    obtain ⟨φs, rfl, hφs⟩ := hx
+    let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
+        [a2 , ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+    change p a ha
+    apply Submodule.span_induction (p := p)
+    · intro x hx
+      obtain ⟨φs', rfl, hφs'⟩ := hx
+      simp [p]
+      rw [superCommute_ofCrAnList_ofCrAnList]
+      simp [hφs, ofCrAnList_append]
+    · simp [p]
+    · intro x y hx hy hp1 hp2
+      simp_all [p, mul_add, add_mul]
+      abel
+    · intro c x hx hp1
+      simp_all [p, smul_sub]
+    · exact ha
+  · simp [p]
+  · intro x y hx hy hp1 hp2
+    simp_all [p, mul_add, add_mul]
+    abel
+  · intro c x hx hp1
+    simp_all [p, smul_sub]
+  · exact hb
+
+
+lemma superCommute_bosonic_fermionic {a b : 𝓕.CrAnAlgebra}
+    (ha : a ∈ statisticSubmodule bosonic) (hb : b ∈ statisticSubmodule fermionic) :
+    [a, b]ₛca = a * b - b * a := by
+  let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
+       [a, a2]ₛca = a * a2 - a2 * a
+  change p b hb
+  apply Submodule.span_induction (p := p)
+  · intro x hx
+    obtain ⟨φs, rfl, hφs⟩ := hx
+    let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
+        [a2 , ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+    change p a ha
+    apply Submodule.span_induction (p := p)
+    · intro x hx
+      obtain ⟨φs', rfl, hφs'⟩ := hx
+      simp [p]
+      rw [superCommute_ofCrAnList_ofCrAnList]
+      simp [hφs, hφs', ofCrAnList_append]
+    · simp [p]
+    · intro x y hx hy hp1 hp2
+      simp_all [p, mul_add, add_mul]
+      abel
+    · intro c x hx hp1
+      simp_all [p, smul_sub]
+    · exact ha
+  · simp [p]
+  · intro x y hx hy hp1 hp2
+    simp_all [p, mul_add, add_mul]
+    abel
+  · intro c x hx hp1
+    simp_all [p, smul_sub]
+  · exact hb
+
+
+lemma superCommute_fermionic_bonsonic {a b : 𝓕.CrAnAlgebra}
+    (ha : a ∈ statisticSubmodule fermionic) (hb : b ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = a * b - b * a := by
+  let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
+       [a, a2]ₛca = a * a2 - a2 * a
+  change p b hb
+  apply Submodule.span_induction (p := p)
+  · intro x hx
+    obtain ⟨φs, rfl, hφs⟩ := hx
+    let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
+        [a2 , ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+    change p a ha
+    apply Submodule.span_induction (p := p)
+    · intro x hx
+      obtain ⟨φs', rfl, hφs'⟩ := hx
+      simp [p]
+      rw [superCommute_ofCrAnList_ofCrAnList]
+      simp [hφs, hφs', ofCrAnList_append]
+    · simp [p]
+    · intro x y hx hy hp1 hp2
+      simp_all [p, mul_add, add_mul]
+      abel
+    · intro c x hx hp1
+      simp_all [p, smul_sub]
+    · exact ha
+  · simp [p]
+  · intro x y hx hy hp1 hp2
+    simp_all [p, mul_add, add_mul]
+    abel
+  · intro c x hx hp1
+    simp_all [p, smul_sub]
+  · exact hb
+
+lemma superCommute_bonsonic {a b : 𝓕.CrAnAlgebra}  (hb : b ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = a * b - b * a := by
+  rw [← bosonicProj_add_fermionicProj a]
+  simp only [map_add, LinearMap.add_apply]
+  rw [superCommute_bosonic_bosonic (by simp) hb, superCommute_fermionic_bonsonic (by simp) hb]
+  simp only [add_mul, mul_add]
+  abel
+
+lemma bosonic_superCommute {a b : 𝓕.CrAnAlgebra}  (ha : a ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = a * b - b * a := by
+  rw [← bosonicProj_add_fermionicProj b]
+  simp only [map_add, LinearMap.add_apply]
+  rw [superCommute_bosonic_bosonic ha (by simp), superCommute_bosonic_fermionic ha (by simp)]
+  simp only [add_mul, mul_add]
+  abel
+
+lemma superCommute_bonsonic_symm {a b : 𝓕.CrAnAlgebra}  (hb : b ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = - [b, a]ₛca := by
+  rw [bosonic_superCommute hb, superCommute_bonsonic hb]
+  simp
+
+lemma bonsonic_superCommute_symm {a b : 𝓕.CrAnAlgebra}  (ha : a ∈ statisticSubmodule bosonic) :
+    [a, b]ₛca = - [b, a]ₛca := by
+  rw [bosonic_superCommute ha, superCommute_bonsonic ha]
+  simp
+
+lemma superCommute_fermionic_fermionic {a b : 𝓕.CrAnAlgebra}
+    (ha : a ∈ statisticSubmodule fermionic) (hb : b ∈ statisticSubmodule fermionic) :
+    [a, b]ₛca = a * b + b * a := by
+  let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
+       [a, a2]ₛca = a * a2 + a2 * a
+  change p b hb
+  apply Submodule.span_induction (p := p)
+  · intro x hx
+    obtain ⟨φs, rfl, hφs⟩ := hx
+    let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
+        [a2 , ofCrAnList φs]ₛca = a2 * ofCrAnList φs + ofCrAnList φs * a2
+    change p a ha
+    apply Submodule.span_induction (p := p)
+    · intro x hx
+      obtain ⟨φs', rfl, hφs'⟩ := hx
+      simp [p]
+      rw [superCommute_ofCrAnList_ofCrAnList]
+      simp [hφs, hφs', ofCrAnList_append]
+    · simp [p]
+    · intro x y hx hy hp1 hp2
+      simp_all [p, mul_add, add_mul]
+      abel
+    · intro c x hx hp1
+      simp_all [p, smul_sub]
+    · exact ha
+  · simp [p]
+  · intro x y hx hy hp1 hp2
+    simp_all [p, mul_add, add_mul]
+    abel
+  · intro c x hx hp1
+    simp_all [p, smul_sub]
+  · exact hb
+
+lemma superCommute_fermionic_fermionic_symm {a b : 𝓕.CrAnAlgebra}
+    (ha : a ∈ statisticSubmodule fermionic) (hb : b ∈ statisticSubmodule fermionic) :
+    [a, b]ₛca = [b, a]ₛca := by
+  rw [superCommute_fermionic_fermionic ha hb]
+  rw [superCommute_fermionic_fermionic hb ha]
+  abel
+
+lemma superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic (φs φs' : List 𝓕.CrAnStates) :
+     [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule fermionic := by
+  by_cases h1 : (𝓕 |>ₛ φs) = bosonic <;> by_cases h2 : (𝓕 |>ₛ φs') = bosonic
+  · left
+    have h : bosonic = bosonic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ h1
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ h2
+  · right
+    have h : fermionic = bosonic + fermionic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ h1
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h2)
+  · right
+    have h : fermionic = fermionic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ h2
+  · left
+    have h : bosonic = fermionic + fermionic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h2)
+
+
+lemma superCommute_bosonic_ofCrAnList_eq_sum (a : 𝓕.CrAnAlgebra) (φs : List 𝓕.CrAnStates)
+    (ha : a ∈ statisticSubmodule bosonic) :
+    [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length),
+      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
+      ofCrAnList (φs.drop (n + 1)) := by
+  let p (a : 𝓕.CrAnAlgebra) (ha : a ∈ statisticSubmodule bosonic) : Prop :=
+       [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length),
+      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
+      ofCrAnList (φs.drop (n + 1))
+  change p a ha
+  apply Submodule.span_induction (p := p)
+  · intro a ha
+    obtain ⟨φs, rfl, hφs⟩ := ha
+    simp [p]
+    rw [superCommute_ofCrAnList_ofCrAnList_eq_sum]
+    congr
+    funext n
+    simp [hφs]
+  · simp [p]
+  · intro x y hx hy hpx hpy
+    simp_all [p]
+    rw [← Finset.sum_add_distrib]
+    congr
+    funext n
+    simp [mul_add, add_mul]
+  · intro c x hx hpx
+    simp_all [p, Finset.smul_sum]
+  · exact ha
+
+
+lemma superCommute_fermionic_ofCrAnList_eq_sum (a : 𝓕.CrAnAlgebra) (φs : List 𝓕.CrAnStates)
+    (ha : a ∈ statisticSubmodule fermionic) :
+    [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length),  𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
+      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
+      ofCrAnList (φs.drop (n + 1)) := by
+  let p (a : 𝓕.CrAnAlgebra) (ha : a ∈ statisticSubmodule fermionic) : Prop :=
+       [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
+      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
+      ofCrAnList (φs.drop (n + 1))
+  change p a ha
+  apply Submodule.span_induction (p := p)
+  · intro a ha
+    obtain ⟨φs, rfl, hφs⟩ := ha
+    simp [p]
+    rw [superCommute_ofCrAnList_ofCrAnList_eq_sum]
+    congr
+    funext n
+    simp [hφs]
+  · simp [p]
+  · intro x y hx hy hpx hpy
+    simp_all [p]
+    rw [← Finset.sum_add_distrib]
+    congr
+    funext n
+    simp [mul_add, add_mul]
+  · intro c x hx hpx
+    simp_all [p, Finset.smul_sum]
+    congr
+    funext x
+    simp [smul_smul, mul_comm]
+  · exact ha
+
+
+lemma statistic_neq_of_superCommute_fermionic {φs φs' : List 𝓕.CrAnStates}
+    (h : [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule fermionic) :
+    (𝓕 |>ₛ φs) ≠ (𝓕 |>ₛ φs') ∨ [ofCrAnList φs, ofCrAnList φs']ₛca = 0 := by
+  by_cases h0 : [ofCrAnList φs, ofCrAnList φs']ₛca = 0
+  · simp [h0]
+  simp [h0]
+  by_contra hn
+  refine h0 (eq_zero_of_bosonic_and_fermionic ?_ h)
+  by_cases hc : (𝓕 |>ₛ φs) = bosonic
+  · have h1 : bosonic = bosonic + bosonic := by
+      simp
+      rfl
+    rw [h1]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _ hc
+    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    rw [← hn, hc]
+  · have h1 : bosonic = fermionic + fermionic := by
+      simp
+      rfl
+    rw [h1]
+    apply superCommute_grade
+    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    simpa using hc
+    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    rw [← hn]
+    simpa using hc
 
 end CrAnAlgebra
 

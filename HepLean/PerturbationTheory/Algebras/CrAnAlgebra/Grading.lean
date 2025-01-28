@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 import Mathlib.RingTheory.GradedAlgebra.Basic
 /-!
@@ -24,6 +23,19 @@ noncomputable section
 /-- The submodule of `CrAnAlgebra` spanned by lists of field statistic `f`. -/
 def statisticSubmodule  (f : FieldStatistic) :  Submodule ℂ 𝓕.CrAnAlgebra  :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
+
+lemma ofCrAnList_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
+  (h : (𝓕 |>ₛ φs) = f) :
+    ofCrAnList φs ∈ statisticSubmodule f  := by
+  refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
+
+lemma ofCrAnList_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
+    ofCrAnList φs ∈ statisticSubmodule bosonic ∨ ofCrAnList φs ∈ statisticSubmodule fermionic := by
+  by_cases h : (𝓕 |>ₛ φs) = bosonic
+  · left
+    exact ofCrAnList_mem_statisticSubmodule_of φs bosonic h
+  · right
+    exact ofCrAnList_mem_statisticSubmodule_of φs fermionic (by simpa using h)
 
 /-- The projection of an element of `CrAnAlgebra` onto it's bosonic part. -/
 def bosonicProj : 𝓕.CrAnAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) bosonic :=
@@ -275,6 +287,15 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
       bosonicProj_of_fermionic_part, add_zero, fermionicProj_of_bosonic_part,
       fermionicProj_of_fermionic_part, zero_add]
     conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
+
+lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.CrAnAlgebra}
+    (hb : a ∈ statisticSubmodule bosonic) (hf : a ∈ statisticSubmodule fermionic) : a = 0 := by
+  have ha := bosonicProj_of_mem_bosonic a hb
+  have hb := fermionicProj_of_mem_fermionic a hf
+  have hc := (bosonicProj_add_fermionicProj a)
+  rw [ha, hb] at hc
+  simpa using hc
+
 
 end
 
