@@ -235,4 +235,17 @@ lemma koszulSignInsert_cons (r0 r1 : 𝓕) (r : List 𝓕) :
     koszulSignInsert q le r0 r := by
   simp [koszulSignInsert, koszulSignCons]
 
+lemma koszulSignInsert_of_le_mem (φ0 : 𝓕) :  (φs : List 𝓕) →  (h : ∀ b ∈ φs, le φ0 b) →
+    koszulSignInsert q le φ0 φs = 1
+  | [], _ => by
+    simp [koszulSignInsert]
+  | φ1 :: φs, h => by
+    simp [koszulSignInsert]
+    rw [if_pos]
+    · apply koszulSignInsert_of_le_mem
+      · intro b hb
+        exact h b (List.mem_cons_of_mem _ hb)
+    · exact h φ1 (List.mem_cons_self _ _)
+
+
 end Wick

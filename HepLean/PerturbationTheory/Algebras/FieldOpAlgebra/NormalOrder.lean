@@ -14,7 +14,6 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 namespace FieldSpecification
 open CrAnAlgebra
 open HepLean.List
-open WickContraction
 open FieldStatistic
 
 namespace FieldOpAlgebra

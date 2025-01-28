@@ -118,6 +118,13 @@ lemma insertIdx_eraseIdx_fin {I : Type} :
       List.insertIdx_succ_cons, List.cons.injEq, true_and]
     exact insertIdx_eraseIdx_fin as ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
+lemma insertIdx_length_fst_append {I : Type} (φ : I) : (φs φs' : List I) →
+     List.insertIdx φs.length φ (φs ++ φs') = (φs ++ φ :: φs')
+  | [], φs' => by simp
+  | φ' :: φs, φs' => by
+    simp
+    exact insertIdx_length_fst_append φ φs φs'
+
 lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
     r.get = (List.insertIdx k i r).get ∘
     (finCongr (insertIdx_length_fin i r k).symm) ∘ k.succAbove := by

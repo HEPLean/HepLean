@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Koszul.KoszulSignInsert
+import HepLean.Mathematics.List.InsertionSort
 /-!
 
 # Koszul sign
@@ -258,5 +259,96 @@ lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le
     List.take_zero, ofList_empty, exchangeSign_bosonic, mul_one, mul_eq_mul_left_iff]
   apply Or.inl
   rfl
+
+lemma koszulSign_swap_eq_rel_cons {ψ φ : 𝓕}
+    (h1 : le φ ψ) (h2 : le ψ φ) (φs' : List 𝓕):
+    koszulSign q le (φ :: ψ :: φs') = koszulSign q le (ψ :: φ :: φs') := by
+  simp only [Wick.koszulSign, ← mul_assoc, mul_eq_mul_right_iff]
+  left
+  rw [mul_comm]
+  simp [Wick.koszulSignInsert, h1, h2]
+
+lemma koszulSign_swap_eq_rel {ψ φ : 𝓕} (h1 : le φ ψ) (h2 : le ψ φ) : (φs φs' : List 𝓕) →
+    koszulSign q le (φs ++ φ :: ψ :: φs') = koszulSign q le (φs ++ ψ :: φ :: φs')
+  | [], φs' => by
+    simp only [List.nil_append]
+    exact koszulSign_swap_eq_rel_cons q le h1 h2 φs'
+  | φ'' :: φs, φs' => by
+    simp only [Wick.koszulSign, List.append_eq]
+    rw [koszulSign_swap_eq_rel h1 h2]
+    congr 1
+    apply Wick.koszulSignInsert_eq_perm
+    exact List.Perm.append_left φs (List.Perm.swap ψ φ φs')
+
+lemma koszulSign_of_sorted : (φs : List 𝓕)
+    → (hs : List.Sorted le φs) → koszulSign q le φs = 1
+  | [], _ => by
+    simp [koszulSign]
+  | φ :: φs, h => by
+    simp [koszulSign]
+    simp at h
+    rw [koszulSign_of_sorted φs h.2]
+    simp
+    exact koszulSignInsert_of_le_mem _ _ _ _ h.1
+
+@[simp]
+lemma koszulSign_of_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) :
+    koszulSign q le (List.insertionSort le φs) = 1 := by
+  apply koszulSign_of_sorted
+  exact List.sorted_insertionSort le φs
+
+lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕 le]  : (φs φs' : List 𝓕) →
+    koszulSign q le (φs ++ φs') =
+    koszulSign q le (List.insertionSort le φs ++ φs') *  koszulSign q le φs
+  | φs, [] => by
+    simp
+  | φs, φ :: φs' => by
+    have h1 : (φs ++ φ :: φs') = List.insertIdx φs.length φ (φs ++ φs') := by
+      rw [insertIdx_length_fst_append]
+    have h2 : (List.insertionSort le φs ++ φ :: φs') = List.insertIdx (List.insertionSort le φs).length φ (List.insertionSort le φs ++ φs') := by
+      rw [insertIdx_length_fst_append]
+    rw [h1, h2]
+    rw [koszulSign_insertIdx]
+    simp
+    rw [koszulSign_insertIdx]
+    simp [mul_assoc]
+    left
+    rw [koszulSign_of_append_eq_insertionSort_left φs φs']
+    simp [mul_assoc]
+    left
+    simp [mul_comm]
+    left
+    congr 3
+    · have h2 : (List.insertionSort le φs ++ φ :: φs') = List.insertIdx φs.length φ (List.insertionSort le φs ++ φs') := by
+        rw [← insertIdx_length_fst_append]
+        simp
+      rw [insertionSortEquiv_congr _ _ h2.symm]
+      simp
+      rw [insertionSortEquiv_insertionSort_append]
+      simp
+      rw [insertionSortEquiv_congr _ _ h1.symm]
+      simp
+    · rw [insertIdx_length_fst_append]
+      rw [show  φs.length = (List.insertionSort le φs).length by simp]
+      rw [insertIdx_length_fst_append]
+      symm
+      apply insertionSort_insertionSort_append
+    · simp
+    · simp
+
+lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le]  : (φs'' φs φs' : List 𝓕) →
+    koszulSign q le (φs'' ++ φs ++ φs') =
+    koszulSign q le (φs'' ++ List.insertionSort le φs ++ φs') *  koszulSign q le φs
+  | [], φs, φs'=> by
+    simp
+    exact koszulSign_of_append_eq_insertionSort_left q le φs φs'
+  | φ'' :: φs'', φs, φs' => by
+    simp only [koszulSign, List.append_eq]
+    rw [koszulSign_of_append_eq_insertionSort φs'' φs φs', ← mul_assoc]
+    congr 2
+    apply koszulSignInsert_eq_perm
+    refine (List.perm_append_right_iff φs').mpr ?_
+    refine List.Perm.append_left φs'' ?_
+    exact List.Perm.symm (List.perm_insertionSort le φs)
 
 end Wick
