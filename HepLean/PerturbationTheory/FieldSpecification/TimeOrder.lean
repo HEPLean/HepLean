@@ -303,7 +303,6 @@ lemma orderedInsert_swap_eq_time {φ ψ : 𝓕.CrAnStates}
   intro y hy
   simpa using List.mem_takeWhile_imp hy
 
-
 lemma orderedInsert_in_swap_eq_time {φ ψ φ': 𝓕.CrAnStates} (h1 : crAnTimeOrderRel φ ψ)
     (h2 : crAnTimeOrderRel ψ φ) : (φs φs' : List 𝓕.CrAnStates) → ∃ l1 l2,
     List.orderedInsert crAnTimeOrderRel φ' (φs ++ φ :: ψ :: φs') = l1 ++ φ :: ψ :: l2 ∧
