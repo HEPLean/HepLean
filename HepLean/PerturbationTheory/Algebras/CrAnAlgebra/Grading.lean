@@ -21,9 +21,11 @@ namespace CrAnAlgebra
 
 noncomputable section
 
+/-- The submodule of `CrAnAlgebra` spanned by lists of field statistic `f`. -/
 def statisticSubmodule  (f : FieldStatistic) :  Submodule ℂ 𝓕.CrAnAlgebra  :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
 
+/-- The projection of an element of `CrAnAlgebra` onto it's bosonic part. -/
 def bosonicProj : 𝓕.CrAnAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) bosonic :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   if h : (𝓕 |>ₛ φs) = bosonic then
@@ -83,6 +85,7 @@ lemma bosonicProj_of_fermionic_part
   apply bosonicProj_of_mem_fermionic
   exact Submodule.coe_mem (a.toFun fermionic)
 
+/-- The projection of an element of `CrAnAlgebra` onto it's fermionic part. -/
 def fermionicProj : 𝓕.CrAnAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) fermionic :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   if h : (𝓕 |>ₛ φs) = fermionic then
