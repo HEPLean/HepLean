@@ -44,10 +44,10 @@ lemma bosonicProj_of_mem_bosonic (a : 𝓕.CrAnAlgebra) (h : a ∈ statisticSubm
   change p a h
   apply Submodule.span_induction
   · intro x hx
-    simp at hx
+    simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p, bosonicProj_ofCrAnList, h]
-  · simp [p]
+  · simp only [map_zero, p]
     rfl
   · intro x y hx hy hpx hpy
     simp_all [p]
@@ -61,7 +61,7 @@ lemma bosonicProj_of_mem_fermionic (a : 𝓕.CrAnAlgebra) (h : a ∈ statisticSu
   change p a h
   apply Submodule.span_induction
   · intro x hx
-    simp at hx
+    simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p, bosonicProj_ofCrAnList, h]
   · simp [p]
@@ -103,7 +103,7 @@ lemma fermionicProj_ofCrAnList_if_bosonic (φs : List 𝓕.CrAnStates) :
   rw [fermionicProj_ofCrAnList]
   by_cases h1 : (𝓕 |>ₛ φs) = fermionic
   · simp [h1]
-  · simp [h1]
+  · simp only [h1, ↓reduceDIte]
     simp only [neq_fermionic_iff_eq_bosonic] at h1
     simp [h1]
 
@@ -114,10 +114,10 @@ lemma fermionicProj_of_mem_fermionic (a : 𝓕.CrAnAlgebra) (h : a ∈ statistic
   change p a h
   apply Submodule.span_induction
   · intro x hx
-    simp at hx
+    simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p, fermionicProj_ofCrAnList, h]
-  · simp [p]
+  · simp only [map_zero, p]
     rfl
   · intro x y hx hy hpx hpy
     simp_all [p]
@@ -131,7 +131,7 @@ lemma fermionicProj_of_mem_bosonic (a : 𝓕.CrAnAlgebra) (h : a ∈ statisticSu
   change p a h
   apply Submodule.span_induction
   · intro x hx
-    simp at hx
+    simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p, fermionicProj_ofCrAnList, h]
   · simp [p]
@@ -161,7 +161,8 @@ lemma bosonicProj_add_fermionicProj (a : 𝓕.CrAnAlgebra) :
     (statisticSubmodule fermionic).subtype ∘ₗ fermionicProj
   change (f1 + f2) a = LinearMap.id (R := ℂ) a
   refine LinearMap.congr_fun (ofCrAnListBasis.ext fun φs ↦ ?_) a
-  simp [f1, f2]
+  simp only [ofListBasis_eq_ofList, LinearMap.add_apply, LinearMap.coe_comp, Submodule.coe_subtype,
+    Function.comp_apply, LinearMap.id_coe, id_eq, f1, f2]
   rw [bosonicProj_ofCrAnList, fermionicProj_ofCrAnList_if_bosonic]
   by_cases h : (𝓕 |>ₛ φs) = bosonic
   · simp [h]
@@ -176,13 +177,13 @@ lemma coeAddMonoidHom_apply_eq_bosonic_plus_fermionic
   apply DirectSum.induction_on
   · simp [C]
   · intro i x
-    simp [C]
+    simp only [DFinsupp.toFun_eq_coe, DirectSum.coeAddMonoidHom_of, C]
     rw [DirectSum.of_apply, DirectSum.of_apply]
     match i with
     | bosonic => simp
     | fermionic => simp
   · intro x y hx hy
-    simp_all [C]
+    simp_all only [C, DFinsupp.toFun_eq_coe, map_add, DirectSum.add_apply, Submodule.coe_add]
     abel
 
 lemma directSum_eq_bosonic_plus_fermionic
@@ -196,30 +197,30 @@ lemma directSum_eq_bosonic_plus_fermionic
   apply DirectSum.induction_on
   · simp [C]
   · intro i x
-    simp [C]
+    simp only [C]
     match i with
     | bosonic =>
       simp only [DirectSum.of_eq_same, self_eq_add_right]
       rw [DirectSum.of_eq_of_ne]
-      simp
+      simp only [map_zero]
       simp
     | fermionic =>
       simp only [DirectSum.of_eq_same, add_zero]
       rw [DirectSum.of_eq_of_ne]
-      simp
+      simp only [map_zero, zero_add]
       simp
   · intro x y hx hy
-    simp [C] at hx hy ⊢
+    simp only [DirectSum.add_apply, map_add, C] at hx hy ⊢
     conv_lhs => rw [hx, hy]
     abel
 
 instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
   one_mem := by
-    simp [statisticSubmodule]
+    simp only [statisticSubmodule]
     refine Submodule.mem_span.mpr fun p a => a ?_
-    simp
+    simp only [Set.mem_setOf_eq]
     use []
-    simp
+    simp only [ofCrAnList_nil, ofList_empty, true_and]
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
     let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
@@ -227,36 +228,36 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
     change p a2 h2
     apply Submodule.span_induction (p := p)
     · intro x hx
-      simp at hx
+      simp only [Set.mem_setOf_eq] at hx
       obtain ⟨φs, rfl, h⟩ := hx
-      simp [p]
+      simp only [p]
       let p (a1 : 𝓕.CrAnAlgebra) (hx : a1 ∈ statisticSubmodule f1) : Prop :=
         a1 * ofCrAnList φs ∈ statisticSubmodule (f1 + f2)
       change p a1 h1
       apply Submodule.span_induction (p := p)
       · intro y hy
         obtain ⟨φs', rfl, h'⟩ := hy
-        simp [p]
+        simp only [p]
         rw [← ofCrAnList_append]
         refine Submodule.mem_span.mpr fun p a => a ?_
-        simp
+        simp only [Set.mem_setOf_eq]
         use φs' ++ φs
-        simp [h, h']
+        simp only [ofList_append, h', h, true_and]
         cases f1 <;> cases f2 <;> rfl
       · simp [p]
       · intro x y hx hy hx1 hx2
-        simp [p, add_mul]
+        simp only [add_mul, p]
         exact Submodule.add_mem _ hx1 hx2
       · intro c a hx h1
-        simp [p, mul_smul]
+        simp only [Algebra.smul_mul_assoc, p]
         exact Submodule.smul_mem _ _ h1
       · exact h1
     · simp [p]
     · intro x y hx hy hx1 hx2
-      simp [p, mul_add]
+      simp only [mul_add, p]
       exact Submodule.add_mem _ hx1 hx2
     · intro c a hx h1
-      simp [p, mul_smul]
+      simp only [Algebra.mul_smul_comm, p]
       exact Submodule.smul_mem _ _ h1
     · exact h2
   decompose' a :=  DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
@@ -267,7 +268,9 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
     · exact bosonicProj_add_fermionicProj a
   right_inv a := by
     rw [coeAddMonoidHom_apply_eq_bosonic_plus_fermionic]
-    simp
+    simp only [DFinsupp.toFun_eq_coe, map_add, bosonicProj_of_bonosic_part,
+      bosonicProj_of_fermionic_part, add_zero, fermionicProj_of_bosonic_part,
+      fermionicProj_of_fermionic_part, zero_add]
     conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
 
 end

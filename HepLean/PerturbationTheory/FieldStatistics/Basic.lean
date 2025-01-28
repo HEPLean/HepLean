@@ -282,7 +282,7 @@ lemma ofList_take_insertIdx_le (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : 
   · exact hn
   · exact hm
 
-
+/-- The instance of an addative monoid on `FieldStatistic`. -/
 instance : AddMonoid FieldStatistic where
   zero := bosonic
   add a b := a * b
@@ -293,14 +293,12 @@ instance : AddMonoid FieldStatistic where
     cases a <;> simp <;> rfl
   add_assoc a b c := by
     cases a <;> cases b <;> cases c <;> simp <;> rfl
-  nsmul_zero a :=   by
+  nsmul_zero a := by
     simp only [Finset.univ_eq_empty, Finset.prod_const, instCommGroup, Finset.card_empty, pow_zero]
     rfl
   nsmul_succ a n := by
     simp only [instCommGroup, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     rfl
-
-
 
 end ofListTake
 end FieldStatistic
