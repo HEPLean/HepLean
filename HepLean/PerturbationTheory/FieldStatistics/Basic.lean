@@ -63,6 +63,10 @@ lemma fermionic_mul_bosonic : fermionic * bosonic = fermionic := rfl
 lemma fermionic_mul_fermionic : fermionic * fermionic = bosonic := rfl
 
 @[simp]
+lemma mul_bosonic (a : FieldStatistic) : a * bosonic = a := by
+  cases a <;> rfl
+
+@[simp]
 lemma mul_self (a : FieldStatistic) : a * a = 1 := by
   cases a <;> rfl
 

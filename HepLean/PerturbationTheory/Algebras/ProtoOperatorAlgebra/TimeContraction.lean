@@ -28,11 +28,11 @@ open FieldStatistic
   as their time ordering in the state algebra minus their normal ordering in the
   creation and annihlation algebra, both mapped to `𝓞.A`.. -/
 def timeContract (φ ψ : 𝓕.States) : 𝓞.A :=
-  𝓞.crAnF (𝓣ᶠ(ofState φ * ofState ψ) - 𝓝(ofState φ * ofState ψ))
+  𝓞.crAnF (𝓣ᶠ(ofState φ * ofState ψ) - 𝓝ᶠ(ofState φ * ofState ψ))
 
 lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
     𝓞.crAnF (𝓣ᶠ(ofState φ * ofState ψ)
-    + (-1 : ℂ) • 𝓝(ofState φ * ofState ψ)) := by rfl
+    + (-1 : ℂ) • 𝓝ᶠ(ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
     𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart φ, ofState ψ]ₛca) := by

@@ -207,6 +207,10 @@ instance : IsTotal 𝓕.CrAnStates 𝓕.crAnTimeOrderRel where
 instance : IsTrans 𝓕.CrAnStates 𝓕.crAnTimeOrderRel where
   trans a b c := IsTrans.trans (r := 𝓕.timeOrderRel) a.1 b.1 c.1
 
+@[simp]
+lemma crAnTimeOrderRel_refl (φ : 𝓕.CrAnStates) : crAnTimeOrderRel φ φ := by
+  exact (IsTotal.to_isRefl (r := 𝓕.crAnTimeOrderRel)).refl φ
+
 /-- The sign associated with putting a list of `CrAnStates` into time order (with
   the state of greatest time to the left).
   We pick up a minus sign for every fermion paired crossed. -/
@@ -218,6 +222,40 @@ lemma crAnTimeOrderSign_nil : crAnTimeOrderSign (𝓕 := 𝓕) [] = 1 := by
   simp only [crAnTimeOrderSign]
   rfl
 
+lemma crAnTimeOrderSign_pair_ordered {φ ψ : 𝓕.CrAnStates} (h : crAnTimeOrderRel φ ψ) :
+    crAnTimeOrderSign [φ, ψ] = 1 := by
+  simp only [crAnTimeOrderSign, Wick.koszulSign, Wick.koszulSignInsert, mul_one, ite_eq_left_iff,
+    ite_eq_right_iff, and_imp]
+  exact fun h' => False.elim (h' h)
+
+lemma crAnTimeOrderSign_pair_not_ordered {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) :
+    crAnTimeOrderSign [φ, ψ] = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) := by
+  simp only [crAnTimeOrderSign, Wick.koszulSign, Wick.koszulSignInsert, mul_one, instCommGroup.eq_1]
+  rw [if_neg h]
+  simp [FieldStatistic.exchangeSign_eq_if]
+
+lemma crAnTimeOrderSign_swap_eq_time_cons {φ ψ : 𝓕.CrAnStates}
+    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) (φs' : List 𝓕.CrAnStates) :
+    crAnTimeOrderSign (φ :: ψ :: φs') = crAnTimeOrderSign (ψ :: φ :: φs') := by
+  simp only [crAnTimeOrderSign, Wick.koszulSign, ← mul_assoc, mul_eq_mul_right_iff]
+  left
+  rw [mul_comm]
+  simp [Wick.koszulSignInsert, h1, h2]
+
+lemma crAnTimeOrderSign_swap_eq_time {φ ψ : 𝓕.CrAnStates}
+    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) : (φs φs' : List 𝓕.CrAnStates) →
+    crAnTimeOrderSign (φs ++ φ :: ψ :: φs') = crAnTimeOrderSign (φs ++ ψ :: φ :: φs')
+  | [], φs' => by
+    simp only [crAnTimeOrderSign, List.nil_append]
+    exact crAnTimeOrderSign_swap_eq_time_cons h1 h2 φs'
+  | φ'' :: φs, φs' => by
+    simp only [crAnTimeOrderSign, Wick.koszulSign, List.append_eq]
+    rw [← crAnTimeOrderSign, ← crAnTimeOrderSign]
+    rw [crAnTimeOrderSign_swap_eq_time h1 h2]
+    congr 1
+    apply Wick.koszulSignInsert_eq_perm
+    exact List.Perm.append_left φs (List.Perm.swap ψ φ φs')
+
 /-- Sort a list of `CrAnStates` based on `crAnTimeOrderRel`. -/
 def crAnTimeOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
   List.insertionSort 𝓕.crAnTimeOrderRel φs
@@ -225,6 +263,99 @@ def crAnTimeOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=
 @[simp]
 lemma crAnTimeOrderList_nil : crAnTimeOrderList (𝓕 := 𝓕) [] = [] := by
   simp [crAnTimeOrderList]
+
+lemma crAnTimeOrderList_pair_ordered {φ ψ : 𝓕.CrAnStates} (h : crAnTimeOrderRel φ ψ) :
+    crAnTimeOrderList [φ, ψ] = [φ, ψ] := by
+  simp only [crAnTimeOrderList, List.insertionSort, List.orderedInsert, ite_eq_left_iff,
+    List.cons.injEq, and_true]
+  exact fun h' => False.elim (h' h)
+
+lemma crAnTimeOrderList_pair_not_ordered {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) :
+    crAnTimeOrderList [φ, ψ] = [ψ, φ] := by
+  simp only [crAnTimeOrderList, List.insertionSort, List.orderedInsert, ite_eq_right_iff,
+    List.cons.injEq, and_true]
+  exact fun h' => False.elim (h h')
+
+lemma orderedInsert_swap_eq_time {φ ψ : 𝓕.CrAnStates}
+    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) (φs : List 𝓕.CrAnStates) :
+    List.orderedInsert crAnTimeOrderRel φ (List.orderedInsert crAnTimeOrderRel ψ φs) =
+    List.takeWhile (fun b => ¬ crAnTimeOrderRel ψ b) φs ++ φ :: ψ ::
+    List.dropWhile (fun b => ¬ crAnTimeOrderRel ψ b) φs := by
+  rw [List.orderedInsert_eq_take_drop crAnTimeOrderRel ψ φs]
+  simp only [decide_not]
+  rw [List.orderedInsert_eq_take_drop]
+  simp only [decide_not]
+  have h1 (b : 𝓕.CrAnStates) : (crAnTimeOrderRel φ b) ↔ (crAnTimeOrderRel ψ b) :=
+    Iff.intro (fun h => IsTrans.trans _ _ _ h2 h) (fun h => IsTrans.trans _ _ _ h1 h)
+  simp only [h1]
+  rw [List.takeWhile_append]
+  rw [List.takeWhile_takeWhile]
+  simp only [Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not, and_self, decide_not,
+    ↓reduceIte, crAnTimeOrderRel_refl, decide_true, Bool.false_eq_true, not_false_eq_true,
+    List.takeWhile_cons_of_neg, List.append_nil, List.append_cancel_left_eq, List.cons.injEq,
+    true_and]
+  rw [List.dropWhile_append]
+  simp only [List.isEmpty_eq_true, List.dropWhile_eq_nil_iff, Bool.not_eq_eq_eq_not, Bool.not_true,
+    decide_eq_false_iff_not, crAnTimeOrderRel_refl, decide_true, Bool.false_eq_true,
+    not_false_eq_true, List.dropWhile_cons_of_neg, ite_eq_left_iff, not_forall, Classical.not_imp,
+    Decidable.not_not, List.append_left_eq_self, forall_exists_index, and_imp]
+  intro x hx hxψ
+  intro y hy
+  simpa using List.mem_takeWhile_imp hy
+
+
+lemma orderedInsert_in_swap_eq_time {φ ψ φ': 𝓕.CrAnStates} (h1 : crAnTimeOrderRel φ ψ)
+    (h2 : crAnTimeOrderRel ψ φ) : (φs φs' : List 𝓕.CrAnStates) → ∃ l1 l2,
+    List.orderedInsert crAnTimeOrderRel φ' (φs ++ φ :: ψ :: φs') = l1 ++ φ :: ψ :: l2 ∧
+    List.orderedInsert crAnTimeOrderRel φ' (φs ++ ψ :: φ :: φs') = l1 ++ ψ :: φ :: l2
+  | [], φs' => by
+    have h1 (b : 𝓕.CrAnStates) : (crAnTimeOrderRel b φ) ↔ (crAnTimeOrderRel b ψ) :=
+      Iff.intro (fun h => IsTrans.trans _ _ _ h h1) (fun h => IsTrans.trans _ _ _ h h2)
+    by_cases h : crAnTimeOrderRel φ' φ
+    · simp only [List.orderedInsert, h, ↓reduceIte, ← h1 φ']
+      use [φ'], φs'
+      simp
+    · simp only [List.orderedInsert, h, ↓reduceIte, ← h1 φ']
+      use [], List.orderedInsert crAnTimeOrderRel φ' φs'
+      simp
+  | φ'' :: φs, φs' => by
+    obtain ⟨l1, l2, hl⟩ := orderedInsert_in_swap_eq_time (φ' := φ') h1 h2 φs φs'
+    simp only [List.orderedInsert, List.append_eq]
+    rw [hl.1, hl.2]
+    by_cases h : crAnTimeOrderRel φ' φ''
+    · simp only [h, ↓reduceIte]
+      use (φ' :: φ'' :: φs), φs'
+      simp
+    · simp only [h, ↓reduceIte]
+      use (φ'' :: l1), l2
+      simp
+
+lemma crAnTimeOrderList_swap_eq_time {φ ψ : 𝓕.CrAnStates}
+    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) :
+    (φs φs' : List 𝓕.CrAnStates) →
+    ∃ (l1 l2 : List 𝓕.CrAnStates),
+      crAnTimeOrderList (φs ++ φ :: ψ :: φs') = l1 ++ φ :: ψ :: l2 ∧
+      crAnTimeOrderList (φs ++ ψ :: φ :: φs') = l1 ++ ψ :: φ :: l2
+  | [], φs' => by
+    simp only [crAnTimeOrderList]
+    simp only [List.insertionSort]
+    use List.takeWhile (fun b => ¬ crAnTimeOrderRel ψ b) (List.insertionSort crAnTimeOrderRel φs'),
+      List.dropWhile (fun b => ¬ crAnTimeOrderRel ψ b) (List.insertionSort crAnTimeOrderRel φs')
+    apply And.intro
+    · exact orderedInsert_swap_eq_time h1 h2 _
+    · have h1' (b : 𝓕.CrAnStates) : (crAnTimeOrderRel φ b) ↔ (crAnTimeOrderRel ψ b) :=
+        Iff.intro (fun h => IsTrans.trans _ _ _ h2 h) (fun h => IsTrans.trans _ _ _ h1 h)
+      simp only [← h1', decide_not]
+      simpa using orderedInsert_swap_eq_time h2 h1 _
+  | φ'' :: φs, φs' => by
+    rw [crAnTimeOrderList, crAnTimeOrderList]
+    simp only [List.insertionSort, List.append_eq]
+    obtain ⟨l1, l2, hl⟩ := crAnTimeOrderList_swap_eq_time h1 h2 φs φs'
+    simp only [crAnTimeOrderList] at hl
+    rw [hl.1, hl.2]
+    obtain ⟨l1', l2', hl'⟩ := orderedInsert_in_swap_eq_time (φ' := φ'') h1 h2 l1 l2
+    rw [hl'.1, hl'.2]
+    use l1', l2'
 
 /-!
 

@@ -31,7 +31,6 @@ def timeOrder : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   crAnTimeOrderSign φs • ofCrAnList (crAnTimeOrderList φs)
 
-
 @[inherit_doc timeOrder]
 scoped[FieldSpecification.CrAnAlgebra] notation "𝓣ᶠ(" a ")" => timeOrder a
 
@@ -51,7 +50,6 @@ lemma timeOrder_ofStateList (φs : List 𝓕.States) :
   congr
   rw [ofStateList_sum, sum_crAnSections_timeOrder]
   rfl
-
 
 lemma timeOrder_ofStateList_nil : timeOrder (𝓕 := 𝓕) (ofStateList []) = 1 := by
   rw [timeOrder_ofStateList]
@@ -84,6 +82,42 @@ lemma timeOrder_ofState_ofState_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (
   have hx := IsTotal.total (r := timeOrderRel) ψ φ
   simp_all
 
+lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel
+    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) :
+    𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca) = 0 := by
+  rw [superCommute_ofCrAnState_ofCrAnState]
+  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton,
+    ← ofCrAnList_append, ← ofCrAnList_append, timeOrder_ofCrAnList, timeOrder_ofCrAnList]
+  simp only [List.singleton_append]
+  rw [crAnTimeOrderSign_pair_not_ordered h, crAnTimeOrderList_pair_not_ordered h]
+  rw [sub_eq_zero, smul_smul]
+  have h1 := IsTotal.total (r := crAnTimeOrderRel) φ ψ
+  congr
+  · rw [crAnTimeOrderSign_pair_ordered, exchangeSign_symm]
+    simp only [instCommGroup.eq_1, mul_one]
+    simp_all
+  · rw [crAnTimeOrderList_pair_ordered]
+    simp_all
+
+lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_eq_time
+    {φ ψ : 𝓕.CrAnStates} (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) :
+    𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca) = [ofCrAnState φ, ofCrAnState ψ]ₛca := by
+  rw [superCommute_ofCrAnState_ofCrAnState]
+  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton,
+    ← ofCrAnList_append, ← ofCrAnList_append, timeOrder_ofCrAnList, timeOrder_ofCrAnList]
+  simp only [List.singleton_append]
+  rw [crAnTimeOrderSign_pair_ordered h1, crAnTimeOrderList_pair_ordered h1,
+    crAnTimeOrderSign_pair_ordered h2, crAnTimeOrderList_pair_ordered h2]
+  simp
+
+/-!
+
+## Interaction with maxTimeField
+
+-/
+
 /-- In the state algebra time, ordering obeys `T(φ₀φ₁…φₙ) = s * φᵢ * T(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`
   where `φᵢ` is the state
   which has maximum time and `s` is the exchange sign of `φᵢ` and `φ₀φ₁…φᵢ₋₁`. -/
@@ -106,7 +140,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
     𝓣ᶠ(ofStateList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
       (Finset.filter (fun x =>
         (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
-     ofState (maxTimeField φ φs) * 𝓣ᶠ(ofStateList (eraseMaxTimeField φ φs)) := by
+      ofState (maxTimeField φ φs) * 𝓣ᶠ(ofStateList (eraseMaxTimeField φ φs)) := by
   rw [timeOrder_eq_maxTimeField_mul]
   congr 3
   apply FieldStatistic.ofList_perm
@@ -149,16 +183,6 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
           Finset.univ)
 
-
-/-!
-
-## Norm-time order
-
--/
-/-- The normal-time ordering on `CrAnAlgebra`. -/
-def normTimeOrder : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
-  normTimeOrderSign φs • ofCrAnList (normTimeOrderList φs)
 end
 
 end CrAnAlgebra
