@@ -31,32 +31,32 @@ namespace complexLorentzTensor
 
 -/
 
+/-- Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀ`. -/
 informal_lemma coContrUnit_symm where
-  math := "Swapping indices of coContrUnit returns contrCoUnit, i.e. {δ' | μ ν = δ | ν μ}.ᵀ"
   deps := [``coContrUnit, ``contrCoUnit]
 
+/-- Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀ`. -/
 informal_lemma contrCoUnit_symm where
-  math := "Swapping indices of contrCoUnit returns coContrUnit, i.e. {δ | μ ν = δ' | ν μ}ᵀ"
   deps := [``contrCoUnit, ``coContrUnit]
 
+/-- Swapping indices of `altLeftLeftUnit` returns `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀ`. -/
 informal_lemma altLeftLeftUnit_symm where
-  math := "Swapping indices of altLeftLeftUnit returns leftAltLeftUnit, i.e.
-    {δL' | α α' = δL | α' α}ᵀ"
   deps := [``altLeftLeftUnit, ``leftAltLeftUnit]
 
+/-- Swapping indices of `leftAltLeftUnit` returns `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀ`. -/
 informal_lemma leftAltLeftUnit_symm where
-  math := "Swapping indices of leftAltLeftUnit returns altLeftLeftUnit, i.e.
-    {δL | α α' = δL' | α' α}ᵀ"
   deps := [``leftAltLeftUnit, ``altLeftLeftUnit]
 
+/-- Swapping indices of `altRightRightUnit` returns `rightAltRightUnit`:
+`{δR' | β β' = δR | β' β}ᵀ`.
+-/
 informal_lemma altRightRightUnit_symm where
-  math := "Swapping indices of altRightRightUnit returns rightAltRightUnit, i.e.
-    {δR' | β β' = δR | β' β}ᵀ"
   deps := [``altRightRightUnit, ``rightAltRightUnit]
 
+/-- Swapping indices of `rightAltRightUnit` returns `altRightRightUnit`:
+`{δR | β β' = δR' | β' β}ᵀ`.
+-/
 informal_lemma rightAltRightUnit_symm where
-  math := "Swapping indices of rightAltRightUnit returns altRightRightUnit, i.e.
-    {δR | β β' = δR' | β' β}ᵀ"
   deps := [``rightAltRightUnit, ``altRightRightUnit]
 
 end complexLorentzTensor

@@ -26,44 +26,55 @@ open ComplexConjugate
 abbrev GaugeGroupI : Type :=
   specialUnitaryGroup (Fin 3) ℂ × specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
+/-- The subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₆-subgroup of `GaugeGroupI` with elements `(α^2 * I₃, α^(-3) * I₂, α)`,
+where `α` is a sixth complex root of unity.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition gaugeGroupℤ₆SubGroup where
-  physics := "The subgroup of the un-quotiented gauge group which acts trivially on
-    all particles in the standard model. "
-  math := "The ℤ₆-subgroup of ``GaugeGroupI with elements (α^2 * I₃, α^(-3) * I₂, α), where `α`
-    is a sixth complex root of unity."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI]
 
+/-- The smallest possible gauge group of the Standard Model, i.e., the quotient of `GaugeGroupI` by
+the ℤ₆-subgroup `gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition GaugeGroupℤ₆ where
-  physics := "The smallest possible gauge group of the Standard Model."
-  math := "The quotient of ``GaugeGroupI by the ℤ₆-subgroup `gaugeGroupℤ₆SubGroup`."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
 
+/-- The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ₂ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition gaugeGroupℤ₂SubGroup where
-  physics := "The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on
-    all particles in the standard model. "
-  math := "The ℤ₂-subgroup of ``GaugeGroupI derived from the ℤ₂ subgroup of `gaugeGroupℤ₆SubGroup`."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
 
+/-- The guage group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition GaugeGroupℤ₂ where
-  physics := "The guage group of the Standard Model with a ℤ₂ quotient."
-  math := "The quotient of ``GaugeGroupI by the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₂SubGroup]
 
+/-- The ℤ₃-subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₃-subgroup of `GaugeGroupI` derived from the ℤ₃ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition gaugeGroupℤ₃SubGroup where
-  physics := "The ℤ₃-subgroup of the un-quotiented gauge group which acts trivially on
-    all particles in the standard model. "
-  math := "The ℤ₃-subgroup of ``GaugeGroupI derived from the ℤ₃ subgroup of `gaugeGroupℤ₆SubGroup`."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
 
+/-- The guage group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₃-subgroup `gaugeGroupℤ₃SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition GaugeGroupℤ₃ where
-  physics := "The guage group of the Standard Model with a ℤ₃-quotient."
-  math := "The quotient of ``GaugeGroupI by the ℤ₃-subgroup `gaugeGroupℤ₃SubGroup`."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₃SubGroup]
 
 /-- Specifies the allowed quotients of `SU(3) x SU(2) x U(1)` which give a valid
@@ -81,11 +92,13 @@ inductive GaugeGroupQuot : Type
   /-- The element of `GaugeGroupQuot` corresponding to the full SM gauge group. -/
   | I : GaugeGroupQuot
 
+/-- The (global) gauge group of the Standard Model given a choice of quotient, i.e., the map from
+`GaugeGroupQuot` to `Type` which gives the gauge group of the Standard Model for a given choice of
+quotient.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+-/
 informal_definition GaugeGroup where
-  physics := "The (global) gauge group of the Standard Model given a choice of quotient."
-  math := "The map from `GaugeGroupQuot` to `Type` which gives the gauge group of the Standard Model
-    for a given choice of quotient."
-  ref := "https://math.ucr.edu/home/baez/guts.pdf"
   deps := [``GaugeGroupI, ``gaugeGroupℤ₆SubGroup, ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
     ``GaugeGroupQuot]
 
@@ -95,20 +108,20 @@ informal_definition GaugeGroup where
 
 -/
 
+/-- The gauge group `GaugeGroupI` is a Lie group. -/
 informal_lemma gaugeGroupI_lie where
-  math := "The gauge group `GaugeGroupI` is a Lie group.."
   deps := [``GaugeGroupI]
 
+/-- For every `q` in `GaugeGroupQuot` the group `GaugeGroup q` is a Lie group. -/
 informal_lemma gaugeGroup_lie where
-  math := "For every q in ``GaugeGroupQuot the group ``GaugeGroup q is a Lie group."
   deps := [``GaugeGroup]
 
+/-- The trivial principal bundle over SpaceTime with structure group `GaugeGroupI`. -/
 informal_definition gaugeBundleI where
-  math := "The trivial principal bundle over SpaceTime with structure group ``GaugeGroupI."
   deps := [``GaugeGroupI, ``SpaceTime]
 
+/-- A global section of `gaugeBundleI`. -/
 informal_definition gaugeTransformI where
-  math := "A global section of ``gaugeBundleI."
   deps := [``gaugeBundleI]
 
 end StandardModel
