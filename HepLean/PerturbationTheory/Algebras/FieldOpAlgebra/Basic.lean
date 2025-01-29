@@ -92,7 +92,7 @@ lemma ι_superCommute_of_annihilate_annihilate (φa φa' : 𝓕.CrAnStates)
   left
   use φa, φa', hφa, hφa'
 
-lemma ι_superCommute_of_diff_statistic (φ ψ : 𝓕.CrAnStates)
+lemma ι_superCommute_of_diff_statistic {φ ψ : 𝓕.CrAnStates}
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) : ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   apply ι_of_mem_fieldOpIdealSet
   simp only [fieldOpIdealSet, exists_prop, exists_and_left, Set.mem_setOf_eq]
@@ -107,7 +107,7 @@ lemma ι_superCommute_zero_of_fermionic (φ ψ : 𝓕.CrAnStates)
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton] at h ⊢
   rcases statistic_neq_of_superCommute_fermionic h with h | h
   · simp [ofCrAnList_singleton]
-    apply ι_superCommute_of_diff_statistic _ _
+    apply ι_superCommute_of_diff_statistic
     simpa using h
   · simp [h]
 

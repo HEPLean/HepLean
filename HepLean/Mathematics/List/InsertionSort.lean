@@ -150,6 +150,15 @@ lemma insertionSort_insertionSort_append {α : Type} (r : α → α → Prop) [D
     simp
     rw [insertionSort_insertionSort_append r l1 l2]
 
+lemma insertionSort_append_insertionSort_append {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] : (l1 l2 l3 : List α)  →
+    List.insertionSort r (l1 ++ List.insertionSort r l2 ++ l3) = List.insertionSort r (l1 ++ l2 ++ l3)
+  | [], l2, l3 => by
+    simp
+    exact insertionSort_insertionSort_append r l2 l3
+  | a :: l1,  l2, l3 => by
+    simp only [List.insertionSort, List.append_eq]
+    rw [insertionSort_append_insertionSort_append r l1 l2 l3]
 
 @[simp]
 lemma orderedInsert_length {α : Type} (r : α → α → Prop) [DecidableRel r] (a : α) (l : List α) :
@@ -209,12 +218,6 @@ lemma takeWhile_orderedInsert' {α : Type} (r : α → α → Prop) [DecidableRe
         exact IsTrans.trans _ _ _ hrba hac
       · simp [hac, h]
         exact takeWhile_orderedInsert' r a b hr l
-
-
-
-
-
-
 
 lemma insertionSortEquiv_commute  {α : Type} (r : α → α → Prop) [DecidableRel r]
     [IsTotal α r] [IsTrans α r] (a b : α) (hr : ¬ r a b) (n : ℕ)  : (l : List α) →
@@ -373,8 +376,271 @@ lemma insertionSortEquiv_insertionSort_append {α : Type} (r : α → α → Pro
     simp
 
 
+/-!
+
+## Insertion sort with equal fields
+
+-/
+
+lemma orderedInsert_filter_of_pos {α : Type} (r : α → α → Prop) [DecidableRel r] [IsTotal α r]
+    [IsTrans α r] (a : α) (p : α → Prop) [DecidablePred p] (h : p a) : (l : List α) →
+    (hl : l.Sorted r) →
+    List.filter p (List.orderedInsert r a l) = List.orderedInsert r a (List.filter p l)
+  | [], hl => by
+    simp
+    exact h
+  | b :: l, hl  => by
+    simp
+    by_cases hpb : p b <;> by_cases hab : r a b
+    · simp [hpb, hab]
+      rw [List.filter_cons_of_pos (by simp [h])]
+      rw [List.filter_cons_of_pos (by simp [hpb])]
+    · simp [hab]
+      rw [List.filter_cons_of_pos (by simp [hpb])]
+      rw [List.filter_cons_of_pos (by simp [hpb])]
+      simp [hab]
+      simp at hl
+      exact orderedInsert_filter_of_pos r a p h l hl.2
+    · simp [hab]
+      rw [List.filter_cons_of_pos (by simp [h]),
+        List.filter_cons_of_neg (by simp [hpb])]
+      rw [List.orderedInsert_eq_take_drop]
+      have hl : List.takeWhile (fun b => decide ¬r a b) (List.filter (fun b => decide (p b)) l)  = [] := by
+        rw [List.takeWhile_eq_nil_iff]
+        intro c hc
+        simp at hc
+        apply hc
+        apply IsTrans.trans a b _ hab
+        simp at hl
+        apply hl.1
+        have hlf : (List.filter (fun b => decide (p b)) l)[0] ∈ (List.filter (fun b => decide (p b)) l) := by
+          exact List.getElem_mem c
+        simp  [- List.getElem_mem] at hlf
+        exact hlf.1
+      rw [hl]
+      simp
+      conv_lhs =>  rw [← List.takeWhile_append_dropWhile (fun b => decide ¬r a b) (List.filter (fun b => decide (p b)) l )]
+      rw [hl]
+      simp
+    · simp [hab]
+      rw [List.filter_cons_of_neg (by simp [hpb])]
+      rw [List.filter_cons_of_neg (by simp [hpb])]
+      simp at hl
+      exact orderedInsert_filter_of_pos r a p h l hl.2
+
+lemma orderedInsert_filter_of_neg {α : Type} (r : α → α → Prop) [DecidableRel r] [IsTotal α r]
+    [IsTrans α r] (a : α) (p : α → Prop) [DecidablePred p] (h : ¬ p a) (l : List α) :
+    List.filter p (List.orderedInsert r a l) = (List.filter p l) := by
+  rw [List.orderedInsert_eq_take_drop]
+  simp
+  rw [List.filter_cons_of_neg]
+  rw [← List.filter_append]
+  congr
+  exact List.takeWhile_append_dropWhile (fun b => !decide (r a b)) l
+  simp [h]
 
 
+
+lemma insertionSort_filter {α : Type} (r : α → α → Prop) [DecidableRel r] [IsTotal α r]
+    [IsTrans α r]  (p : α → Prop) [DecidablePred p] : (l : List α) →
+    List.insertionSort r (List.filter p l) =
+    List.filter p (List.insertionSort r l)
+  | [] => by simp
+  | a :: l => by
+    simp
+    by_cases h : p a
+    · rw [orderedInsert_filter_of_pos]
+      rw [List.filter_cons_of_pos]
+      simp
+      rw [insertionSort_filter]
+      simp_all
+      simp_all
+      exact List.sorted_insertionSort r l
+    · rw [orderedInsert_filter_of_neg]
+      rw [List.filter_cons_of_neg]
+      rw [insertionSort_filter]
+      simp_all
+      exact h
+
+lemma takeWhile_sorted_eq_filter {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α) : (l : List α) → (hl : l.Sorted r) →
+    List.takeWhile (fun c => ¬ r a c) l = List.filter (fun c => ¬ r a c) l
+  | [], _ => by simp
+  | b :: l, hl => by
+    simp at hl
+    by_cases  hb : ¬ r a b
+    · simp [hb]
+      simpa using takeWhile_sorted_eq_filter r a l hl.2
+    · simp_all
+      intro c hc
+      apply IsTrans.trans a b c hb
+      exact hl.1 c hc
+
+lemma dropWhile_sorted_eq_filter {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α)  : (l  : List α) → (hl : l.Sorted r) →
+    List.dropWhile (fun c => ¬ r a c) l  = List.filter (fun c => r a c) l
+  | [], _ => by simp
+  | b :: l, hl => by
+    simp at hl
+    by_cases  hb : ¬ r a b
+    · simp [hb]
+      simpa using dropWhile_sorted_eq_filter r a l hl.2
+    · simp_all
+      symm
+      rw [List.filter_eq_self]
+      intro c hc
+      simp
+      apply IsTrans.trans a b c hb
+      exact hl.1 c hc
+
+lemma dropWhile_sorted_eq_filter_filter {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α) :(l  : List α) → (hl : l.Sorted r)  →
+    List.filter (fun c => r a c) l  =
+    List.filter (fun c => r a c ∧ r c a) l ++ List.filter (fun c => r a c ∧ ¬ r c a) l
+  | [], _ => by
+    simp
+  | b :: l, hl => by
+    simp at hl
+    by_cases  hb : ¬ r a b
+    · simp [hb]
+      simpa using dropWhile_sorted_eq_filter_filter r a l hl.2
+    · simp_all
+      by_cases hba : r b a
+      · simp [hba]
+        rw [List.filter_cons_of_pos]
+        rw [dropWhile_sorted_eq_filter_filter]
+        simp
+        exact hl.2
+        simp_all
+      · simp[hba]
+        have h1 : List.filter (fun c => decide (r a c) && decide (r c a)) l = [] := by
+          rw [@List.filter_eq_nil_iff]
+          intro c hc
+          simp
+          intro hac hca
+          apply hba
+          apply IsTrans.trans b c a _ hca
+          exact hl.1 c hc
+        rw [h1]
+        rw [dropWhile_sorted_eq_filter_filter]
+        simp [h1]
+        rw [List.filter_cons_of_pos]
+        simp_all
+        exact hl.2
+
+lemma filter_rel_eq_insertionSort {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α) :(l  : List α)   →
+    List.filter (fun c => r a c ∧ r c a) (l.insertionSort r) =
+    List.filter (fun c => r a c ∧ r c a) l
+  | [] => by simp
+  | b :: l => by
+    simp only [ List.insertionSort]
+    by_cases h : r a b ∧ r b a
+    · have hl := orderedInsert_filter_of_pos r b (fun c => r a c ∧ r c a) h (List.insertionSort r l)
+        (by exact List.sorted_insertionSort r l)
+      simp at hl ⊢
+      rw [hl]
+      rw [List.orderedInsert_eq_take_drop]
+      have ht : List.takeWhile (fun b_1 => decide ¬r b b_1)
+        (List.filter (fun b => decide (r a b) && decide (r b a)) (List.insertionSort r l))  = [] := by
+        rw [List.takeWhile_eq_nil_iff]
+        intro hl
+        simp
+        have hx := List.getElem_mem hl
+        simp  [- List.getElem_mem] at hx
+        apply IsTrans.trans b a _ h.2
+        simp_all
+      rw [ht]
+      simp
+      rw [List.filter_cons_of_pos]
+      simp
+      have ih := filter_rel_eq_insertionSort r a l
+      simp at ih
+      rw [← ih]
+      have htd := List.takeWhile_append_dropWhile (fun b_1 => decide ¬r b b_1) (List.filter (fun b => decide (r a b) && decide (r b a)) (List.insertionSort r l))
+      simp [decide_not, - List.takeWhile_append_dropWhile] at htd
+      conv_rhs => rw [← htd]
+      simp [- List.takeWhile_append_dropWhile]
+      intro hl
+      have hx := List.getElem_mem hl
+      simp  [- List.getElem_mem] at hx
+      apply IsTrans.trans b a _ h.2
+      simp_all
+      simp_all
+    · have hl := orderedInsert_filter_of_neg r b (fun c => r a c ∧ r c a) h (List.insertionSort r l)
+      simp at hl ⊢
+      rw [hl]
+      rw [List.filter_cons_of_neg]
+      have ih := filter_rel_eq_insertionSort r a l
+      simp_all
+      simpa using h
+
+
+lemma insertionSort_of_eq_list {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α)  (l1 l l2 : List α)
+    (h : ∀ b ∈ l, r a b ∧ r b a) :
+    List.insertionSort r (l1 ++ l ++ l2) =
+    (List.takeWhile (fun c => ¬ r a c) ((l1 ++ l2).insertionSort r))
+    ++ (List.filter (fun c => r a c ∧ r c a) l1)
+    ++ l
+    ++ (List.filter (fun c => r a c ∧ r c a) l2)
+    ++ (List.filter (fun c => r a c ∧ ¬ r c a) ((l1 ++ l2).insertionSort r))
+    := by
+  have hl :  List.insertionSort r (l1 ++ l ++ l2) =
+    List.takeWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r) ++
+    List.dropWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r) := by
+    exact (List.takeWhile_append_dropWhile (fun c => decide ¬r a c)
+          (List.insertionSort r (l1 ++ l ++ l2))).symm
+  have hlt : List.takeWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r)
+      = List.takeWhile (fun c => ¬ r a c) ((l1 ++ l2).insertionSort r) := by
+    rw [takeWhile_sorted_eq_filter, takeWhile_sorted_eq_filter ]
+    rw [← insertionSort_filter, ← insertionSort_filter]
+    congr 1
+    simp
+    exact fun b hb => (h b hb).1
+    exact List.sorted_insertionSort r (l1 ++ l2)
+    exact List.sorted_insertionSort r (l1 ++ l ++ l2)
+  conv_lhs => rw [hl, hlt]
+  simp only [decide_not,  Bool.decide_and]
+  simp
+  have h1 := dropWhile_sorted_eq_filter r a (List.insertionSort r (l1 ++ (l ++ l2)))
+  simp at h1
+  rw [h1]
+  rw [dropWhile_sorted_eq_filter_filter, filter_rel_eq_insertionSort]
+  simp
+  congr 1
+  simp
+  exact fun a a_1 => h a a_1
+  congr 1
+  have h1 := insertionSort_filter r (fun c => decide (r a c) && !decide (r c a)) (l1 ++ (l ++ l2))
+  simp at h1
+  rw [← h1]
+  have h2 := insertionSort_filter r (fun c => decide (r a c) && !decide (r c a)) (l1 ++  l2)
+  simp at h2
+  rw [← h2]
+  congr
+  have hl : List.filter (fun b => decide (r a b) && !decide (r b a)) l = [] := by
+    rw [@List.filter_eq_nil_iff]
+    intro c  hc
+    simp_all
+  rw [hl]
+  simp
+  exact List.sorted_insertionSort r (l1 ++ (l ++ l2))
+  exact List.sorted_insertionSort r (l1 ++ (l ++ l2))
+
+lemma insertionSort_of_takeWhile_filter {α : Type} (r : α → α → Prop) [DecidableRel r]
+    [IsTotal α r] [IsTrans α r] (a : α)  (l1 l2 : List α) :
+    List.insertionSort r (l1 ++ l2) =
+    (List.takeWhile (fun c => ¬ r a c) ((l1 ++ l2).insertionSort r))
+    ++ (List.filter (fun c => r a c ∧ r c a) l1)
+    ++ (List.filter (fun c => r a c ∧ r c a) l2)
+    ++ (List.filter (fun c => r a c ∧ ¬ r c a) ((l1 ++ l2).insertionSort r))
+    := by
+  trans List.insertionSort r (l1 ++ [] ++ l2)
+  simp
+  rw [insertionSort_of_eq_list r a l1 [] l2]
+  simp
+  simp
 
 
 end HepLean.List

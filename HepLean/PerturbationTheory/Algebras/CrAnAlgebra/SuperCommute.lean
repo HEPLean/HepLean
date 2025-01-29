@@ -439,6 +439,40 @@ lemma superCommute_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) : 
     · simp
     · simp [Finset.mul_sum, smul_smul, ofStateList_cons, mul_assoc,
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
+
+lemma summerCommute_jacobi_ofCrAnList (φs1 φs2 φs3 : List 𝓕.CrAnStates) :
+      [ofCrAnList φs1, [ofCrAnList φs2, ofCrAnList φs3]ₛca]ₛca =
+      𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs3) •
+      (- 𝓢(𝓕 |>ₛ φs2, 𝓕 |>ₛ φs3 ) • [ofCrAnList φs3, [ofCrAnList φs1, ofCrAnList φs2]ₛca]ₛca -
+       𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs2) • [ofCrAnList φs2, [ofCrAnList φs3, ofCrAnList φs1]ₛca]ₛca) := by
+    repeat rw [superCommute_ofCrAnList_ofCrAnList]
+    simp
+    repeat rw [superCommute_ofCrAnList_ofCrAnList]
+    simp only [instCommGroup.eq_1, ofList_append_eq_mul, List.append_assoc]
+    by_cases h1 : (𝓕 |>ₛ φs1) = bosonic <;>
+      by_cases h2 : (𝓕 |>ₛ φs2) = bosonic <;>
+      by_cases h3 : (𝓕 |>ₛ φs3) = bosonic
+    · simp [h1, h2, exchangeSign_bosonic, h3, mul_one, one_smul]
+      abel
+    · simp  [h1, h2, exchangeSign_bosonic, bosonic_exchangeSign, mul_one, one_smul]
+      abel
+    · simp  [h1, bosonic_exchangeSign, h3, exchangeSign_bosonic, mul_one, one_smul]
+      abel
+    · simp at h1 h2 h3
+      simp [h1, h2, h3]
+      abel
+    · simp at h1 h2 h3
+      simp [h1, h2, h3]
+      abel
+    · simp at h1 h2 h3
+      simp [h1, h2, h3]
+      abel
+    · simp at h1 h2 h3
+      simp [h1, h2, h3]
+      abel
+    · simp at h1 h2 h3
+      simp [h1, h2, h3]
+      abel
 /-!
 
 ## Interaction with grading.
