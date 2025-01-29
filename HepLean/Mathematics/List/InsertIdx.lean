@@ -119,7 +119,7 @@ lemma insertIdx_eraseIdx_fin {I : Type} :
     exact insertIdx_eraseIdx_fin as ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
 lemma insertIdx_length_fst_append {I : Type} (φ : I) : (φs φs' : List I) →
-     List.insertIdx φs.length φ (φs ++ φs') = (φs ++ φ :: φs')
+    List.insertIdx φs.length φ (φs ++ φs') = (φs ++ φ :: φs')
   | [], φs' => by simp
   | φ' :: φs, φs' => by
     simp

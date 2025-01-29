@@ -261,7 +261,7 @@ lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le
   rfl
 
 lemma koszulSign_swap_eq_rel_cons {ψ φ : 𝓕}
-    (h1 : le φ ψ) (h2 : le ψ φ) (φs' : List 𝓕):
+    (h1 : le φ ψ) (h2 : le ψ φ) (φs' : List 𝓕) :
     koszulSign q le (φ :: ψ :: φs') = koszulSign q le (ψ :: φ :: φs') := by
   simp only [Wick.koszulSign, ← mul_assoc, mul_eq_mul_right_iff]
   left
@@ -285,7 +285,7 @@ lemma koszulSign_eq_rel_eq_stat_append {ψ φ : 𝓕} [IsTrans 𝓕 le] [IsTotal
     koszulSign q le (φ :: ψ :: φs) = koszulSign q le φs := by
   intro φs
   simp [koszulSign, ← mul_assoc]
-  trans 1 *  koszulSign q le φs
+  trans 1 * koszulSign q le φs
   swap
   simp
   congr
@@ -305,11 +305,11 @@ lemma koszulSign_eq_rel_eq_stat {ψ φ : 𝓕} [IsTrans 𝓕 le] [IsTotal 𝓕 l
     rw [koszulSign_eq_rel_eq_stat h1 h2 hq φs' φs]
     simp
     left
-    trans  koszulSignInsert q le φ'' (φ :: ψ :: (φs' ++ φs) )
+    trans koszulSignInsert q le φ'' (φ :: ψ :: (φs' ++ φs))
     apply koszulSignInsert_eq_perm
     refine List.Perm.symm (List.perm_cons_append_cons φ ?_)
     exact List.Perm.symm List.perm_middle
-    rw [koszulSignInsert_eq_remove_same_stat_append q le ]
+    rw [koszulSignInsert_eq_remove_same_stat_append q le]
     simp_all
     simp_all
     simp_all
@@ -331,15 +331,16 @@ lemma koszulSign_of_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : Lis
   apply koszulSign_of_sorted
   exact List.sorted_insertionSort le φs
 
-lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕 le]  : (φs φs' : List 𝓕) →
-    koszulSign q le (φs ++ φs') =
-    koszulSign q le (List.insertionSort le φs ++ φs') *  koszulSign q le φs
+lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕 le] :
+    (φs φs' : List 𝓕) → koszulSign q le (φs ++ φs') =
+    koszulSign q le (List.insertionSort le φs ++ φs') * koszulSign q le φs
   | φs, [] => by
     simp
   | φs, φ :: φs' => by
     have h1 : (φs ++ φ :: φs') = List.insertIdx φs.length φ (φs ++ φs') := by
       rw [insertIdx_length_fst_append]
-    have h2 : (List.insertionSort le φs ++ φ :: φs') = List.insertIdx (List.insertionSort le φs).length φ (List.insertionSort le φs ++ φs') := by
+    have h2 : (List.insertionSort le φs ++ φ :: φs') =
+        List.insertIdx (List.insertionSort le φs).length φ (List.insertionSort le φs ++ φs') := by
       rw [insertIdx_length_fst_append]
     rw [h1, h2]
     rw [koszulSign_insertIdx]
@@ -353,7 +354,8 @@ lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕
     simp [mul_comm]
     left
     congr 3
-    · have h2 : (List.insertionSort le φs ++ φ :: φs') = List.insertIdx φs.length φ (List.insertionSort le φs ++ φs') := by
+    · have h2 : (List.insertionSort le φs ++ φ :: φs') =
+          List.insertIdx φs.length φ (List.insertionSort le φs ++ φs') := by
         rw [← insertIdx_length_fst_append]
         simp
       rw [insertionSortEquiv_congr _ _ h2.symm]
@@ -363,16 +365,16 @@ lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕
       rw [insertionSortEquiv_congr _ _ h1.symm]
       simp
     · rw [insertIdx_length_fst_append]
-      rw [show  φs.length = (List.insertionSort le φs).length by simp]
+      rw [show φs.length = (List.insertionSort le φs).length by simp]
       rw [insertIdx_length_fst_append]
       symm
       apply insertionSort_insertionSort_append
     · simp
     · simp
 
-lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le]  : (φs'' φs φs' : List 𝓕) →
+lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] : (φs'' φs φs' : List 𝓕) →
     koszulSign q le (φs'' ++ φs ++ φs') =
-    koszulSign q le (φs'' ++ List.insertionSort le φs ++ φs') *  koszulSign q le φs
+    koszulSign q le (φs'' ++ List.insertionSort le φs ++ φs') * koszulSign q le φs
   | [], φs, φs'=> by
     simp
     exact koszulSign_of_append_eq_insertionSort_left q le φs φs'
@@ -391,10 +393,10 @@ lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
 
 -/
 
-lemma koszulSign_perm_eq_append [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) ( φs φs' φs2 : List 𝓕)
+lemma koszulSign_perm_eq_append [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs φs' φs2 : List 𝓕)
     (hp : φs.Perm φs') : (h : ∀ φ' ∈ φs, le φ φ' ∧ le φ' φ) →
     koszulSign q le (φs ++ φs2) = koszulSign q le (φs' ++ φs2) := by
-  let motive  (φs φs' : List 𝓕) (hp : φs.Perm φs') : Prop :=
+  let motive (φs φs' : List 𝓕) (hp : φs.Perm φs') : Prop :=
     (h : ∀ φ' ∈ φs, le φ φ' ∧ le φ' φ) →
     koszulSign q le (φs ++ φs2) = koszulSign q le (φs' ++ φs2)
   change motive φs φs' hp
@@ -432,6 +434,5 @@ lemma koszulSign_perm_eq [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) : (φs1
     apply koszulSignInsert_eq_perm
     refine (List.perm_append_right_iff φs2).mpr ?_
     exact List.Perm.append_left φs1 hp
-
 
 end Wick

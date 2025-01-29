@@ -21,12 +21,12 @@ namespace CrAnAlgebra
 noncomputable section
 
 /-- The submodule of `CrAnAlgebra` spanned by lists of field statistic `f`. -/
-def statisticSubmodule  (f : FieldStatistic) :  Submodule ℂ 𝓕.CrAnAlgebra  :=
+def statisticSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.CrAnAlgebra :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
 
 lemma ofCrAnList_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
   (h : (𝓕 |>ₛ φs) = f) :
-    ofCrAnList φs ∈ statisticSubmodule f  := by
+    ofCrAnList φs ∈ statisticSubmodule f := by
   refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
 lemma ofCrAnList_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
@@ -119,7 +119,7 @@ lemma fermionicProj_ofCrAnList (φs : List 𝓕.CrAnStates) :
 lemma fermionicProj_ofCrAnList_if_bosonic (φs : List 𝓕.CrAnStates) :
     fermionicProj (ofCrAnList φs) = if h : (𝓕 |>ₛ φs) = bosonic then
       0 else ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl,
-        by simpa using h ⟩⟩⟩ := by
+        by simpa using h⟩⟩⟩ := by
   rw [fermionicProj_ofCrAnList]
   by_cases h1 : (𝓕 |>ₛ φs) = fermionic
   · simp [h1]
@@ -188,7 +188,6 @@ lemma bosonicProj_add_fermionicProj (a : 𝓕.CrAnAlgebra) :
   · simp [h]
   · simp [h]
 
-
 lemma coeAddMonoidHom_apply_eq_bosonic_plus_fermionic
     (a : DirectSum FieldStatistic (fun i => (statisticSubmodule (𝓕 := 𝓕) i))) :
     DirectSum.coeAddMonoidHom statisticSubmodule a = a.1 bosonic + a.1 fermionic := by
@@ -245,7 +244,7 @@ instance crAnAlgebraGrade : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmo
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
     let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
-       a1 * a2 ∈ statisticSubmodule (f1 + f2)
+      a1 * a2 ∈ statisticSubmodule (f1 + f2)
     change p a2 h2
     apply Submodule.span_induction (p := p)
     · intro x hx
@@ -281,10 +280,10 @@ instance crAnAlgebraGrade : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmo
       simp only [Algebra.mul_smul_comm, p]
       exact Submodule.smul_mem _ _ h1
     · exact h2
-  decompose' a :=  DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
-    +  DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProj a)
+  decompose' a := DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
+    + DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProj a)
   left_inv a := by
-    trans  a.bosonicProj + fermionicProj a
+    trans a.bosonicProj + fermionicProj a
     · simp
     · exact bosonicProj_add_fermionicProj a
   right_inv a := by

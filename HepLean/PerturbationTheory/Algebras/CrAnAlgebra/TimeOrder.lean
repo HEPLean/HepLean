@@ -66,7 +66,7 @@ lemma timeOrder_timeOrder_mid (a b c : 𝓕.CrAnAlgebra) : 𝓣ᶠ(a * b * c) = 
           Algebra.smul_mul_assoc, map_smul]
         rw [timeOrder_ofCrAnList, timeOrder_ofCrAnList, smul_smul]
         congr 1
-        · simp only [crAnTimeOrderSign,  crAnTimeOrderList]
+        · simp only [crAnTimeOrderSign, crAnTimeOrderList]
           rw [Wick.koszulSign_of_append_eq_insertionSort, mul_comm]
         · congr 1
           simp only [crAnTimeOrderList]
@@ -167,7 +167,6 @@ lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right
     timeOrder_superCommute_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
   simp
 
-
 lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left
     {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.CrAnAlgebra) :
     𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca * a) = 0 := by
@@ -183,7 +182,7 @@ lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_mid
   simp
 
 lemma timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel
-    {φ1 φ2 : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.CrAnAlgebra):
+    {φ1 φ2 : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.CrAnAlgebra) :
     𝓣ᶠ([a, [ofCrAnState φ1, ofCrAnState φ2]ₛca]ₛca) = 0 := by
   rw [← bosonicProj_add_fermionicProj a]
   simp
@@ -213,7 +212,7 @@ lemma timeOrder_superCommute_ofCrAnState_superCommute_not_crAnTimeOrderRel
   rw [summerCommute_jacobi_ofCrAnList]
   simp [ofCrAnList_singleton]
   right
-  rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h12 ]
+  rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h12]
   rw [superCommute_ofCrAnState_ofCrAnState_symm φ3]
   simp
   rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h13]
@@ -229,14 +228,14 @@ lemma timeOrder_superCommute_ofCrAnState_superCommute_not_crAnTimeOrderRel'
   right
   rw [superCommute_ofCrAnState_ofCrAnState_symm φ1]
   simp
-  rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h12 ]
+  rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h12]
   simp
   rw [timeOrder_superCommute_superCommute_ofCrAnState_not_crAnTimeOrderRel h13]
   simp
 
 lemma timeOrder_superCommute_ofCrAnState_superCommute_all_not_crAnTimeOrderRel
-    (φ1 φ2 φ3 : 𝓕.CrAnStates) (h : ¬ (
-      crAnTimeOrderRel φ1 φ2 ∧ crAnTimeOrderRel φ1 φ3 ∧
+    (φ1 φ2 φ3 : 𝓕.CrAnStates) (h : ¬
+      (crAnTimeOrderRel φ1 φ2 ∧ crAnTimeOrderRel φ1 φ3 ∧
       crAnTimeOrderRel φ2 φ1 ∧ crAnTimeOrderRel φ2 φ3 ∧
       crAnTimeOrderRel φ3 φ1 ∧ crAnTimeOrderRel φ3 φ2)) :
     𝓣ᶠ([ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca) = 0 := by
@@ -271,7 +270,6 @@ lemma timeOrder_superCommute_ofCrAnState_superCommute_all_not_crAnTimeOrderRel
   simp_all
   refine False.elim (h ?_)
   exact IsTrans.trans φ3 φ2 φ1 h32 h21
-
 
 lemma timeOrder_superCommute_ofCrAnState_ofCrAnState_eq_time
     {φ ψ : 𝓕.CrAnStates} (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) :

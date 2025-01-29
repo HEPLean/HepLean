@@ -112,8 +112,8 @@ lemma ι_superCommute_zero_of_fermionic (φ ψ : 𝓕.CrAnStates)
   · simp [h]
 
 lemma ι_superCommute_ofCrAnState_ofCrAnState_bosonic_or_zero (φ ψ : 𝓕.CrAnStates) :
-     [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ statisticSubmodule bosonic  ∨
-     ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
+    [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ statisticSubmodule bosonic ∨
+    ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   rcases superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [ψ] with h | h
   · simp_all [ofCrAnList_singleton]
   · simp_all [ofCrAnList_singleton]
@@ -236,7 +236,6 @@ lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
 
-
 lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.fermionicProj = 0 := by
   have hx' := hx
@@ -269,7 +268,7 @@ lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x �
       simpa using hx'
 
 lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
-     x.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
+    x.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at hx
   let p {k : Set 𝓕.CrAnAlgebra} (a : CrAnAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) : Prop :=
     a.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet
@@ -405,7 +404,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
     simp [p]
 
 lemma fermionicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
-     x.fermionicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
+    x.fermionicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   have hb := bosonicProj_mem_ideal x hx
   rw [← ι_eq_zero_iff_mem_ideal] at hx hb ⊢
   rw [← bosonicProj_add_fermionicProj x] at hx
@@ -424,8 +423,6 @@ lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : CrAnAlgebra 𝓕) :
   · intro h
     rw [← bosonicProj_add_fermionicProj x]
     simp_all
-
-
 
 end FieldOpAlgebra
 end FieldSpecification

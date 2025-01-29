@@ -80,7 +80,7 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
     apply ι_superCommute_eq_zero_of_ι_left_zero
     exact (ι_eq_zero_iff_mem_ideal (a1 - a2)).mpr h
   simp_all [superCommuteRight_apply_ι]
-  trans  ι ((superCommute a2) b) + 0
+  trans ι ((superCommute a2) b) + 0
   rw [← ha1b1]
   simp
   simp
