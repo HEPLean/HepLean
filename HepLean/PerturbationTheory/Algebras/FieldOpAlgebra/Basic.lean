@@ -106,7 +106,7 @@ lemma ι_superCommute_zero_of_fermionic (φ ψ : 𝓕.CrAnStates)
     ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton] at h ⊢
   rcases statistic_neq_of_superCommute_fermionic h with h | h
-  · simp [ofCrAnList_singleton]
+  · simp only [ofCrAnList_singleton]
     apply ι_superCommute_of_diff_statistic
     simpa using h
   · simp [h]
@@ -116,7 +116,7 @@ lemma ι_superCommute_ofCrAnState_ofCrAnState_bosonic_or_zero (φ ψ : 𝓕.CrAn
     ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   rcases superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [ψ] with h | h
   · simp_all [ofCrAnList_singleton]
-  · simp_all [ofCrAnList_singleton]
+  · simp_all only [ofCrAnList_singleton]
     right
     exact ι_superCommute_zero_of_fermionic _ _ h
 
@@ -187,7 +187,7 @@ lemma ι_superCommute_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnState
   have h0 := ι_commute_crAnAlgebra_superCommute_ofCrAnState_ofCrAnState φ ψ a
   trans ι ((superCommute (ofCrAnState φ)) (ofCrAnState ψ)) * ι a + 0
   swap
-  simp
+  simp only [add_zero]
   rw [← h0]
   abel
 
@@ -208,7 +208,7 @@ lemma ι_eq_zero_iff_mem_ideal (x : CrAnAlgebra 𝓕) :
 lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.bosonicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.bosonicProj = 0 := by
   have hx' := hx
-  simp [fieldOpIdealSet] at hx
+  simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
   rcases hx with ⟨φ1, φ2, φ3, rfl⟩ | ⟨φc, φc', hφc, hφc', rfl⟩ | ⟨φa, φa', hφa, hφa', rfl⟩ |
     ⟨φ, φ', hdiff, rfl⟩
   · rcases superCommute_superCommute_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
@@ -239,7 +239,7 @@ lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈
 lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.fermionicProj = 0 := by
   have hx' := hx
-  simp [fieldOpIdealSet] at hx
+  simp only [fieldOpIdealSet,  exists_prop, Set.mem_setOf_eq] at hx
   rcases hx with ⟨φ1, φ2, φ3, rfl⟩ | ⟨φc, φc', hφc, hφc', rfl⟩ | ⟨φa, φa', hφa, hφa', rfl⟩ |
     ⟨φ, φ', hdiff, rfl⟩
   · rcases superCommute_superCommute_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
@@ -275,11 +275,11 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
   change p x hx
   apply AddSubgroup.closure_induction
   · intro x hx
-    simp [p]
+    simp only [p]
     obtain ⟨a, ha, b, hb, rfl⟩ := Set.mem_mul.mp hx
     obtain ⟨d, hd, y, hy, rfl⟩ := Set.mem_mul.mp ha
     rw [bosonicProj_mul, bosonicProj_mul, fermionicProj_mul]
-    simp [mul_add, add_mul]
+    simp only [add_mul]
     rcases fermionicProj_mem_fieldOpIdealSet_or_zero y hy with hfy | hfy
       <;> rcases bosonicProj_mem_fieldOpIdealSet_or_zero y hy with hby | hby
     · apply TwoSidedIdeal.add_mem
@@ -292,7 +292,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use bosonicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProj y).1
           simp [hby]
         · use ↑(bosonicProj b)
@@ -305,7 +305,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use fermionicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProj y).1
           simp [hby, hfy]
         · use ↑(bosonicProj b)
@@ -319,7 +319,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use bosonicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProj y).1
           simp [hby, hfy]
         · use ↑(fermionicProj b)
@@ -332,12 +332,12 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use fermionicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProj y).1
           simp [hby, hfy]
         · use ↑(fermionicProj b)
           simp
-    · simp [hby]
+    · simp only [hby, ZeroMemClass.coe_zero, mul_zero, zero_mul, zero_add, add_zero]
       apply TwoSidedIdeal.add_mem
       · /- fermion, fermion, boson mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
@@ -347,7 +347,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use fermionicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProj y).1
           simp [hby, hfy]
         · use ↑(bosonicProj b)
@@ -360,12 +360,12 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use bosonicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProj y).1
           simp [hby, hfy]
         · use ↑(fermionicProj b)
           simp
-    · simp [hfy]
+    · simp only [hfy, ZeroMemClass.coe_zero, mul_zero, zero_mul, add_zero, zero_add]
       apply TwoSidedIdeal.add_mem
       · /- boson, boson, boson mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
@@ -375,7 +375,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use bosonicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProj y).1
           simp [hby]
         · use ↑(bosonicProj b)
@@ -388,7 +388,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
         apply And.intro
         · apply Set.mem_mul.mpr
           use fermionicProj d
-          simp
+          simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProj y).1
           simp [hby, hfy]
         · use ↑(fermionicProj b)
@@ -396,7 +396,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
     · simp [hfy, hby]
   · simp [p]
   · intro x y hx hy hpx hpy
-    simp_all [p]
+    simp_all only [map_add, Submodule.coe_add, p]
     apply TwoSidedIdeal.add_mem
     exact hpx
     exact hpy
@@ -408,7 +408,7 @@ lemma fermionicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.s
   have hb := bosonicProj_mem_ideal x hx
   rw [← ι_eq_zero_iff_mem_ideal] at hx hb ⊢
   rw [← bosonicProj_add_fermionicProj x] at hx
-  simp at hx
+  simp only [map_add] at hx
   simp_all
 
 lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : CrAnAlgebra 𝓕) :

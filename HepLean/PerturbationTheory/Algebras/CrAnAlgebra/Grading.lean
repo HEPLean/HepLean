@@ -307,7 +307,7 @@ lemma bosonicProj_mul (a b : 𝓕.CrAnAlgebra) :
   conv_lhs =>
     rw [← bosonicProj_add_fermionicProj a]
     rw [← bosonicProj_add_fermionicProj b]
-  simp [mul_add, add_mul]
+  simp only [mul_add, add_mul, map_add, Submodule.coe_add]
   rw [bosonicProj_of_mem_bosonic]
   conv_lhs =>
     left
@@ -317,7 +317,7 @@ lemma bosonicProj_mul (a b : 𝓕.CrAnAlgebra) :
       have h1 : fermionic = fermionic + bosonic := by simp
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
   conv_lhs =>
     right
@@ -327,23 +327,27 @@ lemma bosonicProj_mul (a b : 𝓕.CrAnAlgebra) :
       have h1 : fermionic = bosonic + fermionic := by simp
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
   conv_lhs =>
     right
     right
     rw [bosonicProj_of_mem_bosonic _
       (by
-      have h1 : bosonic = fermionic + fermionic := by simp; rfl
+      have h1 : bosonic = fermionic + fermionic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
-  simp
-  · have h1 : bosonic = bosonic + bosonic := by simp; rfl
+  simp only [ZeroMemClass.coe_zero, add_zero, zero_add]
+  · have h1 : bosonic = bosonic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
     conv_lhs => rw [h1]
     apply crAnAlgebraGrade.mul_mem
-    simp
+    simp only [SetLike.coe_mem]
     simp
 
 lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
@@ -352,16 +356,18 @@ lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
   conv_lhs =>
     rw [← bosonicProj_add_fermionicProj a]
     rw [← bosonicProj_add_fermionicProj b]
-  simp [mul_add, add_mul]
+  simp only [mul_add, add_mul, map_add, Submodule.coe_add]
   conv_lhs =>
     left
     left
     rw [fermionicProj_of_mem_bosonic _
       (by
-      have h1 : bosonic = bosonic + bosonic := by simp; rfl
+      have h1 : bosonic = bosonic + bosonic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
   conv_lhs =>
     left
@@ -371,7 +377,7 @@ lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
       have h1 : fermionic = fermionic + bosonic := by simp
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
   conv_lhs =>
     right
@@ -381,19 +387,21 @@ lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
       have h1 : fermionic = bosonic + fermionic := by simp
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
   conv_lhs =>
     right
     right
     rw [fermionicProj_of_mem_bosonic _
       (by
-      have h1 : bosonic = fermionic + fermionic := by simp; rfl
+      have h1 : bosonic = fermionic + fermionic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
       conv_lhs => rw [h1]
       apply crAnAlgebraGrade.mul_mem
-      simp
+      simp only [SetLike.coe_mem]
       simp)]
-  simp
+  simp only [ZeroMemClass.coe_zero, zero_add, add_zero]
   abel
 
 end

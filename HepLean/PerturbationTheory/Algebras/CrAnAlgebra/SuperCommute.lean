@@ -446,32 +446,42 @@ lemma summerCommute_jacobi_ofCrAnList (φs1 φs2 φs3 : List 𝓕.CrAnStates) :
     (- 𝓢(𝓕 |>ₛ φs2, 𝓕 |>ₛ φs3) • [ofCrAnList φs3, [ofCrAnList φs1, ofCrAnList φs2]ₛca]ₛca -
     𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs2) • [ofCrAnList φs2, [ofCrAnList φs3, ofCrAnList φs1]ₛca]ₛca) := by
   repeat rw [superCommute_ofCrAnList_ofCrAnList]
-  simp
+  simp only [instCommGroup, map_sub, map_smul, neg_smul]
   repeat rw [superCommute_ofCrAnList_ofCrAnList]
   simp only [instCommGroup.eq_1, ofList_append_eq_mul, List.append_assoc]
   by_cases h1 : (𝓕 |>ₛ φs1) = bosonic <;>
     by_cases h2 : (𝓕 |>ₛ φs2) = bosonic <;>
     by_cases h3 : (𝓕 |>ₛ φs3) = bosonic
-  · simp [h1, h2, exchangeSign_bosonic, h3, mul_one, one_smul]
+  · simp only [h1, h2, h3, mul_self, bosonic_exchangeSign, one_smul, exchangeSign_bosonic, neg_sub]
     abel
-  · simp [h1, h2, exchangeSign_bosonic, bosonic_exchangeSign, mul_one, one_smul]
+  · simp only [h1, h2, bosonic_exchangeSign, one_smul, mul_bosonic, mul_self, map_one,
+    exchangeSign_bosonic, neg_sub]
     abel
-  · simp [h1, bosonic_exchangeSign, h3, exchangeSign_bosonic, mul_one, one_smul]
+  · simp only [h1, h3, mul_bosonic, bosonic_exchangeSign, one_smul, exchangeSign_bosonic, neg_sub,
+    mul_self, map_one]
     abel
-  · simp at h1 h2 h3
-    simp [h1, h2, h3]
+  · simp only [neq_bosonic_iff_eq_fermionic] at h1 h2 h3
+    simp only [h1, h2, h3, mul_self, bosonic_exchangeSign, one_smul,
+      fermionic_exchangeSign_fermionic, neg_smul, neg_sub, bosonic_mul_fermionic, sub_neg_eq_add,
+      mul_bosonic, smul_add, exchangeSign_bosonic]
     abel
-  · simp at h1 h2 h3
-    simp [h1, h2, h3]
+  · simp only [neq_bosonic_iff_eq_fermionic] at h1 h2 h3
+    simp only [h1, h2, h3, mul_self, map_one, one_smul, exchangeSign_bosonic, mul_bosonic,
+      bosonic_exchangeSign, bosonic_mul_fermionic, neg_sub]
     abel
-  · simp at h1 h2 h3
-    simp [h1, h2, h3]
+  · simp only [neq_bosonic_iff_eq_fermionic] at h1 h2 h3
+    simp only [h1, h2, h3, bosonic_mul_fermionic, fermionic_exchangeSign_fermionic, neg_smul,
+      one_smul, sub_neg_eq_add, bosonic_exchangeSign, mul_bosonic, smul_add, exchangeSign_bosonic,
+      neg_sub, mul_self]
     abel
-  · simp at h1 h2 h3
-    simp [h1, h2, h3]
+  · simp only [neq_bosonic_iff_eq_fermionic] at h1 h2 h3
+    simp only [h1, h2, h3, mul_bosonic, fermionic_exchangeSign_fermionic, neg_smul, one_smul,
+      sub_neg_eq_add, exchangeSign_bosonic, bosonic_mul_fermionic, smul_add, mul_self,
+      bosonic_exchangeSign, neg_sub]
     abel
-  · simp at h1 h2 h3
-    simp [h1, h2, h3]
+  · simp only [neq_bosonic_iff_eq_fermionic] at h1 h2 h3
+    simp only [h1, h2, h3, mul_self, map_one, one_smul, fermionic_exchangeSign_fermionic, neg_smul,
+      neg_sub]
     abel
 /-!
 
@@ -488,14 +498,14 @@ lemma superCommute_grade {a b : 𝓕.CrAnAlgebra} {f1 f2 : FieldStatistic}
   apply Submodule.span_induction (p := p)
   · intro x hx
     obtain ⟨φs, rfl, hφs⟩ := hx
-    simp [p]
+    simp only [add_eq_mul, instCommGroup, p]
     let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f1) : Prop :=
         [a2, ofCrAnList φs]ₛca ∈ statisticSubmodule (f1 + f2)
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
-      simp [p]
+      simp only [add_eq_mul, instCommGroup, p]
       rw [superCommute_ofCrAnList_ofCrAnList]
       apply Submodule.sub_mem _
       · apply ofCrAnList_mem_statisticSubmodule_of
@@ -506,18 +516,18 @@ lemma superCommute_grade {a b : 𝓕.CrAnAlgebra} {f1 f2 : FieldStatistic}
         rw [mul_comm]
     · simp [p]
     · intro x y hx hy hp1 hp2
-      simp [p]
+      simp only [add_eq_mul, instCommGroup, map_add, LinearMap.add_apply, p]
       exact Submodule.add_mem _ hp1 hp2
     · intro c x hx hp1
-      simp [p]
+      simp only [add_eq_mul, instCommGroup, map_smul, LinearMap.smul_apply, p]
       exact Submodule.smul_mem _ c hp1
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
-    simp [p]
+    simp only [add_eq_mul, instCommGroup, map_add, p]
     exact Submodule.add_mem _ hp1 hp2
   · intro c x hx hp1
-    simp [p]
+    simp only [add_eq_mul, instCommGroup, map_smul, p]
     exact Submodule.smul_mem _ c hp1
   · exact hb
 
@@ -536,19 +546,19 @@ lemma superCommute_bosonic_bosonic {a b : 𝓕.CrAnAlgebra}
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
-      simp [p]
+      simp only [p]
       rw [superCommute_ofCrAnList_ofCrAnList]
       simp [hφs, ofCrAnList_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
-      simp_all [p, mul_add, add_mul]
+      simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
       abel
     · intro c x hx hp1
       simp_all [p, smul_sub]
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
-    simp_all [p, mul_add, add_mul]
+    simp_all only [p, map_add, mul_add, add_mul]
     abel
   · intro c x hx hp1
     simp_all [p, smul_sub]
@@ -569,19 +579,19 @@ lemma superCommute_bosonic_fermionic {a b : 𝓕.CrAnAlgebra}
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
-      simp [p]
+      simp only [p]
       rw [superCommute_ofCrAnList_ofCrAnList]
       simp [hφs, hφs', ofCrAnList_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
-      simp_all [p, mul_add, add_mul]
+      simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
       abel
     · intro c x hx hp1
       simp_all [p, smul_sub]
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
-    simp_all [p, mul_add, add_mul]
+    simp_all only [p, map_add, mul_add, add_mul]
     abel
   · intro c x hx hp1
     simp_all [p, smul_sub]
@@ -602,19 +612,19 @@ lemma superCommute_fermionic_bonsonic {a b : 𝓕.CrAnAlgebra}
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
-      simp [p]
+      simp only [p]
       rw [superCommute_ofCrAnList_ofCrAnList]
       simp [hφs, hφs', ofCrAnList_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
-      simp_all [p, mul_add, add_mul]
+      simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
       abel
     · intro c x hx hp1
       simp_all [p, smul_sub]
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
-    simp_all [p, mul_add, add_mul]
+    simp_all only [map_add, mul_add, add_mul, p]
     abel
   · intro c x hx hp1
     simp_all [p, smul_sub]
@@ -661,19 +671,19 @@ lemma superCommute_fermionic_fermionic {a b : 𝓕.CrAnAlgebra}
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
-      simp [p]
+      simp only [p]
       rw [superCommute_ofCrAnList_ofCrAnList]
       simp [hφs, hφs', ofCrAnList_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
-      simp_all [p, mul_add, add_mul]
+      simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
       abel
     · intro c x hx hp1
       simp_all [p, smul_sub]
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
-    simp_all [p, mul_add, add_mul]
+    simp_all only [map_add, mul_add, add_mul, p]
     abel
   · intro c x hx hp1
     simp_all [p, smul_sub]
@@ -692,9 +702,10 @@ lemma superCommute_expand_bosonicProj_fermionicProj (a b : 𝓕.CrAnAlgebra) :
     fermionicProj a * bosonicProj b - bosonicProj b * fermionicProj a +
     fermionicProj a * fermionicProj b + fermionicProj b * fermionicProj a := by
   conv_lhs => rw [← bosonicProj_add_fermionicProj a, ← bosonicProj_add_fermionicProj b]
-  simp
-  rw [superCommute_bonsonic (by simp), superCommute_bosonic_fermionic (by simp) (by simp),
+  simp only [map_add, LinearMap.add_apply]
+  rw [superCommute_bonsonic (by simp),
       superCommute_fermionic_bonsonic (by simp) (by simp),
+      superCommute_bosonic_fermionic (by simp) (by simp),
       superCommute_fermionic_fermionic (by simp) (by simp)]
   abel
 
@@ -784,14 +795,14 @@ lemma superCommute_bosonic_ofCrAnList_eq_sum (a : 𝓕.CrAnAlgebra) (φs : List 
   apply Submodule.span_induction (p := p)
   · intro a ha
     obtain ⟨φs, rfl, hφs⟩ := ha
-    simp [p]
+    simp only [List.get_eq_getElem, p]
     rw [superCommute_ofCrAnList_ofCrAnList_eq_sum]
     congr
     funext n
     simp [hφs]
   · simp [p]
   · intro x y hx hy hpx hpy
-    simp_all [p]
+    simp_all only [List.get_eq_getElem, map_add, LinearMap.add_apply, p]
     rw [← Finset.sum_add_distrib]
     congr
     funext n
@@ -813,20 +824,22 @@ lemma superCommute_fermionic_ofCrAnList_eq_sum (a : 𝓕.CrAnAlgebra) (φs : Lis
   apply Submodule.span_induction (p := p)
   · intro a ha
     obtain ⟨φs, rfl, hφs⟩ := ha
-    simp [p]
+    simp only [instCommGroup, List.get_eq_getElem, Algebra.smul_mul_assoc, p]
     rw [superCommute_ofCrAnList_ofCrAnList_eq_sum]
     congr
     funext n
     simp [hφs]
   · simp [p]
   · intro x y hx hy hpx hpy
-    simp_all [p]
+    simp_all only [p, instCommGroup, List.get_eq_getElem, Algebra.smul_mul_assoc, map_add,
+      LinearMap.add_apply]
     rw [← Finset.sum_add_distrib]
     congr
     funext n
     simp [mul_add, add_mul]
   · intro c x hx hpx
-    simp_all [p, Finset.smul_sum]
+    simp_all only [p, instCommGroup, List.get_eq_getElem, Algebra.smul_mul_assoc, map_smul,
+      LinearMap.smul_apply, Finset.smul_sum, Algebra.mul_smul_comm]
     congr
     funext x
     simp [smul_smul, mul_comm]
@@ -837,12 +850,12 @@ lemma statistic_neq_of_superCommute_fermionic {φs φs' : List 𝓕.CrAnStates}
     (𝓕 |>ₛ φs) ≠ (𝓕 |>ₛ φs') ∨ [ofCrAnList φs, ofCrAnList φs']ₛca = 0 := by
   by_cases h0 : [ofCrAnList φs, ofCrAnList φs']ₛca = 0
   · simp [h0]
-  simp [h0]
+  simp only [ne_eq, h0, or_false]
   by_contra hn
   refine h0 (eq_zero_of_bosonic_and_fermionic ?_ h)
   by_cases hc : (𝓕 |>ₛ φs) = bosonic
   · have h1 : bosonic = bosonic + bosonic := by
-      simp
+      simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h1]
     apply superCommute_grade
@@ -850,7 +863,7 @@ lemma statistic_neq_of_superCommute_fermionic {φs φs' : List 𝓕.CrAnStates}
     apply ofCrAnList_mem_statisticSubmodule_of _ _
     rw [← hn, hc]
   · have h1 : bosonic = fermionic + fermionic := by
-      simp
+      simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h1]
     apply superCommute_grade

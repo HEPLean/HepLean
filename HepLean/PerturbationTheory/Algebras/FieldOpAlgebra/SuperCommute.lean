@@ -79,10 +79,10 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
     rw [superCommuteRight_apply_ι]
     apply ι_superCommute_eq_zero_of_ι_left_zero
     exact (ι_eq_zero_iff_mem_ideal (a1 - a2)).mpr h
-  simp_all [superCommuteRight_apply_ι]
+  simp_all only [superCommuteRight_apply_ι, map_sub, LinearMap.sub_apply]
   trans ι ((superCommute a2) b) + 0
   rw [← ha1b1]
-  simp
+  simp only [add_sub_cancel]
   simp
 
 noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
@@ -95,7 +95,7 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
     obtain ⟨b, rfl⟩ := ι_surjective b
     rw [← map_add, ι_apply, ι_apply, ι_apply, ι_apply]
     rw [Quotient.lift_mk, Quotient.lift_mk, Quotient.lift_mk]
-    simp
+    simp only [LinearMap.add_apply]
     rw [superCommuteRight_apply_quot, superCommuteRight_apply_quot, superCommuteRight_apply_quot]
     simp
   map_smul' c y := by
@@ -103,7 +103,7 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
     ext b
     obtain ⟨b, rfl⟩ := ι_surjective b
     rw [← map_smul, ι_apply, ι_apply, ι_apply]
-    simp
+    simp only [Quotient.lift_mk, RingHom.id_apply, LinearMap.smul_apply]
     rw [superCommuteRight_apply_quot, superCommuteRight_apply_quot]
     simp
 
