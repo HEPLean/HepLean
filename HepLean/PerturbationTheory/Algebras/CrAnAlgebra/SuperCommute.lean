@@ -688,6 +688,18 @@ lemma superCommute_fermionic_fermionic_symm {a b : 𝓕.CrAnAlgebra}
   rw [superCommute_fermionic_fermionic hb ha]
   abel
 
+lemma superCommute_expand_bosonicProj_fermionicProj (a b : 𝓕.CrAnAlgebra) :
+    [a, b]ₛca = bosonicProj a * bosonicProj b - bosonicProj b * bosonicProj a +
+    bosonicProj a * fermionicProj b - fermionicProj b * bosonicProj a +
+    fermionicProj a * bosonicProj b - bosonicProj b * fermionicProj a +
+    fermionicProj a * fermionicProj b + fermionicProj b * fermionicProj a := by
+  conv_lhs => rw [← bosonicProj_add_fermionicProj a, ← bosonicProj_add_fermionicProj b]
+  simp
+  rw [superCommute_bonsonic (by simp), superCommute_bosonic_fermionic (by simp) (by simp),
+      superCommute_fermionic_bonsonic (by simp) (by simp),
+      superCommute_fermionic_fermionic (by simp) (by simp)]
+  abel
+
 lemma superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic (φs φs' : List 𝓕.CrAnStates) :
      [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule bosonic ∨
     [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule fermionic := by
@@ -725,6 +737,41 @@ lemma superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic (φs φs' : List �
     apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h1)
     apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h2)
 
+lemma superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic (φ φ' : 𝓕.CrAnStates) :
+     [ofCrAnState φ, ofCrAnState φ']ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnState φ, ofCrAnState φ']ₛca ∈ statisticSubmodule fermionic := by
+  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
+  exact superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [φ']
+
+lemma superCommute_superCommute_ofCrAnState_bosonic_or_fermionic (φ1 φ2 φ3 : 𝓕.CrAnStates) :
+    [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca ∈ statisticSubmodule fermionic := by
+  rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ2 φ3 with hs | hs
+    <;> rcases ofCrAnState_bosonic_or_fermionic φ1 with h1 | h1
+  · left
+    have h : bosonic = bosonic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade h1 hs
+  · right
+    have h : fermionic = fermionic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade h1 hs
+  · right
+    have h : fermionic = bosonic + fermionic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade h1 hs
+  · left
+    have h : bosonic = fermionic + fermionic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    rw [h]
+    apply superCommute_grade h1 hs
 
 lemma superCommute_bosonic_ofCrAnList_eq_sum (a : 𝓕.CrAnAlgebra) (φs : List 𝓕.CrAnStates)
     (ha : a ∈ statisticSubmodule bosonic) :

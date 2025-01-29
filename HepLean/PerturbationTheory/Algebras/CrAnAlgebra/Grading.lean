@@ -37,6 +37,11 @@ lemma ofCrAnList_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
   · right
     exact ofCrAnList_mem_statisticSubmodule_of φs fermionic (by simpa using h)
 
+lemma ofCrAnState_bosonic_or_fermionic (φ : 𝓕.CrAnStates) :
+    ofCrAnState φ ∈ statisticSubmodule bosonic ∨ ofCrAnState φ ∈ statisticSubmodule fermionic := by
+  rw [← ofCrAnList_singleton]
+  exact ofCrAnList_bosonic_or_fermionic [φ]
+
 /-- The projection of an element of `CrAnAlgebra` onto it's bosonic part. -/
 def bosonicProj : 𝓕.CrAnAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) bosonic :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
@@ -183,6 +188,7 @@ lemma bosonicProj_add_fermionicProj (a : 𝓕.CrAnAlgebra) :
   · simp [h]
   · simp [h]
 
+
 lemma coeAddMonoidHom_apply_eq_bosonic_plus_fermionic
     (a : DirectSum FieldStatistic (fun i => (statisticSubmodule (𝓕 := 𝓕) i))) :
     DirectSum.coeAddMonoidHom statisticSubmodule a = a.1 bosonic + a.1 fermionic := by
@@ -229,7 +235,7 @@ lemma directSum_eq_bosonic_plus_fermionic
     conv_lhs => rw [hx, hy]
     abel
 
-instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
+instance crAnAlgebraGrade : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
   one_mem := by
     simp only [statisticSubmodule]
     refine Submodule.mem_span.mpr fun p a => a ?_
@@ -296,6 +302,100 @@ lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.CrAnAlgebra}
   rw [ha, hb] at hc
   simpa using hc
 
+lemma bosonicProj_mul (a b : 𝓕.CrAnAlgebra) :
+    (a * b).bosonicProj.1 = a.bosonicProj.1 * b.bosonicProj.1
+    + a.fermionicProj.1 * b.fermionicProj.1 := by
+  conv_lhs =>
+    rw [← bosonicProj_add_fermionicProj a]
+    rw [← bosonicProj_add_fermionicProj b]
+  simp [mul_add, add_mul]
+  rw [bosonicProj_of_mem_bosonic]
+  conv_lhs =>
+    left
+    right
+    rw [bosonicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = fermionic + bosonic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  conv_lhs =>
+    right
+    left
+    rw [bosonicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = bosonic + fermionic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  conv_lhs =>
+    right
+    right
+    rw [bosonicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = fermionic + fermionic := by simp; rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  simp
+  · have h1 : bosonic = bosonic + bosonic := by simp; rfl
+    conv_lhs => rw [h1]
+    apply crAnAlgebraGrade.mul_mem
+    simp
+    simp
+
+lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
+    (a * b).fermionicProj.1 = a.bosonicProj.1 * b.fermionicProj.1
+    + a.fermionicProj.1 * b.bosonicProj.1 := by
+  conv_lhs =>
+    rw [← bosonicProj_add_fermionicProj a]
+    rw [← bosonicProj_add_fermionicProj b]
+  simp [mul_add, add_mul]
+  conv_lhs =>
+    left
+    left
+    rw [fermionicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = bosonic + bosonic := by simp; rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  conv_lhs =>
+    left
+    right
+    rw [fermionicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = fermionic + bosonic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  conv_lhs =>
+    right
+    left
+    rw [fermionicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = bosonic + fermionic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  conv_lhs =>
+    right
+    right
+    rw [fermionicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = fermionic + fermionic := by simp; rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp
+      simp)]
+  simp
+  abel
 
 end
 
