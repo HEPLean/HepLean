@@ -437,7 +437,7 @@ lemma ofFieldOp_eq_ι_ofState (φ : 𝓕.States) : ofFieldOp φ = ι (ofState φ
 def ofFieldOpList (φs : List 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofStateList φs)
 
 lemma ofFieldOpList_eq_ι_ofStateList (φs : List 𝓕.States) :
-  ofFieldOpList φs = ι (ofStateList φs) := rfl
+    ofFieldOpList φs = ι (ofStateList φs) := rfl
 
 lemma ofFieldOpList_append (φs ψs : List 𝓕.States) :
     ofFieldOpList (φs ++ ψs) = ofFieldOpList φs * ofFieldOpList ψs := by
@@ -453,10 +453,10 @@ lemma ofFieldOpList_singleton (φ : 𝓕.States) :
 def ofCrAnFieldOp (φ : 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnState φ)
 
 lemma ofCrAnFieldOp_eq_ι_ofCrAnState (φ : 𝓕.CrAnStates) :
-  ofCrAnFieldOp φ = ι (ofCrAnState φ) := rfl
+    ofCrAnFieldOp φ = ι (ofCrAnState φ) := rfl
 
 lemma ofFieldOp_eq_sum (φ : 𝓕.States) :
-    ofFieldOp φ =  (∑ i : 𝓕.statesToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩)  := by
+    ofFieldOp φ = (∑ i : 𝓕.statesToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩) := by
   rw [ofFieldOp, ofState]
   simp only [map_sum]
   rfl
@@ -465,7 +465,7 @@ lemma ofFieldOp_eq_sum (φ : 𝓕.States) :
 def ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnList φs)
 
 lemma ofCrAnFieldOpList_eq_ι_ofCrAnList (φs : List 𝓕.CrAnStates) :
-  ofCrAnFieldOpList φs = ι (ofCrAnList φs) := rfl
+    ofCrAnFieldOpList φs = ι (ofCrAnList φs) := rfl
 
 lemma ofCrAnFieldOpList_append (φs ψs : List 𝓕.CrAnStates) :
     ofCrAnFieldOpList (φs ++ ψs) = ofCrAnFieldOpList φs * ofCrAnFieldOpList ψs := by

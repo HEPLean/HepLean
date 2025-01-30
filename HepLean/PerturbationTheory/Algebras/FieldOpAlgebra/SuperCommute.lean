@@ -129,7 +129,6 @@ lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.CrAnAlgebra) :
 
 -/
 
-
 lemma superCommute_create_create {φ φ' : 𝓕.CrAnStates}
     (h : 𝓕 |>ᶜ φ = .create) (h' : 𝓕 |>ᶜ φ' = .create) :
     [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ = 0 := by
@@ -146,7 +145,6 @@ lemma superCommute_diff_statistic {φ φ' : 𝓕.CrAnStates} (h : (𝓕 |>ₛ φ
     [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ = 0 := by
   rw [ofCrAnFieldOp, ofCrAnFieldOp]
   rw [superCommute_eq_ι_superCommuteF, ι_superCommuteF_of_diff_statistic h]
-
 
 lemma superCommute_ofCrAnFieldOp_ofFieldOp_diff_stat_zero (φ : 𝓕.CrAnStates) (ψ : 𝓕.States)
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) : [ofCrAnFieldOp φ, ofFieldOp ψ]ₛ = 0 := by
@@ -175,8 +173,9 @@ lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOp_mem_center (φ φ' : 𝓕.CrAnSta
   rw [ofCrAnFieldOp, ofCrAnFieldOp, superCommute_eq_ι_superCommuteF]
   exact ι_superCommuteF_ofCrAnState_ofCrAnState_mem_center φ φ'
 
-lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOp_commute (φ φ' : 𝓕.CrAnStates) (a : FieldOpAlgebra 𝓕) :
-    a * [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ = [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ  * a  := by
+lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOp_commute (φ φ' : 𝓕.CrAnStates)
+    (a : FieldOpAlgebra 𝓕) :
+    a * [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ = [ofCrAnFieldOp φ, ofCrAnFieldOp φ']ₛ * a := by
   have h1 := superCommute_ofCrAnFieldOp_ofCrAnFieldOp_mem_center φ φ'
   rw [@Subalgebra.mem_center_iff] at h1
   exact h1 a
@@ -184,7 +183,7 @@ lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOp_commute (φ φ' : 𝓕.CrAnStates
 lemma superCommute_ofCrAnFieldOp_ofFieldOp_mem_center (φ : 𝓕.CrAnStates) (φ' : 𝓕.States) :
     [ofCrAnFieldOp φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
   rw [ofFieldOp_eq_sum]
-  simp
+  simp only [map_sum]
   refine Subalgebra.sum_mem (Subalgebra.center ℂ 𝓕.FieldOpAlgebra) ?_
   intro x hx
   exact superCommute_ofCrAnFieldOp_ofCrAnFieldOp_mem_center φ ⟨φ', x⟩
@@ -196,7 +195,7 @@ lemma superCommute_ofCrAnFieldOp_ofFieldOp_commute (φ : 𝓕.CrAnStates) (φ' :
   rw [@Subalgebra.mem_center_iff] at h1
   exact h1 a
 
-lemma superCommute_anPart_ofFieldOp_mem_center  (φ φ' : 𝓕.States) :
+lemma superCommute_anPart_ofFieldOp_mem_center (φ φ' : 𝓕.States) :
     [anPart φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
   match φ with
   | States.inAsymp _ =>
@@ -354,7 +353,6 @@ lemma superCommute_anPart_ofFieldOp (φ φ' : 𝓕.States) :
   rw [superCommute_eq_ι_superCommuteF, superCommuteF_anPartF_ofState]
   rfl
 
-
 /-!
 
 ## Mul equal superCommute
@@ -447,7 +445,7 @@ lemma superCommute_ofCrAnFieldOpList_ofCrAnFieldOpList_symm (φs φs' : List �
     [ofCrAnFieldOpList φs, ofCrAnFieldOpList φs']ₛ =
     (- 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs')) • [ofCrAnFieldOpList φs', ofCrAnFieldOpList φs]ₛ := by
   rw [ofCrAnFieldOpList, ofCrAnFieldOpList, superCommute_eq_ι_superCommuteF,
-   superCommuteF_ofCrAnList_ofCrAnList_symm]
+    superCommuteF_ofCrAnList_ofCrAnList_symm]
   rfl
 
 lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOp_symm (φ φ' : 𝓕.CrAnStates) :
@@ -474,21 +472,20 @@ lemma superCommute_ofCrAnFieldOpList_ofCrAnFieldOpList_eq_sum (φs φs' : List �
   rw [map_sum]
   rfl
 
-lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOpList_eq_sum (φ : 𝓕.CrAnStates) (φs' : List 𝓕.CrAnStates) :
-    [ofCrAnFieldOp φ, ofCrAnFieldOpList φs']ₛ =
+lemma superCommute_ofCrAnFieldOp_ofCrAnFieldOpList_eq_sum (φ : 𝓕.CrAnStates)
+    (φs' : List 𝓕.CrAnStates) : [ofCrAnFieldOp φ, ofCrAnFieldOpList φs']ₛ =
     ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs'.take n) •
     [ofCrAnFieldOp φ, ofCrAnFieldOp (φs'.get n)]ₛ * ofCrAnFieldOpList (φs'.eraseIdx n) := by
   conv_lhs =>
     rw [← ofCrAnFieldOpList_singleton, superCommute_ofCrAnFieldOpList_ofCrAnFieldOpList_eq_sum]
   congr
   funext n
-  simp
+  simp only [instCommGroup.eq_1, ofList_singleton, List.get_eq_getElem, Algebra.smul_mul_assoc]
   congr 1
   rw [ofCrAnFieldOpList_singleton, superCommute_ofCrAnFieldOp_ofCrAnFieldOp_commute]
   rw [mul_assoc, ← ofCrAnFieldOpList_append]
   congr
   exact Eq.symm (List.eraseIdx_eq_take_drop_succ φs' ↑n)
-
 
 lemma superCommute_ofCrAnFieldOpList_ofFieldOpList_eq_sum (φs : List 𝓕.CrAnStates)
     (φs' : List 𝓕.States) : [ofCrAnFieldOpList φs, ofFieldOpList φs']ₛ =
@@ -509,7 +506,7 @@ lemma superCommute_ofCrAnFieldOp_ofFieldOpList_eq_sum (φ : 𝓕.CrAnStates) (φ
     rw [← ofCrAnFieldOpList_singleton, superCommute_ofCrAnFieldOpList_ofFieldOpList_eq_sum]
   congr
   funext n
-  simp
+  simp only [instCommGroup.eq_1, ofList_singleton, List.get_eq_getElem, Algebra.smul_mul_assoc]
   congr 1
   rw [ofCrAnFieldOpList_singleton, superCommute_ofCrAnFieldOp_ofFieldOp_commute]
   rw [mul_assoc, ← ofFieldOpList_append]

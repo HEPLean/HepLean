@@ -158,7 +158,8 @@ lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
   simp only [crPartF_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
     mul_zero, sub_self]
   | _, States.outAsymp φ =>
-  simp only [crPartF_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul, sub_self]
+  simp only [crPartF_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
+    sub_self]
   | States.position φ, States.position φ' =>
   simp only [crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
@@ -427,7 +428,8 @@ lemma superCommuteF_ofCrAnList_ofStateList_eq_sum (φs : List 𝓕.CrAnStates) :
       List.get_eq_getElem, List.drop_nil, Finset.sum_empty]
     simp
   | φ :: φs' => by
-    rw [superCommuteF_ofCrAnList_ofStateList_cons, superCommuteF_ofCrAnList_ofStateList_eq_sum φs φs']
+    rw [superCommuteF_ofCrAnList_ofStateList_cons,
+      superCommuteF_ofCrAnList_ofStateList_eq_sum φs φs']
     conv_rhs => erw [Fin.sum_univ_succ]
     congr 1
     · simp

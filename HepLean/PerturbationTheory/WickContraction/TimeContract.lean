@@ -37,7 +37,7 @@ and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
 lemma timeContract_insertAndContract_none
     (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
-    (φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract  := by
+    (φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract := by
   rw [timeContract, insertAndContract_none_prod_contractions]
   congr
   ext a
@@ -57,7 +57,8 @@ lemma timeConract_insertAndContract_some
     (φsΛ ↩Λ φ i (some j)).timeContract =
     (if i < i.succAbove j then
       ⟨FieldOpAlgebra.timeContract φ φs[j.1], timeContract_mem_center _ _⟩
-    else ⟨FieldOpAlgebra.timeContract φs[j.1] φ, timeContract_mem_center _ _⟩) * φsΛ.timeContract := by
+    else ⟨FieldOpAlgebra.timeContract φs[j.1] φ, timeContract_mem_center _ _⟩) *
+    φsΛ.timeContract := by
   rw [timeContract, insertAndContract_some_prod_contractions]
   congr 1
   · simp only [Nat.succ_eq_add_one, insertAndContract_fstFieldOfContract_some_incl, finCongr_apply,
@@ -75,10 +76,10 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
-    (φsΛ ↩Λ φ i (some k)).timeContract  =
+    (φsΛ ↩Λ φ i (some k)).timeContract =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
     • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedStatesEquiv φs φsΛ) (some k)) *
-      φsΛ.timeContract ) := by
+      φsΛ.timeContract) := by
   rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
@@ -87,7 +88,7 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     Algebra.smul_mul_assoc, uncontractedListGet]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
     rw [timeContract_of_timeOrderRel]
-    trans (1 : ℂ) • ((superCommute (anPart φ)) (ofFieldOp φs[k.1]) * ↑φsΛ.timeContract )
+    trans (1 : ℂ) • ((superCommute (anPart φ)) (ofFieldOp φs[k.1]) * ↑φsΛ.timeContract)
     · simp
     simp only [smul_smul]
     congr 1

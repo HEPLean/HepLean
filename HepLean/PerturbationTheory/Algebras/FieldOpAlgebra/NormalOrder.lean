@@ -44,7 +44,8 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnList_ofCrAnList_eq_zero
   · rw [normalOrderF_superCommuteF_annihilate_create φa' φa hφa' hφa (ofCrAnList φs)
       (ofCrAnList φs')]
     simp
-  · rw [normalOrderF_superCommuteF_ofCrAnList_annihilate_annihilate_ofCrAnList φa φa' hφa hφa' φs φs']
+  · rw [normalOrderF_superCommuteF_ofCrAnList_annihilate_annihilate_ofCrAnList
+      φa φa' hφa hφa' φs φs']
     rw [map_smul, map_mul, map_mul, map_mul,
       ι_superCommuteF_of_annihilate_annihilate φa φa' hφa hφa']
     simp
@@ -312,8 +313,6 @@ lemma normalOrder_superCommute_mid_eq_zero (a b c d : 𝓕.FieldOpAlgebra) :
   rw [superCommute_eq_ι_superCommuteF, ← map_mul, ← map_mul, normalOrder_eq_ι_normalOrderF]
   simp
 
-
-
 /-!
 
 ### Swapping terms in a normal order.
@@ -337,7 +336,7 @@ lemma normalOrder_ofCrAnFieldOp_ofFieldOpList_swap (φ : 𝓕.CrAnStates) (φ' :
   rw [← ofCrAnFieldOpList_singleton, ofCrAnFieldOpList_mul_ofFieldOpList_eq_superCommute]
   simp
 
-lemma normalOrder_anPart_ofFieldOpList_swap  (φ : 𝓕.States) (φ' : List 𝓕.States) :
+lemma normalOrder_anPart_ofFieldOpList_swap (φ : 𝓕.States) (φ' : List 𝓕.States) :
     𝓝(anPart φ * ofFieldOpList φ') = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • 𝓝(ofFieldOpList φ' * anPart φ) := by
   match φ with
   | .inAsymp φ =>
@@ -356,16 +355,15 @@ lemma normalOrder_ofFieldOpList_anPart_swap (φ : 𝓕.States) (φ' : List 𝓕.
   rw [normalOrder_anPart_ofFieldOpList_swap]
   simp [smul_smul, FieldStatistic.exchangeSign_mul_self]
 
-
 lemma normalOrder_ofFieldOpList_mul_anPart_swap (φ : 𝓕.States) (φs : List 𝓕.States) :
     𝓝(ofFieldOpList φs) * anPart φ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • 𝓝(anPart φ * ofFieldOpList φs) := by
   rw [← normalOrder_mul_anPart]
   rw [normalOrder_ofFieldOpList_anPart_swap]
 
-
 lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.States)
     (φs' : List 𝓕.States) : anPart φ * 𝓝(ofFieldOpList φs') =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝(ofFieldOpList φs' * anPart φ) + [anPart φ, 𝓝(ofFieldOpList φs')]ₛ := by
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝(ofFieldOpList φs' * anPart φ) +
+    [anPart φ, 𝓝(ofFieldOpList φs')]ₛ := by
   rw [anPart, ofFieldOpList, normalOrder_eq_ι_normalOrderF, ← map_mul]
   rw [anPartF_mul_normalOrderF_ofStateList_eq_superCommuteF]
   simp only [instCommGroup.eq_1, map_add, map_smul]
@@ -386,7 +384,8 @@ lemma ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum (φ : 𝓕.Cr
     sum_normalOrderList_length]
   congr
   funext n
-  simp
+  simp only [instCommGroup.eq_1, List.get_eq_getElem, normalOrderList_get_normalOrderEquiv,
+    normalOrderList_eraseIdx_normalOrderEquiv, Algebra.smul_mul_assoc, Fin.getElem_fin]
   rw [ofCrAnFieldOpList_eq_normalOrder, mul_smul_comm, smul_smul, smul_smul]
   by_cases hs : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[n])
   · congr
@@ -402,9 +401,10 @@ lemma ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum (φ : 𝓕.Cr
   · erw [superCommute_diff_statistic hs]
     simp
 
-lemma ofCrAnFieldOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnStates) (φs : List 𝓕.States) :
-    [ofCrAnFieldOp φ, 𝓝(ofFieldOpList φs)]ₛ =  ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
-    [ofCrAnFieldOp φ, ofFieldOp φs[n]]ₛ * 𝓝(ofFieldOpList (φs.eraseIdx n))  := by
+lemma ofCrAnFieldOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnStates)
+    (φs : List 𝓕.States) :
+    [ofCrAnFieldOp φ, 𝓝(ofFieldOpList φs)]ₛ = ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
+    [ofCrAnFieldOp φ, ofFieldOp φs[n]]ₛ * 𝓝(ofFieldOpList (φs.eraseIdx n)) := by
   conv_lhs =>
     rw [ofFieldOpList_eq_sum, map_sum, map_sum]
     enter [2, s]
@@ -420,14 +420,14 @@ lemma ofCrAnFieldOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnSt
   conv_lhs =>
     enter [2, 2, n]
     rw [← Finset.mul_sum]
-  rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofFieldOp_eq_sum,  ← ofFieldOpList_eq_sum]
+  rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofFieldOp_eq_sum, ← ofFieldOpList_eq_sum]
 
 /--
 Within a proto-operator algebra we have that
 `[anPartF φ, 𝓝(φs)] = ∑ i, sᵢ • [anPartF φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`
 where `sᵢ` is the exchange sign for `φ` and `φ₀…φᵢ₋₁`.
 -/
-lemma anPart_superCommute_normalOrder_ofFieldOpList_sum  (φ : 𝓕.States) (φs : List 𝓕.States) :
+lemma anPart_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.States) (φs : List 𝓕.States) :
     [anPart φ, 𝓝(ofFieldOpList φs)]ₛ = ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •
     [anPart φ, ofState φs[n]]ₛ * 𝓝(ofFieldOpList (φs.eraseIdx n)) := by
   match φ with
@@ -446,7 +446,6 @@ lemma anPart_superCommute_normalOrder_ofFieldOpList_sum  (φ : 𝓕.States) (φs
       Fin.getElem_fin, Algebra.smul_mul_assoc]
     rfl
 
-
 /-!
 
 ## Multiplying with normal ordered terms
@@ -460,7 +459,7 @@ lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute_reorder (φ : 𝓕.St
     (φs : List 𝓕.States) : anPart φ * 𝓝(ofFieldOpList φs) =
     𝓝(anPart φ * ofFieldOpList φs) + [anPart φ, 𝓝(ofFieldOpList φs)]ₛ := by
   rw [anPart_mul_normalOrder_ofFieldOpList_eq_superCommute]
-  simp  [instCommGroup.eq_1, map_add, map_smul]
+  simp [instCommGroup.eq_1, map_add, map_smul]
   rw [normalOrder_anPart_ofFieldOpList_swap]
 
 /--
@@ -519,12 +518,11 @@ lemma ofFieldOpList_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
   rw [hl]
   rw [ofFieldOpList_append, ofFieldOpList_append]
   rw [ofFieldOpList_mul_ofFieldOpList_eq_superCommute, add_mul]
-  simp  [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
-    map_add, map_smul,  add_zero, smul_smul,
+  simp [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
+    map_add, map_smul, add_zero, smul_smul,
     exchangeSign_mul_self_swap, one_smul]
   rw [← ofFieldOpList_append, ← ofFieldOpList_append]
   simp
-
 
 /-!
 
@@ -557,7 +555,7 @@ lemma normalOrder_ofFieldOp_mul_ofFieldOp (φ φ' : 𝓕.States) : 𝓝(ofFieldO
     crPart φ * crPart φ' + 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • (crPart φ' * anPart φ) +
     crPart φ * anPart φ' + anPart φ * anPart φ' := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, normalOrder_eq_ι_normalOrderF,
-     normalOrderF_ofState_mul_ofState]
+    normalOrderF_ofState_mul_ofState]
   rfl
 
 end FieldOpAlgebra

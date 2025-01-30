@@ -45,8 +45,8 @@ lemma normalOrderF_ofCrAnList (φs : List 𝓕.CrAnStates) :
 
 lemma ofCrAnList_eq_normalOrderF (φs : List 𝓕.CrAnStates) :
     ofCrAnList (normalOrderList φs) = normalOrderSign φs • 𝓝ᶠ(ofCrAnList φs) := by
-  rw [normalOrderF_ofCrAnList, normalOrderList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
-    one_smul]
+  rw [normalOrderF_ofCrAnList, normalOrderList, smul_smul, normalOrderSign,
+    Wick.koszulSign_mul_self, one_smul]
 
 lemma normalOrderF_one : normalOrderF (𝓕 := 𝓕) 1 = 1 := by
   rw [← ofCrAnList_nil, normalOrderF_ofCrAnList, normalOrderSign_nil, normalOrderList_nil,
@@ -61,7 +61,8 @@ lemma normalOrderF_one : normalOrderF (𝓕 := 𝓕) 1 = 1 := by
 lemma normalOrderF_ofCrAnList_cons_create (φ : 𝓕.CrAnStates)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnStates) :
     𝓝ᶠ(ofCrAnList (φ :: φs)) = ofCrAnState φ * 𝓝ᶠ(ofCrAnList φs) := by
-  rw [normalOrderF_ofCrAnList, normalOrderSign_cons_create φ hφ, normalOrderList_cons_create φ hφ φs]
+  rw [normalOrderF_ofCrAnList, normalOrderSign_cons_create φ hφ,
+    normalOrderList_cons_create φ hφ φs]
   rw [ofCrAnList_cons, normalOrderF_ofCrAnList, mul_smul_comm]
 
 lemma normalOrderF_create_mul (φ : 𝓕.CrAnStates)

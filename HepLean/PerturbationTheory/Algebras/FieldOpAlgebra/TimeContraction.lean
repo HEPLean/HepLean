@@ -36,7 +36,7 @@ lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ
     timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ := by
   conv_rhs =>
     rw [ofFieldOp_eq_crPart_add_anPart]
-    rw [map_add,  superCommute_anPart_anPart, superCommute_anPart_crPart]
+    rw [map_add, superCommute_anPart_anPart, superCommute_anPart_crPart]
   simp only [timeContract, instCommGroup.eq_1, Algebra.smul_mul_assoc, add_zero]
   rw [timeOrder_ofFieldOp_ofFieldOp_ordered h]
   rw [normalOrder_ofFieldOp_mul_ofFieldOp]

@@ -121,7 +121,8 @@ lemma timeOrderF_ofStateList_singleton (φ : 𝓕.States) : 𝓣ᶠ(ofStateList 
 
 lemma timeOrderF_ofState_ofState_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :
     𝓣ᶠ(ofState φ * ofState ψ) = ofState φ * ofState ψ := by
-  rw [← ofStateList_singleton, ← ofStateList_singleton, ← ofStateList_append, timeOrderF_ofStateList]
+  rw [← ofStateList_singleton, ← ofStateList_singleton, ← ofStateList_append,
+    timeOrderF_ofStateList]
   simp only [List.singleton_append]
   rw [timeOrderSign_pair_ordered h, timeOrderList_pair_ordered h]
   simp
@@ -134,7 +135,8 @@ lemma timeOrderF_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeO
   rw [timeOrderSign_pair_not_ordered h, timeOrderList_pair_not_ordered h]
   simp [← ofStateList_append]
 
-lemma timeOrderF_ofState_ofState_not_ordered_eq_timeOrderF {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
+lemma timeOrderF_ofState_ofState_not_ordered_eq_timeOrderF {φ ψ : 𝓕.States}
+    (h : ¬ timeOrderRel φ ψ) :
     𝓣ᶠ(ofState φ * ofState ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓣ᶠ(ofState ψ * ofState φ) := by
   rw [timeOrderF_ofState_ofState_not_ordered h]
   rw [timeOrderF_ofState_ofState_ordered]
