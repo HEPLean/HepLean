@@ -235,4 +235,52 @@ lemma koszulSignInsert_cons (r0 r1 : 𝓕) (r : List 𝓕) :
     koszulSignInsert q le r0 r := by
   simp [koszulSignInsert, koszulSignCons]
 
+lemma koszulSignInsert_of_le_mem (φ0 : 𝓕) : (φs : List 𝓕) → (h : ∀ b ∈ φs, le φ0 b) →
+    koszulSignInsert q le φ0 φs = 1
+  | [], _ => by
+    simp [koszulSignInsert]
+  | φ1 :: φs, h => by
+    simp only [koszulSignInsert]
+    rw [if_pos]
+    · apply koszulSignInsert_of_le_mem
+      · intro b hb
+        exact h b (List.mem_cons_of_mem _ hb)
+    · exact h φ1 (List.mem_cons_self _ _)
+
+lemma koszulSignInsert_eq_rel_eq_stat {ψ φ : 𝓕} [IsTrans 𝓕 le]
+    (h1 : le φ ψ) (h2 : le ψ φ) (hq : q ψ = q φ) : (φs : List 𝓕) →
+    koszulSignInsert q le φ φs = koszulSignInsert q le ψ φs
+  | [] => by
+    simp [koszulSignInsert]
+  | φ' :: φs => by
+    simp only [koszulSignInsert]
+    simp_all only
+    by_cases hr : le φ φ'
+    · simp only [hr, ↓reduceIte]
+      have h1' : le ψ φ' := by
+        apply IsTrans.trans ψ φ φ' h2 hr
+      simp only [h1', ↓reduceIte]
+      exact koszulSignInsert_eq_rel_eq_stat h1 h2 hq φs
+    · have hψφ' : ¬ le ψ φ' := by
+        intro hψφ'
+        apply hr
+        apply IsTrans.trans φ ψ φ' h1 hψφ'
+      simp only [hr, ↓reduceIte, hψφ']
+      rw [koszulSignInsert_eq_rel_eq_stat h1 h2 hq φs]
+
+lemma koszulSignInsert_eq_remove_same_stat_append {ψ φ φ' : 𝓕} [IsTrans 𝓕 le]
+    (h1 : le φ ψ) (h2 : le ψ φ) (hq : q ψ = q φ) : (φs : List 𝓕) →
+    koszulSignInsert q le φ' (φ :: ψ :: φs) = koszulSignInsert q le φ' φs := by
+  intro φs
+  simp_all only [koszulSignInsert, and_self, ite_true, ite_false, ite_self]
+  by_cases hφ'φ : le φ' φ
+  · have hφ'ψ : le φ' ψ := by
+      apply IsTrans.trans φ' φ ψ hφ'φ h1
+    simp [hφ'φ, hφ'ψ]
+  · have hφ'ψ : ¬ le φ' ψ := by
+      intro hφ'ψ
+      apply hφ'φ
+      apply IsTrans.trans φ' ψ φ hφ'ψ h2
+    simp_all [hφ'φ, hφ'ψ]
+
 end Wick

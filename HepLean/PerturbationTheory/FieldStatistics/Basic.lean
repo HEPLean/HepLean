@@ -235,6 +235,10 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
     simp only [List.length_cons, List.nodup_cons] at hl
     exact hl.2
 
+lemma ofList_pair (s : 𝓕 → FieldStatistic) (φ1 φ2 : 𝓕) :
+    ofList s [φ1, φ2] = s φ1 * s φ2 := by
+  rw [ofList_cons_eq_mul, ofList_singleton]
+
 /-!
 
 ## ofList and take
@@ -288,17 +292,21 @@ instance : AddMonoid FieldStatistic where
   add a b := a * b
   nsmul n a := ∏ (i : Fin n), a
   zero_add a := by
-    cases a <;> simp <;> rfl
+    cases a <;> simp only [instCommGroup] <;> rfl
   add_zero a := by
-    cases a <;> simp <;> rfl
+    cases a <;>
+      simp only [instCommGroup] <;> rfl
   add_assoc a b c := by
-    cases a <;> cases b <;> cases c <;> simp <;> rfl
+    cases a <;> cases b <;> cases c <;> simp only [instCommGroup] <;> rfl
   nsmul_zero a := by
     simp only [Finset.univ_eq_empty, Finset.prod_const, instCommGroup, Finset.card_empty, pow_zero]
     rfl
   nsmul_succ a n := by
     simp only [instCommGroup, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     rfl
+
+@[simp]
+lemma add_eq_mul (a b : FieldStatistic) : a + b = a * b := rfl
 
 end ofListTake
 end FieldStatistic

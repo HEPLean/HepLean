@@ -234,27 +234,10 @@ lemma crAnTimeOrderSign_pair_not_ordered {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnT
   rw [if_neg h]
   simp [FieldStatistic.exchangeSign_eq_if]
 
-lemma crAnTimeOrderSign_swap_eq_time_cons {φ ψ : 𝓕.CrAnStates}
-    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) (φs' : List 𝓕.CrAnStates) :
-    crAnTimeOrderSign (φ :: ψ :: φs') = crAnTimeOrderSign (ψ :: φ :: φs') := by
-  simp only [crAnTimeOrderSign, Wick.koszulSign, ← mul_assoc, mul_eq_mul_right_iff]
-  left
-  rw [mul_comm]
-  simp [Wick.koszulSignInsert, h1, h2]
-
 lemma crAnTimeOrderSign_swap_eq_time {φ ψ : 𝓕.CrAnStates}
-    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) : (φs φs' : List 𝓕.CrAnStates) →
-    crAnTimeOrderSign (φs ++ φ :: ψ :: φs') = crAnTimeOrderSign (φs ++ ψ :: φ :: φs')
-  | [], φs' => by
-    simp only [crAnTimeOrderSign, List.nil_append]
-    exact crAnTimeOrderSign_swap_eq_time_cons h1 h2 φs'
-  | φ'' :: φs, φs' => by
-    simp only [crAnTimeOrderSign, Wick.koszulSign, List.append_eq]
-    rw [← crAnTimeOrderSign, ← crAnTimeOrderSign]
-    rw [crAnTimeOrderSign_swap_eq_time h1 h2]
-    congr 1
-    apply Wick.koszulSignInsert_eq_perm
-    exact List.Perm.append_left φs (List.Perm.swap ψ φ φs')
+    (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) (φs φs' : List 𝓕.CrAnStates) :
+    crAnTimeOrderSign (φs ++ φ :: ψ :: φs') = crAnTimeOrderSign (φs ++ ψ :: φ :: φs') := by
+  exact Wick.koszulSign_swap_eq_rel _ _ h1 h2 _ _
 
 /-- Sort a list of `CrAnStates` based on `crAnTimeOrderRel`. -/
 def crAnTimeOrderList (φs : List 𝓕.CrAnStates) : List 𝓕.CrAnStates :=

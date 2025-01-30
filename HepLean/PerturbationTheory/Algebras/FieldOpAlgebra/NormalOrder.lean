@@ -3,6 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.NormalOrder
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 /-!
 
@@ -12,9 +13,7 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 
 namespace FieldSpecification
 open CrAnAlgebra
-open ProtoOperatorAlgebra
 open HepLean.List
-open WickContraction
 open FieldStatistic
 
 namespace FieldOpAlgebra
@@ -222,15 +221,13 @@ lemma ι_normalOrder_eq_of_equiv (a b : 𝓕.CrAnAlgebra) (h : a ≈ b) :
 noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ CrAnAlgebra.normalOrder) ι_normalOrder_eq_of_equiv
   map_add' x y := by
-    obtain ⟨x, hx⟩ := ι_surjective x
-    obtain ⟨y, hy⟩ := ι_surjective y
-    subst hx hy
+    obtain ⟨x, rfl⟩ := ι_surjective x
+    obtain ⟨y, rfl⟩ := ι_surjective y
     rw [← map_add, ι_apply, ι_apply, ι_apply]
     rw [Quotient.lift_mk, Quotient.lift_mk, Quotient.lift_mk]
     simp
   map_smul' c y := by
-    obtain ⟨y, hy⟩ := ι_surjective y
-    subst hy
+    obtain ⟨y, rfl⟩ := ι_surjective y
     rw [← map_smul, ι_apply, ι_apply]
     simp
 

@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
+import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.Basic
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 import Mathlib.RingTheory.GradedAlgebra.Basic
 /-!
@@ -22,8 +21,26 @@ namespace CrAnAlgebra
 noncomputable section
 
 /-- The submodule of `CrAnAlgebra` spanned by lists of field statistic `f`. -/
-def statisticSubmodule  (f : FieldStatistic) :  Submodule ℂ 𝓕.CrAnAlgebra  :=
+def statisticSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.CrAnAlgebra :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
+
+lemma ofCrAnList_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
+    (h : (𝓕 |>ₛ φs) = f) :
+    ofCrAnList φs ∈ statisticSubmodule f := by
+  refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
+
+lemma ofCrAnList_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
+    ofCrAnList φs ∈ statisticSubmodule bosonic ∨ ofCrAnList φs ∈ statisticSubmodule fermionic := by
+  by_cases h : (𝓕 |>ₛ φs) = bosonic
+  · left
+    exact ofCrAnList_mem_statisticSubmodule_of φs bosonic h
+  · right
+    exact ofCrAnList_mem_statisticSubmodule_of φs fermionic (by simpa using h)
+
+lemma ofCrAnState_bosonic_or_fermionic (φ : 𝓕.CrAnStates) :
+    ofCrAnState φ ∈ statisticSubmodule bosonic ∨ ofCrAnState φ ∈ statisticSubmodule fermionic := by
+  rw [← ofCrAnList_singleton]
+  exact ofCrAnList_bosonic_or_fermionic [φ]
 
 /-- The projection of an element of `CrAnAlgebra` onto it's bosonic part. -/
 def bosonicProj : 𝓕.CrAnAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) bosonic :=
@@ -102,7 +119,7 @@ lemma fermionicProj_ofCrAnList (φs : List 𝓕.CrAnStates) :
 lemma fermionicProj_ofCrAnList_if_bosonic (φs : List 𝓕.CrAnStates) :
     fermionicProj (ofCrAnList φs) = if h : (𝓕 |>ₛ φs) = bosonic then
       0 else ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl,
-        by simpa using h ⟩⟩⟩ := by
+        by simpa using h⟩⟩⟩ := by
   rw [fermionicProj_ofCrAnList]
   by_cases h1 : (𝓕 |>ₛ φs) = fermionic
   · simp [h1]
@@ -217,7 +234,8 @@ lemma directSum_eq_bosonic_plus_fermionic
     conv_lhs => rw [hx, hy]
     abel
 
-instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
+/-- The instance of a graded algebra on `CrAnAlgebra`. -/
+instance crAnAlgebraGrade : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
   one_mem := by
     simp only [statisticSubmodule]
     refine Submodule.mem_span.mpr fun p a => a ?_
@@ -227,7 +245,7 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
     let p (a2 : 𝓕.CrAnAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
-       a1 * a2 ∈ statisticSubmodule (f1 + f2)
+      a1 * a2 ∈ statisticSubmodule (f1 + f2)
     change p a2 h2
     apply Submodule.span_induction (p := p)
     · intro x hx
@@ -263,10 +281,10 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
       simp only [Algebra.mul_smul_comm, p]
       exact Submodule.smul_mem _ _ h1
     · exact h2
-  decompose' a :=  DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
-    +  DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProj a)
+  decompose' a := DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
+    + DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProj a)
   left_inv a := by
-    trans  a.bosonicProj + fermionicProj a
+    trans a.bosonicProj + fermionicProj a
     · simp
     · exact bosonicProj_add_fermionicProj a
   right_inv a := by
@@ -275,6 +293,117 @@ instance : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
       bosonicProj_of_fermionic_part, add_zero, fermionicProj_of_bosonic_part,
       fermionicProj_of_fermionic_part, zero_add]
     conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
+
+lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.CrAnAlgebra}
+    (hb : a ∈ statisticSubmodule bosonic) (hf : a ∈ statisticSubmodule fermionic) : a = 0 := by
+  have ha := bosonicProj_of_mem_bosonic a hb
+  have hb := fermionicProj_of_mem_fermionic a hf
+  have hc := (bosonicProj_add_fermionicProj a)
+  rw [ha, hb] at hc
+  simpa using hc
+
+lemma bosonicProj_mul (a b : 𝓕.CrAnAlgebra) :
+    (a * b).bosonicProj.1 = a.bosonicProj.1 * b.bosonicProj.1
+    + a.fermionicProj.1 * b.fermionicProj.1 := by
+  conv_lhs =>
+    rw [← bosonicProj_add_fermionicProj a]
+    rw [← bosonicProj_add_fermionicProj b]
+  simp only [mul_add, add_mul, map_add, Submodule.coe_add]
+  rw [bosonicProj_of_mem_bosonic]
+  conv_lhs =>
+    left
+    right
+    rw [bosonicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = fermionic + bosonic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  conv_lhs =>
+    right
+    left
+    rw [bosonicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = bosonic + fermionic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  conv_lhs =>
+    right
+    right
+    rw [bosonicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = fermionic + fermionic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  simp only [ZeroMemClass.coe_zero, add_zero, zero_add]
+  · have h1 : bosonic = bosonic + bosonic := by
+      simp only [add_eq_mul, instCommGroup, mul_self]
+      rfl
+    conv_lhs => rw [h1]
+    apply crAnAlgebraGrade.mul_mem
+    simp only [SetLike.coe_mem]
+    simp
+
+lemma fermionicProj_mul (a b : 𝓕.CrAnAlgebra) :
+    (a * b).fermionicProj.1 = a.bosonicProj.1 * b.fermionicProj.1
+    + a.fermionicProj.1 * b.bosonicProj.1 := by
+  conv_lhs =>
+    rw [← bosonicProj_add_fermionicProj a]
+    rw [← bosonicProj_add_fermionicProj b]
+  simp only [mul_add, add_mul, map_add, Submodule.coe_add]
+  conv_lhs =>
+    left
+    left
+    rw [fermionicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = bosonic + bosonic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  conv_lhs =>
+    left
+    right
+    rw [fermionicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = fermionic + bosonic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  conv_lhs =>
+    right
+    left
+    rw [fermionicProj_of_mem_fermionic _
+      (by
+      have h1 : fermionic = bosonic + fermionic := by simp
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  conv_lhs =>
+    right
+    right
+    rw [fermionicProj_of_mem_bosonic _
+      (by
+      have h1 : bosonic = fermionic + fermionic := by
+        simp only [add_eq_mul, instCommGroup, mul_self]
+        rfl
+      conv_lhs => rw [h1]
+      apply crAnAlgebraGrade.mul_mem
+      simp only [SetLike.coe_mem]
+      simp)]
+  simp only [ZeroMemClass.coe_zero, zero_add, add_zero]
+  abel
 
 end
 
