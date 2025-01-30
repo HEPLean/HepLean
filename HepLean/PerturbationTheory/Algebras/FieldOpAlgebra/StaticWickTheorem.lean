@@ -51,11 +51,15 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
     refine Finset.sum_congr rfl (fun n _ => ?_)
     match n with
     | none =>
-      simp [uncontractedStatesEquiv, contractStateAtIndex]
+      simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+        Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
+        Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insertAndContract_none,
+        insertAndContract_uncontractedList_none_zero]
       erw [sign_insert_none_zero]
       rfl
     | some n =>
-      simp
+      simp only [Algebra.smul_mul_assoc, Nat.succ_eq_add_one, Fin.zero_eta, Fin.val_zero,
+        List.insertIdx_zero]
       rw [normalOrder_uncontracted_some]
       simp [← mul_assoc]
       rw [← smul_mul_assoc]
@@ -74,16 +78,18 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
         erw [sign_insert_some]
         rw [mul_assoc, mul_comm c.sign, ← mul_assoc]
         rw [signInsertSome_mul_filter_contracted_of_not_lt]
-        simp
-        simp
+        simp only [instCommGroup.eq_1, Fin.zero_succAbove, Fin.not_lt_zero, Finset.filter_False,
+          ofFinset_empty, map_one, one_mul]
+        simp only [Fin.zero_succAbove, Fin.not_lt_zero, not_false_eq_true]
         exact hn
       · simp at hn
         by_cases h0 : ¬ GradingCompliant φs c
         · rw [staticContract_of_not_gradingCompliant]
-          simp
+          simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
           exact h0
         · simp_all
-          have h1 :  contractStateAtIndex φ [c]ᵘᶜ ((uncontractedStatesEquiv φs c) (some n)) = 0 := by
+          have h1 :  contractStateAtIndex φ [c]ᵘᶜ
+              ((uncontractedStatesEquiv φs c) (some n)) = 0 := by
             simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
               Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
               instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
