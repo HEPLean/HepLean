@@ -25,7 +25,7 @@ def statisticSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.CrAnAlgebra :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
 
 lemma ofCrAnList_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
-  (h : (𝓕 |>ₛ φs) = f) :
+    (h : (𝓕 |>ₛ φs) = f) :
     ofCrAnList φs ∈ statisticSubmodule f := by
   refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
@@ -234,6 +234,7 @@ lemma directSum_eq_bosonic_plus_fermionic
     conv_lhs => rw [hx, hy]
     abel
 
+/-- The instance of a graded algebra on `CrAnAlgebra`. -/
 instance crAnAlgebraGrade : GradedAlgebra (A := 𝓕.CrAnAlgebra) statisticSubmodule where
   one_mem := by
     simp only [statisticSubmodule]

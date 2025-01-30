@@ -49,8 +49,11 @@ lemma ι_superCommute_eq_of_equiv_right (a b1 b2 : 𝓕.CrAnAlgebra) (h : b1 ≈
   simp only [LinearMap.mem_ker, ← map_sub]
   exact ι_superCommute_right_zero_of_mem_ideal a (b1 - b2) h
 
-noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
-  toFun := Quotient.lift (ι.toLinearMap ∘ₗ CrAnAlgebra.superCommute a) (ι_superCommute_eq_of_equiv_right a)
+/-- The super commutor on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
+noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) :
+  FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+  toFun := Quotient.lift (ι.toLinearMap ∘ₗ CrAnAlgebra.superCommute a)
+    (ι_superCommute_eq_of_equiv_right a)
   map_add' x y := by
     obtain ⟨x, hx⟩ := ι_surjective x
     obtain ⟨y, hy⟩ := ι_surjective y
@@ -64,11 +67,11 @@ noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) : FieldOpAlgebra 𝓕
     rw [← map_smul, ι_apply, ι_apply]
     simp
 
-lemma superCommuteRight_apply_ι (a b : 𝓕.CrAnAlgebra) : superCommuteRight a (ι b) = ι [a, b]ₛca := by
-  rfl
+lemma superCommuteRight_apply_ι (a b : 𝓕.CrAnAlgebra) :
+    superCommuteRight a (ι b) = ι [a, b]ₛca := by rfl
 
-lemma superCommuteRight_apply_quot (a b : 𝓕.CrAnAlgebra) : superCommuteRight a ⟦b⟧= ι [a, b]ₛca := by
-  rfl
+lemma superCommuteRight_apply_quot (a b : 𝓕.CrAnAlgebra) :
+    superCommuteRight a ⟦b⟧= ι [a, b]ₛca := by rfl
 
 lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
     superCommuteRight a1 = superCommuteRight a2 := by
@@ -85,6 +88,7 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
   simp only [add_sub_cancel]
   simp
 
+/-- The super commutor on the `FieldOpAlgebra`. -/
 noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
     FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift superCommuteRight superCommuteRight_eq_of_equiv

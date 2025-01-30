@@ -122,7 +122,8 @@ lemma insertIdx_length_fst_append {I : Type} (φ : I) : (φs φs' : List I) →
     List.insertIdx φs.length φ (φs ++ φs') = (φs ++ φ :: φs')
   | [], φs' => by simp
   | φ' :: φs, φs' => by
-    simp
+    simp only [List.length_cons, List.cons_append, List.insertIdx_succ_cons, List.cons.injEq,
+      true_and]
     exact insertIdx_length_fst_append φ φs φs'
 
 lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
