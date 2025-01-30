@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.NormalOrder
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 /-!
 
 # Normal Ordering on Field operator algebra
@@ -230,6 +230,61 @@ noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra �
     obtain ⟨y, rfl⟩ := ι_surjective y
     rw [← map_smul, ι_apply, ι_apply]
     simp
+
+@[inherit_doc normalOrder]
+scoped[FieldSpecification.FieldOpAlgebra] notation "𝓝(" a ")" => normalOrder a
+
+/-!
+
+## Properties of normal ordering.
+
+-/
+
+lemma normalOrder_eq_ι_normalOrderF (a : 𝓕.CrAnAlgebra) :
+    𝓝(ι a) = ι 𝓝ᶠ(a) := rfl
+
+/-!
+
+### Normal order and super commutes
+
+-/
+
+@[simp]
+lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
+    𝓝([a, b]ₛ) = 0 := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  rw [superCommute_eq_ι_superCommuteF, normalOrder_eq_ι_normalOrderF]
+  simp
+
+@[simp]
+lemma normalOrder_superCommute_left_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
+    𝓝([a, b]ₛ * c) = 0 := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  obtain ⟨c, rfl⟩ := ι_surjective c
+  rw [superCommute_eq_ι_superCommuteF, ← map_mul, normalOrder_eq_ι_normalOrderF]
+  simp
+
+@[simp]
+lemma normalOrder_superCommute_right_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
+    𝓝(c * [a, b]ₛ) = 0 := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  obtain ⟨c, rfl⟩ := ι_surjective c
+  rw [superCommute_eq_ι_superCommuteF, ← map_mul, normalOrder_eq_ι_normalOrderF]
+  simp
+
+@[simp]
+lemma normalOrder_superCommute_mid_eq_zero (a b c d : 𝓕.FieldOpAlgebra) :
+    𝓝(a * [c, d]ₛ * b) = 0 := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  obtain ⟨c, rfl⟩ := ι_surjective c
+  obtain ⟨d, rfl⟩ := ι_surjective d
+  rw [superCommute_eq_ι_superCommuteF, ← map_mul, ← map_mul, normalOrder_eq_ι_normalOrderF]
+  simp
+
 
 end FieldOpAlgebra
 end FieldSpecification

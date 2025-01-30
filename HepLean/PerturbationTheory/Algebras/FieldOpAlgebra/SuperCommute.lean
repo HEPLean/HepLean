@@ -114,8 +114,8 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
 @[inherit_doc superCommute]
 scoped[FieldSpecification.FieldOpAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
 
-lemma ι_superCommuteF_eq_superCommute (a b : 𝓕.CrAnAlgebra) :
-    ι [a, b]ₛca = [ι a, ι b]ₛ := rfl
+lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.CrAnAlgebra) :
+    [ι a, ι b]ₛ = ι [a, b]ₛca := rfl
 
 end FieldOpAlgebra
 end FieldSpecification

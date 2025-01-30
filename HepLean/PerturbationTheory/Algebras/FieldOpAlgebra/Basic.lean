@@ -422,5 +422,33 @@ lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : CrAnAlgebra 𝓕) :
     rw [← bosonicProj_add_fermionicProj x]
     simp_all
 
+/-!
+
+## Constructors
+
+-/
+
+/-- An element of `FieldOpAlgebra` from a `States`. -/
+def ofFieldOp (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofState φ)
+
+lemma ofFieldOp_eq_ι_ofState (φ : 𝓕.States) : ofFieldOp φ = ι (ofState φ) := rfl
+
+/-- An element of `FieldOpAlgebra` from a list of `States`. -/
+def ofFieldOpList (φs : List 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofStateList φs)
+
+lemma ofFieldOpList_eq_ι_ofStateList (φs : List 𝓕.States) :
+  ofFieldOpList φs = ι (ofStateList φs) := rfl
+
+/-- An element of `FieldOpAlgebra` from a `CrAnStates`. -/
+def ofCrAnFieldOp (φ : 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnState φ)
+
+lemma ofCrAnFieldOp_eq_ι_ofCrAnState (φ : 𝓕.CrAnStates) :
+  ofCrAnFieldOp φ = ι (ofCrAnState φ) := rfl
+
+/-- An element of `FieldOpAlgebra` from a list of `CrAnStates`. -/
+def ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnList φs)
+
+lemma ofCrAnFieldOpList_eq_ι_ofCrAnList (φs : List 𝓕.CrAnStates) :
+  ofCrAnFieldOpList φs = ι (ofCrAnList φs) := rfl
 end FieldOpAlgebra
 end FieldSpecification
