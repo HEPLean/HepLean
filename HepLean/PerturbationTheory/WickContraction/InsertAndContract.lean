@@ -304,4 +304,11 @@ lemma insertAndContract_uncontractedList_none_map (φ : 𝓕.States) {φs : List
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
   rfl
 
+@[simp]
+lemma insertAndContract_uncontractedList_none_zero (φ : 𝓕.States) {φs : List 𝓕.States}
+    (φsΛ : WickContraction φs.length) :
+    [φsΛ ↩Λ φ 0 none]ᵘᶜ = φ :: [φsΛ]ᵘᶜ := by
+  rw [insertAndContract_uncontractedList_none_map]
+  simp [uncontractedListOrderPos]
+
 end WickContraction

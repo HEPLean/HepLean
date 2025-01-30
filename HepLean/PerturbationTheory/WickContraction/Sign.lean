@@ -409,6 +409,11 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
   erw [hG a]
   rfl
 
+lemma sign_insert_none_zero (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
+    (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
+  rw [sign_insert_none]
+  simp [signInsertNone]
+
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.States)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = ∏ (x : Fin φs.length),

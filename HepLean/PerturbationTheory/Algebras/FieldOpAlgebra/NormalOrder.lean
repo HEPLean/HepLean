@@ -249,6 +249,13 @@ lemma normalOrder_ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) :
   rw [ofCrAnFieldOpList, normalOrder_eq_ι_normalOrderF, normalOrderF_ofCrAnList]
   rfl
 
+@[simp]
+lemma normalOrder_one_eq_one : normalOrder (𝓕 := 𝓕) 1 = 1 := by
+  have h1 : 1 = ofCrAnFieldOpList (𝓕 := 𝓕) [] := by simp [ofCrAnFieldOpList]
+  rw [h1]
+  rw [normalOrder_ofCrAnFieldOpList]
+  simp
+
 lemma ofCrAnFieldOpList_eq_normalOrder (φs : List 𝓕.CrAnStates) :
     ofCrAnFieldOpList (normalOrderList φs) = normalOrderSign φs • 𝓝(ofCrAnFieldOpList φs) := by
   rw [normalOrder_ofCrAnFieldOpList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
