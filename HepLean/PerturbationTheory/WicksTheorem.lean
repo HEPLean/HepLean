@@ -319,7 +319,7 @@ lemma wick_term_cons_eq_sum_wick_term (φ : 𝓕.States) (φs : List 𝓕.States
 lemma wicks_theorem_nil :
     𝓞.crAnF (𝓣ᶠ(ofStateList [])) = ∑ (nilΛ : WickContraction [].length),
     (nilΛ.sign • nilΛ.timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([nilΛ]ᵘᶜ) := by
-  rw [timeOrder_ofStateList_nil]
+  rw [timeOrderF_ofStateList_nil]
   simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
   simp only [List.map_nil]
@@ -356,7 +356,7 @@ theorem wicks_theorem : (φs : List 𝓕.States) → 𝓞.crAnF (𝓣ᶠ(ofState
   | [] => wicks_theorem_nil
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
-    rw [timeOrder_eq_maxTimeField_mul_finset, map_mul, ih, Finset.mul_sum]
+    rw [timeOrderF_eq_maxTimeField_mul_finset, map_mul, ih, Finset.mul_sum]
     have h1 : φ :: φs =
         (eraseMaxTimeField φ φs).insertIdx (maxTimeFieldPosFin φ φs) (maxTimeField φ φs) := by
       simp only [eraseMaxTimeField, insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
