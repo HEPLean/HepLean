@@ -450,5 +450,16 @@ def ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (
 
 lemma ofCrAnFieldOpList_eq_ι_ofCrAnList (φs : List 𝓕.CrAnStates) :
   ofCrAnFieldOpList φs = ι (ofCrAnList φs) := rfl
+
+/-- The annihilation part of a state. -/
+def anPart (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
+
+lemma anPart_eq_ι_anPartF (φ : 𝓕.States) : anPart φ = ι (anPartF φ) := rfl
+
+/-- The creation part of a state. -/
+def crPart (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
+
+lemma crPart_eq_ι_crPartF (φ : 𝓕.States) : crPart φ = ι (crPartF φ) := rfl
+
 end FieldOpAlgebra
 end FieldSpecification

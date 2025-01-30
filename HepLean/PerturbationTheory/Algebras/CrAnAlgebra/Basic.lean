@@ -22,8 +22,8 @@ The main structures defined in this module are:
 * `ofCrAnState` - Maps a creation/annihilation state to the algebra
 * `ofCrAnList` - Maps a list of creation/annihilation states to the algebra
 * `ofState` - Maps a state to a sum of creation and annihilation operators
-* `crPart` - The creation part of a state in the algebra
-* `anPart` - The annihilation part of a state in the algebra
+* `crPartF` - The creation part of a state in the algebra
+* `anPartF` - The annihilation part of a state in the algebra
 * `superCommuteF` - The super commutator on the algebra
 
 The key lemmas show how these operators interact, particularly focusing on the
@@ -113,55 +113,55 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
 /-- The algebra map taking an element of the free-state algbra to
   the part of it in the creation and annihlation free algebra
   spanned by creation operators. -/
-def crPart : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
+def crPartF : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
   match φ with
   | States.inAsymp φ => ofCrAnState ⟨States.inAsymp φ, ()⟩
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩
   | States.outAsymp _ => 0
 
 @[simp]
-lemma crPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
-    crPart (States.inAsymp φ) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
-  simp [crPart]
+lemma crPartF_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    crPartF (States.inAsymp φ) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
+  simp [crPartF]
 
 @[simp]
-lemma crPart_position (φ : 𝓕.PositionStates) :
-    crPart (States.position φ) =
+lemma crPartF_position (φ : 𝓕.PositionStates) :
+    crPartF (States.position φ) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩ := by
-  simp [crPart]
+  simp [crPartF]
 
 @[simp]
-lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
-    crPart (States.outAsymp φ) = 0 := by
-  simp [crPart]
+lemma crPartF_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    crPartF (States.outAsymp φ) = 0 := by
+  simp [crPartF]
 
 /-- The algebra map taking an element of the free-state algbra to
   the part of it in the creation and annihilation free algebra
   spanned by annihilation operators. -/
-def anPart : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
+def anPartF : 𝓕.States → 𝓕.CrAnAlgebra := fun φ =>
   match φ with
   | States.inAsymp _ => 0
   | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩
   | States.outAsymp φ => ofCrAnState ⟨States.outAsymp φ, ()⟩
 
 @[simp]
-lemma anPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
-    anPart (States.inAsymp φ) = 0 := by
-  simp [anPart]
+lemma anPartF_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    anPartF (States.inAsymp φ) = 0 := by
+  simp [anPartF]
 
 @[simp]
-lemma anPart_position (φ : 𝓕.PositionStates) :
-    anPart (States.position φ) =
+lemma anPartF_position (φ : 𝓕.PositionStates) :
+    anPartF (States.position φ) =
     ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
-  simp [anPart]
+  simp [anPartF]
 
 @[simp]
-lemma anPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
-    anPart (States.outAsymp φ) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
-  simp [anPart]
+lemma anPartF_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    anPartF (States.outAsymp φ) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
+  simp [anPartF]
 
-lemma ofState_eq_crPart_add_anPart (φ : 𝓕.States) :
-    ofState φ = crPart φ + anPart φ := by
+lemma ofState_eq_crPartF_add_anPartF (φ : 𝓕.States) :
+    ofState φ = crPartF φ + anPartF φ := by
   rw [ofState]
   cases φ with
   | inAsymp φ => simp [statesToCrAnType]

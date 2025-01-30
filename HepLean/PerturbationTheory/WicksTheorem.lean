@@ -245,14 +245,14 @@ lemma wick_term_some_eq_wick_term_optionEraseZ (φ : 𝓕.States) (φs : List �
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
         simp only [zero_mul, smul_zero]
-        rw [crAnF_superCommuteF_anPart_ofState_diff_grade_zero]
+        rw [crAnF_superCommuteF_anPartF_ofState_diff_grade_zero]
         simp only [zero_mul, smul_zero]
         exact hg
         exact hg
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
         simp only [zero_mul, smul_zero]
-        rw [crAnF_superCommuteF_anPart_ofState_diff_grade_zero]
+        rw [crAnF_superCommuteF_anPartF_ofState_diff_grade_zero]
         simp only [zero_mul, smul_zero]
         exact hg
         exact fun a => hg (id (Eq.symm a))

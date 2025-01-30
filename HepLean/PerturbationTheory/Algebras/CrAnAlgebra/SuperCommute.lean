@@ -95,163 +95,163 @@ lemma superCommuteF_ofStateList_ofState (φs : List 𝓕.States) (φ : 𝓕.Stat
   rw [← ofStateList_singleton, superCommuteF_ofStateList_ofStatesList, ofStateList_singleton]
   simp
 
-lemma superCommuteF_anPart_crPart (φ φ' : 𝓕.States) :
-    [anPart φ, crPart φ']ₛca =
-    anPart φ * crPart φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPart φ' * anPart φ := by
+lemma superCommuteF_anPartF_crPartF (φ φ' : 𝓕.States) :
+    [anPartF φ, crPartF φ']ₛca =
+    anPartF φ * crPartF φ' -
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPartF φ' * anPartF φ := by
   match φ, φ' with
   | States.inAsymp φ, _ =>
     simp
   | _, States.outAsymp φ =>
-    simp only [crPart_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
+    simp only [crPartF_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
       sub_self]
   | States.position φ, States.position φ' =>
-    simp only [anPart_position, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_position, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.outAsymp φ, States.position φ' =>
-    simp only [anPart_posAsymp, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_posAsymp, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.inAsymp φ' =>
-    simp only [anPart_position, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_position, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp only [List.singleton_append, instCommGroup.eq_1, crAnStatistics,
       FieldStatistic.ofList_singleton, Function.comp_apply, crAnStatesToStates_prod, ←
       ofCrAnList_append]
   | States.outAsymp φ, States.inAsymp φ' =>
-    simp only [anPart_posAsymp, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_posAsymp, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
 
-lemma superCommuteF_crPart_anPart (φ φ' : 𝓕.States) :
-    [crPart φ, anPart φ']ₛca =
-    crPart φ * anPart φ' -
+lemma superCommuteF_crPartF_anPartF (φ φ' : 𝓕.States) :
+    [crPartF φ, anPartF φ']ₛca =
+    crPartF φ * anPartF φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    anPart φ' * crPart φ := by
+    anPartF φ' * crPartF φ := by
     match φ, φ' with
     | States.outAsymp φ, _ =>
-    simp only [crPart_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
+    simp only [crPartF_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
       mul_zero, sub_self]
     | _, States.inAsymp φ =>
-    simp only [anPart_negAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
+    simp only [anPartF_negAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul,
       sub_self]
     | States.position φ, States.position φ' =>
-    simp only [crPart_position, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_position, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.position φ, States.outAsymp φ' =>
-    simp only [crPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_position, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.inAsymp φ, States.position φ' =>
-    simp only [crPart_negAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_negAsymp, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
     | States.inAsymp φ, States.outAsymp φ' =>
-    simp only [crPart_negAsymp, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_negAsymp, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
 
-lemma superCommuteF_crPart_crPart (φ φ' : 𝓕.States) :
-    [crPart φ, crPart φ']ₛca =
-    crPart φ * crPart φ' -
+lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
+    [crPartF φ, crPartF φ']ₛca =
+    crPartF φ * crPartF φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    crPart φ' * crPart φ := by
+    crPartF φ' * crPartF φ := by
   match φ, φ' with
   | States.outAsymp φ, _ =>
-  simp only [crPart_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
+  simp only [crPartF_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
     mul_zero, sub_self]
   | _, States.outAsymp φ =>
-  simp only [crPart_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul, sub_self]
+  simp only [crPartF_posAsymp, map_zero, mul_zero, instCommGroup.eq_1, smul_zero, zero_mul, sub_self]
   | States.position φ, States.position φ' =>
-  simp only [crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+  simp only [crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.inAsymp φ' =>
-  simp only [crPart_position, crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+  simp only [crPartF_position, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.inAsymp φ, States.position φ' =>
-  simp only [crPart_negAsymp, crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+  simp only [crPartF_negAsymp, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
   | States.inAsymp φ, States.inAsymp φ' =>
-  simp only [crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+  simp only [crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
   simp [crAnStatistics, ← ofCrAnList_append]
 
-lemma superCommuteF_anPart_anPart (φ φ' : 𝓕.States) :
-    [anPart φ, anPart φ']ₛca =
-    anPart φ * anPart φ' -
+lemma superCommuteF_anPartF_anPartF (φ φ' : 𝓕.States) :
+    [anPartF φ, anPartF φ']ₛca =
+    anPartF φ * anPartF φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    anPart φ' * anPart φ := by
+    anPartF φ' * anPartF φ := by
   match φ, φ' with
   | States.inAsymp φ, _ =>
     simp
   | _, States.inAsymp φ =>
     simp
   | States.position φ, States.position φ' =>
-    simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.position φ, States.outAsymp φ' =>
-    simp only [anPart_position, anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_position, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.outAsymp φ, States.position φ' =>
-    simp only [anPart_posAsymp, anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_posAsymp, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
   | States.outAsymp φ, States.outAsymp φ' =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
     simp [crAnStatistics, ← ofCrAnList_append]
 
-lemma superCommuteF_crPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
-    [crPart φ, ofStateList φs]ₛca =
-    crPart φ * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs *
-    crPart φ := by
+lemma superCommuteF_crPartF_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
+    [crPartF φ, ofStateList φs]ₛca =
+    crPartF φ * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofStateList φs *
+    crPartF φ := by
   match φ with
   | States.inAsymp φ =>
-    simp only [crPart_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.position φ =>
-    simp only [crPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.outAsymp φ =>
     simp
 
-lemma superCommuteF_anPart_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
-    [anPart φ, ofStateList φs]ₛca =
-    anPart φ * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) •
-    ofStateList φs * anPart φ := by
+lemma superCommuteF_anPartF_ofStateList (φ : 𝓕.States) (φs : List 𝓕.States) :
+    [anPartF φ, ofStateList φs]ₛca =
+    anPartF φ * ofStateList φs - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) •
+    ofStateList φs * anPartF φ := by
   match φ with
   | States.inAsymp φ =>
     simp
   | States.position φ =>
-    simp only [anPart_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
   | States.outAsymp φ =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+    simp only [anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
     rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofStatesList]
     simp [crAnStatistics]
 
-lemma superCommuteF_crPart_ofState (φ φ' : 𝓕.States) :
-    [crPart φ, ofState φ']ₛca =
-    crPart φ * ofState φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * crPart φ := by
-  rw [← ofStateList_singleton, superCommuteF_crPart_ofStateList]
+lemma superCommuteF_crPartF_ofState (φ φ' : 𝓕.States) :
+    [crPartF φ, ofState φ']ₛca =
+    crPartF φ * ofState φ' -
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * crPartF φ := by
+  rw [← ofStateList_singleton, superCommuteF_crPartF_ofStateList]
   simp
 
-lemma superCommuteF_anPart_ofState (φ φ' : 𝓕.States) :
-    [anPart φ, ofState φ']ₛca =
-    anPart φ * ofState φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * anPart φ := by
-  rw [← ofStateList_singleton, superCommuteF_anPart_ofStateList]
+lemma superCommuteF_anPartF_ofState (φ φ' : 𝓕.States) :
+    [anPartF φ, ofState φ']ₛca =
+    anPartF φ * ofState φ' -
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofState φ' * anPartF φ := by
+  rw [← ofStateList_singleton, superCommuteF_anPartF_ofStateList]
   simp
 
 /-!
@@ -292,32 +292,32 @@ lemma ofStateList_mul_ofState_eq_superCommuteF (φs : List 𝓕.States) (φ : �
   rw [superCommuteF_ofStateList_ofState]
   simp
 
-lemma crPart_mul_anPart_eq_superCommuteF (φ φ' : 𝓕.States) :
-    crPart φ * anPart φ' =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPart φ' * crPart φ +
-    [crPart φ, anPart φ']ₛca := by
-  rw [superCommuteF_crPart_anPart]
+lemma crPartF_mul_anPartF_eq_superCommuteF (φ φ' : 𝓕.States) :
+    crPartF φ * anPartF φ' =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPartF φ' * crPartF φ +
+    [crPartF φ, anPartF φ']ₛca := by
+  rw [superCommuteF_crPartF_anPartF]
   simp
 
-lemma anPart_mul_crPart_eq_superCommuteF (φ φ' : 𝓕.States) :
-    anPart φ * crPart φ' =
+lemma anPartF_mul_crPartF_eq_superCommuteF (φ φ' : 𝓕.States) :
+    anPartF φ * crPartF φ' =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    crPart φ' * anPart φ +
-    [anPart φ, crPart φ']ₛca := by
-  rw [superCommuteF_anPart_crPart]
+    crPartF φ' * anPartF φ +
+    [anPartF φ, crPartF φ']ₛca := by
+  rw [superCommuteF_anPartF_crPartF]
   simp
 
-lemma crPart_mul_crPart_eq_superCommuteF (φ φ' : 𝓕.States) :
-    crPart φ * crPart φ' =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPart φ' * crPart φ +
-    [crPart φ, crPart φ']ₛca := by
-  rw [superCommuteF_crPart_crPart]
+lemma crPartF_mul_crPartF_eq_superCommuteF (φ φ' : 𝓕.States) :
+    crPartF φ * crPartF φ' =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPartF φ' * crPartF φ +
+    [crPartF φ, crPartF φ']ₛca := by
+  rw [superCommuteF_crPartF_crPartF]
   simp
 
-lemma anPart_mul_anPart_eq_superCommuteF (φ φ' : 𝓕.States) :
-    anPart φ * anPart φ' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPart φ' * anPart φ +
-    [anPart φ, anPart φ']ₛca := by
-  rw [superCommuteF_anPart_anPart]
+lemma anPartF_mul_anPartF_eq_superCommuteF (φ φ' : 𝓕.States) :
+    anPartF φ * anPartF φ' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPartF φ' * anPartF φ +
+    [anPartF φ, anPartF φ']ₛca := by
+  rw [superCommuteF_anPartF_anPartF]
   simp
 
 lemma ofCrAnList_mul_ofStateList_eq_superCommuteF (φs : List 𝓕.CrAnStates) (φs' : List 𝓕.States) :

@@ -59,17 +59,17 @@ lemma crAnF_superCommuteF_ofCrAnState_ofState_mem_center (φ : 𝓕.CrAnStates) 
   intro x _
   exact 𝓞.superCommuteF_crAn_center φ ⟨ψ, x⟩
 
-lemma crAnF_superCommuteF_anPart_ofState_mem_center (φ ψ : 𝓕.States) :
-    𝓞.crAnF [anPart φ, ofState ψ]ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
+lemma crAnF_superCommuteF_anPartF_ofState_mem_center (φ ψ : 𝓕.States) :
+    𝓞.crAnF [anPartF φ, ofState ψ]ₛca ∈ Subalgebra.center ℂ 𝓞.A := by
   match φ with
   | States.inAsymp _ =>
-    simp only [anPart_negAsymp, map_zero, LinearMap.zero_apply]
+    simp only [anPartF_negAsymp, map_zero, LinearMap.zero_apply]
     exact Subalgebra.zero_mem (Subalgebra.center ℂ 𝓞.A)
   | States.position φ =>
-    simp only [anPart_position]
+    simp only [anPartF_position]
     exact 𝓞.crAnF_superCommuteF_ofCrAnState_ofState_mem_center _ _
   | States.outAsymp _ =>
-    simp only [anPart_posAsymp]
+    simp only [anPartF_posAsymp]
     exact 𝓞.crAnF_superCommuteF_ofCrAnState_ofState_mem_center _ _
 
 lemma crAnF_superCommuteF_ofCrAnState_ofState_diff_grade_zero (φ : 𝓕.CrAnStates) (ψ : 𝓕.States)
@@ -81,18 +81,18 @@ lemma crAnF_superCommuteF_ofCrAnState_ofState_diff_grade_zero (φ : 𝓕.CrAnSta
   apply 𝓞.superCommuteF_different_statistics
   simpa [crAnStatistics] using h
 
-lemma crAnF_superCommuteF_anPart_ofState_diff_grade_zero (φ ψ : 𝓕.States)
+lemma crAnF_superCommuteF_anPartF_ofState_diff_grade_zero (φ ψ : 𝓕.States)
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) :
-    𝓞.crAnF [anPart φ, ofState ψ]ₛca = 0 := by
+    𝓞.crAnF [anPartF φ, ofState ψ]ₛca = 0 := by
   match φ with
   | States.inAsymp _ =>
     simp
   | States.position φ =>
-    simp only [anPart_position]
+    simp only [anPartF_position]
     apply 𝓞.crAnF_superCommuteF_ofCrAnState_ofState_diff_grade_zero _ _ _
     simpa [crAnStatistics] using h
   | States.outAsymp _ =>
-    simp only [anPart_posAsymp]
+    simp only [anPartF_posAsymp]
     apply 𝓞.crAnF_superCommuteF_ofCrAnState_ofState_diff_grade_zero _ _
     simpa [crAnStatistics] using h
 
@@ -104,58 +104,58 @@ lemma crAnF_superCommuteF_ofState_ofState_mem_center (φ ψ : 𝓕.States) :
   intro x _
   exact crAnF_superCommuteF_ofCrAnState_ofState_mem_center 𝓞 ⟨φ, x⟩ ψ
 
-lemma crAnF_superCommuteF_anPart_anPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF [anPart φ, anPart ψ]ₛca = 0 := by
+lemma crAnF_superCommuteF_anPartF_anPartF (φ ψ : 𝓕.States) :
+    𝓞.crAnF [anPartF φ, anPartF ψ]ₛca = 0 := by
   match φ, ψ with
   | _, States.inAsymp _ =>
     simp
   | States.inAsymp _, _ =>
     simp
   | States.position φ, States.position ψ =>
-    simp only [anPart_position]
+    simp only [anPartF_position]
     rw [𝓞.superCommuteF_annihilate_annihilate]
     rfl
     rfl
   | States.position φ, States.outAsymp _ =>
-    simp only [anPart_position, anPart_posAsymp]
+    simp only [anPartF_position, anPartF_posAsymp]
     rw [𝓞.superCommuteF_annihilate_annihilate]
     rfl
     rfl
   | States.outAsymp _, States.outAsymp _ =>
-    simp only [anPart_posAsymp]
+    simp only [anPartF_posAsymp]
     rw [𝓞.superCommuteF_annihilate_annihilate]
     rfl
     rfl
   | States.outAsymp _, States.position _ =>
-    simp only [anPart_posAsymp, anPart_position]
+    simp only [anPartF_posAsymp, anPartF_position]
     rw [𝓞.superCommuteF_annihilate_annihilate]
     rfl
     rfl
 
-lemma crAnF_superCommuteF_crPart_crPart (φ ψ : 𝓕.States) :
-    𝓞.crAnF [crPart φ, crPart ψ]ₛca = 0 := by
+lemma crAnF_superCommuteF_crPartF_crPartF (φ ψ : 𝓕.States) :
+    𝓞.crAnF [crPartF φ, crPartF ψ]ₛca = 0 := by
   match φ, ψ with
   | _, States.outAsymp _ =>
     simp
   | States.outAsymp _, _ =>
     simp
   | States.position φ, States.position ψ =>
-    simp only [crPart_position]
+    simp only [crPartF_position]
     rw [𝓞.superCommuteF_create_create]
     rfl
     rfl
   | States.position φ, States.inAsymp _ =>
-    simp only [crPart_position, crPart_negAsymp]
+    simp only [crPartF_position, crPartF_negAsymp]
     rw [𝓞.superCommuteF_create_create]
     rfl
     rfl
   | States.inAsymp _, States.inAsymp _ =>
-    simp only [crPart_negAsymp]
+    simp only [crPartF_negAsymp]
     rw [𝓞.superCommuteF_create_create]
     rfl
     rfl
   | States.inAsymp _, States.position _ =>
-    simp only [crPart_negAsymp, crPart_position]
+    simp only [crPartF_negAsymp, crPartF_position]
     rw [𝓞.superCommuteF_create_create]
     rfl
     rfl

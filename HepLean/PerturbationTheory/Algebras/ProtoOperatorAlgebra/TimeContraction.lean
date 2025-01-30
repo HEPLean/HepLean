@@ -35,15 +35,15 @@ lemma timeContract_eq_smul (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ =
     + (-1 : ℂ) • 𝓝ᶠ(ofState φ * ofState ψ)) := by rfl
 
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.States) (h : timeOrderRel φ ψ) :
-    𝓞.timeContract φ ψ = 𝓞.crAnF ([anPart φ, ofState ψ]ₛca) := by
+    𝓞.timeContract φ ψ = 𝓞.crAnF ([anPartF φ, ofState ψ]ₛca) := by
   conv_rhs =>
-    rw [ofState_eq_crPart_add_anPart]
-    rw [map_add, map_add, crAnF_superCommuteF_anPart_anPart, superCommuteF_anPart_crPart]
+    rw [ofState_eq_crPartF_add_anPartF]
+    rw [map_add, map_add, crAnF_superCommuteF_anPartF_anPartF, superCommuteF_anPartF_crPartF]
   simp only [timeContract, instCommGroup.eq_1, Algebra.smul_mul_assoc, add_zero]
   rw [timeOrderF_ofState_ofState_ordered h]
   rw [normalOrderF_ofState_mul_ofState]
   simp only [instCommGroup.eq_1]
-  rw [ofState_eq_crPart_add_anPart, ofState_eq_crPart_add_anPart]
+  rw [ofState_eq_crPartF_add_anPartF, ofState_eq_crPartF_add_anPartF]
   simp only [mul_add, add_mul]
   abel_nf
 
@@ -61,11 +61,11 @@ lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.States) (h : ¬ timeOrderRe
 lemma timeContract_mem_center (φ ψ : 𝓕.States) : 𝓞.timeContract φ ψ ∈ Subalgebra.center ℂ 𝓞.A := by
   by_cases h : timeOrderRel φ ψ
   · rw [timeContract_of_timeOrderRel _ _ _ h]
-    exact 𝓞.crAnF_superCommuteF_anPart_ofState_mem_center _ _
+    exact 𝓞.crAnF_superCommuteF_anPartF_ofState_mem_center _ _
   · rw [timeContract_of_not_timeOrderRel _ _ _ h]
     refine Subalgebra.smul_mem (Subalgebra.center ℂ 𝓞.A) ?_ 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ)
     rw [timeContract_of_timeOrderRel]
-    exact 𝓞.crAnF_superCommuteF_anPart_ofState_mem_center _ _
+    exact 𝓞.crAnF_superCommuteF_anPartF_ofState_mem_center _ _
     have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
@@ -73,11 +73,11 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
     𝓞.timeContract φ ψ = 0 := by
   by_cases h1 : timeOrderRel φ ψ
   · rw [timeContract_of_timeOrderRel _ _ _ h1]
-    rw [crAnF_superCommuteF_anPart_ofState_diff_grade_zero]
+    rw [crAnF_superCommuteF_anPartF_ofState_diff_grade_zero]
     exact h
   · rw [timeContract_of_not_timeOrderRel _ _ _ h1]
     rw [timeContract_of_timeOrderRel _ _ _]
-    rw [crAnF_superCommuteF_anPart_ofState_diff_grade_zero]
+    rw [crAnF_superCommuteF_anPartF_ofState_diff_grade_zero]
     simp only [instCommGroup.eq_1, smul_zero]
     exact h.symm
     have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
