@@ -445,6 +445,13 @@ lemma ofFieldOpList_append (φs ψs : List 𝓕.States) :
   rw [ofStateList_append]
   simp
 
+lemma ofFieldOpList_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
+    ofFieldOpList (φ :: φs) = ofFieldOp φ * ofFieldOpList φs := by
+  simp only [ofFieldOpList]
+  rw [ofStateList_cons]
+  simp only [map_mul]
+  rfl
+
 lemma ofFieldOpList_singleton (φ : 𝓕.States) :
     ofFieldOpList [φ] = ofFieldOp φ := by
   simp only [ofFieldOpList, ofFieldOp, ofStateList_singleton]

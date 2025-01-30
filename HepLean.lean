@@ -129,6 +129,7 @@ import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.TimeOrder
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.NormalOrder
+import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeContraction
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeOrder
@@ -157,6 +158,7 @@ import HepLean.PerturbationTheory.WickContraction.InsertAndContractNat
 import HepLean.PerturbationTheory.WickContraction.Involutions
 import HepLean.PerturbationTheory.WickContraction.IsFull
 import HepLean.PerturbationTheory.WickContraction.Sign
+import HepLean.PerturbationTheory.WickContraction.StaticContract
 import HepLean.PerturbationTheory.WickContraction.TimeContract
 import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.WickContraction.UncontractedList
