@@ -439,11 +439,27 @@ def ofFieldOpList (φs : List 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofStateL
 lemma ofFieldOpList_eq_ι_ofStateList (φs : List 𝓕.States) :
   ofFieldOpList φs = ι (ofStateList φs) := rfl
 
+lemma ofFieldOpList_append (φs ψs : List 𝓕.States) :
+    ofFieldOpList (φs ++ ψs) = ofFieldOpList φs * ofFieldOpList ψs := by
+  simp only [ofFieldOpList]
+  rw [ofStateList_append]
+  simp
+
+lemma ofFieldOpList_singleton (φ : 𝓕.States) :
+    ofFieldOpList [φ] = ofFieldOp φ := by
+  simp only [ofFieldOpList, ofFieldOp, ofStateList_singleton]
+
 /-- An element of `FieldOpAlgebra` from a `CrAnStates`. -/
 def ofCrAnFieldOp (φ : 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnState φ)
 
 lemma ofCrAnFieldOp_eq_ι_ofCrAnState (φ : 𝓕.CrAnStates) :
   ofCrAnFieldOp φ = ι (ofCrAnState φ) := rfl
+
+lemma ofFieldOp_eq_sum (φ : 𝓕.States) :
+    ofFieldOp φ =  (∑ i : 𝓕.statesToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩)  := by
+  rw [ofFieldOp, ofState]
+  simp only [map_sum]
+  rfl
 
 /-- An element of `FieldOpAlgebra` from a list of `CrAnStates`. -/
 def ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (ofCrAnList φs)
@@ -460,6 +476,12 @@ lemma ofCrAnFieldOpList_append (φs ψs : List 𝓕.CrAnStates) :
 lemma ofCrAnFieldOpList_singleton (φ : 𝓕.CrAnStates) :
     ofCrAnFieldOpList [φ] = ofCrAnFieldOp φ := by
   simp only [ofCrAnFieldOpList, ofCrAnFieldOp, ofCrAnList_singleton]
+
+lemma ofFieldOpList_eq_sum (φs : List 𝓕.States) :
+    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnFieldOpList s.1 := by
+  rw [ofFieldOpList, ofStateList_sum]
+  simp only [map_sum]
+  rfl
 
 /-- The annihilation part of a state. -/
 def anPart (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
@@ -502,6 +524,11 @@ lemma crPart_position (φ : 𝓕.PositionStates) :
 lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
     crPart (States.outAsymp φ) = 0 := by
   simp [crPart]
+
+lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.States) :
+    ofFieldOp φ = crPart φ + anPart φ := by
+  rw [ofFieldOp, crPart, anPart, ofState_eq_crPartF_add_anPartF]
+  simp only [map_add]
 
 end FieldOpAlgebra
 end FieldSpecification

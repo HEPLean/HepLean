@@ -381,5 +381,53 @@ noncomputable def timeOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra �
     rw [← map_smul, ι_apply, ι_apply]
     simp
 
+@[inherit_doc timeOrder]
+scoped[FieldSpecification.FieldOpAlgebra] notation "𝓣(" a ")" => timeOrder a
+
+/-!
+
+## Properties of time ordering
+
+-/
+
+lemma timeOrder_eq_ι_timeOrderF (a : 𝓕.CrAnAlgebra) :
+    𝓣(ι a) = ι 𝓣ᶠ(a) := rfl
+
+lemma timeOrder_ofFieldOp_ofFieldOp_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :
+    𝓣(ofFieldOp φ * ofFieldOp ψ) = ofFieldOp φ * ofFieldOp ψ := by
+  rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
+    timeOrderF_ofState_ofState_ordered h]
+
+lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
+    𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofFieldOp ψ * ofFieldOp φ := by
+  rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
+    timeOrderF_ofState_ofState_not_ordered h]
+  simp
+
+lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
+    𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓣(ofFieldOp ψ * ofFieldOp φ) := by
+  rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
+    timeOrderF_ofState_ofState_not_ordered_eq_timeOrderF h]
+  simp only [instCommGroup.eq_1, map_smul]
+  rfl
+
+lemma timeOrder_ofFieldOpList_nil : 𝓣(ofFieldOpList (𝓕 := 𝓕) []) = 1 := by
+  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofStateList_nil]
+  simp
+
+@[simp]
+lemma timeOrder_ofFieldOpList_singleton (φ : 𝓕.States) :
+    𝓣(ofFieldOpList [φ]) = ofFieldOpList [φ] := by
+  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofStateList_singleton]
+
+
+lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
+    𝓣(ofFieldOpList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
+      (Finset.filter (fun x =>
+        (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
+      ofFieldOp (maxTimeField φ φs) * 𝓣(ofFieldOpList (eraseMaxTimeField φ φs)) := by
+  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_eq_maxTimeField_mul_finset]
+  rfl
+
 end FieldOpAlgebra
 end FieldSpecification
