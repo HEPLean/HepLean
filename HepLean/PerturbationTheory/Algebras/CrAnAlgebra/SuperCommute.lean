@@ -96,8 +96,7 @@ lemma superCommuteF_ofStateList_ofState (φs : List 𝓕.States) (φ : 𝓕.Stat
   simp
 
 lemma superCommuteF_anPartF_crPartF (φ φ' : 𝓕.States) :
-    [anPartF φ, crPartF φ']ₛca =
-    anPartF φ * crPartF φ' -
+    [anPartF φ, crPartF φ']ₛca = anPartF φ * crPartF φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPartF φ' * anPartF φ := by
   match φ, φ' with
   | States.inAsymp φ, _ =>
@@ -125,10 +124,8 @@ lemma superCommuteF_anPartF_crPartF (φ φ' : 𝓕.States) :
     simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommuteF_crPartF_anPartF (φ φ' : 𝓕.States) :
-    [crPartF φ, anPartF φ']ₛca =
-    crPartF φ * anPartF φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    anPartF φ' * crPartF φ := by
+    [crPartF φ, anPartF φ']ₛca = crPartF φ * anPartF φ' -
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPartF φ' * crPartF φ := by
     match φ, φ' with
     | States.outAsymp φ, _ =>
     simp only [crPartF_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
@@ -154,10 +151,8 @@ lemma superCommuteF_crPartF_anPartF (φ φ' : 𝓕.States) :
     simp [crAnStatistics, ← ofCrAnList_append]
 
 lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
-    [crPartF φ, crPartF φ']ₛca =
-    crPartF φ * crPartF φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    crPartF φ' * crPartF φ := by
+    [crPartF φ, crPartF φ']ₛca = crPartF φ * crPartF φ' -
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • crPartF φ' * crPartF φ := by
   match φ, φ' with
   | States.outAsymp φ, _ =>
   simp only [crPartF_posAsymp, map_zero, LinearMap.zero_apply, zero_mul, instCommGroup.eq_1,
@@ -183,9 +178,7 @@ lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
 
 lemma superCommuteF_anPartF_anPartF (φ φ' : 𝓕.States) :
     [anPartF φ, anPartF φ']ₛca =
-    anPartF φ * anPartF φ' -
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
-    anPartF φ' * anPartF φ := by
+    anPartF φ * anPartF φ' - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • anPartF φ' * anPartF φ := by
   match φ, φ' with
   | States.inAsymp φ, _ =>
     simp
@@ -362,6 +355,7 @@ lemma superCommuteF_ofCrAnState_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
 ## Splitting the super commutor on lists into sums.
 
 -/
+
 lemma superCommuteF_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
     [ofCrAnList φs, ofCrAnList (φ :: φs')]ₛca =
     [ofCrAnList φs, ofCrAnState φ]ₛca * ofCrAnList φs' +
@@ -483,6 +477,7 @@ lemma summerCommute_jacobi_ofCrAnList (φs1 φs2 φs3 : List 𝓕.CrAnStates) :
     simp only [h1, h2, h3, mul_self, map_one, one_smul, fermionic_exchangeSign_fermionic, neg_smul,
       neg_sub]
     abel
+
 /-!
 
 ## Interaction with grading.

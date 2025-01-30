@@ -451,15 +451,57 @@ def ofCrAnFieldOpList (φs : List 𝓕.CrAnStates) : 𝓕.FieldOpAlgebra := ι (
 lemma ofCrAnFieldOpList_eq_ι_ofCrAnList (φs : List 𝓕.CrAnStates) :
   ofCrAnFieldOpList φs = ι (ofCrAnList φs) := rfl
 
+lemma ofCrAnFieldOpList_append (φs ψs : List 𝓕.CrAnStates) :
+    ofCrAnFieldOpList (φs ++ ψs) = ofCrAnFieldOpList φs * ofCrAnFieldOpList ψs := by
+  simp only [ofCrAnFieldOpList]
+  rw [ofCrAnList_append]
+  simp
+
+lemma ofCrAnFieldOpList_singleton (φ : 𝓕.CrAnStates) :
+    ofCrAnFieldOpList [φ] = ofCrAnFieldOp φ := by
+  simp only [ofCrAnFieldOpList, ofCrAnFieldOp, ofCrAnList_singleton]
+
 /-- The annihilation part of a state. -/
 def anPart (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
 
 lemma anPart_eq_ι_anPartF (φ : 𝓕.States) : anPart φ = ι (anPartF φ) := rfl
 
+@[simp]
+lemma anPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    anPart (States.inAsymp φ) = 0 := by
+  simp [anPart, anPartF]
+
+@[simp]
+lemma anPart_position (φ : 𝓕.PositionStates) :
+    anPart (States.position φ) =
+    ofCrAnFieldOp ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
+  simp [anPart, ofCrAnFieldOp]
+
+@[simp]
+lemma anPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    anPart (States.outAsymp φ) = ofCrAnFieldOp ⟨States.outAsymp φ, ()⟩ := by
+  simp [anPart, ofCrAnFieldOp]
+
 /-- The creation part of a state. -/
 def crPart (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
 
 lemma crPart_eq_ι_crPartF (φ : 𝓕.States) : crPart φ = ι (crPartF φ) := rfl
+
+@[simp]
+lemma crPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+    crPart (States.inAsymp φ) = ofCrAnFieldOp ⟨States.inAsymp φ, ()⟩ := by
+  simp [crPart, ofCrAnFieldOp]
+
+@[simp]
+lemma crPart_position (φ : 𝓕.PositionStates) :
+    crPart (States.position φ) =
+    ofCrAnFieldOp ⟨States.position φ, CreateAnnihilate.create⟩ := by
+  simp [crPart, ofCrAnFieldOp]
+
+@[simp]
+lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+    crPart (States.outAsymp φ) = 0 := by
+  simp [crPart]
 
 end FieldOpAlgebra
 end FieldSpecification
