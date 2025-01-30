@@ -72,7 +72,7 @@ lemma ι_of_mem_fieldOpIdealSet (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpI
   refine RingConGen.Rel.of x 0 ?_
   simpa using hx
 
-lemma ι_superCommute_of_create_create (φc φc' : 𝓕.CrAnStates) (hφc : 𝓕 |>ᶜ φc = .create)
+lemma ι_superCommuteF_of_create_create (φc φc' : 𝓕.CrAnStates) (hφc : 𝓕 |>ᶜ φc = .create)
     (hφc' : 𝓕 |>ᶜ φc' = .create) : ι [ofCrAnState φc, ofCrAnState φc']ₛca = 0 := by
   apply ι_of_mem_fieldOpIdealSet
   simp only [fieldOpIdealSet, exists_and_left, Set.mem_setOf_eq]
@@ -81,7 +81,7 @@ lemma ι_superCommute_of_create_create (φc φc' : 𝓕.CrAnStates) (hφc : 𝓕
   left
   use φc, φc', hφc, hφc'
 
-lemma ι_superCommute_of_annihilate_annihilate (φa φa' : 𝓕.CrAnStates)
+lemma ι_superCommuteF_of_annihilate_annihilate (φa φa' : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = .annihilate) (hφa' : 𝓕 |>ᶜ φa' = .annihilate) :
     ι [ofCrAnState φa, ofCrAnState φa']ₛca = 0 := by
   apply ι_of_mem_fieldOpIdealSet
@@ -92,7 +92,7 @@ lemma ι_superCommute_of_annihilate_annihilate (φa φa' : 𝓕.CrAnStates)
   left
   use φa, φa', hφa, hφa'
 
-lemma ι_superCommute_of_diff_statistic {φ ψ : 𝓕.CrAnStates}
+lemma ι_superCommuteF_of_diff_statistic {φ ψ : 𝓕.CrAnStates}
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) : ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   apply ι_of_mem_fieldOpIdealSet
   simp only [fieldOpIdealSet, exists_prop, exists_and_left, Set.mem_setOf_eq]
@@ -101,24 +101,24 @@ lemma ι_superCommute_of_diff_statistic {φ ψ : 𝓕.CrAnStates}
   right
   use φ, ψ
 
-lemma ι_superCommute_zero_of_fermionic (φ ψ : 𝓕.CrAnStates)
+lemma ι_superCommuteF_zero_of_fermionic (φ ψ : 𝓕.CrAnStates)
     (h : [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ statisticSubmodule fermionic) :
     ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton] at h ⊢
-  rcases statistic_neq_of_superCommute_fermionic h with h | h
+  rcases statistic_neq_of_superCommuteF_fermionic h with h | h
   · simp only [ofCrAnList_singleton]
-    apply ι_superCommute_of_diff_statistic
+    apply ι_superCommuteF_of_diff_statistic
     simpa using h
   · simp [h]
 
-lemma ι_superCommute_ofCrAnState_ofCrAnState_bosonic_or_zero (φ ψ : 𝓕.CrAnStates) :
+lemma ι_superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_zero (φ ψ : 𝓕.CrAnStates) :
     [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ statisticSubmodule bosonic ∨
     ι [ofCrAnState φ, ofCrAnState ψ]ₛca = 0 := by
-  rcases superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [ψ] with h | h
+  rcases superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [ψ] with h | h
   · simp_all [ofCrAnList_singleton]
   · simp_all only [ofCrAnList_singleton]
     right
-    exact ι_superCommute_zero_of_fermionic _ _ h
+    exact ι_superCommuteF_zero_of_fermionic _ _ h
 
 /-!
 
@@ -127,63 +127,63 @@ lemma ι_superCommute_ofCrAnState_ofCrAnState_bosonic_or_zero (φ ψ : 𝓕.CrAn
 -/
 
 @[simp]
-lemma ι_superCommute_ofCrAnState_superCommute_ofCrAnState_ofCrAnState (φ1 φ2 φ3 : 𝓕.CrAnStates) :
+lemma ι_superCommuteF_ofCrAnState_superCommuteF_ofCrAnState_ofCrAnState (φ1 φ2 φ3 : 𝓕.CrAnStates) :
     ι [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca = 0 := by
   apply ι_of_mem_fieldOpIdealSet
   simp only [fieldOpIdealSet, exists_prop, exists_and_left, Set.mem_setOf_eq]
   left
   use φ1, φ2, φ3
 
-lemma ι_superCommute_superCommute_ofCrAnState_ofCrAnState_ofCrAnState (φ1 φ2 φ3 : 𝓕.CrAnStates) :
+lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnState (φ1 φ2 φ3 : 𝓕.CrAnStates) :
     ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, ofCrAnState φ3]ₛca = 0 := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rcases superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ1] [φ2] with h | h
-  · rw [bonsonic_superCommute_symm h]
+  rcases superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ1] [φ2] with h | h
+  · rw [bonsonic_superCommuteF_symm h]
     simp [ofCrAnList_singleton]
   · rcases ofCrAnList_bosonic_or_fermionic [φ3] with h' | h'
-    · rw [superCommute_bonsonic_symm h']
+    · rw [superCommuteF_bonsonic_symm h']
       simp [ofCrAnList_singleton]
-    · rw [superCommute_fermionic_fermionic_symm h h']
+    · rw [superCommuteF_fermionic_fermionic_symm h h']
       simp [ofCrAnList_singleton]
 
-lemma ι_superCommute_superCommute_ofCrAnState_ofCrAnState_ofCrAnList (φ1 φ2 : 𝓕.CrAnStates)
+lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnList (φ1 φ2 : 𝓕.CrAnStates)
     (φs : List 𝓕.CrAnStates) :
     ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, ofCrAnList φs]ₛca = 0 := by
   rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rcases superCommute_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ1] [φ2] with h | h
-  · rw [superCommute_bosonic_ofCrAnList_eq_sum _ _ h]
-    simp [ofCrAnList_singleton, ι_superCommute_superCommute_ofCrAnState_ofCrAnState_ofCrAnState]
-  · rw [superCommute_fermionic_ofCrAnList_eq_sum _ _ h]
-    simp [ofCrAnList_singleton, ι_superCommute_superCommute_ofCrAnState_ofCrAnState_ofCrAnState]
+  rcases superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ1] [φ2] with h | h
+  · rw [superCommuteF_bosonic_ofCrAnList_eq_sum _ _ h]
+    simp [ofCrAnList_singleton, ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnState]
+  · rw [superCommuteF_fermionic_ofCrAnList_eq_sum _ _ h]
+    simp [ofCrAnList_singleton, ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnState]
 
 @[simp]
-lemma ι_superCommute_superCommute_ofCrAnState_ofCrAnState_crAnAlgebra (φ1 φ2 : 𝓕.CrAnStates)
+lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_crAnAlgebra (φ1 φ2 : 𝓕.CrAnStates)
     (a : 𝓕.CrAnAlgebra) : ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, a]ₛca = 0 := by
-  change (ι.toLinearMap ∘ₗ superCommute [ofCrAnState φ1, ofCrAnState φ2]ₛca) a = _
-  have h1 : (ι.toLinearMap ∘ₗ superCommute [ofCrAnState φ1, ofCrAnState φ2]ₛca) = 0 := by
+  change (ι.toLinearMap ∘ₗ superCommuteF [ofCrAnState φ1, ofCrAnState φ2]ₛca) a = _
+  have h1 : (ι.toLinearMap ∘ₗ superCommuteF [ofCrAnState φ1, ofCrAnState φ2]ₛca) = 0 := by
     apply (ofCrAnListBasis.ext fun l ↦ ?_)
-    simp [ι_superCommute_superCommute_ofCrAnState_ofCrAnState_ofCrAnList]
+    simp [ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnList]
   rw [h1]
   simp
 
-lemma ι_commute_crAnAlgebra_superCommute_ofCrAnState_ofCrAnState (φ1 φ2 : 𝓕.CrAnStates)
+lemma ι_commute_crAnAlgebra_superCommuteF_ofCrAnState_ofCrAnState (φ1 φ2 : 𝓕.CrAnStates)
     (a : 𝓕.CrAnAlgebra) : ι a * ι [ofCrAnState φ1, ofCrAnState φ2]ₛca -
     ι [ofCrAnState φ1, ofCrAnState φ2]ₛca * ι a = 0 := by
-  rcases ι_superCommute_ofCrAnState_ofCrAnState_bosonic_or_zero φ1 φ2 with h | h
+  rcases ι_superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_zero φ1 φ2 with h | h
   swap
   · simp [h]
   trans - ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, a]ₛca
-  · rw [bosonic_superCommute h]
+  · rw [bosonic_superCommuteF h]
     simp
   · simp
 
-lemma ι_superCommute_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnStates) :
+lemma ι_superCommuteF_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnStates) :
     ι [ofCrAnState φ, ofCrAnState ψ]ₛca ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
   rw [Subalgebra.mem_center_iff]
   intro a
   obtain ⟨a, rfl⟩ := ι_surjective a
-  have h0 := ι_commute_crAnAlgebra_superCommute_ofCrAnState_ofCrAnState φ ψ a
-  trans ι ((superCommute (ofCrAnState φ)) (ofCrAnState ψ)) * ι a + 0
+  have h0 := ι_commute_crAnAlgebra_superCommuteF_ofCrAnState_ofCrAnState φ ψ a
+  trans ι ((superCommuteF (ofCrAnState φ)) (ofCrAnState ψ)) * ι a + 0
   swap
   simp only [add_zero]
   rw [← h0]
@@ -209,25 +209,25 @@ lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
   rcases hx with ⟨φ1, φ2, φ3, rfl⟩ | ⟨φc, φc', hφc, hφc', rfl⟩ | ⟨φa, φa', hφa, hφa', rfl⟩ |
     ⟨φ, φ', hdiff, rfl⟩
-  · rcases superCommute_superCommute_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
+  · rcases superCommuteF_superCommuteF_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
     · left
       rw [bosonicProj_of_mem_bosonic _ h]
       simpa using hx'
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φc φc' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φc φc' with h | h
     · left
       rw [bosonicProj_of_mem_bosonic _ h]
       simpa using hx'
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φa φa' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φa φa' with h | h
     · left
       rw [bosonicProj_of_mem_bosonic _ h]
       simpa using hx'
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ φ' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ φ' with h | h
     · left
       rw [bosonicProj_of_mem_bosonic _ h]
       simpa using hx'
@@ -240,25 +240,25 @@ lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x �
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
   rcases hx with ⟨φ1, φ2, φ3, rfl⟩ | ⟨φc, φc', hφc, hφc', rfl⟩ | ⟨φa, φa', hφa, hφa', rfl⟩ |
     ⟨φ, φ', hdiff, rfl⟩
-  · rcases superCommute_superCommute_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
+  · rcases superCommuteF_superCommuteF_ofCrAnState_bosonic_or_fermionic φ1 φ2 φ3 with h | h
     · right
       rw [fermionicProj_of_mem_bosonic _ h]
     · left
       rw [fermionicProj_of_mem_fermionic _ h]
       simpa using hx'
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φc φc' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φc φc' with h | h
     · right
       rw [fermionicProj_of_mem_bosonic _ h]
     · left
       rw [fermionicProj_of_mem_fermionic _ h]
       simpa using hx'
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φa φa' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φa φa' with h | h
     · right
       rw [fermionicProj_of_mem_bosonic _ h]
     · left
       rw [fermionicProj_of_mem_fermionic _ h]
       simpa using hx'
-  · rcases superCommute_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ φ' with h | h
+  · rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ φ' with h | h
     · right
       rw [fermionicProj_of_mem_bosonic _ h]
     · left
@@ -396,8 +396,8 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
   · intro x y hx hy hpx hpy
     simp_all only [map_add, Submodule.coe_add, p]
     apply TwoSidedIdeal.add_mem
-    exact hpx
-    exact hpy
+    · exact hpx
+    · exact hpy
   · intro x hx
     simp [p]
 
@@ -413,7 +413,7 @@ lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : CrAnAlgebra 𝓕) :
     ι x = 0 ↔ ι x.bosonicProj.1 = 0 ∧ ι x.fermionicProj.1 = 0 := by
   apply Iff.intro
   · intro h
-    rw [@ι_eq_zero_iff_mem_ideal] at h ⊢
+    rw [ι_eq_zero_iff_mem_ideal] at h ⊢
     rw [ι_eq_zero_iff_mem_ideal]
     apply And.intro
     · exact bosonicProj_mem_ideal x h

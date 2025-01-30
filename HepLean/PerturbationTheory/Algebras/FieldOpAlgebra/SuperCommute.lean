@@ -19,15 +19,15 @@ open FieldStatistic
 namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
-lemma ι_superCommute_eq_zero_of_ι_right_zero (a b : 𝓕.CrAnAlgebra) (h : ι b = 0) :
+lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.CrAnAlgebra) (h : ι b = 0) :
     ι [a, b]ₛca = 0 := by
-  rw [superCommute_expand_bosonicProj_fermionicProj]
+  rw [superCommuteF_expand_bosonicProj_fermionicProj]
   rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
   simp_all
 
-lemma ι_superCommute_eq_zero_of_ι_left_zero (a b : 𝓕.CrAnAlgebra) (h : ι a = 0) :
+lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.CrAnAlgebra) (h : ι a = 0) :
     ι [a, b]ₛca = 0 := by
-  rw [superCommute_expand_bosonicProj_fermionicProj]
+  rw [superCommuteF_expand_bosonicProj_fermionicProj]
   rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
   simp_all
 
@@ -37,23 +37,23 @@ lemma ι_superCommute_eq_zero_of_ι_left_zero (a b : 𝓕.CrAnAlgebra) (h : ι a
 
 -/
 
-lemma ι_superCommute_right_zero_of_mem_ideal (a b : 𝓕.CrAnAlgebra)
+lemma ι_superCommuteF_right_zero_of_mem_ideal (a b : 𝓕.CrAnAlgebra)
     (h : b ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι [a, b]ₛca = 0 := by
-  apply ι_superCommute_eq_zero_of_ι_right_zero
+  apply ι_superCommuteF_eq_zero_of_ι_right_zero
   exact (ι_eq_zero_iff_mem_ideal b).mpr h
 
-lemma ι_superCommute_eq_of_equiv_right (a b1 b2 : 𝓕.CrAnAlgebra) (h : b1 ≈ b2) :
+lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.CrAnAlgebra) (h : b1 ≈ b2) :
     ι [a, b1]ₛca = ι [a, b2]ₛca := by
   rw [equiv_iff_sub_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
   simp only [LinearMap.mem_ker, ← map_sub]
-  exact ι_superCommute_right_zero_of_mem_ideal a (b1 - b2) h
+  exact ι_superCommuteF_right_zero_of_mem_ideal a (b1 - b2) h
 
 /-- The super commutor on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
 noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) :
   FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
-  toFun := Quotient.lift (ι.toLinearMap ∘ₗ CrAnAlgebra.superCommute a)
-    (ι_superCommute_eq_of_equiv_right a)
+  toFun := Quotient.lift (ι.toLinearMap ∘ₗ superCommuteF a)
+    (ι_superCommuteF_eq_of_equiv_right a)
   map_add' x y := by
     obtain ⟨x, hx⟩ := ι_surjective x
     obtain ⟨y, hy⟩ := ι_surjective y
@@ -80,10 +80,10 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
   obtain ⟨b, rfl⟩ := ι_surjective b
   have ha1b1 : (superCommuteRight (a1 - a2)) (ι b) = 0 := by
     rw [superCommuteRight_apply_ι]
-    apply ι_superCommute_eq_zero_of_ι_left_zero
+    apply ι_superCommuteF_eq_zero_of_ι_left_zero
     exact (ι_eq_zero_iff_mem_ideal (a1 - a2)).mpr h
   simp_all only [superCommuteRight_apply_ι, map_sub, LinearMap.sub_apply]
-  trans ι ((superCommute a2) b) + 0
+  trans ι ((superCommuteF a2) b) + 0
   rw [← ha1b1]
   simp only [add_sub_cancel]
   simp
@@ -111,8 +111,11 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
     rw [superCommuteRight_apply_quot, superCommuteRight_apply_quot]
     simp
 
-lemma ι_superCommute (a b : 𝓕.CrAnAlgebra) : ι [a, b]ₛca = superCommute (ι a) (ι b) := by
-  rfl
+@[inherit_doc superCommute]
+scoped[FieldSpecification.FieldOpAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
+
+lemma ι_superCommuteF_eq_superCommute (a b : 𝓕.CrAnAlgebra) :
+    ι [a, b]ₛca = [ι a, ι b]ₛ := rfl
 
 end FieldOpAlgebra
 end FieldSpecification

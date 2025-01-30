@@ -24,7 +24,7 @@ The main structures defined in this module are:
 * `ofState` - Maps a state to a sum of creation and annihilation operators
 * `crPart` - The creation part of a state in the algebra
 * `anPart` - The annihilation part of a state in the algebra
-* `superCommute` - The super commutator on the algebra
+* `superCommuteF` - The super commutator on the algebra
 
 The key lemmas show how these operators interact, particularly focusing on the
 super commutation relations between creation and annihilation operators.

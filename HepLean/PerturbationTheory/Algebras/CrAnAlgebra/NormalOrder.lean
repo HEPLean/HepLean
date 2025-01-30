@@ -120,7 +120,7 @@ lemma normalOrder_mul_anPart (φ : 𝓕.States) (a : CrAnAlgebra 𝓕) :
 
 ## Normal ordering for an adjacent creation and annihliation state
 
-The main result of this section is `normalOrder_superCommute_annihilate_create`.
+The main result of this section is `normalOrder_superCommuteF_annihilate_create`.
 -/
 
 lemma normalOrder_swap_create_annihlate_ofCrAnList_ofCrAnList (φc φa : 𝓕.CrAnStates)
@@ -163,23 +163,23 @@ lemma normalOrder_swap_create_annihlate (φc φa : 𝓕.CrAnStates)
       normalOrder_swap_create_annihlate_ofCrAnList φc φa hφc hφa]
   rfl
 
-lemma normalOrder_superCommute_create_annihilate (φc φa : 𝓕.CrAnStates)
+lemma normalOrder_superCommuteF_create_annihilate (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     𝓝ᶠ(a * [ofCrAnState φc, ofCrAnState φa]ₛca * b) = 0 := by
-  simp only [superCommute_ofCrAnState_ofCrAnState, instCommGroup.eq_1, Algebra.smul_mul_assoc]
+  simp only [superCommuteF_ofCrAnState_ofCrAnState, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [mul_sub, sub_mul, map_sub, ← smul_mul_assoc, ← mul_assoc, ← mul_assoc,
     normalOrder_swap_create_annihlate φc φa hφc hφa]
   simp
 
-lemma normalOrder_superCommute_annihilate_create (φc φa : 𝓕.CrAnStates)
+lemma normalOrder_superCommuteF_annihilate_create (φc φa : 𝓕.CrAnStates)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.CrAnAlgebra) :
     𝓝ᶠ(a * [ofCrAnState φa, ofCrAnState φc]ₛca * b) = 0 := by
-  rw [superCommute_ofCrAnState_ofCrAnState_symm]
+  rw [superCommuteF_ofCrAnState_ofCrAnState_symm]
   simp only [instCommGroup.eq_1, neg_smul, mul_neg, Algebra.mul_smul_comm, neg_mul,
     Algebra.smul_mul_assoc, map_neg, map_smul, neg_eq_zero, smul_eq_zero]
-  exact Or.inr (normalOrder_superCommute_create_annihilate φc φa hφc hφa ..)
+  exact Or.inr (normalOrder_superCommuteF_create_annihilate φc φa hφc hφa ..)
 
 lemma normalOrder_swap_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
     𝓝ᶠ(a * (crPart φ) * (anPart φ') * b) =
@@ -223,43 +223,43 @@ lemma normalOrder_swap_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra �
       (anPart φ) * b) := by
   simp [normalOrder_swap_crPart_anPart, smul_smul]
 
-lemma normalOrder_superCommute_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
-    𝓝ᶠ(a * superCommute
+lemma normalOrder_superCommuteF_crPart_anPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
+    𝓝ᶠ(a * superCommuteF
       (crPart φ) (anPart φ') * b) = 0 := by
   match φ, φ' with
   | _, .inAsymp φ' => simp
   | .outAsymp φ', _ => simp
   | .position φ, .position φ' =>
     rw [crPart_position, anPart_position]
-    exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_create_annihilate _ _ rfl rfl ..
   | .inAsymp φ, .outAsymp φ' =>
     rw [crPart_negAsymp, anPart_posAsymp]
-    exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_create_annihilate _ _ rfl rfl ..
   | .inAsymp φ, .position φ' =>
     rw [crPart_negAsymp, anPart_position]
-    exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_create_annihilate _ _ rfl rfl ..
   | .position φ, .outAsymp φ' =>
     rw [crPart_position, anPart_posAsymp]
-    exact normalOrder_superCommute_create_annihilate _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_create_annihilate _ _ rfl rfl ..
 
-lemma normalOrder_superCommute_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
-    𝓝ᶠ(a * superCommute
+lemma normalOrder_superCommuteF_anPart_crPart (φ φ' : 𝓕.States) (a b : CrAnAlgebra 𝓕) :
+    𝓝ᶠ(a * superCommuteF
     (anPart φ) (crPart φ') * b) = 0 := by
   match φ, φ' with
   | .inAsymp φ', _ => simp
   | _, .outAsymp φ' => simp
   | .position φ, .position φ' =>
     rw [anPart_position, crPart_position]
-    exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_annihilate_create _ _ rfl rfl ..
   | .outAsymp φ', .inAsymp φ =>
     simp only [anPart_posAsymp, crPart_negAsymp]
-    exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_annihilate_create _ _ rfl rfl ..
   | .position φ', .inAsymp φ =>
     simp only [anPart_position, crPart_negAsymp]
-    exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_annihilate_create _ _ rfl rfl ..
   | .outAsymp φ, .position φ' =>
     simp only [anPart_posAsymp, crPart_position]
-    exact normalOrder_superCommute_annihilate_create _ _ rfl rfl ..
+    exact normalOrder_superCommuteF_annihilate_create _ _ rfl rfl ..
 
 /-!
 
@@ -325,14 +325,14 @@ lemma normalOrder_ofState_mul_ofState (φ φ' : 𝓕.States) :
 
 TODO "Split the following two lemmas up into smaller parts."
 
-lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
+lemma normalOrder_superCommuteF_ofCrAnList_create_create_ofCrAnList
     (φc φc' : 𝓕.CrAnStates) (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
     (hφc' : 𝓕 |>ᶜ φc' = CreateAnnihilate.create) (φs φs' : List 𝓕.CrAnStates) :
     (𝓝ᶠ(ofCrAnList φs * [ofCrAnState φc, ofCrAnState φc']ₛca * ofCrAnList φs')) =
       normalOrderSign (φs ++ φc' :: φc :: φs') •
     (ofCrAnList (createFilter φs) * [ofCrAnState φc, ofCrAnState φc']ₛca *
       ofCrAnList (createFilter φs') * ofCrAnList (annihilateFilter (φs ++ φs'))) := by
-  rw [superCommute_ofCrAnState_ofCrAnState, mul_sub, sub_mul, map_sub]
+  rw [superCommuteF_ofCrAnState_ofCrAnState, mul_sub, sub_mul, map_sub]
   conv_lhs =>
     lhs; rhs
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, ← ofCrAnList_append, ← ofCrAnList_append,
@@ -384,7 +384,7 @@ lemma normalOrder_superCommute_ofCrAnList_create_create_ofCrAnList
     ofCrAnList_singleton]
   rw [ofCrAnList_append, ofCrAnList_singleton, ofCrAnList_singleton, smul_mul_assoc]
 
-lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
+lemma normalOrder_superCommuteF_ofCrAnList_annihilate_annihilate_ofCrAnList
     (φa φa' : 𝓕.CrAnStates)
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (hφa' : 𝓕 |>ᶜ φa' = CreateAnnihilate.annihilate)
@@ -394,7 +394,7 @@ lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
     (ofCrAnList (createFilter (φs ++ φs'))
       * ofCrAnList (annihilateFilter φs) * [ofCrAnState φa, ofCrAnState φa']ₛca
       * ofCrAnList (annihilateFilter φs')) := by
-  rw [superCommute_ofCrAnState_ofCrAnState, mul_sub, sub_mul, map_sub]
+  rw [superCommuteF_ofCrAnState_ofCrAnState, mul_sub, sub_mul, map_sub]
   conv_lhs =>
     lhs; rhs
     rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, ← ofCrAnList_append, ← ofCrAnList_append,
@@ -458,14 +458,14 @@ lemma normalOrder_superCommute_ofCrAnList_annihilate_annihilate_ofCrAnList
 
 -/
 
-lemma ofCrAnList_superCommute_normalOrder_ofCrAnList (φs φs' : List 𝓕.CrAnStates) :
+lemma ofCrAnList_superCommuteF_normalOrder_ofCrAnList (φs φs' : List 𝓕.CrAnStates) :
     [ofCrAnList φs, 𝓝ᶠ(ofCrAnList φs')]ₛca =
     ofCrAnList φs * 𝓝ᶠ(ofCrAnList φs') -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofCrAnList φs') * ofCrAnList φs := by
-  simp [normalOrder_ofCrAnList, map_smul, superCommute_ofCrAnList_ofCrAnList, ofCrAnList_append,
+  simp [normalOrder_ofCrAnList, map_smul, superCommuteF_ofCrAnList_ofCrAnList, ofCrAnList_append,
     smul_sub, smul_smul, mul_comm]
 
-lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs : List 𝓕.CrAnStates)
+lemma ofCrAnList_superCommuteF_normalOrder_ofStateList (φs : List 𝓕.CrAnStates)
     (φs' : List 𝓕.States) : [ofCrAnList φs, 𝓝ᶠ(ofStateList φs')]ₛca =
     ofCrAnList φs * 𝓝ᶠ(ofStateList φs') -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnList φs := by
@@ -473,7 +473,7 @@ lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs : List 𝓕.CrAnState
     ← Finset.sum_sub_distrib, map_sum]
   congr
   funext n
-  rw [ofCrAnList_superCommute_normalOrder_ofCrAnList,
+  rw [ofCrAnList_superCommuteF_normalOrder_ofCrAnList,
     CrAnSection.statistics_eq_state_statistics]
 
 /-!
@@ -482,20 +482,20 @@ lemma ofCrAnList_superCommute_normalOrder_ofStateList (φs : List 𝓕.CrAnState
 
 -/
 
-lemma ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute (φs : List 𝓕.CrAnStates)
+lemma ofCrAnList_mul_normalOrder_ofStateList_eq_superCommuteF (φs : List 𝓕.CrAnStates)
     (φs' : List 𝓕.States) :
     ofCrAnList φs * 𝓝ᶠ(ofStateList φs') =
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnList φs
     + [ofCrAnList φs, 𝓝ᶠ(ofStateList φs')]ₛca := by
-  simp [ofCrAnList_superCommute_normalOrder_ofStateList]
+  simp [ofCrAnList_superCommuteF_normalOrder_ofStateList]
 
-lemma ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.CrAnStates)
+lemma ofCrAnState_mul_normalOrder_ofStateList_eq_superCommuteF (φ : 𝓕.CrAnStates)
     (φs' : List 𝓕.States) : ofCrAnState φ * 𝓝ᶠ(ofStateList φs') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnState φ
     + [ofCrAnState φ, 𝓝ᶠ(ofStateList φs')]ₛca := by
-  simp [← ofCrAnList_singleton, ofCrAnList_mul_normalOrder_ofStateList_eq_superCommute]
+  simp [← ofCrAnList_singleton, ofCrAnList_mul_normalOrder_ofStateList_eq_superCommuteF]
 
-lemma anPart_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.States)
+lemma anPart_mul_normalOrder_ofStateList_eq_superCommuteF (φ : 𝓕.States)
     (φs' : List 𝓕.States) :
     anPart φ * 𝓝ᶠ(ofStateList φs') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs' * anPart φ)
@@ -503,8 +503,8 @@ lemma anPart_mul_normalOrder_ofStateList_eq_superCommute (φ : 𝓕.States)
   rw [normalOrder_mul_anPart]
   match φ with
   | .inAsymp φ => simp
-  | .position φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute, crAnStatistics]
-  | .outAsymp φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommute, crAnStatistics]
+  | .position φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommuteF, crAnStatistics]
+  | .outAsymp φ => simp [ofCrAnState_mul_normalOrder_ofStateList_eq_superCommuteF, crAnStatistics]
 
 end
 
