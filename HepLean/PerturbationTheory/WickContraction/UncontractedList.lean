@@ -46,6 +46,26 @@ lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· �
   simp only [Fin.coe_succAboveEmb]
   exact Fin.strictMono_succAbove i
 
+lemma fin_finset_sort_map_monotone {n m : ℕ} (a : Finset (Fin n)) (f : Fin n ↪ Fin m)
+    (hf : StrictMono f) : (Finset.sort (· ≤ ·) a).map f =
+    (Finset.sort (· ≤ ·) (a.map f)) := by
+  have h1 : ((Finset.sort (· ≤ ·) a).map f).Sorted (· ≤ ·) := by
+    apply fin_list_sorted_monotone_sorted
+    exact Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) a
+    exact hf
+  have h2 : ((Finset.sort (· ≤ ·) a).map f).Nodup := by
+    refine (List.nodup_map_iff_inj_on ?_).mpr ?_
+    exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) a
+    intro a ha b hb hf
+    exact f.2 hf
+  have h3 :  ((Finset.sort (· ≤ ·) a).map f).toFinset = (a.map f) := by
+    ext a
+    simp
+  rw [← h3]
+  exact ((List.toFinset_sort (· ≤ ·) h2).mpr h1).symm
+
+
+
 lemma fin_list_sorted_split :
     (l : List (Fin n)) → (hl : l.Sorted (· ≤ ·)) → (i : ℕ) →
     l = l.filter (fun x => x.1 < i) ++ l.filter (fun x => i ≤ x.1)
@@ -178,6 +198,10 @@ lemma uncontractedList_mem_iff (i : Fin n) :
   simp [uncontractedList]
 
 @[simp]
+lemma uncontractedList_empty : (empty (n := n)).uncontractedList = List.finRange n := by
+  simp [uncontractedList]
+
+@[simp]
 lemma nil_zero_uncontractedList : (empty (n := 0)).uncontractedList = [] := by
   simp [empty, uncontractedList]
 
@@ -196,6 +220,12 @@ lemma uncontractedList_sorted : List.Sorted (· ≤ ·) c.uncontractedList := by
   apply List.Sorted.filter
   rw [← List.ofFn_id]
   exact Monotone.ofFn_sorted fun ⦃a b⦄ a => a
+
+lemma uncontractedList_sorted_lt : List.Sorted (· < ·) c.uncontractedList := by
+  rw [uncontractedList]
+  apply List.Sorted.filter
+  rw [← List.ofFn_id]
+  exact List.sorted_lt_ofFn_iff.mpr fun ⦃a b⦄ a => a
 
 lemma uncontractedList_nodup : c.uncontractedList.Nodup := by
   rw [uncontractedList]
@@ -294,6 +324,12 @@ def uncontractedListGet {φs : List 𝓕.States} (φsΛ : WickContraction φs.le
 
 @[inherit_doc uncontractedListGet]
 scoped[WickContraction] notation "[" φsΛ "]ᵘᶜ" => uncontractedListGet φsΛ
+
+@[simp]
+lemma uncontractedListGet_empty {φs : List 𝓕.States} :
+    (empty (n := φs.length)).uncontractedListGet = φs := by
+  simp [uncontractedListGet]
+
 /-!
 
 ## uncontractedStatesEquiv
@@ -318,6 +354,70 @@ lemma uncontractedStatesEquiv_list_sum [AddCommMonoid α] (φs : List 𝓕.State
     ∑ (i : Option (Fin [φsΛ]ᵘᶜ.length)), f i =
     ∑ (i : Option φsΛ.uncontracted), f (φsΛ.uncontractedStatesEquiv φs i) := by
   rw [(φsΛ.uncontractedStatesEquiv φs).sum_comp]
+
+/-!
+
+## uncontractedListEmd
+
+-/
+
+/-- The embedding of `Fin [φsΛ]ᵘᶜ.length` into `Fin φs.length`. -/
+def uncontractedListEmd {φs : List 𝓕.States} {φsΛ : WickContraction φs.length} :
+    Fin [φsΛ]ᵘᶜ.length ↪ Fin φs.length :=
+    ((finCongr (by simp [uncontractedListGet])).trans φsΛ.uncontractedIndexEquiv).toEmbedding.trans
+    (Function.Embedding.subtype fun x => x ∈ φsΛ.uncontracted)
+
+lemma uncontractedListEmd_toFun_eq_get (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
+    (uncontractedListEmd (φsΛ := φsΛ)).toFun  =
+    φsΛ.uncontractedList.get ∘ (finCongr (by simp [uncontractedListGet])):= by
+ rfl
+
+lemma uncontractedListEmd_strictMono  {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    {i j : Fin [φsΛ]ᵘᶜ.length} (h : i < j) :  uncontractedListEmd i < uncontractedListEmd j := by
+  simp [uncontractedListEmd, uncontractedIndexEquiv]
+  exact List.Sorted.get_strictMono φsΛ.uncontractedList_sorted_lt h
+
+lemma uncontractedListEmd_mem_uncontracted {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    (i : Fin [φsΛ]ᵘᶜ.length) : uncontractedListEmd i ∈ φsΛ.uncontracted := by
+  simp [uncontractedListEmd]
+
+lemma uncontractedListEmd_surjective_mem_uncontracted {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    (i : Fin φs.length) (hi : i ∈ φsΛ.uncontracted) :
+    ∃ j, φsΛ.uncontractedListEmd j = i := by
+  simp [uncontractedListEmd]
+  have hj : ∃ j, φsΛ.uncontractedIndexEquiv j = ⟨i, hi⟩ := by
+    exact φsΛ.uncontractedIndexEquiv.surjective ⟨i, hi⟩
+  obtain ⟨j, hj⟩ := hj
+  have hj' : ∃ j', Fin.cast uncontractedListEmd.proof_1 j' = j := by
+    exact (finCongr uncontractedListEmd.proof_1).surjective j
+  obtain ⟨j', rfl⟩ := hj'
+  use j'
+  rw [hj]
+
+@[simp]
+lemma uncontractedListEmd_finset_disjoint_left {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    (a : Finset (Fin [φsΛ]ᵘᶜ.length)) (b : Finset (Fin φs.length)) (hb : b ∈ φsΛ.1) : Disjoint (a.map uncontractedListEmd) b := by
+  rw [Finset.disjoint_left]
+  intro x hx
+  simp at hx
+  obtain ⟨x, hx, rfl⟩ := hx
+  have h1 : uncontractedListEmd x ∈ φsΛ.uncontracted :=
+    uncontractedListEmd_mem_uncontracted x
+  rw [mem_uncontracted_iff_not_contracted] at h1
+  exact h1 b hb
+
+@[simp]
+lemma getElem_uncontractedListEmd {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    (k : Fin [φsΛ]ᵘᶜ.length) : φs[(uncontractedListEmd k).1] = [φsΛ]ᵘᶜ[k.1] := by
+  simp [uncontractedListGet]
+  rfl
+
+@[simp]
+lemma uncontractedListEmd_empty {φs : List 𝓕.States} :
+    (empty (n := φs.length)).uncontractedListEmd = (finCongr (by simp)).toEmbedding := by
+  ext x
+  simp [uncontractedListEmd, uncontractedIndexEquiv]
+
 
 /-!
 

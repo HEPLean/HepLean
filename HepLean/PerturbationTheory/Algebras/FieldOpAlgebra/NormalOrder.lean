@@ -261,6 +261,43 @@ lemma ofCrAnFieldOpList_eq_normalOrder (φs : List 𝓕.CrAnStates) :
   rw [normalOrder_ofCrAnFieldOpList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
     one_smul]
 
+lemma normalOrder_normalOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
+    𝓝(a * b * c) = 𝓝(a * 𝓝(b) * c)  := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  obtain ⟨c, rfl⟩ := ι_surjective c
+  rw [normalOrder_eq_ι_normalOrderF]
+  simp [← map_mul]
+  rw [normalOrder_eq_ι_normalOrderF]
+  rw [normalOrderF_normalOrderF_mid]
+  rfl
+
+lemma normalOrder_normalOrder_left (a b : 𝓕.FieldOpAlgebra) :
+    𝓝(a * b) = 𝓝(𝓝(a) * b) := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  rw [normalOrder_eq_ι_normalOrderF]
+  simp [← map_mul]
+  rw [normalOrder_eq_ι_normalOrderF]
+  rw [normalOrderF_normalOrderF_left]
+  rfl
+
+lemma normalOrder_normalOrder_right (a b : 𝓕.FieldOpAlgebra) :
+    𝓝(a * b) = 𝓝(a * 𝓝(b)) := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  rw [normalOrder_eq_ι_normalOrderF]
+  simp [← map_mul]
+  rw [normalOrder_eq_ι_normalOrderF]
+  rw [normalOrderF_normalOrderF_right]
+  rfl
+
+lemma normalOrder_normalOrder (a : 𝓕.FieldOpAlgebra) : 𝓝(𝓝(a)) = 𝓝(a) := by
+  trans 𝓝(𝓝(a) * 1)
+  · simp
+  · rw [← normalOrder_normalOrder_left]
+    simp
+
 /-!
 
 ## mul anpart and crpart

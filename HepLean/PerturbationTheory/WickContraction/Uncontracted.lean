@@ -24,6 +24,11 @@ lemma congr_uncontracted {n m : ℕ} (c : WickContraction n) (h : n = m) :
   subst h
   simp
 
+
+lemma getDual?_eq_none_iff_mem_uncontracted (i : Fin n) :
+    c.getDual? i = none ↔ i ∈ c.uncontracted := by
+  simp [uncontracted]
+
 /-- The equivalence of `Option c.uncontracted` for two propositionally equal Wick contractions. -/
 def uncontractedCongr {c c': WickContraction n} (h : c = c') :
     Option c.uncontracted ≃ Option c'.uncontracted :=
@@ -63,5 +68,19 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     obtain ⟨j, hj⟩ := hn
     apply h {i, j} hj
     simp
+
+@[simp]
+lemma mem_uncontracted_empty (i : Fin n) : i ∈ empty.uncontracted := by
+  rw [@mem_uncontracted_iff_not_contracted]
+  intro p hp
+  simp [empty] at hp
+
+@[simp]
+lemma getDual?_empty_eq_none (i : Fin n) : empty.getDual? i = none := by
+  simpa [uncontracted] using mem_uncontracted_empty i
+
+@[simp]
+lemma uncontracted_empty {n : ℕ} : (@empty n).uncontracted = Finset.univ := by
+  simp [ uncontracted]
 
 end WickContraction

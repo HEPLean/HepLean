@@ -81,6 +81,19 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
     have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
+lemma normalOrder_timeContract (φ ψ : 𝓕.States) :
+    𝓝(timeContract φ ψ) = 0 := by
+  by_cases h : timeOrderRel φ ψ
+  · rw [timeContract_of_timeOrderRel _ _ h]
+    simp
+  · rw [timeContract_of_not_timeOrderRel _ _ h]
+    simp
+    have h1 : timeOrderRel ψ φ := by
+      have ht : timeOrderRel φ ψ ∨ timeOrderRel ψ φ := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
+      simp_all
+    rw [timeContract_of_timeOrderRel _ _ h1]
+    simp
+
 end FieldOpAlgebra
 
 end

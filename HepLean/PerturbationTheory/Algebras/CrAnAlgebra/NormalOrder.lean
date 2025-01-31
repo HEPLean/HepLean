@@ -52,6 +52,66 @@ lemma normalOrderF_one : normalOrderF (𝓕 := 𝓕) 1 = 1 := by
   rw [← ofCrAnList_nil, normalOrderF_ofCrAnList, normalOrderSign_nil, normalOrderList_nil,
     ofCrAnList_nil, one_smul]
 
+lemma normalOrderF_normalOrderF_mid (a b c : 𝓕.CrAnAlgebra) : 𝓝ᶠ(a * b * c) = 𝓝ᶠ(a * 𝓝ᶠ(b) * c) := by
+  let pc (c : 𝓕.CrAnAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+    Prop := 𝓝ᶠ(a * b * c) = 𝓝ᶠ(a * 𝓝ᶠ(b) * c)
+  change pc c (Basis.mem_span _ c)
+  apply Submodule.span_induction
+  · intro x hx
+    obtain ⟨φs, rfl⟩ := hx
+    simp only [ofListBasis_eq_ofList, pc]
+    let pb (b : 𝓕.CrAnAlgebra) (hb : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+      Prop := 𝓝ᶠ(a * b * ofCrAnList φs) = 𝓝ᶠ(a * 𝓝ᶠ(b) * ofCrAnList φs)
+    change pb b (Basis.mem_span _ b)
+    apply Submodule.span_induction
+    · intro x hx
+      obtain ⟨φs', rfl⟩ := hx
+      simp only [ofListBasis_eq_ofList, pb]
+      let pa (a : 𝓕.CrAnAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+        Prop := 𝓝ᶠ(a * ofCrAnList φs' * ofCrAnList φs) = 𝓝ᶠ(a * 𝓝ᶠ(ofCrAnList φs') * ofCrAnList φs)
+      change pa a (Basis.mem_span _ a)
+      apply Submodule.span_induction
+      · intro x hx
+        obtain ⟨φs'', rfl⟩ := hx
+        simp only [ofListBasis_eq_ofList, pa]
+        rw [normalOrderF_ofCrAnList]
+        simp only [← ofCrAnList_append, Algebra.mul_smul_comm,
+          Algebra.smul_mul_assoc, map_smul]
+        rw [normalOrderF_ofCrAnList, normalOrderF_ofCrAnList, smul_smul]
+        congr 1
+        · simp only [normalOrderSign, normalOrderList]
+          rw [Wick.koszulSign_of_append_eq_insertionSort, mul_comm]
+        · congr 1
+          simp only [normalOrderList]
+          rw [HepLean.List.insertionSort_append_insertionSort_append]
+      · simp [pa]
+      · intro x y hx hy h1 h2
+        simp_all [pa, add_mul]
+      · intro x hx h
+        simp_all [pa]
+    · simp [pb]
+    · intro x y hx hy h1 h2
+      simp_all [pb, mul_add, add_mul]
+    · intro x hx h
+      simp_all [pb]
+  · simp [pc]
+  · intro x y hx hy h1 h2
+    simp_all [pc, mul_add]
+  · intro x hx h hp
+    simp_all [pc]
+
+lemma normalOrderF_normalOrderF_right (a b : 𝓕.CrAnAlgebra) : 𝓝ᶠ(a * b) = 𝓝ᶠ(a * 𝓝ᶠ(b)) := by
+  trans 𝓝ᶠ(a * b * 1)
+  · simp
+  · rw [normalOrderF_normalOrderF_mid]
+    simp
+
+lemma normalOrderF_normalOrderF_left (a b : 𝓕.CrAnAlgebra) : 𝓝ᶠ(a * b) = 𝓝ᶠ(𝓝ᶠ(a) * b) := by
+  trans 𝓝ᶠ(1 * a * b)
+  · simp
+  · rw [normalOrderF_normalOrderF_mid]
+    simp
+
 /-!
 
 ## Normal ordering with a creation operator on the left or annihilation on the right
