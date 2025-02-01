@@ -3,10 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
-import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
-import ImportGraph.RequiredModules
+import Lean.Elab.Command
 /-!
 
 # Basic underlying structure for TODOs.
@@ -14,7 +11,7 @@ import ImportGraph.RequiredModules
 -/
 
 namespace HepLean
-open Lean System Meta
+open Lean
 
 /-- The information from a `TODO ...` command. -/
 structure todoInfo where
@@ -38,7 +35,7 @@ syntax (name := todo_comment) "TODO " str : command
 
 /-- Elaborator for the `TODO ...` command -/
 @[command_elab todo_comment]
-def elabTODO : Lean.Elab.Command.CommandElab := fun stx =>
+def elabTODO : Elab.Command.CommandElab := fun stx =>
   match stx with
   | `(TODO $s) => do
     let str : String := s.getString

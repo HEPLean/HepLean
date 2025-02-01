@@ -3,12 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
-import Lean
-import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
 import HepLean.Meta.Informal.Post
-import ImportGraph.RequiredModules
+import Mathlib.Lean.CoreM
 /-!
 
 # Extracting information about informal definitions and lemmas
@@ -19,125 +15,101 @@ To make the dot file for the dependency graph run:
 - or dot -Tpng  -Gdpi=300 -o ./Docs/graph.png ./Docs/InformalDot.dot
 -/
 
-open Lean System Meta
+open Lean
 
-def getConst (imp : Import) : IO (Array (Import × ConstantInfo)) := do
-  let mFile ← findOLean imp.module
-  let (modData, _) ← readModuleData mFile
-  pure (modData.constants.map (fun c => (imp, c)))
+/- To make private definitions completely invisible, place them in a separate importable file. -/
 
-def getLineNumber (c : Name) : MetaM Nat := do
-  match ← findDeclarationRanges? c  with
-  | some decl => pure decl.range.pos.line
-  | none => panic! s!"{c} is a declaration without position"
+structure Decl where
+  name : Name
+  module : Name
+  lineNo : Nat
+  docString : String
 
-def getModule (c : Name) : MetaM Name := do
-  match Lean.Environment.getModuleFor? (← getEnv) c with
-  | some mod => pure mod
-  | none => panic! s!"{c} is a declaration without position"
+inductive InformalDeclKind
+  | def | lemma
 
-def getConstInfo (n : Name) : MetaM ConstantInfo := do
-  match (← getEnv).find? n  with
-  | some c => pure c
-  | none => panic! s!"{n} is not a constant"
+instance : ToString InformalDeclKind where
+  toString
+    | .def => "def"
+    | .lemma => "lemma"
 
-/-- Gets the docstring from a name, if it exists, otherwise the string "No docstring."-/
-def getDocString (n : Name) : MetaM String := do
-  match ← Lean.findDocString? (← getEnv) n with
-  | some doc => pure doc
-  | none => pure "No docstring."
+structure InformalDecl extends Decl where
+  kind : InformalDeclKind
+  deps : Array Decl
 
-def depToString (d : Name) : MetaM String := do
-  let lineNo ← getLineNumber d
-  let mod ← getModule d
-  pure s!"    * {d}: ./{mod.toString.replace "." "/" ++ ".lean"}:{lineNo}"
+structure DepDecls where
+  private mk::
+  private decls : Std.HashMap Name Decl
+  formalDecls : Array Decl
+  /-- Pairs of informal declarations and their enclosing modules. -/
+  informalModuleMap : Array (Name × Array InformalDecl)
 
-def depToWebString (d : Name) : MetaM String := do
-  let lineNo ← getLineNumber d
-  let mod ← getModule d
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (mod.toString.replace "." "/") ++ ".lean"
-  pure s!"    * [{d}]({webPath}#L{lineNo})"
+private abbrev DeclsM := StateRefT (Std.HashMap Name Decl) CoreM
 
-unsafe def informalDependencies (c : ConstantInfo) : MetaM (Array Name) := do
-  if Informal.isInformalLemma c then
-    let informal ← Informal.constantInfoToInformalLemma c
-    pure informal.deps.toArray
-  else if Informal.isInformalDef c then
-    let informal ← Informal.constantInfoToInformalDefinition c
-    pure informal.deps.toArray
-  else
-    pure #[]
+private def Decl.ofName (name : Name) (module : Option Name := none) : DeclsM Decl := do
+  if let some decl := (← get).get? name then
+    return decl
+  let env ← getEnv
+  let decl : Decl := {
+    name
+    module := module.getD (env.getModuleFor? name).get!
+    lineNo := (← findDeclarationRanges? name).get!.range.pos.line
+    docString := (← findDocString? env name).getD "No docstring."
+  }
+  modifyGet fun decls => (decl, decls.insert name decl)
 
-unsafe def informalLemmaToString (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let informalLemma ← Informal.constantInfoToInformalLemma c.2
-  let dep ← informalLemma.deps.mapM fun d => depToString d
-  pure s!"
-Informal lemma: {informalLemma.name}
-- ./{c.1.module.toString.replace "." "/" ++ ".lean"}:{lineNo}
-- Math description: {informalLemma.math}
-- Physics description: {informalLemma.physics}
-- Proof description: {informalLemma.proof}
-- References: {informalLemma.ref}
-- Dependencies:\n{String.intercalate "\n" dep}"
+private unsafe def InformalDecl.ofName? (name module : Name) : DeclsM (Option InformalDecl) := do
+  unless name.isInternalDetail do
+    if let some const := (← getEnv).find? name then
+      if Informal.isInformalDef const then
+        return ← ofName .def (← evalConst InformalDefinition name).deps
+      else if Informal.isInformalLemma const then
+        return ← ofName .lemma (← evalConst InformalLemma name).deps
+  return none
+where
+  ofName (kind : InformalDeclKind) (deps : List Name) : DeclsM InformalDecl :=
+    return {← Decl.ofName name module with kind, deps := ← deps.toArray.mapM Decl.ofName}
 
-unsafe def informalLemmaToWebString (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let informalLemma ← Informal.constantInfoToInformalLemma c.2
-  let dep ← informalLemma.deps.mapM fun d => depToWebString d
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
-  pure s!"
-**Informal lemma**: [{informalLemma.name}]({webPath}#L{lineNo}) :=
-  *{informalLemma.math}*
-- Physics description: {informalLemma.physics}
-- Proof description: {informalLemma.proof}
-- References: {informalLemma.ref}
-- Dependencies:\n{String.intercalate "\n" dep}"
+unsafe def DepDecls.ofRootModule (rootModule : Name) : CoreM DepDecls := do
+  let (informalModuleMap, decls) ← getAllDecls.run ∅
 
-unsafe def informalDefToString (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let informalDef ← Informal.constantInfoToInformalDefinition c.2
-  let dep ← informalDef.deps.mapM fun d => depToString d
-  pure s!"
-Informal def: {informalDef.name}
-- ./{c.1.module.toString.replace "." "/" ++ ".lean"}:{lineNo}
-- Math description: {informalDef.math}
-- Physics description: {informalDef.physics}
-- References: {informalDef.ref}
-- Dependencies:\n{String.intercalate "\n" dep}"
+  let mut informalNames : Std.HashSet Name := ∅
+  for (_, informalDecls) in informalModuleMap do
+    for {name, ..} in informalDecls do
+      informalNames := informalNames.insert name
 
-unsafe def informalDefToWebString (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let informalDef ← Informal.constantInfoToInformalDefinition c.2
-  let dep ← informalDef.deps.mapM fun d => depToWebString d
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
-  pure s!"
-**Informal def**: [{informalDef.name}]({webPath}#L{lineNo}) :=
-  *{informalDef.math}*
-- Physics description: {informalDef.physics}
-- References: {informalDef.ref}
-- Dependencies:\n{String.intercalate "\n" dep}"
+  let mut formalDecls : Array Decl := #[]
+  for (name, decl) in decls do
+    unless informalNames.contains name do
+      formalDecls := formalDecls.push decl
 
-unsafe def informalToString (c : Import × ConstantInfo) : MetaM String := do
-  if Informal.isInformalLemma c.2 then
-    informalLemmaToString c
-  else if Informal.isInformalDef c.2 then
-    informalDefToString c
-  else
-    pure ""
+  return {decls, formalDecls, informalModuleMap}
+where
+  getAllDecls : DeclsM (Array (Name × Array InformalDecl)) := do
+    let ({imports, ..}, _) ← readModuleData (← findOLean rootModule)
+    imports.filterMapM fun {module, ..} => do
+      if module.getRoot == rootModule then
+        let ({constNames, ..}, _) ← readModuleData (← findOLean module)
+        let informalDecls ← constNames.filterMapM fun name => InformalDecl.ofName? name module
+        unless informalDecls.isEmpty do
+          let informalDecls := informalDecls.qsort fun a b => a.lineNo < b.lineNo
+          printInformalDecls module informalDecls
+          return (module, informalDecls)
+      return none
+  printInformalDecls (module : Name) (informalDecls : Array InformalDecl) : CoreM Unit := do
+    println! module
+    for {kind, name, lineNo, docString, deps, ..} in informalDecls do
+      println! s!"
+Informal {kind}: {name}
+- {module.toRelativeFilePath}:{lineNo}
+- Description: {docString}
+- Dependencies:"
+      for {name, module, lineNo, ..} in deps do
+        println! s!"    * {name}: {module.toRelativeFilePath}:{lineNo}"
 
-unsafe def informalToWebString (c : Import × ConstantInfo) : MetaM String := do
-  if Informal.isInformalLemma c.2 then
-    informalLemmaToWebString c
-  else if Informal.isInformalDef c.2 then
-    informalDefToWebString c
-  else
-    pure ""
-
-def informalFileHeader : String := s!"
+/-- Making the Markdown file for dependency graph. -/
+def mkMarkdown (depDecls : DepDecls) : IO Unit := do
+  println! "
 # Informal definitions and lemmas
 
 See [informal definitions and lemmas as a dependency graph](https://heplean.github.io/HepLean/graph.svg).
@@ -151,131 +123,19 @@ There is an implicit invitation to the reader to contribute to the formalization
  background in Lean.
 
 "
-open Informal
-/-- Takes an import and outputs the list of `ConstantInfo` corresponding
-  to an informal definition or lemma in that import, sorted by line number. -/
-def importToInformal (i : Import) : MetaM (Array (Import × ConstantInfo)) := do
-  let constants ← getConst i
-  let constants := constants.filter (fun c => ¬ Lean.Name.isInternalDetail c.2.name)
-  let informalConst := constants.filter fun c => Informal.isInformal c.2
-  let informalConstLineNo ← informalConst.mapM fun c => getLineNumber c.2.name
-  let informalConstWithLineNo := informalConst.zip informalConstLineNo
-  let informalConstWithLineNoSort := informalConstWithLineNo.qsort (fun a b => a.2 < b.2)
-  return informalConstWithLineNoSort.map (fun c => c.1)
+  for (module, informalDecls) in depDecls.informalModuleMap do
+    println! s!"## {module}"
+    for {kind, name, lineNo, docString, deps, ..} in informalDecls do
+      println! s!"
+**Informal {kind}**: [{name}]({module.toGitHubLink lineNo}) :=
+  *{docString}*
+- Dependencies:"
+      for {name, module, lineNo, ..} in deps do
+        println! s!"    * {name}: {module.toRelativeFilePath}:{lineNo}"
 
-unsafe def importToString (i : Import) : MetaM String := do
-  let informalConst ← importToInformal i
-  let informalPrint ← (informalConst.mapM informalToString).run'
-  if informalPrint.isEmpty then
-    pure ""
-  else
-    pure ("\n\n" ++ i.module.toString ++ "\n" ++ String.intercalate "\n\n" informalPrint.toList)
-
-unsafe def importToWebString (i : Import) : MetaM String := do
-  let informalConst ← importToInformal i
-  let informalPrint ← (informalConst.mapM informalToWebString).run'
-  if informalPrint.isEmpty then
-    pure ""
-  else
-    pure ("\n\n## " ++ i.module.toString ++ "\n" ++ String.intercalate "\n\n" informalPrint.toList)
-
-section dotFile
-/-!
-
-## Making the dot file for dependency graph.
-
--/
-
-/-- Turns a formal definition or lemma into a node of a dot graph. -/
-def formalToNode (nameSpaces : Array Name) (d : Name) : MetaM String := do
-  let docstring ← getDocString d
-  let prefixName := if nameSpaces.contains d then d else
-    d.getPrefix
-  let nodeStr := s!"\"{d}\"[label=\"{d}\", shape=box, style=filled, fillcolor=steelblue,
-     tooltip=\"{docstring}\"]"
-  if prefixName = Lean.Name.anonymous then
-    pure nodeStr
-  else
-    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
-
-unsafe def informalLemmaToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
-  let informalLemma ← (Informal.constantInfoToInformalLemma c.2)
-  let prefixName := if nameSpaces.contains c.2.name then c.2.name else
-    c.2.name.getPrefix
-  let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=ellipse, style=filled, fillcolor=lightgray,
-    tooltip=\"{informalLemma.math}\"]"
-  if prefixName = Lean.Name.anonymous then
-    pure nodeStr
-  else
-    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
-
-unsafe def informalDefToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
-  let informalDef ← (constantInfoToInformalDefinition c.2)
-  let prefixName := if nameSpaces.contains c.2.name then c.2.name else
-    c.2.name.getPrefix
-  let nodeStr := s!"\"{c.2.name}\"[label=\"{c.2.name}\", shape=box, style=filled, fillcolor=lightgray,
-    tooltip=\"{informalDef.math}\"]"
-  if prefixName = Lean.Name.anonymous then
-    pure nodeStr
-  else
-    pure ("subgraph cluster_" ++ prefixName.toString.replace "." "_" ++ " { " ++ nodeStr ++ "; }")
-
-
-unsafe def informalToNode (nameSpaces : Array Name) (c : Import × ConstantInfo) : MetaM String := do
-  if Informal.isInformalLemma c.2 then
-    informalLemmaToNode nameSpaces c
-  else if Informal.isInformalDef c.2 then
-    informalDefToNode nameSpaces c
-  else
-    pure ""
-
-unsafe def informalLemmaToEdges (c : Import × ConstantInfo) : MetaM (String) := do
-  let informalLemma ← constantInfoToInformalLemma c.2
-  let edge := informalLemma.deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
-  pure (String.intercalate "\n" edge)
-
-unsafe def informalDefToEdges (c : Import × ConstantInfo) : MetaM (String) := do
-  let informalDef ← constantInfoToInformalDefinition c.2
-  let edge := informalDef.deps.map (fun d => s!"\"{d}\" -> \"{c.2.name}\"")
-  pure (String.intercalate "\n" edge)
-
-unsafe def informalToEdges (c : Import × ConstantInfo) : MetaM (String) := do
-  if Informal.isInformalLemma c.2 then
-    informalLemmaToEdges c
-  else if Informal.isInformalDef c.2 then
-    informalDefToEdges c
-  else
-    pure ""
-
-unsafe def namespaceToCluster (name : Name) : MetaM String := do
-  let nameUnder := name.toString.replace "." "_"
-  if name = Lean.Name.anonymous then
-    pure ""
-  else
-    pure ("subgraph cluster_" ++ nameUnder ++ "
-      {
-          label=\"" ++ name.toString ++ "\";
-          color=steelblue;
-              }")
-
-unsafe def mkDot (imports : Array Import) : MetaM String := do
-  let informal ← imports.mapM importToInformal
-  let informal := informal.flatten
-  let deps ← (informal.map (fun c => c.2)).mapM informalDependencies
-  let deps := deps.flatten
-  let informal_name := informal.map (fun c => c.2.name)
-  let informalNameSpaces := informal.map fun c => c.2.name.getPrefix
-  let clusters ← informalNameSpaces.mapM fun c => namespaceToCluster c
-  let clusters := String.intercalate "\n" clusters.toList.eraseDups
-  let formal_deps := deps.filter (fun d => d ∉ informal_name)
-  let formal_nodes ← formal_deps.mapM (formalToNode informalNameSpaces)
-  let nodes := String.intercalate "\n" formal_nodes.toList
-
-  let informalNodes ← informal.mapM (informalToNode informalNameSpaces)
-  let informalNodes := String.intercalate "\n" informalNodes.toList
-  let edges ← informal.mapM informalToEdges
-  let edges := String.intercalate "\n" edges.toList
-  let header := "strict digraph G {
+/-- Making the DOT file for dependency graph. -/
+def mkDOT (depDecls : DepDecls) : IO Unit := do
+  IO.println "strict digraph G {
     graph [
     pack=true;
     packmode=\"array1\";
@@ -286,77 +146,48 @@ unsafe def mkDot (imports : Array Import) : MetaM String := do
     labelloc=\"t\";
     labeljust=\"l\";
     edge [arrowhead=vee];"
-  let footer := "}"
-  pure (header ++ "\n" ++clusters ++ "\n" ++ nodes ++ "\n" ++
-    informalNodes ++ "\n" ++ edges ++ "\n" ++ footer)
 
-end dotFile
+  let mut clusters : Std.HashSet Name := ∅
+  for (_, informalDecls) in depDecls.informalModuleMap do
+    for {name, ..} in informalDecls do
+      let cluster := name.getPrefix
+      unless cluster.isAnonymous do
+        clusters := clusters.insert cluster
+        println! s!"subgraph cluster_{cluster.toString.replace "." "_"}" ++ "
+      {
+          label=\"" ++ cluster.toString ++ "\";
+          color=steelblue;
+              }"
 
-section htmlFile
+  for decl in depDecls.formalDecls do
+    println! toNode clusters decl "box" "steelblue"
 
-/-!
+  for (_, informalDecls) in depDecls.informalModuleMap do
+    for {toDecl := decl, kind, ..} in informalDecls do
+      match kind with
+      | .def => println! toNode clusters decl "box" "lightgray"
+      | .lemma => println! toNode clusters decl "ellipse" "lightgray"
 
-## Making the html file for dependency graph.
+  for (_, informalDecls) in depDecls.informalModuleMap do
+    for informalDecl in informalDecls do
+      for dep in informalDecl.deps do
+        println! s!"\"{dep.name}\" -> \"{informalDecl.name}\""
 
--/
+  println! "}"
+where
+  toNode (clusters : Std.HashSet Name) (decl : Decl) (shape color : String) : String :=
+    let {name, docString, ..} := decl
+    let prefixName := if clusters.contains name then name else name.getPrefix
+    let nodeStr := s!"\"{name}\"[label=\"{name}\", shape={shape}, style=filled, fillcolor={color},
+    tooltip=\"{docString}\"]"
+    if prefixName.isAnonymous then
+      nodeStr
+    else
+      s!"subgraph cluster_{prefixName.toString.replace "." "_"} \{ {nodeStr}; }"
 
-def formalToHTML (d : Name) : MetaM String := do
-  let lineNo ← getLineNumber d
-  let mod ← getModule d
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (mod.toString.replace "." "/") ++ ".lean"
-  let docstring ← getDocString d
-  pure s!"
-<div id=\"{d}\" class=\"node-text\">
-<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{d}</a></b><br>
-<b>Docstring: </b>{docstring}
-
-</div>"
-
-unsafe def informalLemmaToHTML (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
-  let informalLemma ← (constantInfoToInformalLemma c.2)
-  pure s!"
-<div id=\"{c.2.name}\" class=\"node-text\">
-<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{c.2.name}</a></b><br>
-<b>Math description: </b>{informalLemma.math}<br>
-<b>Physics description: </b>{informalLemma.physics}<br>
-</div>"
-
-unsafe def informalDefToHTML (c : Import × ConstantInfo) : MetaM String := do
-  let lineNo ← getLineNumber c.2.name
-  let webPath := "https://github.com/HEPLean/HepLean/blob/master/"++
-    (c.1.module.toString.replace "." "/") ++ ".lean"
-  let informalDef ← (constantInfoToInformalDefinition c.2)
-  pure s!"
-<div id=\"{c.2.name}\" class=\"node-text\">
-<b><a href=\"{webPath ++ "#L" ++ toString lineNo}\">{c.2.name}</a></b><br>
-<b>Math description: </b>{informalDef.math}<br>
-<b>Physics description: </b>{informalDef.physics}<br>
-</div>"
-
-unsafe def informalToHTML (c : Import × ConstantInfo) : MetaM String := do
-  if Informal.isInformalLemma c.2 then
-    informalLemmaToHTML c
-  else if Informal.isInformalDef c.2 then
-    informalDefToHTML c
-  else
-    pure ""
-
-unsafe def toHTML (imports : Array Import) : MetaM String := do
-  let informal ← imports.mapM importToInformal
-  let informal := informal.flatten
-  let deps ← (informal.map (fun c => c.2)).mapM informalDependencies
-  let deps := deps.flatten
-  let informal_name := informal.map (fun c => c.2.name)
-  let formal_deps := deps.filter (fun d => d ∉ informal_name)
-  let formal_nodes ← formal_deps.mapM (formalToHTML)
-  let nodes := String.intercalate "\n" formal_nodes.toList
-  let informalNodes ← informal.mapM (informalToHTML)
-  let informalNodes := String.intercalate "\n" informalNodes.toList
-  let header := "---
+/-- Making the HTML file for dependency graph. -/
+def mkHTML (depDecls : DepDecls) : IO Unit := do
+  IO.println "---
 layout: default
 ---
 <!DOCTYPE html>
@@ -400,7 +231,15 @@ layout: default
     <div id=\"includedContent\"></div>
     <!-- Div to display the message when a node is clicked -->
     <div id=\"message\"></div>"
-  let footer := "
+
+  for decl in depDecls.formalDecls do
+    println! toHTML decl
+
+  for (_, informalDecls) in depDecls.informalModuleMap do
+    for {toDecl := decl, ..} in informalDecls do
+      println! toHTML decl
+
+  IO.println "
   <script type=\"text/javascript\">
         // Load the DOT file and render the graph
         d3.text(\"InformalDot.dot\").then(function(dotSrc) {
@@ -439,43 +278,39 @@ layout: default
 </body>
 </html>
 "
-  pure (header ++ "\n" ++ nodes ++ "\n" ++
-    informalNodes ++  "\n" ++ footer)
+where
+  toHTML (decl : Decl) : String :=
+    let {name, module, lineNo, docString} := decl
+    s!"
+<div id=\"{name}\" class=\"node-text\">
+<b><a href=\"{module.toGitHubLink lineNo}\">{name}</a></b><br>
+<b>Description: </b>{docString}
 
-end htmlFile
+</div>"
+
 /-!
 
 ## Main function
 
 -/
-unsafe def main (args : List String) : IO UInt32 := do
+
+def IO.withStdoutRedirectedTo {α} (filePath : System.FilePath) (action : IO α) : IO α :=
+  FS.withFile filePath .write fun handle => withStdout (.ofHandle handle) action
+
+unsafe def main (args : List String) : IO Unit := do
   initSearchPath (← findSysroot)
-  let mods : Name := `HepLean
-  let imp : Import := {module := mods}
-  let mFile ← findOLean imp.module
-  unless (← mFile.pathExists) do
-        throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
-  let (hepLeanMod, _) ← readModuleData mFile
-  let imports := hepLeanMod.imports.filter (fun c => c.module ≠ `Init)
-  let importString ← CoreM.withImportModules #[`HepLean] (imports.mapM importToString).run'
-  IO.println (String.intercalate "" importString.toList)
-  /- Writing out informal file. -/
-  let fileOut : System.FilePath := {toString := "./docs/Informal.md"}
-  if "mkFile" ∈ args then
-    let importWebString ← CoreM.withImportModules #[`HepLean] (imports.mapM importToWebString).run'
-    let out := String.intercalate "\n" importWebString.toList
-    IO.println (s!"Informal file made.")
-    IO.FS.writeFile fileOut (informalFileHeader ++ out)
-  /- Making the dot file. -/
-  if "mkDot" ∈ args then
-    let dot ← CoreM.withImportModules #[`HepLean] (mkDot imports).run'
-    let dotFile : System.FilePath := {toString := "./docs/InformalDot.dot"}
-    IO.FS.writeFile dotFile dot
-    IO.println (s!"Dot file made.")
-  /- Making the html file. -/
-  if "mkHTML" ∈ args then
-    let html ← CoreM.withImportModules #[`HepLean] (toHTML imports).run'
-    let htmlFile : System.FilePath := {toString := "./docs/InformalGraph.html"}
-    IO.FS.writeFile htmlFile html
-    IO.println (s!"HTML file made.")
-  pure 0
+  let rootModule := `HepLean
+  CoreM.withImportModules #[rootModule] do
+    /- Build informal dependencies with all information necessary. -/
+    let depDecls ← DepDecls.ofRootModule rootModule
+    /- Stay inside `CoreM.withImportModules` so that references to objects in `env` are not yet
+    destroyed. -/
+    if "mkFile" ∈ args then
+      IO.withStdoutRedirectedTo "./docs/Informal.md" do mkMarkdown depDecls
+      println! "Markdown file made."
+    if "mkDot" ∈ args then
+      IO.withStdoutRedirectedTo "./docs/InformalDot.dot" do mkDOT depDecls
+      println! "DOT file made."
+    if "mkHTML" ∈ args then
+      IO.withStdoutRedirectedTo "./docs/InformalGraph.html" do mkHTML depDecls
+      println! "HTML file made."

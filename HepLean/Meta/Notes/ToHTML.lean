@@ -24,12 +24,12 @@ def sortLE (ni1 ni2 : HTMLNote) : Bool :=
   ni1.line ≤ ni2.line
 
 /-- Returns a sorted list of NodeInfos for a file system. -/
-unsafe def getNodeInfo : MetaM (List HTMLNote) := do
+unsafe def getNodeInfo : CoreM (List HTMLNote) := do
   let env ← getEnv
   let allNotes := (noteExtension.getState env)
   let allDecl := (noteDeclExtension.getState env)
   let allInformalDecl := noteInformalDeclExtension.getState env
-  let allNoteInfo := (← allNotes.mapM HTMLNote.ofNodeInfo) ++ (← allDecl.mapM HTMLNote.ofFormal)
+  let allNoteInfo := allNotes.map HTMLNote.ofNodeInfo ++ (← allDecl.mapM HTMLNote.ofFormal)
     ++ (← allInformalDecl.mapM HTMLNote.ofInformal)
   let noteInfo := allNoteInfo.filter (fun x => x.fileName ∈ N.files)
   let noteInfoSort := noteInfo.toList.mergeSort N.sortLE

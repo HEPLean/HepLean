@@ -3,9 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
 import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
 import ImportGraph.RequiredModules
 /-!
 
@@ -13,8 +11,15 @@ import ImportGraph.RequiredModules
 
 -/
 
-namespace HepLean
-open Lean System Meta
+/-- The size of a flattened array of arrays. -/
+def Array.flatSize {α} : Array (Array α) → Nat :=
+  foldl (init := 0) fun sizeAcc as => sizeAcc + as.size
+
+/-- The size of a flattened array of arrays after applying an element-wise filter. -/
+def Array.flatFilterSizeM {α m} [Monad m] (p : α → m Bool) : Array (Array α) → m Nat :=
+  foldlM (init := 0) fun sizeAcc as => return sizeAcc + (← as.filterM p).size
+
+open Lean
 
 /-!
 
@@ -23,193 +28,166 @@ open Lean System Meta
 -/
 
 /-- Gets all imports within HepLean. -/
-def allImports : IO (Array Import) := do
+def HepLean.allImports : IO (Array Import) := do
   initSearchPath (← findSysroot)
-  let mods : Name := `HepLean
-  let imp : Import := {module := mods}
-  let mFile ← findOLean imp.module
-  unless (← mFile.pathExists) do
-        throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
+  let mods := `HepLean
+  let mFile ← findOLean mods
+  unless ← mFile.pathExists do
+    throw <| IO.userError s!"object file '{mFile}' of module {mods} does not exist"
   let (hepLeanMod, _) ← readModuleData mFile
-  let imports := hepLeanMod.imports.filter (fun c => c.module ≠ `Init)
-  return imports
+  hepLeanMod.imports.filterM fun c => return c.module != `Init
 
 /-- Number of files within HepLean. -/
-def noImports : IO Nat := do
+def HepLean.noImports : IO Nat := do
   let imports ← allImports
-  pure imports.size
+  return imports.size
 
 /-- Gets all constants from an import. -/
-def Imports.getConsts (imp : Import) : IO (Array ConstantInfo) := do
+def HepLean.Imports.getConsts (imp : Import) : IO (Array ConstantInfo) := do
   let mFile ← findOLean imp.module
   let (modData, _) ← readModuleData mFile
-  pure modData.constants
+  return modData.constants
 
 /-- Gets all user defined constants from an import. -/
-def Imports.getUserConsts (imp : Import) : MetaM (Array ConstantInfo) := do
+def HepLean.Imports.getUserConsts (imp : Import) : CoreM (Array ConstantInfo) := do
   let env ← getEnv
-  let x := (← Imports.getConsts imp).filter (fun c => ¬ c.name.isInternal)
-  let x := x.filter (fun c => ¬ Lean.isCasesOnRecursor env c.name)
-  let x := x.filter (fun c => ¬ Lean.isRecOnRecursor env c.name)
-  let x := x.filter (fun c => ¬ Lean.isNoConfusion env c.name)
-  let x := x.filter (fun c => ¬ Lean.isBRecOnRecursor env c.name)
-  let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.binductionOnSuffix)
-  let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.belowSuffix)
-  let x := x.filter (fun c => ¬ Lean.isAuxRecursorWithSuffix env c.name Lean.ibelowSuffix)
-  /- Removing syntax category declarations. -/
-  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.indexExpr.quot")
-  let x := x.filter (fun c => ¬ c.name.toString = "TensorTree.tensorExpr.quot")
-  pure x
+  let consts ← Imports.getConsts imp
+  consts.filterM fun c =>
+    let name := c.name
+    return !name.isInternal
+      && !isCasesOnRecursor env name
+      && !isRecOnRecursor env name
+      && !isNoConfusion env name
+      && !isBRecOnRecursor env name
+      && !isAuxRecursorWithSuffix env name binductionOnSuffix
+      && !isAuxRecursorWithSuffix env name belowSuffix
+      && !isAuxRecursorWithSuffix env name ibelowSuffix
+      /- Removing syntax category declarations. -/
+      && name.toString != "TensorTree.indexExpr.quot"
+      && name.toString != "TensorTree.tensorExpr.quot"
+
+/-- Turns a name into a system file path. -/
+def Lean.Name.toFilePath (c : Name) : System.FilePath :=
+  System.mkFilePath (c.toString.splitOn ".") |>.addExtension "lean"
 
 /-- Lines from import. -/
-def Imports.getLines (imp : Import) : IO (Array String) := do
-  let filePath := (mkFilePath (imp.module.toString.split (· == '.'))).addExtension "lean"
-  let lines ← IO.FS.lines filePath
-  return lines
+def HepLean.Imports.getLines (imp : Import) : IO (Array String) := do
+  IO.FS.lines imp.module.toFilePath
 
+namespace Lean.Name
 /-!
 
 ## Name
 
 -/
 
+variable {m} [Monad m] [MonadEnv m] [MonadLiftT BaseIO m]
+
 /-- Turns a name into a Lean file. -/
-def Name.toFile (c : Name) : MetaM String := do
-  return s!"./{c.toString.replace "." "/" ++ ".lean"}"
+def toRelativeFilePath (c : Name) : System.FilePath :=
+  System.FilePath.join "." c.toFilePath
 
 /-- Turns a name, which represents a module, into a link to github. -/
-def Name.toGitHubLink (c : Name) (l : Nat := 0) : MetaM String := do
-  let headerLink := "https://github.com/HEPLean/HepLean/blob/master/"
-  let filePart := (c.toString.replace "." "/") ++ ".lean"
-  let linePart := "#L" ++ toString l
-  return headerLink ++ filePart ++ linePart
+def toGitHubLink (c : Name) (line : Nat) : String :=
+  s!"https://github.com/HEPLean/HepLean/blob/master/{c.toFilePath}#L{line}"
 
 /-- Given a name, returns the line number. -/
-def Name.lineNumber (c : Name) : MetaM Nat := do
+def lineNumber (c : Name) : m Nat := do
   match ← findDeclarationRanges? c with
-  | some decl => pure decl.range.pos.line
+  | some decl => return decl.range.pos.line
   | none => panic! s!"{c} is a declaration without position"
 
 /-- Given a name, returns the file name corresponding to that declaration. -/
-def Name.fileName (c : Name) : MetaM Name := do
+def fileName (c : Name) : m Name := do
   let env ← getEnv
-  let x := env.getModuleFor? c
-  match x with
-  | some c => pure c
+  match env.getModuleFor? c with
+  | some decl => return decl
   | none => panic! s!"{c} is a declaration without position"
 
 /-- Returns the location of a name. -/
-def Name.location (c : Name) : MetaM String := do
+def location (c : Name) : m String := do
   let env ← getEnv
-  let x := env.getModuleFor? c
-  match x with
-  | some decl => pure ((← Name.toFile decl) ++ ":" ++ toString (← Name.lineNumber c) ++ " "
-    ++ c.toString)
+  match env.getModuleFor? c with
+  | some decl => return s!"{decl.toRelativeFilePath}:{← c.lineNumber} {c}"
   | none => panic! s!"{c} is a declaration without position"
 
 /-- Determines if a name has a location. -/
-def Name.hasPos (c : Name) : MetaM Bool := do
-  match ← findDeclarationRanges? c with
-  | some _ => pure true
-  | none => pure false
+def hasPos (c : Name) : m Bool := do
+  let ranges? ← findDeclarationRanges? c
+  return ranges?.isSome
 
 /-- Determines if a name has a doc string. -/
-def Name.hasDocString (c : Name) : MetaM Bool := do
+def hasDocString (c : Name) : CoreM Bool := do
   let env ← getEnv
-  let doc ← Lean.findDocString? env c
-  match doc with
-  | some _ => pure true
-  | none => pure false
+  let doc? ← findDocString? env c
+  return doc?.isSome
 
 /-- The doc string from a name. -/
-def Name.getDocString (c : Name) : MetaM String := do
+def getDocString (c : Name) : CoreM String := do
   let env ← getEnv
-  let doc ← Lean.findDocString? env c
-  match doc with
-  | some doc => pure doc
-  | none => pure ""
+  let doc? ← findDocString? env c
+  return doc?.getD ""
 
 /-- Given a name, returns the source code defining that name. -/
-def Name.getDeclString (name : Name) : MetaM String := do
+def getDeclString (name : Name) : CoreM String := do
   let env ← getEnv
-  let decl ← findDeclarationRanges? name
-  match decl with
-  | some decl =>
-    let startLine := decl.range.pos
-    let endLine := decl.range.endPos
-    let fileName? := env.getModuleFor? name
-    match fileName? with
+  match ← findDeclarationRanges? name with
+  | some { range := { pos, endPos, .. }, .. } =>
+    match env.getModuleFor? name with
     | some fileName =>
-      let fileContent ← IO.FS.readFile { toString := (← Name.toFile fileName)}
+      let fileContent ← IO.FS.readFile fileName.toRelativeFilePath
       let fileMap := fileContent.toFileMap
-      let startPos := fileMap.ofPosition startLine
-      let endPos := fileMap.ofPosition endLine
-      let text := fileMap.source.extract startPos endPos
-      pure text
-    | none =>
-        pure ""
-  | none => pure ""
+      return fileMap.source.extract (fileMap.ofPosition pos) (fileMap.ofPosition endPos)
+    | none => return ""
+  | none => return ""
+
+end Lean.Name
+
+namespace HepLean
 
 /-- Number of definitions. -/
-def noDefs : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (fun c => c.isDef)
-  let x ← x.filterM (fun c => (Name.hasPos c.name))
-  pure x.toList.length
+def noDefs : CoreM Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getUserConsts
+  x.flatFilterSizeM fun c => return c.isDef && (← c.name.hasPos)
 
 /-- Number of definitions. -/
-def noLemmas : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (fun c => ¬ c.isDef)
-  let x ← x.filterM (fun c => (Name.hasPos c.name))
-  pure x.toList.length
+def noLemmas : CoreM Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getUserConsts
+  x.flatFilterSizeM fun c => return !c.isDef && (← c.name.hasPos)
 
 /-- Number of definitions without a doc-string. -/
-def noDefsNoDocString : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (fun c => c.isDef)
-  let x ← x.filterM (fun c => (Name.hasPos c.name))
-  let x ← x.filterM (fun c => do
-    return Bool.not (← (Name.hasDocString c.name)))
-  pure x.toList.length
+def noDefsNoDocString : CoreM Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getUserConsts
+  x.flatFilterSizeM fun c =>
+    return c.isDef && (← c.name.hasPos) && !(← c.name.hasDocString)
 
 /-- Number of definitions without a doc-string. -/
-def noLemmasNoDocString : MetaM Nat := do
-  let imports ← allImports
-  let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (fun c => ¬ c.isDef)
-  let x ← x.filterM (fun c => (Name.hasPos c.name))
-  let x ← x.filterM (fun c => do
-    return Bool.not (← (Name.hasDocString c.name)))
-  pure x.toList.length
+def noLemmasNoDocString : CoreM Nat := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getUserConsts
+  x.flatFilterSizeM fun c =>
+    return !c.isDef && (← c.name.hasPos) && !(← c.name.hasDocString)
 
 /-- The number of lines in HepLean. -/
 def noLines : IO Nat := do
   let imports ← HepLean.allImports
   let x ← imports.mapM HepLean.Imports.getLines
-  let x := x.flatten
-  pure x.toList.length
+  return x.flatSize
 
 /-- The number of TODO items. -/
 def noTODOs : IO Nat := do
   let imports ← HepLean.allImports
   let x ← imports.mapM HepLean.Imports.getLines
-  let x := x.flatten
-  let x := x.filter fun l => l.startsWith "TODO "
-  pure x.size
+  x.flatFilterSizeM fun l => return l.startsWith "TODO "
 
 /-- The number of files with a TODO item. -/
 def noFilesWithTODOs : IO Nat := do
   let imports ← HepLean.allImports
   let x ← imports.mapM HepLean.Imports.getLines
-  let x := x.filter (fun M => M.any fun l => l.startsWith "TODO ")
-  pure x.size
+  let x := x.filter fun bs => bs.any fun l => l.startsWith "TODO "
+  return x.size
 
 end HepLean

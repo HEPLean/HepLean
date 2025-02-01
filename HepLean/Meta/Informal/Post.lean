@@ -10,69 +10,55 @@ import HepLean.Meta.Informal.Basic
 ## Informal definitions and lemmas
 
 -/
-open Lean Elab System
+open Lean
 
 namespace Informal
 
 /-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma` or a
   `InformalDefinition`. -/
-def isInformal (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalDefinition ∨ c.type.isAppOf ``InformalLemma then true else false
+def isInformal : ConstantInfo → Bool
+  | .defnInfo c => c.type.isConstOf ``InformalDefinition ∨ c.type.isConstOf ``InformalLemma
   | _ => false
 
 /-- Is true if and only if a `ConstantInfo` corresponds to an `InformalLemma`. -/
-def isInformalLemma (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalLemma then true else false
+def isInformalLemma : ConstantInfo → Bool
+  | .defnInfo c => c.type.isConstOf ``InformalLemma
   | _ => false
 
 /-- Is true if and only if a `ConstantInfo` corresponds to an `InformalDefinition`. -/
-def isInformalDef (c : ConstantInfo) : Bool :=
-  match c with
-  | ConstantInfo.defnInfo c =>
-    if c.type.isAppOf ``InformalDefinition then true else false
+def isInformalDef : ConstantInfo → Bool
+  | .defnInfo c => c.type.isConstOf ``InformalDefinition
   | _ => false
 
 /-- Takes a `ConstantInfo` corresponding to a `InformalLemma` and returns
   the corresponding `InformalLemma`. -/
-unsafe def constantInfoToInformalLemma (c : ConstantInfo) : MetaM InformalLemma := do
+unsafe def constantInfoToInformalLemma (c : ConstantInfo) : CoreM InformalLemma := do
   match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalLemma ``InformalLemma c.value
+  | .defnInfo c => evalConstCheck InformalLemma ``InformalLemma c.name
   | _ => panic! "Passed constantInfoToInformalLemma a `ConstantInfo` that is not a `InformalLemma`"
 
 /-- Takes a `ConstantInfo` corresponding to a `InformalDefinition` and returns
   the corresponding `InformalDefinition`. -/
-unsafe def constantInfoToInformalDefinition (c : ConstantInfo) : MetaM InformalDefinition := do
+unsafe def constantInfoToInformalDefinition (c : ConstantInfo) : CoreM InformalDefinition := do
   match c with
-  | ConstantInfo.defnInfo c =>
-      Lean.Meta.evalExpr' InformalDefinition ``InformalDefinition c.value
-  | _ => panic! "Passed constantInfoToInformalDefinition a
-    `ConstantInfo` that is not a `InformalDefinition`"
+  | .defnInfo c => evalConstCheck InformalDefinition ``InformalDefinition c.name
+  | _ => panic!
+    "Passed constantInfoToInformalDefinition a `ConstantInfo` that is not a `InformalDefinition`"
 
 end Informal
 
 namespace HepLean
 
 /-- The number of informal lemmas in HepLean. -/
-def noInformalLemmas : MetaM Nat := do
+def noInformalLemmas : CoreM Nat := do
   let imports ← allImports
   let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalLemma)
-  pure x.toList.length
+  x.flatFilterSizeM fun c => return Informal.isInformalLemma c
 
 /-- The number of informal definitions in HepLean. -/
-def noInformalDefs : MetaM Nat := do
+def noInformalDefs : CoreM Nat := do
   let imports ← allImports
   let x ← imports.mapM Imports.getUserConsts
-  let x := x.flatten
-  let x := x.filter (Informal.isInformal)
-  let x := x.filter (Informal.isInformalDef)
-  pure x.toList.length
+  x.flatFilterSizeM fun c => return Informal.isInformalDef c
 
 end HepLean
