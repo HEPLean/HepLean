@@ -55,6 +55,13 @@ lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.States) (h : ¬ timeOrderRe
   simp only [instCommGroup.eq_1, map_smul, map_add, smul_add]
   rw [smul_smul, smul_smul, mul_comm]
 
+lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.States) (h : ¬ timeOrderRel φ ψ) :
+    timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ := by
+  rw [timeContract_of_not_timeOrderRel _ _ h]
+  rw [timeContract_of_timeOrderRel _ _ _]
+  have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
+  simp_all
+
 lemma timeContract_mem_center (φ ψ : 𝓕.States) :
     timeContract φ ψ ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
   by_cases h : timeOrderRel φ ψ
@@ -93,6 +100,77 @@ lemma normalOrder_timeContract (φ ψ : 𝓕.States) :
       simp_all
     rw [timeContract_of_timeOrderRel _ _ h1]
     simp
+
+lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.States}
+    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
+    𝓣(a * timeContract φ ψ * b) = timeContract φ ψ * 𝓣(a * b):= by
+  rw [timeContract_of_timeOrderRel _ _ h1]
+  rw [ofFieldOp_eq_sum]
+  simp [Finset.mul_sum, Finset.sum_mul]
+  congr
+  funext x
+  match φ with
+  | .inAsymp φ =>
+    simp
+  | .position φ =>
+    simp only [anPart_position, instCommGroup.eq_1]
+    apply timeOrder_superCommute_eq_time_mid _ _
+    simp [crAnTimeOrderRel, h1]
+    simp [crAnTimeOrderRel, h2]
+  | .outAsymp φ =>
+    simp only [anPart_posAsymp, instCommGroup.eq_1]
+    apply timeOrder_superCommute_eq_time_mid _ _
+    simp [crAnTimeOrderRel, h1]
+    simp [crAnTimeOrderRel, h2]
+
+lemma timeOrder_timeContract_eq_time_left {φ ψ : 𝓕.States}
+    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
+    𝓣(timeContract φ ψ * b) = timeContract φ ψ * 𝓣(b):= by
+  trans 𝓣(1 * timeContract φ ψ * b)
+  simp
+  rw [timeOrder_timeContract_eq_time_mid h1 h2]
+  simp
+
+lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.States}
+    (h1 : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
+    𝓣(timeContract φ ψ) = 0 := by
+  by_cases h2 : timeOrderRel φ ψ
+  · simp_all
+    rw [timeContract_of_timeOrderRel _ _ h2]
+    simp
+    rw [ofFieldOp_eq_sum]
+    simp [Finset.mul_sum, Finset.sum_mul]
+    apply Finset.sum_eq_zero
+    intro x hx
+    match φ with
+    | .inAsymp φ =>
+      simp
+    | .position φ =>
+      simp only [anPart_position, instCommGroup.eq_1]
+      apply timeOrder_superCommute_neq_time
+      simp_all [crAnTimeOrderRel]
+    | .outAsymp φ =>
+      simp only [anPart_posAsymp, instCommGroup.eq_1]
+      apply timeOrder_superCommute_neq_time
+      simp_all [crAnTimeOrderRel]
+  · rw [timeContract_of_not_timeOrderRel_expand _ _ h2]
+    simp
+    right
+    rw [ofFieldOp_eq_sum]
+    simp [Finset.mul_sum, Finset.sum_mul]
+    apply Finset.sum_eq_zero
+    intro x hx
+    match ψ with
+    | .inAsymp ψ =>
+      simp
+    | .position ψ =>
+      simp only [anPart_position, instCommGroup.eq_1]
+      apply timeOrder_superCommute_neq_time
+      simp_all [crAnTimeOrderRel]
+    | .outAsymp ψ =>
+      simp only [anPart_posAsymp, instCommGroup.eq_1]
+      apply timeOrder_superCommute_neq_time
+      simp_all [crAnTimeOrderRel]
 
 end FieldOpAlgebra
 

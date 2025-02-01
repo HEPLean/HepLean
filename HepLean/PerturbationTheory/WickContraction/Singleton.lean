@@ -122,4 +122,16 @@ lemma subContraction_singleton_eq_singleton {φs : List 𝓕.States}
   simp [subContraction, singleton]
   exact finset_eq_fstFieldOfContract_sndFieldOfContract φsΛ a
 
+lemma singleton_timeContract {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :
+    (singleton hij).timeContract =
+    ⟨FieldOpAlgebra.timeContract φs[i] φs[j], timeContract_mem_center _ _⟩ := by
+  rw [timeContract, singleton_prod]
+  simp
+
+lemma singleton_staticContract {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :
+    (singleton hij).staticContract.1 =
+    [anPart φs[i], ofFieldOp φs[j]]ₛ := by
+  rw [staticContract, singleton_prod]
+  simp
+
 end WickContraction

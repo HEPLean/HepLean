@@ -49,6 +49,22 @@ lemma card_zero_iff_empty (c : WickContraction n) : c.1.card = 0 ↔ c = empty :
   rw [Subtype.eq_iff]
   simp [empty]
 
+lemma exists_pair_of_not_eq_empty (c : WickContraction n) (h : c ≠ empty) :
+    ∃ i j, {i, j} ∈ c.1 := by
+  by_contra hn
+  simp at hn
+  have hc : c.1 = ∅ := by
+    ext a
+    simp
+    by_contra hn'
+    have hc := c.2.1 a hn'
+    rw [@Finset.card_eq_two] at hc
+    obtain ⟨x, y, hx, rfl⟩ := hc
+    exact hn x y hn'
+  apply h
+  apply Subtype.eq
+  simp [empty, hc]
+
 /-- The equivalence between `WickContraction n` and `WickContraction m`
   derived from a propositional equality of `n` and `m`. -/
 def congr : {n m : ℕ} → (h : n = m) → WickContraction n ≃ WickContraction m

@@ -367,6 +367,12 @@ def uncontractedListEmd {φs : List 𝓕.States} {φsΛ : WickContraction φs.le
     ((finCongr (by simp [uncontractedListGet])).trans φsΛ.uncontractedIndexEquiv).toEmbedding.trans
     (Function.Embedding.subtype fun x => x ∈ φsΛ.uncontracted)
 
+lemma uncontractedListEmd_congr {φs : List 𝓕.States} {φsΛ φsΛ' : WickContraction φs.length}
+    (h : φsΛ = φsΛ') :
+    φsΛ.uncontractedListEmd = (finCongr (by simp [h])).toEmbedding.trans φsΛ'.uncontractedListEmd := by
+  subst h
+  rfl
+
 lemma uncontractedListEmd_toFun_eq_get (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
     (uncontractedListEmd (φsΛ := φsΛ)).toFun  =
     φsΛ.uncontractedList.get ∘ (finCongr (by simp [uncontractedListGet])):= by
@@ -405,6 +411,17 @@ lemma uncontractedListEmd_finset_disjoint_left {φs : List 𝓕.States} {φsΛ :
     uncontractedListEmd_mem_uncontracted x
   rw [mem_uncontracted_iff_not_contracted] at h1
   exact h1 b hb
+
+lemma uncontractedListEmd_finset_not_mem {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+    (a : Finset (Fin [φsΛ]ᵘᶜ.length)) :
+    a.map uncontractedListEmd ∉ φsΛ.1 := by
+  by_contra hn
+  have h1 := uncontractedListEmd_finset_disjoint_left a (a.map uncontractedListEmd) hn
+  simp at h1
+  have h2 := φsΛ.2.1 (a.map uncontractedListEmd) hn
+  rw [h1] at h2
+  simp at h2
+
 
 @[simp]
 lemma getElem_uncontractedListEmd {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}

@@ -83,4 +83,27 @@ lemma getDual?_empty_eq_none (i : Fin n) : empty.getDual? i = none := by
 lemma uncontracted_empty {n : ℕ} : (@empty n).uncontracted = Finset.univ := by
   simp [ uncontracted]
 
+lemma uncontracted_card_le (c : WickContraction n) : c.uncontracted.card ≤ n := by
+  simp [uncontracted]
+  apply le_of_le_of_eq (Finset.card_filter_le _ _)
+  simp
+
+lemma uncontracted_card_eq_iff (c : WickContraction n) :
+    c.uncontracted.card = n ↔ c = empty := by
+  apply Iff.intro
+  · intro h
+    have hc : c.uncontracted.card = (Finset.univ (α := Fin n)).card := by simpa using h
+    simp only [uncontracted] at hc
+    rw [Finset.card_filter_eq_iff] at hc
+    by_contra hn
+    have hc' := exists_pair_of_not_eq_empty c hn
+    obtain ⟨i, j, hij⟩ := hc'
+    have hci : c.getDual? i = some j := by
+      rw [@getDual?_eq_some_iff_mem]
+      exact hij
+    simp_all
+  · intro h
+    subst h
+    simp
+
 end WickContraction
