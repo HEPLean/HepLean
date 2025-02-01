@@ -3,17 +3,14 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
-import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
-import ImportGraph.RequiredModules
+import Lean.Elab.Command
 /-!
 
 ## Underlying structure for remarks
 -/
 
 namespace HepLean
-open Lean System Meta
+open Lean
 
 /-- The information from a `remark ...` command. To be used in a note file-/
 structure RemarkInfo where
@@ -41,7 +38,7 @@ syntax (name := remark_syntax) "remark " ident ":=" str : command
 
 /-- Elaborator for the `note ...` command -/
 @[command_elab remark_syntax]
-def elabRemark : Lean.Elab.Command.CommandElab := fun stx =>
+def elabRemark : Elab.Command.CommandElab := fun stx =>
   match stx with
   | `(remark $n := $s) => do
     let str : String := s.getString

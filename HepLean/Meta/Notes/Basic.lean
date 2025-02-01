@@ -3,10 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Batteries.Lean.HashSet
 import Mathlib.Lean.Expr.Basic
-import Mathlib.Lean.CoreM
-import ImportGraph.RequiredModules
 /-!
 
 ## Underlying structure for notes
@@ -24,7 +21,7 @@ Other results relating to notes are in other files.
 -/
 
 namespace HepLean
-open Lean System Meta
+open Lean
 
 /-- The information from a `note ...` command. To be used in a note file-/
 structure NoteInfo where

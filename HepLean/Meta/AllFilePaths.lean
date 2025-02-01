@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Lean
 import HepLean.Meta.TODO.Basic
 /-!
 
@@ -11,7 +10,7 @@ import HepLean.Meta.TODO.Basic
 
 -/
 
-open Lean Elab System
+open System
 
 TODO "Make this definition more functional in style. In other words, remove the for loop."
 

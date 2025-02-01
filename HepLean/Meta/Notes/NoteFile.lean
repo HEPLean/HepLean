@@ -13,7 +13,7 @@ A note file is a structure which contains the information to go into a note.
 -/
 
 namespace HepLean
-open Lean System Meta
+open Lean
 
 /-- A note consists of a title and a list of Lean files which make up the note. -/
 structure NoteFile where

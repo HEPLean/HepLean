@@ -895,10 +895,11 @@ lemma forgetLiftAppCon_naturality_eqToHom_apply (c c1 : C) (h : c = c1)
   rw [forgetLiftAppCon_naturality_eqToHom]
   rfl
 
+/-- The natural isomorphism between `lift (C := C) ⋙ forget` and
+`Functor.id (Discrete C ⥤ Rep k G)`.
+-/
 informal_definition forgetLift where
-  math :≈ "The natural isomorphism between `lift (C := C) ⋙ forget` and
-    `Functor.id (Discrete C ⥤ Rep k G)`."
-  deps :≈ [``forget, ``lift]
+  deps := [``forget, ``lift]
 
 end
 end OverColor
