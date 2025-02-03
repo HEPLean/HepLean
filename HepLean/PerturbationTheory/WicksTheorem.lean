@@ -247,14 +247,14 @@ lemma wick_term_some_eq_wick_term_optionEraseZ (φ : 𝓕.States) (φs : List �
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
         simp only [zero_mul, smul_zero]
-        rw [superCommute_anPart_ofState_diff_grade_zero]
+        rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
         simp only [zero_mul, smul_zero]
         exact hg
         exact hg
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
         simp only [zero_mul, smul_zero]
-        rw [superCommute_anPart_ofState_diff_grade_zero]
+        rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
         simp only [zero_mul, smul_zero]
         exact hg
         exact fun a => hg (id (Eq.symm a))
@@ -272,7 +272,7 @@ is equal to the product of
   over all `k` in `Option φsΛ.uncontracted`.
 
 The proof of this result primarily depends on
-- `crAnF_ofState_mul_normalOrderF_ofStatesList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
+- `crAnF_ofFieldOpF_mul_normalOrderF_ofFieldOpFsList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
 - `wick_term_none_eq_wick_term_cons`
 - `wick_term_some_eq_wick_term_optionEraseZ`
 -/

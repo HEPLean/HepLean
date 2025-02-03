@@ -154,7 +154,7 @@ lemma superCommute_ofCrAnFieldOp_ofFieldOp_diff_stat_zero (φ : 𝓕.CrAnStates)
   apply superCommute_diff_statistic
   simpa [crAnStatistics] using h
 
-lemma superCommute_anPart_ofState_diff_grade_zero (φ ψ : 𝓕.States)
+lemma superCommute_anPart_ofFieldOpF_diff_grade_zero (φ ψ : 𝓕.States)
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) : [anPart φ, ofFieldOp ψ]ₛ = 0 := by
   match φ with
   | States.inAsymp _ =>
@@ -231,28 +231,28 @@ lemma superCommute_ofCrAnFieldOpList_ofFieldOpList (φcas : List 𝓕.CrAnStates
     [ofCrAnFieldOpList φcas, ofFieldOpList φs]ₛ = ofCrAnFieldOpList φcas * ofFieldOpList φs -
     𝓢(𝓕 |>ₛ φcas, 𝓕 |>ₛ φs) • ofFieldOpList φs * ofCrAnFieldOpList φcas := by
   rw [ofCrAnFieldOpList, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofCrAnList_ofStatesList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofCrAnList_ofFieldOpFsList]
   rfl
 
 lemma superCommute_ofFieldOpList_ofFieldOpList (φs φs' : List 𝓕.States) :
     [ofFieldOpList φs, ofFieldOpList φs']ₛ = ofFieldOpList φs * ofFieldOpList φs' -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpList φs' * ofFieldOpList φs := by
   rw [ofFieldOpList, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofStatesList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofFieldOpFsList]
   rfl
 
 lemma superCommute_ofFieldOp_ofFieldOpList (φ : 𝓕.States) (φs : List 𝓕.States) :
     [ofFieldOp φ, ofFieldOpList φs]ₛ = ofFieldOp φ * ofFieldOpList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofFieldOpList φs * ofFieldOp φ := by
   rw [ofFieldOp, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofState_ofStatesList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpF_ofFieldOpFsList]
   rfl
 
 lemma superCommute_ofFieldOpList_ofFieldOp (φs : List 𝓕.States) (φ : 𝓕.States) :
     [ofFieldOpList φs, ofFieldOp φ]ₛ = ofFieldOpList φs * ofFieldOp φ -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofFieldOp φ * ofFieldOpList φs := by
   rw [ofFieldOpList, ofFieldOp]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofState]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofFieldOpF]
   rfl
 
 lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
@@ -343,14 +343,14 @@ lemma superCommute_crPart_ofFieldOp (φ φ' : 𝓕.States) :
     [crPart φ, ofFieldOp φ']ₛ = crPart φ * ofFieldOp φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofFieldOp φ' * crPart φ := by
   rw [crPart, ofFieldOp]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_crPartF_ofState]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_crPartF_ofFieldOpF]
   rfl
 
 lemma superCommute_anPart_ofFieldOp (φ φ' : 𝓕.States) :
     [anPart φ, ofFieldOp φ']ₛ = anPart φ * ofFieldOp φ' -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofFieldOp φ' * anPart φ := by
   rw [anPart, ofFieldOp]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_anPartF_ofState]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_anPartF_ofFieldOpF]
   rfl
 
 /-!

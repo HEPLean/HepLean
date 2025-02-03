@@ -429,9 +429,9 @@ lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : FieldOpFreeAlgebra �
 -/
 
 /-- An element of `FieldOpAlgebra` from a `States`. -/
-def ofFieldOp (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofState φ)
+def ofFieldOp (φ : 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofFieldOpF φ)
 
-lemma ofFieldOp_eq_ι_ofState (φ : 𝓕.States) : ofFieldOp φ = ι (ofState φ) := rfl
+lemma ofFieldOp_eq_ι_ofFieldOpF (φ : 𝓕.States) : ofFieldOp φ = ι (ofFieldOpF φ) := rfl
 
 /-- An element of `FieldOpAlgebra` from a list of `States`. -/
 def ofFieldOpList (φs : List 𝓕.States) : 𝓕.FieldOpAlgebra := ι (ofFieldOpListF φs)
@@ -464,7 +464,7 @@ lemma ofCrAnFieldOp_eq_ι_ofCrAnState (φ : 𝓕.CrAnStates) :
 
 lemma ofFieldOp_eq_sum (φ : 𝓕.States) :
     ofFieldOp φ = (∑ i : 𝓕.statesToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩) := by
-  rw [ofFieldOp, ofState]
+  rw [ofFieldOp, ofFieldOpF]
   simp only [map_sum]
   rfl
 
@@ -534,7 +534,7 @@ lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
 
 lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.States) :
     ofFieldOp φ = crPart φ + anPart φ := by
-  rw [ofFieldOp, crPart, anPart, ofState_eq_crPartF_add_anPartF]
+  rw [ofFieldOp, crPart, anPart, ofFieldOpF_eq_crPartF_add_anPartF]
   simp only [map_add]
 
 end FieldOpAlgebra

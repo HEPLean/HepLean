@@ -103,7 +103,7 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
             right
             simp only [uncontractedListGet, List.getElem_map,
               uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem]
-            rw [superCommute_anPart_ofState_diff_grade_zero]
+            rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
             exact hn
           rw [h1]
           simp

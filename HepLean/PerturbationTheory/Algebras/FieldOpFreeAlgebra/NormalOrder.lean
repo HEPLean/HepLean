@@ -367,14 +367,14 @@ lemma normalOrderF_anPartF_mul_crPartF (φ φ' : 𝓕.States) :
   rw [← mul_assoc, normalOrderF_swap_anPartF_crPartF]
   simp
 
-lemma normalOrderF_ofState_mul_ofState (φ φ' : 𝓕.States) :
-    𝓝ᶠ(ofState φ * ofState φ') =
+lemma normalOrderF_ofFieldOpF_mul_ofFieldOpF (φ φ' : 𝓕.States) :
+    𝓝ᶠ(ofFieldOpF φ * ofFieldOpF φ') =
     crPartF φ * crPartF φ' +
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     (crPartF φ' * anPartF φ) +
     crPartF φ * anPartF φ' +
     anPartF φ * anPartF φ' := by
-  rw [ofState_eq_crPartF_add_anPartF, ofState_eq_crPartF_add_anPartF, mul_add, add_mul, add_mul]
+  rw [ofFieldOpF_eq_crPartF_add_anPartF, ofFieldOpF_eq_crPartF_add_anPartF, mul_add, add_mul, add_mul]
   simp only [map_add, normalOrderF_crPartF_mul_crPartF, normalOrderF_anPartF_mul_crPartF,
     instCommGroup.eq_1, normalOrderF_crPartF_mul_anPartF, normalOrderF_anPartF_mul_anPartF]
   abel

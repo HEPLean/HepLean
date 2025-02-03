@@ -21,7 +21,7 @@ The main structures defined in this module are:
 * `FieldOpFreeAlgebra` - The creation and annihilation algebra
 * `ofCrAnState` - Maps a creation/annihilation state to the algebra
 * `ofCrAnList` - Maps a list of creation/annihilation states to the algebra
-* `ofState` - Maps a state to a sum of creation and annihilation operators
+* `ofFieldOpF` - Maps a state to a sum of creation and annihilation operators
 * `crPartF` - The creation part of a state in the algebra
 * `anPartF` - The annihilation part of a state in the algebra
 * `superCommuteF` - The super commutator on the algebra
@@ -66,13 +66,13 @@ lemma ofCrAnList_singleton (φ : 𝓕.CrAnStates) :
 
 /-- Maps a state to the sum of creation and annihilation operators in
   creation and annihilation free-algebra. -/
-def ofState (φ : 𝓕.States) : FieldOpFreeAlgebra 𝓕 :=
+def ofFieldOpF (φ : 𝓕.States) : FieldOpFreeAlgebra 𝓕 :=
   ∑ (i : 𝓕.statesToCrAnType φ), ofCrAnState ⟨φ, i⟩
 
 /-- Maps a list of states to the creation and annihilation free-algebra by taking
   the product of their sums of creation and annihlation operators.
   Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
-def ofFieldOpListF (φs : List 𝓕.States) : FieldOpFreeAlgebra 𝓕 := (List.map ofState φs).prod
+def ofFieldOpListF (φs : List 𝓕.States) : FieldOpFreeAlgebra 𝓕 := (List.map ofFieldOpF φs).prod
 
 /-- Coercion from `List 𝓕.States` to `FieldOpFreeAlgebra 𝓕` through `ofFieldOpListF`. -/
 instance : Coe (List 𝓕.States) (FieldOpFreeAlgebra 𝓕) := ⟨ofFieldOpListF⟩
@@ -81,10 +81,10 @@ instance : Coe (List 𝓕.States) (FieldOpFreeAlgebra 𝓕) := ⟨ofFieldOpListF
 lemma ofFieldOpListF_nil : ofFieldOpListF ([] : List 𝓕.States) = 1 := rfl
 
 lemma ofFieldOpListF_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
-    ofFieldOpListF (φ :: φs) = ofState φ * ofFieldOpListF φs := rfl
+    ofFieldOpListF (φ :: φs) = ofFieldOpF φ * ofFieldOpListF φs := rfl
 
 lemma ofFieldOpListF_singleton (φ : 𝓕.States) :
-    ofFieldOpListF [φ] = ofState φ := by simp [ofFieldOpListF]
+    ofFieldOpListF [φ] = ofFieldOpF φ := by simp [ofFieldOpListF]
 
 lemma ofFieldOpListF_append (φs φs' : List 𝓕.States) :
     ofFieldOpListF (φs ++ φs') = ofFieldOpListF φs * ofFieldOpListF φs' := by
@@ -160,9 +160,9 @@ lemma anPartF_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
     anPartF (States.outAsymp φ) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
   simp [anPartF]
 
-lemma ofState_eq_crPartF_add_anPartF (φ : 𝓕.States) :
-    ofState φ = crPartF φ + anPartF φ := by
-  rw [ofState]
+lemma ofFieldOpF_eq_crPartF_add_anPartF (φ : 𝓕.States) :
+    ofFieldOpF φ = crPartF φ + anPartF φ := by
+  rw [ofFieldOpF]
   cases φ with
   | inAsymp φ => simp [statesToCrAnType]
   | position φ => simp [statesToCrAnType, CreateAnnihilate.sum_eq]

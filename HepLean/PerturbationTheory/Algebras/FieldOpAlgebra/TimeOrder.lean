@@ -396,19 +396,19 @@ lemma timeOrder_eq_ι_timeOrderF (a : 𝓕.FieldOpFreeAlgebra) :
 lemma timeOrder_ofFieldOp_ofFieldOp_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = ofFieldOp φ * ofFieldOp ψ := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
-    timeOrderF_ofState_ofState_ordered h]
+    timeOrderF_ofFieldOpF_ofFieldOpF_ordered h]
 
 lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofFieldOp ψ * ofFieldOp φ := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
-    timeOrderF_ofState_ofState_not_ordered h]
+    timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered h]
   simp
 
 lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder {φ ψ : 𝓕.States}
     (h : ¬ timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓣(ofFieldOp ψ * ofFieldOp φ) := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
-    timeOrderF_ofState_ofState_not_ordered_eq_timeOrderF h]
+    timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered_eq_timeOrderF h]
   simp only [instCommGroup.eq_1, map_smul]
   rfl
 

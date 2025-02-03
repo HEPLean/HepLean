@@ -78,11 +78,11 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.States) (h : (𝓕 |>ₛ φ)
     timeContract φ ψ = 0 := by
   by_cases h1 : timeOrderRel φ ψ
   · rw [timeContract_of_timeOrderRel _ _ h1]
-    rw [superCommute_anPart_ofState_diff_grade_zero]
+    rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
     exact h
   · rw [timeContract_of_not_timeOrderRel _ _ h1]
     rw [timeContract_of_timeOrderRel _ _ _]
-    rw [superCommute_anPart_ofState_diff_grade_zero]
+    rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
     simp only [instCommGroup.eq_1, smul_zero]
     exact h.symm
     have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
