@@ -163,8 +163,8 @@ import HepLean.PerturbationTheory.WickContraction.Sign
 import HepLean.PerturbationTheory.WickContraction.Singleton
 import HepLean.PerturbationTheory.WickContraction.StaticContract
 import HepLean.PerturbationTheory.WickContraction.SubContraction
+import HepLean.PerturbationTheory.WickContraction.TimeCond
 import HepLean.PerturbationTheory.WickContraction.TimeContract
-import HepLean.PerturbationTheory.WickContraction.TimeSet
 import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.WickContraction.UncontractedList
 import HepLean.PerturbationTheory.WicksTheorem
