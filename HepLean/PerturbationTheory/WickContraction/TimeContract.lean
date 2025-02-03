@@ -21,7 +21,7 @@ open FieldOpAlgebra
 /-- Given a Wick contraction `φsΛ` associated with a list `φs`, the
   product of all time-contractions of pairs of contracted elements in `φs`,
   as a member of the center of `𝓞.A`. -/
-noncomputable def timeContract {φs : List 𝓕.States}
+noncomputable def timeContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
   ∏ (a : φsΛ.1), ⟨FieldOpAlgebra.timeContract
@@ -35,7 +35,7 @@ This result follows from the fact that `timeContract` only depends on contracted
 and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
 @[simp]
 lemma timeContract_insertAndContract_none
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract := by
   rw [timeContract, insertAndContract_none_prod_contractions]
@@ -52,7 +52,7 @@ This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contr
 corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
 or after `φⱼ`. -/
 lemma timeConract_insertAndContract_some
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).timeContract =
     (if i < i.succAbove j then
@@ -71,7 +71,7 @@ lemma timeConract_insertAndContract_some
     simp
 
 @[simp]
-lemma timeContract_empty (φs : List 𝓕.States) :
+lemma timeContract_empty (φs : List 𝓕.FieldOp) :
     (@empty φs.length).timeContract = 1 := by
   rw [timeContract, empty]
   simp
@@ -79,16 +79,16 @@ lemma timeContract_empty (φs : List 𝓕.States) :
 open FieldStatistic
 
 lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
     (φsΛ ↩Λ φ i (some k)).timeContract =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
-    • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedStatesEquiv φs φsΛ) (some k)) *
+    • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
       φsΛ.timeContract) := by
   rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
@@ -112,16 +112,16 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     · exact ht
 
 lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
     (φsΛ ↩Λ φ i (some k)).timeContract =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x ≤ k))⟩)
     • (contractStateAtIndex φ [φsΛ]ᵘᶜ
-      ((uncontractedStatesEquiv φs φsΛ) (some k)) * φsΛ.timeContract) := by
+      ((uncontractedFieldOpEquiv φs φsΛ) (some k)) * φsΛ.timeContract) := by
   rw [timeConract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
@@ -163,7 +163,7 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
   simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
   exact ht
 
-lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.States)
+lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (h : ¬ GradingCompliant φs φsΛ) :
     φsΛ.timeContract = 0 := by
   rw [timeContract]

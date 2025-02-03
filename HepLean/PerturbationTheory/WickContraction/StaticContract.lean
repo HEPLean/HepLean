@@ -21,7 +21,7 @@ open FieldOpAlgebra
 /-- Given a Wick contraction `φsΛ` associated with a list `φs`, the
   product of all time-contractions of pairs of contracted elements in `φs`,
   as a member of the center of `𝓞.A`. -/
-noncomputable def staticContract {φs : List 𝓕.States}
+noncomputable def staticContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
   ∏ (a : φsΛ.1), ⟨[anPart (φs.get (φsΛ.fstFieldOfContract a)),
@@ -29,7 +29,7 @@ noncomputable def staticContract {φs : List 𝓕.States}
       superCommute_anPart_ofFieldOp_mem_center _ _⟩
 
 @[simp]
-lemma staticContract_insertAndContract_none (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma staticContract_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract := by
   rw [staticContract, insertAndContract_none_prod_contractions]
@@ -46,7 +46,7 @@ This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contr
 corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
 or after `φⱼ`. -/
 lemma staticContract_insertAndContract_some
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).staticContract =
     (if i < i.succAbove j then
@@ -67,16 +67,16 @@ lemma staticContract_insertAndContract_some
 open FieldStatistic
 
 lemma staticConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
-    (φ : 𝓕.States) (φs : List 𝓕.States)
+    (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hik : i < i.succAbove k) :
     (φsΛ ↩Λ φ i (some k)).staticContract =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
-    • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedStatesEquiv φs φsΛ) (some k)) *
+    • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
       φsΛ.staticContract) := by
   rw [staticContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
-    contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+    contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
@@ -97,7 +97,7 @@ lemma staticConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     rw [h1]
     simp only [exchangeSign_mul_self]
 
-lemma staticContract_of_not_gradingCompliant (φs : List 𝓕.States)
+lemma staticContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (h : ¬ GradingCompliant φs φsΛ) :
     φsΛ.staticContract = 0 := by
   rw [staticContract]

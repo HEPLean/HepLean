@@ -16,7 +16,7 @@ In this module is the definition of a field specification.
 A field specification is a structure consisting of a type of fields and a
 the field statistics of each field.
 
-From each field we can create three different types of `States`.
+From each field we can create three different types of `FieldOp`.
 - Negative asymptotic states.
 - Position states.
 - Positive asymptotic states.
@@ -52,27 +52,27 @@ def IncomingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 def OutgoingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
 
 /-- A position state is a field and a space-time position. -/
-def PositionStates : Type := 𝓕.Fields × SpaceTime
+def PositionFieldOp : Type := 𝓕.Fields × SpaceTime
 
-/-- The type States is the inductive type combining the asymptotic states and position states. -/
-inductive States (𝓕 : FieldSpecification) where
-  | inAsymp : 𝓕.IncomingAsymptotic → 𝓕.States
-  | position : 𝓕.PositionStates → 𝓕.States
-  | outAsymp : 𝓕.OutgoingAsymptotic → 𝓕.States
+/-- The type FieldOp is the inductive type combining the asymptotic states and position states. -/
+inductive FieldOp (𝓕 : FieldSpecification) where
+  | inAsymp : 𝓕.IncomingAsymptotic → 𝓕.FieldOp
+  | position : 𝓕.PositionFieldOp → 𝓕.FieldOp
+  | outAsymp : 𝓕.OutgoingAsymptotic → 𝓕.FieldOp
 
 /-- Taking a state to its underlying field. -/
-def statesToField : 𝓕.States → 𝓕.Fields
-  | States.inAsymp φ => φ.1
-  | States.position φ => φ.1
-  | States.outAsymp φ => φ.1
+def fieldOpToField : 𝓕.FieldOp → 𝓕.Fields
+  | FieldOp.inAsymp φ => φ.1
+  | FieldOp.position φ => φ.1
+  | FieldOp.outAsymp φ => φ.1
 
-/-- The bool on `States` which is true only for position states. -/
-def statesIsPosition : 𝓕.States → Bool
-  | States.position _ => true
+/-- The bool on `FieldOp` which is true only for position states. -/
+def statesIsPosition : 𝓕.FieldOp → Bool
+  | FieldOp.position _ => true
   | _ => false
 
 /-- The statistics associated to a state. -/
-def statesStatistic : 𝓕.States → FieldStatistic := 𝓕.statistics ∘ 𝓕.statesToField
+def statesStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistics ∘ 𝓕.fieldOpToField
 
 /-- The field statistics associated with a state. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ

@@ -46,7 +46,7 @@ lemma of_singleton_eq {i j : Fin n} (hij : i < j) (a : (singleton hij).1) :
   rw [@mem_singleton_iff] at ha2
   exact Subtype.coe_eq_of_eq_mk ha2
 
-lemma singleton_prod {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j)
+lemma singleton_prod {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j)
     (f : (singleton hij).1 → M) [CommMonoid M] :
     ∏ a, f a = f ⟨{i,j}, mem_singleton hij⟩:= by
   simp [singleton, of_singleton_eq]
@@ -67,7 +67,7 @@ lemma singleton_sndFieldOfContract {i j : Fin n} (hij : i < j) :
   · simp
   · exact hij
 
-lemma singleton_sign_expand {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :
+lemma singleton_sign_expand {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j) :
     (singleton hij).sign = 𝓢(𝓕 |>ₛ φs[j], 𝓕 |>ₛ ⟨φs.get, (singleton hij).signFinset i j⟩) := by
   rw [sign, singleton_prod]
   simp
@@ -79,7 +79,7 @@ lemma singleton_getDual?_eq_none_iff_neq {i j : Fin n} (hij : i < j) (a : Fin n)
   simp only [singleton, Finset.mem_singleton, forall_eq, Finset.mem_insert, not_or, ne_eq]
   omega
 
-lemma singleton_uncontractedEmd_neq_left {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j)
+lemma singleton_uncontractedEmd_neq_left {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j)
     (a : Fin [singleton hij]ᵘᶜ.length) :
     (singleton hij).uncontractedListEmd a ≠ i := by
   by_contra hn
@@ -90,7 +90,7 @@ lemma singleton_uncontractedEmd_neq_left {φs : List 𝓕.States} {i j : Fin φs
     simp [singleton]
   simp_all
 
-lemma singleton_uncontractedEmd_neq_right {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j)
+lemma singleton_uncontractedEmd_neq_right {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j)
     (a : Fin [singleton hij]ᵘᶜ.length) :
     (singleton hij).uncontractedListEmd a ≠ j := by
   by_contra hn
@@ -111,7 +111,7 @@ lemma mem_signFinset {i j : Fin n} (hij : i < j) (a : Fin n) :
   apply Or.inl
   omega
 
-lemma subContraction_singleton_eq_singleton {φs : List 𝓕.States}
+lemma subContraction_singleton_eq_singleton {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (a : φsΛ.1) : φsΛ.subContraction {a.1} (by simp) =
     singleton (φsΛ.fstFieldOfContract_lt_sndFieldOfContract a) := by
@@ -119,13 +119,13 @@ lemma subContraction_singleton_eq_singleton {φs : List 𝓕.States}
   simp only [subContraction, singleton, Finset.singleton_inj]
   exact finset_eq_fstFieldOfContract_sndFieldOfContract φsΛ a
 
-lemma singleton_timeContract {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :
+lemma singleton_timeContract {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j) :
     (singleton hij).timeContract =
     ⟨FieldOpAlgebra.timeContract φs[i] φs[j], timeContract_mem_center _ _⟩ := by
   rw [timeContract, singleton_prod]
   simp
 
-lemma singleton_staticContract {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :
+lemma singleton_staticContract {φs : List 𝓕.FieldOp} {i j : Fin φs.length} (hij : i < j) :
     (singleton hij).staticContract.1 =
     [anPart φs[i], ofFieldOp φs[j]]ₛ := by
   rw [staticContract, singleton_prod]

@@ -24,12 +24,12 @@ noncomputable section
 def statisticSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.FieldOpFreeAlgebra :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnListF φs ∧ (𝓕 |>ₛ φs) = f}
 
-lemma ofCrAnListF_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
+lemma ofCrAnListF_mem_statisticSubmodule_of (φs : List 𝓕.CrAnFieldOp) (f : FieldStatistic)
     (h : (𝓕 |>ₛ φs) = f) :
     ofCrAnListF φs ∈ statisticSubmodule f := by
   refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
-lemma ofCrAnListF_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
+lemma ofCrAnListF_bosonic_or_fermionic (φs : List 𝓕.CrAnFieldOp) :
     ofCrAnListF φs ∈ statisticSubmodule bosonic ∨ ofCrAnListF φs ∈ statisticSubmodule fermionic := by
   by_cases h : (𝓕 |>ₛ φs) = bosonic
   · left
@@ -37,7 +37,7 @@ lemma ofCrAnListF_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
   · right
     exact ofCrAnListF_mem_statisticSubmodule_of φs fermionic (by simpa using h)
 
-lemma ofCrAnOpF_bosonic_or_fermionic (φ : 𝓕.CrAnStates) :
+lemma ofCrAnOpF_bosonic_or_fermionic (φ : 𝓕.CrAnFieldOp) :
     ofCrAnOpF φ ∈ statisticSubmodule bosonic ∨ ofCrAnOpF φ ∈ statisticSubmodule fermionic := by
   rw [← ofCrAnListF_singleton]
   exact ofCrAnListF_bosonic_or_fermionic [φ]
@@ -50,7 +50,7 @@ def bosonicProj : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 :
   else
     0
 
-lemma bosonicProj_ofCrAnListF (φs : List 𝓕.CrAnStates) :
+lemma bosonicProj_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
     bosonicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = bosonic then
       ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
   conv_lhs =>
@@ -110,13 +110,13 @@ def fermionicProj : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] statisticSubmodule (𝓕
   else
     0
 
-lemma fermionicProj_ofCrAnListF (φs : List 𝓕.CrAnStates) :
+lemma fermionicProj_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
     fermionicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = fermionic then
       ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
   conv_lhs =>
     rw [← ofListBasis_eq_ofList, fermionicProj, Basis.constr_basis]
 
-lemma fermionicProj_ofCrAnListF_if_bosonic (φs : List 𝓕.CrAnStates) :
+lemma fermionicProj_ofCrAnListF_if_bosonic (φs : List 𝓕.CrAnFieldOp) :
     fermionicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = bosonic then
       0 else ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl,
         by simpa using h⟩⟩⟩ := by

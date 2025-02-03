@@ -35,7 +35,7 @@ over all Wick contraction `φsΛ`.
 This is compared to the ordinary Wicks theorem in which `staticContract` is replaced with
 `timeContract`.
 -/
-theorem static_wick_theorem : (φs : List 𝓕.States) →
+theorem static_wick_theorem : (φs : List 𝓕.FieldOp) →
     ofFieldOpList φs = ∑ (φsΛ : WickContraction φs.length),
     φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
   | [] => static_wick_theorem_nil
@@ -54,11 +54,11 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
       simp [mul_assoc]
     rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum]
     rw [Finset.mul_sum]
-    rw [uncontractedStatesEquiv_list_sum]
+    rw [uncontractedFieldOpEquiv_list_sum]
     refine Finset.sum_congr rfl (fun n _ => ?_)
     match n with
     | none =>
-      simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+      simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
         Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
         Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insertAndContract_none,
         insertAndContract_uncontractedList_none_zero]
@@ -96,8 +96,8 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
           exact h0
         · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
           have h1 : contractStateAtIndex φ [c]ᵘᶜ
-              ((uncontractedStatesEquiv φs c) (some n)) = 0 := by
-            simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+              ((uncontractedFieldOpEquiv φs c) (some n)) = 0 := by
+            simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
               Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
               instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
             right

@@ -32,16 +32,16 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   the sign associated with `φsΛ` is sign corresponding to the number
   of fermionic-fermionic exchanges one must do to put elements in contracted pairs
   of `φsΛ` next to each other. -/
-def sign (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) : ℂ :=
+def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
   ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],
     𝓕 |>ₛ ⟨φs.get, φsΛ.signFinset (φsΛ.fstFieldOfContract a) (φsΛ.sndFieldOfContract a)⟩)
 
-lemma sign_empty (φs : List 𝓕.States) :
+lemma sign_empty (φs : List 𝓕.FieldOp) :
     sign φs empty = 1 := by
   rw [sign]
   simp [empty]
 
-lemma sign_congr {φs φs' : List 𝓕.States} (h : φs = φs') (φsΛ : WickContraction φs.length) :
+lemma sign_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') (φsΛ : WickContraction φs.length) :
     sign φs' (congr (by simp [h]) φsΛ) = sign φs φsΛ := by
   subst h
   rfl

@@ -20,7 +20,7 @@ open FieldOpAlgebra
 
 open FieldStatistic
 
-lemma stat_signFinset_right {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma stat_signFinset_right {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (i j : Fin [φsΛ]ᵘᶜ.length) :
     (𝓕 |>ₛ ⟨[φsΛ]ᵘᶜ.get, φsucΛ.signFinset i j⟩) =
     (𝓕 |>ₛ ⟨φs.get, (φsucΛ.signFinset i j).map uncontractedListEmd⟩) := by
@@ -32,7 +32,7 @@ lemma stat_signFinset_right {φs : List 𝓕.States} (φsΛ : WickContraction φ
   intro i j h
   exact uncontractedListEmd_strictMono h
 
-lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.States}
+lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length)
     (i j : Fin [φsΛ]ᵘᶜ.length) : (φsucΛ.signFinset i j).map uncontractedListEmd =
     ((join φsΛ φsucΛ).signFinset (uncontractedListEmd i) (uncontractedListEmd j)).filter
@@ -90,7 +90,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.States
           exact hl
           exact fun _ _ h => uncontractedListEmd_strictMono h
 
-lemma sign_right_eq_prod_mul_prod {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma sign_right_eq_prod_mul_prod {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
     φsucΛ.sign = (∏ a, 𝓢(𝓕|>ₛ [φsΛ]ᵘᶜ[φsucΛ.sndFieldOfContract a], 𝓕|>ₛ ⟨φs.get,
     ((join φsΛ φsucΛ).signFinset (uncontractedListEmd (φsucΛ.fstFieldOfContract a))
@@ -107,7 +107,7 @@ lemma sign_right_eq_prod_mul_prod {φs : List 𝓕.States} (φsΛ : WickContract
   rw [stat_signFinset_right, signFinset_right_map_uncontractedListEmd_eq_filter]
   rw [ofFinset_filter]
 
-lemma join_singleton_signFinset_eq_filter {φs : List 𝓕.States}
+lemma join_singleton_signFinset_eq_filter {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     (join (singleton h) φsucΛ).signFinset i j =
@@ -149,7 +149,7 @@ lemma join_singleton_signFinset_eq_filter {φs : List 𝓕.States}
     · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h2'
       simp [h2']
 
-lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.States}
+lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     (𝓕 |>ₛ ⟨φs.get, (singleton h).signFinset i j⟩)
@@ -166,7 +166,7 @@ lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.States}
 
 /-- The difference in sign between `φsucΛ.sign` and the direct contribution of `φsucΛ` to
   `(join (singleton h) φsucΛ)`. -/
-def joinSignRightExtra {φs : List 𝓕.States}
+def joinSignRightExtra {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) : ℂ :=
     ∏ a, 𝓢(𝓕|>ₛ [singleton h]ᵘᶜ[φsucΛ.sndFieldOfContract a], 𝓕|>ₛ ⟨φs.get,
@@ -176,7 +176,7 @@ def joinSignRightExtra {φs : List 𝓕.States}
 
 /-- The difference in sign between `(singleton h).sign` and the direct contribution of
   `(singleton h)` to `(join (singleton h) φsucΛ)`. -/
-def joinSignLeftExtra {φs : List 𝓕.States}
+def joinSignLeftExtra {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) : ℂ :=
     𝓢(𝓕 |>ₛ φs[j], (𝓕 |>ₛ ⟨φs.get, ((singleton h).signFinset i j).filter (fun c =>
@@ -184,7 +184,7 @@ def joinSignLeftExtra {φs : List 𝓕.States}
       ((h1 : ((join (singleton h) φsucΛ).getDual? c).isSome) →
       (((join (singleton h) φsucΛ).getDual? c).get h1) < i)))⟩))
 
-lemma join_singleton_sign_left {φs : List 𝓕.States}
+lemma join_singleton_sign_left {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     (singleton h).sign = 𝓢(𝓕 |>ₛ φs[j],
@@ -194,7 +194,7 @@ lemma join_singleton_sign_left {φs : List 𝓕.States}
   rw [map_mul]
   rfl
 
-lemma join_singleton_sign_right {φs : List 𝓕.States}
+lemma join_singleton_sign_right {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     φsucΛ.sign =
@@ -206,7 +206,7 @@ lemma join_singleton_sign_right {φs : List 𝓕.States}
   rfl
 
 
-lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.States}
+lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j)
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     joinSignRightExtra h φsucΛ = ∏ a,
@@ -298,7 +298,7 @@ lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.States}
                 Option.get_some, forall_const, false_or, true_and]
               omega
 
-lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.States}
+lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j) (hs : (𝓕 |>ₛ φs[i]) = (𝓕 |>ₛ φs[j]))
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     joinSignLeftExtra h φsucΛ = joinSignRightExtra h φsucΛ := by
@@ -380,7 +380,7 @@ lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.States}
           simp only [Finset.disjoint_singleton_right, Finset.mem_singleton]
           exact Fin.ne_of_lt h
 
-lemma join_sign_singleton {φs : List 𝓕.States}
+lemma join_sign_singleton {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j) (hs : (𝓕 |>ₛ φs[i]) = (𝓕 |>ₛ φs[j]))
     (φsucΛ : WickContraction [singleton h]ᵘᶜ.length) :
     (join (singleton h) φsucΛ).sign = (singleton h).sign * φsucΛ.sign := by
@@ -401,7 +401,7 @@ lemma join_sign_singleton {φs : List 𝓕.States}
   · funext a
     simp
 
-lemma join_sign_induction {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma join_sign_induction {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (hc : φsΛ.GradingCompliant) :
     (n : ℕ) → (hn : φsΛ.1.card = n) →
     (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign
@@ -428,12 +428,12 @@ lemma join_sign_induction {φs : List 𝓕.States} (φsΛ : WickContraction φs.
     apply sign_congr
     exact join_uncontractedListGet (singleton hij) φsucΛ'
 
-lemma join_sign {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma join_sign {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (hc : φsΛ.GradingCompliant) :
     (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign := by
   exact join_sign_induction φsΛ φsucΛ hc (φsΛ).1.card rfl
 
-lemma join_sign_timeContract {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma join_sign_timeContract {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
     (join φsΛ φsucΛ).sign • (join φsΛ φsucΛ).timeContract.1 =
     (φsΛ.sign • φsΛ.timeContract.1) * (φsucΛ.sign • φsucΛ.timeContract.1) := by

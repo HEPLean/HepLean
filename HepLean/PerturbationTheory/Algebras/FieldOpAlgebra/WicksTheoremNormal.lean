@@ -20,7 +20,7 @@ namespace FieldOpAlgebra
 open WickContraction
 open EqTimeOnly
 
-lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.States) :
+lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
     timeOrder (ofFieldOpList φs) = ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs)}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
   rw [static_wick_theorem φs]
@@ -43,7 +43,7 @@ lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.States) :
   exact x.2
   exact x.2
 
-lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.States) :
+lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
     timeOrder (ofFieldOpList φs) = 𝓣(𝓝(ofFieldOpList φs)) +
     ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
@@ -70,14 +70,14 @@ lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.States) :
     rw [← e2.symm.sum_comp]
     rfl
 
-lemma normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.States) :
+lemma normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
     𝓣(𝓝(ofFieldOpList φs)) = 𝓣(ofFieldOpList φs) -
     ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
   rw [timeOrder_ofFieldOpList_eq_eqTimeOnly_empty]
   simp
 
-lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs : List 𝓕.States) :
+lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs : List 𝓕.FieldOp) :
     𝓣(𝓝(ofFieldOpList φs)) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
     + (∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}),
@@ -93,7 +93,7 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs 
     Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, sub_left_inj, e1]
   rw [add_comm]
 
-lemma haveEqTime_wick_sum_eq_split (φs : List 𝓕.States) :
+lemma haveEqTime_wick_sum_eq_split (φs : List 𝓕.FieldOp) :
     (∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) =
     ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
@@ -122,7 +122,7 @@ lemma haveEqTime_wick_sum_eq_split (φs : List 𝓕.States) :
   congr 1
   rw [@join_uncontractedListGet]
 
-lemma normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive (φs : List 𝓕.States) :
+lemma normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive (φs : List 𝓕.FieldOp) :
     𝓣(𝓝(ofFieldOpList φs)) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
       + ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
@@ -142,9 +142,9 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive (φs :
   rw [← smul_sub, ← mul_sub]
 
 lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
-    ∑ (φsΛ : {φsΛ : WickContraction ([] : List 𝓕.States).length // ¬ HaveEqTime φsΛ}),
+    ∑ (φsΛ : {φsΛ : WickContraction ([] : List 𝓕.FieldOp).length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ) := by
-  let e2 : {φsΛ : WickContraction ([] : List 𝓕.States).length // ¬ HaveEqTime φsΛ} ≃ Unit :=
+  let e2 : {φsΛ : WickContraction ([] : List 𝓕.FieldOp).length // ¬ HaveEqTime φsΛ} ≃ Unit :=
     {
       toFun := fun x => (),
       invFun := fun x => ⟨empty, by simp⟩,
@@ -181,7 +181,7 @@ Wicks theorem for normal ordering followed by time-ordering, states that
 for those Wick contraction `φsΛ` which do not have any equal time contractions.
 This is compared to the ordinary Wicks theorem which sums over all Wick contractions.
 -/
-theorem wicks_theorem_normal_order : (φs : List 𝓕.States) →
+theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
     𝓣(𝓝(ofFieldOpList φs)) = ∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)
   | [] => wicks_theorem_normal_order_empty

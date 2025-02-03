@@ -19,8 +19,8 @@ open FieldStatistic
 namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
-lemma ι_timeOrderF_superCommuteF_superCommuteF_eq_time_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnStates}
-    (φs1 φs2 : List 𝓕.CrAnStates) (h :
+lemma ι_timeOrderF_superCommuteF_superCommuteF_eq_time_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp}
+    (φs1 φs2 : List 𝓕.CrAnFieldOp) (h :
       crAnTimeOrderRel φ1 φ2 ∧ crAnTimeOrderRel φ1 φ3 ∧
       crAnTimeOrderRel φ2 φ1 ∧ crAnTimeOrderRel φ2 φ3 ∧
       crAnTimeOrderRel φ3 φ1 ∧ crAnTimeOrderRel φ3 φ2) :
@@ -139,8 +139,8 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF_eq_time_ofCrAnListF {φ1 φ2 φ3
     map_smul, smul_sub]
   simp_all
 
-lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnStates}
-    (φs1 φs2 : List 𝓕.CrAnStates) :
+lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp}
+    (φs1 φs2 : List 𝓕.CrAnFieldOp) :
     ι 𝓣ᶠ(ofCrAnListF φs1 * [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca * ofCrAnListF φs2)
     = 0 := by
   by_cases h :
@@ -153,7 +153,7 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnListF {φ1 φ2 φ3 : 𝓕.
     simp
 
 @[simp]
-lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnStates} (a b : 𝓕.FieldOpFreeAlgebra) :
+lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp} (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca * b) = 0 := by
   let pb (b : 𝓕.FieldOpFreeAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
     Prop := ι 𝓣ᶠ(a * [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca * b) = 0
@@ -181,7 +181,7 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnStates} 
   · intro x hx hpx
     simp_all [pb, hpx]
 
-lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnStates}
+lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * b) =
     ι ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * 𝓣ᶠ(a * b)) := by
@@ -277,7 +277,7 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnStates}
   · intro x hx hpx
     simp_all [pb, hpx]
 
-lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnStates}
+lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid]
@@ -393,18 +393,18 @@ scoped[FieldSpecification.FieldOpAlgebra] notation "𝓣(" a ")" => timeOrder a
 lemma timeOrder_eq_ι_timeOrderF (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣(ι a) = ι 𝓣ᶠ(a) := rfl
 
-lemma timeOrder_ofFieldOp_ofFieldOp_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :
+lemma timeOrder_ofFieldOp_ofFieldOp_ordered {φ ψ : 𝓕.FieldOp} (h : timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = ofFieldOp φ * ofFieldOp ψ := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
     timeOrderF_ofFieldOpF_ofFieldOpF_ordered h]
 
-lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
+lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered {φ ψ : 𝓕.FieldOp} (h : ¬ timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofFieldOp ψ * ofFieldOp φ := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
     timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered h]
   simp
 
-lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder {φ ψ : 𝓕.States}
+lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder {φ ψ : 𝓕.FieldOp}
     (h : ¬ timeOrderRel φ ψ) :
     𝓣(ofFieldOp φ * ofFieldOp ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓣(ofFieldOp ψ * ofFieldOp φ) := by
   rw [ofFieldOp, ofFieldOp, ← map_mul, timeOrder_eq_ι_timeOrderF,
@@ -417,11 +417,11 @@ lemma timeOrder_ofFieldOpList_nil : 𝓣(ofFieldOpList (𝓕 := 𝓕) []) = 1 :=
   simp
 
 @[simp]
-lemma timeOrder_ofFieldOpList_singleton (φ : 𝓕.States) :
+lemma timeOrder_ofFieldOpList_singleton (φ : 𝓕.FieldOp) :
     𝓣(ofFieldOpList [φ]) = ofFieldOpList [φ] := by
   rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofFieldOpListF_singleton]
 
-lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
+lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     𝓣(ofFieldOpList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
       (Finset.filter (fun x =>
         (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
@@ -429,7 +429,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
   rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_eq_maxTimeField_mul_finset]
   rfl
 
-lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnStates}
+lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
     𝓣(a * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
     [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(a * b) := by
@@ -443,7 +443,7 @@ lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnStates}
   · simp_all
   · simp_all
 
-lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnStates}
+lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
     𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
     [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(b) := by
@@ -452,7 +452,7 @@ lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnStates}
   rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
   simp
 
-lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnStates}
+lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) :
     𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ) = 0 := by
   rw [ofCrAnFieldOp, ofCrAnFieldOp]
@@ -463,7 +463,7 @@ lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnStates}
   rw [ι_timeOrderF_superCommuteF_neq_time]
   exact hφψ
 
-lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.States}
+lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
     (hφψ : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
     𝓣([anPart φ,ofFieldOp ψ]ₛ) = 0 := by
   rw [ofFieldOp_eq_sum]

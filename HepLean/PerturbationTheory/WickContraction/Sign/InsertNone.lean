@@ -19,7 +19,7 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
-lemma signFinset_insertAndContract_none (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signFinset_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
       (φsΛ ↩Λ φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
@@ -81,14 +81,14 @@ lemma signFinset_insertAndContract_none (φ : 𝓕.States) (φs : List 𝓕.Stat
 
   For each contracted pair `{a1, a2}` in `φsΛ` if `a1 < a2` such that `i` is within the range
   `a1 < i < a2` we pick up a sign equal to `𝓢(φ, φs[a2])`. -/
-def signInsertNone (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+def signInsertNone (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) : ℂ :=
   ∏ (a : φsΛ.1),
     if i.succAbove (φsΛ.fstFieldOfContract a) < i ∧ i < i.succAbove (φsΛ.sndFieldOfContract a) then
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else 1
 
-lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length)
+lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).sign = (φsΛ.signInsertNone φ φs i) * φsΛ.sign := by
   rw [sign]
@@ -109,7 +109,7 @@ lemma sign_insert_none (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : Wick
     simp
   · rw [stat_ofFinset_of_insertAndContractLiftFinset]
 
-lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
   φsΛ.signInsertNone φ φs i = ∏ (a : φsΛ.1),
     (if i.succAbove (φsΛ.fstFieldOfContract a) < i then
@@ -143,7 +143,7 @@ lemma signInsertNone_eq_mul_fst_snd (φ : 𝓕.States) (φs : List 𝓕.States)
       have hx := (Fin.succAbove_lt_succAbove_iff (p := i)).mpr hn
       omega
 
-lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signInsertNone_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = ∏ (a : φsΛ.1), ∏ (x : a),
       (if i.succAbove x < i then 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[x.1]) else 1) := by
@@ -158,12 +158,12 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.States) (φs : List 𝓕.States)
   erw [hG a]
   rfl
 
-lemma sign_insert_none_zero (φ : 𝓕.States) (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :
+lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :
     (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
   rw [sign_insert_none]
   simp [signInsertNone]
 
-lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = ∏ (x : Fin φs.length),
       if (φsΛ.getDual? x).isSome then
@@ -190,7 +190,7 @@ lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.States) (φs : List 𝓕.S
   rfl
   exact hG
 
-lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signInsertNone_eq_filter_map (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ((List.filter (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)
@@ -216,7 +216,7 @@ lemma signInsertNone_eq_filter_map (φ : 𝓕.States) (φs : List 𝓕.States)
 
 /-- The change in sign when inserting a field `φ` at `i` into `φsΛ` is equal
   to the sign got by moving `φ` through each field `φ₀…φᵢ₋₁` which has a dual. -/
-lemma signInsertNone_eq_filterset (φ : 𝓕.States) (φs : List 𝓕.States)
+lemma signInsertNone_eq_filterset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
     (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)⟩) := by
