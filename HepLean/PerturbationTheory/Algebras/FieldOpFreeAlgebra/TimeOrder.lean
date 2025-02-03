@@ -39,7 +39,8 @@ lemma timeOrderF_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
   rw [← ofListBasis_eq_ofList]
   simp only [timeOrderF, Basis.constr_basis]
 
-lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c) := by
+lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.FieldOpFreeAlgebra) :
+    𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c) := by
   let pc (c : 𝓕.FieldOpFreeAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
     Prop := 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c)
   change pc c (Basis.mem_span _ c)
@@ -55,7 +56,8 @@ lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * 
       obtain ⟨φs', rfl⟩ := hx
       simp only [ofListBasis_eq_ofList, pb]
       let pa (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
-        Prop := 𝓣ᶠ(a * ofCrAnListF φs' * ofCrAnListF φs) = 𝓣ᶠ(a * 𝓣ᶠ(ofCrAnListF φs') * ofCrAnListF φs)
+        Prop := 𝓣ᶠ(a * ofCrAnListF φs' * ofCrAnListF φs) =
+          𝓣ᶠ(a * 𝓣ᶠ(ofCrAnListF φs') * ofCrAnListF φs)
       change pa a (Basis.mem_span _ a)
       apply Submodule.span_induction
       · intro x hx
@@ -116,7 +118,8 @@ lemma timeOrderF_ofFieldOpListF_nil : timeOrderF (𝓕 := 𝓕) (ofFieldOpListF 
   simp [timeOrderSign, Wick.koszulSign, timeOrderList]
 
 @[simp]
-lemma timeOrderF_ofFieldOpListF_singleton (φ : 𝓕.FieldOp) : 𝓣ᶠ(ofFieldOpListF [φ]) = ofFieldOpListF [φ] := by
+lemma timeOrderF_ofFieldOpListF_singleton (φ : 𝓕.FieldOp) :
+    𝓣ᶠ(ofFieldOpListF [φ]) = ofFieldOpListF [φ] := by
   simp [timeOrderF_ofFieldOpListF, timeOrderSign, timeOrderList]
 
 lemma timeOrderF_ofFieldOpF_ofFieldOpF_ordered {φ ψ : 𝓕.FieldOp} (h : timeOrderRel φ ψ) :

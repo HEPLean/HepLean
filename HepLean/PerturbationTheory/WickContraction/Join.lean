@@ -532,9 +532,9 @@ lemma join_getDual?_apply_uncontractedListEmb_some {φs : List 𝓕.FieldOp}
   simp
 
 @[simp]
-lemma join_getDual?_apply_uncontractedListEmb {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
-    (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (i : Fin [φsΛ]ᵘᶜ.length) :
-    ((join φsΛ φsucΛ).getDual? (uncontractedListEmd i)) =
+lemma join_getDual?_apply_uncontractedListEmb {φs : List 𝓕.FieldOp}
+    (φsΛ : WickContraction φs.length) (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length)
+    (i : Fin [φsΛ]ᵘᶜ.length) : ((join φsΛ φsucΛ).getDual? (uncontractedListEmd i)) =
     Option.map uncontractedListEmd (φsucΛ.getDual? i) := by
   by_cases h : (φsucΛ.getDual? i).isSome
   · rw [join_getDual?_apply_uncontractedListEmb_some]
@@ -608,9 +608,8 @@ lemma join_singleton_getDual?_right {φs : List 𝓕.FieldOp}
   left
   exact Finset.pair_comm j i
 
-
-lemma exists_contraction_pair_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
-    (h : 0 < φsΛ.1.card) :
+lemma exists_contraction_pair_of_card_ge_zero {φs : List 𝓕.FieldOp}
+    (φsΛ : WickContraction φs.length) (h : 0 < φsΛ.1.card) :
     ∃ a, a ∈ φsΛ.1 := by
   simpa using h
 
@@ -655,6 +654,5 @@ lemma join_not_gradingCompliant_of_left_not_gradingCompliant {φs : List 𝓕.Fi
   simp only [Subtype.coe_eta, join_fstFieldOfContract_joinLiftLeft,
     join_sndFieldOfContract_joinLift]
   exact ha2
-
 
 end WickContraction

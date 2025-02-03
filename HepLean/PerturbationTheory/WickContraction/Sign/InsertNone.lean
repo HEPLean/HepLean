@@ -158,8 +158,8 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   erw [hG a]
   rfl
 
-lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :
-    (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
+lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) : (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
   rw [sign_insert_none]
   simp [signInsertNone]
 

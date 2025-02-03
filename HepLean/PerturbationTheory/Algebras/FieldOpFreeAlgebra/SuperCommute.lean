@@ -26,7 +26,8 @@ open FieldStatistic
 /-- The super commutor on the creation and annihlation algebra. For two bosonic operators
   or a bosonic and fermionic operator this corresponds to the usual commutator
   whilst for two fermionic operators this corresponds to the anti-commutator. -/
-noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra :=
+noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
+    𝓕.FieldOpFreeAlgebra :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
   Basis.constr ofCrAnListFBasis ℂ fun φs' =>
   ofCrAnListF (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF (φs' ++ φs)
@@ -86,13 +87,15 @@ lemma superCommuteF_ofFieldOpListF_ofFieldOpFsList (φ : List 𝓕.FieldOp) (φs
 lemma superCommuteF_ofFieldOpF_ofFieldOpFsList (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     [ofFieldOpF φ, ofFieldOpListF φs]ₛca = ofFieldOpF φ * ofFieldOpListF φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofFieldOpListF φs * ofFieldOpF φ := by
-  rw [← ofFieldOpListF_singleton, superCommuteF_ofFieldOpListF_ofFieldOpFsList, ofFieldOpListF_singleton]
+  rw [← ofFieldOpListF_singleton, superCommuteF_ofFieldOpListF_ofFieldOpFsList,
+    ofFieldOpListF_singleton]
   simp
 
 lemma superCommuteF_ofFieldOpListF_ofFieldOpF (φs : List 𝓕.FieldOp) (φ : 𝓕.FieldOp) :
     [ofFieldOpListF φs, ofFieldOpF φ]ₛca = ofFieldOpListF φs * ofFieldOpF φ -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofFieldOpF φ * ofFieldOpListF φs := by
-  rw [← ofFieldOpListF_singleton, superCommuteF_ofFieldOpListF_ofFieldOpFsList, ofFieldOpListF_singleton]
+  rw [← ofFieldOpListF_singleton, superCommuteF_ofFieldOpListF_ofFieldOpFsList,
+    ofFieldOpListF_singleton]
   simp
 
 lemma superCommuteF_anPartF_crPartF (φ φ' : 𝓕.FieldOp) :
@@ -269,7 +272,8 @@ lemma ofCrAnOpF_mul_ofCrAnListF_eq_superCommuteF (φ : 𝓕.CrAnFieldOp) (φs' :
   simp
 
 lemma ofFieldOpListF_mul_ofFieldOpListF_eq_superCommuteF (φs φs' : List 𝓕.FieldOp) :
-    ofFieldOpListF φs * ofFieldOpListF φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofFieldOpListF φs
+    ofFieldOpListF φs * ofFieldOpListF φs' =
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofFieldOpListF φs
     + [ofFieldOpListF φs, ofFieldOpListF φs']ₛca := by
   rw [superCommuteF_ofFieldOpListF_ofFieldOpFsList]
   simp
@@ -314,8 +318,9 @@ lemma anPartF_mul_anPartF_eq_superCommuteF (φ φ' : 𝓕.FieldOp) :
   rw [superCommuteF_anPartF_anPartF]
   simp
 
-lemma ofCrAnListF_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnFieldOp) (φs' : List 𝓕.FieldOp) :
-    ofCrAnListF φs * ofFieldOpListF φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofCrAnListF φs
+lemma ofCrAnListF_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnFieldOp)
+    (φs' : List 𝓕.FieldOp) : ofCrAnListF φs * ofFieldOpListF φs' =
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofCrAnListF φs
     + [ofCrAnListF φs, ofFieldOpListF φs']ₛca := by
   rw [superCommuteF_ofCrAnListF_ofFieldOpFsList]
   simp
@@ -365,7 +370,8 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_cons (φ : 𝓕.CrAnFieldOp) (φs φ
   rw [superCommuteF_ofCrAnListF_ofCrAnListF]
   conv_rhs =>
     lhs
-    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF, sub_mul, ← ofCrAnListF_append]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF, sub_mul,
+      ← ofCrAnListF_append]
     rhs
     rw [FieldStatistic.ofList_singleton, ofCrAnListF_append, ofCrAnListF_singleton, smul_mul_assoc,
       mul_assoc, ← ofCrAnListF_append]
@@ -410,14 +416,16 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum (φs : List 𝓕.CrAnFieldOp)
   | [] => by
     simp [← ofCrAnListF_nil, superCommuteF_ofCrAnListF_ofCrAnListF]
   | φ :: φs' => by
-    rw [superCommuteF_ofCrAnListF_ofCrAnListF_cons, superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum φs φs']
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF_cons,
+      superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum φs φs']
     conv_rhs => erw [Fin.sum_univ_succ]
     congr 1
     · simp
     · simp [Finset.mul_sum, smul_smul, ofCrAnListF_cons, mul_assoc,
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
 
-lemma superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum (φs : List 𝓕.CrAnFieldOp) : (φs' : List 𝓕.FieldOp) →
+lemma superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum (φs : List 𝓕.CrAnFieldOp) :
+    (φs' : List 𝓕.FieldOp) →
     [ofCrAnListF φs, ofFieldOpListF φs']ₛca =
     ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
       ofFieldOpListF (φs'.take n) * [ofCrAnListF φs, ofFieldOpF (φs'.get n)]ₛca *
@@ -643,12 +651,14 @@ lemma bosonic_superCommuteF {a b : 𝓕.FieldOpFreeAlgebra} (ha : a ∈ statisti
   simp only [add_mul, mul_add]
   abel
 
-lemma superCommuteF_bonsonic_symm {a b : 𝓕.FieldOpFreeAlgebra} (hb : b ∈ statisticSubmodule bosonic) :
+lemma superCommuteF_bonsonic_symm {a b : 𝓕.FieldOpFreeAlgebra}
+    (hb : b ∈ statisticSubmodule bosonic) :
     [a, b]ₛca = - [b, a]ₛca := by
   rw [bosonic_superCommuteF hb, superCommuteF_bonsonic hb]
   simp
 
-lemma bonsonic_superCommuteF_symm {a b : 𝓕.FieldOpFreeAlgebra} (ha : a ∈ statisticSubmodule bosonic) :
+lemma bonsonic_superCommuteF_symm {a b : 𝓕.FieldOpFreeAlgebra}
+    (ha : a ∈ statisticSubmodule bosonic) :
     [a, b]ₛca = - [b, a]ₛca := by
   rw [bosonic_superCommuteF ha, superCommuteF_bonsonic ha]
   simp
@@ -808,8 +818,8 @@ lemma superCommuteF_bosonic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φ
     simp_all [p, Finset.smul_sum]
   · exact ha
 
-lemma superCommuteF_fermionic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs : List 𝓕.CrAnFieldOp)
-    (ha : a ∈ statisticSubmodule fermionic) :
+lemma superCommuteF_fermionic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra)
+    (φs : List 𝓕.CrAnFieldOp) (ha : a ∈ statisticSubmodule fermionic) :
     [a, ofCrAnListF φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
       ofCrAnListF (φs.take n) * [a, ofCrAnOpF (φs.get n)]ₛca *
       ofCrAnListF (φs.drop (n + 1)) := by

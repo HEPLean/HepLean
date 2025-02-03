@@ -198,7 +198,8 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnFieldOp) :
 -/
 
 /-- The bi-linear map associated with multiplication in `FieldOpFreeAlgebra`. -/
-noncomputable def mulLinearMap : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 where
+noncomputable def mulLinearMap : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 →ₗ[ℂ]
+    FieldOpFreeAlgebra 𝓕 where
   toFun a := {
     toFun := fun b => a * b,
     map_add' := fun c d => by simp [mul_add]

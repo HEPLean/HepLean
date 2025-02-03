@@ -153,7 +153,8 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnListF {φ1 φ2 φ3 : 𝓕.
     simp
 
 @[simp]
-lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp} (a b : 𝓕.FieldOpFreeAlgebra) :
+lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp}
+    (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca * b) = 0 := by
   let pb (b : 𝓕.FieldOpFreeAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
     Prop := ι 𝓣ᶠ(a * [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca * b) = 0
@@ -303,7 +304,8 @@ lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnFieldOp}
 lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
     (h : a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι 𝓣ᶠ(a) = 0 := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at h
-  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓣ᶠ(a) = 0
+  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕)
+    (h : a ∈ AddSubgroup.closure k) := ι 𝓣ᶠ(a) = 0
   change p a h
   apply AddSubgroup.closure_induction
   · intro x hx

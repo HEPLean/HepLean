@@ -199,8 +199,8 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
   rw [timeOrder_timeContract_mul_of_eqTimeOnly_mid φsΛ hl]
   simp
 
-lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
-    (h1 : ¬ φsΛ.EqTimeOnly) :
+lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
+    (φsΛ : WickContraction φs.length) (h1 : ¬ φsΛ.EqTimeOnly) :
     ∃ (i j : Fin φs.length) (h : i < j) (φsucΛ : WickContraction [singleton h]ᵘᶜ.length),
     φsΛ = join (singleton h) φsucΛ ∧ (¬ timeOrderRel φs[i] φs[j] ∨ ¬ timeOrderRel φs[j] φs[i]) := by
   rw [eqTimeOnly_iff_forall_finset] at h1

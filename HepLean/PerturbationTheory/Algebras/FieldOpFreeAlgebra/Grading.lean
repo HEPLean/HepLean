@@ -30,7 +30,8 @@ lemma ofCrAnListF_mem_statisticSubmodule_of (φs : List 𝓕.CrAnFieldOp) (f : F
   refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
 lemma ofCrAnListF_bosonic_or_fermionic (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnListF φs ∈ statisticSubmodule bosonic ∨ ofCrAnListF φs ∈ statisticSubmodule fermionic := by
+    ofCrAnListF φs ∈ statisticSubmodule bosonic ∨
+    ofCrAnListF φs ∈ statisticSubmodule fermionic := by
   by_cases h : (𝓕 |>ₛ φs) = bosonic
   · left
     exact ofCrAnListF_mem_statisticSubmodule_of φs bosonic h
@@ -73,7 +74,8 @@ lemma bosonicProj_of_mem_bosonic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ statis
   · intro a x hx hy
     simp_all [p]
 
-lemma bosonicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ statisticSubmodule fermionic) :
+lemma bosonicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra)
+    (h : a ∈ statisticSubmodule fermionic) :
     bosonicProj a = 0 := by
   let p (a : 𝓕.FieldOpFreeAlgebra) (hx : a ∈ statisticSubmodule fermionic) : Prop :=
     bosonicProj a = 0
@@ -127,7 +129,8 @@ lemma fermionicProj_ofCrAnListF_if_bosonic (φs : List 𝓕.CrAnFieldOp) :
     simp only [neq_fermionic_iff_eq_bosonic] at h1
     simp [h1]
 
-lemma fermionicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ statisticSubmodule fermionic) :
+lemma fermionicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra)
+    (h : a ∈ statisticSubmodule fermionic) :
     fermionicProj a = ⟨a, h⟩ := by
   let p (a : 𝓕.FieldOpFreeAlgebra) (hx : a ∈ statisticSubmodule fermionic) : Prop :=
     fermionicProj a = ⟨a, hx⟩
@@ -235,7 +238,8 @@ lemma directSum_eq_bosonic_plus_fermionic
     abel
 
 /-- The instance of a graded algebra on `FieldOpFreeAlgebra`. -/
-instance fieldOpFreeAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) statisticSubmodule where
+instance fieldOpFreeAlgebraGrade :
+    GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) statisticSubmodule where
   one_mem := by
     simp only [statisticSubmodule]
     refine Submodule.mem_span.mpr fun p a => a ?_

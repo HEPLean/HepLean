@@ -19,13 +19,11 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldStatistic
 
-
 /-!
 
 ## Sign insert some
 
 -/
-
 
 lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.FieldOp)
     (a : Finset (Fin φs.length)) (φsΛ : WickContraction φs.length) (hg : GradingCompliant φs φsΛ)
@@ -62,7 +60,6 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.FieldOp)
     simp only [fstFieldOfContract_getDual?, Option.get_some] at hsom'
     exact False.elim (h1 hsom')
     rfl
-
 
 lemma signFinset_insertAndContract_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length)

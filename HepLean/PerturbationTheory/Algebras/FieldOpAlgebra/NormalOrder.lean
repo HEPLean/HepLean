@@ -52,7 +52,8 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero
     (φa φa' : 𝓕.CrAnFieldOp) (φs : List 𝓕.CrAnFieldOp)
-    (a : 𝓕.FieldOpFreeAlgebra) : ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * a) = 0 := by
+    (a : 𝓕.FieldOpFreeAlgebra) :
+    ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * a) = 0 := by
   have hf : ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
       mulLinearMap (ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca) = 0 := by
     apply ofCrAnListFBasis.ext
@@ -126,7 +127,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero_mul
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommuteF (ofCrAnListF φs)) = 0 := by
     apply ofCrAnListFBasis.ext
     intro φs'
-    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, FieldOpFreeAlgebra.ofListBasis_eq_ofList,
+    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, ofListBasis_eq_ofList,
       LinearMap.coe_comp, Function.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
       LinearMap.zero_apply]
     rw [ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero_mul]
@@ -142,7 +143,7 @@ lemma ι_normalOrderF_superCommuteF_eq_zero_mul
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommuteF.flip c) = 0 := by
     apply ofCrAnListFBasis.ext
     intro φs
-    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, FieldOpFreeAlgebra.ofListBasis_eq_ofList,
+    simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, ofListBasis_eq_ofList,
       LinearMap.coe_comp, Function.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
       LinearMap.zero_apply]
     rw [ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero_mul]
@@ -182,7 +183,8 @@ lemma ι_normalOrderF_superCommuteF_eq_zero (c d : 𝓕.FieldOpFreeAlgebra) : ι
 lemma ι_normalOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
     (h : a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι 𝓝ᶠ(a) = 0 := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at h
-  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓝ᶠ(a) = 0
+  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕)
+    (h : a ∈ AddSubgroup.closure k) := ι 𝓝ᶠ(a) = 0
   change p a h
   apply AddSubgroup.closure_induction
   · intro x hx

@@ -203,7 +203,8 @@ lemma ι_eq_zero_iff_mem_ideal (x : FieldOpFreeAlgebra 𝓕) :
   simp only
   rfl
 
-lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
+lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕)
+    (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.bosonicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.bosonicProj = 0 := by
   have hx' := hx
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
@@ -234,7 +235,8 @@ lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (hx 
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
 
-lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
+lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕)
+    (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.fermionicProj = 0 := by
   have hx' := hx
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
@@ -265,10 +267,12 @@ lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (h
       rw [fermionicProj_of_mem_fermionic _ h]
       simpa using hx'
 
-lemma bosonicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
+lemma bosonicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
+    (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
     x.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at hx
-  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) : Prop :=
+  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕)
+    (h : a ∈ AddSubgroup.closure k) : Prop :=
     a.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet
   change p x hx
   apply AddSubgroup.closure_induction
@@ -401,7 +405,8 @@ lemma bosonicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ TwoSidedId
   · intro x hx
     simp [p]
 
-lemma fermionicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
+lemma fermionicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
+    (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   have hb := bosonicProj_mem_ideal x hx
   rw [← ι_eq_zero_iff_mem_ideal] at hx hb ⊢
