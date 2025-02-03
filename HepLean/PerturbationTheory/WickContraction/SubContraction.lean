@@ -37,21 +37,20 @@ def quotContraction (S : Finset (Finset (Fin φs.length))) (ha : S ⊆ φsΛ.1) 
   ⟨Finset.filter (fun a => Finset.map uncontractedListEmd a ∈ φsΛ.1) Finset.univ,
   by
     intro a ha'
-    simp at ha'
-    simpa using  φsΛ.2.1 (Finset.map uncontractedListEmd a) ha'
-    , by
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha'
+    simpa using  φsΛ.2.1 (Finset.map uncontractedListEmd a) ha' , by
   intro a ha b hb
-  simp at ha hb
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
   by_cases hab : a = b
   · simp [hab]
-  · simp [hab]
+  · simp only [hab, false_or]
     have hx := φsΛ.2.2 (Finset.map uncontractedListEmd a) ha (Finset.map uncontractedListEmd b) hb
     simp_all⟩
 
 lemma mem_of_mem_quotContraction {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     {a : Finset (Fin [φsΛ.subContraction S hs]ᵘᶜ.length)}
     (ha : a ∈ (quotContraction S hs).1) : Finset.map uncontractedListEmd a ∈ φsΛ.1 := by
-  simp [quotContraction] at ha
+  simp only [quotContraction, Finset.mem_filter, Finset.mem_univ, true_and] at ha
   exact ha
 
 lemma mem_subContraction_or_quotContraction {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
@@ -60,8 +59,8 @@ lemma mem_subContraction_or_quotContraction {S : Finset (Finset (Fin φs.length)
     ∃ a', Finset.map uncontractedListEmd a' = a ∧ a' ∈ (quotContraction S hs).1 := by
   by_cases h1 : a ∈ (φsΛ.subContraction S hs).1
   · simp [h1]
-  simp [h1]
-  simp [subContraction] at h1
+  simp only [h1, false_or]
+  simp only [subContraction] at h1
   have h2 := φsΛ.2.1 a ha
   rw [@Finset.card_eq_two] at h2
   obtain ⟨i, j, hij, rfl⟩ := h2
@@ -70,25 +69,26 @@ lemma mem_subContraction_or_quotContraction {S : Finset (Finset (Fin φs.length)
     intro p hp
     have hp' : p ∈ φsΛ.1 := hs hp
     have hp2 := φsΛ.2.2 p hp' {i, j} ha
-    simp [subContraction] at hp
+    simp only [subContraction] at hp
     rcases hp2 with hp2 | hp2
     · simp_all
-    simp at hp2
+    simp only [Finset.disjoint_insert_right, Finset.disjoint_singleton_right] at hp2
     exact hp2.1
   have hj : j ∈ (φsΛ.subContraction S hs).uncontracted := by
     rw [mem_uncontracted_iff_not_contracted]
     intro p hp
     have hp' : p ∈ φsΛ.1 := hs hp
     have hp2 := φsΛ.2.2 p hp' {i, j} ha
-    simp [subContraction] at hp
+    simp only [subContraction] at hp
     rcases hp2 with hp2 | hp2
     · simp_all
-    simp at hp2
+    simp only [Finset.disjoint_insert_right, Finset.disjoint_singleton_right] at hp2
     exact hp2.2
   obtain ⟨i, rfl⟩ := uncontractedListEmd_surjective_mem_uncontracted i hi
   obtain ⟨j, rfl⟩ := uncontractedListEmd_surjective_mem_uncontracted j hj
   use {i, j}
-  simp [quotContraction]
+  simp only [Finset.map_insert, Finset.map_singleton, quotContraction, Finset.mem_filter,
+    Finset.mem_univ, true_and]
   exact ha
 
 @[simp]
@@ -105,12 +105,12 @@ lemma subContraction_fstFieldOfContract {S : Finset (Finset (Fin φs.length))} {
     φsΛ.fstFieldOfContract ⟨a.1, mem_of_mem_subContraction a.2⟩:= by
   apply eq_fstFieldOfContract_of_mem _ _ _ (φsΛ.sndFieldOfContract ⟨a.1, mem_of_mem_subContraction a.2⟩)
   · have ha := finset_eq_fstFieldOfContract_sndFieldOfContract _ ⟨a.1, mem_of_mem_subContraction a.2⟩
-    simp at ha
+    simp only at ha
     conv_lhs =>
       rw [ha]
     simp
   · have ha := finset_eq_fstFieldOfContract_sndFieldOfContract _ ⟨a.1, mem_of_mem_subContraction a.2⟩
-    simp at ha
+    simp only at ha
     conv_lhs =>
       rw [ha]
     simp
@@ -123,12 +123,12 @@ lemma subContraction_sndFieldOfContract {S : Finset (Finset (Fin φs.length))} {
     φsΛ.sndFieldOfContract ⟨a.1, mem_of_mem_subContraction a.2⟩:= by
   apply eq_sndFieldOfContract_of_mem _ _ (φsΛ.fstFieldOfContract ⟨a.1, mem_of_mem_subContraction a.2⟩)
   · have ha := finset_eq_fstFieldOfContract_sndFieldOfContract _ ⟨a.1, mem_of_mem_subContraction a.2⟩
-    simp at ha
+    simp only at ha
     conv_lhs =>
       rw [ha]
     simp
   · have ha := finset_eq_fstFieldOfContract_sndFieldOfContract _ ⟨a.1, mem_of_mem_subContraction a.2⟩
-    simp at ha
+    simp only at ha
     conv_lhs =>
       rw [ha]
     simp
@@ -162,12 +162,13 @@ lemma quotContraction_sndFieldOfContract_uncontractedListEmd {S : Finset (Finset
 lemma quotContraction_gradingCompliant {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     (hsΛ : φsΛ.GradingCompliant) :
     GradingCompliant [φsΛ.subContraction S hs]ᵘᶜ (quotContraction S hs) := by
-  simp [GradingCompliant]
+  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall]
   intro a ha
   have h1' := mem_of_mem_quotContraction ha
   erw [subContraction_uncontractedList_get]
   erw [subContraction_uncontractedList_get]
-  simp
+  simp only [quotContraction_fstFieldOfContract_uncontractedListEmd, Fin.getElem_fin,
+    quotContraction_sndFieldOfContract_uncontractedListEmd]
   apply hsΛ
 
 lemma mem_quotContraction_iff {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}

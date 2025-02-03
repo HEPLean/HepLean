@@ -25,11 +25,11 @@ open FieldStatistic
 def singleton {i j : Fin n} (hij : i < j) : WickContraction n :=
   ⟨{{i, j}}, by
     intro i hi
-    simp at hi
+    simp only [Finset.mem_singleton] at hi
     subst hi
     rw [@Finset.card_eq_two]
     use i, j
-    simp
+    simp only [ne_eq, and_true]
     omega
     , by
     intro i hi j hj
@@ -80,7 +80,7 @@ lemma singleton_getDual?_eq_none_iff_neq {i j : Fin n} (hij : i < j) (a : Fin n)
     (singleton hij).getDual? a = none ↔ (i ≠ a ∧ j ≠ a) := by
   rw [getDual?_eq_none_iff_mem_uncontracted]
   rw [mem_uncontracted_iff_not_contracted]
-  simp [singleton]
+  simp only [singleton, Finset.mem_singleton, forall_eq, Finset.mem_insert, not_or, ne_eq]
   omega
 
 lemma singleton_uncontractedEmd_neq_left {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j)
@@ -108,7 +108,8 @@ lemma singleton_uncontractedEmd_neq_right {φs : List 𝓕.States} {i j : Fin φ
 @[simp]
 lemma mem_signFinset {i j : Fin n} (hij : i < j) (a : Fin n) :
     a ∈ (singleton hij).signFinset i j ↔ i < a ∧ a < j := by
-  simp [signFinset]
+  simp only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and, and_congr_right_iff,
+    and_iff_left_iff_imp]
   intro h1 h2
   rw [@singleton_getDual?_eq_none_iff_neq]
   apply Or.inl
@@ -119,7 +120,7 @@ lemma subContraction_singleton_eq_singleton {φs : List 𝓕.States}
     (a : φsΛ.1) : φsΛ.subContraction {a.1} (by simp) =
     singleton (φsΛ.fstFieldOfContract_lt_sndFieldOfContract a) := by
   apply Subtype.ext
-  simp [subContraction, singleton]
+  simp only [subContraction, singleton, Finset.singleton_inj]
   exact finset_eq_fstFieldOfContract_sndFieldOfContract φsΛ a
 
 lemma singleton_timeContract {φs : List 𝓕.States} {i j : Fin φs.length} (hij : i < j) :

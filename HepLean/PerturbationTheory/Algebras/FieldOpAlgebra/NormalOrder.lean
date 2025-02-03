@@ -262,12 +262,12 @@ lemma ofCrAnFieldOpList_eq_normalOrder (φs : List 𝓕.CrAnStates) :
     one_smul]
 
 lemma normalOrder_normalOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
-    𝓝(a * b * c) = 𝓝(a * 𝓝(b) * c)  := by
+    𝓝(a * b * c) = 𝓝(a * 𝓝(b) * c) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
   obtain ⟨c, rfl⟩ := ι_surjective c
   rw [normalOrder_eq_ι_normalOrderF]
-  simp [← map_mul]
+  simp only [← map_mul]
   rw [normalOrder_eq_ι_normalOrderF]
   rw [normalOrderF_normalOrderF_mid]
   rfl
@@ -277,7 +277,7 @@ lemma normalOrder_normalOrder_left (a b : 𝓕.FieldOpAlgebra) :
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
   rw [normalOrder_eq_ι_normalOrderF]
-  simp [← map_mul]
+  simp only [← map_mul]
   rw [normalOrder_eq_ι_normalOrderF]
   rw [normalOrderF_normalOrderF_left]
   rfl
@@ -287,7 +287,7 @@ lemma normalOrder_normalOrder_right (a b : 𝓕.FieldOpAlgebra) :
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
   rw [normalOrder_eq_ι_normalOrderF]
-  simp [← map_mul]
+  simp only [← map_mul]
   rw [normalOrder_eq_ι_normalOrderF]
   rw [normalOrderF_normalOrderF_right]
   rfl
@@ -503,7 +503,7 @@ lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute_reorder (φ : 𝓕.St
     (φs : List 𝓕.States) : anPart φ * 𝓝(ofFieldOpList φs) =
     𝓝(anPart φ * ofFieldOpList φs) + [anPart φ, 𝓝(ofFieldOpList φs)]ₛ := by
   rw [anPart_mul_normalOrder_ofFieldOpList_eq_superCommute]
-  simp [instCommGroup.eq_1, map_add, map_smul]
+  simp only [instCommGroup.eq_1, add_left_inj]
   rw [normalOrder_anPart_ofFieldOpList_swap]
 
 /--
@@ -562,8 +562,8 @@ lemma ofFieldOpList_normalOrder_insert (φ : 𝓕.States) (φs : List 𝓕.State
   rw [hl]
   rw [ofFieldOpList_append, ofFieldOpList_append]
   rw [ofFieldOpList_mul_ofFieldOpList_eq_superCommute, add_mul]
-  simp [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
-    map_add, map_smul, add_zero, smul_smul,
+  simp only [instCommGroup.eq_1, Nat.succ_eq_add_one, ofList_singleton, Algebra.smul_mul_assoc,
+    map_add, map_smul, normalOrder_superCommute_left_eq_zero, add_zero, smul_smul,
     exchangeSign_mul_self_swap, one_smul]
   rw [← ofFieldOpList_append, ← ofFieldOpList_append]
   simp

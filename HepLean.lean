@@ -133,6 +133,7 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeContraction
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeOrder
+import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.WicksTheoremNormal
 import HepLean.PerturbationTheory.CreateAnnihilate
 import HepLean.PerturbationTheory.FeynmanDiagrams.Basic
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
@@ -157,9 +158,13 @@ import HepLean.PerturbationTheory.WickContraction.InsertAndContract
 import HepLean.PerturbationTheory.WickContraction.InsertAndContractNat
 import HepLean.PerturbationTheory.WickContraction.Involutions
 import HepLean.PerturbationTheory.WickContraction.IsFull
+import HepLean.PerturbationTheory.WickContraction.Join
 import HepLean.PerturbationTheory.WickContraction.Sign
+import HepLean.PerturbationTheory.WickContraction.Singleton
 import HepLean.PerturbationTheory.WickContraction.StaticContract
+import HepLean.PerturbationTheory.WickContraction.SubContraction
 import HepLean.PerturbationTheory.WickContraction.TimeContract
+import HepLean.PerturbationTheory.WickContraction.TimeSet
 import HepLean.PerturbationTheory.WickContraction.Uncontracted
 import HepLean.PerturbationTheory.WickContraction.UncontractedList
 import HepLean.PerturbationTheory.WicksTheorem

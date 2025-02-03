@@ -440,15 +440,15 @@ lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnStates}
   rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF]
   rw [ι_timeOrderF_superCommuteF_eq_time]
   rfl
-  simp_all
-  simp_all
+  · simp_all
+  · simp_all
 
 lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnStates}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
     𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
     [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(b) := by
   trans 𝓣(1 * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b)
-  simp
+  simp only [one_mul]
   rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
   simp
 
@@ -458,16 +458,16 @@ lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnStates}
   rw [ofCrAnFieldOp, ofCrAnFieldOp]
   rw [superCommute_eq_ι_superCommuteF]
   rw [timeOrder_eq_ι_timeOrderF]
-  trans  ι (timeOrderF (1 * (superCommuteF (ofCrAnState φ)) (ofCrAnState ψ) * 1))
-  simp
-  rw [ι_timeOrderF_superCommuteF_neq_time ]
+  trans ι (timeOrderF (1 * (superCommuteF (ofCrAnState φ)) (ofCrAnState ψ) * 1))
+  simp only [one_mul, mul_one]
+  rw [ι_timeOrderF_superCommuteF_neq_time]
   exact hφψ
 
 lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.States}
     (hφψ : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
     𝓣([anPart φ,ofFieldOp ψ]ₛ) = 0 := by
   rw [ofFieldOp_eq_sum]
-  simp
+  simp only [map_sum]
   apply Finset.sum_eq_zero
   intro a ha
   match φ with
@@ -483,24 +483,24 @@ lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.States}
     simp_all [crAnTimeOrderRel]
 
 lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
-    𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c):= by
+    𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
   obtain ⟨c, rfl⟩ := ι_surjective c
   rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrder_eq_ι_timeOrderF,
-   ← map_mul, ← map_mul,  timeOrder_eq_ι_timeOrderF, timeOrderF_timeOrderF_mid]
+  ← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrderF_timeOrderF_mid]
 
 lemma timeOrder_timeOrder_left (b c : 𝓕.FieldOpAlgebra) :
-    𝓣(b * c) = 𝓣(𝓣(b) * c):= by
+    𝓣(b * c) = 𝓣(𝓣(b) * c) := by
   trans 𝓣(1 * b * c)
-  simp
+  simp only [one_mul]
   rw [timeOrder_timeOrder_mid]
   simp
 
 lemma timeOrder_timeOrder_right (a b : 𝓕.FieldOpAlgebra) :
     𝓣(a * b) = 𝓣(a * 𝓣(b)) := by
   trans 𝓣(a * b * 1)
-  simp
+  simp only [mul_one]
   rw [timeOrder_timeOrder_mid]
   simp
 

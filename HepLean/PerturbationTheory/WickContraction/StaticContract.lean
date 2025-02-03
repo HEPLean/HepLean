@@ -51,7 +51,7 @@ lemma staticContract_insertAndContract_some
     (φsΛ ↩Λ φ i (some j)).staticContract =
     (if i < i.succAbove j then
       ⟨[anPart φ, ofFieldOp φs[j.1]]ₛ, superCommute_anPart_ofFieldOp_mem_center _ _⟩
-    else ⟨[anPart  φs[j.1], ofFieldOp φ]ₛ, superCommute_anPart_ofFieldOp_mem_center _ _⟩) *
+    else ⟨[anPart φs[j.1], ofFieldOp φ]ₛ, superCommute_anPart_ofFieldOp_mem_center _ _⟩) *
     φsΛ.staticContract := by
   rw [staticContract, insertAndContract_some_prod_contractions]
   congr 1

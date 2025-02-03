@@ -52,10 +52,10 @@ lemma card_zero_iff_empty (c : WickContraction n) : c.1.card = 0 ↔ c = empty :
 lemma exists_pair_of_not_eq_empty (c : WickContraction n) (h : c ≠ empty) :
     ∃ i j, {i, j} ∈ c.1 := by
   by_contra hn
-  simp at hn
+  simp only [not_exists] at hn
   have hc : c.1 = ∅ := by
     ext a
-    simp
+    simp only [Finset.not_mem_empty, iff_false]
     by_contra hn'
     have hc := c.2.1 a hn'
     rw [@Finset.card_eq_two] at hc
@@ -148,7 +148,7 @@ lemma congrLift_bijective {n m : ℕ} {c : WickContraction n} (h : n = m) :
 
 /-- Given a contracted pair in `c : WickContraction n` the contracted pair
   in `congr h c`. -/
-def congrLiftInv {n m : ℕ} (h : n = m) {c : WickContraction n} (a : (congr h c).1 ) : c.1 :=
+def congrLiftInv {n m : ℕ} (h : n = m) {c : WickContraction n} (a : (congr h c).1) : c.1 :=
   ⟨a.1.map (finCongr h.symm).toEmbedding, by
     subst h
     simp⟩

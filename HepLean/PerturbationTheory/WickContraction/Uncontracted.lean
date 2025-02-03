@@ -24,7 +24,6 @@ lemma congr_uncontracted {n m : ℕ} (c : WickContraction n) (h : n = m) :
   subst h
   simp
 
-
 lemma getDual?_eq_none_iff_mem_uncontracted (i : Fin n) :
     c.getDual? i = none ↔ i ∈ c.uncontracted := by
   simp [uncontracted]
@@ -81,10 +80,10 @@ lemma getDual?_empty_eq_none (i : Fin n) : empty.getDual? i = none := by
 
 @[simp]
 lemma uncontracted_empty {n : ℕ} : (@empty n).uncontracted = Finset.univ := by
-  simp [ uncontracted]
+  simp [uncontracted]
 
 lemma uncontracted_card_le (c : WickContraction n) : c.uncontracted.card ≤ n := by
-  simp [uncontracted]
+  simp only [uncontracted]
   apply le_of_le_of_eq (Finset.card_filter_le _ _)
   simp
 

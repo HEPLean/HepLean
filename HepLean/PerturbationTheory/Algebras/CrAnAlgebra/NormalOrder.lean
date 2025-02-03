@@ -52,7 +52,8 @@ lemma normalOrderF_one : normalOrderF (𝓕 := 𝓕) 1 = 1 := by
   rw [← ofCrAnList_nil, normalOrderF_ofCrAnList, normalOrderSign_nil, normalOrderList_nil,
     ofCrAnList_nil, one_smul]
 
-lemma normalOrderF_normalOrderF_mid (a b c : 𝓕.CrAnAlgebra) : 𝓝ᶠ(a * b * c) = 𝓝ᶠ(a * 𝓝ᶠ(b) * c) := by
+lemma normalOrderF_normalOrderF_mid (a b c : 𝓕.CrAnAlgebra) :
+    𝓝ᶠ(a * b * c) = 𝓝ᶠ(a * 𝓝ᶠ(b) * c) := by
   let pc (c : 𝓕.CrAnAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
     Prop := 𝓝ᶠ(a * b * c) = 𝓝ᶠ(a * 𝓝ᶠ(b) * c)
   change pc c (Basis.mem_span _ c)
