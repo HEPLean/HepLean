@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldSpecification.TimeOrder
-import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.SuperCommute
+import HepLean.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
 

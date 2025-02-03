@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.StaticContract
-import HepLean.PerturbationTheory.WicksTheorem
+import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
 import HepLean.Meta.Remark.Basic
 /-!
 

@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.TimeContract
 import HepLean.PerturbationTheory.WickContraction.StaticContract
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeContraction
+import HepLean.PerturbationTheory.FieldOpAlgebra.TimeContraction
 import HepLean.PerturbationTheory.WickContraction.SubContraction
 import HepLean.PerturbationTheory.WickContraction.Singleton
 

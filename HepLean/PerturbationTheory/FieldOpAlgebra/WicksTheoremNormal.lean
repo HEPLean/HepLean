@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.TimeCond
 import HepLean.PerturbationTheory.WickContraction.Sign.Join
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.StaticWickTheorem
+import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
 import HepLean.Meta.Remark.Basic
 /-!
 

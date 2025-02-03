@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.Basic
-import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.Grading
+import HepLean.PerturbationTheory.FieldOpFreeAlgebra.Basic
+import HepLean.PerturbationTheory.FieldOpFreeAlgebra.Grading
 /-!
 
 # Super Commute
