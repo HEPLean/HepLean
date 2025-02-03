@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Informal.Post
+import Mathlib.Lean.CoreM
 /-!
 
 # HepLean Stats
