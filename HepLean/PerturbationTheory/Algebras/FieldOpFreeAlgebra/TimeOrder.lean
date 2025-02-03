@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.FieldSpecification.TimeOrder
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
+import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.SuperCommute
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 /-!
 
-# Time Ordering in the CrAnAlgebra
+# Time Ordering in the FieldOpFreeAlgebra
 
 -/
 
@@ -16,7 +16,7 @@ namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 open FieldStatistic
 
-namespace CrAnAlgebra
+namespace FieldOpFreeAlgebra
 
 noncomputable section
 open HepLean.List
@@ -26,35 +26,35 @@ open HepLean.List
 
 -/
 
-/-- Time ordering for the `CrAnAlgebra`. -/
-def timeOrderF : CrAnAlgebra 𝓕 →ₗ[ℂ] CrAnAlgebra 𝓕 :=
+/-- Time ordering for the `FieldOpFreeAlgebra`. -/
+def timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
   Basis.constr ofCrAnListBasis ℂ fun φs =>
   crAnTimeOrderSign φs • ofCrAnList (crAnTimeOrderList φs)
 
 @[inherit_doc timeOrderF]
-scoped[FieldSpecification.CrAnAlgebra] notation "𝓣ᶠ(" a ")" => timeOrderF a
+scoped[FieldSpecification.FieldOpFreeAlgebra] notation "𝓣ᶠ(" a ")" => timeOrderF a
 
 lemma timeOrderF_ofCrAnList (φs : List 𝓕.CrAnStates) :
     𝓣ᶠ(ofCrAnList φs) = crAnTimeOrderSign φs • ofCrAnList (crAnTimeOrderList φs) := by
   rw [← ofListBasis_eq_ofList]
   simp only [timeOrderF, Basis.constr_basis]
 
-lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.CrAnAlgebra) : 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c) := by
-  let pc (c : 𝓕.CrAnAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c) := by
+  let pc (c : 𝓕.FieldOpFreeAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
     Prop := 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c)
   change pc c (Basis.mem_span _ c)
   apply Submodule.span_induction
   · intro x hx
     obtain ⟨φs, rfl⟩ := hx
     simp only [ofListBasis_eq_ofList, pc]
-    let pb (b : 𝓕.CrAnAlgebra) (hb : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+    let pb (b : 𝓕.FieldOpFreeAlgebra) (hb : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
       Prop := 𝓣ᶠ(a * b * ofCrAnList φs) = 𝓣ᶠ(a * 𝓣ᶠ(b) * ofCrAnList φs)
     change pb b (Basis.mem_span _ b)
     apply Submodule.span_induction
     · intro x hx
       obtain ⟨φs', rfl⟩ := hx
       simp only [ofListBasis_eq_ofList, pb]
-      let pa (a : 𝓕.CrAnAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+      let pa (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
         Prop := 𝓣ᶠ(a * ofCrAnList φs' * ofCrAnList φs) = 𝓣ᶠ(a * 𝓣ᶠ(ofCrAnList φs') * ofCrAnList φs)
       change pa a (Basis.mem_span _ a)
       apply Submodule.span_induction
@@ -87,13 +87,13 @@ lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.CrAnAlgebra) : 𝓣ᶠ(a * b * c) 
   · intro x hx h hp
     simp_all [pc]
 
-lemma timeOrderF_timeOrderF_right (a b : 𝓕.CrAnAlgebra) : 𝓣ᶠ(a * b) = 𝓣ᶠ(a * 𝓣ᶠ(b)) := by
+lemma timeOrderF_timeOrderF_right (a b : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b) = 𝓣ᶠ(a * 𝓣ᶠ(b)) := by
   trans 𝓣ᶠ(a * b * 1)
   · simp
   · rw [timeOrderF_timeOrderF_mid]
     simp
 
-lemma timeOrderF_timeOrderF_left (a b : 𝓕.CrAnAlgebra) : 𝓣ᶠ(a * b) = 𝓣ᶠ(𝓣ᶠ(a) * b) := by
+lemma timeOrderF_timeOrderF_left (a b : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b) = 𝓣ᶠ(𝓣ᶠ(a) * b) := by
   trans 𝓣ᶠ(1 * a * b)
   · simp
   · rw [timeOrderF_timeOrderF_mid]
@@ -163,28 +163,28 @@ lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel
     simp_all
 
 lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right
-    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.CrAnAlgebra) :
+    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca) = 0 := by
   rw [timeOrderF_timeOrderF_right,
     timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left
-    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.CrAnAlgebra) :
+    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca * a) = 0 := by
   rw [timeOrderF_timeOrderF_left,
     timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_mid
-    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a b : 𝓕.CrAnAlgebra) :
+    {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a b : 𝓕.FieldOpFreeAlgebra) :
     𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid,
     timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel
-    {φ1 φ2 : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.CrAnAlgebra) :
+    {φ1 φ2 : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣ᶠ([a, [ofCrAnState φ1, ofCrAnState φ2]ₛca]ₛca) = 0 := by
   rw [← bosonicProj_add_fermionicProj a]
   simp only [map_add, LinearMap.add_apply]
@@ -361,6 +361,6 @@ lemma timeOrderF_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.
 
 end
 
-end CrAnAlgebra
+end FieldOpFreeAlgebra
 
 end FieldSpecification

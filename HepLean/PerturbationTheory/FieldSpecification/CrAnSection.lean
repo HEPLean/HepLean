@@ -22,7 +22,7 @@ That is to say, the states underlying `ψs` are the states in `φs`.
 We denote these sections as `CrAnSection φs`.
 
 Looking forward the main consequence of this definition is the lemma
-`FieldSpecification.CrAnAlgebra.ofStateList_sum`.
+`FieldSpecification.FieldOpFreeAlgebra.ofStateList_sum`.
 
 In this module we define various properties of `CrAnSection`.
 

@@ -20,7 +20,7 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 open FieldOpAlgebra
 open HepLean.List
 open WickContraction

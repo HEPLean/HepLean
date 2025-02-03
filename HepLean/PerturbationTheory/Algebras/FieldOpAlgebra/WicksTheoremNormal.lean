@@ -15,7 +15,7 @@ import HepLean.Meta.Remark.Basic
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 namespace FieldOpAlgebra
 open WickContraction
 open EqTimeOnly

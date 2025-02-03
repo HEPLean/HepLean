@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.TimeOrder
+import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.TimeOrder
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 /-!
 
@@ -12,7 +12,7 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 -/
 
 namespace FieldSpecification
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 open HepLean.List
 open FieldStatistic
 
@@ -153,16 +153,16 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnList {φ1 φ2 φ3 : 𝓕.C
     simp
 
 @[simp]
-lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnStates} (a b : 𝓕.CrAnAlgebra) :
+lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnStates} (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca * b) = 0 := by
-  let pb (b : 𝓕.CrAnAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+  let pb (b : 𝓕.FieldOpFreeAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
     Prop := ι 𝓣ᶠ(a * [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca * b) = 0
   change pb b (Basis.mem_span _ b)
   apply Submodule.span_induction
   · intro x hx
     obtain ⟨φs, rfl⟩ := hx
     simp only [ofListBasis_eq_ofList, pb]
-    let pa (a : 𝓕.CrAnAlgebra) (hc : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+    let pa (a : 𝓕.FieldOpFreeAlgebra) (hc : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
       Prop := ι 𝓣ᶠ(a * [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca * ofCrAnList φs) = 0
     change pa a (Basis.mem_span _ a)
     apply Submodule.span_induction
@@ -182,10 +182,10 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF {φ1 φ2 φ3 : 𝓕.CrAnStates} 
     simp_all [pb, hpx]
 
 lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnStates}
-    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.CrAnAlgebra) :
+    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * b) =
     ι ([ofCrAnState φ, ofCrAnState ψ]ₛca * 𝓣ᶠ(a * b)) := by
-  let pb (b : 𝓕.CrAnAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+  let pb (b : 𝓕.FieldOpFreeAlgebra) (hc : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
     Prop := ι 𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * b) =
     ι ([ofCrAnState φ, ofCrAnState ψ]ₛca * 𝓣ᶠ(a * b))
   change pb b (Basis.mem_span _ b)
@@ -193,7 +193,7 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnStates}
   · intro x hx
     obtain ⟨φs, rfl⟩ := hx
     simp only [ofListBasis_eq_ofList, map_mul, pb]
-    let pa (a : 𝓕.CrAnAlgebra) (hc : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+    let pa (a : 𝓕.FieldOpFreeAlgebra) (hc : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
       Prop := ι 𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * ofCrAnList φs) =
       ι ([ofCrAnState φ, ofCrAnState ψ]ₛca * 𝓣ᶠ(a* ofCrAnList φs))
     change pa a (Basis.mem_span _ a)
@@ -278,7 +278,7 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnStates}
     simp_all [pb, hpx]
 
 lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnStates}
-    (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) (a b : 𝓕.CrAnAlgebra) :
+    (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid]
   have hφψ : ¬ (crAnTimeOrderRel φ ψ) ∨ ¬ (crAnTimeOrderRel ψ φ) := by
@@ -300,10 +300,10 @@ lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnStates}
 
 -/
 
-lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.CrAnAlgebra)
+lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
     (h : a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι 𝓣ᶠ(a) = 0 := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at h
-  let p {k : Set 𝓕.CrAnAlgebra} (a : CrAnAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓣ᶠ(a) = 0
+  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) := ι 𝓣ᶠ(a) = 0
   change p a h
   apply AddSubgroup.closure_induction
   · intro x hx
@@ -358,7 +358,7 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.CrAnAlgebra)
   · intro x hx
     simp [p]
 
-lemma ι_timeOrderF_eq_of_equiv (a b : 𝓕.CrAnAlgebra) (h : a ≈ b) :
+lemma ι_timeOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) :
     ι 𝓣ᶠ(a) = ι 𝓣ᶠ(b) := by
   rw [equiv_iff_sub_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
@@ -390,7 +390,7 @@ scoped[FieldSpecification.FieldOpAlgebra] notation "𝓣(" a ")" => timeOrder a
 
 -/
 
-lemma timeOrder_eq_ι_timeOrderF (a : 𝓕.CrAnAlgebra) :
+lemma timeOrder_eq_ι_timeOrderF (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣(ι a) = ι 𝓣ᶠ(a) := rfl
 
 lemma timeOrder_ofFieldOp_ofFieldOp_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :

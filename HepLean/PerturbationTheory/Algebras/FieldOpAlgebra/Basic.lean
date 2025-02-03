@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.SuperCommute
+import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.SuperCommute
 import Mathlib.Algebra.RingQuot
 import Mathlib.RingTheory.TwoSidedIdeal.Operations
 /-!
@@ -13,7 +13,7 @@ import Mathlib.RingTheory.TwoSidedIdeal.Operations
 -/
 
 namespace FieldSpecification
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 open HepLean.List
 open FieldStatistic
 
@@ -21,7 +21,7 @@ variable (𝓕 : FieldSpecification)
 
 /-- The set contains the super-commutors equal to zero in the operator algebra.
   This contains e.g. the super-commutor of two creation operators. -/
-def fieldOpIdealSet : Set (CrAnAlgebra 𝓕) :=
+def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
   { x |
     (∃ (φ1 φ2 φ3 : 𝓕.CrAnStates),
         x = [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca)
@@ -39,16 +39,16 @@ abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCo
 namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
-/-- The instance of a setoid on `CrAnAlgebra` from the ideal `TwoSidedIdeal`. -/
-instance : Setoid (CrAnAlgebra 𝓕) := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.toSetoid
+/-- The instance of a setoid on `FieldOpFreeAlgebra` from the ideal `TwoSidedIdeal`. -/
+instance : Setoid (FieldOpFreeAlgebra 𝓕) := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.toSetoid
 
-lemma equiv_iff_sub_mem_ideal (x y : CrAnAlgebra 𝓕) :
+lemma equiv_iff_sub_mem_ideal (x y : FieldOpFreeAlgebra 𝓕) :
     x ≈ y ↔ x - y ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [← TwoSidedIdeal.rel_iff]
   rfl
 
-/-- The projection of `CrAnAlgebra` down to `FieldOpAlgebra` as an algebra map. -/
-def ι : CrAnAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
+/-- The projection of `FieldOpFreeAlgebra` down to `FieldOpAlgebra` as an algebra map. -/
+def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.mk'
   map_one' := by rfl
   map_mul' x y := by rfl
@@ -62,9 +62,9 @@ lemma ι_surjective : Function.Surjective (@ι 𝓕) := by
   use x
   rfl
 
-lemma ι_apply (x : CrAnAlgebra 𝓕) : ι x = Quotient.mk _ x := rfl
+lemma ι_apply (x : FieldOpFreeAlgebra 𝓕) : ι x = Quotient.mk _ x := rfl
 
-lemma ι_of_mem_fieldOpIdealSet (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
+lemma ι_of_mem_fieldOpIdealSet (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     ι x = 0 := by
   rw [ι_apply]
   change ⟦x⟧ = ⟦0⟧
@@ -157,8 +157,8 @@ lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnList (φ1 φ2
     simp [ofCrAnList_singleton, ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_ofCrAnState]
 
 @[simp]
-lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_crAnAlgebra (φ1 φ2 : 𝓕.CrAnStates)
-    (a : 𝓕.CrAnAlgebra) : ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, a]ₛca = 0 := by
+lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_fieldOpFreeAlgebra (φ1 φ2 : 𝓕.CrAnStates)
+    (a : 𝓕.FieldOpFreeAlgebra) : ι [[ofCrAnState φ1, ofCrAnState φ2]ₛca, a]ₛca = 0 := by
   change (ι.toLinearMap ∘ₗ superCommuteF [ofCrAnState φ1, ofCrAnState φ2]ₛca) a = _
   have h1 : (ι.toLinearMap ∘ₗ superCommuteF [ofCrAnState φ1, ofCrAnState φ2]ₛca) = 0 := by
     apply (ofCrAnListBasis.ext fun l ↦ ?_)
@@ -166,8 +166,8 @@ lemma ι_superCommuteF_superCommuteF_ofCrAnState_ofCrAnState_crAnAlgebra (φ1 φ
   rw [h1]
   simp
 
-lemma ι_commute_crAnAlgebra_superCommuteF_ofCrAnState_ofCrAnState (φ1 φ2 : 𝓕.CrAnStates)
-    (a : 𝓕.CrAnAlgebra) : ι a * ι [ofCrAnState φ1, ofCrAnState φ2]ₛca -
+lemma ι_commute_fieldOpFreeAlgebra_superCommuteF_ofCrAnState_ofCrAnState (φ1 φ2 : 𝓕.CrAnStates)
+    (a : 𝓕.FieldOpFreeAlgebra) : ι a * ι [ofCrAnState φ1, ofCrAnState φ2]ₛca -
     ι [ofCrAnState φ1, ofCrAnState φ2]ₛca * ι a = 0 := by
   rcases ι_superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_zero φ1 φ2 with h | h
   swap
@@ -182,7 +182,7 @@ lemma ι_superCommuteF_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnStat
   rw [Subalgebra.mem_center_iff]
   intro a
   obtain ⟨a, rfl⟩ := ι_surjective a
-  have h0 := ι_commute_crAnAlgebra_superCommuteF_ofCrAnState_ofCrAnState φ ψ a
+  have h0 := ι_commute_fieldOpFreeAlgebra_superCommuteF_ofCrAnState_ofCrAnState φ ψ a
   trans ι ((superCommuteF (ofCrAnState φ)) (ofCrAnState ψ)) * ι a + 0
   swap
   simp only [add_zero]
@@ -194,7 +194,7 @@ lemma ι_superCommuteF_ofCrAnState_ofCrAnState_mem_center (φ ψ : 𝓕.CrAnStat
 ## The kernal of ι
 -/
 
-lemma ι_eq_zero_iff_mem_ideal (x : CrAnAlgebra 𝓕) :
+lemma ι_eq_zero_iff_mem_ideal (x : FieldOpFreeAlgebra 𝓕) :
     ι x = 0 ↔ x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [ι_apply]
   change ⟦x⟧ = ⟦0⟧ ↔ _
@@ -203,7 +203,7 @@ lemma ι_eq_zero_iff_mem_ideal (x : CrAnAlgebra 𝓕) :
   simp only
   rfl
 
-lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
+lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.bosonicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.bosonicProj = 0 := by
   have hx' := hx
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
@@ -234,7 +234,7 @@ lemma bosonicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈
     · right
       rw [bosonicProj_of_mem_fermionic _ h]
 
-lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
+lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ 𝓕.fieldOpIdealSet ∨ x.fermionicProj = 0 := by
   have hx' := hx
   simp only [fieldOpIdealSet, exists_prop, Set.mem_setOf_eq] at hx
@@ -265,10 +265,10 @@ lemma fermionicProj_mem_fieldOpIdealSet_or_zero (x : CrAnAlgebra 𝓕) (hx : x �
       rw [fermionicProj_of_mem_fermionic _ h]
       simpa using hx'
 
-lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
+lemma bosonicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
     x.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure] at hx
-  let p {k : Set 𝓕.CrAnAlgebra} (a : CrAnAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) : Prop :=
+  let p {k : Set 𝓕.FieldOpFreeAlgebra} (a : FieldOpFreeAlgebra 𝓕) (h : a ∈ AddSubgroup.closure k) : Prop :=
     a.bosonicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet
   change p x hx
   apply AddSubgroup.closure_induction
@@ -401,7 +401,7 @@ lemma bosonicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.spa
   · intro x hx
     simp [p]
 
-lemma fermionicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
+lemma fermionicProj_mem_ideal (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
     x.fermionicProj.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   have hb := bosonicProj_mem_ideal x hx
   rw [← ι_eq_zero_iff_mem_ideal] at hx hb ⊢
@@ -409,7 +409,7 @@ lemma fermionicProj_mem_ideal (x : CrAnAlgebra 𝓕) (hx : x ∈ TwoSidedIdeal.s
   simp only [map_add] at hx
   simp_all
 
-lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : CrAnAlgebra 𝓕) :
+lemma ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero (x : FieldOpFreeAlgebra 𝓕) :
     ι x = 0 ↔ ι x.bosonicProj.1 = 0 ∧ ι x.fermionicProj.1 = 0 := by
   apply Iff.intro
   · intro h

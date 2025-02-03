@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.TimeOrder
+import HepLean.PerturbationTheory.Algebras.FieldOpFreeAlgebra.TimeOrder
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 /-!
 
@@ -12,20 +12,20 @@ import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
 -/
 
 namespace FieldSpecification
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 open HepLean.List
 open FieldStatistic
 
 namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
-lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.CrAnAlgebra) (h : ι b = 0) :
+lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι b = 0) :
     ι [a, b]ₛca = 0 := by
   rw [superCommuteF_expand_bosonicProj_fermionicProj]
   rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
   simp_all
 
-lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.CrAnAlgebra) (h : ι a = 0) :
+lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι a = 0) :
     ι [a, b]ₛca = 0 := by
   rw [superCommuteF_expand_bosonicProj_fermionicProj]
   rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
@@ -37,12 +37,12 @@ lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.CrAnAlgebra) (h : ι 
 
 -/
 
-lemma ι_superCommuteF_right_zero_of_mem_ideal (a b : 𝓕.CrAnAlgebra)
+lemma ι_superCommuteF_right_zero_of_mem_ideal (a b : 𝓕.FieldOpFreeAlgebra)
     (h : b ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι [a, b]ₛca = 0 := by
   apply ι_superCommuteF_eq_zero_of_ι_right_zero
   exact (ι_eq_zero_iff_mem_ideal b).mpr h
 
-lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.CrAnAlgebra) (h : b1 ≈ b2) :
+lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.FieldOpFreeAlgebra) (h : b1 ≈ b2) :
     ι [a, b1]ₛca = ι [a, b2]ₛca := by
   rw [equiv_iff_sub_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
@@ -50,7 +50,7 @@ lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.CrAnAlgebra) (h : b1 �
   exact ι_superCommuteF_right_zero_of_mem_ideal a (b1 - b2) h
 
 /-- The super commutor on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
-noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) :
+noncomputable def superCommuteRight (a : 𝓕.FieldOpFreeAlgebra) :
   FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ superCommuteF a)
     (ι_superCommuteF_eq_of_equiv_right a)
@@ -67,13 +67,13 @@ noncomputable def superCommuteRight (a : 𝓕.CrAnAlgebra) :
     rw [← map_smul, ι_apply, ι_apply]
     simp
 
-lemma superCommuteRight_apply_ι (a b : 𝓕.CrAnAlgebra) :
+lemma superCommuteRight_apply_ι (a b : 𝓕.FieldOpFreeAlgebra) :
     superCommuteRight a (ι b) = ι [a, b]ₛca := by rfl
 
-lemma superCommuteRight_apply_quot (a b : 𝓕.CrAnAlgebra) :
+lemma superCommuteRight_apply_quot (a b : 𝓕.FieldOpFreeAlgebra) :
     superCommuteRight a ⟦b⟧= ι [a, b]ₛca := by rfl
 
-lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.CrAnAlgebra) (h : a1 ≈ a2) :
+lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.FieldOpFreeAlgebra) (h : a1 ≈ a2) :
     superCommuteRight a1 = superCommuteRight a2 := by
   rw [equiv_iff_sub_mem_ideal] at h
   ext b
@@ -114,7 +114,7 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
 @[inherit_doc superCommute]
 scoped[FieldSpecification.FieldOpAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
 
-lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.CrAnAlgebra) :
+lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.FieldOpFreeAlgebra) :
     [ι a, ι b]ₛ = ι [a, b]ₛca := rfl
 
 /-!
