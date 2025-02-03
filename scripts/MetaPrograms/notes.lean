@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Meta.Basic
 import HepLean.Meta.Remark.Properties
 import HepLean.Meta.Notes.ToHTML
+import Mathlib.Lean.CoreM
 /-!
 
 # Extracting notes from Lean files
@@ -42,7 +43,7 @@ def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
 def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
   let docStringIndent := d.docString.replace "\n" "\n      "
-  let link ←  Name.toGitHubLink d.fileName d.line
+  let link := Name.toGitHubLink d.fileName d.line
   return s!"
   - type: name
     name: {d.name}
@@ -82,7 +83,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     let newString := s!"
   - type: remark
     name: \"{shortName}\"
-    link: \"{← Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
+    link: \"{Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
     content: |
       {contentIndent}"
     return ⟨x.1 ++ [newString], x.2⟩
