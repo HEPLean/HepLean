@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Tactic.FinCases
 import Mathlib.CategoryTheory.Comma.Over
-import Mathlib.CategoryTheory.Limits.Shapes.Terminal
+import Mathlib.CategoryTheory.IsomorphismClasses
 import Mathlib.Data.Fintype.Perm
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.WalkCounting
 /-!

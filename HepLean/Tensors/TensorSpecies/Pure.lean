@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Tensors.TensorSpecies.DualRepIso
+import HepLean.Tensors.TensorSpecies.Basic
 /-!
 
 # Pure tensors
@@ -20,7 +20,6 @@ open MonoidalCategory
 noncomputable section
 
 namespace TensorSpecies
-open TensorTree
 variable (S : TensorSpecies)
 
 /-- The type of tensors specified by a map to colors `c : OverColor S.C`. -/

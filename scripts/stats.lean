@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Informal.Post
+import Mathlib.Lean.CoreM
 /-!
 
 # HepLean Stats
@@ -12,9 +13,7 @@ This file concerns with statistics of HepLean.
 
 -/
 
-
 open Lean System Meta HepLean
-
 
 def getStats : MetaM String := do
   let noDefsVal ← noDefs

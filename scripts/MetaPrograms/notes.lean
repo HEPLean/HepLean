@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.Meta.Basic
 import HepLean.Meta.Remark.Properties
 import HepLean.Meta.Notes.ToHTML
+import Mathlib.Lean.CoreM
 /-!
 
 # Extracting notes from Lean files
@@ -42,7 +43,7 @@ def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
 def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
   let docStringIndent := d.docString.replace "\n" "\n      "
-  let link ←  Name.toGitHubLink d.fileName d.line
+  let link := Name.toGitHubLink d.fileName d.line
   return s!"
   - type: name
     name: {d.name}
@@ -82,7 +83,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     let newString := s!"
   - type: remark
     name: \"{shortName}\"
-    link: \"{← Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
+    link: \"{Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
     content: |
       {contentIndent}"
     return ⟨x.1 ++ [newString], x.2⟩
@@ -134,16 +135,16 @@ def perturbationTheory : Note where
     .name `FieldSpecification.singleBoson,
     .name `FieldSpecification.singleFermion,
     .name `FieldSpecification.doubleBosonDoubleFermion,
-    .h2 "States",
+    .h2 "FieldOp",
     .p "Given a field, there are three common states (or operators) of that field that we work with.
       These are the in and out asymptotic states and the position states.",
     .p "For a field structure `𝓕` these states are defined as:",
     .name `FieldSpecification.IncomingAsymptotic,
     .name `FieldSpecification.OutgoingAsymptotic,
-    .name `FieldSpecification.PositionStates,
+    .name `FieldSpecification.PositionFieldOp,
     .p "We will want to consider all three of these types of states simultanously so we define
-      and inductive type `States` which is the disjoint union of these three types of states.",
-    .name `FieldSpecification.States,
+      and inductive type `FieldOp` which is the disjoint union of these three types of states.",
+    .name `FieldSpecification.FieldOp,
     .h2 "Time ordering",
     .name `FieldSpecification.timeOrderRel,
     .name `FieldSpecification.timeOrderSign,

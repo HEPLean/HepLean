@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.TimeContract
 import HepLean.PerturbationTheory.WickContraction.StaticContract
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeContraction
+import HepLean.PerturbationTheory.FieldOpAlgebra.TimeContraction
 /-!
 
 # Sub contractions
@@ -16,7 +16,7 @@ open FieldSpecification
 variable {𝓕 : FieldSpecification}
 
 namespace WickContraction
-variable {n : ℕ} {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+variable {n : ℕ} {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
 open HepLean.List
 open FieldOpAlgebra
 

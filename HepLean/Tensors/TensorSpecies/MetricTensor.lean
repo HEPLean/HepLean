@@ -102,18 +102,14 @@ lemma metricTensor_contr_dual_metricTensor_outer_eq_unit (c : S.C) :
   apply perm_congr _ rfl
   apply OverColor.Hom.fin_ext
   intro i
-  simp only [Functor.id_obj, mk_hom, Function.comp_apply, Equiv.refl_symm, Equiv.coe_refl, id_eq,
-    Fin.zero_eta, Matrix.cons_val_zero, List.pmap.eq_1, ContrPair.contrSwapHom,
+  simp only [Function.comp_apply, Equiv.refl_symm, Equiv.coe_refl, id_eq, ContrPair.contrSwapHom,
     extractOne_homToEquiv, Category.assoc, Hom.hom_comp, Over.comp_left, equivToHomEq_hom_left,
-    Equiv.toFun_as_coe, types_comp_apply, finMapToEquiv_apply, mkIso_hom_hom_left_apply]
-  rw [extractTwo_hom_left_apply]
-  simp only [mk_left, braidPerm_toEquiv, Equiv.symm_trans_apply, Equiv.symm_symm,
-    Equiv.sumComm_symm, Equiv.sumComm_apply, finExtractOnePerm_symm_apply, Equiv.trans_apply,
-    Equiv.symm_apply_apply, Sum.swap_swap, Equiv.apply_symm_apply, finExtractOne_symm_inr_apply,
-    Fin.zero_succAbove, List.pmap.eq_2, Fin.mk_one, List.pmap.eq_1, Matrix.cons_val_one,
-    Matrix.head_cons, extractTwo_hom_left_apply, permProdRight_toEquiv, equivToHomEq_toEquiv,
-    Equiv.sumCongr_refl, Equiv.refl_trans, Equiv.symm_trans_self, Equiv.refl_symm, Equiv.refl_apply,
-    predAboveI_succAbove, finExtractOnePerm_apply]
+    types_comp_apply, mkIso_hom_hom_left_apply]
+  conv_lhs =>
+    right
+    rw [extractTwo_hom_left_apply]
+  simp only [mk_left, braidPerm_toEquiv, permProdRight_toEquiv, equivToHomEq_toEquiv,
+    finExtractOnePerm_apply, finExtractOne_symm_inr_apply, extractTwo_hom_left_apply]
   fin_cases i
   · decide
   · decide

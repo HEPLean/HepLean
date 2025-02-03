@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.WickContraction.TimeContract
 import HepLean.PerturbationTheory.WickContraction.Join
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.TimeContraction
 /-!
 
 # Time contractions
@@ -22,16 +20,16 @@ open FieldOpAlgebra
 
 /-- The condition on a Wick contraction which is true iff and only if every contraction
   is between two fields of equal time. -/
-def EqTimeOnly {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) : Prop :=
+def EqTimeOnly {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : Prop :=
   ∀ (i j), {i, j} ∈ φsΛ.1 → timeOrderRel φs[i] φs[j]
 noncomputable section
 
-instance {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+instance {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     Decidable (EqTimeOnly φsΛ) :=
     inferInstanceAs (Decidable (∀ (i j), {i, j} ∈ φsΛ.1 → timeOrderRel φs[i] φs[j]))
 
 namespace EqTimeOnly
-variable {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+variable {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
 
 lemma timeOrderRel_of_eqTimeOnly_pair {i j : Fin φs.length} (h : {i, j} ∈ φsΛ.1)
     (hc : EqTimeOnly φsΛ) :
@@ -50,7 +48,7 @@ lemma timeOrderRel_both_of_eqTimeOnly {i j : Fin φs.length} (h : {i, j} ∈ φs
     rw [@Finset.pair_comm]
     exact h
 
-lemma eqTimeOnly_iff_forall_finset {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+lemma eqTimeOnly_iff_forall_finset {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     φsΛ.EqTimeOnly ↔ ∀ (a : φsΛ.1),
       timeOrderRel (φs[φsΛ.fstFieldOfContract a]) (φs[φsΛ.sndFieldOfContract a])
       ∧ timeOrderRel (φs[φsΛ.sndFieldOfContract a]) (φs[φsΛ.fstFieldOfContract a]) := by
@@ -94,7 +92,7 @@ lemma eqTimeOnly_iff_forall_finset {φs : List 𝓕.States} (φsΛ : WickContrac
       simp_all
 
 @[simp]
-lemma empty_mem {φs : List 𝓕.States} : empty (n := φs.length).EqTimeOnly := by
+lemma empty_mem {φs : List 𝓕.FieldOp} : empty (n := φs.length).EqTimeOnly := by
   rw [eqTimeOnly_iff_forall_finset]
   simp [empty]
 
@@ -111,12 +109,12 @@ lemma staticContract_eq_timeContract_of_eqTimeOnly (h : φsΛ.EqTimeOnly) :
   exact a.2
   exact h
 
-lemma eqTimeOnly_congr {φs φs' : List 𝓕.States} (h : φs = φs') (φsΛ : WickContraction φs.length) :
+lemma eqTimeOnly_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') (φsΛ : WickContraction φs.length) :
     (congr (by simp [h]) φsΛ).EqTimeOnly (φs := φs') ↔ φsΛ.EqTimeOnly := by
   subst h
   simp
 
-lemma quotContraction_eqTimeOnly {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+lemma quotContraction_eqTimeOnly {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     (h : φsΛ.EqTimeOnly) (S : Finset (Finset (Fin φs.length))) (ha : S ⊆ φsΛ.1) :
     (φsΛ.quotContraction S ha).EqTimeOnly := by
   rw [eqTimeOnly_iff_forall_finset]
@@ -129,7 +127,7 @@ lemma quotContraction_eqTimeOnly {φs : List 𝓕.States} {φsΛ : WickContracti
   rw [eqTimeOnly_iff_forall_finset] at h
   apply h
 
-lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (h : 0 < φsΛ.1.card) (h1 : φsΛ.EqTimeOnly) :
     ∃ (i j : Fin φs.length) (h : i < j) (φsucΛ : WickContraction [singleton h]ᵘᶜ.length),
     φsΛ = join (singleton h) φsucΛ ∧ (timeOrderRel φs[i] φs[j] ∧ timeOrderRel φs[j] φs[i])
@@ -163,7 +161,7 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.States} (φsΛ : Wi
       simp only [subContraction, Finset.card_singleton, id_eq, eq_mpr_eq_cast] at h1
       omega
 
-lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.States}
+lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (hl : φsΛ.EqTimeOnly) (a b: 𝓕.FieldOpAlgebra) : (n : ℕ) → (hn : φsΛ.1.card = n) →
     𝓣(a * φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(a * b)
@@ -186,13 +184,13 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.St
     simp_all only [Nat.succ_eq_add_one, Fin.getElem_fin, add_left_inj]
     simp_all
 
-lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid {φs : List 𝓕.States}
+lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (hl : φsΛ.EqTimeOnly) (a b : 𝓕.FieldOpAlgebra) :
     𝓣(a * φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(a * b) := by
   exact timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction φsΛ hl a b φsΛ.1.card rfl
 
-lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.States}
+lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (hl : φsΛ.EqTimeOnly) (b : 𝓕.FieldOpAlgebra) :
     𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b) := by
@@ -201,8 +199,8 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.States}
   rw [timeOrder_timeContract_mul_of_eqTimeOnly_mid φsΛ hl]
   simp
 
-lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
-    (h1 : ¬ φsΛ.EqTimeOnly) :
+lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
+    (φsΛ : WickContraction φs.length) (h1 : ¬ φsΛ.EqTimeOnly) :
     ∃ (i j : Fin φs.length) (h : i < j) (φsucΛ : WickContraction [singleton h]ᵘᶜ.length),
     φsΛ = join (singleton h) φsucΛ ∧ (¬ timeOrderRel φs[i] φs[j] ∨ ¬ timeOrderRel φs[j] φs[i]) := by
   rw [eqTimeOnly_iff_forall_finset] at h1
@@ -226,7 +224,7 @@ lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.States} (φsΛ : 
     · simp_all [h1]
     · simp_all [h1]
 
-lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.States}
+lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (hl : ¬ φsΛ.EqTimeOnly) : 𝓣(φsΛ.timeContract.1) = 0 := by
   obtain ⟨i, j, hij, φsucΛ, rfl, hr⟩ := exists_join_singleton_of_not_eqTimeOnly φsΛ hl
@@ -240,7 +238,7 @@ lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.States}
   intro h
   simp_all
 
-lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (hl : ¬ φsΛ.EqTimeOnly) : 𝓣(φsΛ.staticContract.1) = 0 := by
   obtain ⟨i, j, hij, φsucΛ, rfl, hr⟩ := exists_join_singleton_of_not_eqTimeOnly φsΛ hl
   rw [join_staticContract]
@@ -256,17 +254,17 @@ end EqTimeOnly
 
 /-- The condition on a Wick contraction which is true if it has at least one contraction
   which is between two equal time fields. -/
-def HaveEqTime {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) : Prop :=
+def HaveEqTime {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : Prop :=
   ∃ (i j : Fin φs.length) (h : {i, j} ∈ φsΛ.1),
   timeOrderRel φs[i] φs[j] ∧ timeOrderRel φs[j] φs[i]
 
-noncomputable instance {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+noncomputable instance {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     Decidable (HaveEqTime φsΛ) :=
   inferInstanceAs (Decidable (∃ (i j : Fin φs.length)
     (h : ({i, j} : Finset (Fin φs.length)) ∈ φsΛ.1),
     timeOrderRel φs[i] φs[j] ∧ timeOrderRel φs[j] φs[i]))
 
-lemma haveEqTime_iff_finset {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+lemma haveEqTime_iff_finset {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     HaveEqTime φsΛ ↔ ∃ (a : Finset (Fin φs.length)) (h : a ∈ φsΛ.1),
       timeOrderRel φs[φsΛ.fstFieldOfContract ⟨a, h⟩] φs[φsΛ.sndFieldOfContract ⟨a, h⟩]
     ∧ timeOrderRel φs[φsΛ.sndFieldOfContract ⟨a, h⟩] φs[φsΛ.fstFieldOfContract ⟨a, h⟩] := by
@@ -299,20 +297,20 @@ lemma haveEqTime_iff_finset {φs : List 𝓕.States} (φsΛ : WickContraction φ
     exact h1
 
 @[simp]
-lemma empty_not_haveEqTime {φs : List 𝓕.States} :
+lemma empty_not_haveEqTime {φs : List 𝓕.FieldOp} :
     ¬ HaveEqTime (empty : WickContraction φs.length) := by
   rw [haveEqTime_iff_finset]
   simp [empty]
 
 /-- Given a Wick contraction the subset of contracted pairs between eqaul time fields. -/
-def eqTimeContractSet {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+def eqTimeContractSet {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     Finset (Finset (Fin φs.length)) :=
   Finset.univ.filter (fun a =>
     a ∈ φsΛ.1 ∧ ∀ (h : a ∈ φsΛ.1),
     timeOrderRel φs[φsΛ.fstFieldOfContract ⟨a, h⟩] φs[φsΛ.sndFieldOfContract ⟨a, h⟩]
     ∧ timeOrderRel φs[φsΛ.sndFieldOfContract ⟨a, h⟩] φs[φsΛ.fstFieldOfContract ⟨a, h⟩])
 
-lemma eqTimeContractSet_subset {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) :
+lemma eqTimeContractSet_subset {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     eqTimeContractSet φsΛ ⊆ φsΛ.1 := by
   simp only [eqTimeContractSet, Fin.getElem_fin]
   intro a
@@ -320,12 +318,12 @@ lemma eqTimeContractSet_subset {φs : List 𝓕.States} (φsΛ : WickContraction
   intro h _
   exact h
 
-lemma mem_of_mem_eqTimeContractSet{φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+lemma mem_of_mem_eqTimeContractSet{φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     {a : Finset (Fin φs.length)} (h : a ∈ eqTimeContractSet φsΛ) : a ∈ φsΛ.1 := by
   simp only [eqTimeContractSet, Fin.getElem_fin, Finset.mem_filter, Finset.mem_univ, true_and] at h
   exact h.1
 
-lemma join_eqTimeContractSet {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma join_eqTimeContractSet {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
     eqTimeContractSet (join φsΛ φsucΛ) = φsΛ.eqTimeContractSet ∪
     φsucΛ.eqTimeContractSet.map (Finset.mapEmbedding uncontractedListEmd).toEmbedding := by
@@ -380,7 +378,7 @@ lemma join_eqTimeContractSet {φs : List 𝓕.States} (φsΛ : WickContraction �
           join_sndFieldOfContract_joinLiftRight]
         simpa using h2
 
-lemma eqTimeContractSet_of_not_haveEqTime {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+lemma eqTimeContractSet_of_not_haveEqTime {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     (h : ¬ HaveEqTime φsΛ) : eqTimeContractSet φsΛ = ∅ := by
   ext a
   simp only [Finset.not_mem_empty, iff_false]
@@ -391,7 +389,7 @@ lemma eqTimeContractSet_of_not_haveEqTime {φs : List 𝓕.States} {φsΛ : Wick
   have h2 := hn.2 hn.1
   simp_all
 
-lemma eqTimeContractSet_of_mem_eqTimeOnly {φs : List 𝓕.States} {φsΛ : WickContraction φs.length}
+lemma eqTimeContractSet_of_mem_eqTimeOnly {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     (h : φsΛ.EqTimeOnly) : eqTimeContractSet φsΛ = φsΛ.1 := by
   ext a
   simp only [eqTimeContractSet, Fin.getElem_fin, Finset.mem_filter, Finset.mem_univ, true_and,
@@ -399,7 +397,7 @@ lemma eqTimeContractSet_of_mem_eqTimeOnly {φs : List 𝓕.States} {φsΛ : Wick
   rw [EqTimeOnly.eqTimeOnly_iff_forall_finset] at h
   exact fun h_1 => h ⟨a, h_1⟩
 
-lemma subContraction_eqTimeContractSet_eqTimeOnly {φs : List 𝓕.States}
+lemma subContraction_eqTimeContractSet_eqTimeOnly {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     (φsΛ.subContraction (eqTimeContractSet φsΛ) (eqTimeContractSet_subset φsΛ)).EqTimeOnly := by
   rw [EqTimeOnly.eqTimeOnly_iff_forall_finset]
@@ -410,7 +408,7 @@ lemma subContraction_eqTimeContractSet_eqTimeOnly {φs : List 𝓕.States}
   simp only [subContraction_fstFieldOfContract, Fin.getElem_fin, subContraction_sndFieldOfContract]
   exact ha2.2 ha2.1
 
-lemma pair_mem_eqTimeContractSet_iff {φs : List 𝓕.States} {i j : Fin φs.length}
+lemma pair_mem_eqTimeContractSet_iff {φs : List 𝓕.FieldOp} {i j : Fin φs.length}
     (φsΛ : WickContraction φs.length) (h : {i, j} ∈ φsΛ.1) :
     {i, j} ∈ φsΛ.eqTimeContractSet ↔ timeOrderRel φs[i] φs[j] ∧ timeOrderRel φs[j] φs[i] := by
   simp only [eqTimeContractSet, Fin.getElem_fin, Finset.mem_filter, Finset.mem_univ, true_and]
@@ -436,7 +434,7 @@ lemma pair_mem_eqTimeContractSet_iff {φs : List 𝓕.States} {i j : Fin φs.len
       simp_all only [and_self]
 
 lemma subContraction_eqTimeContractSet_not_empty_of_haveEqTime
-    {φs : List 𝓕.States} (φsΛ : WickContraction φs.length) (h : HaveEqTime φsΛ) :
+    {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) (h : HaveEqTime φsΛ) :
     φsΛ.subContraction (eqTimeContractSet φsΛ) (eqTimeContractSet_subset φsΛ) ≠ empty := by
   simp only [ne_eq]
   erw [Subtype.eq_iff]
@@ -450,7 +448,7 @@ lemma subContraction_eqTimeContractSet_not_empty_of_haveEqTime
   simp_all only [Fin.getElem_fin, and_self]
   exact h1
 
-lemma quotContraction_eqTimeContractSet_not_haveEqTime {φs : List 𝓕.States}
+lemma quotContraction_eqTimeContractSet_not_haveEqTime {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     ¬ HaveEqTime (φsΛ.quotContraction (eqTimeContractSet φsΛ) (eqTimeContractSet_subset φsΛ)) := by
   rw [haveEqTime_iff_finset]
@@ -470,7 +468,7 @@ lemma quotContraction_eqTimeContractSet_not_haveEqTime {φs : List 𝓕.States}
   obtain ⟨h, h1⟩ := hn''
   simp_all
 
-lemma join_haveEqTime_of_eqTimeOnly_nonEmpty {φs : List 𝓕.States} (φsΛ : WickContraction φs.length)
+lemma join_haveEqTime_of_eqTimeOnly_nonEmpty {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (h1 : φsΛ.EqTimeOnly) (h2 : φsΛ ≠ empty)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
     HaveEqTime (join φsΛ φsucΛ) := by
@@ -485,7 +483,7 @@ lemma join_haveEqTime_of_eqTimeOnly_nonEmpty {φs : List 𝓕.States} (φsΛ : W
   rw [Finset.pair_comm]
   exact h
 
-lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.States} {x1 x2 :
+lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.FieldOp} {x1 x2 :
     Σ (φsΛ : {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly ∧ φsΛ ≠ empty}),
     {φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ HaveEqTime φssucΛ}}
     (h1 : x1.1.1 = x2.1.1) (h2 : x1.2.1 = congr (by simp [h1]) x2.2.1) : x1 = x2 := by
@@ -499,7 +497,7 @@ lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.States} {x1 x2 :
 /-- The equivalence which seperates a Wick contraction which has an equal time contraction
 into a non-empty contraction only between equal-time fields and a Wick contraction which
 does not have equal time contractions. -/
-def hasEqTimeEquiv (φs : List 𝓕.States) :
+def hasEqTimeEquiv (φs : List 𝓕.FieldOp) :
     {φsΛ : WickContraction φs.length // HaveEqTime φsΛ} ≃
     Σ (φsΛ : {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly ∧ φsΛ ≠ empty}),
     {φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ HaveEqTime φssucΛ} where
@@ -540,7 +538,7 @@ def hasEqTimeEquiv (φs : List 𝓕.States) :
         rw [uncontractedListEmd_congr hs]
         rw [Finset.map_map]
 
-lemma sum_haveEqTime (φs : List 𝓕.States)
+lemma sum_haveEqTime (φs : List 𝓕.FieldOp)
     (f : WickContraction φs.length → M) [AddCommMonoid M]:
   ∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}), f φsΛ =
   ∑ (φsΛ : {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly ∧ φsΛ ≠ empty}),

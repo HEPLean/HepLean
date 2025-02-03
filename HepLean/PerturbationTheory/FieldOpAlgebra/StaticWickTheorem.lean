@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.StaticContract
-import HepLean.PerturbationTheory.WicksTheorem
+import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
 import HepLean.Meta.Remark.Basic
 /-!
 
@@ -14,7 +14,7 @@ import HepLean.Meta.Remark.Basic
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open CrAnAlgebra
+open FieldOpFreeAlgebra
 
 open HepLean.List
 open WickContraction
@@ -23,17 +23,24 @@ namespace FieldOpAlgebra
 
 lemma static_wick_theorem_nil : ofFieldOpList [] = ∑ (φsΛ : WickContraction [].length),
     φsΛ.sign (𝓕 := 𝓕) • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ) := by
-  simp only [ofFieldOpList, ofStateList_nil, map_one, List.length_nil]
+  simp only [ofFieldOpList, ofFieldOpListF_nil, map_one, List.length_nil]
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
   simp [sign, empty, staticContract]
 
-theorem static_wick_theorem : (φs : List 𝓕.States) →
+/--
+The static Wicks theorem states that
+`φ₀…φₙ` is equal to the sum of
+`φsΛ.1.sign • φsΛ.1.staticContract * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
+over all Wick contraction `φsΛ`.
+This is compared to the ordinary Wicks theorem in which `staticContract` is replaced with
+`timeContract`.
+-/
+theorem static_wick_theorem : (φs : List 𝓕.FieldOp) →
     ofFieldOpList φs = ∑ (φsΛ : WickContraction φs.length),
     φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
   | [] => static_wick_theorem_nil
   | φ :: φs => by
-    rw [ofFieldOpList_cons]
-    rw [static_wick_theorem φs]
+    rw [ofFieldOpList_cons, static_wick_theorem φs]
     rw [show (φ :: φs) = φs.insertIdx (⟨0, Nat.zero_lt_succ φs.length⟩ : Fin φs.length.succ) φ
       from rfl]
     conv_rhs => rw [insertLift_sum]
@@ -47,11 +54,11 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
       simp [mul_assoc]
     rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum]
     rw [Finset.mul_sum]
-    rw [uncontractedStatesEquiv_list_sum]
+    rw [uncontractedFieldOpEquiv_list_sum]
     refine Finset.sum_congr rfl (fun n _ => ?_)
     match n with
     | none =>
-      simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+      simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
         Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
         Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insertAndContract_none,
         insertAndContract_uncontractedList_none_zero]
@@ -89,14 +96,14 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
           exact h0
         · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
           have h1 : contractStateAtIndex φ [c]ᵘᶜ
-              ((uncontractedStatesEquiv φs c) (some n)) = 0 := by
-            simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
+              ((uncontractedFieldOpEquiv φs c) (some n)) = 0 := by
+            simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
               Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
               instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
             right
             simp only [uncontractedListGet, List.getElem_map,
               uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem]
-            rw [superCommute_anPart_ofState_diff_grade_zero]
+            rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
             exact hn
           rw [h1]
           simp

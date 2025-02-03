@@ -325,7 +325,7 @@ lemma isBounded_of_𝓵_pos (h : 0 < P.𝓵) : P.IsBounded := by
 
 /-- When there is no quartic coupling, the potential is bounded iff the mass squared is
 non-positive, i.e., for `P : Potential` then `P.IsBounded` iff `P.μ2 ≤ 0`. That is to say
-`- P.μ2 * ‖φ‖_H^2 x` is bounded below ifff `P.μ2 ≤ 0`.-/
+`- P.μ2 * ‖φ‖_H^2 x` is bounded below ifff `P.μ2 ≤ 0`. -/
 informal_lemma isBounded_iff_of_𝓵_zero where
   deps := [`StandardModel.HiggsField.Potential.IsBounded, `StandardModel.HiggsField.Potential]
 
