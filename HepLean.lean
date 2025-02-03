@@ -159,7 +159,7 @@ import HepLean.PerturbationTheory.WickContraction.InsertAndContractNat
 import HepLean.PerturbationTheory.WickContraction.Involutions
 import HepLean.PerturbationTheory.WickContraction.IsFull
 import HepLean.PerturbationTheory.WickContraction.Join
-import HepLean.PerturbationTheory.WickContraction.Sign
+import HepLean.PerturbationTheory.WickContraction.Sign.Basic
 import HepLean.PerturbationTheory.WickContraction.Singleton
 import HepLean.PerturbationTheory.WickContraction.StaticContract
 import HepLean.PerturbationTheory.WickContraction.SubContraction

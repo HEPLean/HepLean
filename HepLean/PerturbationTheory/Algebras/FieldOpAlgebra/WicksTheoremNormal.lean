@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.WickContraction.TimeCond
+import HepLean.PerturbationTheory.WickContraction.Sign.Join
 import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.StaticWickTheorem
 import HepLean.Meta.Remark.Basic
 /-!
@@ -173,6 +174,13 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
   rw [timeOrderF_ofCrAnList]
   simp
 
+/--
+Wicks theorem for normal ordering followed by time-ordering, states that
+`𝓣(𝓝(φ₀…φₙ))` is equal to the sum over
+`φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
+for those Wick contraction `φsΛ` which do not have any equal time contractions.
+This is compared to the ordinary Wicks theorem which sums over all Wick contractions.
+-/
 theorem wicks_theorem_normal_order : (φs : List 𝓕.States) →
     𝓣(𝓝(ofFieldOpList φs)) = ∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)

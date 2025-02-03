@@ -27,13 +27,20 @@ lemma static_wick_theorem_nil : ofFieldOpList [] = ∑ (φsΛ : WickContraction 
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
   simp [sign, empty, staticContract]
 
+/--
+The static Wicks theorem states that
+`φ₀…φₙ` is equal to the sum of
+`φsΛ.1.sign • φsΛ.1.staticContract * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
+over all Wick contraction `φsΛ`.
+This is compared to the ordinary Wicks theorem in which `staticContract` is replaced with
+`timeContract`.
+-/
 theorem static_wick_theorem : (φs : List 𝓕.States) →
     ofFieldOpList φs = ∑ (φsΛ : WickContraction φs.length),
     φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
   | [] => static_wick_theorem_nil
   | φ :: φs => by
-    rw [ofFieldOpList_cons]
-    rw [static_wick_theorem φs]
+    rw [ofFieldOpList_cons, static_wick_theorem φs]
     rw [show (φ :: φs) = φs.insertIdx (⟨0, Nat.zero_lt_succ φs.length⟩ : Fin φs.length.succ) φ
       from rfl]
     conv_rhs => rw [insertLift_sum]

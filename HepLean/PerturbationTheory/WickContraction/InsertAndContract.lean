@@ -311,4 +311,61 @@ lemma insertAndContract_uncontractedList_none_zero (φ : 𝓕.States) {φs : Lis
   rw [insertAndContract_uncontractedList_none_map]
   simp [uncontractedListOrderPos]
 
+open FieldStatistic in
+lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.States) (φs : List 𝓕.States)
+    (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
+    (𝓕 |>ₛ ⟨(φs.insertIdx i φ).get, insertAndContractLiftFinset φ i a⟩) = 𝓕 |>ₛ ⟨φs.get, a⟩ := by
+  simp only [ofFinset, Nat.succ_eq_add_one]
+  congr 1
+  rw [get_eq_insertIdx_succAbove φ _ i, ← List.map_map, ← List.map_map]
+  congr
+  have h1 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))
+      (List.map i.succAbove (Finset.sort (fun x1 x2 => x1 ≤ x2) a))).Sorted (· ≤ ·) := by
+    simp only [Nat.succ_eq_add_one, List.map_map]
+    refine
+      fin_list_sorted_monotone_sorted (Finset.sort (fun x1 x2 => x1 ≤ x2) a) ?hl
+        (⇑(finCongr (Eq.symm (insertIdx_length_fin φ φs i))) ∘ i.succAbove) ?hf
+    exact Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) a
+    refine StrictMono.comp (fun ⦃a b⦄ a => a) ?hf.hf
+    exact Fin.strictMono_succAbove i
+  have h2 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))
+      (List.map i.succAbove (Finset.sort (fun x1 x2 => x1 ≤ x2) a))).Nodup := by
+    simp only [Nat.succ_eq_add_one, List.map_map]
+    refine List.Nodup.map ?_ ?_
+    apply (Equiv.comp_injective _ (finCongr _)).mpr
+    exact Fin.succAbove_right_injective
+    exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) a
+  have h3 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))
+      (List.map i.succAbove (Finset.sort (fun x1 x2 => x1 ≤ x2) a))).toFinset
+      = (insertAndContractLiftFinset φ i a) := by
+    ext b
+    simp only [Nat.succ_eq_add_one, List.map_map, List.mem_toFinset, List.mem_map, Finset.mem_sort,
+      Function.comp_apply, finCongr_apply]
+    rcases insert_fin_eq_self φ i b with hk | hk
+    · subst hk
+      simp only [Nat.succ_eq_add_one, self_not_mem_insertAndContractLiftFinset, iff_false,
+        not_exists, not_and]
+      intro x hx
+      refine Fin.ne_of_val_ne ?h.inl.h
+      simp only [Fin.coe_cast, ne_eq]
+      rw [Fin.val_eq_val]
+      exact Fin.succAbove_ne i x
+    · obtain ⟨k, hk⟩ := hk
+      subst hk
+      simp only [Nat.succ_eq_add_one]
+      rw [succAbove_mem_insertAndContractLiftFinset]
+      apply Iff.intro
+      · intro h
+        obtain ⟨x, hx⟩ := h
+        simp only [Fin.ext_iff, Fin.coe_cast] at hx
+        rw [Fin.val_eq_val] at hx
+        rw [Function.Injective.eq_iff] at hx
+        rw [← hx.2]
+        exact hx.1
+        exact Fin.succAbove_right_injective
+      · intro h
+        use k
+  rw [← h3]
+  rw [(List.toFinset_sort (· ≤ ·) h2).mpr h1]
+
 end WickContraction
