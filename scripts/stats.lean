@@ -16,7 +16,6 @@ This file concerns with statistics of HepLean.
 
 open Lean System Meta HepLean
 
-
 def getStats : MetaM String := do
   let noDefsVal ← noDefs
   let noLemmasVal ← noLemmas
