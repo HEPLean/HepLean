@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import HepLean.Meta.Basic
 import HepLean.Meta.TODO.Basic
+import Mathlib.Lean.CoreM
 /-!
 
 # Turning TODOs into YAML
@@ -23,7 +24,7 @@ def todoToYAML (todo : todoInfo) : MetaM String := do
   return s!"
 - content: \"{todo.content}\"
   file: {todo.fileName}
-  githubLink: {← Name.toGitHubLink todo.fileName todo.line}
+  githubLink: {Name.toGitHubLink todo.fileName todo.line}
   line: {todo.line}"
 
 unsafe def todosToYAML : MetaM String := do
