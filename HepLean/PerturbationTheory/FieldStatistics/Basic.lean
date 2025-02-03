@@ -15,9 +15,8 @@ Basic properties related to whether a field, or list of fields, is bosonic or fe
 
 -/
 
-/-- A field can either be bosonic or fermionic in nature.
-  That is to say, they can either have Bose-Einstein statistics or
-  Fermi-Dirac statistics. -/
+/-- The type `FieldStatistic` is the type containing two elements `bosonic` and `fermionic`.
+  This type is used to specify if a field or operator obeys bosonic or fermionic statistics. -/
 inductive FieldStatistic : Type where
   | bosonic : FieldStatistic
   | fermionic : FieldStatistic

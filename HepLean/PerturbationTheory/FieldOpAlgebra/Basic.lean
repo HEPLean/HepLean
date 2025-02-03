@@ -501,18 +501,18 @@ def anPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
 lemma anPart_eq_ι_anPartF (φ : 𝓕.FieldOp) : anPart φ = ι (anPartF φ) := rfl
 
 @[simp]
-lemma anPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+lemma anPart_negAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
     anPart (FieldOp.inAsymp φ) = 0 := by
   simp [anPart, anPartF]
 
 @[simp]
-lemma anPart_position (φ : 𝓕.PositionFieldOp) :
+lemma anPart_position (φ : 𝓕.Fields × SpaceTime) :
     anPart (FieldOp.position φ) =
     ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.annihilate⟩ := by
   simp [anPart, ofCrAnFieldOp]
 
 @[simp]
-lemma anPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+lemma anPart_posAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
     anPart (FieldOp.outAsymp φ) = ofCrAnFieldOp ⟨FieldOp.outAsymp φ, ()⟩ := by
   simp [anPart, ofCrAnFieldOp]
 
@@ -522,18 +522,18 @@ def crPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
 lemma crPart_eq_ι_crPartF (φ : 𝓕.FieldOp) : crPart φ = ι (crPartF φ) := rfl
 
 @[simp]
-lemma crPart_negAsymp (φ : 𝓕.IncomingAsymptotic) :
+lemma crPart_negAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
     crPart (FieldOp.inAsymp φ) = ofCrAnFieldOp ⟨FieldOp.inAsymp φ, ()⟩ := by
   simp [crPart, ofCrAnFieldOp]
 
 @[simp]
-lemma crPart_position (φ : 𝓕.PositionFieldOp) :
+lemma crPart_position (φ : 𝓕.Fields × SpaceTime) :
     crPart (FieldOp.position φ) =
     ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.create⟩ := by
   simp [crPart, ofCrAnFieldOp]
 
 @[simp]
-lemma crPart_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
+lemma crPart_posAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
     crPart (FieldOp.outAsymp φ) = 0 := by
   simp [crPart]
 

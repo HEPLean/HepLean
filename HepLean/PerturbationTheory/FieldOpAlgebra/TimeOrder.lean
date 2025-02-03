@@ -506,5 +506,13 @@ lemma timeOrder_timeOrder_right (a b : 𝓕.FieldOpAlgebra) :
   rw [timeOrder_timeOrder_mid]
   simp
 
+/-- Time ordering is a projection. -/
+lemma timeOrder_timeOrder (a : 𝓕.FieldOpAlgebra) :
+    𝓣(𝓣(a)) = 𝓣(a) := by
+  trans 𝓣(𝓣(a) * 1)
+  · simp
+  · rw [← timeOrder_timeOrder_left]
+    simp
+
 end FieldOpAlgebra
 end FieldSpecification
