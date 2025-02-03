@@ -413,13 +413,13 @@ lemma timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder {φ ψ : 𝓕.State
   rfl
 
 lemma timeOrder_ofFieldOpList_nil : 𝓣(ofFieldOpList (𝓕 := 𝓕) []) = 1 := by
-  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofStateList_nil]
+  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofFieldOpListF_nil]
   simp
 
 @[simp]
 lemma timeOrder_ofFieldOpList_singleton (φ : 𝓕.States) :
     𝓣(ofFieldOpList [φ]) = ofFieldOpList [φ] := by
-  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofStateList_singleton]
+  rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_ofFieldOpListF_singleton]
 
 lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
     𝓣(ofFieldOpList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,

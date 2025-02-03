@@ -99,41 +99,41 @@ lemma timeOrderF_timeOrderF_left (a b : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b
   · rw [timeOrderF_timeOrderF_mid]
     simp
 
-lemma timeOrderF_ofStateList (φs : List 𝓕.States) :
-    𝓣ᶠ(ofStateList φs) = timeOrderSign φs • ofStateList (timeOrderList φs) := by
+lemma timeOrderF_ofFieldOpListF (φs : List 𝓕.States) :
+    𝓣ᶠ(ofFieldOpListF φs) = timeOrderSign φs • ofFieldOpListF (timeOrderList φs) := by
   conv_lhs =>
-    rw [ofStateList_sum, map_sum]
+    rw [ofFieldOpListF_sum, map_sum]
     enter [2, x]
     rw [timeOrderF_ofCrAnList]
   simp only [crAnTimeOrderSign_crAnSection]
   rw [← Finset.smul_sum]
   congr
-  rw [ofStateList_sum, sum_crAnSections_timeOrder]
+  rw [ofFieldOpListF_sum, sum_crAnSections_timeOrder]
   rfl
 
-lemma timeOrderF_ofStateList_nil : timeOrderF (𝓕 := 𝓕) (ofStateList []) = 1 := by
-  rw [timeOrderF_ofStateList]
+lemma timeOrderF_ofFieldOpListF_nil : timeOrderF (𝓕 := 𝓕) (ofFieldOpListF []) = 1 := by
+  rw [timeOrderF_ofFieldOpListF]
   simp [timeOrderSign, Wick.koszulSign, timeOrderList]
 
 @[simp]
-lemma timeOrderF_ofStateList_singleton (φ : 𝓕.States) : 𝓣ᶠ(ofStateList [φ]) = ofStateList [φ] := by
-  simp [timeOrderF_ofStateList, timeOrderSign, timeOrderList]
+lemma timeOrderF_ofFieldOpListF_singleton (φ : 𝓕.States) : 𝓣ᶠ(ofFieldOpListF [φ]) = ofFieldOpListF [φ] := by
+  simp [timeOrderF_ofFieldOpListF, timeOrderSign, timeOrderList]
 
 lemma timeOrderF_ofState_ofState_ordered {φ ψ : 𝓕.States} (h : timeOrderRel φ ψ) :
     𝓣ᶠ(ofState φ * ofState ψ) = ofState φ * ofState ψ := by
-  rw [← ofStateList_singleton, ← ofStateList_singleton, ← ofStateList_append,
-    timeOrderF_ofStateList]
+  rw [← ofFieldOpListF_singleton, ← ofFieldOpListF_singleton, ← ofFieldOpListF_append,
+    timeOrderF_ofFieldOpListF]
   simp only [List.singleton_append]
   rw [timeOrderSign_pair_ordered h, timeOrderList_pair_ordered h]
   simp
 
 lemma timeOrderF_ofState_ofState_not_ordered {φ ψ : 𝓕.States} (h : ¬ timeOrderRel φ ψ) :
     𝓣ᶠ(ofState φ * ofState ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • ofState ψ * ofState φ := by
-  rw [← ofStateList_singleton, ← ofStateList_singleton,
-    ← ofStateList_append, timeOrderF_ofStateList]
+  rw [← ofFieldOpListF_singleton, ← ofFieldOpListF_singleton,
+    ← ofFieldOpListF_append, timeOrderF_ofFieldOpListF]
   simp only [List.singleton_append, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [timeOrderSign_pair_not_ordered h, timeOrderList_pair_not_ordered h]
-  simp [← ofStateList_append]
+  simp [← ofFieldOpListF_append]
 
 lemma timeOrderF_ofState_ofState_not_ordered_eq_timeOrderF {φ ψ : 𝓕.States}
     (h : ¬ timeOrderRel φ ψ) :
@@ -298,11 +298,11 @@ lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_eq_time
   where `φᵢ` is the state
   which has maximum time and `s` is the exchange sign of `φᵢ` and `φ₀φ₁…φᵢ₋₁`. -/
 lemma timeOrderF_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States) :
-    𝓣ᶠ(ofStateList (φ :: φs)) =
+    𝓣ᶠ(ofFieldOpListF (φ :: φs)) =
     𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ (φ :: φs).take (maxTimeFieldPos φ φs)) •
-    ofState (maxTimeField φ φs) * 𝓣ᶠ(ofStateList (eraseMaxTimeField φ φs)) := by
-  rw [timeOrderF_ofStateList, timeOrderList_eq_maxTimeField_timeOrderList]
-  rw [ofStateList_cons, timeOrderF_ofStateList]
+    ofState (maxTimeField φ φs) * 𝓣ᶠ(ofFieldOpListF (eraseMaxTimeField φ φs)) := by
+  rw [timeOrderF_ofFieldOpListF, timeOrderList_eq_maxTimeField_timeOrderList]
+  rw [ofFieldOpListF_cons, timeOrderF_ofFieldOpListF]
   simp only [instCommGroup.eq_1, Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
   congr
   rw [timerOrderSign_of_eraseMaxTimeField, mul_assoc]
@@ -313,10 +313,10 @@ lemma timeOrderF_eq_maxTimeField_mul (φ : 𝓕.States) (φs : List 𝓕.States)
   which has maximum time and `s` is the exchange sign of `φᵢ` and `φ₀φ₁…φᵢ₋₁`.
   Here `s` is written using finite sets. -/
 lemma timeOrderF_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.States) :
-    𝓣ᶠ(ofStateList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
+    𝓣ᶠ(ofFieldOpListF (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
       (Finset.filter (fun x =>
         (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs) Finset.univ)⟩) •
-      ofState (maxTimeField φ φs) * 𝓣ᶠ(ofStateList (eraseMaxTimeField φ φs)) := by
+      ofState (maxTimeField φ φs) * 𝓣ᶠ(ofFieldOpListF (eraseMaxTimeField φ φs)) := by
   rw [timeOrderF_eq_maxTimeField_mul]
   congr 3
   apply FieldStatistic.ofList_perm

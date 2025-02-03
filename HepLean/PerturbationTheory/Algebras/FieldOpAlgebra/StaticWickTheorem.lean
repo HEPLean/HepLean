@@ -23,7 +23,7 @@ namespace FieldOpAlgebra
 
 lemma static_wick_theorem_nil : ofFieldOpList [] = ∑ (φsΛ : WickContraction [].length),
     φsΛ.sign (𝓕 := 𝓕) • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ) := by
-  simp only [ofFieldOpList, ofStateList_nil, map_one, List.length_nil]
+  simp only [ofFieldOpList, ofFieldOpListF_nil, map_one, List.length_nil]
   rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
   simp [sign, empty, staticContract]
 

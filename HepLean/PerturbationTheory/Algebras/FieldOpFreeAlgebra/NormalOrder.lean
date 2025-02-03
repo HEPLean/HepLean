@@ -527,11 +527,11 @@ lemma ofCrAnList_superCommuteF_normalOrderF_ofCrAnList (φs φs' : List 𝓕.CrA
   simp [normalOrderF_ofCrAnList, map_smul, superCommuteF_ofCrAnList_ofCrAnList, ofCrAnList_append,
     smul_sub, smul_smul, mul_comm]
 
-lemma ofCrAnList_superCommuteF_normalOrderF_ofStateList (φs : List 𝓕.CrAnStates)
-    (φs' : List 𝓕.States) : [ofCrAnList φs, 𝓝ᶠ(ofStateList φs')]ₛca =
-    ofCrAnList φs * 𝓝ᶠ(ofStateList φs') -
-    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnList φs := by
-  rw [ofStateList_sum, map_sum, Finset.mul_sum, Finset.smul_sum, Finset.sum_mul,
+lemma ofCrAnList_superCommuteF_normalOrderF_ofFieldOpListF (φs : List 𝓕.CrAnStates)
+    (φs' : List 𝓕.States) : [ofCrAnList φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛca =
+    ofCrAnList φs * 𝓝ᶠ(ofFieldOpListF φs') -
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnList φs := by
+  rw [ofFieldOpListF_sum, map_sum, Finset.mul_sum, Finset.smul_sum, Finset.sum_mul,
     ← Finset.sum_sub_distrib, map_sum]
   congr
   funext n
@@ -544,29 +544,29 @@ lemma ofCrAnList_superCommuteF_normalOrderF_ofStateList (φs : List 𝓕.CrAnSta
 
 -/
 
-lemma ofCrAnList_mul_normalOrderF_ofStateList_eq_superCommuteF (φs : List 𝓕.CrAnStates)
+lemma ofCrAnList_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnStates)
     (φs' : List 𝓕.States) :
-    ofCrAnList φs * 𝓝ᶠ(ofStateList φs') =
-    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnList φs
-    + [ofCrAnList φs, 𝓝ᶠ(ofStateList φs')]ₛca := by
-  simp [ofCrAnList_superCommuteF_normalOrderF_ofStateList]
+    ofCrAnList φs * 𝓝ᶠ(ofFieldOpListF φs') =
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnList φs
+    + [ofCrAnList φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
+  simp [ofCrAnList_superCommuteF_normalOrderF_ofFieldOpListF]
 
-lemma ofCrAnState_mul_normalOrderF_ofStateList_eq_superCommuteF (φ : 𝓕.CrAnStates)
-    (φs' : List 𝓕.States) : ofCrAnState φ * 𝓝ᶠ(ofStateList φs') =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs') * ofCrAnState φ
-    + [ofCrAnState φ, 𝓝ᶠ(ofStateList φs')]ₛca := by
-  simp [← ofCrAnList_singleton, ofCrAnList_mul_normalOrderF_ofStateList_eq_superCommuteF]
+lemma ofCrAnState_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φ : 𝓕.CrAnStates)
+    (φs' : List 𝓕.States) : ofCrAnState φ * 𝓝ᶠ(ofFieldOpListF φs') =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnState φ
+    + [ofCrAnState φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
+  simp [← ofCrAnList_singleton, ofCrAnList_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF]
 
-lemma anPartF_mul_normalOrderF_ofStateList_eq_superCommuteF (φ : 𝓕.States)
+lemma anPartF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φ : 𝓕.States)
     (φs' : List 𝓕.States) :
-    anPartF φ * 𝓝ᶠ(ofStateList φs') =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofStateList φs' * anPartF φ)
-    + [anPartF φ, 𝓝ᶠ(ofStateList φs')]ₛca := by
+    anPartF φ * 𝓝ᶠ(ofFieldOpListF φs') =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs' * anPartF φ)
+    + [anPartF φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
   rw [normalOrderF_mul_anPartF]
   match φ with
   | .inAsymp φ => simp
-  | .position φ => simp [ofCrAnState_mul_normalOrderF_ofStateList_eq_superCommuteF, crAnStatistics]
-  | .outAsymp φ => simp [ofCrAnState_mul_normalOrderF_ofStateList_eq_superCommuteF, crAnStatistics]
+  | .position φ => simp [ofCrAnState_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF, crAnStatistics]
+  | .outAsymp φ => simp [ofCrAnState_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF, crAnStatistics]
 
 end
 

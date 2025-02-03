@@ -72,27 +72,27 @@ def ofState (φ : 𝓕.States) : FieldOpFreeAlgebra 𝓕 :=
 /-- Maps a list of states to the creation and annihilation free-algebra by taking
   the product of their sums of creation and annihlation operators.
   Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
-def ofStateList (φs : List 𝓕.States) : FieldOpFreeAlgebra 𝓕 := (List.map ofState φs).prod
+def ofFieldOpListF (φs : List 𝓕.States) : FieldOpFreeAlgebra 𝓕 := (List.map ofState φs).prod
 
-/-- Coercion from `List 𝓕.States` to `FieldOpFreeAlgebra 𝓕` through `ofStateList`. -/
-instance : Coe (List 𝓕.States) (FieldOpFreeAlgebra 𝓕) := ⟨ofStateList⟩
+/-- Coercion from `List 𝓕.States` to `FieldOpFreeAlgebra 𝓕` through `ofFieldOpListF`. -/
+instance : Coe (List 𝓕.States) (FieldOpFreeAlgebra 𝓕) := ⟨ofFieldOpListF⟩
 
 @[simp]
-lemma ofStateList_nil : ofStateList ([] : List 𝓕.States) = 1 := rfl
+lemma ofFieldOpListF_nil : ofFieldOpListF ([] : List 𝓕.States) = 1 := rfl
 
-lemma ofStateList_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
-    ofStateList (φ :: φs) = ofState φ * ofStateList φs := rfl
+lemma ofFieldOpListF_cons (φ : 𝓕.States) (φs : List 𝓕.States) :
+    ofFieldOpListF (φ :: φs) = ofState φ * ofFieldOpListF φs := rfl
 
-lemma ofStateList_singleton (φ : 𝓕.States) :
-    ofStateList [φ] = ofState φ := by simp [ofStateList]
+lemma ofFieldOpListF_singleton (φ : 𝓕.States) :
+    ofFieldOpListF [φ] = ofState φ := by simp [ofFieldOpListF]
 
-lemma ofStateList_append (φs φs' : List 𝓕.States) :
-    ofStateList (φs ++ φs') = ofStateList φs * ofStateList φs' := by
-  dsimp only [ofStateList]
+lemma ofFieldOpListF_append (φs φs' : List 𝓕.States) :
+    ofFieldOpListF (φs ++ φs') = ofFieldOpListF φs * ofFieldOpListF φs' := by
+  dsimp only [ofFieldOpListF]
   rw [List.map_append, List.prod_append]
 
-lemma ofStateList_sum (φs : List 𝓕.States) :
-    ofStateList φs = ∑ (s : CrAnSection φs), ofCrAnList s.1 := by
+lemma ofFieldOpListF_sum (φs : List 𝓕.States) :
+    ofFieldOpListF φs = ∑ (s : CrAnSection φs), ofCrAnList s.1 := by
   induction φs with
   | nil => simp
   | cons φ φs ih =>
@@ -101,7 +101,7 @@ lemma ofStateList_sum (φs : List 𝓕.States) :
     conv_rhs =>
       enter [2, x]
       rw [← Finset.mul_sum]
-    rw [← Finset.sum_mul, ofStateList_cons, ← ih]
+    rw [← Finset.sum_mul, ofFieldOpListF_cons, ← ih]
     rfl
 
 /-!

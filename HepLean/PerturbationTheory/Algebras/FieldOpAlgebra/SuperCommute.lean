@@ -238,7 +238,7 @@ lemma superCommute_ofFieldOpList_ofFieldOpList (φs φs' : List 𝓕.States) :
     [ofFieldOpList φs, ofFieldOpList φs']ₛ = ofFieldOpList φs * ofFieldOpList φs' -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpList φs' * ofFieldOpList φs := by
   rw [ofFieldOpList, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofStateList_ofStatesList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofStatesList]
   rfl
 
 lemma superCommute_ofFieldOp_ofFieldOpList (φ : 𝓕.States) (φs : List 𝓕.States) :
@@ -252,7 +252,7 @@ lemma superCommute_ofFieldOpList_ofFieldOp (φs : List 𝓕.States) (φ : 𝓕.S
     [ofFieldOpList φs, ofFieldOp φ]ₛ = ofFieldOpList φs * ofFieldOp φ -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofFieldOp φ * ofFieldOpList φs := by
   rw [ofFieldOpList, ofFieldOp]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofStateList_ofState]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_ofFieldOpListF_ofState]
   rfl
 
 lemma superCommute_anPart_crPart (φ φ' : 𝓕.States) :
@@ -329,14 +329,14 @@ lemma superCommute_crPart_ofFieldOpList (φ : 𝓕.States) (φs : List 𝓕.Stat
     [crPart φ, ofFieldOpList φs]ₛ = crPart φ * ofFieldOpList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofFieldOpList φs * crPart φ := by
   rw [crPart, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_crPartF_ofStateList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_crPartF_ofFieldOpListF]
   rfl
 
 lemma superCommute_anPart_ofFieldOpList (φ : 𝓕.States) (φs : List 𝓕.States) :
     [anPart φ, ofFieldOpList φs]ₛ = anPart φ * ofFieldOpList φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofFieldOpList φs * anPart φ := by
   rw [anPart, ofFieldOpList]
-  rw [superCommute_eq_ι_superCommuteF, superCommuteF_anPartF_ofStateList]
+  rw [superCommute_eq_ι_superCommuteF, superCommuteF_anPartF_ofFieldOpListF]
   rfl
 
 lemma superCommute_crPart_ofFieldOp (φ φ' : 𝓕.States) :
@@ -494,7 +494,7 @@ lemma superCommute_ofCrAnFieldOpList_ofFieldOpList_eq_sum (φs : List 𝓕.CrAnS
     ofFieldOpList (φs'.drop (n + 1)) := by
   conv_lhs =>
     rw [ofCrAnFieldOpList, ofFieldOpList, superCommute_eq_ι_superCommuteF,
-      superCommuteF_ofCrAnList_ofStateList_eq_sum]
+      superCommuteF_ofCrAnList_ofFieldOpListF_eq_sum]
   rw [map_sum]
   rfl
 

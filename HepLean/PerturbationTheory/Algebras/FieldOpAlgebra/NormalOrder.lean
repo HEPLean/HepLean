@@ -409,7 +409,7 @@ lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.States)
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝(ofFieldOpList φs' * anPart φ) +
     [anPart φ, 𝓝(ofFieldOpList φs')]ₛ := by
   rw [anPart, ofFieldOpList, normalOrder_eq_ι_normalOrderF, ← map_mul]
-  rw [anPartF_mul_normalOrderF_ofStateList_eq_superCommuteF]
+  rw [anPartF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF]
   simp only [instCommGroup.eq_1, map_add, map_smul]
   rfl
 
@@ -520,7 +520,7 @@ lemma ofFieldOp_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.States)
     lhs
     rw [← add_mul, ← ofFieldOp_eq_crPart_add_anPart]
 
-/-- In the expansion of `ofState φ * normalOrderF (ofStateList φs)` the element
+/-- In the expansion of `ofState φ * normalOrderF (ofFieldOpListF φs)` the element
   of `𝓞.A` associated with contracting `φ` with the (optional) `n`th element of `φs`. -/
 noncomputable def contractStateAtIndex (φ : 𝓕.States) (φs : List 𝓕.States)
     (n : Option (Fin φs.length)) : 𝓕.FieldOpAlgebra :=
