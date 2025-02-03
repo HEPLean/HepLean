@@ -199,7 +199,6 @@ lemma uncontractedList_mem_iff (i : Fin n) :
 lemma uncontractedList_empty : (empty (n := n)).uncontractedList = List.finRange n := by
   simp [uncontractedList]
 
-@[simp]
 lemma nil_zero_uncontractedList : (empty (n := 0)).uncontractedList = [] := by
   simp [empty, uncontractedList]
 

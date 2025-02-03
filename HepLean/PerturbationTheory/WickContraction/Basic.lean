@@ -44,7 +44,6 @@ instance : DecidableEq (WickContraction n) := Subtype.instDecidableEq
 /-- The contraction consisting of no contracted pairs. -/
 def empty : WickContraction n := ⟨∅, by simp, by simp⟩
 
-@[simp]
 lemma card_zero_iff_empty (c : WickContraction n) : c.1.card = 0 ↔ c = empty := by
   rw [Subtype.eq_iff]
   simp [empty]

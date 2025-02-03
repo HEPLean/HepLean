@@ -68,7 +68,6 @@ lemma mem_uncontracted_iff_not_contracted (i : Fin n) :
     apply h {i, j} hj
     simp
 
-@[simp]
 lemma mem_uncontracted_empty (i : Fin n) : i ∈ empty.uncontracted := by
   rw [@mem_uncontracted_iff_not_contracted]
   intro p hp
