@@ -86,15 +86,15 @@ def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
 def crAnStatistics : 𝓕.CrAnFieldOp → FieldStatistic :=
   𝓕.statesStatistic ∘ 𝓕.crAnFieldOpToFieldOp
 
-/-- The field statistic of a `CrAnState`. -/
+/-- The field statistic of a `CrAnFieldOp`. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ =>
     (crAnStatistics 𝓕) φ
 
-/-- The field statistic of a list of `CrAnState`s. -/
+/-- The field statistic of a list of `CrAnFieldOp`s. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (crAnStatistics 𝓕) φ
 
-/-- The `CreateAnnihilate` value of a `CrAnState`s, i.e. whether it is a creation or
+/-- The `CreateAnnihilate` value of a `CrAnFieldOp`s, i.e. whether it is a creation or
   annihilation operator. -/
 scoped[FieldSpecification] infixl:80 "|>ᶜ" =>
     crAnFieldOpToCreateAnnihilate
