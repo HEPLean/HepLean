@@ -45,28 +45,24 @@ structure FieldSpecification where
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- An incoming asymptotic state is a field and a momentum. -/
-def IncomingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
-
-/-- An outgoing asymptotic states is a field and a momentum. -/
-def OutgoingAsymptotic : Type := 𝓕.Fields × Lorentz.Contr 4
-
-/-- A position state is a field and a space-time position. -/
-def PositionFieldOp : Type := 𝓕.Fields × SpaceTime
-
-/-- The type FieldOp is the inductive type combining the asymptotic states and position states. -/
+/-- For a field specification `𝓕`, the type `𝓕.FieldOp` is defined such that every element of
+  `FieldOp` corresponds either to:
+- an incoming asymptotic field operator `.inAsymp` specified by a field and a `4`-momentum.
+- an position operator `.position` specified by a field and a point in spacetime.
+- an outgoing asymptotic field operator `.outAsymp` specified by a field and a `4`-momentum.
+-/
 inductive FieldOp (𝓕 : FieldSpecification) where
-  | inAsymp : 𝓕.IncomingAsymptotic → 𝓕.FieldOp
-  | position : 𝓕.PositionFieldOp → 𝓕.FieldOp
-  | outAsymp : 𝓕.OutgoingAsymptotic → 𝓕.FieldOp
+  | inAsymp : 𝓕.Fields × Lorentz.Contr 4 → 𝓕.FieldOp
+  | position : 𝓕.Fields × SpaceTime → 𝓕.FieldOp
+  | outAsymp : 𝓕.Fields × Lorentz.Contr 4 → 𝓕.FieldOp
 
-/-- Taking a state to its underlying field. -/
+/-- Taking a field operator to its underlying field. -/
 def fieldOpToField : 𝓕.FieldOp → 𝓕.Fields
   | FieldOp.inAsymp φ => φ.1
   | FieldOp.position φ => φ.1
   | FieldOp.outAsymp φ => φ.1
 
-/-- The bool on `FieldOp` which is true only for position states. -/
+/-- The bool on `FieldOp` which is true only for position field operator. -/
 def statesIsPosition : 𝓕.FieldOp → Bool
   | FieldOp.position _ => true
   | _ => false

@@ -20,6 +20,7 @@ inductive NotePart
   | h2 : String → NotePart
   | p : String → NotePart
   | name : Name → NotePart
+  | warning : String → NotePart
 
 structure DeclInfo where
   line : Nat
@@ -73,6 +74,11 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
   - type: p
     content: \"{s}\""
     return ⟨x.1 ++ [newString], x.2⟩
+  | x, NotePart.warning s =>
+    let newString := s!"
+  - type: warning
+    content: \"{s}\""
+    return ⟨x.1 ++ [newString], x.2⟩
   | x, NotePart.name n => do
   match (← RemarkInfo.IsRemark n) with
   | true =>
@@ -111,12 +117,13 @@ def perturbationTheory : Note where
   title := "Proof of Wick's theorem"
   curators := ["Joseph Tooby-Smith"]
   parts := [
+    .warning "This note is a work in progress and is not finished. Use with caution.",
     .h1 "Introduction",
     .name `FieldSpecification.wicks_theorem_context,
     .p "In this note we walk through the important parts of the proof of Wick's theorem
       for both fermions and bosons,
       as it appears in HepLean. We start with some basic definitions.",
-    .h1 "Preliminary definitions",
+    .h1 "Field operators",
     .h2 "Field statistics",
     .p "A quantum field can either be a bosonic or fermionic. This information is
       contained in the inductive type `FieldStatistic`. This is defined as follows:",
@@ -135,23 +142,25 @@ def perturbationTheory : Note where
     .name `FieldSpecification.singleBoson,
     .name `FieldSpecification.singleFermion,
     .name `FieldSpecification.doubleBosonDoubleFermion,
-    .h2 "FieldOp",
-    .p "Given a field, there are three common states (or operators) of that field that we work with.
-      These are the in and out asymptotic states and the position states.",
-    .p "For a field structure `𝓕` these states are defined as:",
-    .name `FieldSpecification.IncomingAsymptotic,
-    .name `FieldSpecification.OutgoingAsymptotic,
-    .name `FieldSpecification.PositionFieldOp,
-    .p "We will want to consider all three of these types of states simultanously so we define
-      and inductive type `FieldOp` which is the disjoint union of these three types of states.",
+    .h2 "Field operators",
     .name `FieldSpecification.FieldOp,
-    .h2 "Time ordering",
+    .name `FieldSpecification.CrAnFieldOp,
+    .h2 "Field-operator free algebra",
+    .name `FieldSpecification.FieldOpFreeAlgebra,
+    .h2 "Field-operator algebra",
+    .name `FieldSpecification.FieldOpAlgebra,
+    .h1 "Time ordering",
     .name `FieldSpecification.timeOrderRel,
     .name `FieldSpecification.timeOrderSign,
-    .h2 "Creation and annihilation states",
-    .h2 "Normal ordering",
+    .h1 "Normal ordering",
     .h1 "Wick Contractions",
-    .h1 "Proof of Wick's theorem",
+    .h2 "Definition",
+    .h2 "Constructors",
+    .p "There are a number of ways to construct a Wick contraction from
+      other Wick contractions or single contractions.",
+    .h2 "Sign",
+    .h1 "Static Wick's theorem",
+    .h1 "Time-dependent Wick's theorem",
     .h2 "Wick terms",
     .name `FieldSpecification.wick_term_terminology,
     .name `FieldSpecification.wick_term_none_eq_wick_term_cons,
@@ -163,7 +172,9 @@ def perturbationTheory : Note where
       The proof of Wick's theorem follows from definitions and simple lemmas.",
     .name `FieldSpecification.wicks_theorem_nil,
     .h2 "Wick's theorems",
-    .name `FieldSpecification.wicks_theorem]
+    .name `FieldSpecification.wicks_theorem,
+    .h1 "Wick's theorem with normal ordering"]
+
 
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)

@@ -51,6 +51,11 @@ layout: default
   {% if entry.type == "p" %}
     <p>{{ entry.content }}</p>
   {% endif %}
+  {% if entry.type == "warning" %}
+  <div class="alert alert-danger" role="alert">
+    <b>Warning:</b> {{ entry.content }}
+  </div>
+  {% endif %}
   {% if entry.type == "name" %}
 
   <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px;">

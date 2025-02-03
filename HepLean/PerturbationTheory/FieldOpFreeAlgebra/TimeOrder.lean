@@ -26,7 +26,9 @@ open HepLean.List
 
 -/
 
-/-- Time ordering for the `FieldOpFreeAlgebra`. -/
+/-- Time ordering for the `FieldOpFreeAlgebra` defined by taking
+  `ofCrAnListF φs` to `crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)`.
+  The notation `𝓣ᶠ(a)` is used for the time-ordering of `a : FieldOpFreeAlgebra`. -/
 def timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
   crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)
