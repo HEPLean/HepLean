@@ -70,6 +70,12 @@ lemma timeConract_insertAndContract_some
     ext a
     simp
 
+@[simp]
+lemma timeContract_empty (φs : List 𝓕.States) :
+    (@empty φs.length).timeContract = 1 := by
+  rw [timeContract, empty]
+  simp
+
 open FieldStatistic
 
 lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt

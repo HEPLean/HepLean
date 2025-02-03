@@ -34,15 +34,15 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
   | φ :: φs => by
     rw [ofFieldOpList_cons]
     rw [static_wick_theorem φs]
-    rw [show  (φ :: φs) = φs.insertIdx (⟨0, Nat.zero_lt_succ φs.length⟩ : Fin φs.length.succ) φ
+    rw [show (φ :: φs) = φs.insertIdx (⟨0, Nat.zero_lt_succ φs.length⟩ : Fin φs.length.succ) φ
       from rfl]
-    conv_rhs => rw [insertLift_sum ]
+    conv_rhs => rw [insertLift_sum]
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro c _
-    trans  (sign φs c • ↑c.staticContract * (ofFieldOp φ * normalOrder (ofFieldOpList [c]ᵘᶜ)))
+    trans (sign φs c • ↑c.staticContract * (ofFieldOp φ * normalOrder (ofFieldOpList [c]ᵘᶜ)))
     · have ht := Subalgebra.mem_center_iff.mp (Subalgebra.smul_mem (Subalgebra.center ℂ _)
-        (c.staticContract).2 c.sign )
+        (c.staticContract).2 c.sign)
       conv_rhs => rw [← mul_assoc, ← ht]
       simp [mul_assoc]
     rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum]
@@ -61,7 +61,7 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
       simp only [Algebra.smul_mul_assoc, Nat.succ_eq_add_one, Fin.zero_eta, Fin.val_zero,
         List.insertIdx_zero]
       rw [normalOrder_uncontracted_some]
-      simp [← mul_assoc]
+      simp only [← mul_assoc]
       rw [← smul_mul_assoc]
       conv_rhs => rw [← smul_mul_assoc]
       congr 1
@@ -69,7 +69,7 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
       swap
       · simp
       rw [smul_smul]
-      by_cases hn :  GradingCompliant φs c ∧ (𝓕|>ₛφ) = (𝓕|>ₛ φs[n.1])
+      by_cases hn : GradingCompliant φs c ∧ (𝓕|>ₛφ) = (𝓕|>ₛ φs[n.1])
       · congr 1
         swap
         · have h1 := c.staticContract.2
@@ -82,19 +82,20 @@ theorem static_wick_theorem : (φs : List 𝓕.States) →
           ofFinset_empty, map_one, one_mul]
         simp only [Fin.zero_succAbove, Fin.not_lt_zero, not_false_eq_true]
         exact hn
-      · simp at hn
+      · simp only [Fin.getElem_fin, not_and] at hn
         by_cases h0 : ¬ GradingCompliant φs c
         · rw [staticContract_of_not_gradingCompliant]
           simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
           exact h0
-        · simp_all
-          have h1 :  contractStateAtIndex φ [c]ᵘᶜ
+        · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
+          have h1 : contractStateAtIndex φ [c]ᵘᶜ
               ((uncontractedStatesEquiv φs c) (some n)) = 0 := by
             simp only [contractStateAtIndex, uncontractedStatesEquiv, Equiv.optionCongr_apply,
               Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
               instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
             right
-            simp [uncontractedListGet]
+            simp only [uncontractedListGet, List.getElem_map,
+              uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem]
             rw [superCommute_anPart_ofState_diff_grade_zero]
             exact hn
           rw [h1]

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import HepLean.PerturbationTheory.Algebras.CrAnAlgebra.TimeOrder
-import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.Basic
+import HepLean.PerturbationTheory.Algebras.FieldOpAlgebra.SuperCommute
 /-!
 
 # Time Ordering on Field operator algebra
@@ -428,6 +428,81 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.States) (φs : List 𝓕.S
       ofFieldOp (maxTimeField φ φs) * 𝓣(ofFieldOpList (eraseMaxTimeField φ φs)) := by
   rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_eq_maxTimeField_mul_finset]
   rfl
+
+lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnStates}
+    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
+    𝓣(a * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
+    [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(a * b) := by
+  rw [ofCrAnFieldOp, ofCrAnFieldOp]
+  rw [superCommute_eq_ι_superCommuteF]
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF]
+  rw [ι_timeOrderF_superCommuteF_eq_time]
+  rfl
+  · simp_all
+  · simp_all
+
+lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnStates}
+    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
+    𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
+    [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(b) := by
+  trans 𝓣(1 * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b)
+  simp only [one_mul]
+  rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
+  simp
+
+lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnStates}
+    (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) :
+    𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ) = 0 := by
+  rw [ofCrAnFieldOp, ofCrAnFieldOp]
+  rw [superCommute_eq_ι_superCommuteF]
+  rw [timeOrder_eq_ι_timeOrderF]
+  trans ι (timeOrderF (1 * (superCommuteF (ofCrAnState φ)) (ofCrAnState ψ) * 1))
+  simp only [one_mul, mul_one]
+  rw [ι_timeOrderF_superCommuteF_neq_time]
+  exact hφψ
+
+lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.States}
+    (hφψ : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
+    𝓣([anPart φ,ofFieldOp ψ]ₛ) = 0 := by
+  rw [ofFieldOp_eq_sum]
+  simp only [map_sum]
+  apply Finset.sum_eq_zero
+  intro a ha
+  match φ with
+  | .inAsymp φ =>
+    simp
+  | .position φ =>
+    simp only [anPart_position, instCommGroup.eq_1]
+    apply timeOrder_superCommute_neq_time
+    simp_all [crAnTimeOrderRel]
+  | .outAsymp φ =>
+    simp only [anPart_posAsymp, instCommGroup.eq_1]
+    apply timeOrder_superCommute_neq_time
+    simp_all [crAnTimeOrderRel]
+
+lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
+    𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c) := by
+  obtain ⟨a, rfl⟩ := ι_surjective a
+  obtain ⟨b, rfl⟩ := ι_surjective b
+  obtain ⟨c, rfl⟩ := ι_surjective c
+  rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrder_eq_ι_timeOrderF,
+  ← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrderF_timeOrderF_mid]
+
+lemma timeOrder_timeOrder_left (b c : 𝓕.FieldOpAlgebra) :
+    𝓣(b * c) = 𝓣(𝓣(b) * c) := by
+  trans 𝓣(1 * b * c)
+  simp only [one_mul]
+  rw [timeOrder_timeOrder_mid]
+  simp
+
+lemma timeOrder_timeOrder_right (a b : 𝓕.FieldOpAlgebra) :
+    𝓣(a * b) = 𝓣(a * 𝓣(b)) := by
+  trans 𝓣(a * b * 1)
+  simp only [mul_one]
+  rw [timeOrder_timeOrder_mid]
+  simp
 
 end FieldOpAlgebra
 end FieldSpecification

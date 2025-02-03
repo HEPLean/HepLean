@@ -38,8 +38,31 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 
+/-- Wick contractions are decidable. -/
+instance : DecidableEq (WickContraction n) := Subtype.instDecidableEq
+
 /-- The contraction consisting of no contracted pairs. -/
 def empty : WickContraction n := ⟨∅, by simp, by simp⟩
+
+lemma card_zero_iff_empty (c : WickContraction n) : c.1.card = 0 ↔ c = empty := by
+  rw [Subtype.eq_iff]
+  simp [empty]
+
+lemma exists_pair_of_not_eq_empty (c : WickContraction n) (h : c ≠ empty) :
+    ∃ i j, {i, j} ∈ c.1 := by
+  by_contra hn
+  simp only [not_exists] at hn
+  have hc : c.1 = ∅ := by
+    ext a
+    simp only [Finset.not_mem_empty, iff_false]
+    by_contra hn'
+    have hc := c.2.1 a hn'
+    rw [@Finset.card_eq_two] at hc
+    obtain ⟨x, y, hx, rfl⟩ := hc
+    exact hn x y hn'
+  apply h
+  apply Subtype.eq
+  simp [empty, hc]
 
 /-- The equivalence between `WickContraction n` and `WickContraction m`
   derived from a propositional equality of `n` and `m`. -/
@@ -48,8 +71,13 @@ def congr : {n m : ℕ} → (h : n = m) → WickContraction n ≃ WickContractio
 
 @[simp]
 lemma congr_refl : c.congr rfl = c := by
-  cases c
   rfl
+
+@[simp]
+lemma card_congr {n m : ℕ} (h : n = m) (c : WickContraction n) :
+    (congr h c).1.card = c.1.card := by
+  subst h
+  simp
 
 lemma congr_contractions {n m : ℕ} (h : n = m) (c : WickContraction n) :
     ((congr h) c).1 = Finset.map (Finset.mapEmbedding (finCongr h)).toEmbedding c.1 := by
@@ -83,6 +111,11 @@ lemma congr_trans_apply {n m o : ℕ} (h1 : n = m) (h2 : m = o) (c : WickContrac
   subst h1 h2
   simp
 
+lemma mem_congr_iff {n m : ℕ} (h : n = m) {c : WickContraction n } {a : Finset (Fin m)} :
+    a ∈ (congr h c).1 ↔ Finset.map (finCongr h.symm).toEmbedding a ∈ c.1 := by
+  subst h
+  simp
+
 /-- Given a contracted pair in `c : WickContraction n` the contracted pair
   in `congr h c`. -/
 def congrLift {n m : ℕ} (h : n = m) {c : WickContraction n} (a : c.1) : (congr h c).1 :=
@@ -111,6 +144,18 @@ lemma congrLift_surjective {n m : ℕ} {c : WickContraction n} (h : n = m) :
 lemma congrLift_bijective {n m : ℕ} {c : WickContraction n} (h : n = m) :
     Function.Bijective (c.congrLift h) := by
   exact ⟨c.congrLift_injective h, c.congrLift_surjective h⟩
+
+/-- Given a contracted pair in `c : WickContraction n` the contracted pair
+  in `congr h c`. -/
+def congrLiftInv {n m : ℕ} (h : n = m) {c : WickContraction n} (a : (congr h c).1) : c.1 :=
+  ⟨a.1.map (finCongr h.symm).toEmbedding, by
+    subst h
+    simp⟩
+
+lemma congrLiftInv_rfl {n : ℕ} {c : WickContraction n} :
+    c.congrLiftInv rfl = id := by
+  funext a
+  simp [congrLiftInv]
 
 lemma eq_filter_mem_self : c.1 = Finset.filter (fun x => x ∈ c.1) Finset.univ := by
   exact Eq.symm (Finset.filter_univ_mem c.1)
@@ -480,6 +525,12 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
   contracted pair of states they are either both fermionic or both bosonic. -/
 def GradingCompliant (φs : List 𝓕.States) (φsΛ : WickContraction φs.length) :=
   ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
+
+lemma gradingCompliant_congr {φs φs' : List 𝓕.States} (h : φs = φs')
+    (φsΛ : WickContraction φs.length) :
+    GradingCompliant φs φsΛ ↔ GradingCompliant φs' (congr (by simp [h]) φsΛ) := by
+  subst h
+  rfl
 
 /-- An equivalence from the sigma type `(a : c.1) × a` to the subtype of `Fin n` consisting of
   those positions which are contracted. -/
