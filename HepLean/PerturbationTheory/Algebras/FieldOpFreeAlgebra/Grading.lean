@@ -22,37 +22,37 @@ noncomputable section
 
 /-- The submodule of `FieldOpFreeAlgebra` spanned by lists of field statistic `f`. -/
 def statisticSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.FieldOpFreeAlgebra :=
-  Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
+  Submodule.span ℂ {a | ∃ φs, a = ofCrAnListF φs ∧ (𝓕 |>ₛ φs) = f}
 
-lemma ofCrAnList_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
+lemma ofCrAnListF_mem_statisticSubmodule_of (φs : List 𝓕.CrAnStates) (f : FieldStatistic)
     (h : (𝓕 |>ₛ φs) = f) :
-    ofCrAnList φs ∈ statisticSubmodule f := by
+    ofCrAnListF φs ∈ statisticSubmodule f := by
   refine Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
-lemma ofCrAnList_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
-    ofCrAnList φs ∈ statisticSubmodule bosonic ∨ ofCrAnList φs ∈ statisticSubmodule fermionic := by
+lemma ofCrAnListF_bosonic_or_fermionic (φs : List 𝓕.CrAnStates) :
+    ofCrAnListF φs ∈ statisticSubmodule bosonic ∨ ofCrAnListF φs ∈ statisticSubmodule fermionic := by
   by_cases h : (𝓕 |>ₛ φs) = bosonic
   · left
-    exact ofCrAnList_mem_statisticSubmodule_of φs bosonic h
+    exact ofCrAnListF_mem_statisticSubmodule_of φs bosonic h
   · right
-    exact ofCrAnList_mem_statisticSubmodule_of φs fermionic (by simpa using h)
+    exact ofCrAnListF_mem_statisticSubmodule_of φs fermionic (by simpa using h)
 
-lemma ofCrAnState_bosonic_or_fermionic (φ : 𝓕.CrAnStates) :
-    ofCrAnState φ ∈ statisticSubmodule bosonic ∨ ofCrAnState φ ∈ statisticSubmodule fermionic := by
-  rw [← ofCrAnList_singleton]
-  exact ofCrAnList_bosonic_or_fermionic [φ]
+lemma ofCrAnOpF_bosonic_or_fermionic (φ : 𝓕.CrAnStates) :
+    ofCrAnOpF φ ∈ statisticSubmodule bosonic ∨ ofCrAnOpF φ ∈ statisticSubmodule fermionic := by
+  rw [← ofCrAnListF_singleton]
+  exact ofCrAnListF_bosonic_or_fermionic [φ]
 
 /-- The projection of an element of `FieldOpFreeAlgebra` onto it's bosonic part. -/
 def bosonicProj : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) bosonic :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
+  Basis.constr ofCrAnListFBasis ℂ fun φs =>
   if h : (𝓕 |>ₛ φs) = bosonic then
-    ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩
+    ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩
   else
     0
 
-lemma bosonicProj_ofCrAnList (φs : List 𝓕.CrAnStates) :
-    bosonicProj (ofCrAnList φs) = if h : (𝓕 |>ₛ φs) = bosonic then
-      ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
+lemma bosonicProj_ofCrAnListF (φs : List 𝓕.CrAnStates) :
+    bosonicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = bosonic then
+      ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
   conv_lhs =>
     rw [← ofListBasis_eq_ofList, bosonicProj, Basis.constr_basis]
 
@@ -65,7 +65,7 @@ lemma bosonicProj_of_mem_bosonic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ statis
   · intro x hx
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
-    simp [p, bosonicProj_ofCrAnList, h]
+    simp [p, bosonicProj_ofCrAnListF, h]
   · simp only [map_zero, p]
     rfl
   · intro x y hx hy hpx hpy
@@ -82,7 +82,7 @@ lemma bosonicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ stat
   · intro x hx
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
-    simp [p, bosonicProj_ofCrAnList, h]
+    simp [p, bosonicProj_ofCrAnListF, h]
   · simp [p]
   · intro x y hx hy hpx hpy
     simp_all [p]
@@ -104,23 +104,23 @@ lemma bosonicProj_of_fermionic_part
 
 /-- The projection of an element of `FieldOpFreeAlgebra` onto it's fermionic part. -/
 def fermionicProj : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] statisticSubmodule (𝓕 := 𝓕) fermionic :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
+  Basis.constr ofCrAnListFBasis ℂ fun φs =>
   if h : (𝓕 |>ₛ φs) = fermionic then
-    ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩
+    ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩
   else
     0
 
-lemma fermionicProj_ofCrAnList (φs : List 𝓕.CrAnStates) :
-    fermionicProj (ofCrAnList φs) = if h : (𝓕 |>ₛ φs) = fermionic then
-      ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
+lemma fermionicProj_ofCrAnListF (φs : List 𝓕.CrAnStates) :
+    fermionicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = fermionic then
+      ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩⟩ else 0 := by
   conv_lhs =>
     rw [← ofListBasis_eq_ofList, fermionicProj, Basis.constr_basis]
 
-lemma fermionicProj_ofCrAnList_if_bosonic (φs : List 𝓕.CrAnStates) :
-    fermionicProj (ofCrAnList φs) = if h : (𝓕 |>ₛ φs) = bosonic then
-      0 else ⟨ofCrAnList φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl,
+lemma fermionicProj_ofCrAnListF_if_bosonic (φs : List 𝓕.CrAnStates) :
+    fermionicProj (ofCrAnListF φs) = if h : (𝓕 |>ₛ φs) = bosonic then
+      0 else ⟨ofCrAnListF φs, Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl,
         by simpa using h⟩⟩⟩ := by
-  rw [fermionicProj_ofCrAnList]
+  rw [fermionicProj_ofCrAnListF]
   by_cases h1 : (𝓕 |>ₛ φs) = fermionic
   · simp [h1]
   · simp only [h1, ↓reduceDIte]
@@ -136,7 +136,7 @@ lemma fermionicProj_of_mem_fermionic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ st
   · intro x hx
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
-    simp [p, fermionicProj_ofCrAnList, h]
+    simp [p, fermionicProj_ofCrAnListF, h]
   · simp only [map_zero, p]
     rfl
   · intro x y hx hy hpx hpy
@@ -153,7 +153,7 @@ lemma fermionicProj_of_mem_bosonic (a : 𝓕.FieldOpFreeAlgebra) (h : a ∈ stat
   · intro x hx
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
-    simp [p, fermionicProj_ofCrAnList, h]
+    simp [p, fermionicProj_ofCrAnListF, h]
   · simp [p]
   · intro x y hx hy hpx hpy
     simp_all [p]
@@ -180,10 +180,10 @@ lemma bosonicProj_add_fermionicProj (a : 𝓕.FieldOpFreeAlgebra) :
   let f2 :𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra :=
     (statisticSubmodule fermionic).subtype ∘ₗ fermionicProj
   change (f1 + f2) a = LinearMap.id (R := ℂ) a
-  refine LinearMap.congr_fun (ofCrAnListBasis.ext fun φs ↦ ?_) a
+  refine LinearMap.congr_fun (ofCrAnListFBasis.ext fun φs ↦ ?_) a
   simp only [ofListBasis_eq_ofList, LinearMap.add_apply, LinearMap.coe_comp, Submodule.coe_subtype,
     Function.comp_apply, LinearMap.id_coe, id_eq, f1, f2]
-  rw [bosonicProj_ofCrAnList, fermionicProj_ofCrAnList_if_bosonic]
+  rw [bosonicProj_ofCrAnListF, fermionicProj_ofCrAnListF_if_bosonic]
   by_cases h : (𝓕 |>ₛ φs) = bosonic
   · simp [h]
   · simp [h]
@@ -241,7 +241,7 @@ instance fieldOpFreeAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) 
     refine Submodule.mem_span.mpr fun p a => a ?_
     simp only [Set.mem_setOf_eq]
     use []
-    simp only [ofCrAnList_nil, ofList_empty, true_and]
+    simp only [ofCrAnListF_nil, ofList_empty, true_and]
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
@@ -253,13 +253,13 @@ instance fieldOpFreeAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) 
       obtain ⟨φs, rfl, h⟩ := hx
       simp only [p]
       let p (a1 : 𝓕.FieldOpFreeAlgebra) (hx : a1 ∈ statisticSubmodule f1) : Prop :=
-        a1 * ofCrAnList φs ∈ statisticSubmodule (f1 + f2)
+        a1 * ofCrAnListF φs ∈ statisticSubmodule (f1 + f2)
       change p a1 h1
       apply Submodule.span_induction (p := p)
       · intro y hy
         obtain ⟨φs', rfl, h'⟩ := hy
         simp only [p]
-        rw [← ofCrAnList_append]
+        rw [← ofCrAnListF_append]
         refine Submodule.mem_span.mpr fun p a => a ?_
         simp only [Set.mem_setOf_eq]
         use φs' ++ φs

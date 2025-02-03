@@ -27,9 +27,9 @@ open FieldStatistic
   or a bosonic and fermionic operator this corresponds to the usual commutator
   whilst for two fermionic operators this corresponds to the anti-commutator. -/
 noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
-  Basis.constr ofCrAnListBasis ℂ fun φs' =>
-  ofCrAnList (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList (φs' ++ φs)
+  Basis.constr ofCrAnListFBasis ℂ fun φs =>
+  Basis.constr ofCrAnListFBasis ℂ fun φs' =>
+  ofCrAnListF (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF (φs' ++ φs)
 
 /-- The super commutor on the creation and annihlation algebra. For two bosonic operators
   or a bosonic and fermionic operator this corresponds to the usual commutator
@@ -42,30 +42,30 @@ scoped[FieldSpecification.FieldOpFreeAlgebra] notation "[" φs "," φs' "]ₛca"
 
 -/
 
-lemma superCommuteF_ofCrAnList_ofCrAnList (φs φs' : List 𝓕.CrAnStates) :
-    [ofCrAnList φs, ofCrAnList φs']ₛca =
-    ofCrAnList (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList (φs' ++ φs) := by
+lemma superCommuteF_ofCrAnListF_ofCrAnListF (φs φs' : List 𝓕.CrAnStates) :
+    [ofCrAnListF φs, ofCrAnListF φs']ₛca =
+    ofCrAnListF (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF (φs' ++ φs) := by
   rw [← ofListBasis_eq_ofList, ← ofListBasis_eq_ofList]
   simp only [superCommuteF, Basis.constr_basis]
 
-lemma superCommuteF_ofCrAnState_ofCrAnState (φ φ' : 𝓕.CrAnStates) :
-    [ofCrAnState φ, ofCrAnState φ']ₛca =
-    ofCrAnState φ * ofCrAnState φ' - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofCrAnState φ' * ofCrAnState φ := by
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rw [superCommuteF_ofCrAnList_ofCrAnList, ofCrAnList_append]
+lemma superCommuteF_ofCrAnOpF_ofCrAnOpF (φ φ' : 𝓕.CrAnStates) :
+    [ofCrAnOpF φ, ofCrAnOpF φ']ₛca =
+    ofCrAnOpF φ * ofCrAnOpF φ' - 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') • ofCrAnOpF φ' * ofCrAnOpF φ := by
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+  rw [superCommuteF_ofCrAnListF_ofCrAnListF, ofCrAnListF_append]
   congr
-  rw [ofCrAnList_append]
+  rw [ofCrAnListF_append]
   rw [FieldStatistic.ofList_singleton, FieldStatistic.ofList_singleton, smul_mul_assoc]
 
-lemma superCommuteF_ofCrAnList_ofFieldOpFsList (φcas : List 𝓕.CrAnStates) (φs : List 𝓕.States) :
-    [ofCrAnList φcas, ofFieldOpListF φs]ₛca = ofCrAnList φcas * ofFieldOpListF φs -
-    𝓢(𝓕 |>ₛ φcas, 𝓕 |>ₛ φs) • ofFieldOpListF φs * ofCrAnList φcas := by
+lemma superCommuteF_ofCrAnListF_ofFieldOpFsList (φcas : List 𝓕.CrAnStates) (φs : List 𝓕.States) :
+    [ofCrAnListF φcas, ofFieldOpListF φs]ₛca = ofCrAnListF φcas * ofFieldOpListF φs -
+    𝓢(𝓕 |>ₛ φcas, 𝓕 |>ₛ φs) • ofFieldOpListF φs * ofCrAnListF φcas := by
   conv_lhs => rw [ofFieldOpListF_sum]
   rw [map_sum]
   conv_lhs =>
     enter [2, x]
-    rw [superCommuteF_ofCrAnList_ofCrAnList, CrAnSection.statistics_eq_state_statistics,
-      ofCrAnList_append, ofCrAnList_append]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF, CrAnSection.statistics_eq_state_statistics,
+      ofCrAnListF_append, ofCrAnListF_append]
   rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.smul_sum,
     ← Finset.sum_mul, ← ofFieldOpListF_sum]
   simp
@@ -78,7 +78,7 @@ lemma superCommuteF_ofFieldOpListF_ofFieldOpFsList (φ : List 𝓕.States) (φs 
     Algebra.smul_mul_assoc]
   conv_lhs =>
     enter [2, x]
-    rw [superCommuteF_ofCrAnList_ofFieldOpFsList]
+    rw [superCommuteF_ofCrAnListF_ofFieldOpFsList]
   simp only [instCommGroup.eq_1, CrAnSection.statistics_eq_state_statistics,
     Algebra.smul_mul_assoc, Finset.sum_sub_distrib]
   rw [← Finset.sum_mul, ← Finset.smul_sum, ← Finset.mul_sum, ← ofFieldOpListF_sum]
@@ -106,22 +106,22 @@ lemma superCommuteF_anPartF_crPartF (φ φ' : 𝓕.States) :
       sub_self]
   | States.position φ, States.position φ' =>
     simp only [anPartF_position, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
   | States.outAsymp φ, States.position φ' =>
     simp only [anPartF_posAsymp, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
   | States.position φ, States.inAsymp φ' =>
     simp only [anPartF_position, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
     simp only [List.singleton_append, instCommGroup.eq_1, crAnStatistics,
       FieldStatistic.ofList_singleton, Function.comp_apply, crAnStatesToStates_prod, ←
-      ofCrAnList_append]
+      ofCrAnListF_append]
   | States.outAsymp φ, States.inAsymp φ' =>
     simp only [anPartF_posAsymp, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
 
 lemma superCommuteF_crPartF_anPartF (φ φ' : 𝓕.States) :
     [crPartF φ, anPartF φ']ₛca = crPartF φ * anPartF φ' -
@@ -135,20 +135,20 @@ lemma superCommuteF_crPartF_anPartF (φ φ' : 𝓕.States) :
       sub_self]
     | States.position φ, States.position φ' =>
     simp only [crPartF_position, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
     | States.position φ, States.outAsymp φ' =>
     simp only [crPartF_position, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
     | States.inAsymp φ, States.position φ' =>
     simp only [crPartF_negAsymp, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
     | States.inAsymp φ, States.outAsymp φ' =>
     simp only [crPartF_negAsymp, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
 
 lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
     [crPartF φ, crPartF φ']ₛca = crPartF φ * crPartF φ' -
@@ -162,20 +162,20 @@ lemma superCommuteF_crPartF_crPartF (φ φ' : 𝓕.States) :
     sub_self]
   | States.position φ, States.position φ' =>
   simp only [crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+  simp [crAnStatistics, ← ofCrAnListF_append]
   | States.position φ, States.inAsymp φ' =>
   simp only [crPartF_position, crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+  simp [crAnStatistics, ← ofCrAnListF_append]
   | States.inAsymp φ, States.position φ' =>
   simp only [crPartF_negAsymp, crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+  simp [crAnStatistics, ← ofCrAnListF_append]
   | States.inAsymp φ, States.inAsymp φ' =>
   simp only [crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-  simp [crAnStatistics, ← ofCrAnList_append]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+  simp [crAnStatistics, ← ofCrAnListF_append]
 
 lemma superCommuteF_anPartF_anPartF (φ φ' : 𝓕.States) :
     [anPartF φ, anPartF φ']ₛca =
@@ -187,20 +187,20 @@ lemma superCommuteF_anPartF_anPartF (φ φ' : 𝓕.States) :
     simp
   | States.position φ, States.position φ' =>
     simp only [anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
   | States.position φ, States.outAsymp φ' =>
     simp only [anPartF_position, anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
   | States.outAsymp φ, States.position φ' =>
     simp only [anPartF_posAsymp, anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
   | States.outAsymp φ, States.outAsymp φ' =>
     simp only [anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList]
-    simp [crAnStatistics, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp [crAnStatistics, ← ofCrAnListF_append]
 
 lemma superCommuteF_crPartF_ofFieldOpListF (φ : 𝓕.States) (φs : List 𝓕.States) :
     [crPartF φ, ofFieldOpListF φs]ₛca =
@@ -209,11 +209,11 @@ lemma superCommuteF_crPartF_ofFieldOpListF (φ : 𝓕.States) (φs : List 𝓕.S
   match φ with
   | States.inAsymp φ =>
     simp only [crPartF_negAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofFieldOpFsList]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofFieldOpFsList]
     simp [crAnStatistics]
   | States.position φ =>
     simp only [crPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofFieldOpFsList]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofFieldOpFsList]
     simp [crAnStatistics]
   | States.outAsymp φ =>
     simp
@@ -227,11 +227,11 @@ lemma superCommuteF_anPartF_ofFieldOpListF (φ : 𝓕.States) (φs : List 𝓕.S
     simp
   | States.position φ =>
     simp only [anPartF_position, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofFieldOpFsList]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofFieldOpFsList]
     simp [crAnStatistics]
   | States.outAsymp φ =>
     simp only [anPartF_posAsymp, instCommGroup.eq_1, Algebra.smul_mul_assoc]
-    rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofFieldOpFsList]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofFieldOpFsList]
     simp [crAnStatistics]
 
 lemma superCommuteF_crPartF_ofFieldOpF (φ φ' : 𝓕.States) :
@@ -256,16 +256,16 @@ Lemmas which rewrite a multiplication of two elements of the algebra as their co
 multiplication with a sign plus the super commutor.
 
 -/
-lemma ofCrAnList_mul_ofCrAnList_eq_superCommuteF (φs φs' : List 𝓕.CrAnStates) :
-    ofCrAnList φs * ofCrAnList φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnList φs' * ofCrAnList φs
-    + [ofCrAnList φs, ofCrAnList φs']ₛca := by
-  rw [superCommuteF_ofCrAnList_ofCrAnList]
-  simp [ofCrAnList_append]
+lemma ofCrAnListF_mul_ofCrAnListF_eq_superCommuteF (φs φs' : List 𝓕.CrAnStates) :
+    ofCrAnListF φs * ofCrAnListF φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF φs' * ofCrAnListF φs
+    + [ofCrAnListF φs, ofCrAnListF φs']ₛca := by
+  rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+  simp [ofCrAnListF_append]
 
-lemma ofCrAnState_mul_ofCrAnList_eq_superCommuteF (φ : 𝓕.CrAnStates) (φs' : List 𝓕.CrAnStates) :
-    ofCrAnState φ * ofCrAnList φs' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • ofCrAnList φs' * ofCrAnState φ
-    + [ofCrAnState φ, ofCrAnList φs']ₛca := by
-  rw [← ofCrAnList_singleton, ofCrAnList_mul_ofCrAnList_eq_superCommuteF]
+lemma ofCrAnOpF_mul_ofCrAnListF_eq_superCommuteF (φ : 𝓕.CrAnStates) (φs' : List 𝓕.CrAnStates) :
+    ofCrAnOpF φ * ofCrAnListF φs' = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • ofCrAnListF φs' * ofCrAnOpF φ
+    + [ofCrAnOpF φ, ofCrAnListF φs']ₛca := by
+  rw [← ofCrAnListF_singleton, ofCrAnListF_mul_ofCrAnListF_eq_superCommuteF]
   simp
 
 lemma ofFieldOpListF_mul_ofFieldOpListF_eq_superCommuteF (φs φs' : List 𝓕.States) :
@@ -314,10 +314,10 @@ lemma anPartF_mul_anPartF_eq_superCommuteF (φ φ' : 𝓕.States) :
   rw [superCommuteF_anPartF_anPartF]
   simp
 
-lemma ofCrAnList_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnStates) (φs' : List 𝓕.States) :
-    ofCrAnList φs * ofFieldOpListF φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofCrAnList φs
-    + [ofCrAnList φs, ofFieldOpListF φs']ₛca := by
-  rw [superCommuteF_ofCrAnList_ofFieldOpFsList]
+lemma ofCrAnListF_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnStates) (φs' : List 𝓕.States) :
+    ofCrAnListF φs * ofFieldOpListF φs' = 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofFieldOpListF φs' * ofCrAnListF φs
+    + [ofCrAnListF φs, ofFieldOpListF φs']ₛca := by
+  rw [superCommuteF_ofCrAnListF_ofFieldOpFsList]
   simp
 
 /-!
@@ -326,10 +326,10 @@ lemma ofCrAnList_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnStates
 
 -/
 
-lemma superCommuteF_ofCrAnList_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates) :
-    [ofCrAnList φs, ofCrAnList φs']ₛca =
-    (- 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs')) • [ofCrAnList φs', ofCrAnList φs]ₛca := by
-  rw [superCommuteF_ofCrAnList_ofCrAnList, superCommuteF_ofCrAnList_ofCrAnList, smul_sub]
+lemma superCommuteF_ofCrAnListF_ofCrAnListF_symm (φs φs' : List 𝓕.CrAnStates) :
+    [ofCrAnListF φs, ofCrAnListF φs']ₛca =
+    (- 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs')) • [ofCrAnListF φs', ofCrAnListF φs]ₛca := by
+  rw [superCommuteF_ofCrAnListF_ofCrAnListF, superCommuteF_ofCrAnListF_ofCrAnListF, smul_sub]
   simp only [instCommGroup.eq_1, neg_smul, sub_neg_eq_add]
   rw [smul_smul]
   conv_rhs =>
@@ -338,10 +338,10 @@ lemma superCommuteF_ofCrAnList_ofCrAnList_symm (φs φs' : List 𝓕.CrAnStates)
   simp only [one_smul]
   abel
 
-lemma superCommuteF_ofCrAnState_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
-    [ofCrAnState φ, ofCrAnState φ']ₛca =
-    (- 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ')) • [ofCrAnState φ', ofCrAnState φ]ₛca := by
-  rw [superCommuteF_ofCrAnState_ofCrAnState, superCommuteF_ofCrAnState_ofCrAnState]
+lemma superCommuteF_ofCrAnOpF_ofCrAnOpF_symm (φ φ' : 𝓕.CrAnStates) :
+    [ofCrAnOpF φ, ofCrAnOpF φ']ₛca =
+    (- 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ')) • [ofCrAnOpF φ', ofCrAnOpF φ]ₛca := by
+  rw [superCommuteF_ofCrAnOpF_ofCrAnOpF, superCommuteF_ofCrAnOpF_ofCrAnOpF]
   rw [smul_sub]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, neg_smul, sub_neg_eq_add]
   rw [smul_smul]
@@ -357,41 +357,41 @@ lemma superCommuteF_ofCrAnState_ofCrAnState_symm (φ φ' : 𝓕.CrAnStates) :
 
 -/
 
-lemma superCommuteF_ofCrAnList_ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
-    [ofCrAnList φs, ofCrAnList (φ :: φs')]ₛca =
-    [ofCrAnList φs, ofCrAnState φ]ₛca * ofCrAnList φs' +
+lemma superCommuteF_ofCrAnListF_ofCrAnListF_cons (φ : 𝓕.CrAnStates) (φs φs' : List 𝓕.CrAnStates) :
+    [ofCrAnListF φs, ofCrAnListF (φ :: φs')]ₛca =
+    [ofCrAnListF φs, ofCrAnOpF φ]ₛca * ofCrAnListF φs' +
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ)
-    • ofCrAnState φ * [ofCrAnList φs, ofCrAnList φs']ₛca := by
-  rw [superCommuteF_ofCrAnList_ofCrAnList]
+    • ofCrAnOpF φ * [ofCrAnListF φs, ofCrAnListF φs']ₛca := by
+  rw [superCommuteF_ofCrAnListF_ofCrAnListF]
   conv_rhs =>
     lhs
-    rw [← ofCrAnList_singleton, superCommuteF_ofCrAnList_ofCrAnList, sub_mul, ← ofCrAnList_append]
+    rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF, sub_mul, ← ofCrAnListF_append]
     rhs
-    rw [FieldStatistic.ofList_singleton, ofCrAnList_append, ofCrAnList_singleton, smul_mul_assoc,
-      mul_assoc, ← ofCrAnList_append]
+    rw [FieldStatistic.ofList_singleton, ofCrAnListF_append, ofCrAnListF_singleton, smul_mul_assoc,
+      mul_assoc, ← ofCrAnListF_append]
   conv_rhs =>
     rhs
-    rw [superCommuteF_ofCrAnList_ofCrAnList, mul_sub, smul_mul_assoc]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF, mul_sub, smul_mul_assoc]
   simp only [instCommGroup.eq_1, List.cons_append, List.append_assoc, List.nil_append,
     Algebra.mul_smul_comm, Algebra.smul_mul_assoc, sub_add_sub_cancel, sub_right_inj]
-  rw [← ofCrAnList_cons, smul_smul, FieldStatistic.ofList_cons_eq_mul]
+  rw [← ofCrAnListF_cons, smul_smul, FieldStatistic.ofList_cons_eq_mul]
   simp only [instCommGroup, map_mul, mul_comm]
 
-lemma superCommuteF_ofCrAnList_ofFieldOpListF_cons (φ : 𝓕.States) (φs : List 𝓕.CrAnStates)
-    (φs' : List 𝓕.States) : [ofCrAnList φs, ofFieldOpListF (φ :: φs')]ₛca =
-    [ofCrAnList φs, ofFieldOpF φ]ₛca * ofFieldOpListF φs' +
-    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofFieldOpF φ * [ofCrAnList φs, ofFieldOpListF φs']ₛca := by
-  rw [superCommuteF_ofCrAnList_ofFieldOpFsList]
+lemma superCommuteF_ofCrAnListF_ofFieldOpListF_cons (φ : 𝓕.States) (φs : List 𝓕.CrAnStates)
+    (φs' : List 𝓕.States) : [ofCrAnListF φs, ofFieldOpListF (φ :: φs')]ₛca =
+    [ofCrAnListF φs, ofFieldOpF φ]ₛca * ofFieldOpListF φs' +
+    𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φ) • ofFieldOpF φ * [ofCrAnListF φs, ofFieldOpListF φs']ₛca := by
+  rw [superCommuteF_ofCrAnListF_ofFieldOpFsList]
   conv_rhs =>
     lhs
-    rw [← ofFieldOpListF_singleton, superCommuteF_ofCrAnList_ofFieldOpFsList, sub_mul, mul_assoc,
+    rw [← ofFieldOpListF_singleton, superCommuteF_ofCrAnListF_ofFieldOpFsList, sub_mul, mul_assoc,
       ← ofFieldOpListF_append]
     rhs
     rw [FieldStatistic.ofList_singleton, ofFieldOpListF_singleton, smul_mul_assoc,
       smul_mul_assoc, mul_assoc]
   conv_rhs =>
     rhs
-    rw [superCommuteF_ofCrAnList_ofFieldOpFsList, mul_sub, smul_mul_assoc]
+    rw [superCommuteF_ofCrAnListF_ofFieldOpFsList, mul_sub, smul_mul_assoc]
   simp only [instCommGroup, Algebra.smul_mul_assoc, List.singleton_append, Algebra.mul_smul_comm,
     sub_add_sub_cancel, sub_right_inj]
   rw [ofFieldOpListF_cons, mul_assoc, smul_smul, FieldStatistic.ofList_cons_eq_mul]
@@ -402,48 +402,48 @@ Within the creation and annihilation algebra, we have that
 `[φᶜᵃs, φᶜᵃ₀ … φᶜᵃₙ]ₛca = ∑ i, sᵢ • φᶜᵃs₀ … φᶜᵃᵢ₋₁ * [φᶜᵃs, φᶜᵃᵢ]ₛca * φᶜᵃᵢ₊₁ … φᶜᵃₙ`
 where `sᵢ` is the exchange sign for `φᶜᵃs` and `φᶜᵃs₀ … φᶜᵃᵢ₋₁`.
 -/
-lemma superCommuteF_ofCrAnList_ofCrAnList_eq_sum (φs : List 𝓕.CrAnStates) :
-    (φs' : List 𝓕.CrAnStates) → [ofCrAnList φs, ofCrAnList φs']ₛca =
+lemma superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum (φs : List 𝓕.CrAnStates) :
+    (φs' : List 𝓕.CrAnStates) → [ofCrAnListF φs, ofCrAnListF φs']ₛca =
     ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
-    ofCrAnList (φs'.take n) * [ofCrAnList φs, ofCrAnState (φs'.get n)]ₛca *
-    ofCrAnList (φs'.drop (n + 1))
+    ofCrAnListF (φs'.take n) * [ofCrAnListF φs, ofCrAnOpF (φs'.get n)]ₛca *
+    ofCrAnListF (φs'.drop (n + 1))
   | [] => by
-    simp [← ofCrAnList_nil, superCommuteF_ofCrAnList_ofCrAnList]
+    simp [← ofCrAnListF_nil, superCommuteF_ofCrAnListF_ofCrAnListF]
   | φ :: φs' => by
-    rw [superCommuteF_ofCrAnList_ofCrAnList_cons, superCommuteF_ofCrAnList_ofCrAnList_eq_sum φs φs']
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF_cons, superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum φs φs']
     conv_rhs => erw [Fin.sum_univ_succ]
     congr 1
     · simp
-    · simp [Finset.mul_sum, smul_smul, ofCrAnList_cons, mul_assoc,
+    · simp [Finset.mul_sum, smul_smul, ofCrAnListF_cons, mul_assoc,
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
 
-lemma superCommuteF_ofCrAnList_ofFieldOpListF_eq_sum (φs : List 𝓕.CrAnStates) : (φs' : List 𝓕.States) →
-    [ofCrAnList φs, ofFieldOpListF φs']ₛca =
+lemma superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum (φs : List 𝓕.CrAnStates) : (φs' : List 𝓕.States) →
+    [ofCrAnListF φs, ofFieldOpListF φs']ₛca =
     ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
-      ofFieldOpListF (φs'.take n) * [ofCrAnList φs, ofFieldOpF (φs'.get n)]ₛca *
+      ofFieldOpListF (φs'.take n) * [ofCrAnListF φs, ofFieldOpF (φs'.get n)]ₛca *
       ofFieldOpListF (φs'.drop (n + 1))
   | [] => by
-    simp only [superCommuteF_ofCrAnList_ofFieldOpFsList, instCommGroup, ofList_empty,
+    simp only [superCommuteF_ofCrAnListF_ofFieldOpFsList, instCommGroup, ofList_empty,
       exchangeSign_bosonic, one_smul, List.length_nil, Finset.univ_eq_empty, List.take_nil,
       List.get_eq_getElem, List.drop_nil, Finset.sum_empty]
     simp
   | φ :: φs' => by
-    rw [superCommuteF_ofCrAnList_ofFieldOpListF_cons,
-      superCommuteF_ofCrAnList_ofFieldOpListF_eq_sum φs φs']
+    rw [superCommuteF_ofCrAnListF_ofFieldOpListF_cons,
+      superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum φs φs']
     conv_rhs => erw [Fin.sum_univ_succ]
     congr 1
     · simp
     · simp [Finset.mul_sum, smul_smul, ofFieldOpListF_cons, mul_assoc,
         FieldStatistic.ofList_cons_eq_mul, mul_comm]
 
-lemma summerCommute_jacobi_ofCrAnList (φs1 φs2 φs3 : List 𝓕.CrAnStates) :
-    [ofCrAnList φs1, [ofCrAnList φs2, ofCrAnList φs3]ₛca]ₛca =
+lemma summerCommute_jacobi_ofCrAnListF (φs1 φs2 φs3 : List 𝓕.CrAnStates) :
+    [ofCrAnListF φs1, [ofCrAnListF φs2, ofCrAnListF φs3]ₛca]ₛca =
     𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs3) •
-    (- 𝓢(𝓕 |>ₛ φs2, 𝓕 |>ₛ φs3) • [ofCrAnList φs3, [ofCrAnList φs1, ofCrAnList φs2]ₛca]ₛca -
-    𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs2) • [ofCrAnList φs2, [ofCrAnList φs3, ofCrAnList φs1]ₛca]ₛca) := by
-  repeat rw [superCommuteF_ofCrAnList_ofCrAnList]
+    (- 𝓢(𝓕 |>ₛ φs2, 𝓕 |>ₛ φs3) • [ofCrAnListF φs3, [ofCrAnListF φs1, ofCrAnListF φs2]ₛca]ₛca -
+    𝓢(𝓕 |>ₛ φs1, 𝓕 |>ₛ φs2) • [ofCrAnListF φs2, [ofCrAnListF φs3, ofCrAnListF φs1]ₛca]ₛca) := by
+  repeat rw [superCommuteF_ofCrAnListF_ofCrAnListF]
   simp only [instCommGroup, map_sub, map_smul, neg_smul]
-  repeat rw [superCommuteF_ofCrAnList_ofCrAnList]
+  repeat rw [superCommuteF_ofCrAnListF_ofCrAnListF]
   simp only [instCommGroup.eq_1, ofList_append_eq_mul, List.append_assoc]
   by_cases h1 : (𝓕 |>ₛ φs1) = bosonic <;>
     by_cases h2 : (𝓕 |>ₛ φs2) = bosonic <;>
@@ -497,18 +497,18 @@ lemma superCommuteF_grade {a b : 𝓕.FieldOpFreeAlgebra} {f1 f2 : FieldStatisti
     obtain ⟨φs, rfl, hφs⟩ := hx
     simp only [add_eq_mul, instCommGroup, p]
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule f1) : Prop :=
-        [a2, ofCrAnList φs]ₛca ∈ statisticSubmodule (f1 + f2)
+        [a2, ofCrAnListF φs]ₛca ∈ statisticSubmodule (f1 + f2)
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
       simp only [add_eq_mul, instCommGroup, p]
-      rw [superCommuteF_ofCrAnList_ofCrAnList]
+      rw [superCommuteF_ofCrAnListF_ofCrAnListF]
       apply Submodule.sub_mem _
-      · apply ofCrAnList_mem_statisticSubmodule_of
+      · apply ofCrAnListF_mem_statisticSubmodule_of
         rw [ofList_append_eq_mul, hφs, hφs']
       · apply Submodule.smul_mem
-        apply ofCrAnList_mem_statisticSubmodule_of
+        apply ofCrAnListF_mem_statisticSubmodule_of
         rw [ofList_append_eq_mul, hφs, hφs']
         rw [mul_comm]
     · simp [p]
@@ -538,14 +538,14 @@ lemma superCommuteF_bosonic_bosonic {a b : 𝓕.FieldOpFreeAlgebra}
   · intro x hx
     obtain ⟨φs, rfl, hφs⟩ := hx
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
-        [a2, ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+        [a2, ofCrAnListF φs]ₛca = a2 * ofCrAnListF φs - ofCrAnListF φs * a2
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
       simp only [p]
-      rw [superCommuteF_ofCrAnList_ofCrAnList]
-      simp [hφs, ofCrAnList_append]
+      rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+      simp [hφs, ofCrAnListF_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
       simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
@@ -571,14 +571,14 @@ lemma superCommuteF_bosonic_fermionic {a b : 𝓕.FieldOpFreeAlgebra}
   · intro x hx
     obtain ⟨φs, rfl, hφs⟩ := hx
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule bosonic) : Prop :=
-        [a2, ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+        [a2, ofCrAnListF φs]ₛca = a2 * ofCrAnListF φs - ofCrAnListF φs * a2
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
       simp only [p]
-      rw [superCommuteF_ofCrAnList_ofCrAnList]
-      simp [hφs, hφs', ofCrAnList_append]
+      rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+      simp [hφs, hφs', ofCrAnListF_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
       simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
@@ -604,14 +604,14 @@ lemma superCommuteF_fermionic_bonsonic {a b : 𝓕.FieldOpFreeAlgebra}
   · intro x hx
     obtain ⟨φs, rfl, hφs⟩ := hx
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
-        [a2, ofCrAnList φs]ₛca = a2 * ofCrAnList φs - ofCrAnList φs * a2
+        [a2, ofCrAnListF φs]ₛca = a2 * ofCrAnListF φs - ofCrAnListF φs * a2
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
       simp only [p]
-      rw [superCommuteF_ofCrAnList_ofCrAnList]
-      simp [hφs, hφs', ofCrAnList_append]
+      rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+      simp [hφs, hφs', ofCrAnListF_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
       simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
@@ -663,14 +663,14 @@ lemma superCommuteF_fermionic_fermionic {a b : 𝓕.FieldOpFreeAlgebra}
   · intro x hx
     obtain ⟨φs, rfl, hφs⟩ := hx
     let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule fermionic) : Prop :=
-        [a2, ofCrAnList φs]ₛca = a2 * ofCrAnList φs + ofCrAnList φs * a2
+        [a2, ofCrAnListF φs]ₛca = a2 * ofCrAnListF φs + ofCrAnListF φs * a2
     change p a ha
     apply Submodule.span_induction (p := p)
     · intro x hx
       obtain ⟨φs', rfl, hφs'⟩ := hx
       simp only [p]
-      rw [superCommuteF_ofCrAnList_ofCrAnList]
-      simp [hφs, hφs', ofCrAnList_append]
+      rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+      simp [hφs, hφs', ofCrAnListF_append]
     · simp [p]
     · intro x y hx hy hp1 hp2
       simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
@@ -706,9 +706,9 @@ lemma superCommuteF_expand_bosonicProj_fermionicProj (a b : 𝓕.FieldOpFreeAlge
       superCommuteF_fermionic_fermionic (by simp) (by simp)]
   abel
 
-lemma superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic (φs φs' : List 𝓕.CrAnStates) :
-    [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule bosonic ∨
-    [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule fermionic := by
+lemma superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic (φs φs' : List 𝓕.CrAnStates) :
+    [ofCrAnListF φs, ofCrAnListF φs']ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnListF φs, ofCrAnListF φs']ₛca ∈ statisticSubmodule fermionic := by
   by_cases h1 : (𝓕 |>ₛ φs) = bosonic <;> by_cases h2 : (𝓕 |>ₛ φs') = bosonic
   · left
     have h : bosonic = bosonic + bosonic := by
@@ -716,44 +716,44 @@ lemma superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic (φs φs' : List 
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ h1
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ h2
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h1
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h2
   · right
     have h : fermionic = bosonic + fermionic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ h1
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h2)
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h1
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
   · right
     have h : fermionic = fermionic + bosonic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h1)
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ h2
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h2
   · left
     have h : bosonic = fermionic + fermionic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h1)
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ (by simpa using h2)
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
 
-lemma superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic (φ φ' : 𝓕.CrAnStates) :
-    [ofCrAnState φ, ofCrAnState φ']ₛca ∈ statisticSubmodule bosonic ∨
-    [ofCrAnState φ, ofCrAnState φ']ₛca ∈ statisticSubmodule fermionic := by
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  exact superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ] [φ']
+lemma superCommuteF_ofCrAnOpF_ofCrAnOpF_bosonic_or_fermionic (φ φ' : 𝓕.CrAnStates) :
+    [ofCrAnOpF φ, ofCrAnOpF φ']ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnOpF φ, ofCrAnOpF φ']ₛca ∈ statisticSubmodule fermionic := by
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+  exact superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic [φ] [φ']
 
-lemma superCommuteF_superCommuteF_ofCrAnState_bosonic_or_fermionic (φ1 φ2 φ3 : 𝓕.CrAnStates) :
-    [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca ∈ statisticSubmodule bosonic ∨
-    [ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca ∈ statisticSubmodule fermionic := by
-  rcases superCommuteF_ofCrAnState_ofCrAnState_bosonic_or_fermionic φ2 φ3 with hs | hs
-    <;> rcases ofCrAnState_bosonic_or_fermionic φ1 with h1 | h1
+lemma superCommuteF_superCommuteF_ofCrAnOpF_bosonic_or_fermionic (φ1 φ2 φ3 : 𝓕.CrAnStates) :
+    [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca ∈ statisticSubmodule bosonic ∨
+    [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca ∈ statisticSubmodule fermionic := by
+  rcases superCommuteF_ofCrAnOpF_ofCrAnOpF_bosonic_or_fermionic φ2 φ3 with hs | hs
+    <;> rcases ofCrAnOpF_bosonic_or_fermionic φ1 with h1 | h1
   · left
     have h : bosonic = bosonic + bosonic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
@@ -779,21 +779,21 @@ lemma superCommuteF_superCommuteF_ofCrAnState_bosonic_or_fermionic (φ1 φ2 φ3 
     rw [h]
     apply superCommuteF_grade h1 hs
 
-lemma superCommuteF_bosonic_ofCrAnList_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs : List 𝓕.CrAnStates)
+lemma superCommuteF_bosonic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs : List 𝓕.CrAnStates)
     (ha : a ∈ statisticSubmodule bosonic) :
-    [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length),
-      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
-      ofCrAnList (φs.drop (n + 1)) := by
+    [a, ofCrAnListF φs]ₛca = ∑ (n : Fin φs.length),
+      ofCrAnListF (φs.take n) * [a, ofCrAnOpF (φs.get n)]ₛca *
+      ofCrAnListF (φs.drop (n + 1)) := by
   let p (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ statisticSubmodule bosonic) : Prop :=
-      [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length),
-      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
-      ofCrAnList (φs.drop (n + 1))
+      [a, ofCrAnListF φs]ₛca = ∑ (n : Fin φs.length),
+      ofCrAnListF (φs.take n) * [a, ofCrAnOpF (φs.get n)]ₛca *
+      ofCrAnListF (φs.drop (n + 1))
   change p a ha
   apply Submodule.span_induction (p := p)
   · intro a ha
     obtain ⟨φs, rfl, hφs⟩ := ha
     simp only [List.get_eq_getElem, p]
-    rw [superCommuteF_ofCrAnList_ofCrAnList_eq_sum]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum]
     congr
     funext n
     simp [hφs]
@@ -808,21 +808,21 @@ lemma superCommuteF_bosonic_ofCrAnList_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs
     simp_all [p, Finset.smul_sum]
   · exact ha
 
-lemma superCommuteF_fermionic_ofCrAnList_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs : List 𝓕.CrAnStates)
+lemma superCommuteF_fermionic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (φs : List 𝓕.CrAnStates)
     (ha : a ∈ statisticSubmodule fermionic) :
-    [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
-      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
-      ofCrAnList (φs.drop (n + 1)) := by
+    [a, ofCrAnListF φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
+      ofCrAnListF (φs.take n) * [a, ofCrAnOpF (φs.get n)]ₛca *
+      ofCrAnListF (φs.drop (n + 1)) := by
   let p (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ statisticSubmodule fermionic) : Prop :=
-      [a, ofCrAnList φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
-      ofCrAnList (φs.take n) * [a, ofCrAnState (φs.get n)]ₛca *
-      ofCrAnList (φs.drop (n + 1))
+      [a, ofCrAnListF φs]ₛca = ∑ (n : Fin φs.length), 𝓢(fermionic, 𝓕 |>ₛ φs.take n) •
+      ofCrAnListF (φs.take n) * [a, ofCrAnOpF (φs.get n)]ₛca *
+      ofCrAnListF (φs.drop (n + 1))
   change p a ha
   apply Submodule.span_induction (p := p)
   · intro a ha
     obtain ⟨φs, rfl, hφs⟩ := ha
     simp only [instCommGroup, List.get_eq_getElem, Algebra.smul_mul_assoc, p]
-    rw [superCommuteF_ofCrAnList_ofCrAnList_eq_sum]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum]
     congr
     funext n
     simp [hφs]
@@ -843,9 +843,9 @@ lemma superCommuteF_fermionic_ofCrAnList_eq_sum (a : 𝓕.FieldOpFreeAlgebra) (�
   · exact ha
 
 lemma statistic_neq_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnStates}
-    (h : [ofCrAnList φs, ofCrAnList φs']ₛca ∈ statisticSubmodule fermionic) :
-    (𝓕 |>ₛ φs) ≠ (𝓕 |>ₛ φs') ∨ [ofCrAnList φs, ofCrAnList φs']ₛca = 0 := by
-  by_cases h0 : [ofCrAnList φs, ofCrAnList φs']ₛca = 0
+    (h : [ofCrAnListF φs, ofCrAnListF φs']ₛca ∈ statisticSubmodule fermionic) :
+    (𝓕 |>ₛ φs) ≠ (𝓕 |>ₛ φs') ∨ [ofCrAnListF φs, ofCrAnListF φs']ₛca = 0 := by
+  by_cases h0 : [ofCrAnListF φs, ofCrAnListF φs']ₛca = 0
   · simp [h0]
   simp only [ne_eq, h0, or_false]
   by_contra hn
@@ -856,17 +856,17 @@ lemma statistic_neq_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnStates}
       rfl
     rw [h1]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _ hc
-    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _ hc
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _
     rw [← hn, hc]
   · have h1 : bosonic = fermionic + fermionic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h1]
     apply superCommuteF_grade
-    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _
     simpa using hc
-    apply ofCrAnList_mem_statisticSubmodule_of _ _
+    apply ofCrAnListF_mem_statisticSubmodule_of _ _
     rw [← hn]
     simpa using hc
 

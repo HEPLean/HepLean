@@ -28,43 +28,43 @@ open HepLean.List
 
 /-- Time ordering for the `FieldOpFreeAlgebra`. -/
 def timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
-  Basis.constr ofCrAnListBasis ℂ fun φs =>
-  crAnTimeOrderSign φs • ofCrAnList (crAnTimeOrderList φs)
+  Basis.constr ofCrAnListFBasis ℂ fun φs =>
+  crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)
 
 @[inherit_doc timeOrderF]
 scoped[FieldSpecification.FieldOpFreeAlgebra] notation "𝓣ᶠ(" a ")" => timeOrderF a
 
-lemma timeOrderF_ofCrAnList (φs : List 𝓕.CrAnStates) :
-    𝓣ᶠ(ofCrAnList φs) = crAnTimeOrderSign φs • ofCrAnList (crAnTimeOrderList φs) := by
+lemma timeOrderF_ofCrAnListF (φs : List 𝓕.CrAnStates) :
+    𝓣ᶠ(ofCrAnListF φs) = crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs) := by
   rw [← ofListBasis_eq_ofList]
   simp only [timeOrderF, Basis.constr_basis]
 
 lemma timeOrderF_timeOrderF_mid (a b c : 𝓕.FieldOpFreeAlgebra) : 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c) := by
-  let pc (c : 𝓕.FieldOpFreeAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
+  let pc (c : 𝓕.FieldOpFreeAlgebra) (hc : c ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
     Prop := 𝓣ᶠ(a * b * c) = 𝓣ᶠ(a * 𝓣ᶠ(b) * c)
   change pc c (Basis.mem_span _ c)
   apply Submodule.span_induction
   · intro x hx
     obtain ⟨φs, rfl⟩ := hx
     simp only [ofListBasis_eq_ofList, pc]
-    let pb (b : 𝓕.FieldOpFreeAlgebra) (hb : b ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
-      Prop := 𝓣ᶠ(a * b * ofCrAnList φs) = 𝓣ᶠ(a * 𝓣ᶠ(b) * ofCrAnList φs)
+    let pb (b : 𝓕.FieldOpFreeAlgebra) (hb : b ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
+      Prop := 𝓣ᶠ(a * b * ofCrAnListF φs) = 𝓣ᶠ(a * 𝓣ᶠ(b) * ofCrAnListF φs)
     change pb b (Basis.mem_span _ b)
     apply Submodule.span_induction
     · intro x hx
       obtain ⟨φs', rfl⟩ := hx
       simp only [ofListBasis_eq_ofList, pb]
-      let pa (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListBasis)) :
-        Prop := 𝓣ᶠ(a * ofCrAnList φs' * ofCrAnList φs) = 𝓣ᶠ(a * 𝓣ᶠ(ofCrAnList φs') * ofCrAnList φs)
+      let pa (a : 𝓕.FieldOpFreeAlgebra) (ha : a ∈ Submodule.span ℂ (Set.range ofCrAnListFBasis)) :
+        Prop := 𝓣ᶠ(a * ofCrAnListF φs' * ofCrAnListF φs) = 𝓣ᶠ(a * 𝓣ᶠ(ofCrAnListF φs') * ofCrAnListF φs)
       change pa a (Basis.mem_span _ a)
       apply Submodule.span_induction
       · intro x hx
         obtain ⟨φs'', rfl⟩ := hx
         simp only [ofListBasis_eq_ofList, pa]
-        rw [timeOrderF_ofCrAnList]
-        simp only [← ofCrAnList_append, Algebra.mul_smul_comm,
+        rw [timeOrderF_ofCrAnListF]
+        simp only [← ofCrAnListF_append, Algebra.mul_smul_comm,
           Algebra.smul_mul_assoc, map_smul]
-        rw [timeOrderF_ofCrAnList, timeOrderF_ofCrAnList, smul_smul]
+        rw [timeOrderF_ofCrAnListF, timeOrderF_ofCrAnListF, smul_smul]
         congr 1
         · simp only [crAnTimeOrderSign, crAnTimeOrderList]
           rw [Wick.koszulSign_of_append_eq_insertionSort, mul_comm]
@@ -104,7 +104,7 @@ lemma timeOrderF_ofFieldOpListF (φs : List 𝓕.States) :
   conv_lhs =>
     rw [ofFieldOpListF_sum, map_sum]
     enter [2, x]
-    rw [timeOrderF_ofCrAnList]
+    rw [timeOrderF_ofCrAnListF]
   simp only [crAnTimeOrderSign_crAnSection]
   rw [← Finset.smul_sum]
   congr
@@ -144,13 +144,13 @@ lemma timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered_eq_timeOrderF {φ ψ : 𝓕.S
   have hx := IsTotal.total (r := timeOrderRel) ψ φ
   simp_all
 
-lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel
+lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) :
-    𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca) = 0 := by
-  rw [superCommuteF_ofCrAnState_ofCrAnState]
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = 0 := by
+  rw [superCommuteF_ofCrAnOpF_ofCrAnOpF]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton,
-    ← ofCrAnList_append, ← ofCrAnList_append, timeOrderF_ofCrAnList, timeOrderF_ofCrAnList]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton,
+    ← ofCrAnListF_append, ← ofCrAnListF_append, timeOrderF_ofCrAnListF, timeOrderF_ofCrAnListF]
   simp only [List.singleton_append]
   rw [crAnTimeOrderSign_pair_not_ordered h, crAnTimeOrderList_pair_not_ordered h]
   rw [sub_eq_zero, smul_smul]
@@ -162,98 +162,98 @@ lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel
   · rw [crAnTimeOrderList_pair_ordered]
     simp_all
 
-lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right
+lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right
     {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca) = 0 := by
+    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = 0 := by
   rw [timeOrderF_timeOrderF_right,
-    timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
+    timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
-lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left
+lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left
     {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca * a) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * a) = 0 := by
   rw [timeOrderF_timeOrderF_left,
-    timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
+    timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
-lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_mid
+lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_mid
     {φ ψ : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ ψ) (a b : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ(a * [ofCrAnState φ, ofCrAnState ψ]ₛca * b) = 0 := by
+    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid,
-    timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel h]
+    timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
-lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel
+lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ1 φ2 : 𝓕.CrAnStates} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ([a, [ofCrAnState φ1, ofCrAnState φ2]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([a, [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛca]ₛca) = 0 := by
   rw [← bosonicProj_add_fermionicProj a]
   simp only [map_add, LinearMap.add_apply]
   rw [bosonic_superCommuteF (Submodule.coe_mem (bosonicProj a))]
   simp only [map_sub]
-  rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left h]
-  rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right h]
+  rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
+  rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]
   simp only [sub_self, zero_add]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rcases superCommuteF_ofCrAnList_ofCrAnList_bosonic_or_fermionic [φ1] [φ2] with h' | h'
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+  rcases superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic [φ1] [φ2] with h' | h'
   · rw [superCommuteF_bonsonic h']
-    simp only [ofCrAnList_singleton, map_sub]
-    rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left h]
-    rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right h]
+    simp only [ofCrAnListF_singleton, map_sub]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]
     simp
   · rw [superCommuteF_fermionic_fermionic (Submodule.coe_mem (fermionicProj a)) h']
-    simp only [ofCrAnList_singleton, map_add]
-    rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_left h]
-    rw [timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_not_crAnTimeOrderRel_right h]
+    simp only [ofCrAnListF_singleton, map_add]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]
     simp
 
-lemma timeOrderF_superCommuteF_ofCrAnState_superCommuteF_not_crAnTimeOrderRel
+lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel
     {φ1 φ2 φ3 : 𝓕.CrAnStates} (h12 : ¬ crAnTimeOrderRel φ1 φ2)
     (h13 : ¬ crAnTimeOrderRel φ1 φ3) :
-    𝓣ᶠ([ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca) = 0 := by
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rw [summerCommute_jacobi_ofCrAnList]
-  simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnList_singleton, neg_smul, map_smul,
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+  rw [summerCommute_jacobi_ofCrAnListF]
+  simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnListF_singleton, neg_smul, map_smul,
     map_sub, map_neg, smul_eq_zero]
   right
-  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h12]
-  rw [superCommuteF_ofCrAnState_ofCrAnState_symm φ3]
+  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h12]
+  rw [superCommuteF_ofCrAnOpF_ofCrAnOpF_symm φ3]
   simp only [smul_zero, neg_zero, instCommGroup.eq_1, neg_smul, map_neg, map_smul, smul_neg,
     sub_neg_eq_add, zero_add, smul_eq_zero]
-  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h13]
+  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h13]
   simp
 
-lemma timeOrderF_superCommuteF_ofCrAnState_superCommuteF_not_crAnTimeOrderRel'
+lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel'
     {φ1 φ2 φ3 : 𝓕.CrAnStates} (h12 : ¬ crAnTimeOrderRel φ2 φ1)
     (h13 : ¬ crAnTimeOrderRel φ3 φ1) :
-    𝓣ᶠ([ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca) = 0 := by
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton, ← ofCrAnList_singleton]
-  rw [summerCommute_jacobi_ofCrAnList]
-  simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnList_singleton, neg_smul, map_smul,
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+  rw [summerCommute_jacobi_ofCrAnListF]
+  simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnListF_singleton, neg_smul, map_smul,
     map_sub, map_neg, smul_eq_zero]
   right
-  rw [superCommuteF_ofCrAnState_ofCrAnState_symm φ1]
+  rw [superCommuteF_ofCrAnOpF_ofCrAnOpF_symm φ1]
   simp only [instCommGroup.eq_1, neg_smul, map_neg, map_smul, smul_neg, neg_neg]
-  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h12]
+  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h12]
   simp only [smul_zero, zero_sub, neg_eq_zero, smul_eq_zero]
-  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h13]
+  rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h13]
   simp
 
-lemma timeOrderF_superCommuteF_ofCrAnState_superCommuteF_all_not_crAnTimeOrderRel
+lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_all_not_crAnTimeOrderRel
     (φ1 φ2 φ3 : 𝓕.CrAnStates) (h : ¬
       (crAnTimeOrderRel φ1 φ2 ∧ crAnTimeOrderRel φ1 φ3 ∧
       crAnTimeOrderRel φ2 φ1 ∧ crAnTimeOrderRel φ2 φ3 ∧
       crAnTimeOrderRel φ3 φ1 ∧ crAnTimeOrderRel φ3 φ2)) :
-    𝓣ᶠ([ofCrAnState φ1, [ofCrAnState φ2, ofCrAnState φ3]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
   simp only [not_and] at h
   by_cases h23 : ¬ crAnTimeOrderRel φ2 φ3
   · simp_all only [IsEmpty.forall_iff, implies_true]
-    rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h23]
+    rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h23]
   simp_all only [Decidable.not_not, forall_const]
   by_cases h32 : ¬ crAnTimeOrderRel φ3 φ2
   · simp_all only [not_false_eq_true, implies_true]
-    rw [superCommuteF_ofCrAnState_ofCrAnState_symm]
+    rw [superCommuteF_ofCrAnOpF_ofCrAnOpF_symm]
     simp only [instCommGroup.eq_1, neg_smul, map_neg, map_smul, neg_eq_zero, smul_eq_zero]
-    rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnState_not_crAnTimeOrderRel h32]
+    rw [timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel h32]
     simp
   simp_all only [imp_false, Decidable.not_not]
   by_cases h12 : ¬ crAnTimeOrderRel φ1 φ2
@@ -261,7 +261,7 @@ lemma timeOrderF_superCommuteF_ofCrAnState_superCommuteF_all_not_crAnTimeOrderRe
       intro h13
       apply h12
       exact IsTrans.trans φ1 φ3 φ2 h13 h32
-    rw [timeOrderF_superCommuteF_ofCrAnState_superCommuteF_not_crAnTimeOrderRel h12 h13]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel h12 h13]
   simp_all only [Decidable.not_not, forall_const]
   have h13 : crAnTimeOrderRel φ1 φ3 := IsTrans.trans φ1 φ2 φ3 h12 h23
   simp_all only [forall_const]
@@ -271,18 +271,18 @@ lemma timeOrderF_superCommuteF_ofCrAnState_superCommuteF_all_not_crAnTimeOrderRe
       intro h31
       apply h21
       exact IsTrans.trans φ2 φ3 φ1 h23 h31
-    rw [timeOrderF_superCommuteF_ofCrAnState_superCommuteF_not_crAnTimeOrderRel' h21 h31]
+    rw [timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel' h21 h31]
   simp_all only [Decidable.not_not, forall_const]
   refine False.elim (h ?_)
   exact IsTrans.trans φ3 φ2 φ1 h32 h21
 
-lemma timeOrderF_superCommuteF_ofCrAnState_ofCrAnState_eq_time
+lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_eq_time
     {φ ψ : 𝓕.CrAnStates} (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) :
-    𝓣ᶠ([ofCrAnState φ, ofCrAnState ψ]ₛca) = [ofCrAnState φ, ofCrAnState ψ]ₛca := by
-  rw [superCommuteF_ofCrAnState_ofCrAnState]
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca := by
+  rw [superCommuteF_ofCrAnOpF_ofCrAnOpF]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
-  rw [← ofCrAnList_singleton, ← ofCrAnList_singleton,
-    ← ofCrAnList_append, ← ofCrAnList_append, timeOrderF_ofCrAnList, timeOrderF_ofCrAnList]
+  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton,
+    ← ofCrAnListF_append, ← ofCrAnListF_append, timeOrderF_ofCrAnListF, timeOrderF_ofCrAnListF]
   simp only [List.singleton_append]
   rw [crAnTimeOrderSign_pair_ordered h1, crAnTimeOrderList_pair_ordered h1,
     crAnTimeOrderSign_pair_ordered h2, crAnTimeOrderList_pair_ordered h2]

@@ -171,7 +171,7 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
   rw [normalOrder_ofCrAnFieldOpList]
   simp only [normalOrderSign_nil, normalOrderList_nil, one_smul]
   rw [ofCrAnFieldOpList, timeOrder_eq_ι_timeOrderF]
-  rw [timeOrderF_ofCrAnList]
+  rw [timeOrderF_ofCrAnListF]
   simp
 
 /--

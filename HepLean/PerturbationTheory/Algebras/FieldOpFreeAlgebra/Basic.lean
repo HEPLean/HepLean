@@ -19,8 +19,8 @@ The algebra is spanned by lists of creation/annihilation states.
 The main structures defined in this module are:
 
 * `FieldOpFreeAlgebra` - The creation and annihilation algebra
-* `ofCrAnState` - Maps a creation/annihilation state to the algebra
-* `ofCrAnList` - Maps a list of creation/annihilation states to the algebra
+* `ofCrAnOpF` - Maps a creation/annihilation state to the algebra
+* `ofCrAnListF` - Maps a list of creation/annihilation states to the algebra
 * `ofFieldOpF` - Maps a state to a sum of creation and annihilation operators
 * `crPartF` - The creation part of a state in the algebra
 * `anPartF` - The annihilation part of a state in the algebra
@@ -44,30 +44,30 @@ abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 
 namespace FieldOpFreeAlgebra
 
 /-- Maps a creation and annihlation state to the creation and annihlation free-algebra. -/
-def ofCrAnState (φ : 𝓕.CrAnStates) : FieldOpFreeAlgebra 𝓕 :=
+def ofCrAnOpF (φ : 𝓕.CrAnStates) : FieldOpFreeAlgebra 𝓕 :=
   FreeAlgebra.ι ℂ φ
 
 /-- Maps a list creation and annihlation state to the creation and annihlation free-algebra
   by taking their product. -/
-def ofCrAnList (φs : List 𝓕.CrAnStates) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnState φs).prod
+def ofCrAnListF (φs : List 𝓕.CrAnStates) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnOpF φs).prod
 
 @[simp]
-lemma ofCrAnList_nil : ofCrAnList ([] : List 𝓕.CrAnStates) = 1 := rfl
+lemma ofCrAnListF_nil : ofCrAnListF ([] : List 𝓕.CrAnStates) = 1 := rfl
 
-lemma ofCrAnList_cons (φ : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates) :
-    ofCrAnList (φ :: φs) = ofCrAnState φ * ofCrAnList φs := rfl
+lemma ofCrAnListF_cons (φ : 𝓕.CrAnStates) (φs : List 𝓕.CrAnStates) :
+    ofCrAnListF (φ :: φs) = ofCrAnOpF φ * ofCrAnListF φs := rfl
 
-lemma ofCrAnList_append (φs φs' : List 𝓕.CrAnStates) :
-    ofCrAnList (φs ++ φs') = ofCrAnList φs * ofCrAnList φs' := by
-  simp [ofCrAnList, List.map_append]
+lemma ofCrAnListF_append (φs φs' : List 𝓕.CrAnStates) :
+    ofCrAnListF (φs ++ φs') = ofCrAnListF φs * ofCrAnListF φs' := by
+  simp [ofCrAnListF, List.map_append]
 
-lemma ofCrAnList_singleton (φ : 𝓕.CrAnStates) :
-    ofCrAnList [φ] = ofCrAnState φ := by simp [ofCrAnList]
+lemma ofCrAnListF_singleton (φ : 𝓕.CrAnStates) :
+    ofCrAnListF [φ] = ofCrAnOpF φ := by simp [ofCrAnListF]
 
 /-- Maps a state to the sum of creation and annihilation operators in
   creation and annihilation free-algebra. -/
 def ofFieldOpF (φ : 𝓕.States) : FieldOpFreeAlgebra 𝓕 :=
-  ∑ (i : 𝓕.statesToCrAnType φ), ofCrAnState ⟨φ, i⟩
+  ∑ (i : 𝓕.statesToCrAnType φ), ofCrAnOpF ⟨φ, i⟩
 
 /-- Maps a list of states to the creation and annihilation free-algebra by taking
   the product of their sums of creation and annihlation operators.
@@ -92,12 +92,12 @@ lemma ofFieldOpListF_append (φs φs' : List 𝓕.States) :
   rw [List.map_append, List.prod_append]
 
 lemma ofFieldOpListF_sum (φs : List 𝓕.States) :
-    ofFieldOpListF φs = ∑ (s : CrAnSection φs), ofCrAnList s.1 := by
+    ofFieldOpListF φs = ∑ (s : CrAnSection φs), ofCrAnListF s.1 := by
   induction φs with
   | nil => simp
   | cons φ φs ih =>
     rw [CrAnSection.sum_cons]
-    dsimp only [CrAnSection.cons, ofCrAnList_cons]
+    dsimp only [CrAnSection.cons, ofCrAnListF_cons]
     conv_rhs =>
       enter [2, x]
       rw [← Finset.mul_sum]
@@ -115,19 +115,19 @@ lemma ofFieldOpListF_sum (φs : List 𝓕.States) :
   spanned by creation operators. -/
 def crPartF : 𝓕.States → 𝓕.FieldOpFreeAlgebra := fun φ =>
   match φ with
-  | States.inAsymp φ => ofCrAnState ⟨States.inAsymp φ, ()⟩
-  | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩
+  | States.inAsymp φ => ofCrAnOpF ⟨States.inAsymp φ, ()⟩
+  | States.position φ => ofCrAnOpF ⟨States.position φ, CreateAnnihilate.create⟩
   | States.outAsymp _ => 0
 
 @[simp]
 lemma crPartF_negAsymp (φ : 𝓕.IncomingAsymptotic) :
-    crPartF (States.inAsymp φ) = ofCrAnState ⟨States.inAsymp φ, ()⟩ := by
+    crPartF (States.inAsymp φ) = ofCrAnOpF ⟨States.inAsymp φ, ()⟩ := by
   simp [crPartF]
 
 @[simp]
 lemma crPartF_position (φ : 𝓕.PositionStates) :
     crPartF (States.position φ) =
-    ofCrAnState ⟨States.position φ, CreateAnnihilate.create⟩ := by
+    ofCrAnOpF ⟨States.position φ, CreateAnnihilate.create⟩ := by
   simp [crPartF]
 
 @[simp]
@@ -141,8 +141,8 @@ lemma crPartF_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
 def anPartF : 𝓕.States → 𝓕.FieldOpFreeAlgebra := fun φ =>
   match φ with
   | States.inAsymp _ => 0
-  | States.position φ => ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩
-  | States.outAsymp φ => ofCrAnState ⟨States.outAsymp φ, ()⟩
+  | States.position φ => ofCrAnOpF ⟨States.position φ, CreateAnnihilate.annihilate⟩
+  | States.outAsymp φ => ofCrAnOpF ⟨States.outAsymp φ, ()⟩
 
 @[simp]
 lemma anPartF_negAsymp (φ : 𝓕.IncomingAsymptotic) :
@@ -152,12 +152,12 @@ lemma anPartF_negAsymp (φ : 𝓕.IncomingAsymptotic) :
 @[simp]
 lemma anPartF_position (φ : 𝓕.PositionStates) :
     anPartF (States.position φ) =
-    ofCrAnState ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
+    ofCrAnOpF ⟨States.position φ, CreateAnnihilate.annihilate⟩ := by
   simp [anPartF]
 
 @[simp]
 lemma anPartF_posAsymp (φ : 𝓕.OutgoingAsymptotic) :
-    anPartF (States.outAsymp φ) = ofCrAnState ⟨States.outAsymp φ, ()⟩ := by
+    anPartF (States.outAsymp φ) = ofCrAnOpF ⟨States.outAsymp φ, ()⟩ := by
   simp [anPartF]
 
 lemma ofFieldOpF_eq_crPartF_add_anPartF (φ : 𝓕.States) :
@@ -175,15 +175,15 @@ lemma ofFieldOpF_eq_crPartF_add_anPartF (φ : 𝓕.States) :
 -/
 
 /-- The basis of the free creation and annihilation algebra formed by lists of CrAnStates. -/
-noncomputable def ofCrAnListBasis : Basis (List 𝓕.CrAnStates) ℂ (FieldOpFreeAlgebra 𝓕) where
+noncomputable def ofCrAnListFBasis : Basis (List 𝓕.CrAnStates) ℂ (FieldOpFreeAlgebra 𝓕) where
   repr := FreeAlgebra.equivMonoidAlgebraFreeMonoid.toLinearEquiv
 
 @[simp]
 lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnStates) :
-    ofCrAnListBasis φs = ofCrAnList φs := by
-  simp only [ofCrAnListBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
+    ofCrAnListFBasis φs = ofCrAnListF φs := by
+  simp only [ofCrAnListFBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
     Basis.coe_ofRepr, AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_apply,
-    AlgEquiv.ofAlgHom_symm_apply, ofCrAnList]
+    AlgEquiv.ofAlgHom_symm_apply, ofCrAnListF]
   erw [MonoidAlgebra.lift_apply]
   simp only [zero_smul, Finsupp.sum_single_index, one_smul]
   rw [@FreeMonoid.lift_apply]
