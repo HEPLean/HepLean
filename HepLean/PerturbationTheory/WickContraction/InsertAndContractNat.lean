@@ -345,6 +345,14 @@ lemma insertAndContractNat_none_getDual?_isNone (c : WickContraction n) (i : Fin
   simp
 
 @[simp]
+lemma insertAndContractNat_none_getDual?_eq_none (c : WickContraction n) (i : Fin n.succ) :
+    (insertAndContractNat c i none).getDual? i = none := by
+  have hi : i ∈ (insertAndContractNat c i none).uncontracted := by
+    simp
+  simp only [Nat.succ_eq_add_one, uncontracted, Finset.mem_filter, Finset.mem_univ, true_and] at hi
+  rw [hi]
+
+@[simp]
 lemma insertAndContractNat_succAbove_getDual?_eq_none_iff (c : WickContraction n) (i : Fin n.succ)
     (j : Fin n) :
     (insertAndContractNat c i none).getDual? (i.succAbove j) = none ↔ c.getDual? j = none := by
@@ -512,8 +520,7 @@ lemma insertAndContractNat_getDualErase (c : WickContraction n) (i : Fin n.succ)
   | Nat.succ n =>
   match j with
   | none =>
-    have hi := insertAndContractNat_none_getDual?_isNone c i
-    simp [getDualErase, hi]
+    simp [getDualErase]
   | some j =>
     simp only [Nat.succ_eq_add_one, getDualErase, insertAndContractNat_some_getDual?_eq,
       Option.isSome_some, ↓reduceDIte, Option.get_some, predAboveI_succAbove,
@@ -730,5 +737,69 @@ lemma insertLiftSome_surjective {c : WickContraction n} (i : Fin n.succ) (j : c.
 lemma insertLiftSome_bijective {c : WickContraction n} (i : Fin n.succ) (j : c.uncontracted) :
     Function.Bijective (insertLiftSome i j) :=
   ⟨insertLiftSome_injective i j, insertLiftSome_surjective i j⟩
+
+/-!
+
+# insertAndContractNat c i none and injection
+
+-/
+
+lemma insertAndContractNat_injective (i : Fin n.succ) :
+    Function.Injective (fun c => insertAndContractNat c i none) := by
+  intro c1 c2 hc1c2
+  rw [Subtype.ext_iff] at hc1c2
+  simp [insertAndContractNat] at hc1c2
+  exact Subtype.eq hc1c2
+
+lemma insertAndContractNat_surjective_on_nodual (i : Fin n.succ)
+    (c : WickContraction n.succ) (hc : c.getDual? i = none) :
+    ∃ c', insertAndContractNat c' i none = c := by
+  use c.erase i
+  apply Subtype.eq
+  ext a
+  simp [insertAndContractNat, erase, hc]
+  apply Iff.intro
+  · intro h
+    obtain ⟨a', ha', rfl⟩ := h
+    exact ha'
+  · intro h
+    have hi : i ∈ c.uncontracted := by
+      simpa [uncontracted] using hc
+    rw [mem_uncontracted_iff_not_contracted] at hi
+    obtain ⟨j, hj⟩ := (@Fin.exists_succAbove_eq_iff _ i (c.fstFieldOfContract ⟨a, h⟩)).mpr
+      (by
+      by_contra hn
+      apply hi a h
+      change i ∈ (⟨a, h⟩ : c.1).1
+      rw [finset_eq_fstFieldOfContract_sndFieldOfContract c ⟨a, h⟩]
+      subst hn
+      simp)
+    obtain ⟨k, hk⟩ := (@Fin.exists_succAbove_eq_iff _ i (c.sndFieldOfContract ⟨a, h⟩)).mpr
+      (by
+      by_contra hn
+      apply hi a h
+      change i ∈ (⟨a, h⟩ : c.1).1
+      rw [finset_eq_fstFieldOfContract_sndFieldOfContract c ⟨a, h⟩]
+      subst hn
+      simp)
+    use {j, k}
+    rw [Finset.mapEmbedding_apply]
+    simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton]
+    rw [hj, hk]
+    rw [← finset_eq_fstFieldOfContract_sndFieldOfContract c ⟨a, h⟩]
+    simp only [and_true]
+    exact h
+
+lemma insertAndContractNat_bijective (i : Fin n.succ) :
+    Function.Bijective (fun c => (⟨insertAndContractNat c i none, by simp⟩ :
+      {c : WickContraction n.succ // c.getDual? i = none})) := by
+  apply And.intro
+  · intro a b hab
+    simp only [Nat.succ_eq_add_one, Subtype.mk.injEq] at hab
+    exact insertAndContractNat_injective i hab
+  · intro c
+    obtain ⟨c', hc'⟩ := insertAndContractNat_surjective_on_nodual i c c.2
+    use c'
+    simp [hc']
 
 end WickContraction

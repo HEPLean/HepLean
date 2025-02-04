@@ -469,9 +469,10 @@ lemma ofCrAnFieldOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnFi
   rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofFieldOp_eq_sum, ← ofFieldOpList_eq_sum]
 
 /--
-Within a proto-operator algebra we have that
-`[anPartF φ, 𝓝(φs)] = ∑ i, sᵢ • [anPartF φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`
-where `sᵢ` is the exchange sign for `φ` and `φ₀…φᵢ₋₁`.
+The commutor of the annihilation part of a field operator with a normal ordered list of field
+operators can be decomponsed into the sum of the commutators of the annihilation part with each
+element of the list of field operators, i.e.
+`[anPart φ, 𝓝(φ₀…φₙ)]ₛ= ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [anPart φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
 -/
 lemma anPart_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     [anPart φ, 𝓝(ofFieldOpList φs)]ₛ = ∑ n : Fin φs.length, 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) •

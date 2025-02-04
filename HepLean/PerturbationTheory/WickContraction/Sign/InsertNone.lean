@@ -20,10 +20,9 @@ open HepLean.List
 open FieldStatistic
 
 lemma signFinset_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
-    (φsΛ : WickContraction φs.length)
-    (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
-      (φsΛ ↩Λ φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
-      (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
+    (φsΛ ↩Λ φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
+    (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
       (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
@@ -214,8 +213,18 @@ lemma signInsertNone_eq_filter_map (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     exact List.nodup_finRange φs.length
   · exact hG
 
-/-- The change in sign when inserting a field `φ` at `i` into `φsΛ` is equal
-  to the sign got by moving `φ` through each field `φ₀…φᵢ₋₁` which has a dual. -/
+/-- The following signs for a grading compliant Wick contraction are equal:
+- The sign `φsΛ.signInsertNone φ φs i` which is given by the following: For each
+  contracted pair `{a1, a2}` in `φsΛ` if `a1 < a2`
+  such that `i` is within the range `a1 < i < a2` we pick up a sign equal to `𝓢(φ, φs[a2])`.
+- The sign got by moving `φ` through `φ₀…φᵢ₋₁` and only picking up a sign when `φᵢ` has a dual.
+These are equal since: Both ignore uncontracted fields, and for a contracted pair `{a1, a2}`
+with `a1 < a2`
+- if `i < a1 < a2` then we don't pick up a sign from either `φₐ₁` or `φₐ₂`.
+- if `a1 < i < a2` then we pick up a sign from `φₐ₁` cases which is equal to `𝓢(φ, φs[a2])`
+(since `φsΛ` is grading compliant).
+- if `a1 < a2 < i` then we pick up a sign from both `φₐ₁` and `φₐ₂` which cancel each other out.
+-/
 lemma signInsertNone_eq_filterset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
