@@ -279,17 +279,6 @@ def specialTypes : List (String × (Term → Term)) := [
 def termNodeSyntax (T : Term) : TermElabM Term := do
   let expr ← elabTerm T none
   let type ← inferType expr
-  let defEqList ← specialTypes.filterM (fun x => do
-    let type' ← stringToType x.1
-    match type' with
-    | none => return false
-    | some type' =>
-    let defEq ← isDefEq type type'
-    return defEq)
-  match defEqList with
-  | [(_, f)] =>
-    return f T
-  | _ =>
   match type with
   | Expr.app _ (Expr.app _ (Expr.app _ _)) =>
       return Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
