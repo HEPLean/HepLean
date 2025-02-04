@@ -48,6 +48,11 @@ def isFullInvolutionEquiv : {c : WickContraction n // IsFull c} ≃
   left_inv c := by simp
   right_inv f := by simp
 
+remark card_in_general := "The cardinality of `WickContraction n` in general
+  follows OEIS:A000085. I.e.
+  1, 1, 2, 4, 10, 26, 76, 232, 764, 2620, 9496, 35696, 140152, 568504, 2390480,
+  10349536, 46206736, 211799312, 997313824,...."
+
 /-- If `n` is even then the number of full contractions is `(n-1)!!`. -/
 theorem card_of_isfull_even (he : Even n) :
     Fintype.card {c : WickContraction n // IsFull c} = (n - 1)‼ := by

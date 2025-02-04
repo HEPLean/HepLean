@@ -198,11 +198,13 @@ lemma signFinset_insertAndContract_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Fie
         simp only [Fin.coe_cast, Option.get_map, Function.comp_apply, Fin.val_fin_lt]
         rw [Fin.succAbove_lt_succAbove_iff]
 
-/-- Given a Wick contraction `c` associated with a list of states `φs`
-  and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
-  inserting `φ` into `φs` at position `i` and contracting it with `j : c.uncontracted`
-  coming from contractions other then the `i` and `j` contraction but which
-  are effected by this new contraction. -/
+/--
+Given a Wick contraction `φsΛ` the sign defined in the followin way,
+related to inserting a field `φ` at position `i` and contracting it with `j : φsΛ.uncontracted`.
+- For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < j`.
+- For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φⱼ, φₐ₂)` if `a₁ < j < a₂` and `i < a₁`. -/
 def signInsertSomeProd (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
   ∏ (a : φsΛ.1),
@@ -216,10 +218,12 @@ def signInsertSomeProd (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : Wi
     else
       1
 
-/-- Given a Wick contraction `c` associated with a list of states `φs`
-  and an `i : Fin φs.length.succ`, the change in sign of the contraction associated with
-  inserting `φ` into `φs` at position `i` and contracting it with `j : c.uncontracted`
-  coming from putting `i` next to `j`. -/
+/-- Given a Wick contraction `φsΛ` the sign defined in the followin way,
+related to inserting a field `φ` at position `i` and contracting it with `j : φsΛ.uncontracted`.
+- If `j < i`, for each field `φₐ` in `φⱼ₊₁…φᵢ₋₁` without a dual at position `< j`
+  the sign `𝓢(φₐ, φᵢ)`.
+- Else, for each field `φₐ` in `φᵢ…φⱼ₋₁` of `φs` without dual at position `< i` the sign
+  `𝓢(φₐ, φⱼ)`.  -/
 def signInsertSomeCoef (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
   let a : (φsΛ ↩Λ φ i (some j)).1 := congrLift (insertIdx_length_fin φ φs i).symm
@@ -239,8 +243,7 @@ def signInsertSome (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickCo
 lemma sign_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).sign = (φsΛ.signInsertSome φ φs i j) * φsΛ.sign := by
-  rw [sign]
-  rw [signInsertSome, signInsertSomeProd, sign, mul_assoc, ← Finset.prod_mul_distrib]
+  rw [sign, signInsertSome, signInsertSomeProd, sign, mul_assoc, ← Finset.prod_mul_distrib]
   rw [insertAndContract_some_prod_contractions]
   congr
   funext a
@@ -374,40 +377,6 @@ lemma signInsertSomeProd_eq_prod_fin (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldO
   simp only [Nat.succ_eq_add_one, not_lt, Equiv.symm_symm, Equiv.sumCompl_apply_inl,
     Finset.prod_const_one, mul_one, e2]
   rfl
-  simp only [hφj, Fin.getElem_fin]
-  exact hg
-
-lemma signInsertSomeProd_eq_list (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
-    (φsΛ : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : φsΛ.uncontracted) (hφj : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[j.1]))
-    (hg : GradingCompliant φs φsΛ) :
-    φsΛ.signInsertSomeProd φ φs i j =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (List.filter (fun x => (φsΛ.getDual? x).isSome ∧
-      ∀ (h : (φsΛ.getDual? x).isSome), x < j ∧ (i.succAbove x < i ∧
-      i < i.succAbove ((φsΛ.getDual? x).get h)
-      ∨ j < ((φsΛ.getDual? x).get h) ∧ ¬ i.succAbove x < i))
-    (List.finRange φs.length)).map φs.get) := by
-  rw [signInsertSomeProd_eq_prod_fin]
-  rw [FieldStatistic.ofList_map_eq_finset_prod]
-  rw [map_prod]
-  congr
-  funext x
-  split
-  · rename_i h
-    simp only [Nat.succ_eq_add_one, not_lt, instCommGroup.eq_1, Bool.decide_and,
-      Bool.decide_eq_true, List.mem_filter, List.mem_finRange, h, forall_true_left, Bool.decide_or,
-      Bool.true_and, Bool.and_eq_true, decide_eq_true_eq, Bool.or_eq_true, true_and,
-      Fin.getElem_fin]
-    split
-    · rename_i h1
-      simp [h1]
-    · rename_i h1
-      simp [h1]
-  · rename_i h
-    simp [h]
-  refine
-    List.Nodup.filter _ ?_
-  exact List.nodup_finRange φs.length
   simp only [hφj, Fin.getElem_fin]
   exact hg
 
@@ -630,10 +599,33 @@ lemma signInsertSomeCoef_eq_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     stat_signFinset_insert_some_self_fst]
   simp [hφj]
 
-/-- The change in sign when inserting a field `φ` at `i` into `φsΛ` and
-  contracting it with `k` (`k < i`) is equal
-  to the sign got by moving `φ` through each field `φ₀…φᵢ₋₁`
-  multiplied by the sign got moving `φ` through each uncontracted field `φ₀…φₖ`. -/
+/--
+The following two signs are equal for `i.succAbove k < i`. The sign `signInsertSome φ φs φsΛ i k` which is constructed
+as follows:
+1a. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < k`.
+1b.  For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φⱼ, φₐ₂)` if `a₁ < k < a₂` and `i < a₁`.
+1c.  For each field `φₐ` in `φₖ₊₁…φᵢ₋₁` without a dual at position `< k`
+  the sign `𝓢(φₐ, φᵢ)`.
+and the sign constructed as follows:
+2a. For each uncontracted field `φₐ` in `φ₀…φₖ` in `φsΛ` the sign `𝓢(φ, φₐ)`
+2b. For each field in `φₐ` in `φ₀…φᵢ₋₁` the sign `𝓢(φ, φₐ)`.
+
+The outline of why this is true can be got by considering contributions of fields.
+- `φₐ`, `i ≤ a`. No contributions.
+- `φₖ`, `k -> 2a`, `k -> 2b`
+- `φₐ`, `a ≤ k` uncontracted `a -> 2a`, `a -> 2b`.
+- `φₐ`, `k < a < i` uncontracted `a -> 1c`, `a -> 2b`.
+
+For contracted fields `{a₁, a₂}` in `φsΛ` with `a₁ < a₂` we have the following cases:
+- `φₐ₁` `φₐ₂` `a₁ < a₂ < k < i`, `a₁ -> 2b`, `a₂ -> 2b`,
+- `φₐ₁` `φₐ₂` `a₁ < k < a₂ < i`, `a₁ -> 2b`, `a₂ -> 2b`,
+- `φₐ₁` `φₐ₂` `a₁ < k < i ≤  a₂`, `a₁ -> 2b`, `a₂ -> 1a`
+- `φₐ₁` `φₐ₂` `k < a₁ < a₂ < i`, `a₁ -> 2b`, `a₂ -> 2b`, `a₁ -> 1c`, `a₂ -> 1c`
+- `φₐ₁` `φₐ₂` `k < a₁ < i ≤ a₂ `,`a₁ -> 2b`, `a₁ -> 1c`
+- `φₐ₁` `φₐ₂` `k  < i ≤ a₁ < a₂ `, No contributions.
+ -/
 lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hk : i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
@@ -669,14 +661,12 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.FieldOp) (φs : List
         simp only [not_lt] at hkj
         have h2 := h.2 hkj
         apply Fin.ne_succAbove i j
-        have hij : i.succAbove j ≤ i.succAbove k.1 :=
-          Fin.succAbove_le_succAbove_iff.mpr hkj
+        have hij : i.succAbove j ≤ i.succAbove k.1 := Fin.succAbove_le_succAbove_iff.mpr hkj
         omega
       · have h1' := h.1
         rcases h1' with h1' | h1'
         · have hl := h.2 h1'
-          have hij : i.succAbove j ≤ i.succAbove k.1 :=
-          Fin.succAbove_le_succAbove_iff.mpr h1'
+          have hij : i.succAbove j ≤ i.succAbove k.1 := Fin.succAbove_le_succAbove_iff.mpr h1'
           by_contra hn
           apply Fin.ne_succAbove i j
           omega
@@ -737,10 +727,35 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.FieldOp) (φs : List
         or_true, imp_self]
         omega
 
-/-- The change in sign when inserting a field `φ` at `i` into `φsΛ` and
-  contracting it with `k` (`i < k`) is equal
-  to the sign got by moving `φ` through each field `φ₀…φᵢ₋₁`
-  multiplied by the sign got moving `φ` through each uncontracted field `φ₀…φₖ₋₁`. -/
+
+/--
+The following two signs are equal for `i < i.succAbove k`.
+The sign `signInsertSome φ φs φsΛ i k` which is constructed
+as follows:
+1a. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < k`.
+1b.  For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+  `𝓢(φⱼ, φₐ₂)` if `a₁ < k < a₂` and `i < a₁`.
+1c.  For each field `φₐ` in `φᵢ…φₖ₋₁` of `φs` without dual at position `< i` the sign
+  `𝓢(φₐ, φⱼ)`.
+and the sign constructed as follows:
+2a. For each uncontracted field `φₐ` in `φ₀…φₖ₋₁` in `φsΛ` the sign `𝓢(φ, φₐ)`
+2b. For each field in `φₐ` in `φ₀…φᵢ₋₁` the sign `𝓢(φ, φₐ)`.
+
+The outline of why this is true can be got by considering contributions of fields.
+- `φₐ`, `k < a`. No contributions.
+- `φₖ`, No Contributes
+- `φₐ`, `a < i` uncontracted `a -> 2a`, `a -> 2b`.
+- `φₐ`, `i ≤ a < k` uncontracted `a -> 1c`, `a -> 2a`.
+
+For contracted fields `{a₁, a₂}` in `φsΛ` with `a₁ < a₂` we have the following cases:
+- `φₐ₁` `φₐ₂` `a₁ < a₂ < i ≤ k`, `a₁ -> 2b`, `a₂ -> 2b`
+- `φₐ₁` `φₐ₂` `a₁ < i ≤ a₂ < k`, `a₁ -> 2b`, `a₂ -> 1a`
+- `φₐ₁` `φₐ₂` `a₁ < i ≤ k <  a₂`, `a₁ -> 2b`, `a₂ -> 1a`
+- `φₐ₁` `φₐ₂` `i ≤  a₁ < a₂ < k`, `a₂ -> 1c`, `a₁ -> 1c`
+- `φₐ₁` `φₐ₂` `i ≤ a₁ < k < a₂ `, `a₁ -> 1c`, `a₁ -> 1b`
+- `φₐ₁` `φₐ₂` `i ≤ k ≤ a₁ < a₂ `, No contributions
+ -/
 lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
@@ -804,9 +819,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
         imp_false, not_lt, true_and, implies_true, imp_self, and_true, forall_const, hik,
         imp_forall_iff_forall]
     · have hikn : j < k.1 := by omega
-      have hksucc : i.succAbove j < i.succAbove k.1 := by
-        rw [Fin.succAbove_lt_succAbove_iff]
-        omega
+      have hksucc : i.succAbove j < i.succAbove k.1 := Fin.succAbove_lt_succAbove_iff.mpr hikn
       simp only [hikn, true_and, forall_const, hik, false_and, or_false, IsEmpty.forall_iff,
         and_true]
       by_cases hij: i < i.succAbove j
@@ -822,9 +835,8 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
           · apply Or.inl
             omega
           · apply Or.inl
-            have hi : i.succAbove k.1 < i.succAbove ((φsΛ.getDual? j).get hj) := by
-              rw [Fin.succAbove_lt_succAbove_iff]
-              omega
+            have hi : i.succAbove k.1 < i.succAbove ((φsΛ.getDual? j).get hj) :=
+              Fin.succAbove_lt_succAbove_iff.mpr h1
             apply And.intro
             · apply Or.inr
               apply And.intro

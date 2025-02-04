@@ -67,13 +67,13 @@ def statesIsPosition : 𝓕.FieldOp → Bool
   | FieldOp.position _ => true
   | _ => false
 
-/-- The statistics associated to a state. -/
+/-- The statistics associated to a field operator. -/
 def statesStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistics ∘ 𝓕.fieldOpToField
 
-/-- The field statistics associated with a state. -/
+/-- The field statistics associated with a field operator. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ
 
-/-- The field statistics associated with a list states. -/
+/-- The field statistics associated with a list field operators. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (statesStatistic 𝓕) φ
 
