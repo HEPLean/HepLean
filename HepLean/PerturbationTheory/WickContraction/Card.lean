@@ -236,6 +236,9 @@ def cardFun : ℕ → ℕ
   | 1 => 1
   | Nat.succ (Nat.succ n) => cardFun (Nat.succ n) + (n + 1) * cardFun n
 
+/-- The number of Wick contractions for `n : ℕ` fields, i.e. the cardinality of
+  `WickContraction n`, is equal to the terms in
+  Online Encyclopedia of Integer Sequences (OEIS) A000085. -/
 theorem card_eq_cardFun : (n : ℕ) → Fintype.card (WickContraction n) = cardFun n
   | 0 => by decide
   | 1 => by decide

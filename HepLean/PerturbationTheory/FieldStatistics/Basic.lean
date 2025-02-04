@@ -26,7 +26,8 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
-/-- Field statistics form a commuative group isomorphic to `ℤ₂`. -/
+/-- Field statistics form a commuative group isomorphic to `ℤ₂` in which `bosonic` is the identity
+  and `fermionic` is the non-trivial element. -/
 @[simp]
 instance : CommGroup FieldStatistic where
   one := bosonic
