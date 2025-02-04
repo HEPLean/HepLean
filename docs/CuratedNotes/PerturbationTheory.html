@@ -1,6 +1,12 @@
 ---
 layout: default
 ---
+<style>
+  body {
+    color: black;
+  }
+</style>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
@@ -31,10 +37,10 @@ layout: default
 <p>
 {% for entry in site.data.perturbationTheory.parts %}
 {% if entry.type == "h1" %}
-  {{ entry.sectionNo }}. {{ entry.content }}<br>
+  <a href="#section-{{ entry.sectionNo }}" style="color: #2c5282;">{{ entry.sectionNo }}. {{ entry.content }}</a><br>
 {% endif %}
 {% if entry.type == "h2" %}
-  - {{ entry.sectionNo }}. {{ entry.content }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#section-{{ entry.sectionNo }}"  style="color: #2c5282;">{{ entry.sectionNo }}. {{ entry.content }}</a><br>
 {% endif %}
 {% endfor %}
 </p>
@@ -43,10 +49,10 @@ layout: default
 <br>
 {% for entry in site.data.perturbationTheory.parts %}
   {% if entry.type == "h1" %}
-    <h1>{{ entry.sectionNo }}. {{ entry.content }}</h1>
+    <h1 id="section-{{ entry.sectionNo }}">{{ entry.sectionNo }}. {{ entry.content }}</h1>
   {% endif %}
   {% if entry.type == "h2" %}
-    <h2>{{ entry.sectionNo }}. {{ entry.content }}</h2>
+    <h2 id="section-{{ entry.sectionNo }}">{{ entry.sectionNo }}. {{ entry.content }} </h2>
   {% endif %}
   {% if entry.type == "p" %}
     <p>{{ entry.content }}</p>
