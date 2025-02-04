@@ -96,17 +96,17 @@ lemma tensorNode_coMetric : {η' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE 
 
 /-- The definitional tensor node relation for `contrMetric`. -/
 lemma tensorNode_contrMetric : {η | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
-  .up .up Lorentz.contrMetric).tensor := by
+    .up .up Lorentz.contrMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `leftMetric`. -/
 lemma tensorNode_leftMetric : {εL | α α'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
-  .upL .upL Fermion.leftMetric).tensor := by
+    .upL .upL Fermion.leftMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `rightMetric`. -/
 lemma tensorNode_rightMetric : {εR | β β'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
-  .upR .upR Fermion.rightMetric).tensor:= by
+    .upR .upR Fermion.rightMetric).tensor:= by
   rfl
 
 /-- The definitional tensor node relation for `altLeftMetric`. -/

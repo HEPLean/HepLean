@@ -31,6 +31,10 @@ open Lorentz
 
 -/
 
+TODO "To increase the speed of these files `(vecNodeE complexLorentzTensor .up p).tensor | μ` is
+  written out expliclity. Notation should be introduced so that we can just write `p | μ` or
+  similar without slowing things down."
+
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
 def contrBispinorUp (p : complexContr) :=
   {pauliCo | μ α β ⊗ (vecNodeE complexLorentzTensor .up p).tensor | μ}ᵀ.tensor
