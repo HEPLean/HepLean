@@ -37,22 +37,27 @@ open Fermion
 -/
 
 /-- The metric `ηᵢᵢ` as a complex Lorentz tensor. -/
-def coMetric := {Lorentz.coMetric | μ ν}ᵀ.tensor
+def coMetric := (TensorTree.constTwoNodeE complexLorentzTensor .down .down Lorentz.coMetric).tensor
 
 /-- The metric `ηⁱⁱ` as a complex Lorentz tensor. -/
-def contrMetric := {Lorentz.contrMetric | μ ν}ᵀ.tensor
+def contrMetric := (TensorTree.constTwoNodeE complexLorentzTensor
+  .up .up Lorentz.contrMetric).tensor
 
 /-- The metric `εᵃᵃ` as a complex Lorentz tensor. -/
-def leftMetric := {Fermion.leftMetric | α α'}ᵀ.tensor
+def leftMetric := (TensorTree.constTwoNodeE complexLorentzTensor
+  .upL .upL Fermion.leftMetric).tensor
 
 /-- The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. -/
-def rightMetric := {Fermion.rightMetric | β β'}ᵀ.tensor
+def rightMetric := (TensorTree.constTwoNodeE complexLorentzTensor
+  .upR .upR Fermion.rightMetric).tensor
 
 /-- The metric `εₐₐ` as a complex Lorentz tensor. -/
-def altLeftMetric := {Fermion.altLeftMetric | α α'}ᵀ.tensor
+def altLeftMetric := (TensorTree.constTwoNodeE complexLorentzTensor
+  .downL .downL Fermion.altLeftMetric).tensor
 
 /-- The metric `ε_{dot a}_{dot a}` as a complex Lorentz tensor. -/
-def altRightMetric := {Fermion.altRightMetric | β β'}ᵀ.tensor
+def altRightMetric := (TensorTree.constTwoNodeE complexLorentzTensor
+  .downR .downR Fermion.altRightMetric).tensor
 
 /-!
 
@@ -85,29 +90,35 @@ scoped[complexLorentzTensor] notation "εR'" => altRightMetric
 -/
 
 /-- The definitional tensor node relation for `coMetric`. -/
-lemma tensorNode_coMetric : {η' | μ ν}ᵀ.tensor = {Lorentz.coMetric | μ ν}ᵀ.tensor := by
+lemma tensorNode_coMetric : {η' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+    .down .down Lorentz.coMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `contrMetric`. -/
-lemma tensorNode_contrMetric : {η | μ ν}ᵀ.tensor = {Lorentz.contrMetric | μ ν}ᵀ.tensor := by
+lemma tensorNode_contrMetric : {η | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+  .up .up Lorentz.contrMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `leftMetric`. -/
-lemma tensorNode_leftMetric : {εL | α α'}ᵀ.tensor = {Fermion.leftMetric | α α'}ᵀ.tensor := by
+lemma tensorNode_leftMetric : {εL | α α'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+  .upL .upL Fermion.leftMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `rightMetric`. -/
-lemma tensorNode_rightMetric : {εR | β β'}ᵀ.tensor = {Fermion.rightMetric | β β'}ᵀ.tensor := by
+lemma tensorNode_rightMetric : {εR | β β'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+  .upR .upR Fermion.rightMetric).tensor:= by
   rfl
 
 /-- The definitional tensor node relation for `altLeftMetric`. -/
 lemma tensorNode_altLeftMetric :
-    {εL' | α α'}ᵀ.tensor = {Fermion.altLeftMetric | α α'}ᵀ.tensor := by
+    {εL' | α α'}ᵀ.tensor =  (TensorTree.constTwoNodeE complexLorentzTensor
+  .downL .downL Fermion.altLeftMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `altRightMetric`. -/
 lemma tensorNode_altRightMetric :
-    {εR' | β β'}ᵀ.tensor = {Fermion.altRightMetric | β β'}ᵀ.tensor := by
+    {εR' | β β'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+  .downR .downR Fermion.altRightMetric).tensor:= by
   rfl
 
 /-!

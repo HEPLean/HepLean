@@ -32,7 +32,8 @@ open Fermion
 -/
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
-def pauliContr := {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor
+def pauliContr := (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
+  PauliMatrix.asConsTensor).tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
 def pauliCo := {η' | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor
@@ -51,7 +52,8 @@ def pauliContrDown := {pauliContr | μ α β ⊗ εL' | α α' ⊗ εR' | β β'
 
 /-- The definitional tensor node relation for `pauliContr`. -/
 lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀ.tensor =
-    {PauliMatrix.asConsTensor | ν α β}ᵀ.tensor := by
+    (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
+  PauliMatrix.asConsTensor).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `pauliCo`. -/
