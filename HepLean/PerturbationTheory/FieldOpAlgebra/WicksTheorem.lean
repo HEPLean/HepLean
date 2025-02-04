@@ -342,11 +342,19 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
   simp
 
 remark wicks_theorem_context := "
-  Wick's theorem is one of the most important results in perturbative quantum field theory.
-  It expresses a time-ordered product of fields as a sum of terms consisting of
-  time-contractions of pairs of fields multiplied by the normal-ordered product of
-  the remaining fields. Wick's theorem is also the precursor to the diagrammatic
-  approach to quantum field theory called Feynman diagrams."
+  In perturbation quantum field theory, Wick's theorem allows
+  us to expand expectation values of time-ordered products of fields in terms of normal-orders
+  and time contractions.
+  The theorem is used to simplify the calculation of scattering amplitudes, and is the precurser
+  to Feynman diagrams.
+
+  There is are actually three different versions of Wick's theorem used.
+  The static version, the time-dependent version, and the normal-ordered time-dependent version.
+  HepLean contains a formalization of all three of these theorems in complete generality for
+  mixtures of bosonic and fermionic fields.
+
+  The statement of these theorems for bosons is simplier then when fermions are involved, since
+  one does not have to worry about the minus-signs picked up on exchanging fields."
 
 /-- Wick's theorem for time-ordered products of bosonic and fermionic fields.
   The time ordered product `T(φ₀φ₁…φₙ)` is equal to the sum of terms,
