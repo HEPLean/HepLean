@@ -223,7 +223,7 @@ related to inserting a field `φ` at position `i` and contracting it with `j : �
 - If `j < i`, for each field `φₐ` in `φⱼ₊₁…φᵢ₋₁` without a dual at position `< j`
   the sign `𝓢(φₐ, φᵢ)`.
 - Else, for each field `φₐ` in `φᵢ…φⱼ₋₁` of `φs` without dual at position `< i` the sign
-  `𝓢(φₐ, φⱼ)`.  -/
+  `𝓢(φₐ, φⱼ)`. -/
 def signInsertSomeCoef (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : φsΛ.uncontracted) : ℂ :=
   let a : (φsΛ ↩Λ φ i (some j)).1 := congrLift (insertIdx_length_fin φ φs i).symm
@@ -600,13 +600,13 @@ lemma signInsertSomeCoef_eq_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   simp [hφj]
 
 /--
-The following two signs are equal for `i.succAbove k < i`. The sign `signInsertSome φ φs φsΛ i k` which is constructed
-as follows:
+The following two signs are equal for `i.succAbove k < i`. The sign `signInsertSome φ φs φsΛ i k`
+which is constructed as follows:
 1a. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
   `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < k`.
-1b.  For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+1b. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
   `𝓢(φⱼ, φₐ₂)` if `a₁ < k < a₂` and `i < a₁`.
-1c.  For each field `φₐ` in `φₖ₊₁…φᵢ₋₁` without a dual at position `< k`
+1c. For each field `φₐ` in `φₖ₊₁…φᵢ₋₁` without a dual at position `< k`
   the sign `𝓢(φₐ, φᵢ)`.
 and the sign constructed as follows:
 2a. For each uncontracted field `φₐ` in `φ₀…φₖ` in `φsΛ` the sign `𝓢(φ, φₐ)`
@@ -621,11 +621,11 @@ The outline of why this is true can be got by considering contributions of field
 For contracted fields `{a₁, a₂}` in `φsΛ` with `a₁ < a₂` we have the following cases:
 - `φₐ₁` `φₐ₂` `a₁ < a₂ < k < i`, `a₁ -> 2b`, `a₂ -> 2b`,
 - `φₐ₁` `φₐ₂` `a₁ < k < a₂ < i`, `a₁ -> 2b`, `a₂ -> 2b`,
-- `φₐ₁` `φₐ₂` `a₁ < k < i ≤  a₂`, `a₁ -> 2b`, `a₂ -> 1a`
+- `φₐ₁` `φₐ₂` `a₁ < k < i ≤ a₂`, `a₁ -> 2b`, `a₂ -> 1a`
 - `φₐ₁` `φₐ₂` `k < a₁ < a₂ < i`, `a₁ -> 2b`, `a₂ -> 2b`, `a₁ -> 1c`, `a₂ -> 1c`
 - `φₐ₁` `φₐ₂` `k < a₁ < i ≤ a₂ `,`a₁ -> 2b`, `a₁ -> 1c`
-- `φₐ₁` `φₐ₂` `k  < i ≤ a₁ < a₂ `, No contributions.
- -/
+- `φₐ₁` `φₐ₂` `k < i ≤ a₁ < a₂ `, No contributions.
+-/
 lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hk : i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
@@ -727,16 +727,15 @@ lemma signInsertSome_mul_filter_contracted_of_lt (φ : 𝓕.FieldOp) (φs : List
         or_true, imp_self]
         omega
 
-
 /--
 The following two signs are equal for `i < i.succAbove k`.
 The sign `signInsertSome φ φs φsΛ i k` which is constructed
 as follows:
 1a. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
   `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < k`.
-1b.  For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
+1b. For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
   `𝓢(φⱼ, φₐ₂)` if `a₁ < k < a₂` and `i < a₁`.
-1c.  For each field `φₐ` in `φᵢ…φₖ₋₁` of `φs` without dual at position `< i` the sign
+1c. For each field `φₐ` in `φᵢ…φₖ₋₁` of `φs` without dual at position `< i` the sign
   `𝓢(φₐ, φⱼ)`.
 and the sign constructed as follows:
 2a. For each uncontracted field `φₐ` in `φ₀…φₖ₋₁` in `φsΛ` the sign `𝓢(φ, φₐ)`
@@ -751,11 +750,11 @@ The outline of why this is true can be got by considering contributions of field
 For contracted fields `{a₁, a₂}` in `φsΛ` with `a₁ < a₂` we have the following cases:
 - `φₐ₁` `φₐ₂` `a₁ < a₂ < i ≤ k`, `a₁ -> 2b`, `a₂ -> 2b`
 - `φₐ₁` `φₐ₂` `a₁ < i ≤ a₂ < k`, `a₁ -> 2b`, `a₂ -> 1a`
-- `φₐ₁` `φₐ₂` `a₁ < i ≤ k <  a₂`, `a₁ -> 2b`, `a₂ -> 1a`
-- `φₐ₁` `φₐ₂` `i ≤  a₁ < a₂ < k`, `a₂ -> 1c`, `a₁ -> 1c`
+- `φₐ₁` `φₐ₂` `a₁ < i ≤ k < a₂`, `a₁ -> 2b`, `a₂ -> 1a`
+- `φₐ₁` `φₐ₂` `i ≤ a₁ < a₂ < k`, `a₂ -> 1c`, `a₁ -> 1c`
 - `φₐ₁` `φₐ₂` `i ≤ a₁ < k < a₂ `, `a₁ -> 1c`, `a₁ -> 1b`
 - `φₐ₁` `φₐ₂` `i ≤ k ≤ a₁ < a₂ `, No contributions
- -/
+-/
 lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :

@@ -153,6 +153,7 @@ import HepLean.PerturbationTheory.FieldStatistics.OfFinset
 import HepLean.PerturbationTheory.Koszul.KoszulSign
 import HepLean.PerturbationTheory.Koszul.KoszulSignInsert
 import HepLean.PerturbationTheory.WickContraction.Basic
+import HepLean.PerturbationTheory.WickContraction.Card
 import HepLean.PerturbationTheory.WickContraction.Erase
 import HepLean.PerturbationTheory.WickContraction.ExtractEquiv
 import HepLean.PerturbationTheory.WickContraction.InsertAndContract

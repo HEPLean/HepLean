@@ -91,14 +91,14 @@ lemma insertAndContract_fstFieldOfContract_some_incl (φ : 𝓕.FieldOp) (φs : 
 ## insertAndContract and getDual?
 
 -/
+
 @[simp]
 lemma insertAndContract_none_getDual?_self (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i) = none := by
   simp only [Nat.succ_eq_add_one, insertAndContract, getDual?_congr, finCongr_apply, Fin.cast_trans,
     Fin.cast_eq_self, Option.map_eq_none']
-  have h1 := φsΛ.insertAndContractNat_none_getDual?_isNone i
-  simpa using h1
+  simp
 
 lemma insertAndContract_isSome_getDual?_self (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
