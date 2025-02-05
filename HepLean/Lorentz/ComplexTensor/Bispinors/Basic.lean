@@ -60,7 +60,7 @@ def coBispinorDown (p : complexCo) :=
 /-- The definitional tensor node relation for `contrBispinorUp`. -/
 lemma tensorNode_contrBispinorUp (p : complexContr) :
     {contrBispinorUp p | α β}ᵀ.tensor = {pauliCo | μ α β ⊗
-      (vecNodeE complexLorentzTensor .up p).tensor  | μ}ᵀ.tensor := by
+      (vecNodeE complexLorentzTensor .up p).tensor | μ}ᵀ.tensor := by
   rw [contrBispinorUp, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `contrBispinorDown`. -/

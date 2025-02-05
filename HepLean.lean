@@ -127,6 +127,7 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
 import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldOpAlgebra.Basic
+import HepLean.PerturbationTheory.FieldOpAlgebra.Grading
 import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder
 import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.SuperCommute

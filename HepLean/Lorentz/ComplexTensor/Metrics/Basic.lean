@@ -111,7 +111,7 @@ lemma tensorNode_rightMetric : {εR | β β'}ᵀ.tensor = (TensorTree.constTwoNo
 
 /-- The definitional tensor node relation for `altLeftMetric`. -/
 lemma tensorNode_altLeftMetric :
-    {εL' | α α'}ᵀ.tensor =  (TensorTree.constTwoNodeE complexLorentzTensor
+    {εL' | α α'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
   .downL .downL Fermion.altLeftMetric).tensor := by
   rfl
 

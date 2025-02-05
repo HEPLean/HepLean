@@ -21,14 +21,14 @@ variable {𝓕 : FieldSpecification}
 
 lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι b = 0) :
     ι [a, b]ₛca = 0 := by
-  rw [superCommuteF_expand_bosonicProj_fermionicProj]
-  rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
+  rw [superCommuteF_expand_bosonicProjF_fermionicProjF]
+  rw [ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero] at h
   simp_all
 
 lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι a = 0) :
     ι [a, b]ₛca = 0 := by
-  rw [superCommuteF_expand_bosonicProj_fermionicProj]
-  rw [ι_eq_zero_iff_ι_bosonicProj_fermonicProj_zero] at h
+  rw [superCommuteF_expand_bosonicProjF_fermionicProjF]
+  rw [ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero] at h
   simp_all
 
 /-!

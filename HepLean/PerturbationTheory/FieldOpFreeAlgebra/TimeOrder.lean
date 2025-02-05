@@ -191,9 +191,9 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_mid
 lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ1 φ2 : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.FieldOpFreeAlgebra) :
     𝓣ᶠ([a, [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛca]ₛca) = 0 := by
-  rw [← bosonicProj_add_fermionicProj a]
+  rw [← bosonicProjF_add_fermionicProjF a]
   simp only [map_add, LinearMap.add_apply]
-  rw [bosonic_superCommuteF (Submodule.coe_mem (bosonicProj a))]
+  rw [bosonic_superCommuteF (Submodule.coe_mem (bosonicProjF a))]
   simp only [map_sub]
   rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
   rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]
@@ -205,7 +205,7 @@ lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel
     rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
     rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]
     simp
-  · rw [superCommuteF_fermionic_fermionic (Submodule.coe_mem (fermionicProj a)) h']
+  · rw [superCommuteF_fermionic_fermionic (Submodule.coe_mem (fermionicProjF a)) h']
     simp only [ofCrAnListF_singleton, map_add]
     rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left h]
     rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right h]

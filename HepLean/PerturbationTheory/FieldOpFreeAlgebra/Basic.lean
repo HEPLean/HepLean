@@ -50,12 +50,14 @@ remark naming_convention := "
   This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
   as a quotient of `FieldOpFreeAlgebra`."
 
-/-- Maps a creation and annihlation state to the creation and annihlation free-algebra. -/
+/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
+  single `𝓕.CrAnFieldOp`. -/
 def ofCrAnOpF (φ : 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 :=
   FreeAlgebra.ι ℂ φ
 
-/-- Maps a list creation and annihlation state to the creation and annihlation free-algebra
-  by taking their product. -/
+/-- For a field specification `𝓕`, `ofCrAnListF φs` of `𝓕.FieldOpFreeAlgebra` formed by a
+  list `φs` of `𝓕.CrAnFieldOp`. For example for the list `[φ₁ᶜ, φ₂ᵃ, φ₃ᶜ]` we schematically
+  get `φ₁ᶜφ₂ᵃφ₃ᶜ`. The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`. -/
 def ofCrAnListF (φs : List 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnOpF φs).prod
 
 @[simp]
@@ -71,14 +73,16 @@ lemma ofCrAnListF_append (φs φs' : List 𝓕.CrAnFieldOp) :
 lemma ofCrAnListF_singleton (φ : 𝓕.CrAnFieldOp) :
     ofCrAnListF [φ] = ofCrAnOpF φ := by simp [ofCrAnListF]
 
-/-- Maps a state to the sum of creation and annihilation operators in
-  creation and annihilation free-algebra. -/
+/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
+  `𝓕.FieldOp` by summing over the creation and annihilation components of `𝓕.FieldOp`.
+  For example for `φ₁` an incoming asymptotic field operator we get `φ₁ᶜ`, and for `φ₁` a
+  position field operator we get `φ₁ᶜ + φ₁ᵃ`. -/
 def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=
   ∑ (i : 𝓕.fieldOpToCrAnType φ), ofCrAnOpF ⟨φ, i⟩
 
-/-- Maps a list of states to the creation and annihilation free-algebra by taking
-  the product of their sums of creation and annihlation operators.
-  Roughly `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)` etc. -/
+/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
+  list of `𝓕.FieldOp` by summing over the creation and annihilation components.
+  For example, `φ₁` and `φ₂` position states `[φ1, φ2]` gets sent to `(φ1ᶜ+ φ1ᵃ) * (φ2ᶜ+ φ2ᵃ)`. -/
 def ofFieldOpListF (φs : List 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofFieldOpF φs).prod
 
 /-- Coercion from `List 𝓕.FieldOp` to `FieldOpFreeAlgebra 𝓕` through `ofFieldOpListF`. -/
