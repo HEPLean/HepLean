@@ -3,9 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+import HepLean.PerturbationTheory.WickContraction.Sign.InsertNone
+import HepLean.PerturbationTheory.WickContraction.Sign.InsertSome
 import HepLean.PerturbationTheory.WickContraction.StaticContract
-import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
-import HepLean.Meta.Remark.Basic
 /-!
 
 # Static Wick's theorem
@@ -29,11 +30,16 @@ lemma static_wick_theorem_nil : ofFieldOpList [] = ∑ (φsΛ : WickContraction 
 
 /--
 The static Wicks theorem states that
-`φ₀…φₙ` is equal to the sum of
-`φsΛ.1.sign • φsΛ.1.staticContract * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
+`φ₀…φₙ` is equal to
+`∑ φsΛ, φsΛ.1.sign • φsΛ.1.staticContract * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
 over all Wick contraction `φsΛ`.
 This is compared to the ordinary Wicks theorem in which `staticContract` is replaced with
 `timeContract`.
+
+The proof is via induction on `φs`. The base case `φs = []` is handled by `static_wick_theorem_nil`.
+The inductive step works as follows:
+- The proof considers `φ₀…φₙ` as `φ₀(φ₁…φₙ)` and use the induction hypothesis on `φ₁…φₙ`.
+- It also uses `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum`
 -/
 theorem static_wick_theorem : (φs : List 𝓕.FieldOp) →
     ofFieldOpList φs = ∑ (φsΛ : WickContraction φs.length),

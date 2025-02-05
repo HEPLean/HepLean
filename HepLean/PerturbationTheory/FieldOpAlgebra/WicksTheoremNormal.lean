@@ -3,10 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.PerturbationTheory.WickContraction.TimeCond
-import HepLean.PerturbationTheory.WickContraction.Sign.Join
 import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
-import HepLean.Meta.Remark.Basic
+import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
+import HepLean.PerturbationTheory.WickContraction.Sign.Join
+import HepLean.PerturbationTheory.WickContraction.TimeCond
 /-!
 
 # Wick's theorem for normal ordered lists
@@ -21,7 +21,7 @@ open WickContraction
 open EqTimeOnly
 
 lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
-    timeOrder (ofFieldOpList φs) = ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs)}),
+    𝓣(ofFieldOpList φs) = ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs)}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
   rw [static_wick_theorem φs]
   let e2 : WickContraction φs.length ≃
@@ -86,6 +86,7 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs 
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
   rw [normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty]
   rw [wicks_theorem]
+  simp only [wickTerm]
   let e1 : WickContraction φs.length ≃ {φsΛ // HaveEqTime φsΛ} ⊕ {φsΛ // ¬ HaveEqTime φsΛ} := by
     exact (Equiv.sumCompl HaveEqTime).symm
   rw [← e1.symm.sum_comp]
@@ -143,7 +144,8 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive (φs :
 
 lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
     ∑ (φsΛ : {φsΛ : WickContraction ([] : List 𝓕.FieldOp).length // ¬ HaveEqTime φsΛ}),
-    φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ) := by
+    φsΛ.1.wickTerm := by
+  simp only [wickTerm]
   let e2 : {φsΛ : WickContraction ([] : List 𝓕.FieldOp).length // ¬ HaveEqTime φsΛ} ≃ Unit :=
     {
       toFun := fun x => (),
@@ -176,16 +178,17 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
 
 /--
 Wicks theorem for normal ordering followed by time-ordering, states that
-`𝓣(𝓝(φ₀…φₙ))` is equal to the sum over
-`φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
-for those Wick contraction `φsΛ` which do not have any equal time contractions.
+`𝓣(𝓝(φ₀…φₙ))` is equal to
+`∑ φsΛ, φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
+over those Wick contraction `φsΛ` which do not have any equal time contractions.
 This is compared to the ordinary Wicks theorem which sums over all Wick contractions.
 -/
 theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
-    𝓣(𝓝(ofFieldOpList φs)) = ∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
-    φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)
+    𝓣(𝓝(ofFieldOpList φs)) =
+    ∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}), φsΛ.1.wickTerm
   | [] => wicks_theorem_normal_order_empty
   | φ :: φs => by
+    simp only [wickTerm]
     rw [normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive]
     simp only [Algebra.smul_mul_assoc, ne_eq, add_right_eq_self]
     apply Finset.sum_eq_zero
@@ -194,7 +197,7 @@ theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
     right
     have ih := wicks_theorem_normal_order [φsΛ.1]ᵘᶜ
     rw [ih]
-    simp
+    simp [wickTerm]
 termination_by φs => φs.length
 decreasing_by
   simp only [uncontractedListGet, List.length_cons, List.length_map, gt_iff_lt]

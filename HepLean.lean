@@ -128,11 +128,14 @@ import HepLean.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
 import HepLean.PerturbationTheory.FeynmanDiagrams.Momentum
 import HepLean.PerturbationTheory.FieldOpAlgebra.Basic
 import HepLean.PerturbationTheory.FieldOpAlgebra.Grading
-import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder
+import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.Basic
+import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
 import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.SuperCommute
 import HepLean.PerturbationTheory.FieldOpAlgebra.TimeContraction
 import HepLean.PerturbationTheory.FieldOpAlgebra.TimeOrder
+import HepLean.PerturbationTheory.FieldOpAlgebra.WickTerm
 import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
 import HepLean.PerturbationTheory.FieldOpFreeAlgebra.Basic
