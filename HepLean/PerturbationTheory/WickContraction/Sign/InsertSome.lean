@@ -901,4 +901,15 @@ lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [mul_comm, ← mul_assoc]
   simp
 
+lemma sign_insert_some_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
+    (hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = 𝓕|>ₛφs[k.1]):
+    (φsΛ ↩Λ φ 0 k).sign =  𝓢(𝓕|>ₛφ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < ↑k))⟩) *
+    φsΛ.sign := by
+  rw [sign_insert_some_of_not_lt]
+  · simp
+  · simp
+  · exact hn
+
+
 end WickContraction

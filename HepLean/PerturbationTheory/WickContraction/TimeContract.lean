@@ -34,7 +34,7 @@ noncomputable def timeContract {φs : List 𝓕.FieldOp}
 This result follows from the fact that `timeContract` only depends on contracted pairs,
 and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
 @[simp]
-lemma timeContract_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract := by
   rw [timeContract, insertAndContract_none_prod_contractions]
@@ -77,7 +77,7 @@ lemma timeContract_empty (φs : List 𝓕.FieldOp) :
 
 open FieldStatistic
 
-lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
+lemma timeContract_insert_some_of_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
@@ -110,7 +110,7 @@ lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
-lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
+lemma timeContract_insert_some_of_not_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :

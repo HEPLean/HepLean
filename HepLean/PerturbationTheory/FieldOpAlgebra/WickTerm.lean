@@ -29,6 +29,7 @@ noncomputable section
 def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
+/-- The Wick term for the empty contraction of the empty list is `1`. -/
 @[simp]
 lemma wickTerm_empty_nil  :
     wickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
@@ -36,23 +37,13 @@ lemma wickTerm_empty_nil  :
   simp [sign_empty]
 
 /--
-Let `φsΛ` be a Wick Contraction for `φs = φ₀φ₁…φₙ`. Then the wick-term of ` (φsΛ ↩Λ φ i none)`
+Let `φsΛ` be a Wick Contraction for `φs = φ₀φ₁…φₙ`. Then the following holds
+`(φsΛ ↩Λ φ i none).wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) φsΛ.sign • φsΛ.timeContract * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
-```(φsΛ ↩Λ φ i none).sign • (φsΛ ↩Λ φ i none).timeContract 𝓞 * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ)```
-
-is equal to
-
-`s • (φsΛ.sign • φsΛ.timeContract 𝓞 * 𝓞.crAnF 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ))`
-
-where `s` is the exchange sign of `φ` and the uncontracted fields in `φ₀φ₁…φᵢ₋₁`.
-
-The proof of this result relies primarily on:
-- `normalOrderF_uncontracted_none` which replaces `𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ)` with
-  `𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)` up to a sign.
-- `timeContract_insertAndContract_none` which replaces `(φsΛ ↩Λ φ i none).timeContract 𝓞` with
-  `φsΛ.timeContract 𝓞`.
-- `sign_insert_none` and `signInsertNone_eq_filterset` which are used to take account of
-  signs.
+The proof of this result relies on
+- `normalOrder_uncontracted_none` to rewrite normal orderings.
+- `timeContract_insert_none` to rewrite the time contract.
+- `sign_insert_none` to rewrite the sign.
 -/
 lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
@@ -62,7 +53,7 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [wickTerm]
   by_cases hg : GradingCompliant φs φsΛ
   · rw [normalOrder_uncontracted_none, sign_insert_none  _ _ _ _ hg]
-    simp only [Nat.succ_eq_add_one, timeContract_insertAndContract_none, instCommGroup.eq_1,
+    simp only [Nat.succ_eq_add_one, timeContract_insert_none, instCommGroup.eq_1,
       Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
     congr 1
     rw [← mul_assoc]
@@ -89,18 +80,29 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
       simp only [Bool.not_eq_true, Bool.eq_false_or_eq_true_self, true_and]
       intro h1 h2
       simp_all
-  · simp only [Nat.succ_eq_add_one, timeContract_insertAndContract_none, Algebra.smul_mul_assoc,
+  · simp only [Nat.succ_eq_add_one, timeContract_insert_none, Algebra.smul_mul_assoc,
     instCommGroup.eq_1]
     rw [timeContract_of_not_gradingCompliant]
     simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
     exact hg
 
-/--
-Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
-This lemma states that
-`(c.sign • c.timeContract 𝓞) * N(c.uncontracted)`
-for `c` equal to `c ↩Λ φ i (some k)` is equal to that for just `c`
-mulitiplied by the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`.
+/-- Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Let `φ` be a field with time
+greater then or equal to all the fields in `φs`. Let `i` be a in `Fin φs.length.succ` such that
+all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then`(φsΛ ↩Λ φ i (some k)).wickTerm`
+is equal the product of
+- the sign `𝓢(φ, φ₀…φᵢ₋₁) `
+- the sign `φsΛ.sign`
+- `φsΛ.timeContract`
+- `s • [anPart φ, ofFieldOp φs[k]]ₛ` where `s` is the sign associated with moving `φ` through
+  uncontracted fields in `φ₀…φₖ₋₁`
+- the normal ordering `𝓝([φsΛ]ᵘᶜ.erase (uncontractedFieldOpEquiv φs φsΛ k))`.
+
+The proof of this result relies on
+- `timeContract_insert_some_of_not_lt`
+ and `timeContract_insert_some_of_lt` to rewrite time
+ contractions.
+- `normalOrder_uncontracted_some` to rewrite normal orderings.
+- `sign_insert_some_of_not_lt` and `sign_insert_some_of_lt` to rewrite signs.
 -/
 lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
@@ -114,7 +116,7 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [wickTerm]
   by_cases hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
   · by_cases hk : i.succAbove k < i
-    · rw [WickContraction.timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt]
+    · rw [WickContraction.timeContract_insert_some_of_not_lt]
       swap
       · exact hn _ hk
       · rw [normalOrder_uncontracted_some, sign_insert_some_of_lt φ φs φsΛ i k hk hg]
@@ -124,7 +126,7 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
         simp
       · omega
     · have hik : i.succAbove ↑k ≠ i := Fin.succAbove_ne i ↑k
-      rw [timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt]
+      rw [timeContract_insert_some_of_lt]
       swap
       · exact hlt _
       · rw [normalOrder_uncontracted_some]
@@ -164,17 +166,16 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
       exact hg'
 
 /--
-Given a Wick contraction `φsΛ` of `φs = φ₀φ₁…φₙ` and an `i`, we have that
-`(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
-is equal to the product of
-- the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`,
-- the sum of `((φsΛ ↩Λ φ i k).sign • (φsΛ ↩Λ φ i k).timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i k]ᵘᶜ)`
-  over all `k` in `Option φsΛ.uncontracted`.
+Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Let `φ` be a field with time
+greater then or equal to all the fields in `φs`. Let `i` be a in `Fin φs.length.succ` such that
+all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then
+`φ * φsΛ.wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) • ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
+where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
-The proof of this result primarily depends on
-- `crAnF_ofFieldOpF_mul_normalOrderF_ofFieldOpFsList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
-- `wick_term_none_eq_wick_term_cons`
-- `wick_term_some_eq_wick_term_optionEraseZ`
+The proof of proceeds as follows:
+- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand  `φ 𝓝([φsΛ]ᵘᶜ)` as
+  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
+- Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.
 -/
 lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin φs.length.succ)
     (φsΛ : WickContraction φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])

@@ -216,6 +216,11 @@ lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.FieldOp)
 
 -/
 
+/--
+The proof of this result ultimetly depends on
+- `superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum`
+- `normalOrderSign_eraseIdx`
+-/
 lemma ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum (φ : 𝓕.CrAnFieldOp)
     (φs : List 𝓕.CrAnFieldOp) : [ofCrAnFieldOp φ, 𝓝(ofCrAnFieldOpList φs)]ₛ = ∑ n : Fin φs.length,
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) • [ofCrAnFieldOp φ, ofCrAnFieldOp φs[n]]ₛ
@@ -329,6 +334,9 @@ noncomputable def contractStateAtIndex (φ : 𝓕.FieldOp) (φs : List 𝓕.Fiel
 /--
 For a field specification `𝓕`, the following relation holds in the algebra `𝓕.FieldOpAlgebra`,
 `φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPartF φ, φᵢ]ₛ) * 𝓝(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`.
+
+The proof of this ultimently depends on :
+- `ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum`
 -/
 lemma ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     ofFieldOp φ * 𝓝(ofFieldOpList φs) =

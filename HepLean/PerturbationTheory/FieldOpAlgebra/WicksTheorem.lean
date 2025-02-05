@@ -101,7 +101,7 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     · simp [uncontractedListGet]
     rw [smul_smul]
     simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one,
-      Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insertAndContract_none,
+      Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insert_none,
       Finset.univ_eq_attach, smul_add, one_smul, uncontractedListGet]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
