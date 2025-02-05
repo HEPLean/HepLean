@@ -157,11 +157,6 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   erw [hG a]
   rfl
 
-lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
-    (φsΛ : WickContraction φs.length) : (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
-  rw [sign_insert_none_eq_signInsertNone_mul_sign]
-  simp [signInsertNone]
-
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
     φsΛ.signInsertNone φ φs i = ∏ (x : Fin φs.length),
@@ -254,5 +249,10 @@ lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [sign_insert_none_eq_signInsertNone_mul_sign]
   rw [signInsertNone_eq_filterset]
   exact hG
+
+lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) : (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
+  rw [sign_insert_none_eq_signInsertNone_mul_sign]
+  simp [signInsertNone]
 
 end WickContraction

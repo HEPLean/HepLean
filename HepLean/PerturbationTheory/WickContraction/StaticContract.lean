@@ -29,7 +29,7 @@ noncomputable def staticContract {φs : List 𝓕.FieldOp}
       superCommute_anPart_ofFieldOp_mem_center _ _⟩
 
 @[simp]
-lemma staticContract_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract := by
   rw [staticContract, insertAndContract_none_prod_contractions]
@@ -66,7 +66,7 @@ lemma staticContract_insertAndContract_some
 
 open FieldStatistic
 
-lemma staticContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
+lemma staticContract_insert_some_of_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hik : i < i.succAbove k) :

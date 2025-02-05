@@ -24,11 +24,15 @@ open HepLean.Fin
 
 -/
 
-/-- Given a Wick contraction `c` associated to a list `φs`,
-  a position `i : Fin n.succ`, an element `φ`, and an optional uncontracted element
-  `j : Option (c.uncontracted)` of `c`.
-  The Wick contraction associated with `(φs.insertIdx i φ).length` formed by 'inserting' `φ`
-  into `φs` after the first `i` elements and contracting it optionally with j. -/
+/-- Given a Wick contraction `φsΛ` associated to a list `φs`,
+    a position `i : Fin φs.lengthsucc`, an element `φ`, and an optional uncontracted element
+  `j : Option (φsΛ.uncontracted)` of `φsΛ`.
+  The Wick contraction `φsΛ.insertAndContract φ i j` is defined to be the Wick contraction
+  associated with `(φs.insertIdx i φ)` formed by 'inserting' `φ` into `φs` after the first `i`
+  elements and contracting `φ` optionally with `j`.
+
+  The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. Thus,
+  `φsΛ ↩Λ φ i none` indicates the case when we insert `φ` into `φs` but do not contract it.  -/
 def insertAndContract {φs : List 𝓕.FieldOp} (φ : 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : Option φsΛ.uncontracted) :
     WickContraction (φs.insertIdx i φ).length :=
