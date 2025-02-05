@@ -23,18 +23,18 @@ namespace FieldOpFreeAlgebra
 
 open FieldStatistic
 
-/-- The super commutor on the creation and annihlation algebra. For two bosonic operators
-  or a bosonic and fermionic operator this corresponds to the usual commutator
-  whilst for two fermionic operators this corresponds to the anti-commutator. -/
+/-- For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
+  map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra` such that
+  `superCommuteF (φ₀ᶜ…φₙᵃ) (φ₀'ᶜ…φₙ'ᶜ)` is equal to
+  `φ₀ᶜ…φₙᵃ * φ₀'ᶜ…φₙ'ᶜ - 𝓢(φ₀ᶜ…φₙᵃ, φ₀'ᶜ…φₙ'ᶜ) φ₀'ᶜ…φₙ'ᶜ * φ₀ᶜ…φₙᵃ`.
+  The notation `[a, b]ₛca` is used for this super commutator.  -/
 noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
     𝓕.FieldOpFreeAlgebra :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
   Basis.constr ofCrAnListFBasis ℂ fun φs' =>
   ofCrAnListF (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF (φs' ++ φs)
 
-/-- The super commutor on the creation and annihlation algebra. For two bosonic operators
-  or a bosonic and fermionic operator this corresponds to the usual commutator
-  whilst for two fermionic operators this corresponds to the anti-commutator. -/
+@[inherit_doc superCommuteF]
 scoped[FieldSpecification.FieldOpFreeAlgebra] notation "[" φs "," φs' "]ₛca" => superCommuteF φs φs'
 
 /-!
