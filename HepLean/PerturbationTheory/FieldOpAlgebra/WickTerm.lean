@@ -114,7 +114,7 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [wickTerm]
   by_cases hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
   · by_cases hk : i.succAbove k < i
-    · rw [WickContraction.timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt]
+    · rw [WickContraction.timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt]
       swap
       · exact hn _ hk
       · rw [normalOrder_uncontracted_some, sign_insert_some_of_lt φ φs φsΛ i k hk hg]
@@ -134,7 +134,7 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
         rw [mul_assoc, mul_assoc, mul_comm, mul_assoc, mul_assoc]
         simp
       · omega
-  · rw [timeConract_insertAndContract_some]
+  · rw [timeContract_insertAndContract_some]
     simp only [Fin.getElem_fin, not_and] at hg
     by_cases hg' : GradingCompliant φs φsΛ
     · have hg := hg hg'

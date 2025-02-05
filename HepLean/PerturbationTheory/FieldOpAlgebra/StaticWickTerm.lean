@@ -55,7 +55,7 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   simp only [← mul_assoc]
   rw [← smul_mul_assoc]
   congr 1
-  rw [staticConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt]
+  rw [staticContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt]
   swap
   · simp
   rw [smul_smul]

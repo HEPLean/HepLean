@@ -66,7 +66,7 @@ lemma staticContract_insertAndContract_some
 
 open FieldStatistic
 
-lemma staticConract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
+lemma staticContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (hik : i < i.succAbove k) :
