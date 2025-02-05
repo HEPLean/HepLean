@@ -57,7 +57,7 @@ def ofCrAnOpF (φ : 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 :=
 
 /-- For a field specification `𝓕`, `ofCrAnListF φs` of `𝓕.FieldOpFreeAlgebra` formed by a
   list `φs` of `𝓕.CrAnFieldOp`. For example for the list `[φ₁ᶜ, φ₂ᵃ, φ₃ᶜ]` we schematically
-  get `φ₁ᶜφ₂ᵃφ₃ᶜ`. The set of all `ofCrAnListF φs` forms a basis of  `FieldOpFreeAlgebra 𝓕`. -/
+  get `φ₁ᶜφ₂ᵃφ₃ᶜ`. The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`. -/
 def ofCrAnListF (φs : List 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnOpF φs).prod
 
 @[simp]
@@ -74,7 +74,7 @@ lemma ofCrAnListF_singleton (φ : 𝓕.CrAnFieldOp) :
     ofCrAnListF [φ] = ofCrAnOpF φ := by simp [ofCrAnListF]
 
 /-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
- `𝓕.FieldOp` by summing over the creation and annihilation components of `𝓕.FieldOp`.
+  `𝓕.FieldOp` by summing over the creation and annihilation components of `𝓕.FieldOp`.
   For example for `φ₁` an incoming asymptotic field operator we get `φ₁ᶜ`, and for `φ₁` a
   position field operator we get `φ₁ᶜ + φ₁ᵃ`. -/
 def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=

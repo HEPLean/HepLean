@@ -27,7 +27,7 @@ open FieldStatistic
   map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra` such that
   `superCommuteF (φ₀ᶜ…φₙᵃ) (φ₀'ᶜ…φₙ'ᶜ)` is equal to
   `φ₀ᶜ…φₙᵃ * φ₀'ᶜ…φₙ'ᶜ - 𝓢(φ₀ᶜ…φₙᵃ, φ₀'ᶜ…φₙ'ᶜ) φ₀'ᶜ…φₙ'ᶜ * φ₀ᶜ…φₙᵃ`.
-  The notation `[a, b]ₛca` is used for this super commutator.  -/
+  The notation `[a, b]ₛca` is used for this super commutator. -/
 noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
     𝓕.FieldOpFreeAlgebra :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
@@ -637,7 +637,7 @@ lemma superCommuteF_fermionic_bonsonic {a b : 𝓕.FieldOpFreeAlgebra}
 
 lemma superCommuteF_bonsonic {a b : 𝓕.FieldOpFreeAlgebra} (hb : b ∈ statisticSubmodule bosonic) :
     [a, b]ₛca = a * b - b * a := by
-  rw [← bosonicProj_add_fermionicProj a]
+  rw [← bosonicProjF_add_fermionicProjF a]
   simp only [map_add, LinearMap.add_apply]
   rw [superCommuteF_bosonic_bosonic (by simp) hb, superCommuteF_fermionic_bonsonic (by simp) hb]
   simp only [add_mul, mul_add]
@@ -645,7 +645,7 @@ lemma superCommuteF_bonsonic {a b : 𝓕.FieldOpFreeAlgebra} (hb : b ∈ statist
 
 lemma bosonic_superCommuteF {a b : 𝓕.FieldOpFreeAlgebra} (ha : a ∈ statisticSubmodule bosonic) :
     [a, b]ₛca = a * b - b * a := by
-  rw [← bosonicProj_add_fermionicProj b]
+  rw [← bosonicProjF_add_fermionicProjF b]
   simp only [map_add, LinearMap.add_apply]
   rw [superCommuteF_bosonic_bosonic ha (by simp), superCommuteF_bosonic_fermionic ha (by simp)]
   simp only [add_mul, mul_add]
@@ -703,12 +703,12 @@ lemma superCommuteF_fermionic_fermionic_symm {a b : 𝓕.FieldOpFreeAlgebra}
   rw [superCommuteF_fermionic_fermionic hb ha]
   abel
 
-lemma superCommuteF_expand_bosonicProj_fermionicProj (a b : 𝓕.FieldOpFreeAlgebra) :
-    [a, b]ₛca = bosonicProj a * bosonicProj b - bosonicProj b * bosonicProj a +
-    bosonicProj a * fermionicProj b - fermionicProj b * bosonicProj a +
-    fermionicProj a * bosonicProj b - bosonicProj b * fermionicProj a +
-    fermionicProj a * fermionicProj b + fermionicProj b * fermionicProj a := by
-  conv_lhs => rw [← bosonicProj_add_fermionicProj a, ← bosonicProj_add_fermionicProj b]
+lemma superCommuteF_expand_bosonicProjF_fermionicProjF (a b : 𝓕.FieldOpFreeAlgebra) :
+    [a, b]ₛca = bosonicProjF a * bosonicProjF b - bosonicProjF b * bosonicProjF a +
+    bosonicProjF a * fermionicProjF b - fermionicProjF b * bosonicProjF a +
+    fermionicProjF a * bosonicProjF b - bosonicProjF b * fermionicProjF a +
+    fermionicProjF a * fermionicProjF b + fermionicProjF b * fermionicProjF a := by
+  conv_lhs => rw [← bosonicProjF_add_fermionicProjF a, ← bosonicProjF_add_fermionicProjF b]
   simp only [map_add, LinearMap.add_apply]
   rw [superCommuteF_bonsonic (by simp),
       superCommuteF_fermionic_bonsonic (by simp) (by simp),
