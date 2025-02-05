@@ -87,8 +87,8 @@ def signInsertNone (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickCo
       𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
     else 1
 
-lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
-    (i : Fin φs.length.succ) :
+lemma sign_insert_none_eq_signInsertNone_mul_sign (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).sign = (φsΛ.signInsertNone φ φs i) * φsΛ.sign := by
   rw [sign]
   rw [signInsertNone, sign, ← Finset.prod_mul_distrib]
@@ -159,7 +159,7 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
 
 lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) : (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
-  rw [sign_insert_none]
+  rw [sign_insert_none_eq_signInsertNone_mul_sign]
   simp [signInsertNone]
 
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
@@ -242,5 +242,17 @@ lemma signInsertNone_eq_filterset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   · rename_i h
     simp [h]
   · exact hG
+
+/-- For `φsΛ` a grading compliant Wick contraction, and `i : Fin φs.length.succ` we have
+  `(φsΛ ↩Λ φ i none).sign = s * φsΛ.sign`
+  where `s` is the sign got by moving `φ` through the elements of `φ₀…φᵢ₋₁` which
+  are contracted. -/
+lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+    (φsΛ ↩Λ φ i none).sign = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
+    (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)⟩) * φsΛ.sign := by
+  rw [sign_insert_none_eq_signInsertNone_mul_sign]
+  rw [signInsertNone_eq_filterset]
+  exact hG
 
 end WickContraction

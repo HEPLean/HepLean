@@ -31,6 +31,7 @@ lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
   rw [← e2.symm.sum_comp]
   simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
     Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, map_add, map_sum, map_smul, e2]
+  simp only [staticWickTerm, Algebra.smul_mul_assoc, map_smul]
   conv_lhs =>
     enter [2, 2, x]
     rw [timeOrder_timeOrder_left]

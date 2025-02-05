@@ -39,6 +39,20 @@ lemma normalOrder_one_eq_one : normalOrder (𝓕 := 𝓕) 1 = 1 := by
   rw [normalOrder_ofCrAnFieldOpList]
   simp
 
+@[simp]
+lemma normalOrder_ofFieldOpList_nil : normalOrder (𝓕 := 𝓕) (ofFieldOpList []) = 1 := by
+  rw [ofFieldOpList]
+  rw [normalOrder_eq_ι_normalOrderF]
+  simp only [ofFieldOpListF_nil]
+  change normalOrder (𝓕 := 𝓕) 1 = _
+  simp
+
+@[simp]
+lemma normalOrder_ofCrAnFieldOpList_nil : normalOrder (𝓕 := 𝓕) (ofCrAnFieldOpList []) = 1 := by
+  rw [normalOrder_ofCrAnFieldOpList]
+  simp only [normalOrderSign_nil, normalOrderList_nil, one_smul]
+  rfl
+
 lemma ofCrAnFieldOpList_eq_normalOrder (φs : List 𝓕.CrAnFieldOp) :
     ofCrAnFieldOpList (normalOrderList φs) = normalOrderSign φs • 𝓝(ofCrAnFieldOpList φs) := by
   rw [normalOrder_ofCrAnFieldOpList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,

@@ -29,7 +29,7 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   (c.getDual? i = none ∨ ∀ (h : (c.getDual? i).isSome), i1 < (c.getDual? i).get h))
 
 /-- Given a Wick contraction `φsΛ` associated with a list of states `φs`
-  the sign associated with `φsΛ` is sign corresponding to the number
+  the sign associated with `φsΛ` is the sign corresponding to the number
   of fermionic-fermionic exchanges one must do to put elements in contracted pairs
   of `φsΛ` next to each other. -/
 def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
