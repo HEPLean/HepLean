@@ -40,28 +40,11 @@ open FieldStatistic
 
 -/
 
-/-- Wick's theorem for the empty list. -/
-lemma wicks_theorem_nil :
-    𝓣(ofFieldOpList (𝓕 := 𝓕) []) = ∑ (nilΛ : WickContraction [].length),
-    (nilΛ.sign (𝓕 := 𝓕) • nilΛ.timeContract) * 𝓝(ofFieldOpList [nilΛ]ᵘᶜ) := by
-  rw [timeOrder_ofFieldOpList_nil]
-  simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
-  rw [sum_WickContraction_nil, uncontractedListGet, nil_zero_uncontractedList]
-  simp only [List.map_nil]
-  have h1 : ofFieldOpList (𝓕 := 𝓕) [] = ofCrAnFieldOpList [] := by
-    rw [ofFieldOpList, ofCrAnFieldOpList]
-    simp
-  rw [h1, normalOrder_ofCrAnFieldOpList]
-  simp only [sign, List.length_nil, empty, Finset.univ_eq_empty, instCommGroup.eq_1,
-    Fin.getElem_fin, Finset.prod_empty, WickContraction.timeContract, List.get_eq_getElem,
-    OneMemClass.coe_one, normalOrderSign_nil, normalOrderList_nil, one_smul, one_mul]
-  rfl
-
 lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
     ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
     = ∑ (φs'Λ : WickContraction φs'.length), φs'Λ.wickTerm := by
   subst h
-  simp
+  rfl
 
 remark wicks_theorem_context := "
   In perturbation quantum field theory, Wick's theorem allows
@@ -93,7 +76,11 @@ The inductive step works as follows:
 -/
 theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
-  | [] => wicks_theorem_nil
+  | [] => by
+    rw [timeOrder_ofFieldOpList_nil]
+    simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+    rw [sum_WickContraction_nil]
+    simp
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
     conv_lhs => rw [timeOrder_eq_maxTimeField_mul_finset, ih, Finset.mul_sum]
@@ -106,7 +93,7 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     conv_rhs => rw [insertLift_sum]
     apply Finset.sum_congr rfl
     intro c _
-    rw [Algebra.smul_mul_assoc, wickTerm_cons_eq_sum_wick_term
+    rw [Algebra.smul_mul_assoc, mul_wickTerm_eq_sum
       (maxTimeField φ φs) (eraseMaxTimeField φ φs) (maxTimeFieldPosFin φ φs) c]
     trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted },
       (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).wickTerm

@@ -131,6 +131,7 @@ import HepLean.PerturbationTheory.FieldOpAlgebra.Grading
 import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.Basic
 import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
 import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
 import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.SuperCommute
 import HepLean.PerturbationTheory.FieldOpAlgebra.TimeContraction

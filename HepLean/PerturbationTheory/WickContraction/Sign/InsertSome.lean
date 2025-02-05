@@ -9,6 +9,8 @@ import HepLean.PerturbationTheory.WickContraction.Sign.Basic
 
 # Sign on inserting and contracting
 
+The main results of this file are `sign_insert_some_of_lt` and `sign_insert_some_of_not_lt` which
+write the sign of `(φsΛ ↩Λ φ i (some k)).sign` in terms of the sign of `φsΛ`.
 -/
 
 open FieldSpecification
@@ -851,5 +853,52 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
         simp only [hijn, true_and, hijn', and_false, or_false, or_true, imp_false, not_lt,
           forall_const]
         exact fun h => lt_of_le_of_ne h (Fin.succAbove_ne i ((φsΛ.getDual? j).get hj))
+
+/--
+For `k < i`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted  fields in `φ₀…φₖ`,
+- the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
+- the sign of `φsΛ`.
+
+The proof of this result involves a careful consideration of the contributions of different
+fields in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+-/
+lemma sign_insert_some_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+    (hk : i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+    (φsΛ ↩Λ φ i (some k)).sign =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x ≤ ↑k)⟩)
+    * 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩)
+    * φsΛ.sign := by
+  rw [sign_insert_some,
+    ← signInsertSome_mul_filter_contracted_of_lt φ φs φsΛ i k hk hg]
+  rw [← mul_assoc]
+  congr 1
+  rw [mul_comm, ← mul_assoc]
+  simp
+
+
+/--
+For `i ≤ k`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted  fields in `φ₀…φₖ₋₁`,
+- the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
+- the sign of `φsΛ`.
+
+The proof of this result involves a careful consideration of the contributions of different
+fields in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+-/
+lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+    (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+    (φsΛ ↩Λ φ i (some k)).sign =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x < ↑k)⟩)
+    * 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩) *
+    φsΛ.sign := by
+  rw [sign_insert_some,
+    ← signInsertSome_mul_filter_contracted_of_not_lt φ φs φsΛ i k hk hg]
+  rw [← mul_assoc]
+  congr 1
+  rw [mul_comm, ← mul_assoc]
+  simp
 
 end WickContraction

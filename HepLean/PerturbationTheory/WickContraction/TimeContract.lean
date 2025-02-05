@@ -50,7 +50,7 @@ lemma timeContract_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.F
 This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contracted pair than `φsΛ`,
 corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
 or after `φⱼ`. -/
-lemma timeConract_insertAndContract_some
+lemma timeContract_insertAndContract_some
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).timeContract =
@@ -85,7 +85,7 @@ lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
     • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
       φsΛ.timeContract) := by
-  rw [timeConract_insertAndContract_some]
+  rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
@@ -110,7 +110,7 @@ lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
-lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
+lemma timeContract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
     (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
@@ -118,7 +118,7 @@ lemma timeConract_insertAndContract_some_eq_mul_contractStateAtIndex_not_lt
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x ≤ k))⟩)
     • (contractStateAtIndex φ [φsΛ]ᵘᶜ
       ((uncontractedFieldOpEquiv φs φsΛ) (some k)) * φsΛ.timeContract) := by
-  rw [timeConract_insertAndContract_some]
+  rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
