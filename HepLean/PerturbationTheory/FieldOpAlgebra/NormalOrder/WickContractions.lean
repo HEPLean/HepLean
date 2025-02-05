@@ -1,0 +1,118 @@
+/-
+Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joseph Tooby-Smith
+-/
+import HepLean.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+import HepLean.PerturbationTheory.WickContraction.InsertAndContract
+/-!
+
+# Normal ordering with relation to Wick contractions
+
+-/
+
+namespace FieldSpecification
+open FieldOpFreeAlgebra
+open HepLean.List
+open FieldStatistic
+open WickContraction
+namespace FieldOpAlgebra
+variable {𝓕 : FieldSpecification}
+
+/-!
+
+## Normal order of uncontracted terms within proto-algebra.
+
+-/
+
+/--
+Let `c` be a Wick Contraction for `φs := φ₀φ₁…φₙ`.
+We have (roughly) `𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)`
+Where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀φ₁…φᵢ₋₁`.
+-/
+lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
+    𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ)
+    = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => i.succAbove x < i)⟩) •
+    𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ)) := by
+  simp only [Nat.succ_eq_add_one, instCommGroup.eq_1]
+  rw [ofFieldOpList_normalOrder_insert φ [φsΛ]ᵘᶜ
+    ⟨(φsΛ.uncontractedListOrderPos i), by simp [uncontractedListGet]⟩, smul_smul]
+  trans (1 : ℂ) • (𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ))
+  · simp
+  congr 1
+  simp only [instCommGroup.eq_1, uncontractedListGet]
+  rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
+  have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) φsΛ.uncontractedList))
+        = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
+      simp only [Nat.succ_eq_add_one, ofFinset]
+      congr
+      rw [uncontractedList_eq_sort]
+      have hdup : (List.filter (fun x => decide (x.1 < i.1))
+          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
+        exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+      have hsort : (List.filter (fun x => decide (x.1 < i.1))
+          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
+        exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+      rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
+      congr
+      ext a
+      simp
+  rw [h1]
+  simp only [Nat.succ_eq_add_one]
+  have h2 : (Finset.filter (fun x => x.1 < i.1) φsΛ.uncontracted) =
+    (Finset.filter (fun x => i.succAbove x < i) φsΛ.uncontracted) := by
+    ext a
+    simp only [Nat.succ_eq_add_one, Finset.mem_filter, and_congr_right_iff]
+    intro ha
+    simp only [Fin.succAbove]
+    split
+    · apply Iff.intro
+      · intro h
+        omega
+      · intro h
+        rename_i h
+        rw [Fin.lt_def] at h
+        simp only [Fin.coe_castSucc] at h
+        omega
+    · apply Iff.intro
+      · intro h
+        rename_i h'
+        rw [Fin.lt_def]
+        simp only [Fin.val_succ]
+        rw [Fin.lt_def] at h'
+        simp only [Fin.coe_castSucc, not_lt] at h'
+        omega
+      · intro h
+        rename_i h
+        rw [Fin.lt_def] at h
+        simp only [Fin.val_succ] at h
+        omega
+  rw [h2]
+  simp only [exchangeSign_mul_self]
+  congr
+  simp only [Nat.succ_eq_add_one]
+  rw [insertAndContract_uncontractedList_none_map]
+
+/--
+Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
+We have (roughly) `N(c ↩Λ φ i k).uncontractedList`
+is equal to `N((c.uncontractedList).eraseIdx k')`
+where `k'` is the position in `c.uncontractedList` corresponding to `k`.
+-/
+lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+    (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted) :
+    𝓝(ofFieldOpList [φsΛ ↩Λ φ i (some k)]ᵘᶜ)
+    = 𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedFieldOpEquiv φs φsΛ) k))) := by
+  simp only [Nat.succ_eq_add_one, insertAndContract, optionEraseZ, uncontractedFieldOpEquiv,
+    Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+    Fin.coe_cast, uncontractedListGet]
+  congr
+  rw [congr_uncontractedList]
+  erw [uncontractedList_extractEquiv_symm_some]
+  simp only [Fin.coe_succAboveEmb, List.map_eraseIdx, List.map_map]
+  congr
+  conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
+
+end FieldOpAlgebra
+end FieldSpecification
