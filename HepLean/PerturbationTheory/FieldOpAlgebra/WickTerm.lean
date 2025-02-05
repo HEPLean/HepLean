@@ -164,17 +164,16 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
       exact hg'
 
 /--
-Given a Wick contraction `φsΛ` of `φs = φ₀φ₁…φₙ` and an `i`, we have that
-`(φsΛ.sign • φsΛ.timeContract 𝓞) * 𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
-is equal to the product of
-- the exchange sign of `φ` and `φ₀φ₁…φᵢ₋₁`,
-- the sum of `((φsΛ ↩Λ φ i k).sign • (φsΛ ↩Λ φ i k).timeContract 𝓞) * 𝓞.crAnF 𝓝ᶠ([φsΛ ↩Λ φ i k]ᵘᶜ)`
-  over all `k` in `Option φsΛ.uncontracted`.
+Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Let `φ` be a field with time
+greater then or equal to all the fields in `φs`. Let `i` be a in `Fin φs.length.succ` such that
+all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then
+`φ * φsΛ.wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) • ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
+where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
-The proof of this result primarily depends on
-- `crAnF_ofFieldOpF_mul_normalOrderF_ofFieldOpFsList_eq_sum` to rewrite `𝓞.crAnF (φ * 𝓝ᶠ([φsΛ]ᵘᶜ))`
-- `wick_term_none_eq_wick_term_cons`
-- `wick_term_some_eq_wick_term_optionEraseZ`
+The proof of proceeds as follows:
+- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand  `φ 𝓝([φsΛ]ᵘᶜ)` as
+  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
+- Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.
 -/
 lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin φs.length.succ)
     (φsΛ : WickContraction φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
