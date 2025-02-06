@@ -41,13 +41,7 @@ def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
 - `[ofCrAnOpF φa, ofCrAnOpF φa']ₛca` for `φa` and `φa'` annihilation operators. I.e two
   annihilation operators always super-commute.
 - `[ofCrAnOpF φ, ofCrAnOpF φ']ₛca` for `φ` and `φ'` field operators with different statistics.
-  I.e. Fermions super-commute with bosons.
-
-The algebra `𝓕.FieldOpAlgebra` satisfies the following universal property. For any
-algebra `A` (e.g. the operator algebra of the theory) with a map `f : 𝓕.CrAnFieldOp → A` (e.g.
-the inclusion of the creation and annihilation parts of field operators into the operator algebra)
-such that the image of `f` obey the relations above, there exists a unique algebra map
-`g : 𝓕.FieldOpAlgebra → A` through which `f` factors. -/
+  I.e. Fermions super-commute with bosons. -/
 abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.Quotient
 
 namespace FieldOpAlgebra
@@ -60,6 +54,18 @@ lemma equiv_iff_sub_mem_ideal (x y : FieldOpFreeAlgebra 𝓕) :
     x ≈ y ↔ x - y ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [← TwoSidedIdeal.rel_iff]
   rfl
+
+lemma equiv_iff_exists_add (x y : FieldOpFreeAlgebra 𝓕) :
+    x ≈ y ↔ ∃ a, x = y + a ∧ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
+  apply Iff.intro
+  · intro h
+    rw [equiv_iff_sub_mem_ideal] at h
+    use x - y
+    simp [h]
+  · intro h
+    obtain ⟨a, rfl, ha⟩ := h
+    rw [equiv_iff_sub_mem_ideal]
+    simp [ha]
 
 /-- The projection of `FieldOpFreeAlgebra` down to `FieldOpAlgebra` as an algebra map. -/
 def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
