@@ -162,7 +162,7 @@ lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.FieldOp}
     left
     rw [join_singleton_signFinset_eq_filter]
   rw [mul_comm]
-  exact (ofFinset_filter_mul_neg 𝓕.statesStatistic _ _ _).symm
+  exact (ofFinset_filter_mul_neg 𝓕.fieldOpStatistic _ _ _).symm
 
 /-- The difference in sign between `φsucΛ.sign` and the direct contribution of `φsucΛ` to
   `(join (singleton h) φsucΛ)`. -/

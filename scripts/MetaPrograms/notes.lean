@@ -7,6 +7,7 @@ import HepLean.Meta.Basic
 import HepLean.Meta.Remark.Properties
 import HepLean.Meta.Notes.ToHTML
 import Mathlib.Lean.CoreM
+import HepLean
 /-!
 
 # Extracting notes from Lean files
@@ -15,21 +16,31 @@ import Mathlib.Lean.CoreM
 
 open Lean System Meta HepLean
 
+inductive NameStatus
+  | complete : NameStatus
+  | incomplete : NameStatus
+
+instance : ToString NameStatus where
+  toString
+    | NameStatus.complete => "complete"
+    | NameStatus.incomplete => "incomplete"
+
 inductive NotePart
   | h1 : String → NotePart
   | h2 : String → NotePart
   | p : String → NotePart
-  | name : Name → NotePart
+  | name : Name → NameStatus → NotePart
   | warning : String → NotePart
 
 structure DeclInfo where
   line : Nat
   fileName : Name
   name : Name
+  status : NameStatus
   declString : String
   docString : String
 
-def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
+def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let line ← Name.lineNumber n
   let fileName ← Name.fileName n
   let declString ← Name.getDeclString n
@@ -38,6 +49,7 @@ def DeclInfo.ofName (n : Name) : MetaM DeclInfo := do
     line := line,
     fileName := fileName,
     name := n,
+    status := ns,
     declString := declString,
     docString := docString}
 
@@ -50,6 +62,7 @@ def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
     name: {d.name}
     line: {d.line}
     fileName: {d.fileName}
+    status: \"{d.status}\"
     link: \"{link}\"
     docString: |
       {docStringIndent}
@@ -79,7 +92,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
   - type: warning
     content: \"{s}\""
     return ⟨x.1 ++ [newString], x.2⟩
-  | x, NotePart.name n => do
+  | x, NotePart.name n s => do
   match (← RemarkInfo.IsRemark n) with
   | true =>
     let remarkInfo ← RemarkInfo.getRemarkInfo n
@@ -89,12 +102,13 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     let newString := s!"
   - type: remark
     name: \"{shortName}\"
+    status : \"{s}\"
     link: \"{Name.toGitHubLink remarkInfo.fileName remarkInfo.line}\"
     content: |
       {contentIndent}"
     return ⟨x.1 ++ [newString], x.2⟩
   | false =>
-  let newString ← (← DeclInfo.ofName n).toYML
+  let newString ← (← DeclInfo.ofName n s).toYML
   return ⟨x.1 ++ [newString], x.2⟩
 
 structure Note where
@@ -120,104 +134,108 @@ def perturbationTheory : Note where
     .warning "This note is a work in progress and is not finished. Use with caution.
       (5th Feb 2025)",
     .h1 "Introduction",
-    .name `FieldSpecification.wicks_theorem_context,
+    .name `FieldSpecification.wicks_theorem_context .incomplete,
     .p "In this note we walk through the important parts of the proof of Wick's theorem
       for both fermions and bosons,
       as it appears in HepLean. We start with some basic definitions.",
     .h1 "Field operators",
     .h2 "Field statistics",
-    .name `FieldStatistic,
-    .name `FieldStatistic.instCommGroup,
-    .name `FieldStatistic.exchangeSign,
+    .name ``FieldStatistic .complete,
+    .name ``FieldStatistic.instCommGroup .complete,
+    .name ``FieldStatistic.exchangeSign .complete,
     .h2 "Field specifications",
-    .name `FieldSpecification,
+    .name ``FieldSpecification .complete,
     .h2 "Field operators",
-    .name `FieldSpecification.FieldOp,
-    .name `FieldSpecification.statesStatistic,
-    .name `FieldSpecification.CrAnFieldOp,
-    .name `FieldSpecification.crAnStatistics,
-    .name `FieldSpecification.notation_remark,
+    .name ``FieldSpecification.FieldOp .complete,
+    .name ``FieldSpecification.fieldOpStatistic .complete,
+    .name ``CreateAnnihilate .complete,
+    .name ``FieldSpecification.CrAnFieldOp .complete,
+    .name ``FieldSpecification.crAnStatistics .complete,
+    .name `FieldSpecification.notation_remark .complete,
     .h2 "Field-operator free algebra",
-    .name `FieldSpecification.FieldOpFreeAlgebra,
-    .name `FieldSpecification.FieldOpFreeAlgebra.naming_convention,
-    .name `FieldSpecification.FieldOpFreeAlgebra.ofCrAnOpF,
-    .name `FieldSpecification.FieldOpFreeAlgebra.ofCrAnListF,
-    .name `FieldSpecification.FieldOpFreeAlgebra.ofFieldOpF,
-    .name `FieldSpecification.FieldOpFreeAlgebra.ofFieldOpListF,
-    .name `FieldSpecification.FieldOpFreeAlgebra.fieldOpFreeAlgebraGrade,
-    .name `FieldSpecification.FieldOpFreeAlgebra.superCommuteF,
-    .name `FieldSpecification.FieldOpFreeAlgebra.superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum,
+    .name ``FieldSpecification.FieldOpFreeAlgebra .incomplete,
+    .name `FieldSpecification.FieldOpFreeAlgebra.naming_convention .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.ofCrAnOpF .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.ofCrAnListF .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.ofFieldOpF .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.ofFieldOpListF .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.fieldOpFreeAlgebraGrade .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.superCommuteF .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum .incomplete,
     .h2 "Field-operator algebra",
-    .name `FieldSpecification.FieldOpAlgebra,
-    .name `FieldSpecification.FieldOpAlgebra.ofCrAnFieldOp,
-    .name `FieldSpecification.FieldOpAlgebra.ofCrAnFieldOpList,
-    .name `FieldSpecification.FieldOpAlgebra.ofFieldOp,
-    .name `FieldSpecification.FieldOpAlgebra.ofCrAnFieldOpList,
-    .name `FieldSpecification.FieldOpAlgebra.fieldOpAlgebraGrade,
-    .name `FieldSpecification.FieldOpAlgebra.superCommute,
+    .name ``FieldSpecification.FieldOpAlgebra .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofCrAnFieldOp .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofCrAnFieldOpList .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofFieldOp .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofCrAnFieldOpList .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.anPart .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.crPart .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofFieldOp_eq_crPart_add_anPart .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.fieldOpAlgebraGrade .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.superCommute .incomplete,
     .h1 "Time ordering",
-    .name `FieldSpecification.crAnTimeOrderRel,
-    .name `FieldSpecification.crAnTimeOrderSign,
-    .name `FieldSpecification.FieldOpFreeAlgebra.timeOrderF,
-    .name `FieldSpecification.FieldOpAlgebra.timeOrder,
-    .name `FieldSpecification.FieldOpAlgebra.timeOrder_eq_maxTimeField_mul_finset,
+    .name ``FieldSpecification.crAnTimeOrderRel .incomplete,
+    .name ``FieldSpecification.crAnTimeOrderSign .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.timeOrderF .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.timeOrder .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.timeOrder_eq_maxTimeField_mul_finset .incomplete,
     .h1 "Normal ordering",
-    .name `FieldSpecification.normalOrderRel,
-    .name `FieldSpecification.normalOrderSign,
-    .name `FieldSpecification.FieldOpFreeAlgebra.normalOrderF,
-    .name `FieldSpecification.FieldOpAlgebra.normalOrder,
+    .name ``FieldSpecification.normalOrderRel .incomplete,
+    .name ``FieldSpecification.normalOrderSign .incomplete,
+    .name ``FieldSpecification.FieldOpFreeAlgebra.normalOrderF .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.normalOrder .incomplete,
     .h2 "Some lemmas",
-    .name `FieldSpecification.normalOrderSign_eraseIdx,
-    .name `FieldSpecification.FieldOpAlgebra.ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum,
-    .name `FieldSpecification.FieldOpAlgebra.ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum,
+    .name ``FieldSpecification.normalOrderSign_eraseIdx .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofCrAnFieldOp_superCommute_normalOrder_ofCrAnFieldOpList_sum .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum .incomplete,
     .h1 "Wick Contractions",
     .h2 "Definition",
-    .name `WickContraction,
-    .name `WickContraction.GradingCompliant,
+    .name ``WickContraction .incomplete,
+    .name ``WickContraction.GradingCompliant .incomplete,
     .h2 "Aside: Cardinality",
-    .name `WickContraction.card_eq_cardFun,
+    .name ``WickContraction.card_eq_cardFun .incomplete,
     .h2 "Constructors",
     .p "There are a number of ways to construct a Wick contraction from
       other Wick contractions or single contractions.",
-    .name `WickContraction.insertAndContract,
-    .name `WickContraction.join,
+    .name ``WickContraction.insertAndContract .incomplete,
+    .name ``WickContraction.join .incomplete,
     .h2 "Sign",
-    .name `WickContraction.sign,
-    .name `WickContraction.join_sign,
-    .name `WickContraction.sign_insert_none,
-    .name `WickContraction.sign_insert_none_zero,
-    .name `WickContraction.sign_insert_some_of_not_lt,
-    .name `WickContraction.sign_insert_some_of_lt,
-    .name `WickContraction.sign_insert_some_zero,
+    .name ``WickContraction.sign .incomplete,
+    .name ``WickContraction.join_sign .incomplete,
+    .name ``WickContraction.sign_insert_none .incomplete,
+    .name ``WickContraction.sign_insert_none_zero .incomplete,
+    .name ``WickContraction.sign_insert_some_of_not_lt .incomplete,
+    .name ``WickContraction.sign_insert_some_of_lt .incomplete,
+    .name ``WickContraction.sign_insert_some_zero .incomplete,
     .h2 "Normal order",
-    .name `FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_none,
-    .name `FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_some,
+    .name ``FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_none .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_some .incomplete,
     .h1 "Static contractions",
-    .name `WickContraction.staticContract,
-    .name `WickContraction.staticContract_insert_some_of_lt,
-    .name `WickContraction.staticContract_insert_none,
+    .name ``WickContraction.staticContract .incomplete,
+    .name ``WickContraction.staticContract_insert_some_of_lt .incomplete,
+    .name ``WickContraction.staticContract_insert_none .incomplete,
     .h1 "Time contractions",
-    .name `FieldSpecification.FieldOpAlgebra.timeContract,
-    .name `WickContraction.timeContract,
-    .name `WickContraction.timeContract_insert_none,
-    .name `WickContraction.timeContract_insert_some_of_not_lt,
-    .name `WickContraction.timeContract_insert_some_of_lt,
+    .name ``FieldSpecification.FieldOpAlgebra.timeContract .incomplete,
+    .name ``WickContraction.timeContract .incomplete,
+    .name ``WickContraction.timeContract_insert_none .incomplete,
+    .name ``WickContraction.timeContract_insert_some_of_not_lt .incomplete,
+    .name ``WickContraction.timeContract_insert_some_of_lt .incomplete,
     .h1 "Wick terms",
-    .name `WickContraction.wickTerm,
-    .name `WickContraction.wickTerm_empty_nil,
-    .name `WickContraction.wickTerm_insert_none,
-    .name `WickContraction.wickTerm_insert_some,
-    .name `WickContraction.mul_wickTerm_eq_sum,
+    .name ``WickContraction.wickTerm .incomplete,
+    .name ``WickContraction.wickTerm_empty_nil .incomplete,
+    .name ``WickContraction.wickTerm_insert_none .incomplete,
+    .name ``WickContraction.wickTerm_insert_some .incomplete,
+    .name ``WickContraction.mul_wickTerm_eq_sum .incomplete,
     .h1 "Static wick terms",
-    .name `WickContraction.staticWickTerm,
-    .name `WickContraction.staticWickTerm_empty_nil,
-    .name `WickContraction.staticWickTerm_insert_zero_none,
-    .name `WickContraction.staticWickTerm_insert_zero_some,
-    .name `WickContraction.mul_staticWickTerm_eq_sum,
+    .name ``WickContraction.staticWickTerm .incomplete,
+    .name ``WickContraction.staticWickTerm_empty_nil .incomplete,
+    .name ``WickContraction.staticWickTerm_insert_zero_none .incomplete,
+    .name ``WickContraction.staticWickTerm_insert_zero_some .incomplete,
+    .name ``WickContraction.mul_staticWickTerm_eq_sum .incomplete,
     .h1 "The three Wick's theorems",
-    .name `FieldSpecification.wicks_theorem,
-    .name `FieldSpecification.FieldOpAlgebra.static_wick_theorem,
-    .name `FieldSpecification.FieldOpAlgebra.wicks_theorem_normal_order
+    .name ``FieldSpecification.wicks_theorem .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.static_wick_theorem .incomplete,
+    .name ``FieldSpecification.FieldOpAlgebra.wicks_theorem_normal_order .incomplete
     ]
 
 unsafe def main (_ : List String) : IO UInt32 := do

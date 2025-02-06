@@ -126,7 +126,7 @@ lemma timeOrder_maxTimeField (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   the state of greatest time to the left).
   We pick up a minus sign for every fermion paired crossed. -/
 def timeOrderSign (φs : List 𝓕.FieldOp) : ℂ :=
-  Wick.koszulSign 𝓕.statesStatistic 𝓕.timeOrderRel φs
+  Wick.koszulSign 𝓕.fieldOpStatistic 𝓕.timeOrderRel φs
 
 @[simp]
 lemma timeOrderSign_nil : timeOrderSign (𝓕 := 𝓕) [] = 1 := by
@@ -354,7 +354,7 @@ lemma crAnTimeOrderList_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
 lemma koszulSignInsert_crAnTimeOrderRel_crAnSection {φ : 𝓕.FieldOp} {ψ : 𝓕.CrAnFieldOp}
     (h : ψ.1 = φ) : {φs : List 𝓕.FieldOp} → (ψs : CrAnSection φs) →
     Wick.koszulSignInsert 𝓕.crAnStatistics 𝓕.crAnTimeOrderRel ψ ψs.1 =
-    Wick.koszulSignInsert 𝓕.statesStatistic 𝓕.timeOrderRel φ φs
+    Wick.koszulSignInsert 𝓕.fieldOpStatistic 𝓕.timeOrderRel φ φs
   | [], ⟨[], h⟩ => by
     simp [Wick.koszulSignInsert]
   | φ' :: φs, ⟨ψ' :: ψs, h1⟩ => by
