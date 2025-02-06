@@ -29,7 +29,7 @@ def universalLiftMap {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnField
     intro a b h
     rw [equiv_iff_exists_add] at h
     obtain ⟨a, rfl, ha⟩ := h
-    simp
+    simp only [map_add]
     rw [h1 a ha]
     simp)
 
