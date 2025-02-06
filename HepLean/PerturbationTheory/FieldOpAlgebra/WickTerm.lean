@@ -31,7 +31,7 @@ def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : �
 
 /-- The Wick term for the empty contraction of the empty list is `1`. -/
 @[simp]
-lemma wickTerm_empty_nil  :
+lemma wickTerm_empty_nil :
     wickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
   rw [wickTerm]
   simp [sign_empty]
@@ -52,7 +52,7 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     • (φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ))) := by
   rw [wickTerm]
   by_cases hg : GradingCompliant φs φsΛ
-  · rw [normalOrder_uncontracted_none, sign_insert_none  _ _ _ _ hg]
+  · rw [normalOrder_uncontracted_none, sign_insert_none _ _ _ _ hg]
     simp only [Nat.succ_eq_add_one, timeContract_insert_none, instCommGroup.eq_1,
       Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
     congr 1
@@ -99,8 +99,8 @@ is equal the product of
 
 The proof of this result relies on
 - `timeContract_insert_some_of_not_lt`
- and `timeContract_insert_some_of_lt` to rewrite time
- contractions.
+  and `timeContract_insert_some_of_lt` to rewrite time
+  contractions.
 - `normalOrder_uncontracted_some` to rewrite normal orderings.
 - `sign_insert_some_of_not_lt` and `sign_insert_some_of_lt` to rewrite signs.
 -/
@@ -173,7 +173,7 @@ all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then
 where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
 The proof of proceeds as follows:
-- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand  `φ 𝓝([φsΛ]ᵘᶜ)` as
+- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
   a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
 - Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.
 -/

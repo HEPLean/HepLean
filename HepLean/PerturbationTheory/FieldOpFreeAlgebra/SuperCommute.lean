@@ -24,10 +24,11 @@ namespace FieldOpFreeAlgebra
 open FieldStatistic
 
 /-- For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
-  map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra` such that
-  `superCommuteF (φ₀ᶜ…φₙᵃ) (φ₀'ᶜ…φₙ'ᶜ)` is equal to
-  `φ₀ᶜ…φₙᵃ * φ₀'ᶜ…φₙ'ᶜ - 𝓢(φ₀ᶜ…φₙᵃ, φ₀'ᶜ…φₙ'ᶜ) φ₀'ᶜ…φₙ'ᶜ * φ₀ᶜ…φₙᵃ`.
-  The notation `[a, b]ₛca` is used for this super commutator. -/
+  map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra`
+  which on the lists `φs` and `φs'` of `𝓕.CrAnFieldOp` gives
+  `superCommuteF φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`.
+
+  The notation `[a, b]ₛca` can be used for `superCommuteF a b`. -/
 noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
     𝓕.FieldOpFreeAlgebra :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
@@ -404,9 +405,12 @@ lemma superCommuteF_ofCrAnListF_ofFieldOpListF_cons (φ : 𝓕.FieldOp) (φs : L
   simp [mul_comm]
 
 /--
-Within the creation and annihilation algebra, we have that
-`[φᶜᵃs, φᶜᵃ₀ … φᶜᵃₙ]ₛca = ∑ i, sᵢ • φᶜᵃs₀ … φᶜᵃᵢ₋₁ * [φᶜᵃs, φᶜᵃᵢ]ₛca * φᶜᵃᵢ₊₁ … φᶜᵃₙ`
-where `sᵢ` is the exchange sign for `φᶜᵃs` and `φᶜᵃs₀ … φᶜᵃᵢ₋₁`.
+For a field specification `𝓕`, and to lists `φs = φ₀…φₙ` and `φs'` of `𝓕.CrAnFieldOp`
+the following super commutation relation holds:
+
+`[φs', φ₀…φₙ]ₛca = ∑ i, 𝓢(φs', φ₀…φᵢ₋₁) • φ₀…φᵢ₋₁ * [φs', φᵢ]ₛca * φᵢ₊₁ … φₙ`
+
+The proof of this relation is via induction on the length of `φs`.
 -/
 lemma superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum (φs : List 𝓕.CrAnFieldOp) :
     (φs' : List 𝓕.CrAnFieldOp) → [ofCrAnListF φs, ofCrAnListF φs']ₛca =

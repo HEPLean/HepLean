@@ -63,14 +63,15 @@ def fieldOpToCreateAnnihilateTypeCongr : {i j : 𝓕.FieldOp} → i = j →
   | _, _, rfl => Equiv.refl _
 
 /--
-For a field specification `𝓕`, the type `𝓕.CrAnFieldOp` is defined such that every element
-corresponds to
-- an incoming asymptotic field operator `.inAsymp` and the unique element of `Unit`,
-  corresponding to the statement that an `inAsymp` state is a creation operator.
-- a position operator `.position` and an element of `CreateAnnihilate`,
-  corresponding to either the creation part or the annihilation part of a position operator.
-- an outgoing asymptotic field operator `.outAsymp` and the unique element of `Unit`,
-  corresponding to the statement that an `outAsymp` state is an annihilation operator.
+For a field specification `𝓕`, elements in `𝓕.CrAnFieldOp`, the type
+of creation and annihilation field operators, corresponds to
+- an incoming asymptotic field operator `.inAsymp` in `𝓕.FieldOp`.
+- a position operator `.position` in `𝓕.FieldOp` and an element of
+  `CreateAnnihilate` specifying the creation or annihilation part of that position operator.
+- an outgoing asymptotic field operator `.outAsymp` in `𝓕.FieldOp`.
+
+Note that the incoming and outgoing asymptotic field operators are implicitly creation and
+annihilation operators respectively.
 -/
 def CrAnFieldOp : Type := Σ (s : 𝓕.FieldOp), 𝓕.fieldOpToCrAnType s
 
@@ -89,15 +90,23 @@ def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
   | ⟨FieldOp.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
   | ⟨FieldOp.outAsymp _, _⟩ => CreateAnnihilate.annihilate
 
-/-- Takes a `CrAnFieldOp` state to its corresponding fields statistic (bosonic or fermionic). -/
-def crAnStatistics : 𝓕.CrAnFieldOp → FieldStatistic :=
-  𝓕.statesStatistic ∘ 𝓕.crAnFieldOpToFieldOp
+/-- For a field specification `𝓕`, and an element `φ` in `𝓕.CrAnFieldOp`, the field
+  statistic `crAnStatistics φ` is defined to be the statistic associated with the field `𝓕.Field`
+  (or equivalently `𝓕.FieldOp`) underlying `φ`.
 
-/-- The field statistic of a `CrAnFieldOp`. -/
+  The following notation is used in relation to `crAnStatistics`:
+  - For `φ` an element of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φ` is `crAnStatistics φ`.
+  - For `φs` a list of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φs` is the product of `crAnStatistics φ` over
+    the list `φs`.
+-/
+def crAnStatistics : 𝓕.CrAnFieldOp → FieldStatistic :=
+  𝓕.fieldOpStatistic ∘ 𝓕.crAnFieldOpToFieldOp
+
+@[inherit_doc crAnStatistics]
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ =>
     (crAnStatistics 𝓕) φ
 
-/-- The field statistic of a list of `CrAnFieldOp`s. -/
+@[inherit_doc crAnStatistics]
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (crAnStatistics 𝓕) φ
 
@@ -105,5 +114,19 @@ scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
   annihilation operator. -/
 scoped[FieldSpecification] infixl:80 "|>ᶜ" =>
     crAnFieldOpToCreateAnnihilate
+
+remark notation_remark := "When working with a field specification `𝓕` we will use
+some notation within doc-strings and in code. The main notation used is:
+- In doc-strings when field statistics occur in exchange signs we may drop the `𝓕 |>ₛ _`.
+- In doc-strings we will often write lists of `FieldOp` or `CrAnFieldOp` `φs` as e.g. `φ₀…φₙ`,
+  which should be interpreted within the context in which it appears.
+- In doc-strings we may use e.g. `φᶜ` to indicate the creation part of an operator and
+  `φᵃ` to indicate the annihilation part of an operator.
+
+Some examples:
+- `𝓢(φ, φs)` corresponds to `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
+- `φ₀…φᵢ₋₁φᵢ₊₁…φₙ` corresponds to a (given) list `φs = φ₀…φₙ` with the element at the `i`th position
+  removed.
+"
 
 end FieldSpecification

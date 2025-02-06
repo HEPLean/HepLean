@@ -136,6 +136,7 @@ import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.SuperCommute
 import HepLean.PerturbationTheory.FieldOpAlgebra.TimeContraction
 import HepLean.PerturbationTheory.FieldOpAlgebra.TimeOrder
+import HepLean.PerturbationTheory.FieldOpAlgebra.Universality
 import HepLean.PerturbationTheory.FieldOpAlgebra.WickTerm
 import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheorem
 import HepLean.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
@@ -148,7 +149,6 @@ import HepLean.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
 import HepLean.PerturbationTheory.FieldSpecification.Basic
 import HepLean.PerturbationTheory.FieldSpecification.CrAnFieldOp
 import HepLean.PerturbationTheory.FieldSpecification.CrAnSection
-import HepLean.PerturbationTheory.FieldSpecification.Examples
 import HepLean.PerturbationTheory.FieldSpecification.Filters
 import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
 import HepLean.PerturbationTheory.FieldSpecification.TimeOrder

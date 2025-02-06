@@ -162,7 +162,7 @@ lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.FieldOp}
     left
     rw [join_singleton_signFinset_eq_filter]
   rw [mul_comm]
-  exact (ofFinset_filter_mul_neg 𝓕.statesStatistic _ _ _).symm
+  exact (ofFinset_filter_mul_neg 𝓕.fieldOpStatistic _ _ _).symm
 
 /-- The difference in sign between `φsucΛ.sign` and the direct contribution of `φsucΛ` to
   `(join (singleton h) φsucΛ)`. -/
@@ -418,7 +418,7 @@ lemma join_sign_induction {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs
     exact join_uncontractedListGet (singleton hij) φsucΛ'
 
 /-- Let `φsΛ` be a grading compliant Wick contraction for `φs` and
-  `φsucΛ` a Wick contraction for `[φsΛ]ᵘᶜ`. Then  `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
+  `φsucΛ` a Wick contraction for `[φsΛ]ᵘᶜ`. Then `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
 
   This lemma manifests the fact that it does not matter which order contracted pairs are brought
   together when defining the sign of a contraction. -/

@@ -856,7 +856,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
 
 /--
 For `k < i`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
-- the sign associated with moving `φ` through the `φsΛ`-uncontracted  fields in `φ₀…φₖ`,
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted fields in `φ₀…φₖ`,
 - the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
 - the sign of `φsΛ`.
 
@@ -877,10 +877,9 @@ lemma sign_insert_some_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [mul_comm, ← mul_assoc]
   simp
 
-
 /--
 For `i ≤ k`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
-- the sign associated with moving `φ` through the `φsΛ`-uncontracted  fields in `φ₀…φₖ₋₁`,
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted fields in `φ₀…φₖ₋₁`,
 - the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
 - the sign of `φsΛ`.
 
@@ -903,13 +902,12 @@ lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
 
 lemma sign_insert_some_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
-    (hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = 𝓕|>ₛφs[k.1]):
-    (φsΛ ↩Λ φ 0 k).sign =  𝓢(𝓕|>ₛφ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < ↑k))⟩) *
+    (hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = 𝓕|>ₛφs[k.1]) :
+    (φsΛ ↩Λ φ 0 k).sign = 𝓢(𝓕|>ₛφ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < ↑k))⟩) *
     φsΛ.sign := by
   rw [sign_insert_some_of_not_lt]
   · simp
   · simp
   · exact hn
-
 
 end WickContraction

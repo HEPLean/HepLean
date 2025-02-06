@@ -14,13 +14,14 @@ import HepLean.PerturbationTheory.Koszul.KoszulSign
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 
-/-- The normal ordering relation on creation and annihlation operators.
-  For a list of creation and annihlation states, this relation is designed
-  to move all creation states to the left, and all annihlation operators to the right.
-  We have that `normalOrderRel φ1 φ2` is true if
-  - `φ1` is a creation operator
-  or
-  - `φ2` is an annihlate operator. -/
+/-- For a field specification `𝓕`, `𝓕.normalOrderRel` is a relation on `𝓕.CrAnFieldOp`
+  representing normal ordering. It is defined such that `𝓕.normalOrderRel φ₀ φ₁`
+  is true if one of the following is true
+  - `φ₀` is a creation operator
+  - `φ₁` is an annihilation.
+
+  Thus, colloquially `𝓕.normalOrderRel φ₀ φ₁` says the creation operators are 'less then'
+  annihilation operators. -/
 def normalOrderRel : 𝓕.CrAnFieldOp → 𝓕.CrAnFieldOp → Prop :=
   fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)
 
@@ -42,9 +43,9 @@ instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (normalOrderRel φ φ') :=
 
 -/
 
-/-- The sign associated with putting a list of creation and annihlation states into normal order
-  (with the creation operators on the left).
-  We pick up a minus sign for every fermion paired crossed. -/
+/-- For a field speciication `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`, `𝓕.normalOrderSign φs` is the
+  sign corresponding to the number of `fermionic`-`fermionic` exchanges undertaken to normal-order
+  `φs` using the insertion sort algorithm. -/
 def normalOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
   Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderRel φs
 
@@ -221,9 +222,12 @@ open FieldStatistic
 
 -/
 
-/-- The normal ordering of a list of creation and annihilation states.
-  To give some schematic. For example:
-  - `normalOrderList [φ1c, φ1a, φ2c, φ2a] = [φ1c, φ2c, φ1a, φ2a]`
+/-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+  `𝓕.normalOrderList φs` is the list `φs` normal-ordered using ther
+  insertion sort algorithm. It puts creation operators on the left and annihilation operators on
+  the right. For example:
+
+  `𝓕.normalOrderList [φ1c, φ1a, φ2c, φ2a] = [φ1c, φ2c, φ1a, φ2a]`
 -/
 def normalOrderList (φs : List 𝓕.CrAnFieldOp) : List 𝓕.CrAnFieldOp :=
   List.insertionSort 𝓕.normalOrderRel φs
@@ -339,10 +343,17 @@ lemma normalOrderList_eraseIdx_normalOrderEquiv {φs : List 𝓕.CrAnFieldOp} (n
   simp only [normalOrderList, normalOrderEquiv]
   rw [HepLean.List.eraseIdx_insertionSort_fin]
 
-lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnFieldOp) (n : Fin φs.length) :
-    normalOrderSign (φs.eraseIdx n) = normalOrderSign φs *
-    𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ (φs.take n)) *
-    𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv n))) := by
+/-- For a field specification `𝓕`, a list `φs = φ₀…φₙ` of `𝓕.CrAnFieldOp` and an `i < φs.length`,
+  the following relation holds
+  `normalOrderSign (φ₀…φᵢ₋₁φᵢ₊₁…φₙ)` is equal to the product of
+  - `normalOrderSign φ₀…φₙ`,
+  - `𝓢(φᵢ, φ₀…φᵢ₋₁)` i.e. the sign needed to remove `φᵢ` from  `φ₀…φₙ`,
+  - `𝓢(φᵢ, _)` where `_` is the list of elements appearing before `φᵢ` after normal ordering. I.e.
+    the sign needed to insert `φᵢ` back into the normal-ordered list at the correct place. -/
+lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnFieldOp) (i : Fin φs.length) :
+    normalOrderSign (φs.eraseIdx i) = normalOrderSign φs *
+    𝓢(𝓕 |>ₛ (φs.get i), 𝓕 |>ₛ (φs.take i)) *
+    𝓢(𝓕 |>ₛ (φs.get i), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv i))) := by
   rw [normalOrderSign, Wick.koszulSign_eraseIdx, ← normalOrderSign]
   rfl
 

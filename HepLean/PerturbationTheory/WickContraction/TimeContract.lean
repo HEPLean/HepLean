@@ -97,7 +97,7 @@ lemma timeContract_insert_some_of_lt
     · simp
     simp only [smul_smul]
     congr 1
-    have h1 : ofList 𝓕.statesStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+    have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
         (List.map φs.get φsΛ.uncontractedList))
         = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
       simp only [ofFinset]
@@ -128,7 +128,7 @@ lemma timeContract_insert_some_of_not_lt
   rw [timeContract_of_not_timeOrderRel, timeContract_of_timeOrderRel]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
   congr
-  have h1 : ofList 𝓕.statesStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+  have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
       (List.map φs.get φsΛ.uncontractedList))
       = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
     simp only [ofFinset]

@@ -41,10 +41,7 @@ def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
 - `[ofCrAnOpF φa, ofCrAnOpF φa']ₛca` for `φa` and `φa'` annihilation operators. I.e two
   annihilation operators always super-commute.
 - `[ofCrAnOpF φ, ofCrAnOpF φ']ₛca` for `φ` and `φ'` field operators with different statistics.
-  I.e. Fermions super-commute with bosons.
-The algebra `𝓕.FieldOpAlgebra` is the most general (in the correct sense) algebra
-satisfying these properties.
--/
+  I.e. Fermions super-commute with bosons. -/
 abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.Quotient
 
 namespace FieldOpAlgebra
@@ -58,7 +55,23 @@ lemma equiv_iff_sub_mem_ideal (x y : FieldOpFreeAlgebra 𝓕) :
   rw [← TwoSidedIdeal.rel_iff]
   rfl
 
-/-- The projection of `FieldOpFreeAlgebra` down to `FieldOpAlgebra` as an algebra map. -/
+lemma equiv_iff_exists_add (x y : FieldOpFreeAlgebra 𝓕) :
+    x ≈ y ↔ ∃ a, x = y + a ∧ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
+  apply Iff.intro
+  · intro h
+    rw [equiv_iff_sub_mem_ideal] at h
+    use x - y
+    simp [h]
+  · intro h
+    obtain ⟨a, rfl, ha⟩ := h
+    rw [equiv_iff_sub_mem_ideal]
+    simp [ha]
+
+/-- For a field specification `𝓕`, the projection
+
+`𝓕.FieldOpFreeAlgebra →ₐ[ℂ] FieldOpAlgebra 𝓕`
+
+taking each element of `𝓕.FieldOpFreeAlgebra` to its equivalence class in `FieldOpAlgebra 𝓕`. -/
 def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.mk'
   map_one' := by rfl
@@ -444,12 +457,14 @@ lemma ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero (x : FieldOpFreeAlgebra �
 
 -/
 
-/-- An element of `FieldOpAlgebra` from a `FieldOp`. -/
+/-- For a field specification `𝓕` and an element `φ` of `𝓕.FieldOp`, the element of
+  `𝓕.FieldOpAlgebra` given by `ι (ofFieldOpF φ)`. -/
 def ofFieldOp (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (ofFieldOpF φ)
 
 lemma ofFieldOp_eq_ι_ofFieldOpF (φ : 𝓕.FieldOp) : ofFieldOp φ = ι (ofFieldOpF φ) := rfl
 
-/-- An element of `FieldOpAlgebra` from a list of `FieldOp`. -/
+/-- For a field specification `𝓕` and a list `φs` of `𝓕.FieldOp`, the element of
+  `𝓕.FieldOpAlgebra` given by `ι (ofFieldOpListF φ)`. -/
 def ofFieldOpList (φs : List 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (ofFieldOpListF φs)
 
 lemma ofFieldOpList_eq_ι_ofFieldOpListF (φs : List 𝓕.FieldOp) :
@@ -472,82 +487,99 @@ lemma ofFieldOpList_singleton (φ : 𝓕.FieldOp) :
     ofFieldOpList [φ] = ofFieldOp φ := by
   simp only [ofFieldOpList, ofFieldOp, ofFieldOpListF_singleton]
 
-/-- An element of `FieldOpAlgebra` from a `CrAnFieldOp`. -/
-def ofCrAnFieldOp (φ : 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnOpF φ)
+/-- For a field specification `𝓕` and an element `φ` of `𝓕.CrAnFieldOp`, the element of
+  `𝓕.FieldOpAlgebra` given by `ι (ofCrAnOpF φ)`. -/
+def ofCrAnOp (φ : 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnOpF φ)
 
-lemma ofCrAnFieldOp_eq_ι_ofCrAnOpF (φ : 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOp φ = ι (ofCrAnOpF φ) := rfl
+lemma ofCrAnOp_eq_ι_ofCrAnOpF (φ : 𝓕.CrAnFieldOp) :
+    ofCrAnOp φ = ι (ofCrAnOpF φ) := rfl
 
 lemma ofFieldOp_eq_sum (φ : 𝓕.FieldOp) :
-    ofFieldOp φ = (∑ i : 𝓕.fieldOpToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩) := by
+    ofFieldOp φ = (∑ i : 𝓕.fieldOpToCrAnType φ, ofCrAnOp ⟨φ, i⟩) := by
   rw [ofFieldOp, ofFieldOpF]
   simp only [map_sum]
   rfl
 
-/-- An element of `FieldOpAlgebra` from a list of `CrAnFieldOp`. -/
-def ofCrAnFieldOpList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
+/-- For a field specification `𝓕` and a list `φs` of `𝓕.CrAnFieldOp`, the element of
+  `𝓕.FieldOpAlgebra` given by `ι (ofCrAnListF φ)`. -/
+def ofCrAnList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
 
-lemma ofCrAnFieldOpList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList φs = ι (ofCrAnListF φs) := rfl
+lemma ofCrAnList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList φs = ι (ofCrAnListF φs) := rfl
 
-lemma ofCrAnFieldOpList_append (φs ψs : List 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList (φs ++ ψs) = ofCrAnFieldOpList φs * ofCrAnFieldOpList ψs := by
-  simp only [ofCrAnFieldOpList]
+lemma ofCrAnList_append (φs ψs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList (φs ++ ψs) = ofCrAnList φs * ofCrAnList ψs := by
+  simp only [ofCrAnList]
   rw [ofCrAnListF_append]
   simp
 
-lemma ofCrAnFieldOpList_singleton (φ : 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList [φ] = ofCrAnFieldOp φ := by
-  simp only [ofCrAnFieldOpList, ofCrAnFieldOp, ofCrAnListF_singleton]
+lemma ofCrAnList_singleton (φ : 𝓕.CrAnFieldOp) :
+    ofCrAnList [φ] = ofCrAnOp φ := by
+  simp only [ofCrAnList, ofCrAnOp, ofCrAnListF_singleton]
 
 lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
-    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnFieldOpList s.1 := by
+    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnList s.1 := by
   rw [ofFieldOpList, ofFieldOpListF_sum]
   simp only [map_sum]
   rfl
 
-/-- The annihilation part of a state. -/
+remark notation_drop := "In doc-strings we will often drop explicit applications of `ofCrAnOp`,
+`ofCrAnList`, `ofFieldOp`, and `ofFieldOpList`"
+
+/-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
+  annihilation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.
+  If `φ` is an incoming asymptotic state this is zero by definition, otherwise
+  it is of the form `ofCrAnOp _`. -/
 def anPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
 
 lemma anPart_eq_ι_anPartF (φ : 𝓕.FieldOp) : anPart φ = ι (anPartF φ) := rfl
 
 @[simp]
-lemma anPart_negAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
+lemma anPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
     anPart (FieldOp.inAsymp φ) = 0 := by
   simp [anPart, anPartF]
 
 @[simp]
-lemma anPart_position (φ : 𝓕.Fields × SpaceTime) :
+lemma anPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
     anPart (FieldOp.position φ) =
-    ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.annihilate⟩ := by
-  simp [anPart, ofCrAnFieldOp]
+    ofCrAnOp ⟨FieldOp.position φ, CreateAnnihilate.annihilate⟩ := by
+  simp [anPart, ofCrAnOp]
 
 @[simp]
-lemma anPart_posAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
-    anPart (FieldOp.outAsymp φ) = ofCrAnFieldOp ⟨FieldOp.outAsymp φ, ()⟩ := by
-  simp [anPart, ofCrAnFieldOp]
+lemma anPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+    anPart (FieldOp.outAsymp φ) = ofCrAnOp ⟨FieldOp.outAsymp φ, ()⟩ := by
+  simp [anPart, ofCrAnOp]
 
-/-- The creation part of a state. -/
+/-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
+  creation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.
+  If `φ` is an outgoing asymptotic state this is zero by definition, otherwise
+  it is of the form `ofCrAnOp _`. -/
 def crPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
 
 lemma crPart_eq_ι_crPartF (φ : 𝓕.FieldOp) : crPart φ = ι (crPartF φ) := rfl
 
 @[simp]
-lemma crPart_negAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
-    crPart (FieldOp.inAsymp φ) = ofCrAnFieldOp ⟨FieldOp.inAsymp φ, ()⟩ := by
-  simp [crPart, ofCrAnFieldOp]
+lemma crPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+    crPart (FieldOp.inAsymp φ) = ofCrAnOp ⟨FieldOp.inAsymp φ, ()⟩ := by
+  simp [crPart, ofCrAnOp]
 
 @[simp]
-lemma crPart_position (φ : 𝓕.Fields × SpaceTime) :
+lemma crPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
     crPart (FieldOp.position φ) =
-    ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.create⟩ := by
-  simp [crPart, ofCrAnFieldOp]
+    ofCrAnOp ⟨FieldOp.position φ, CreateAnnihilate.create⟩ := by
+  simp [crPart, ofCrAnOp]
 
 @[simp]
-lemma crPart_posAsymp (φ : 𝓕.Fields × Lorentz.Contr 4) :
+lemma crPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
     crPart (FieldOp.outAsymp φ) = 0 := by
   simp [crPart]
 
+/-- For field specification `𝓕`, and an element `φ` of `𝓕.FieldOp` the following relation holds:
+
+`ofFieldOp φ = crPart φ + anPart φ`
+
+That is, every field operator splits into its creation part plus its annihilation part.
+-/
 lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.FieldOp) :
     ofFieldOp φ = crPart φ + anPart φ := by
   rw [ofFieldOp, crPart, anPart, ofFieldOpF_eq_crPartF_add_anPartF]

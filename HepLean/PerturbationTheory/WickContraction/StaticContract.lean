@@ -85,7 +85,7 @@ lemma staticContract_insert_some_of_lt
     · simp
     simp only [smul_smul]
     congr 1
-    have h1 : ofList 𝓕.statesStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+    have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
         (List.map φs.get φsΛ.uncontractedList))
         = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
       simp only [ofFinset]
