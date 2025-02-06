@@ -217,6 +217,9 @@ lemma anPart_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.FieldOp)
 -/
 
 /--
+For a `CrAnFieldOp` `φ` and a list of `CrAnFieldOp`s `φs`, the following is true
+`[φ, 𝓝(φ₀…φₙ)]ₛ = ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
+
 The proof of this result ultimetly depends on
 - `superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum`
 - `normalOrderSign_eraseIdx`

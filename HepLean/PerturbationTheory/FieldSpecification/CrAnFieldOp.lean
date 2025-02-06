@@ -106,4 +106,10 @@ scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
 scoped[FieldSpecification] infixl:80 "|>ᶜ" =>
     crAnFieldOpToCreateAnnihilate
 
+remark notation_remark := "When working with a field specification `𝓕` we will use
+some notation within doc-strings and in code. The main notation used is:
+- In docstrings when field statistics occur in exchange signs we may drop the `𝓕 |>ₛ`.
+- In docstrings we will often write lists of `FieldOp` or `CrAnFieldOp` `φs` as e.g. `φ₀…φₙ`,
+  which should be interpreted within the context in which it appears."
+
 end FieldSpecification

@@ -191,7 +191,14 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
 
 -/
 
-/-- The time ordering relation on CrAnFieldOp. -/
+/-- For a field specification `𝓕`,  `𝓕.crAnTimeOrderRel` is time ordering relation on
+  `𝓕.CrAnFieldOp` defined to put those field operators with greatest time to the left on
+  ordering a list. Thus `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following is
+  true
+- `φ₀` is an outgoing asymptotic creation and annihilation field operator
+- `φ₁` is an incoming asymptotic creation and annihilation field operator
+- `φ₀` and `φ₁` are both position operators where `φ₀` occurs at a time greater then or equal to
+  that of `φ₁`. -/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 
 /-- The relation `crAnTimeOrderRel` is decidable, but not computablly so due to
