@@ -219,7 +219,14 @@ lemma ι_normalOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) 
   simp only [LinearMap.mem_ker, ← map_sub]
   exact ι_normalOrderF_zero_of_mem_ideal (a - b) h
 
-/-- Normal ordering on `FieldOpAlgebra`. -/
+/-- For a field specification `𝓕`, `normalOrder` is the linera map
+
+  `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+
+  defined as the decent of `ι ∘ₗ normalOrderF` from `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+  This decent exists because `ι ∘ₗ normalOrderF` is well-defined on equivalence classes.
+
+  The notation `𝓝(a)` is used for `normalOrder a`.  -/
 noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ normalOrderF) ι_normalOrderF_eq_of_equiv
   map_add' x y := by

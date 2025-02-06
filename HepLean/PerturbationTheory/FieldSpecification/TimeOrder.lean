@@ -223,8 +223,8 @@ lemma crAnTimeOrderRel_refl (φ : 𝓕.CrAnFieldOp) : crAnTimeOrderRel φ φ := 
 
 /-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
   `𝓕.crAnTimeOrderSign φs` is the sign corresponding to the number of `ferimionic`-`fermionic`
-  undertaken to time-order (i.e. order with respect to `𝓕.crAnTimeOrderRel`) `φs` using the
-  insertion sort algorithm. -/
+  exchanges undertaken to time-order (i.e. order with respect to `𝓕.crAnTimeOrderRel`) `φs` using
+  the insertion sort algorithm. -/
 def crAnTimeOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
   Wick.koszulSign 𝓕.crAnStatistics 𝓕.crAnTimeOrderRel φs
 

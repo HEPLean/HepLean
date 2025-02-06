@@ -27,11 +27,12 @@ namespace FieldOpFreeAlgebra
 
 noncomputable section
 
-/-- The linear map on the free creation and annihlation
-  algebra defined as the map taking
-  a list of CrAnFieldOp to the normal-ordered list of states multiplied by
-  the sign corresponding to the number of fermionic-fermionic
-  exchanges done in ordering. -/
+/-- For a field specification `𝓕`, `normalOrderF` is the linera map
+  `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
+  defined by its action on the basis `ofCrAnListF φs`, taking `ofCrAnListF φs` to
+  `normalOrderSign φs • ofCrAnListF (normalOrderList φs)`.
+
+  The notation `𝓝ᶠ(a)` is used for `normalOrderF a`. -/
 def normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
   normalOrderSign φs • ofCrAnListF (normalOrderList φs)
