@@ -148,7 +148,6 @@ import HepLean.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
 import HepLean.PerturbationTheory.FieldSpecification.Basic
 import HepLean.PerturbationTheory.FieldSpecification.CrAnFieldOp
 import HepLean.PerturbationTheory.FieldSpecification.CrAnSection
-import HepLean.PerturbationTheory.FieldSpecification.Examples
 import HepLean.PerturbationTheory.FieldSpecification.Filters
 import HepLean.PerturbationTheory.FieldSpecification.NormalOrder
 import HepLean.PerturbationTheory.FieldSpecification.TimeOrder

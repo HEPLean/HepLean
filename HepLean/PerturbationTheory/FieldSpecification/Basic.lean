@@ -23,44 +23,57 @@ From each field we can create three different types of `FieldOp`.
 
 These states carry the same field statistic as the field they are derived from.
 
+## Some references
+
+- https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf
+
 -/
 
-remark fieldSpecification_intro := "The raw ingredients of a field theory are:
-  - The specification of the fields.
-  - Whether each field is a boson or a fermion.
-  - Vertices present in the Lagrangian.
-  - The coefficent of each vertex.
-
-  We call the first two of these ingredients the `FieldSpecification` of the theory. "
-
-/-- A field specification is a type, `Fields`, elements of which are fields
-  present in a theory, and a map `statistics` from `Fields` to `FieldStatistic` which
-  identifies each field as a boson or a fermion. -/
+/-- A field specification is defined as a structure containing the basic data needed to write down
+  position and asymptotic field operators for a theory. It contains:
+  - A type `positionDOF` containing the degree-of-freedom in position-based field
+  operators (excluding space-time position). Thus a sutible (but not unique) choice
+    - Real-scalar fields correspond to a single element of `positionDOF`.
+    - Complex-scalar fields correspond to two elements of `positionDOF`, one for the field and one
+      for its conjugate.
+    - Dirac fermions correspond to eight elements of `positionDOF`. One for each Lorentz index of the
+      field and its conjugate. (These are not all independent)
+    - Weyl fermions correspond to four elements of `positionDOF`. One for each Lorentz index of the
+      field. (These are not all independent)
+  - A type `asymptoticDOF` containing the degree-of-freedom in asymptotic field operators. Thus a
+    sutible (but not unique) choice is
+    - Real-scalar fields correspond to a single element of `asymptoticDOF`.
+    - Complex-scalar fields correspond to two elements of `asymptoticDOF`, one for the field and one
+      for its conjugate.
+    - Dirac fermions correspond to four elements of `asymptoticDOF`, two for each type of spin.
+    - Weyl fermions correspond to two elements of `asymptoticDOF`, one for each spin.
+  - A specification `statisticsPos` on a `positionDOF` is Fermionic or Bosonic.
+  - A specification `statisticsAsym` on a `asymptoticDOF` is Fermionic or Bosonic.
+-/
 structure FieldSpecification where
-  /-- The type of fields. This also includes anti-states. -/
-  Fields : Type
-  /-- The specification if a field is bosonic or fermionic. -/
-  statistics : Fields → FieldStatistic
+  /-- Degrees of freedom for position based field operators. -/
+  positionDOF : Type
+  /-- Degrees of freedom for asymptotic based field operators. -/
+  asymptoticDOF : Type
+  /-- The specification if the `positionDOF` are Fermionic or Bosonic. -/
+  statisticsPos : positionDOF → FieldStatistic
+  /-- The specification if the `asymptoticDOF` are Fermionic or Bosonic. -/
+  statisticsAsym : asymptoticDOF → FieldStatistic
 
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
 /-- For a field specification `𝓕`, the type `𝓕.FieldOp` is defined such that every element of
   `FieldOp` corresponds either to:
-- an incoming asymptotic field operator `.inAsymp` specified by a field and a `4`-momentum.
+- an incoming asymptotic field operator `.inAsymp` specified by a field and a `3`-momentum.
 - an position operator `.position` specified by a field and a point in spacetime.
-- an outgoing asymptotic field operator `.outAsymp` specified by a field and a `4`-momentum.
+- an outgoing asymptotic field operator `.outAsymp` specified by a field and a `3`-momentum.
 -/
 inductive FieldOp (𝓕 : FieldSpecification) where
-  | inAsymp : 𝓕.Fields × Lorentz.Contr 4 → 𝓕.FieldOp
-  | position : 𝓕.Fields × SpaceTime → 𝓕.FieldOp
-  | outAsymp : 𝓕.Fields × Lorentz.Contr 4 → 𝓕.FieldOp
+  | inAsymp : 𝓕.asymptoticDOF × (Fin 3 → ℝ) → 𝓕.FieldOp
+  | position : 𝓕.positionDOF × SpaceTime → 𝓕.FieldOp
+  | outAsymp : 𝓕.asymptoticDOF × (Fin 3 → ℝ) → 𝓕.FieldOp
 
-/-- Taking a field operator to its underlying field. -/
-def fieldOpToField : 𝓕.FieldOp → 𝓕.Fields
-  | FieldOp.inAsymp φ => φ.1
-  | FieldOp.position φ => φ.1
-  | FieldOp.outAsymp φ => φ.1
 
 /-- The bool on `FieldOp` which is true only for position field operator. -/
 def statesIsPosition : 𝓕.FieldOp → Bool
@@ -68,7 +81,11 @@ def statesIsPosition : 𝓕.FieldOp → Bool
   | _ => false
 
 /-- The statistics associated to a field operator. -/
-def statesStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistics ∘ 𝓕.fieldOpToField
+def statesStatistic : 𝓕.FieldOp → FieldStatistic := fun f =>
+  match f with
+  | FieldOp.inAsymp (a, _) => 𝓕.statisticsAsym a
+  | FieldOp.position (a, _) => 𝓕.statisticsPos a
+  | FieldOp.outAsymp (a, _) => 𝓕.statisticsAsym a
 
 /-- The field statistics associated with a field operator. -/
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => statesStatistic 𝓕 φ

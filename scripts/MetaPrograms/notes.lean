@@ -130,7 +130,6 @@ def perturbationTheory : Note where
     .name `FieldStatistic.instCommGroup,
     .name `FieldStatistic.exchangeSign,
     .h2 "Field specifications",
-    .name `fieldSpecification_intro,
     .name `FieldSpecification,
     .h2 "Field operators",
     .name `FieldSpecification.FieldOp,
