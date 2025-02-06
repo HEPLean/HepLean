@@ -19,11 +19,11 @@ namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
 /-- For a field specification, `𝓕`, given an algebra `A` and a function `f : 𝓕.CrAnFieldOp → A`
-  such that the lift of `f` to  `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
+  such that the lift of `f` to `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
   zero on the ideal defining `𝓕.FieldOpAlgebra`, the corresponding map `𝓕.FieldOpAlgebra → A`.
 -/
 def universalLiftMap {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
-    (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0):
+    (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
     FieldOpAlgebra 𝓕 → A :=
   Quotient.lift (FreeAlgebra.lift ℂ f) (by
     intro a b h
@@ -38,9 +38,8 @@ lemma universalLiftMap_ι {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAn
     (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
     universalLiftMap f h1 (ι a) = FreeAlgebra.lift ℂ f a := by rfl
 
-
 /-- For a field specification, `𝓕`, given an algebra `A` and a function `f : 𝓕.CrAnFieldOp → A`
-  such that the lift of `f` to  `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
+  such that the lift of `f` to `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
   zero on the ideal defining `𝓕.FieldOpAlgebra`, the corresponding algebra map
   `𝓕.FieldOpAlgebra → A`.
 -/

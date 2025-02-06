@@ -191,7 +191,7 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
 
 -/
 
-/-- For a field specification `𝓕`,  `𝓕.crAnTimeOrderRel` is a relation on
+/-- For a field specification `𝓕`, `𝓕.crAnTimeOrderRel` is a relation on
   `𝓕.CrAnFieldOp` representing time ordering.
   It is defined as such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
   holds
@@ -201,7 +201,7 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
   the `SpaceTime` point of `φ₀` has a time *greater* then or equal to that of `φ₁`.
 
 Thus, colloquially `𝓕.crAnTimeOrderRel φ₀ φ₁` if `φ₀` has time *greater* then or equal to `φ₁`.
- -/
+-/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 
 /-- The relation `crAnTimeOrderRel` is decidable, but not computablly so due to

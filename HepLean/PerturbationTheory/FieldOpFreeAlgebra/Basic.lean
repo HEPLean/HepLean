@@ -40,7 +40,6 @@ abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 
 
 namespace FieldOpFreeAlgebra
 
-
 remark naming_convention := "
   For mathematicial objects defined in relation to `FieldOpFreeAlgebra` we will often postfix
   their names with an `F` to indicate that they are related to the free algebra.
@@ -62,7 +61,7 @@ The algebra `𝓕.FieldOpFreeAlgebra` satisfies the universal property that for 
   The unique `g` is given by `FreeAlgebra.lift ℂ f`.
 -/
 lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A) :
-    ∃! g : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] A,  g ∘ ofCrAnOpF = f := by
+    ∃! g : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] A, g ∘ ofCrAnOpF = f := by
   use FreeAlgebra.lift ℂ f
   apply And.intro
   · funext x

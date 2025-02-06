@@ -32,7 +32,7 @@ open HepLean.Fin
   elements and contracting `φ` optionally with `j`.
 
   The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. Thus,
-  `φsΛ ↩Λ φ i none` indicates the case when we insert `φ` into `φs` but do not contract it.  -/
+  `φsΛ ↩Λ φ i none` indicates the case when we insert `φ` into `φs` but do not contract it. -/
 def insertAndContract {φs : List 𝓕.FieldOp} (φ : 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : Option φsΛ.uncontracted) :
     WickContraction (φs.insertIdx i φ).length :=

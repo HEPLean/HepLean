@@ -95,8 +95,8 @@ def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
   (or equivalently `𝓕.FieldOp`) underlying `φ`.
 
   The following notation is used in relation to `crAnStatistics`:
-  - For `φ` an element of  `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φ` is `crAnStatistics φ`.
-  - For `φs` a list of  `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φs` is the product of `crAnStatistics φ` over
+  - For `φ` an element of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φ` is `crAnStatistics φ`.
+  - For `φs` a list of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φs` is the product of `crAnStatistics φ` over
     the list `φs`.
 -/
 def crAnStatistics : 𝓕.CrAnFieldOp → FieldStatistic :=
@@ -124,7 +124,7 @@ some notation within doc-strings and in code. The main notation used is:
   `φᵃ` to indicate the annihilation part of an operator.
 
 Some examples:
-- `𝓢(φ, φs)` corresponds to  `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
+- `𝓢(φ, φs)` corresponds to `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
 - `φ₀…φᵢ₋₁φᵢ₊₁…φₙ` corresponds to a (given) list `φs = φ₀…φₙ` with the element at the `i`th position
   removed.
 "

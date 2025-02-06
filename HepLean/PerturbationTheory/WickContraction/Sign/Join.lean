@@ -418,7 +418,7 @@ lemma join_sign_induction {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs
     exact join_uncontractedListGet (singleton hij) φsucΛ'
 
 /-- Let `φsΛ` be a grading compliant Wick contraction for `φs` and
-  `φsucΛ` a Wick contraction for `[φsΛ]ᵘᶜ`. Then  `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
+  `φsucΛ` a Wick contraction for `[φsΛ]ᵘᶜ`. Then `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
 
   This lemma manifests the fact that it does not matter which order contracted pairs are brought
   together when defining the sign of a contraction. -/

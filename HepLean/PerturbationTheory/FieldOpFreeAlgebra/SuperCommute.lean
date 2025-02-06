@@ -28,7 +28,7 @@ open FieldStatistic
   which on the lists `φs` and `φs'` of `𝓕.CrAnFieldOp` gives
   `superCommuteF φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`.
 
-  The notation `[a, b]ₛca` can be used for  `superCommuteF a b`. -/
+  The notation `[a, b]ₛca` can be used for `superCommuteF a b`. -/
 noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
     𝓕.FieldOpFreeAlgebra :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>

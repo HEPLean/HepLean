@@ -87,7 +87,6 @@ inductive FieldOp (𝓕 : FieldSpecification) where
   | position : (Σ f, 𝓕.PositionLabel f) × SpaceTime → 𝓕.FieldOp
   | outAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp
 
-
 /-- The bool on `FieldOp` which is true only for position field operator. -/
 def statesIsPosition : 𝓕.FieldOp → Bool
   | FieldOp.position _ => true
@@ -105,12 +104,12 @@ def fieldOpToField : 𝓕.FieldOp → 𝓕.Field
   the field underlying `φ`.
 
   The following notation is used in relation to `fieldOpStatistic`:
-- For `φ` an element of  `𝓕.FieldOp`, `𝓕 |>ₛ φ` is `fieldOpStatistic φ`.
-- For `φs` a list of  `𝓕.FieldOp`, `𝓕 |>ₛ φs` is the product of `fieldOpStatistic φ` over
+- For `φ` an element of `𝓕.FieldOp`, `𝓕 |>ₛ φ` is `fieldOpStatistic φ`.
+- For `φs` a list of `𝓕.FieldOp`, `𝓕 |>ₛ φs` is the product of `fieldOpStatistic φ` over
   the list `φs`.
-- For a function `f : Fin n → 𝓕.FieldOp`  and a finset `a` of `Fin n`, `𝓕 |>ₛ ⟨f, a⟩` is the
+- For a function `f : Fin n → 𝓕.FieldOp` and a finset `a` of `Fin n`, `𝓕 |>ₛ ⟨f, a⟩` is the
   product of `fieldOpStatistic (f i)` for all `i ∈ a`. -/
-def fieldOpStatistic : 𝓕.FieldOp → FieldStatistic :=  𝓕.statistic ∘ 𝓕.fieldOpToField
+def fieldOpStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistic ∘ 𝓕.fieldOpToField
 
 @[inherit_doc fieldOpStatistic]
 scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => fieldOpStatistic 𝓕 φ

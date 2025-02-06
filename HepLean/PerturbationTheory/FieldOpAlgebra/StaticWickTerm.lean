@@ -29,7 +29,7 @@ def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length
 
 /-- The static Wick term for the empty contraction of the empty list is `1`. -/
 @[simp]
-lemma staticWickTerm_empty_nil  :
+lemma staticWickTerm_empty_nil :
     staticWickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
   rw [staticWickTerm, uncontractedListGet, nil_zero_uncontractedList]
   simp [sign, empty, staticContract]
@@ -51,7 +51,7 @@ lemma staticWickTerm_insert_zero_none (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   simp only [staticContract_insert_none, insertAndContract_uncontractedList_none_zero,
     Algebra.smul_mul_assoc]
 
-/-- Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`.  Then`(φsΛ ↩Λ φ 0 (some k)).wickTerm`
+/-- Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Then`(φsΛ ↩Λ φ 0 (some k)).wickTerm`
 is equal the product of
 - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
 - the sign `φsΛ.sign`
@@ -62,7 +62,7 @@ is equal the product of
 
 The proof of this result relies on
 - `staticContract_insert_some_of_lt` to rewrite static
- contractions.
+  contractions.
 - `normalOrder_uncontracted_some` to rewrite normal orderings.
 - `sign_insert_some_zero` to rewrite signs.
 -/
@@ -105,14 +105,13 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
       rw [h1]
       simp
 
-
 /--
-Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`.  Then
+Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Then
 `φ * φsΛ.staticWickTerm = ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
 where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
 The proof of proceeds as follows:
-- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand  `φ 𝓝([φsΛ]ᵘᶜ)` as
+- `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
   a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
 - Then `staticWickTerm_insert_zero_none` and `staticWickTerm_insert_zero_some` are
   used to equate terms.

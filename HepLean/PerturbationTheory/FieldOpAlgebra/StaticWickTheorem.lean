@@ -10,8 +10,6 @@ import HepLean.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
 
 -/
 
-
-
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 open FieldOpFreeAlgebra
