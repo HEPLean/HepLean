@@ -191,14 +191,17 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
 
 -/
 
-/-- For a field specification `𝓕`,  `𝓕.crAnTimeOrderRel` is time ordering relation on
-  `𝓕.CrAnFieldOp` defined to put those field operators with greatest time to the left on
-  ordering a list. Thus `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following is
-  true
-- `φ₀` is an outgoing asymptotic creation and annihilation field operator
-- `φ₁` is an incoming asymptotic creation and annihilation field operator
-- `φ₀` and `φ₁` are both position operators where `φ₀` occurs at a time greater then or equal to
-  that of `φ₁`. -/
+/-- For a field specification `𝓕`,  `𝓕.crAnTimeOrderRel` is a relation on
+  `𝓕.CrAnFieldOp` representing time ordering.
+  It is defined as such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
+  holds
+- `φ₀` is an *outgoing* asymptotic operator
+- `φ₁` is an *incoming* asymptotic field operator
+- `φ₀` and `φ₁` are both position field operators where
+  the `SpaceTime` point of `φ₀` has a time *greater* then or equal to that of `φ₁`.
+
+Thus, colloquially `𝓕.crAnTimeOrderRel φ₀ φ₁` if `φ₀` has time *greater* then or equal to `φ₁`.
+ -/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 
 /-- The relation `crAnTimeOrderRel` is decidable, but not computablly so due to
@@ -218,9 +221,10 @@ instance : IsTrans 𝓕.CrAnFieldOp 𝓕.crAnTimeOrderRel where
 lemma crAnTimeOrderRel_refl (φ : 𝓕.CrAnFieldOp) : crAnTimeOrderRel φ φ := by
   exact (IsTotal.to_isRefl (r := 𝓕.crAnTimeOrderRel)).refl φ
 
-/-- The sign associated with putting a list of `CrAnFieldOp` into time order (with
-  the state of greatest time to the left).
-  We pick up a minus sign for every fermion paired crossed. -/
+/-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+  `𝓕.crAnTimeOrderSign φs` is the sign corresponding to the number of `ferimionic`-`fermionic`
+  undertaken to time-order (i.e. order with respect to `𝓕.crAnTimeOrderRel`) `φs` using the
+  insertion sort algorithm. -/
 def crAnTimeOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
   Wick.koszulSign 𝓕.crAnStatistics 𝓕.crAnTimeOrderRel φs
 
@@ -246,7 +250,8 @@ lemma crAnTimeOrderSign_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
     crAnTimeOrderSign (φs ++ φ :: ψ :: φs') = crAnTimeOrderSign (φs ++ ψ :: φ :: φs') := by
   exact Wick.koszulSign_swap_eq_rel _ _ h1 h2 _ _
 
-/-- Sort a list of `CrAnFieldOp` based on `crAnTimeOrderRel`. -/
+/-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+  `𝓕.crAnTimeOrderList φs` is the list `φs` time-ordered using the insertion sort algorithm. -/
 def crAnTimeOrderList (φs : List 𝓕.CrAnFieldOp) : List 𝓕.CrAnFieldOp :=
   List.insertionSort 𝓕.crAnTimeOrderRel φs
 
