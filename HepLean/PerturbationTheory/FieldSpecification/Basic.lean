@@ -36,8 +36,8 @@ These states carry the same field statistic as the field they are derived from.
     - Real-scalar fields correspond to a single element of `positionDOF`.
     - Complex-scalar fields correspond to two elements of `positionDOF`, one for the field and one
       for its conjugate.
-    - Dirac fermions correspond to eight elements of `positionDOF`. One for each Lorentz index of the
-      field and its conjugate. (These are not all independent)
+    - Dirac fermions correspond to eight elements of `positionDOF`. One for each Lorentz index of
+      the field and its conjugate. (These are not all independent)
     - Weyl fermions correspond to four elements of `positionDOF`. One for each Lorentz index of the
       field. (These are not all independent)
   - A type `asymptoticDOF` containing the degree-of-freedom in asymptotic field operators. Thus a
