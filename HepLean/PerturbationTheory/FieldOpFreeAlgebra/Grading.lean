@@ -237,8 +237,8 @@ lemma directSum_eq_bosonic_plus_fermionic
     abel
 
 /-- For a field statistic `𝓕`, the algebra `𝓕.FieldOpFreeAlgebra` is graded by `FieldStatistic`.
-  Those `ofCrAnListF φs` for which `φs` has `bosonic` statistics form one part of the grading,
-  whilst those where `φs` has `fermionic` statistics form the other part of the grading. -/
+  Those `ofCrAnListF φs` for which `φs` has `bosonic` statistics span one part  of the grading,
+  whilst those where `φs` has `fermionic` statistics span the other part of the grading. -/
 instance fieldOpFreeAlgebraGrade :
     GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) statisticSubmodule where
   one_mem := by

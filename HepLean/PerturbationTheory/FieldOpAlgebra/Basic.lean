@@ -42,9 +42,12 @@ def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
   annihilation operators always super-commute.
 - `[ofCrAnOpF φ, ofCrAnOpF φ']ₛca` for `φ` and `φ'` field operators with different statistics.
   I.e. Fermions super-commute with bosons.
-The algebra `𝓕.FieldOpAlgebra` is the most general (in the correct sense) algebra
-satisfying these properties.
--/
+
+The algebra `𝓕.FieldOpAlgebra` satisfies the following universal property. For any
+algebra `A` (e.g. the operator algebra of the theory) with a map `f : 𝓕.CrAnFieldOp → A` (e.g.
+the inclusion of the creation and annihilation parts of field operators into the operator algebra)
+such that the image of `f` obey the relations above, there exists a unique algebra map
+`g : 𝓕.FieldOpAlgebra → A` through which `f` factors. -/
 abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.Quotient
 
 namespace FieldOpAlgebra

@@ -120,6 +120,8 @@ some notation within doc-strings and in code. The main notation used is:
 - In doc-strings when field statistics occur in exchange signs we may drop the `𝓕 |>ₛ _`.
 - In doc-strings we will often write lists of `FieldOp` or `CrAnFieldOp` `φs` as e.g. `φ₀…φₙ`,
   which should be interpreted within the context in which it appears.
+- In doc-strings we may use e.g. `φᶜ` to indicate the creation part of an operator and
+  `φᵃ` to indicate the annihilation part of an operator.
 
 Some examples:
 - `𝓢(φ, φs)` corresponds to  `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
