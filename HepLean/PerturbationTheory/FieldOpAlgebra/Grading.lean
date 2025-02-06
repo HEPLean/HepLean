@@ -20,14 +20,14 @@ variable {𝓕 : FieldSpecification}
 
 /-- The submodule of `𝓕.FieldOpAlgebra` spanned by lists of field statistic `f`. -/
 def statSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.FieldOpAlgebra :=
-  Submodule.span ℂ {a | ∃ φs, a = ofCrAnOpList φs ∧ (𝓕 |>ₛ φs) = f}
+  Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
 
-lemma ofCrAnOpList_mem_statSubmodule_of_eq (φs : List 𝓕.CrAnFieldOp) (f : FieldStatistic)
-    (h : (𝓕 |>ₛ φs) = f) : ofCrAnOpList φs ∈ statSubmodule f :=
+lemma ofCrAnList_mem_statSubmodule_of_eq (φs : List 𝓕.CrAnFieldOp) (f : FieldStatistic)
+    (h : (𝓕 |>ₛ φs) = f) : ofCrAnList φs ∈ statSubmodule f :=
   Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, h⟩⟩
 
-lemma ofCrAnOpList_mem_statSubmodule (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnOpList φs ∈ statSubmodule (𝓕 |>ₛ φs) :=
+lemma ofCrAnList_mem_statSubmodule (φs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList φs ∈ statSubmodule (𝓕 |>ₛ φs) :=
   Submodule.mem_span.mpr fun _ a => a ⟨φs, ⟨rfl, rfl⟩⟩
 
 lemma mem_bosonic_of_mem_free_bosonic (a : 𝓕.FieldOpFreeAlgebra)
@@ -40,7 +40,7 @@ lemma mem_bosonic_of_mem_free_bosonic (a : 𝓕.FieldOpFreeAlgebra)
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p]
-    apply ofCrAnOpList_mem_statSubmodule_of_eq
+    apply ofCrAnList_mem_statSubmodule_of_eq
     exact h
   · simp only [map_zero, p]
     exact Submodule.zero_mem (statSubmodule bosonic)
@@ -61,7 +61,7 @@ lemma mem_fermionic_of_mem_free_fermionic (a : 𝓕.FieldOpFreeAlgebra)
     simp only [Set.mem_setOf_eq] at hx
     obtain ⟨φs, rfl, h⟩ := hx
     simp [p]
-    apply ofCrAnOpList_mem_statSubmodule_of_eq
+    apply ofCrAnList_mem_statSubmodule_of_eq
     exact h
   · simp only [map_zero, p]
     exact Submodule.zero_mem (statSubmodule fermionic)
@@ -204,7 +204,7 @@ lemma bosonicProj_mem_bosonic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodul
     simp only [p]
     apply Subtype.eq
     simp only
-    rw [ofCrAnOpList]
+    rw [ofCrAnList]
     rw [bosonicProj_eq_bosonicProjFree]
     rw [bosonicProjFree_eq_ι_bosonicProjF]
     rw [bosonicProjF_of_mem_bosonic]
@@ -227,7 +227,7 @@ lemma fermionicProj_mem_fermionic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubm
     simp only [p]
     apply Subtype.eq
     simp only
-    rw [ofCrAnOpList]
+    rw [ofCrAnList]
     rw [fermionicProj_eq_fermionicProjFree]
     rw [fermionicProjFree_eq_ι_fermionicProjF]
     rw [fermionicProjF_of_mem_fermionic]
@@ -384,7 +384,7 @@ lemma directSum_eq_bosonic_plus_fermionic
     abel
 
 /-- For a field statistic `𝓕`, the algebra `𝓕.FieldOpAlgebra` is graded by `FieldStatistic`.
-  Those `ofCrAnOpList φs` for which `φs` has `bosonic` statistics span one part of the grading,
+  Those `ofCrAnList φs` for which `φs` has `bosonic` statistics span one part of the grading,
   whilst those where `φs` has `fermionic` statistics span the other part of the grading. -/
 instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubmodule where
   one_mem := by
@@ -392,7 +392,7 @@ instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubm
     refine Submodule.mem_span.mpr fun p a => a ?_
     simp only [Set.mem_setOf_eq]
     use []
-    simp only [ofCrAnOpList, ofCrAnListF_nil, map_one, ofList_empty, true_and]
+    simp only [ofCrAnList, ofCrAnListF_nil, map_one, ofList_empty, true_and]
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
     let p (a2 : 𝓕.FieldOpAlgebra) (hx : a2 ∈ statSubmodule f2) : Prop :=
@@ -404,13 +404,13 @@ instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubm
       obtain ⟨φs, rfl, h⟩ := hx
       simp only [p]
       let p (a1 : 𝓕.FieldOpAlgebra) (hx : a1 ∈ statSubmodule f1) : Prop :=
-        a1 * ofCrAnOpList φs ∈ statSubmodule (f1 + f2)
+        a1 * ofCrAnList φs ∈ statSubmodule (f1 + f2)
       change p a1 h1
       apply Submodule.span_induction (p := p)
       · intro y hy
         obtain ⟨φs', rfl, h'⟩ := hy
         simp only [p]
-        rw [← ofCrAnOpList_append]
+        rw [← ofCrAnList_append]
         refine Submodule.mem_span.mpr fun p a => a ?_
         simp only [Set.mem_setOf_eq]
         use φs' ++ φs

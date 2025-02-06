@@ -485,23 +485,23 @@ lemma ofFieldOp_eq_sum (φ : 𝓕.FieldOp) :
   rfl
 
 /-- An element of `FieldOpAlgebra` from a list of `CrAnFieldOp`. -/
-def ofCrAnOpList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
+def ofCrAnList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
 
-lemma ofCrAnOpList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnOpList φs = ι (ofCrAnListF φs) := rfl
+lemma ofCrAnList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList φs = ι (ofCrAnListF φs) := rfl
 
-lemma ofCrAnOpList_append (φs ψs : List 𝓕.CrAnFieldOp) :
-    ofCrAnOpList (φs ++ ψs) = ofCrAnOpList φs * ofCrAnOpList ψs := by
-  simp only [ofCrAnOpList]
+lemma ofCrAnList_append (φs ψs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList (φs ++ ψs) = ofCrAnList φs * ofCrAnList ψs := by
+  simp only [ofCrAnList]
   rw [ofCrAnListF_append]
   simp
 
-lemma ofCrAnOpList_singleton (φ : 𝓕.CrAnFieldOp) :
-    ofCrAnOpList [φ] = ofCrAnOp φ := by
-  simp only [ofCrAnOpList, ofCrAnOp, ofCrAnListF_singleton]
+lemma ofCrAnList_singleton (φ : 𝓕.CrAnFieldOp) :
+    ofCrAnList [φ] = ofCrAnOp φ := by
+  simp only [ofCrAnList, ofCrAnOp, ofCrAnListF_singleton]
 
 lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
-    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnOpList s.1 := by
+    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnList s.1 := by
   rw [ofFieldOpList, ofFieldOpListF_sum]
   simp only [map_sum]
   rfl

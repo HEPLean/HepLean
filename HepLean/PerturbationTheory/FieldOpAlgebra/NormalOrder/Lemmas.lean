@@ -27,16 +27,16 @@ variable {𝓕 : FieldSpecification}
 lemma normalOrder_eq_ι_normalOrderF (a : 𝓕.FieldOpFreeAlgebra) :
     𝓝(ι a) = ι 𝓝ᶠ(a) := rfl
 
-lemma normalOrder_ofCrAnOpList (φs : List 𝓕.CrAnFieldOp) :
-    𝓝(ofCrAnOpList φs) = normalOrderSign φs • ofCrAnOpList (normalOrderList φs) := by
-  rw [ofCrAnOpList, normalOrder_eq_ι_normalOrderF, normalOrderF_ofCrAnListF]
+lemma normalOrder_ofCrAnList (φs : List 𝓕.CrAnFieldOp) :
+    𝓝(ofCrAnList φs) = normalOrderSign φs • ofCrAnList (normalOrderList φs) := by
+  rw [ofCrAnList, normalOrder_eq_ι_normalOrderF, normalOrderF_ofCrAnListF]
   rfl
 
 @[simp]
 lemma normalOrder_one_eq_one : normalOrder (𝓕 := 𝓕) 1 = 1 := by
-  have h1 : 1 = ofCrAnOpList (𝓕 := 𝓕) [] := by simp [ofCrAnOpList]
+  have h1 : 1 = ofCrAnList (𝓕 := 𝓕) [] := by simp [ofCrAnList]
   rw [h1]
-  rw [normalOrder_ofCrAnOpList]
+  rw [normalOrder_ofCrAnList]
   simp
 
 @[simp]
@@ -48,14 +48,14 @@ lemma normalOrder_ofFieldOpList_nil : normalOrder (𝓕 := 𝓕) (ofFieldOpList 
   simp
 
 @[simp]
-lemma normalOrder_ofCrAnOpList_nil : normalOrder (𝓕 := 𝓕) (ofCrAnOpList []) = 1 := by
-  rw [normalOrder_ofCrAnOpList]
+lemma normalOrder_ofCrAnList_nil : normalOrder (𝓕 := 𝓕) (ofCrAnList []) = 1 := by
+  rw [normalOrder_ofCrAnList]
   simp only [normalOrderSign_nil, normalOrderList_nil, one_smul]
   rfl
 
-lemma ofCrAnOpList_eq_normalOrder (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnOpList (normalOrderList φs) = normalOrderSign φs • 𝓝(ofCrAnOpList φs) := by
-  rw [normalOrder_ofCrAnOpList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
+lemma ofCrAnList_eq_normalOrder (φs : List 𝓕.CrAnFieldOp) :
+    ofCrAnList (normalOrderList φs) = normalOrderSign φs • 𝓝(ofCrAnList φs) := by
+  rw [normalOrder_ofCrAnList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
     one_smul]
 
 lemma normalOrder_normalOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
@@ -165,16 +165,16 @@ lemma normalOrder_ofFieldOp_ofFieldOp_swap (φ φ' : 𝓕.FieldOp) :
   rw [ofFieldOp_mul_ofFieldOp_eq_superCommute]
   simp
 
-lemma normalOrder_ofCrAnOp_ofCrAnOpList (φ : 𝓕.CrAnFieldOp)
-    (φs : List 𝓕.CrAnFieldOp) : 𝓝(ofCrAnOp φ * ofCrAnOpList φs) =
-    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • 𝓝(ofCrAnOpList φs * ofCrAnOp φ) := by
-  rw [← ofCrAnOpList_singleton, ofCrAnOpList_mul_ofCrAnOpList_eq_superCommute]
+lemma normalOrder_ofCrAnOp_ofCrAnList (φ : 𝓕.CrAnFieldOp)
+    (φs : List 𝓕.CrAnFieldOp) : 𝓝(ofCrAnOp φ * ofCrAnList φs) =
+    𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • 𝓝(ofCrAnList φs * ofCrAnOp φ) := by
+  rw [← ofCrAnList_singleton, ofCrAnList_mul_ofCrAnList_eq_superCommute]
   simp
 
 lemma normalOrder_ofCrAnOp_ofFieldOpList_swap (φ : 𝓕.CrAnFieldOp) (φ' : List 𝓕.FieldOp) :
     𝓝(ofCrAnOp φ * ofFieldOpList φ') = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φ') •
     𝓝(ofFieldOpList φ' * ofCrAnOp φ) := by
-  rw [← ofCrAnOpList_singleton, ofCrAnOpList_mul_ofFieldOpList_eq_superCommute]
+  rw [← ofCrAnList_singleton, ofCrAnList_mul_ofFieldOpList_eq_superCommute]
   simp
 
 lemma normalOrder_anPart_ofFieldOpList_swap (φ : 𝓕.FieldOp) (φ' : List 𝓕.FieldOp) :
@@ -224,18 +224,18 @@ The proof of this result ultimetly depends on
 - `superCommuteF_ofCrAnListF_ofFieldOpListF_eq_sum`
 - `normalOrderSign_eraseIdx`
 -/
-lemma ofCrAnOp_superCommute_normalOrder_ofCrAnOpList_sum (φ : 𝓕.CrAnFieldOp)
-    (φs : List 𝓕.CrAnFieldOp) : [ofCrAnOp φ, 𝓝(ofCrAnOpList φs)]ₛ = ∑ n : Fin φs.length,
+lemma ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum (φ : 𝓕.CrAnFieldOp)
+    (φs : List 𝓕.CrAnFieldOp) : [ofCrAnOp φ, 𝓝(ofCrAnList φs)]ₛ = ∑ n : Fin φs.length,
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) • [ofCrAnOp φ, ofCrAnOp φs[n]]ₛ
-    * 𝓝(ofCrAnOpList (φs.eraseIdx n)) := by
-  rw [normalOrder_ofCrAnOpList, map_smul]
-  rw [superCommute_ofCrAnOp_ofCrAnOpList_eq_sum, Finset.smul_sum,
+    * 𝓝(ofCrAnList (φs.eraseIdx n)) := by
+  rw [normalOrder_ofCrAnList, map_smul]
+  rw [superCommute_ofCrAnOp_ofCrAnList_eq_sum, Finset.smul_sum,
     sum_normalOrderList_length]
   congr
   funext n
   simp only [instCommGroup.eq_1, List.get_eq_getElem, normalOrderList_get_normalOrderEquiv,
     normalOrderList_eraseIdx_normalOrderEquiv, Algebra.smul_mul_assoc, Fin.getElem_fin]
-  rw [ofCrAnOpList_eq_normalOrder, mul_smul_comm, smul_smul, smul_smul]
+  rw [ofCrAnList_eq_normalOrder, mul_smul_comm, smul_smul, smul_smul]
   by_cases hs : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[n])
   · congr
     erw [normalOrderSign_eraseIdx, ← hs]
@@ -257,7 +257,7 @@ lemma ofCrAnOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnFieldOp
   conv_lhs =>
     rw [ofFieldOpList_eq_sum, map_sum, map_sum]
     enter [2, s]
-    rw [ofCrAnOp_superCommute_normalOrder_ofCrAnOpList_sum, CrAnSection.sum_over_length]
+    rw [ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum, CrAnSection.sum_over_length]
     enter [2, n]
     rw [CrAnSection.take_statistics_eq_take_state_statistics, smul_mul_assoc]
   rw [Finset.sum_comm]
@@ -339,7 +339,7 @@ For a field specification `𝓕`, the following relation holds in the algebra `�
 `φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPartF φ, φᵢ]ₛ) * 𝓝(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`.
 
 The proof of this ultimently depends on :
-- `ofCrAnOp_superCommute_normalOrder_ofCrAnOpList_sum`
+- `ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum`
 -/
 lemma ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     ofFieldOp φ * 𝓝(ofFieldOpList φs) =
