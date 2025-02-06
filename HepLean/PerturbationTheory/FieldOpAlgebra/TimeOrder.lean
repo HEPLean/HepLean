@@ -435,9 +435,9 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.
 
 lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
-    𝓣(a * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
-    [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(a * b) := by
-  rw [ofCrAnFieldOp, ofCrAnFieldOp]
+    𝓣(a * [ofCrAnOp φ, ofCrAnOp ψ]ₛ * b) =
+    [ofCrAnOp φ, ofCrAnOp ψ]ₛ * 𝓣(a * b) := by
+  rw [ofCrAnOp, ofCrAnOp]
   rw [superCommute_eq_ι_superCommuteF]
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -449,17 +449,17 @@ lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
 
 lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
-    𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b) =
-    [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * 𝓣(b) := by
-  trans 𝓣(1 * [ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ * b)
+    𝓣([ofCrAnOp φ, ofCrAnOp ψ]ₛ * b) =
+    [ofCrAnOp φ, ofCrAnOp ψ]ₛ * 𝓣(b) := by
+  trans 𝓣(1 * [ofCrAnOp φ, ofCrAnOp ψ]ₛ * b)
   simp only [one_mul]
   rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
   simp
 
 lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) :
-    𝓣([ofCrAnFieldOp φ, ofCrAnFieldOp ψ]ₛ) = 0 := by
-  rw [ofCrAnFieldOp, ofCrAnFieldOp]
+    𝓣([ofCrAnOp φ, ofCrAnOp ψ]ₛ) = 0 := by
+  rw [ofCrAnOp, ofCrAnOp]
   rw [superCommute_eq_ι_superCommuteF]
   rw [timeOrder_eq_ι_timeOrderF]
   trans ι (timeOrderF (1 * (superCommuteF (ofCrAnOpF φ)) (ofCrAnOpF ψ) * 1))

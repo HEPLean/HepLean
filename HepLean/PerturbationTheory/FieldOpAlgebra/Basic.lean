@@ -473,35 +473,35 @@ lemma ofFieldOpList_singleton (φ : 𝓕.FieldOp) :
   simp only [ofFieldOpList, ofFieldOp, ofFieldOpListF_singleton]
 
 /-- An element of `FieldOpAlgebra` from a `CrAnFieldOp`. -/
-def ofCrAnFieldOp (φ : 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnOpF φ)
+def ofCrAnOp (φ : 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnOpF φ)
 
-lemma ofCrAnFieldOp_eq_ι_ofCrAnOpF (φ : 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOp φ = ι (ofCrAnOpF φ) := rfl
+lemma ofCrAnOp_eq_ι_ofCrAnOpF (φ : 𝓕.CrAnFieldOp) :
+    ofCrAnOp φ = ι (ofCrAnOpF φ) := rfl
 
 lemma ofFieldOp_eq_sum (φ : 𝓕.FieldOp) :
-    ofFieldOp φ = (∑ i : 𝓕.fieldOpToCrAnType φ, ofCrAnFieldOp ⟨φ, i⟩) := by
+    ofFieldOp φ = (∑ i : 𝓕.fieldOpToCrAnType φ, ofCrAnOp ⟨φ, i⟩) := by
   rw [ofFieldOp, ofFieldOpF]
   simp only [map_sum]
   rfl
 
 /-- An element of `FieldOpAlgebra` from a list of `CrAnFieldOp`. -/
-def ofCrAnFieldOpList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
+def ofCrAnOpList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
 
-lemma ofCrAnFieldOpList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList φs = ι (ofCrAnListF φs) := rfl
+lemma ofCrAnOpList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
+    ofCrAnOpList φs = ι (ofCrAnListF φs) := rfl
 
-lemma ofCrAnFieldOpList_append (φs ψs : List 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList (φs ++ ψs) = ofCrAnFieldOpList φs * ofCrAnFieldOpList ψs := by
-  simp only [ofCrAnFieldOpList]
+lemma ofCrAnOpList_append (φs ψs : List 𝓕.CrAnFieldOp) :
+    ofCrAnOpList (φs ++ ψs) = ofCrAnOpList φs * ofCrAnOpList ψs := by
+  simp only [ofCrAnOpList]
   rw [ofCrAnListF_append]
   simp
 
-lemma ofCrAnFieldOpList_singleton (φ : 𝓕.CrAnFieldOp) :
-    ofCrAnFieldOpList [φ] = ofCrAnFieldOp φ := by
-  simp only [ofCrAnFieldOpList, ofCrAnFieldOp, ofCrAnListF_singleton]
+lemma ofCrAnOpList_singleton (φ : 𝓕.CrAnFieldOp) :
+    ofCrAnOpList [φ] = ofCrAnOp φ := by
+  simp only [ofCrAnOpList, ofCrAnOp, ofCrAnListF_singleton]
 
 lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
-    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnFieldOpList s.1 := by
+    ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnOpList s.1 := by
   rw [ofFieldOpList, ofFieldOpListF_sum]
   simp only [map_sum]
   rfl
@@ -519,13 +519,13 @@ lemma anPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
 @[simp]
 lemma anPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
     anPart (FieldOp.position φ) =
-    ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.annihilate⟩ := by
-  simp [anPart, ofCrAnFieldOp]
+    ofCrAnOp ⟨FieldOp.position φ, CreateAnnihilate.annihilate⟩ := by
+  simp [anPart, ofCrAnOp]
 
 @[simp]
 lemma anPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
-    anPart (FieldOp.outAsymp φ) = ofCrAnFieldOp ⟨FieldOp.outAsymp φ, ()⟩ := by
-  simp [anPart, ofCrAnFieldOp]
+    anPart (FieldOp.outAsymp φ) = ofCrAnOp ⟨FieldOp.outAsymp φ, ()⟩ := by
+  simp [anPart, ofCrAnOp]
 
 /-- The creation part of a state. -/
 def crPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
@@ -534,14 +534,14 @@ lemma crPart_eq_ι_crPartF (φ : 𝓕.FieldOp) : crPart φ = ι (crPartF φ) := 
 
 @[simp]
 lemma crPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
-    crPart (FieldOp.inAsymp φ) = ofCrAnFieldOp ⟨FieldOp.inAsymp φ, ()⟩ := by
-  simp [crPart, ofCrAnFieldOp]
+    crPart (FieldOp.inAsymp φ) = ofCrAnOp ⟨FieldOp.inAsymp φ, ()⟩ := by
+  simp [crPart, ofCrAnOp]
 
 @[simp]
 lemma crPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
     crPart (FieldOp.position φ) =
-    ofCrAnFieldOp ⟨FieldOp.position φ, CreateAnnihilate.create⟩ := by
-  simp [crPart, ofCrAnFieldOp]
+    ofCrAnOp ⟨FieldOp.position φ, CreateAnnihilate.create⟩ := by
+  simp [crPart, ofCrAnOp]
 
 @[simp]
 lemma crPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
