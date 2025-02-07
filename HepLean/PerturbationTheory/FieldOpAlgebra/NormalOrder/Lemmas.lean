@@ -118,7 +118,6 @@ lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
 
 -/
 
-
 /-- For a field specfication `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
   of the super commutator of `a` and `b` vanishes. I.e. `𝓝([a,b]ₛ) = 0`. -/
 @[simp]
@@ -351,7 +350,7 @@ the following relation holds in the algebra `𝓕.FieldOpAlgebra`,
 
 The proof of ultimetly goes as follows:
 - `ofFieldOp_eq_crPart_add_anPart` is used to split `φ` into its creation and annihilation parts.
-- The fact that `crPart φ *  𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)` is used.
+- The fact that `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)` is used.
 - The fact that `anPart φ * 𝓝(φ₀φ₁…φₙ)` is
   `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ + [anPart φ, 𝓝(φ₀φ₁…φₙ)]` is used
 - The fact that `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ = 𝓝(anPart φ * φ₀φ₁…φₙ)`

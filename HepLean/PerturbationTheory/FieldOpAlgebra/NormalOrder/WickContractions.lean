@@ -26,7 +26,7 @@ variable {𝓕 : FieldSpecification}
 -/
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`, and a `i ≤ φs.length`  the following relation holds
+  `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
 
   `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
@@ -100,7 +100,7 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
 
 /--
   For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
   `𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `FieldOp`
   corresponding to `k` removed.
 

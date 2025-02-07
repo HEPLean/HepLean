@@ -315,7 +315,7 @@ lemma take_uncontractedIndexEquiv_symm (k : c.uncontracted) :
 -/
 
 /-- Given a Wick Contraction `φsΛ` of a list `φs` of `𝓕.FieldOp`. The list
-  `φsΛ.uncontractedListGet` of `𝓕.FieldOp`  is defined as the list `φs` with
+  `φsΛ.uncontractedListGet` of `𝓕.FieldOp` is defined as the list `φs` with
   all contracted positions removed, leaving the uncontracted `𝓕.FieldOp`.
 
   The notation `[φsΛ]ᵘᶜ` is used for `φsΛ.uncontractedListGet`. -/

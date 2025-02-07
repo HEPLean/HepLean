@@ -31,11 +31,10 @@ def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra :=
 lemma timeContract_eq_smul (φ ψ : 𝓕.FieldOp) : timeContract φ ψ =
     𝓣(ofFieldOp φ * ofFieldOp ψ) + (-1 : ℂ) • 𝓝(ofFieldOp φ * ofFieldOp ψ) := by rfl
 
-
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
   `φ` and `ψ` are time-ordered then
 
-  `timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ`.  -/
+  `timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ`. -/
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : timeOrderRel φ ψ) :
     timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ := by
   conv_rhs =>
@@ -62,7 +61,7 @@ lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderR
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
   `φ` and `ψ` are not time-ordered then
 
-  `timeContract φ ψ =  𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ`.  -/
+  `timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ`. -/
 lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderRel φ ψ) :
     timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ := by
   rw [timeContract_of_not_timeOrderRel _ _ h]

@@ -33,7 +33,7 @@ The inductive step works as follows:
 
 For the LHS:
 1. The proof considers `φ₀…φₙ` as `φ₀(φ₁…φₙ)` and use the induction hypothesis on `φ₁…φₙ`.
-2. This gives terms of the form  `φ * φsΛ.staticWickTerm` on which
+2. This gives terms of the form `φ * φsΛ.staticWickTerm` on which
   `mul_staticWickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₁…φₙ`,
   to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
 

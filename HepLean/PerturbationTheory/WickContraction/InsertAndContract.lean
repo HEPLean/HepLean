@@ -24,7 +24,7 @@ open HepLean.Fin
 
 -/
 
-/-- Given a Wick contraction `φsΛ` for a list  `φs`  of `𝓕.FieldOp`,
+/-- Given a Wick contraction `φsΛ` for a list `φs` of `𝓕.FieldOp`,
   a `𝓕.FieldOp` `φ`, an `i ≤ φs.length` and a `j` which is either `none` or
   some element of `φsΛ.uncontracted`, the new Wick contraction
   `φsΛ.insertAndContract φ i j` is defined by inserting `φ` into `φs` after
@@ -285,7 +285,7 @@ lemma insert_fin_eq_self (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
     rfl
 
 /-- For a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` a sum over
+  `𝓕.FieldOp`, a `i ≤ φs.length` a sum over
   Wick contractions of `φs` with `φ` inserted at `i` is equal to the sum over Wick contractions
   `φsΛ` of just `φs` and the sum over optional uncontracted elements of the `φsΛ`.
 

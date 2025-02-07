@@ -31,7 +31,7 @@ noncomputable def timeContract {φs : List 𝓕.FieldOp}
     timeContract_mem_center _ _⟩
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`, and a `i ≤ φs.length`  the following relation holds
+  `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
 
   `(φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract`
 
@@ -45,8 +45,8 @@ lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   ext a
   simp
 
-/--  For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
   - `timeContract φ φs[k]` if `i ≤ k` or `timeContract φs[k] φ` if `k < i`
   - `φsΛ.timeContract`.
@@ -80,7 +80,7 @@ lemma timeContract_empty (φs : List 𝓕.FieldOp) :
 open FieldStatistic
 
 /-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`, with the
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`, with the
   condition that `φ` has greater or equal time to `φs[k]`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
   - `[anPart φ, φs[k]]ₛ`
@@ -124,7 +124,7 @@ lemma timeContract_insert_some_of_lt
     · exact ht
 
 /-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
   condition that `φs[k]` does not have has greater or equal time to `φ`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
   - `[anPart φ, φs[k]]ₛ`

@@ -226,7 +226,7 @@ lemma ι_normalOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) 
   defined as the decent of `ι ∘ₗ normalOrderF` from `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
   This decent exists because `ι ∘ₗ normalOrderF` is well-defined on equivalence classes.
 
-  The notation `𝓝(a)` is used for `normalOrder a`.  -/
+  The notation `𝓝(a)` is used for `normalOrder a`. -/
 noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ normalOrderF) ι_normalOrderF_eq_of_equiv
   map_add' x y := by

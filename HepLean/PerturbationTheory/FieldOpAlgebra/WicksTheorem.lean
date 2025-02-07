@@ -79,7 +79,7 @@ For the LHS:
   the maximal time field in `φ₀…φₙ`
 2. The induction hypothesis is then used on `𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` to expand it as a sum over
   Wick contractions of `φ₀…φᵢ₋₁φᵢ₊₁φₙ`.
-3. This gives terms of the form  `φᵢ * φsΛ.timeContract` on which
+3. This gives terms of the form `φᵢ * φsΛ.timeContract` on which
   `mul_wickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₀…φᵢ₋₁φᵢ₊₁φ`,
   to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
 

@@ -31,7 +31,7 @@ noncomputable def staticContract {φs : List 𝓕.FieldOp}
       superCommute_anPart_ofFieldOp_mem_center _ _⟩
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`, and a `i ≤ φs.length`  the following relation holds
+  `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
 
   `(φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract`
 
@@ -46,10 +46,9 @@ lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   ext a
   simp
 
-
 /--
   For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
   `(φsΛ ↩Λ φ i (some k)).staticContract` is equal to the product of
   - `[anPart φ, φs[k]]ₛ` if `i ≤ k` or `[anPart φs[k], φ]ₛ` if `k < i`
   - `φsΛ.staticContract`.

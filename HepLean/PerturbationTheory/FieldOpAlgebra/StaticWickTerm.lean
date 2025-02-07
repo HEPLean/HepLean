@@ -31,7 +31,7 @@ noncomputable section
 def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
-/-- For the empty list `[]` of `𝓕.FieldOp`,  the `staticWickTerm` of the empty Wick contraction
+/-- For the empty list `[]` of `𝓕.FieldOp`, the `staticWickTerm` of the empty Wick contraction
   `empty` of `[]` (its only Wick contraction) is `1`. -/
 @[simp]
 lemma staticWickTerm_empty_nil :
