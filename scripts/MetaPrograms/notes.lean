@@ -74,19 +74,23 @@ def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
     declString: |
       {declStringIndent}"
 
-def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((List String) × Nat × Nat)
+/-- In `(List String) × Nat × Nat` the first `Nat` is section number, the second `Nat`
+  is subsection number, and the third `Nat` is defn. or lemma number.
+  Definitions and lemmas etc are done by section not subsection. -/
+def NotePart.toYMLM : ((List String) × Nat × Nat × Nat) →  NotePart →
+    MetaM ((List String) × Nat × Nat × Nat)
   | x, NotePart.h1 s =>
     let newString := s!"
   - type: h1
     sectionNo: {x.2.1.succ}
     content: \"{s}\""
-    return ⟨x.1 ++ [newString], ⟨Nat.succ x.2.1, 0⟩⟩
+    return ⟨x.1 ++ [newString], ⟨Nat.succ x.2.1, 0, 0⟩⟩
   | x, NotePart.h2 s =>
     let newString := s!"
   - type: h2
-    sectionNo: \"{x.2.1}.{x.2.2.succ}\"
+    sectionNo: \"{x.2.1}.{x.2.2.1.succ}\"
     content: \"{s}\""
-    return ⟨x.1 ++ [newString], ⟨x.2.1, Nat.succ x.2.2⟩⟩
+    return ⟨x.1 ++ [newString], ⟨x.2.1, Nat.succ x.2.2.1, x.2.2.2⟩⟩
   | x, NotePart.p s =>
     let newString := s!"
   - type: p
@@ -114,7 +118,8 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     return ⟨x.1 ++ [newString], x.2⟩
   | false =>
   let newString ← (← DeclInfo.ofName n s).toYML
-  return ⟨x.1 ++ [newString], x.2⟩
+  let newString := newString ++ s!"\n    declNo: \"{x.2.1}.{x.2.2.2.succ}\""
+  return ⟨x.1 ++ [newString], ⟨x.2.1, x.2.2.1, Nat.succ x.2.2.2⟩⟩
 
 structure Note where
   title : String

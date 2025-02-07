@@ -69,7 +69,9 @@ layout: default
   {% if entry.type == "name" %}
 
   <div style="background-color: #ffff; padding: 10px; border-radius: 4px;">
-     <b>{% if entry.isDef %}Definition{% else %}Theorem{% endif %}</b>
+     <b id="decl-{{ entry.declNo }}">
+      <a href="#decl-{{ entry.declNo }}" style="color: black;">
+      {% if entry.isDef %}Definition{% else %}Theorem{% endif %} {{ entry.declNo }}</a></b>
       (<a href = "{{ entry.link }}" style="color: #2c5282;">{{ entry.name }}</a>)<b>:</b>
       {% if entry.status == "incomplete" %}🚧{% endif %}
       <div style="margin-left: 1em;">{{ entry.docString | markdownify}}</div>
