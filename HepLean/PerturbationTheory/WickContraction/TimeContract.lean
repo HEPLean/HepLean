@@ -79,7 +79,7 @@ lemma timeContract_empty (φs : List 𝓕.FieldOp) :
 
 open FieldStatistic
 
-/-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`, with the
   condition that `φ` has greater or equal time to `φs[k]`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
@@ -123,7 +123,7 @@ lemma timeContract_insert_some_of_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
-/-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
   condition that `φs[k]` does not have has greater or equal time to `φ`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
