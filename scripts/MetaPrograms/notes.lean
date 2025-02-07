@@ -39,19 +39,23 @@ structure DeclInfo where
   status : NameStatus
   declString : String
   docString : String
+  isDef : Bool
 
 def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let line ← Name.lineNumber n
   let fileName ← Name.fileName n
   let declString ← Name.getDeclString n
   let docString ← Name.getDocString n
+  let constInfo ← getConstInfo n
+  let isDef := constInfo.isDef ∨ Lean.isStructure (← getEnv) n ∨ constInfo.isInductive
   pure {
     line := line,
     fileName := fileName,
     name := n,
     status := ns,
     declString := declString,
-    docString := docString}
+    docString := docString,
+    isDef := isDef}
 
 def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
@@ -64,6 +68,7 @@ def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
     fileName: {d.fileName}
     status: \"{d.status}\"
     link: \"{link}\"
+    isDef: {d.isDef}
     docString: |
       {docStringIndent}
     declString: |
@@ -135,7 +140,8 @@ def perturbationTheory : Note where
     .name `FieldSpecification.wicks_theorem_context .incomplete,
     .p "In this note we walk through the important parts of the proof of Wick's theorem
       for both fermions and bosons,
-      as it appears in HepLean. We start with some basic definitions.",
+      as it appears in HepLean. Not every lemma or definition is covered here.
+      The aim is to give just enough that the story can be understood.",
     .h1 "Field operators",
     .h2 "Field statistics",
     .name ``FieldStatistic .complete,
