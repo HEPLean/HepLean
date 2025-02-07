@@ -25,10 +25,14 @@ variable {𝓕 : FieldSpecification}
 
 -/
 
-/--
-Let `c` be a Wick Contraction for `φs := φ₀φ₁…φₙ`.
-We have (roughly) `𝓝ᶠ([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝ᶠ(φ :: [φsΛ]ᵘᶜ)`
-Where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀φ₁…φᵢ₋₁`.
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and a `i ≤ φs.length`  the following relation holds
+
+  `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝(φ :: [φsΛ]ᵘᶜ)`
+
+  where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀…φᵢ₋₁`.
+
+  The prove of this result ultimately a consequence of `normalOrder_superCommute_eq_zero`.
 -/
 lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
@@ -95,10 +99,12 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   rw [insertAndContract_uncontractedList_none_map]
 
 /--
-Let `c` be a Wick Contraction for `φ₀φ₁…φₙ`.
-We have (roughly) `N(c ↩Λ φ i k).uncontractedList`
-is equal to `N((c.uncontractedList).eraseIdx k')`
-where `k'` is the position in `c.uncontractedList` corresponding to `k`.
+  For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+  `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `FieldOp`
+  corresponding to `k` removed.
+
+  The proof of this result ultimately a consequence of definitions.
 -/
 lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted) :

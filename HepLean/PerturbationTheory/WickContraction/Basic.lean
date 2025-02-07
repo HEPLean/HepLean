@@ -14,13 +14,18 @@ open FieldSpecification
 variable {𝓕 : FieldSpecification}
 
 /--
-Given a natural number `n` corresponding to the number of fields, a Wick contraction
-is a finite set of pairs of `Fin n`, such that no element of `Fin n` occurs in more then one pair.
+Given a natural number `n`, which will correspond to the number of fields needing
+contracting, a Wick contraction
+is a finite set of pairs of `Fin n` (numbers `0`, …, `n-1`), such that no
+element of `Fin n` occurs in more then one pair. The pairs are the positions of fields we
+'contract' together.
+
 For example for `n = 3` there are `4` Wick contractions:
 - `∅`, corresponding to the case where no fields are contracted.
 - `{{0, 1}}`, corresponding to the case where the field at position `0` and `1` are contracted.
 - `{{0, 2}}`, corresponding to the case where the field at position `0` and `2` are contracted.
 - `{{1, 2}}`, corresponding to the case where the field at position `1` and `2` are contracted.
+
 For `n=4` some possible Wick contractions are
 - `∅`, corresponding to the case where no fields are contracted.
 - `{{0, 1}, {2, 3}}`, corresponding to the case where the field at position `0` and `1` are
@@ -36,6 +41,12 @@ def WickContraction (n : ℕ) : Type :=
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
+
+remark contraction_notation := "Given a field specification `𝓕`, and a list `φs`
+  of `𝓕.FieldOp`, a Wick contraction of `φs` will mean a Wick contraction in
+  `WickContraction φs.length`. The notation `φsΛ` will be used for such contractions.
+  The terminology that `φsΛ` contracts pairs within of `φs` will also be used, even though
+  `φsΛ` is really contains positions of `φs`."
 
 /-- Wick contractions are decidable. -/
 instance : DecidableEq (WickContraction n) := Subtype.instDecidableEq
@@ -520,8 +531,11 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
   rw [← (c.contractEquivFinTwo a).symm.prod_comp]
   simp [contractEquivFinTwo]
 
-/-- A Wick contraction associated with a list of states is said to be `GradingCompliant` if in any
-  contracted pair of states they are either both fermionic or both bosonic. -/
+/-- For a field specification `𝓕`, `φs` a list of `𝓕.FieldOp` and a Wick contraction
+  `φsΛ` of `φs`, the Wick contraction `φsΛ` is said to be `GradingCompliant` if
+  for every pair in `φsΛ` the contracted fields are either both `fermionic` or both `bosonic`.
+  I.e. in a `GradingCompliant` Wick contraction no contractions occur between `fermionic` and
+  `bosonic` fields. -/
 def GradingCompliant (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :=
   ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
 

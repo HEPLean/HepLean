@@ -855,13 +855,15 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
         exact fun h => lt_of_le_of_ne h (Fin.succAbove_ne i ((φsΛ.getDual? j).get hj))
 
 /--
-For `k < i`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
-- the sign associated with moving `φ` through the `φsΛ`-uncontracted fields in `φ₀…φₖ`,
-- the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in  `φsΛ.uncontracted` such that `k<i`,
+the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ`,
+- the sign associated with moving `φ` through all `FieldOp` in `φ₀…φᵢ₋₁`,
 - the sign of `φsΛ`.
 
 The proof of this result involves a careful consideration of the contributions of different
-fields in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+`FieldOp` in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
 -/
 lemma sign_insert_some_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
@@ -878,13 +880,15 @@ lemma sign_insert_some_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   simp
 
 /--
-For `i ≤ k`, the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
-- the sign associated with moving `φ` through the `φsΛ`-uncontracted fields in `φ₀…φₖ₋₁`,
-- the sign associated with moving `φ` through the fields in `φ₀…φᵢ₋₁`,
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in  `φsΛ.uncontracted` such that `i ≤ k`,
+the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ₋₁`,
+- the sign associated with moving `φ` through all the `FieldOp` in `φ₀…φᵢ₋₁`,
 - the sign of `φsΛ`.
 
 The proof of this result involves a careful consideration of the contributions of different
-fields in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+`FieldOp` in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
 -/
 lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
@@ -900,6 +904,15 @@ lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   rw [mul_comm, ← mul_assoc]
   simp
 
+/--
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and a `k` in  `φsΛ.uncontracted`,
+the sign of `φsΛ ↩Λ φ 0 (some k)` is equal to the product of
+- the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ₋₁`,
+- the sign of `φsΛ`.
+
+This is a direct corollary of `sign_insert_some_of_not_lt`.
+-/
 lemma sign_insert_some_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
     (hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = 𝓕|>ₛφs[k.1]) :
