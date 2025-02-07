@@ -28,10 +28,11 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   Finset.univ.filter (fun i => i1 < i ∧ i < i2 ∧
   (c.getDual? i = none ∨ ∀ (h : (c.getDual? i).isSome), i1 < (c.getDual? i).get h))
 
-/-- Given a Wick contraction `φsΛ` associated with a list of states `φs`
-  the sign associated with `φsΛ` is the sign corresponding to the number
-  of fermionic-fermionic exchanges one must do to put elements in contracted pairs
-  of `φsΛ` next to each other. -/
+/-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`,
+  the complex number `φsΛ.sign` is defined to be the sign (`1` or `-1`) corresponding
+  to the number of `fermionic`-`fermionic` exchanges that must done to put
+  contracted pairs with `φsΛ` next to one another, starting from the contracted pair
+  whose first element occurs at the left-most position. -/
 def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
   ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],
     𝓕 |>ₛ ⟨φs.get, φsΛ.signFinset (φsΛ.fstFieldOfContract a) (φsΛ.sndFieldOfContract a)⟩)

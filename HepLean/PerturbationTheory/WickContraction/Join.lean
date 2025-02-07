@@ -23,9 +23,9 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldOpAlgebra
 
-/-- Given a Wick contraction `φsΛ` on `φs` and a Wick contraction `φsucΛ` on the uncontracted fields
-within `φsΛ`, a Wick contraction on `φs`consisting of the contractins in `φsΛ` and
-the contractions in `φsucΛ`. -/
+/-- Given a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs` and a Wick contraction
+  `φsucΛ` of `[φsΛ]ᵘᶜ`, `join φsΛ φsucΛ` is defined as the Wick contraction of `φs` consisting of
+  the contractions in `φsΛ` and those in `φsucΛ`. -/
 def join {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) : WickContraction φs.length :=
   ⟨φsΛ.1 ∪ φsucΛ.1.map (Finset.mapEmbedding uncontractedListEmd).toEmbedding, by

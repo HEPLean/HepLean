@@ -18,9 +18,11 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldOpAlgebra
-/-- Given a Wick contraction `φsΛ` associated with a list `φs`, the
-  product of all time-contractions of pairs of contracted elements in `φs`,
-  as a member of the center of `𝓞.A`. -/
+
+/-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
+  element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.timeContract` is defined as the product
+  of `timeContract φs[j] φs[k]` over contracted pairs `{j, k}` (both indices of `φs`) in `φsΛ`
+  with `j < k`. -/
 noncomputable def timeContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
@@ -28,11 +30,12 @@ noncomputable def timeContract {φs : List 𝓕.FieldOp}
     (φs.get (φsΛ.fstFieldOfContract a)) (φs.get (φsΛ.sndFieldOfContract a)),
     timeContract_mem_center _ _⟩
 
-/-- For `φsΛ` a Wick contraction for `φs`, the time contraction `(φsΛ ↩Λ φ i none).timeContract 𝓞`
-  is equal to `φsΛ.timeContract 𝓞`.
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
 
-This result follows from the fact that `timeContract` only depends on contracted pairs,
-and `(φsΛ ↩Λ φ i none)` has the 'same' contracted pairs as `φsΛ`. -/
+  `(φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract`
+
+  The prove of this result ultimately a consequence of definitions. -/
 @[simp]
 lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
@@ -42,14 +45,13 @@ lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   ext a
   simp
 
-/-- For `φsΛ` a Wick contraction for `φs = φ₀…φₙ`, the time contraction
-  `(φsΛ ↩Λ φ i (some j)).timeContract 𝓞` is equal to the multiple of
-- the time contraction of `φ` with `φⱼ` if `i < i.succAbove j` else
-    `φⱼ` with `φ`.
-- `φsΛ.timeContract 𝓞`.
-This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contracted pair than `φsΛ`,
-corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
-or after `φⱼ`. -/
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+  `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
+  - `timeContract φ φs[k]` if `i ≤ k` or `timeContract φs[k] φ` if `k < i`
+  - `φsΛ.timeContract`.
+
+  The proof of this result ultimately a consequence of definitions. -/
 lemma timeContract_insertAndContract_some
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
@@ -77,6 +79,17 @@ lemma timeContract_empty (φs : List 𝓕.FieldOp) :
 
 open FieldStatistic
 
+/-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`, with the
+  condition that `φ` has greater or equal time to `φs[k]`, then
+  `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
+  - `[anPart φ, φs[k]]ₛ`
+  - `φsΛ.timeContract`
+  - two copies of the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
+    These two exchange signs cancle each other out but are included for convenience.
+
+  The proof of this result ultimately a consequence of definitions and
+  `timeContract_of_timeOrderRel`. -/
 lemma timeContract_insert_some_of_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
@@ -110,6 +123,19 @@ lemma timeContract_insert_some_of_lt
     simp only [exchangeSign_mul_self]
     · exact ht
 
+/-! For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
+  condition that `φs[k]` does not have has greater or equal time to `φ`, then
+  `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
+  - `[anPart φ, φs[k]]ₛ`
+  - `φsΛ.timeContract`
+  - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
+  - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ`.
+
+  Most of the contributes to the exchange signs cancle.
+
+  The proof of this result ultimately a consequence of definitions and
+  `timeContract_of_not_timeOrderRel_expand`. -/
 lemma timeContract_insert_some_of_not_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)

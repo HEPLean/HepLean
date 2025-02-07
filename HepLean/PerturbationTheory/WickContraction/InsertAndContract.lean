@@ -24,15 +24,19 @@ open HepLean.Fin
 
 -/
 
-/-- Given a Wick contraction `φsΛ` associated to a list `φs`,
-    a position `i : Fin φs.lengthsucc`, an element `φ`, and an optional uncontracted element
-  `j : Option (φsΛ.uncontracted)` of `φsΛ`.
-  The Wick contraction `φsΛ.insertAndContract φ i j` is defined to be the Wick contraction
-  associated with `(φs.insertIdx i φ)` formed by 'inserting' `φ` into `φs` after the first `i`
-  elements and contracting `φ` optionally with `j`.
+/-- Given a Wick contraction `φsΛ` for a list `φs` of `𝓕.FieldOp`,
+  a `𝓕.FieldOp` `φ`, an `i ≤ φs.length` and a `j` which is either `none` or
+  some element of `φsΛ.uncontracted`, the new Wick contraction
+  `φsΛ.insertAndContract φ i j` is defined by inserting `φ` into `φs` after
+  the first `i`-elements and moving the values representing the contracted pairs in `φsΛ`
+  accordingly.
+  If `j` is not `none`, but rather `some j`, to this contraction is added the contraction
+  of `φ` (at position `i`) with the new position of `j` after `φ` is added.
 
-  The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. Thus,
-  `φsΛ ↩Λ φ i none` indicates the case when we insert `φ` into `φs` but do not contract it. -/
+  In other words, `φsΛ.insertAndContract φ i j` is formed by adding `φ` to `φs` at position `i`,
+  and contracting `φ` with the field orginally at position `j` if `j` is not none.
+
+  The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. -/
 def insertAndContract {φs : List 𝓕.FieldOp} (φ : 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
     (i : Fin φs.length.succ) (j : Option φsΛ.uncontracted) :
     WickContraction (φs.insertIdx i φ).length :=
@@ -280,6 +284,14 @@ lemma insert_fin_eq_self (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
     use z
     rfl
 
+/-- For a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, a `i ≤ φs.length` a sum over
+  Wick contractions of `φs` with `φ` inserted at `i` is equal to the sum over Wick contractions
+  `φsΛ` of just `φs` and the sum over optional uncontracted elements of the `φsΛ`.
+
+  I.e. `∑ (φsΛ : WickContraction (φs.insertIdx i φ).length), f φsΛ` is equal to
+  `∑ (φsΛ : WickContraction φs.length), ∑ (k : Option φsΛ.uncontracted), f (φsΛ ↩Λ φ i k) `.
+  where `(φs.insertIdx i φ)` is `φs` with `φ` inserted at position `i`. -/
 lemma insertLift_sum (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
     (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
     ∑ c, f c =

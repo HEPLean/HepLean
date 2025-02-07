@@ -22,12 +22,17 @@ open FieldOpAlgebra
 open FieldStatistic
 noncomputable section
 
-/-- For a Wick contraction `φsΛ`, we define `staticWickTerm φsΛ` to be the element of
-  `𝓕.FieldOpAlgebra` given by `φsΛ.sign • φsΛ.staticContract * 𝓝([φsΛ]ᵘᶜ)`. -/
+/-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
+  of `𝓕.FieldOpAlgebra`, `φsΛ.staticWickTerm` is defined as
+
+  `φsΛ.sign • φsΛ.staticContract * 𝓝([φsΛ]ᵘᶜ)`.
+
+  This is term which appears in the static version Wick's theorem. -/
 def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
-/-- The static Wick term for the empty contraction of the empty list is `1`. -/
+/-- For the empty list `[]` of `𝓕.FieldOp`, the `staticWickTerm` of the empty Wick contraction
+  `empty` of `[]` (its only Wick contraction) is `1`. -/
 @[simp]
 lemma staticWickTerm_empty_nil :
     staticWickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
@@ -35,7 +40,9 @@ lemma staticWickTerm_empty_nil :
   simp [sign, empty, staticContract]
 
 /--
-Let `φsΛ` be a Wick Contraction for `φs = φ₀φ₁…φₙ`. Then the following holds
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, and an element `φ` of
+  `𝓕.FieldOp`, the following relation holds
+
 `(φsΛ ↩Λ φ 0 none).staticWickTerm = φsΛ.sign • φsΛ.staticWickTerm * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
 The proof of this result relies on
@@ -51,8 +58,9 @@ lemma staticWickTerm_insert_zero_none (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   simp only [staticContract_insert_none, insertAndContract_uncontractedList_none_zero,
     Algebra.smul_mul_assoc]
 
-/-- Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Then`(φsΛ ↩Λ φ 0 (some k)).wickTerm`
-is equal the product of
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and a `k` in `φsΛ.uncontracted`, `(φsΛ ↩Λ φ 0 (some k)).wickTerm` is equal
+  to the product of
 - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
 - the sign `φsΛ.sign`
 - `φsΛ.staticContract`
@@ -60,9 +68,8 @@ is equal the product of
   uncontracted fields in `φ₀…φₖ₋₁`
 - the normal ordering `𝓝([φsΛ]ᵘᶜ.erase (uncontractedFieldOpEquiv φs φsΛ k))`.
 
-The proof of this result relies on
-- `staticContract_insert_some_of_lt` to rewrite static
-  contractions.
+The proof of this result ultimitley relies on
+- `staticContract_insert_some` to rewrite static contractions.
 - `normalOrder_uncontracted_some` to rewrite normal orderings.
 - `sign_insert_some_zero` to rewrite signs.
 -/
@@ -106,13 +113,16 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
       simp
 
 /--
-Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Then
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, the following relation
+holds
+
 `φ * φsΛ.staticWickTerm = ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
+
 where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
 The proof of proceeds as follows:
 - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
-  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
+  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`.
 - Then `staticWickTerm_insert_zero_none` and `staticWickTerm_insert_zero_some` are
   used to equate terms.
 -/

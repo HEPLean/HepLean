@@ -347,7 +347,7 @@ lemma normalOrderList_eraseIdx_normalOrderEquiv {φs : List 𝓕.CrAnFieldOp} (n
   the following relation holds
   `normalOrderSign (φ₀…φᵢ₋₁φᵢ₊₁…φₙ)` is equal to the product of
   - `normalOrderSign φ₀…φₙ`,
-  - `𝓢(φᵢ, φ₀…φᵢ₋₁)` i.e. the sign needed to remove `φᵢ` from  `φ₀…φₙ`,
+  - `𝓢(φᵢ, φ₀…φᵢ₋₁)` i.e. the sign needed to remove `φᵢ` from `φ₀…φₙ`,
   - `𝓢(φᵢ, _)` where `_` is the list of elements appearing before `φᵢ` after normal ordering. I.e.
     the sign needed to insert `φᵢ` back into the normal-ordered list at the correct place. -/
 lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnFieldOp) (i : Fin φs.length) :

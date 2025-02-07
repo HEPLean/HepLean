@@ -61,18 +61,38 @@ remark wicks_theorem_context := "
   The statement of these theorems for bosons is simplier then when fermions are involved, since
   one does not have to worry about the minus-signs picked up on exchanging fields."
 
-/-- Wick's theorem states that for a list of fields `φs = φ₀…φₙ`
-`𝓣(φs) = ∑ φsΛ, (φsΛ.sign • φsΛ.timeContract) * 𝓝([φsΛ]ᵘᶜ)`
-where the sum is over all Wick contractions `φsΛ` of `φs`.
+/--
+For a list `φs` of `𝓕.FieldOp`, Wick's theorem states that
 
-The proof is via induction on `φs`. The base case `φs = []` is handled by `wicks_theorem_nil`.
+`𝓣(φs) = ∑ φsΛ, φsΛ.wickTerm`
+
+where the sum is over all Wick contraction `φsΛ`.
+
+The proof is via induction on `φs`.
+- The base case `φs = []` is handled by `wickTerm_empty_nil`.
+
 The inductive step works as follows:
-- The lemma `timeOrder_eq_maxTimeField_mul_finset` is used to write
+
+For the LHS:
+1. `timeOrder_eq_maxTimeField_mul_finset` is used to write
   `𝓣(φ₀…φₙ)` as ` 𝓢(φᵢ,φ₀…φᵢ₋₁) • φᵢ * 𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` where `φᵢ` is
-  the maximal time field in `φ₀…φₙ`.
-- The induction hypothesis is used to expand `𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` as a sum over Wick contractions of
-  `φ₀…φᵢ₋₁φᵢ₊₁φₙ`.
-- Further the lemmas `wick_term_cons_eq_sum_wick_term` and `insertLift_sum` are used.
+  the maximal time field in `φ₀…φₙ`
+2. The induction hypothesis is then used on `𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` to expand it as a sum over
+  Wick contractions of `φ₀…φᵢ₋₁φᵢ₊₁φₙ`.
+3. This gives terms of the form `φᵢ * φsΛ.timeContract` on which
+  `mul_wickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₀…φᵢ₋₁φᵢ₊₁φ`,
+  to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
+
+On the LHS we now have a sum over Wick contractions `φsΛ` of `φ₀…φᵢ₋₁φᵢ₊₁φ` (from 2) and optional
+uncontracted elements of `φsΛ` (from 3)
+
+For the RHS:
+1. The sum over Wick contractions of `φ₀…φₙ` on the RHS
+  is split via `insertLift_sum` into a sum over Wick contractions `φsΛ` of `φ₀…φᵢ₋₁φᵢ₊₁φ` and
+  sum over optional uncontracted elements of `φsΛ`.
+
+Both side now are sums over the same thing and their terms equate by the nature of the
+lemmas used.
 -/
 theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
@@ -80,7 +100,7 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     rw [timeOrder_ofFieldOpList_nil]
     simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
     rw [sum_WickContraction_nil]
-    simp
+    simp only [wickTerm_empty_nil]
   | φ :: φs => by
     have ih := wicks_theorem (eraseMaxTimeField φ φs)
     conv_lhs => rw [timeOrder_eq_maxTimeField_mul_finset, ih, Finset.mul_sum]
