@@ -44,7 +44,7 @@ structure DeclInfo where
 def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let line ← Name.lineNumber n
   let fileName ← Name.fileName n
-  let declString ← Name.getDeclString n
+  let declString ← Name.getDeclStringNoDoc n
   let docString ← Name.getDocString n
   let constInfo ← getConstInfo n
   let isDef := constInfo.isDef ∨ Lean.isStructure (← getEnv) n ∨ constInfo.isInductive
