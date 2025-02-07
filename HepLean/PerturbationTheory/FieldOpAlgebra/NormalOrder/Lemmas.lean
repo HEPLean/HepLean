@@ -118,7 +118,7 @@ lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
 
 -/
 
-/-- For a field specfication `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
+/-- For a field specification `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
   of the super commutator of `a` and `b` vanishes. I.e. `𝓝([a,b]ₛ) = 0`. -/
 @[simp]
 lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
@@ -230,7 +230,7 @@ The proof of this result ultimetly goes as follows
 - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
   (considered as a list with one element) with
   `ofCrAnList φsn` as a sum of supercommutors, one for each element of `φsn`.
-- The fact that super-commutors are in the center of `𝓕.FieldOpAlgebra` is used to rearange terms.
+- The fact that super-commutors are in the center of `𝓕.FieldOpAlgebra` is used to  rearrange terms.
 - Properties of ordered lists, and `normalOrderSign_eraseIdx` is then used to complete the proof.
 -/
 lemma ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum (φ : 𝓕.CrAnFieldOp)

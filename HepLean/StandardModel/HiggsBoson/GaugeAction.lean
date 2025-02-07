@@ -98,7 +98,7 @@ lemma rep_apply (g : GaugeGroupI) (φ : HiggsVec) : rep g φ = g.2.2 ^ 3 • (g.
 -/
 
 /-- Given a Higgs vector, a rotation matrix which puts the first component of the
-  svector to zero, and the second component to a real -/
+  vector to zero, and the second component to a real -/
 def rotateMatrix (φ : HiggsVec) : Matrix (Fin 2) (Fin 2) ℂ :=
   ![![φ 1 /‖φ‖, - φ 0 /‖φ‖], ![conj (φ 0) / ‖φ‖, conj (φ 1) / ‖φ‖]]
 
@@ -152,7 +152,7 @@ def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 /-- Acting on a non-zero Higgs vector with its rotation matrix gives a vector which is
-  zero in the first componenent and a positive real in the second component. -/
+  zero in the first component and a positive real in the second component. -/
 lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     rep (rotateGuageGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
   rw [rep_apply]
@@ -175,7 +175,7 @@ lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
 
 /-- For every Higgs vector there exists an element of the gauge group which rotates that
   Higgs vector to have `0` in the first component and be a non-negative real in the second
-  componenet. -/
+  component. -/
 theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
     ∃ (g : GaugeGroupI), rep g φ = ![0, Complex.ofReal ‖φ‖] := by
   by_cases h : φ = 0
@@ -189,7 +189,7 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
 
 /-- For every Higgs vector there exists an element of the gauge group which rotates that
   Higgs vector to have `0` in the second component and be a non-negative real in the first
-  componenet. -/
+  component. -/
 theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
     ∃ (g : GaugeGroupI), rep g φ = ![Complex.ofReal ‖φ‖, 0] := by
   obtain ⟨g, h⟩ := rotate_fst_zero_snd_real φ

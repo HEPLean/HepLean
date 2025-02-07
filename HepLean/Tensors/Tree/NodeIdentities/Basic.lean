@@ -44,7 +44,7 @@ informal_lemma constTwoNode_eq_twoNode where
 
 -/
 
-/-- The tenor node of a tensor tree's tensor has a tensor which is the tensor tree's tensor. -/
+/-- The tensor node of a tensor tree's tensor has a tensor which is the tensor tree's tensor. -/
 lemma tensorNode_of_tree (t : TensorTree S c) : (tensorNode t.tensor).tensor = t.tensor := by
   simp [tensorNode]
 

@@ -139,7 +139,7 @@ lemma sum_inr_succAbove_leftContrI_leftContrJ (k : Fin n1) : finSumFinEquiv.symm
   erw [succAbove_leftContrJ_leftContrI_natAdd]
   simp
 
-/- An auxillary lemma to `contrMap_prod_tprod`. -/
+/- An auxiliary lemma to `contrMap_prod_tprod`. -/
 lemma contrMap_prod_tprod_aux
     (l : (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).left ⊕ (OverColor.mk c1).left)
     (l' : Fin n.succ.succ ⊕ Fin n1)

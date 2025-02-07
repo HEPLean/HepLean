@@ -7,7 +7,7 @@ import HepLean.PerturbationTheory.FieldSpecification.CrAnFieldOp
 import HepLean.PerturbationTheory.FieldSpecification.CrAnSection
 /-!
 
-# Creation and annihlation free-algebra
+# Creation and annihilation free-algebra
 
 This module defines the creation and annihilation algebra for a field structure.
 
@@ -142,7 +142,7 @@ lemma ofFieldOpListF_sum (φs : List 𝓕.FieldOp) :
 -/
 
 /-- The algebra map taking an element of the free-state algbra to
-  the part of it in the creation and annihlation free algebra
+  the part of it in the creation and annihilation free algebra
   spanned by creation operators. -/
 def crPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
   match φ with
@@ -201,7 +201,7 @@ lemma ofFieldOpF_eq_crPartF_add_anPartF (φ : 𝓕.FieldOp) :
 
 /-!
 
-## The basis of the creation and annihlation free-algebra.
+## The basis of the creation and annihilation free-algebra.
 
 -/
 

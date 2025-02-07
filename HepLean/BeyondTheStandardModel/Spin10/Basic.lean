@@ -30,7 +30,7 @@ See page 56 of https://math.ucr.edu/home/baez/guts.pdf
 informal_definition inclPatiSalam where
   deps := [``GaugeGroupI, ``PatiSalam.GaugeGroupI, ``PatiSalam.gaugeGroupISpinEquiv]
 
-/-- The inclusion of the Standard Model gauge group into Spin(10), i.e., the compoisiton of
+/-- The inclusion of the Standard Model gauge group into Spin(10), i.e., the composition of
 `embedPatiSalam` and `PatiSalam.inclSM`.
 
 See page 56 of https://math.ucr.edu/home/baez/guts.pdf

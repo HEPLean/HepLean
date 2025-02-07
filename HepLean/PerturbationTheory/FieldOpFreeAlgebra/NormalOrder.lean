@@ -27,7 +27,7 @@ namespace FieldOpFreeAlgebra
 
 noncomputable section
 
-/-- For a field specification `𝓕`, `normalOrderF` is the linera map
+/-- For a field specification `𝓕`, `normalOrderF` is the linear map
   `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
   defined by its action on the basis `ofCrAnListF φs`, taking `ofCrAnListF φs` to
   `normalOrderSign φs • ofCrAnListF (normalOrderList φs)`.
@@ -143,7 +143,7 @@ lemma normalOrderF_create_mul (φ : 𝓕.CrAnFieldOp)
 lemma normalOrderF_ofCrAnListF_append_annihilate (φ : 𝓕.CrAnFieldOp)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate) (φs : List 𝓕.CrAnFieldOp) :
     𝓝ᶠ(ofCrAnListF (φs ++ [φ])) = 𝓝ᶠ(ofCrAnListF φs) * ofCrAnOpF φ := by
-  rw [normalOrderF_ofCrAnListF, normalOrderSign_append_annihlate φ hφ φs,
+  rw [normalOrderF_ofCrAnListF, normalOrderSign_append_annihilate φ hφ φs,
     normalOrderList_append_annihilate φ hφ φs, ofCrAnListF_append, ofCrAnListF_singleton,
       normalOrderF_ofCrAnListF, smul_mul_assoc]
 
@@ -189,18 +189,18 @@ lemma normalOrderF_mul_anPartF (φ : 𝓕.FieldOp) (a : FieldOpFreeAlgebra 𝓕)
 The main result of this section is `normalOrderF_superCommuteF_annihilate_create`.
 -/
 
-lemma normalOrderF_swap_create_annihlate_ofCrAnListF_ofCrAnListF (φc φa : 𝓕.CrAnFieldOp)
+lemma normalOrderF_swap_create_annihilate_ofCrAnListF_ofCrAnListF (φc φa : 𝓕.CrAnFieldOp)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnFieldOp) :
     𝓝ᶠ(ofCrAnListF φs' * ofCrAnOpF φc * ofCrAnOpF φa * ofCrAnListF φs) = 𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa) •
     𝓝ᶠ(ofCrAnListF φs' * ofCrAnOpF φa * ofCrAnOpF φc * ofCrAnListF φs) := by
   rw [mul_assoc, mul_assoc, ← ofCrAnListF_cons, ← ofCrAnListF_cons, ← ofCrAnListF_append]
-  rw [normalOrderF_ofCrAnListF, normalOrderSign_swap_create_annihlate φc φa hφc hφa]
-  rw [normalOrderList_swap_create_annihlate φc φa hφc hφa, ← smul_smul, ← normalOrderF_ofCrAnListF]
+  rw [normalOrderF_ofCrAnListF, normalOrderSign_swap_create_annihilate φc φa hφc hφa]
+  rw [normalOrderList_swap_create_annihilate φc φa hφc hφa, ← smul_smul, ← normalOrderF_ofCrAnListF]
   rw [ofCrAnListF_append, ofCrAnListF_cons, ofCrAnListF_cons]
   noncomm_ring
 
-lemma normalOrderF_swap_create_annihlate_ofCrAnListF (φc φa : 𝓕.CrAnFieldOp)
+lemma normalOrderF_swap_create_annihilate_ofCrAnListF (φc φa : 𝓕.CrAnFieldOp)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (φs : List 𝓕.CrAnFieldOp) (a : 𝓕.FieldOpFreeAlgebra) :
     𝓝ᶠ(ofCrAnListF φs * ofCrAnOpF φc * ofCrAnOpF φa * a) = 𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa) •
@@ -211,10 +211,10 @@ lemma normalOrderF_swap_create_annihlate_ofCrAnListF (φc φa : 𝓕.CrAnFieldOp
   refine LinearMap.congr_fun (ofCrAnListFBasis.ext fun l ↦ ?_) a
   simp only [mulLinearMap, LinearMap.coe_mk, AddHom.coe_mk, ofListBasis_eq_ofList,
     LinearMap.coe_comp, Function.comp_apply, instCommGroup.eq_1]
-  rw [normalOrderF_swap_create_annihlate_ofCrAnListF_ofCrAnListF φc φa hφc hφa]
+  rw [normalOrderF_swap_create_annihilate_ofCrAnListF_ofCrAnListF φc φa hφc hφa]
   rfl
 
-lemma normalOrderF_swap_create_annihlate (φc φa : 𝓕.CrAnFieldOp)
+lemma normalOrderF_swap_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.FieldOpFreeAlgebra) :
     𝓝ᶠ(a * ofCrAnOpF φc * ofCrAnOpF φa * b) = 𝓢(𝓕 |>ₛ φc, 𝓕 |>ₛ φa) •
@@ -226,7 +226,7 @@ lemma normalOrderF_swap_create_annihlate (φc φa : 𝓕.CrAnFieldOp)
   refine LinearMap.congr_fun (ofCrAnListFBasis.ext fun l ↦ ?_) _
   simp only [mulLinearMap, ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
     LinearMap.flip_apply, LinearMap.coe_mk, AddHom.coe_mk, instCommGroup.eq_1, ← mul_assoc,
-      normalOrderF_swap_create_annihlate_ofCrAnListF φc φa hφc hφa]
+      normalOrderF_swap_create_annihilate_ofCrAnListF φc φa hφc hφa]
   rfl
 
 lemma normalOrderF_superCommuteF_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
@@ -235,7 +235,7 @@ lemma normalOrderF_superCommuteF_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
     𝓝ᶠ(a * [ofCrAnOpF φc, ofCrAnOpF φa]ₛca * b) = 0 := by
   simp only [superCommuteF_ofCrAnOpF_ofCrAnOpF, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [mul_sub, sub_mul, map_sub, ← smul_mul_assoc, ← mul_assoc, ← mul_assoc,
-    normalOrderF_swap_create_annihlate φc φa hφc hφa]
+    normalOrderF_swap_create_annihilate φc φa hφc hφa]
   simp
 
 lemma normalOrderF_superCommuteF_annihilate_create (φc φa : 𝓕.CrAnFieldOp)
@@ -256,22 +256,22 @@ lemma normalOrderF_swap_crPartF_anPartF (φ φ' : 𝓕.FieldOp) (a b : FieldOpFr
   | .outAsymp φ, _ => simp
   | .position φ, .position φ' =>
     simp only [crPartF_position, anPartF_position, instCommGroup.eq_1]
-    rw [normalOrderF_swap_create_annihlate]
+    rw [normalOrderF_swap_create_annihilate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
     rfl; rfl
   | .inAsymp φ, .outAsymp φ' =>
     simp only [crPartF_negAsymp, anPartF_posAsymp, instCommGroup.eq_1]
-    rw [normalOrderF_swap_create_annihlate]
+    rw [normalOrderF_swap_create_annihilate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
     rfl; rfl
   | .inAsymp φ, .position φ' =>
     simp only [crPartF_negAsymp, anPartF_position, instCommGroup.eq_1]
-    rw [normalOrderF_swap_create_annihlate]
+    rw [normalOrderF_swap_create_annihilate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
     rfl; rfl
   | .position φ, .outAsymp φ' =>
     simp only [crPartF_position, anPartF_posAsymp, instCommGroup.eq_1]
-    rw [normalOrderF_swap_create_annihlate]
+    rw [normalOrderF_swap_create_annihilate]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
     rfl; rfl
 

@@ -34,8 +34,8 @@ In this module in addition to defining `CrAnFieldOp` we also define some maps:
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- To each field operator the specificaition of the type of creation and annihlation parts.
-  For asymptotic staes there is only one allowed part, whilst for position
+/-- To each field operator the specificaition of the type of creation and annihilation parts.
+  For asymptotic states there is only one allowed part, whilst for position
   field operator there is two. -/
 def fieldOpToCrAnType : 𝓕.FieldOp → Type
   | FieldOp.inAsymp _ => Unit
@@ -75,14 +75,14 @@ annihilation operators respectively.
 -/
 def CrAnFieldOp : Type := Σ (s : 𝓕.FieldOp), 𝓕.fieldOpToCrAnType s
 
-/-- The map from creation and annihlation field operator to their underlying states. -/
+/-- The map from creation and annihilation field operator to their underlying states. -/
 def crAnFieldOpToFieldOp : 𝓕.CrAnFieldOp → 𝓕.FieldOp := Sigma.fst
 
 @[simp]
 lemma crAnFieldOpToFieldOp_prod (s : 𝓕.FieldOp) (t : 𝓕.fieldOpToCrAnType s) :
     𝓕.crAnFieldOpToFieldOp ⟨s, t⟩ = s := rfl
 
-/-- The map from creation and annihlation states to the type `CreateAnnihilate`
+/-- The map from creation and annihilation states to the type `CreateAnnihilate`
   specifying if a state is a creation or an annihilation state. -/
 def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
   | ⟨FieldOp.inAsymp _, _⟩ => CreateAnnihilate.create

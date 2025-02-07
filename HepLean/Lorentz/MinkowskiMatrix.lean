@@ -88,7 +88,7 @@ lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := 
 lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
   rfl
 
-/-- The space diagonal components of the Minkowski matriz are `-1`. -/
+/-- The space diagonal components of the Minkowski matrix are `-1`. -/
 lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   simp_all only [diagonal_apply_eq, Sum.elim_inr]

@@ -12,7 +12,7 @@ import HepLean.Lorentz.PauliMatrices.Basic
 namespace PauliMatrix
 open Matrix
 
-/-- The trace of `σ0` multiplied by a self-adjiont `2×2` matrix is real. -/
+/-- The trace of `σ0` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
   rw [eta_fin_two A.1]
@@ -35,7 +35,7 @@ lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
     cons_val_fin_one, head_fin_const] at h11
   exact Complex.conj_eq_iff_re.mp h11
 
-/-- The trace of `σ1` multiplied by a self-adjiont `2×2` matrix is real. -/
+/-- The trace of `σ1` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ1 * A.1)).re = Matrix.trace (σ1 * A.1) := by
   rw [eta_fin_two A.1]
@@ -55,7 +55,7 @@ lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
   simp only [Fin.isValue, Complex.ofReal_mul, Complex.ofReal_ofNat]
   ring
 
-/-- The trace of `σ2` multiplied by a self-adjiont `2×2` matrix is real. -/
+/-- The trace of `σ2` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ2 * A.1)).re = Matrix.trace (σ2 * A.1) := by
   rw [eta_fin_two A.1]
@@ -79,7 +79,7 @@ lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
     simp
   · ring
 
-/-- The trace of `σ3` multiplied by a self-adjiont `2×2` matrix is real. -/
+/-- The trace of `σ3` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ3 * A.1)).re = Matrix.trace (σ3 * A.1) := by
   rw [eta_fin_two A.1]
@@ -100,7 +100,7 @@ lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) 
 
 open Complex
 
-/-- Two `2×2` self-adjiont matrices are equal if the (complex) traces of each matrix multiplied by
+/-- Two `2×2` self-adjoint matrices are equal if the (complex) traces of each matrix multiplied by
   each of the Pauli-matrices are equal. -/
 lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h0 : Matrix.trace (PauliMatrix.σ0 * A.1) = Matrix.trace (PauliMatrix.σ0 * B.1))
@@ -133,7 +133,7 @@ lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
   | 1, 1 =>
     linear_combination (norm := ring_nf) (h0 - h3) / 2
 
-/-- Two `2×2` self-adjiont matrices are equal if the real traces of each matrix multiplied by
+/-- Two `2×2` self-adjoint matrices are equal if the real traces of each matrix multiplied by
   each of the Pauli-matrices are equal. -/
 lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h0 : ((Matrix.trace (PauliMatrix.σ0 * A.1))).re = ((Matrix.trace (PauliMatrix.σ0 * B.1))).re)
@@ -154,7 +154,7 @@ lemma selfAdjoint_ext {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
 
 noncomputable section
 
-/-- An auxillary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
+/-- An auxiliary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
   Pauli-matrix as a self-adjoint matrix. -/
 def σSA' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   match i with
@@ -225,7 +225,7 @@ lemma σSA_span : ⊤ ≤ Submodule.span ℝ (Set.range σSA') := by
 def σSA : Basis (Fin 1 ⊕ Fin 3) ℝ (selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :=
   Basis.mk σSA_linearly_independent σSA_span
 
-/-- An auxillary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
+/-- An auxiliary function which on `i : Fin 1 ⊕ Fin 3` returns the corresponding
   Pauli-matrix as a self-adjoint matrix with a minus sign for `Sum.inr _`. -/
 def σSAL' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ) :=
   match i with

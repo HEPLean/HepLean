@@ -146,7 +146,7 @@ lemma fromInvolution_toInvolution (f : {f : Fin n → Fin n // Function.Involuti
     simp only [fromInvolution_getDual?_isSome, ne_eq, Decidable.not_not] at h
     exact id (Eq.symm h)
 
-/-- The equivalence btween Wick contractions for `n` and involutions of `Fin n`.
+/-- The equivalence between Wick contractions for `n` and involutions of `Fin n`.
   The involution of `Fin n` associated with a Wick contraction `c : WickContraction n` as follows.
   If `i : Fin n` is contracted in `c` then it is taken to its dual, otherwise
   it is taken to itself. -/
