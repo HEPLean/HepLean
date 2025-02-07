@@ -426,8 +426,8 @@ lemma join_sign_induction {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs
   choice does not matter, and that contracted pairs can be brought together in any order. -/
 lemma join_sign {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (hc : φsΛ.GradingCompliant) :
-    (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign := by
-  exact join_sign_induction φsΛ φsucΛ hc (φsΛ).1.card rfl
+    (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign :=
+  join_sign_induction φsΛ φsucΛ hc (φsΛ).1.card rfl
 
 /-- For a list `φs` of `𝓕.FieldOp`, a  Wick contraction `φsΛ` of `φs`,
   and a Wick contraction `φsucΛ` of `[φsΛ]ᵘᶜ`,
