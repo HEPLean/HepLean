@@ -18,9 +18,11 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldOpAlgebra
-/-- Given a Wick contraction `φsΛ` associated with a list `φs`, the
-  product of all time-contractions of pairs of contracted elements in `φs`,
-  as a member of the center of `𝓞.A`. -/
+
+/-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
+  element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.staticContract` is defined as the product
+  of `[anPart φs[j], φs[k]]ₛ` over contracted pairs `{j, k}` (both indices of `φs`) in `φsΛ`
+  with `j < k`. -/
 noncomputable def staticContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
     Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
@@ -28,6 +30,13 @@ noncomputable def staticContract {φs : List 𝓕.FieldOp}
     ofFieldOp (φs.get (φsΛ.sndFieldOfContract a))]ₛ,
       superCommute_anPart_ofFieldOp_mem_center _ _⟩
 
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and a `i ≤ φs.length`  the following relation holds
+
+  `(φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract`
+
+  The prove of this result ultimately a consequence of definitions.
+-/
 @[simp]
 lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
@@ -37,15 +46,17 @@ lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   ext a
   simp
 
-/-- For `φsΛ` a Wick contraction for `φs = φ₀…φₙ`, the time contraction
-  `(φsΛ ↩Λ φ i (some j)).timeContract 𝓞` is equal to the multiple of
-- the time contraction of `φ` with `φⱼ` if `i < i.succAbove j` else
-    `φⱼ` with `φ`.
-- `φsΛ.timeContract 𝓞`.
-This follows from the fact that `(φsΛ ↩Λ φ i (some j))` has one more contracted pair than `φsΛ`,
-corresponding to `φ` contracted with `φⱼ`. The order depends on whether we insert `φ` before
-or after `φⱼ`. -/
-lemma staticContract_insertAndContract_some
+
+/--
+  For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+  `(φsΛ ↩Λ φ i (some k)).staticContract` is equal to the product of
+  - `[anPart φ, φs[k]]ₛ` if `i ≤ k` or `[anPart φs[k], φ]ₛ` if `k < i`
+  - `φsΛ.staticContract`.
+
+  The proof of this result ultimately a consequence of definitions.
+-/
+lemma staticContract_insert_some
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).staticContract =
@@ -74,7 +85,7 @@ lemma staticContract_insert_some_of_lt
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
     • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
       φsΛ.staticContract) := by
-  rw [staticContract_insertAndContract_some]
+  rw [staticContract_insert_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
     Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,

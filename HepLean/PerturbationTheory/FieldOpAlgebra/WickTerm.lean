@@ -24,12 +24,17 @@ open FieldOpAlgebra
 open FieldStatistic
 noncomputable section
 
-/-- For a Wick contraction `φsΛ`, we define `wickTerm φsΛ` to be the element of `𝓕.FieldOpAlgebra`
-  given by `φsΛ.sign • φsΛ.timeContract * 𝓝([φsΛ]ᵘᶜ)`. -/
+/-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
+  of `𝓕.FieldOpAlgebra`, `φsΛ.wickTerm` is defined as
+
+  `φsΛ.sign • φsΛ.timeContract * 𝓝([φsΛ]ᵘᶜ)`.
+
+  This is term which appears in the Wick's theorem. -/
 def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
-/-- The Wick term for the empty contraction of the empty list is `1`. -/
+/-- For the empty list `[]` of `𝓕.FieldOp`,  the `wickTerm` of the empty Wick contraction
+  `empty` of `[]` (its only Wick contraction) is `1`. -/
 @[simp]
 lemma wickTerm_empty_nil :
     wickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
@@ -37,7 +42,9 @@ lemma wickTerm_empty_nil :
   simp [sign_empty]
 
 /--
-Let `φsΛ` be a Wick Contraction for `φs = φ₀φ₁…φₙ`. Then the following holds
+For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, and `i ≤ φs.length` the following relation holds
+
 `(φsΛ ↩Λ φ i none).wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) φsΛ.sign • φsΛ.timeContract * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
 The proof of this result relies on
@@ -86,16 +93,18 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
     exact hg
 
-/-- Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Let `φ` be a field with time
-greater then or equal to all the fields in `φs`. Let `i` be a in `Fin φs.length.succ` such that
-all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then`(φsΛ ↩Λ φ i (some k)).wickTerm`
+/-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+  `𝓕.FieldOp`, `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`,
+  such that all `FieldOp` in `φ₀…φᵢ₋₁` have time strictly less then `φ` and
+  `φ` has a time greater then or equal to all `FieldOp` in `φ₀…φₙ`, then
+  `(φsΛ ↩Λ φ i (some k)).wickTerm`
 is equal the product of
 - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
 - the sign `φsΛ.sign`
 - `φsΛ.timeContract`
 - `s • [anPart φ, ofFieldOp φs[k]]ₛ` where `s` is the sign associated with moving `φ` through
   uncontracted fields in `φ₀…φₖ₋₁`
-- the normal ordering `𝓝([φsΛ]ᵘᶜ.erase (uncontractedFieldOpEquiv φs φsΛ k))`.
+- the normal ordering `[φsΛ]ᵘᶜ` with the field corresonding to `k` removed.
 
 The proof of this result relies on
 - `timeContract_insert_some_of_not_lt`
@@ -167,14 +176,16 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
 
 /--
 Let `φsΛ` be a Wick contraction for `φs = φ₀φ₁…φₙ`. Let `φ` be a field with time
-greater then or equal to all the fields in `φs`. Let `i` be a in `Fin φs.length.succ` such that
-all files in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then
+greater then or equal to all the `FieldOp` in `φs`. Let `i ≤ φs.length` be such that
+all `FieldOp` in `φ₀…φᵢ₋₁` have time strictly less then `φ`. Then
+
 `φ * φsΛ.wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) • ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
+
 where the sum is over all `k` in `Option φsΛ.uncontracted` (so either `none` or `some k`).
 
 The proof of proceeds as follows:
 - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
-  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[φ, φs[k]]` etc.
+  a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`..
 - Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.
 -/
 lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin φs.length.succ)

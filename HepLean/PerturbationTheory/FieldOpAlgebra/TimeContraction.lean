@@ -23,15 +23,19 @@ namespace FieldOpAlgebra
 
 open FieldStatistic
 
-/-- The time contraction of two FieldOp as an element of `𝓞.A` defined
-  as their time ordering in the state algebra minus their normal ordering in the
-  creation and annihlation algebra, both mapped to `𝓞.A`.. -/
+/-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, the element of
+  `𝓕.FieldOpAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ)- 𝓝(φψ)`. -/
 def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra :=
     𝓣(ofFieldOp φ * ofFieldOp ψ) - 𝓝(ofFieldOp φ * ofFieldOp ψ)
 
 lemma timeContract_eq_smul (φ ψ : 𝓕.FieldOp) : timeContract φ ψ =
     𝓣(ofFieldOp φ * ofFieldOp ψ) + (-1 : ℂ) • 𝓝(ofFieldOp φ * ofFieldOp ψ) := by rfl
 
+
+/-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
+  `φ` and `ψ` are time-ordered then
+
+  `timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ`.  -/
 lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : timeOrderRel φ ψ) :
     timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ := by
   conv_rhs =>
@@ -55,6 +59,10 @@ lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderR
   simp only [instCommGroup.eq_1, map_smul, map_add, smul_add]
   rw [smul_smul, smul_smul, mul_comm]
 
+/-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
+  `φ` and `ψ` are not time-ordered then
+
+  `timeContract φ ψ =  𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ`.  -/
 lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderRel φ ψ) :
     timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ := by
   rw [timeContract_of_not_timeOrderRel _ _ h]
@@ -62,6 +70,8 @@ lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.FieldOp) (h : ¬ tim
   have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
   simp_all
 
+/-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, then
+  `timeContract φ ψ` is in the center of `𝓕.FieldOpAlgebra`. -/
 lemma timeContract_mem_center (φ ψ : 𝓕.FieldOp) :
     timeContract φ ψ ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
   by_cases h : timeOrderRel φ ψ

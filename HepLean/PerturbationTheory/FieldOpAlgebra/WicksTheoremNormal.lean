@@ -20,6 +20,23 @@ namespace FieldOpAlgebra
 open WickContraction
 open EqTimeOnly
 
+/--
+For a list `φs` of `𝓕.FieldOp`, then
+
+`𝓣(φs) = ∑ φsΛ, φsΛ.1.wickTerm • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))`
+
+where the sum is over all Wick contraction `φsΛ` which only have equal time contractions.
+
+This result follows from
+- `static_wick_theorem` to rewrite `𝓣(φs)` on the left hand side as a sum of
+  `𝓣(φsΛ.staticWickTerm)`.
+- `EqTimeOnly.timeOrder_staticContract_of_not_mem`  and `timeOrder_timeOrder_mid` to set to
+  zero those terms in which the contracted elements do not have equal time.
+- `staticContract_eq_timeContract_of_eqTimeOnly` to rewrite the static contract as a time contract
+  for those terms which have equal time.
+- `timeOrder_timeContract_mul_of_eqTimeOnly_left` to move the time contracts out of the time
+  ordering.
+-/
 lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
     𝓣(ofFieldOpList φs) = ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs)}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
@@ -44,8 +61,9 @@ lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
   exact x.2
   exact x.2
 
+
 lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
-    timeOrder (ofFieldOpList φs) = 𝓣(𝓝(ofFieldOpList φs)) +
+    𝓣(ofFieldOpList φs) = 𝓣(𝓝(ofFieldOpList φs)) +
     ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
   let e1 : {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly} ≃
@@ -71,6 +89,17 @@ lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
     rw [← e2.symm.sum_comp]
     rfl
 
+/--
+For a list `φs` of `𝓕.FieldOp`, then
+
+`𝓣(𝓝(φs)) = 𝓣(φs) - ∑ φsΛ, φsΛ.1.wickTerm • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))`
+
+where the sum is over all *non-empty* Wick contraction `φsΛ` which only
+  have equal time contractions.
+
+This result follows directly from
+- `timeOrder_ofFieldOpList_eqTimeOnly`
+-/
 lemma normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
     𝓣(𝓝(ofFieldOpList φs)) = 𝓣(ofFieldOpList φs) -
     ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
@@ -78,14 +107,33 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.F
   rw [timeOrder_ofFieldOpList_eq_eqTimeOnly_empty]
   simp
 
-lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs : List 𝓕.FieldOp) :
-    𝓣(𝓝(ofFieldOpList φs)) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
+/--
+For a list `φs` of `𝓕.FieldOp`, then `𝓣(φs)` is equal to the sum of
+
+- `∑ φsΛ, φsΛ.wickTerm` where the sum is over all Wick contraction `φsΛ` which have
+  no contractions of equal time.
+- `∑ φsΛ,  sign φs ↑φsΛ • (φsΛ.1).timeContract ∑ φssucΛ, φssucΛ.wickTerm`, where
+  the first sum is over all Wick contraction `φsΛ` which only have equal time contractions
+  and the second sum is over all Wick contraction `φssucΛ` of the uncontracted elements of `φsΛ`
+  which do not have any equal time contractions.
+
+The proof of this result relies on `wicks_theorem` to rewrite `𝓣(φs)` as a sum over
+all Wick contractions.
+The sum over all Wick contractions is then split additively into two parts using based on having or
+not  having equal time contractions.
+The sum over Wick contractions which do have equal time contractions is turned into two sums
+one over the Wick contractions which only have equal time contractions and the other over the
+uncontracted elements of the Wick contraction which do not have equal time contractions using
+`join`.
+The properties of `join_sign_timeContract` is then used to equate terms.
+-/
+lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
+  𝓣(ofFieldOpList φs) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
-    + (∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}),
-    φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
-    - ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
-    φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
-  rw [normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty]
+    + ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
+        sign φs ↑φsΛ • (φsΛ.1).timeContract *
+        (∑ φssucΛ : { φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ φssucΛ.HaveEqTime },
+      sign [φsΛ.1]ᵘᶜ φssucΛ • (φssucΛ.1).timeContract * normalOrder (ofFieldOpList [φssucΛ.1]ᵘᶜ)) := by
   rw [wicks_theorem]
   simp only [wickTerm]
   let e1 : WickContraction φs.length ≃ {φsΛ // HaveEqTime φsΛ} ⊕ {φsΛ // ¬ HaveEqTime φsΛ} := by
@@ -94,17 +142,9 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime (φs 
   simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
     Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, sub_left_inj, e1]
   rw [add_comm]
-
-lemma haveEqTime_wick_sum_eq_split (φs : List 𝓕.FieldOp) :
-    (∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}),
-    φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) =
-    ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
-      (sign φs ↑φsΛ • (φsΛ.1).timeContract *
-    ∑ φssucΛ : { φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬φssucΛ.HaveEqTime },
-      sign [φsΛ.1]ᵘᶜ φssucΛ •
-      (φssucΛ.1).timeContract * normalOrder (ofFieldOpList [φssucΛ.1]ᵘᶜ)) := by
+  congr 1
   let f : WickContraction φs.length → 𝓕.FieldOpAlgebra := fun φsΛ =>
-    φsΛ.sign • φsΛ.timeContract.1 * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
+    φsΛ.sign • (φsΛ.timeContract.1 * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ))
   change ∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}), f φsΛ.1 = _
   rw [sum_haveEqTime]
   congr
@@ -112,12 +152,12 @@ lemma haveEqTime_wick_sum_eq_split (φs : List 𝓕.FieldOp) :
   simp only [f]
   conv_lhs =>
     enter [2, φsucΛ]
-    enter [1]
+    rw [← Algebra.smul_mul_assoc]
     rw [join_sign_timeContract φsΛ.1 φsucΛ.1]
   conv_lhs =>
     enter [2, φsucΛ]
     rw [mul_assoc]
-  rw [← Finset.mul_sum]
+  rw [← Finset.mul_sum, ← Algebra.smul_mul_assoc]
   congr
   funext φsΛ'
   simp only [ne_eq, Algebra.smul_mul_assoc]
@@ -132,10 +172,10 @@ lemma normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive (φs :
         (∑ φssucΛ : { φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ φssucΛ.HaveEqTime },
       sign [φsΛ.1]ᵘᶜ φssucΛ • (φssucΛ.1).timeContract * normalOrder (ofFieldOpList [φssucΛ.1]ᵘᶜ) -
       𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))) := by
-  rw [normalOrder_timeOrder_ofFieldOpList_eq_haveEqTime_sum_not_haveEqTime]
+  rw [normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty,
+    timeOrder_haveEqTime_split]
   rw [add_sub_assoc]
   congr 1
-  rw [haveEqTime_wick_sum_eq_split]
   simp only [ne_eq, Algebra.smul_mul_assoc]
   rw [← Finset.sum_sub_distrib]
   congr 1
@@ -177,12 +217,19 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
   rw [timeOrderF_ofCrAnListF]
   simp
 
-/--
-Wicks theorem for normal ordering followed by time-ordering, states that
-`𝓣(𝓝(φ₀…φₙ))` is equal to
-`∑ φsΛ, φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)`
-over those Wick contraction `φsΛ` which do not have any equal time contractions.
-This is compared to the ordinary Wicks theorem which sums over all Wick contractions.
+/--For a list `φs` of `𝓕.FieldOp`, the normal-ordered version of Wick's theorem states that
+
+`𝓣(𝓝(φs)) = ∑ φsΛ, φsΛ.wickTerm`
+
+where the sum is over all Wick contraction `φsΛ` in which no two contracted elements
+have the same time.
+
+The proof of proceeds by induction  on `φs`, with the base case `[]` holding by following
+through definitions. and the inductive case holding as a result of
+- `timeOrder_haveEqTime_split`
+- `normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty`
+- and the induction hypothesis on `𝓣(𝓝([φsΛ.1]ᵘᶜ))` for contractions `φsΛ` of `φs` which only
+  have equal time contractions and are non-empty.
 -/
 theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
     𝓣(𝓝(ofFieldOpList φs)) =

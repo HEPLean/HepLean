@@ -429,6 +429,11 @@ lemma join_sign {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign := by
   exact join_sign_induction φsΛ φsucΛ hc (φsΛ).1.card rfl
 
+/-- For a list `φs` of `𝓕.FieldOp`, a  Wick contraction `φsΛ` of `φs`,
+  and a Wick contraction `φsucΛ` of `[φsΛ]ᵘᶜ`,
+  `(join φsΛ φsucΛ).sign • (join φsΛ φsucΛ).timeContract` is equal to the product of
+  - `φsΛ.sign • φsΛ.timeContract` and
+  - `φsucΛ.sign • φsucΛ.timeContract`. -/
 lemma join_sign_timeContract {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
     (join φsΛ φsucΛ).sign • (join φsΛ φsucΛ).timeContract.1 =

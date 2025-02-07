@@ -496,6 +496,8 @@ lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
     apply timeOrder_superCommute_neq_time
     simp_all [crAnTimeOrderRel]
 
+/-- For a field specification `𝓕`, and `a`, `b`, `c` in `𝓕.FieldOpAlgebra`, then
+  `𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c)`. -/
 lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
     𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c) := by
   obtain ⟨a, rfl⟩ := ι_surjective a

@@ -101,7 +101,7 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
 /--
   For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`,  a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
-  `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `FieldOp`
+  `𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `FieldOp`
   corresponding to `k` removed.
 
   The proof of this result ultimately a consequence of definitions.

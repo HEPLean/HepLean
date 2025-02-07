@@ -96,6 +96,9 @@ lemma empty_mem {φs : List 𝓕.FieldOp} : empty (n := φs.length).EqTimeOnly :
   rw [eqTimeOnly_iff_forall_finset]
   simp [empty]
 
+/-- Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` of `φs` with
+  in which every contraction involves two `FieldOp`s that have the same time. Then
+  `φsΛ.staticContract = φsΛ.timeContract`. -/
 lemma staticContract_eq_timeContract_of_eqTimeOnly (h : φsΛ.EqTimeOnly) :
     φsΛ.staticContract = φsΛ.timeContract := by
   simp only [staticContract, timeContract]
@@ -190,6 +193,12 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid {φs : List 𝓕.FieldOp}
     𝓣(a * φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(a * b) := by
   exact timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction φsΛ hl a b φsΛ.1.card rfl
 
+/-- Let `φs` be a list of `𝓕.FieldOp`, `φsΛ` a `WickContraction` of `φs` with
+  in which every contraction involves two `FieldOp`s that have the same time and
+  `b` a general element in `𝓕.FieldOpAlgebra`. Then
+  `𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b)`.
+
+  This follows from properties of orderings and the ideal defining `𝓕.FieldOpAlgebra`. -/
 lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
     (hl : φsΛ.EqTimeOnly) (b : 𝓕.FieldOpAlgebra) :
@@ -238,6 +247,9 @@ lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
   intro h
   simp_all
 
+/-- Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` with
+  at least one contraction between `FieldOp` that do not have the same time. Then
+  `𝓣(φsΛ.staticContract.1) = 0`. -/
 lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (hl : ¬ φsΛ.EqTimeOnly) : 𝓣(φsΛ.staticContract.1) = 0 := by
   obtain ⟨i, j, hij, φsucΛ, rfl, hr⟩ := exists_join_singleton_of_not_eqTimeOnly φsΛ hl
