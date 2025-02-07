@@ -188,7 +188,7 @@ lemma orderedInsert_eq_insertIdx_of_fin_list_sorted (l : List (Fin n)) (hl : l.S
 -/
 
 /-- Given a Wick contraction `c`, the ordered list of elements of `Fin n` which are not contracted,
-  i.e. do not appera anywhere in `c.1`. -/
+  i.e. do not appear anywhere in `c.1`. -/
 def uncontractedList : List (Fin n) := List.filter (fun x => x ∈ c.uncontracted) (List.finRange n)
 
 lemma uncontractedList_mem_iff (i : Fin n) :

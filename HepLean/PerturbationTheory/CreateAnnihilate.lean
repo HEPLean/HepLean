@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Algebra.BigOperators.Group.Finset
 /-!
 
-# Creation and annihlation parts of fields
+# Creation and annihilation parts of fields
 
 -/
 
@@ -33,8 +33,8 @@ instance : Fintype CreateAnnihilate where
 lemma eq_create_or_annihilate (φ : CreateAnnihilate) : φ = create ∨ φ = annihilate := by
   cases φ <;> simp
 
-/-- The normal ordering on creation and annihlation operators.
-  Under this relation, `normalOrder a b` is false only if `a` is annihlate and `b` is create. -/
+/-- The normal ordering on creation and annihilation operators.
+  Under this relation, `normalOrder a b` is false only if `a` is annihilate and `b` is create. -/
 def normalOrder : CreateAnnihilate → CreateAnnihilate → Prop
   | create, _ => True
   | annihilate, annihilate => True

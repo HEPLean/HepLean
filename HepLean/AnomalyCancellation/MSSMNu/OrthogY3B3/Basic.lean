@@ -30,7 +30,7 @@ structure AnomalyFreePerp extends MSSMACC.LinSols where
   perpB₃ : dot B₃.val val = 0
 
 /-- The projection of an object in `MSSMACC.AnomalyFreeLinear` onto the subspace
-  orthgonal to `Y₃` and`B₃`. -/
+  orthogonal to `Y₃` and`B₃`. -/
 def proj (T : MSSMACC.LinSols) : MSSMACC.AnomalyFreePerp :=
   ⟨(dot B₃.val T.val - dot Y₃.val T.val) • Y₃.1.1
   + (dot Y₃.val T.val - 2 * dot B₃.val T.val) • B₃.1.1

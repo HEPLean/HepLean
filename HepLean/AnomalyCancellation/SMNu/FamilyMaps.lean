@@ -82,7 +82,7 @@ def familyEmbedding (m n : ℕ) : (SMνCharges m).Charges →ₗ[ℚ] (SMνCharg
   chargesMapOfSpeciesMap (speciesEmbed m n)
 
 /-- For species, the embedding of the `1`-family charges into the `n`-family charges in
-a universal manor. -/
+a universal manner. -/
 @[simps!]
 def speciesFamilyUniversial (n : ℕ) :
     (SMνSpecies 1).Charges →ₗ[ℚ] (SMνSpecies n).Charges where
@@ -91,7 +91,7 @@ def speciesFamilyUniversial (n : ℕ) :
   map_smul' _ _ := rfl
 
 /-- The embedding of the `1`-family charges into the `n`-family charges in
-a universal manor. -/
+a universal manner. -/
 def familyUniversal (n : ℕ) : (SMνCharges 1).Charges →ₗ[ℚ] (SMνCharges n).Charges :=
   chargesMapOfSpeciesMap (speciesFamilyUniversial n)
 

@@ -25,7 +25,7 @@ structure HTMLNote where
   /-- The line in the file where the contribution came from. -/
   line : Nat
 
-/-- Converts a note infor into a HTMLNote. -/
+/-- Converts a note info into a HTMLNote. -/
 def HTMLNote.ofNodeInfo (ni : NoteInfo) : HTMLNote :=
   { ni with }
 

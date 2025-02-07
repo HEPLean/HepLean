@@ -143,7 +143,7 @@ lemma mul_eq_iff_eq_mul' (a b c : FieldStatistic) : a * b = c ↔ b = a * c := b
       reduceCtorEq, fermionic_mul_bosonic, true_iff, iff_true]
   all_goals rfl
 
-/-- The field statistics of a list of fields is fermionic if ther is an odd number of fermions,
+/-- The field statistics of a list of fields is fermionic if there is an odd number of fermions,
   otherwise it is bosonic. -/
 def ofList (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) → FieldStatistic
   | [] => bosonic

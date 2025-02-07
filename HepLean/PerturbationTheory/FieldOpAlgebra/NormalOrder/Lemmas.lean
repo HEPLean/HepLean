@@ -118,7 +118,7 @@ lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
 
 -/
 
-/-- For a field specfication `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
+/-- For a field specification `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
   of the super commutator of `a` and `b` vanishes. I.e. `𝓝([a,b]ₛ) = 0`. -/
 @[simp]
 lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :

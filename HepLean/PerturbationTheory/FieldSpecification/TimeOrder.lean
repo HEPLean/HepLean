@@ -103,7 +103,7 @@ lemma maxTimeFieldPos_lt_eraseMaxTimeField_length_succ (φ : 𝓕.FieldOp) (φs 
   exact maxTimeFieldPos_lt_length φ φs
 
 /-- Given a list `φ :: φs` of states, the position of the left-most state of maximum
-  time as an eement of `Fin (eraseMaxTimeField φ φs).length.succ`.
+  time as an element of `Fin (eraseMaxTimeField φ φs).length.succ`.
   As an example:
   - for the list `[φ1(t = 4), φ2(t = 5), φ3(t = 3), φ4(t = 5)]` this would return `⟨1,...⟩`.
 -/

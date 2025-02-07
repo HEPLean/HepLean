@@ -31,7 +31,7 @@ open TensorProduct
 
 variable {d : ℕ}
 
-/-- An auxillary linear map used in the definition of a generalised boost. -/
+/-- An auxiliary linear map used in the definition of a generalised boost. -/
 def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
   toFun x := (2 * ⟪x, u.val.val⟫ₘ) • v.1.1
   map_add' x y := by
@@ -43,7 +43,7 @@ def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d 
       smul_tmul, tmul_smul, map_smul, smul_eq_mul, RingHom.id_apply]
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
-/-- An auxillary linear map used in the definition of a genearlised boost. -/
+/-- An auxiliary linear map used in the definition of a genearlised boost. -/
 def genBoostAux₂ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
   toFun x := - (⟪x, u.1.1 + v.1.1⟫ₘ / (1 + ⟪u.1.1, v.1.1⟫ₘ)) • (u.1.1 + v.1.1)
   map_add' x y := by

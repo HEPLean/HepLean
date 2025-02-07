@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import HepLean.PerturbationTheory.FieldSpecification.CrAnFieldOp
 /-!
 
-# Creation and annihlation sections
+# Creation and annihilation sections
 
 In the module
 `HepLean.PerturbationTheory.FieldSpecification.Basic`
@@ -34,8 +34,8 @@ variable {𝓕 : FieldSpecification}
 /-- The sections in `𝓕.CrAnFieldOp` over a list `φs : List 𝓕.FieldOp`.
   In terms of physics, given some fields `φ₁...φₙ`, the different ways one can associate
   each field as a `creation` or an `annilation` operator. E.g. the number of terms
-  `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annhilation
-  operators at this point (e.g. ansymptotic states) this is accounted for. -/
+  `φ₁⁰φ₂¹...φₙ⁰` `φ₁¹φ₂¹...φₙ⁰` etc. If some fields are exclusively creation or annihilation
+  operators at this point (e.g. asymptotic states) this is accounted for. -/
 def CrAnSection (φs : List 𝓕.FieldOp) : Type :=
   {ψs : List 𝓕.CrAnFieldOp // ψs.map 𝓕.crAnFieldOpToFieldOp = φs}
   -- Π i, 𝓕.fieldOpToCreateAnnihilateType (φs.get i)
@@ -107,7 +107,7 @@ def nilEquiv : CrAnSection (𝓕 := 𝓕) [] ≃ Unit where
   right_inv _ := by
     simp
 
-/-- The creation and annihlation sections for a singleton list is given by
+/-- The creation and annihilation sections for a singleton list is given by
   a choice of `𝓕.fieldOpToCreateAnnihilateType φ`. If `φ` is a asymptotic state
   there is no choice here, else there are two choices. -/
 def singletonEquiv {φ : 𝓕.FieldOp} : CrAnSection [φ] ≃
@@ -126,7 +126,7 @@ def singletonEquiv {φ : 𝓕.FieldOp} : CrAnSection [φ] ≃
     simp only [head]
     rfl
 
-/-- An equivalence seperating the head of a creation and annhilation section
+/-- An equivalence seperating the head of a creation and annihilation section
   from the tail. -/
 def consEquiv {φ : 𝓕.FieldOp} {φs : List 𝓕.FieldOp} : CrAnSection (φ :: φs) ≃
     𝓕.fieldOpToCrAnType φ × CrAnSection φs where
