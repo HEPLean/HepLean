@@ -12,6 +12,19 @@ layout: default
 <script type="text/javascript" charset="UTF-8"
   src="../assets/css/lean.min.js"></script>
 <script>hljs.highlightAll();</script>
+<!--- Toggle background color. -->
+<script>
+let isDefaultBackground = true;
+function toggleDyslexiaMode() {
+  document.body.style.backgroundColor = isDefaultBackground ? '#f4ecd8' : '#ffffff';
+  isDefaultBackground = !isDefaultBackground;
+}
+</script>
+<div style="text-align: right;">
+  <a href="#" onclick="toggleDyslexiaMode(); return false;" style="color: #2c5282; text-decoration: underline; cursor: pointer;">
+    Toggle background color
+  </a>
+</div>
 <!-- Note header (title, curators, notice etc.). -->
 <center><h1 style="font-size: 50px;">{{ site.data.perturbationTheory.title }}</h1></center>
 <center><h2 style="font-size: 20px;">Note Authors: {{ site.data.perturbationTheory.curators }}</h2></center>
@@ -68,7 +81,7 @@ layout: default
   {% endif %}
   {% if entry.type == "name" %}
 
-  <div style="background-color: #ffff; padding: 10px; border-radius: 4px;">
+  <div style=" padding: 10px; border-radius: 4px;">
      <b id="decl-{{ entry.declNo }}">
       <a href="#decl-{{ entry.declNo }}" style="color: black;">
       {% if entry.isDef %}Definition{% else %}Theorem{% endif %} {{ entry.declNo }}</a></b>
