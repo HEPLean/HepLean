@@ -127,9 +127,9 @@ uncontracted elements of the Wick contraction which do not have equal time contr
 The properties of `join_sign_timeContract` is then used to equate terms.
 -/
 lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
-  𝓣(ofFieldOpList φs) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
+    𝓣(ofFieldOpList φs) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
     φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
-  + ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}), φsΛ.1.sign • φsΛ.1.timeContract *
+    + ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}), φsΛ.1.sign • φsΛ.1.timeContract *
     (∑ φssucΛ : { φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ φssucΛ.HaveEqTime },
       φssucΛ.1.wickTerm) := by
   rw [wicks_theorem]
