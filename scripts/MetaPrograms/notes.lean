@@ -39,19 +39,23 @@ structure DeclInfo where
   status : NameStatus
   declString : String
   docString : String
+  isDef : Bool
 
 def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let line ← Name.lineNumber n
   let fileName ← Name.fileName n
-  let declString ← Name.getDeclString n
+  let declString ← Name.getDeclStringNoDoc n
   let docString ← Name.getDocString n
+  let constInfo ← getConstInfo n
+  let isDef := constInfo.isDef ∨ Lean.isStructure (← getEnv) n ∨ constInfo.isInductive
   pure {
     line := line,
     fileName := fileName,
     name := n,
     status := ns,
     declString := declString,
-    docString := docString}
+    docString := docString,
+    isDef := isDef}
 
 def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
@@ -64,24 +68,29 @@ def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
     fileName: {d.fileName}
     status: \"{d.status}\"
     link: \"{link}\"
+    isDef: {d.isDef}
     docString: |
       {docStringIndent}
     declString: |
       {declStringIndent}"
 
-def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((List String) × Nat × Nat)
+/-- In `(List String) × Nat × Nat` the first `Nat` is section number, the second `Nat`
+  is subsection number, and the third `Nat` is defn. or lemma number.
+  Definitions and lemmas etc are done by section not subsection. -/
+def NotePart.toYMLM : ((List String) × Nat × Nat × Nat) →  NotePart →
+    MetaM ((List String) × Nat × Nat × Nat)
   | x, NotePart.h1 s =>
     let newString := s!"
   - type: h1
     sectionNo: {x.2.1.succ}
     content: \"{s}\""
-    return ⟨x.1 ++ [newString], ⟨Nat.succ x.2.1, 0⟩⟩
+    return ⟨x.1 ++ [newString], ⟨Nat.succ x.2.1, 0, 0⟩⟩
   | x, NotePart.h2 s =>
     let newString := s!"
   - type: h2
-    sectionNo: \"{x.2.1}.{x.2.2.succ}\"
+    sectionNo: \"{x.2.1}.{x.2.2.1.succ}\"
     content: \"{s}\""
-    return ⟨x.1 ++ [newString], ⟨x.2.1, Nat.succ x.2.2⟩⟩
+    return ⟨x.1 ++ [newString], ⟨x.2.1, Nat.succ x.2.2.1, x.2.2.2⟩⟩
   | x, NotePart.p s =>
     let newString := s!"
   - type: p
@@ -109,7 +118,8 @@ def NotePart.toYMLM : ((List String) × Nat × Nat) →  NotePart → MetaM ((Li
     return ⟨x.1 ++ [newString], x.2⟩
   | false =>
   let newString ← (← DeclInfo.ofName n s).toYML
-  return ⟨x.1 ++ [newString], x.2⟩
+  let newString := newString ++ s!"\n    declNo: \"{x.2.1}.{x.2.2.2.succ}\""
+  return ⟨x.1 ++ [newString], ⟨x.2.1, x.2.2.1, Nat.succ x.2.2.2⟩⟩
 
 structure Note where
   title : String
@@ -135,7 +145,8 @@ def perturbationTheory : Note where
     .name `FieldSpecification.wicks_theorem_context .incomplete,
     .p "In this note we walk through the important parts of the proof of Wick's theorem
       for both fermions and bosons,
-      as it appears in HepLean. We start with some basic definitions.",
+      as it appears in HepLean. Not every lemma or definition is covered here.
+      The aim is to give just enough that the story can be understood.",
     .h1 "Field operators",
     .h2 "Field statistics",
     .name ``FieldStatistic .complete,

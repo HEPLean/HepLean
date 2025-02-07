@@ -9,17 +9,34 @@ layout: default
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
 <script type="text/javascript" charset="UTF-8"
   src="../assets/css/lean.min.js"></script>
 <script>hljs.highlightAll();</script>
+<!--- Toggle background color. -->
+<script>
+let isDefaultBackground = true;
+function toggleDyslexiaMode() {
+  document.body.style.backgroundColor = isDefaultBackground ? '#f4ecd8' : '#ffffff';
+  isDefaultBackground = !isDefaultBackground;
+}
+</script>
+<div style="text-align: right;">
+  <a href="#" onclick="toggleDyslexiaMode(); return false;" style="color: #2c5282; text-decoration: underline; cursor: pointer;">
+    Toggle background color
+  </a>
+</div>
 <!-- Note header (title, curators, notice etc.). -->
 <center><h1 style="font-size: 50px;">{{ site.data.perturbationTheory.title }}</h1></center>
-<center><h2 style="font-size: 20px;">Note Curators: {{ site.data.perturbationTheory.curators }}</h2></center>
-
+<center><h2 style="font-size: 20px;">Note Authors: {{ site.data.perturbationTheory.curators }}</h2></center>
+<!--  -->
+<style>
+  body {
+    font-family: "Times New Roman", Times, serif;
+  }
+</style>
 <br>
 <div style="border: 1px solid black; padding: 10px;">
-  <p>Note:
+  <p>
   These notes are created using an interactive theorem
   prover called <a href="https://lean-lang.org">Lean</a>.
   Lean formally checks definitions, theorems and proofs for correctness.
@@ -64,17 +81,18 @@ layout: default
   {% endif %}
   {% if entry.type == "name" %}
 
-  <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px;">
-    <p> <a href = "{{ entry.link }}" style="font-weight: bold; color: #2c5282;">{{ entry.name }}</a>:
+  <div style=" padding: 10px; border-radius: 4px;">
+     <b id="decl-{{ entry.declNo }}">
+      <a href="#decl-{{ entry.declNo }}" style="color: black;">
+      {% if entry.isDef %}Definition{% else %}Theorem{% endif %} {{ entry.declNo }}</a></b>
+      (<a href = "{{ entry.link }}" style="color: #2c5282;">{{ entry.name }}</a>)<b>:</b>
       {% if entry.status == "incomplete" %}🚧{% endif %}
-      {{ entry.docString | markdownify}}</p>
+      <div style="margin-left: 1em;">{{ entry.docString | markdownify}}</div>
     <details class="code-block-container">
-    <summary>Show Lean code:</summary>
+    <summary style="font-size: 0.8em; margin-left: 1em;">Show Lean code:</summary>
     <pre style="background: none; margin: 0;"><code class="language-lean">{{ entry.declString }}</code></pre>
     </details>
   </div>
-  <br>
-
   {% endif %}
   {% if entry.type == "remark" %}
   <div style="padding: 10px; border-radius: 4px; border: 1px solid #e8e6e6;">

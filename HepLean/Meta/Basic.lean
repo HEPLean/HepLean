@@ -128,7 +128,7 @@ def getDocString (c : Name) : CoreM String := do
   let doc? ← findDocString? env c
   return doc?.getD ""
 
-/-- Given a name, returns the source code defining that name. -/
+/-- Given a name, returns the source code defining that name, including doc strings. -/
 def getDeclString (name : Name) : CoreM String := do
   let env ← getEnv
   match ← findDeclarationRanges? name with
@@ -140,6 +140,20 @@ def getDeclString (name : Name) : CoreM String := do
       return fileMap.source.extract (fileMap.ofPosition pos) (fileMap.ofPosition endPos)
     | none => return ""
   | none => return ""
+
+/-- Given a name, returns the source code defining that name,
+  starting with the def ... or lemma...  etc. -/
+def getDeclStringNoDoc (name : Name) : CoreM String := do
+  let declerationString ← getDeclString name
+  let headerLine (line : String) : Bool :=
+    line.startsWith "def " ∨ line.startsWith "lemma " ∨ line.startsWith "inductive "
+    ∨ line.startsWith "structure " ∨ line.startsWith "theorem "
+    ∨ line.startsWith "instance " ∨ line.startsWith "abbrev " ∨
+    line.startsWith "noncomputable def "
+  let lines := declerationString.splitOn "\n"
+  match lines.findIdx? headerLine with
+  | none => panic! s!"{name} has no header line"
+  | some i => return String.intercalate "\n" (lines.drop i)
 
 end Lean.Name
 
