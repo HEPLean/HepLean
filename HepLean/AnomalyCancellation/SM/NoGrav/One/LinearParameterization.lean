@@ -61,7 +61,7 @@ lemma speciesVal (S : linearParameters) :
   | 3 => rfl
   | 4 => rfl
 
-/-- The map from the linear paramaters to elements of `(SMNoGrav 1).LinSols`. -/
+/-- The map from the linear parameters to elements of `(SMNoGrav 1).LinSols`. -/
 def asLinear (S : linearParameters) : (SMNoGrav 1).LinSols :=
   chargeToLinear S.asCharges (by
     simp only [accSU2, SMSpecies_numberCharges, Finset.univ_unique, Fin.default_eq_zero,

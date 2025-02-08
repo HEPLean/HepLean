@@ -44,7 +44,7 @@ We define the direct sum of the edge and vertex momentum spaces.
 
 -/
 
-/-- The type which assocaites to each half-edge a `1`-dimensional vector space.
+/-- The type which associates to each half-edge a `1`-dimensional vector space.
   Corresponding to that spanned by its momentum. -/
 def HalfEdgeMomenta : Type := F.𝓱𝓔 → ℝ
 
@@ -89,7 +89,7 @@ instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
 /-- The edge momenta form a module over `ℝ`. -/
 instance : Module ℝ F.EdgeMomenta := Pi.module _ _ _
 
-/-- The type which assocaites to each ege a `1`-dimensional vector space.
+/-- The type which associates to each ege a `1`-dimensional vector space.
   Corresponding to that spanned by its total inflowing momentum. -/
 def VertexMomenta : Type := F.𝓥 → ℝ
 

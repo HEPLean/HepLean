@@ -314,7 +314,7 @@ lemma empty_not_haveEqTime {φs : List 𝓕.FieldOp} :
   rw [haveEqTime_iff_finset]
   simp [empty]
 
-/-- Given a Wick contraction the subset of contracted pairs between eqaul time fields. -/
+/-- Given a Wick contraction the subset of contracted pairs between equal time fields. -/
 def eqTimeContractSet {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
     Finset (Finset (Fin φs.length)) :=
   Finset.univ.filter (fun a =>

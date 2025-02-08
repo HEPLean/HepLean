@@ -29,7 +29,7 @@ variable {d : ℕ}
 /-- Notation for `minkowskiMatrix`. -/
 scoped[minkowskiMatrix] notation "η" => minkowskiMatrix
 
-/-- The Minkowski matrix is self-inveting. -/
+/-- The Minkowski matrix is self-inverting. -/
 @[simp]
 lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_mul_diagonal]
@@ -55,8 +55,8 @@ lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
 lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_transpose]
 
-/-- The deteminant of the Minkowski matrix is equal to `-1` to the power
-  of the number of spactial dimensions. -/
+/-- The determinant of the Minkowski matrix is equal to `-1` to the power
+  of the number of spatial dimensions. -/
 @[simp]
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
@@ -68,7 +68,7 @@ lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 
   | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
-/-- The Minkowski matix as a block matrix. -/
+/-- The Minkowski matrix as a block matrix. -/
 lemma as_block : @minkowskiMatrix d =
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ) := by
   rw [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, ← fromBlocks_diagonal]

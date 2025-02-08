@@ -175,7 +175,7 @@ lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM
     _ = 1 := by rw [hE]; simp [detD_one, detA_one]
 
 /-- This promotes `Lorentz.SL2C.toSelfAdjointMap M` and its definitional equivalence,
-`Lorentz.SL2C.toSelfAdjointMap' M`, to a linear equivalence by recognising the linear inverse to be
+`Lorentz.SL2C.toSelfAdjointMap' M`, to a linear equivalence by recognizing the linear inverse to be
 `Lorentz.SL2C.toSelfAdjointMap M⁻¹`, i.e., `Lorentz.SL2C.toSelfAdjointMap' M⁻¹`. -/
 noncomputable def toSelfAdjointEquiv (M : ℂ²ˣ²) [Invertible M] : ℍ₂ ≃ₗ[ℝ] ℍ₂ where
   toLinearMap := toSelfAdjointMap' M

@@ -21,7 +21,7 @@ open HepLean.List
 open FieldOpAlgebra
 
 /-- Given a Wick contraction `φsΛ`, and a subset of `φsΛ.1`, the Wick contraction
-  conisting of contracted pairs within that subset. -/
+  consisting of contracted pairs within that subset. -/
 def subContraction (S : Finset (Finset (Fin φs.length))) (ha : S ⊆ φsΛ.1) :
     WickContraction φs.length :=
   ⟨S, by

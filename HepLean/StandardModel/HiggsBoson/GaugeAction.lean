@@ -118,7 +118,7 @@ lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det 
   simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
     Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
 
-/-- The `rotateMatrix` for a non-zero Higgs vector is untitary. -/
+/-- The `rotateMatrix` for a non-zero Higgs vector is unitary. -/
 lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
     (rotateMatrix φ) ∈ unitaryGroup (Fin 2) ℂ := by
   rw [mem_unitaryGroup_iff', rotateMatrix_star, rotateMatrix]
@@ -148,15 +148,15 @@ lemma rotateMatrix_specialUnitary {φ : HiggsVec} (hφ : φ ≠ 0) :
 
 /-- Given a Higgs vector, an element of the gauge group which puts the first component of the
 vector to zero, and the second component to a real number. -/
-def rotateGuageGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
+def rotateGaugeGroup {φ : HiggsVec} (hφ : φ ≠ 0) : GaugeGroupI :=
     ⟨1, ⟨(rotateMatrix φ), rotateMatrix_specialUnitary hφ⟩, 1⟩
 
 /-- Acting on a non-zero Higgs vector with its rotation matrix gives a vector which is
   zero in the first component and a positive real in the second component. -/
-lemma rotateGuageGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
-    rep (rotateGuageGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
+lemma rotateGaugeGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
+    rep (rotateGaugeGroup hφ) φ = ![0, Complex.ofRealHom ‖φ‖] := by
   rw [rep_apply]
-  simp only [rotateGuageGroup, rotateMatrix, one_pow, one_smul,
+  simp only [rotateGaugeGroup, rotateMatrix, one_pow, one_smul,
     Nat.succ_eq_add_one, Nat.reduceAdd, ofRealHom_eq_coe]
   ext i
   fin_cases i
@@ -184,8 +184,8 @@ theorem rotate_fst_zero_snd_real (φ : HiggsVec) :
       norm_zero]
     ext i
     fin_cases i <;> rfl
-  · use rotateGuageGroup h
-    exact rotateGuageGroup_apply h
+  · use rotateGaugeGroup h
+    exact rotateGaugeGroup_apply h
 
 /-- For every Higgs vector there exists an element of the gauge group which rotates that
   Higgs vector to have `0` in the second component and be a non-negative real in the first

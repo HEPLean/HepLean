@@ -52,7 +52,7 @@ See https://math.ucr.edu/home/baez/guts.pdf
 informal_definition gaugeGroupℤ₂SubGroup where
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
 
-/-- The guage group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
+/-- The gauge group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
 the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
 
 See https://math.ucr.edu/home/baez/guts.pdf
@@ -69,7 +69,7 @@ See https://math.ucr.edu/home/baez/guts.pdf
 informal_definition gaugeGroupℤ₃SubGroup where
   deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
 
-/-- The guage group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
+/-- The gauge group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
 the ℤ₃-subgroup `gaugeGroupℤ₃SubGroup`.
 
 See https://math.ucr.edu/home/baez/guts.pdf

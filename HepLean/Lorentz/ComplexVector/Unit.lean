@@ -38,7 +38,7 @@ lemma contrCoUnitVal_expand_tmul : contrCoUnitVal =
   rfl
 
 /-- The contra-co unit for complex lorentz vectors as a morphism
-  `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo`, manifesting the invaraince under
+  `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo`, manifesting the invariance under
   the `SL(2, ℂ)` action. -/
 def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
   hom := ModuleCat.ofHom {
@@ -88,7 +88,7 @@ lemma coContrUnitVal_expand_tmul : coContrUnitVal =
   rfl
 
 /-- The co-contra unit for complex lorentz vectors as a morphism
-  `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr`, manifesting the invaraince under
+  `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr`, manifesting the invariance under
   the `SL(2, ℂ)` action. -/
 def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
   hom := ModuleCat.ofHom {

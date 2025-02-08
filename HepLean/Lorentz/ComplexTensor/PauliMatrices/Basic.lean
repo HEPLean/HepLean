@@ -79,7 +79,7 @@ lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
 -/
 
 set_option maxRecDepth 5000 in
-/-- A rearanging of `pauliCoDown` to place the pauli matrices on the right. -/
+/-- A rearranging of `pauliCoDown` to place the pauli matrices on the right. -/
 lemma pauliCoDown_eq_metric_mul_pauliCo :
     {pauliCoDown | μ α' β' = εL' | α α' ⊗ εR' | β β' ⊗ pauliCo | μ α β}ᵀ := by
   conv =>
@@ -128,7 +128,7 @@ lemma pauliCoDown_eq_metric_mul_pauliCo :
   decide
 
 set_option maxRecDepth 5000 in
-/-- A rearanging of `pauliContrDown` to place the pauli matrices on the right. -/
+/-- A rearranging of `pauliContrDown` to place the pauli matrices on the right. -/
 lemma pauliContrDown_eq_metric_mul_pauliContr :
     {pauliContrDown | μ α' β' = εL' | α α' ⊗
     εR' | β β' ⊗ pauliContr | μ α β}ᵀ := by

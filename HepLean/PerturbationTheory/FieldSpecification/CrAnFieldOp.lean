@@ -34,7 +34,7 @@ In this module in addition to defining `CrAnFieldOp` we also define some maps:
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- To each field operator the specificaition of the type of creation and annihilation parts.
+/-- To each field operator the specification of the type of creation and annihilation parts.
   For asymptotic states there is only one allowed part, whilst for position
   field operator there is two. -/
 def fieldOpToCrAnType : 𝓕.FieldOp → Type
@@ -92,7 +92,7 @@ def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
 
 /-- For a field specification `𝓕`, and an element `φ` in `𝓕.CrAnFieldOp`, the field
   statistic `crAnStatistics φ` is defined to be the statistic associated with the field `𝓕.Field`
-  (or equivalently `𝓕.FieldOp`) underlying `φ`.
+  (or `𝓕.FieldOp`) underlying `φ`.
 
   The following notation is used in relation to `crAnStatistics`:
   - For `φ` an element of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φ` is `crAnStatistics φ`.

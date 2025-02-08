@@ -174,11 +174,11 @@ lemma altLeftContraction_basis (i j : Fin 2) :
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
 /--
-The linear map from rightHandedWeyl ⊗ altRightHandedWeyl to ℂ given by
-  summing over components of rightHandedWeyl and altRightHandedWeyl in the
+The linear map from `rightHandedWeyl ⊗ altRightHandedWeyl` to `ℂ` given by
+  summing over components of `rightHandedWeyl` and `altRightHandedWeyl` in the
   standard basis (i.e. the dot product).
   The contraction of a right-handed Weyl fermion with a left-handed Weyl fermion.
-  In index notation this is ψ^{dot a} φ_{dot a}.
+  In index notation this is `ψ^{dot a} φ_{dot a}`.
 -/
 def rightAltContraction : rightHanded ⊗ altRightHanded ⟶ 𝟙_ (Rep ℂ SL(2,ℂ)) where
   hom := ModuleCat.ofHom <| TensorProduct.lift rightAltBi
