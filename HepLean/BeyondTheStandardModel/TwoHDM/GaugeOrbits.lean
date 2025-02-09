@@ -84,8 +84,8 @@ lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
     simpa only [prodMatrix, Fin.zero_eta, Fin.isValue, of_apply, cons_val', cons_val_zero,
       empty_val', cons_val_fin_one] using smooth_innerProd _ _
 
-/-- The map `prodMatrix` is invariant under the simultanous action of `gaugeAction` on the two Higgs
-fields. -/
+/-- The map `prodMatrix` is invariant under the simultaneous action of `gaugeAction` on the two
+Higgs fields. -/
 informal_lemma prodMatrix_invariant where
   deps := [``prodMatrix, ``gaugeAction]
 

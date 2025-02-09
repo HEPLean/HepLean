@@ -124,7 +124,7 @@ lemma pureU1_last {n : ℕ} (S : (PureU1 n.succ).LinSols) :
   rw [Fin.sum_univ_castSucc] at hS
   linear_combination hS
 
-/-- Two solutions to the Linear ACCs for `n.succ` areq equal if their first `n` charges are
+/-- Two solutions to the Linear ACCs for `n.succ` are equal if their first `n` charges are
   equal. -/
 lemma pureU1_anomalyFree_ext {n : ℕ} {S T : (PureU1 n.succ).LinSols}
     (h : ∀ (i : Fin n), S.val i.castSucc = T.val i.castSucc) : S = T := by

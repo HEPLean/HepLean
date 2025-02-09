@@ -97,7 +97,7 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
   exact congrFun (congrArg (fun f => f.toFun) hg) _
 
 /-- The unit tensor of the dual of a color `c` is equal to the unit tensor of `c`
-  with indicees permuted. -/
+  with indices permuted. -/
 lemma dual_unitTensor_eq_perm (c : S.C) :
     {S.unitTensor (S.τ c) | ν μ}ᵀ.tensor = ({S.unitTensor c | μ ν}ᵀ |>
     perm (OverColor.equivToHomEq (finMapToEquiv ![1, 0] ![1, 0])

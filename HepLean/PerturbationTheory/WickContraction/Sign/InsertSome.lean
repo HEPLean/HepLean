@@ -201,7 +201,7 @@ lemma signFinset_insertAndContract_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Fie
         rw [Fin.succAbove_lt_succAbove_iff]
 
 /--
-Given a Wick contraction `φsΛ` the sign defined in the followin way,
+Given a Wick contraction `φsΛ` the sign defined in the following way,
 related to inserting a field `φ` at position `i` and contracting it with `j : φsΛ.uncontracted`.
 - For each contracted pair `{a1, a2}` in `φsΛ` with `a1 < a2` the sign
   `𝓢(φ, φₐ₂)` if `a₁ < i ≤ a₂` and `a₁ < j`.
@@ -220,7 +220,7 @@ def signInsertSomeProd (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : Wi
     else
       1
 
-/-- Given a Wick contraction `φsΛ` the sign defined in the followin way,
+/-- Given a Wick contraction `φsΛ` the sign defined in the following way,
 related to inserting a field `φ` at position `i` and contracting it with `j : φsΛ.uncontracted`.
 - If `j < i`, for each field `φₐ` in `φⱼ₊₁…φᵢ₋₁` without a dual at position `< j`
   the sign `𝓢(φₐ, φᵢ)`.

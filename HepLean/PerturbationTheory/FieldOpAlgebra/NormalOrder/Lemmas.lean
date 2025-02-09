@@ -224,7 +224,7 @@ For a field specification `𝓕`, an element `φ` of `𝓕.CrAnFieldOp`, a list 
 
 `[φ, 𝓝(φ₀…φₙ)]ₛ = ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
 
-The proof of this result ultimetly goes as follows
+The proof of this result ultimately goes as follows
 - The definition of `normalOrder` is used to rewrite `𝓝(φ₀…φₙ)` as a scalar multiple of
   a `ofCrAnList φsn` where `φsn` is the normal ordering of `φ₀…φₙ`.
 - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
@@ -348,7 +348,7 @@ For a field specification `𝓕`, a `φ` in `𝓕.FieldOp` and a list `φs` of `
 the following relation holds in the algebra `𝓕.FieldOpAlgebra`,
 `φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPart φ, φᵢ]ₛ) * 𝓝(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`.
 
-The proof of ultimetly goes as follows:
+The proof of ultimately goes as follows:
 - `ofFieldOp_eq_crPart_add_anPart` is used to split `φ` into its creation and annihilation parts.
 - The fact that `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)` is used.
 - The fact that `anPart φ * 𝓝(φ₀φ₁…φₙ)` is

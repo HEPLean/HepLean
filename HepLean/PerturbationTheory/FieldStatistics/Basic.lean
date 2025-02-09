@@ -291,7 +291,7 @@ lemma ofList_take_insertIdx_le (n m : ℕ) (φ1 : 𝓕) (φs : List 𝓕) (hn : 
   · exact hn
   · exact hm
 
-/-- The instance of an addative monoid on `FieldStatistic`. -/
+/-- The instance of an additive monoid on `FieldStatistic`. -/
 instance : AddMonoid FieldStatistic where
   zero := bosonic
   add a b := a * b

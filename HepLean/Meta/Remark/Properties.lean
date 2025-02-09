@@ -13,7 +13,7 @@ namespace HepLean
 open Lean
 variable {m} [Monad m] [MonadEnv m] [MonadError m]
 
-/-- All remarks in the enviroment. -/
+/-- All remarks in the environment. -/
 def allRemarkInfo : m (Array RemarkInfo) := do
   let env ← getEnv
   return remarkExtension.getState env

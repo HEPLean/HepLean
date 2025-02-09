@@ -422,7 +422,7 @@ def Rcscb (V : CKMMatrix) : ℂ := [V]cs / [V]cb
 /-- The ratio of the `cs` and `cb` elements of a CKM matrix. -/
 scoped[CKMMatrix] notation (name := cs_cb_ratio) "[" V "]cs|cb" => Rcscb V
 
-/-- Multiplicying the ratio of the `cs` by `cb` element of a CKM matrix by the `cb` element
+/-- Multiplying the ratio of the `cs` by `cb` element of a CKM matrix by the `cb` element
   returns the `cs` element, as long as the `cb` element is non-zero. -/
 lemma Rcscb_mul_cb {V : CKMMatrix} (h : [V]cb ≠ 0) : [V]cs = Rcscb V * [V]cb := by
   rw [Rcscb]

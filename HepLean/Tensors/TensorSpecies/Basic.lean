@@ -93,13 +93,13 @@ open OverColor
 
 variable (S : TensorSpecies)
 
-/-- The field `k` of a TensorSpecies has the instance of a commutative ring. -/
+/-- The field `k` of a `TensorSpecies` has the instance of a commutative ring. -/
 instance : CommRing S.k := S.k_commRing
 
-/-- The field `G` of a TensorSpecies has the instance of a group. -/
+/-- The field `G` of a `TensorSpecies` has the instance of a group. -/
 instance : Group S.G := S.G_group
 
-/-- The field `repDim` of a TensorSpecies is non-zero for all colors. -/
+/-- The field `repDim` of a `TensorSpecies` is non-zero for all colors. -/
 instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 
 /-- The lift of the functor `S.F` to functor. -/

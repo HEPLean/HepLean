@@ -44,7 +44,7 @@ lemma fst_row_normalized_abs (V : CKMMatrix) : abs [V]ud ^ 2 + abs [V]us ^ 2 + a
 lemma snd_row_normalized_abs (V : CKMMatrix) : abs [V]cd ^ 2 + abs [V]cs ^ 2 + abs [V]cb ^ 2 = 1 :=
   VAbs_sum_sq_row_eq_one ⟦V⟧ 1
 
-/-- The absolute value squared of the thid rwo of a CKM matrix is `1`, in terms of `abs`. -/
+/-- The absolute value squared of the third rwo of a CKM matrix is `1`, in terms of `abs`. -/
 lemma thd_row_normalized_abs (V : CKMMatrix) : abs [V]td ^ 2 + abs [V]ts ^ 2 + abs [V]tb ^ 2 = 1 :=
   VAbs_sum_sq_row_eq_one ⟦V⟧ 2
 

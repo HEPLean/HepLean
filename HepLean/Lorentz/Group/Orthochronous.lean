@@ -29,7 +29,7 @@ open Lorentz.Contr
 /-- A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. -/
 def IsOrthochronous : Prop := 0 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0)
 
-/-- A Lorentz transformation is `orthochronous` if and only if its fist column is
+/-- A Lorentz transformation is `orthochronous` if and only if its first column is
   future pointing. -/
 lemma IsOrthochronous_iff_futurePointing :
     IsOrthochronous Λ ↔ toNormOne Λ ∈ NormOne.FuturePointing d := by
@@ -66,7 +66,7 @@ def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => Λ.1 (Sum.inl 0) (Sum.
 
 /-- An auxiliary function used in the definition of `orthchroMapReal`.
   This function takes all elements of `ℝ` less then `-1` to `-1`,
-  all elements of `R` geater then `1` to `1` and peserves all other elements. -/
+  all elements of `R` greater then `1` to `1` and preserves all other elements. -/
 def stepFunction : ℝ → ℝ := fun t =>
   if t ≤ -1 then -1 else
     if 1 ≤ t then 1 else t
@@ -152,7 +152,7 @@ lemma mul_othchron_of_not_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : �
   exact NormOne.FuturePointing.metric_reflect_not_mem_not_mem h h'
 
 /-- The product of an orthochronous Lorentz transformations with a
-  non-orthochronous Loentz transformation is not orthochronous. -/
+  non-orthochronous Lorentz transformation is not orthochronous. -/
 lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
     (h' : ¬ IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
   rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]
@@ -161,7 +161,7 @@ lemma mul_not_othchron_of_othchron_not_othchron {Λ Λ' : LorentzGroup d} (h : I
   exact NormOne.FuturePointing.metric_reflect_mem_not_mem h h'
 
 /-- The product of a non-orthochronous Lorentz transformations with an
-  orthochronous Loentz transformation is not orthochronous. -/
+  orthochronous Lorentz transformation is not orthochronous. -/
 lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : ¬ IsOrthochronous Λ)
     (h' : IsOrthochronous Λ') : ¬ IsOrthochronous (Λ * Λ') := by
   rw [not_orthochronous_iff_le_zero, LorentzGroup.inl_inl_mul]

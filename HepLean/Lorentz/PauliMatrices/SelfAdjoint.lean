@@ -301,7 +301,7 @@ lemma σSAL_span : ⊤ ≤ Submodule.span ℝ (Set.range σSAL') := by
 def σSAL : Basis (Fin 1 ⊕ Fin 3) ℝ (selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :=
   Basis.mk σSAL_linearly_independent σSAL_span
 
-/-- The decomposition of a self-adjint matrix into the Pauli matrices (where `σi` are negated). -/
+/-- The decomposition of a self-adjoint matrix into the Pauli matrices (where `σi` are negated). -/
 lemma σSAL_decomp (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     M = (1/2 * (Matrix.trace (σ0 * M.1)).re) • σSAL (Sum.inl 0)
     + (-1/2 * (Matrix.trace (σ1 * M.1)).re) • σSAL (Sum.inr 0)

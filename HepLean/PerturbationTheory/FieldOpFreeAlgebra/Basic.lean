@@ -55,7 +55,7 @@ def ofCrAnOpF (φ : 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 :=
 The algebra `𝓕.FieldOpFreeAlgebra` satisfies the universal property that for any other algebra
   `A` (e.g. the operator algebra of the theory) with a map `f : 𝓕.CrAnFieldOp → A` (e.g.
   the inclusion of the creation and annihilation parts of field operators into the
-  operator algebra) there is a unqiue algebra map `g : 𝓕.FieldOpFreeAlgebra → A`
+  operator algebra) there is a unique algebra map `g : 𝓕.FieldOpFreeAlgebra → A`
   such that `g ∘ ofCrAnOpF = f`.
 
   The unique `g` is given by `FreeAlgebra.lift ℂ f`.
@@ -141,7 +141,7 @@ lemma ofFieldOpListF_sum (φs : List 𝓕.FieldOp) :
 
 -/
 
-/-- The algebra map taking an element of the free-state algbra to
+/-- The algebra map taking an element of the free-state algebra to
   the part of it in the creation and annihilation free algebra
   spanned by creation operators. -/
 def crPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
@@ -166,7 +166,7 @@ lemma crPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) 
     crPartF (FieldOp.outAsymp φ) = 0 := by
   simp [crPartF]
 
-/-- The algebra map taking an element of the free-state algbra to
+/-- The algebra map taking an element of the free-state algebra to
   the part of it in the creation and annihilation free algebra
   spanned by annihilation operators. -/
 def anPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>

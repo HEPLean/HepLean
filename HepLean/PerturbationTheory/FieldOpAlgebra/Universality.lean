@@ -75,7 +75,7 @@ lemma universalLift_ι {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFie
     universalLift f h1 (ι a) = FreeAlgebra.lift ℂ f a := by rfl
 
 /--
-For a field specification, `𝓕`, the algebra `𝓕.FieldOpAlgebra` satifies the following universal
+For a field specification, `𝓕`, the algebra `𝓕.FieldOpAlgebra` satisfies the following universal
 property. Let `f : 𝓕.CrAnFieldOp → A` be a function and `g : 𝓕.FieldOpFreeAlgebra →ₐ[ℂ] A`
 the universal lift of that function associated with the free algebra `𝓕.FieldOpFreeAlgebra`.
 If `g` is zero on the ideal defining `𝓕.FieldOpAlgebra`, then there is a unique

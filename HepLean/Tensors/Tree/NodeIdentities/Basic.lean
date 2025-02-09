@@ -125,7 +125,7 @@ lemma perm_eq_id {n : ℕ} {c : Fin n → S.C} (σ : (OverColor.mk c) ⟶ (OverC
   simp [perm_tensor, h]
 
 /-- Given an equality of tensors corresponding to tensor trees where the tensor tree on the
-  left finishes with a premotion node, this permutation node can be moved to the
+  left finishes with a permutation node, this permutation node can be moved to the
   tensor tree on the right. This lemma holds here for isomorphisms only, but holds in practice
   more generally. -/
 lemma perm_eq_of_eq_perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
