@@ -21,7 +21,7 @@ open ComplexConjugate
 
 section rows
 
-/-- The absolute value squared of any rwo of a CKM matrix is `1`, in terms of `Vabs`. -/
+/-- The absolute value squared of any row of a CKM matrix is `1`, in terms of `Vabs`. -/
 lemma VAbs_sum_sq_row_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
     (VAbs i 0 V) ^ 2 + (VAbs i 1 V) ^ 2 + (VAbs i 2 V) ^ 2 = 1 := by
   obtain ⟨V, hV⟩ := Quot.exists_rep V
@@ -36,31 +36,31 @@ lemma VAbs_sum_sq_row_eq_one (V : Quotient CKMMatrixSetoid) (i : Fin 3) :
   rw [← ofReal_inj]
   simpa using ht
 
-/-- The absolute value squared of the first rwo of a CKM matrix is `1`, in terms of `abs`. -/
+/-- The absolute value squared of the first row of a CKM matrix is `1`, in terms of `abs`. -/
 lemma fst_row_normalized_abs (V : CKMMatrix) : abs [V]ud ^ 2 + abs [V]us ^ 2 + abs [V]ub ^ 2 = 1 :=
   VAbs_sum_sq_row_eq_one ⟦V⟧ 0
 
-/-- The absolute value squared of the second rwo of a CKM matrix is `1`, in terms of `abs`. -/
+/-- The absolute value squared of the second row of a CKM matrix is `1`, in terms of `abs`. -/
 lemma snd_row_normalized_abs (V : CKMMatrix) : abs [V]cd ^ 2 + abs [V]cs ^ 2 + abs [V]cb ^ 2 = 1 :=
   VAbs_sum_sq_row_eq_one ⟦V⟧ 1
 
-/-- The absolute value squared of the third rwo of a CKM matrix is `1`, in terms of `abs`. -/
+/-- The absolute value squared of the third row of a CKM matrix is `1`, in terms of `abs`. -/
 lemma thd_row_normalized_abs (V : CKMMatrix) : abs [V]td ^ 2 + abs [V]ts ^ 2 + abs [V]tb ^ 2 = 1 :=
   VAbs_sum_sq_row_eq_one ⟦V⟧ 2
 
-/-- The absolute value squared of the first rwo of a CKM matrix is `1`, in terms of `nomSq`. -/
+/-- The absolute value squared of the first row of a CKM matrix is `1`, in terms of `nomSq`. -/
 lemma fst_row_normalized_normSq (V : CKMMatrix) :
     normSq [V]ud + normSq [V]us + normSq [V]ub = 1 := by
   repeat rw [← Complex.sq_abs]
   exact V.fst_row_normalized_abs
 
-/-- The absolute value squared of the second rwo of a CKM matrix is `1`, in terms of `nomSq`. -/
+/-- The absolute value squared of the second row of a CKM matrix is `1`, in terms of `nomSq`. -/
 lemma snd_row_normalized_normSq (V : CKMMatrix) :
     normSq [V]cd + normSq [V]cs + normSq [V]cb = 1 := by
   repeat rw [← Complex.sq_abs]
   exact V.snd_row_normalized_abs
 
-/-- The absolute value squared of the third rwo of a CKM matrix is `1`, in terms of `nomSq`. -/
+/-- The absolute value squared of the third row of a CKM matrix is `1`, in terms of `nomSq`. -/
 lemma thd_row_normalized_normSq (V : CKMMatrix) :
     normSq [V]td + normSq [V]ts + normSq [V]tb = 1 := by
   repeat rw [← Complex.sq_abs]
