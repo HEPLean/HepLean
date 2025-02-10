@@ -7,36 +7,47 @@
 #layout: home
 ---
 
-# What is HepLean?
+# 1. Mission of HepLean
 
-HepLean is an open-source project to digitalise definitions, theorems, proofs, and calculations in physics using the interactive theorem prover Lean 4.
+The mission of HepLean is to digitalize results, meaning definitions, theorems and calculations, from physics into Lean 4 with an initial focus on high energy physics and in a way which is useful to the broad physics community.
 
-## Scope of HepLean
+# 2. Vision of HepLean
 
-Currently the scope of HepLean includes the results and foundations of the following arXiv categories:
+**Statement**: HepLean aspires to be the definitive formal repository for physics in Lean, akin to Mathlib for mathematics, with both the Lean and physics communities behind it and a potential formal collaboration.
 
-*hep-th, hep-ph, hep-ex, hep-lat, gr-qc, and math-ph.*
+**Detailed Vision**:
+- A comprehensive repository for containing fundamental definitions, theorems, and calculations from physics.
+- A interface between experimental data, simulations, and formal theoretical frameworks.
+- Extensive, physics-focused documentation to support adoption.
+- Accessibility for physicists at all levels, including and especially to those new to formal methods.
+- An intuitive set-up that aligns with the way physicists think and work.
+- A large and active team, with the potential for structured, high-energy physics-style collaborations.
 
-In particular, the current scope of HepLean includes (but is not limited to) the following foundational areas:
+# 3. Values of the project
+The three core values of HepLean are:
 
-*special and general relativity, quantum mechanics, quantum field theory, particle physics, classical mechanics and field theory, cosmology, thermodynamics*
+- *Welcoming*:  HepLean strives to foster an environment where contributors of all academic backgrounds and experience levels feel valued, supported, and empowered to make meaningful contributions.
+- *Open and Transparent*: HepLean and its outputs will always be openly accessible, freely available, and developed with transparency to benefit the broader physics and Lean communities.
+- *Accessibility and Practicality*: HepLean is designed to be intuitive, well-documented, and directly useful to physicists, regardless of their familiarity with formal methods.
 
-Once the foundations are in place, and HepLean has a large enough active community behind it, the scope of HepLean will naturally increase to include other areas of physics (and it most likely will undergo a name change).
+# 4. Potential impact of the project
 
-# Why formalize physics?
-
-HepLean has the potential to benefit the physics community in four ways:
+HepLean has the potential to have the following impact on the physics community:
 - Make it easier to find results.
 - Make it easier to automate the creation of new results using e.g. machine learning methods.
 - Make it easier to check papers and results for mathematical correctness.
 - Create new avenues through which physics can be taught.
-- Opens up new ways to interface between theory and computer programs.
+- Open up new ways to interface between theory and computer programs.
 
-# How to get involved?
+# 5. Where to learn more
+
+You can learn more about HepLean by reading: [2405.08863](https://inspirehep.net/literature/2787050), or contacting Joseph Tooby-Smith at: joseph at heplean dot com.
+
+# 6. How to get involved?
 
 There are a number of different ways to get involved in HepLean depending on your background.
 
-## Physicists
+## 6.1 Physicists
 Physicists, who are not so familiar with Lean, can contribute by adding `informal_definition` and `informal_lemma` to HepLean. These are English written statements of results which can latter be formalised. Informal definitions and lemmas already in HepLean can be found (here)[https://heplean.github.io/HepLean/InformalGraph.html].
 
 Here are some tips when writing informal results:
@@ -47,10 +58,10 @@ Here are some tips when writing informal results:
 
 Physicists can also help by improving documentation on existing results in HepLean.
 
-## Mathematicians with a Lean background
+## 6.2 Mathematicians with a Lean background
 Mathematicians and people with a Lean background can contribute in a number of ways:
 - Help by formalising `informal_definition` and `informal_lemma` which are currently in HepLean.
 - Help by golfing and refactoring code.
 
-## Computer scientists with a Lean background
+## 6.3 Computer scientists with a Lean background
 There are a number of metaprograms and infrastructure projects which would improve HepLean. If you need help in this direction, please get in touch.
