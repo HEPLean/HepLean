@@ -7,9 +7,23 @@
 #layout: home
 ---
 
+
+
+<div class="example-container" style="border: 2px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <div style="text-align: center;">
+    <img src="/assets/WicksTheoremScreenShot.png"
+         alt="Screenshot of Wick's theorem implementation in HepLean"
+         style="width: 100%; height: auto; border-radius: 4px;">
+    <p style="margin-top: 10px; font-style: italic; color: #666;">
+      The above screenshot demonstrates how theorems are formalized in HepLean.
+    </p>
+  </div>
+</div>
+
 # 1. Mission of HepLean
 
 The mission of HepLean is to digitalize results, meaning definitions, theorems and calculations, from physics into Lean 4 with an initial focus on high energy physics and in a way which is useful to the broad physics community.
+
 
 # 2. Vision of HepLean
 
