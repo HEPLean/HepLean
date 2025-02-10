@@ -17,7 +17,7 @@ namespace FieldOpFreeAlgebra
 
 /-!
 
-## The super commutor on the FieldOpFreeAlgebra.
+## The super commutator on the FieldOpFreeAlgebra.
 
 -/
 
@@ -40,7 +40,7 @@ scoped[FieldSpecification.FieldOpFreeAlgebra] notation "[" φs "," φs' "]ₛca"
 
 /-!
 
-## The super commutor of different types of elements
+## The super commutator of different types of elements
 
 -/
 
@@ -257,7 +257,7 @@ lemma superCommuteF_anPartF_ofFieldOpF (φ φ' : 𝓕.FieldOp) :
 ## Mul equal superCommuteF
 
 Lemmas which rewrite a multiplication of two elements of the algebra as their commuted
-multiplication with a sign plus the super commutor.
+multiplication with a sign plus the super commutator.
 
 -/
 lemma ofCrAnListF_mul_ofCrAnListF_eq_superCommuteF (φs φs' : List 𝓕.CrAnFieldOp) :
@@ -328,7 +328,7 @@ lemma ofCrAnListF_mul_ofFieldOpListF_eq_superCommuteF (φs : List 𝓕.CrAnField
 
 /-!
 
-## Symmetry of the super commutor.
+## Symmetry of the super commutator.
 
 -/
 
@@ -359,7 +359,7 @@ lemma superCommuteF_ofCrAnOpF_ofCrAnOpF_symm (φ φ' : 𝓕.CrAnFieldOp) :
 
 /-!
 
-## Splitting the super commutor on lists into sums.
+## Splitting the super commutator on lists into sums.
 
 -/
 

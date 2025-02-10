@@ -118,7 +118,7 @@ def dual : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ := η * Λᵀ * η
 lemma dual_id : @dual d 1 = 1 := by
   simpa only [dual, transpose_one, mul_one] using minkowskiMatrix.sq
 
-/-- The Minkowski dual swaps multiplications (acts contrvariantly). -/
+/-- The Minkowski dual swaps multiplications (acts contravariantly). -/
 @[simp]
 lemma dual_mul : dual (Λ * Λ') = dual Λ' * dual Λ := by
   simp only [dual, transpose_mul]

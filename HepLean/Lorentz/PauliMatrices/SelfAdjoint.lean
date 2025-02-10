@@ -405,7 +405,7 @@ lemma σSAL_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   linear_combination (norm := ring_nf) -h0
   simp only [σSAL, Basis.mk_repr, Fin.isValue, sub_self]
 
-/-- The relationship between the basis `σSA` of contrvariant Pauli-matrices and the basis
+/-- The relationship between the basis `σSA` of contravariant Pauli-matrices and the basis
   `σSAL` of covariant Pauli matrices is by multiplication by the Minkowski matrix. -/
 lemma σSA_minkowskiMetric_σSAL (i : Fin 1 ⊕ Fin 3) :
     σSA i = minkowskiMatrix i i • σSAL i := by

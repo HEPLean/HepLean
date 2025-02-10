@@ -61,7 +61,7 @@ lemma coMetric_basis_expand_tree : {η' | μ ν}ᵀ.tensor =
     (smul (-1) (tensorNode (basisVector ![Color.down, Color.down] (fun _ => 3))))).tensor :=
   coMetric_basis_expand
 
-/-- The expansion of the Lorentz contrvariant metric in terms of basis vectors. -/
+/-- The expansion of the Lorentz contravariant metric in terms of basis vectors. -/
 lemma contrMatrix_basis_expand : {η | μ ν}ᵀ.tensor =
     basisVector ![Color.up, Color.up] (fun _ => 0)
     - basisVector ![Color.up, Color.up] (fun _ => 1)
@@ -87,7 +87,7 @@ lemma contrMatrix_basis_expand : {η | μ ν}ᵀ.tensor =
       simp only [Fin.isValue, Lorentz.complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply]
       rfl
 
-/-- The expansion of the Lorentz contrvariant metric in terms of basis vectors as
+/-- The expansion of the Lorentz contravariant metric in terms of basis vectors as
   a structured tensor tree. -/
 lemma contrMatrix_basis_expand_tree : {η | μ ν}ᵀ.tensor =
     (TensorTree.add (tensorNode (basisVector ![Color.up, Color.up] (fun _ => 0))) <|

@@ -229,8 +229,8 @@ The proof of this result ultimately goes as follows
   a `ofCrAnList φsn` where `φsn` is the normal ordering of `φ₀…φₙ`.
 - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
   (considered as a list with one element) with
-  `ofCrAnList φsn` as a sum of supercommutors, one for each element of `φsn`.
-- The fact that super-commutors are in the center of `𝓕.FieldOpAlgebra` is used to  rearrange terms.
+  `ofCrAnList φsn` as a sum of super commutators, one for each element of `φsn`.
+- The fact that super-commutators are in the center of `𝓕.FieldOpAlgebra` is used to  rearrange terms.
 - Properties of ordered lists, and `normalOrderSign_eraseIdx` are then used to complete the proof.
 -/
 lemma ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum (φ : 𝓕.CrAnFieldOp)
@@ -281,7 +281,7 @@ lemma ofCrAnOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnFieldOp
   rw [← Finset.sum_mul, ← map_sum, ← map_sum, ← ofFieldOp_eq_sum, ← ofFieldOpList_eq_sum]
 
 /--
-The commutor of the annihilation part of a field operator with a normal ordered list of field
+The commutator of the annihilation part of a field operator with a normal ordered list of field
 operators can be decomposed into the sum of the commutators of the annihilation part with each
 element of the list of field operators, i.e.
 `[anPart φ, 𝓝(φ₀…φₙ)]ₛ= ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [anPart φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
