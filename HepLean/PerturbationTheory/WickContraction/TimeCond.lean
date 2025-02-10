@@ -506,7 +506,7 @@ lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.FieldOp} {x1 x2 :
     simp only [ne_eq, congr_refl] at h2
     simp [h2]
 
-/-- The equivalence which seperates a Wick contraction which has an equal time contraction
+/-- The equivalence which separates a Wick contraction which has an equal time contraction
 into a non-empty contraction only between equal-time fields and a Wick contraction which
 does not have equal time contractions. -/
 def hasEqTimeEquiv (φs : List 𝓕.FieldOp) :

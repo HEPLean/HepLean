@@ -12,7 +12,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset
 
 /-- The type `CreateAnnihilate` is the type containing two elements `create` and `annihilate`.
   This type is used to specify if an operator is a creation, or annihilation, operator
-  or the sum thereof or intergral thereover etc. -/
+  or the sum thereof or integral thereover etc. -/
 inductive CreateAnnihilate where
   | create : CreateAnnihilate
   | annihilate : CreateAnnihilate

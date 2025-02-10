@@ -216,7 +216,7 @@ lemma basis_contr_pauliMatrix_basis_tree_expand' {n : ℕ} {c : Fin n → comple
   rfl
 
 /-- The map to color which appears when contracting a basis vector with
-  puali matrices. -/
+  Pauli matrices. -/
 def pauliMatrixBasisProdMap
     {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (b : Π k, Fin (complexLorentzTensor.repDim (c k))) (i1 i2 i3 : Fin 4) :

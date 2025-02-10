@@ -40,7 +40,7 @@ def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
   This corresponds to the condition that two annihilation operators always super-commute.
 - `[ofCrAnOpF φ, ofCrAnOpF φ']ₛca` for `φ` and `φ'` operators with different statistics.
   This corresponds to the condition that two operators with different statistics always
-  super-commute. In otherwords, fermions and bosons always super-commute.
+  super-commute. In other words, fermions and bosons always super-commute.
 - `[ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca`. This corresponds to the condition,
   when combined with the conditions above, that the super-commutor is in the center of the
   of the algebra.
@@ -218,7 +218,7 @@ lemma ι_superCommuteF_ofCrAnOpF_ofCrAnOpF_mem_center (φ ψ : 𝓕.CrAnFieldOp)
 
 /-!
 
-## The kernal of ι
+## The kernel of ι
 -/
 
 lemma ι_eq_zero_iff_mem_ideal (x : FieldOpFreeAlgebra 𝓕) :

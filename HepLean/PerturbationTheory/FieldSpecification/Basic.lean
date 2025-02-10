@@ -88,7 +88,7 @@ As some intuition, if `f` corresponds to a Weyl-fermion field, then
 - `position f e x`, `e` would correspond to a Lorentz index `α`, and `position f e x` would,
   once represented in the operator algebra, be proportional to the operator
   `∑ s, ∫ d^3p/(…) (x_α(p,s)  a(p, s) e^{-i p x} + y_α(p,s) a^†(p, s) e^{-i p x})`.
-- `outAsymp f e p`, `e` would corresond to a spin `s`, and `outAsymp f e p` would,
+- `outAsymp f e p`, `e` would correspond to a spin `s`, and `outAsymp f e p` would,
   once represented in the operator algebra, be proportional to the
   annihilation operator `a^†(p, s)`.
 

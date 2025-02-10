@@ -83,7 +83,7 @@ As some intuition, if `f` corresponds to a Weyl-fermion field, it would contribu
 - an element corresponding to the creation parts of position operators for each each Lorentz
   index `α`:
   `∑ s, ∫ d^3p/(…) (x_α(p,s)  a(p, s) e^{-i p x})`.
-- an element corresponding to anihilation parts of position operator,
+- an element corresponding to annihilation parts of position operator,
   for each each Lorentz index `α`:
   `∑ s, ∫ d^3p/(…) (y_α(p,s) a^†(p, s) e^{-i p x})`.
 - an element corresponding to outgoing asymptotic operators for each spin `s`: `a^†(p, s)`.
@@ -98,7 +98,7 @@ def crAnFieldOpToFieldOp : 𝓕.CrAnFieldOp → 𝓕.FieldOp := Sigma.fst
 lemma crAnFieldOpToFieldOp_prod (s : 𝓕.FieldOp) (t : 𝓕.fieldOpToCrAnType s) :
     𝓕.crAnFieldOpToFieldOp ⟨s, t⟩ = s := rfl
 
-/-- For a field specficiation `𝓕`, `𝓕.crAnFieldOpToCreateAnnihilate` is the map from
+/-- For a field specification `𝓕`, `𝓕.crAnFieldOpToCreateAnnihilate` is the map from
   `𝓕.CrAnFieldOp` to `CreateAnnihilate` taking `φ` to `create` if
 - `φ` corresponds to an incoming asymptotic field operator or the creation part of a position based
   field operator.

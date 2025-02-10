@@ -282,7 +282,7 @@ lemma ofCrAnOp_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.CrAnFieldOp
 
 /--
 The commutor of the annihilation part of a field operator with a normal ordered list of field
-operators can be decomponsed into the sum of the commutators of the annihilation part with each
+operators can be decomposed into the sum of the commutators of the annihilation part with each
 element of the list of field operators, i.e.
 `[anPart φ, 𝓝(φ₀…φₙ)]ₛ= ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [anPart φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
 -/

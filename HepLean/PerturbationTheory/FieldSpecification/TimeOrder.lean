@@ -32,7 +32,7 @@ def timeOrderRel : 𝓕.FieldOp → 𝓕.FieldOp → Prop
   | FieldOp.inAsymp _, FieldOp.position _ => False
   | FieldOp.inAsymp _, FieldOp.inAsymp _ => True
 
-/-- The relation `timeOrderRel` is decidable, but not computablly so due to
+/-- The relation `timeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance : (φ φ' : 𝓕.FieldOp) → Decidable (timeOrderRel φ φ')
   | FieldOp.outAsymp _, _ => isTrue True.intro
@@ -206,7 +206,7 @@ it is needed that the operator with the greatest time is to the left.
 -/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 
-/-- The relation `crAnTimeOrderRel` is decidable, but not computablly so due to
+/-- The relation `crAnTimeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (crAnTimeOrderRel φ φ') :=
   inferInstanceAs (Decidable (𝓕.timeOrderRel φ.1 φ'.1))
@@ -508,7 +508,7 @@ lemma sum_crAnSections_timeOrder {φs : List 𝓕.FieldOp} [AddCommMonoid M]
 def normTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop :=
   crAnTimeOrderRel a b ∧ (crAnTimeOrderRel b a → normalOrderRel a b)
 
-/-- The relation `normTimeOrderRel` is decidable, but not computablly so due to
+/-- The relation `normTimeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (normTimeOrderRel φ φ') :=
   instDecidableAnd

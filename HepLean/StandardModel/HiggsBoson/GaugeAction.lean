@@ -43,7 +43,7 @@ noncomputable def higgsRepUnitary : GaugeGroupI →* unitaryGroup (Fin 2) ℂ wh
     repeat rw [mul_assoc]
   map_one' := by simp
 
-/-- Using the orthonormal basis of `HiggsVec`, turns a `2×2`-matrix intoa a linear map
+/-- Using the orthonormal basis of `HiggsVec`, turns a `2×2`-matrix into a linear map
   of `HiggsVec`. -/
 noncomputable def matrixToLin : Matrix (Fin 2) (Fin 2) ℂ →* (HiggsVec →L[ℂ] HiggsVec) where
   toFun g := LinearMap.toContinuousLinearMap
@@ -220,7 +220,7 @@ informal_lemma guage_orbit where
   deps := [``rotate_fst_zero_snd_real]
 
 /-- The Higgs boson breaks electroweak symmetry down to the electromagnetic force, i.e., the
-stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for non-zero `‖φ‖`, is the
+stability group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for non-zero `‖φ‖`, is the
 `SU(3) × U(1)` subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` with the embedding given by
 `(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`.
 -/

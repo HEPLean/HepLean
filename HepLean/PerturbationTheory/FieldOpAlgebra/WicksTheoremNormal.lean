@@ -34,7 +34,7 @@ This result follows from
   those `𝓣(φsΛ.staticWickTerm)` for which `φsΛ` has a contracted pair which are not
   equal time to zero.
 - `staticContract_eq_timeContract_of_eqTimeOnly` to rewrite the static contract
-  in the reminaing `𝓣(φsΛ.staticWickTerm)` as a time contract.
+  in the remaining `𝓣(φsΛ.staticWickTerm)` as a time contract.
 - `timeOrder_timeContract_mul_of_eqTimeOnly_left` to move the time contracts out of the time
   ordering.
 -/

@@ -104,7 +104,7 @@ is equal the product of
 - `φsΛ.timeContract`
 - `s • [anPart φ, ofFieldOp φs[k]]ₛ` where `s` is the sign associated with moving `φ` through
   uncontracted fields in `φ₀…φₖ₋₁`
-- the normal ordering `[φsΛ]ᵘᶜ` with the field corresonding to `k` removed.
+- the normal ordering `[φsΛ]ᵘᶜ` with the field corresponding to `k` removed.
 
 The proof of this result relies on
 - `timeContract_insert_some_of_not_lt`

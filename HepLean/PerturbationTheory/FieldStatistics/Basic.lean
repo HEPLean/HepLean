@@ -26,7 +26,7 @@ namespace FieldStatistic
 
 variable {𝓕 : Type}
 
-/-- The type `FieldStatistic` carries an instance of a commuative group in which
+/-- The type `FieldStatistic` carries an instance of a commutative group in which
 - `bosonic * bosonic = bosonic`
 - `bosonic * fermionic = fermionic`
 - `fermionic * bosonic = fermionic`

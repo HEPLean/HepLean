@@ -43,7 +43,7 @@ informal_lemma inclSM_ker where
   deps := [``inclSM, ``StandardModel.gaugeGroupℤ₃SubGroup]
 
 /-- The group embedding from `StandardModel.GaugeGroupℤ₃` to `GaugeGroupI` induced by `inclSM` by
-quotienting by the kernal `inclSM_ker`.
+quotienting by the kernel `inclSM_ker`.
 -/
 informal_definition embedSMℤ₃ where
   deps := [``inclSM, ``StandardModel.GaugeGroupℤ₃, ``GaugeGroupI, ``inclSM_ker]

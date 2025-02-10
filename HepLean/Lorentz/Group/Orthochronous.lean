@@ -113,7 +113,7 @@ lemma orthchroMapReal_minus_one_or_one (Λ : LorentzGroup d) :
 
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
-/-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernal are the Orthochronous elements. -/
+/-- A continuous map from `lorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
 def orthchroMap : C(LorentzGroup d, ℤ₂) :=
   ContinuousMap.comp coeForℤ₂ {
     toFun := fun Λ => ⟨orthchroMapReal Λ, orthchroMapReal_minus_one_or_one Λ⟩,

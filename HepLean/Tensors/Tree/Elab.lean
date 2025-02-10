@@ -77,7 +77,7 @@ syntax num : indexExpr
 /-- Notation to describe the jiggle of a tensor index. -/
 syntax "τ(" ident ")" : indexExpr
 
-/-- Bool which is ture if an index is a num. -/
+/-- Bool which is true if an index is a num. -/
 def indexExprIsNum (stx : Syntax) : Bool :=
   match stx with
   | `(indexExpr|$_:num) => true

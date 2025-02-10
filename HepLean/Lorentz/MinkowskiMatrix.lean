@@ -163,7 +163,7 @@ lemma dual_apply (μ ν : Fin 1 ⊕ Fin d) :
     diagonal_mul, transpose_apply, diagonal_apply_eq]
 
 /-- The components of the Minkowski dual of a matrix multiplied by the Minkowski matrix
-  in tems of the original matrix. -/
+  in terms of the original matrix. -/
 lemma dual_apply_minkowskiMatrix (μ ν : Fin 1 ⊕ Fin d) :
     dual Λ μ ν * η ν ν = η μ μ * Λ ν μ := by
   rw [dual_apply, mul_assoc]
