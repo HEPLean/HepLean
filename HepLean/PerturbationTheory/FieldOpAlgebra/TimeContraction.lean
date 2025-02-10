@@ -24,7 +24,7 @@ namespace FieldOpAlgebra
 open FieldStatistic
 
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, the element of
-  `𝓕.FieldOpAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ)- 𝓝(φψ)`. -/
+  `𝓕.FieldOpAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ) - 𝓝(φψ)`. -/
 def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra :=
     𝓣(ofFieldOp φ * ofFieldOp ψ) - 𝓝(ofFieldOp φ * ofFieldOp ψ)
 

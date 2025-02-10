@@ -22,7 +22,7 @@ namespace FieldOpAlgebra
 /--
 For a list `φs` of `𝓕.FieldOp`, the static version of Wick's theorem states that
 
-`φs =∑ φsΛ, φsΛ.staticWickTerm`
+`φs = ∑ φsΛ, φsΛ.staticWickTerm`
 
 where the sum is over all Wick contraction `φsΛ`.
 

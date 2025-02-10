@@ -21,7 +21,7 @@ open FieldOpAlgebra
 
 /-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
   element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.timeContract` is defined as the product
-  of `timeContract φs[j] φs[k]` over contracted pairs `{j, k}` (both indices of `φs`) in `φsΛ`
+  of `timeContract φs[j] φs[k]` over contracted pairs `{j, k}` in `φsΛ`
   with `j < k`. -/
 noncomputable def timeContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
@@ -86,7 +86,7 @@ open FieldStatistic
   - `[anPart φ, φs[k]]ₛ`
   - `φsΛ.timeContract`
   - two copies of the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
-    These two exchange signs cancle each other out but are included for convenience.
+    These two exchange signs cancel each other out but are included for convenience.
 
   The proof of this result ultimately a consequence of definitions and
   `timeContract_of_timeOrderRel`. -/
@@ -125,14 +125,12 @@ lemma timeContract_insert_some_of_lt
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
-  condition that `φs[k]` does not have has greater or equal time to `φ`, then
+  condition that `φs[k]` does not have time greater or equal to `φ`, then
   `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
   - `[anPart φ, φs[k]]ₛ`
   - `φsΛ.timeContract`
   - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
   - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ`.
-
-  Most of the contributes to the exchange signs cancle.
 
   The proof of this result ultimately a consequence of definitions and
   `timeContract_of_not_timeOrderRel_expand`. -/

@@ -31,9 +31,10 @@ This result follows from
 - `static_wick_theorem` to rewrite `𝓣(φs)` on the left hand side as a sum of
   `𝓣(φsΛ.staticWickTerm)`.
 - `EqTimeOnly.timeOrder_staticContract_of_not_mem` and `timeOrder_timeOrder_mid` to set to
-  zero those terms in which the contracted elements do not have equal time.
-- `staticContract_eq_timeContract_of_eqTimeOnly` to rewrite the static contract as a time contract
-  for those terms which have equal time.
+  those `𝓣(φsΛ.staticWickTerm)` for which `φsΛ` has a contracted pair which are not
+  equal time to zero.
+- `staticContract_eq_timeContract_of_eqTimeOnly` to rewrite the static contract
+  in the reminaing `𝓣(φsΛ.staticWickTerm)` as a time contract.
 - `timeOrder_timeContract_mul_of_eqTimeOnly_left` to move the time contracts out of the time
   ordering.
 -/
@@ -111,20 +112,20 @@ For a list `φs` of `𝓕.FieldOp`, then `𝓣(φs)` is equal to the sum of
 
 - `∑ φsΛ, φsΛ.wickTerm` where the sum is over all Wick contraction `φsΛ` which have
   no contractions of equal time.
-- `∑ φsΛ, sign φs ↑φsΛ • (φsΛ.1).timeContract ∑ φssucΛ, φssucΛ.wickTerm`, where
+- `∑ φsΛ, φsΛ.sign • φsΛ.timeContract  * (∑ φssucΛ, φssucΛ.wickTerm)`, where
   the first sum is over all Wick contraction `φsΛ` which only have equal time contractions
   and the second sum is over all Wick contraction `φssucΛ` of the uncontracted elements of `φsΛ`
   which do not have any equal time contractions.
 
-The proof of this result relies on `wicks_theorem` to rewrite `𝓣(φs)` as a sum over
-all Wick contractions.
-The sum over all Wick contractions is then split additively into two parts using based on having or
-not having equal time contractions.
-The sum over Wick contractions which do have equal time contractions is turned into two sums
-one over the Wick contractions which only have equal time contractions and the other over the
-uncontracted elements of the Wick contraction which do not have equal time contractions using
-`join`.
-The properties of `join_sign_timeContract` is then used to equate terms.
+The proof of proceeds as follows
+- `wicks_theorem` is used to rewrite `𝓣(φs)` as a sum over all Wick contractions.
+- The sum over all Wick contractions is then split additively into two parts using based on having
+  or not having an equal time contractions.
+- Using `join`, the sum `∑ φsΛ, _` over Wick contractions which do have equal time contractions
+  is split into two sums `∑ φsΛ, ∑ φsucΛ, _`, the first over non-zero elements
+  which only have equal time contractions and the second over Wick contractions `φsucΛ` of
+  `[φsΛ]ᵘᶜ` which do not have equal time contractions.
+- `join_sign_timeContract` is then used to equate terms.
 -/
 lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
     𝓣(ofFieldOpList φs) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
