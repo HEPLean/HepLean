@@ -47,13 +47,13 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
   rfl
 
 remark wicks_theorem_context := "
-  In perturbation quantum field theory, Wick's theorem allows
+  In perturbative quantum field theory, Wick's theorem allows
   us to expand expectation values of time-ordered products of fields in terms of normal-orders
   and time contractions.
   The theorem is used to simplify the calculation of scattering amplitudes, and is the precurser
   to Feynman diagrams.
 
-  There is are actually three different versions of Wick's theorem used.
+  There are actually three different versions of Wick's theorem used.
   The static version, the time-dependent version, and the normal-ordered time-dependent version.
   HepLean contains a formalization of all three of these theorems in complete generality for
   mixtures of bosonic and fermionic fields.
@@ -75,11 +75,11 @@ The inductive step works as follows:
 
 For the LHS:
 1. `timeOrder_eq_maxTimeField_mul_finset` is used to write
-  `𝓣(φ₀…φₙ)` as ` 𝓢(φᵢ,φ₀…φᵢ₋₁) • φᵢ * 𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` where `φᵢ` is
+  `𝓣(φ₀…φₙ)` as `𝓢(φᵢ,φ₀…φᵢ₋₁) • φᵢ * 𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` where `φᵢ` is
   the maximal time field in `φ₀…φₙ`
 2. The induction hypothesis is then used on `𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` to expand it as a sum over
   Wick contractions of `φ₀…φᵢ₋₁φᵢ₊₁φₙ`.
-3. This gives terms of the form `φᵢ * φsΛ.timeContract` on which
+3. This gives terms of the form `φᵢ * φsΛ.wickTerm` on which
   `mul_wickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₀…φᵢ₋₁φᵢ₊₁φ`,
   to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
 

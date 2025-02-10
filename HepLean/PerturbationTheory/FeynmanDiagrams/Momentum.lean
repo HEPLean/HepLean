@@ -48,7 +48,7 @@ We define the direct sum of the edge and vertex momentum spaces.
   Corresponding to that spanned by its momentum. -/
 def HalfEdgeMomenta : Type := F.𝓱𝓔 → ℝ
 
-/-- The half momenta carries the structure of an addative commutative group. -/
+/-- The half momenta carries the structure of an additive commutative group. -/
 instance : AddCommGroup F.HalfEdgeMomenta := Pi.addCommGroup
 
 /-- The half momenta carries the structure of a module over `ℝ`. Defined via its target. -/
@@ -83,17 +83,17 @@ def euclidInner : F.HalfEdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta →ₗ[ℝ] �
   Corresponding to that spanned by its total outflowing momentum. -/
 def EdgeMomenta : Type := F.𝓔 → ℝ
 
-/-- The edge momenta form an addative commuative group. -/
+/-- The edge momenta form an additive commutative group. -/
 instance : AddCommGroup F.EdgeMomenta := Pi.addCommGroup
 
 /-- The edge momenta form a module over `ℝ`. -/
 instance : Module ℝ F.EdgeMomenta := Pi.module _ _ _
 
-/-- The type which associates to each ege a `1`-dimensional vector space.
+/-- The type which associates to each edge a `1`-dimensional vector space.
   Corresponding to that spanned by its total inflowing momentum. -/
 def VertexMomenta : Type := F.𝓥 → ℝ
 
-/-- The vertex momenta carries the structure of an addative commuative group. -/
+/-- The vertex momenta carries the structure of an additive commutative group. -/
 instance : AddCommGroup F.VertexMomenta := Pi.addCommGroup
 
 /-- The vertex momenta carries the structure of a module over `ℝ`. -/
@@ -106,7 +106,7 @@ def EdgeVertexMomentaMap : Fin 2 → Type := fun i =>
   | 1 => F.VertexMomenta
 
 /-- The target of the map `EdgeVertexMomentaMap` is either the type of edge momenta
-  or vertex momenta and thus carries the structure of an addative commuative group. -/
+  or vertex momenta and thus carries the structure of an additive commutative group. -/
 instance (i : Fin 2) : AddCommGroup (EdgeVertexMomentaMap F i) :=
   match i with
   | 0 => instAddCommGroupEdgeMomenta F
@@ -122,7 +122,7 @@ instance (i : Fin 2) : Module ℝ (EdgeVertexMomentaMap F i) :=
 /-- The direct sum of `EdgeMomenta` and `VertexMomenta`. -/
 def EdgeVertexMomenta : Type := DirectSum (Fin 2) (EdgeVertexMomentaMap F)
 
-/-- The structure of a addative commutative group on `EdgeVertexMomenta` for a
+/-- The structure of a additive commutative group on `EdgeVertexMomenta` for a
   Feynman diagram `F`. -/
 instance : AddCommGroup F.EdgeVertexMomenta := DirectSum.instAddCommGroup _
 

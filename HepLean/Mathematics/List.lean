@@ -755,7 +755,7 @@ lemma eraseIdx_insertionSort_fin {I : Type} (le1 : I → I → Prop) [DecidableR
     = List.insertionSort le1 (r.eraseIdx n) :=
   eraseIdx_insertionSort le1 n.val r (Fin.prop n)
 
-/-- Given a list `i :: l` the left-most minimial position `a` of `i :: l` wrt `r`.
+/-- Given a list `i :: l` the left-most minimal position `a` of `i :: l` wrt `r`.
   That is the first position
   of `l` such that for every element `(i :: l)[b]` before that position
   `r ((i :: l)[b]) ((i :: l)[a])` is not true. The use of `i :: l` here

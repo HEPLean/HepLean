@@ -63,7 +63,7 @@ def repCharges {n : ℕ} : Representation ℚ (PermGroup n) (SMCharges n).Charge
     erw [toSMSpecies_toSpecies_inv]
     rfl
 
-/-- The species chages of a set of charges acted on by a family permutation is the permutation
+/-- The species charges of a set of charges acted on by a family permutation is the permutation
   of those species charges with the corresponding part of the family permutation. -/
 lemma repCharges_toSpecies (f : PermGroup n) (S : (SMCharges n).Charges) (j : Fin 5) :
     toSpecies j (repCharges f S) = toSpecies j S ∘ f⁻¹ j := by
@@ -78,7 +78,7 @@ lemma toSpecies_sum_invariant (m : ℕ) (f : PermGroup n) (S : (SMCharges n).Cha
   exact Fintype.sum_equiv (f⁻¹ j) (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S ∘ ⇑(f⁻¹ j)) x)
     (fun x => ((fun a => a ^ m) ∘ (toSpecies j) S) x) (congrFun rfl)
 
-/-- The gravitional anomaly equations is invariant under family permutations. -/
+/-- The gravitational anomaly equations is invariant under family permutations. -/
 lemma accGrav_invariant (f : PermGroup n) (S : (SMCharges n).Charges) :
     accGrav (repCharges f S) = accGrav S := accGrav_ext
   (by simpa using toSpecies_sum_invariant 1 f S)

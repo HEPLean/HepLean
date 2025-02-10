@@ -21,7 +21,7 @@ open FieldStatistic
 
 /-- Given a Wick contraction `c : WickContraction n` and `i1 i2 : Fin n` the finite set
   of elements of `Fin n` between `i1` and `i2` which are either uncontracted
-  or are contracted but are contracted with an element occuring after `i1`.
+  or are contracted but are contracted with an element occurring after `i1`.
   I.e. the elements of `Fin n` between `i1` and `i2` which are not contracted with before `i1`.
   One should assume `i1 < i2` otherwise this finite set is empty. -/
 def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
@@ -30,8 +30,9 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
 
 /-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`,
   the complex number `φsΛ.sign` is defined to be the sign (`1` or `-1`) corresponding
-  to the number of `fermionic`-`fermionic` exchanges that must done to put
-  contracted pairs with `φsΛ` next to one another, starting from the contracted pair
+  to the number of `fermionic`-`fermionic` exchanges that must be done to put
+  contracted pairs within `φsΛ` next to one another, starting recursively
+  from the contracted pair
   whose first element occurs at the left-most position. -/
 def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
   ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],

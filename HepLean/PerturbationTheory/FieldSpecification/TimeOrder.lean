@@ -32,7 +32,7 @@ def timeOrderRel : 𝓕.FieldOp → 𝓕.FieldOp → Prop
   | FieldOp.inAsymp _, FieldOp.position _ => False
   | FieldOp.inAsymp _, FieldOp.inAsymp _ => True
 
-/-- The relation `timeOrderRel` is decidable, but not computablly so due to
+/-- The relation `timeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance : (φ φ' : 𝓕.FieldOp) → Decidable (timeOrderRel φ φ')
   | FieldOp.outAsymp _, _ => isTrue True.intro
@@ -193,7 +193,7 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
 
 /-- For a field specification `𝓕`, `𝓕.crAnTimeOrderRel` is a relation on
   `𝓕.CrAnFieldOp` representing time ordering.
-  It is defined as such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
+  It is defined such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
   holds
 - `φ₀` is an *outgoing* asymptotic operator
 - `φ₁` is an *incoming* asymptotic field operator
@@ -201,10 +201,12 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
   the `SpaceTime` point of `φ₀` has a time *greater* then or equal to that of `φ₁`.
 
 Thus, colloquially `𝓕.crAnTimeOrderRel φ₀ φ₁` if `φ₀` has time *greater* then or equal to `φ₁`.
+The use of *greater* then rather then *less* then is because on ordering lists of operators
+it is needed that the operator with the greatest time is to the left.
 -/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 
-/-- The relation `crAnTimeOrderRel` is decidable, but not computablly so due to
+/-- The relation `crAnTimeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (crAnTimeOrderRel φ φ') :=
   inferInstanceAs (Decidable (𝓕.timeOrderRel φ.1 φ'.1))
@@ -506,7 +508,7 @@ lemma sum_crAnSections_timeOrder {φs : List 𝓕.FieldOp} [AddCommMonoid M]
 def normTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop :=
   crAnTimeOrderRel a b ∧ (crAnTimeOrderRel b a → normalOrderRel a b)
 
-/-- The relation `normTimeOrderRel` is decidable, but not computablly so due to
+/-- The relation `normTimeOrderRel` is decidable, but not computable so due to
   `Real.decidableLE`. -/
 noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (normTimeOrderRel φ φ') :=
   instDecidableAnd

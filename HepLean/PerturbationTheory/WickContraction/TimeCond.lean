@@ -97,7 +97,7 @@ lemma empty_mem {φs : List 𝓕.FieldOp} : empty (n := φs.length).EqTimeOnly :
   simp [empty]
 
 /-- Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` of `φs` with
-  in which every contraction involves two `FieldOp`s that have the same time. Then
+  in which every contraction involves two `𝓕FieldOp`s that have the same time, then
   `φsΛ.staticContract = φsΛ.timeContract`. -/
 lemma staticContract_eq_timeContract_of_eqTimeOnly (h : φsΛ.EqTimeOnly) :
     φsΛ.staticContract = φsΛ.timeContract := by
@@ -194,7 +194,7 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid {φs : List 𝓕.FieldOp}
   exact timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction φsΛ hl a b φsΛ.1.card rfl
 
 /-- Let `φs` be a list of `𝓕.FieldOp`, `φsΛ` a `WickContraction` of `φs` with
-  in which every contraction involves two `FieldOp`s that have the same time and
+  in which every contraction involves two `𝓕.FieldOp`s that have the same time and
   `b` a general element in `𝓕.FieldOpAlgebra`. Then
   `𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b)`.
 
@@ -248,7 +248,7 @@ lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
   simp_all
 
 /-- Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` with
-  at least one contraction between `FieldOp` that do not have the same time. Then
+  at least one contraction between `𝓕.FieldOp` that do not have the same time. Then
   `𝓣(φsΛ.staticContract.1) = 0`. -/
 lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (hl : ¬ φsΛ.EqTimeOnly) : 𝓣(φsΛ.staticContract.1) = 0 := by
@@ -506,7 +506,7 @@ lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.FieldOp} {x1 x2 :
     simp only [ne_eq, congr_refl] at h2
     simp [h2]
 
-/-- The equivalence which seperates a Wick contraction which has an equal time contraction
+/-- The equivalence which separates a Wick contraction which has an equal time contraction
 into a non-empty contraction only between equal-time fields and a Wick contraction which
 does not have equal time contractions. -/
 def hasEqTimeEquiv (φs : List 𝓕.FieldOp) :

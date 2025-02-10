@@ -42,13 +42,15 @@ The structure `FieldSpecification` is defined to have the following content:
     - For `f` a *Weyl fermion*, `PositionLabel f` will have four elements, one for each Lorentz
       index of the field and its conjugate.
   - For every field `f` in `Field`, a type `AsymptoticLabel f` whose elements label the different
-    asymptotic based field operators associated with the field `f`. For example,
+    types of incoming asymptotic field operators associated with the
+    field `f` (this is also matches the types of outgoing asymptotic field operators).
+    For example,
     - For `f` a *real-scalar field*, `AsymptoticLabel f` will have a unique element.
     - For `f` a *complex-scalar field*, `AsymptoticLabel f` will have two elements, one for the
       field operator and one for its conjugate.
     - For `f` a *Dirac fermion*, `AsymptoticLabel f` will have four elements, two for each spin.
     - For `f` a *Weyl fermion*, `AsymptoticLabel f` will have two elements, one for each spin.
-  - For each field `f` in `Field`, a field statistic `statistic f` which classifying `f` as either
+  - For each field `f` in `Field`, a field statistic `statistic f` which classifies `f` as either
     `bosonic` or `fermionic`.
 -/
 structure FieldSpecification where
@@ -67,20 +69,30 @@ structure FieldSpecification where
 namespace FieldSpecification
 variable (𝓕 : FieldSpecification)
 
-/-- For a field specification `𝓕`, the type `𝓕.FieldOp` is defined such that every element of
-  `FieldOp` corresponds either to:
-- an incoming asymptotic field operator `.inAsymp` which is specified by
-  a field `f` in `𝓕.Field`, an element of `AsymptoticLabel f` (which specifies exactly
-  which asymptotic field operator associated with `f`) and a `3`-momentum.
-- an position operator `.position` which is specified by
-  a field `f` in `𝓕.Field`, an element of `PositionLabel f` (which specifies exactly
-  which position field operator associated with `f`) and a element of `SpaceTime`.
-- an outgoing asymptotic field operator `.outAsymp` which is specified by
-  a field `f` in `𝓕.Field`, an element of `AsymptoticLabel f` (which specifies exactly
-  which asymptotic field operator associated with `f`) and a `3`-momentum.
+/-- For a field specification `𝓕`, the inductive type `𝓕.FieldOp` is defined
+  to contain the following elements:
+- for every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+  element labelled `inAsymp f e p` corresponding to an incoming asymptotic field operator
+  of the field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
+- for every `f` in `𝓕.Field`, element of `e` of `PositionLabel f` and space-time position `x`, an
+  element labelled `position f e x` corresponding to a position field operator of the field `f`,
+  of label `e` (e.g. specifying the Lorentz index), and position `x`.
+- for every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+  element labelled `outAsymp f e p` corresponding to an outgoing asymptotic field operator of the
+  field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
 
-Note the use of `3`-momentum here rather then `4`-momentum. This is because the asymptotic states
-have on-shell momenta.
+As some intuition, if `f` corresponds to a Weyl-fermion field, then
+- For `inAsymp f e p`, `e` would correspond to a spin `s`, and `inAsymp f e p` would, once
+  represented in the operator algebra,
+  be proportional to the creation operator `a(p, s)`.
+- `position f e x`, `e` would correspond to a Lorentz index `α`, and `position f e x` would,
+  once represented in the operator algebra, be proportional to the operator
+  `∑ s, ∫ d^3p/(…) (x_α(p,s)  a(p, s) e^{-i p x} + y_α(p,s) a^†(p, s) e^{-i p x})`.
+- `outAsymp f e p`, `e` would correspond to a spin `s`, and `outAsymp f e p` would,
+  once represented in the operator algebra, be proportional to the
+  annihilation operator `a^†(p, s)`.
+
+This type contains all operators which are related to a field.
 -/
 inductive FieldOp (𝓕 : FieldSpecification) where
   | inAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp

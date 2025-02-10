@@ -384,9 +384,10 @@ lemma directSum_eq_bosonic_plus_fermionic
     abel
 
 /-- For a field statistic `𝓕`, the algebra `𝓕.FieldOpAlgebra` is graded by `FieldStatistic`.
-  Those `ofCrAnList φs` for which `φs` has an overall `bosonic` statistic span `bosonic`
-  submodule, whilst those `ofCrAnList φs` for which `φs` has an overall `fermionic` statistic span
-  the `fermionic` submodule. -/
+  Those `ofCrAnList φs` for which `φs` has an overall `bosonic` statistic
+  (i.e. `𝓕 |>ₛ φs = bosonic`) span `bosonic`
+  submodule, whilst those `ofCrAnList φs` for which `φs` has an overall `fermionic` statistic
+  (i.e. `𝓕 |>ₛ φs = fermionic`) span the `fermionic` submodule. -/
 instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubmodule where
   one_mem := by
     simp only [statSubmodule]

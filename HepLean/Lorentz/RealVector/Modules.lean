@@ -113,7 +113,7 @@ lemma stdBasis_apply (μ ν : Fin 1 ⊕ Fin d) : (stdBasis μ).val ν = if μ = 
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
 
-/-- Decomposition of a contrvariant Lorentz vector into the standard basis. -/
+/-- Decomposition of a contravariant Lorentz vector into the standard basis. -/
 lemma stdBasis_decomp (v : ContrMod d) : v = ∑ i, v.toFin1dℝ i • stdBasis i := by
   apply toFin1dℝEquiv.injective
   simp only [map_sum, _root_.map_smul]

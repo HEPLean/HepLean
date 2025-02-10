@@ -371,7 +371,8 @@ lemma ι_timeOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) :
 
 `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
 
-defined as the decent of `ι ∘ₗ timeOrderF` from `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+defined as the decent of `ι ∘ₗ timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕` from
+`FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
 This decent exists because `ι ∘ₗ timeOrderF` is well-defined on equivalence classes.
 
 The notation `𝓣(a)` is used for `timeOrder a`. -/

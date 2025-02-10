@@ -126,7 +126,7 @@ def singletonEquiv {φ : 𝓕.FieldOp} : CrAnSection [φ] ≃
     simp only [head]
     rfl
 
-/-- An equivalence seperating the head of a creation and annihilation section
+/-- An equivalence separating the head of a creation and annihilation section
   from the tail. -/
 def consEquiv {φ : 𝓕.FieldOp} {φs : List 𝓕.FieldOp} : CrAnSection (φ :: φs) ≃
     𝓕.fieldOpToCrAnType φ × CrAnSection φs where

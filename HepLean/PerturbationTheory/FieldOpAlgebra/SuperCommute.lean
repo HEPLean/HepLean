@@ -49,7 +49,7 @@ lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.FieldOpFreeAlgebra) (h 
   simp only [LinearMap.mem_ker, ← map_sub]
   exact ι_superCommuteF_right_zero_of_mem_ideal a (b1 - b2) h
 
-/-- The super commutor on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
+/-- The super commutator on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
 noncomputable def superCommuteRight (a : 𝓕.FieldOpFreeAlgebra) :
   FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ superCommuteF a)
@@ -367,7 +367,7 @@ lemma superCommute_anPart_ofFieldOp (φ φ' : 𝓕.FieldOp) :
 ## Mul equal superCommute
 
 Lemmas which rewrite a multiplication of two elements of the algebra as their commuted
-multiplication with a sign plus the super commutor.
+multiplication with a sign plus the super commutator.
 
 -/
 
@@ -446,7 +446,7 @@ lemma anPart_mul_anPart_swap (φ φ' : 𝓕.FieldOp) :
 
 /-!
 
-## Symmetry of the super commutor.
+## Symmetry of the super commutator.
 
 -/
 

@@ -107,4 +107,52 @@ lemma sum_extractEquiv_congr [AddCommMonoid M] {n m : ℕ} (i : Fin n) (f : Wick
   rw [Finset.sum_sigma']
   rfl
 
+/-- For `n = 3` there are `4` possible Wick contractions:
+
+- `∅`, corresponding to the case where no fields are contracted.
+- `{{0, 1}}`, corresponding to the case where the field at position `0` and `1` are contracted.
+- `{{0, 2}}`, corresponding to the case where the field at position `0` and `2` are contracted.
+- `{{1, 2}}`, corresponding to the case where the field at position `1` and `2` are contracted.
+
+The proof of this result uses the fact that Lean is an executable programming language
+and can calculate all Wick contractions for a given `n`. -/
+lemma mem_three (c : WickContraction 3) : c.1 ∈ ({∅, {{0, 1}}, {{0, 2}}, {{1, 2}}} :
+    Finset (Finset (Finset (Fin 3)))) := by
+  fin_cases c <;>
+    simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Function.Embedding.coeFn_mk,
+      Finset.mem_insert, Finset.mem_singleton]
+  · exact Or.inl rfl
+  · exact Or.inr (Or.inl rfl)
+  · exact Or.inr (Or.inr (Or.inl rfl))
+  · exact Or.inr (Or.inr (Or.inr rfl))
+
+/-- For `n = 4` there are `10` possible Wick contractions including e.g.
+
+- `∅`, corresponding to the case where no fields are contracted.
+- `{{0, 1}, {2, 3}}`, corresponding to the case where the fields at position `0` and `1` are
+  contracted, and the fields at position `2` and `3` are contracted.
+- `{{0, 2}, {1, 3}}`, corresponding to the case where the fields at position `0` and `2` are
+  contracted, and the fields at position `1` and `3` are contracted.
+
+The proof of this result uses the fact that Lean is an executable programming language
+and can calculate all Wick contractions for a given `n`.
+-/
+lemma mem_four (c : WickContraction 4) : c.1 ∈ ({∅,
+    {{0, 1}}, {{0, 2}}, {{0, 3}}, {{1, 2}}, {{1, 3}}, {{2,3}},
+    {{0, 1}, {2, 3}}, {{0, 2}, {1, 3}}, {{0, 3}, {1, 2}}} :
+    Finset (Finset (Finset (Fin 4)))) := by
+  fin_cases c <;>
+    simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Function.Embedding.coeFn_mk,
+      Finset.mem_insert, Finset.mem_singleton]
+  · exact Or.inl rfl -- ∅
+  · exact Or.inr (Or.inl rfl) -- {{0, 1}}
+  · exact Or.inr (Or.inr (Or.inl rfl)) -- {{0, 2}}
+  · exact Or.inr (Or.inr (Or.inr (Or.inl rfl))) -- {{0, 3}}
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) -- {{1, 2}}
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))))))
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))) -- {{1, 3}}
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))) -- {{2, 3 }}
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))
+
 end WickContraction

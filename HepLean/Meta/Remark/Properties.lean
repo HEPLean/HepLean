@@ -25,7 +25,7 @@ def RemarkInfo.toFullName (r : RemarkInfo) : Name :=
   else
     r.name
 
-/-- A Bool which is true if a name correponds to a remark. -/
+/-- A Bool which is true if a name corresponds to a remark. -/
 def RemarkInfo.IsRemark (n : Name) : m Bool := do
   let allRemarks ← allRemarkInfo
   let r := allRemarks.find? fun r => r.toFullName == n

@@ -25,7 +25,7 @@ open minkowskiMatrix
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 
-/-- The representation of contrvariant Lorentz vectors forms a topological space, induced
+/-- The representation of contravariant Lorentz vectors forms a topological space, induced
   by its equivalence to `Fin 1 ⊕ Fin d → ℝ`. -/
 instance : TopologicalSpace (Contr d) := TopologicalSpace.induced
   ContrMod.toFin1dℝEquiv (Pi.topologicalSpace)

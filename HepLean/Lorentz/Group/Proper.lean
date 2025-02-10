@@ -189,7 +189,7 @@ lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
 lemma id_IsProper : @IsProper d 1 := by
   simp [IsProper]
 
-/-- If two Lorentz transformations are in the same connected componenet, and one is proper then
+/-- If two Lorentz transformations are in the same connected component, and one is proper then
   the other is also proper. -/
 lemma isProper_on_connected_component {Λ Λ' : LorentzGroup d} (h : Λ' ∈ connectedComponent Λ) :
     IsProper Λ ↔ IsProper Λ' := by

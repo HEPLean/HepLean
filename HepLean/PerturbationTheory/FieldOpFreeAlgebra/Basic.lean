@@ -41,13 +41,14 @@ abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 
 namespace FieldOpFreeAlgebra
 
 remark naming_convention := "
-  For mathematicial objects defined in relation to `FieldOpFreeAlgebra` we will often postfix
-  their names with an `F` to indicate that they are related to the free algebra.
+  For mathematicial objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
+  may be given to
+  their names to indicate that they are related to the free algebra.
   This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
   as a quotient of `FieldOpFreeAlgebra`."
 
-/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
-  single `𝓕.CrAnFieldOp`. -/
+/-- For a field specification `𝓕`, and a element `φ` of `𝓕.CrAnFieldOp`,
+  `ofCrAnOpF φ` is defined as the element of `𝓕.FieldOpFreeAlgebra` formed by `φ`. -/
 def ofCrAnOpF (φ : 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 :=
   FreeAlgebra.ι ℂ φ
 
@@ -70,9 +71,11 @@ lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp
     ext x
     simpa using congrFun hg x
 
-/-- For a field specification `𝓕`, `ofCrAnListF φs` of `𝓕.FieldOpFreeAlgebra` formed by a
-  list `φs` of `𝓕.CrAnFieldOp`. For example for the list `[φ₁ᶜ, φ₂ᵃ, φ₃ᶜ]` we schematically
-  get `φ₁ᶜφ₂ᵃφ₃ᶜ`. The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`. -/
+/-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+ `ofCrAnListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
+  obtained by the product of `ofCrAnListF φ` for each `φ` in `φs`.
+  For example `ofCrAnListF [φ₁, φ₂, φ₃] = ofCrAnOpF φ₁ * ofCrAnOpF φ₂ * ofCrAnOpF φ₃`.
+  The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`. -/
 def ofCrAnListF (φs : List 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnOpF φs).prod
 
 @[simp]
@@ -88,22 +91,25 @@ lemma ofCrAnListF_append (φs φs' : List 𝓕.CrAnFieldOp) :
 lemma ofCrAnListF_singleton (φ : 𝓕.CrAnFieldOp) :
     ofCrAnListF [φ] = ofCrAnOpF φ := by simp [ofCrAnListF]
 
-/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
-  `𝓕.FieldOp` by summing over the creation and annihilation components of `𝓕.FieldOp`.
-  For example for `φ₁` an incoming asymptotic field operator we get
-  `ofCrAnOpF φ₁ᶜ`, and for `φ₁` a
-  position field operator we get `ofCrAnOpF φ₁ᶜ + ofCrAnOpF φ₁ᵃ`. -/
+/-- For a field specification `𝓕`, and an element `φ` of  `𝓕.FieldOp`,
+  `ofFieldOpF φ` is the element of `𝓕.FieldOpFreeAlgebra` formed  by summing over
+  `ofCrAnOpF` of the
+  creation and annihilation parts of `φ`.
+
+  For example for `φ` an incoming asymptotic field operator we get
+  `ofCrAnOpF ⟨φ, ()⟩`, and for `φ` a
+  position field operator we get `ofCrAnOpF ⟨φ, .create⟩ + ofCrAnOpF ⟨φ, .annihilate⟩`. -/
 def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=
   ∑ (i : 𝓕.fieldOpToCrAnType φ), ofCrAnOpF ⟨φ, i⟩
 
-/-- For a field specification `𝓕`, the element of `𝓕.FieldOpFreeAlgebra` formed by a
-  list of `𝓕.FieldOp` by summing over the creation and annihilation components.
-  For example, `φ₁` and `φ₂` position states `[φ1, φ2]` gets sent to
-  `(ofCrAnOpF φ1ᶜ + ofCrAnOpF φ1ᵃ) * (ofCrAnOpF φ2ᶜ + ofCrAnOpF φ2ᵃ)`. -/
+/-- For a field specification `𝓕`, and a list `φs` of `𝓕.FieldOp`,
+  `𝓕.ofFieldOpListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
+  obtained by the product of `ofFieldOpF φ` for each `φ` in `φs`.
+  For example `ofFieldOpListF [φ₁, φ₂, φ₃] = ofFieldOpF φ₁ * ofFieldOpF φ₂ * ofFieldOpF φ₃`. -/
 def ofFieldOpListF (φs : List 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofFieldOpF φs).prod
 
-remark notation_drop := "In doc-strings we will often drop explicit applications of `ofCrAnOpF`,
-`ofCrAnListF`, `ofFieldOpF`, and `ofFieldOpListF`"
+remark notation_drop := "In doc-strings explicit applications of `ofCrAnOpF`,
+`ofCrAnListF`, `ofFieldOpF`, and `ofFieldOpListF` will often be dropped."
 
 /-- Coercion from `List 𝓕.FieldOp` to `FieldOpFreeAlgebra 𝓕` through `ofFieldOpListF`. -/
 instance : Coe (List 𝓕.FieldOp) (FieldOpFreeAlgebra 𝓕) := ⟨ofFieldOpListF⟩

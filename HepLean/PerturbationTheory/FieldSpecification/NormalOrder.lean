@@ -17,8 +17,8 @@ variable {𝓕 : FieldSpecification}
 /-- For a field specification `𝓕`, `𝓕.normalOrderRel` is a relation on `𝓕.CrAnFieldOp`
   representing normal ordering. It is defined such that `𝓕.normalOrderRel φ₀ φ₁`
   is true if one of the following is true
-  - `φ₀` is a creation operator
-  - `φ₁` is an annihilation.
+  - `φ₀` is a field creation operator
+  - `φ₁` is a field annihilation operator.
 
   Thus, colloquially `𝓕.normalOrderRel φ₀ φ₁` says the creation operators are 'less then'
   annihilation operators. -/
@@ -344,11 +344,12 @@ lemma normalOrderList_eraseIdx_normalOrderEquiv {φs : List 𝓕.CrAnFieldOp} (n
   rw [HepLean.List.eraseIdx_insertionSort_fin]
 
 /-- For a field specification `𝓕`, a list `φs = φ₀…φₙ` of `𝓕.CrAnFieldOp` and an `i < φs.length`,
-  the following relation holds
+  then
   `normalOrderSign (φ₀…φᵢ₋₁φᵢ₊₁…φₙ)` is equal to the product of
   - `normalOrderSign φ₀…φₙ`,
   - `𝓢(φᵢ, φ₀…φᵢ₋₁)` i.e. the sign needed to remove `φᵢ` from `φ₀…φₙ`,
-  - `𝓢(φᵢ, _)` where `_` is the list of elements appearing before `φᵢ` after normal ordering. I.e.
+  - `𝓢(φᵢ, _)` where `_` is the list of elements appearing before `φᵢ` after normal ordering,
+    i.e.
     the sign needed to insert `φᵢ` back into the normal-ordered list at the correct place. -/
 lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnFieldOp) (i : Fin φs.length) :
     normalOrderSign (φs.eraseIdx i) = normalOrderSign φs *

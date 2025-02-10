@@ -30,6 +30,8 @@ open HepLean.List
   `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
   defined by its action on the basis `ofCrAnListF φs`, taking
   `ofCrAnListF φs` to `crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)`.
+  That is, `timeOrderF` time-orders the field operators and multiplies by the sign of the
+  time order.
 
   The notation `𝓣ᶠ(a)` is used for `timeOrderF a` -/
 def timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
