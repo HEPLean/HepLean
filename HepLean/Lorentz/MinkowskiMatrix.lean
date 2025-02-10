@@ -155,7 +155,7 @@ lemma det_dual : (dual Λ).det = Λ.det := by
   norm_cast
   simp
 
-/-- Expansion of the components of the Minkowski dual interms of the components
+/-- Expansion of the components of the Minkowski dual in terms of the components
   of the original matrix. -/
 lemma dual_apply (μ ν : Fin 1 ⊕ Fin d) :
     dual Λ μ ν = η μ μ * Λ ν μ * η ν ν := by

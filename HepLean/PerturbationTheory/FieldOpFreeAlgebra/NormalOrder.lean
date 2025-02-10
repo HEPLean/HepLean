@@ -31,8 +31,11 @@ noncomputable section
   `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
   defined by its action on the basis `ofCrAnListF φs`, taking `ofCrAnListF φs` to
   `normalOrderSign φs • ofCrAnListF (normalOrderList φs)`.
+  That is, `normalOrderF` normal-orders the field operators and multiplies by the sign of the
+  normal order.
 
-  The notation `𝓝ᶠ(a)` is used for `normalOrderF a`. -/
+  The notation `𝓝ᶠ(a)` is used for `normalOrderF a` for `a` an element of
+  `FieldOpFreeAlgebra 𝓕`. -/
 def normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
   Basis.constr ofCrAnListFBasis ℂ fun φs =>
   normalOrderSign φs • ofCrAnListF (normalOrderList φs)

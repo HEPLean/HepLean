@@ -193,7 +193,7 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
 
 /-- For a field specification `𝓕`, `𝓕.crAnTimeOrderRel` is a relation on
   `𝓕.CrAnFieldOp` representing time ordering.
-  It is defined as such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
+  It is defined such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
   holds
 - `φ₀` is an *outgoing* asymptotic operator
 - `φ₁` is an *incoming* asymptotic field operator
@@ -201,6 +201,8 @@ lemma timeOrderList_eq_maxTimeField_timeOrderList (φ : 𝓕.FieldOp) (φs : Lis
   the `SpaceTime` point of `φ₀` has a time *greater* then or equal to that of `φ₁`.
 
 Thus, colloquially `𝓕.crAnTimeOrderRel φ₀ φ₁` if `φ₀` has time *greater* then or equal to `φ₁`.
+The use of *greater* then rather then *less* then is because on ordering lists of operators
+it is needed that the operator with the greatest time is to the left.
 -/
 def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
 

@@ -422,7 +422,7 @@ lemma join_sign_induction {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs
   `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
 
   In `φsΛ.sign` the sign is determined by starting with the contracted pair
-  whose first element occurs at the left-most position. This lemma manifests that
+  whose first element occurs at the left-most position. This lemma manifests that this
   choice does not matter, and that contracted pairs can be brought together in any order. -/
 lemma join_sign {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (hc : φsΛ.GradingCompliant) :

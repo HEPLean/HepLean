@@ -47,13 +47,13 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
   rfl
 
 remark wicks_theorem_context := "
-  In perturbation quantum field theory, Wick's theorem allows
+  In perturbative quantum field theory, Wick's theorem allows
   us to expand expectation values of time-ordered products of fields in terms of normal-orders
   and time contractions.
   The theorem is used to simplify the calculation of scattering amplitudes, and is the precurser
   to Feynman diagrams.
 
-  There is are actually three different versions of Wick's theorem used.
+  There are actually three different versions of Wick's theorem used.
   The static version, the time-dependent version, and the normal-ordered time-dependent version.
   HepLean contains a formalization of all three of these theorems in complete generality for
   mixtures of bosonic and fermionic fields.

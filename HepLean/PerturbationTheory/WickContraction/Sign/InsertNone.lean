@@ -239,7 +239,7 @@ lemma signInsertNone_eq_filterset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   · exact hG
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a graded compliant Wick contraction `φsΛ` of `φs`,
-  an `i ≤ φs.length` and a `φ` in `𝓕.FieldOp`, the following relation holds
+  an `i ≤ φs.length`, and a `φ` in `𝓕.FieldOp`, then
   `(φsΛ ↩Λ φ i none).sign = s * φsΛ.sign`
   where `s` is the sign got by moving `φ` through the elements of `φ₀…φᵢ₋₁` which
   are contracted with some element.
@@ -255,7 +255,7 @@ lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   exact hG
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a graded compliant Wick contraction `φsΛ` of `φs`,
-  and a `φ` in `𝓕.FieldOp`, the following relation holds `(φsΛ ↩Λ φ 0 none).sign = φsΛ.sign`.
+  and a `φ` in `𝓕.FieldOp`, then `(φsΛ ↩Λ φ 0 none).sign = φsΛ.sign`.
 
   This is a direct corollary of `sign_insert_none`. -/
 lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)

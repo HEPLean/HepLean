@@ -143,10 +143,21 @@ def perturbationTheory : Note where
   parts := [
     .h1 "Introduction",
     .name `FieldSpecification.wicks_theorem_context .incomplete,
-    .p "In this note we walk through the important parts of the proof of Wick's theorem
-      for both fermions and bosons,
+    .p "In this note we walk through the important parts of the proof of the three versions of
+      Wick's theorem for field operators containing carrying both fermionic and bosonic statitics,
       as it appears in HepLean. Not every lemma or definition is covered here.
       The aim is to give just enough that the story can be understood.",
+    .p "
+     Before proceeding with the steps in the proof, we review some basic terminology
+     related to Lean and type theory. The most important notion is that of a type.
+     We don't give any formal definition here, except to say that a type `T`, like a set, has
+     elements `x` which we say are of type `T` and write `x : T`. Examples of types include,
+     the type of natural numbers `ℕ`, the type of real numbers `ℝ`, the type of numbers
+     `0, …, n-1` denoted `Fin n`. Given two types `T` and `S`, we can form the product type `T × S`,
+     and the function type `T → S`.
+
+     Types form the foundation of Lean and the theory behind them will be used both explicitly and
+      implicitly throughout this note.",
     .h1 "Field operators",
     .h2 "Field statistics",
     .name ``FieldStatistic .complete,
@@ -159,6 +170,7 @@ def perturbationTheory : Note where
     .name ``FieldSpecification.fieldOpStatistic .complete,
     .name ``CreateAnnihilate .complete,
     .name ``FieldSpecification.CrAnFieldOp .complete,
+    .name ``FieldSpecification.crAnFieldOpToCreateAnnihilate .complete,
     .name ``FieldSpecification.crAnStatistics .complete,
     .name `FieldSpecification.notation_remark .complete,
     .h2 "Field-operator free algebra",
@@ -208,6 +220,8 @@ def perturbationTheory : Note where
     .h1 "Wick Contractions",
     .h2 "Definition",
     .name ``WickContraction .complete,
+    .name ``WickContraction.mem_three .complete,
+    .name ``WickContraction.mem_four .complete,
     .name `WickContraction.contraction_notation .complete,
     .name ``WickContraction.GradingCompliant .complete,
     .h2 "Aside: Cardinality",
@@ -235,7 +249,7 @@ def perturbationTheory : Note where
     .name ``WickContraction.staticContract .complete,
     .name ``WickContraction.staticContract_insert_none .complete,
     .name ``WickContraction.staticContract_insert_some .complete,
-    .h2 "Static wick terms",
+    .h2 "Static Wick terms",
     .name ``WickContraction.staticWickTerm .complete,
     .name ``WickContraction.staticWickTerm_empty_nil .complete,
     .name ``WickContraction.staticWickTerm_insert_zero_none .complete,

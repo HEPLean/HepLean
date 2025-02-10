@@ -27,8 +27,8 @@ variable {𝓕 : Type}
 /-- The exchange sign, `exchangeSign`, is defined as the group homomorphism
   `FieldStatistic →* FieldStatistic →* ℂ`,
   for which `exchangeSign a b` is `-1` if both `a` and `b` are `fermionic` and `1` otherwise.
-  The exchange sign is sign one picks up on exchanging an operator or field `φ₁` of statistic `a`
-  with one `φ₂` of statistic `b`, i.e. `φ₁φ₂ → φ₂φ₁`.
+  The exchange sign is the sign one picks up on exchanging an operator or field `φ₁` of statistic
+  `a` with an operator or field `φ₂` of statistic `b`, i.e. `φ₁φ₂ → φ₂φ₁`.
 
   The notation `𝓢(a, b)` is used for the exchange sign of `a` and `b`. -/
 def exchangeSign : FieldStatistic →* FieldStatistic →* ℂ where

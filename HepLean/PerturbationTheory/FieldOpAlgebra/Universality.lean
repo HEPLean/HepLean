@@ -78,8 +78,9 @@ lemma universalLift_ι {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFie
 For a field specification, `𝓕`, the algebra `𝓕.FieldOpAlgebra` satisfies the following universal
 property. Let `f : 𝓕.CrAnFieldOp → A` be a function and `g : 𝓕.FieldOpFreeAlgebra →ₐ[ℂ] A`
 the universal lift of that function associated with the free algebra `𝓕.FieldOpFreeAlgebra`.
-If `g` is zero on the ideal defining `𝓕.FieldOpAlgebra`, then there is a unique
-algebra map `g' : FieldOpAlgebra 𝓕 →ₐ[ℂ] A` such that `g' ∘ ι = g`.
+If `g` is zero on the ideal defining `𝓕.FieldOpAlgebra`, then there exists
+algebra map `g' : FieldOpAlgebra 𝓕 →ₐ[ℂ] A` such that `g' ∘ ι = g`, and furthermore this
+algebra map is unique.
 -/
 lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
     (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :

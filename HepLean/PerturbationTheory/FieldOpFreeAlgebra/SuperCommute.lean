@@ -405,7 +405,7 @@ lemma superCommuteF_ofCrAnListF_ofFieldOpListF_cons (φ : 𝓕.FieldOp) (φs : L
   simp [mul_comm]
 
 /--
-For a field specification `𝓕`, and to lists `φs = φ₀…φₙ` and `φs'` of `𝓕.CrAnFieldOp`
+For a field specification `𝓕`, and two lists `φs = φ₀…φₙ` and `φs'` of `𝓕.CrAnFieldOp`
 the following super commutation relation holds:
 
 `[φs', φ₀…φₙ]ₛca = ∑ i, 𝓢(φs', φ₀…φᵢ₋₁) • φ₀…φᵢ₋₁ * [φs', φᵢ]ₛca * φᵢ₊₁ … φₙ`

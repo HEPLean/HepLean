@@ -19,9 +19,9 @@ variable {n : ℕ} (c : WickContraction n)
 open HepLean.List
 open FieldOpAlgebra
 
-/-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
+/-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ`, the
   element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.staticContract` is defined as the product
-  of `[anPart φs[j], φs[k]]ₛ` over contracted pairs `{j, k}` (both indices of `φs`) in `φsΛ`
+  of `[anPart φs[j], φs[k]]ₛ` over contracted pairs `{j, k}` in `φsΛ`
   with `j < k`. -/
 noncomputable def staticContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
@@ -31,7 +31,7 @@ noncomputable def staticContract {φs : List 𝓕.FieldOp}
       superCommute_anPart_ofFieldOp_mem_center _ _⟩
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
+  `𝓕.FieldOp`, and a `i ≤ φs.length`, then the following relation holds:
 
   `(φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract`
 

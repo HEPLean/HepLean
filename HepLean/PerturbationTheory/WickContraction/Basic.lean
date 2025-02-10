@@ -19,20 +19,6 @@ contracting, a Wick contraction
 is a finite set of pairs of `Fin n` (numbers `0`, …, `n-1`), such that no
 element of `Fin n` occurs in more then one pair. The pairs are the positions of fields we
 'contract' together.
-
-For example for `n = 3` there are `4` Wick contractions:
-- `∅`, corresponding to the case where no fields are contracted.
-- `{{0, 1}}`, corresponding to the case where the field at position `0` and `1` are contracted.
-- `{{0, 2}}`, corresponding to the case where the field at position `0` and `2` are contracted.
-- `{{1, 2}}`, corresponding to the case where the field at position `1` and `2` are contracted.
-
-For `n=4` some possible Wick contractions are
-- `∅`, corresponding to the case where no fields are contracted.
-- `{{0, 1}, {2, 3}}`, corresponding to the case where the field at position `0` and `1` are
-  contracted and the field at position `2` and `3` are contracted.
-- `{{0, 2}, {1, 3}}`, corresponding to the case where the field at position `0` and `2` are
-  contracted and the field at position `1` and `3` are contracted.
-  etc.
 -/
 def WickContraction (n : ℕ) : Type :=
   {f : Finset ((Finset (Fin n))) // (∀ a ∈ f, a.card = 2) ∧
@@ -534,8 +520,8 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
 /-- For a field specification `𝓕`, `φs` a list of `𝓕.FieldOp` and a Wick contraction
   `φsΛ` of `φs`, the Wick contraction `φsΛ` is said to be `GradingCompliant` if
   for every pair in `φsΛ` the contracted fields are either both `fermionic` or both `bosonic`.
-  I.e. in a `GradingCompliant` Wick contraction no contractions occur between `fermionic` and
-  `bosonic` fields. -/
+  In other words, in a `GradingCompliant` Wick contraction no contractions occur between
+  `fermionic` and `bosonic` fields. -/
 def GradingCompliant (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :=
   ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
 

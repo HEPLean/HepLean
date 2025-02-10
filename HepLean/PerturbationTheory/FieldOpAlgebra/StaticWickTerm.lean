@@ -68,7 +68,7 @@ lemma staticWickTerm_insert_zero_none (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   uncontracted fields in `φ₀…φₖ₋₁`
 - the normal ordering `𝓝([φsΛ]ᵘᶜ.erase (uncontractedFieldOpEquiv φs φsΛ k))`.
 
-The proof of this result ultimitley relies on
+The proof of this result ultimately relies on
 - `staticContract_insert_some` to rewrite static contractions.
 - `normalOrder_uncontracted_some` to rewrite normal orderings.
 - `sign_insert_some_zero` to rewrite signs.

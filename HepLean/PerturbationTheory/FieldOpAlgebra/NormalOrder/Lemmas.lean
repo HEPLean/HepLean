@@ -231,7 +231,7 @@ The proof of this result ultimately goes as follows
   (considered as a list with one element) with
   `ofCrAnList φsn` as a sum of supercommutors, one for each element of `φsn`.
 - The fact that super-commutors are in the center of `𝓕.FieldOpAlgebra` is used to  rearrange terms.
-- Properties of ordered lists, and `normalOrderSign_eraseIdx` is then used to complete the proof.
+- Properties of ordered lists, and `normalOrderSign_eraseIdx` are then used to complete the proof.
 -/
 lemma ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum (φ : 𝓕.CrAnFieldOp)
     (φs : List 𝓕.CrAnFieldOp) : [ofCrAnOp φ, 𝓝(ofCrAnList φs)]ₛ = ∑ n : Fin φs.length,

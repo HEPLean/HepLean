@@ -25,7 +25,13 @@ open FieldOpAlgebra
 
 /-- Given a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs` and a Wick contraction
   `φsucΛ` of `[φsΛ]ᵘᶜ`, `join φsΛ φsucΛ` is defined as the Wick contraction of `φs` consisting of
-  the contractions in `φsΛ` and those in `φsucΛ`. -/
+  the contractions in `φsΛ` and those in `φsucΛ`.
+
+  As an example, for `φs = [φ1, φ2, φ3, φ4]`,
+  `φsΛ = {{0, 1}}` corresponding to the contraction of `φ1` and `φ2` in `φs` and
+  `φsucΛ = {{0, 1}}`
+  corresponding to the contraction of `φ3` and `φ4` in `[φsΛ]ᵘᶜ = [φ3, φ4]`, then
+  `join φsΛ φsucΛ` is the contraction `{{0, 1}, {2, 3}}` of `φs`. -/
 def join {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) : WickContraction φs.length :=
   ⟨φsΛ.1 ∪ φsucΛ.1.map (Finset.mapEmbedding uncontractedListEmd).toEmbedding, by
