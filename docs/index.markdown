@@ -37,14 +37,14 @@ The mission of HepLean is to digitalize results, meaning definitions, theorems a
 - An intuitive set-up that aligns with the way physicists think and work.
 - A large and active team, with the potential for structured, high-energy physics-style collaborations.
 
-# 3. Values of the project
+# 3. Values of HepLean
 The three core values of HepLean are:
 
 - *Welcoming*:  HepLean strives to foster an environment where contributors of all academic backgrounds and experience levels feel valued, supported, and empowered to make meaningful contributions.
 - *Open and Transparent*: HepLean and its outputs will always be openly accessible, freely available, and developed with transparency to benefit the broader physics and Lean communities.
 - *Accessibility and Practicality*: HepLean is designed to be intuitive, well-documented, and directly useful to physicists, regardless of their familiarity with formal methods.
 
-# 4. Potential impact of the project
+# 4. Potential impact of the HepLean
 
 HepLean has the potential to have the following impact on the physics community:
 - Make it easier to find results.
@@ -57,7 +57,7 @@ HepLean has the potential to have the following impact on the physics community:
 
 You can learn more about HepLean by reading: [2405.08863](https://inspirehep.net/literature/2787050), or contacting Joseph Tooby-Smith at: joseph at heplean dot com.
 
-# 6. How to get involved?
+# 6. How to get involved
 
 There are a number of different ways to get involved in HepLean depending on your background.
 
