@@ -220,7 +220,7 @@ lemma insertAndContract_none_prod_contractions (φ : 𝓕.FieldOp) (φs : List �
   let e2 := Equiv.ofBijective (congrLift (insertIdx_length_fin φ φs i).symm)
     ((φsΛ.insertAndContractNat i none).congrLift_bijective ((insertIdx_length_fin φ φs i).symm))
   erw [← e2.prod_comp]
-  erw [← e1.prod_comp]
+  rw [← e1.prod_comp]
   rfl
 
 lemma insertAndContract_some_prod_contractions (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
@@ -233,7 +233,7 @@ lemma insertAndContract_some_prod_contractions (φ : 𝓕.FieldOp) (φs : List �
     ((φsΛ.insertAndContractNat i (some j)).congrLift_bijective ((insertIdx_length_fin φ φs i).symm))
   erw [← e2.prod_comp]
   let e1 := Equiv.ofBijective (φsΛ.insertLiftSome i j) (insertLiftSome_bijective i j)
-  erw [← e1.prod_comp]
+  rw [← e1.prod_comp]
   rw [Fintype.prod_sum_type]
   simp only [Finset.univ_unique, PUnit.default_eq_unit, Nat.succ_eq_add_one, Finset.prod_singleton,
     Finset.univ_eq_attach]
