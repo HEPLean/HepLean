@@ -28,9 +28,13 @@ namespace FieldOpFreeAlgebra
 noncomputable section
 
 /-- For a field specification `𝓕`, `normalOrderF` is the linear map
+
   `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
+
   defined by its action on the basis `ofCrAnListF φs`, taking `ofCrAnListF φs` to
+
   `normalOrderSign φs • ofCrAnListF (normalOrderList φs)`.
+
   That is, `normalOrderF` normal-orders the field operators and multiplies by the sign of the
   normal order.
 

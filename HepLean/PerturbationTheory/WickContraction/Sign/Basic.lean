@@ -22,7 +22,8 @@ open FieldStatistic
 /-- Given a Wick contraction `c : WickContraction n` and `i1 i2 : Fin n` the finite set
   of elements of `Fin n` between `i1` and `i2` which are either uncontracted
   or are contracted but are contracted with an element occurring after `i1`.
-  I.e. the elements of `Fin n` between `i1` and `i2` which are not contracted with before `i1`.
+  In other words, the elements of `Fin n` between `i1` and `i2` which are not
+  contracted with before `i1`.
   One should assume `i1 < i2` otherwise this finite set is empty. -/
 def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   Finset.univ.filter (fun i => i1 < i ∧ i < i2 ∧

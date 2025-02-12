@@ -81,12 +81,14 @@ As some intuition, if `f` corresponds to a Weyl-fermion field, it would contribu
   the following elements to `𝓕.CrAnFieldOp`
 - an element corresponding to incoming asymptotic operators for each spin `s`: `a(p, s)`.
 - an element corresponding to the creation parts of position operators for each each Lorentz
-  index `α`:
-  `∑ s, ∫ d^3p/(…) (x_α(p,s)  a(p, s) e^{-i p x})`.
+  index `a`:
+
+  `∑ s, ∫ d³p/(…) (xₐ (p,s)  a(p, s) e ^ (-i p x))`.
 - an element corresponding to annihilation parts of position operator,
-  for each each Lorentz index `α`:
-  `∑ s, ∫ d^3p/(…) (y_α(p,s) a^†(p, s) e^{-i p x})`.
-- an element corresponding to outgoing asymptotic operators for each spin `s`: `a^†(p, s)`.
+  for each each Lorentz index `a`:
+
+  `∑ s, ∫ d³p/(…) (yₐ(p,s) a†(p, s) e ^ (-i p x))`.
+- an element corresponding to outgoing asymptotic operators for each spin `s`: `a†(p, s)`.
 
 -/
 def CrAnFieldOp : Type := Σ (s : 𝓕.FieldOp), 𝓕.fieldOpToCrAnType s

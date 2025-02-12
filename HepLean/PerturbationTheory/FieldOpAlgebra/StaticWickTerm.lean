@@ -41,9 +41,9 @@ lemma staticWickTerm_empty_nil :
 
 /--
 For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, and an element `φ` of
-  `𝓕.FieldOp`, the following relation holds
+  `𝓕.FieldOp`, then  `(φsΛ ↩Λ φ 0 none).staticWickTerm` is equal to
 
-`(φsΛ ↩Λ φ 0 none).staticWickTerm = φsΛ.sign • φsΛ.staticWickTerm * 𝓝(φ :: [φsΛ]ᵘᶜ)`
+`φsΛ.sign • φsΛ.staticWickTerm * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
 The proof of this result relies on
 - `staticContract_insert_none` to rewrite the static contract.

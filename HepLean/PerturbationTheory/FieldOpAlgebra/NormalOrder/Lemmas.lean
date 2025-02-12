@@ -119,7 +119,7 @@ lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
 -/
 
 /-- For a field specification `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
-  of the super commutator of `a` and `b` vanishes. I.e. `𝓝([a,b]ₛ) = 0`. -/
+  of the super commutator of `a` and `b` vanishes, i.e. `𝓝([a,b]ₛ) = 0`. -/
 @[simp]
 lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
     𝓝([a, b]ₛ) = 0 := by
@@ -346,15 +346,24 @@ noncomputable def contractStateAtIndex (φ : 𝓕.FieldOp) (φs : List 𝓕.Fiel
 
 /--
 For a field specification `𝓕`, a `φ` in `𝓕.FieldOp` and a list `φs` of `𝓕.FieldOp`
-the following relation holds in the algebra `𝓕.FieldOpAlgebra`,
-`φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPart φ, φᵢ]ₛ) * 𝓝(φ₀φ₁…φᵢ₋₁φᵢ₊₁…φₙ)`.
+then `φ * 𝓝(φ₀φ₁…φₙ)` is equal to
+
+`𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPart φ, φᵢ]ₛ) * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
 
 The proof of ultimately goes as follows:
 - `ofFieldOp_eq_crPart_add_anPart` is used to split `φ` into its creation and annihilation parts.
-- The fact that `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)` is used.
-- The fact that `anPart φ * 𝓝(φ₀φ₁…φₙ)` is
-  `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ + [anPart φ, 𝓝(φ₀φ₁…φₙ)]` is used
-- The fact that `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ = 𝓝(anPart φ * φ₀φ₁…φₙ)`
+- The following relation is then used
+
+  `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)`.
+
+- It used that  `anPart φ * 𝓝(φ₀φ₁…φₙ)` is equal to
+
+  `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ + [anPart φ, 𝓝(φ₀φ₁…φₙ)]`
+
+- Then it is used that
+
+  `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ = 𝓝(anPart φ * φ₀φ₁…φₙ)`
+
 - The result `ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum` is used
   to expand `[anPart φ, 𝓝(φ₀φ₁…φₙ)]` as a sum.
 -/

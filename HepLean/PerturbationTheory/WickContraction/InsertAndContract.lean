@@ -291,9 +291,15 @@ lemma insert_fin_eq_self (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
   Wick contractions of `φs` with `φ` inserted at `i` is equal to the sum over Wick contractions
   `φsΛ` of just `φs` and the sum over optional uncontracted elements of the `φsΛ`.
 
-  In other words, `∑ (φsΛ : WickContraction (φs.insertIdx i φ).length), f φsΛ` is equal to
-  `∑ (φsΛ : WickContraction φs.length), ∑ (k : Option φsΛ.uncontracted), f (φsΛ ↩Λ φ i k) `.
-  where `(φs.insertIdx i φ)` is `φs` with `φ` inserted at position `i`. -/
+  In other words,
+
+  `∑ (φsΛ : WickContraction (φs.insertIdx i φ).length), f φsΛ`
+
+  where `(φs.insertIdx i φ)` is `φs` with `φ` inserted at position `i`. is equal to
+
+  `∑ (φsΛ : WickContraction φs.length), ∑ k, f (φsΛ ↩Λ φ i k) `.
+
+  where the sum over `k` is over all `k` in `Option φsΛ.uncontracted`. -/
 lemma insertLift_sum (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
     (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
     ∑ c, f c =
