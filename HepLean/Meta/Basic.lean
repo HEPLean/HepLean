@@ -171,6 +171,14 @@ def noLemmas : CoreM Nat := do
   let x ← imports.mapM HepLean.Imports.getUserConsts
   x.flatFilterSizeM fun c => return !c.isDef && (← c.name.hasPos)
 
+/-- All docstrings present in HepLean. -/
+def allDocStrings : CoreM (Array String) := do
+  let imports ← HepLean.allImports
+  let x ← imports.mapM HepLean.Imports.getUserConsts
+  let x' := x.flatten
+  let docString ← x'.mapM fun c => Lean.Name.getDocString c.name
+  return docString
+
 /-- Number of definitions without a doc-string. -/
 def noDefsNoDocString : CoreM Nat := do
   let imports ← HepLean.allImports
