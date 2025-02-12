@@ -71,13 +71,13 @@ variable (𝓕 : FieldSpecification)
 
 /-- For a field specification `𝓕`, the inductive type `𝓕.FieldOp` is defined
   to contain the following elements:
-- for every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+- For every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
   element labelled `inAsymp f e p` corresponding to an incoming asymptotic field operator
   of the field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
-- for every `f` in `𝓕.Field`, element of `e` of `PositionLabel f` and space-time position `x`, an
+- For every `f` in `𝓕.Field`, element of `e` of `PositionLabel f` and space-time position `x`, an
   element labelled `position f e x` corresponding to a position field operator of the field `f`,
   of label `e` (e.g. specifying the Lorentz index), and position `x`.
-- for every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+- For every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
   element labelled `outAsymp f e p` corresponding to an outgoing asymptotic field operator of the
   field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
 
@@ -94,7 +94,6 @@ As some intuition, if `f` corresponds to a Weyl-fermion field, then
   once represented in the operator algebra, be proportional to the
   annihilation operator `a†(p, s)`.
 
-This type contains all operators which are related to a field.
 -/
 inductive FieldOp (𝓕 : FieldSpecification) where
   | inAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp

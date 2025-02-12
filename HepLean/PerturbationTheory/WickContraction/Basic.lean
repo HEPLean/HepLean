@@ -16,7 +16,7 @@ variable {𝓕 : FieldSpecification}
 /--
 Given a natural number `n`, which will correspond to the number of fields needing
 contracting, a Wick contraction
-is a finite set of pairs of `Fin n` (numbers `0`, …, `n-1`), such that no
+is a finite set of pairs of `Fin n` (numbers `0`, ..., `n-1`), such that no
 element of `Fin n` occurs in more then one pair. The pairs are the positions of fields we
 'contract' together.
 -/
