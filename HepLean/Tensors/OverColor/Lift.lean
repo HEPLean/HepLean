@@ -91,13 +91,10 @@ lemma objObj'_ρ_tprod (f : OverColor C) (M : G) (x : (i : f.left) → F.obj (Di
 
 @[simp]
 lemma objObj'_ρ_empty (g : G) : (objObj' F (𝟙_ (OverColor C))).ρ g = LinearMap.id := by
-  erw [objObj'_ρ]
+  rw [objObj'_ρ]
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
-    simp only [CategoryTheory.Functor.id_obj, map_add, hx, ModuleCat.hom_comp,
-      Function.comp_apply, hy]
-    erw [hx, hy]
-    rfl
+    simp_all
   simp only [OverColor.instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
     OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod,
     _root_.map_smul, PiTensorProduct.map_tprod, LinearMap.id_coe, id_eq]

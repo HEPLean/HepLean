@@ -189,7 +189,10 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     (((lift.obj S.FD).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
     (((lift.obj S.FD).map (equivToIso (HepLean.Fin.finExtractOne i)).hom).hom
     ((PiTensorProduct.tprod S.k) _)))) =_
-  rw [lift.map_tprod]
+  conv_lhs =>
+    enter [2, 2, 2]
+    rw [lift.map_tprod]
+
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
     ((lift.obj S.FD).map (mkIso _).hom).hom)
@@ -198,7 +201,9 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     (OverColor.mk ((c ∘ ⇑(HepLean.Fin.finExtractOne i).symm) ∘ Sum.inr))).inv.hom
     (((lift.obj S.FD).map (mkSum (c ∘ ⇑(HepLean.Fin.finExtractOne i).symm)).hom).hom
     (((PiTensorProduct.tprod S.k) _)))) =_
-  rw [lift.map_tprod]
+  conv_lhs =>
+    enter [2, 2]
+    rw [lift.map_tprod]
   change ((TensorProduct.map (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom).hom
     ((lift.obj S.FD).map (mkIso _).hom).hom.hom))
@@ -208,11 +213,11 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
     ((((PiTensorProduct.tprod S.k) _)))) =_
   rw [lift.μIso_inv_tprod]
   rw [TensorProduct.map_tmul]
-  erw [lift.map_tprod]
-  simp only [Nat.succ_eq_add_one, CategoryStruct.comp, Functor.id_obj,
+  conv_lhs =>
+    erw [lift.map_tprod]
+  simp only [ CategoryStruct.comp, Functor.id_obj,
     instMonoidalCategoryStruct_tensorObj_hom, mk_hom, Sum.elim_inl, Function.comp_apply,
-    instMonoidalCategoryStruct_tensorObj_left, mkSum_homToEquiv, Equiv.refl_symm,
-    LinearMap.coe_comp, Sum.elim_inr]
+    instMonoidalCategoryStruct_tensorObj_left, mkSum_homToEquiv, Equiv.refl_symm]
   congr 1
   · change (forgetLiftApp S.FD (c i)).hom.hom
       (((lift.obj S.FD).map (mkIso _).hom).hom

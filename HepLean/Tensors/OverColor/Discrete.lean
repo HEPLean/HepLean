@@ -77,14 +77,16 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     Category.assoc, Functor.LaxMonoidal.μ_natural_assoc, Action.comp_hom,
     Action.instMonoidalCategory_tensorHom_hom, Action.mkIso_inv_hom, ModuleCat.hom_comp,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, mk_hom, mk_left, Functor.id_obj]
+    Action.FunctorCategoryEquivalence.functor_obj_obj, mk_hom, Functor.id_obj]
   simp only [LinearMap.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.tensorHom_tmul,
-    LinearEquiv.coe_coe, forgetLiftAppV_symm_apply, mk_left, Functor.id_obj]
-  change ((lift.obj F).map fin2Iso.inv).hom
-    (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
-      ((Functor.LaxMonoidal.μ (lift.obj F).toFunctor (mk fun _ => c1) (mk fun _ => c2)).hom
-        (((PiTensorProduct.tprod k) fun _ => x) ⊗ₜ[k] (PiTensorProduct.tprod k) fun _ => y))) = _
-  rw [lift.obj_μ_tprod_tmul F (mk fun _ => c1) (mk fun _ => c2)]
+    LinearEquiv.coe_coe, forgetLiftAppV_symm_apply, Functor.id_obj]
+  rw [ModuleCat.Hom.hom, ModuleCat.Hom.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
+  simp only [LinearEquiv.toModuleIso_inv, ModuleCat.instConcreteCategoryLinearMapIdCarrier]
+  conv_lhs =>
+    enter [2, 2]
+    change ((Functor.LaxMonoidal.μ (lift.obj F).toFunctor (mk fun _ => c1) (mk fun _ => c2)).hom
+        (((PiTensorProduct.tprod k) fun _ => x) ⊗ₜ[k] (PiTensorProduct.tprod k) fun _ => y))
+    rw [lift.obj_μ_tprod_tmul F (mk fun _ => c1) (mk fun _ => c2)]
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
       ((PiTensorProduct.tprod k) _)) = _
@@ -119,8 +121,12 @@ lemma pairIsoSep_inv_tprod {c1 c2 : C} (fx : (i : (𝟭 Type).obj (OverColor.mk 
     Functor.id_obj, mk_hom, ModuleCat.hom_comp, Function.comp_apply, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
   simp_rw [LinearMap.comp_apply]
-  erw [lift.map_tprod]
-  erw [lift.μIso_inv_tprod]
+  conv_lhs =>
+    enter [2, 2, 2]
+    erw [lift.map_tprod]
+  conv_lhs =>
+    enter [2, 2]
+    erw [lift.μIso_inv_tprod]
   change (((forgetLiftApp F c1).hom.hom (((lift.obj F).map (mkIso _).inv).hom
     ((PiTensorProduct.tprod k) fun i =>
     (lift.discreteFunctorMapEqIso F _) (fx ((Hom.toEquiv fin2Iso.hom).symm (Sum.inl i)))))) ⊗ₜ[k]
@@ -218,15 +224,19 @@ lemma tripleIsoSep_tmul {c1 c2 c3 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (
     tripleIsoSep, Functor.mapIso_symm, Iso.trans_hom, whiskerLeftIso_hom, whiskerRightIso_hom,
     Iso.symm_hom, Functor.mapIso_inv, Action.comp_hom,
     Action.instMonoidalCategory_whiskerLeft_hom, Action.instMonoidalCategory_whiskerRight_hom,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
     ModuleCat.MonoidalCategory.whiskerLeft_apply, ModuleCat.MonoidalCategory.whiskerRight_apply,
     Functor.id_obj, mk_hom]
   simp only [Functor.Monoidal.μIso_hom, Functor.CoreMonoidal.toMonoidal_toLaxMonoidal,
     LinearMap.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.whiskerLeft_apply,
     ModuleCat.MonoidalCategory.whiskerRight_apply, mk_left]
-  erw [pairIsoSep_tmul F y z]
-  erw [forgetLiftAppV_symm_apply F c1]
+  conv_lhs =>
+    enter [2, 2]
+    erw [pairIsoSep_tmul F y z]
+  conv_lhs =>
+    enter [2, 2, 2]
+    erw [forgetLiftAppV_symm_apply F c1]
   conv_lhs =>
     enter [2]
     erw [lift.obj_μ_tprod_tmul F _ _]
