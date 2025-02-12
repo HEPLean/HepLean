@@ -237,9 +237,8 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   rw [← tensor_comp]
   have h1 : 𝟙_ (Rep S.k S.G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ) := by
     rfl
-  rw [h1, ← tensor_comp]
-  rw [CategoryTheory.Category.id_comp]
-  erw [CategoryTheory.Category.comp_id, CategoryTheory.Category.comp_id]
+  rw [h1, ← tensor_comp, Category.id_comp]
+  erw [Category.comp_id, Category.comp_id]
   rw [S.contr.naturality]
   rfl
 

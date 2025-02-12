@@ -235,9 +235,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     refine h1' ?_ ?_ ?_
     · simp only [leftContr, Nat.succ_eq_add_one, Equiv.toFun_as_coe, leftContrI,
       Equiv.symm_apply_apply, finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl]
-    · erw [ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply, ModuleCat.id_apply]
-      simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, equivToIso_homToEquiv,
-        LinearEquiv.coe_coe]
+    · simp only [mk_left, equivToIso_homToEquiv, ModuleCat.hom_id, LinearMap.id_coe, id_eq]
       apply contrMap_prod_tprod_aux_2
       exact Eq.symm ((fun f => (Equiv.apply_eq_iff_eq_symm_apply f).mp) finSumFinEquiv rfl)
     · simp only [Discrete.functor_obj_eq_as, Function.comp_apply, AddHom.toFun_eq_coe,
@@ -272,7 +270,7 @@ lemma contrMap_prod_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
         (Hom.toEquiv_comp_inv_apply (mkIso (leftContr_map_eq q)).hom k)
     · obtain ⟨k, hk⟩ := finSumFinEquiv.surjective k
       subst hk
-      erw [Equiv.symm_apply_apply]
+      simp only [mk_left, Equiv.refl_apply, Equiv.symm_apply_apply]
       match k with
       | Sum.inl k => exact q.sum_inl_succAbove_leftContrI_leftContrJ _
       | Sum.inr k => exact q.sum_inr_succAbove_leftContrI_leftContrJ _

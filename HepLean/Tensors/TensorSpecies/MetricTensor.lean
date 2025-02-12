@@ -108,6 +108,8 @@ lemma metricTensor_contr_dual_metricTensor_outer_eq_unit (c : S.C) :
   conv_lhs =>
     right
     rw [extractTwo_hom_left_apply]
+  rw [extractTwo_hom_left_apply 0 2 (braidPerm ![c, c] ![S.τ c, S.τ c]) _]
+  rw [braidPerm_toEquiv]
   simp only [mk_left, braidPerm_toEquiv, permProdRight_toEquiv, equivToHomEq_toEquiv,
     finExtractOnePerm_apply, finExtractOne_symm_inr_apply, extractTwo_hom_left_apply]
   fin_cases i
