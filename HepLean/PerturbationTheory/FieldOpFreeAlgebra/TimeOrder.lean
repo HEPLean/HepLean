@@ -27,9 +27,14 @@ open HepLean.List
 -/
 
 /-- For a field specification `𝓕`, `timeOrderF` is the linear map
+
   `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
+
   defined by its action on the basis `ofCrAnListF φs`, taking
-  `ofCrAnListF φs` to `crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)`.
+  `ofCrAnListF φs` to
+
+  `crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)`.
+
   That is, `timeOrderF` time-orders the field operators and multiplies by the sign of the
   time order.
 

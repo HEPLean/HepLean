@@ -26,6 +26,7 @@ open FieldStatistic
 /-- For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
   map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra`
   which on the lists `φs` and `φs'` of `𝓕.CrAnFieldOp` gives
+
   `superCommuteF φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`.
 
   The notation `[a, b]ₛca` can be used for `superCommuteF a b`. -/

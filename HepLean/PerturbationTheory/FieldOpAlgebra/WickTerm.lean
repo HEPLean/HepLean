@@ -43,9 +43,9 @@ lemma wickTerm_empty_nil :
 
 /--
 For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
-  `𝓕.FieldOp`, and `i ≤ φs.length` the following relation holds
+  `𝓕.FieldOp`, and `i ≤ φs.length`, then `(φsΛ ↩Λ φ i none).wickTerm` is equal to
 
-`(φsΛ ↩Λ φ i none).wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) φsΛ.sign • φsΛ.timeContract * 𝓝(φ :: [φsΛ]ᵘᶜ)`
+`𝓢(φ, φ₀…φᵢ₋₁) φsΛ.sign • φsΛ.timeContract * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
 The proof of this result relies on
 - `normalOrder_uncontracted_none` to rewrite normal orderings.

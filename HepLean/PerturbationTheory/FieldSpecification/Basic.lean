@@ -85,12 +85,14 @@ As some intuition, if `f` corresponds to a Weyl-fermion field, then
 - For `inAsymp f e p`, `e` would correspond to a spin `s`, and `inAsymp f e p` would, once
   represented in the operator algebra,
   be proportional to the creation operator `a(p, s)`.
-- `position f e x`, `e` would correspond to a Lorentz index `α`, and `position f e x` would,
+- `position f e x`, `e` would correspond to a Lorentz index `a`, and `position f e x` would,
   once represented in the operator algebra, be proportional to the operator
-  `∑ s, ∫ d^3p/(…) (x_α(p,s)  a(p, s) e^{-i p x} + y_α(p,s) a^†(p, s) e^{-i p x})`.
+
+  `∑ s, ∫ d³p/(…) (xₐ(p,s)  a(p, s) e ^ (-i p x) + yₐ(p,s) a†(p, s) e ^ (-i p x))`.
+
 - `outAsymp f e p`, `e` would correspond to a spin `s`, and `outAsymp f e p` would,
   once represented in the operator algebra, be proportional to the
-  annihilation operator `a^†(p, s)`.
+  annihilation operator `a†(p, s)`.
 
 This type contains all operators which are related to a field.
 -/

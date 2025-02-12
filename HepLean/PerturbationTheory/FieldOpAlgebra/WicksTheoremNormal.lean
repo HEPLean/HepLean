@@ -23,7 +23,7 @@ open EqTimeOnly
 /--
 For a list `φs` of `𝓕.FieldOp`, then
 
-`𝓣(φs) = ∑ φsΛ, φsΛ.1.wickTerm • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))`
+`𝓣(φs) = ∑ φsΛ, φsΛ.sign • φsΛ.timeContract * 𝓣(𝓝([φsΛ]ᵘᶜ))`
 
 where the sum is over all Wick contraction `φsΛ` which only have equal time contractions.
 
@@ -92,7 +92,7 @@ lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
 /--
 For a list `φs` of `𝓕.FieldOp`, then
 
-`𝓣(𝓝(φs)) = 𝓣(φs) - ∑ φsΛ, φsΛ.1.wickTerm • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))`
+`𝓣(𝓝(φs)) = 𝓣(φs) - ∑ φsΛ, φsΛ.sign • φsΛ.timeContract.1 * 𝓣(𝓝([φsΛ]ᵘᶜ))`
 
 where the sum is over all *non-empty* Wick contraction `φsΛ` which only
   have equal time contractions.
@@ -222,7 +222,7 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
 where the sum is over all Wick contraction `φsΛ` in which no two contracted elements
 have the same time.
 
-The proof of proceeds by induction on `φs`, with the base case `[]` holding by following
+The proof proceeds by induction on `φs`, with the base case `[]` holding by following
 through definitions. and the inductive case holding as a result of
 - `timeOrder_haveEqTime_split`
 - `normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty`

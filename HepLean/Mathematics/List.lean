@@ -353,7 +353,7 @@ lemma orderedInsert_eraseIdx_orderedInsertPos_le {I : Type} (le1 : I → I → P
     omega
 
 /-- The equivalence between `Fin (r0 :: r).length` and `Fin (List.orderedInsert le1 r0 r).length`
-  according to where the elements map. I.e. `0` is taken to `orderedInsertPos le1 r r0`. -/
+  according to where the elements map, i.e. `0` is taken to `orderedInsertPos le1 r r0`. -/
 def orderedInsertEquiv {I : Type} (le1 : I → I → Prop) [DecidableRel le1] (r : List I) (r0 : I) :
     Fin (r0 :: r).length ≃ Fin (List.orderedInsert le1 r0 r).length := by
   let e2 : Fin (List.orderedInsert le1 r0 r).length ≃ Fin (r0 :: r).length :=
