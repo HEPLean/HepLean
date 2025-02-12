@@ -61,7 +61,7 @@ def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded
     simp
 
 lemma leftAltLeftUnit_apply_one : leftAltLeftUnit.hom (1 : ℂ) = leftAltLeftUnitVal := by
-  change leftAltLeftUnit.hom.hom.toFun (1 : ℂ) = leftAltLeftUnitVal
+  change (1 : ℂ) • leftAltLeftUnitVal = leftAltLeftUnitVal
   simp only [leftAltLeftUnit, one_smul]
 
 /-- The alt-left-left unit `δₐᵃ` as an element of `(altLeftHanded ⊗ leftHanded).V`. -/
@@ -106,7 +106,7 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
 
 /-- Applying the morphism `altLeftLeftUnit` to `1` returns `altLeftLeftUnitVal`. -/
 lemma altLeftLeftUnit_apply_one : altLeftLeftUnit.hom (1 : ℂ) = altLeftLeftUnitVal := by
-  change altLeftLeftUnit.hom.hom.toFun (1 : ℂ) = altLeftLeftUnitVal
+  change (1 : ℂ) • altLeftLeftUnitVal = altLeftLeftUnitVal
   simp only [altLeftLeftUnit, one_smul]
 
 /-- The right-alt-right unit `δ^{dot a}_{dot a}` as an element of
@@ -157,7 +157,7 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
     simp
 
 lemma rightAltRightUnit_apply_one : rightAltRightUnit.hom (1 : ℂ) = rightAltRightUnitVal := by
-  change rightAltRightUnit.hom.hom.toFun (1 : ℂ) = rightAltRightUnitVal
+  change (1 : ℂ) • rightAltRightUnitVal  = rightAltRightUnitVal
   simp only [rightAltRightUnit, one_smul]
 
 /-- The alt-right-right unit `δ_{dot a}^{dot a}` as an element of
@@ -206,7 +206,7 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
     simp
 
 lemma altRightRightUnit_apply_one : altRightRightUnit.hom (1 : ℂ) = altRightRightUnitVal := by
-  change altRightRightUnit.hom.hom.toFun (1 : ℂ) = altRightRightUnitVal
+  change (1 : ℂ) • altRightRightUnitVal = altRightRightUnitVal
   simp only [altRightRightUnit, one_smul]
 
 /-!
@@ -236,7 +236,7 @@ lemma contr_altLeftLeftUnit (x : leftHanded) :
   erw [h1, h1, h1, h1]
   repeat rw [leftAltContraction_basis]
   simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Iso.trans_hom, ModuleCat.ofSelfIso_hom,
     CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero,
     ↓reduceIte, Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one,
     zero_add]

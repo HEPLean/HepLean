@@ -58,12 +58,14 @@ def _root_.LorentzGroup.toNormOne (Λ : LorentzGroup d) : NormOne d :=
 lemma _root_.LorentzGroup.toNormOne_inl (Λ : LorentzGroup d) :
     (LorentzGroup.toNormOne Λ).val.val (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
   simp only [Fin.isValue, LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte,
-    Finsupp.coe_mk, Matrix.mulVec_single, mul_one]
+    Finsupp.coe_mk, Matrix.mulVec_single, MulOpposite.op_one, Pi.smul_apply, Matrix.transpose_apply,
+    one_smul]
 
 lemma _root_.LorentzGroup.toNormOne_inr (Λ : LorentzGroup d) (i : Fin d) :
     (LorentzGroup.toNormOne Λ).val.val (Sum.inr i) = Λ.1 (Sum.inr i) (Sum.inl 0) := by
   simp only [LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte, Fin.isValue,
-    Finsupp.coe_mk, Matrix.mulVec_single, mul_one]
+    Finsupp.coe_mk, Matrix.mulVec_single, MulOpposite.op_one, Pi.smul_apply, Matrix.transpose_apply,
+    one_smul]
 
 lemma _root_.LorentzGroup.inl_inl_mul (Λ Λ' : LorentzGroup d) : (Λ * Λ').1 (Sum.inl 0) (Sum.inl 0) =
     ⟪(LorentzGroup.toNormOne (LorentzGroup.transpose Λ)).1,

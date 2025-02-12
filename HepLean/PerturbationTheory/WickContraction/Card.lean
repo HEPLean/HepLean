@@ -181,6 +181,7 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
     rcases h with h | h
     · obtain ⟨b, hb, rfl⟩ := h
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
+      simp only [succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and, c'] at hb
       exact hb
     · subst h
       rw [← h2]
@@ -203,9 +204,9 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
       obtain ⟨y, rfl⟩ := (Fin.exists_succAbove_eq (x := y) (y := i)) (by omega)
       use {x, y}
       simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton, Fin.val_succEmb,
-        h, true_and]
+        h, true_and, c']
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
-      simp
+      simpa using h
 
 lemma consAddContract_bijection (i : Fin n.succ) :
     Function.Bijective (fun c => (⟨(consAddContract i c), by simp⟩ :

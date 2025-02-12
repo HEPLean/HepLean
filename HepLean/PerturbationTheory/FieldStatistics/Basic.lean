@@ -184,7 +184,7 @@ lemma ofList_append (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
         (if a = (if b = c then bosonic else fermionic) then bosonic else fermionic) =
         if (if a = b then bosonic else fermionic) = c then bosonic else fermionic := by
       fin_cases a <;> fin_cases b <;> fin_cases c <;> rfl
-    simp only [ofList, List.append_eq, Fin.isValue, ih, hab]
+    simp only [List.cons_append, ofList, ih, hab]
 
 lemma ofList_append_eq_mul (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
     ofList s (φs ++ φs') = ofList s φs * ofList s φs' := by

@@ -42,6 +42,7 @@ lemma koszulSign_mul_self (l : List 𝓕) : koszulSign q le l * koszulSign q le 
 
 @[simp]
 lemma koszulSign_freeMonoid_of (φ : 𝓕) : koszulSign q le (FreeMonoid.of φ) = 1 := by
+  change koszulSign q le [φ] = 1
   simp only [koszulSign, mul_one]
   rfl
 
@@ -235,6 +236,9 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     𝓢(q φs[↑n], ofList q (List.take (↑((insertionSortEquiv le φs) n)) (List.insertionSort le φs))))
   swap
   · simp only [Fin.getElem_fin]
+    rw [Equiv.trans_apply, Equiv.trans_apply]
+    simp only [instCommGroup.eq_1, mul_one, Fin.castOrderIso,
+      Equiv.coe_fn_mk, Fin.cast_mk, Fin.eta, Fin.coe_cast]
     ring
   conv_rhs =>
     rhs
@@ -274,7 +278,7 @@ lemma koszulSign_swap_eq_rel {ψ φ : 𝓕} (h1 : le φ ψ) (h2 : le ψ φ) : (�
     simp only [List.nil_append]
     exact koszulSign_swap_eq_rel_cons q le h1 h2 φs'
   | φ'' :: φs, φs' => by
-    simp only [Wick.koszulSign, List.append_eq]
+    simp only [List.cons_append, koszulSign]
     rw [koszulSign_swap_eq_rel h1 h2]
     congr 1
     apply Wick.koszulSignInsert_eq_perm
@@ -301,7 +305,7 @@ lemma koszulSign_eq_rel_eq_stat {ψ φ : 𝓕} [IsTrans 𝓕 le]
     simp only [List.nil_append]
     exact koszulSign_eq_rel_eq_stat_append q le h1 h2 hq φs
   | φ'' :: φs', φs => by
-    simp only [koszulSign, List.append_eq]
+    simp only [List.cons_append, koszulSign]
     rw [koszulSign_eq_rel_eq_stat h1 h2 hq φs' φs]
     simp only [mul_eq_mul_right_iff]
     left
@@ -381,7 +385,7 @@ lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
     simp only [List.nil_append]
     exact koszulSign_of_append_eq_insertionSort_left q le φs φs'
   | φ'' :: φs'', φs, φs' => by
-    simp only [koszulSign, List.append_eq]
+    simp only [List.cons_append, koszulSign]
     rw [koszulSign_of_append_eq_insertionSort φs'' φs φs', ← mul_assoc]
     congr 2
     apply koszulSignInsert_eq_perm
@@ -430,7 +434,7 @@ lemma koszulSign_perm_eq [IsTrans 𝓕 le] (φ : 𝓕) : (φs1 φs φs' φs2 : L
     simp only [List.nil_append]
     exact koszulSign_perm_eq_append q le φ φs φs' φs2 hp h
   | φ1 :: φs1, φs, φs', φs2, h, hp => by
-    simp only [koszulSign, List.append_eq]
+    simp only [List.cons_append, koszulSign]
     have ih := koszulSign_perm_eq φ φs1 φs φs' φs2 h hp
     rw [ih]
     congr 1

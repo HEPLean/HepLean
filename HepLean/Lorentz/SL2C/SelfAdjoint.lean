@@ -129,7 +129,7 @@ lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM
           _ = 1 := detM
   have detD_one : D.det = 1 :=
     let z := x * conj y
-    have k₀ : (M * E₂ * Mᴴ) 0 1 = z := by rw [he', he]; simp [E₂]
+    have k₀ : (M * E₂ * Mᴴ) 0 1 = z := by rw [he', he]; simp [E₂, z]
     have k₁ : (M * E₃ * Mᴴ) 0 1 = ⟨-z.im, z.re⟩ :=
       calc
         _ = x * I * conj y := by rw [he', he]; simp [E₃]
@@ -140,7 +140,7 @@ lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM
       | 0, 1 => congrArg Complex.re k₁ | 1, 1 => congrArg Complex.im k₁
     calc D.det
       _ = normSq z := by simp [hD, z.normSq_apply]
-      _ = normSq x * normSq y := by simp [x.normSq_mul]
+      _ = normSq x * normSq y := by simp [x.normSq_mul, z]
       _ = 1 := detA_one
 
   letI : Invertible D.det := detD_one ▸ invertibleOne

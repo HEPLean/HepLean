@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.BigOperators.Group.Finset
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 /-!
 
 # Creation and annihilation parts of fields
@@ -66,7 +66,7 @@ lemma not_normalOrder_annihilate_iff_false (a : CreateAnnihilate) :
 
 lemma sum_eq {M : Type} [AddCommMonoid M] (f : CreateAnnihilate → M) :
     ∑ i, f i = f create + f annihilate := by
-  change ∑ i in {create, annihilate}, f i = f create + f annihilate
+  change ∑ i ∈ {create, annihilate}, f i = f create + f annihilate
   simp
 
 @[simp]

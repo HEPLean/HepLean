@@ -210,10 +210,12 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
     coe_smul, mulVec_empty, add_zero, zero_add, one_smul]
   funext i
   fin_cases i
-  · simp only [Fin.zero_eta, Fin.isValue, Pi.smul_apply, Function.comp_apply, cons_val_zero,
-      tail_cons, head_cons, real_smul, mul_one]
-  · simp only [Fin.mk_one, Fin.isValue, Pi.smul_apply, Function.comp_apply, cons_val_one, head_cons,
-      tail_cons, smul_zero]
+  · simp only [one_pow, mulVec_cons, Nat.succ_eq_add_one, Nat.reduceAdd, zero_smul, coe_smul,
+    mulVec_empty, add_zero, zero_add, Fin.zero_eta, Fin.isValue, Pi.smul_apply, Function.comp_apply,
+    cons_val_zero, tail_cons, head_cons, real_smul, mul_one, one_smul, P]
+  · simp only [one_pow, mulVec_cons, Nat.succ_eq_add_one, Nat.reduceAdd, zero_smul, coe_smul,
+    mulVec_empty, add_zero, zero_add, Fin.mk_one, Fin.isValue, Pi.smul_apply, Function.comp_apply,
+    cons_val_one, head_cons, tail_cons, smul_zero, P]
 
 /-- There exists a `g` in `GaugeGroupI` such that `rep g φ = φ'` iff `‖φ‖ = ‖φ'‖`. -/
 informal_lemma guage_orbit where

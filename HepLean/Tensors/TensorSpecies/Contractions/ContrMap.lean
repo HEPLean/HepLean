@@ -70,7 +70,7 @@ lemma contrFin1Fin1_inv_tmul {n : ℕ} (c : Fin n.succ.succ → S.C)
         ((OverColor.forgetLiftApp S.FD (S.τ (c i))).inv.hom y))))) = _
   simp only [Nat.succ_eq_add_one, Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    forgetLiftApp, Action.mkIso_inv_hom, LinearEquiv.toModuleIso_inv_hom, Fin.isValue]
+    forgetLiftApp, Action.mkIso_inv_hom, Fin.isValue]
   erw [OverColor.forgetLiftAppV_symm_apply,
     OverColor.forgetLiftAppV_symm_apply S.FD (S.τ (c i))]
   change ((OverColor.lift.obj S.FD).map (OverColor.mkSum
@@ -200,8 +200,12 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     (((lift.obj S.FD).map (equivToIso (HepLean.Fin.finExtractTwo i j)).hom).hom
     ((PiTensorProduct.tprod S.k) x)))))) = _
   rw [lift.map_tprod]
-  erw [lift.map_tprod]
-  erw [lift.μIso_inv_tprod]
+  conv_lhs =>
+    enter [2, 2, 2, 2]
+    rw (transparency := .instances)  [lift.map_tprod]
+  conv_lhs =>
+    enter [2, 2, 2]
+    rw (transparency := .instances) [lift.μIso_inv_tprod]
   change (λ_ ((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove)))).hom.hom
     (((S.contr.app { as := c i }).hom ▷ ((lift.obj S.FD).obj
     (OverColor.mk (c ∘ i.succAbove ∘ j.succAbove))).V)
@@ -247,12 +251,12 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
       simp only [Nat.succ_eq_add_one, Fin.isValue, HepLean.Fin.finExtractTwo_symm_inl_inr_apply]
       simp [h]
   /- The tensor. -/
-  · erw [lift.map_tprod]
+  · conv_lhs => erw [lift.map_tprod]
     apply congrArg
     funext d
     simp only [mk_hom, Function.comp_apply, lift.discreteFunctorMapEqIso, Functor.mapIso_hom,
       eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom,
-      Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+      Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply, ]
     change (S.FD.map (eqToHom _)).hom
         ((x ((HepLean.Fin.finExtractTwo i j).symm (Sum.inr (d))))) = _
     simp only [Nat.succ_eq_add_one]

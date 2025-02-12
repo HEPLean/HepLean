@@ -67,7 +67,7 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
     simp only [LorentzGroup.toComplex_mul_minkowskiMatrix_mul_transpose]
 
 lemma contrMetric_apply_one : contrMetric.hom (1 : ℂ) = contrMetricVal := by
-  change contrMetric.hom.hom.toFun (1 : ℂ) = contrMetricVal
+  change (1 : ℂ) • contrMetricVal = contrMetricVal
   simp only [contrMetric, one_smul]
 
 /-- The metric `ηᵢᵢ` as an element of `(complexCo ⊗ complexCo).V`. -/
@@ -121,7 +121,7 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
       LorentzGroup.toComplex_transpose_mul_minkowskiMatrix_mul_self]
 
 lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
-  change coMetric.hom.hom.toFun (1 : ℂ) = coMetricVal
+  change (1 : ℂ) • coMetricVal = coMetricVal
   simp only [coMetric, one_smul]
 
 /-!

@@ -79,8 +79,7 @@ lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discr
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, mk_hom, mk_left, Functor.id_obj]
   simp only [LinearMap.coe_comp, Function.comp_apply, ModuleCat.MonoidalCategory.tensorHom_tmul,
-    LinearEquiv.toModuleIso_inv_hom, LinearEquiv.coe_coe, forgetLiftAppV_symm_apply, mk_left,
-    Functor.id_obj]
+    LinearEquiv.coe_coe, forgetLiftAppV_symm_apply, mk_left, Functor.id_obj]
   change ((lift.obj F).map fin2Iso.inv).hom
     (((lift.obj F).map ((mkIso _).hom ⊗ (mkIso _).hom)).hom
       ((Functor.LaxMonoidal.μ (lift.obj F).toFunctor (mk fun _ => c1) (mk fun _ => c2)).hom

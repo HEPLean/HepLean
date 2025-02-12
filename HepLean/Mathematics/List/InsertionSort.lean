@@ -133,7 +133,7 @@ lemma insertionSort_orderedInsert_append {α : Type} (r : α → α → Prop) [D
     · simp [h]
     conv_lhs => simp [h]
     rw [insertionSort_orderedInsert_append r a l1 l2]
-    simp only [List.insertionSort, List.append_eq]
+    simp only [List.cons_append, List.insertionSort]
     rw [orderedInsert_commute r a b h]
 
 lemma insertionSort_insertionSort_append {α : Type} (r : α → α → Prop) [DecidableRel r]
@@ -144,7 +144,7 @@ lemma insertionSort_insertionSort_append {α : Type} (r : α → α → Prop) [D
   | a :: l1, l2 => by
     conv_lhs => simp
     rw [insertionSort_orderedInsert_append]
-    simp only [List.insertionSort, List.append_eq]
+    simp only [List.cons_append, List.insertionSort]
     rw [insertionSort_insertionSort_append r l1 l2]
 
 lemma insertionSort_append_insertionSort_append {α : Type} (r : α → α → Prop) [DecidableRel r]
@@ -155,7 +155,7 @@ lemma insertionSort_append_insertionSort_append {α : Type} (r : α → α → P
     simp only [List.nil_append]
     exact insertionSort_insertionSort_append r l2 l3
   | a :: l1, l2, l3 => by
-    simp only [List.insertionSort, List.append_eq]
+    simp only [List.cons_append, List.insertionSort]
     rw [insertionSort_append_insertionSort_append r l1 l2 l3]
 
 @[simp]
@@ -273,16 +273,17 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
       refine hbc ?_
       exact IsTrans.trans _ _ _ hrba hac
   have ha1 : b1.1 ≤ a2.1 := by
-    simp only [orderedInsertPos, decide_not]
+    simp only [orderedInsertPos, decide_not, b1, b2]
     rw [ht]
     apply List.Sublist.length_le
-    exact List.takeWhile_sublist fun c => !decide (r b c)
+    simp only [decide_not, b1]
+    exact List.takeWhile_sublist _
   have ha2 : a1.1 = a2.1 + 1 := by
-    simp only [orderedInsertPos, decide_not]
+    simp only [orderedInsertPos, decide_not, a1, a2]
     rw [takeWhile_orderedInsert]
     exact hr
   have hb : b1.1 = b2.1 := by
-    simp only [orderedInsertPos, decide_not]
+    simp only [orderedInsertPos, decide_not, b1, b2]
     rw [takeWhile_orderedInsert']
     exact hr
   let n := ((insertionSortEquiv r l) ⟨n, by simpa using hn⟩)
@@ -338,7 +339,7 @@ lemma insertionSortEquiv_orderedInsert_append {α : Type} (r : α → α → Pro
     (insertionSortEquiv r (List.orderedInsert r a l1 ++ a2 :: l2) ⟨l1.length + 1, by
       simp⟩)
     = (finCongr (by
-      simp only [List.insertionSort, List.append_eq, orderedInsert_length, List.length_cons,
+      simp only [List.cons_append, List.insertionSort, orderedInsert_length, List.length_cons,
         List.length_insertionSort, List.length_append]
       omega))
       ((insertionSortEquiv r (a :: l1 ++ a2 :: l2)) ⟨l1.length + 1, by simp⟩)
@@ -408,8 +409,8 @@ lemma orderedInsert_filter_of_pos {α : Type} (r : α → α → Prop) [Decidabl
     (hl : l.Sorted r) →
     List.filter p (List.orderedInsert r a l) = List.orderedInsert r a (List.filter p l)
   | [], hl => by
-    simp only [List.orderedInsert, List.filter_eq_self, List.mem_singleton, decide_eq_true_eq,
-      forall_eq]
+    simp only [List.orderedInsert, List.filter_nil, List.orderedInsert_nil, List.filter_eq_self,
+      List.mem_singleton, decide_eq_true_eq, forall_eq]
     exact h
   | b :: l, hl => by
     simp only [List.orderedInsert]

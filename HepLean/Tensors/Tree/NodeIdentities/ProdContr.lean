@@ -425,9 +425,16 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
   simp only [TensorSpecies.F_def]
   conv_rhs => rw [lift.obj_μ_tprod_tmul]
   simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul]
-  conv_lhs => rw [lift.obj_μ_tprod_tmul]
-  conv_rhs => erw [lift.map_tprod]
-  conv_rhs => erw [contrMap, TensorSpecies.contrMap_tprod]
+  conv_lhs =>
+    enter [2, 2]
+    rw [lift.obj_μ_tprod_tmul]
+  conv_rhs =>
+    enter [2, 2]
+    erw [lift.map_tprod]
+  conv_rhs =>
+    enter [2]
+    rw [contrMap]
+    erw [TensorSpecies.contrMap_tprod]
   simp only [TensorProduct.smul_tmul, TensorProduct.tmul_smul, map_smul]
   congr 1
   /- The contraction. -/
