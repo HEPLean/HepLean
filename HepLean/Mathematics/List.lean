@@ -78,11 +78,12 @@ lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
     split
     next x heq =>
       simp_all only [decide_eq_true_eq, decide_true, List.dropWhile_cons_of_pos, List.dropWhile_nil,
-        List.length_singleton, le_add_iff_nonneg_left, zero_le, ↓reduceIte, add_tsub_cancel_right, List.eraseIdx_nil]
+        List.length_singleton, le_add_iff_nonneg_left, zero_le, ↓reduceIte,
+        add_tsub_cancel_right, List.eraseIdx_nil]
     next x heq =>
       simp_all only [decide_eq_false_iff_not, decide_false, Bool.false_eq_true, not_false_eq_true,
-        List.dropWhile_cons_of_neg, List.length_nil, le_add_iff_nonneg_left, zero_le, ↓reduceIte, tsub_zero,
-        List.eraseIdx_cons_succ, List.eraseIdx_nil]
+        List.dropWhile_cons_of_neg, List.length_nil, le_add_iff_nonneg_left,
+        zero_le, ↓reduceIte, tsub_zero, List.eraseIdx_cons_succ, List.eraseIdx_nil]
     exact Nat.le_add_left [a].length n
   | a :: b :: l, 0, h => by
     simp only [List.dropWhile, List.takeWhile, nonpos_iff_eq_zero, List.length_eq_zero, zero_le,

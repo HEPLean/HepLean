@@ -323,8 +323,8 @@ lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
   fin_cases i <;> fin_cases j <;>
     simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, zero_mul, add_zero, mul_zero,
       _root_.map_mul, mul_re, I_re, ofReal_re, I_im, ofReal_im, sub_self, Real.exp_zero,
-      one_mul, mul_one,  Complex.abs_exp, Fin.mk_one, cons_val_one, head_cons, zero_add, head_fin_const,
-      Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
+      one_mul, mul_one,  Complex.abs_exp, Fin.mk_one, cons_val_one, head_cons, zero_add,
+      head_fin_const, Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
       tail_val', head_val']
   all_goals change Complex.abs (0 * _ + _) = _
   all_goals simp [Complex.abs_exp]
