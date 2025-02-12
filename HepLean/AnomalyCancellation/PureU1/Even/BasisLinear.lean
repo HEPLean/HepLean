@@ -66,7 +66,7 @@ lemma ext_even (S T : Fin (2 * n.succ) → ℚ) (h1 : ∀ i, S (evenFst i) = T (
   · let j : Fin n.succ := ⟨i - n.succ, by omega⟩
     have h2 := h2 j
     have h3 : evenSnd j = i := by
-      simp only [succ_eq_add_one, evenSnd, Fin.ext_iff, Fin.coe_cast, Fin.coe_natAdd]
+      simp only [succ_eq_add_one, evenSnd, Fin.ext_iff, Fin.coe_cast, Fin.coe_natAdd, j]
       omega
     rw [h3] at h2
     exact h2
@@ -699,8 +699,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
   use f'
   change P! f' = _ at hf'
   erw [hf']
-  simp only [and_self, and_true]
-  change S'.val = P g + (P! f + _)
+  simp only [and_self, and_true, X]
   rw [← add_assoc, ← h]
   apply swap!_as_add at hS
   exact hS

@@ -34,8 +34,8 @@ namespace Equiv
 def sumEquivSigmalCond : Fin m ⊕ Fin n ≃ Σ b, cond b (Fin m) (Fin n) :=
   calc Fin m ⊕ Fin n
     _ ≃ Fin n ⊕ Fin m := sumComm ..
-    _ ≃ Σ b, Bool.casesOn b (Fin n) (Fin m) := sumEquivSigmaBool ..
-    _ ≃ Σ b, cond b (Fin m) (Fin n) := sigmaCongrRight fun | true | false => Equiv.refl _
+    _ ≃ Σ b, bif b then (Fin m) else (Fin n) := sumEquivSigmaBool ..
+    _ ≃ Σ b, cond b (Fin m) (Fin n) := sigmaCongrRight (fun | true | false => Equiv.refl _)
 
 /-- The composition of `finSumFinEquiv` and `Equiv.sumEquivSigmalCond` used by
 `LinearMap.SchurTriangulationAux.of`. -/
@@ -183,10 +183,10 @@ protected noncomputable def SchurTriangulationAux.of
         have hB : ∀ s, bE s = B s.1 s.2
           | ⟨true, i⟩ => show bE ⟨true, i⟩ = bV i from
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨true, i⟩ = bV i
-            by simp
+            by simp [B]
           | ⟨false, j⟩ => show bE ⟨false, j⟩ = bW j from
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨false, j⟩ = bW j
-            by simp
+            by simp [B]
         have hf {bi i' bj j'} (hi : e i = ⟨bi, i'⟩) (hj : e j = ⟨bj, j'⟩) :=
           calc toMatrixOrthonormal basis f i j
             _ = toMatrixOrthonormal bE f (e i) (e j) := by

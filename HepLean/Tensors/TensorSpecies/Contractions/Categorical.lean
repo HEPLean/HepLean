@@ -249,8 +249,12 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     Monoidal.tensorUnit_obj, Action.instMonoidalCategory_whiskerRight_hom,
     Action.instMonoidalCategory_associator_inv_hom, Action.instMonoidalCategory_associator_hom_hom,
     F_def]
+    enter [2, 2]
     erw [OverColor.lift.μ_tmul_tprod S.FD]
+  conv_lhs =>
+    enter [2]
     rw (config := { transparency := .instances }) [OverColor.lift.map_tprod]
+  conv_lhs =>
     rw (config := { transparency := .instances }) [contrMap_tprod]
   congr 1
   /- The contraction. -/

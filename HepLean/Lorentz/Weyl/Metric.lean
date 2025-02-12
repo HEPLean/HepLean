@@ -108,7 +108,7 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
       not_false_eq_true, mul_nonsing_inv, transpose_one, mul_one]
 
 lemma leftMetric_apply_one : leftMetric.hom (1 : ℂ) = leftMetricVal := by
-  change leftMetric.hom.hom.toFun (1 : ℂ) = leftMetricVal
+  change (1 : ℂ) • leftMetricVal = leftMetricVal
   simp only [leftMetric, one_smul]
 
 /-- The metric `εₐₐ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
@@ -155,7 +155,7 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
       not_false_eq_true, mul_nonsing_inv, mul_one]
 
 lemma altLeftMetric_apply_one : altLeftMetric.hom (1 : ℂ) = altLeftMetricVal := by
-  change altLeftMetric.hom.hom.toFun (1 : ℂ) = altLeftMetricVal
+  change (1 : ℂ) • altLeftMetricVal = altLeftMetricVal
   simp only [altLeftMetric, one_smul]
 
 /-- The metric `ε^{dot a}^{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
@@ -209,7 +209,7 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
       rfl
 
 lemma rightMetric_apply_one : rightMetric.hom (1 : ℂ) = rightMetricVal := by
-  change rightMetric.hom.hom.toFun (1 : ℂ) = rightMetricVal
+  change (1 : ℂ) • rightMetricVal = rightMetricVal
   simp only [rightMetric, one_smul]
 
 /-- The metric `ε_{dot a}_{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
@@ -267,7 +267,7 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
       rfl
 
 lemma altRightMetric_apply_one : altRightMetric.hom (1 : ℂ) = altRightMetricVal := by
-  change altRightMetric.hom.hom.toFun (1 : ℂ) = altRightMetricVal
+  change (1 : ℂ) • altRightMetricVal = altRightMetricVal
   simp only [altRightMetric, one_smul]
 
 /-!

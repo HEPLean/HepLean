@@ -69,7 +69,7 @@ lemma koszulSignInsert_ge_forall_append (φs : List 𝓕) (φ' φ : 𝓕) (hi : 
   induction φs with
   | nil => simp [koszulSignInsert, hi]
   | cons φ'' φs ih =>
-    simp only [koszulSignInsert, Fin.isValue, List.append_eq]
+    simp only [koszulSignInsert, List.cons_append]
     by_cases hr : le φ' φ''
     · rw [if_pos hr, if_pos hr, ih]
     · rw [if_neg hr, if_neg hr, ih]

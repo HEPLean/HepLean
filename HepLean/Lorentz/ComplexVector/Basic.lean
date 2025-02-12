@@ -47,7 +47,7 @@ lemma complexContrBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
   rw [LinearMap.toMatrix_apply]
   simp only [complexContrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
   change (((LorentzGroup.toComplex (SL2C.toLorentzGroup M))) *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, transpose_apply, mul_one]
+  simp only [mulVec_single, MulOpposite.op_one, Pi.smul_apply, transpose_apply, one_smul]
 
 lemma complexContrBasis_ρ_val (M : SL(2,ℂ)) (v : complexContr) :
     ((complexContr.ρ M) v).val =
@@ -74,7 +74,7 @@ lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
   rw [LinearMap.toMatrix_apply]
   simp only [complexCoBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
   change ((LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ᵀ *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, transpose_apply, mul_one]
+  simp only [mulVec_single, MulOpposite.op_one, transpose_transpose, Pi.smul_apply, one_smul]
 
 /-- The standard basis of complex covariant Lorentz vectors indexed by `Fin 4`. -/
 def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=

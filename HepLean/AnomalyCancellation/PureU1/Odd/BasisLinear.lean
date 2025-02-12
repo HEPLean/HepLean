@@ -707,8 +707,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
   use f'
   change P! f' = _ at hf'
   erw [hf']
-  simp only [and_self, and_true]
-  change S'.val = P g + (P! f + _)
+  simp only [and_self, and_true, X]
   rw [← add_assoc, ← hS1]
   apply swap!_as_add at hS
   exact hS

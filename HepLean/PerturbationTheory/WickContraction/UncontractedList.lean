@@ -276,7 +276,7 @@ def uncontractedIndexEquiv (c : WickContraction n) :
     Fin (c.uncontractedList).length ≃ c.uncontracted where
   toFun i := ⟨c.uncontractedList.get i, c.uncontractedList_get_mem_uncontracted i⟩
   invFun i := ⟨List.indexOf i.1 c.uncontractedList,
-    List.indexOf_lt_length.mpr ((c.uncontractedList_mem_iff i.1).mpr i.2)⟩
+    List.indexOf_lt_length_iff.mpr ((c.uncontractedList_mem_iff i.1).mpr i.2)⟩
   left_inv i := by
     ext
     exact List.get_indexOf (uncontractedList_nodup c) _

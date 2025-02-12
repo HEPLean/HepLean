@@ -66,8 +66,8 @@ def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
     simp
 
 lemma contrCoUnit_apply_one : contrCoUnit.hom (1 : ℂ) = contrCoUnitVal := by
-  change contrCoUnit.hom.hom.toFun (1 : ℂ) = contrCoUnitVal
-  simp only [contrCoUnit, one_smul]
+  change (1 : ℂ) • contrCoUnitVal = contrCoUnitVal
+  rw [one_smul]
 
 /-- The co-contra unit for complex lorentz vectors. Usually denoted `δᵢⁱ`. -/
 def coContrUnitVal : (complexCo ⊗ complexContr).V :=
@@ -118,8 +118,9 @@ def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
     simp
 
 lemma coContrUnit_apply_one : coContrUnit.hom (1 : ℂ) = coContrUnitVal := by
-  change coContrUnit.hom.hom.toFun (1 : ℂ) = coContrUnitVal
-  simp only [coContrUnit, one_smul]
+  change (1 : ℂ) • coContrUnitVal = coContrUnitVal
+  rw [one_smul]
+
 /-!
 
 ## Contraction of the units
@@ -151,7 +152,7 @@ lemma contr_contrCoUnit (x : complexCo) :
   repeat rw (config := { transparency := .instances }) [h1'']
   repeat rw [coContrContraction_basis']
   simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, LinearEquiv.toModuleIso_hom_hom, ModuleCat.ofSelfIso_hom,
+    CategoryTheory.Iso.trans_hom, ModuleCat.ofSelfIso_hom,
     CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, ↓reduceIte,
     reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero,
     Fin.reduceEq, zero_add, zero_ne_one]

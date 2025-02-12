@@ -308,15 +308,15 @@ lemma orderedInsert_in_swap_eq_time {φ ψ φ': 𝓕.CrAnFieldOp} (h1 : crAnTime
     have h1 (b : 𝓕.CrAnFieldOp) : (crAnTimeOrderRel b φ) ↔ (crAnTimeOrderRel b ψ) :=
       Iff.intro (fun h => IsTrans.trans _ _ _ h h1) (fun h => IsTrans.trans _ _ _ h h2)
     by_cases h : crAnTimeOrderRel φ' φ
-    · simp only [List.orderedInsert, h, ↓reduceIte, ← h1 φ']
+    · simp only [List.nil_append, List.orderedInsert, h, ↓reduceIte, ← h1 φ']
       use [φ'], φs'
       simp
-    · simp only [List.orderedInsert, h, ↓reduceIte, ← h1 φ']
+    · simp only [List.nil_append, List.orderedInsert, h, ↓reduceIte, ← h1 φ']
       use [], List.orderedInsert crAnTimeOrderRel φ' φs'
       simp
   | φ'' :: φs, φs' => by
     obtain ⟨l1, l2, hl⟩ := orderedInsert_in_swap_eq_time (φ' := φ') h1 h2 φs φs'
-    simp only [List.orderedInsert, List.append_eq]
+    simp only [List.cons_append, List.orderedInsert]
     rw [hl.1, hl.2]
     by_cases h : crAnTimeOrderRel φ' φ''
     · simp only [h, ↓reduceIte]
@@ -334,7 +334,7 @@ lemma crAnTimeOrderList_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
       crAnTimeOrderList (φs ++ ψ :: φ :: φs') = l1 ++ ψ :: φ :: l2
   | [], φs' => by
     simp only [crAnTimeOrderList]
-    simp only [List.insertionSort]
+    simp only [List.nil_append, List.insertionSort]
     use List.takeWhile (fun b => ¬ crAnTimeOrderRel ψ b) (List.insertionSort crAnTimeOrderRel φs'),
       List.dropWhile (fun b => ¬ crAnTimeOrderRel ψ b) (List.insertionSort crAnTimeOrderRel φs')
     apply And.intro
@@ -345,7 +345,7 @@ lemma crAnTimeOrderList_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
       simpa using orderedInsert_swap_eq_time h2 h1 _
   | φ'' :: φs, φs' => by
     rw [crAnTimeOrderList, crAnTimeOrderList]
-    simp only [List.insertionSort, List.append_eq]
+    simp only [List.cons_append, List.insertionSort]
     obtain ⟨l1, l2, hl⟩ := crAnTimeOrderList_swap_eq_time h1 h2 φs φs'
     simp only [crAnTimeOrderList] at hl
     rw [hl.1, hl.2]

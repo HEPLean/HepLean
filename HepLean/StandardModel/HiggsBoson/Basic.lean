@@ -84,8 +84,8 @@ TODO "Make `HiggsBundle` an associated bundle."
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
 /-- The instance of a smooth vector bundle with total space `HiggsBundle` and fiber `HiggsVec`. -/
-instance : SmoothVectorBundle HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
-  Bundle.Trivial.smoothVectorBundle HiggsVec
+instance : ContMDiffVectorBundle ⊤ HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
+  Bundle.Trivial.contMDiffVectorBundle HiggsVec
 
 /-- A Higgs field is a smooth section of the Higgs bundle. -/
 abbrev HiggsField : Type := ContMDiffSection SpaceTime.asSmoothManifold HiggsVec ⊤ HiggsBundle

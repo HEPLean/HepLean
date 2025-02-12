@@ -84,7 +84,7 @@ lemma koszulSignInsert_append_annihilate (φ' φ : 𝓕.CrAnFieldOp)
     Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ' (φs ++ [φ]) =
     Wick.koszulSignInsert 𝓕.crAnStatistics normalOrderRel φ' φs
   | [] => by
-    simp only [Wick.koszulSignInsert, normalOrderRel, hφ, ite_eq_left_iff,
+    simp only [List.nil_append, Wick.koszulSignInsert, normalOrderRel, hφ, ite_eq_left_iff,
       CreateAnnihilate.not_normalOrder_annihilate_iff_false, ite_eq_right_iff, and_imp,
       IsEmpty.forall_iff]
   | φ'' :: φs => by
@@ -281,6 +281,7 @@ lemma normalOrderList_append_annihilate (φ : 𝓕.CrAnFieldOp)
     simp only [normalOrderList, List.insertionSort, List.append_eq]
     have hi := normalOrderList_append_annihilate φ hφ φs
     dsimp only [normalOrderList] at hi
+    simp only [List.cons_append, List.insertionSort]
     rw [hi, orderedInsert_append_annihilate φ' φ hφ]
 
 lemma normalOrder_swap_create_annihilate_fst (φc φa : 𝓕.CrAnFieldOp)
