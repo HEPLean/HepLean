@@ -25,24 +25,25 @@ open HepLean.Fin
 -/
 
 /-- Given a Wick contraction `φsΛ` for a list `φs` of `𝓕.FieldOp`,
-  an element `φ` of `𝓕.FieldOp`, an `i ≤ φs.length` and a `j` which is either `none` or
+  an element `φ` of `𝓕.FieldOp`, an `i ≤ φs.length` and a `k`
+  in `Option φsΛ.uncontracted` i.e. is either `none` or
   some element of `φsΛ.uncontracted`, the new Wick contraction
-  `φsΛ.insertAndContract φ i j` is defined by inserting `φ` into `φs` after
+  `φsΛ.insertAndContract φ i k` is defined by inserting `φ` into `φs` after
   the first `i`-elements and moving the values representing the contracted pairs in `φsΛ`
   accordingly.
-  If `j` is not `none`, but rather `some j`, to this contraction is added the contraction
-  of `φ` (at position `i`) with the new position of `j` after `φ` is added.
+  If `k` is not `none`, but rather `some k`, to this contraction is added the contraction
+  of `φ` (at position `i`) with the new position of `k` after `φ` is added.
 
-  In other words, `φsΛ.insertAndContract φ i j` is formed by adding `φ` to `φs` at position `i`,
-  and contracting `φ` with the field originally at position `j` if `j` is not `none`.
+  In other words, `φsΛ.insertAndContract φ i k` is formed by adding `φ` to `φs` at position `i`,
+  and contracting `φ` with the field originally at position `k` if `k` is not `none`.
   It is a Wick contraction of the list `φs.insertIdx φ i` corresponding to `φs` with `φ` inserted at
   position `i`.
 
-  The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. -/
+  The notation `φsΛ ↩Λ φ i k` is used to denote `φsΛ.insertAndContract φ i k`. -/
 def insertAndContract {φs : List 𝓕.FieldOp} (φ : 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
-    (i : Fin φs.length.succ) (j : Option φsΛ.uncontracted) :
+    (i : Fin φs.length.succ) (k : Option φsΛ.uncontracted) :
     WickContraction (φs.insertIdx i φ).length :=
-  congr (by simp) (φsΛ.insertAndContractNat i j)
+  congr (by simp) (φsΛ.insertAndContractNat i k)
 
 @[inherit_doc insertAndContract]
 scoped[WickContraction] notation φs "↩Λ" φ:max i:max j => insertAndContract φ φs i j

@@ -239,7 +239,7 @@ lemma normalOrderF_swap_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
 lemma normalOrderF_superCommuteF_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.FieldOpFreeAlgebra) :
-    𝓝ᶠ(a * [ofCrAnOpF φc, ofCrAnOpF φa]ₛca * b) = 0 := by
+    𝓝ᶠ(a * [ofCrAnOpF φc, ofCrAnOpF φa]ₛF * b) = 0 := by
   simp only [superCommuteF_ofCrAnOpF_ofCrAnOpF, instCommGroup.eq_1, Algebra.smul_mul_assoc]
   rw [mul_sub, sub_mul, map_sub, ← smul_mul_assoc, ← mul_assoc, ← mul_assoc,
     normalOrderF_swap_create_annihilate φc φa hφc hφa]
@@ -248,7 +248,7 @@ lemma normalOrderF_superCommuteF_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
 lemma normalOrderF_superCommuteF_annihilate_create (φc φa : 𝓕.CrAnFieldOp)
     (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create) (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (a b : 𝓕.FieldOpFreeAlgebra) :
-    𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnOpF φc]ₛca * b) = 0 := by
+    𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnOpF φc]ₛF * b) = 0 := by
   rw [superCommuteF_ofCrAnOpF_ofCrAnOpF_symm]
   simp only [instCommGroup.eq_1, neg_smul, mul_neg, Algebra.mul_smul_comm, neg_mul,
     Algebra.smul_mul_assoc, map_neg, map_smul, neg_eq_zero, smul_eq_zero]
@@ -402,9 +402,9 @@ TODO "Split the following two lemmas up into smaller parts."
 lemma normalOrderF_superCommuteF_ofCrAnListF_create_create_ofCrAnListF
     (φc φc' : 𝓕.CrAnFieldOp) (hφc : 𝓕 |>ᶜ φc = CreateAnnihilate.create)
     (hφc' : 𝓕 |>ᶜ φc' = CreateAnnihilate.create) (φs φs' : List 𝓕.CrAnFieldOp) :
-    (𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φc, ofCrAnOpF φc']ₛca * ofCrAnListF φs')) =
+    (𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φc, ofCrAnOpF φc']ₛF * ofCrAnListF φs')) =
       normalOrderSign (φs ++ φc' :: φc :: φs') •
-    (ofCrAnListF (createFilter φs) * [ofCrAnOpF φc, ofCrAnOpF φc']ₛca *
+    (ofCrAnListF (createFilter φs) * [ofCrAnOpF φc, ofCrAnOpF φc']ₛF *
       ofCrAnListF (createFilter φs') * ofCrAnListF (annihilateFilter (φs ++ φs'))) := by
   rw [superCommuteF_ofCrAnOpF_ofCrAnOpF, mul_sub, sub_mul, map_sub]
   conv_lhs =>
@@ -463,10 +463,10 @@ lemma normalOrderF_superCommuteF_ofCrAnListF_annihilate_annihilate_ofCrAnListF
     (hφa : 𝓕 |>ᶜ φa = CreateAnnihilate.annihilate)
     (hφa' : 𝓕 |>ᶜ φa' = CreateAnnihilate.annihilate)
     (φs φs' : List 𝓕.CrAnFieldOp) :
-    𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * ofCrAnListF φs') =
+    𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF * ofCrAnListF φs') =
       normalOrderSign (φs ++ φa' :: φa :: φs') •
     (ofCrAnListF (createFilter (φs ++ φs'))
-      * ofCrAnListF (annihilateFilter φs) * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca
+      * ofCrAnListF (annihilateFilter φs) * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF
       * ofCrAnListF (annihilateFilter φs')) := by
   rw [superCommuteF_ofCrAnOpF_ofCrAnOpF, mul_sub, sub_mul, map_sub]
   conv_lhs =>
@@ -533,7 +533,7 @@ lemma normalOrderF_superCommuteF_ofCrAnListF_annihilate_annihilate_ofCrAnListF
 -/
 
 lemma ofCrAnListF_superCommuteF_normalOrderF_ofCrAnListF (φs φs' : List 𝓕.CrAnFieldOp) :
-    [ofCrAnListF φs, 𝓝ᶠ(ofCrAnListF φs')]ₛca =
+    [ofCrAnListF φs, 𝓝ᶠ(ofCrAnListF φs')]ₛF =
     ofCrAnListF φs * 𝓝ᶠ(ofCrAnListF φs') -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofCrAnListF φs') * ofCrAnListF φs := by
   simp only [normalOrderF_ofCrAnListF, map_smul, superCommuteF_ofCrAnListF_ofCrAnListF,
@@ -541,7 +541,7 @@ lemma ofCrAnListF_superCommuteF_normalOrderF_ofCrAnListF (φs φs' : List 𝓕.C
     Algebra.mul_smul_comm, mul_comm, Algebra.smul_mul_assoc]
 
 lemma ofCrAnListF_superCommuteF_normalOrderF_ofFieldOpListF (φs : List 𝓕.CrAnFieldOp)
-    (φs' : List 𝓕.FieldOp) : [ofCrAnListF φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛca =
+    (φs' : List 𝓕.FieldOp) : [ofCrAnListF φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛF =
     ofCrAnListF φs * 𝓝ᶠ(ofFieldOpListF φs') -
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnListF φs := by
   rw [ofFieldOpListF_sum, map_sum, Finset.mul_sum, Finset.smul_sum, Finset.sum_mul,
@@ -561,20 +561,20 @@ lemma ofCrAnListF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φs : List �
     (φs' : List 𝓕.FieldOp) :
     ofCrAnListF φs * 𝓝ᶠ(ofFieldOpListF φs') =
     𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnListF φs
-    + [ofCrAnListF φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
+    + [ofCrAnListF φs, 𝓝ᶠ(ofFieldOpListF φs')]ₛF := by
   simp [ofCrAnListF_superCommuteF_normalOrderF_ofFieldOpListF]
 
 lemma ofCrAnOpF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φ : 𝓕.CrAnFieldOp)
     (φs' : List 𝓕.FieldOp) : ofCrAnOpF φ * 𝓝ᶠ(ofFieldOpListF φs') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs') * ofCrAnOpF φ
-    + [ofCrAnOpF φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
+    + [ofCrAnOpF φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛF := by
   simp [← ofCrAnListF_singleton, ofCrAnListF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF]
 
 lemma anPartF_mul_normalOrderF_ofFieldOpListF_eq_superCommuteF (φ : 𝓕.FieldOp)
     (φs' : List 𝓕.FieldOp) :
     anPartF φ * 𝓝ᶠ(ofFieldOpListF φs') =
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs') • 𝓝ᶠ(ofFieldOpListF φs' * anPartF φ)
-    + [anPartF φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛca := by
+    + [anPartF φ, 𝓝ᶠ(ofFieldOpListF φs')]ₛF := by
   rw [normalOrderF_mul_anPartF]
   match φ with
   | .inAsymp φ => simp

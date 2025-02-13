@@ -96,7 +96,7 @@ lemma ofCrAnListF_singleton (φ : 𝓕.CrAnFieldOp) :
   `ofCrAnOpF` of the
   creation and annihilation parts of `φ`.
 
-  For example for `φ` an incoming asymptotic field operator we get
+  For example, for `φ` an incoming asymptotic field operator we get
   `ofCrAnOpF ⟨φ, ()⟩`, and for `φ` a
   position field operator we get `ofCrAnOpF ⟨φ, .create⟩ + ofCrAnOpF ⟨φ, .annihilate⟩`. -/
 def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=

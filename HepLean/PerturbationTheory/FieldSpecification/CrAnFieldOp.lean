@@ -66,29 +66,29 @@ def fieldOpToCreateAnnihilateTypeCongr : {i j : 𝓕.FieldOp} → i = j →
 For a field specification `𝓕`, the (sigma) type `𝓕.CrAnFieldOp`
 corresponds to the type of creation and annihilation parts of field operators.
 It formally defined to consist of the following elements:
-- for each incoming asymptotic field operator `φ` in `𝓕.FieldOp` an element
+- For each incoming asymptotic field operator `φ` in `𝓕.FieldOp` an element
   written as `⟨φ, ()⟩` in `𝓕.CrAnFieldOp`, corresponding to the creation part of `φ`.
   Here `φ` has no annihilation part. (Here `()` is the unique element of `Unit`.)
-- for each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
+- For each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
   written as `⟨φ, .create⟩`, corresponding to the creation part of `φ`.
-- for each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
+- For each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
   written as `⟨φ, .annihilate⟩`, corresponding to the annihilation part of `φ`.
-- for each outgoing asymptotic field operator `φ` in `𝓕.FieldOp` an element
+- For each outgoing asymptotic field operator `φ` in `𝓕.FieldOp` an element
   written as `⟨φ, ()⟩` in `𝓕.CrAnFieldOp`, corresponding to the annihilation part of `φ`.
   Here `φ` has no creation part. (Here `()` is the unique element of `Unit`.)
 
 As an example, if `f` corresponds to a Weyl-fermion field, it would contribute
   the following elements to `𝓕.CrAnFieldOp`
-- an element corresponding to incoming asymptotic operators for each spin `s`: `a(p, s)`.
-- an element corresponding to the creation parts of position operators for each each Lorentz
-  index `a`:
+- For each spin `s`, an element corresponding to an incoming asymptotic operator: `a(p, s)`.
+- For each each Lorentz
+  index `a`, an element corresponding to the creation part of a position operator:
 
   `∑ s, ∫ d³p/(…) (xₐ (p,s)  a(p, s) e ^ (-i p x))`.
-- an element corresponding to annihilation parts of position operator,
-  for each each Lorentz index `a`:
+- For each each Lorentz
+  index `a`,an element corresponding to annihilation part of a position operator:
 
   `∑ s, ∫ d³p/(…) (yₐ(p,s) a†(p, s) e ^ (-i p x))`.
-- an element corresponding to outgoing asymptotic operators for each spin `s`: `a†(p, s)`.
+- For each spin `s`, element corresponding to an outgoing asymptotic operator: `a†(p, s)`.
 
 -/
 def CrAnFieldOp : Type := Σ (s : 𝓕.FieldOp), 𝓕.fieldOpToCrAnType s

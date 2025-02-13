@@ -32,7 +32,7 @@ is zero.
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero
     (φa φa' : 𝓕.CrAnFieldOp) (φs φs' : List 𝓕.CrAnFieldOp) :
-    ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * ofCrAnListF φs') = 0 := by
+    ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF * ofCrAnListF φs') = 0 := by
   rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa) with hφa | hφa
   <;> rcases CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φa') with hφa' | hφa'
   · rw [normalOrderF_superCommuteF_ofCrAnListF_create_create_ofCrAnListF φa φa' hφa hφa' φs φs']
@@ -53,27 +53,27 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero
     (φa φa' : 𝓕.CrAnFieldOp) (φs : List 𝓕.CrAnFieldOp)
     (a : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * a) = 0 := by
+    ι 𝓝ᶠ(ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF * a) = 0 := by
   have hf : ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
-      mulLinearMap (ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca) = 0 := by
+      mulLinearMap (ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF) = 0 := by
     apply ofCrAnListFBasis.ext
     intro l
     simp only [FieldOpFreeAlgebra.ofListBasis_eq_ofList, LinearMap.coe_comp, Function.comp_apply,
       AlgHom.toLinearMap_apply, LinearMap.zero_apply]
     exact ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero φa φa' φs l
   change (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
-    mulLinearMap ((ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca))) a = 0
+    mulLinearMap ((ofCrAnListF φs * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF))) a = 0
   rw [hf]
   simp
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnOpF_eq_zero_mul (φa φa' : 𝓕.CrAnFieldOp)
     (a b : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnOpF φa']ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnOpF φa']ₛF * b) = 0 := by
   rw [mul_assoc]
   change (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ mulLinearMap.flip
-    ([ofCrAnOpF φa, ofCrAnOpF φa']ₛca * b)) a = 0
+    ([ofCrAnOpF φa, ofCrAnOpF φa']ₛF * b)) a = 0
   have hf : ι.toLinearMap ∘ₗ normalOrderF ∘ₗ mulLinearMap.flip
-      ([ofCrAnOpF φa, ofCrAnOpF φa']ₛca * b) = 0 := by
+      ([ofCrAnOpF φa, ofCrAnOpF φa']ₛF * b) = 0 := by
     apply ofCrAnListFBasis.ext
     intro l
     simp only [mulLinearMap, FieldOpFreeAlgebra.ofListBasis_eq_ofList, LinearMap.coe_comp,
@@ -86,7 +86,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnOpF_eq_zero_mul (φa φa' : 𝓕.CrAnF
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnOpF_ofCrAnListF_eq_zero_mul (φa : 𝓕.CrAnFieldOp)
     (φs : List 𝓕.CrAnFieldOp) (a b : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnListF φs]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnOpF φa, ofCrAnListF φs]ₛF * b) = 0 := by
   rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum]
   rw [Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
@@ -98,7 +98,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnOpF_ofCrAnListF_eq_zero_mul (φa : �
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnOpF_eq_zero_mul (φa : 𝓕.CrAnFieldOp)
     (φs : List 𝓕.CrAnFieldOp) (a b : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [ofCrAnListF φs, ofCrAnOpF φa]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnListF φs, ofCrAnOpF φa]ₛF * b) = 0 := by
   rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF_symm, ofCrAnListF_singleton]
   simp only [FieldStatistic.instCommGroup.eq_1, FieldStatistic.ofList_singleton, mul_neg,
     Algebra.mul_smul_comm, neg_mul, Algebra.smul_mul_assoc, map_neg, map_smul]
@@ -107,7 +107,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnOpF_eq_zero_mul (φa : �
 
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero_mul
     (φs φs' : List 𝓕.CrAnFieldOp) (a b : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [ofCrAnListF φs, ofCrAnListF φs']ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnListF φs, ofCrAnListF φs']ₛF * b) = 0 := by
   rw [superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum, Finset.mul_sum, Finset.sum_mul]
   rw [map_sum, map_sum]
   apply Fintype.sum_eq_zero
@@ -119,7 +119,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnListF_eq_zero_mul
 lemma ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero_mul
     (φs : List 𝓕.CrAnFieldOp)
     (a b c : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [ofCrAnListF φs, c]ₛca * b) = 0 := by
+    ι 𝓝ᶠ(a * [ofCrAnListF φs, c]ₛF * b) = 0 := by
   change (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommuteF (ofCrAnListF φs)) c = 0
   have hf : (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
@@ -135,7 +135,7 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_eq_zero_mul
 
 @[simp]
 lemma ι_normalOrderF_superCommuteF_eq_zero_mul
-    (a b c d : 𝓕.FieldOpFreeAlgebra) : ι 𝓝ᶠ(a * [d, c]ₛca * b) = 0 := by
+    (a b c d : 𝓕.FieldOpFreeAlgebra) : ι 𝓝ᶠ(a * [d, c]ₛF * b) = 0 := by
   change (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
     mulLinearMap.flip b ∘ₗ mulLinearMap a ∘ₗ superCommuteF.flip c) d = 0
   have hf : (ι.toLinearMap ∘ₗ normalOrderF ∘ₗ
@@ -151,25 +151,25 @@ lemma ι_normalOrderF_superCommuteF_eq_zero_mul
 
 @[simp]
 lemma ι_normalOrder_superCommuteF_eq_zero_mul_right (b c d : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ([d, c]ₛca * b) = 0 := by
+    ι 𝓝ᶠ([d, c]ₛF * b) = 0 := by
   rw [← ι_normalOrderF_superCommuteF_eq_zero_mul 1 b c d]
   simp
 
 @[simp]
 lemma ι_normalOrderF_superCommuteF_eq_zero_mul_left (a c d : 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [d, c]ₛca) = 0 := by
+    ι 𝓝ᶠ(a * [d, c]ₛF) = 0 := by
   rw [← ι_normalOrderF_superCommuteF_eq_zero_mul a 1 c d]
   simp
 
 @[simp]
 lemma ι_normalOrderF_superCommuteF_eq_zero_mul_mul_right (a b1 b2 c d: 𝓕.FieldOpFreeAlgebra) :
-    ι 𝓝ᶠ(a * [d, c]ₛca * b1 * b2) = 0 := by
+    ι 𝓝ᶠ(a * [d, c]ₛF * b1 * b2) = 0 := by
   rw [← ι_normalOrderF_superCommuteF_eq_zero_mul a (b1 * b2) c d]
   congr 2
   noncomm_ring
 
 @[simp]
-lemma ι_normalOrderF_superCommuteF_eq_zero (c d : 𝓕.FieldOpFreeAlgebra) : ι 𝓝ᶠ([d, c]ₛca) = 0 := by
+lemma ι_normalOrderF_superCommuteF_eq_zero (c d : 𝓕.FieldOpFreeAlgebra) : ι 𝓝ᶠ([d, c]ₛF) = 0 := by
   rw [← ι_normalOrderF_superCommuteF_eq_zero_mul 1 1 c d]
   simp
 
