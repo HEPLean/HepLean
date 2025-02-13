@@ -34,7 +34,14 @@ def signFinset (c : WickContraction n) (i1 i2 : Fin n) : Finset (Fin n) :=
   to the number of `fermionic`-`fermionic` exchanges that must be done to put
   contracted pairs within `φsΛ` next to one another, starting recursively
   from the contracted pair
-  whose first element occurs at the left-most position. -/
+  whose first element occurs at the left-most position.
+
+  As an example, if `[φ1, φ2, φ3, φ4]` correspond to fermionic fields then the sign
+  associated with
+- `{{0, 1}}` is `1`
+- `{{0, 1}, {2, 3}}` is `1`
+- `{{0, 2}, {1, 3}}` is `-1`
+-/
 def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
   ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],
     𝓕 |>ₛ ⟨φs.get, φsΛ.signFinset (φsΛ.fstFieldOfContract a) (φsΛ.sndFieldOfContract a)⟩)

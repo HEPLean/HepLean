@@ -161,7 +161,7 @@ lemma timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered_eq_timeOrderF {φ ψ : 𝓕.F
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) :
-    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛF) = 0 := by
   rw [superCommuteF_ofCrAnOpF_ofCrAnOpF]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
   rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton,
@@ -179,28 +179,28 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_right
     {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = 0 := by
+    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF) = 0 := by
   rw [timeOrderF_timeOrderF_right,
     timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_left
     {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * a) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛF * a) = 0 := by
   rw [timeOrderF_timeOrderF_left,
     timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel_mid
     {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) (a b : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca * b) = 0 := by
+    𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid,
     timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel h]
   simp
 
 lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ1 φ2 : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ1 φ2) (a : 𝓕.FieldOpFreeAlgebra) :
-    𝓣ᶠ([a, [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([a, [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛF]ₛF) = 0 := by
   rw [← bosonicProjF_add_fermionicProjF a]
   simp only [map_add, LinearMap.add_apply]
   rw [bosonic_superCommuteF (Submodule.coe_mem (bosonicProjF a))]
@@ -224,7 +224,7 @@ lemma timeOrderF_superCommuteF_superCommuteF_ofCrAnOpF_not_crAnTimeOrderRel
 lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel
     {φ1 φ2 φ3 : 𝓕.CrAnFieldOp} (h12 : ¬ crAnTimeOrderRel φ1 φ2)
     (h13 : ¬ crAnTimeOrderRel φ1 φ3) :
-    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF) = 0 := by
   rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
   rw [summerCommute_jacobi_ofCrAnListF]
   simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnListF_singleton, neg_smul, map_smul,
@@ -240,7 +240,7 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel
 lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_not_crAnTimeOrderRel'
     {φ1 φ2 φ3 : 𝓕.CrAnFieldOp} (h12 : ¬ crAnTimeOrderRel φ2 φ1)
     (h13 : ¬ crAnTimeOrderRel φ3 φ1) :
-    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF) = 0 := by
   rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
   rw [summerCommute_jacobi_ofCrAnListF]
   simp only [instCommGroup.eq_1, ofList_singleton, ofCrAnListF_singleton, neg_smul, map_smul,
@@ -258,7 +258,7 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_all_not_crAnTimeOrderRel
       (crAnTimeOrderRel φ1 φ2 ∧ crAnTimeOrderRel φ1 φ3 ∧
       crAnTimeOrderRel φ2 φ1 ∧ crAnTimeOrderRel φ2 φ3 ∧
       crAnTimeOrderRel φ3 φ1 ∧ crAnTimeOrderRel φ3 φ2)) :
-    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca) = 0 := by
+    𝓣ᶠ([ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF) = 0 := by
   simp only [not_and] at h
   by_cases h23 : ¬ crAnTimeOrderRel φ2 φ3
   · simp_all only [IsEmpty.forall_iff, implies_true]
@@ -293,7 +293,7 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_superCommuteF_all_not_crAnTimeOrderRel
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_eq_time
     {φ ψ : 𝓕.CrAnFieldOp} (h1 : crAnTimeOrderRel φ ψ) (h2 : crAnTimeOrderRel ψ φ) :
-    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛca) = [ofCrAnOpF φ, ofCrAnOpF ψ]ₛca := by
+    𝓣ᶠ([ofCrAnOpF φ, ofCrAnOpF ψ]ₛF) = [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF := by
   rw [superCommuteF_ofCrAnOpF_ofCrAnOpF]
   simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, map_sub, map_smul]
   rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton,

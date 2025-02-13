@@ -20,13 +20,13 @@ namespace FieldOpAlgebra
 variable {𝓕 : FieldSpecification}
 
 lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι b = 0) :
-    ι [a, b]ₛca = 0 := by
+    ι [a, b]ₛF = 0 := by
   rw [superCommuteF_expand_bosonicProjF_fermionicProjF]
   rw [ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero] at h
   simp_all
 
 lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι a = 0) :
-    ι [a, b]ₛca = 0 := by
+    ι [a, b]ₛF = 0 := by
   rw [superCommuteF_expand_bosonicProjF_fermionicProjF]
   rw [ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero] at h
   simp_all
@@ -38,12 +38,12 @@ lemma ι_superCommuteF_eq_zero_of_ι_left_zero (a b : 𝓕.FieldOpFreeAlgebra) (
 -/
 
 lemma ι_superCommuteF_right_zero_of_mem_ideal (a b : 𝓕.FieldOpFreeAlgebra)
-    (h : b ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι [a, b]ₛca = 0 := by
+    (h : b ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) : ι [a, b]ₛF = 0 := by
   apply ι_superCommuteF_eq_zero_of_ι_right_zero
   exact (ι_eq_zero_iff_mem_ideal b).mpr h
 
 lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.FieldOpFreeAlgebra) (h : b1 ≈ b2) :
-    ι [a, b1]ₛca = ι [a, b2]ₛca := by
+    ι [a, b1]ₛF = ι [a, b2]ₛF := by
   rw [equiv_iff_sub_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
   simp only [LinearMap.mem_ker, ← map_sub]
@@ -68,10 +68,10 @@ noncomputable def superCommuteRight (a : 𝓕.FieldOpFreeAlgebra) :
     simp
 
 lemma superCommuteRight_apply_ι (a b : 𝓕.FieldOpFreeAlgebra) :
-    superCommuteRight a (ι b) = ι [a, b]ₛca := by rfl
+    superCommuteRight a (ι b) = ι [a, b]ₛF := by rfl
 
 lemma superCommuteRight_apply_quot (a b : 𝓕.FieldOpFreeAlgebra) :
-    superCommuteRight a ⟦b⟧= ι [a, b]ₛca := by rfl
+    superCommuteRight a ⟦b⟧= ι [a, b]ₛF := by rfl
 
 lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.FieldOpFreeAlgebra) (h : a1 ≈ a2) :
     superCommuteRight a1 = superCommuteRight a2 := by
@@ -126,7 +126,7 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
 scoped[FieldSpecification.FieldOpAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
 
 lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.FieldOpFreeAlgebra) :
-    [ι a, ι b]ₛ = ι [a, b]ₛca := rfl
+    [ι a, ι b]ₛ = ι [a, b]ₛF := rfl
 
 /-!
 

@@ -97,7 +97,7 @@ lemma empty_mem {φs : List 𝓕.FieldOp} : empty (n := φs.length).EqTimeOnly :
   simp [empty]
 
 /-- Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` of `φs` within
-  which every contraction involves two `𝓕FieldOp`s that have the same time, then
+  which every contraction involves two `𝓕.FieldOp`s that have the same time, then
   `φsΛ.staticContract = φsΛ.timeContract`. -/
 lemma staticContract_eq_timeContract_of_eqTimeOnly (h : φsΛ.EqTimeOnly) :
     φsΛ.staticContract = φsΛ.timeContract := by
