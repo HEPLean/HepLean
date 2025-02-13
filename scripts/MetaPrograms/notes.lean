@@ -40,6 +40,7 @@ structure DeclInfo where
   declString : String
   docString : String
   isDef : Bool
+  isThm : Bool
 
 def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let line ← Name.lineNumber n
@@ -48,6 +49,7 @@ def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
   let docString ← Name.getDocString n
   let constInfo ← getConstInfo n
   let isDef := constInfo.isDef ∨ Lean.isStructure (← getEnv) n ∨ constInfo.isInductive
+  let isThm := declString.startsWith "theorem" ∨ declString.startsWith "noncomputable theorem"
   pure {
     line := line,
     fileName := fileName,
@@ -55,7 +57,8 @@ def DeclInfo.ofName (n : Name) (ns : NameStatus): MetaM DeclInfo := do
     status := ns,
     declString := declString,
     docString := docString,
-    isDef := isDef}
+    isDef := isDef
+    isThm := isThm}
 
 def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
   let declStringIndent := d.declString.replace "\n" "\n      "
@@ -69,6 +72,7 @@ def DeclInfo.toYML (d : DeclInfo) : MetaM String := do
     status: \"{d.status}\"
     link: \"{link}\"
     isDef: {d.isDef}
+    isThm: {d.isThm}
     docString: |
       {docStringIndent}
     declString: |
@@ -244,7 +248,7 @@ def perturbationTheory : Note where
     .h2 "Normal order",
     .name ``FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_none .complete,
     .name ``FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_some .complete,
-    .h1 "Static Wicks theorem",
+    .h1 "Static Wick's theorem",
     .h2 "Static contractions",
     .name ``WickContraction.staticContract .complete,
     .name ``WickContraction.staticContract_insert_none .complete,
@@ -255,7 +259,7 @@ def perturbationTheory : Note where
     .name ``WickContraction.staticWickTerm_insert_zero_none .complete,
     .name ``WickContraction.staticWickTerm_insert_zero_some .complete,
     .name ``WickContraction.mul_staticWickTerm_eq_sum .complete,
-    .h2 "The Static Wicks theorem",
+    .h2 "The Static Wick's theorem",
     .name ``FieldSpecification.FieldOpAlgebra.static_wick_theorem .complete,
     .h1 "Wick's theorem",
     .h2 "Time contractions",

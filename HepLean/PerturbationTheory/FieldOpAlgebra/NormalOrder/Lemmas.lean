@@ -350,7 +350,7 @@ then `φ * 𝓝(φ₀φ₁…φₙ)` is equal to
 
 `𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPart φ, φᵢ]ₛ) * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
 
-The proof of ultimately goes as follows:
+The proof ultimately goes as follows:
 - `ofFieldOp_eq_crPart_add_anPart` is used to split `φ` into its creation and annihilation parts.
 - The following relation is then used
 

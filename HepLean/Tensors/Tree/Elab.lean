@@ -285,7 +285,7 @@ def termNodeSyntax (T : Term) : TermElabM Term := do
   | _ => return Syntax.mkApp (mkIdent ``TensorTree.vecNode) #[T]
 
 /-- Adjusts a list `List ℕ` by subtracting from each natural number the number
-  of elements before it in the list which are less then itself. This is used
+  of elements before it in the list which are less than itself. This is used
   to form a list of pairs which can be used for evaluating indices. -/
 def evalAdjustPos (l : List ℕ) : List ℕ :=
   let l' := List.mapAccumr
@@ -335,7 +335,7 @@ def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
   | [x] => [(x, 0)]
 
 /-- Adjusts a list `List (ℕ × ℕ)` by subtracting from each natural number the number
-  of elements before it in the list which are less then itself. This is used
+  of elements before it in the list which are less than itself. This is used
   to form a list of pairs which can be used for contracting indices. -/
 def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
   let l' := l.flatMap (fun p => [p.1, p.2])

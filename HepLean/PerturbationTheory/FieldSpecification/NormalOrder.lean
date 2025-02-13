@@ -20,7 +20,7 @@ variable {𝓕 : FieldSpecification}
   - `φ₀` is a field creation operator
   - `φ₁` is a field annihilation operator.
 
-  Thus, colloquially `𝓕.normalOrderRel φ₀ φ₁` says the creation operators are 'less then'
+  Thus, colloquially `𝓕.normalOrderRel φ₀ φ₁` says the creation operators are less than
   annihilation operators. -/
 def normalOrderRel : 𝓕.CrAnFieldOp → 𝓕.CrAnFieldOp → Prop :=
   fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)

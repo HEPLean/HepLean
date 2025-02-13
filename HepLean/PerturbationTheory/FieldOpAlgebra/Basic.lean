@@ -42,7 +42,7 @@ def fieldOpIdealSet : Set (FieldOpFreeAlgebra 𝓕) :=
   This corresponds to the condition that two operators with different statistics always
   super-commute. In other words, fermions and bosons always super-commute.
 - `[ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛca]ₛca`. This corresponds to the condition,
-  when combined with the conditions above, that the super-commutator is in the center of the
+  when combined with the conditions above, that the super-commutator is in the center
   of the algebra.
 -/
 abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.Quotient

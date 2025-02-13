@@ -47,7 +47,7 @@ lemma IsOrthochronous_iff_ge_one :
   rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.mem_iff_inl_one_le_inl,
     toNormOne_inl]
 
-/-- A Lorentz transformation is not orthochronous if and only if its `0 0` element is less then
+/-- A Lorentz transformation is not orthochronous if and only if its `0 0` element is less than
   or equal to minus one. -/
 lemma not_orthochronous_iff_le_neg_one :
     ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) ≤ -1 := by
@@ -65,8 +65,8 @@ def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => Λ.1 (Sum.inl 0) (Sum.
     Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
 
 /-- An auxiliary function used in the definition of `orthchroMapReal`.
-  This function takes all elements of `ℝ` less then `-1` to `-1`,
-  all elements of `R` greater then `1` to `1` and preserves all other elements. -/
+  This function takes all elements of `ℝ` less than `-1` to `-1`,
+  all elements of `R` greater than `1` to `1` and preserves all other elements. -/
 def stepFunction : ℝ → ℝ := fun t =>
   if t ≤ -1 then -1 else
     if 1 ≤ t then 1 else t

@@ -117,9 +117,9 @@ For a list `φs` of `𝓕.FieldOp`, then `𝓣(φs)` is equal to the sum of
   and the second sum is over all Wick contraction `φssucΛ` of the uncontracted elements of `φsΛ`
   which do not have any equal time contractions.
 
-The proof of proceeds as follows
+The proof proceeds as follows
 - `wicks_theorem` is used to rewrite `𝓣(φs)` as a sum over all Wick contractions.
-- The sum over all Wick contractions is then split additively into two parts using based on having
+- The sum over all Wick contractions is then split additively into two parts based on having
   or not having an equal time contractions.
 - Using `join`, the sum `∑ φsΛ, _` over Wick contractions which do have equal time contractions
   is split into two sums `∑ φsΛ, ∑ φsucΛ, _`, the first over non-zero elements

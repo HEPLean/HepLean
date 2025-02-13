@@ -32,7 +32,7 @@ The proof is via induction on `φs`.
 The inductive step works as follows:
 
 For the LHS:
-1. The proof considers `φ₀…φₙ` as `φ₀(φ₁…φₙ)` and use the induction hypothesis on `φ₁…φₙ`.
+1. The proof considers `φ₀…φₙ` as `φ₀(φ₁…φₙ)` and uses the induction hypothesis on `φ₁…φₙ`.
 2. This gives terms of the form `φ * φsΛ.staticWickTerm` on which
   `mul_staticWickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₁…φₙ`,
   to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
@@ -45,7 +45,7 @@ For the RHS:
   is split via `insertLift_sum` into a sum over Wick contractions `φsΛ` of `φ₁…φₙ` and
   sum over optional uncontracted elements of `φsΛ`.
 
-Both side now are sums over the same thing and their terms equate by the nature of the
+Both sides are now sums over the same thing and their terms equate by the nature of the
 lemmas used.
 
 -/
