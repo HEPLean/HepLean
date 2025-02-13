@@ -29,7 +29,7 @@ noncomputable section
 
   `φsΛ.sign • φsΛ.timeContract * 𝓝([φsΛ]ᵘᶜ)`.
 
-  This is term which appears in the Wick's theorem. -/
+  This is a term which appears in the Wick's theorem. -/
 def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
@@ -95,10 +95,10 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`,
-  such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less then `φ` and
-  `φ` has a time greater then or equal to all `FieldOp` in `φ₀…φₙ`, then
+  such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less than `φ` and
+  `φ` has a time greater than or equal to all `FieldOp` in `φ₀…φₙ`, then
   `(φsΛ ↩Λ φ i (some k)).staticWickTerm`
-is equal the product of
+is equal to the product of
 - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
 - the sign `φsΛ.sign`
 - `φsΛ.timeContract`
@@ -177,14 +177,14 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
 /--
 For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, and `i ≤ φs.length`
-  such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less then `φ` and
-  `φ` has a time greater then or equal to all `FieldOp` in `φ₀…φₙ`, then
+  such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less than `φ` and
+  `φ` has a time greater than or equal to all `FieldOp` in `φ₀…φₙ`, then
 
 `φ * φsΛ.wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) • ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
 
 where the sum is over all `k` in `Option φsΛ.uncontracted`, so `k` is either `none` or `some k`.
 
-The proof of proceeds as follows:
+The proof proceeds as follows:
 - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
   a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`.
 - Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.

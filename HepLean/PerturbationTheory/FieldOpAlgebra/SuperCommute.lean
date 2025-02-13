@@ -92,7 +92,7 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.FieldOpFreeAlgebra) (h : a1 �
 
   `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
 
-  defined as the decent of `ι ∘ superCommuteF` in both arguments.
+  defined as the descent of `ι ∘ superCommuteF` in both arguments.
   In particular for `φs` and `φs'` lists of `𝓕.CrAnFieldOp` in `FieldOpAlgebra 𝓕` the following
   relation holds:
 

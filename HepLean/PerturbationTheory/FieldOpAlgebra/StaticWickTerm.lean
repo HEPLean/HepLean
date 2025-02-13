@@ -27,7 +27,7 @@ noncomputable section
 
   `φsΛ.sign • φsΛ.staticContract * 𝓝([φsΛ]ᵘᶜ)`.
 
-  This is term which appears in the static version Wick's theorem. -/
+  This is a term which appears in the static version Wick's theorem. -/
 def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
   φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
@@ -120,7 +120,7 @@ holds
 
 where the sum is over all `k` in `Option φsΛ.uncontracted`,  so `k` is either `none` or `some k`.
 
-The proof of proceeds as follows:
+The proof proceeds as follows:
 - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
   a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`.
 - Then `staticWickTerm_insert_zero_none` and `staticWickTerm_insert_zero_some` are

@@ -35,7 +35,7 @@ noncomputable def timeContract {φs : List 𝓕.FieldOp}
 
   `(φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract`
 
-  The prove of this result ultimately a consequence of definitions. -/
+  The proof of this result ultimately is a consequence of definitions. -/
 @[simp]
 lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
@@ -51,7 +51,7 @@ lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   - `timeContract φ φs[k]` if `i ≤ k` or `timeContract φs[k] φ` if `k < i`
   - `φsΛ.timeContract`.
 
-  The proof of this result ultimately a consequence of definitions. -/
+  The proof of this result ultimately is a consequence of definitions. -/
 lemma timeContract_insertAndContract_some
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
@@ -88,7 +88,7 @@ open FieldStatistic
   - two copies of the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
     These two exchange signs cancel each other out but are included for convenience.
 
-  The proof of this result ultimately a consequence of definitions and
+  The proof of this result ultimately is a consequence of definitions and
   `timeContract_of_timeOrderRel`. -/
 lemma timeContract_insert_some_of_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
@@ -132,7 +132,7 @@ lemma timeContract_insert_some_of_lt
   - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
   - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ`.
 
-  The proof of this result ultimately a consequence of definitions and
+  The proof of this result ultimately is a consequence of definitions and
   `timeContract_of_not_timeOrderRel_expand`. -/
 lemma timeContract_insert_some_of_not_lt
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)

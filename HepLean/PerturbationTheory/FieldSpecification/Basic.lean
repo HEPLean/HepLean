@@ -43,7 +43,7 @@ The structure `FieldSpecification` is defined to have the following content:
       index of the field and its conjugate.
   - For every field `f` in `Field`, a type `AsymptoticLabel f` whose elements label the different
     types of incoming asymptotic field operators associated with the
-    field `f` (this is also matches the types of outgoing asymptotic field operators).
+    field `f` (this also matches the types of outgoing asymptotic field operators).
     For example,
     - For `f` a *real-scalar field*, `AsymptoticLabel f` will have a unique element.
     - For `f` a *complex-scalar field*, `AsymptoticLabel f` will have two elements, one for the
@@ -81,7 +81,7 @@ variable (𝓕 : FieldSpecification)
   element labelled `outAsymp f e p` corresponding to an outgoing asymptotic field operator of the
   field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
 
-As some intuition, if `f` corresponds to a Weyl-fermion field, then
+As an example, if `f` corresponds to a Weyl-fermion field, then
 - For `inAsymp f e p`, `e` would correspond to a spin `s`, and `inAsymp f e p` would, once
   represented in the operator algebra,
   be proportional to the creation operator `a(p, s)`.
@@ -120,7 +120,7 @@ def fieldOpToField : 𝓕.FieldOp → 𝓕.Field
 - For `φ` an element of `𝓕.FieldOp`, `𝓕 |>ₛ φ` is `fieldOpStatistic φ`.
 - For `φs` a list of `𝓕.FieldOp`, `𝓕 |>ₛ φs` is the product of `fieldOpStatistic φ` over
   the list `φs`.
-- For a function `f : Fin n → 𝓕.FieldOp` and a finset `a` of `Fin n`, `𝓕 |>ₛ ⟨f, a⟩` is the
+- For a function `f : Fin n → 𝓕.FieldOp` and a finite set `a` of `Fin n`, `𝓕 |>ₛ ⟨f, a⟩` is the
   product of `fieldOpStatistic (f i)` for all `i ∈ a`. -/
 def fieldOpStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistic ∘ 𝓕.fieldOpToField
 

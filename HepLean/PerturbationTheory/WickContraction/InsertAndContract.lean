@@ -34,8 +34,8 @@ open HepLean.Fin
   of `φ` (at position `i`) with the new position of `j` after `φ` is added.
 
   In other words, `φsΛ.insertAndContract φ i j` is formed by adding `φ` to `φs` at position `i`,
-  and contracting `φ` with the field originally at position `j` if `j` is not none.
-  It is a Wick contraction of `φs.insertIdx φ i`, the list `φs` with `φ` inserted at
+  and contracting `φ` with the field originally at position `j` if `j` is not `none`.
+  It is a Wick contraction of the list `φs.insertIdx φ i` corresponding to `φs` with `φ` inserted at
   position `i`.
 
   The notation `φsΛ ↩Λ φ i j` is used to denote `φsΛ.insertAndContract φ i j`. -/

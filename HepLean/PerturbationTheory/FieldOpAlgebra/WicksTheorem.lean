@@ -91,7 +91,7 @@ For the RHS:
   is split via `insertLift_sum` into a sum over Wick contractions `φsΛ` of `φ₀…φᵢ₋₁φᵢ₊₁φ` and
   sum over optional uncontracted elements of `φsΛ`.
 
-Both side now are sums over the same thing and their terms equate by the nature of the
+Both sides are now sums over the same thing and their terms equate by the nature of the
 lemmas used.
 -/
 theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =

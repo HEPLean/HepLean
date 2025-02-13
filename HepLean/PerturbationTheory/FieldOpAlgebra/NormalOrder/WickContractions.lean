@@ -32,7 +32,7 @@ variable {𝓕 : FieldSpecification}
 
   where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀…φᵢ₋₁`.
 
-  The prove of this result ultimately a consequence of `normalOrder_superCommute_eq_zero`.
+  The proof of this result ultimately is a consequence of `normalOrder_superCommute_eq_zero`.
 -/
 lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
@@ -104,7 +104,7 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   `𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `𝓕.FieldOp`
   corresponding to `k` removed.
 
-  The proof of this result ultimately a consequence of definitions.
+  The proof of this result ultimately is a consequence of definitions.
 -/
 lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted) :

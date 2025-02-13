@@ -583,7 +583,7 @@ lemma uncontractedList_succAboveEmb_toFinset (c : WickContraction n) (i : Fin n.
 -/
 
 /-- Given a Wick contraction `c : WickContraction n` and a `Fin n.succ`, the number of elements
-  of `c.uncontractedList` which are less then `i`.
+  of `c.uncontractedList` which are less than `i`.
   Suppose we want to insert into `c` at position `i`, then this is the position we would
   need to insert into `c.uncontractedList`. -/
 def uncontractedListOrderPos (c : WickContraction n) (i : Fin n.succ) : ℕ :=

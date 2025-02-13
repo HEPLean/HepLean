@@ -83,7 +83,7 @@ lemma S₂₃_nonneg (V : Quotient CKMMatrixSetoid) : 0 ≤ S₂₃ V := by
   · rw [S₂₃, if_neg ha, @div_nonneg_iff]
     exact .inl (.intro (VAbs_ge_zero 1 2 V) (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2)))
 
-/-- For a CKM matrix `sin θ₁₂` is less then or equal to 1. -/
+/-- For a CKM matrix `sin θ₁₂` is less than or equal to 1. -/
 lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
   rw [S₁₂, @div_le_one_iff]
   by_cases h1 : √(VudAbs V ^ 2 + VusAbs V ^ 2) = 0
@@ -99,11 +99,11 @@ lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
     simp only [Fin.isValue, le_add_iff_nonneg_left]
     exact sq_nonneg (VAbs 0 0 V)
 
-/-- For a CKM matrix `sin θ₁₃` is less then or equal to 1. -/
+/-- For a CKM matrix `sin θ₁₃` is less than or equal to 1. -/
 lemma S₁₃_leq_one (V : Quotient CKMMatrixSetoid) : S₁₃ V ≤ 1 :=
   VAbs_leq_one 0 2 V
 
-/-- For a CKM matrix `sin θ₂₃` is less then or equal to 1. -/
+/-- For a CKM matrix `sin θ₂₃` is less than or equal to 1. -/
 lemma S₂₃_leq_one (V : Quotient CKMMatrixSetoid) : S₂₃ V ≤ 1 := by
   by_cases ha : VubAbs V = 1
   · rw [S₂₃, if_pos ha]

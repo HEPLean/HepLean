@@ -35,7 +35,7 @@ noncomputable def staticContract {φs : List 𝓕.FieldOp}
 
   `(φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract`
 
-  The prove of this result ultimately a consequence of definitions.
+  The proof of this result ultimately is a consequence of definitions.
 -/
 @[simp]
 lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
@@ -53,7 +53,7 @@ lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   - `[anPart φ, φs[k]]ₛ` if `i ≤ k` or `[anPart φs[k], φ]ₛ` if `k < i`
   - `φsΛ.staticContract`.
 
-  The proof of this result ultimately a consequence of definitions.
+  The proof of this result ultimately is a consequence of definitions.
 -/
 lemma staticContract_insert_some
     (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
