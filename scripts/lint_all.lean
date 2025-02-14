@@ -15,6 +15,6 @@ def main (_: List String) : IO UInt32 := do
   let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
   println! importCheck.stdout
   println! "Lean linter ..."
-  let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "HepLean"]}
+  let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "PhysLean"]}
   println! leanCheck.stdout
   pure 0
