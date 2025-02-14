@@ -3,17 +3,17 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Meta.Informal.Post
+import PhysLean.Meta.Informal.Post
 import Mathlib.Lean.CoreM
 /-!
 
-# HepLean Stats
+# PhysLean Stats
 
-This file concerns with statistics of HepLean.
+This file concerns with statistics of PhysLean.
 
 -/
 
-open Lean System Meta HepLean
+open Lean System Meta PhysLean
 
 def getStats : MetaM String := do
   let noDefsVal ← noDefs
@@ -49,7 +49,7 @@ layout: default
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stats for HepLean</title>
+    <title>Stats for PhysLean</title>
      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
      <style>
         /* Style the progress bar to be wider and take up more space */
@@ -79,7 +79,7 @@ layout: default
 </head>
 <body>"
   let body := s!"
-<h1>Stats for HepLean</h1>
+<h1>Stats for PhysLean</h1>
 <h3>Number of Files 📄: {noImportsVal}</h3>
 <h3>Number of lines 💻: {noLinesVal}</h3>
 <h3>Number of Definitions (incl. instances): {noDefsVal - noInformalLemmasVal}</h3>
@@ -105,10 +105,10 @@ layout: default
 
 unsafe def main (args  : List String) : IO UInt32 := do
   let _ ← noImports
-  let statString ← CoreM.withImportModules #[`HepLean] (getStats).run'
+  let statString ← CoreM.withImportModules #[`PhysLean] (getStats).run'
   println! statString
   if "mkHTML" ∈ args then
-    let html ← CoreM.withImportModules #[`HepLean] (Stats.toHtml).run'
+    let html ← CoreM.withImportModules #[`PhysLean] (Stats.toHtml).run'
     let htmlFile : System.FilePath := {toString := "./docs/Stats.html"}
     IO.FS.writeFile htmlFile html
     IO.println (s!"HTML file made.")

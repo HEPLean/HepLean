@@ -1,5 +1,5 @@
 
-# Scripts associated with HepLean
+# Scripts associated with PhysLean
 
 ## lint-style.py and lint-style.sh
 
@@ -9,7 +9,7 @@ These are to be slowly replaced with code written in Lean.
 
 ## hepLean_style_lint
 
-Checks the following in HepLean
+Checks the following in PhysLean
 - There are no double empty lines.
 - There are no non-initial double spaces.
 Passing this linter is currently not required to pass CI on github.
@@ -21,7 +21,7 @@ lake exe hepLean_style_lint
 
 ## check_file_imports.lean
 
-Checks all files are correctly imported into `HepLean.lean`.
+Checks all files are correctly imported into `PhysLean.lean`.
 
 Run using
 ```
@@ -39,7 +39,7 @@ lake exe type_former_lint
 
 ## stats.sh
 
-Outputs statistics for HepLean.
+Outputs statistics for PhysLean.
 
 Run using
 ```
@@ -61,7 +61,7 @@ Run on a specific file using
 ```
 lake exe openAI_doc_check <module_name>
 ```
-where `<module_name>` is e.g. `HepLean.SpaceTime.Basic`.
+where `<module_name>` is e.g. `PhysLean.SpaceTime.Basic`.
 
 Run on a random file using
 ```
@@ -70,7 +70,7 @@ lake exe openAI_doc_check random
 
 ## lint-all.sh
 
-Performs all linting checks on HepLean.
+Performs all linting checks on PhysLean.
 
 Run using
 ```
@@ -79,13 +79,13 @@ Run using
 
 ## Other useful commands
 
-- To build HepLean use
+- To build PhysLean use
 ```
 lake exe cache get
 lake build
 ```
 
-- To update HepLean's dependencies use
+- To update PhysLean's dependencies use
 ```
 lake update
 ```

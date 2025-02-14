@@ -9,7 +9,7 @@ import Lean
 
 # Check file imports
 
-This file checks that the imports in `HepLean.lean` are sorted and complete.
+This file checks that the imports in `PhysLean.lean` are sorted and complete.
 
 It can be run from the terminal using
 `lake exe check_file_imports`.
@@ -18,7 +18,7 @@ It can be run from the terminal using
 
 The functions
 
-`addModulesIn`, `expectedHepLeanImports`, and `checkMissingImports`
+`addModulesIn`, `expectedPhysLeanImports`, and `checkMissingImports`
 
 are adapted from `batteries.scripts.check_imports.lean` authored by Joe Hendrix.
 
@@ -39,11 +39,11 @@ partial def addModulesIn (recurse : Bool) (prev : Array Name) (root : Name := .a
       r := r.push (root.mkStr mod)
   pure r
 
-/-- Compute imports expected by `HepLean.lean` by looking at file structure. -/
-def expectedHepLeanImports : IO (Array Name) := do
+/-- Compute imports expected by `PhysLean.lean` by looking at file structure. -/
+def expectedPhysLeanImports : IO (Array Name) := do
   let mut needed := #[]
-  for top in ← FilePath.readDir "HepLean" do
-      let nm := `HepLean
+  for top in ← FilePath.readDir "PhysLean" do
+      let nm := `PhysLean
       let rootname := FilePath.withExtension top.fileName ""
       let root :=  nm.mkStr rootname.toString
       if ← top.path.isDir then
@@ -87,7 +87,7 @@ def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
       none)
   if nameArray.size ≠ 0  then
     let nameArraySort := nameArray.qsort (·.toString < ·.toString)
-    IO.print s!"Files are not imported add the following to the `HepLean` file: \n"
+    IO.print s!"Files are not imported add the following to the `PhysLean` file: \n"
     for name in nameArraySort do
       IO.print s!"import {name}\n"
     warned := true
@@ -95,16 +95,16 @@ def checkMissingImports (modData : ModuleData) (reqImports : Array Name) :
 
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let mods : Name := `HepLean
+  let mods : Name := `PhysLean
   let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do
         throw <| IO.userError s!"object file '{mFile}' of module {imp.module} does not exist"
   let (hepLeanMod, _) ← readModuleData mFile
-  let eHepLeanImports ← expectedHepLeanImports
+  let ePhysLeanImports ← expectedPhysLeanImports
   let sortedWarned ← arrayImportSorted hepLeanMod.imports
-  let warned ← checkMissingImports hepLeanMod eHepLeanImports
+  let warned ← checkMissingImports hepLeanMod ePhysLeanImports
   if (warned ∨ sortedWarned) then
-    throw <| IO.userError s!"The HepLean module is not sorted, or has missing imports."
+    throw <| IO.userError s!"The PhysLean module is not sorted, or has missing imports."
   IO.println s!"Import check complete."
   pure 0

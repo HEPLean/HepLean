@@ -1,5 +1,5 @@
-name = "HepLean"
-defaultTargets = ["HepLean"]
+name = "PhysLean"
+defaultTargets = ["PhysLean"]
 # -- Optional inclusion for LeanCopilot
 #moreLinkArgs = ["-L./.lake/packages/LeanCopilot/.lake/build/lib", "-lctranslate2"]
 
@@ -14,7 +14,7 @@ git = "https://github.com/leanprover/doc-gen4"
 rev = "v4.16.0"
 
 [[lean_lib]]
-name = "HepLean"
+name = "PhysLean"
 
 # -- Optional inclusion of llm. Needed for `openAI_doc_check`
 #[[require]]
@@ -34,7 +34,7 @@ name = "HepLean"
 #git = "https://github.com/lean-dojo/LeanCopilot.git"
 #rev = "v1.4.1"
 
-# lean_exe commands defined specifically for HepLean.
+# lean_exe commands defined specifically for PhysLean.
 
 [[lean_exe]]
 name = "check_file_imports"

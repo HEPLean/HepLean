@@ -8,9 +8,9 @@ import Mathlib.Tactic.Linter.TextBased
 import Batteries.Data.Array.Merge
 /-!
 
-# HepLean style linter
+# PhysLean style linter
 
-A number of linters on HepLean to enforce a consistent style.
+A number of linters on PhysLean to enforce a consistent style.
 
 There are currently not enforced at the GitHub action level.
 
@@ -27,10 +27,10 @@ Some of the linters here can be replaced by regex.
 open Lean System Meta
 
 /-- Given a list of lines, outputs an error message and a line number. -/
-def HepLeanTextLinter : Type := Array String → Array (String × ℕ × ℕ)
+def PhysLeanTextLinter : Type := Array String → Array (String × ℕ × ℕ)
 
 /-- Checks if there are two consecutive empty lines. -/
-def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
+def doubleEmptyLineLinter : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let pairLines := List.zip enumLines (List.tail! enumLines)
   let errors := pairLines.filterMap (fun ((lno1, l1), _, l2) ↦
@@ -40,7 +40,7 @@ def doubleEmptyLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
   errors.toArray
 
 /-- Checks if there is a double space in the line, which is not at the start. -/
-def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
+def doubleSpaceLinter : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     if String.containsSubstr l.trimLeft "  " then
@@ -52,7 +52,7 @@ def doubleSpaceLinter : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
-def longLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
+def longLineLinter : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     if l.length > 100 ∧ ¬ String.containsSubstr l "http" then
@@ -61,7 +61,7 @@ def longLineLinter : HepLeanTextLinter := fun lines ↦ Id.run do
   errors.toArray
 
 /-- Substring linter. -/
-def substringLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
+def substringLinter (s : String) : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     if String.containsSubstr l s then
@@ -73,7 +73,7 @@ def substringLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
-def endLineLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
+def endLineLinter (s : String) : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     if l.endsWith s then
@@ -82,7 +82,7 @@ def endLineLinter (s : String) : HepLeanTextLinter := fun lines ↦ Id.run do
   errors.toArray
 
 /-- Number of space at new line must be even. -/
-def numInitialSpacesEven : HepLeanTextLinter := fun lines ↦ Id.run do
+def numInitialSpacesEven : PhysLeanTextLinter := fun lines ↦ Id.run do
   let enumLines := (lines.toList.enumFrom 1)
   let errors := enumLines.filterMap (fun (lno, l) ↦
     let numSpaces := (l.takeWhile (· == ' ')).length
@@ -91,7 +91,7 @@ def numInitialSpacesEven : HepLeanTextLinter := fun lines ↦ Id.run do
     else none)
   errors.toArray
 
-structure HepLeanErrorContext where
+structure PhysLeanErrorContext where
   /-- The underlying `message`. -/
   error : String
   /-- The line number -/
@@ -101,14 +101,14 @@ structure HepLeanErrorContext where
   /-- The file path -/
   path : FilePath
 
-def printErrors (errors : Array HepLeanErrorContext) : IO Unit := do
+def printErrors (errors : Array PhysLeanErrorContext) : IO Unit := do
   for e in errors do
     IO.println (s!"error: {e.path}:{e.lineNumber}:{e.columnNumber}: {e.error}")
 
-def hepLeanLintFile (path : FilePath) : IO (Array HepLeanErrorContext) := do
+def hepLeanLintFile (path : FilePath) : IO (Array PhysLeanErrorContext) := do
   let lines ← IO.FS.lines path
   let allOutput := (Array.map (fun lint ↦
-    (Array.map (fun (e, n, c) ↦ HepLeanErrorContext.mk e n c path)) (lint lines)))
+    (Array.map (fun (e, n, c) ↦ PhysLeanErrorContext.mk e n c path)) (lint lines)))
     #[doubleEmptyLineLinter, doubleSpaceLinter, numInitialSpacesEven, longLineLinter,
     substringLinter ".-/", substringLinter " )",
     substringLinter "( ", substringLinter "=by", substringLinter "  def ",
@@ -120,7 +120,7 @@ def hepLeanLintFile (path : FilePath) : IO (Array HepLeanErrorContext) := do
 
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let mods : Name :=  `HepLean
+  let mods : Name :=  `PhysLean
   let imp : Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do

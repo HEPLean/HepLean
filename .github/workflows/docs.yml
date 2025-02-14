@@ -39,7 +39,7 @@ jobs:
         run: lake -Kenv=dev exe cache get || true
 
       - name: Build project
-        run: lake -Kenv=dev build HepLean
+        run: lake -Kenv=dev build PhysLean
 
       - name: make TODO list
         run : lake exe TODO_to_yml mkFile
@@ -72,13 +72,13 @@ jobs:
             .lake/build/doc/Std
             .lake/build/doc/Mathlib
             .lake/build/doc/declarations
-            !.lake/build/doc/declarations/declaration-data-HepLean*
+            !.lake/build/doc/declarations/declaration-data-PhysLean*
           key: MathlibDoc-${{ hashFiles('lake-manifest.json') }}
           restore-keys: |
             MathlibDoc-
 
       - name: Build documentation
-        run: lake -Kenv=dev build HepLean:docs
+        run: lake -Kenv=dev build PhysLean:docs
 
       - name: Copy documentation to `docs/docs`
         run: |

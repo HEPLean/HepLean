@@ -3,8 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Meta.Basic
-import HepLean.Meta.TODO.Basic
+import PhysLean.Meta.Basic
+import PhysLean.Meta.TODO.Basic
 import Mathlib.Lean.CoreM
 /-!
 
@@ -12,7 +12,7 @@ import Mathlib.Lean.CoreM
 
 -/
 
-open Lean System Meta HepLean
+open Lean System Meta PhysLean
 
 
 unsafe def getTodoInfo : MetaM (List todoInfo) := do
@@ -34,7 +34,7 @@ unsafe def todosToYAML : MetaM String := do
 
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let ymlString ← CoreM.withImportModules #[`HepLean] (todosToYAML).run'
+  let ymlString ← CoreM.withImportModules #[`PhysLean] (todosToYAML).run'
   println! ymlString
   let fileOut : System.FilePath := {toString := "./docs/_data/TODO.yml"}
   if "mkFile" ∈ args then
