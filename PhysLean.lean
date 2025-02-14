@@ -191,6 +191,7 @@ import PhysLean.Tensors.OverColor.Functors
 import PhysLean.Tensors.OverColor.Iso
 import PhysLean.Tensors.OverColor.Lift
 import PhysLean.Tensors.TensorSpecies.Basic
+import PhysLean.Tensors.TensorSpecies.Basis
 import PhysLean.Tensors.TensorSpecies.Contractions.Basic
 import PhysLean.Tensors.TensorSpecies.Contractions.Categorical
 import PhysLean.Tensors.TensorSpecies.Contractions.ContrMap

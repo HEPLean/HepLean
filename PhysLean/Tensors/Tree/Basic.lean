@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Tensors.TensorSpecies.Contractions.ContrMap
+import PhysLean.Tensors.TensorSpecies.Basis
 /-!
 
 # Tensor trees
@@ -289,6 +290,34 @@ lemma smul_mul_eq {T1 : TensorTree S c} {a b : S.k} (h : a = b) :
 lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.mk c)}
     (h : T1.tensor = t) : T1.tensor = (tensorNode t).tensor := by
   simpa using h
+
+/-!
+## Properties on basis.
+-/
+
+TODO "Fill in the other relationships between tensor trees and tensor basis."
+
+lemma tensorNode_tensorBasis_repr {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
+    (S.tensorBasis c).repr (tensorNode T).tensor = (S.tensorBasis c).repr T := rfl
+
+@[simp]
+lemma add_tensorBasis_repr (t1 t2 : TensorTree S c) :
+    (S.tensorBasis c).repr (add t1 t2).tensor = (S.tensorBasis c).repr t1.tensor +
+    (S.tensorBasis c).repr t2.tensor := by
+  rw [add_tensor]
+  simp
+
+@[simp]
+lemma smul_tensorBasis_repr {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
+    (S.tensorBasis c).repr (smul a T).tensor = a • (S.tensorBasis c).repr T.tensor := by
+  rw [smul_tensor]
+  simp
+
+@[simp]
+lemma neg_tensorBasis_repr (t : TensorTree S c) :
+    (S.tensorBasis c).repr (neg t).tensor = - (S.tensorBasis c).repr t.tensor := by
+  rw [neg_tensor]
+  simp
 
 /-!
 
