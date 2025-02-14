@@ -1,4 +1,5 @@
 
+![PhysLean](./docs/PhysLeanLogo.jpeg)
 [![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.github.io/HepLean/)
 [![](https://img.shields.io/badge/Get-Involved-green)](https://heplean.github.io/HepLean/#how-to-get-involved)
 [![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
