@@ -6,8 +6,8 @@ Authors: Joseph Tooby-Smith
 import Batteries.Lean.HashSet
 import Batteries.Data.String.Matcher
 import Lean
-import HepLean.Meta.AllFilePaths
-import HepLean.Meta.TransverseTactics
+import PhysLean.Meta.AllFilePaths
+import PhysLean.Meta.TransverseTactics
 /-!
 
 This file checks for non-terminating `simp` tactics which do not appear as `simp only`.

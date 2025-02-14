@@ -12,7 +12,7 @@ import LLM.GPT.Json
 import LLM.GPT.API
 /-!
 
-# HepLean OpenAI doc check
+# PhysLean OpenAI doc check
 
 This file uses the openAI API to check the doc strings of definitions and theorems in a
 Lean 4 file.
@@ -53,7 +53,7 @@ def main (args : List String) : IO UInt32 := do
   | some x => do
     let mut imp : Import := Import.mk x.toName false
     if x == "random" then
-      let mods : Name :=  `HepLean
+      let mods : Name :=  `PhysLean
       let imps :  Import := {module := mods}
       let mFile ← findOLean imps.module
       unless (← mFile.pathExists) do

@@ -3,18 +3,18 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import HepLean.Meta.Basic
-import HepLean.Meta.Remark.Properties
-import HepLean.Meta.Notes.ToHTML
+import PhysLean.Meta.Basic
+import PhysLean.Meta.Remark.Properties
+import PhysLean.Meta.Notes.ToHTML
 import Mathlib.Lean.CoreM
-import HepLean
+import PhysLean
 /-!
 
 # Extracting notes from Lean files
 
 -/
 
-open Lean System Meta HepLean
+open Lean System Meta PhysLean
 
 inductive NameStatus
   | complete : NameStatus
@@ -149,7 +149,7 @@ def perturbationTheory : Note where
     .name `FieldSpecification.wicks_theorem_context .incomplete,
     .p "In this note we walk through the important parts of the proof of the three versions of
       Wick's theorem for field operators containing carrying both fermionic and bosonic statitics,
-      as it appears in HepLean. Not every lemma or definition is covered here.
+      as it appears in PhysLean. Not every lemma or definition is covered here.
       The aim is to give just enough that the story can be understood.",
     .p "
      Before proceeding with the steps in the proof, we review some basic terminology
@@ -292,7 +292,7 @@ def perturbationTheory : Note where
 
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let ymlString ← CoreM.withImportModules #[`HepLean] (perturbationTheory.toYML).run'
+  let ymlString ← CoreM.withImportModules #[`PhysLean] (perturbationTheory.toYML).run'
   let fileOut : System.FilePath := {toString := "./docs/_data/perturbationTheory.yml"}
   IO.println (s!"YML file made.")
   IO.FS.writeFile fileOut ymlString

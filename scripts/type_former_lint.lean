@@ -11,7 +11,7 @@ import Lean
 
 This file checks that all definitions which form types start with a capital letter
 (or some non-latin character). This linter is not currently strictly enforced
-in HepLean.
+in PhysLean.
 
 
 -/
@@ -29,7 +29,7 @@ def IsUpperCamal (s : String) : Bool :=
 
 def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
-  let mods : Name :=  `HepLean
+  let mods : Name :=  `PhysLean
   let imp :  Import := {module := mods}
   let mFile ← findOLean imp.module
   unless (← mFile.pathExists) do
