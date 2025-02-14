@@ -66,7 +66,8 @@ def coordinateMultiLinearSingle {n : ℕ} (c : Fin n → S.C) (b : Π j, Fin (S.
  the coordinates with respect to the basis defined in `S`.
 -/
 def coordinateMultiLinear {n : ℕ} (c : Fin n → S.C) :
-    MultilinearMap S.k (fun i => S.FD.obj (Discrete.mk (c i))) ((Π j, Fin (S.repDim (c j))) → S.k) where
+    MultilinearMap S.k (fun i => S.FD.obj (Discrete.mk (c i)))
+    ((Π j, Fin (S.repDim (c j))) → S.k) where
   toFun t := fun b => coordinateMultiLinearSingle S c b t
   map_update_add' t i x y := by
     ext b
