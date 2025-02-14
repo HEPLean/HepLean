@@ -192,7 +192,6 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
   conv_lhs =>
     enter [2, 2, 2]
     rw [lift.map_tprod]
-
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
     ((lift.obj S.FD).map (mkIso _).hom).hom)
@@ -318,6 +317,18 @@ lemma tensorToVec_naturality_eqToHom_apply (c c1 : S.C) (h : c = c1)
     (S.FD.map (Discrete.eqToHom h)).hom ((S.tensorToVec c).hom.hom x) =
     (S.tensorToVec c1).hom.hom (((S.F.map (OverColor.mkIso (by rw [h])).hom).hom x)) :=
   forgetLiftAppCon_naturality_eqToHom_apply S.FD c c1 h x
+
+/-!
+
+## Lift
+
+-/
+
+
+def liftTensor {n : ℕ} {c : Fin n → S.C} {E : Type} [AddCommMonoid E] [Module S.k E]:
+    MultilinearMap S.k (fun i => S.FD.obj (Discrete.mk (c i))) E ≃ₗ[S.k]
+    (S.F.obj (OverColor.mk c) →ₗ[S.k] E) :=
+  PiTensorProduct.lift
 
 end TensorSpecies
 

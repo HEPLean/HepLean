@@ -191,6 +191,7 @@ import HepLean.Tensors.OverColor.Functors
 import HepLean.Tensors.OverColor.Iso
 import HepLean.Tensors.OverColor.Lift
 import HepLean.Tensors.TensorSpecies.Basic
+import HepLean.Tensors.TensorSpecies.Basis
 import HepLean.Tensors.TensorSpecies.Contractions.Basic
 import HepLean.Tensors.TensorSpecies.Contractions.Categorical
 import HepLean.Tensors.TensorSpecies.Contractions.ContrMap
