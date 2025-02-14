@@ -319,6 +319,19 @@ lemma tensorToVec_naturality_eqToHom_apply (c c1 : S.C) (h : c = c1)
     (S.tensorToVec c1).hom.hom (((S.F.map (OverColor.mkIso (by rw [h])).hom).hom x)) :=
   forgetLiftAppCon_naturality_eqToHom_apply S.FD c c1 h x
 
+/-!
+
+## Lift
+
+-/
+
+/-- The lift of a linear map `(S.F.obj (OverColor.mk c) →ₗ[S.k] E)` to a
+  multi-linear map from `fun i => S.FD.obj (Discrete.mk (c i))` (i.e. pure tensors) to `E`.  -/
+def liftTensor {n : ℕ} {c : Fin n → S.C} {E : Type} [AddCommMonoid E] [Module S.k E]:
+    MultilinearMap S.k (fun i => S.FD.obj (Discrete.mk (c i))) E ≃ₗ[S.k]
+    (S.F.obj (OverColor.mk c) →ₗ[S.k] E) :=
+  PiTensorProduct.lift
+
 end TensorSpecies
 
 end

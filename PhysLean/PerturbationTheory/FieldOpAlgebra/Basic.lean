@@ -72,7 +72,7 @@ lemma equiv_iff_exists_add (x y : FieldOpFreeAlgebra 𝓕) :
 
 /-- For a field specification `𝓕`, `ι` is defined as the projection
 
-`𝓕.FieldOpFreeAlgebra →ₐ[ℂ] FieldOpAlgebra 𝓕`
+`𝓕.FieldOpFreeAlgebra →ₐ[ℂ] 𝓕.FieldOpAlgebra`
 
 taking each element of `𝓕.FieldOpFreeAlgebra` to its equivalence class in `FieldOpAlgebra 𝓕`. -/
 def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
