@@ -25,6 +25,8 @@ noncomputable section
 namespace complexLorentzTensor
 open Fermion
 
+TODO "Move this file  from Lorentz.ComplexTensors to Lorentz.PauliMatrices -
+  there is no point having two folders for Pauli matrices."
 /-!
 
 ## Definitions.

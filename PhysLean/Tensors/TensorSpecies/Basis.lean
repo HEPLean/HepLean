@@ -227,7 +227,8 @@ lemma map_tensorBasis {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   simp only [basisVector, Functor.id_obj, mk_hom]
   congr
   funext i
-  simp [lift.discreteFunctorMapEqIso, congr]
+  simp only [mk_left, lift.discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom,
+    Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply, congr, Equiv.coe_fn_symm_mk]
   rw [FD_map_basis]
   exact OverColor.Hom.toEquiv_symm_apply σ i
 
