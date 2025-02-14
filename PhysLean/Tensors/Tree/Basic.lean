@@ -296,6 +296,7 @@ lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.m
 -/
 
 TODO "Fill in the other relationships between tensor trees and tensor basis."
+open TensorSpecies
 
 lemma tensorNode_tensorBasis_repr {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
     (S.tensorBasis c).repr (tensorNode T).tensor = (S.tensorBasis c).repr T := rfl
@@ -306,6 +307,43 @@ lemma add_tensorBasis_repr (t1 t2 : TensorTree S c) :
     (S.tensorBasis c).repr t2.tensor := by
   rw [add_tensor]
   simp
+
+@[simp]
+lemma perm_tensorBasis_repr_apply  {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} (t : TensorTree S c)
+    (b : Π j, Fin (S.repDim (c1 j))) :
+    (S.tensorBasis c1).repr (perm σ t).tensor b =
+    (S.tensorBasis c).repr t.tensor
+    (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ) b) := by
+  simp [perm_tensor]
+  let pb (t : S.F.obj (OverColor.mk c))
+      (hc : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) : Prop :=
+      ((S.tensorBasis c1).repr
+      ((ConcreteCategory.hom (S.F.map σ).hom) t)) b = (S.tensorBasis c).repr t
+      (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ) b)
+  change pb t.tensor (Basis.mem_span _ t.tensor)
+  apply Submodule.span_induction
+  · intro x h
+    simp only [Set.mem_range] at h
+    obtain ⟨x, rfl⟩ := h
+    simp only [OverColor.mk_hom, Basis.repr_self, pb]
+    rw [TensorBasis.map_tensorBasis]
+    simp only [OverColor.mk_hom, Basis.repr_self, pb]
+    rw [Finsupp.single_apply, Finsupp.single_apply]
+    congr 1
+    simp only [eq_iff_iff, pb]
+    apply Iff.intro
+    · intro h
+      rw [← h]
+      simp only [Equiv.apply_symm_apply, pb]
+    · intro h
+      rw [h]
+      simp
+  · simp only [OverColor.mk_hom, map_zero, Finsupp.coe_zero, Pi.zero_apply, pb]
+  · intro x y hx hy
+    simp_all [pb]
+  · intro x hx a
+    simp_all [pb]
 
 @[simp]
 lemma smul_tensorBasis_repr {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :

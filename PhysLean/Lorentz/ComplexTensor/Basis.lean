@@ -33,6 +33,9 @@ open Fermion
 noncomputable section
 namespace complexLorentzTensor
 
+TODO "Replace basisVector in this file with TensorSpecies.tensorBasis.
+  All of the results here should be generalized to TensorSpecies.tensorBasis."
+
 /-- Basis vectors for complex Lorentz tensors. -/
 def basisVector {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
