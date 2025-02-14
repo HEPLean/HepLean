@@ -34,7 +34,7 @@ name = "PhysLean"
 #git = "https://github.com/lean-dojo/LeanCopilot.git"
 #rev = "v1.4.1"
 
-# lean_exe commands defined specifically for HepLean.
+# lean_exe commands defined specifically for PhysLean.
 
 [[lean_exe]]
 name = "check_file_imports"

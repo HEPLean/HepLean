@@ -31,7 +31,7 @@ jobs:
         run: |
           lake exe cache get
 
-      - name: build HepLean
+      - name: build PhysLean
         id: build
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
@@ -43,13 +43,13 @@ jobs:
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
 
-      - name: runLinter on HepLean
+      - name: runLinter on PhysLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: gcc
-          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter HepLean
+          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
 
   style_lint:
     name: Python based style linter

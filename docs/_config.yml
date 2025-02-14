@@ -18,10 +18,10 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: "HepLean: Digitalizing High-Energy Physics in Lean 4"
+title: "PhysLean: Digitalizing Physics in Lean 4"
 #email: HEPLean
 description: >- # this means to ignore newlines until "baseurl:"
-  A project to digitalize results from high-energy physics into Lean 4.
+  A project to digitalize results from physics into Lean 4.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://heplean.com" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
