@@ -102,6 +102,12 @@ instance : Group S.G := S.G_group
 /-- The field `repDim` of a `TensorSpecies` is non-zero for all colors. -/
 instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 
+lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
+    (S.FD.map (Discrete.eqToHom h)).hom.hom (S.basis c i)
+    = S.basis c1 (Fin.cast (by simp [h]) i) := by
+  subst h
+  simp
+
 /-- The lift of the functor `S.F` to functor. -/
 def F : Functor (OverColor S.C) (Rep S.k S.G) := ((OverColor.lift).obj S.FD).toFunctor
 

@@ -14,12 +14,12 @@ open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
-noncomputable section
 
 namespace TensorSpecies
 open OverColor
 
 variable (S : TensorSpecies)
+noncomputable section
 
 /--
  The multi-linear map from `(fun i => S.FD.obj (Discrete.mk (c i)))` to `S.k` giving
@@ -172,10 +172,65 @@ def tensorBasis {n : ℕ} (c : Fin n → S.C) :
     (S.coordinate_fromCoordinate_left_inv c) (S.coordinate_fromCoordinate_right_inv c)).trans
     (Finsupp.linearEquivFunOnFinite S.k S.k ((j : Fin n) → Fin (S.repDim (c j)))).symm
 
-TODO "It is probably benifical to define a type `Coord` as
-  `(Π (j : Fin n), Fin (S.repDim (c j)))` and define properties, such as join,
-  map etc."
-
-end TensorSpecies
+lemma tensorBasis_eq_basisVector {n : ℕ} (c : Fin n → S.C) (b : Π j, Fin (S.repDim (c j))) :
+    S.tensorBasis c b = S.basisVector c b := by
+  simp [tensorBasis]
+  change (S.fromCoordinates _) _ = _
+  simp only [fromCoordinates, LinearMap.coe_mk, AddHom.coe_mk]
+  rw [Finset.sum_eq_single b]
+  · simp
+  · intro b' hb
+    simp_all only [Finset.mem_univ, ne_eq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul,
+      implies_true]
+  · simp
 
 end
+
+
+namespace TensorBasis
+
+variable {S : TensorSpecies}
+
+/-- The equivalence between the indexing set of basis of Lorentz tensors
+  induced by an equivalence on indices. -/
+def congr {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (σ  : Fin n ≃ Fin m)
+    (h :  ∀ i, c i = c1 (σ i)) :
+    (Π j, Fin (S.repDim (c1 j))) ≃ Π j, Fin (S.repDim (c j)) where
+  toFun b := fun i => Fin.cast (congrArg S.repDim (h i).symm) (b (σ i))
+  invFun b := fun i => Fin.cast (congrArg S.repDim (by simp [h])) (b (σ.symm i))
+  left_inv b := by
+    funext i
+    ext
+    simp only [Fin.cast_trans, Fin.coe_cast]
+    congr
+    · exact Equiv.apply_symm_apply σ i
+    · exact Equiv.apply_symm_apply σ i
+  right_inv b := by
+    funext i
+    ext
+    simp only [Fin.cast_trans, Fin.coe_cast]
+    congr
+    · exact Equiv.symm_apply_apply σ i
+    · exact Equiv.symm_apply_apply σ i
+
+lemma map_tensorBasis {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)}
+    (b : Π j, Fin (S.repDim (c j))) :
+    (S.F.map σ).hom.hom (S.tensorBasis c b) =
+    S.tensorBasis c1 ((congr (OverColor.Hom.toEquiv σ)
+    (OverColor.Hom.toEquiv_comp_apply σ)).symm b) := by
+  rw [tensorBasis_eq_basisVector, basisVector]
+  simp only [F_def]
+  erw [lift.objMap'_tprod]
+  erw [tensorBasis_eq_basisVector]
+  simp only [basisVector, Functor.id_obj, mk_hom]
+  congr
+  funext i
+  simp [lift.discreteFunctorMapEqIso, congr]
+  rw [FD_map_basis]
+  exact OverColor.Hom.toEquiv_symm_apply σ i
+
+end TensorBasis
+
+end TensorSpecies
