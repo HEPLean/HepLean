@@ -175,7 +175,8 @@ lemma toDualRep_fromDualRep_tensorTree_unitTensor (c : S.C) (x : S.FD.obj (Discr
       rfl) (by
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
         OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, Function.comp_apply,
-        PhysLean.Fin.finMapToEquiv_symm_apply, Matrix.cons_val_zero, OverColor.extractOne_homToEquiv,
+        PhysLean.Fin.finMapToEquiv_symm_apply, Matrix.cons_val_zero,
+        OverColor.extractOne_homToEquiv,
         permProdRight_toEquiv, OverColor.equivToHomEq_toEquiv, Equiv.symm_trans_apply,
         Equiv.symm_symm, Equiv.sumCongr_symm, Equiv.refl_symm, Equiv.sumCongr_apply, Equiv.coe_refl,
         PhysLean.Fin.finExtractOnePerm_symm_apply, Equiv.trans_apply, Equiv.symm_apply_apply,
@@ -196,7 +197,8 @@ lemma toDualRep_fromDualRep_tensorTree_unitTensor (c : S.C) (x : S.FD.obj (Discr
     OverColor.extractTwo_hom_left_apply, Equiv.symm_apply_apply, Sum.map_map, CompTriple.comp_eq,
     Equiv.self_comp_symm, Sum.map_id_id, Equiv.apply_symm_apply,
     PhysLean.Fin.finExtractOne_symm_inr_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one,
-    PhysLean.Fin.finExtractOnePerm_apply, Function.comp_apply, PhysLean.Fin.finMapToEquiv_symm_apply,
+    PhysLean.Fin.finExtractOnePerm_apply, Function.comp_apply,
+    PhysLean.Fin.finMapToEquiv_symm_apply,
     Matrix.cons_val_zero]
 
 lemma toDualRep_fromDualRep_tensorTree (c : S.C) (x : S.FD.obj (Discrete.mk c)) :

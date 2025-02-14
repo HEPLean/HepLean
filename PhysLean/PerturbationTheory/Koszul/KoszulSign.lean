@@ -103,7 +103,8 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     trans koszulSign q le (φ1 :: φs) * koszulSignInsert q le φ (φ1 :: φs)
     ring
     simp only [insertionSortEquiv, List.length_cons, Nat.succ_eq_add_one, List.insertionSort,
-      orderedInsertEquiv, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, PhysLean.Fin.equivCons_trans,
+      orderedInsertEquiv, OrderIso.toEquiv_symm, Fin.symm_castOrderIso,
+      PhysLean.Fin.equivCons_trans,
       Equiv.trans_apply, PhysLean.Fin.equivCons_zero, PhysLean.Fin.finExtractOne_apply_eq,
       Fin.isValue, PhysLean.Fin.finExtractOne_symm_inl_apply, RelIso.coe_fn_toEquiv,
       Fin.castOrderIso_apply, Fin.cast_mk, Fin.eta]

@@ -63,7 +63,8 @@ lemma contrFin1Fin1_inv_tmul {n : ℕ} (c : Fin n.succ.succ → S.C)
     Action.instMonoidalCategory_tensorHom_hom, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     ModuleCat.hom_comp, mk_left, Functor.id_obj, mk_hom, Fin.isValue]
-  change (S.F.map (OverColor.mkSum ((c ∘ ⇑(PhysLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
+  change (S.F.map (OverColor.mkSum ((c ∘
+    ⇑(PhysLean.Fin.finExtractTwo i j).symm) ∘ Sum.inl)).inv).hom
     ((S.F.map ((OverColor.mkIso _).hom ⊗ (OverColor.mkIso _).hom)).hom
       ((Functor.LaxMonoidal.μ S.F (OverColor.mk fun _ => c i) (OverColor.mk fun _ => S.τ (c i))).hom
         ((((OverColor.forgetLiftApp S.FD (c i)).inv.hom x) ⊗ₜ[S.k]
