@@ -11,8 +11,11 @@ import Mathlib.Analysis.Complex.Basic
 
 namespace PhysLean
 
+/-- Rational complex numbers. This type is mainly used when decidability is needed. -/
 structure RatComplexNum where
+  /-- The real part of a `RatComplexNum`. -/
   fst : ℚ
+  /-- The imaginary part of a `RatComplexNum`. -/
   snd : ℚ
 
 namespace RatComplexNum
@@ -25,6 +28,7 @@ lemma ext {x y : RatComplexNum} (h1 : x.1 = y.1) (h2 : x.2 = y.2) : x = y := by
   subst h1 h2
   rfl
 
+/-- The equivalence as a type of `RatComplexNum` with `ℚ × ℚ`. -/
 def equivToProd : RatComplexNum ≃ ℚ × ℚ where
   toFun := fun x => (x.1, x.2)
   invFun := fun x => ⟨x.1, x.2⟩
@@ -201,12 +205,13 @@ lemma zero_snd : (0 : RatComplexNum).snd = 0 := rfl
 
 open Complex
 
+/-- The inclusion of `RatComplexNum` into the complex numbers. -/
 noncomputable def toComplexNum : RatComplexNum →+* ℂ where
   toFun := fun x => x.fst + x.snd * I
   map_one' := by
     simp
   map_add' a b := by
-    simp
+    simp only [add_fst, Rat.cast_add, add_snd]
     ring
   map_mul' a b := by
     simp only [mul_fst, Rat.cast_sub, Rat.cast_mul, mul_snd, Rat.cast_add]

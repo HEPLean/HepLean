@@ -22,6 +22,10 @@ open PhysLean
 
 variable (S : TensorSpecies)
 
+/--A complex Lorentz tensor from a map
+  `(Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum`. All
+  complex Lorentz tensors with rational coefficents with respect to the basis are of this
+  form. -/
 noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) :
     complexLorentzTensor.F.obj (OverColor.mk c) :=
@@ -43,13 +47,13 @@ lemma tensorBasis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
     complexLorentzTensor.tensorBasis c b
     = ofRat (fun b' => if b = b' then ⟨1, 0⟩ else ⟨0, 0⟩) := by
   apply (complexLorentzTensor.tensorBasis c).repr.injective
-  simp
+  simp only [Basis.repr_self]
   ext b'
-  simp
+  simp only [ofRat_tensorBasis_repr_apply]
   rw [Finsupp.single_apply, toComplexNum]
-  simp
+  simp only [RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk]
   split
-  simp
+  simp only [Rat.cast_one, Rat.cast_zero, zero_mul, add_zero]
   simp
 
 lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}

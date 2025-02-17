@@ -220,6 +220,10 @@ def congr {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     · exact Equiv.symm_apply_apply σ i
     · exact Equiv.symm_apply_apply σ i
 
+/-- The equivalence between the coordinate parameters
+  `(Π j, Fin (S.repDim (Sum.elim c c1 j)))` and
+  `(Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j)))` formed by
+  splitting up based on `j`. -/
 def elimEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} :
     (Π j, Fin (S.repDim (Sum.elim c c1 j))) ≃
     (Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j))) where
@@ -233,6 +237,10 @@ def elimEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} :
   right_inv b := by
     simp
 
+/-- The equivalence between the coordinate parameters
+  `(Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j))))` and
+  `(Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j)))` formed by
+  splitting up based on `j`. -/
 def prodEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} :
     (Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j)))) ≃
     (Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j))) :=
@@ -282,9 +290,9 @@ lemma tensorBasis_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
         (Equiv.symm_apply_eq finSumFinEquiv).mp hj
       subst hi
       congr
-      simp
+      simp only [finSumFinEquiv_apply_left]
       ext
-      simp
+      simp only [Fin.val_natCast, Fin.coe_cast]
       refine Nat.mod_eq_of_lt ?_
       simpa using (b (Fin.castAdd m j)).2
     | Sum.inr j =>
@@ -293,9 +301,9 @@ lemma tensorBasis_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
         (Equiv.symm_apply_eq finSumFinEquiv).mp hj
       subst hi
       congr
-      simp
+      simp only [finSumFinEquiv_apply_right]
       ext
-      simp
+      simp only [Fin.val_natCast, Fin.coe_cast]
       refine Nat.mod_eq_of_lt ?_
       simpa using (b (Fin.natAdd n j)).2
   have hj := hj (finSumFinEquiv.symm i) rfl
@@ -304,7 +312,7 @@ lemma tensorBasis_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   exact Eq.symm (Fin.cast_val_eq_self (b i))
   congr
   funext i
-  simp
+  simp only [prodEquiv_apply_fst]
   funext i
   simp
 
@@ -325,7 +333,7 @@ lemma map_tensorBasis {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   rw [FD_map_basis]
   exact OverColor.Hom.toEquiv_symm_apply σ i
 
-def contrMap_tensorBasis {n : ℕ} {c : Fin n.succ.succ → S.C}
+lemma contrMap_tensorBasis {n : ℕ} {c : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)}
     (b : Π j, Fin (S.repDim (c j))) :
     (S.contrMap c i j h).hom (S.tensorBasis c b) =
@@ -344,6 +352,9 @@ def contrMap_tensorBasis {n : ℕ} {c : Fin n.succ.succ → S.C}
     congr 2
     exact FD_map_basis S h (b (i.succAbove j))
 
+/-- Given a coordinate parameter
+  `b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))`, the
+  coordinate parameter `Π k, Fin (S.repDim (c k))` which map down to `b`. -/
 def ContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) :
@@ -353,7 +364,6 @@ def ContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
 end TensorBasis
 open TensorBasis
 
-@[simp]
 lemma pairIsoSep_tensorBasis_repr {c c1 : S.C}
     (t : (S.FD.obj { as := c } ⊗ S.FD.obj { as := c1 }).V)
     (b : ((j : Fin (Nat.succ 0).succ) → Fin (S.repDim (![c, c1] j)))) :
@@ -374,7 +384,8 @@ lemma pairIsoSep_tensorBasis_repr {c c1 : S.C}
       right
       erw [Discrete.pairIsoSep_tmul]
     erw [tensorBasis_repr_tprod]
-    simp
+    simp only [Nat.reduceAdd, Nat.succ_eq_add_one, mk_hom, Fin.prod_univ_two, Fin.isValue,
+      Matrix.cons_val_zero, Fin.cases_zero, Matrix.cons_val_one, Matrix.head_cons, P]
     rw [mul_comm]
     rfl
   · intro x y hx hy

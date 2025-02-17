@@ -19,6 +19,8 @@ open OverColor
 
 variable (S : TensorSpecies)
 
+/-- A tensor from a `(Π j, Fin (S.repDim (c j))) → ℤ`. All tensors
+  which have integer coefficents with respect to `tensorBasis` are of this form. -/
 noncomputable def tensorOfInt {n : ℕ} {c : Fin n → S.C}
     (f : (Π j, Fin (S.repDim (c j))) → ℤ) :
     S.F.obj (OverColor.mk c) :=
@@ -38,9 +40,9 @@ lemma tensorBasis_eq_ofInt {n : ℕ} {c : Fin n → S.C}
     S.tensorBasis c b
     = S.tensorOfInt (fun b' => if b = b' then 1 else 0) := by
   apply (S.tensorBasis c).repr.injective
-  simp
+  simp only [Basis.repr_self]
   ext b'
-  simp
+  simp only [tensorOfInt_tensorBasis_repr_apply, Int.cast_ite, Int.cast_one, Int.cast_zero]
   rw [Finsupp.single_apply]
 
 end TensorSpecies

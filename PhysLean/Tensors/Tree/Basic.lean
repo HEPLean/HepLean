@@ -335,20 +335,22 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
       simp at ht ht1
       obtain ⟨b1, rfl⟩ := ht
       obtain ⟨b2, rfl⟩ := ht1
-      simp [Pt, P]
+      simp only [Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
+        Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj, Basis.repr_self, Pt, P]
       trans (S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr
         (S.tensorBasis (Sum.elim c c1 ∘ finSumFinEquiv.symm)
         (TensorBasis.prodEquiv.symm (b1, b2))) b
       · congr 2
         rw [TensorBasis.tensorBasis_prod]
         simp
-      simp
+      simp only [Function.comp_apply, Basis.repr_self, Pt, P]
       rw [MonoidAlgebra.single_apply, MonoidAlgebra.single_apply, MonoidAlgebra.single_apply]
       obtain ⟨b, rfl⟩ := TensorBasis.prodEquiv.symm.surjective b
-      simp
+      simp only [EmbeddingLike.apply_eq_iff_eq, Equiv.apply_symm_apply, mul_ite, mul_one, mul_zero]
       match b with
       | (b1', b2') =>
-        simp
+        simp only [Prod.mk.injEq]
         simp_all only [Set.mem_range, exists_apply_eq_apply]
         obtain ⟨fst, snd⟩ := b
         split
@@ -385,7 +387,6 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
       Pi.smul_apply, smul_eq_mul, P]
     ring
 
-@[simp]
 lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : Fin (n + 1 + 1)}
     {j : Fin (n + 1)} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
     (b : Π k, Fin (S.repDim (c (i.succAbove (j.succAbove k))))) :
@@ -408,23 +409,27 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
   change P t.tensor (Basis.mem_span _ t.tensor)
   apply Submodule.span_induction
   · intro t ht
-    simp at ht
+    simp only [Set.mem_range] at ht
     obtain ⟨b', rfl⟩ := ht
     simp [P]
     rw [TensorBasis.contrMap_tensorBasis]
-    simp
+    simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
+      Nat.succ_eq_add_one, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj,
+      Discrete.functor_obj_eq_as, Function.comp_apply, map_smul, Basis.repr_self,
+      Finsupp.smul_single, smul_eq_mul, mul_one, P]
     by_cases hb : b' ∈ TensorBasis.ContrSection b
     · rw [Finsupp.single_apply]
       rw [Finset.sum_eq_single ⟨b', hb⟩]
       rw [TensorBasis.ContrSection] at hb
       simp at hb
-      simp [hb]
+      simp only [hb, ↓reduceIte, Finsupp.single_eq_same, one_mul, P]
       rfl
       intro b'' hb'' hbb''
       rw [Finsupp.single_apply]
       have hx := Subtype.eq_iff.mpr.mt hbb''
-      simp at hx
-      simp
+      simp only [P] at hx
+      simp only [ite_mul, one_mul, zero_mul, ite_eq_right_iff, P]
       exact fun a => False.elim (hx (id (Eq.symm a)))
       simp
     · rw [Finsupp.single_apply]
@@ -433,12 +438,13 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
       intro x hx
       rw [Finsupp.single_apply]
       rw [if_neg]
-      simp
+      simp only [zero_mul, P]
       by_contra hxb
       subst hxb
-      simp_all
+      simp_all only [Finset.mem_attach, Set.mem_range, exists_apply_eq_apply, Nat.succ_eq_add_one,
+        Finset.coe_mem, not_true_eq_false, P]
       rw [funext_iff]
-      simp
+      simp only [not_forall, P]
       simpa [TensorBasis.ContrSection] using hb
   · simp [P]
   · intro x y hx hy hP1 hP2
