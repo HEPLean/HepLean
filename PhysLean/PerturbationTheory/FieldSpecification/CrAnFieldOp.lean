@@ -83,7 +83,7 @@ As an example, if `f` corresponds to a Weyl-fermion field, it would contribute
 - For each each Lorentz
   index `a`, an element corresponding to the creation part of a position operator:
 
-  `∑ s, ∫ d³p/(…) (xₐ (p,s)  a(p, s) e ^ (-i p x))`.
+  `∑ s, ∫ d³p/(…) (xₐ (p,s) a(p, s) e ^ (-i p x))`.
 - For each each Lorentz
   index `a`,an element corresponding to annihilation part of a position operator:
 
@@ -106,7 +106,7 @@ lemma crAnFieldOpToFieldOp_prod (s : 𝓕.FieldOp) (t : 𝓕.fieldOpToCrAnType s
   field operator.
 
 otherwise it takes `φ` to `annihilate`.
- -/
+-/
 def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
   | ⟨FieldOp.inAsymp _, _⟩ => CreateAnnihilate.create
   | ⟨FieldOp.position _, CreateAnnihilate.create⟩ => CreateAnnihilate.create

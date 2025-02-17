@@ -65,6 +65,51 @@ lemma pauliContr_in_basis : {pauliContr | μ α β}ᵀ.tensor =
     | (1 : Fin 3) => rfl
     | (2 : Fin 3) => rfl
 
+lemma pauliContr_tensorBasis : pauliContr =
+    complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 0 | 1 => 1 | 2 => 1)
+    + complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    + complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 1 | 1 => 1 | 2 => 0)
+    - I • complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    + I • complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 2 | 1 => 1 | 2 => 0)
+    + complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    - complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
+      (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  trans {pauliContr | μ α β}ᵀ.tensor
+  · simp
+  rw [pauliContr_in_basis]
+  simp [basisVector_eq_tensorBasis]
+
+lemma pauliContr_ofRat : pauliContr = ofRat (fun b =>
+    if b = (fun | (0 : Fin 3) => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, -1⟩ else
+    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, 1⟩ else
+    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨-1, 0⟩ else 0) := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [pauliContr_tensorBasis]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, map_neg,
+    Finsupp.coe_add, Finsupp.coe_neg, Pi.add_apply, Pi.neg_apply, cons_val_zero, cons_val_one,
+    head_cons]
+  repeat rw [tensorBasis_eq_ofRat]
+  simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
+    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+  simp only [Fin.isValue, ← map_add, ← map_sub]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  with_unfolding_all decide
+
 lemma pauliContr_basis_expand_tree : {pauliContr | μ α β}ᵀ.tensor =
     (TensorTree.add (tensorNode
       (basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0))) <|
@@ -542,6 +587,45 @@ lemma pauliCo_basis_expand : pauliCo
     rw [pauliMatrix_contr_down_3]
   simp only [neg_smul, one_smul]
   abel
+
+lemma pauliCo_tensorBasis : pauliCo =
+    complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 0 | 1 => 1 | 2 => 1)
+    - complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    - complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 1 | 1 => 1 | 2 => 0)
+    + I • complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    - I • complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 2 | 1 => 1 | 2 => 0)
+    - complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    + complexLorentzTensor.tensorBasis pauliCoMap (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  rw [pauliCo_basis_expand]
+  simp [basisVector_eq_tensorBasis]
+
+set_option maxRecDepth 1000
+lemma pauliCo_ofRat : pauliCo = ofRat (fun b =>
+    if b = (fun | (0 : Fin 3) => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
+    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨-1, 0⟩ else
+    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨-1, 0⟩ else
+    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, 1⟩ else
+    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, -1⟩ else
+    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨-1, 0⟩ else
+    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else ⟨0, 0⟩) := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [pauliCo]
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp [coMetric_eq_ofRat, pauliContr_ofRat]
+    erw [← _root_.map_mul]
+    erw [contr_basis_ratComplexNum]
+    erw [← _root_.map_mul]
+  rw [← map_sum]
+  rw [ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  with_unfolding_all decide
 
 lemma pauliCo_basis_expand_tree : {pauliCo | μ α β}ᵀ.tensor
     = (TensorTree.add (tensorNode

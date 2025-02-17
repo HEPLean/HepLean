@@ -174,8 +174,7 @@ def ε : 𝟙_ (Rep k G) ≅ objObj' F (𝟙_ (OverColor C)) :=
     simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorUnit_left,
       OverColor.instMonoidalCategoryStruct_tensorUnit_hom,
       Action.instMonoidalCategory_tensorUnit_V, Action.tensorUnit_ρ', Functor.id_obj,
-      Category.id_comp, LinearEquiv.coe_coe,
-       ModuleCat.comp_apply]
+      Category.id_comp, LinearEquiv.coe_coe, ModuleCat.comp_apply]
     rw [ModuleCat.hom_comp, ModuleCat.hom_comp]
     simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorUnit_left,
       instMonoidalCategoryStruct_tensorUnit_hom, LinearEquiv.toModuleIso_hom, ModuleCat.hom_ofHom,
@@ -338,7 +337,7 @@ lemma μ_natural_right {X Y : OverColor C} (X' : OverColor C) (f : X ⟶ Y) :
   rw [objMap'_tprod]
   rw [ModuleCat.Hom.hom, ConcreteCategory.hom]
   simp only [ModuleCat.instConcreteCategoryLinearMapIdCarrier, LinearMap.coe_comp,
-     Function.comp_apply]
+    Function.comp_apply]
   conv_lhs =>
     right
     change (PiTensorProduct.tprod k) p ⊗ₜ[k] (objMap' F f).hom ((PiTensorProduct.tprod k) q)
@@ -843,7 +842,7 @@ def forgetLiftApp (c : C) : (lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) => c
     refine LinearMap.ext (fun x => ?_)
     rw [ModuleCat.Hom.hom, ConcreteCategory.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
     simp only [ModuleCat.instConcreteCategoryLinearMapIdCarrier, LinearMap.coe_comp,
-     Function.comp_apply]
+      Function.comp_apply]
     simp only [forgetLiftAppV, Fin.isValue]
     refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
       simp_rw [map_add, hx, hy]

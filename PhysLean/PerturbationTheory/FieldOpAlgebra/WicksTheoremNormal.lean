@@ -112,7 +112,7 @@ For a list `φs` of `𝓕.FieldOp`, then `𝓣(φs)` is equal to the sum of
 
 - `∑ φsΛ, φsΛ.wickTerm` where the sum is over all Wick contraction `φsΛ` which have
   no contractions of equal time.
-- `∑ φsΛ, φsΛ.sign • φsΛ.timeContract  * (∑ φssucΛ, φssucΛ.wickTerm)`, where
+- `∑ φsΛ, φsΛ.sign • φsΛ.timeContract * (∑ φssucΛ, φssucΛ.wickTerm)`, where
   the first sum is over all Wick contraction `φsΛ` which only have equal time contractions
   and the second sum is over all Wick contraction `φssucΛ` of the uncontracted elements of `φsΛ`
   which do not have any equal time contractions.

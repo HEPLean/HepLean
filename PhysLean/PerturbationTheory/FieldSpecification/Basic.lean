@@ -88,7 +88,7 @@ As an example, if `f` corresponds to a Weyl-fermion field, then
 - `position f e x`, `e` would correspond to a Lorentz index `a`, and `position f e x` would,
   once represented in the operator algebra, be proportional to the operator
 
-  `∑ s, ∫ d³p/(…) (xₐ(p,s)  a(p, s) e ^ (-i p x) + yₐ(p,s) a†(p, s) e ^ (-i p x))`.
+  `∑ s, ∫ d³p/(…) (xₐ(p,s) a(p, s) e ^ (-i p x) + yₐ(p,s) a†(p, s) e ^ (-i p x))`.
 
 - `outAsymp f e p`, `e` would correspond to a spin `s`, and `outAsymp f e p` would,
   once represented in the operator algebra, be proportional to the

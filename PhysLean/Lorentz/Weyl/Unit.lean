@@ -157,7 +157,7 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
     simp
 
 lemma rightAltRightUnit_apply_one : rightAltRightUnit.hom (1 : ℂ) = rightAltRightUnitVal := by
-  change (1 : ℂ) • rightAltRightUnitVal  = rightAltRightUnitVal
+  change (1 : ℂ) • rightAltRightUnitVal = rightAltRightUnitVal
   simp only [rightAltRightUnit, one_smul]
 
 /-- The alt-right-right unit `δ_{dot a}^{dot a}` as an element of

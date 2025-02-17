@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Lorentz.ComplexTensor.Metrics.Basis
 import PhysLean.Lorentz.ComplexTensor.Units.Basic
+import PhysLean.Tensors.TensorSpecies.OfInt
 /-!
 
 ## Basic lemmas regarding metrics
@@ -32,28 +33,78 @@ namespace complexLorentzTensor
 -/
 
 /-- The covariant metric is symmetric `{η' | μ ν = η' | ν μ}ᵀ`. -/
-informal_lemma coMetric_symm where
-  deps := [``coMetric]
+lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coMetric_eq_ofRat, Fin.isValue, cons_val_zero,
+    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-- The contravariant metric is symmetric `{η | μ ν = η | ν μ}ᵀ`. -/
-informal_lemma contrMetric_symm where
-  deps := [``contrMetric]
+lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, contrMetric_eq_ofRat, Fin.isValue, cons_val_zero,
+    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-- The left metric is antisymmetric `{εL | α α' = - εL | α' α}ᵀ`. -/
-informal_lemma leftMetric_antisymm where
-  deps := [``leftMetric]
+lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, leftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
+    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+  simp only [Fin.isValue, ← map_neg]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-- The right metric is antisymmetric `{εR | β β' = - εR | β' β}ᵀ`. -/
-informal_lemma rightMetric_antisymm where
-  deps := [``rightMetric]
+lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, rightMetric_eq_ofRat, Fin.isValue, cons_val_zero,
+    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+  simp only [Fin.isValue, ← map_neg]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-- The alt-left metric is antisymmetric `{εL' | α α' = - εL' | α' α}ᵀ`. -/
-informal_lemma altLeftMetric_antisymm where
-  deps := [``altLeftMetric]
+lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
+    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+  simp only [Fin.isValue, ← map_neg]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-- The alt-right metric is antisymmetric `{εR' | β β' = - εR' | β' β}ᵀ`. -/
-informal_lemma altRightMetric_antisymm where
-  deps := [``altRightMetric]
+lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightMetric_eq_ofRat, Fin.isValue,
+    cons_val_zero, cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
+    perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+  simp only [Fin.isValue, ← map_neg]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide
 
 /-!
 

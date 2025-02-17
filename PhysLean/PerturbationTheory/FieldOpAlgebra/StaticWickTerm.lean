@@ -41,7 +41,7 @@ lemma staticWickTerm_empty_nil :
 
 /--
 For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, and an element `φ` of
-  `𝓕.FieldOp`, then  `(φsΛ ↩Λ φ 0 none).staticWickTerm` is equal to
+  `𝓕.FieldOp`, then `(φsΛ ↩Λ φ 0 none).staticWickTerm` is equal to
 
 `φsΛ.sign • φsΛ.staticWickTerm * 𝓝(φ :: [φsΛ]ᵘᶜ)`
 
@@ -118,7 +118,7 @@ holds
 
 `φ * φsΛ.staticWickTerm = ∑ k, (φsΛ ↩Λ φ 0 k).staticWickTerm`
 
-where the sum is over all `k` in `Option φsΛ.uncontracted`,  so `k` is either `none` or `some k`.
+where the sum is over all `k` in `Option φsΛ.uncontracted`, so `k` is either `none` or `some k`.
 
 The proof proceeds as follows:
 - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
