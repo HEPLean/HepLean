@@ -308,6 +308,146 @@ lemma add_tensorBasis_repr (t1 t2 : TensorTree S c) :
   rw [add_tensor]
   simp
 
+lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (t : TensorTree S c) (t1 : TensorTree S c1)
+    (b : Π j, Fin (S.repDim ((Sum.elim c c1 ∘ finSumFinEquiv.symm) j))) :
+    (S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr (prod t t1).tensor b =
+    (S.tensorBasis c).repr t.tensor (TensorBasis.prodEquiv b).1 *
+    (S.tensorBasis c1).repr t1.tensor (TensorBasis.prodEquiv b).2 := by
+  simp only [prod_tensor]
+  let P (t : S.F.obj (OverColor.mk c))
+      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) (t1 : S.F.obj (OverColor.mk c1))
+      (ht1 : t1 ∈ Submodule.span S.k (Set.range (S.tensorBasis c1))) :
+      Prop := ((S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr
+      ((ConcreteCategory.hom (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom)
+        ((ConcreteCategory.hom (Functor.LaxMonoidal.μ S.F (OverColor.mk c) (OverColor.mk c1)).hom)
+          (t ⊗ₜ[S.k] t1)))) b =
+    ((S.tensorBasis c).repr t) (TensorBasis.prodEquiv b).1 *
+    ((S.tensorBasis c1).repr t1) (TensorBasis.prodEquiv b).2
+  change P t.tensor (Basis.mem_span _ t.tensor) t1.tensor (Basis.mem_span _ t1.tensor)
+  apply Submodule.span_induction
+  · intro t1 ht1
+    let Pt  (t : S.F.obj (OverColor.mk c))
+      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) := P t ht t1 (Basis.mem_span _ t1)
+    change Pt t.tensor (Basis.mem_span _ t.tensor)
+    apply Submodule.span_induction
+    · intro t ht
+      simp at ht ht1
+      obtain ⟨b1, rfl⟩ := ht
+      obtain ⟨b2, rfl⟩ := ht1
+      simp [Pt, P]
+      trans (S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr
+        (S.tensorBasis (Sum.elim c c1 ∘ finSumFinEquiv.symm) (TensorBasis.prodEquiv.symm (b1, b2))) b
+      · congr 2
+        rw [TensorBasis.tensorBasis_prod]
+        simp
+      simp
+      rw [MonoidAlgebra.single_apply, MonoidAlgebra.single_apply, MonoidAlgebra.single_apply]
+      obtain ⟨b, rfl⟩ := TensorBasis.prodEquiv.symm.surjective b
+      simp
+      match b with
+      | (b1', b2') =>
+        simp
+        simp_all only [Set.mem_range, exists_apply_eq_apply]
+        obtain ⟨fst, snd⟩ := b
+        split
+        next h => simp_all only [↓reduceIte]
+        next h =>
+          simp_all only [not_and]
+          split
+          next h_1 =>
+            subst h_1
+            simp_all only [not_true_eq_false, imp_false, ↓reduceIte]
+          next h_1 => simp_all only [not_false_eq_true, implies_true]
+    · simp [Pt, P]
+    · intro x y hx hy hP1 hP2
+      simp_all only [Set.mem_range, Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
+        Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj, add_tmul, map_add, Finsupp.coe_add,
+        Pi.add_apply, add_mul, Pt, P]
+    · intro x hx a hP
+      simp_all only [Set.mem_range, Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
+        Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+        Action.FunctorCategoryEquivalence.functor_obj_obj, smul_tmul, tmul_smul, map_smul,
+        Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, Pt, P]
+      ring
+  · simp [P]
+  · intro x y hx hy hP1 hP2
+    simp_all only [Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_add, map_add, Finsupp.coe_add,
+      Pi.add_apply, mul_add, P]
+  · intro x hx a hP
+    simp_all only [Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_smul, map_smul, Finsupp.coe_smul,
+      Pi.smul_apply, smul_eq_mul, P]
+    ring
+
+@[simp]
+lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
+    {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) :
+    (S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b =
+    ∑ (b' : TensorBasis.ContrSection b),
+    ((S.tensorBasis c).repr t.tensor b'.1) *
+    S.castToField ((S.contr.app (Discrete.mk (c i))).hom
+    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))  := by
+  simp only [contr_tensor]
+  let P (t : S.F.obj (OverColor.mk c))
+      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) : Prop :=
+      ((S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr ((ConcreteCategory.hom (S.contrMap c i j h).hom) t)) b =
+      ∑ (b' : TensorBasis.ContrSection b),
+    ((S.tensorBasis c).repr t b'.1) *
+    S.castToField ((S.contr.app (Discrete.mk (c i))).hom
+    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))
+  change P t.tensor (Basis.mem_span _ t.tensor)
+  apply Submodule.span_induction
+  · intro t ht
+    simp at ht
+    obtain ⟨b', rfl⟩ := ht
+    simp [P]
+    rw [TensorBasis.contrMap_tensorBasis]
+    simp
+    by_cases hb : b' ∈ TensorBasis.ContrSection b
+    · rw [Finsupp.single_apply]
+      rw [Finset.sum_eq_single ⟨b', hb⟩]
+      rw [TensorBasis.ContrSection] at hb
+      simp at hb
+      simp [hb]
+      rfl
+      intro b'' hb'' hbb''
+      rw [Finsupp.single_apply]
+      have hx := Subtype.eq_iff.mpr.mt hbb''
+      simp at hx
+      simp
+      exact fun a => False.elim (hx (id (Eq.symm a)))
+      simp
+    · rw [Finsupp.single_apply]
+      rw [if_neg]
+      rw [Finset.sum_eq_zero]
+      intro x hx
+      rw [Finsupp.single_apply]
+      rw [if_neg]
+      simp
+      by_contra hxb
+      subst hxb
+      simp_all
+      rw [funext_iff]
+      simp
+      simpa [TensorBasis.ContrSection] using hb
+  · simp [P]
+  · intro x y hx hy hP1 hP2
+    simp [P] at hP1 hP2 ⊢
+    rw [hP1, hP2]
+    rw [← Finset.sum_add_distrib]
+    simp [add_mul]
+  · intro x hx a hP
+    simp [P] at hP ⊢
+    rw [hP]
+    rw [Finset.mul_sum]
+    simp [mul_assoc]
+
 @[simp]
 lemma perm_tensorBasis_repr_apply  {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} (t : TensorTree S c)

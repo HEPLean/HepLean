@@ -42,6 +42,13 @@ def basisVector {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     complexLorentzTensor.F.obj (OverColor.mk c) :=
   PiTensorProduct.tprod ℂ (fun i => complexLorentzTensor.basis (c i) (b i))
 
+lemma basisVector_eq_tensorBasis {n : ℕ} (c : Fin n → complexLorentzTensor.C)
+    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
+    basisVector c b = complexLorentzTensor.tensorBasis c b := by
+  rw [basisVector, TensorSpecies.tensorBasis_eq_basisVector]
+  simp only [OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, TensorSpecies.basisVector]
+  rfl
+
 lemma perm_basisVector_cast {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C}
     (σ : OverColor.mk c ⟶ OverColor.mk c1) (i : Fin m) :

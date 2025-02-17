@@ -69,7 +69,7 @@ import PhysLean.Lorentz.ComplexTensor.Metrics.Basis
 import PhysLean.Lorentz.ComplexTensor.Metrics.Lemmas
 import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Basic
 import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Basis
-import PhysLean.Lorentz.ComplexTensor.PauliMatrices.CoContractContr
+import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Relations
 import PhysLean.Lorentz.ComplexTensor.Units.Basic
 import PhysLean.Lorentz.ComplexTensor.Units.Symm
 import PhysLean.Lorentz.ComplexVector.Basic

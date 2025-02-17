@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Tensors.TensorSpecies.Basic
+import PhysLean.Tensors.TensorSpecies.Contractions.ContrMap
 /-!
 
 # Basis for tensors in a tensor species
@@ -191,11 +192,18 @@ namespace TensorBasis
 
 variable {S : TensorSpecies}
 
+lemma tensorBasis_repr_tprod {n : ℕ} {c : Fin n → S.C} (x : (i : Fin n) → S.FD.obj (Discrete.mk (c i)))
+    (b : Π j, Fin (S.repDim (c j))) :
+    (S.tensorBasis c).repr (PiTensorProduct.tprod S.k x) b =
+    ∏ i, (S.basis (c i)).repr (x i) (b i) := by
+  change S.coordinate c (PiTensorProduct.tprod S.k x) b = _
+  rw [coordinate_tprod]
+  rfl
+
 /-- The equivalence between the indexing set of basis of Lorentz tensors
   induced by an equivalence on indices. -/
 def congr {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    (σ  : Fin n ≃ Fin m)
-    (h :  ∀ i, c i = c1 (σ i)) :
+    (σ  : Fin n ≃ Fin m) (h :  ∀ i, c i = c1 (σ i)) :
     (Π j, Fin (S.repDim (c1 j))) ≃ Π j, Fin (S.repDim (c j)) where
   toFun b := fun i => Fin.cast (congrArg S.repDim (h i).symm) (b (σ i))
   invFun b := fun i => Fin.cast (congrArg S.repDim (by simp [h])) (b (σ.symm i))
@@ -214,9 +222,96 @@ def congr {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     · exact Equiv.symm_apply_apply σ i
     · exact Equiv.symm_apply_apply σ i
 
+def elimEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} :
+    (Π j, Fin (S.repDim (Sum.elim c c1 j))) ≃
+    (Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j))) where
+  toFun b := (fun i => b (Sum.inl i), fun i => b (Sum.inr i))
+  invFun b := fun i => Sum.elim (fun i => b.1 i) (fun j =>  b.2 j) i
+  left_inv b := by
+    funext i
+    cases i
+    · simp
+    · simp
+  right_inv b := by
+    simp
+
+def prodEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C} :
+    (Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j)))) ≃
+    (Π j, Fin (S.repDim (c j))) × (Π j, Fin (S.repDim (c1 j))) :=
+  (Equiv.piCongrLeft _ finSumFinEquiv.symm).trans elimEquiv
+
+@[simp]
+lemma prodEquiv_apply_fst {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (b : Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j))))
+    (j : Fin n) :
+    (prodEquiv b).1 j = (Fin.cast (by simp) (b (Fin.castAdd m j))) := by
+  simp [prodEquiv, elimEquiv, Fin.cast_eq_cast]
+  exact eqRec_eq_cast _ (Equiv.apply_symm_apply finSumFinEquiv.symm (Sum.inl j))
+
+@[simp]
+lemma prodEquiv_apply_snd {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (b : Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j))))
+    (j : Fin m) :
+    (prodEquiv b).2 j = (Fin.cast (by simp) (b (Fin.natAdd n j))) := by
+  simp [prodEquiv, elimEquiv, Fin.cast_eq_cast]
+  exact eqRec_eq_cast _ (Equiv.apply_symm_apply finSumFinEquiv.symm (Sum.inr j))
+
+lemma tensorBasis_prod {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (b : Π j, Fin (S.repDim (Sum.elim c c1 (finSumFinEquiv.symm j)))) :
+    S.tensorBasis (Sum.elim c c1 ∘ finSumFinEquiv.symm) b =
+    (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom
+    ((Functor.LaxMonoidal.μ S.F _ _).hom
+    (S.tensorBasis c (prodEquiv b).1 ⊗ₜ[S.k] S.tensorBasis c1 (prodEquiv b).2)) := by
+  rw [tensorBasis_eq_basisVector, basisVector]
+  rw [tensorBasis_eq_basisVector, basisVector]
+  rw [tensorBasis_eq_basisVector, basisVector]
+  simp only [F_def]
+  conv_rhs =>
+    right
+    erw [lift.μ_tmul_tprod]
+  erw [lift.objMap'_tprod]
+  congr
+  funext i
+  simp [lift.discreteFunctorMapEqIso]
+  have hj (j : Fin n ⊕ Fin m) (hj : finSumFinEquiv.symm i = j) : (S.basis (Sum.elim c c1 j)) (b i) =
+    (lift.discreteSumEquiv' S.FD j)
+    (PhysLean.PiTensorProduct.elimPureTensor (fun i => (S.basis (c i)) ((prodEquiv b).1 i))
+      (fun i => (S.basis (c1 i)) ((prodEquiv b).2 i)) j) := by
+    match j with
+    | Sum.inl j =>
+      simp [PhysLean.PiTensorProduct.elimPureTensor, lift.discreteSumEquiv']
+      have hi : i = finSumFinEquiv (Sum.inl j) :=
+        (Equiv.symm_apply_eq finSumFinEquiv).mp hj
+      subst hi
+      congr
+      simp
+      ext
+      simp
+      refine Nat.mod_eq_of_lt ?_
+      simpa using (b (Fin.castAdd m j)).2
+    | Sum.inr j =>
+      simp [PhysLean.PiTensorProduct.elimPureTensor, lift.discreteSumEquiv']
+      have hi : i = finSumFinEquiv (Sum.inr j) :=
+        (Equiv.symm_apply_eq finSumFinEquiv).mp hj
+      subst hi
+      congr
+      simp
+      ext
+      simp
+      refine Nat.mod_eq_of_lt ?_
+      simpa using (b (Fin.natAdd n j)).2
+  have hj := hj (finSumFinEquiv.symm i) ( rfl)
+  refine Eq.trans (Eq.trans  ?_ hj) ?_
+  congr
+  exact Eq.symm (Fin.cast_val_eq_self (b i))
+  congr
+  funext i
+  simp
+  funext i
+  simp
+
 lemma map_tensorBasis {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)}
-    (b : Π j, Fin (S.repDim (c j))) :
+    {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} (b : Π j, Fin (S.repDim (c j))) :
     (S.F.map σ).hom.hom (S.tensorBasis c b) =
     S.tensorBasis c1 ((congr (OverColor.Hom.toEquiv σ)
     (OverColor.Hom.toEquiv_comp_apply σ)).symm b) := by
@@ -232,6 +327,59 @@ lemma map_tensorBasis {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   rw [FD_map_basis]
   exact OverColor.Hom.toEquiv_symm_apply σ i
 
+def contrMap_tensorBasis {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)} (b : Π j, Fin (S.repDim (c j))) :
+    (S.contrMap c i j h).hom (S.tensorBasis c b) =
+    (S.contr.app (Discrete.mk (c i))).hom
+    (S.basis (c i) (b i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b (i.succAbove j))))  •
+    (S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)
+    (fun k => b ((i.succAbove ∘ j.succAbove) k))) := by
+  rw [tensorBasis_eq_basisVector, basisVector, tensorBasis_eq_basisVector, basisVector]
+  rw [contrMap_tprod]
+  congr 1
+  /- The coefficent. -/
+  · simp only [castToField, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
+    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as,
+    Function.comp_apply]
+    congr 2
+    exact FD_map_basis S h (b (i.succAbove j))
+
+def ContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) :
+    Finset (Π k, Fin (S.repDim (c k))) :=
+    {b' : Π k, Fin (S.repDim (c k)) | ∀ k, b' ((i.succAbove ∘ j.succAbove) k) = b k}
+
+
 end TensorBasis
+open TensorBasis
+
+@[simp]
+lemma pairIsoSep_tensorBasis_repr  {c c1 : S.C}
+    (t : (S.FD.obj { as := c } ⊗ S.FD.obj { as := c1 }).V)
+    (b : ((j : Fin (Nat.succ 0).succ) → Fin (S.repDim (![c, c1] j)))):
+    (S.tensorBasis ![c, c1]).repr
+    ((OverColor.Discrete.pairIsoSep S.FD).hom.hom t) b =
+    (Basis.tensorProduct (S.basis c) (S.basis c1)).repr t (b 0, b 1)  := by
+  let P (t : ( (S.FD.obj { as := c } ⊗ S.FD.obj { as := c1 }).V)):=
+    (S.tensorBasis ![c, c1]).repr
+    ((OverColor.Discrete.pairIsoSep S.FD).hom.hom t) b =
+    (Basis.tensorProduct (S.basis c) (S.basis c1)).repr t (b 0, b 1)
+  change P t
+  apply TensorProduct.induction_on
+  · simp [P]
+  · intro x y
+    simp [P]
+    conv_lhs =>
+      left
+      right
+      erw [Discrete.pairIsoSep_tmul]
+    erw [tensorBasis_repr_tprod]
+    simp
+    rw [mul_comm]
+    rfl
+  · intro x y hx hy
+    simp_all [P]
 
 end TensorSpecies
