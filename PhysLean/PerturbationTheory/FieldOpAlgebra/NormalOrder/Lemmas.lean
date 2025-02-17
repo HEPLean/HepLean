@@ -230,7 +230,7 @@ The proof of this result ultimately goes as follows
 - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
   (considered as a list with one element) with
   `ofCrAnList φsn` as a sum of super commutators, one for each element of `φsn`.
-- The fact that super-commutators are in the center of `𝓕.FieldOpAlgebra` is used to  rearrange
+- The fact that super-commutators are in the center of `𝓕.FieldOpAlgebra` is used to rearrange
   terms.
 - Properties of ordered lists, and `normalOrderSign_eraseIdx` are then used to complete the proof.
 -/
@@ -356,7 +356,7 @@ The proof ultimately goes as follows:
 
   `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)`.
 
-- It used that  `anPart φ * 𝓝(φ₀φ₁…φₙ)` is equal to
+- It used that `anPart φ * 𝓝(φ₀φ₁…φₙ)` is equal to
 
   `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ + [anPart φ, 𝓝(φ₀φ₁…φₙ)]`
 

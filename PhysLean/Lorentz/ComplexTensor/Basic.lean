@@ -286,12 +286,12 @@ instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
 @[simp]
-lemma k_instSub :  @HSub.hSub complexLorentzTensor.k complexLorentzTensor.k complexLorentzTensor.k
+lemma k_instSub : @HSub.hSub complexLorentzTensor.k complexLorentzTensor.k complexLorentzTensor.k
     instHSub = @HSub.hSub ℂ ℂ ℂ instHSub := by rfl
 
 @[simp]
-lemma k_instAdd : @HAdd.hAdd complexLorentzTensor.k complexLorentzTensor.k complexLorentzTensor.k instHAdd
-    = @HAdd.hAdd ℂ ℂ ℂ instHAdd := by rfl
+lemma k_instAdd : @HAdd.hAdd complexLorentzTensor.k
+    complexLorentzTensor.k complexLorentzTensor.k instHAdd = @HAdd.hAdd ℂ ℂ ℂ instHAdd := by rfl
 
 @[simp]
 lemma k_neg : @Neg.neg complexLorentzTensor.k = @Neg.neg ℂ := by rfl

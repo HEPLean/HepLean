@@ -203,7 +203,7 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
   rw [lift.map_tprod]
   conv_lhs =>
     enter [2, 2, 2, 2]
-    rw (transparency := .instances)  [lift.map_tprod]
+    rw (transparency := .instances) [lift.map_tprod]
   conv_lhs =>
     enter [2, 2, 2]
     rw (transparency := .instances) [lift.μIso_inv_tprod]
@@ -257,7 +257,7 @@ lemma contrMap_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     funext d
     simp only [mk_hom, Function.comp_apply, lift.discreteFunctorMapEqIso, Functor.mapIso_hom,
       eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom,
-      Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply, ]
+      Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
     change (S.FD.map (eqToHom _)).hom
         ((x ((PhysLean.Fin.finExtractTwo i j).symm (Sum.inr (d))))) = _
     simp only [Nat.succ_eq_add_one]

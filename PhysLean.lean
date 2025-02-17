@@ -67,6 +67,7 @@ import PhysLean.Lorentz.ComplexTensor.Lemmas
 import PhysLean.Lorentz.ComplexTensor.Metrics.Basic
 import PhysLean.Lorentz.ComplexTensor.Metrics.Basis
 import PhysLean.Lorentz.ComplexTensor.Metrics.Lemmas
+import PhysLean.Lorentz.ComplexTensor.OfRat
 import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Basic
 import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Basis
 import PhysLean.Lorentz.ComplexTensor.PauliMatrices.Relations
@@ -107,6 +108,7 @@ import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
 import PhysLean.Mathematics.List.InsertionSort
 import PhysLean.Mathematics.PiTensorProduct
+import PhysLean.Mathematics.RatComplexNum
 import PhysLean.Mathematics.SO3.Basic
 import PhysLean.Mathematics.SchurTriangulation
 import PhysLean.Meta.AllFilePaths
@@ -197,6 +199,7 @@ import PhysLean.Tensors.TensorSpecies.Contractions.Categorical
 import PhysLean.Tensors.TensorSpecies.Contractions.ContrMap
 import PhysLean.Tensors.TensorSpecies.DualRepIso
 import PhysLean.Tensors.TensorSpecies.MetricTensor
+import PhysLean.Tensors.TensorSpecies.OfInt
 import PhysLean.Tensors.TensorSpecies.Pure
 import PhysLean.Tensors.TensorSpecies.UnitTensor
 import PhysLean.Tensors.Tree.Basic

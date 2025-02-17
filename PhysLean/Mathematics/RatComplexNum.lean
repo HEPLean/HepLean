@@ -9,7 +9,6 @@ import Mathlib.Analysis.Complex.Basic
 
 -/
 
-
 namespace PhysLean
 
 structure RatComplexNum where
@@ -100,11 +99,11 @@ instance : Ring RatComplexNum where
     match x, y, z with
     | ⟨x1, x2⟩, ⟨y1, y2⟩, ⟨z1, z2⟩ =>
       ext
-      · change  (x1 * y1 -  x2 * y2) * z1 -  ( x1 * y2 + x2 * y1) * z2 =
-          x1 * (y1 * z1 -  y2 * z2) -  x2 * (y1 * z2 + y2 * z1)
+      · change (x1 * y1 - x2 * y2) * z1 - (x1 * y2 + x2 * y1) * z2 =
+          x1 * (y1 * z1 - y2 * z2) - x2 * (y1 * z2 + y2 * z1)
         ring
-      · change  ( x1 * y1 -  x2 * y2) * z2 +  (x1 * y2 +  x2 * y1) * z1 =
-           x1 * ( y1 * z2 + y2 * z1) + x2 * ( y1 * z1 -  y2 * z2)
+      · change (x1 * y1 - x2 * y2) * z2 + (x1 * y2 + x2 * y1) * z1 =
+          x1 * (y1 * z2 + y2 * z1) + x2 * (y1 * z1 - y2 * z2)
         ring
   one_mul := by
     intro x
@@ -131,7 +130,7 @@ instance : Ring RatComplexNum where
     | ⟨a1, a2⟩, ⟨b1, b2⟩, ⟨c1, c2⟩ =>
       ext
       · change a1 * (b1 + c1) - a2 * (b2 + c2) =
-          (a1 * b1  - a2 * b2) + (a1 * c1  - a2 * c2)
+          (a1 * b1 - a2 * b2) + (a1 * c1 - a2 * c2)
         ring
       · change a1 * (b2 + c2) + a2 * (b1 + c1) =
           (a1 * b2 + a2 * b1) + (a1 * c2 + a2 * c1)
@@ -142,7 +141,7 @@ instance : Ring RatComplexNum where
     | ⟨b1, b2⟩, ⟨c1, c2⟩, ⟨a1, a2⟩ =>
       ext
       · change (b1 + c1) * a1 - (b2 + c2) * a2 =
-          (b1 * a1  - b2 * a2) + (c1 * a1  - c2 * a2)
+          (b1 * a1 - b2 * a2) + (c1 * a1 - c2 * a2)
         ring
       · change (b1 + c1) * a2 + (b2 + c2) * a1 =
           (b1 * a2 + b2 * a1) + (c1 * a2 + c2 * a1)
@@ -224,8 +223,8 @@ lemma I_mul_toComplexNum (a : RatComplexNum) : I * toComplexNum a = toComplexNum
   simp only [I_sq, neg_mul, one_mul]
   ring
 
-
-lemma ofNat_mul_toComplexNum (n : ℕ) (a : RatComplexNum) : n * toComplexNum a = toComplexNum (n * a) := by
+lemma ofNat_mul_toComplexNum (n : ℕ) (a : RatComplexNum) :
+    n * toComplexNum a = toComplexNum (n * a) := by
   simp only [map_mul, map_natCast]
 
 lemma toComplexNum_injective : Function.Injective toComplexNum := by

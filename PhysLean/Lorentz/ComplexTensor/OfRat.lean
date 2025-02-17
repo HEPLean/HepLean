@@ -15,7 +15,6 @@ open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
-
 namespace complexLorentzTensor
 open OverColor
 open PhysLean.RatComplexNum
@@ -29,7 +28,7 @@ noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
   (complexLorentzTensor.tensorBasis c).repr.symm <|
   (Finsupp.linearEquivFunOnFinite complexLorentzTensor.k complexLorentzTensor.k
   ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|
-  (fun j =>  toComplexNum (f j))
+  (fun j => toComplexNum (f j))
 
 @[simp]
 lemma ofRat_tensorBasis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor.C}
@@ -40,7 +39,7 @@ lemma ofRat_tensorBasis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor
   rfl
 
 lemma tensorBasis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (b : Π j, Fin (complexLorentzTensor.repDim (c j)))  :
+    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
     complexLorentzTensor.tensorBasis c b
     = ofRat (fun b' => if b = b' then ⟨1, 0⟩ else ⟨0, 0⟩) := by
   apply (complexLorentzTensor.tensorBasis c).repr.injective
@@ -55,7 +54,7 @@ lemma tensorBasis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
 
 lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
     (i : Fin (complexLorentzTensor.repDim c))
-    (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))):
+    (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
     complexLorentzTensor.castToField
       ((complexLorentzTensor.contr.app (Discrete.mk c)).hom
       (complexLorentzTensor.basis c i ⊗ₜ
@@ -79,11 +78,13 @@ lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
     rw [Fermion.rightAltContraction_basis]
     simp
   | Color.up =>
-    change Lorentz.contrCoContraction.hom  (Lorentz.complexContrBasisFin4 i ⊗ₜ Lorentz.complexCoBasisFin4 j) = _
+    change Lorentz.contrCoContraction.hom
+      (Lorentz.complexContrBasisFin4 i ⊗ₜ Lorentz.complexCoBasisFin4 j) = _
     rw [Lorentz.contrCoContraction_basis]
     simp
   | Color.down =>
-    change Lorentz.contrCoContraction.hom  (Lorentz.complexContrBasisFin4 i ⊗ₜ Lorentz.complexCoBasisFin4 j) = _
+    change Lorentz.contrCoContraction.hom
+      (Lorentz.complexContrBasisFin4 i ⊗ₜ Lorentz.complexCoBasisFin4 j) = _
     rw [Lorentz.contrCoContraction_basis]
     simp
 

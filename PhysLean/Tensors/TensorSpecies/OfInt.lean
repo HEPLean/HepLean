@@ -14,7 +14,6 @@ open IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
-
 namespace TensorSpecies
 open OverColor
 
@@ -35,7 +34,7 @@ lemma tensorOfInt_tensorBasis_repr_apply {n : ℕ} {c : Fin n → S.C}
   rfl
 
 lemma tensorBasis_eq_ofInt {n : ℕ} {c : Fin n → S.C}
-    (b : Π j, Fin (S.repDim (c j)))  :
+    (b : Π j, Fin (S.repDim (c j))) :
     S.tensorBasis c b
     = S.tensorOfInt (fun b' => if b = b' then 1 else 0) := by
   apply (S.tensorBasis c).repr.injective

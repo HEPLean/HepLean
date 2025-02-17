@@ -327,7 +327,7 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
   change P t.tensor (Basis.mem_span _ t.tensor) t1.tensor (Basis.mem_span _ t1.tensor)
   apply Submodule.span_induction
   · intro t1 ht1
-    let Pt  (t : S.F.obj (OverColor.mk c))
+    let Pt (t : S.F.obj (OverColor.mk c))
       (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) := P t ht t1 (Basis.mem_span _ t1)
     change Pt t.tensor (Basis.mem_span _ t.tensor)
     apply Submodule.span_induction
@@ -337,7 +337,8 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
       obtain ⟨b2, rfl⟩ := ht1
       simp [Pt, P]
       trans (S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr
-        (S.tensorBasis (Sum.elim c c1 ∘ finSumFinEquiv.symm) (TensorBasis.prodEquiv.symm (b1, b2))) b
+        (S.tensorBasis (Sum.elim c c1 ∘ finSumFinEquiv.symm)
+        (TensorBasis.prodEquiv.symm (b1, b2))) b
       · congr 2
         rw [TensorBasis.tensorBasis_prod]
         simp
@@ -385,22 +386,25 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     ring
 
 @[simp]
-lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
-    {j : Fin n.succ} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
-    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) :
+lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : Fin (n + 1 + 1)}
+    {j : Fin (n + 1)} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
+    (b : Π k, Fin (S.repDim (c (i.succAbove (j.succAbove k))))) :
     (S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b =
     ∑ (b' : TensorBasis.ContrSection b),
     ((S.tensorBasis c).repr t.tensor b'.1) *
     S.castToField ((S.contr.app (Discrete.mk (c i))).hom
-    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))  := by
+    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
+    (b'.1 (i.succAbove j))))) := by
   simp only [contr_tensor]
   let P (t : S.F.obj (OverColor.mk c))
       (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) : Prop :=
-      ((S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr ((ConcreteCategory.hom (S.contrMap c i j h).hom) t)) b =
+      ((S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr
+      ((ConcreteCategory.hom (S.contrMap c i j h).hom) t)) b =
       ∑ (b' : TensorBasis.ContrSection b),
     ((S.tensorBasis c).repr t b'.1) *
     S.castToField ((S.contr.app (Discrete.mk (c i))).hom
-    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))
+    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k]
+    S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))
   change P t.tensor (Basis.mem_span _ t.tensor)
   apply Submodule.span_induction
   · intro t ht
@@ -449,7 +453,7 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin n.succ.succ → S.C} {i : 
     simp [mul_assoc]
 
 @[simp]
-lemma perm_tensorBasis_repr_apply  {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} (t : TensorTree S c)
     (b : Π j, Fin (S.repDim (c1 j))) :
     (S.tensorBasis c1).repr (perm σ t).tensor b =

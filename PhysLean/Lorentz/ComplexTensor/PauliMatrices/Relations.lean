@@ -31,7 +31,7 @@ noncomputable section
 namespace complexLorentzTensor
 open Fermion
 
-/-- The statement that `ηᵤᵥ σᵘᵃᵇ  σᵛᵃ'ᵇ' = 2 εᵃᵃ' εᵇᵇ'`. -/
+/-- The statement that `ηᵤᵥ σᵘᵃᵇ σᵛᵃ'ᵇ' = 2 εᵃᵃ' εᵇᵇ'`. -/
 theorem pauliCo_contr_pauliContr :
     {pauliCo | ν α β ⊗ pauliContr | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
@@ -55,7 +55,7 @@ theorem pauliCo_contr_pauliContr :
     enter [2, x]
     rw [TensorTree.prod_tensorBasis_repr_apply]
     simp only [pauliCo_ofRat, pauliContr_ofRat]
-    simp only [ Fin.isValue, Function.comp_apply,
+    simp only [Fin.isValue, Function.comp_apply,
       tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
       Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,

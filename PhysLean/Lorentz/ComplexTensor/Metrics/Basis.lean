@@ -170,7 +170,6 @@ lemma leftMetric_expand : {εL | α β}ᵀ.tensor =
     · rfl
     · rfl
 
-
 lemma leftMetric_tensorBasis : εL =
     - complexLorentzTensor.tensorBasis ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1)
     + complexLorentzTensor.tensorBasis ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0) := by
@@ -181,7 +180,7 @@ lemma leftMetric_tensorBasis : εL =
 
 lemma leftMetric_eq_ofRat : εL = ofRat fun f =>
     if f 0 = 0 ∧ f 1 = 1 then - 1 else
-    if f 1 = 0 ∧ f 0 = 1  then 1 else 0 := by
+    if f 1 = 0 ∧ f 0 = 1 then 1 else 0 := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [leftMetric_tensorBasis]
@@ -222,7 +221,6 @@ lemma altLeftMetric_expand : {εL' | α β}ᵀ.tensor =
     · rfl
     · rfl
 
-
 lemma altLeftMetric_tensorBasis : εL' =
     complexLorentzTensor.tensorBasis ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1)
     - complexLorentzTensor.tensorBasis ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0) := by
@@ -233,7 +231,7 @@ lemma altLeftMetric_tensorBasis : εL' =
 
 lemma altLeftMetric_eq_ofRat : εL' = ofRat fun f =>
     if f 0 = 0 ∧ f 1 = 1 then 1 else
-    if f 1 = 0 ∧ f 0 = 1  then - 1 else 0 := by
+    if f 1 = 0 ∧ f 0 = 1 then - 1 else 0 := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [altLeftMetric_tensorBasis]
@@ -247,7 +245,6 @@ lemma altLeftMetric_eq_ofRat : εL' = ofRat fun f =>
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
   with_unfolding_all decide
-
 
 /-- The expansion of the Fermionic alt-left metric in terms of basis vectors as a
   structured tensor tree. -/
@@ -277,7 +274,6 @@ lemma rightMetric_expand : {εR | α β}ᵀ.tensor =
     · rfl
     · rfl
 
-
 lemma rightMetric_tensorBasis : εR =
     - complexLorentzTensor.tensorBasis ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1)
     + complexLorentzTensor.tensorBasis ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0) := by
@@ -288,7 +284,7 @@ lemma rightMetric_tensorBasis : εR =
 
 lemma rightMetric_eq_ofRat : εR = ofRat fun f =>
     if f 0 = 0 ∧ f 1 = 1 then - 1 else
-    if f 1 = 0 ∧ f 0 = 1  then 1 else 0 := by
+    if f 1 = 0 ∧ f 0 = 1 then 1 else 0 := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [rightMetric_tensorBasis]
@@ -329,7 +325,6 @@ lemma altRightMetric_expand : {εR' | α β}ᵀ.tensor =
     · rfl
     · rfl
 
-
 lemma altRightMetric_tensorBasis : εR' =
     complexLorentzTensor.tensorBasis ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1)
     - complexLorentzTensor.tensorBasis ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0) := by
@@ -340,7 +335,7 @@ lemma altRightMetric_tensorBasis : εR' =
 
 lemma altRightMetric_eq_ofRat : εR' = ofRat fun f =>
     if f 0 = 0 ∧ f 1 = 1 then 1 else
-    if f 1 = 0 ∧ f 0 = 1  then - 1 else 0 := by
+    if f 1 = 0 ∧ f 0 = 1 then - 1 else 0 := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [altRightMetric_tensorBasis]

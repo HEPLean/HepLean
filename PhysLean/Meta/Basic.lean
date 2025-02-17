@@ -142,7 +142,7 @@ def getDeclString (name : Name) : CoreM String := do
   | none => return ""
 
 /-- Given a name, returns the source code defining that name,
-  starting with the def ... or lemma...  etc. -/
+  starting with the def ... or lemma... etc. -/
 def getDeclStringNoDoc (name : Name) : CoreM String := do
   let declerationString ← getDeclString name
   let headerLine (line : String) : Bool :=

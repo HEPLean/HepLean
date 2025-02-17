@@ -72,7 +72,7 @@ lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp
     simpa using congrFun hg x
 
 /-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
- `ofCrAnListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
+  `ofCrAnListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
   obtained by the product of `ofCrAnListF φ` for each `φ` in `φs`.
   For example `ofCrAnListF [φ₁, φ₂, φ₃] = ofCrAnOpF φ₁ * ofCrAnOpF φ₂ * ofCrAnOpF φ₃`.
   The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`. -/
@@ -91,8 +91,8 @@ lemma ofCrAnListF_append (φs φs' : List 𝓕.CrAnFieldOp) :
 lemma ofCrAnListF_singleton (φ : 𝓕.CrAnFieldOp) :
     ofCrAnListF [φ] = ofCrAnOpF φ := by simp [ofCrAnListF]
 
-/-- For a field specification `𝓕`, and an element `φ` of  `𝓕.FieldOp`,
-  `ofFieldOpF φ` is the element of `𝓕.FieldOpFreeAlgebra` formed  by summing over
+/-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`,
+  `ofFieldOpF φ` is the element of `𝓕.FieldOpFreeAlgebra` formed by summing over
   `ofCrAnOpF` of the
   creation and annihilation parts of `φ`.
 
