@@ -13,9 +13,8 @@ import PhysLean.Meta.TODO.Basic
 
 ## Basis vectors associated with complex Lorentz tensors
 
-Note that this file will be much improved once:
-  https://github.com/leanprover-community/mathlib4/pull/11156
-is merged.
+The material in this file should slowly be replaced with
+tensorBasis.
 
 -/
 open IndexNotation

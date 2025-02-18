@@ -58,6 +58,37 @@ lemma complexContrBasis_ρ_val (M : SL(2,ℂ)) (v : complexContr) :
 def complexContrBasisFin4 : Basis (Fin 4) ℂ complexContr :=
   Basis.reindex complexContrBasis finSumFinEquiv
 
+@[simp]
+lemma complexContrBasisFin4_apply_zero :
+    complexContrBasisFin4 0 = complexContrBasis (Sum.inl 0) := by
+  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexContrBasisFin4_apply_one :
+    complexContrBasisFin4 1 = complexContrBasis (Sum.inr 0) := by
+  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexContrBasisFin4_apply_two :
+    complexContrBasisFin4 2 = complexContrBasis (Sum.inr 1) := by
+  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexContrBasisFin4_apply_three :
+    complexContrBasisFin4 3 = complexContrBasis (Sum.inr 2) := by
+  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexContrBasisFin4_apply_succ (i : Fin 3) :
+    complexContrBasisFin4 i.succ = complexContrBasis (Sum.inr i) := by
+  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  congr 1
+  fin_cases i <;> decide
+
 /-- The standard basis of complex covariant Lorentz vectors. -/
 def complexCoBasis : Basis (Fin 1 ⊕ Fin 3) ℂ complexCo :=
   Basis.ofEquivFun CoℂModule.toFin13ℂEquiv
@@ -79,6 +110,30 @@ lemma complexCoBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
 /-- The standard basis of complex covariant Lorentz vectors indexed by `Fin 4`. -/
 def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
   Basis.reindex complexCoBasis finSumFinEquiv
+
+@[simp]
+lemma complexCoBasisFin4_apply_zero :
+    complexCoBasisFin4 0 = complexCoBasis (Sum.inl 0) := by
+  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexCoBasisFin4_apply_one :
+    complexCoBasisFin4 1 = complexCoBasis (Sum.inr 0) := by
+  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexCoBasisFin4_apply_two :
+    complexCoBasisFin4 2 = complexCoBasis (Sum.inr 1) := by
+  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  rfl
+
+@[simp]
+lemma complexCoBasisFin4_apply_three :
+    complexCoBasisFin4 3 = complexCoBasis (Sum.inr 2) := by
+  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  rfl
 
 /-!
 

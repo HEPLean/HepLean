@@ -3,156 +3,153 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.PiTensorProduct
-import Mathlib.RepresentationTheory.Rep
-import PhysLean.Lorentz.Group.Basic
+import PhysLean.Lorentz.ComplexTensor.Metrics.Lemmas
 /-!
 
-## Pauli matrices
+## Pauli matrices as complex Lorentz tensors
 
 -/
+open IndexNotation
+open CategoryTheory
+open MonoidalCategory
+open Matrix
+open MatrixGroups
+open Complex
+open TensorProduct
+open IndexNotation
+open CategoryTheory
+open TensorTree
+open OverColor.Discrete
+noncomputable section
 
 namespace PauliMatrix
-
-open Complex
-open Matrix
-
-/-- The zeroth Pauli-matrix as a `2 x 2` complex matrix.
-  That is the matrix `!![1, 0; 0, 1]`. -/
-def σ0 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
-
-/-- The first Pauli-matrix as a `2 x 2` complex matrix.
-  That is, the matrix `!![0, 1; 1, 0]`. -/
-def σ1 : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; 1, 0]
-
-/-- The second Pauli-matrix as a `2 x 2` complex matrix.
-  That is, the matrix `!![0, -I; I, 0]`. -/
-def σ2 : Matrix (Fin 2) (Fin 2) ℂ := !![0, -I; I, 0]
-
-/-- The third Pauli-matrix as a `2 x 2` complex matrix.
-  That is, the matrix `!![1, 0; 0, -1]`. -/
-def σ3 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
-
-/-- The conjugate transpose of `σ0` is equal to `σ0`. -/
-@[simp]
-lemma σ0_selfAdjoint : σ0ᴴ = σ0 := by
-  rw [eta_fin_two σ0ᴴ]
-  simp [σ0]
-
-/-- The conjugate transpose of `σ1` is equal to `σ1`. -/
-@[simp]
-lemma σ1_selfAdjoint : σ1ᴴ = σ1 := by
-  rw [eta_fin_two σ1ᴴ]
-  simp [σ1]
-
-/-- The conjugate transpose of `σ2` is equal to `σ2`. -/
-@[simp]
-lemma σ2_selfAdjoint : σ2ᴴ = σ2 := by
-  rw [eta_fin_two σ2ᴴ]
-  simp [σ2]
-
-/-- The conjugate transpose of `σ3` is equal to `σ3`. -/
-@[simp]
-lemma σ3_selfAdjoint : σ3ᴴ = σ3 := by
-  rw [eta_fin_two σ3ᴴ]
-  simp [σ3]
-
+open Fermion
+open complexLorentzTensor
 /-!
 
-## Traces
+## Definitions.
 
 -/
 
-/-- The trace of `σ0` multiplied by `σ0` is equal to `2`. -/
-@[simp]
-lemma σ0_σ0_trace : Matrix.trace (σ0 * σ0) = 2 := by
-  simp only [σ0, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+/-- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
+def pauliContr := (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
+  PauliMatrix.asConsTensor).tensor
 
-/-- The trace of `σ0` multiplied by `σ1` is equal to `0`. -/
-@[simp]
-lemma σ0_σ1_trace : Matrix.trace (σ0 * σ1) = 0 := by
-  simp [σ0, σ1]
+@[inherit_doc pauliContr]
+scoped[PauliMatrix] notation "σ^^^" => PauliMatrix.pauliContr
 
-/-- The trace of `σ0` multiplied by `σ2` is equal to `0`. -/
-@[simp]
-lemma σ0_σ2_trace : Matrix.trace (σ0 * σ2) = 0 := by
-  simp [σ0, σ2]
+/-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
+def pauliCo := {η' | μ ν ⊗ σ^^^ | ν α β}ᵀ.tensor
 
-/-- The trace of `σ0` multiplied by `σ3` is equal to `0`. -/
-@[simp]
-lemma σ0_σ3_trace : Matrix.trace (σ0 * σ3) = 0 := by
-  simp [σ0, σ3]
+@[inherit_doc pauliCo]
+scoped[PauliMatrix] notation "σ_^^" => PauliMatrix.pauliCo
 
-/-- The trace of `σ1` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ1_σ0_trace : Matrix.trace (σ1 * σ0) = 0 := by
-  simp [σ1, σ0]
+/-- The Pauli matrices as the complex Lorentz tensor `σ_μ_{dot β}_α`. -/
+def pauliCoDown := {σ_^^ | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ.tensor
 
-/-- The trace of `σ1` multiplied by `σ1` is equal to `2`. -/
-@[simp]
-lemma σ1_σ1_trace : Matrix.trace (σ1 * σ1) = 2 := by
-  simp only [σ1, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+@[inherit_doc pauliCoDown]
+scoped[PauliMatrix] notation "σ___" => PauliMatrix.pauliCoDown
 
-/-- The trace of `σ1` multiplied by `σ2` is equal to `0`. -/
-@[simp]
-lemma σ1_σ2_trace : Matrix.trace (σ1 * σ2) = 0 := by
-  simp [σ1, σ2]
+/-- The Pauli matrices as the complex Lorentz tensor `σ^μ_{dot β}_α`. -/
+def pauliContrDown := {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ.tensor
 
-/-- The trace of `σ1` multiplied by `σ3` is equal to `0`. -/
-@[simp]
-lemma σ1_σ3_trace : Matrix.trace (σ1 * σ3) = 0 := by
-  simp [σ1, σ3]
+@[inherit_doc pauliContrDown]
+scoped[PauliMatrix] notation "σ^__" => PauliMatrix.pauliContrDown
 
-/-- The trace of `σ2` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ2_σ0_trace : Matrix.trace (σ2 * σ0) = 0 := by
-  simp [σ2, σ0]
+/-!
 
-/-- The trace of `σ2` multiplied by `σ1` is equal to `0`. -/
-@[simp]
-lemma σ2_σ1_trace : Matrix.trace (σ2 * σ1) = 0 := by
-  simp [σ2, σ1]
+## Tensor nodes.
 
-/-- The trace of `σ2` multiplied by `σ2` is equal to `2`. -/
-@[simp]
-lemma σ2_σ2_trace : Matrix.trace (σ2 * σ2) = 2 := by
-  simp only [σ2, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+-/
 
-/-- The trace of `σ2` multiplied by `σ3` is equal to `0`. -/
-@[simp]
-lemma σ2_σ3_trace : Matrix.trace (σ2 * σ3) = 0 := by
-  simp [σ2, σ3]
+/-- The definitional tensor node relation for `pauliContr`. -/
+lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀ.tensor =
+    (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
+  PauliMatrix.asConsTensor).tensor := by
+  rfl
 
-/-- The trace of `σ3` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ3_σ0_trace : Matrix.trace (σ3 * σ0) = 0 := by
-  simp [σ3, σ0]
+/-- The definitional tensor node relation for `pauliCo`. -/
+lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀ.tensor =
+    {η' | μ ν ⊗ pauliContr | ν α β}ᵀ.tensor := by
+  rw [pauliCo, tensorNode_tensor]
 
-/-- The trace of `σ3` multiplied by `σ1` is equal to `0`. -/
-@[simp]
-lemma σ3_σ1_trace : Matrix.trace (σ3 * σ1) = 0 := by
-  simp [σ3, σ1]
+/-- The definitional tensor node relation for `pauliCoDown`. -/
+lemma tensorNode_pauliCoDown : {pauliCoDown | μ α β}ᵀ.tensor =
+    {pauliCo | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ.tensor := by
+  rw [pauliCoDown, tensorNode_tensor]
 
-/-- The trace of `σ3` multiplied by `σ2` is equal to `0`. -/
-@[simp]
-lemma σ3_σ2_trace : Matrix.trace (σ3 * σ2) = 0 := by
-  simp [σ3, σ2]
+/-- The definitional tensor node relation for `pauliContrDown`. -/
+lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀ.tensor =
+    {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ.tensor := by
+  rw [pauliContr, tensorNode_tensor]
+  rfl
 
-/-- The trace of `σ3` multiplied by `σ3` is equal to `2`. -/
-@[simp]
-lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by
-  simp only [σ3, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+/-!
+
+## Group actions
+
+-/
+
+/-- The tensor `pauliContr` is invariant under the action of `SL(2,ℂ)`. -/
+lemma action_pauliContr (g : SL(2,ℂ)) : {g •ₐ pauliContr | μ α β}ᵀ.tensor =
+    {pauliContr | μ α β}ᵀ.tensor := by
+  rw [tensorNode_pauliContr, constThreeNodeE]
+  rw [← action_constThreeNode _ g]
+  rfl
+
+/-- The tensor `pauliCo` is invariant under the action of `SL(2,ℂ)`. -/
+lemma action_pauliCo (g : SL(2,ℂ)) : {g •ₐ pauliCo | μ α β}ᵀ.tensor =
+    {pauliCo | μ α β}ᵀ.tensor := by
+  conv =>
+    lhs
+    rw [action_tensor_eq <| tensorNode_pauliCo]
+    rw [action_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_pauliContr]
+    rw [(contr_action _ _).symm]
+    rw [contr_tensor_eq <| (prod_action _ _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| action_constTwoNode _ _]
+    rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_constThreeNode _ _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliCo]
+    rw [contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_pauliContr]
+  rfl
+
+/-- The tensor `pauliCoDown` is invariant under the action of `SL(2,ℂ)`. -/
+lemma action_pauliCoDown (g : SL(2,ℂ)) : {g •ₐ pauliCoDown | μ α β}ᵀ.tensor =
+    {pauliCoDown | μ α β}ᵀ.tensor := by
+  conv =>
+    lhs
+    rw [action_tensor_eq <| tensorNode_pauliCoDown]
+    rw [(contr_action _ _).symm]
+    rw [contr_tensor_eq <| (prod_action _ _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| (contr_action _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| (prod_action _ _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_fst <|
+      action_pauliCo _]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
+      action_altRightMetric _]
+    rw [contr_tensor_eq <| prod_tensor_eq_snd <| action_altLeftMetric _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliCoDown]
+
+/-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
+lemma action_pauliContrDown (g : SL(2,ℂ)) : {g •ₐ pauliContrDown | μ α β}ᵀ.tensor =
+    {pauliContrDown | μ α β}ᵀ.tensor := by
+  conv =>
+    lhs
+    rw [action_tensor_eq <| tensorNode_pauliContrDown]
+    rw [(contr_action _ _).symm]
+    rw [contr_tensor_eq <| (prod_action _ _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| (contr_action _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| (prod_action _ _ _).symm]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_fst <|
+      action_pauliContr _]
+    rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <| prod_tensor_eq_snd <|
+      action_altRightMetric _]
+    erw [contr_tensor_eq <| prod_tensor_eq_snd <| action_altLeftMetric _]
+  conv =>
+    rhs
+    rw [tensorNode_pauliContrDown]
 
 end PauliMatrix
