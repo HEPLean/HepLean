@@ -3,10 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Lorentz.ComplexTensor.Units.Basic
 import PhysLean.Lorentz.ComplexTensor.OfRat
-import PhysLean.Lorentz.ComplexTensor.Basis
-import PhysLean.Tensors.TensorSpecies.OfInt
+import PhysLean.Lorentz.ComplexTensor.Units.Basic
 /-!
 
 ## Basis of units
@@ -134,7 +132,7 @@ lemma altLeftLeftUnit_tensorBasis : altLeftLeftUnit =
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
   rw (transparency := .instances) [Fermion.altLeftLeftUnit_apply_one]
   rw [Fermion.altLeftLeftUnitVal_expand_tmul]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add]
   congr 1
   all_goals
     erw [pairIsoSep_tmul]
@@ -159,7 +157,7 @@ lemma leftAltLeftUnit_tensorBasis : leftAltLeftUnit =
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
   rw (transparency := .instances) [Fermion.leftAltLeftUnit_apply_one]
   rw [Fermion.leftAltLeftUnitVal_expand_tmul]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add]
   congr 1
   all_goals
     erw [pairIsoSep_tmul]
@@ -184,7 +182,7 @@ lemma altRightRightUnit_tensorBasis : altRightRightUnit =
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
   rw (transparency := .instances) [Fermion.altRightRightUnit_apply_one]
   rw [Fermion.altRightRightUnitVal_expand_tmul]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add]
   congr 1
   all_goals
     erw [pairIsoSep_tmul]
@@ -209,7 +207,7 @@ lemma rightAltRightUnit_tensorBasis : rightAltRightUnit =
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
   rw (transparency := .instances) [Fermion.rightAltRightUnit_apply_one]
   rw [Fermion.rightAltRightUnitVal_expand_tmul]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add]
   congr 1
   all_goals
     erw [pairIsoSep_tmul]
