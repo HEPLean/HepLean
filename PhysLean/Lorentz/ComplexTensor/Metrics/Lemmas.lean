@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Lorentz.ComplexTensor.Metrics.Basis
-import PhysLean.Lorentz.ComplexTensor.Units.Basic
+import PhysLean.Lorentz.ComplexTensor.Units.Symm
 import PhysLean.Tensors.TensorSpecies.OfInt
 /-!
 
@@ -115,38 +115,230 @@ lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
 /-- The contraction of the covariant metric with the contravariant metric is the unit
 `{η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ`.
 -/
-informal_lemma coMetric_contr_contrMetric where
-  deps := [``coMetric, ``contrMetric, ``coContrUnit]
+lemma coMetric_contr_contrMetric : {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [coMetric_eq_ofRat, contrMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [coContrUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-- The contraction of the contravariant metric with the covariant metric is the unit
 `{η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ`.
 -/
-informal_lemma contrMetric_contr_coMetric where
-  deps := [``contrMetric, ``coMetric, ``contrCoUnit]
+lemma contrMetric_contr_coMetric : {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [coMetric_eq_ofRat, contrMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [contrCoUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-- The contraction of the left metric with the alt-left metric is the unit
 `{εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ`.
 -/
-informal_lemma leftMetric_contr_altLeftMetric where
-  deps := [``leftMetric, ``altLeftMetric, ``leftAltLeftUnit]
+lemma leftMetric_contr_altLeftMetric : {εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [leftMetric_eq_ofRat, altLeftMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [leftAltLeftUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-- The contraction of the right metric with the alt-right metric is the unit
 `{εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ`.
 -/
-informal_lemma rightMetric_contr_altRightMetric where
-  deps := [``rightMetric, ``altRightMetric, ``rightAltRightUnit]
+lemma rightMetric_contr_altRightMetric : {εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [rightMetric_eq_ofRat, altRightMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [rightAltRightUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-- The contraction of the alt-left metric with the left metric is the unit
 `{εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ`.
 -/
-informal_lemma altLeftMetric_contr_leftMetric where
-  deps := [``altLeftMetric, ``leftMetric, ``altLeftLeftUnit]
+lemma altLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [leftMetric_eq_ofRat, altLeftMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [altLeftLeftUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-- The contraction of the alt-right metric with the right metric is the unit
 `{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ`.
 -/
-informal_lemma altRightMetric_contr_rightMetric where
-  deps := [``altRightMetric, ``rightMetric, ``altRightRightUnit]
+lemma altRightMetric_contr_rightMetric : {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ := by
+  apply (complexLorentzTensor.tensorBasis _).repr.injective
+  ext b
+  rw [TensorTree.contr_tensorBasis_repr_apply]
+  conv_lhs =>
+    enter [2, x]
+    rw [TensorTree.prod_tensorBasis_repr_apply]
+    simp only [rightMetric_eq_ofRat, altRightMetric_eq_ofRat]
+    simp only [Fin.isValue, Function.comp_apply,
+      tensorNode_tensor, ofRat_tensorBasis_repr_apply, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
+      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    left
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  conv_lhs =>
+    enter [2, x]
+    right
+    rw (transparency := .instances) [contr_basis_ratComplexNum]
+  conv_lhs =>
+    enter [2, x]
+    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
+  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
+  conv_rhs =>
+    rw [TensorTree.perm_tensorBasis_repr_apply]
+    rw [altRightRightUnit_eq_ofRat]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Function.comp_apply, Fin.isValue,
+    Finset.univ_eq_attach, cons_val_zero, cons_val_one, head_cons, mul_one, mul_neg,
+    mul_zero, map_sum, tensorNode_tensor, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv,
+    ofRat_tensorBasis_repr_apply]
+  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
+  revert b
+  decide +kernel
 
 /-!
 

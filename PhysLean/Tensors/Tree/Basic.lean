@@ -458,6 +458,18 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
     rw [Finset.mul_sum]
     simp [mul_assoc]
 
+lemma contr_tensorBasis_repr_apply_eq {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : Fin (n + 1 + 1)}
+    {j : Fin (n + 1)} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
+    (b : Π k, Fin (S.repDim (c (i.succAbove (j.succAbove k))))) (a : S.k) :
+    (S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b = a
+    ↔
+    ∑ (b' : TensorBasis.ContrSection b),
+    ((S.tensorBasis c).repr t.tensor b'.1) *
+    S.castToField ((S.contr.app (Discrete.mk (c i))).hom
+    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
+    (b'.1 (i.succAbove j))))) = a := by
+  rw [contr_tensorBasis_repr_apply]
+
 @[simp]
 lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : (OverColor.mk c) ⟶ (OverColor.mk c1)} (t : TensorTree S c)
@@ -498,6 +510,12 @@ lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
 @[simp]
 lemma smul_tensorBasis_repr {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
     (S.tensorBasis c).repr (smul a T).tensor = a • (S.tensorBasis c).repr T.tensor := by
+  rw [smul_tensor]
+  simp
+
+lemma smul_tensorBasis_repr_apply {c : Fin n → S.C} (a : S.k) (T : TensorTree S c)
+    (b : Π j, Fin (S.repDim (c j))) :
+    (S.tensorBasis c).repr (smul a T).tensor b = a * (S.tensorBasis c).repr T.tensor b := by
   rw [smul_tensor]
   simp
 
