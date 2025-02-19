@@ -99,7 +99,9 @@ lemma deriv_hermitePolynomial : (n : ℕ) →
     rw [deriv_sub (by simp [f1]; fun_prop) (by simp [f2]; fun_prop)]
     simp only [f1, f2]
     rw [deriv_mul _ (by fun_prop)]
-    simp
+    simp only [nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply, Nat.cast_mul, Nat.cast_add,
+      Nat.cast_one, differentiableAt_const, deriv_const_mul_field', Pi.natCast_def, Pi.mul_apply,
+      Pi.ofNat_apply, Pi.add_apply, Pi.one_apply, f2, f1]
     have h1 : deriv (2 * fun x => x) x = 2 := by
       erw [deriv_const_mul_field']
       simp
@@ -110,7 +112,7 @@ lemma deriv_hermitePolynomial : (n : ℕ) →
     rw [ih, ih']
     simp [hermitePolynomial]
     ring_nf
-    simp
+    simp only [nsmul_eq_mul, Nat.cast_ofNat, f2, f1]
     change DifferentiableAt ℝ (fun x => 2 * x) x
     fun_prop
 
@@ -169,14 +171,16 @@ lemma eigenfunction_zero (m ℏ ω : ℝ) : eigenfunction m ℏ ω 0 = fun (x : 
 lemma deriv_eigenfunction_zero (m ℏ ω : ℝ) : deriv (eigenfunction m ℏ ω 0) =
     Complex.ofReal (- m * ω / ℏ) • Complex.ofReal * eigenfunction m ℏ ω 0 := by
   rw [eigenfunction_zero m ℏ ω]
-  simp
+  simp only [neg_mul, deriv_const_mul_field', Complex.ofReal_div, Complex.ofReal_neg,
+    Complex.ofReal_mul, Algebra.smul_mul_assoc]
   ext x
   have h1 : deriv (fun x => Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))) x =
       - m * ω * x /ℏ* Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ)) := by
     trans deriv (Complex.exp ∘ (fun x => -(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))) x
     · rfl
     rw [deriv_comp]
-    simp
+    simp only [Complex.deriv_exp, deriv_div_const, deriv.neg', differentiableAt_const,
+      deriv_const_mul_field', neg_mul]
     have h1' : deriv (fun x => (Complex.ofReal x) ^ 2) x = 2 * x := by
       trans deriv (fun x => Complex.ofReal x * Complex.ofReal x) x
       · apply congr
@@ -185,7 +189,7 @@ lemma deriv_eigenfunction_zero (m ℏ ω : ℝ) : deriv (eigenfunction m ℏ ω 
         ring
         rfl
       rw [deriv_mul]
-      simp
+      simp only [Complex.deriv_ofReal, one_mul, mul_one]
       ring
       exact Complex.differentiableAt_ofReal
       exact Complex.differentiableAt_ofReal
@@ -198,7 +202,7 @@ lemma deriv_eigenfunction_zero (m ℏ ω : ℝ) : deriv (eigenfunction m ℏ ω 
     refine DifferentiableAt.const_mul ?_ _
     refine DifferentiableAt.pow ?_ 2
     exact Complex.differentiableAt_ofReal
-  simp
+  simp only [Pi.smul_apply, Pi.mul_apply, smul_eq_mul]
   rw [h1]
   ring
 
@@ -214,9 +218,10 @@ lemma deriv_deriv_eigenfunction_zero (m ℏ ω : ℝ) (x : ℝ) :
     + ↑x * (-(↑m * ↑ω) / ↑ℏ * ↑x * eigenfunction m ℏ ω 0 x)) := by
   simp [deriv_eigenfunction_zero]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
-  simp
+  simp only [differentiableAt_const, deriv_const_mul_field', Complex.deriv_ofReal, mul_one]
   rw [deriv_eigenfunction_zero]
-  simp
+  simp only [neg_mul, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul, Pi.mul_apply,
+    Pi.smul_apply, smul_eq_mul]
   ring
 
 lemma schrodingerOperator_eigenfunction_zero (m ℏ ω : ℝ) (x : ℝ)
@@ -238,10 +243,12 @@ lemma eigenFunction_succ_eq_mul_eigenfunction_zero (m ℏ ω : ℝ) (n : ℕ) :
   rw [eigenfunction, eigenfunction_zero]
   repeat rw [mul_assoc]
   congr 1
-  simp
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+    Complex.ofReal_inv]
   rw [mul_comm, mul_assoc]
   congr 1
-  simp
+  simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring_nf
 
 lemma deriv_hermitePolynomial_succ (m ℏ ω : ℝ) (n : ℕ) :
@@ -255,11 +262,14 @@ lemma deriv_hermitePolynomial_succ (m ℏ ω : ℝ) (n : ℕ) :
   · rfl
   rw [fderiv_comp_deriv]
   rw [fderiv_comp_deriv]
-  simp
+  simp only [Function.comp_apply, fderiv_eq_smul_deriv, smul_eq_mul, Complex.deriv_ofReal,
+    Complex.real_smul, Complex.ofReal_mul, mul_one]
   rw [deriv_mul]
-  simp
+  simp only [deriv_const', zero_mul, deriv_id'', mul_one, zero_add]
   rw [deriv_hermitePolynomial]
-  simp
+  simp only [Pi.natCast_def, Pi.mul_apply, Pi.ofNat_apply, cast_ofNat, Pi.add_apply, Pi.one_apply,
+    Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_add, Complex.ofReal_natCast,
+    Complex.ofReal_one]
   ring
   all_goals fun_prop
 
@@ -274,9 +284,12 @@ lemma deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) :
   rw [eigenFunction_succ_eq_mul_eigenfunction_zero]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
-  simp
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
+    Complex.ofReal_inv, differentiableAt_const, deriv_mul, deriv_const', zero_mul, mul_zero,
+    add_zero, zero_add, smul_eq_mul]
   rw [deriv_hermitePolynomial_succ, deriv_eigenfunction_zero]
-  simp
+  simp only [neg_mul, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul, Pi.mul_apply,
+    Pi.smul_apply, smul_eq_mul]
   ring
 
 lemma deriv_deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
@@ -289,7 +302,11 @@ lemma deriv_deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
       (-(↑m * ↑ω) / ↑ℏ) * (1 + (-(↑m * ↑ω) / ↑ℏ) * x ^ 2) *
       (hermitePolynomial (n + 1) (√(m * ω / ℏ) * x))) * eigenfunction m ℏ ω 0 x) := by
   rw [deriv_eigenFunction_succ]
-  simp
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
+    Complex.ofReal_inv, smul_eq_mul, differentiableAt_const, deriv_const_mul_field',
+    mul_eq_mul_left_iff, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
+    Real.sqrt_eq_zero, cast_eq_zero, ne_eq, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false,
+    not_false_eq_true, pow_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
   left
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   rw [deriv_eigenfunction_zero]
@@ -297,11 +314,12 @@ lemma deriv_deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
   left
   rw [deriv_add (by fun_prop) (by fun_prop)]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
-  simp
+  simp only [differentiableAt_const, deriv_mul, deriv_const', zero_mul, mul_zero, add_zero,
+    deriv_add, zero_add]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
-  simp
+  simp only [deriv_mul_const_field', Complex.deriv_ofReal, mul_one]
   rw [deriv_hermitePolynomial_succ]
-  simp
+  simp only
   ring
 
 lemma deriv_deriv_eigenFunction_one (m ℏ ω : ℝ) (x : ℝ) :
@@ -376,10 +394,9 @@ lemma deriv_deriv_eigenFunction_succ_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) (
     ring
 
 lemma schrodingerOperator_eigenfunction_succ_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ)
-      (hm : 0 < m) (hℏ : 0 < ℏ) (hω : 0 ≤ ω) :
+    (hm : 0 < m) (hℏ : 0 < ℏ) (hω : 0 ≤ ω) :
     schrodingerOperator m ℏ ω (eigenfunction m ℏ ω (n + 2)) x=
     eigenValue ℏ ω (n + 2) * eigenfunction m ℏ ω (n + 2) x := by
-
   simp [schrodingerOperator, eigenValue]
   rw [deriv_deriv_eigenFunction_succ_succ _ _ _ _ _ hm hℏ hω]
   have hm' := Complex.ofReal_ne_zero.mpr (Ne.symm (_root_.ne_of_lt hm))
