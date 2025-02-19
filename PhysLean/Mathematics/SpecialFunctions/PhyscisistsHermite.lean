@@ -1,5 +1,7 @@
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 /-!
 
 # Physicists Hermite Polynomial
@@ -61,6 +63,10 @@ lemma physHermite_succ' (n : ℕ) :
 
 noncomputable def physHermiteFun (n : ℕ) : ℝ → ℝ := fun x => aeval x (physHermite n)
 
+@[simp]
+lemma physHermiteFun_zero_apply (x : ℝ) : physHermiteFun 0 x = 1 := by
+  simp [physHermiteFun, aeval]
+
 lemma physHermiteFun_eq_aeval_physHermite (n : ℕ) :
     physHermiteFun n = fun x => aeval x (physHermite n) := rfl
 
@@ -117,7 +123,48 @@ lemma deriv_physHermiteFun' (x : ℝ)
     deriv (fun x => physHermiteFun n (f x)) x
     = (2 * n * physHermiteFun  (n - 1) (f x)) * deriv f x := by
   unfold deriv
-  rw[fderiv_physHermiteFun (hf:=by fun_prop)]
+  rw [fderiv_physHermiteFun (hf:=by fun_prop)]
   rfl
+
+/-!
+
+## Relationship to Gaussians
+
+-/
+
+lemma deriv_gaussian_eq_physHermiteFun_mul_gaussian (n : ℕ) (x : ℝ) :
+    deriv^[n] (fun y => Real.exp (- y ^ 2)) x =
+    (-1 : ℝ) ^ n * physHermiteFun n x * Real.exp (- x ^ 2) := by
+  rw [mul_assoc]
+  induction' n with n ih generalizing x
+  · rw [Function.iterate_zero_apply, pow_zero, one_mul, physHermiteFun_zero_apply, one_mul]
+  · replace ih : deriv^[n] _ = _ := _root_.funext ih
+    have deriv_gaussian :
+      deriv (fun y => Real.exp (-(y ^ 2 ))) x = -2 * x * Real.exp (-(x ^ 2 )) := by
+      rw [deriv_exp (by simp)]; simp; ring
+    rw [Function.iterate_succ_apply', ih, deriv_const_mul_field, deriv_mul, pow_succ (-1 : ℝ),
+      deriv_gaussian, physHermiteFun_succ]
+    · rw [deriv_physHermiteFun]
+      simp
+      ring
+    · apply Polynomial.differentiable_aeval
+    · apply DifferentiableAt.exp
+      simp
+
+lemma physHermiteFun_eq_deriv_gaussian  (n : ℕ) (x : ℝ) :
+    physHermiteFun n x = (-1 : ℝ) ^ n * deriv^[n]
+    (fun y => Real.exp (- y ^ 2)) x / Real.exp (- x ^ 2) := by
+  rw [deriv_gaussian_eq_physHermiteFun_mul_gaussian]
+  field_simp [Real.exp_ne_zero]
+  rw [← @smul_eq_mul ℝ _ ((-1) ^ n), ← inv_smul_eq_iff₀, mul_assoc, smul_eq_mul, ← inv_pow, ←
+    neg_inv, inv_one]
+  exact pow_ne_zero _ (by norm_num)
+
+
+lemma physHermiteFun_eq_deriv_gaussian'  (n : ℕ) (x : ℝ) :
+    physHermiteFun n x = (-1 : ℝ) ^ n * deriv^[n] (fun y => Real.exp (- y ^ 2)) x *
+    Real.exp (x ^ 2) := by
+  rw [physHermiteFun_eq_deriv_gaussian, Real.exp_neg]
+  field_simp [Real.exp_ne_zero]
 
 end PhysLean

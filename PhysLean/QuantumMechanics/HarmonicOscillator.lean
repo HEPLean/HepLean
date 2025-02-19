@@ -187,7 +187,6 @@ lemma deriv_physHermiteFun_succ (m ℏ ω : ℝ) (n : ℕ) :
   ring
   all_goals fun_prop
 
-
 lemma deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) :
     deriv (eigenfunction m ℏ ω (n + 1)) = fun x =>
     Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1) !)) •
