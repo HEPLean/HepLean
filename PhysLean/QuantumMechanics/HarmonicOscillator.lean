@@ -6,6 +6,10 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.SpecialFunctions.Integrals
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.RingTheory.Polynomial.Hermite.Gaussian
+import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 /-!
 
 # 1d Harmonic Oscillator
@@ -24,97 +28,6 @@ This file contains
 
 -/
 
-/-!
-
-## Some preliminary results about Hermite polynomials.
-
-To be moved.
-
--/
-
-/-- The Hermite polynomials defined via their recursive relation. -/
-def hermitePolynomial : (n : ℕ) → (x : ℝ) → ℝ
-  | 0, _ => 1
-  | 1, x => 2 * x
-  | (n + 2), x => 2 * x * hermitePolynomial (n + 1) x - 2 * (n + 1) * hermitePolynomial n x
-
-@[fun_prop]
-lemma hermitePolynomial_differentiableAt : (n : ℕ) → (x : ℝ) →
-    DifferentiableAt ℝ (hermitePolynomial n) x
-  | 0, x => by
-    simp [hermitePolynomial]
-  | 1, x => by
-    simp [hermitePolynomial]
-    fun_prop
-  | n + 2, x => by
-    simp [hermitePolynomial]
-    have ih := hermitePolynomial_differentiableAt (n + 1) x
-    have ih' := hermitePolynomial_differentiableAt n x
-    fun_prop
-
-lemma hermitePolynomial_add_succ_succ (n : ℕ) :
-    hermitePolynomial (n + 2) = 2 • (fun x => x) * hermitePolynomial (n + 1) -
-    (2 * (n + 1) : ℝ) • hermitePolynomial n := by
-  simp [hermitePolynomial]
-  rfl
-
-lemma deriv_hermitePolynomial : (n : ℕ) →
-    deriv (hermitePolynomial (n + 1)) = 2 * (n + 1) * hermitePolynomial n
-  | 0 => by
-    simp [hermitePolynomial]
-    trans (deriv fun x => (fun x => 2) x * id x)
-    rfl
-    funext x
-    have h1 := deriv_mul (c := fun x => (2 : ℝ)) (d := id) (x := x)
-      (differentiableAt_const 2) (differentiableAt_id)
-    rw [h1]
-    simp
-  | 1 => by
-    simp [hermitePolynomial]
-    ring_nf
-    let f3 := fun (x : ℝ) => (-2 : ℝ)
-    let f1 := fun (x : ℝ) => x
-    let f2 := fun (x : ℝ) => (4 : ℝ)
-    trans deriv (fun x => (f3 x + (f1 x * f1 x) * f2 x))
-    · apply congrArg
-      funext x
-      simp [f1, f2]
-      ring
-    funext x
-    rw [deriv_add (by fun_prop) (by fun_prop)]
-    rw [deriv_mul (by fun_prop) (by fun_prop)]
-    rw [deriv_mul (by fun_prop) (by fun_prop)]
-    simp [f1, f2, f3]
-    ring
-  | n + 2 => by
-    change deriv (hermitePolynomial ((n + 1) + 2)) = _
-    conv_lhs =>
-      rw [hermitePolynomial_add_succ_succ]
-    let f1 := fun (x : ℝ) => (2 • fun x => x) x * hermitePolynomial (n + 1 + 1) x
-    let f2 := fun x => (2 * ↑(n +1 + 1)) • hermitePolynomial (n + 1) x
-    funext x
-    trans deriv (fun x => f1 x - f2 x) x
-    · simp [f1, f2]
-      rfl
-    rw [deriv_sub (by simp [f1]; fun_prop) (by simp [f2]; fun_prop)]
-    simp only [f1, f2]
-    rw [deriv_mul _ (by fun_prop)]
-    simp only [nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply, Nat.cast_mul, Nat.cast_add,
-      Nat.cast_one, differentiableAt_const, deriv_const_mul_field', Pi.natCast_def, Pi.mul_apply,
-      Pi.ofNat_apply, Pi.add_apply, Pi.one_apply, f2, f1]
-    have h1 : deriv (2 * fun x => x) x = 2 := by
-      erw [deriv_const_mul_field']
-      simp
-      rfl
-    rw [h1]
-    have ih := deriv_hermitePolynomial n
-    have ih' := deriv_hermitePolynomial (n + 1)
-    rw [ih, ih']
-    simp [hermitePolynomial]
-    ring_nf
-    simp only [nsmul_eq_mul, Nat.cast_ofNat, f2, f1]
-    change DifferentiableAt ℝ (fun x => 2 * x) x
-    fun_prop
 
 /-!
 
@@ -149,7 +62,7 @@ namespace QuantumMechanics
 namespace HarmonicOscillator
 
 open Nat
-
+open PhysLean
 /-- The Schrodinger Operator for the Harmonic oscillator. -/
 noncomputable def schrodingerOperator (m ℏ ω : ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ := fun y =>
   - ℏ ^ 2 / (2 * m) * (deriv (fun y => deriv ψ y) y) + 1/2 *
@@ -158,7 +71,7 @@ noncomputable def schrodingerOperator (m ℏ ω : ℝ) (ψ : ℝ → ℂ) : ℝ 
 /-- The eigenfunctions for the Harmonic oscillator. -/
 noncomputable def eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) : ℂ :=
   1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) *
-  hermitePolynomial n (Real.sqrt (m * ω /ℏ) * x) * Real.exp (- m * ω * x^2 / (2 * ℏ))
+  physHermiteFun n (Real.sqrt (m * ω /ℏ) * x) * Real.exp (- m * ω * x^2 / (2 * ℏ))
 
 /-- The eigenvalues for the Harmonic oscillator. -/
 noncomputable def eigenValue (ℏ ω : ℝ) (n : ℕ) : ℝ := (n + 1/2) * ℏ * ω
@@ -166,7 +79,7 @@ noncomputable def eigenValue (ℏ ω : ℝ) (n : ℕ) : ℝ := (n + 1/2) * ℏ *
 lemma eigenfunction_zero (m ℏ ω : ℝ) : eigenfunction m ℏ ω 0 = fun (x : ℝ) =>
     (Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) * Complex.exp (- m * ω * x^2 / (2 * ℏ))) := by
   funext x
-  simp [eigenfunction, hermitePolynomial]
+  simp [eigenfunction, physHermiteFun]
 
 lemma deriv_eigenfunction_zero (m ℏ ω : ℝ) : deriv (eigenfunction m ℏ ω 0) =
     Complex.ofReal (- m * ω / ℏ) • Complex.ofReal * eigenfunction m ℏ ω 0 := by
@@ -237,7 +150,7 @@ lemma schrodingerOperator_eigenfunction_zero (m ℏ ω : ℝ) (x : ℝ)
 
 lemma eigenFunction_succ_eq_mul_eigenfunction_zero (m ℏ ω : ℝ) (n : ℕ) :
     eigenfunction m ℏ ω (n + 1) = fun x => Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1)!))
-    * Complex.ofReal (hermitePolynomial (n + 1) (Real.sqrt (m * ω / ℏ) * x))
+    * Complex.ofReal (physHermiteFun (n + 1) (Real.sqrt (m * ω / ℏ) * x))
     * eigenfunction m ℏ ω 0 x := by
   funext x
   rw [eigenfunction, eigenfunction_zero]
@@ -251,13 +164,13 @@ lemma eigenFunction_succ_eq_mul_eigenfunction_zero (m ℏ ω : ℝ) (n : ℕ) :
     Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring_nf
 
-lemma deriv_hermitePolynomial_succ (m ℏ ω : ℝ) (n : ℕ) :
-    deriv (fun x => Complex.ofReal (hermitePolynomial (n + 1) (Real.sqrt (m * ω / ℏ) * x))) =
+lemma deriv_physHermiteFun_succ (m ℏ ω : ℝ) (n : ℕ) :
+    deriv (fun x => Complex.ofReal (physHermiteFun (n + 1) (Real.sqrt (m * ω / ℏ) * x))) =
     fun x =>
     Complex.ofReal (Real.sqrt (m * ω / ℏ)) * 2 * (n + 1) *
-    hermitePolynomial n (Real.sqrt (m * ω / ℏ) * x) := by
+    physHermiteFun n (Real.sqrt (m * ω / ℏ) * x) := by
   funext x
-  trans deriv (Complex.ofReal ∘ hermitePolynomial (n + 1) ∘
+  trans deriv (Complex.ofReal ∘ physHermiteFun (n + 1) ∘
     fun (x : ℝ) => (Real.sqrt (m * ω / ℏ) * x)) x
   · rfl
   rw [fderiv_comp_deriv]
@@ -266,19 +179,21 @@ lemma deriv_hermitePolynomial_succ (m ℏ ω : ℝ) (n : ℕ) :
     Complex.real_smul, Complex.ofReal_mul, mul_one]
   rw [deriv_mul]
   simp only [deriv_const', zero_mul, deriv_id'', mul_one, zero_add]
-  rw [deriv_hermitePolynomial]
+  rw [deriv_physHermiteFun]
   simp only [Pi.natCast_def, Pi.mul_apply, Pi.ofNat_apply, cast_ofNat, Pi.add_apply, Pi.one_apply,
     Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_add, Complex.ofReal_natCast,
     Complex.ofReal_one]
+  simp
   ring
   all_goals fun_prop
+
 
 lemma deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) :
     deriv (eigenfunction m ℏ ω (n + 1)) = fun x =>
     Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1) !)) •
     (((Real.sqrt (m * ω / ℏ)) * 2 * (↑n + 1) *
-      ↑(hermitePolynomial n (Real.sqrt (m * ω / ℏ) * x))
-      + ↑(hermitePolynomial (n + 1) (Real.sqrt (m * ω / ℏ) * x)) *
+      ↑(physHermiteFun n (Real.sqrt (m * ω / ℏ) * x))
+      + ↑(physHermiteFun (n + 1) (Real.sqrt (m * ω / ℏ) * x)) *
       (-(↑m * ↑ω) / ↑ℏ * ↑x)) * eigenfunction m ℏ ω 0 x) := by
   funext x
   rw [eigenFunction_succ_eq_mul_eigenfunction_zero]
@@ -287,7 +202,7 @@ lemma deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) :
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
     Complex.ofReal_inv, differentiableAt_const, deriv_mul, deriv_const', zero_mul, mul_zero,
     add_zero, zero_add, smul_eq_mul]
-  rw [deriv_hermitePolynomial_succ, deriv_eigenfunction_zero]
+  rw [deriv_physHermiteFun_succ, deriv_eigenfunction_zero]
   simp only [neg_mul, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul, Pi.mul_apply,
     Pi.smul_apply, smul_eq_mul]
   ring
@@ -296,11 +211,11 @@ lemma deriv_deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
     deriv (fun x => deriv (eigenfunction m ℏ ω (n + 1)) x) x =
     Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1) !)) *
       ((↑√(m * ω / ℏ) * 2 * (↑n + 1) *
-      deriv (fun x => ↑(hermitePolynomial n (√(m * ω / ℏ) * x))) x +
+      deriv (fun x => ↑(physHermiteFun n (√(m * ω / ℏ) * x))) x +
       (-(↑m * ↑ω) / ↑ℏ) * ↑√(m * ω / ℏ) * (4 * (↑n + 1) * x) *
-      (hermitePolynomial n (√(m * ω / ℏ) * x)) +
+      (physHermiteFun n (√(m * ω / ℏ) * x)) +
       (-(↑m * ↑ω) / ↑ℏ) * (1 + (-(↑m * ↑ω) / ↑ℏ) * x ^ 2) *
-      (hermitePolynomial (n + 1) (√(m * ω / ℏ) * x))) * eigenfunction m ℏ ω 0 x) := by
+      (physHermiteFun (n + 1) (√(m * ω / ℏ) * x))) * eigenfunction m ℏ ω 0 x) := by
   rw [deriv_eigenFunction_succ]
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
     Complex.ofReal_inv, smul_eq_mul, differentiableAt_const, deriv_const_mul_field',
@@ -318,7 +233,7 @@ lemma deriv_deriv_eigenFunction_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
     deriv_add, zero_add]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   simp only [deriv_mul_const_field', Complex.deriv_ofReal, mul_one]
-  rw [deriv_hermitePolynomial_succ]
+  rw [deriv_physHermiteFun_succ]
   simp only
   ring
 
@@ -330,7 +245,8 @@ lemma deriv_deriv_eigenFunction_one (m ℏ ω : ℝ) (x : ℝ) :
         eigenfunction m ℏ ω 0 x) := by
   rw [deriv_deriv_eigenFunction_succ]
   congr 2
-  simp [hermitePolynomial]
+  simp [physHermiteFun_eq_aeval_physHermite, physHermite_one, Polynomial.aeval]
+
 
 lemma schrodingerOperator_eigenfunction_one (m ℏ ω : ℝ) (x : ℝ) (hm : m ≠ 0) (hℏ : ℏ ≠ 0) :
     schrodingerOperator m ℏ ω (eigenfunction m ℏ ω 1) x=
@@ -340,7 +256,7 @@ lemma schrodingerOperator_eigenfunction_one (m ℏ ω : ℝ) (x : ℝ) (hm : m �
   have hm' := Complex.ofReal_ne_zero.mpr hm
   have hℏ' := Complex.ofReal_ne_zero.mpr hℏ
   rw [eigenFunction_succ_eq_mul_eigenfunction_zero]
-  simp [hermitePolynomial]
+  simp [physHermiteFun_eq_aeval_physHermite, physHermite_one, Polynomial.aeval]
   ring_nf
   have hl : (Complex.ofReal √2 * ↑ℏ * (↑m * ↑√2 * ↑ℏ ^ 2)) ≠ 0 := by
     simp_all
@@ -354,24 +270,24 @@ lemma deriv_deriv_eigenFunction_succ_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) (
   trans Complex.ofReal (1/Real.sqrt (2 ^ (n + 1 + 1) * (n + 1 + 1) !)) *
         (((- m * ω / ℏ) * (2 * (n + 2)
         + (1 + (-(m * ω) / ℏ) * x ^ 2)) *
-        (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x))) * eigenfunction m ℏ ω 0 x)
+        (physHermiteFun (n + 2) (√(m * ω / ℏ) * x))) * eigenfunction m ℏ ω 0 x)
   rw [deriv_deriv_eigenFunction_succ]
   congr 2
   trans (√(m * ω / ℏ) * 2 * (n + 1 + 1) * (√(m * ω / ℏ) *
-    2 * (n + 1) * (hermitePolynomial n (√(m * ω / ℏ) * x))) +
+    2 * (n + 1) * (physHermiteFun n (√(m * ω / ℏ) * x))) +
     (-(m * ω) / ℏ) * √(m * ω / ℏ) * (4 * (n + 1 + 1) * x) *
-    (hermitePolynomial (n + 1) (√(m * ω / ℏ) * x)) +
-    (-(m * ω) / ℏ) * (1 + (-(m * ω) / ℏ) * x ^ 2) * (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x)))
-  · rw [deriv_hermitePolynomial_succ]
+    (physHermiteFun (n + 1) (√(m * ω / ℏ) * x)) +
+    (-(m * ω) / ℏ) * (1 + (-(m * ω) / ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(m * ω / ℏ) * x)))
+  · rw [deriv_physHermiteFun_succ]
     simp
-  trans ((m * ω / ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) * (hermitePolynomial n (√(m * ω / ℏ) * x))) +
+  trans ((m * ω / ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) * (physHermiteFun n (√(m * ω / ℏ) * x))) +
         (- (m * ω) / ℏ) * √(m * ω / ℏ) * (4 * (n + 1 + 1) * x) *
-        (hermitePolynomial (n + 1) (√(m * ω / ℏ) * x)) +
+        (physHermiteFun (n + 1) (√(m * ω / ℏ) * x)) +
         (-(m * ω) / ℏ) * (1 + (-(m * ω) / ℏ) * x ^ 2) *
-        (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x)))
+        (physHermiteFun (n + 2) (√(m * ω / ℏ) * x)))
   · congr 2
     trans (↑√(m * ω / ℏ) * ↑√(m * ω / ℏ)) * 2 * (↑n + 1 + 1) *
-    (2 * (↑n + 1) * ↑(hermitePolynomial n (√(m * ω / ℏ) * x)))
+    (2 * (↑n + 1) * ↑(physHermiteFun n (√(m * ω / ℏ) * x)))
     · ring
     congr 3
     rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Complex.ofReal_div]
@@ -381,14 +297,16 @@ lemma deriv_deriv_eigenFunction_succ_succ (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) (
     exact (mul_nonneg_iff_of_pos_left hm).mpr hω
     exact le_of_lt hℏ
   trans (- m * ω / ℏ) * (2 * (n + 1 + 1) *
-        (2 * (√(m * ω / ℏ) * x) * (hermitePolynomial (n + 1) (√(m * ω / ℏ) * x)) -
-        2 * (n + 1) * (hermitePolynomial n (√(m * ω / ℏ) * x)))
-        + (1 + (-(m * ω) / ℏ) * x ^ 2) * (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x)))
+        (2 * (√(m * ω / ℏ) * x) * (physHermiteFun (n + 1) (√(m * ω / ℏ) * x)) -
+        2 * (n + 1) * (physHermiteFun n (√(m * ω / ℏ) * x)))
+        + (1 + (-(m * ω) / ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(m * ω / ℏ) * x)))
   · ring
-  trans (- m * ω / ℏ) * (2 * (n + 1 + 1) * (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x))
-        + (1 + (-(m * ω) / ℏ) * x ^ 2) * (hermitePolynomial (n + 2) (√(m * ω / ℏ) * x)))
+  trans (- m * ω / ℏ) * (2 * (n + 1 + 1) * (physHermiteFun (n + 2) (√(m * ω / ℏ) * x))
+        + (1 + (-(m * ω) / ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(m * ω / ℏ) * x)))
   · congr
-    simp [hermitePolynomial]
+    conv_rhs =>
+      rw [physHermiteFun_succ]
+    simp
   ring
   · rw [eigenFunction_succ_eq_mul_eigenfunction_zero]
     ring
@@ -414,6 +332,79 @@ theorem schrodingerOperator_eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ)
   | 1 => schrodingerOperator_eigenfunction_one m ℏ ω x
     (Ne.symm (_root_.ne_of_lt hm)) (Ne.symm (_root_.ne_of_lt hℏ))
   | n + 2 => schrodingerOperator_eigenfunction_succ_succ m ℏ ω n x hm hℏ hω
+
+open Filter Finset
+
+
+lemma eigenFunction_sq (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
+    (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x)  =
+    (( 1/ (2 ^ n * n !)) * (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
+     Complex.ofReal ((physHermiteFun n (Real.sqrt (m * ω /ℏ) * x))^2 * (Real.exp (- m * ω * x^2 /  ℏ))) := by
+  calc eigenfunction m ℏ ω n x * eigenfunction m ℏ ω n x
+    _ =  (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ n * n !)) *
+      (Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
+     (physHermiteFun n (Real.sqrt (m * ω /ℏ) * x))^2 * (Real.exp (- m * ω * x^2 / (2 * ℏ)) * Real.exp (- m * ω * x^2 / (2 * ℏ))) := by
+      simp [eigenfunction]
+      ring
+    _ = ( 1/ (2 ^ n * n !)) *
+      ( (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
+     (physHermiteFun n (Real.sqrt (m * ω /ℏ) * x))^2 * (Real.exp (- m * ω * x^2 /  ℏ)) := by
+      congr 1
+      · congr 1
+        · congr 1
+          · trans  1 / ↑(√(2 ^ n * ↑n !) * ↑√(2 ^ n * ↑n !))
+            · field_simp
+            congr
+            trans Complex.ofReal ((2 ^ n * ↑n !))
+            · congr 1
+              refine Real.mul_self_sqrt ?_
+              refine Left.mul_nonneg ?_ ?_
+              refine pow_nonneg ?_ n
+              simp
+              exact cast_nonneg' n !
+            simp
+          · rw [← Complex.ofReal_mul]
+            congr
+            refine Real.mul_self_sqrt ?_
+            exact Real.sqrt_nonneg (m * ω / (Real.pi * ℏ))
+      · rw [← Complex.ofReal_mul]
+        congr
+        rw [← Real.exp_add]
+        simp
+        field_simp
+        ring
+  simp
+  ring
+
+
+
+
+
+
+/-!
+
+## Normalization of the wave functions.
+
+See e.g. https://www.phys.uconn.edu/~rozman/Courses/P2400_17S/downloads/harmonic-oscillator-qm.pdf
+-/
+lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) :
+    ∫ x : ℝ,  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) = 1 := by
+  conv_lhs =>
+    enter [2, x]
+    rw [eigenFunction_sq m ℏ ω n hℏ]
+  rw [MeasureTheory.integral_mul_left]
+  rw [integral_complex_ofReal]
+  have h1 : ∫ (x : ℝ), Real.exp (- x^2) = Real.sqrt (Real.pi) := by
+    trans ∫ (x : ℝ), Real.exp (- 1 * x^2)
+    · simp
+    rw [integral_gaussian]
+    simp
+  have h1 : ∫ (x : ℝ), (physHermiteFun n x) * deriv (fun x => Real.exp (- x^2)) x =
+      - ∫ (x : ℝ), deriv (physHermiteFun n) x * Real.exp (- x^2) := by
+      refine MeasureTheory.integral_mul_deriv_eq_deriv_mul_of_integrable ?_ ?_ ?_ ?_ ?_
+      sorry
+      sorry
+      refine MeasureTheory.Integrable.mul_of_top_right ?_ ?_
 
 end HarmonicOscillator
 
