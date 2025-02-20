@@ -112,6 +112,7 @@ import PhysLean.Mathematics.PiTensorProduct
 import PhysLean.Mathematics.RatComplexNum
 import PhysLean.Mathematics.SO3.Basic
 import PhysLean.Mathematics.SchurTriangulation
+import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.Basic
 import PhysLean.Meta.Informal.Basic
