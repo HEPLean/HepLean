@@ -23,7 +23,6 @@ This file contains
 
 ## TODO
 - Show that Schrodinger operator is linear.
-- Show that eigenfunctions are orthogonal and normalized.
 - Show that eigenfunctions satisfy the completeness relation.
 
 -/
@@ -513,7 +512,6 @@ lemma eigenFunction_orthogonal (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) (hm
   rw [physHermiteFun_orthogonal_cons]
   simp
   exact hnp
-
 
 end HarmonicOscillator
 
