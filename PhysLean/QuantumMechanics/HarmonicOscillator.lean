@@ -334,8 +334,38 @@ theorem schrodingerOperator_eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ)
 
 open Filter Finset
 
+lemma eigenFunction_mul (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) :
+  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω p x)  =
+    ((1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
+      ( (Real.sqrt (m * ω / (Real.pi * ℏ)))))  *
+     Complex.ofReal ((physHermiteFun n (Real.sqrt (m * ω /ℏ) * x)* physHermiteFun p (Real.sqrt (m * ω /ℏ) * x)) * (Real.exp (- m * ω * x^2 /  ℏ))) := by
+  calc eigenfunction m ℏ ω n x * eigenfunction m ℏ ω p x
+    _ =  (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
+      (Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
+     (physHermiteFun n (Real.sqrt (m * ω /ℏ) * x) * physHermiteFun p (Real.sqrt (m * ω /ℏ) * x)) *
+      (Real.exp (- m * ω * x^2 / (2 * ℏ)) * Real.exp (- m * ω * x^2 / (2 * ℏ))) := by
+      simp [eigenfunction]
+      ring
+    _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
+      ( (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
+     (physHermiteFun n (Real.sqrt (m * ω /ℏ) * x) * physHermiteFun p (Real.sqrt (m * ω /ℏ) * x)) * (Real.exp (- m * ω * x^2 /  ℏ)) := by
+      congr 1
+      · congr 1
+        · congr 1
+          · rw [← Complex.ofReal_mul]
+            congr
+            refine Real.mul_self_sqrt ?_
+            exact Real.sqrt_nonneg (m * ω / (Real.pi * ℏ))
+      · rw [← Complex.ofReal_mul]
+        congr
+        rw [← Real.exp_add]
+        simp
+        field_simp
+        ring
+  simp
+  ring
 
-lemma eigenFunction_sq (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
+lemma eigenFunction_mul_self (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
     (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x)  =
     (( 1/ (2 ^ n * n !)) * (Real.sqrt (m * ω / (Real.pi * ℏ))))  *
      Complex.ofReal ((physHermiteFun n (Real.sqrt (m * ω /ℏ) * x))^2 * (Real.exp (- m * ω * x^2 /  ℏ))) := by
@@ -375,9 +405,6 @@ lemma eigenFunction_sq (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
   simp
   ring
 
-
-
-
 /-!
 
 ## Normalization of the wave functions.
@@ -389,7 +416,7 @@ lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm :
     ∫ x : ℝ,  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) = 1 := by
   conv_lhs =>
     enter [2, x]
-    rw [eigenFunction_sq m ℏ ω n hℏ]
+    rw [eigenFunction_mul_self m ℏ ω n hℏ]
   rw [MeasureTheory.integral_mul_left]
   rw [integral_complex_ofReal]
   let c := √(m * ω / ℏ)
@@ -459,6 +486,33 @@ lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm :
   simp
   exact mul_pos hm hω
 
+lemma eigenFunction_orthogonal (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m) (hω : 0 < ω)
+    (hnp : n ≠ p) : ∫ x : ℝ,  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω p x) = 0 := by
+  conv_lhs =>
+    enter [2, x]
+    rw [eigenFunction_mul m ℏ ω n p hℏ]
+  rw [MeasureTheory.integral_mul_left]
+  rw [integral_complex_ofReal]
+  let c := √(m * ω / ℏ)
+  have h1 : c ^ 2 = m * ω / ℏ := by
+    trans c * c
+    · exact pow_two c
+    simp [c]
+    refine Real.mul_self_sqrt ?_
+    refine div_nonneg ?_ ?_
+    exact (mul_nonneg_iff_of_pos_left hm).mpr (le_of_lt hω)
+    exact le_of_lt hℏ
+  have hc : (∫ (x : ℝ), (physHermiteFun n (c * x) * physHermiteFun p (c * x)) *  Real.exp (-m * ω * x ^ 2 / ℏ))
+    =  ∫ (x : ℝ), (physHermiteFun n (c * x) * physHermiteFun p (c * x)) * Real.exp (- c^2 * x ^ 2) := by
+    congr
+    funext x
+    congr
+    simp [h1]
+    field_simp
+  rw [hc]
+  rw [physHermiteFun_orthogonal_cons]
+  simp
+  exact hnp
 
 
 end HarmonicOscillator

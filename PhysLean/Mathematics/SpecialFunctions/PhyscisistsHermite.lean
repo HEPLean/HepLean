@@ -376,8 +376,15 @@ theorem physHermiteFun_orthogonal {n m : ℕ} (hnm : n ≠ m) :
 
 lemma physHermiteFun_orthogonal_cons {n m : ℕ} (hnm : n ≠ m) (c : ℝ) :
     ∫ x : ℝ, (physHermiteFun n (c * x) * physHermiteFun m (c * x)) * Real.exp (- c ^ 2 * x ^ 2) = 0 := by
-  sorry
-
+  trans ∫ x : ℝ, (fun x => (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x^2)) (c * x)
+  · congr
+    funext x
+    simp
+    left
+    exact Eq.symm (mul_pow c x 2)
+  rw [MeasureTheory.Measure.integral_comp_mul_left (fun x => physHermiteFun n x * physHermiteFun m x * Real.exp (-x ^ 2)) c]
+  rw [physHermiteFun_orthogonal hnm]
+  simp
 
 theorem physHermiteFun_norm (n : ℕ) :
     ∫ x : ℝ, (physHermiteFun n x * physHermiteFun n x) * Real.exp (- x ^ 2) =
