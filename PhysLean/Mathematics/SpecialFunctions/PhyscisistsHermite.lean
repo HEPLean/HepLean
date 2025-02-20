@@ -67,6 +67,72 @@ lemma physHermite_succ' (n : ℕ) :
     physHermite (n + 1) = 2 • X * physHermite n - 2 * n • physHermite (n - 1) := by
   rw [physHermite_succ, derivative_physHermite]
 
+lemma coeff_physHhermite_succ_zero (n : ℕ) :
+    coeff (physHermite (n + 1)) 0 = - coeff (physHermite n) 1 := by
+  simp [physHermite_succ, coeff_derivative]
+
+lemma coeff_physHermite_succ_succ (n k : ℕ) : coeff (physHermite (n + 1)) (k + 1) =
+    2 * coeff (physHermite n) k - (k + 2) * coeff (physHermite n) (k + 2) := by
+  rw [physHermite_succ, coeff_sub, smul_mul_assoc, coeff_smul, coeff_X_mul, coeff_derivative,
+    mul_comm]
+  norm_cast
+
+
+lemma coeff_physHermite_of_lt {n k : ℕ} (hnk : n < k) : coeff (physHermite n) k = 0 := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_lt hnk
+  clear hnk
+  induction n generalizing k with
+  | zero => exact coeff_C
+  | succ n ih =>
+    have : n + k + 1 + 2 = n + (k + 2) + 1 := by ring
+    rw [coeff_physHermite_succ_succ, add_right_comm, this, ih k, ih (k + 2), mul_zero]
+    simp
+
+
+@[simp]
+lemma coeff_physHermite_self_succ (n : ℕ) : coeff (physHermite n) n = 2 ^ n := by
+  induction n with
+  | zero => exact coeff_C
+  | succ n ih =>
+    rw [coeff_physHermite_succ_succ, ih, coeff_physHermite_of_lt, mul_zero, sub_zero]
+    rw [← Int.pow_succ']
+    omega
+
+@[simp]
+lemma degree_physHermite (n : ℕ) : degree (physHermite n) = n := by
+  rw [degree_eq_of_le_of_coeff_ne_zero]
+  · simp_rw [degree_le_iff_coeff_zero, Nat.cast_lt]
+    rintro m hnm
+    exact coeff_physHermite_of_lt hnm
+  · simp
+
+@[simp]
+lemma natDegree_physHermite  {n : ℕ} : (physHermite  n).natDegree = n :=
+  natDegree_eq_of_degree_eq_some (degree_physHermite n)
+
+lemma iterate_derivative_physHermite_of_gt {n m : ℕ} (h : n < m) :
+    derivative^[m] (physHermite n) = 0 := by
+  refine iterate_derivative_eq_zero ?_
+  simpa using h
+
+open Nat
+
+@[simp]
+lemma iterate_derivative_physHermite_self  {n : ℕ} :
+    derivative^[n] (physHermite n) = C ((n !  : ℤ) * 2 ^ n) := by
+  refine coeff_inj.mp ?_
+  funext m
+  rw [Polynomial.coeff_iterate_derivative]
+  match m with
+  | 0 =>
+    rw [Polynomial.coeff_C_zero]
+    simp
+    rw [Nat.descFactorial_self]
+  | m + 1 =>
+    rw [coeff_physHermite_of_lt (by omega)]
+    rw [Polynomial.coeff_C_ne_zero (by omega)]
+    rfl
+
 noncomputable def physHermiteFun (n : ℕ) : ℝ → ℝ := fun x => aeval x (physHermite n)
 
 @[simp]
@@ -89,9 +155,25 @@ lemma physHermiteFun_succ (n : ℕ) :
   ext x
   simp [physHermite_succ', aeval, mul_assoc, physHermiteFun]
 
+lemma iterated_deriv_physHermiteFun_eq_aeval (n : ℕ) : (m : ℕ) →
+    deriv^[m] (physHermiteFun n) = fun x => (derivative^[m] (physHermite n)).aeval x
+  | 0 => by
+    simp [physHermiteFun_eq_aeval_physHermite]
+  | m + 1 => by
+    simp only [Function.iterate_succ_apply' , Function.comp_apply]
+    rw [iterated_deriv_physHermiteFun_eq_aeval n m]
+    funext x
+    rw [Polynomial.deriv_aeval]
+
 @[fun_prop]
 lemma physHermiteFun_differentiableAt (n : ℕ) (x : ℝ)  :
     DifferentiableAt ℝ (physHermiteFun n) x := Polynomial.differentiableAt_aeval (physHermite n)
+
+@[fun_prop]
+lemma deriv_physHermiteFun_differentiableAt (n m : ℕ) (x : ℝ) :
+    DifferentiableAt ℝ (deriv^[m] (physHermiteFun n)) x := by
+  rw [iterated_deriv_physHermiteFun_eq_aeval]
+  exact Polynomial.differentiableAt_aeval _
 
 lemma deriv_physHermiteFun (n : ℕ) :
     deriv (physHermiteFun n) = 2 * n * (physHermiteFun (n - 1)) := by
@@ -100,16 +182,6 @@ lemma deriv_physHermiteFun (n : ℕ) :
   rw [Polynomial.deriv_aeval (physHermite n)]
   rw [derivative_physHermite]
   simp [aeval, mul_assoc, physHermiteFun_eq_aeval_physHermite]
-
-lemma iterated_deriv_physHermiteFun (n : ℕ) : (m : ℕ) →
-    deriv^[m] (physHermiteFun n) = fun x => (derivative^[m] (physHermite n)).aeval x
-  | 0 => by
-    simp [physHermiteFun_eq_aeval_physHermite]
-  | m + 1 => by
-    simp only [Function.iterate_succ_apply' , Function.comp_apply]
-    rw [iterated_deriv_physHermiteFun n m]
-    funext x
-    rw [Polynomial.deriv_aeval]
 
 lemma fderiv_physHermiteFun
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (x : E)
@@ -198,16 +270,17 @@ lemma physHermiteFun_gaussian_integrable (n p m : ℕ) :
     ((-1 : ℝ) ^ n • physHermiteFun n * (fun x => Real.exp (- x ^ 2)))
     := by
     funext x
-    simp [deriv_gaussian_eq_physHermiteFun_mul_gaussian]
+    simp only [Pi.mul_apply, deriv_gaussian_eq_physHermiteFun_mul_gaussian, Algebra.smul_mul_assoc,
+      Pi.smul_apply, smul_eq_mul, mul_eq_mul_left_iff]
     ring_nf
     left
     trivial
   rw [h1]
-  simp
+  simp only [Algebra.smul_mul_assoc, Algebra.mul_smul_comm]
   refine MeasureTheory.Integrable.smul ((-1) ^ n) ?_
   have h2 : deriv^[m] (physHermiteFun p) * physHermiteFun n =
       fun x => (derivative^[m] (physHermite p) * physHermite n).aeval x := by
-    rw [iterated_deriv_physHermiteFun, physHermiteFun_eq_aeval_physHermite]
+    rw [iterated_deriv_physHermiteFun_eq_aeval, physHermiteFun_eq_aeval_physHermite]
     funext x
     simp
   conv =>
@@ -223,5 +296,82 @@ lemma physHermiteFun_gaussian_integrable (n p m : ℕ) :
   apply guassian_integrable_polynomial
   exact Real.zero_lt_one
 
+lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_exp (n m : ℕ) :
+    ∫ x : ℝ,  (physHermiteFun n x * physHermiteFun m x) * Real.exp (-x ^ 2) =
+    (-1 : ℝ) ^ m * ∫ x : ℝ, (physHermiteFun n x * (deriv^[m] fun x => Real.exp (-x ^ 2)) x) := by
+  have h1 (x : ℝ) : (physHermiteFun n x * physHermiteFun m x) * Real.exp (-x ^ 2)
+    = (-1 : ℝ) ^ m * (physHermiteFun n x * (deriv^[m] fun x => Real.exp (-x ^ 2)) x) := by
+    conv_lhs =>
+      enter [1, 2]
+      rw [physHermiteFun_eq_deriv_gaussian']
+    rw [mul_assoc, mul_assoc, ← Real.exp_add]
+    simp
+    ring
+  simp [h1]
+  exact MeasureTheory.integral_mul_left ((-1) ^ m) fun a =>
+      physHermiteFun n a * deriv^[m] (fun x => Real.exp (-x ^ 2)) a
+
+lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive (n m : ℕ) :  (p : ℕ) → (hpm : p ≤ m) →
+    ∫ x : ℝ,  (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x ^ 2) =
+    (-1 : ℝ) ^ (m - p) * ∫ x : ℝ, (deriv^[p] (physHermiteFun n) x * (deriv^[m - p] fun x => Real.exp (-x ^ 2)) x)
+  | 0, h => by
+    exact integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_exp n m
+  | p + 1, h => by
+    rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive n m p]
+    have h1 : m - p = m - (p + 1) + 1 := by omega
+    rw [h1]
+    rw [Function.iterate_succ_apply']
+    conv_rhs =>
+      rw [Function.iterate_succ_apply']
+    have h1 : (-1 : ℝ) ^ (m - (p + 1) + 1) = (-1) ^ (m - (p + 1)) * (-1) := by
+      rw [pow_add]
+      simp
+    rw [h1, mul_assoc]
+    congr
+    have hl :  ∫ (x : ℝ), deriv^[p] (physHermiteFun n) x * deriv (deriv^[m - (p + 1)] fun x => Real.exp (-x ^ 2)) x =
+      - ∫ (x : ℝ), deriv (deriv^[p] (physHermiteFun n)) x * deriv^[m - (p + 1)] (fun x => Real.exp (-x ^ 2)) x := by
+      apply MeasureTheory.integral_mul_deriv_eq_deriv_mul_of_integrable
+      · intro x
+        refine DifferentiableAt.hasDerivAt ?_
+        fun_prop
+      · intro x
+        simp
+        have h1 : (deriv^[m - (p + 1)] fun x => Real.exp (-x ^ 2)) =
+          fun x => (-1 : ℝ) ^ (m - (p + 1))  * physHermiteFun (m - (p + 1)) x * Real.exp (- x ^ 2) := by
+          funext x
+          exact deriv_gaussian_eq_physHermiteFun_mul_gaussian (m - (p + 1)) x
+        rw [h1]
+        fun_prop
+      · rw [← Function.iterate_succ_apply' deriv]
+        exact physHermiteFun_gaussian_integrable _ _ _
+      · rw [← Function.iterate_succ_apply' deriv]
+        exact physHermiteFun_gaussian_integrable _ _ _
+      · fun_prop
+    rw [hl]
+    simp
+    omega
+
+lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv (n m : ℕ) :
+    ∫ x : ℝ,  (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x ^ 2) =
+    ∫ x : ℝ, (deriv^[m] (physHermiteFun n) x * (Real.exp (-x ^ 2))) := by
+  rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive n m m (by rfl)]
+  simp
+
+
+lemma physHermiteFun_orthogonal_lt {n m : ℕ} (hnm : n < m) :
+    ∫ x : ℝ,  (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x ^ 2) = 0 := by
+  rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv]
+  rw [iterated_deriv_physHermiteFun_eq_aeval, iterate_derivative_physHermite_of_gt hnm]
+  simp
+
+theorem physHermiteFun_orthogonal {n m : ℕ} (hnm : n ≠ m) :
+    ∫ x : ℝ, (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x ^ 2) = 0 := by
+  by_cases hnm' : n < m
+  · exact physHermiteFun_orthogonal_lt hnm'
+  · have hmn : m < n := by omega
+    conv_lhs =>
+      enter [2, x, 1]
+      rw [mul_comm]
+    rw [physHermiteFun_orthogonal_lt hmn]
 
 end PhysLean
