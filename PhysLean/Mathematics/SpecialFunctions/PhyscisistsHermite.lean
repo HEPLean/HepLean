@@ -261,6 +261,25 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
   exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
 
 @[fun_prop]
+lemma guassian_integrable_polynomial_cons {b c : ℝ} (hb : 0 < b) (P : Polynomial ℤ) :
+    MeasureTheory.Integrable fun x : ℝ => (P.aeval (c * x)) * Real.exp (-b * x ^ 2) := by
+  conv =>
+    enter [1, x]
+    rw [Polynomial.aeval_eq_sum_range, Finset.sum_mul]
+  apply MeasureTheory.integrable_finset_sum
+  intro i hi
+  have h2 : (fun a => P.coeff i • (c * a) ^ i * Real.exp (-b * a ^ 2)) =
+      (c ^ i * P.coeff i : ℝ) • (fun x => (x ^ (i : ℝ) * Real.exp (-b * x ^ 2))) := by
+    funext x
+    simp [mul_assoc]
+    ring
+  rw [h2]
+  refine MeasureTheory.Integrable.smul (c ^ i * P.coeff i : ℝ) ?_
+  apply integrable_rpow_mul_exp_neg_mul_sq (s := i)
+  exact hb
+  exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
+
+@[fun_prop]
 lemma physHermiteFun_gaussian_integrable (n p m : ℕ) :
     MeasureTheory.Integrable (deriv^[m] (physHermiteFun p) * deriv^[n] fun x => Real.exp (-x ^ 2))
     MeasureTheory.volume := by

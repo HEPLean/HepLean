@@ -12,7 +12,6 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 
 -/
 
-
 namespace QuantumMechanics
 
 namespace OneDimension
@@ -28,12 +27,13 @@ lemma mem_iff {f : ℝ →ₘ[MeasureTheory.volume] ℂ} : f ∈ HilbertSpace
   rw [HilbertSpace]
   rw [MeasureTheory.Lp.mem_Lp_iff_memℒp]
   simp [MeasureTheory.Memℒp]
-  have h1 : MeasureTheory.AEStronglyMeasurable (↑f) MeasureTheory.volume  := by
+  have h1 : MeasureTheory.AEStronglyMeasurable (↑f) MeasureTheory.volume := by
     exact MeasureTheory.AEEqFun.aestronglyMeasurable f
   simp [h1]
   rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
   simp [MeasureTheory.Integrable]
-  have h0 : MeasureTheory.AEStronglyMeasurable (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
+  have h0 : MeasureTheory.AEStronglyMeasurable
+    (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
     apply MeasureTheory.AEStronglyMeasurable.pow
     refine Continuous.comp_aestronglyMeasurable ?_ h1
     exact Complex.continuous_abs
@@ -49,12 +49,14 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
   rw [HilbertSpace]
   rw [MeasureTheory.Lp.mem_Lp_iff_memℒp]
   simp [MeasureTheory.Memℒp]
-  have h1 : MeasureTheory.AEStronglyMeasurable (MeasureTheory.AEEqFun.mk f hf) MeasureTheory.volume  := by
+  have h1 : MeasureTheory.AEStronglyMeasurable
+    (MeasureTheory.AEEqFun.mk f hf) MeasureTheory.volume := by
     apply MeasureTheory.AEEqFun.aestronglyMeasurable
   simp [h1]
   rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
   simp [MeasureTheory.Integrable]
-  have h0 : MeasureTheory.AEStronglyMeasurable (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
+  have h0 : MeasureTheory.AEStronglyMeasurable
+    (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
     apply MeasureTheory.AEStronglyMeasurable.pow
     refine Continuous.comp_aestronglyMeasurable ?_ hf
     exact Complex.continuous_abs

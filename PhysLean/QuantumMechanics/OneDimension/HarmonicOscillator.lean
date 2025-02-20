@@ -65,6 +65,13 @@ noncomputable def eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) : ℂ :=
   1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) *
   physHermiteFun n (Real.sqrt (m * ω /ℏ) * x) * Real.exp (- m * ω * x^2 / (2 * ℏ))
 
+lemma eigenfunction_eq (m ℏ ω : ℝ) (n : ℕ):
+    eigenfunction m ℏ ω n  = fun (x : ℝ) =>
+    ((1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ)))) *
+    Complex.ofReal (physHermiteFun n (Real.sqrt (m * ω / ℏ) * x) * Real.exp (- m * ω * x^2 / (2 * ℏ)))) := by
+  funext x
+  simp [eigenfunction]
+  ring
 /-- The eigenvalues for the Harmonic oscillator. -/
 noncomputable def eigenValue (ℏ ω : ℝ) (n : ℕ) : ℝ := (n + 1/2) * ℏ * ω
 
@@ -523,6 +530,34 @@ lemma eigenFunction_orthogonal (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) (hm
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
     mul_one, Complex.ofReal_zero, mul_zero, c]
   exact hnp
+
+@[fun_prop]
+lemma eigenFunction_intergrable (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) (hm : 0 < m) (hω : 0 < ω) :
+    MeasureTheory.Integrable (eigenfunction m ℏ ω n) := by
+  rw [eigenfunction_eq]
+  apply MeasureTheory.Integrable.const_mul
+  apply MeasureTheory.Integrable.ofReal
+  change MeasureTheory.Integrable
+    (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
+    (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) MeasureTheory.volume
+  have h1 :  (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
+    (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) =
+     (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
+    (Real.exp (- (m * ω / (2* ℏ)) * x ^ 2)))  := by
+    funext x
+    simp only [neg_mul, mul_eq_mul_left_iff, Real.exp_eq_exp]
+    left
+    field_simp
+  rw [h1]
+  rw [physHermiteFun_eq_aeval_physHermite]
+  apply guassian_integrable_polynomial_cons
+  simp_all only [neg_mul, mul_pos_iff_of_pos_left, div_pos_iff_of_pos_left, ofNat_pos]
+
+@[fun_prop]
+lemma eigenFunction_aeStronglyMeasurable (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) (hm : 0 < m)
+    (hω : 0 < ω) : MeasureTheory.AEStronglyMeasurable (eigenfunction m ℏ ω n) := by
+  apply MeasureTheory.Integrable.aestronglyMeasurable
+  exact eigenFunction_intergrable m ℏ ω n hℏ hm hω
 
 end HarmonicOscillator
 
