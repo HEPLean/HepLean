@@ -375,6 +375,92 @@ lemma eigenFunction_sq (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
   simp
   ring
 
+
+
+
+/-!
+
+## Normalization of the wave functions.
+
+-/
+
+/-- The Eigenfunctions of the harmonic osscilator are normalized. -/
+lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m) (hω : 0 < ω) :
+    ∫ x : ℝ,  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) = 1 := by
+  conv_lhs =>
+    enter [2, x]
+    rw [eigenFunction_sq m ℏ ω n hℏ]
+  rw [MeasureTheory.integral_mul_left]
+  rw [integral_complex_ofReal]
+  let c := √(m * ω / ℏ)
+  have h1 : c ^ 2 = m * ω / ℏ := by
+    trans c * c
+    · exact pow_two c
+    simp [c]
+    refine Real.mul_self_sqrt ?_
+    refine div_nonneg ?_ ?_
+    exact (mul_nonneg_iff_of_pos_left hm).mpr (le_of_lt hω)
+    exact le_of_lt hℏ
+  have hc : (∫ (x : ℝ), physHermiteFun n (√(m * ω / ℏ) * x) ^ 2 * Real.exp (-m * ω * x ^ 2 / ℏ))
+    =  ∫ (x : ℝ), (physHermiteFun n (c * x) * physHermiteFun n (c * x)) * Real.exp (- c^2 * x ^ 2) := by
+    congr
+    funext x
+    congr
+    · simp [c]
+      exact pow_two _
+    simp [h1]
+    field_simp
+  rw [hc]
+  rw [physHermiteFun_norm_cons]
+  simp [c]
+  ring_nf
+  have h1 : ↑n ! * (↑n ! : ℂ)⁻¹  = 1 := by
+    rw [← IsUnit.eq_mul_inv_iff_mul_eq ]
+    simp
+    refine IsUnit.inv ?_
+    simp
+    exact factorial_ne_zero n
+  rw [h1]
+  repeat rw [mul_assoc]
+  have h1 :  ((1 / 2) ^ n * (2 : ℂ) ^ n) = 1:= by
+    rw [← IsUnit.eq_mul_inv_iff_mul_eq ]
+    simp
+    simp
+  rw [h1]
+  simp
+  have h1 : Complex.ofReal |(√(m * (ω * ℏ⁻¹)))⁻¹| = (√(m * (ω * ℏ⁻¹)))⁻¹ := by
+    congr
+    apply abs_of_nonneg
+    refine inv_nonneg_of_nonneg ?_
+    exact Real.sqrt_nonneg (m * (ω * ℏ⁻¹))
+  rw [h1]
+  have h1 : √(m * (ω * (Real.pi⁻¹ * ℏ⁻¹))) = (√(m * (ω * ℏ⁻¹))) * (√(Real.pi⁻¹)) := by
+    trans √((m * (ω * ℏ⁻¹)) * Real.pi⁻¹)
+    · ring_nf
+    refine Real.sqrt_mul' (m * (ω * ℏ⁻¹)) ?_
+    refine inv_nonneg_of_nonneg ?_
+    exact Real.pi_nonneg
+  rw [h1]
+  simp [mul_comm]
+  ring_nf
+  have h1 :  ↑√Real.pi * (↑√Real.pi : ℂ)⁻¹ =1 := by
+    rw [← IsUnit.eq_mul_inv_iff_mul_eq ]
+    simp
+    simp
+    refine Real.sqrt_ne_zero'.mpr ?_
+    exact Real.pi_pos
+  rw [h1]
+  simp
+  rw [mul_comm, ← IsUnit.eq_mul_inv_iff_mul_eq ]
+  simp
+  simp
+  refine Real.sqrt_ne_zero'.mpr ?_
+  rw [propext (lt_mul_inv_iff₀ hℏ)]
+  simp
+  exact mul_pos hm hω
+
+
+
 end HarmonicOscillator
 
 end QuantumMechanics

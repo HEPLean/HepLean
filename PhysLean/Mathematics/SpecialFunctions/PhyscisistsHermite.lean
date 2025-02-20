@@ -374,7 +374,12 @@ theorem physHermiteFun_orthogonal {n m : ℕ} (hnm : n ≠ m) :
       rw [mul_comm]
     rw [physHermiteFun_orthogonal_lt hmn]
 
-lemma physHermiteFun_norm (n : ℕ) :
+lemma physHermiteFun_orthogonal_cons {n m : ℕ} (hnm : n ≠ m) (c : ℝ) :
+    ∫ x : ℝ, (physHermiteFun n (c * x) * physHermiteFun m (c * x)) * Real.exp (- c ^ 2 * x ^ 2) = 0 := by
+  sorry
+
+
+theorem physHermiteFun_norm (n : ℕ) :
     ∫ x : ℝ, (physHermiteFun n x * physHermiteFun n x) * Real.exp (- x ^ 2) =
     ↑n ! * 2 ^ n * √Real.pi := by
   rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv]
@@ -392,5 +397,17 @@ lemma physHermiteFun_norm (n : ℕ) :
     rw [integral_gaussian]
     simp
   rw [h1]
+
+lemma physHermiteFun_norm_cons (n : ℕ) (c : ℝ) :
+    ∫ x : ℝ, (physHermiteFun n (c * x) * physHermiteFun n (c * x)) * Real.exp (- c ^ 2 * x ^ 2) =
+     |c⁻¹| • (↑n ! * 2 ^ n * √Real.pi) := by
+  trans ∫ x : ℝ, (fun x => (physHermiteFun n x * physHermiteFun n x) * Real.exp (- x^2)) (c * x)
+  · congr
+    funext x
+    simp
+    left
+    exact Eq.symm (mul_pow c x 2)
+  rw [MeasureTheory.Measure.integral_comp_mul_left (fun x => physHermiteFun n x * physHermiteFun n x * Real.exp (-x ^ 2)) c]
+  rw [physHermiteFun_norm]
 
 end PhysLean
