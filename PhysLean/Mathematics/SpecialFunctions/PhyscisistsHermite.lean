@@ -374,4 +374,23 @@ theorem physHermiteFun_orthogonal {n m : ℕ} (hnm : n ≠ m) :
       rw [mul_comm]
     rw [physHermiteFun_orthogonal_lt hmn]
 
+lemma physHermiteFun_norm (n : ℕ) :
+    ∫ x : ℝ, (physHermiteFun n x * physHermiteFun n x) * Real.exp (- x ^ 2) =
+    ↑n ! * 2 ^ n * √Real.pi := by
+  rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv]
+  rw [iterated_deriv_physHermiteFun_eq_aeval]
+  simp only [iterate_derivative_physHermite_self,
+    Int.cast_pow, Int.cast_ofNat,  map_pow]
+  conv_lhs =>
+    enter [2, x]
+    rw [aeval_C]
+    simp
+  rw [MeasureTheory.integral_mul_left]
+  have h1 : ∫ (x : ℝ), Real.exp (- x^2) = Real.sqrt (Real.pi) := by
+    trans ∫ (x : ℝ), Real.exp (- 1 * x^2)
+    · simp
+    rw [integral_gaussian]
+    simp
+  rw [h1]
+
 end PhysLean
