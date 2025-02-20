@@ -312,6 +312,7 @@ lemma schrodingerOperator_eigenfunction_succ_succ (m ℏ ω : ℝ) (n : ℕ) (x 
   field_simp
   ring
 
+/-- The eigenfunctions satisfy the time-independent Schrodinger equation. -/
 theorem schrodingerOperator_eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ)
     (hm : 0 < m) (hℏ : 0 < ℏ) (hω : 0 ≤ ω) :
     schrodingerOperator m ℏ ω (eigenfunction m ℏ ω n) x =
@@ -325,6 +326,7 @@ theorem schrodingerOperator_eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ)
 
 open Filter Finset
 
+/-- A simplification of the product of two eigen-functions. -/
 lemma eigenFunction_mul (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) :
     (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω p x) =
     ((1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
@@ -415,7 +417,7 @@ lemma eigenFunction_mul_self (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) :
 
 -/
 
-/-- The Eigenfunctions of the harmonic osscilator are normalized. -/
+/-- The eigenfunctions of the harmonic osscilator are normalized. -/
 lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m) (hω : 0 < ω) :
     ∫ x : ℝ, (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) = 1 := by
   conv_lhs =>
@@ -490,6 +492,7 @@ lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm :
   simp only [zero_mul, c]
   exact mul_pos hm hω
 
+/-- The eigen-functions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenFunction_orthogonal (m ℏ ω : ℝ) (n p : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m) (hω : 0 < ω)
     (hnp : n ≠ p) : ∫ x : ℝ, (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω p x) = 0 := by
   conv_lhs =>
