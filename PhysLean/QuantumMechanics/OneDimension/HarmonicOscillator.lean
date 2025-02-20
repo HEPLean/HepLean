@@ -554,10 +554,35 @@ lemma eigenFunction_intergrable (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) (hm
   simp_all only [neg_mul, mul_pos_iff_of_pos_left, div_pos_iff_of_pos_left, ofNat_pos]
 
 @[fun_prop]
-lemma eigenFunction_aeStronglyMeasurable (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) (hm : 0 < m)
+lemma eigenFunction_aeStronglyMeasurable (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m)
     (hω : 0 < ω) : MeasureTheory.AEStronglyMeasurable (eigenfunction m ℏ ω n) := by
   apply MeasureTheory.Integrable.aestronglyMeasurable
   exact eigenFunction_intergrable m ℏ ω n hℏ hm hω
+
+@[simp]
+lemma eigenfunction_conj (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
+    (starRingEnd ℂ) (eigenfunction m ℏ ω n x) = eigenfunction m ℏ ω n x := by
+  rw [eigenfunction_eq]
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+    neg_mul, map_mul, map_inv₀, Complex.conj_ofReal]
+
+lemma eigenfunction_norm_eq (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) :
+    ‖eigenfunction m ℏ ω n x‖ ^ 2 = (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) := by
+  rw [← Complex.conj_mul']
+  simp
+
+@[fun_prop]
+lemma eigenFunction_square_intergrable (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm : 0 < m)
+    (hω : 0 < ω) :  MeasureTheory.Integrable (fun x => ‖eigenfunction m ℏ ω n x‖ ^ 2) := by
+  refine MeasureTheory.integrable_of_integral_eq_one ?_
+  apply Complex.ofReal_injective
+  rw [← integral_complex_ofReal]
+  conv_lhs =>
+    enter [2, x]
+    rw [Complex.ofReal_pow]
+    rw [eigenfunction_norm_eq]
+  rw [eigenFunction_normalized m ℏ ω n hℏ hm hω]
+  rfl
 
 end HarmonicOscillator
 
