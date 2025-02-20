@@ -375,36 +375,6 @@ lemma eigenFunction_sq (m ℏ ω : ℝ) (n : ℕ)  (hℏ : 0 < ℏ) :
   simp
   ring
 
-
-
-
-
-
-/-!
-
-## Normalization of the wave functions.
-
-See e.g. https://www.phys.uconn.edu/~rozman/Courses/P2400_17S/downloads/harmonic-oscillator-qm.pdf
--/
-lemma eigenFunction_normalized (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) :
-    ∫ x : ℝ,  (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω n x) = 1 := by
-  conv_lhs =>
-    enter [2, x]
-    rw [eigenFunction_sq m ℏ ω n hℏ]
-  rw [MeasureTheory.integral_mul_left]
-  rw [integral_complex_ofReal]
-  have h1 : ∫ (x : ℝ), Real.exp (- x^2) = Real.sqrt (Real.pi) := by
-    trans ∫ (x : ℝ), Real.exp (- 1 * x^2)
-    · simp
-    rw [integral_gaussian]
-    simp
-  have h1 : ∫ (x : ℝ), (physHermiteFun n x) * deriv (fun x => Real.exp (- x^2)) x =
-      - ∫ (x : ℝ), deriv (physHermiteFun n) x * Real.exp (- x^2) := by
-      refine MeasureTheory.integral_mul_deriv_eq_deriv_mul_of_integrable ?_ ?_ ?_ ?_ ?_
-      sorry
-      sorry
-      refine MeasureTheory.Integrable.mul_of_top_right ?_ ?_
-
 end HarmonicOscillator
 
 end QuantumMechanics
