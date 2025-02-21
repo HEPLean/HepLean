@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace
 /-!
 
 # 1d Harmonic Oscillator
@@ -51,6 +52,7 @@ The 1d Harmonic Oscillator
 -/
 namespace QuantumMechanics
 
+namespace OneDimension
 namespace HarmonicOscillator
 
 open Nat
@@ -585,6 +587,17 @@ lemma eigenFunction_square_intergrable (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < �
   rw [eigenFunction_normalized m ℏ ω n hℏ hm hω]
   rfl
 
-end HarmonicOscillator
+open InnerProductSpace
 
+/-- The eigen vectors of the quantum harmonic Osscilators as members of the Hilbert space. -/
+noncomputable def eigenVector {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
+    (hω : 0 < ω) (n : ℕ) : HilbertSpace :=
+  ⟨MeasureTheory.AEEqFun.mk (eigenfunction m ℏ ω n)
+    (eigenFunction_aeStronglyMeasurable m ℏ ω n hℏ hm hω),
+    (HilbertSpace.mem_iff'
+    (eigenFunction_aeStronglyMeasurable m ℏ ω n hℏ hm hω)).mpr (
+    eigenFunction_square_intergrable m ℏ ω n hℏ hm hω)⟩
+
+end HarmonicOscillator
+end OneDimension
 end QuantumMechanics

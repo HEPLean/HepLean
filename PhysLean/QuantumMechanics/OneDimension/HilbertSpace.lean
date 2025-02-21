@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
-
+import Mathlib.MeasureTheory.Function.L2Space
 /-!
 
 # Hilbert space for one dimension quantum mechanics
