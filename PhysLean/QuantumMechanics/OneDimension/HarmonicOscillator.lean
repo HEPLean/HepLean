@@ -62,7 +62,9 @@ noncomputable def schrodingerOperator (m ℏ ω : ℝ) (ψ : ℝ → ℂ) : ℝ 
   - ℏ ^ 2 / (2 * m) * (deriv (fun y => deriv ψ y) y) + 1/2 *
   m * ω^2 * y^2 * ψ y
 
-/-- The eigenfunctions for the Harmonic oscillator. -/
+/-- The eigenfunctions for the Harmonic oscillator.
+  Note: eigenfunctions are not defined as members of the hilbert space.
+  See `eigenVector` for this. -/
 noncomputable def eigenfunction (m ℏ ω : ℝ) (n : ℕ) (x : ℝ) : ℂ :=
   1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (m * ω / (Real.pi * ℏ))) *
   physHermiteFun n (Real.sqrt (m * ω /ℏ) * x) * Real.exp (- m * ω * x^2 / (2 * ℏ))
@@ -75,6 +77,7 @@ lemma eigenfunction_eq (m ℏ ω : ℝ) (n : ℕ) :
   funext x
   simp [eigenfunction]
   ring
+
 /-- The eigenvalues for the Harmonic oscillator. -/
 noncomputable def eigenValue (ℏ ω : ℝ) (n : ℕ) : ℝ := (n + 1/2) * ℏ * ω
 
@@ -598,6 +601,36 @@ noncomputable def eigenVector {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
     (eigenFunction_aeStronglyMeasurable m ℏ ω n hℏ hm hω)).mpr (
     eigenFunction_square_intergrable m ℏ ω n hℏ hm hω)⟩
 
+lemma coe_eigenVector_ae_eigenfunction {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
+    (hω : 0 < ω) (n : ℕ) :
+    (eigenVector hℏ hm hω n) =ᶠ[MeasureTheory.ae MeasureTheory.volume]
+    eigenfunction m ℏ ω n := by
+  simp [eigenVector]
+  exact MeasureTheory.AEEqFun.coeFn_mk (eigenfunction m ℏ ω n)
+      (eigenFunction_aeStronglyMeasurable m ℏ ω n hℏ hm hω)
+
+/-- The eigenvectors are orthonormal within the Hilbert space. s-/
+lemma eigenVector_orthonormal {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
+    (hω : 0 < ω) : Orthonormal ℂ (eigenVector hℏ hm hω ) := by
+  rw [orthonormal_iff_ite]
+  intro n p
+  trans ∫ x : ℝ, (eigenfunction m ℏ ω n x) * (eigenfunction m ℏ ω p x)
+  · apply MeasureTheory.integral_congr_ae
+    have hn_ae := coe_eigenVector_ae_eigenfunction hℏ hm hω n
+    have hm_ae := coe_eigenVector_ae_eigenfunction hℏ hm hω p
+    filter_upwards [hn_ae, hm_ae] with _ hf hg
+    rw [hf, hg]
+    simp
+  · by_cases hnp : n = p
+    · simp [hnp]
+      exact eigenFunction_normalized m ℏ ω p hℏ hm hω
+    · simp [hnp]
+      exact eigenFunction_orthogonal m ℏ ω n p hℏ hm hω hnp
+
+/- For completeness see:
+
+https://ncatlab.org/toddtrimble/published/Completeness+of+polynomials
+-/
 end HarmonicOscillator
 end OneDimension
 end QuantumMechanics
