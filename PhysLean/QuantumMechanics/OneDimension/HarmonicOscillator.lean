@@ -542,9 +542,9 @@ lemma eigenFunction_intergrable (m ℏ ω : ℝ) (n : ℕ) (hℏ : 0 < ℏ) (hm 
     (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
     (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) MeasureTheory.volume
   have h1 : (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
-    (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) =
-    (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
-    (Real.exp (- (m * ω / (2* ℏ)) * x ^ 2))) := by
+      (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) =
+      (fun x => (physHermiteFun n (√(m * ω / ℏ) * x)) *
+      (Real.exp (- (m * ω / (2* ℏ)) * x ^ 2))) := by
     funext x
     simp only [neg_mul, mul_eq_mul_left_iff, Real.exp_eq_exp]
     left
