@@ -129,6 +129,15 @@ lemma iterate_derivative_physHermite_self {n : ℕ} :
     rw [Polynomial.coeff_C_ne_zero (by omega)]
     rfl
 
+@[simp]
+lemma physHermite_leadingCoeff {n : ℕ} : (physHermite n).leadingCoeff = 2 ^ n := by
+  simp [leadingCoeff]
+
+@[simp]
+lemma physHermite_ne_zero {n : ℕ} : physHermite n ≠ 0 := by
+  refine leadingCoeff_ne_zero.mp ?_
+  simp
+
 /-- The physicists Hermite polynomial as a function from `ℝ` to `ℝ`. -/
 noncomputable def physHermiteFun (n : ℕ) : ℝ → ℝ := fun x => aeval x (physHermite n)
 
@@ -440,5 +449,61 @@ lemma physHermiteFun_norm_cons (n : ℕ) (c : ℝ) :
   rw [MeasureTheory.Measure.integral_comp_mul_left
     (fun x => physHermiteFun n x * physHermiteFun n x * Real.exp (-x ^ 2)) c]
   rw [physHermiteFun_norm]
+
+lemma polynomial_mem_physHermiteFun_induction (P : Polynomial ℤ) :  (n : ℕ) →
+    (hn : P.natDegree = n) →
+    (fun x => P.aeval x) ∈ Submodule.span ℝ (Set.range physHermiteFun)
+  | 0, h => by
+    rw [natDegree_eq_zero] at h
+    obtain ⟨x, rfl⟩ := h
+    refine Finsupp.mem_span_range_iff_exists_finsupp.mpr ?_
+    use Finsupp.single 0 x
+    funext y
+    simp
+  | n + 1, h => by
+    let P' := ((coeff (physHermite (n + 1)) (n + 1)) • P -
+        (coeff P (n + 1)) • physHermite (n + 1))
+    have hd : P'.natDegree < n + 1:= by
+      simp only [P']
+      rw [Polynomial.natDegree_lt_iff_degree_lt]
+      apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
+      intro m hm'
+      simp only [coeff_physHermite_self_succ,  Int.cast_pow, Int.cast_ofNat, coeff_sub,
+         Int.cast_id]
+      change n + 1 ≤ m at hm'
+      rw [coeff_smul, coeff_smul]
+      by_cases hm : m = n + 1
+      · subst hm
+        simp
+        ring
+      · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
+        simp
+        · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+          simp
+          omega
+          sorry
+        · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+          omega
+          sorry
+    have hP' := polynomial_mem_physHermiteFun_induction P' P'.natDegree
+      (by refine degree_eq_natDegree (by sorry))
+    apply Submodule.smul_mem_iff
+    have hPeqP' : (fun (x : ℝ) => P.aeval x) = (fun (x : ℝ) => P'.aeval x) +
+      (coeff P (n + 1)) • physHermite (n + 1) := by
+      funext x
+      simp only [P', Polynomial.aeval_sub, Polynomial.aeval_smul, Polynomial.aeval_C,
+        Polynomial.aeval_X, Polynomial.aeval]
+      ring
+
+
+
+
+
+
+
+
+    sorry
+
+
 
 end PhysLean

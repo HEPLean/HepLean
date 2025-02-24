@@ -627,10 +627,21 @@ lemma eigenVector_orthonormal {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
     · simp [hnp]
       exact eigenFunction_orthogonal m ℏ ω n p hℏ hm hω hnp
 
-/- For completeness see:
+/-
 
-https://ncatlab.org/toddtrimble/published/Completeness+of+polynomials
+## Completeness
+
+Completeness of the eigenfunctions follows from Plancherel's theorem.
+
+The steps of this proof are:
+
+1. Prove that if `f` is orthogonal to all eigenvectors then the Fourier transform of
+  it muliplied by `exp(-c x^2)` for a `0<c` is zero.
+2. Use 'Plancherel's theorem' to show that `f` is zero.
+
 -/
+
+
 end HarmonicOscillator
 end OneDimension
 end QuantumMechanics
