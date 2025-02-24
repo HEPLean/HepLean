@@ -112,6 +112,7 @@ import PhysLean.Mathematics.PiTensorProduct
 import PhysLean.Mathematics.RatComplexNum
 import PhysLean.Mathematics.SO3.Basic
 import PhysLean.Mathematics.SchurTriangulation
+import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.Basic
 import PhysLean.Meta.Informal.Basic
@@ -180,6 +181,8 @@ import PhysLean.PerturbationTheory.WickContraction.TimeCond
 import PhysLean.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.PerturbationTheory.WickContraction.Uncontracted
 import PhysLean.PerturbationTheory.WickContraction.UncontractedList
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace
 import PhysLean.SpaceTime.Basic
 import PhysLean.SpaceTime.CliffordAlgebra
 import PhysLean.StandardModel.Basic
