@@ -5,6 +5,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 /-!
 
 # Physicists Hermite Polynomial
@@ -450,7 +451,7 @@ lemma physHermiteFun_norm_cons (n : ℕ) (c : ℝ) :
     (fun x => physHermiteFun n x * physHermiteFun n x * Real.exp (-x ^ 2)) c]
   rw [physHermiteFun_norm]
 
-lemma polynomial_mem_physHermiteFun_induction (P : Polynomial ℤ) :  (n : ℕ) →
+lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) :  (n : ℕ) →
     (hn : P.natDegree = n) →
     (fun x => P.aeval x) ∈ Submodule.span ℝ (Set.range physHermiteFun)
   | 0, h => by
@@ -461,48 +462,95 @@ lemma polynomial_mem_physHermiteFun_induction (P : Polynomial ℤ) :  (n : ℕ) 
     funext y
     simp
   | n + 1, h => by
+    by_cases hP0 : P = 0
+    · subst hP0
+      simp
+      change 0 ∈ _
+      exact Submodule.zero_mem (Submodule.span ℝ (Set.range physHermiteFun))
     let P' := ((coeff (physHermite (n + 1)) (n + 1)) • P -
         (coeff P (n + 1)) • physHermite (n + 1))
-    have hd : P'.natDegree < n + 1:= by
-      simp only [P']
-      rw [Polynomial.natDegree_lt_iff_degree_lt]
-      apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
-      intro m hm'
-      simp only [coeff_physHermite_self_succ,  Int.cast_pow, Int.cast_ofNat, coeff_sub,
-         Int.cast_id]
-      change n + 1 ≤ m at hm'
-      rw [coeff_smul, coeff_smul]
-      by_cases hm : m = n + 1
-      · subst hm
+    have hP'mem : (fun x => P'.aeval x) ∈ Submodule.span ℝ (Set.range physHermiteFun) := by
+      by_cases hP' : P' = 0
+      · rw [hP']
         simp
-        ring
-      · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
-        simp
-        · rw [← Polynomial.natDegree_lt_iff_degree_lt]
-          simp
-          omega
-          sorry
-        · rw [← Polynomial.natDegree_lt_iff_degree_lt]
-          omega
-          sorry
-    have hP' := polynomial_mem_physHermiteFun_induction P' P'.natDegree
-      (by refine degree_eq_natDegree (by sorry))
-    apply Submodule.smul_mem_iff
-    have hPeqP' : (fun (x : ℝ) => P.aeval x) = (fun (x : ℝ) => P'.aeval x) +
-      (coeff P (n + 1)) • physHermite (n + 1) := by
+        change 0 ∈ _
+        exact Submodule.zero_mem (Submodule.span ℝ (Set.range physHermiteFun))
+      · exact polynomial_mem_physHermiteFun_span_induction P' P'.natDegree (by rfl)
+    simp only [P'] at hP'mem
+    have hl : (fun x => (aeval x) ((physHermite (n + 1)).coeff (n + 1) • P - P.coeff (n + 1) • physHermite (n + 1)))
+        = (2 ^ (n + 1) : ℝ) •  (fun (x : ℝ) =>   (aeval x) P)  - ↑(P.coeff (n + 1) : ℝ) • (fun (x : ℝ)=>  (aeval x) (physHermite (n + 1)) ):= by
       funext x
-      simp only [P', Polynomial.aeval_sub, Polynomial.aeval_smul, Polynomial.aeval_C,
-        Polynomial.aeval_X, Polynomial.aeval]
+      simp
+      simp [aeval]
+    rw [hl] at hP'mem
+    rw [Submodule.sub_mem_iff_left] at hP'mem
+    rw [Submodule.smul_mem_iff] at hP'mem
+    exact hP'mem
+    simp
+    apply Submodule.smul_mem _
+    refine Finsupp.mem_span_range_iff_exists_finsupp.mpr ?_
+    use Finsupp.single (n + 1) 1
+    simp
+    rfl
+decreasing_by
+  rw [Polynomial.natDegree_lt_iff_degree_lt]
+  apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
+  intro m hm'
+  simp only [coeff_physHermite_self_succ,  Int.cast_pow, Int.cast_ofNat, coeff_sub,
+      Int.cast_id]
+  change n + 1 ≤ m at hm'
+  rw [coeff_smul, coeff_smul]
+  by_cases hm : m = n + 1
+  · subst hm
+    simp
+    ring
+  · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
+    simp
+    · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+      simp
+      omega
+      simp
+    · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+      omega
+      exact hP0
+  · exact hP'
+
+lemma polynomial_mem_physHermiteFun_span (P : Polynomial ℤ) :
+    (fun x => P.aeval x) ∈ Submodule.span ℝ (Set.range physHermiteFun) := by
+  exact polynomial_mem_physHermiteFun_span_induction P P.natDegree rfl
+
+lemma cos_mem_physHermiteFun_span_topologicalClosure (c : ℝ) :
+    (fun (x : ℝ) => Real.cos (c * x)) ∈
+    (Submodule.span ℝ (Set.range physHermiteFun)).topologicalClosure := by
+  change  (fun (x : ℝ) => Real.cos (c * x)) ∈
+    closure (Submodule.span ℝ (Set.range physHermiteFun))
+  have h1 := Real.hasSum_cos
+  simp [HasSum] at h1
+  have h1 : Filter.Tendsto
+      (fun s => fun y => ∑ x ∈ s, (-1) ^ x * (c * y) ^ (2 * x) / ((2 * x)! : ℝ))
+    Filter.atTop (nhds (fun x => Real.cos (c * x))) := by
+    exact tendsto_pi_nhds.mpr fun x => h1 (c * x)
+  have h2 (z : Finset ℕ) : (fun y => ∑ x ∈ z, (-1) ^ x * (c * y) ^ (2 * x) / ↑(2 * x)!) ∈
+      ↑(Submodule.span ℝ (Set.range physHermiteFun)) := by
+    have h0 : (fun y => ∑ x ∈ z, (-1) ^ x * (c * y) ^ (2 * x) / ↑(2 * x)!)  =
+      ∑ x ∈  z, (((-1) ^ x * c ^ (2 * x) / ↑(2 * x)!) • fun (y : ℝ) => (y) ^ (2 * x) ) := by
+      funext y
+      simp
+      congr
+      funext z
       ring
-
-
-
-
-
-
-
-
-    sorry
+    rw [h0]
+    apply Submodule.sum_mem
+    intro l hl
+    apply Submodule.smul_mem
+    let P : Polynomial ℤ := X ^ (2 * l)
+    have hy : (fun y => y ^ (2 * l)) = (fun (y : ℝ) => P.aeval y) := by
+      funext y
+      simp [P]
+    rw [hy]
+    exact polynomial_mem_physHermiteFun_span P
+  refine mem_closure_of_tendsto h1 ?_
+  simp [h2]
 
 
 
