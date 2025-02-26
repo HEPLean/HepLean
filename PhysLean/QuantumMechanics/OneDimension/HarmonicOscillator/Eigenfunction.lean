@@ -100,8 +100,7 @@ lemma eigenfunction_integrable (n : ℕ) : MeasureTheory.Integrable (Q.eigenfunc
 lemma eigenfunction_conj (n : ℕ) (x : ℝ) :
     (starRingEnd ℂ) (Q.eigenfunction n x) = Q.eigenfunction n x := by
   rw [eigenfunction_eq]
-  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-    neg_mul, map_mul, map_inv₀, Complex.conj_ofReal]
+  simp [-Complex.ofReal_exp]
 
 lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
     ‖Q.eigenfunction n x‖ = (1/Real.sqrt (2 ^ n * n !) *
