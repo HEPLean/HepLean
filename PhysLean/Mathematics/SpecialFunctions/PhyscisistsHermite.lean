@@ -145,10 +145,9 @@ lemma physHermite_ne_zero {n : ℕ} : physHermite n ≠ 0 := by
   refine leadingCoeff_ne_zero.mp ?_
   simp
 
-instance : CoeFun (Polynomial ℤ)  (fun _ ↦ ℝ → ℝ)where
+instance : CoeFun (Polynomial ℤ) (fun _ ↦ ℝ → ℝ)where
   coe p := fun x => p.aeval x
 
-@[simp]
 lemma physHermite_zero_apply (x : ℝ) : physHermite 0 x = 1 := by
   simp [aeval]
 
@@ -158,7 +157,7 @@ lemma physHermite_pow (n m : ℕ) (x : ℝ) :
 
 lemma physHermite_succ_fun (n : ℕ) :
     (physHermite (n + 1) : ℝ → ℝ) = 2 • (fun x => x) *
-    (physHermite n : ℝ → ℝ)- (2 * n : ℝ) • (physHermite (n - 1) : ℝ → ℝ):= by
+    (physHermite n : ℝ → ℝ)- (2 * n : ℝ) • (physHermite (n - 1) : ℝ → ℝ) := by
   ext x
   simp [physHermite_succ', aeval, mul_assoc]
 

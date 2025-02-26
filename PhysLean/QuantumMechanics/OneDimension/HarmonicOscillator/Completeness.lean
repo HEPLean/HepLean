@@ -130,7 +130,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
         Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul]
       ring
     rw [h2] at h1
-    suffices h2 : IsUnit (↑(√(Q.m * Q.ω / Q.ℏ) ^ r : ℂ))  by
+    suffices h2 : IsUnit (↑(√(Q.m * Q.ω / Q.ℏ) ^ r : ℂ)) by
       rw [IsUnit.integrable_smul_iff h2] at h1
       simpa using h1
     simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero, not_and,

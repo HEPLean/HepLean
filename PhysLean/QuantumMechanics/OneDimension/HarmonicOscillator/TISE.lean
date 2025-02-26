@@ -262,7 +262,7 @@ lemma schrodingerOperator_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
 /-- The `n`th eigenfunction satisfies the time-independent Schrodinger equation with
   respect to the `n`th eigenvalue. That is to say for `Q` a harmonic scillator,
 
-  `Q.schrodingerOperator (Q.eigenfunction n) x =  Q.eigenValue n * Q.eigenfunction n x`.
+  `Q.schrodingerOperator (Q.eigenfunction n) x = Q.eigenValue n * Q.eigenfunction n x`.
 
   The proof of this result is done by explicit calculation of derivatives.
 -/

@@ -21,7 +21,7 @@ open Nat
 open PhysLean
 open HilbertSpace
 
-/-- The `n`th  eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
+/-- The `n`th eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
   taking `x : ℝ` to
 
   `1/√(2^n n!) (m ω /(π ℏ))^(1/4) * physHermite n (√(m ω /ℏ) x) * e ^ (- m ω x^2/2ℏ)`.
