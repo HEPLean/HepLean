@@ -468,7 +468,7 @@ lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) : (n : �
   | n + 1, h => by
     by_cases hP0 : P = 0
     · subst hP0
-      simp
+      simp only [map_zero]
       change 0 ∈ _
       exact Submodule.zero_mem (Submodule.span ℝ (Set.range physHermiteFun))
     let P' := ((coeff (physHermite (n + 1)) (n + 1)) • P -
@@ -476,7 +476,7 @@ lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) : (n : �
     have hP'mem : (fun x => P'.aeval x) ∈ Submodule.span ℝ (Set.range physHermiteFun) := by
       by_cases hP' : P' = 0
       · rw [hP']
-        simp
+        simp only [map_zero]
         change 0 ∈ _
         exact Submodule.zero_mem (Submodule.span ℝ (Set.range physHermiteFun))
       · exact polynomial_mem_physHermiteFun_span_induction P' P'.natDegree (by rfl)
@@ -486,13 +486,16 @@ lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) : (n : �
         = (2 ^ (n + 1) : ℝ) • (fun (x : ℝ) => (aeval x) P) - ↑(P.coeff (n + 1) : ℝ) •
         (fun (x : ℝ)=> (aeval x) (physHermite (n + 1))) := by
       funext x
-      simp
+      simp only [coeff_physHermite_self_succ, zsmul_eq_mul, Int.cast_pow, Int.cast_ofNat, map_sub,
+        map_mul, map_pow, map_intCast, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, sub_left_inj,
+        mul_eq_mul_right_iff, P']
       simp [aeval]
     rw [hl] at hP'mem
     rw [Submodule.sub_mem_iff_left] at hP'mem
     rw [Submodule.smul_mem_iff] at hP'mem
     exact hP'mem
-    simp
+    simp only [ne_eq, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true,
+      pow_eq_zero_iff, OfNat.ofNat_ne_zero, P']
     apply Submodule.smul_mem _
     refine Finsupp.mem_span_range_iff_exists_finsupp.mpr ?_
     use Finsupp.single (n + 1) 1
@@ -508,12 +511,12 @@ decreasing_by
   rw [coeff_smul, coeff_smul]
   by_cases hm : m = n + 1
   · subst hm
-    simp
+    simp only [smul_eq_mul, coeff_physHermite_self_succ]
     ring
   · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
-    simp
+    simp only [smul_eq_mul, mul_zero, sub_self]
     · rw [← Polynomial.natDegree_lt_iff_degree_lt]
-      simp
+      simp only [natDegree_physHermite]
       omega
       simp
     · rw [← Polynomial.natDegree_lt_iff_degree_lt]
@@ -541,7 +544,7 @@ lemma cos_mem_physHermiteFun_span_topologicalClosure (c : ℝ) :
     have h0 : (fun y => ∑ x ∈ z, (-1) ^ x * (c * y) ^ (2 * x) / ↑(2 * x)!) =
       ∑ x ∈ z, (((-1) ^ x * c ^ (2 * x) / ↑(2 * x)!) • fun (y : ℝ) => (y) ^ (2 * x)) := by
       funext y
-      simp
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
       congr
       funext z
       ring
