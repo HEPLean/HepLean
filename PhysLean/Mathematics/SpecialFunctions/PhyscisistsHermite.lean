@@ -146,6 +146,10 @@ noncomputable def physHermiteFun (n : ℕ) : ℝ → ℝ := fun x => aeval x (ph
 lemma physHermiteFun_zero_apply (x : ℝ) : physHermiteFun 0 x = 1 := by
   simp [physHermiteFun, aeval]
 
+lemma physHermiteFun_pow  (n m : ℕ) (x : ℝ) :
+    physHermiteFun n x ^ m = aeval x (physHermite n ^ m) := by
+  simp [physHermiteFun]
+
 lemma physHermiteFun_eq_aeval_physHermite (n : ℕ) :
     physHermiteFun n = fun x => aeval x (physHermite n) := rfl
 
