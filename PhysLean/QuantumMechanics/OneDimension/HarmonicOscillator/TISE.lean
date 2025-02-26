@@ -21,7 +21,7 @@ open Nat
 open PhysLean
 open HilbertSpace
 
-/-- The eigenvalues for the Harmonic oscillator. -/
+/-- The `n`th eigenvalues for a Harmonic oscillator is defined as `(n + 1/2) * ℏ * ω`. -/
 noncomputable def eigenValue (n : ℕ) : ℝ := (n + 1/2) * Q.ℏ * Q.ω
 
 lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction 0) =
@@ -255,7 +255,13 @@ lemma schrodingerOperator_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
   field_simp
   ring
 
-/-- The eigenfunctions satisfy the time-independent Schrodinger equation. -/
+/-- The `n`th eigenfunction satisfies the time-independent Schrodinger equation with
+  respect to the `n`th eigenvalue. That is to say for `Q` a harmonic scillator,
+
+  `Q.schrodingerOperator (Q.eigenfunction n) x =  Q.eigenValue n * Q.eigenfunction n x`.
+
+  The prove of this result is done by explicit calculation of derivatives.
+-/
 theorem schrodingerOperator_eigenfunction (n : ℕ) :
     Q.schrodingerOperator (Q.eigenfunction n) x =
     Q.eigenValue n * Q.eigenfunction n x :=

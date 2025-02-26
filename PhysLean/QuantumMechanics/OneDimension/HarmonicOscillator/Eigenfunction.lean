@@ -21,8 +21,12 @@ open Nat
 open PhysLean
 open HilbertSpace
 
-/-- The eigenfunctions for the Harmonic oscillator defined as a function
-  `ℝ → ℂ`. -/
+/-- The `n`th  eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
+  taking `x : ℝ` to
+
+  `1/√(2^n n!) (m ω /(π ℏ))^(1/4) * physHermiteFun n (√(m ω /ℏ) x) * e ^ (- m ω x^2/2ℏ)`.
+
+-/
 noncomputable def eigenfunction (n : ℕ) : ℝ → ℂ := fun x =>
   1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
   physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))
@@ -380,7 +384,7 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
     mul_one, Complex.ofReal_zero, mul_zero, c]
   exact hnp
 
-/-- The eigenvectors are orthonormal within the Hilbert space. s-/
+/-- The eigenfunctions are orthonormal within the Hilbert space. -/
 lemma eigenfunction_orthonormal :
     Orthonormal ℂ (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)) := by
   rw [orthonormal_iff_ite]

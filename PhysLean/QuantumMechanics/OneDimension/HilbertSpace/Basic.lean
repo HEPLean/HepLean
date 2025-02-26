@@ -22,20 +22,25 @@ namespace QuantumMechanics
 
 namespace OneDimension
 noncomputable section
-/-- The Hilbert space in 1d corresponding to square integbrable (equivalence classes)
-  of functions. -/
+
+/-- The Hilbert space for a one dimensional quantum system is defined as
+  the space of almost-everywhere equal equivalence classes of square integrable functions
+  from `ℝ` to `ℂ`. -/
 noncomputable abbrev HilbertSpace := MeasureTheory.Lp (α := ℝ) ℂ 2
 
 namespace HilbertSpace
 open MeasureTheory
 
-/-- The proposition which is true if a function `f` can be lifted to the Hilbert space. -/
+/-- The proposition `MemHS f` for a function `f : ℝ → ℂ` is defined
+  to be true if the function `f` can be lifted to the Hilbert space. -/
 def MemHS (f : ℝ → ℂ) : Prop := Memℒp f 2 MeasureTheory.volume
 
 lemma aeStronglyMeasurable_of_memHS {f : ℝ → ℂ} (h : MemHS f) :
     AEStronglyMeasurable f := by
   exact h.1
 
+/-- A function `f` statisfies `MemHS f` if and only if it is almost everywhere
+  strongly measurable, and square integrable. -/
 lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
     AEStronglyMeasurable f ∧ Integrable (fun x => ‖f x‖ ^ 2) := by
   rw [MemHS]
@@ -61,7 +66,8 @@ lemma aeEqFun_mk_mem_iff (f : ℝ → ℂ) (hf : AEStronglyMeasurable f volume) 
   apply MeasureTheory.memℒp_congr_ae
   exact AEEqFun.coeFn_mk f hf
 
-/-- The member of the Hilbert space from a `MemHS f`. -/
+/-- Given a function `f : ℝ → ℂ` such that `MemHS f` is true via `hf`, then `HilbertSpace.mk hf`
+  is the element of the `HilbertSpace` defined by `f`. -/
 def mk {f : ℝ → ℂ} (hf : MemHS f) : HilbertSpace :=
   ⟨AEEqFun.mk f hf.1, (aeEqFun_mk_mem_iff f hf.1).mpr hf⟩
 

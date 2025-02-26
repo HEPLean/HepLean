@@ -256,6 +256,12 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     apply Integrable.smul
     exact Q.mul_physHermiteFun_integrable f hf i
 
+/-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
+  to all `eigenfunction n` then it is orthogonal to
+
+  `x ^ r * e ^ (- m ω x ^ 2 / (2 ℏ))`
+
+  the proof of this result relies on the fact that Hermite polynomials span polynomials. -/
 lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (r : ℕ) :
@@ -297,6 +303,15 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
 
 open Finset
 
+/-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
+  to all `eigenfunction n` then it is orthogonal to
+
+  `e ^ (I c x) * e ^ (- m ω x ^ 2 / (2 ℏ))`
+
+  for any real `c`.
+  The proof of this result relies on the expansion of `e ^ (I c x)`
+  in terms of `x^r/r!` and using `orthogonal_power_of_mem_orthogonal`
+  along with integrablity conditions. -/
 lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (c : ℝ) : ∫ x : ℝ, Complex.exp (Complex.I * c * x) *
@@ -458,6 +473,14 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
 open FourierTransform MeasureTheory Real Lp Memℒp Filter Complex Topology
   ComplexInnerProductSpace ComplexConjugate
 
+/-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
+  to all `eigenfunction n` then the fourier transform of
+
+  `f (x) * e ^ (- m ω x ^ 2 / (2 ℏ))`
+
+  is zero.
+
+  The proof of this result relies on `orthogonal_exp_of_mem_orthogonal`. -/
 lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0) :
     𝓕 (fun x => f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
@@ -537,7 +560,19 @@ lemma zero_of_orthogonal_eigenVector (f : HilbertSpace)
   obtain ⟨f, hf, rfl⟩ := HilbertSpace.mk_surjective f
   exact zero_of_orthogonal_mk Q f hf hOrth plancherel_theorem
 
-lemma completness_eigenvector
+/--
+  Assuming Plancherel's theorem (which is not yet in Mathlib),
+  the topological closure of the span of the eigenfunctions of the harmonic oscillator
+  is the whole Hilbert space.
+
+  The proof of this result relies on `fourierIntegral_zero_of_mem_orthogonal`
+  and Plancherel's theorem which together give us that the norm of
+
+  `f x * e ^ (- m * ω * x^2 / (2 * ℏ)`
+
+  is zero for `f` orthogonal to all eigenfunctions, and hence the norm of `f` is zero.
+-/
+theorem eigenfunction_completeness
     (plancherel_theorem : ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
       eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) :
     (Submodule.span ℂ
