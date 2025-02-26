@@ -260,7 +260,7 @@ lemma schrodingerOperator_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
 
   `Q.schrodingerOperator (Q.eigenfunction n) x =  Q.eigenValue n * Q.eigenfunction n x`.
 
-  The prove of this result is done by explicit calculation of derivatives.
+  The proof of this result is done by explicit calculation of derivatives.
 -/
 theorem schrodingerOperator_eigenfunction (n : ℕ) :
     Q.schrodingerOperator (Q.eigenfunction n) x =
