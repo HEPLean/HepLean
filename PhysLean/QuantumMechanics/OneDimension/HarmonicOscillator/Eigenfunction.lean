@@ -60,13 +60,13 @@ lemma eigenfunction_eq_mul_eigenfunction_zero (n : ℕ) :
     rw [eigenfunction, eigenfunction_zero]
     repeat rw [mul_assoc]
     congr 1
-    simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-      Complex.ofReal_inv]
-    rw [mul_comm, mul_assoc]
-    congr 1
-    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
-      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
-    ring_nf
+    · simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+        Complex.ofReal_inv]
+    · rw [mul_comm, mul_assoc]
+      congr 1
+      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
+      ring_nf
 
 /-!
 
@@ -158,9 +158,8 @@ lemma eigenfunction_square_integrable (n : ℕ) :
 /-- The eigenfunctions are almost everywhere strongly measurable. -/
 @[fun_prop]
 lemma eigenfunction_aeStronglyMeasurable (n : ℕ) :
-    MeasureTheory.AEStronglyMeasurable (Q.eigenfunction n) := by
-  apply MeasureTheory.Integrable.aestronglyMeasurable
-  exact Q.eigenfunction_integrable n
+    MeasureTheory.AEStronglyMeasurable (Q.eigenfunction n) :=
+  (Q.eigenfunction_integrable n).aestronglyMeasurable
 
 /-- The eigenfunctions are members of the Hilbert space. -/
 lemma eigenfunction_memHS (n : ℕ) : MemHS (Q.eigenfunction n) := by
@@ -251,10 +250,9 @@ lemma eigenfunction_mul_self (n : ℕ) :
             trans Complex.ofReal ((2 ^ n * ↑n !))
             · congr 1
               refine Real.mul_self_sqrt ?_
-              refine Left.mul_nonneg ?_ ?_
+              refine Left.mul_nonneg ?_ (cast_nonneg' n !)
               refine pow_nonneg ?_ n
               simp only [ofNat_nonneg]
-              exact cast_nonneg' n !
             simp
           · rw [← Complex.ofReal_mul]
             congr
@@ -342,8 +340,9 @@ lemma eigenfunction_normalized (n : ℕ) :
     exact Real.pi_pos
   rw [h1]
   simp only [one_mul, c]
-  rw [mul_comm, ← IsUnit.eq_mul_inv_iff_mul_eq]
-  simp only [one_mul, c]
+  suffices h2 : IsUnit (↑√(Q.m * Q.ω * Q.ℏ⁻¹) : ℂ) by
+    rw [mul_comm, ← IsUnit.eq_mul_inv_iff_mul_eq h2]
+    simp only [one_mul, c]
   simp only [isUnit_iff_ne_zero, ne_eq, Complex.ofReal_eq_zero, c]
   refine Real.sqrt_ne_zero'.mpr ?_
   rw [propext (lt_mul_inv_iff₀ Q.hℏ)]
@@ -378,11 +377,9 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
     congr
     simp only [neg_mul, h1, c]
     field_simp
-  rw [hc]
-  rw [physHermiteFun_orthogonal_cons]
+  rw [hc, physHermiteFun_orthogonal_cons hnp]
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-    mul_one, Complex.ofReal_zero, mul_zero, c]
-  exact hnp
+      mul_one, Complex.ofReal_zero, mul_zero, c]
 
 /-- The eigenfunctions are orthonormal within the Hilbert space. -/
 lemma eigenfunction_orthonormal :

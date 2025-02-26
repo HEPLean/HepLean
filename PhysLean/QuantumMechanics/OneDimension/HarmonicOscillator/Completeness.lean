@@ -67,7 +67,7 @@ lemma mul_physHermiteFun_integrable (f : ℝ → ℂ) (hf : MemHS f) (n : ℕ) :
   have h1 := Q.mul_eigenfunction_integrable f hf (n := n)
   rw [← h2] at h1
   rw [IsUnit.integrable_smul_iff] at h1
-  exact h1
+  · exact h1
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
     isUnit_iff_ne_zero, ne_eq, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
     Real.sqrt_eq_zero, cast_eq_zero, pow_eq_zero_iff', OfNat.ofNat_ne_zero, false_and, or_false,
@@ -130,8 +130,9 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
         Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul]
       ring
     rw [h2] at h1
-    rw [IsUnit.integrable_smul_iff] at h1
-    simpa using h1
+    suffices h2 : IsUnit (↑(√(Q.m * Q.ω / Q.ℏ) ^ r : ℂ))  by
+      rw [IsUnit.integrable_smul_iff h2] at h1
+      simpa using h1
     simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero, not_and,
       Decidable.not_not]
     have h1 : √(Q.m * Q.ω / Q.ℏ) ≠ 0 := by

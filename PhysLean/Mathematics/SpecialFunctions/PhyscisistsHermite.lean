@@ -96,8 +96,8 @@ lemma coeff_physHermite_self_succ (n : ℕ) : coeff (physHermite n) n = 2 ^ n :=
   | zero => exact coeff_C
   | succ n ih =>
     rw [coeff_physHermite_succ_succ, ih, coeff_physHermite_of_lt, mul_zero, sub_zero]
-    rw [← Int.pow_succ']
-    omega
+    · rw [← Int.pow_succ']
+    · omega
 
 @[simp]
 lemma degree_physHermite (n : ℕ) : degree (physHermite n) = n := by
@@ -277,8 +277,8 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
   rw [h2]
   refine MeasureTheory.Integrable.smul (P.coeff i : ℝ) ?_
   apply integrable_rpow_mul_exp_neg_mul_sq (s := i)
-  exact hb
-  exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
+  · exact hb
+  · exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
 
 @[fun_prop]
 lemma guassian_integrable_polynomial_cons {b c : ℝ} (hb : 0 < b) (P : Polynomial ℤ) :
@@ -296,8 +296,8 @@ lemma guassian_integrable_polynomial_cons {b c : ℝ} (hb : 0 < b) (P : Polynomi
   rw [h2]
   refine MeasureTheory.Integrable.smul (c ^ i * P.coeff i : ℝ) ?_
   apply integrable_rpow_mul_exp_neg_mul_sq (s := i)
-  exact hb
-  exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
+  · exact hb
+  · exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
 
 @[fun_prop]
 lemma physHermiteFun_gaussian_integrable (n p m : ℕ) :
@@ -356,7 +356,7 @@ lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive (n 
   | 0, h => by
     exact integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_exp n m
   | p + 1, h => by
-    rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive n m p]
+    rw [integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive n m p (by omega)]
     have h1 : m - p = m - (p + 1) + 1 := by omega
     rw [h1]
     rw [Function.iterate_succ_apply']
@@ -391,7 +391,6 @@ lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv_inductive (n 
       · fun_prop
     rw [hl]
     simp only [mul_neg, neg_mul, one_mul, neg_neg]
-    omega
 
 lemma integral_physHermiteFun_mul_physHermiteFun_eq_integral_deriv (n m : ℕ) :
     ∫ x : ℝ, (physHermiteFun n x * physHermiteFun m x) * Real.exp (- x ^ 2) =
@@ -498,10 +497,9 @@ lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) : (n : �
       simp [aeval]
     rw [hl] at hP'mem
     rw [Submodule.sub_mem_iff_left] at hP'mem
-    rw [Submodule.smul_mem_iff] at hP'mem
-    exact hP'mem
-    simp only [ne_eq, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true,
-      pow_eq_zero_iff, OfNat.ofNat_ne_zero, P']
+    · rw [Submodule.smul_mem_iff] at hP'mem
+      · exact hP'mem
+      · simp
     apply Submodule.smul_mem _
     refine Finsupp.mem_span_range_iff_exists_finsupp.mpr ?_
     use Finsupp.single (n + 1) 1
@@ -509,25 +507,25 @@ lemma polynomial_mem_physHermiteFun_span_induction (P : Polynomial ℤ) : (n : �
     rfl
 decreasing_by
   rw [Polynomial.natDegree_lt_iff_degree_lt]
-  apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
-  intro m hm'
-  simp only [coeff_physHermite_self_succ, Int.cast_pow, Int.cast_ofNat, coeff_sub,
-      Int.cast_id]
-  change n + 1 ≤ m at hm'
-  rw [coeff_smul, coeff_smul]
-  by_cases hm : m = n + 1
-  · subst hm
-    simp only [smul_eq_mul, coeff_physHermite_self_succ]
-    ring
-  · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
-    simp only [smul_eq_mul, mul_zero, sub_self]
-    · rw [← Polynomial.natDegree_lt_iff_degree_lt]
-      simp only [natDegree_physHermite]
-      omega
-      simp
-    · rw [← Polynomial.natDegree_lt_iff_degree_lt]
-      omega
-      exact hP0
+  · apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
+    intro m hm'
+    simp only [coeff_physHermite_self_succ, Int.cast_pow, Int.cast_ofNat, coeff_sub,
+        Int.cast_id]
+    change n + 1 ≤ m at hm'
+    rw [coeff_smul, coeff_smul]
+    by_cases hm : m = n + 1
+    · subst hm
+      simp only [smul_eq_mul, coeff_physHermite_self_succ]
+      ring
+    · rw [coeff_eq_zero_of_degree_lt, coeff_eq_zero_of_degree_lt (n := m)]
+      · simp only [smul_eq_mul, mul_zero, sub_self]
+      · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+        · simp only [natDegree_physHermite]
+          omega
+        · simp
+      · rw [← Polynomial.natDegree_lt_iff_degree_lt]
+        · omega
+        · exact hP0
   · exact hP'
 
 lemma polynomial_mem_physHermiteFun_span (P : Polynomial ℤ) :

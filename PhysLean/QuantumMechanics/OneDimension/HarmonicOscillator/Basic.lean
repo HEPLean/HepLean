@@ -78,14 +78,14 @@ variable (Q : HarmonicOscillator)
 @[simp]
 lemma m_mul_ω_div_two_ℏ_pos : 0 < Q.m * Q.ω / (2 * Q.ℏ) := by
   apply div_pos
-  exact mul_pos Q.hm Q.hω
-  exact mul_pos (by norm_num) Q.hℏ
+  · exact mul_pos Q.hm Q.hω
+  · exact mul_pos (by norm_num) Q.hℏ
 
 @[simp]
 lemma m_mul_ω_div_ℏ_pos : 0 < Q.m * Q.ω / Q.ℏ := by
   apply div_pos
-  exact mul_pos Q.hm Q.hω
-  exact Q.hℏ
+  · exact mul_pos Q.hm Q.hω
+  · exact Q.hℏ
 
 lemma m_ne_zero : Q.m ≠ 0 := by
   have h1 := Q.hm

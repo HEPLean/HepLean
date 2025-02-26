@@ -101,11 +101,11 @@ lemma deriv_physHermiteFun_succ (n : ℕ) :
   trans deriv (Complex.ofReal ∘ physHermiteFun (n + 1) ∘
     fun (x : ℝ) => (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) x
   · rfl
-  rw [fderiv_comp_deriv]
-  rw [fderiv_comp_deriv]
+  rw [fderiv_comp_deriv _ (by fun_prop) (by fun_prop)]
+  rw [fderiv_comp_deriv _ (by fun_prop) (by fun_prop)]
   simp only [Function.comp_apply, fderiv_eq_smul_deriv, smul_eq_mul, Complex.deriv_ofReal,
     Complex.real_smul, Complex.ofReal_mul, mul_one]
-  rw [deriv_mul]
+  rw [deriv_mul (by fun_prop) (by fun_prop)]
   simp only [deriv_const', zero_mul, deriv_id'', mul_one, zero_add]
   rw [deriv_physHermiteFun]
   simp only [Pi.natCast_def, Pi.mul_apply, Pi.ofNat_apply, cast_ofNat, Pi.add_apply, Pi.one_apply,
@@ -113,7 +113,6 @@ lemma deriv_physHermiteFun_succ (n : ℕ) :
     Complex.ofReal_one]
   simp only [cast_add, cast_one, add_tsub_cancel_right]
   ring
-  all_goals fun_prop
 
 lemma deriv_eigenfunction_succ (n : ℕ) :
     deriv (Q.eigenfunction (n + 1)) = fun x =>
@@ -202,45 +201,44 @@ lemma deriv_deriv_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
         (((- Q.m * Q.ω / Q.ℏ) * (2 * (n + 2)
         + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2)) *
         (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x))) * Q.eigenfunction 0 x)
-  rw [deriv_deriv_eigenfunction_succ]
-  congr 2
-  trans (√(Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (√(Q.m * Q.ω / Q.ℏ) *
-    2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
-    (-(Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
-    (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
-    (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
-    (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
-  · rw [deriv_physHermiteFun_succ]
-    simp
-  trans ((Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) *
-      (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
-      (- (Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
+  · rw [deriv_deriv_eigenfunction_succ]
+    congr 2
+    trans (√(Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (√(Q.m * Q.ω / Q.ℏ) *
+      2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
+      (-(Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
       (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
       (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
       (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
-  · congr 2
-    trans (↑√(Q.m * Q.ω / Q.ℏ) * ↑√(Q.m * Q.ω / Q.ℏ)) * 2 * (↑n + 1 + 1) *
-    (2 * (↑n + 1) * ↑(physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)))
+    · rw [deriv_physHermiteFun_succ]
+      simp
+    trans ((Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) *
+        (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
+        (- (Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
+        (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
+        (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
+        (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
+    · congr 2
+      trans (↑√(Q.m * Q.ω / Q.ℏ) * ↑√(Q.m * Q.ω / Q.ℏ)) * 2 * (↑n + 1 + 1) *
+      (2 * (↑n + 1) * ↑(physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)))
+      · ring
+      congr 3
+      rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Complex.ofReal_div]
+      congr 1
+      refine Real.mul_self_sqrt ?_
+      refine div_nonneg ?_ (le_of_lt Q.hℏ)
+      exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
+    trans (- Q.m * Q.ω / Q.ℏ) * (2 * (n + 1 + 1) *
+          (2 * (√(Q.m * Q.ω / Q.ℏ) * x) * (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) -
+          2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)))
+          + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
     · ring
-    congr 3
-    rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Complex.ofReal_div]
-    congr 1
-    refine Real.mul_self_sqrt ?_
-    refine div_nonneg ?_ ?_
-    exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
-    exact le_of_lt Q.hℏ
-  trans (- Q.m * Q.ω / Q.ℏ) * (2 * (n + 1 + 1) *
-        (2 * (√(Q.m * Q.ω / Q.ℏ) * x) * (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) -
-        2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)))
-        + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
-  · ring
-  trans (- Q.m * Q.ω / Q.ℏ) * (2 * (n + 1 + 1) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x))
-        + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
-  · congr
-    conv_rhs =>
-      rw [physHermiteFun_succ]
-    simp
-  ring
+    trans (- Q.m * Q.ω / Q.ℏ) * (2 * (n + 1 + 1) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x))
+          + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
+    · congr
+      conv_rhs =>
+        rw [physHermiteFun_succ]
+      simp
+    ring
   · rw [Q.eigenfunction_eq_mul_eigenfunction_zero (n + 2)]
     ring
 
