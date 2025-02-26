@@ -33,7 +33,9 @@ lemma eigenfunction_eq (n : ℕ) :
     Complex.ofReal (physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x) *
     Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))) := by
   funext x
-  simp [eigenfunction]
+  simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div,
+    mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring
 
 lemma eigenfunction_zero : Q.eigenfunction 0 = fun (x : ℝ) =>
@@ -358,7 +360,7 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
   have h1 : c ^ 2 = Q.m * Q.ω / Q.ℏ := by
     trans c * c
     · exact pow_two c
-    simp [c]
+    simp only [c]
     refine Real.mul_self_sqrt ?_
     refine div_nonneg ?_ ?_
     exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
@@ -370,7 +372,7 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
     congr
     funext x
     congr
-    simp [h1]
+    simp only [neg_mul, h1, c]
     field_simp
   rw [hc]
   rw [physHermiteFun_orthogonal_cons]

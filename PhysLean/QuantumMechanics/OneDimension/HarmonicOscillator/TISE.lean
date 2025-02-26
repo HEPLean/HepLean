@@ -65,12 +65,15 @@ lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction 0) =
 lemma deriv_deriv_eigenfunction_zero (x : ℝ) : deriv (deriv (Q.eigenfunction 0)) x =
     - (Q.m * Q.ω) / Q.ℏ * (Q.eigenfunction 0 x +
     x * (-(Q.m * Q.ω) / Q.ℏ * x * Q.eigenfunction 0 x)) := by
-  simp [deriv_eigenfunction_zero]
+  simp only [deriv_eigenfunction_zero, neg_mul, Complex.ofReal_div, Complex.ofReal_neg,
+    Complex.ofReal_mul, Algebra.smul_mul_assoc]
   trans deriv (fun x => (-(↑Q.m * ↑Q.ω) / ↑Q.ℏ) • (Complex.ofReal x * Q.eigenfunction 0 x)) x
   · congr
     funext x
     simp
-  simp
+  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul,
+    differentiableAt_const, deriv_const_mul_field', mul_eq_mul_left_iff, div_eq_zero_iff,
+    neg_eq_zero, _root_.mul_eq_zero, Complex.ofReal_eq_zero]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field', Complex.deriv_ofReal, mul_one]
   rw [deriv_eigenfunction_zero]
@@ -82,7 +85,7 @@ lemma deriv_deriv_eigenfunction_zero (x : ℝ) : deriv (deriv (Q.eigenfunction 0
 
 lemma schrodingerOperator_eigenfunction_zero (x : ℝ) :
     Q.schrodingerOperator (Q.eigenfunction 0) x = Q.eigenValue 0 * Q.eigenfunction 0 x := by
-  simp [schrodingerOperator]
+  simp only [schrodingerOperator, one_div]
   rw [deriv_deriv_eigenfunction_zero, eigenValue]
   have hm' := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
   have hℏ' := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
@@ -149,7 +152,8 @@ lemma deriv_deriv_eigenfunction_succ (n : ℕ) (x : ℝ) :
   left
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   rw [deriv_eigenfunction_zero]
-  simp [← mul_assoc, ← add_mul]
+  simp only [← mul_assoc, neg_mul, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul,
+    Pi.mul_apply, Pi.smul_apply, smul_eq_mul, ← add_mul, mul_eq_mul_right_iff]
   left
   rw [deriv_add (by fun_prop) (by fun_prop)]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
@@ -174,13 +178,17 @@ lemma deriv_deriv_eigenfunction_one (x : ℝ) :
 lemma schrodingerOperator_eigenfunction_one (x : ℝ) :
     Q.schrodingerOperator (Q.eigenfunction 1) x=
     Q.eigenValue 1 * Q.eigenfunction 1 x := by
-  simp [schrodingerOperator, eigenValue]
+  simp only [schrodingerOperator, one_div, eigenValue, cast_one, Complex.ofReal_mul,
+    Complex.ofReal_add, Complex.ofReal_one, Complex.ofReal_inv, Complex.ofReal_ofNat]
   rw [deriv_deriv_eigenfunction_one]
   have hm' := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
   have hℏ := Q.ℏ_ne_zero
   have hℏ' := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
   rw [Q.eigenfunction_eq_mul_eigenfunction_zero 1]
-  simp [physHermiteFun_eq_aeval_physHermite, physHermite_one, Polynomial.aeval]
+  simp only [pow_one, factorial_one, cast_one, mul_one, one_div, Complex.ofReal_inv,
+    physHermiteFun_eq_aeval_physHermite, Polynomial.aeval, physHermite_one,
+    Polynomial.eval₂AlgHom'_apply, Polynomial.eval₂_mul, Polynomial.eval₂_ofNat, Polynomial.eval₂_X,
+    Complex.ofReal_mul, Complex.ofReal_ofNat]
   ring_nf
   have hl : (Complex.ofReal √2 * Q.ℏ * (↑Q.m * ↑√2 * ↑Q.ℏ ^ 2)) ≠ 0 := by
     simp_all
@@ -239,7 +247,8 @@ lemma deriv_deriv_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
 lemma schrodingerOperator_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
     Q.schrodingerOperator (Q.eigenfunction (n + 2)) x=
     Q.eigenValue (n + 2) * Q.eigenfunction (n + 2) x := by
-  simp [schrodingerOperator, eigenValue]
+  simp only [schrodingerOperator, one_div, eigenValue, cast_add, cast_ofNat, Complex.ofReal_mul,
+    Complex.ofReal_add, Complex.ofReal_natCast, Complex.ofReal_ofNat, Complex.ofReal_inv]
   rw [Q.deriv_deriv_eigenfunction_succ_succ]
   have hm' := Complex.ofReal_ne_zero.mpr (Ne.symm (_root_.ne_of_lt Q.hm))
   have hℏ' := Complex.ofReal_ne_zero.mpr (Ne.symm (_root_.ne_of_lt Q.hℏ))

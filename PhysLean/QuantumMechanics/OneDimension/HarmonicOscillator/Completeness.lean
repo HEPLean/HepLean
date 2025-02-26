@@ -41,7 +41,7 @@ lemma mul_eigenfunction_integrable (f : ℝ → ℂ) (hf : MemHS f) :
   have h1 := MeasureTheory.L2.integrable_inner (𝕜 := ℂ) (HilbertSpace.mk (Q.eigenfunction_memHS n))
     (HilbertSpace.mk hf)
   refine (integrable_congr ?_).mp h1
-  simp
+  simp only [RCLike.inner_apply]
   apply Filter.EventuallyEq.mul
   swap
   · exact coe_mk_ae hf
@@ -60,13 +60,18 @@ lemma mul_physHermiteFun_integrable (f : ℝ → ℂ) (hf : MemHS f) (n : ℕ) :
       (f x * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) = fun x =>
       Q.eigenfunction n x * f x := by
     funext x
-    simp [eigenfunction_eq]
+    simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+      neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul, eigenfunction_eq]
     ring
   have h1 := Q.mul_eigenfunction_integrable f hf (n := n)
   rw [← h2] at h1
   rw [IsUnit.integrable_smul_iff] at h1
   exact h1
-  simp
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+    isUnit_iff_ne_zero, ne_eq, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
+    Real.sqrt_eq_zero, cast_eq_zero, pow_eq_zero_iff', OfNat.ofNat_ne_zero, false_and, or_false,
+    Real.sqrt_nonneg, not_or]
   apply And.intro
   · exact factorial_ne_zero n
   · apply Real.sqrt_ne_zero'.mpr
@@ -100,7 +105,9 @@ lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial
     = fun x => (a i) • ((physHermiteFun i (√(Q.m * Q.ω / Q.ℏ) * x)) *
       (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) := by
     funext x
-    simp
+    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Complex.real_smul,
+      mul_eq_mul_left_iff, Complex.ofReal_eq_zero]
     ring_nf
     simp_all
   rw [hf']
@@ -112,25 +119,28 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
       (f x * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)))) volume := by
   by_cases hr : r ≠ 0
   · have h1 := Q.mul_polynomial_integrable f hf (Polynomial.X ^ r)
-    simp at h1
+    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_mul, neg_mul,
+      Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_ofNat] at h1
     have h2 : (fun x => (↑√(Q.m * Q.ω / Q.ℏ) * ↑x) ^ r *
       (f x * Complex.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))
       = (↑√(Q.m * Q.ω / Q.ℏ) : ℂ) ^ r • (fun x => (↑x ^r *
       (f x * Real.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))) := by
       funext x
-      simp
+      simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_mul,
+        Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul]
       ring
     rw [h2] at h1
     rw [IsUnit.integrable_smul_iff] at h1
     simpa using h1
-    simp
+    simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero, not_and,
+      Decidable.not_not]
     have h1 : √(Q.m * Q.ω / Q.ℏ) ≠ 0 := by
       refine Real.sqrt_ne_zero'.mpr ?_
       refine div_pos ?_ ?_
       · exact mul_pos Q.hm Q.hω
       · exact Q.hℏ
     simp [h1]
-  · simp at hr
+  · simp only [ne_eq, Decidable.not_not] at hr
     subst hr
     simpa using Q.mul_physHermiteFun_integrable f hf 0
 
@@ -167,24 +177,31 @@ lemma orthogonal_physHermiteFun_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS 
             Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
     = fun x => Q.eigenfunction n x * f x := by
     funext x
-    simp [eigenfunction_eq]
+    simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+      neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_ofNat, eigenfunction_eq]
     ring
   rw [← h2] at h1
   rw [MeasureTheory.integral_mul_left] at h1
-  simp at h1
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+    neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+    Complex.ofReal_ofNat, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
+    Real.sqrt_eq_zero, cast_eq_zero, pow_eq_zero_iff', OfNat.ofNat_ne_zero, ne_eq, false_and,
+    or_false, Real.sqrt_nonneg] at h1
   have h0 : n ! ≠ 0 := by
     exact factorial_ne_zero n
   have h0' : √(Q.m * Q.ω / (Real.pi * Q.ℏ)) ≠ 0 := by
-    simp
+    simp only [ne_eq]
     refine Real.sqrt_ne_zero'.mpr ?_
     refine div_pos ?_ ?_
     · exact mul_pos hm hω
     · apply mul_pos Real.pi_pos hℏ
-  simp [h0, h0'] at h1
+  simp only [h0, h0', or_self, false_or] at h1
   rw [← h1]
   congr
   funext x
-  simp
+  simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring
 
 lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
@@ -209,14 +226,17 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   rw [MeasureTheory.integral_finset_sum]
   · apply Finset.sum_eq_zero
     intro x hx
-    simp [mul_assoc]
+    simp only [neg_mul, mul_assoc, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
     rw [integral_mul_left]
-    simp
+    simp only [_root_.mul_eq_zero, Complex.ofReal_eq_zero]
     right
     rw [← Q.orthogonal_physHermiteFun_of_mem_orthogonal f hf hOrth x]
     congr
     funext x
-    simp
+    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, mul_eq_mul_left_iff,
+      Complex.ofReal_eq_zero]
     left
     left
     congr 1
@@ -228,7 +248,9 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = a i • (fun x => (physHermiteFun i (√(m * ω / ℏ) * x)) *
         (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ))))) := by
       funext x
-      simp
+      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply,
+        Complex.real_smul]
       ring
     rw [hf']
     apply Integrable.smul
@@ -240,7 +262,8 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     ∫ x : ℝ, (x ^ r * (f x * Real.exp (- m * ω * x^2 / (2 * ℏ)))) = 0 := by
   by_cases hr : r ≠ 0
   · have h1 := Q.orthogonal_polynomial_of_mem_orthogonal f hf hOrth (Polynomial.X ^ r)
-    simp at h1
+    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_mul, neg_mul,
+      Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_ofNat] at h1
     have h2 : (fun x => (↑√(m * ω / ℏ) * ↑x) ^ r *
       (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))))
       = (fun x => (↑√(m * ω / ℏ) : ℂ) ^ r * (↑x ^r *
@@ -249,23 +272,24 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       ring
     rw [h2] at h1
     rw [MeasureTheory.integral_mul_left] at h1
-    simp at h1
+    simp only [_root_.mul_eq_zero, pow_eq_zero_iff', Complex.ofReal_eq_zero, ne_eq] at h1
     have h0 : r ≠ 0 := by
       exact hr
     have h0' : √(m * ω / (ℏ)) ≠ 0 := by
-      simp
+      simp only [ne_eq]
       refine Real.sqrt_ne_zero'.mpr ?_
       refine div_pos ?_ ?_
       · exact mul_pos hm hω
       · exact hℏ
-    simp [h0, h0'] at h1
+    simp only [h0', h0, not_false_eq_true, and_true, false_or] at h1
     rw [← h1]
     congr
     funext x
     simp
-  · simp at hr
+  · simp only [ne_eq, Decidable.not_not] at hr
     subst hr
-    simp
+    simp only [pow_zero, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, one_mul]
     rw [← Q.orthogonal_physHermiteFun_of_mem_orthogonal f hf hOrth 0]
     congr
     funext x
@@ -296,7 +320,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       simp
     rw [h12]
     apply Filter.Tendsto.mul_const
-    simp [Complex.exp, Complex.exp']
+    simp only [Complex.exp, Complex.exp']
     haveI hi : CauSeq.IsComplete ℂ norm :=
       inferInstanceAs (CauSeq.IsComplete ℂ Complex.abs)
     exact CauSeq.tendsto_limit (Complex.exp' (Complex.I * c * y))
@@ -317,7 +341,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = fun a => (Complex.I * ↑c) ^ r / ↑r ! *
         (f a * Complex.ofReal (a ^ r * (Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
-        simp
+        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+          Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
         ring
       rw [h1]
       apply MeasureTheory.AEStronglyMeasurable.const_mul
@@ -330,7 +355,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
             (fun x => (Polynomial.X ^ r : Polynomial ℤ).aeval x *
             (Real.exp (- (m * ω / (2* ℏ)) * x ^ 2))) := by
           funext x
-          simp [neg_mul, mul_eq_mul_left_iff, Real.exp_eq_exp]
+          simp only [neg_mul, map_pow, Polynomial.aeval_X, mul_eq_mul_left_iff, Real.exp_eq_exp,
+            pow_eq_zero_iff', ne_eq]
           left
           field_simp
         rw [h1]
@@ -339,7 +365,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     · /- Prove the bound is integrable. -/
       have hbound : bound = (fun x => Real.exp |c * x| * Complex.abs (f x) *
           Real.exp (-(m * ω / (2 * ℏ)) * x ^ 2)) := by
-        simp [bound]
+        simp only [neg_mul, bound]
         funext x
         congr
         field_simp
@@ -354,13 +380,15 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       apply Filter.Eventually.of_forall
       intro y
       rw [← Finset.sum_mul]
-      simp [bound]
+      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, norm_mul, Complex.norm_eq_abs,
+        bound]
       rw [mul_assoc]
       conv_rhs =>
         rw [mul_assoc]
       have h1 : (Complex.abs (f y) * Complex.abs (Complex.exp (-(↑m * ↑ω * ↑y ^ 2) / (2 * ↑ℏ))))
         = Complex.abs (f y) * Real.exp (-(m * ω * y ^ 2) / (2 * ℏ)) := by
-        simp
+        simp only [mul_eq_mul_left_iff, map_eq_zero, bound]
         left
         rw [Complex.abs_exp]
         congr
@@ -381,7 +409,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         apply le_of_eq
         congr
         funext i
-        simp
+        simp only [map_div₀, AbsoluteValue.map_pow, AbsoluteValue.map_mul, Complex.abs_I,
+          Complex.abs_ofReal, one_mul, Complex.abs_natCast, bound]
         congr
         rw [abs_mul]
       · refine mul_pos ?_ ?_
@@ -403,7 +432,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = fun a => ((Complex.I * ↑c) ^ r / ↑r !) *
         (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
-        simp
+        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+          Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
         ring
       rw [hf']
       rw [MeasureTheory.integral_mul_left]
@@ -415,7 +445,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = ((Complex.I * ↑c) ^ r / ↑r !) •
         fun a => (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
-        simp
+        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+          Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul]
         ring
       rw [hf']
       apply MeasureTheory.Integrable.smul
@@ -432,11 +463,13 @@ lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     𝓕 (fun x => f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
   funext c
   rw [Real.fourierIntegral_eq]
-  simp
+  simp only [RCLike.inner_apply, conj_trivial, neg_mul, ofReal_exp, ofReal_div, ofReal_neg,
+    ofReal_mul, ofReal_pow, ofReal_ofNat, Pi.zero_apply]
   rw [← Q.orthogonal_exp_of_mem_orthogonal f hf hOrth (- 2 * Real.pi * c)]
   congr
   funext x
-  simp [Real.fourierChar, Circle.exp]
+  simp only [fourierChar, Circle.exp, ContinuousMap.coe_mk, ofReal_mul, ofReal_ofNat,
+    AddChar.coe_mk, ofReal_neg, mul_neg, neg_mul, ofReal_exp, ofReal_div, ofReal_pow]
   change Complex.exp (-(2 * ↑Real.pi * (↑x * ↑c) * Complex.I)) *
     (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))) = _
   congr 2
@@ -449,15 +482,16 @@ lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
     HilbertSpace.mk hf = 0 := by
   have hf' : (fun x => f x * ↑(rexp (-m * ω * x ^ 2 / (2 * ℏ))))
         = (fun x => f x * ↑(rexp (- (m * ω / (2 * ℏ)) * (x - 0) ^ 2))) := by
-        funext x
-        simp
-        left
-        congr
-        field_simp
+    funext x
+    simp only [neg_mul, ofReal_exp, ofReal_div, ofReal_neg, ofReal_mul, ofReal_pow,
+      ofReal_ofNat, sub_zero, mul_eq_mul_left_iff]
+    left
+    congr
+    field_simp
   have h1 : eLpNorm (fun x => f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) 2 volume = 0 := by
     rw [← plancherel_theorem]
     rw [Q.fourierIntegral_zero_of_mem_orthogonal f hf hOrth]
-    simp
+    simp only [eLpNorm_zero]
     · /- f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is integrable -/
       rw [hf']
       rw [← memℒp_one_iff_integrable]
@@ -474,14 +508,15 @@ lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
       · have h1 := Q.hℏ
         linarith
   refine (norm_eq_zero_iff (by simp)).mp ?_
-  simp [Norm.norm]
+  simp only [Norm.norm, eLpNorm_mk]
   have h2 : eLpNorm f 2 volume = 0 := by
     rw [MeasureTheory.eLpNorm_eq_zero_iff] at h1 ⊢
     rw [Filter.eventuallyEq_iff_all_subsets] at h1 ⊢
-    simp at h1
+    simp only [neg_mul, ofReal_exp, ofReal_div, ofReal_neg, ofReal_mul, ofReal_pow, ofReal_ofNat,
+      Pi.zero_apply, _root_.mul_eq_zero, Complex.exp_ne_zero, or_false] at h1
     exact h1
     exact aeStronglyMeasurable_of_memHS hf
-    simp
+    simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true]
     · /- f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is strongly measurable -/
       rw [hf']
       apply Integrable.aestronglyMeasurable

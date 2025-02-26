@@ -39,18 +39,18 @@ lemma aeStronglyMeasurable_of_memHS {f : ℝ → ℂ} (h : MemHS f) :
 lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
     AEStronglyMeasurable f ∧ Integrable (fun x => ‖f x‖ ^ 2) := by
   rw [MemHS]
-  simp [MeasureTheory.Memℒp]
+  simp only [Memℒp, Complex.norm_eq_abs, and_congr_right_iff]
   intro h1
   rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
-  simp [MeasureTheory.Integrable]
+  simp only [ENNReal.toReal_ofNat, ENNReal.rpow_ofNat, Integrable]
   have h0 : MeasureTheory.AEStronglyMeasurable
     (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
     apply MeasureTheory.AEStronglyMeasurable.pow
     refine Continuous.comp_aestronglyMeasurable ?_ h1
     exact Complex.continuous_abs
-  simp [h0]
-  simp [MeasureTheory.HasFiniteIntegral]
-  simp [enorm, nnnorm]
+  simp only [h0, true_and]
+  simp only [HasFiniteIntegral, enorm_pow]
+  simp only [enorm, nnnorm, Complex.norm_eq_abs, Real.norm_eq_abs, Complex.abs_abs]
   exact Ne.symm (NeZero.ne' 2)
   exact ENNReal.ofNat_ne_top
 
@@ -100,21 +100,21 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
     ↔ MeasureTheory.Integrable (fun x => ‖f x‖ ^ 2) := by
   rw [HilbertSpace]
   rw [MeasureTheory.Lp.mem_Lp_iff_memℒp]
-  simp [MeasureTheory.Memℒp]
+  simp only [Memℒp, eLpNorm_aeeqFun, Complex.norm_eq_abs]
   have h1 : MeasureTheory.AEStronglyMeasurable
     (MeasureTheory.AEEqFun.mk f hf) MeasureTheory.volume := by
     apply MeasureTheory.AEEqFun.aestronglyMeasurable
-  simp [h1]
+  simp only [h1, true_and]
   rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
-  simp [MeasureTheory.Integrable]
+  simp only [ENNReal.toReal_ofNat, ENNReal.rpow_ofNat, Integrable]
   have h0 : MeasureTheory.AEStronglyMeasurable
     (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
     apply MeasureTheory.AEStronglyMeasurable.pow
     refine Continuous.comp_aestronglyMeasurable ?_ hf
     exact Complex.continuous_abs
-  simp [h0]
-  simp [MeasureTheory.HasFiniteIntegral]
-  simp [enorm, nnnorm]
+  simp only [h0, true_and]
+  simp only [HasFiniteIntegral, enorm_pow]
+  simp only [enorm, nnnorm, Complex.norm_eq_abs, Real.norm_eq_abs, Complex.abs_abs]
   exact Ne.symm (NeZero.ne' 2)
   exact ENNReal.ofNat_ne_top
 
@@ -145,15 +145,17 @@ lemma gaussian_memHS {b : ℝ} (c : ℝ) (hb : 0 < b) :
   rw [memHS_iff]
   apply And.intro
   · exact gaussian_aestronglyMeasurable c hb
-  simp [Complex.abs_exp]
+  simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_neg, Complex.ofReal_mul,
+    Complex.ofReal_pow, Complex.ofReal_sub, Complex.norm_eq_abs, Complex.abs_exp, Complex.neg_re,
+    Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   have h1 : (fun (x : ℝ) => Real.exp (-(b * ((x - c : ℂ) ^ 2).re)) ^ 2) =
     fun y => (fun x => Real.exp (- (2 * b) * x ^ 2)) (y - c) := by
     ext x
-    simp
+    simp only [neg_mul]
     trans Real.exp (-(b * ((x - c: ℂ) ^ 2).re)) ^ (2 : ℝ)
     · simp
     rw [← Real.exp_mul]
-    simp
+    simp only [neg_mul, Real.exp_eq_exp, neg_inj]
     rw [← Complex.ofReal_sub, ← Complex.ofReal_pow, Complex.ofReal_re]
     ring
   rw [h1]
@@ -194,8 +196,8 @@ lemma exp_abs_mul_gaussian_integrable (b c : ℝ) (hb : 0 < b) :
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_gaussian_integrable b (- |c|) hb
     · intro x hx
-      simp at hx
-      simp [g]
+      simp only [Set.mem_Iic] at hx
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, Real.exp_ne_zero, or_false, g]
       rw [abs_mul]
       rw [abs_of_nonpos hx]
       ring
@@ -205,8 +207,8 @@ lemma exp_abs_mul_gaussian_integrable (b c : ℝ) (hb : 0 < b) :
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_gaussian_integrable b (|c|) hb
     · intro x hx
-      simp at hx
-      simp [g]
+      simp only [Set.mem_Ici] at hx
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, Real.exp_ne_zero, or_false, g]
       rw [abs_mul]
       rw [abs_of_nonneg hx]
 
@@ -216,7 +218,8 @@ lemma mul_gaussian_mem_Lp_one (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
   let g : HilbertSpace := mk (gaussian_memHS c hb)
   have h1 := MeasureTheory.L2.integrable_inner (𝕜 := ℂ) g (mk hf)
   refine (integrable_congr ?_).mp h1
-  simp
+  simp only [RCLike.inner_apply, neg_mul, Complex.ofReal_exp, Complex.ofReal_neg,
+    Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_sub]
   conv_lhs =>
     enter [x]
     rw [mul_comm]
@@ -224,7 +227,8 @@ lemma mul_gaussian_mem_Lp_one (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
   · exact coe_mk_ae hf
   trans (fun x => (starRingEnd ℂ) (Real.exp (- b * (x - c) ^2)))
   · apply Filter.EventuallyEq.fun_comp
-    simp [g]
+    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_neg, Complex.ofReal_mul,
+      Complex.ofReal_pow, Complex.ofReal_sub, g]
     exact AEEqFun.coeFn_mk _ _
   · apply Filter.EventuallyEq.of_eq
     funext x
@@ -241,7 +245,7 @@ lemma mul_gaussian_mem_Lp_two (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
       simp only [neg_mul, Complex.norm_eq_abs, zero_sub, even_two, Even.neg_pow]
       rw [Complex.abs_ofReal]
       rw [abs_of_nonneg]
-      · simp [Real.exp_le_exp_of_le]
+      · simp only [Real.exp_zero, Real.exp_le_one_iff, Left.neg_nonpos_iff]
         apply mul_nonneg
         · exact le_of_lt hb
         · exact sq_nonneg (x - c)
@@ -253,7 +257,10 @@ lemma abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (
   have h1 : (fun x => Complex.abs (f x) * Real.exp (- b * (x - c)^2)) =
       (fun x => Complex.abs (f x * Real.exp (- b *(x - c)^2))) := by
     funext x
-    simp [Complex.abs_exp]
+    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_neg, Complex.ofReal_mul,
+      Complex.ofReal_pow, Complex.ofReal_sub, AbsoluteValue.map_mul, Complex.abs_exp,
+      Complex.neg_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+      mul_eq_mul_left_iff, Real.exp_eq_exp, neg_inj, map_eq_zero]
     left
     left
     rw [← Complex.ofReal_sub, ← Complex.ofReal_pow]
@@ -297,8 +304,9 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_abs_mul_gaussian_integrable f hf b (-|c|) hb
     · intro x hx
-      simp at hx
-      simp [g]
+      simp only [Set.mem_Iic] at hx
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, map_eq_zero, Real.exp_ne_zero,
+        or_false, g]
       left
       rw [abs_mul]
       rw [abs_of_nonpos hx]
@@ -309,8 +317,9 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_abs_mul_gaussian_integrable f hf b |c| hb
     · intro x hx
-      simp at hx
-      simp [g]
+      simp only [Set.mem_Ici] at hx
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, map_eq_zero, Real.exp_ne_zero,
+        or_false, g]
       left
       rw [abs_mul]
       rw [abs_of_nonneg hx]
