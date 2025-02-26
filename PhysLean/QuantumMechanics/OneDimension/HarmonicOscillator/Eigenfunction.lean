@@ -10,7 +10,6 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 
 -/
 
-
 namespace QuantumMechanics
 
 namespace OneDimension
@@ -117,9 +116,10 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
       simp [abs_of_nonneg]
 
 lemma eigenfunction_point_norm_sq (n : ℕ) (x : ℝ) :
-    ‖Q.eigenfunction n x‖ ^ 2 =  (1/Real.sqrt (2 ^ n * n !) *
+    ‖Q.eigenfunction n x‖ ^ 2 = (1/Real.sqrt (2 ^ n * n !) *
     Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) ^ 2 *
-    ((physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) ^ 2 * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
+    ((physHermiteFun n
+    (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) ^ 2 * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
   trans (1/Real.sqrt (2 ^ n * n !) *
     Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) ^ 2 *
     ((|physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)|) ^ 2 *
@@ -137,7 +137,8 @@ lemma eigenfunction_point_norm_sq (n : ℕ) (x : ℝ) :
 @[fun_prop]
 lemma eigenfunction_square_integrable (n : ℕ) :
     MeasureTheory.Integrable (fun x => ‖Q.eigenfunction n x‖ ^ 2) := by
-  have h0 (x : ℝ) : Real.exp (- Q.m * Q.ω * x ^ 2 / Q.ℏ) = Real.exp (- (Q.m * Q.ω /Q.ℏ) * x ^ 2)  := by
+  have h0 (x : ℝ) : Real.exp (- Q.m * Q.ω * x ^ 2 / Q.ℏ) =
+      Real.exp (- (Q.m * Q.ω /Q.ℏ) * x ^ 2) := by
     simp only [neg_mul, Real.exp_eq_exp]
     ring
   conv =>
@@ -186,7 +187,8 @@ lemma eigenfunction_mul (n p : ℕ) :
     _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
       (Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
       Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermiteFun n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) * physHermiteFun p (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x)) *
+      (physHermiteFun n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
+        physHermiteFun p (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x)) *
       (Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
       simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul,
         one_div, mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
@@ -194,7 +196,8 @@ lemma eigenfunction_mul (n p : ℕ) :
       ring
     _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
       ((Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermiteFun n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) * physHermiteFun p (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) *
+      (physHermiteFun n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
+        physHermiteFun p (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) *
       (Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
       congr 1
       · congr 1
@@ -231,7 +234,8 @@ lemma eigenfunction_mul_self (n : ℕ) :
       ring
     _ = (1/ (2 ^ n * n !)) *
       ((Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))^2 * (Real.exp (- Q.m * Q.ω * x^2 /Q.ℏ)) := by
+      (physHermiteFun n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))^2 *
+      (Real.exp (- Q.m * Q.ω * x^2 /Q.ℏ)) := by
       congr 1
       · congr 1
         · congr 1
@@ -263,8 +267,9 @@ lemma eigenfunction_mul_self (n : ℕ) :
 open InnerProductSpace
 
 /-- The eigenfunction are normalized. -/
-lemma eigenfunction_normalized  (n : ℕ) :
-    ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 1 := by
+lemma eigenfunction_normalized (n : ℕ) :
+    ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
+      HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 1 := by
   rw [inner_mk_mk]
   conv_lhs =>
     enter [2, x]
@@ -279,7 +284,8 @@ lemma eigenfunction_normalized  (n : ℕ) :
     refine div_nonneg ?_ ?_
     exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
     exact le_of_lt Q.hℏ
-  have hc : (∫ (x : ℝ), physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x) ^ 2 * Real.exp (- Q.m * Q.ω * x ^ 2 / Q.ℏ))
+  have hc : (∫ (x : ℝ), physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x) ^ 2 *
+      Real.exp (- Q.m * Q.ω * x ^ 2 / Q.ℏ))
       = ∫ (x : ℝ), (physHermiteFun n (c * x) *
       physHermiteFun n (c * x)) * Real.exp (- c^2 * x ^ 2) := by
     congr
@@ -340,11 +346,12 @@ lemma eigenfunction_normalized  (n : ℕ) :
 
 /-- The eigen-functions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
-    ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk (Q.eigenfunction_memHS p)⟫_ℂ  = 0 := by
+    ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
+      HilbertSpace.mk (Q.eigenfunction_memHS p)⟫_ℂ = 0 := by
   rw [inner_mk_mk]
   conv_lhs =>
     enter [2, x]
-    rw [eigenfunction_conj, Q.eigenfunction_mul n p ]
+    rw [eigenfunction_conj, Q.eigenfunction_mul n p]
   rw [MeasureTheory.integral_mul_left]
   rw [integral_complex_ofReal]
   let c := √(Q.m * Q.ω / Q.ℏ)
@@ -371,7 +378,6 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
     mul_one, Complex.ofReal_zero, mul_zero, c]
   exact hnp
 
-
 /-- The eigenvectors are orthonormal within the Hilbert space. s-/
 lemma eigenfunction_orthonormal :
     Orthonormal ℂ (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)) := by
@@ -382,7 +388,6 @@ lemma eigenfunction_orthonormal :
     exact Q.eigenfunction_normalized p
   · simp only [hnp, reduceIte]
     exact Q.eigenfunction_orthogonal hnp
-
 
 end HarmonicOscillator
 end OneDimension

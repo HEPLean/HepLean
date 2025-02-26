@@ -55,9 +55,9 @@ lemma mul_eigenfunction_integrable (f : ℝ → ℂ) (hf : MemHS f) :
 lemma mul_physHermiteFun_integrable (f : ℝ → ℂ) (hf : MemHS f) (n : ℕ) :
     MeasureTheory.Integrable (fun x => (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)) *
       (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) := by
-  have h2 : (1 / ↑√(2 ^ n * ↑n !) * ↑√√(Q.m * Q.ω / (Real.pi * Q.ℏ)) : ℂ) • (fun (x : ℝ ) =>
+  have h2 : (1 / ↑√(2 ^ n * ↑n !) * ↑√√(Q.m * Q.ω / (Real.pi * Q.ℏ)) : ℂ) • (fun (x : ℝ) =>
       (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x) *
-      (f x  * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) = fun x =>
+      (f x * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) = fun x =>
       Q.eigenfunction n x * f x := by
     funext x
     simp [eigenfunction_eq]
@@ -75,13 +75,15 @@ lemma mul_physHermiteFun_integrable (f : ℝ → ℂ) (hf : MemHS f) (n : ℕ) :
     · apply mul_pos Real.pi_pos Q.hℏ
 
 lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial ℤ) :
-    MeasureTheory.Integrable (fun x => ((fun x => P.aeval  x) (√(Q.m * Q.ω / Q.ℏ)  * x)) *
+    MeasureTheory.Integrable (fun x => ((fun x => P.aeval x) (√(Q.m * Q.ω / Q.ℏ) * x)) *
       (f x * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)))) volume := by
   have h1 := polynomial_mem_physHermiteFun_span P
   rw [Finsupp.mem_span_range_iff_exists_finsupp] at h1
   obtain ⟨a, ha⟩ := h1
-  have h2 : (fun x => ↑((fun x => P.aeval  x) (√(Q.m * Q.ω / Q.ℏ)  * x)) * (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))))
-    = (fun x => ∑ r ∈ a.support, a r * (physHermiteFun r (√(Q.m * Q.ω / Q.ℏ) * x)) * (f x * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))) := by
+  have h2 : (fun x => ↑((fun x => P.aeval x) (√(Q.m * Q.ω / Q.ℏ) * x)) *
+    (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))))
+    = (fun x => ∑ r ∈ a.support, a r * (physHermiteFun r (√(Q.m * Q.ω / Q.ℏ) * x)) *
+    (f x * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))) := by
     funext x
     rw [← ha]
     rw [← Finset.sum_mul]
@@ -93,7 +95,8 @@ lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial
   intro i hi
   simp only [mul_assoc]
   have hf' : (fun a_1 =>
-    ↑(a i) * (↑(physHermiteFun i (√(Q.m * Q.ω / Q.ℏ) * a_1)) * (f a_1 * ↑(Real.exp (- Q.m * (Q.ω * a_1 ^ 2) / (2 * Q.ℏ))))))
+    ↑(a i) * (↑(physHermiteFun i (√(Q.m * Q.ω / Q.ℏ) * a_1)) *
+    (f a_1 * ↑(Real.exp (- Q.m * (Q.ω * a_1 ^ 2) / (2 * Q.ℏ))))))
     = fun x => (a i) • ((physHermiteFun i (√(Q.m * Q.ω / Q.ℏ) * x)) *
       (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))) := by
     funext x
@@ -104,14 +107,16 @@ lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial
   apply MeasureTheory.Integrable.smul
   exact Q.mul_physHermiteFun_integrable f hf i
 
-lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f)  (r : ℕ) :
+lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
     MeasureTheory.Integrable (fun x => x ^ r *
       (f x * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)))) volume := by
   by_cases hr : r ≠ 0
-  · have h1 := Q.mul_polynomial_integrable f hf  (Polynomial.X ^ r)
+  · have h1 := Q.mul_polynomial_integrable f hf (Polynomial.X ^ r)
     simp at h1
-    have h2 : (fun x => (↑√(Q.m * Q.ω / Q.ℏ) * ↑x) ^ r * (f x * Complex.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))
-      =   (↑√(Q.m * Q.ω / Q.ℏ)  : ℂ) ^ r •  (fun x => (↑x ^r * (f x * Real.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))) := by
+    have h2 : (fun x => (↑√(Q.m * Q.ω / Q.ℏ) * ↑x) ^ r *
+      (f x * Complex.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))
+      = (↑√(Q.m * Q.ω / Q.ℏ) : ℂ) ^ r • (fun x => (↑x ^r *
+      (f x * Real.exp (-(↑Q.m * ↑Q.ω * ↑x ^ 2) / (2 * ↑Q.ℏ))))) := by
       funext x
       simp
       ring
@@ -119,7 +124,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f)  (r : ℕ) :
     rw [IsUnit.integrable_smul_iff] at h1
     simpa using h1
     simp
-    have h1 :  √(Q.m * Q.ω / Q.ℏ) ≠ 0 := by
+    have h1 : √(Q.m * Q.ω / Q.ℏ) ≠ 0 := by
       refine Real.sqrt_ne_zero'.mpr ?_
       refine div_pos ?_ ?_
       · exact mul_pos Q.hm Q.hω
@@ -127,7 +132,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f)  (r : ℕ) :
     simp [h1]
   · simp at hr
     subst hr
-    simpa using Q.mul_physHermiteFun_integrable f hf  0
+    simpa using Q.mul_physHermiteFun_integrable f hf 0
 
 /-!
 
@@ -136,7 +141,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f)  (r : ℕ) :
 -/
 
 lemma orthogonal_eigenfunction_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (n : ℕ) : ∫ (x : ℝ), Q.eigenfunction n x * f x = 0 := by
   rw [← hOrth n]
   rw [inner_mk_mk]
@@ -150,14 +155,16 @@ local notation "hℏ" => Q.hℏ
 local notation "hω" => Q.hω
 
 lemma orthogonal_physHermiteFun_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (n : ℕ) :
-    ∫ (x : ℝ), (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)) * (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
+    ∫ (x : ℝ), (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)) *
+    (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
     = 0 := by
   have h1 := Q.orthogonal_eigenfunction_of_mem_orthogonal f hf hOrth n
-  have h2 : (fun (x : ℝ ) =>
+  have h2 : (fun (x : ℝ) =>
           (1 / ↑√(2 ^ n * ↑n !) * ↑√√(Q.m * Q.ω / (Real.pi * Q.ℏ)) : ℂ) *
-            (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x) * f x  * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
+            (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x) * f x *
+            Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
     = fun x => Q.eigenfunction n x * f x := by
     funext x
     simp [eigenfunction_eq]
@@ -180,16 +187,18 @@ lemma orthogonal_physHermiteFun_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS 
   simp
   ring
 
-lemma orthogonal_polynomial_of_mem_orthogonal  (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
+lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (P : Polynomial ℤ) :
-    ∫ x : ℝ, ((fun x => P.aeval  x) (√(m * ω / ℏ)  * x)) *
+    ∫ x : ℝ, ((fun x => P.aeval x) (√(m * ω / ℏ) * x)) *
       (f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
   have h1 := polynomial_mem_physHermiteFun_span P
   rw [Finsupp.mem_span_range_iff_exists_finsupp] at h1
   obtain ⟨a, ha⟩ := h1
-  have h2 : (fun x => ↑((fun x => P.aeval  x) (√(m * ω / ℏ)  * x)) * (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))))
-    = (fun x => ∑ r ∈ a.support, a r * (physHermiteFun r (√(m * ω / ℏ) * x)) * (f x * Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) := by
+  have h2 : (fun x => ↑((fun x => P.aeval x) (√(m * ω / ℏ) * x)) *
+    (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))))
+    = (fun x => ∑ r ∈ a.support, a r * (physHermiteFun r (√(m * ω / ℏ) * x)) *
+    (f x * Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) := by
     funext x
     rw [← ha]
     rw [← Finset.sum_mul]
@@ -214,25 +223,28 @@ lemma orthogonal_polynomial_of_mem_orthogonal  (f : ℝ → ℂ) (hf : MemHS f)
     ring
   · /- Integrablility -/
     intro i hi
-    have hf' :
-      (fun x => ↑(a i) * ↑(physHermiteFun i (√(m * ω / ℏ) * x)) * (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))))
-        =  a i  • (fun x => (physHermiteFun i (√(m * ω / ℏ) * x)) * (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ))))) := by
-        funext x
-        simp
-        ring
+    have hf' : (fun x => ↑(a i) * ↑(physHermiteFun i (√(m * ω / ℏ) * x)) *
+        (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))))
+        = a i • (fun x => (physHermiteFun i (√(m * ω / ℏ) * x)) *
+        (f x * ↑(Real.exp (-m * ω * x ^ 2 / (2 * ℏ))))) := by
+      funext x
+      simp
+      ring
     rw [hf']
     apply Integrable.smul
     exact Q.mul_physHermiteFun_integrable f hf i
 
 lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (r : ℕ) :
     ∫ x : ℝ, (x ^ r * (f x * Real.exp (- m * ω * x^2 / (2 * ℏ)))) = 0 := by
   by_cases hr : r ≠ 0
   · have h1 := Q.orthogonal_polynomial_of_mem_orthogonal f hf hOrth (Polynomial.X ^ r)
     simp at h1
-    have h2 : (fun x => (↑√(m * ω / ℏ) * ↑x) ^ r * (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))))
-      =  (fun x => (↑√(m * ω / ℏ)  : ℂ) ^ r * (↑x ^r * (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))))) := by
+    have h2 : (fun x => (↑√(m * ω / ℏ) * ↑x) ^ r *
+      (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))))
+      = (fun x => (↑√(m * ω / ℏ) : ℂ) ^ r * (↑x ^r *
+      (f x * Complex.exp (-(↑m * ↑ω * ↑x ^ 2) / (2 * ↑ℏ))))) := by
       funext x
       ring
     rw [h2] at h1
@@ -262,14 +274,15 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
 open Finset
 
 lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
-    (c : ℝ) :
-    ∫ x : ℝ, Complex.exp (Complex.I * c * x) * (f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
+    (c : ℝ) : ∫ x : ℝ, Complex.exp (Complex.I * c * x) *
+    (f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
   /- Rewriting the intergrand as a limit. -/
-  have h1 (y : ℝ) : Filter.Tendsto (fun n =>  ∑ r ∈ range n,
+  have h1 (y : ℝ) : Filter.Tendsto (fun n => ∑ r ∈ range n,
         (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))
-      Filter.atTop (nhds (Complex.exp (Complex.I * c * y) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))) := by
-    have h11 : (fun n =>  ∑ r ∈ range n,
+      Filter.atTop (nhds (Complex.exp (Complex.I * c * y) *
+      (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))) := by
+    have h11 : (fun n => ∑ r ∈ range n,
         (Complex.I * ↑c * ↑y) ^ r / r !
         * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ)))) =
         fun n => (∑ r ∈ range n,
@@ -278,8 +291,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       funext s
       simp [Finset.sum_mul]
     rw [h11]
-    have h12 :  (Complex.exp (Complex.I * c * y) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))
-      = ( Complex.exp (Complex.I * c * y)) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))):= by
+    have h12 : (Complex.exp (Complex.I * c * y) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))
+      = (Complex.exp (Complex.I * c * y)) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))) := by
       simp
     rw [h12]
     apply Filter.Tendsto.mul_const
@@ -291,15 +304,18 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   /- Rewritting the integral as a limit using dominated_convergence -/
   have h1' : Filter.Tendsto (fun n => ∫ y : ℝ, ∑ r ∈ range n,
       (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))
-      Filter.atTop (nhds (∫ y : ℝ, Complex.exp (Complex.I * c * y) * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))) := by
+      Filter.atTop (nhds (∫ y : ℝ, Complex.exp (Complex.I * c * y) *
+      (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))) := by
     let bound : ℝ → ℝ := fun x => Real.exp (|c * x|) * Complex.abs (f x) *
       (Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))
     apply MeasureTheory.tendsto_integral_of_dominated_convergence bound
     · intro n
       apply Finset.aestronglyMeasurable_sum
       intro r hr
-      have h1 : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
-        =  fun a => (Complex.I * ↑c) ^ r / ↑r ! * (f a * Complex.ofReal (a ^ r * (Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
+      have h1 : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! *
+        (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
+        = fun a => (Complex.I * ↑c) ^ r / ↑r ! *
+        (f a * Complex.ofReal (a ^ r * (Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
         simp
         ring
@@ -309,25 +325,24 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       · exact aeStronglyMeasurable_of_memHS hf
       · apply MeasureTheory.Integrable.aestronglyMeasurable
         apply MeasureTheory.Integrable.ofReal
-        change Integrable (fun x =>  (x ^ r) * (Real.exp (-m * ω * x ^ 2 / (2 * ℏ))))
+        change Integrable (fun x => (x ^ r) * (Real.exp (-m * ω * x ^ 2 / (2 * ℏ))))
         have h1 : (fun x => (x ^ r)*(Real.exp (-m * ω * x ^ 2 / (2 * ℏ)))) =
-            (fun x => (Polynomial.X ^ r : Polynomial ℤ).aeval x  *
+            (fun x => (Polynomial.X ^ r : Polynomial ℤ).aeval x *
             (Real.exp (- (m * ω / (2* ℏ)) * x ^ 2))) := by
           funext x
-          simp  [neg_mul, mul_eq_mul_left_iff, Real.exp_eq_exp]
+          simp [neg_mul, mul_eq_mul_left_iff, Real.exp_eq_exp]
           left
           field_simp
         rw [h1]
         apply guassian_integrable_polynomial
         simp
     · /- Prove the bound is integrable. -/
-      have hbound : bound =
-        (fun x => Real.exp |c * x| * Complex.abs (f x) * Real.exp (-(m * ω / (2 * ℏ)) * x ^ 2))
-         := by
-         simp [bound]
-         funext x
-         congr
-         field_simp
+      have hbound : bound = (fun x => Real.exp |c * x| * Complex.abs (f x) *
+          Real.exp (-(m * ω / (2 * ℏ)) * x ^ 2)) := by
+        simp [bound]
+        funext x
+        congr
+        field_simp
       rw [hbound]
       apply HilbertSpace.exp_abs_mul_abs_mul_gaussian_integrable
       · exact hf
@@ -359,7 +374,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       rw [_root_.mul_le_mul_right]
       · have h1 := Real.sum_le_exp_of_nonneg (x := |c * y|) (abs_nonneg (c * y)) n
         refine le_trans ?_ h1
-        have h2 :  Complex.abs (∑ i ∈ range n, (Complex.I * (↑c * ↑y)) ^ i / ↑i !) ≤
+        have h2 : Complex.abs (∑ i ∈ range n, (Complex.I * (↑c * ↑y)) ^ i / ↑i !) ≤
           ∑ i ∈ range n, Complex.abs ((Complex.I * (↑c * ↑y)) ^ i / ↑i !) := by
           exact AbsoluteValue.sum_le _ _ _
         refine le_trans h2 ?_
@@ -370,20 +385,23 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         congr
         rw [abs_mul]
       · refine mul_pos ?_ ?_
-        have h1 : 0 ≤  Complex.abs (f y) := by exact AbsoluteValue.nonneg Complex.abs (f y)
+        have h1 : 0 ≤ Complex.abs (f y) := by exact AbsoluteValue.nonneg Complex.abs (f y)
         apply lt_of_le_of_ne h1 (fun a => hf (id (Eq.symm a)))
         exact Real.exp_pos (-(m * ω * y ^ 2) / (2 * ℏ))
     · apply Filter.Eventually.of_forall
       intro y
       exact h1 y
-  have h3b  : (fun n => ∫ y : ℝ, ∑ r ∈ range n,
-      (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ)))) = fun (n : ℕ) => 0 := by
+  have h3b : (fun n => ∫ y : ℝ, ∑ r ∈ range n,
+      (Complex.I * ↑c * ↑y) ^ r / r ! *
+      (f y * Real.exp (- m * ω * y^2 / (2 * ℏ)))) = fun (n : ℕ) => 0 := by
     funext n
     rw [MeasureTheory.integral_finset_sum]
     · apply Finset.sum_eq_zero
       intro r hr
-      have hf' : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
-        = fun a => ((Complex.I * ↑c) ^ r / ↑r !) * (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
+      have hf' : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! *
+        (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
+        = fun a => ((Complex.I * ↑c) ^ r / ↑r !) *
+        (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
         simp
         ring
@@ -392,24 +410,25 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       rw [Q.orthogonal_power_of_mem_orthogonal f hf hOrth r]
       simp
     · intro r hr
-      have hf' : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
-        = ((Complex.I * ↑c) ^ r / ↑r !)  • fun a => (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
+      have hf' : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! *
+        (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ)))))
+        = ((Complex.I * ↑c) ^ r / ↑r !) •
+        fun a => (a^ r * (f a * ↑(Real.exp (-m * ω * a ^ 2 / (2 * ℏ))))) := by
         funext a
         simp
         ring
       rw [hf']
       apply MeasureTheory.Integrable.smul
-      exact Q.mul_power_integrable f hf  r
+      exact Q.mul_power_integrable f hf r
   rw [h3b] at h1'
   apply tendsto_nhds_unique h1'
   rw [tendsto_const_nhds_iff]
 
+open FourierTransform MeasureTheory Real Lp Memℒp Filter Complex Topology
+  ComplexInnerProductSpace ComplexConjugate
 
-open FourierTransform MeasureTheory Real Lp Memℒp Filter Complex Topology ComplexInnerProductSpace ComplexConjugate
-
-
-lemma fourierIntegral_zero_of_mem_orthogonal  (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0) :
+lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0) :
     𝓕 (fun x => f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
   funext c
   rw [Real.fourierIntegral_eq]
@@ -423,13 +442,13 @@ lemma fourierIntegral_zero_of_mem_orthogonal  (f : ℝ → ℂ) (hf : MemHS f)
   congr 2
   ring
 
-lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
-    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n) , HilbertSpace.mk hf⟫_ℂ = 0)
+lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (plancherel_theorem: ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
-       eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume):
+      eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) :
     HilbertSpace.mk hf = 0 := by
   have hf' : (fun x => f x * ↑(rexp (-m * ω * x ^ 2 / (2 * ℏ))))
-        = (fun x => f x * ↑(rexp (- (m * ω / (2 * ℏ)) * (x - 0) ^ 2 ))) := by
+        = (fun x => f x * ↑(rexp (- (m * ω / (2 * ℏ)) * (x - 0) ^ 2))) := by
         funext x
         simp
         left
@@ -439,7 +458,7 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
     rw [← plancherel_theorem]
     rw [Q.fourierIntegral_zero_of_mem_orthogonal f hf hOrth]
     simp
-    · /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is integrable -/
+    · /- f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is integrable -/
       rw [hf']
       rw [← memℒp_one_iff_integrable]
       apply HilbertSpace.mul_gaussian_mem_Lp_one f hf (m * ω / (2 * ℏ)) 0
@@ -447,7 +466,7 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
       · exact mul_pos hm hω
       · have h1 := Q.hℏ
         linarith
-    ·  /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is square-integrable -/
+    · /- f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is square-integrable -/
       rw [hf']
       refine HilbertSpace.mul_gaussian_mem_Lp_two f hf (m * ω / (2 * ℏ)) 0 ?_
       refine div_pos ?_ ?_
@@ -457,19 +476,17 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
   refine (norm_eq_zero_iff (by simp)).mp ?_
   simp [Norm.norm]
   have h2 : eLpNorm f 2 volume = 0 := by
-    rw [MeasureTheory.eLpNorm_eq_zero_iff]  at h1 ⊢
+    rw [MeasureTheory.eLpNorm_eq_zero_iff] at h1 ⊢
     rw [Filter.eventuallyEq_iff_all_subsets] at h1 ⊢
-    have h3 (x : ℝ) :  f x * ↑(rexp (-m * ω * x ^ 2 / (2 * ℏ))) = 0  ↔
-      f x = 0 := by simp
-    simp [h3] at h1
+    simp at h1
     exact h1
     exact aeStronglyMeasurable_of_memHS hf
     simp
-    ·  /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is strongly measurable -/
+    · /- f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is strongly measurable -/
       rw [hf']
       apply Integrable.aestronglyMeasurable
       rw [← memℒp_one_iff_integrable]
-      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf  (m * ω / (2 * ℏ)) 0
+      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf (m * ω / (2 * ℏ)) 0
       refine div_pos ?_ ?_
       · exact mul_pos hm hω
       · have h1 := Q.hℏ
@@ -481,16 +498,18 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
 lemma zero_of_orthogonal_eigenVector (f : HilbertSpace)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), f⟫_ℂ = 0)
     (plancherel_theorem: ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
-       eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) : f = 0 := by
+      eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) : f = 0 := by
   obtain ⟨f, hf, rfl⟩ := HilbertSpace.mk_surjective f
   exact zero_of_orthogonal_mk Q f hf hOrth plancherel_theorem
 
 lemma completness_eigenvector
     (plancherel_theorem : ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
-       eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume)  :
-    (Submodule.span ℂ (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)))).topologicalClosure = ⊤ := by
+      eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) :
+    (Submodule.span ℂ
+    (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)))).topologicalClosure = ⊤ := by
   rw [Submodule.topologicalClosure_eq_top_iff]
-  refine (Submodule.eq_bot_iff (Submodule.span ℂ (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n))))ᗮ).mpr ?_
+  refine (Submodule.eq_bot_iff (Submodule.span ℂ
+    (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n))))ᗮ).mpr ?_
   intro f hf
   apply Q.zero_of_orthogonal_eigenVector f ?_ plancherel_theorem
   intro n

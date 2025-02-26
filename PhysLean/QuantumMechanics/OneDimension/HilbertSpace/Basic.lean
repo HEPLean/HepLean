@@ -29,6 +29,7 @@ noncomputable abbrev HilbertSpace := MeasureTheory.Lp (α := ℝ) ℂ 2
 namespace HilbertSpace
 open MeasureTheory
 
+/-- The proposition which is true if a function `f` can be lifted to the Hilbert space. -/
 def MemHS (f : ℝ → ℂ) : Prop := Memℒp f 2 MeasureTheory.volume
 
 lemma aeStronglyMeasurable_of_memHS {f : ℝ → ℂ} (h : MemHS f) :
@@ -54,7 +55,7 @@ lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
   exact ENNReal.ofNat_ne_top
 
 lemma aeEqFun_mk_mem_iff (f : ℝ → ℂ) (hf : AEStronglyMeasurable f volume) :
-     AEEqFun.mk f hf ∈ HilbertSpace ↔ MemHS f := by
+    AEEqFun.mk f hf ∈ HilbertSpace ↔ MemHS f := by
   rw [MemHS, HilbertSpace]
   rw [MeasureTheory.Lp.mem_Lp_iff_memℒp]
   apply MeasureTheory.memℒp_congr_ae
@@ -124,14 +125,14 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
 -/
 open MeasureTheory
 
-lemma gaussian_integrable {b  : ℝ} (c : ℝ) (hb : 0 < b) :
+lemma gaussian_integrable {b : ℝ} (c : ℝ) (hb : 0 < b) :
     MeasureTheory.Integrable (fun x => (Real.exp (- b * (x - c)^ 2) : ℂ)) := by
   apply MeasureTheory.Integrable.ofReal
   have hf : (fun x => (Real.exp (-b * (x - c) ^ 2))) =
     fun y => (fun x => (Real.exp (-b * x ^ 2))) (y - c) := by
     exact rfl
   erw [hf]
-  apply Integrable.comp_sub_right (f :=  (fun x => Real.exp (- b * x ^ 2)))
+  apply Integrable.comp_sub_right (f := (fun x => Real.exp (- b * x ^ 2)))
   exact integrable_exp_neg_mul_sq hb
 
 lemma gaussian_aestronglyMeasurable {b : ℝ} (c : ℝ) (hb : 0 < b) :
@@ -140,7 +141,7 @@ lemma gaussian_aestronglyMeasurable {b : ℝ} (c : ℝ) (hb : 0 < b) :
   exact gaussian_integrable c hb
 
 lemma gaussian_memHS {b : ℝ} (c : ℝ) (hb : 0 < b) :
-    MemHS (fun x  => (Real.exp (- b * (x - c) ^2) : ℂ)) := by
+    MemHS (fun x => (Real.exp (- b * (x - c) ^2) : ℂ)) := by
   rw [memHS_iff]
   apply And.intro
   · exact gaussian_aestronglyMeasurable c hb
@@ -160,9 +161,9 @@ lemma gaussian_memHS {b : ℝ} (c : ℝ) (hb : 0 < b) :
   apply integrable_exp_neg_mul_sq
   linarith
 
-lemma exp_mul_gaussian_integrable  (b c : ℝ) (hb : 0 < b) :
-    MeasureTheory.Integrable (fun x => Real.exp (c *  x) * Real.exp (- b * x ^ 2))  := by
-  have h1 :  (fun x =>  Real.exp (c *  x) * Real.exp (- b * x ^ 2))
+lemma exp_mul_gaussian_integrable (b c : ℝ) (hb : 0 < b) :
+    MeasureTheory.Integrable (fun x => Real.exp (c * x) * Real.exp (- b * x ^ 2)) := by
+  have h1 : (fun x => Real.exp (c * x) * Real.exp (- b * x ^ 2))
       = (fun x => Real.exp (c^2 /(4 * b)) * Real.exp (- b * (x - c/(2 * b)) ^ 2)) := by
     funext x
     rw [← Real.exp_add, ← Real.exp_add]
@@ -172,24 +173,24 @@ lemma exp_mul_gaussian_integrable  (b c : ℝ) (hb : 0 < b) :
   rw [h1]
   apply MeasureTheory.Integrable.const_mul
   have h1 :(fun x => Real.exp (- b * (x - c/(2 * b)) ^ 2))
-      = fun y => (fun x => Real.exp (- b * x ^ 2)) (y -  c/(2 * b)) := by
+      = fun y => (fun x => Real.exp (- b * x ^ 2)) (y - c/(2 * b)) := by
     funext x
     rw [sub_sq]
     ring_nf
   rw [h1]
-  apply Integrable.comp_sub_right (f :=  (fun x => Real.exp (- b * x ^ 2)))
+  apply Integrable.comp_sub_right (f := (fun x => Real.exp (- b * x ^ 2)))
   exact integrable_exp_neg_mul_sq hb
 
-lemma exp_abs_mul_gaussian_integrable  (b c : ℝ) (hb : 0 < b) :
-    MeasureTheory.Integrable (fun x => Real.exp (|c *  x|) * Real.exp (- b * x ^ 2))  := by
+lemma exp_abs_mul_gaussian_integrable (b c : ℝ) (hb : 0 < b) :
+    MeasureTheory.Integrable (fun x => Real.exp (|c * x|) * Real.exp (- b * x ^ 2)) := by
   rw [← MeasureTheory.integrableOn_univ]
-  have h1 : Set.univ (α := ℝ) = (Set.Iic 0) ∪ Set.Ici 0  := by
+  have h1 : Set.univ (α := ℝ) = (Set.Iic 0) ∪ Set.Ici 0 := by
     exact Eq.symm Set.Iic_union_Ici
   rw [h1]
   apply MeasureTheory.IntegrableOn.union
   · let g := fun x => Real.exp ((- |c|) * x) * Real.exp (- b * x ^ 2)
     rw [integrableOn_congr_fun (g := g) _ measurableSet_Iic]
-    · apply MeasureTheory.IntegrableOn.left_of_union (t := Set.Ici 0 )
+    · apply MeasureTheory.IntegrableOn.left_of_union (t := Set.Ici 0)
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_gaussian_integrable b (- |c|) hb
     · intro x hx
@@ -200,7 +201,7 @@ lemma exp_abs_mul_gaussian_integrable  (b c : ℝ) (hb : 0 < b) :
       ring
   · let g := fun x => Real.exp (|c| * x) * Real.exp (- b * x ^ 2)
     rw [integrableOn_congr_fun (g := g) _ measurableSet_Ici]
-    · apply MeasureTheory.IntegrableOn.right_of_union (s := Set.Iic 0 )
+    · apply MeasureTheory.IntegrableOn.right_of_union (s := Set.Iic 0)
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_gaussian_integrable b (|c|) hb
     · intro x hx
@@ -212,9 +213,9 @@ lemma exp_abs_mul_gaussian_integrable  (b c : ℝ) (hb : 0 < b) :
 lemma mul_gaussian_mem_Lp_one (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb : 0 < b) :
     MeasureTheory.Memℒp (fun x => f x * Real.exp (- b * (x - c) ^ 2)) 1 volume := by
   refine memℒp_one_iff_integrable.mpr ?_
-  let g : HilbertSpace :=  mk (gaussian_memHS c hb)
+  let g : HilbertSpace := mk (gaussian_memHS c hb)
   have h1 := MeasureTheory.L2.integrable_inner (𝕜 := ℂ) g (mk hf)
-  refine (integrable_congr   ?_).mp h1
+  refine (integrable_congr ?_).mp h1
   simp
   conv_lhs =>
     enter [x]
@@ -230,7 +231,7 @@ lemma mul_gaussian_mem_Lp_one (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
     rw [Complex.conj_ofReal]
     simp
 
-lemma mul_gaussian_mem_Lp_two  (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb : 0 < b) :
+lemma mul_gaussian_mem_Lp_two (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb : 0 < b) :
     MeasureTheory.Memℒp (fun x => f x * Real.exp (- b * (x - c) ^ 2)) 2 volume := by
   apply MeasureTheory.Memℒp.mul_of_top_left (p := 2)
   · apply MeasureTheory.memℒp_top_of_bound (C := Real.exp (0))
@@ -248,7 +249,7 @@ lemma mul_gaussian_mem_Lp_two  (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb 
   · exact hf
 
 lemma abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb : 0 < b) :
-    MeasureTheory.Integrable (fun x =>  Complex.abs (f x) * Real.exp (- b * (x - c)^2)) := by
+    MeasureTheory.Integrable (fun x => Complex.abs (f x) * Real.exp (- b * (x - c)^2)) := by
   have h1 : (fun x => Complex.abs (f x) * Real.exp (- b * (x - c)^2)) =
       (fun x => Complex.abs (f x * Real.exp (- b *(x - c)^2))) := by
     funext x
@@ -262,11 +263,13 @@ lemma abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (
     exact mul_gaussian_mem_Lp_one f hf b c hb
   simpa using MeasureTheory.Memℒp.integrable_norm_rpow h2 (by simp) (by simp)
 
-lemma exp_mul_abs_mul_gaussian_integrable  (f : ℝ → ℂ) (hf : MemHS f)
-    (b c : ℝ) (hb : 0 < b) :
-    MeasureTheory.Integrable (fun x => Real.exp (c *  x) * Complex.abs (f x) * Real.exp (- b * x ^ 2))  := by
-  have h1 :  (fun x =>  Real.exp (c *  x) * Complex.abs (f x) * Real.exp (- b * x ^ 2))
-      = (fun x => Real.exp (c^2 /(4 * b)) * (Complex.abs (f x) * Real.exp (- b * (x - c/(2 * b)) ^ 2))) := by
+lemma exp_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f)
+    (b c : ℝ) (hb : 0 < b) : MeasureTheory.Integrable
+    (fun x => Real.exp (c * x) * Complex.abs (f x) * Real.exp (- b * x ^ 2)) := by
+  have h1 : (fun x => Real.exp (c * x) *
+  Complex.abs (f x) * Real.exp (- b * x ^ 2))
+      = (fun x => Real.exp (c^2 /(4 * b)) *
+      (Complex.abs (f x) * Real.exp (- b * (x - c/(2 * b)) ^ 2))) := by
     funext x
     rw [mul_comm,← mul_assoc]
     trans (Real.exp (c ^ 2 / (4 * b)) * Real.exp (-b * (x - c / (2 * b)) ^ 2)) * Complex.abs (f x)
@@ -280,16 +283,17 @@ lemma exp_mul_abs_mul_gaussian_integrable  (f : ℝ → ℂ) (hf : MemHS f)
   apply MeasureTheory.Integrable.const_mul
   exact abs_mul_gaussian_integrable f hf b (c / (2 * b)) hb
 
-lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f)  (b c : ℝ) (hb : 0 < b) :
-    MeasureTheory.Integrable (fun x => Real.exp (|c * x|) * Complex.abs (f x) * Real.exp (- b * x ^ 2)) := by
+lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb : 0 < b) :
+    MeasureTheory.Integrable
+    (fun x => Real.exp (|c * x|) * Complex.abs (f x) * Real.exp (- b * x ^ 2)) := by
   rw [← MeasureTheory.integrableOn_univ]
-  have h1 : Set.univ (α := ℝ) = (Set.Iic 0) ∪ Set.Ici 0  := by
+  have h1 : Set.univ (α := ℝ) = (Set.Iic 0) ∪ Set.Ici 0 := by
     exact Eq.symm Set.Iic_union_Ici
   rw [h1]
   apply MeasureTheory.IntegrableOn.union
   · let g := fun x => Real.exp ((- |c|) * x) * Complex.abs (f x) * Real.exp (- b * x ^ 2)
     rw [integrableOn_congr_fun (g := g) _ measurableSet_Iic]
-    · apply MeasureTheory.IntegrableOn.left_of_union (t := Set.Ici 0 )
+    · apply MeasureTheory.IntegrableOn.left_of_union (t := Set.Ici 0)
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_abs_mul_gaussian_integrable f hf b (-|c|) hb
     · intro x hx
@@ -299,9 +303,9 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f)  
       rw [abs_mul]
       rw [abs_of_nonpos hx]
       ring
-  · let g := fun x => Real.exp (|c| * x)  * Complex.abs (f x) * Real.exp (- b * x ^ 2)
+  · let g := fun x => Real.exp (|c| * x) * Complex.abs (f x) * Real.exp (- b * x ^ 2)
     rw [integrableOn_congr_fun (g := g) _ measurableSet_Ici]
-    · apply MeasureTheory.IntegrableOn.right_of_union (s := Set.Iic 0 )
+    · apply MeasureTheory.IntegrableOn.right_of_union (s := Set.Iic 0)
       rw [← h1, MeasureTheory.integrableOn_univ]
       exact exp_mul_abs_mul_gaussian_integrable f hf b |c| hb
     · intro x hx
@@ -310,6 +314,5 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f)  
       left
       rw [abs_mul]
       rw [abs_of_nonneg hx]
-
 
 end HilbertSpace

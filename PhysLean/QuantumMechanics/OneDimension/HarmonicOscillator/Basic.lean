@@ -54,9 +54,14 @@ namespace QuantumMechanics
 
 namespace OneDimension
 
+/-- A quantum harmonic oscillator specified by a mass, a value of Plancck's and
+  an angular frequency. -/
 structure HarmonicOscillator where
+  /-- The mass of the particle. -/
   m : ℝ
+  /-- Reduced Planck's constant. -/
   ℏ : ℝ
+  /-- The angular frequency of the harmonic oscillator. -/
   ω : ℝ
   hℏ : 0 < ℏ
   hω : 0 < ω
@@ -76,7 +81,7 @@ lemma m_mul_ω_div_two_ℏ_pos : 0 < Q.m * Q.ω / (2 * Q.ℏ) := by
   exact mul_pos (by norm_num) Q.hℏ
 
 @[simp]
-lemma m_mul_ω_div_ℏ_pos : 0 < Q.m * Q.ω /  Q.ℏ := by
+lemma m_mul_ω_div_ℏ_pos : 0 < Q.m * Q.ω / Q.ℏ := by
   apply div_pos
   exact mul_pos Q.hm Q.hω
   exact Q.hℏ
@@ -93,7 +98,7 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
 
   The prime `'` in the name is to signify that this is not defined on
   equivalence classes of square integrable functions. -/
-noncomputable def schrodingerOperator (ψ : ℝ → ℂ) :  ℝ → ℂ :=
+noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
 
 end HarmonicOscillator

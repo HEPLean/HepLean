@@ -10,7 +10,6 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
 
 -/
 
-
 namespace QuantumMechanics
 
 namespace OneDimension
@@ -22,11 +21,10 @@ open Nat
 open PhysLean
 open HilbertSpace
 
-
 /-- The eigenvalues for the Harmonic oscillator. -/
 noncomputable def eigenValue (n : ℕ) : ℝ := (n + 1/2) * Q.ℏ * Q.ω
 
-lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction  0) =
+lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction 0) =
     Complex.ofReal (- Q.m * Q.ω / Q.ℏ) • Complex.ofReal * Q.eigenfunction 0 := by
   rw [eigenfunction_zero]
   simp only [neg_mul, deriv_const_mul_field', Complex.ofReal_div, Complex.ofReal_neg,
@@ -64,13 +62,11 @@ lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction  0) =
   rw [h1]
   ring
 
-
-
 lemma deriv_deriv_eigenfunction_zero (x : ℝ) : deriv (deriv (Q.eigenfunction 0)) x =
     - (Q.m * Q.ω) / Q.ℏ * (Q.eigenfunction 0 x +
     x * (-(Q.m * Q.ω) / Q.ℏ * x * Q.eigenfunction 0 x)) := by
   simp [deriv_eigenfunction_zero]
-  trans  deriv (fun x => (-(↑Q.m * ↑Q.ω) / ↑Q.ℏ) • (Complex.ofReal x * Q.eigenfunction 0 x)) x
+  trans deriv (fun x => (-(↑Q.m * ↑Q.ω) / ↑Q.ℏ) • (Complex.ofReal x * Q.eigenfunction 0 x)) x
   · congr
     funext x
     simp
@@ -169,13 +165,13 @@ lemma deriv_deriv_eigenfunction_one (x : ℝ) :
     deriv (fun x => deriv (Q.eigenfunction 1) x) x =
       Complex.ofReal (1/Real.sqrt (2 ^ 1 * 1 !)) *
       ((((-(Q.m * Q.ω) / Q.ℏ) * ↑√(Q.m * Q.ω / Q.ℏ) * (4 * x) +
-        (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (2* (√(Q.m * Q.ω / Q.ℏ) * x)))) *
-        Q.eigenfunction 0 x) := by
+        (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
+        (2 * (√(Q.m * Q.ω / Q.ℏ) * x)))) * Q.eigenfunction 0 x) := by
   rw [deriv_deriv_eigenfunction_succ]
   congr 2
   simp [physHermiteFun_eq_aeval_physHermite, physHermite_one, Polynomial.aeval]
 
-lemma schrodingerOperator_eigenfunction_one (x : ℝ)  :
+lemma schrodingerOperator_eigenfunction_one (x : ℝ) :
     Q.schrodingerOperator (Q.eigenfunction 1) x=
     Q.eigenValue 1 * Q.eigenfunction 1 x := by
   simp [schrodingerOperator, eigenValue]
@@ -191,8 +187,6 @@ lemma schrodingerOperator_eigenfunction_one (x : ℝ)  :
   field_simp [hl, hℏ]
   ring
 
-
-
 lemma deriv_deriv_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
     deriv (fun x => deriv (Q.eigenfunction (n + 2)) x) x = (- Q.m * Q.ω / Q.ℏ) * (2 * (n + 2)
     + (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2)) * Q.eigenfunction (n + 2) x := by
@@ -206,14 +200,16 @@ lemma deriv_deriv_eigenfunction_succ_succ (n : ℕ) (x : ℝ) :
     2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
     (-(Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
     (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
-    (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) * (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
+    (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
+    (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
   · rw [deriv_physHermiteFun_succ]
     simp
-  trans ((Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) * (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
-        (- (Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
-        (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
-        (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
-        (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
+  trans ((Q.m * Q.ω / Q.ℏ) * 2 * (n + 1 + 1) * (2 * (n + 1) *
+      (physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x))) +
+      (- (Q.m * Q.ω) / Q.ℏ) * √(Q.m * Q.ω / Q.ℏ) * (4 * (n + 1 + 1) * x) *
+      (physHermiteFun (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x)) +
+      (-(Q.m * Q.ω) / Q.ℏ) * (1 + (-(Q.m * Q.ω) / Q.ℏ) * x ^ 2) *
+      (physHermiteFun (n + 2) (√(Q.m * Q.ω / Q.ℏ) * x)))
   · congr 2
     trans (↑√(Q.m * Q.ω / Q.ℏ) * ↑√(Q.m * Q.ω / Q.ℏ)) * 2 * (↑n + 1 + 1) *
     (2 * (↑n + 1) * ↑(physHermiteFun n (√(Q.m * Q.ω / Q.ℏ) * x)))
@@ -262,7 +258,6 @@ theorem schrodingerOperator_eigenfunction (n : ℕ) :
 open Filter Finset
 
 open InnerProductSpace
-
 
 end HarmonicOscillator
 end OneDimension
