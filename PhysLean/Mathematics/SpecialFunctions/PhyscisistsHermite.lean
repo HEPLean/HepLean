@@ -17,7 +17,12 @@ This file may eventually be upstreamed to Mathlib.
 open Polynomial
 namespace PhysLean
 
-/-- The Physicists Hermite polynomial. -/
+/-- The Physicists Hermite polynomial are defined as polynomials over `ℤ` in `X` recursively
+  with `physHermite 0 = 1` and
+
+  `physHermite (n + 1) = 2 • X * physHermite n - derivative (physHermite n)`.
+
+-/
 noncomputable def physHermite : ℕ → Polynomial ℤ
   | 0 => 1
   | n + 1 => 2 • X * physHermite n - derivative (physHermite n)
@@ -139,7 +144,8 @@ lemma physHermite_ne_zero {n : ℕ} : physHermite n ≠ 0 := by
   refine leadingCoeff_ne_zero.mp ?_
   simp
 
-/-- The physicists Hermite polynomial as a function from `ℝ` to `ℝ`. -/
+/-- The function `physHermiteFun` from `ℝ` to `ℝ` is defined by evaulation of
+ `physHermite` in `ℝ`. -/
 noncomputable def physHermiteFun (n : ℕ) : ℝ → ℝ := fun x => aeval x (physHermite n)
 
 @[simp]

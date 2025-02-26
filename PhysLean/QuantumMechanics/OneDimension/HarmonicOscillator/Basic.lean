@@ -54,8 +54,9 @@ namespace QuantumMechanics
 
 namespace OneDimension
 
-/-- A quantum harmonic oscillator specified by a mass, a value of Plancck's and
-  an angular frequency. -/
+/-- A quantum harmonic oscillator specified by a three
+  real parameters: the mass of the particle `m`, a value of Planck's constant `ℏ`, and
+  an angular frequency `ω`. All three of these parameters are assumed to be positive. -/
 structure HarmonicOscillator where
   /-- The mass of the particle. -/
   m : ℝ
@@ -94,10 +95,10 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
   have h1 := Q.hℏ
   linarith
 
-/-- The Schrodinger Operator for the Harmonic oscillator on the space of functions.
+/-- For a harmonic oscillator, the Schrodinger Operator corresponding to it
+  is defined as the function from `ℝ → ℂ` to `ℝ → ℂ` taking
 
-  The prime `'` in the name is to signify that this is not defined on
-  equivalence classes of square integrable functions. -/
+  `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
 

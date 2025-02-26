@@ -290,10 +290,63 @@ def perturbationTheory : Note where
     .name ``FieldSpecification.FieldOpAlgebra.wicks_theorem_normal_order .complete
     ]
 
+
+def harmonicOscillator : Note where
+  title := "The Quantum Harmonic Oscillator in Lean 4"
+  curators := ["Joseph Tooby-Smith"]
+  parts := [
+    .h1 "Introduction",
+    .p "The quantum harmonic oscillator is a fundamental example of a one-dimensional
+      quantum mechanical system. It is often one of the first models encountered by undergraduate
+      students studying quantum mechanics.",
+    .p " This note presents the formalization of the quantum harmonic oscillator in the theorem prover
+     Lean 4, as part of the larger project PhysLean.
+     What this means is that every definition and theorem in this note has been formally checked
+     for mathematical correctness for by a computer. There are a number of
+     motivations for doing this which are dicussed <a href = 'https://heplean.com'>here</a>.",
+    .p "Note that we do not give every definition and theorem which is part of
+      the formalization.
+     Our goal is give key aspects, in such a way that we hope this note will be useful
+     to newcomers to Lean or those intrested in simply intrested in learning about the
+     quantum harmonic oscillator.",
+    .h1 "Hilbert Space",
+    .name ``QuantumMechanics.OneDimension.HilbertSpace .complete,
+    .name ``QuantumMechanics.OneDimension.HilbertSpace.MemHS .complete,
+    .name ``QuantumMechanics.OneDimension.HilbertSpace.memHS_iff .complete,
+    .name ``QuantumMechanics.OneDimension.HilbertSpace.mk .complete,
+    .h1 "The Schrodinger Operator",
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.schrodingerOperator .complete,
+    .h1 "The eigenfunctions of the Schrodinger Operator",
+    .name ``PhysLean.physHermite .complete,
+    .name ``PhysLean.physHermiteFun .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction .complete,
+    .h2 "Properties of the eigenfunctions",
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_integrable .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_conj .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_aeStronglyMeasurable .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_square_integrable .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_memHS .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_differentiableAt .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_orthonormal .complete,
+    .h1 "The time-independent Schrodinger Equation",
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenValue .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.schrodingerOperator_eigenfunction
+      .complete,
+    .h1 "Completeness",
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.orthogonal_power_of_mem_orthogonal .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.orthogonal_exp_of_mem_orthogonal .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.fourierIntegral_zero_of_mem_orthogonal .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_completeness .complete,
+    ]
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let ymlString ← CoreM.withImportModules #[`PhysLean] (perturbationTheory.toYML).run'
   let fileOut : System.FilePath := {toString := "./docs/_data/perturbationTheory.yml"}
-  IO.println (s!"YML file made.")
+  IO.println (s!"YML file made for perturbation theory.")
   IO.FS.writeFile fileOut ymlString
+  let ymlString2 ← CoreM.withImportModules #[`PhysLean] (harmonicOscillator.toYML).run'
+  let fileOut2 : System.FilePath := {toString := "./docs/_data/harmonicOscillator.yml"}
+  IO.println (s!"YML file made for harmonic oscillator.")
+  IO.FS.writeFile fileOut2 ymlString2
   pure 0

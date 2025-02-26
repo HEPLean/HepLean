@@ -149,7 +149,7 @@ def getDeclStringNoDoc (name : Name) : CoreM String := do
     line.startsWith "def " ∨ line.startsWith "lemma " ∨ line.startsWith "inductive "
     ∨ line.startsWith "structure " ∨ line.startsWith "theorem "
     ∨ line.startsWith "instance " ∨ line.startsWith "abbrev " ∨
-    line.startsWith "noncomputable def "
+    line.startsWith "noncomputable def " ∨ line.startsWith "noncomputable abbrev "
   let lines := declerationString.splitOn "\n"
   match lines.findIdx? headerLine with
   | none => panic! s!"{name} has no header line"
