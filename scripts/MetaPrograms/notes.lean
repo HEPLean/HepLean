@@ -296,13 +296,19 @@ def harmonicOscillator : Note where
   curators := ["Joseph Tooby-Smith"]
   parts := [
     .h1 "Introduction",
-    .p "The quantum harmonic oscillator is one of the foundational examples
-    of a 1d quantum mechanical system. It is perhaps the first example that
-    many undergraduate students encounter when learning quantum mechanics.",
-    .p "
-    This note shall present the digitilisation (or formalization) of the
-    quantum harmonic oscillator into the theorem prover Lean 4. This is part of a larger
-    project called PhysLean. Note not every definition and theorem is given here.",
+    .p "The quantum harmonic oscillator is a fundamental example of a one-dimensional
+      quantum mechanical system. It is often one of the first models encountered by undergraduate
+      students studying quantum mechanics.",
+    .p " This note presents the formalization of the quantum harmonic oscillator in the theorem prover
+     Lean 4, as part of the larger project PhysLean.
+     What this means is that every definition and theorem in this note has been formally checked
+     for mathematical correctness for by a computer. There are a number of
+     motivations for doing this which are dicussed <a href = 'https://heplean.com'>here</a>.",
+    .p "Note that we do not give every definition and theorem which is part of
+      the formalization.
+     Our goal is give key aspects, in such a way that we hope this note will be useful
+     to newcomers to Lean or those intrested in simply intrested in learning about the
+     quantum harmonic oscillator.",
     .h1 "Hilbert Space",
     .name ``QuantumMechanics.OneDimension.HilbertSpace .complete,
     .name ``QuantumMechanics.OneDimension.HilbertSpace.MemHS .complete,
