@@ -181,8 +181,11 @@ import PhysLean.PerturbationTheory.WickContraction.TimeCond
 import PhysLean.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.PerturbationTheory.WickContraction.Uncontracted
 import PhysLean.PerturbationTheory.WickContraction.UncontractedList
-import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Completeness
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.SpaceTime.Basic
 import PhysLean.SpaceTime.CliffordAlgebra
 import PhysLean.StandardModel.Basic

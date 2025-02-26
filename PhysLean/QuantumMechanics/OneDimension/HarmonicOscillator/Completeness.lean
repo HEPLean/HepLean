@@ -330,8 +330,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
          field_simp
       rw [hbound]
       apply HilbertSpace.exp_abs_mul_abs_mul_gaussian_integrable
-      · refine (aeEqFun_mk_mem_iff f ?_).mpr hf
-        exact aeStronglyMeasurable_of_memHS hf
+      · exact hf
       · refine div_pos ?_ ?_
         · exact mul_pos hm hω
         · have h1 := Q.hℏ
@@ -443,16 +442,18 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
     · /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is integrable -/
       rw [hf']
       rw [← memℒp_one_iff_integrable]
-      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf hb (m * ω / (2 * ℏ)) 0
+      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf (m * ω / (2 * ℏ)) 0
       refine div_pos ?_ ?_
       · exact mul_pos hm hω
-      · linarith
+      · have h1 := Q.hℏ
+        linarith
     ·  /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is square-integrable -/
       rw [hf']
-      refine HilbertSpace.mul_gaussian_mem_Lp_two f hf hb (m * ω / (2 * ℏ)) 0 ?_
+      refine HilbertSpace.mul_gaussian_mem_Lp_two f hf (m * ω / (2 * ℏ)) 0 ?_
       refine div_pos ?_ ?_
       · exact mul_pos hm hω
-      · linarith
+      · have h1 := Q.hℏ
+        linarith
   refine (norm_eq_zero_iff (by simp)).mp ?_
   simp [Norm.norm]
   have h2 : eLpNorm f 2 volume = 0 := by
@@ -462,49 +463,40 @@ lemma zero_of_orthogonal_mk  (f : ℝ → ℂ) (hf : MemHS f)
       f x = 0 := by simp
     simp [h3] at h1
     exact h1
-    exact hf
+    exact aeStronglyMeasurable_of_memHS hf
     simp
     ·  /-  f x * Real.exp (- m * ω * x^2 / (2 * ℏ)) is strongly measurable -/
       rw [hf']
       apply Integrable.aestronglyMeasurable
       rw [← memℒp_one_iff_integrable]
-      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf hb (m * ω / (2 * ℏ)) 0
+      apply HilbertSpace.mul_gaussian_mem_Lp_one f hf  (m * ω / (2 * ℏ)) 0
       refine div_pos ?_ ?_
       · exact mul_pos hm hω
-      · linarith
+      · have h1 := Q.hℏ
+        linarith
     · simp
   rw [h2]
   simp
 
-lemma zero_of_orthogonal_eigenVector   {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
-    (hω : 0 < ω) (f : HilbertSpace)
-    (hOrth : ∀ n : ℕ, ⟪eigenVector hℏ hm hω n, f⟫_ℂ = 0)
+lemma zero_of_orthogonal_eigenVector (f : HilbertSpace)
+    (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), f⟫_ℂ = 0)
     (plancherel_theorem: ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
        eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume) : f = 0 := by
-  have hf : f.1 = AEEqFun.mk (f : ℝ → ℂ) (Lp.aestronglyMeasurable f) := by
-    exact Eq.symm (AEEqFun.mk_coeFn _)
-  have hf2 : f = ⟨AEEqFun.mk (f : ℝ → ℂ) (Lp.aestronglyMeasurable f) , by
-    rw [← hf]
-    exact f.2⟩ := by
-    simp
-  rw [hf2]
-  apply zero_of_orthogonal_mk
-  · rw [← hf2]
-    exact hOrth
-  · exact plancherel_theorem
+  obtain ⟨f, hf, rfl⟩ := HilbertSpace.mk_surjective f
+  exact zero_of_orthogonal_mk Q f hf hOrth plancherel_theorem
 
-lemma completness_eigenvector  {m ℏ ω : ℝ} (hℏ : 0 < ℏ) (hm : 0 < m)
-    (hω : 0 < ω) (plancherel_theorem : ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
+lemma completness_eigenvector
+    (plancherel_theorem : ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),
        eLpNorm (𝓕 f) 2 volume = eLpNorm f 2 volume)  :
-    (Submodule.span ℂ (Set.range (eigenVector hℏ hm hω))).topologicalClosure = ⊤ := by
+    (Submodule.span ℂ (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)))).topologicalClosure = ⊤ := by
   rw [Submodule.topologicalClosure_eq_top_iff]
-  refine (Submodule.eq_bot_iff (Submodule.span ℂ (Set.range (eigenVector hℏ hm hω)))ᗮ).mpr ?_
+  refine (Submodule.eq_bot_iff (Submodule.span ℂ (Set.range (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n))))ᗮ).mpr ?_
   intro f hf
-  apply zero_of_orthogonal_eigenVector hℏ hm hω f ?_ plancherel_theorem
+  apply Q.zero_of_orthogonal_eigenVector f ?_ plancherel_theorem
   intro n
   rw [@Submodule.mem_orthogonal'] at hf
   rw [← inner_conj_symm]
-  have hl : ⟪f, eigenVector hℏ hm hω n⟫_ℂ = 0 := by
+  have hl : ⟪f, HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 0 := by
     apply hf
     refine Finsupp.mem_span_range_iff_exists_finsupp.mpr ?_
     use Finsupp.single n 1
