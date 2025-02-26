@@ -480,7 +480,8 @@ lemma polynomial_mem_physHermite_span_induction (P : Polynomial ℤ) : (n : ℕ)
       exact Submodule.zero_mem (Submodule.span ℝ (Set.range (fun n => (physHermite n : ℝ → ℝ))))
     let P' := ((coeff (physHermite (n + 1)) (n + 1)) • P -
         (coeff P (n + 1)) • physHermite (n + 1))
-    have hP'mem : (fun x => P'.aeval x) ∈ Submodule.span ℝ (Set.range (fun n => (physHermite n : ℝ → ℝ))) := by
+    have hP'mem : (fun x => P'.aeval x) ∈ Submodule.span ℝ
+        (Set.range (fun n => (physHermite n : ℝ → ℝ))) := by
       by_cases hP' : P' = 0
       · rw [hP']
         simp only [map_zero]
