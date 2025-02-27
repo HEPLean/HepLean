@@ -46,18 +46,16 @@ lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
   rw [MemHS]
   simp only [Memℒp, Complex.norm_eq_abs, and_congr_right_iff]
   intro h1
-  rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
+  rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top
+    (Ne.symm (NeZero.ne' 2)) ENNReal.ofNat_ne_top]
   simp only [ENNReal.toReal_ofNat, ENNReal.rpow_ofNat, Integrable]
   have h0 : MeasureTheory.AEStronglyMeasurable
     (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
     apply MeasureTheory.AEStronglyMeasurable.pow
-    refine Continuous.comp_aestronglyMeasurable ?_ h1
-    exact Complex.continuous_abs
+    exact Continuous.comp_aestronglyMeasurable Complex.continuous_abs h1
   simp only [h0, true_and]
   simp only [HasFiniteIntegral, enorm_pow]
   simp only [enorm, nnnorm, Complex.norm_eq_abs, Real.norm_eq_abs, Complex.abs_abs]
-  exact Ne.symm (NeZero.ne' 2)
-  exact ENNReal.ofNat_ne_top
 
 lemma aeEqFun_mk_mem_iff (f : ℝ → ℂ) (hf : AEStronglyMeasurable f volume) :
     AEEqFun.mk f hf ∈ HilbertSpace ↔ MemHS f := by
@@ -111,7 +109,8 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
     (MeasureTheory.AEEqFun.mk f hf) MeasureTheory.volume := by
     apply MeasureTheory.AEEqFun.aestronglyMeasurable
   simp only [h1, true_and]
-  rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top]
+  rw [MeasureTheory.eLpNorm_lt_top_iff_lintegral_rpow_nnnorm_lt_top (Ne.symm (NeZero.ne' 2))
+    ENNReal.ofNat_ne_top]
   simp only [ENNReal.toReal_ofNat, ENNReal.rpow_ofNat, Integrable]
   have h0 : MeasureTheory.AEStronglyMeasurable
     (fun x => Complex.abs (f x) ^ 2) MeasureTheory.volume := by
@@ -121,8 +120,6 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
   simp only [h0, true_and]
   simp only [HasFiniteIntegral, enorm_pow]
   simp only [enorm, nnnorm, Complex.norm_eq_abs, Real.norm_eq_abs, Complex.abs_abs]
-  exact Ne.symm (NeZero.ne' 2)
-  exact ENNReal.ofNat_ne_top
 
 /-!
 

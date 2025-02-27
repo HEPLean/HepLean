@@ -92,8 +92,8 @@ lemma koszulSignInsert_eq_filter (φ : 𝓕) : (φs : List 𝓕) →
       simp only [Fin.isValue, h, ↓reduceIte]
       rw [koszulSignInsert_eq_filter]
       congr
-      simp only [decide_not]
-      simp
+      · simp only [decide_not]
+      · simp
 
 lemma koszulSignInsert_eq_cons [IsTotal 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
     koszulSignInsert q le φ φs = koszulSignInsert q le φ (φ :: φs) := by
@@ -131,10 +131,10 @@ lemma koszulSignInsert_eq_grade (φ : 𝓕) (φs : List 𝓕) :
           simpa [ofList] using ih
       · simp [hr1]
     · rw [List.filter_cons_of_neg]
-      simp only [decide_not, Fin.isValue]
-      rw [koszulSignInsert_eq_filter] at ih
-      simpa [ofList] using ih
-      simpa using hr1
+      · simp only [decide_not, Fin.isValue]
+        rw [koszulSignInsert_eq_filter] at ih
+        simpa [ofList] using ih
+      · simpa using hr1
 
 lemma koszulSignInsert_eq_perm (φs φs' : List 𝓕) (φ : 𝓕) (h : φs.Perm φs') :
     koszulSignInsert q le φ φs = koszulSignInsert q le φ φs' := by
