@@ -277,7 +277,7 @@ open InnerProductSpace
 
 /-- The eigenfunction are normalized. -/
 lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
-      HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 1 := by
+    HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 1 := by
   rw [inner_mk_mk]
   conv_lhs =>
     enter [2, x]

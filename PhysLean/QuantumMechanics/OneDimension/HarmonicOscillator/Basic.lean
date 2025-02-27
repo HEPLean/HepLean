@@ -133,7 +133,7 @@ lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
 
   `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
+  fun x => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) x) + 1/2 * Q.m * Q.ω^2 * x^2 * ψ x
 
 open HilbertSpace
 
