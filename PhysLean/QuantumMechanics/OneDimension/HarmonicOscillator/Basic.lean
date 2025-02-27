@@ -112,11 +112,8 @@ lemma ξ_pos : 0 < Q.ξ := by
 @[simp]
 lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
 
-lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / Q.ℏ):= by
-  have := Q.ξ_pos
+lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / Q.ℏ) := by
   have := Q.hℏ
-  have := Q.hm
-  have := Q.hω
   field_simp [ξ]
 
 lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / Q.ℏ):= by
