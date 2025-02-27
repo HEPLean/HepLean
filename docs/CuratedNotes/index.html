@@ -1,0 +1,72 @@
+---
+layout: default
+---
+<div class="curated-notes">
+  <h1 class="title">Curated Notes</h1>
+  <div class="notes-container">
+    <div class="note-card">
+      <h2 style="text-align: center;">Quantum Harmonic Oscillator</h2>
+      <p class="description">The formalization of the quantum harmonic oscillator.</p>
+      <a href="HarmonicOscillator" class="note-link">Read More →</a>
+    </div>
+    <div class="note-card">
+      <h2 style="text-align: center;">Proof of Wick's theorem</h2>
+
+      <p class="description">The formalization of the proof of Wick's theorem in perturbation theory.</p>
+      <a href="PerturbationTheory" class="note-link">Read More →</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.curated-notes {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+}
+
+.notes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.note-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.note-card:hover {
+  transform: translateY(-5px);
+}
+
+.note-card h2 {
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.note-link {
+  display: inline-block;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.note-link:hover {
+  color: #2980b9;
+}
+</style>

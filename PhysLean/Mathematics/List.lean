@@ -49,9 +49,9 @@ lemma takeWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
     · dsimp only [List.takeWhile]
       simp only [hPa, decide_true, List.eraseIdx_cons_succ, List.cons.injEq, true_and]
       rw [takeWile_eraseIdx]
-      rfl
-      intro i j hij hP
-      simpa using h (Fin.succ i) (Fin.succ j) (by simpa using hij) (by simpa using hP)
+      · rfl
+      · intro i j hij hP
+        simpa using h (Fin.succ i) (Fin.succ j) (by simpa using hij) (by simpa using hP)
     · simp [hPa]
 
 lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
