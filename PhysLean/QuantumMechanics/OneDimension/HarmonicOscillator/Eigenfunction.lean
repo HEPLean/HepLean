@@ -29,8 +29,8 @@ open HilbertSpace
 
 -/
 noncomputable def eigenfunction (n : ℕ) : ℝ → ℂ := fun x =>
-  1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
-  physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))
+  1/√(2 ^ n * n !) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ)) *
+  physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))
 
 lemma eigenfunction_eq (n : ℕ) :
     Q.eigenfunction n = fun (x : ℝ) =>
@@ -121,14 +121,11 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
       simp [abs_of_nonneg]
 
 lemma eigenfunction_point_norm_sq (n : ℕ) (x : ℝ) :
-    ‖Q.eigenfunction n x‖ ^ 2 = (1/Real.sqrt (2 ^ n * n !) *
-    Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) ^ 2 *
-    ((physHermite n
-    (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) ^ 2 * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
-  trans (1/Real.sqrt (2 ^ n * n !) *
-    Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) ^ 2 *
-    ((|physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)|) ^ 2 *
-    (Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) ^ (2 : ℝ)))
+    ‖Q.eigenfunction n x‖ ^ 2 = (1/√(2 ^ n * n !) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) ^ 2 *
+    ((physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)) ^ 2 * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
+  trans (1/√(2 ^ n * n !) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) ^ 2 *
+    ((|physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)|) ^ 2 *
+    Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) ^ (2 : ℝ))
   · simp only [Real.rpow_two]
     rw [eigenfunction_point_norm]
     ring
@@ -201,26 +198,21 @@ lemma eigenfunction_parity (n : ℕ) :
 /-- A simplification of the product of two eigen-functions. -/
 lemma eigenfunction_mul (n p : ℕ) :
     (Q.eigenfunction n x) * (Q.eigenfunction p x) =
-    ((1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
-    ((Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))))) *
-    Complex.ofReal ((physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
-    physHermite p (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x)) * (Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ))) := by
+    1/√(2 ^ n * n !) * 1/√(2 ^ p * p !) * √(Q.m * Q.ω / (Real.pi * Q.ℏ)) *
+    Complex.ofReal (physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
+    physHermite p (√(Q.m * Q.ω /Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
   calc Q.eigenfunction n x * Q.eigenfunction p x
-    _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
-      (Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
-      Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
-        physHermite p (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x)) *
-      (Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
+    _ = (1/√(2 ^ n * n !) * 1/√(2 ^ p * p !)) *
+        (√√(Q.m * Q.ω / (Real.pi * Q.ℏ)) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) *
+        (physHermite n (√(Q.m * Q.ω /Q.ℏ) * x) * physHermite p (√(Q.m * Q.ω /Q.ℏ) * x)) *
+        (Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
       simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul,
         one_div, mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_pow, Complex.ofReal_ofNat, mul_one]
       ring
-    _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ p * p !)) *
-      ((Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
-        physHermite p (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) *
-      (Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
+    _ = (1/√(2 ^ n * n !) * 1/√(2 ^ p * p !)) * √(Q.m * Q.ω / (Real.pi * Q.ℏ)) *
+        (physHermite n (√(Q.m * Q.ω /Q.ℏ) * x) *  physHermite p (√(Q.m * Q.ω / Q.ℏ) * x)) *
+        (Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
       congr 1
       · congr 1
         · congr 1
@@ -239,25 +231,21 @@ lemma eigenfunction_mul (n p : ℕ) :
     Complex.ofReal_pow]
   ring
 
-lemma eigenfunction_mul_self (n : ℕ) :
-    (Q.eigenfunction n x) * (Q.eigenfunction n x) =
-    ((1/ (2 ^ n * n !)) * (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-    Complex.ofReal ((physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x))^2 *
-    (Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ))) := by
+lemma eigenfunction_mul_self (n : ℕ) : (Q.eigenfunction n x) * (Q.eigenfunction n x) =
+    (1/ (2 ^ n * n !) * √(Q.m * Q.ω / (Real.pi * Q.ℏ))) *
+    Complex.ofReal ((physHermite n (√(Q.m * Q.ω /Q.ℏ) * x))^2 *
+    Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
   calc Q.eigenfunction n x * Q.eigenfunction n x
-    _ = (1/Real.sqrt (2 ^ n * n !) * 1/Real.sqrt (2 ^ n * n !)) *
-      (Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
-      Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x))^2 *
-      (Real.exp (-Q.m * Q.ω * x^2 / (2 * Q.ℏ)) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
+    _ = (1/√(2 ^ n * n !) * 1/√(2 ^ n * n !)) *
+        (√√(Q.m * Q.ω / (Real.pi * Q.ℏ)) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) *
+        (physHermite n (√(Q.m * Q.ω /Q.ℏ) * x))^2 *
+        (Real.exp (-Q.m * Q.ω * x^2 / (2 * Q.ℏ)) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
       simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul,
         one_div, mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_pow, Complex.ofReal_ofNat, mul_one]
       ring
-    _ = (1/ (2 ^ n * n !)) *
-      ((Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-      (physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))^2 *
-      (Real.exp (- Q.m * Q.ω * x^2 /Q.ℏ)) := by
+    _ = (1/ (2 ^ n * n !)) * √(Q.m * Q.ω / (Real.pi * Q.ℏ)) *
+        (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x))^2 * Real.exp (- Q.m * Q.ω * x^2 /Q.ℏ) := by
       congr 1
       · congr 1
         · congr 1
@@ -288,83 +276,38 @@ lemma eigenfunction_mul_self (n : ℕ) :
 open InnerProductSpace
 
 /-- The eigenfunction are normalized. -/
-lemma eigenfunction_normalized (n : ℕ) :
-    ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
+lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
       HilbertSpace.mk (Q.eigenfunction_memHS n)⟫_ℂ = 1 := by
   rw [inner_mk_mk]
   conv_lhs =>
     enter [2, x]
     rw [eigenfunction_conj, Q.eigenfunction_mul_self]
   rw [MeasureTheory.integral_mul_left, integral_complex_ofReal]
-  let c := √(Q.m * Q.ω / Q.ℏ)
-  have h1 : c ^ 2 = Q.m * Q.ω / Q.ℏ := by
-    trans c * c
-    · exact pow_two c
-    simp only [c]
-    refine Real.mul_self_sqrt ?_
-    refine div_nonneg ?_ ?_
-    exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
-    exact le_of_lt Q.hℏ
   have hc : (∫ (x : ℝ), physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) ^ 2 *
       Real.exp (- Q.m * Q.ω * x ^ 2 / Q.ℏ))
-      = ∫ (x : ℝ), (physHermite n (c * x) *
-      physHermite n (c * x)) * Real.exp (- c^2 * x ^ 2) := by
+      = ∫ (x : ℝ), (physHermite n (1/Q.ξ * x) *
+      physHermite n (1/Q.ξ * x)) * Real.exp (- (1/Q.ξ)^2 * x ^ 2) := by
     congr
     funext x
     congr
-    · simp only [c]
+    · simp only [one_over_ξ]
       exact pow_two _
-    simp only [neg_mul, h1, c]
-    field_simp
+    · simp only [neg_mul, one_over_ξ_sq]
+      field_simp
   rw [hc, physHermite_norm_cons]
   simp only [one_div, mul_inv_rev, smul_eq_mul, Complex.ofReal_mul, Complex.ofReal_natCast,
-    Complex.ofReal_pow, Complex.ofReal_ofNat, c]
+    Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring_nf
-  have h1 : ↑n ! * (↑n ! : ℂ)⁻¹ = 1 := by
-    rw [← IsUnit.eq_mul_inv_iff_mul_eq]
-    simp only [inv_inv, one_mul, c]
-    refine IsUnit.inv ?_
-    simp only [isUnit_iff_ne_zero, ne_eq, cast_eq_zero, c]
-    exact factorial_ne_zero n
-  rw [h1]
-  repeat rw [mul_assoc]
-  have h1 : ((1 / 2) ^ n * (2 : ℂ) ^ n) = 1:= by
-    rw [← IsUnit.eq_mul_inv_iff_mul_eq]
-    · simp
-    · simp
-  rw [h1]
-  simp only [mul_one, one_mul, c]
-  have h1 : Complex.ofReal |(√(Q.m * (Q.ω * Q.ℏ⁻¹)))⁻¹| = (√(Q.m * (Q.ω * Q.ℏ⁻¹)))⁻¹ := by
-    congr
-    apply abs_of_nonneg
-    refine inv_nonneg_of_nonneg ?_
-    exact Real.sqrt_nonneg (Q.m * (Q.ω * Q.ℏ⁻¹))
-  rw [h1]
-  have h1 : √(Q.m * (Q.ω * (Real.pi⁻¹ * Q.ℏ⁻¹))) = (√(Q.m * (Q.ω * Q.ℏ⁻¹))) * (√(Real.pi⁻¹)) := by
-    trans √((Q.m * (Q.ω * Q.ℏ⁻¹)) * Real.pi⁻¹)
+  have h1 : √(Q.m * Q.ω * Real.pi⁻¹ * Q.ℏ⁻¹) = Q.ξ⁻¹* (√(Real.pi⁻¹)) := by
+    trans √((Q.m * Q.ω * Q.ℏ⁻¹) * Real.pi⁻¹)
     · ring_nf
-    refine Real.sqrt_mul' (Q.m * (Q.ω * Q.ℏ⁻¹)) ?_
-    refine inv_nonneg_of_nonneg ?_
-    exact Real.pi_nonneg
+    rw [Real.sqrt_mul' _ (inv_nonneg_of_nonneg Real.pi_nonneg), ξ_inverse]
+    field_simp
   rw [h1]
-  simp only [Real.sqrt_inv, mul_comm, Complex.ofReal_mul, Complex.ofReal_inv, c]
-  ring_nf
-  have h1 : ↑√Real.pi * (↑√Real.pi : ℂ)⁻¹ =1 := by
-    rw [← IsUnit.eq_mul_inv_iff_mul_eq]
-    simp only [inv_inv, one_mul, c]
-    simp only [isUnit_iff_ne_zero, ne_eq, inv_eq_zero, Complex.ofReal_eq_zero, c]
-    refine Real.sqrt_ne_zero'.mpr ?_
-    exact Real.pi_pos
-  rw [h1]
-  simp only [one_mul, c]
-  suffices h2 : IsUnit (↑√(Q.m * Q.ω * Q.ℏ⁻¹) : ℂ) by
-    rw [mul_comm, ← IsUnit.eq_mul_inv_iff_mul_eq h2]
-    simp only [one_mul, c]
-  simp only [isUnit_iff_ne_zero, ne_eq, Complex.ofReal_eq_zero, c]
-  refine Real.sqrt_ne_zero'.mpr ?_
-  rw [propext (lt_mul_inv_iff₀ Q.hℏ)]
-  simp only [zero_mul, c]
-  exact mul_pos Q.hm Q.hω
+  have : (n ! : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos <| by simpa using factorial_pos n
+  have := Complex.ofReal_ne_zero.mpr (ne_of_gt Q.ξ_pos)
+  have := Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr Real.pi_pos)
+  field_simp
 
 /-- The eigen-functions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
@@ -374,29 +317,18 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
   conv_lhs =>
     enter [2, x]
     rw [eigenfunction_conj, Q.eigenfunction_mul n p]
-  rw [MeasureTheory.integral_mul_left]
-  rw [integral_complex_ofReal]
-  let c := √(Q.m * Q.ω / Q.ℏ)
-  have h1 : c ^ 2 = Q.m * Q.ω / Q.ℏ := by
-    trans c * c
-    · exact pow_two c
-    simp only [c]
-    refine Real.mul_self_sqrt ?_
-    refine div_nonneg ?_ ?_
-    exact (mul_nonneg_iff_of_pos_left Q.hm).mpr (le_of_lt Q.hω)
-    exact le_of_lt Q.hℏ
-  have hc : (∫ (x : ℝ), (physHermite n (c * x) * physHermite p (c * x)) *
-      Real.exp (-Q.m * Q.ω * x ^ 2 / Q.ℏ))
-      = ∫ (x : ℝ), (physHermite n (c * x) * physHermite p (c * x)) *
-      Real.exp (- c^2 * x ^ 2) := by
+  rw [MeasureTheory.integral_mul_left, integral_complex_ofReal]
+  have hc : (∫ (x : ℝ), (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) *
+      physHermite p (√(Q.m * Q.ω / Q.ℏ) * x)) *  Real.exp (-Q.m * Q.ω * x ^ 2 / Q.ℏ))
+      = ∫ (x : ℝ), (physHermite n (1/Q.ξ * x) * physHermite p (1/Q.ξ * x)) *
+      Real.exp (- (1/Q.ξ)^2 * x ^ 2) := by
     congr
     funext x
-    congr
-    simp only [neg_mul, h1, c]
-    field_simp
+    rw [one_over_ξ_sq]
+    field_simp [neg_mul, one_over_ξ, one_over_ξ_sq]
   rw [hc, physHermite_orthogonal_cons hnp]
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-      mul_one, Complex.ofReal_zero, mul_zero, c]
+    mul_one, Complex.ofReal_zero, mul_zero]
 
 /-- The eigenfunctions are orthonormal within the Hilbert space. -/
 lemma eigenfunction_orthonormal :
@@ -408,6 +340,11 @@ lemma eigenfunction_orthonormal :
     exact Q.eigenfunction_normalized p
   · simp only [hnp, reduceIte]
     exact Q.eigenfunction_orthogonal hnp
+
+/-- The eigenfunctions are linearly independent. -/
+lemma eigenfunction_linearIndependent :
+    LinearIndependent ℂ (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)) :=
+  Q.eigenfunction_orthonormal.linearIndependent
 
 end HarmonicOscillator
 end OneDimension
