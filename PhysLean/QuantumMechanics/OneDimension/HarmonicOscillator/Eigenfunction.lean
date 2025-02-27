@@ -33,9 +33,8 @@ noncomputable def eigenfunction (n : ℕ) : ℝ → ℂ := fun x =>
   physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))
 
 lemma eigenfunction_eq (n : ℕ) :
-    Q.eigenfunction n = fun (x : ℝ) =>
-    ((1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-    Complex.ofReal (physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x) *
+    Q.eigenfunction n = fun (x : ℝ) => ((1/√(2 ^ n * n !) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) *
+    Complex.ofReal (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) *
     Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ)))) := by
   funext x
   simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div,
@@ -44,30 +43,20 @@ lemma eigenfunction_eq (n : ℕ) :
   ring
 
 lemma eigenfunction_zero : Q.eigenfunction 0 = fun (x : ℝ) =>
-    (Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
-    Complex.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ))) := by
+    √√(Q.m * Q.ω / (Real.pi * Q.ℏ)) * Complex.exp (- Q.m * Q.ω * x^2 / (2 * Q.ℏ)) := by
   funext x
   simp [eigenfunction]
 
 lemma eigenfunction_eq_mul_eigenfunction_zero (n : ℕ) :
-    Q.eigenfunction n = fun x => Complex.ofReal (1/Real.sqrt (2 ^ n * n !))
-    * Complex.ofReal (physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))
-    * Q.eigenfunction 0 x := by
+    Q.eigenfunction n = fun x => Complex.ofReal (1/√(2 ^ n * n !))
+    * Complex.ofReal (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)) * Q.eigenfunction 0 x := by
   match n with
   | 0 =>
     simp
   | n + 1 =>
     funext x
-    rw [eigenfunction, eigenfunction_zero]
-    repeat rw [mul_assoc]
-    congr 1
-    · simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-        Complex.ofReal_inv]
-    · rw [mul_comm, mul_assoc]
-      congr 1
-      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
-        Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
-      ring_nf
+    field_simp [eigenfunction, eigenfunction_zero]
+    ring
 
 /-!
 
@@ -104,10 +93,8 @@ lemma eigenfunction_conj (n : ℕ) (x : ℝ) :
   simp [-Complex.ofReal_exp]
 
 lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
-    ‖Q.eigenfunction n x‖ = (1/Real.sqrt (2 ^ n * n !) *
-    Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ)))) *
-    (|physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)| *
-    Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))) := by
+    ‖Q.eigenfunction n x‖ = (1/√(2 ^ n * n !) * √√(Q.m * Q.ω / (Real.pi * Q.ℏ))) *
+    (|physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)| * Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))) := by
   rw [eigenfunction_eq]
   simp only [neg_mul, Complex.ofReal_mul, Complex.norm_eq_abs]
   rw [AbsoluteValue.map_mul, AbsoluteValue.map_mul]
@@ -199,7 +186,7 @@ lemma eigenfunction_parity (n : ℕ) :
 lemma eigenfunction_mul (n p : ℕ) :
     (Q.eigenfunction n x) * (Q.eigenfunction p x) =
     1/√(2 ^ n * n !) * 1/√(2 ^ p * p !) * √(Q.m * Q.ω / (Real.pi * Q.ℏ)) *
-    Complex.ofReal (physHermite n (Real.sqrt (Q.m * Q.ω /Q.ℏ) * x) *
+    Complex.ofReal (physHermite n (√(Q.m * Q.ω /Q.ℏ) * x) *
     physHermite p (√(Q.m * Q.ω /Q.ℏ) * x) * Real.exp (- Q.m * Q.ω * x^2 / Q.ℏ)) := by
   calc Q.eigenfunction n x * Q.eigenfunction p x
     _ = (1/√(2 ^ n * n !) * 1/√(2 ^ p * p !)) *

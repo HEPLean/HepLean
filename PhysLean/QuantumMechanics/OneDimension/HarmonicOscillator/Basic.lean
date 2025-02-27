@@ -103,7 +103,6 @@ noncomputable def ξ : ℝ := √(Q.ℏ / (Q.m * Q.ω))
 lemma ξ_nonneg : 0 ≤ Q.ξ := Real.sqrt_nonneg _
 
 lemma ξ_pos : 0 < Q.ξ := by
-  have h1 := m_mul_ω_div_ℏ_pos Q
   rw [ξ]
   apply Real.sqrt_pos.mpr
   apply div_pos

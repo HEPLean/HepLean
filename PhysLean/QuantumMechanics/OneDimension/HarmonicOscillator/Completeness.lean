@@ -167,8 +167,7 @@ local notation "hω" => Q.hω
 
 lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
-    (n : ℕ) :
-    ∫ (x : ℝ), (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)) *
+    (n : ℕ) : ∫ (x : ℝ), (physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)) *
     (f x * ↑(Real.exp (- Q.m * Q.ω * x ^ 2 / (2 * Q.ℏ))))
     = 0 := by
   have h1 := Q.orthogonal_eigenfunction_of_mem_orthogonal f hf hOrth n
@@ -208,8 +207,7 @@ lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
 lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (P : Polynomial ℤ) :
-    ∫ x : ℝ, (P (√(m * ω / ℏ) * x)) *
-      (f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
+    ∫ x : ℝ, (P (√(m * ω / ℏ) * x)) * (f x * Real.exp (- m * ω * x^2 / (2 * ℏ))) = 0 := by
   have h1 := polynomial_mem_physHermite_span P
   rw [Finsupp.mem_span_range_iff_exists_finsupp] at h1
   obtain ⟨a, ha⟩ := h1
