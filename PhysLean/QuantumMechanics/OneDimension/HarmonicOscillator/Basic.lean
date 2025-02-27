@@ -96,12 +96,40 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
   have h1 := Q.hℏ
   linarith
 
+/-- The characteristic length of the harmonic oscilator.
+  Defined as `√(ℏ /(m ω))`. -/
+noncomputable def ξ : ℝ := √(Q.ℏ / (Q.m * Q.ω))
+
+lemma ξ_nonneg : 0 ≤ Q.ξ := Real.sqrt_nonneg _
+
+lemma ξ_pos : 0 < Q.ξ := by
+  rw [ξ]
+  apply Real.sqrt_pos.mpr
+  apply div_pos
+  · exact Q.hℏ
+  · exact mul_pos Q.hm Q.hω
+
+@[simp]
+lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
+
+lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / Q.ℏ) := by
+  have := Q.hℏ
+  field_simp [ξ]
+
+lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / Q.ℏ):= by
+  rw [inv_eq_one_div]
+  exact one_over_ξ Q
+
+lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
+  rw [one_over_ξ]
+  refine Real.sq_sqrt (le_of_lt Q.m_mul_ω_div_ℏ_pos)
+
 /-- For a harmonic oscillator, the Schrodinger Operator corresponding to it
   is defined as the function from `ℝ → ℂ` to `ℝ → ℂ` taking
 
   `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
+  fun x => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) x) + 1/2 * Q.m * Q.ω^2 * x^2 * ψ x
 
 open HilbertSpace
 

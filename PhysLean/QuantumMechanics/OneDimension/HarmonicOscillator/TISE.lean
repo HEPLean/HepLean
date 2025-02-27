@@ -93,10 +93,8 @@ lemma schrodingerOperator_eigenfunction_zero (x : ℝ) :
   ring
 
 lemma deriv_physHermite_succ (n : ℕ) :
-    deriv (fun x => Complex.ofReal (physHermite (n + 1) (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))) =
-    fun x =>
-    Complex.ofReal (Real.sqrt (Q.m * Q.ω / Q.ℏ)) * 2 * (n + 1) *
-    physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x) := by
+    deriv (fun x => Complex.ofReal (physHermite (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x))) = fun x =>
+    Complex.ofReal (√(Q.m * Q.ω / Q.ℏ)) * 2 * (n + 1) * physHermite n (√(Q.m * Q.ω / Q.ℏ) * x) := by
   funext x
   trans deriv (Complex.ofReal ∘ physHermite (n + 1) ∘
     fun (x : ℝ) => (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) x
@@ -115,12 +113,10 @@ lemma deriv_physHermite_succ (n : ℕ) :
   ring
 
 lemma deriv_eigenfunction_succ (n : ℕ) :
-    deriv (Q.eigenfunction (n + 1)) = fun x =>
-    Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1) !)) •
-    (((Real.sqrt (Q.m * Q.ω / Q.ℏ)) * 2 * (↑n + 1) *
-      ↑(physHermite n (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x))
-      + ↑(physHermite (n + 1) (Real.sqrt (Q.m * Q.ω / Q.ℏ) * x)) *
-      (-(Q.m * Q.ω) / Q.ℏ * ↑x)) * Q.eigenfunction 0 x) := by
+    deriv (Q.eigenfunction (n + 1)) = fun x => Complex.ofReal (1/√(2 ^ (n + 1) * (n + 1)!)) •
+    (((√(Q.m * Q.ω / Q.ℏ)) * 2 * (↑n + 1) * physHermite n (√(Q.m * Q.ω / Q.ℏ) * x)
+      + physHermite (n + 1) (√(Q.m * Q.ω / Q.ℏ) * x) * (-(Q.m * Q.ω) / Q.ℏ * ↑x))
+      * Q.eigenfunction 0 x) := by
   funext x
   rw [eigenfunction_eq_mul_eigenfunction_zero]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
@@ -135,7 +131,7 @@ lemma deriv_eigenfunction_succ (n : ℕ) :
 
 lemma deriv_deriv_eigenfunction_succ (n : ℕ) (x : ℝ) :
     deriv (fun x => deriv (Q.eigenfunction (n + 1)) x) x =
-    Complex.ofReal (1/Real.sqrt (2 ^ (n + 1) * (n + 1) !)) *
+    Complex.ofReal (1/√(2 ^ (n + 1) * (n + 1) !)) *
       ((↑√(Q.m * Q.ω / Q.ℏ) * 2 * (↑n + 1) *
       deriv (fun x => ↑(physHermite n (√(Q.m * Q.ω / Q.ℏ) * x))) x +
       (-(↑Q.m * ↑Q.ω) / ↑Q.ℏ) * ↑√(Q.m * Q.ω / Q.ℏ) * (4 * (↑n + 1) * x) *
