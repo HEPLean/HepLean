@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import Mathlib.Algebra.Order.GroupWithZero.Unbundled
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 /-!
 
 # 1d Harmonic Oscillator
@@ -101,6 +102,23 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
   `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
+
+open HilbertSpace
+
+/-- The Schrodinger operator commutes with the parity operator. -/
+lemma schrodingerOperator_parity (ψ : ℝ → ℂ) :
+    Q.schrodingerOperator (parity ψ) = parity (Q.schrodingerOperator ψ) := by
+  funext x
+  simp only [schrodingerOperator, parity, LinearMap.coe_mk, AddHom.coe_mk, one_div,
+    Complex.ofReal_neg, even_two, Even.neg_pow, add_left_inj, mul_eq_mul_left_iff, div_eq_zero_iff,
+    neg_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
+    Complex.ofReal_eq_zero, _root_.mul_eq_zero, false_or]
+  left
+  have h1 (ψ : ℝ → ℂ) : (fun x => (deriv fun x => ψ (-x)) x) = fun x => - deriv ψ (-x) := by
+    funext x
+    rw [← deriv_comp_neg]
+  change deriv (fun x=> (deriv fun x => ψ (-x)) x) x = _
+  simp [h1]
 
 end HarmonicOscillator
 end OneDimension

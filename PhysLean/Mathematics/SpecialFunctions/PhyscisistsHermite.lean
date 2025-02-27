@@ -148,6 +148,10 @@ lemma physHermite_ne_zero {n : ℕ} : physHermite n ≠ 0 := by
 instance : CoeFun (Polynomial ℤ) (fun _ ↦ ℝ → ℝ)where
   coe p := fun x => p.aeval x
 
+lemma physHermite_eq_aeval (n : ℕ) (x : ℝ) :
+    physHermite n x = (physHermite n).aeval x := by
+  rfl
+
 lemma physHermite_zero_apply (x : ℝ) : physHermite 0 x = 1 := by
   simp [aeval]
 
@@ -218,6 +222,19 @@ lemma deriv_physHermite' (x : ℝ)
   unfold deriv
   rw [fderiv_physHermite (hf := by fun_prop)]
   rfl
+
+lemma physHermite_parity: (n : ℕ) → (x : ℝ) →
+    physHermite n (-x) = (-1)^n * physHermite n x
+  | 0, x => by simp
+  | 1, x => by
+    simp [physHermite_one, aeval]
+  | n + 2, x => by
+    rw [physHermite_succ_fun']
+    have h1 := physHermite_parity (n + 1) x
+    have h2 := physHermite_parity n x
+    simp only [smul_neg, nsmul_eq_mul, cast_ofNat, h1, neg_mul, cast_add, cast_one,
+      add_tsub_cancel_right, h2, smul_eq_mul]
+    ring
 
 /-!
 
