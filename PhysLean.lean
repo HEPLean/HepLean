@@ -186,6 +186,7 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Completeness
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.SpaceTime.Basic
 import PhysLean.SpaceTime.CliffordAlgebra
 import PhysLean.StandardModel.Basic
