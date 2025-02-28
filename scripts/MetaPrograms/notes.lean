@@ -318,6 +318,7 @@ def harmonicOscillator : Note where
     .name ``QuantumMechanics.OneDimension.HilbertSpace.memHS_of_parity .complete,
     .h1 "The Schrodinger Operator",
     .name ``QuantumMechanics.OneDimension.HarmonicOscillator .complete,
+    .name ``QuantumMechanics.OneDimension.HarmonicOscillator.ξ .complete,
     .name ``QuantumMechanics.OneDimension.HarmonicOscillator.schrodingerOperator .complete,
     .name ``QuantumMechanics.OneDimension.HarmonicOscillator.schrodingerOperator_parity .complete,
     .h1 "The eigenfunctions of the Schrodinger Operator",
