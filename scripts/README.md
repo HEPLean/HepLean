@@ -61,7 +61,7 @@ Run on a specific file using
 ```
 lake exe openAI_doc_check <module_name>
 ```
-where `<module_name>` is e.g. `PhysLean.SpaceTime.Basic`.
+where `<module_name>` is e.g. `PhysLean.Relativity.SpaceTime.Basic`.
 
 Run on a random file using
 ```
