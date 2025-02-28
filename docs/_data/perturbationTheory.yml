@@ -1,0 +1,3357 @@
+
+title: "Proof of Wick's theorem"
+curators: Joseph Tooby-Smith
+parts:
+
+  - type: h1
+    sectionNo: 1
+    content: "Introduction"
+
+  - type: remark
+    name: "wicks_theorem_context"
+    status : "incomplete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheorem.lean#L49"
+    content: |
+
+        In perturbative quantum field theory, Wick's theorem allows
+        us to expand expectation values of time-ordered products of fields in terms of normal-orders
+        and time contractions.
+        The theorem is used to simplify the calculation of scattering amplitudes, and is the precurser
+        to Feynman diagrams.
+
+        There are actually three different versions of Wick's theorem used.
+        The static version, the time-dependent version, and the normal-ordered time-dependent version.
+        PhysLean contains a formalization of all three of these theorems in complete generality for
+        mixtures of bosonic and fermionic fields.
+
+        The statement of these theorems for bosons is simplier then when fermions are involved, since
+        one does not have to worry about the minus-signs picked up on exchanging fields.
+
+  - type: p
+    content: "In this note we walk through the important parts of the proof of the three versions of
+      Wick's theorem for field operators containing carrying both fermionic and bosonic statitics,
+      as it appears in PhysLean. Not every lemma or definition is covered here.
+      The aim is to give just enough that the story can be understood."
+
+  - type: p
+    content: "
+     Before proceeding with the steps in the proof, we review some basic terminology
+     related to Lean and type theory. The most important notion is that of a type.
+     We don't give any formal definition here, except to say that a type `T`, like a set, has
+     elements `x` which we say are of type `T` and write `x : T`. Examples of types include,
+     the type of natural numbers `ℕ`, the type of real numbers `ℝ`, the type of numbers
+     `0, …, n-1` denoted `Fin n`. Given two types `T` and `S`, we can form the product type `T × S`,
+     and the function type `T → S`.
+
+     Types form the foundation of Lean and the theory behind them will be used both explicitly and
+      implicitly throughout this note."
+
+  - type: h1
+    sectionNo: 2
+    content: "Field operators"
+
+  - type: h2
+    sectionNo: "2.1"
+    content: "Field statistics"
+
+  - type: name
+    name: FieldStatistic
+    line: 18
+    fileName: PhysLean.QFT.PerturbationTheory.FieldStatistics.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldStatistics/Basic.lean#L18"
+    isDef: true
+    isThm: false
+    docString: |
+      The type `FieldStatistic` is the type containing two elements `bosonic` and `fermionic`.
+      This type is used to specify if a field or operator obeys bosonic or fermionic statistics.
+    declString: |
+      inductive FieldStatistic : Type where
+        | bosonic : FieldStatistic
+        | fermionic : FieldStatistic
+      deriving DecidableEq
+    declNo: "2.1"
+
+  - type: name
+    name: FieldStatistic.instCommGroup
+    line: 29
+    fileName: PhysLean.QFT.PerturbationTheory.FieldStatistics.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldStatistics/Basic.lean#L29"
+    isDef: true
+    isThm: false
+    docString: |
+      The type `FieldStatistic` carries an instance of a commutative group in which
+      - `bosonic * bosonic = bosonic`
+      - `bosonic * fermionic = fermionic`
+      - `fermionic * bosonic = fermionic`
+      - `fermionic * fermionic = bosonic`
+
+      This group is isomorphic to `ℤ₂`.
+    declString: |
+      instance : CommGroup FieldStatistic where
+        one := bosonic
+        mul a b :=
+          match a, b with
+          | bosonic, bosonic => bosonic
+          | bosonic, fermionic => fermionic
+          | fermionic, bosonic => fermionic
+          | fermionic, fermionic => bosonic
+        inv a := a
+        mul_assoc a b c := by
+          cases a <;> cases b <;> cases c <;>
+          dsimp [HMul.hMul]
+        one_mul a := by
+          cases a <;> dsimp [HMul.hMul]
+        mul_one a := by
+          cases a <;> dsimp [HMul.hMul]
+        inv_mul_cancel a := by
+          cases a <;> dsimp only [HMul.hMul, Nat.succ_eq_add_one] <;> rfl
+        mul_comm a b := by
+          cases a <;> cases b <;> rfl
+    declNo: "2.2"
+
+  - type: name
+    name: FieldStatistic.exchangeSign
+    line: 27
+    fileName: PhysLean.QFT.PerturbationTheory.FieldStatistics.ExchangeSign
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldStatistics/ExchangeSign.lean#L27"
+    isDef: true
+    isThm: false
+    docString: |
+      The exchange sign, `exchangeSign`, is defined as the group homomorphism
+
+      `FieldStatistic →* FieldStatistic →* ℂ`,
+
+      for which `exchangeSign a b` is `-1` if both `a` and `b` are `fermionic` and `1` otherwise.
+      The exchange sign is the sign one picks up on exchanging an operator or field `φ₁` of statistic
+      `a` with an operator or field `φ₂` of statistic `b`, i.e. `φ₁φ₂ → φ₂φ₁`.
+
+      The notation `𝓢(a, b)` is used for the exchange sign of `a` and `b`.
+    declString: |
+      def exchangeSign : FieldStatistic →* FieldStatistic →* ℂ where
+        toFun a :=
+          {
+            toFun := fun b =>
+              match a, b with
+              | bosonic, _ => 1
+              | _, bosonic => 1
+              | fermionic, fermionic => -1
+            map_one' := by
+              fin_cases a
+              <;> simp
+            map_mul' := fun c b => by
+              fin_cases a <;>
+                fin_cases b <;>
+                fin_cases c <;>
+                simp
+          }
+        map_one' := by
+          ext b
+          fin_cases b
+          <;> simp
+        map_mul' c b := by
+          ext a
+          fin_cases a
+          <;> fin_cases b <;> fin_cases c
+          <;> simp
+    declNo: "2.3"
+
+  - type: h2
+    sectionNo: "2.2"
+    content: "Field specifications"
+
+  - type: name
+    name: FieldSpecification
+    line: 32
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/Basic.lean#L32"
+    isDef: true
+    isThm: false
+    docString: |
+      The structure `FieldSpecification` is defined to have the following content:
+      - A type `Field` whose elements are the constituent fields of the theory.
+      - For every field `f` in `Field`, a type `PositionLabel f` whose elements label the different
+        position operators associated with the field `f`. For example,
+        - For `f` a *real-scalar field*, `PositionLabel f` will have a unique element.
+        - For `f` a *complex-scalar field*, `PositionLabel f` will have two elements, one for the field
+          operator and one for its conjugate.
+        - For `f` a *Dirac fermion*, `PositionLabel f` will have eight elements, one for each Lorentz
+          index of the field and its conjugate.
+        - For `f` a *Weyl fermion*, `PositionLabel f` will have four elements, one for each Lorentz
+          index of the field and its conjugate.
+      - For every field `f` in `Field`, a type `AsymptoticLabel f` whose elements label the different
+        types of incoming asymptotic field operators associated with the
+        field `f` (this also matches the types of outgoing asymptotic field operators).
+        For example,
+        - For `f` a *real-scalar field*, `AsymptoticLabel f` will have a unique element.
+        - For `f` a *complex-scalar field*, `AsymptoticLabel f` will have two elements, one for the
+          field operator and one for its conjugate.
+        - For `f` a *Dirac fermion*, `AsymptoticLabel f` will have four elements, two for each spin.
+        - For `f` a *Weyl fermion*, `AsymptoticLabel f` will have two elements, one for each spin.
+      - For each field `f` in `Field`, a field statistic `statistic f` which classifies `f` as either
+        `bosonic` or `fermionic`.
+
+    declString: |
+      structure FieldSpecification where
+        /-- A type whose elements are the constituent fields of the theory. -/
+        Field : Type
+        /-- For every field `f` in `Field`, the type `PositionLabel f` has elements that label the
+          different position operators associated with the field `f`. -/
+        PositionLabel : Field → Type
+        /-- For every field `f` in `Field`, the type `AsymptoticLabel f` has elements that label
+          the different asymptotic based field operators associated with the field `f`. -/
+        AsymptoticLabel : Field → Type
+        /-- For every field `f` in `Field`, the field statistic `statistic f` classifies `f` as either
+          `bosonic` or `fermionic`. -/
+        statistic : Field → FieldStatistic
+    declNo: "2.4"
+
+  - type: h2
+    sectionNo: "2.3"
+    content: "Field operators"
+
+  - type: name
+    name: FieldSpecification.FieldOp
+    line: 72
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/Basic.lean#L72"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the inductive type `𝓕.FieldOp` is defined
+        to contain the following elements:
+      - For every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+        element labelled `inAsymp f e p` corresponding to an incoming asymptotic field operator
+        of the field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
+      - For every `f` in `𝓕.Field`, element of `e` of `PositionLabel f` and space-time position `x`, an
+        element labelled `position f e x` corresponding to a position field operator of the field `f`,
+        of label `e` (e.g. specifying the Lorentz index), and position `x`.
+      - For every `f` in `𝓕.Field`, element of `e` of `AsymptoticLabel f` and `3`-momentum `p`, an
+        element labelled `outAsymp f e p` corresponding to an outgoing asymptotic field operator of the
+        field `f`, of label `e` (e.g. specifying the spin), and momentum `p`.
+
+      As an example, if `f` corresponds to a Weyl-fermion field, then
+      - For `inAsymp f e p`, `e` would correspond to a spin `s`, and `inAsymp f e p` would, once
+        represented in the operator algebra,
+        be proportional to the creation operator `a(p, s)`.
+      - `position f e x`, `e` would correspond to a Lorentz index `a`, and `position f e x` would,
+        once represented in the operator algebra, be proportional to the operator
+
+        `∑ s, ∫ d³p/(…) (xₐ(p,s) a(p, s) e ^ (-i p x) + yₐ(p,s) a†(p, s) e ^ (-i p x))`.
+
+      - `outAsymp f e p`, `e` would correspond to a spin `s`, and `outAsymp f e p` would,
+        once represented in the operator algebra, be proportional to the
+        annihilation operator `a†(p, s)`.
+
+
+    declString: |
+      inductive FieldOp (𝓕 : FieldSpecification) where
+        | inAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp
+        | position : (Σ f, 𝓕.PositionLabel f) × SpaceTime → 𝓕.FieldOp
+        | outAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp
+    declNo: "2.5"
+
+  - type: name
+    name: FieldSpecification.fieldOpStatistic
+    line: 115
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/Basic.lean#L115"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`.
+        The field statistic `fieldOpStatistic φ` is defined to be the statistic associated with
+        the field underlying `φ`.
+
+        The following notation is used in relation to `fieldOpStatistic`:
+      - For `φ` an element of `𝓕.FieldOp`, `𝓕 |>ₛ φ` is `fieldOpStatistic φ`.
+      - For `φs` a list of `𝓕.FieldOp`, `𝓕 |>ₛ φs` is the product of `fieldOpStatistic φ` over
+        the list `φs`.
+      - For a function `f : Fin n → 𝓕.FieldOp` and a finite set `a` of `Fin n`, `𝓕 |>ₛ ⟨f, a⟩` is the
+        product of `fieldOpStatistic (f i)` for all `i ∈ a`.
+    declString: |
+      def fieldOpStatistic : 𝓕.FieldOp → FieldStatistic := 𝓕.statistic ∘ 𝓕.fieldOpToField
+    declNo: "2.6"
+
+  - type: name
+    name: CreateAnnihilate
+    line: 13
+    fileName: PhysLean.QFT.PerturbationTheory.CreateAnnihilate
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/CreateAnnihilate.lean#L13"
+    isDef: true
+    isThm: false
+    docString: |
+      The type `CreateAnnihilate` is the type containing two elements `create` and `annihilate`.
+      This type is used to specify if an operator is a creation, or annihilation, operator
+      or the sum thereof or integral thereover etc.
+    declString: |
+      inductive CreateAnnihilate where
+        | create : CreateAnnihilate
+        | annihilate : CreateAnnihilate
+      deriving Inhabited, BEq, DecidableEq
+    declNo: "2.7"
+
+  - type: name
+    name: FieldSpecification.CrAnFieldOp
+    line: 65
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnFieldOp
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/CrAnFieldOp.lean#L65"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the (sigma) type `𝓕.CrAnFieldOp`
+      corresponds to the type of creation and annihilation parts of field operators.
+      It formally defined to consist of the following elements:
+      - For each incoming asymptotic field operator `φ` in `𝓕.FieldOp` an element
+        written as `⟨φ, ()⟩` in `𝓕.CrAnFieldOp`, corresponding to the creation part of `φ`.
+        Here `φ` has no annihilation part. (Here `()` is the unique element of `Unit`.)
+      - For each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
+        written as `⟨φ, .create⟩`, corresponding to the creation part of `φ`.
+      - For each position field operator `φ` in `𝓕.FieldOp` an element of `𝓕.CrAnFieldOp`
+        written as `⟨φ, .annihilate⟩`, corresponding to the annihilation part of `φ`.
+      - For each outgoing asymptotic field operator `φ` in `𝓕.FieldOp` an element
+        written as `⟨φ, ()⟩` in `𝓕.CrAnFieldOp`, corresponding to the annihilation part of `φ`.
+        Here `φ` has no creation part. (Here `()` is the unique element of `Unit`.)
+
+      As an example, if `f` corresponds to a Weyl-fermion field, it would contribute
+        the following elements to `𝓕.CrAnFieldOp`
+      - For each spin `s`, an element corresponding to an incoming asymptotic operator: `a(p, s)`.
+      - For each each Lorentz
+        index `a`, an element corresponding to the creation part of a position operator:
+
+        `∑ s, ∫ d³p/(…) (xₐ (p,s) a(p, s) e ^ (-i p x))`.
+      - For each each Lorentz
+        index `a`,an element corresponding to annihilation part of a position operator:
+
+        `∑ s, ∫ d³p/(…) (yₐ(p,s) a†(p, s) e ^ (-i p x))`.
+      - For each spin `s`, element corresponding to an outgoing asymptotic operator: `a†(p, s)`.
+
+
+    declString: |
+      def CrAnFieldOp : Type := Σ (s : 𝓕.FieldOp), 𝓕.fieldOpToCrAnType s
+    declNo: "2.8"
+
+  - type: name
+    name: FieldSpecification.crAnFieldOpToCreateAnnihilate
+    line: 103
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnFieldOp
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/CrAnFieldOp.lean#L103"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `𝓕.crAnFieldOpToCreateAnnihilate` is the map from
+        `𝓕.CrAnFieldOp` to `CreateAnnihilate` taking `φ` to `create` if
+      - `φ` corresponds to an incoming asymptotic field operator or the creation part of a position based
+        field operator.
+
+      otherwise it takes `φ` to `annihilate`.
+
+    declString: |
+      def crAnFieldOpToCreateAnnihilate : 𝓕.CrAnFieldOp → CreateAnnihilate
+        | ⟨FieldOp.inAsymp _, _⟩ => CreateAnnihilate.create
+        | ⟨FieldOp.position _, CreateAnnihilate.create⟩ => CreateAnnihilate.create
+        | ⟨FieldOp.position _, CreateAnnihilate.annihilate⟩ => CreateAnnihilate.annihilate
+        | ⟨FieldOp.outAsymp _, _⟩ => CreateAnnihilate.annihilate
+    declNo: "2.9"
+
+  - type: name
+    name: FieldSpecification.crAnStatistics
+    line: 116
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnFieldOp
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/CrAnFieldOp.lean#L116"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and an element `φ` in `𝓕.CrAnFieldOp`, the field
+      statistic `crAnStatistics φ` is defined to be the statistic associated with the field `𝓕.Field`
+      (or the `𝓕.FieldOp`) underlying `φ`.
+
+      The following notation is used in relation to `crAnStatistics`:
+      - For `φ` an element of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φ` is `crAnStatistics φ`.
+      - For `φs` a list of `𝓕.CrAnFieldOp`, `𝓕 |>ₛ φs` is the product of `crAnStatistics φ` over
+        the list `φs`.
+
+    declString: |
+      def crAnStatistics : 𝓕.CrAnFieldOp → FieldStatistic :=
+        𝓕.fieldOpStatistic ∘ 𝓕.crAnFieldOpToFieldOp
+    declNo: "2.10"
+
+  - type: remark
+    name: "notation_remark"
+    status : "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/CrAnFieldOp.lean#L141"
+    content: |
+      When working with a field specification `𝓕` the
+      following notation will be used within doc-strings:
+      - when field statistics occur in exchange signs the `𝓕 |>ₛ _` may be dropped.
+      - lists of `FieldOp` or `CrAnFieldOp` `φs` may be written as `φ₀…φₙ`,
+        which should be interpreted within the context in which it appears.
+      - `φᶜ` may be used to indicate the creation part of an operator and
+        `φᵃ` to indicate the annihilation part of an operator.
+
+      Some examples of these notation-conventions are:
+      - `𝓢(φ, φs)` which corresponds to `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
+      - `φ₀…φᵢ₋₁φᵢ₊₁…φₙ` which corresponds to a (given) list `φs = φ₀…φₙ` with the element at the
+        `i`th position removed.
+
+
+  - type: h2
+    sectionNo: "2.4"
+    content: "Field-operator free algebra"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra
+    line: 37
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L37"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the algebra `𝓕.FieldOpFreeAlgebra` is
+      the free algebra generated by `𝓕.CrAnFieldOp`.
+    declString: |
+      abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 𝓕.CrAnFieldOp
+    declNo: "2.11"
+
+  - type: remark
+    name: "naming_convention"
+    status : "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L43"
+    content: |
+
+        For mathematicial objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
+        may be given to
+        their names to indicate that they are related to the free algebra.
+        This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
+        as a quotient of `FieldOpFreeAlgebra`.
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.ofCrAnOpF
+    line: 50
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L50"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a element `φ` of `𝓕.CrAnFieldOp`,
+      `ofCrAnOpF φ` is defined as the element of `𝓕.FieldOpFreeAlgebra` formed by `φ`.
+    declString: |
+      def ofCrAnOpF (φ : 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 :=
+        FreeAlgebra.ι ℂ φ
+    declNo: "2.12"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.universality
+    line: 55
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L55"
+    isDef: false
+    isThm: false
+    docString: |
+      The algebra `𝓕.FieldOpFreeAlgebra` satisfies the universal property that for any other algebra
+      `A` (e.g. the operator algebra of the theory) with a map `f : 𝓕.CrAnFieldOp → A` (e.g.
+      the inclusion of the creation and annihilation parts of field operators into the
+      operator algebra) there is a unique algebra map `g : 𝓕.FieldOpFreeAlgebra → A`
+      such that `g ∘ ofCrAnOpF = f`.
+
+      The unique `g` is given by `FreeAlgebra.lift ℂ f`.
+
+    declString: |
+      lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A) :
+          ∃! g : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] A, g ∘ ofCrAnOpF = f := by
+        use FreeAlgebra.lift ℂ f
+        apply And.intro
+        · funext x
+          simp [ofCrAnOpF]
+        · intro g hg
+          ext x
+          simpa using congrFun hg x
+    declNo: "2.13"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.ofCrAnListF
+    line: 74
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L74"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+      `ofCrAnListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
+      obtained by the product of `ofCrAnListF φ` for each `φ` in `φs`.
+      For example `ofCrAnListF [φ₁, φ₂, φ₃] = ofCrAnOpF φ₁ * ofCrAnOpF φ₂ * ofCrAnOpF φ₃`.
+      The set of all `ofCrAnListF φs` forms a basis of `FieldOpFreeAlgebra 𝓕`.
+    declString: |
+      def ofCrAnListF (φs : List 𝓕.CrAnFieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofCrAnOpF φs).prod
+    declNo: "2.14"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.ofFieldOpF
+    line: 94
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L94"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`,
+      `ofFieldOpF φ` is the element of `𝓕.FieldOpFreeAlgebra` formed by summing over
+      `ofCrAnOpF` of the
+      creation and annihilation parts of `φ`.
+
+      For example, for `φ` an incoming asymptotic field operator we get
+      `ofCrAnOpF ⟨φ, ()⟩`, and for `φ` a
+      position field operator we get `ofCrAnOpF ⟨φ, .create⟩ + ofCrAnOpF ⟨φ, .annihilate⟩`.
+    declString: |
+      def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=
+        ∑ (i : 𝓕.fieldOpToCrAnType φ), ofCrAnOpF ⟨φ, i⟩
+    declNo: "2.15"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.ofFieldOpListF
+    line: 105
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L105"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.FieldOp`,
+      `𝓕.ofFieldOpListF φs` is defined as the element of `𝓕.FieldOpFreeAlgebra`
+      obtained by the product of `ofFieldOpF φ` for each `φ` in `φs`.
+      For example `ofFieldOpListF [φ₁, φ₂, φ₃] = ofFieldOpF φ₁ * ofFieldOpF φ₂ * ofFieldOpF φ₃`.
+    declString: |
+      def ofFieldOpListF (φs : List 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofFieldOpF φs).prod
+    declNo: "2.16"
+
+  - type: remark
+    name: "notation_drop"
+    status : "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L111"
+    content: |
+      In doc-strings explicit applications of `ofCrAnOpF`,
+      `ofCrAnListF`, `ofFieldOpF`, and `ofFieldOpListF` will often be dropped.
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.fieldOpFreeAlgebraGrade
+    line: 239
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Grading
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Grading.lean#L239"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the algebra `𝓕.FieldOpFreeAlgebra` is graded by `FieldStatistic`.
+      Those `ofCrAnListF φs` for which `φs` has an overall `bosonic` statistic
+      (i.e. `𝓕 |>ₛ φs = bosonic`) span `bosonic`
+      submodule, whilst those `ofCrAnListF φs` for which `φs` has an overall `fermionic` statistic
+      (i.e. `𝓕 |>ₛ φs = fermionic`) span
+      the `fermionic` submodule.
+    declString: |
+      instance fieldOpFreeAlgebraGrade :
+          GradedAlgebra (A := 𝓕.FieldOpFreeAlgebra) statisticSubmodule where
+        one_mem := by
+          simp only [statisticSubmodule]
+          refine Submodule.mem_span.mpr fun p a => a ?_
+          simp only [Set.mem_setOf_eq]
+          use []
+          simp only [ofCrAnListF_nil, ofList_empty, true_and]
+          rfl
+        mul_mem f1 f2 a1 a2 h1 h2 := by
+          let p (a2 : 𝓕.FieldOpFreeAlgebra) (hx : a2 ∈ statisticSubmodule f2) : Prop :=
+            a1 * a2 ∈ statisticSubmodule (f1 + f2)
+          change p a2 h2
+          apply Submodule.span_induction (p := p)
+          · intro x hx
+            simp only [Set.mem_setOf_eq] at hx
+            obtain ⟨φs, rfl, h⟩ := hx
+            simp only [p]
+            let p (a1 : 𝓕.FieldOpFreeAlgebra) (hx : a1 ∈ statisticSubmodule f1) : Prop :=
+              a1 * ofCrAnListF φs ∈ statisticSubmodule (f1 + f2)
+            change p a1 h1
+            apply Submodule.span_induction (p := p)
+            · intro y hy
+              obtain ⟨φs', rfl, h'⟩ := hy
+              simp only [p]
+              rw [← ofCrAnListF_append]
+              refine Submodule.mem_span.mpr fun p a => a ?_
+              simp only [Set.mem_setOf_eq]
+              use φs' ++ φs
+              simp only [ofList_append, h', h, true_and]
+              cases f1 <;> cases f2 <;> rfl
+            · simp [p]
+            · intro x y hx hy hx1 hx2
+              simp only [add_mul, p]
+              exact Submodule.add_mem _ hx1 hx2
+            · intro c a hx h1
+              simp only [Algebra.smul_mul_assoc, p]
+              exact Submodule.smul_mem _ _ h1
+            · exact h1
+          · simp [p]
+          · intro x y hx hy hx1 hx2
+            simp only [mul_add, p]
+            exact Submodule.add_mem _ hx1 hx2
+          · intro c a hx h1
+            simp only [Algebra.mul_smul_comm, p]
+            exact Submodule.smul_mem _ _ h1
+          · exact h2
+        decompose' a := DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProjF a)
+          + DirectSum.of (fun i => (statisticSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProjF a)
+        left_inv a := by
+          trans a.bosonicProjF + fermionicProjF a
+          · simp
+          · exact bosonicProjF_add_fermionicProjF a
+        right_inv a := by
+          rw [coeAddMonoidHom_apply_eq_bosonic_plus_fermionic]
+          simp only [DFinsupp.toFun_eq_coe, map_add, bosonicProjF_of_bonosic_part,
+            bosonicProjF_of_fermionic_part, add_zero, fermionicProjF_of_bosonic_part,
+            fermionicProjF_of_fermionic_part, zero_add]
+          conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
+    declNo: "2.17"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.superCommuteF
+    line: 26
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/SuperCommute.lean#L26"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
+      map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra`
+      which on the lists `φs` and `φs'` of `𝓕.CrAnFieldOp` gives
+
+      `superCommuteF φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`.
+
+      The notation `[a, b]ₛF` can be used for `superCommuteF a b`.
+    declString: |
+      noncomputable def superCommuteF : 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ]
+          𝓕.FieldOpFreeAlgebra :=
+        Basis.constr ofCrAnListFBasis ℂ fun φs =>
+        Basis.constr ofCrAnListFBasis ℂ fun φs' =>
+        ofCrAnListF (φs ++ φs') - 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs') • ofCrAnListF (φs' ++ φs)
+    declNo: "2.18"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum
+    line: 408
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/SuperCommute.lean#L408"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and two lists `φs = φ₀…φₙ` and `φs'` of `𝓕.CrAnFieldOp`
+      the following super commutation relation holds:
+
+      `[φs', φ₀…φₙ]ₛF = ∑ i, 𝓢(φs', φ₀…φᵢ₋₁) • φ₀…φᵢ₋₁ * [φs', φᵢ]ₛF * φᵢ₊₁ … φₙ`
+
+      The proof of this relation is via induction on the length of `φs`.
+
+    declString: |
+      lemma superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum (φs : List 𝓕.CrAnFieldOp) :
+          (φs' : List 𝓕.CrAnFieldOp) → [ofCrAnListF φs, ofCrAnListF φs']ₛF =
+          ∑ (n : Fin φs'.length), 𝓢(𝓕 |>ₛ φs, 𝓕 |>ₛ φs'.take n) •
+          ofCrAnListF (φs'.take n) * [ofCrAnListF φs, ofCrAnOpF (φs'.get n)]ₛF *
+          ofCrAnListF (φs'.drop (n + 1))
+        | [] => by
+          simp [← ofCrAnListF_nil, superCommuteF_ofCrAnListF_ofCrAnListF]
+        | φ :: φs' => by
+          rw [superCommuteF_ofCrAnListF_ofCrAnListF_cons,
+            superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum φs φs']
+          conv_rhs => erw [Fin.sum_univ_succ]
+          congr 1
+          · simp
+          · simp [Finset.mul_sum, smul_smul, ofCrAnListF_cons, mul_assoc,
+              FieldStatistic.ofList_cons_eq_mul, mul_comm]
+    declNo: "2.19"
+
+  - type: h2
+    sectionNo: "2.5"
+    content: "Field-operator algebra"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra
+    line: 35
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L35"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the algebra `𝓕.FieldOpAlgebra` is defined as the quotient
+        of the free algebra `𝓕.FieldOpFreeAlgebra` by the ideal generated by
+      - `[ofCrAnOpF φc, ofCrAnOpF φc']ₛF` for `φc` and `φc'` field creation operators.
+        This corresponds to the condition that two creation operators always super-commute.
+      - `[ofCrAnOpF φa, ofCrAnOpF φa']ₛF` for `φa` and `φa'` field annihilation operators.
+        This corresponds to the condition that two annihilation operators always super-commute.
+      - `[ofCrAnOpF φ, ofCrAnOpF φ']ₛF` for `φ` and `φ'` operators with different statistics.
+        This corresponds to the condition that two operators with different statistics always
+        super-commute. In other words, fermions and bosons always super-commute.
+      - `[ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF`. This corresponds to the condition,
+        when combined with the conditions above, that the super-commutator is in the center
+        of the algebra.
+
+    declString: |
+      abbrev FieldOpAlgebra : Type := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.Quotient
+    declNo: "2.20"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ι
+    line: 73
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L73"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `ι` is defined as the projection
+
+      `𝓕.FieldOpFreeAlgebra →ₐ[ℂ] 𝓕.FieldOpAlgebra`
+
+      taking each element of `𝓕.FieldOpFreeAlgebra` to its equivalence class in `FieldOpAlgebra 𝓕`.
+    declString: |
+      def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
+        toFun := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.mk'
+        map_one' := by rfl
+        map_mul' x y := by rfl
+        map_zero' := by rfl
+        map_add' x y := by rfl
+        commutes' x := by rfl
+    declNo: "2.21"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.universality
+    line: 77
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Universality
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Universality.lean#L77"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification, `𝓕`, the algebra `𝓕.FieldOpAlgebra` satisfies the following universal
+      property. Let `f : 𝓕.CrAnFieldOp → A` be a function and `g : 𝓕.FieldOpFreeAlgebra →ₐ[ℂ] A`
+      the universal lift of that function associated with the free algebra `𝓕.FieldOpFreeAlgebra`.
+      If `g` is zero on the ideal defining `𝓕.FieldOpAlgebra`, then there exists
+      algebra map `g' : FieldOpAlgebra 𝓕 →ₐ[ℂ] A` such that `g' ∘ ι = g`, and furthermore this
+      algebra map is unique.
+
+    declString: |
+      lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
+          (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
+          ∃! g : FieldOpAlgebra 𝓕 →ₐ[ℂ] A, g ∘ ι = FreeAlgebra.lift ℂ f := by
+        use universalLift f h1
+        simp only
+        apply And.intro
+        · ext a
+          simp
+        · intro g hg
+          ext a
+          obtain ⟨a, rfl⟩ := ι_surjective a
+          simpa using congrFun hg a
+    declNo: "2.22"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofCrAnOp
+    line: 495
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L495"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕` and an element `φ` of `𝓕.CrAnFieldOp`,
+      `ofCrAnOp φ` is defined as the element of
+      `𝓕.FieldOpAlgebra` given by `ι (ofCrAnOpF φ)`.
+    declString: |
+      def ofCrAnOp (φ : 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnOpF φ)
+    declNo: "2.23"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofCrAnList
+    line: 509
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L509"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕` and a list `φs` of `𝓕.CrAnFieldOp`,
+      `ofCrAnList φs` is defined as the element of
+      `𝓕.FieldOpAlgebra` given by `ι (ofCrAnListF φ)`.
+    declString: |
+      def ofCrAnList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
+    declNo: "2.24"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofFieldOp
+    line: 463
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L463"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕` and an element `φ` of `𝓕.FieldOp`,
+      `ofFieldOp φ` is defined as the element of
+      `𝓕.FieldOpAlgebra` given by `ι (ofFieldOpF φ)`.
+    declString: |
+      def ofFieldOp (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (ofFieldOpF φ)
+    declNo: "2.25"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofCrAnList
+    line: 509
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L509"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕` and a list `φs` of `𝓕.CrAnFieldOp`,
+      `ofCrAnList φs` is defined as the element of
+      `𝓕.FieldOpAlgebra` given by `ι (ofCrAnListF φ)`.
+    declString: |
+      def ofCrAnList (φs : List 𝓕.CrAnFieldOp) : 𝓕.FieldOpAlgebra := ι (ofCrAnListF φs)
+    declNo: "2.26"
+
+  - type: remark
+    name: "notation_drop"
+    status : "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L533"
+    content: |
+      In doc-strings we will often drop explicit applications of `ofCrAnOp`,
+      `ofCrAnList`, `ofFieldOp`, and `ofFieldOpList`
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.anPart
+    line: 536
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L536"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
+        annihilation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.
+        Thus for `φ`
+      - an incoming asymptotic state this is `0`.
+      - a position based state this is `ofCrAnOp ⟨φ, .create⟩`.
+      - an outgoing asymptotic state this is `ofCrAnOp ⟨φ, ()⟩`.
+    declString: |
+      def anPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
+    declNo: "2.27"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.crPart
+    line: 562
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L562"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
+        creation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.
+        Thus for `φ`
+      - an incoming asymptotic state this is `ofCrAnOp ⟨φ, ()⟩`.
+      - a position based state this is `ofCrAnOp ⟨φ, .create⟩`.
+      - an outgoing asymptotic state this is `0`.
+    declString: |
+      def crPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
+    declNo: "2.28"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofFieldOp_eq_crPart_add_anPart
+    line: 588
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Basic.lean#L588"
+    isDef: false
+    isThm: false
+    docString: |
+      For field specification `𝓕`, and an element `φ` of `𝓕.FieldOp` the following relation holds:
+
+      `ofFieldOp φ = crPart φ + anPart φ`
+
+      That is, every field operator splits into its creation part plus its annihilation part.
+
+    declString: |
+      lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.FieldOp) :
+          ofFieldOp φ = crPart φ + anPart φ := by
+        rw [ofFieldOp, crPart, anPart, ofFieldOpF_eq_crPartF_add_anPartF]
+        simp only [map_add]
+    declNo: "2.29"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.fieldOpAlgebraGrade
+    line: 386
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Grading
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/Grading.lean#L386"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field statistic `𝓕`, the algebra `𝓕.FieldOpAlgebra` is graded by `FieldStatistic`.
+      Those `ofCrAnList φs` for which `φs` has an overall `bosonic` statistic
+      (i.e. `𝓕 |>ₛ φs = bosonic`) span `bosonic`
+      submodule, whilst those `ofCrAnList φs` for which `φs` has an overall `fermionic` statistic
+      (i.e. `𝓕 |>ₛ φs = fermionic`) span the `fermionic` submodule.
+    declString: |
+      instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubmodule where
+        one_mem := by
+          simp only [statSubmodule]
+          refine Submodule.mem_span.mpr fun p a => a ?_
+          simp only [Set.mem_setOf_eq]
+          use []
+          simp only [ofCrAnList, ofCrAnListF_nil, map_one, ofList_empty, true_and]
+          rfl
+        mul_mem f1 f2 a1 a2 h1 h2 := by
+          let p (a2 : 𝓕.FieldOpAlgebra) (hx : a2 ∈ statSubmodule f2) : Prop :=
+            a1 * a2 ∈ statSubmodule (f1 + f2)
+          change p a2 h2
+          apply Submodule.span_induction
+          · intro x hx
+            simp only [Set.mem_setOf_eq] at hx
+            obtain ⟨φs, rfl, h⟩ := hx
+            simp only [p]
+            let p (a1 : 𝓕.FieldOpAlgebra) (hx : a1 ∈ statSubmodule f1) : Prop :=
+              a1 * ofCrAnList φs ∈ statSubmodule (f1 + f2)
+            change p a1 h1
+            apply Submodule.span_induction (p := p)
+            · intro y hy
+              obtain ⟨φs', rfl, h'⟩ := hy
+              simp only [p]
+              rw [← ofCrAnList_append]
+              refine Submodule.mem_span.mpr fun p a => a ?_
+              simp only [Set.mem_setOf_eq]
+              use φs' ++ φs
+              simp only [ofList_append, h', h, true_and]
+              cases f1 <;> cases f2 <;> rfl
+            · simp [p]
+            · intro x y hx hy hx1 hx2
+              simp only [add_mul, p]
+              exact Submodule.add_mem _ hx1 hx2
+            · intro c a hx h1
+              simp only [Algebra.smul_mul_assoc, p]
+              exact Submodule.smul_mem _ _ h1
+            · exact h1
+          · simp [p]
+          · intro x y hx hy hx1 hx2
+            simp only [mul_add, p]
+            exact Submodule.add_mem _ hx1 hx2
+          · intro c a hx h1
+            simp only [Algebra.mul_smul_comm, p]
+            exact Submodule.smul_mem _ _ h1
+        decompose' a := DirectSum.of (fun i => (statSubmodule (𝓕 := 𝓕) i)) bosonic (bosonicProj a)
+          + DirectSum.of (fun i => (statSubmodule (𝓕 := 𝓕) i)) fermionic (fermionicProj a)
+        left_inv a := by
+          trans a.bosonicProj + a.fermionicProj
+          · simp
+          · exact bosonicProj_add_fermionicProj a
+        right_inv a := by
+          rw [coeAddMonoidHom_apply_eq_bosonic_plus_fermionic]
+          simp only [DFinsupp.toFun_eq_coe, map_add, bosonicProj_of_bosonic_part,
+            bosonicProj_of_fermionic_part, add_zero, fermionicProj_of_bosonic_part,
+            fermionicProj_of_fermionic_part, zero_add]
+          conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
+    declNo: "2.30"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.superCommute
+    line: 91
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.SuperCommute
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/SuperCommute.lean#L91"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `superCommute` is the linear map
+
+      `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+
+      defined as the descent of `ι ∘ superCommuteF` in both arguments.
+      In particular for `φs` and `φs'` lists of `𝓕.CrAnFieldOp` in `FieldOpAlgebra 𝓕` the following
+      relation holds:
+
+      `superCommute φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`
+
+      The notation `[a, b]ₛ` is used for `superCommute a b`.
+
+    declString: |
+      noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
+          FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+        toFun := Quotient.lift superCommuteRight superCommuteRight_eq_of_equiv
+        map_add' x y := by
+          obtain ⟨x, rfl⟩ := ι_surjective x
+          obtain ⟨y, rfl⟩ := ι_surjective y
+          ext b
+          obtain ⟨b, rfl⟩ := ι_surjective b
+          rw [← map_add, ι_apply, ι_apply, ι_apply, ι_apply]
+          rw [Quotient.lift_mk, Quotient.lift_mk, Quotient.lift_mk]
+          simp only [LinearMap.add_apply]
+          rw [superCommuteRight_apply_quot, superCommuteRight_apply_quot, superCommuteRight_apply_quot]
+          simp
+        map_smul' c y := by
+          obtain ⟨y, rfl⟩ := ι_surjective y
+          ext b
+          obtain ⟨b, rfl⟩ := ι_surjective b
+          rw [← map_smul, ι_apply, ι_apply, ι_apply]
+          simp only [Quotient.lift_mk, RingHom.id_apply, LinearMap.smul_apply]
+          rw [superCommuteRight_apply_quot, superCommuteRight_apply_quot]
+          simp
+    declNo: "2.31"
+
+  - type: h1
+    sectionNo: 3
+    content: "Time ordering"
+
+  - type: name
+    name: FieldSpecification.crAnTimeOrderRel
+    line: 194
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/TimeOrder.lean#L194"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `𝓕.crAnTimeOrderRel` is a relation on
+        `𝓕.CrAnFieldOp` representing time ordering.
+        It is defined such that `𝓕.crAnTimeOrderRel φ₀ φ₁` is true if and only if one of the following
+        holds
+      - `φ₀` is an *outgoing* asymptotic operator
+      - `φ₁` is an *incoming* asymptotic field operator
+      - `φ₀` and `φ₁` are both position field operators where
+        the `SpaceTime` point of `φ₀` has a time *greater* than or equal to that of `φ₁`.
+
+      Thus, colloquially `𝓕.crAnTimeOrderRel φ₀ φ₁` if `φ₀` has time *greater* than or equal to `φ₁`.
+      The use of *greater* than rather then *less* than is because on ordering lists of operators
+      it is needed that the operator with the greatest time is to the left.
+
+    declString: |
+      def crAnTimeOrderRel (a b : 𝓕.CrAnFieldOp) : Prop := 𝓕.timeOrderRel a.1 b.1
+    declNo: "3.1"
+
+  - type: name
+    name: FieldSpecification.crAnTimeOrderList
+    line: 255
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/TimeOrder.lean#L255"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+      `𝓕.crAnTimeOrderList φs` is the list `φs` time-ordered using the insertion sort algorithm.
+    declString: |
+      def crAnTimeOrderList (φs : List 𝓕.CrAnFieldOp) : List 𝓕.CrAnFieldOp :=
+        List.insertionSort 𝓕.crAnTimeOrderRel φs
+    declNo: "3.2"
+
+  - type: name
+    name: FieldSpecification.crAnTimeOrderSign
+    line: 226
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/TimeOrder.lean#L226"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+      `𝓕.crAnTimeOrderSign φs` is the sign corresponding to the number of `ferimionic`-`fermionic`
+      exchanges undertaken to time-order (i.e. order with respect to `𝓕.crAnTimeOrderRel`) `φs` using
+      the insertion sort algorithm.
+    declString: |
+      def crAnTimeOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
+        Wick.koszulSign 𝓕.crAnStatistics 𝓕.crAnTimeOrderRel φs
+    declNo: "3.3"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.timeOrderF
+    line: 29
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/TimeOrder.lean#L29"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `timeOrderF` is the linear map
+
+      `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
+
+      defined by its action on the basis `ofCrAnListF φs`, taking
+      `ofCrAnListF φs` to
+
+      `crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)`.
+
+      That is, `timeOrderF` time-orders the field operators and multiplies by the sign of the
+      time order.
+
+      The notation `𝓣ᶠ(a)` is used for `timeOrderF a`
+    declString: |
+      def timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
+        Basis.constr ofCrAnListFBasis ℂ fun φs =>
+        crAnTimeOrderSign φs • ofCrAnListF (crAnTimeOrderList φs)
+    declNo: "3.4"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeOrder
+    line: 370
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeOrder.lean#L370"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `timeOrder` is the linear map
+
+      `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+
+      defined as the descent of `ι ∘ₗ timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕` from
+      `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+      This descent exists because `ι ∘ₗ timeOrderF` is well-defined on equivalence classes.
+
+      The notation `𝓣(a)` is used for `timeOrder a`.
+    declString: |
+      noncomputable def timeOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+        toFun := Quotient.lift (ι.toLinearMap ∘ₗ timeOrderF) ι_timeOrderF_eq_of_equiv
+        map_add' x y := by
+          obtain ⟨x, hx⟩ := ι_surjective x
+          obtain ⟨y, hy⟩ := ι_surjective y
+          subst hx hy
+          rw [← map_add, ι_apply, ι_apply, ι_apply]
+          rw [Quotient.lift_mk, Quotient.lift_mk, Quotient.lift_mk]
+          simp
+        map_smul' c y := by
+          obtain ⟨y, hy⟩ := ι_surjective y
+          subst hy
+          rw [← map_smul, ι_apply, ι_apply]
+          simp
+    declNo: "3.5"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeOrder_eq_maxTimeField_mul_finset
+    line: 434
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeOrder.lean#L434"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, the time order operator acting on a
+      list of `𝓕.FieldOp`, `𝓣(φ₀…φₙ)`, is equal to
+      `𝓢(φᵢ,φ₀…φᵢ₋₁) • φᵢ * 𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` where `φᵢ` is the maximal time field
+      operator in `φ₀…φₙ`.
+
+      The proof of this result ultimately relies on basic properties of ordering and signs.
+    declString: |
+      lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
+          𝓣(ofFieldOpList (φ :: φs)) = 𝓢(𝓕 |>ₛ maxTimeField φ φs, 𝓕 |>ₛ ⟨(eraseMaxTimeField φ φs).get,
+            (Finset.univ.filter (fun x =>
+              (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs))⟩) •
+            ofFieldOp (maxTimeField φ φs) * 𝓣(ofFieldOpList (eraseMaxTimeField φ φs)) := by
+        rw [ofFieldOpList, timeOrder_eq_ι_timeOrderF, timeOrderF_eq_maxTimeField_mul_finset]
+        rfl
+    declNo: "3.6"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeOrder_timeOrder_mid
+    line: 501
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeOrder.lean#L501"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `a`, `b`, `c` in `𝓕.FieldOpAlgebra`, then
+      `𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c)`.
+    declString: |
+      lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
+          𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c) := by
+        obtain ⟨a, rfl⟩ := ι_surjective a
+        obtain ⟨b, rfl⟩ := ι_surjective b
+        obtain ⟨c, rfl⟩ := ι_surjective c
+        rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrder_eq_ι_timeOrderF,
+        ← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrderF_timeOrderF_mid]
+    declNo: "3.7"
+
+  - type: h1
+    sectionNo: 4
+    content: "Normal ordering"
+
+  - type: name
+    name: FieldSpecification.normalOrderRel
+    line: 17
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.NormalOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/NormalOrder.lean#L17"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `𝓕.normalOrderRel` is a relation on `𝓕.CrAnFieldOp`
+      representing normal ordering. It is defined such that `𝓕.normalOrderRel φ₀ φ₁`
+      is true if one of the following is true
+      - `φ₀` is a field creation operator
+      - `φ₁` is a field annihilation operator.
+
+      Thus, colloquially `𝓕.normalOrderRel φ₀ φ₁` says the creation operators are less than
+      annihilation operators.
+    declString: |
+      def normalOrderRel : 𝓕.CrAnFieldOp → 𝓕.CrAnFieldOp → Prop :=
+        fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)
+    declNo: "4.1"
+
+  - type: name
+    name: FieldSpecification.normalOrderList
+    line: 225
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.NormalOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/NormalOrder.lean#L225"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
+      `𝓕.normalOrderList φs` is the list `φs` normal-ordered using ther
+      insertion sort algorithm. It puts creation operators on the left and annihilation operators on
+      the right. For example:
+
+      `𝓕.normalOrderList [φ1c, φ1a, φ2c, φ2a] = [φ1c, φ2c, φ1a, φ2a]`
+
+    declString: |
+      def normalOrderList (φs : List 𝓕.CrAnFieldOp) : List 𝓕.CrAnFieldOp :=
+        List.insertionSort 𝓕.normalOrderRel φs
+    declNo: "4.2"
+
+  - type: name
+    name: FieldSpecification.normalOrderSign
+    line: 46
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.NormalOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/NormalOrder.lean#L46"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`, `𝓕.normalOrderSign φs` is the
+      sign corresponding to the number of `fermionic`-`fermionic` exchanges undertaken to normal-order
+      `φs` using the insertion sort algorithm.
+    declString: |
+      def normalOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
+        Wick.koszulSign 𝓕.crAnStatistics 𝓕.normalOrderRel φs
+    declNo: "4.3"
+
+  - type: name
+    name: FieldSpecification.normalOrderSign_eraseIdx
+    line: 347
+    fileName: PhysLean.QFT.PerturbationTheory.FieldSpecification.NormalOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldSpecification/NormalOrder.lean#L347"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, a list `φs = φ₀…φₙ` of `𝓕.CrAnFieldOp` and an `i < φs.length`,
+      then
+      `normalOrderSign (φ₀…φᵢ₋₁φᵢ₊₁…φₙ)` is equal to the product of
+      - `normalOrderSign φ₀…φₙ`,
+      - `𝓢(φᵢ, φ₀…φᵢ₋₁)` i.e. the sign needed to remove `φᵢ` from `φ₀…φₙ`,
+      - `𝓢(φᵢ, _)` where `_` is the list of elements appearing before `φᵢ` after normal ordering,
+        i.e.
+        the sign needed to insert `φᵢ` back into the normal-ordered list at the correct place.
+    declString: |
+      lemma normalOrderSign_eraseIdx (φs : List 𝓕.CrAnFieldOp) (i : Fin φs.length) :
+          normalOrderSign (φs.eraseIdx i) = normalOrderSign φs *
+          𝓢(𝓕 |>ₛ (φs.get i), 𝓕 |>ₛ (φs.take i)) *
+          𝓢(𝓕 |>ₛ (φs.get i), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv i))) := by
+        rw [normalOrderSign, Wick.koszulSign_eraseIdx, ← normalOrderSign]
+        rfl
+    declNo: "4.4"
+
+  - type: name
+    name: FieldSpecification.FieldOpFreeAlgebra.normalOrderF
+    line: 30
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.NormalOrder
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/NormalOrder.lean#L30"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `normalOrderF` is the linear map
+
+      `FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕`
+
+      defined by its action on the basis `ofCrAnListF φs`, taking `ofCrAnListF φs` to
+
+      `normalOrderSign φs • ofCrAnListF (normalOrderList φs)`.
+
+      That is, `normalOrderF` normal-orders the field operators and multiplies by the sign of the
+      normal order.
+
+      The notation `𝓝ᶠ(a)` is used for `normalOrderF a` for `a` an element of
+      `FieldOpFreeAlgebra 𝓕`.
+    declString: |
+      def normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFreeAlgebra 𝓕 :=
+        Basis.constr ofCrAnListFBasis ℂ fun φs =>
+        normalOrderSign φs • ofCrAnListF (normalOrderList φs)
+    declNo: "4.5"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.normalOrder
+    line: 222
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/Basic.lean#L222"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `normalOrder` is the linear map
+
+      `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+
+      defined as the descent of `ι ∘ₗ normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+      from `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+      This descent exists because `ι ∘ₗ normalOrderF` is well-defined on equivalence classes.
+
+      The notation `𝓝(a)` is used for `normalOrder a` for `a` an element of `FieldOpAlgebra 𝓕`.
+    declString: |
+      noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+        toFun := Quotient.lift (ι.toLinearMap ∘ₗ normalOrderF) ι_normalOrderF_eq_of_equiv
+        map_add' x y := by
+          obtain ⟨x, rfl⟩ := ι_surjective x
+          obtain ⟨y, rfl⟩ := ι_surjective y
+          rw [← map_add, ι_apply, ι_apply, ι_apply]
+          rw [Quotient.lift_mk, Quotient.lift_mk, Quotient.lift_mk]
+          simp
+        map_smul' c y := by
+          obtain ⟨y, rfl⟩ := ι_surjective y
+          rw [← map_smul, ι_apply, ι_apply]
+          simp
+    declNo: "4.6"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.normalOrder_superCommute_eq_zero
+    line: 121
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/Lemmas.lean#L121"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
+      of the super commutator of `a` and `b` vanishes, i.e. `𝓝([a,b]ₛ) = 0`.
+    declString: |
+      lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
+          𝓝([a, b]ₛ) = 0 := by
+        obtain ⟨a, rfl⟩ := ι_surjective a
+        obtain ⟨b, rfl⟩ := ι_surjective b
+        rw [superCommute_eq_ι_superCommuteF, normalOrder_eq_ι_normalOrderF]
+        simp
+    declNo: "4.7"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum
+    line: 221
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/Lemmas.lean#L221"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, an element `φ` of `𝓕.CrAnFieldOp`, a list `φs` of `𝓕.CrAnFieldOp`,
+        the following relation holds
+
+      `[φ, 𝓝(φ₀…φₙ)]ₛ = ∑ i, 𝓢(φ, φ₀…φᵢ₋₁) • [φ, φᵢ]ₛ * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
+
+      The proof of this result ultimately goes as follows
+      - The definition of `normalOrder` is used to rewrite `𝓝(φ₀…φₙ)` as a scalar multiple of
+        a `ofCrAnList φsn` where `φsn` is the normal ordering of `φ₀…φₙ`.
+      - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
+        (considered as a list with one element) with
+        `ofCrAnList φsn` as a sum of super commutators, one for each element of `φsn`.
+      - The fact that super-commutators are in the center of `𝓕.FieldOpAlgebra` is used to rearrange
+        terms.
+      - Properties of ordered lists, and `normalOrderSign_eraseIdx` are then used to complete the proof.
+
+    declString: |
+      lemma ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum (φ : 𝓕.CrAnFieldOp)
+          (φs : List 𝓕.CrAnFieldOp) : [ofCrAnOp φ, 𝓝(ofCrAnList φs)]ₛ = ∑ n : Fin φs.length,
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) • [ofCrAnOp φ, ofCrAnOp φs[n]]ₛ
+          * 𝓝(ofCrAnList (φs.eraseIdx n)) := by
+        rw [normalOrder_ofCrAnList, map_smul]
+        rw [superCommute_ofCrAnOp_ofCrAnList_eq_sum, Finset.smul_sum,
+          sum_normalOrderList_length]
+        congr
+        funext n
+        simp only [instCommGroup.eq_1, List.get_eq_getElem, normalOrderList_get_normalOrderEquiv,
+          normalOrderList_eraseIdx_normalOrderEquiv, Algebra.smul_mul_assoc, Fin.getElem_fin]
+        rw [ofCrAnList_eq_normalOrder, mul_smul_comm, smul_smul, smul_smul]
+        by_cases hs : (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[n])
+        · congr
+          erw [normalOrderSign_eraseIdx, ← hs]
+          trans (normalOrderSign φs * normalOrderSign φs) *
+            (𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv n))) *
+            𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ ((normalOrderList φs).take (normalOrderEquiv n))))
+            * 𝓢(𝓕 |>ₛ (φs.get n), 𝓕 |>ₛ (φs.take n))
+          · ring_nf
+            rw [hs]
+            rfl
+          · simp [hs]
+        · erw [superCommute_diff_statistic hs]
+          simp
+    declNo: "4.8"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum
+    line: 347
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/Lemmas.lean#L347"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, a `φ` in `𝓕.FieldOp` and a list `φs` of `𝓕.FieldOp`
+      then `φ * 𝓝(φ₀φ₁…φₙ)` is equal to
+
+      `𝓝(φφ₀φ₁…φₙ) + ∑ i, (𝓢(φ,φ₀φ₁…φᵢ₋₁) • [anPart φ, φᵢ]ₛ) * 𝓝(φ₀…φᵢ₋₁φᵢ₊₁…φₙ)`.
+
+      The proof ultimately goes as follows:
+      - `ofFieldOp_eq_crPart_add_anPart` is used to split `φ` into its creation and annihilation parts.
+      - The following relation is then used
+
+        `crPart φ * 𝓝(φ₀φ₁…φₙ) = 𝓝(crPart φ * φ₀φ₁…φₙ)`.
+
+      - It used that `anPart φ * 𝓝(φ₀φ₁…φₙ)` is equal to
+
+        `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ + [anPart φ, 𝓝(φ₀φ₁…φₙ)]`
+
+      - Then it is used that
+
+        `𝓢(φ, φ₀φ₁…φₙ) 𝓝(φ₀φ₁…φₙ) * anPart φ = 𝓝(anPart φ * φ₀φ₁…φₙ)`
+
+      - The result `ofCrAnOp_superCommute_normalOrder_ofCrAnList_sum` is used
+        to expand `[anPart φ, 𝓝(φ₀φ₁…φₙ)]` as a sum.
+
+    declString: |
+      lemma ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
+          ofFieldOp φ * 𝓝(ofFieldOpList φs) =
+          ∑ n : Option (Fin φs.length), contractStateAtIndex φ φs n *
+          𝓝(ofFieldOpList (optionEraseZ φs φ n)) := by
+        rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_superCommute]
+        rw [anPart_superCommute_normalOrder_ofFieldOpList_sum]
+        simp only [instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc, contractStateAtIndex,
+          Fintype.sum_option, one_mul]
+        rfl
+    declNo: "4.9"
+
+  - type: h1
+    sectionNo: 5
+    content: "Wick Contractions"
+
+  - type: h2
+    sectionNo: "5.1"
+    content: "Definition"
+
+  - type: name
+    name: WickContraction
+    line: 16
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Basic.lean#L16"
+    isDef: true
+    isThm: false
+    docString: |
+      Given a natural number `n`, which will correspond to the number of fields needing
+      contracting, a Wick contraction
+      is a finite set of pairs of `Fin n` (numbers `0`, ..., `n-1`), such that no
+      element of `Fin n` occurs in more than one pair. The pairs are the positions of fields we
+      'contract' together.
+
+    declString: |
+      def WickContraction (n : ℕ) : Type :=
+        {f : Finset ((Finset (Fin n))) // (∀ a ∈ f, a.card = 2) ∧
+          (∀ a ∈ f, ∀ b ∈ f, a = b ∨ Disjoint a b)}
+    declNo: "5.1"
+
+  - type: name
+    name: WickContraction.mem_three
+    line: 110
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.ExtractEquiv
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/ExtractEquiv.lean#L110"
+    isDef: false
+    isThm: false
+    docString: |
+      For `n = 3` there are `4` possible Wick contractions:
+
+      - `∅`, corresponding to the case where no fields are contracted.
+      - `{{0, 1}}`, corresponding to the case where the field at position `0` and `1` are contracted.
+      - `{{0, 2}}`, corresponding to the case where the field at position `0` and `2` are contracted.
+      - `{{1, 2}}`, corresponding to the case where the field at position `1` and `2` are contracted.
+
+      The proof of this result uses the fact that Lean is an executable programming language
+      and can calculate all Wick contractions for a given `n`.
+    declString: |
+      lemma mem_three (c : WickContraction 3) : c.1 ∈ ({∅, {{0, 1}}, {{0, 2}}, {{1, 2}}} :
+          Finset (Finset (Finset (Fin 3)))) := by
+        fin_cases c <;>
+          simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Function.Embedding.coeFn_mk,
+            Finset.mem_insert, Finset.mem_singleton]
+        · exact Or.inl rfl
+        · exact Or.inr (Or.inl rfl)
+        · exact Or.inr (Or.inr (Or.inl rfl))
+        · exact Or.inr (Or.inr (Or.inr rfl))
+    declNo: "5.2"
+
+  - type: name
+    name: WickContraction.mem_four
+    line: 129
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.ExtractEquiv
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/ExtractEquiv.lean#L129"
+    isDef: false
+    isThm: false
+    docString: |
+      For `n = 4` there are `10` possible Wick contractions including e.g.
+
+      - `∅`, corresponding to the case where no fields are contracted.
+      - `{{0, 1}, {2, 3}}`, corresponding to the case where the fields at position `0` and `1` are
+        contracted, and the fields at position `2` and `3` are contracted.
+      - `{{0, 2}, {1, 3}}`, corresponding to the case where the fields at position `0` and `2` are
+        contracted, and the fields at position `1` and `3` are contracted.
+
+      The proof of this result uses the fact that Lean is an executable programming language
+      and can calculate all Wick contractions for a given `n`.
+
+    declString: |
+      lemma mem_four (c : WickContraction 4) : c.1 ∈ ({∅,
+          {{0, 1}}, {{0, 2}}, {{0, 3}}, {{1, 2}}, {{1, 3}}, {{2,3}},
+          {{0, 1}, {2, 3}}, {{0, 2}, {1, 3}}, {{0, 3}, {1, 2}}} :
+          Finset (Finset (Finset (Fin 4)))) := by
+        fin_cases c <;>
+          simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Function.Embedding.coeFn_mk,
+            Finset.mem_insert, Finset.mem_singleton]
+        · exact Or.inl rfl -- ∅
+        · exact Or.inr (Or.inl rfl) -- {{0, 1}}
+        · exact Or.inr (Or.inr (Or.inl rfl)) -- {{0, 2}}
+        · exact Or.inr (Or.inr (Or.inr (Or.inl rfl))) -- {{0, 3}}
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) -- {{1, 2}}
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))))))
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))) -- {{1, 3}}
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))) -- {{2, 3 }}
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))
+    declNo: "5.3"
+
+  - type: remark
+    name: "contraction_notation"
+    status : "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Basic.lean#L31"
+    content: |
+      Given a field specification `𝓕`, and a list `φs`
+        of `𝓕.FieldOp`, a Wick contraction of `φs` will mean a Wick contraction in
+        `WickContraction φs.length`. The notation `φsΛ` will be used for such contractions.
+        The terminology that `φsΛ` contracts pairs within of `φs` will also be used, even though
+        `φsΛ` is really contains positions of `φs`.
+
+  - type: name
+    name: WickContraction.GradingCompliant
+    line: 520
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Basic.lean#L520"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, `φs` a list of `𝓕.FieldOp` and a Wick contraction
+      `φsΛ` of `φs`, the Wick contraction `φsΛ` is said to be `GradingCompliant` if
+      for every pair in `φsΛ` the contracted fields are either both `fermionic` or both `bosonic`.
+      In other words, in a `GradingCompliant` Wick contraction if
+      no contracted pairs occur between `fermionic` and `bosonic` fields.
+    declString: |
+      def GradingCompliant (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :=
+        ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
+    declNo: "5.4"
+
+  - type: h2
+    sectionNo: "5.2"
+    content: "Aside: Cardinality"
+
+  - type: name
+    name: WickContraction.card_eq_cardFun
+    line: 240
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Card
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Card.lean#L240"
+    isDef: false
+    isThm: true
+    docString: |
+      The number of Wick contractions in `WickContraction n` is equal to the terms in
+      Online Encyclopedia of Integer Sequences (OEIS) A000085. That is:
+      1, 1, 2, 4, 10, 26, 76, 232, 764, 2620, 9496, ...
+    declString: |
+      theorem card_eq_cardFun : (n : ℕ) → Fintype.card (WickContraction n) = cardFun n
+        | 0 => by decide
+        | 1 => by decide
+        | Nat.succ (Nat.succ n) => by
+          rw [wickContraction_card_eq_sum_zero_none_isSome, wickContraction_zero_none_card,
+            wickContraction_zero_some_eq_mul]
+          simp only [cardFun, succ_eq_add_one]
+          rw [← card_eq_cardFun n, ← card_eq_cardFun (n + 1)]
+    declNo: "5.5"
+
+  - type: h2
+    sectionNo: "5.3"
+    content: "Uncontracted elements"
+
+  - type: name
+    name: WickContraction.uncontracted
+    line: 19
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Uncontracted
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Uncontracted.lean#L19"
+    isDef: true
+    isThm: false
+    docString: |
+      For a Wick contraction `c`, `c.uncontracted` is defined as the finset of elements of `Fin n`
+      which are not in any contracted pair.
+    declString: |
+      def uncontracted : Finset (Fin n) := Finset.filter (fun i => c.getDual? i = none) (Finset.univ)
+    declNo: "5.6"
+
+  - type: name
+    name: WickContraction.uncontractedListGet
+    line: 317
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.UncontractedList
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/UncontractedList.lean#L317"
+    isDef: true
+    isThm: false
+    docString: |
+      Given a Wick Contraction `φsΛ` of a list `φs` of `𝓕.FieldOp`. The list
+      `φsΛ.uncontractedListGet` of `𝓕.FieldOp` is defined as the list `φs` with
+      all contracted positions removed, leaving the uncontracted `𝓕.FieldOp`.
+
+      The notation `[φsΛ]ᵘᶜ` is used for `φsΛ.uncontractedListGet`.
+    declString: |
+      def uncontractedListGet {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) :
+          List 𝓕.FieldOp := φsΛ.uncontractedList.map φs.get
+    declNo: "5.7"
+
+  - type: h2
+    sectionNo: "5.4"
+    content: "Constructors"
+
+  - type: name
+    name: WickContraction.insertAndContract
+    line: 27
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/InsertAndContract.lean#L27"
+    isDef: true
+    isThm: false
+    docString: |
+      Given a Wick contraction `φsΛ` for a list `φs` of `𝓕.FieldOp`,
+      an element `φ` of `𝓕.FieldOp`, an `i ≤ φs.length` and a `k`
+      in `Option φsΛ.uncontracted` i.e. is either `none` or
+      some element of `φsΛ.uncontracted`, the new Wick contraction
+      `φsΛ.insertAndContract φ i k` is defined by inserting `φ` into `φs` after
+      the first `i`-elements and moving the values representing the contracted pairs in `φsΛ`
+      accordingly.
+      If `k` is not `none`, but rather `some k`, to this contraction is added the contraction
+      of `φ` (at position `i`) with the new position of `k` after `φ` is added.
+
+      In other words, `φsΛ.insertAndContract φ i k` is formed by adding `φ` to `φs` at position `i`,
+      and contracting `φ` with the field originally at position `k` if `k` is not `none`.
+      It is a Wick contraction of the list `φs.insertIdx φ i` corresponding to `φs` with `φ` inserted at
+      position `i`.
+
+      The notation `φsΛ ↩Λ φ i k` is used to denote `φsΛ.insertAndContract φ i k`.
+    declString: |
+      def insertAndContract {φs : List 𝓕.FieldOp} (φ : 𝓕.FieldOp) (φsΛ : WickContraction φs.length)
+          (i : Fin φs.length.succ) (k : Option φsΛ.uncontracted) :
+          WickContraction (φs.insertIdx i φ).length :=
+        congr (by simp) (φsΛ.insertAndContractNat i k)
+    declNo: "5.8"
+
+  - type: name
+    name: WickContraction.insertLift_sum
+    line: 290
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/InsertAndContract.lean#L290"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp` and a `i ≤ φs.length` then a sum over
+      Wick contractions of `φs` with `φ` inserted at `i` is equal to the sum over Wick contractions
+      `φsΛ` of just `φs` and the sum over optional uncontracted elements of the `φsΛ`.
+
+      In other words,
+
+      `∑ (φsΛ : WickContraction (φs.insertIdx i φ).length), f φsΛ`
+
+      where `(φs.insertIdx i φ)` is `φs` with `φ` inserted at position `i`. is equal to
+
+      `∑ (φsΛ : WickContraction φs.length), ∑ k, f (φsΛ ↩Λ φ i k) `.
+
+      where the sum over `k` is over all `k` in `Option φsΛ.uncontracted`.
+    declString: |
+      lemma insertLift_sum (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
+          (i : Fin φs.length.succ) [AddCommMonoid M] (f : WickContraction (φs.insertIdx i φ).length → M) :
+          ∑ c, f c =
+          ∑ (φsΛ : WickContraction φs.length), ∑ (k : Option φsΛ.uncontracted), f (φsΛ ↩Λ φ i k) := by
+        rw [sum_extractEquiv_congr (finCongr (insertIdx_length_fin φ φs i).symm i) f
+          (insertIdx_length_fin φ φs i)]
+        rfl
+    declNo: "5.9"
+
+  - type: name
+    name: WickContraction.join
+    line: 26
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Join
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Join.lean#L26"
+    isDef: true
+    isThm: false
+    docString: |
+      Given a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs` and a Wick contraction
+      `φsucΛ` of `[φsΛ]ᵘᶜ`, `join φsΛ φsucΛ` is defined as the Wick contraction of `φs` consisting of
+      the contractions in `φsΛ` and those in `φsucΛ`.
+
+      As an example, for `φs = [φ1, φ2, φ3, φ4]`,
+      `φsΛ = {{0, 1}}` corresponding to the contraction of `φ1` and `φ2` in `φs` and
+      `φsucΛ = {{0, 1}}`
+      corresponding to the contraction of `φ3` and `φ4` in `[φsΛ]ᵘᶜ = [φ3, φ4]`, then
+      `join φsΛ φsucΛ` is the contraction `{{0, 1}, {2, 3}}` of `φs`.
+    declString: |
+      def join {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
+          (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) : WickContraction φs.length :=
+        ⟨φsΛ.1 ∪ φsucΛ.1.map (Finset.mapEmbedding uncontractedListEmd).toEmbedding, by
+          intro a ha
+          simp only [Finset.le_eq_subset, Finset.mem_union, Finset.mem_map,
+            RelEmbedding.coe_toEmbedding] at ha
+          rcases ha with ha | ha
+          · exact φsΛ.2.1 a ha
+          · obtain ⟨a, ha, rfl⟩ := ha
+            rw [Finset.mapEmbedding_apply]
+            simp only [Finset.card_map]
+            exact φsucΛ.2.1 a ha, by
+          intro a ha b hb
+          simp only [Finset.le_eq_subset, Finset.mem_union, Finset.mem_map,
+            RelEmbedding.coe_toEmbedding] at ha hb
+          rcases ha with ha | ha <;> rcases hb with hb | hb
+          · exact φsΛ.2.2 a ha b hb
+          · obtain ⟨b, hb, rfl⟩ := hb
+            right
+            symm
+            rw [Finset.mapEmbedding_apply]
+            apply uncontractedListEmd_finset_disjoint_left
+            exact ha
+          · obtain ⟨a, ha, rfl⟩ := ha
+            right
+            rw [Finset.mapEmbedding_apply]
+            apply uncontractedListEmd_finset_disjoint_left
+            exact hb
+          · obtain ⟨a, ha, rfl⟩ := ha
+            obtain ⟨b, hb, rfl⟩ := hb
+            simp only [EmbeddingLike.apply_eq_iff_eq]
+            rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
+            rw [Finset.disjoint_map]
+            exact φsucΛ.2.2 a ha b hb⟩
+    declNo: "5.10"
+
+  - type: h2
+    sectionNo: "5.5"
+    content: "Sign"
+
+  - type: name
+    name: WickContraction.sign
+    line: 32
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/Basic.lean#L32"
+    isDef: true
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`,
+        the complex number `φsΛ.sign` is defined to be the sign (`1` or `-1`) corresponding
+        to the number of `fermionic`-`fermionic` exchanges that must be done to put
+        contracted pairs within `φsΛ` next to one another, starting recursively
+        from the contracted pair
+        whose first element occurs at the left-most position.
+
+        As an example, if `[φ1, φ2, φ3, φ4]` correspond to fermionic fields then the sign
+        associated with
+      - `{{0, 1}}` is `1`
+      - `{{0, 1}, {2, 3}}` is `1`
+      - `{{0, 2}, {1, 3}}` is `-1`
+
+    declString: |
+      def sign (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) : ℂ :=
+        ∏ (a : φsΛ.1), 𝓢(𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a],
+          𝓕 |>ₛ ⟨φs.get, φsΛ.signFinset (φsΛ.fstFieldOfContract a) (φsΛ.sndFieldOfContract a)⟩)
+    declNo: "5.11"
+
+  - type: name
+    name: WickContraction.join_sign
+    line: 420
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Join
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/Join.lean#L420"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, a grading compliant Wick contraction `φsΛ` of `φs`,
+      and a Wick contraction `φsucΛ` of `[φsΛ]ᵘᶜ`, the following relation holds
+      `(join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign`.
+
+      In `φsΛ.sign` the sign is determined by starting with the contracted pair
+      whose first element occurs at the left-most position. This lemma manifests that this
+      choice does not matter, and that contracted pairs can be brought together in any order.
+    declString: |
+      lemma join_sign {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
+          (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) (hc : φsΛ.GradingCompliant) :
+          (join φsΛ φsucΛ).sign = φsΛ.sign * φsucΛ.sign :=
+        join_sign_induction φsΛ φsucΛ hc (φsΛ).1.card rfl
+    declNo: "5.12"
+
+  - type: name
+    name: WickContraction.sign_insert_none
+    line: 241
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/InsertNone.lean#L241"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a graded compliant Wick contraction `φsΛ` of `φs`,
+      an `i ≤ φs.length`, and a `φ` in `𝓕.FieldOp`, then
+      `(φsΛ ↩Λ φ i none).sign = s * φsΛ.sign`
+      where `s` is the sign arrived at by moving `φ` through the elements of `φ₀…φᵢ₋₁` which
+      are contracted with some element.
+
+      The proof of this result involves a careful consideration of the contributions of different
+      `FieldOp`s in `φs` to the sign of `φsΛ ↩Λ φ i none`.
+    declString: |
+      lemma sign_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :
+          (φsΛ ↩Λ φ i none).sign = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter
+          (fun x => (φsΛ.getDual? x).isSome ∧ i.succAbove x < i)⟩) * φsΛ.sign := by
+        rw [sign_insert_none_eq_signInsertNone_mul_sign]
+        rw [signInsertNone_eq_filterset]
+        exact hG
+    declNo: "5.13"
+
+  - type: name
+    name: WickContraction.sign_insert_none_zero
+    line: 257
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/InsertNone.lean#L257"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a graded compliant Wick contraction `φsΛ` of `φs`,
+      and a `φ` in `𝓕.FieldOp`, then `(φsΛ ↩Λ φ 0 none).sign = φsΛ.sign`.
+
+      This is a direct corollary of `sign_insert_none`.
+    declString: |
+      lemma sign_insert_none_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) : (φsΛ ↩Λ φ 0 none).sign = φsΛ.sign := by
+        rw [sign_insert_none_eq_signInsertNone_mul_sign]
+        simp [signInsertNone]
+    declNo: "5.14"
+
+  - type: name
+    name: WickContraction.sign_insert_some_of_not_lt
+    line: 882
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/InsertSome.lean#L882"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`,
+      the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+      - the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ₋₁`,
+      - the sign associated with moving `φ` through all the `FieldOp` in `φ₀…φᵢ₋₁`,
+      - the sign of `φsΛ`.
+
+      The proof of this result involves a careful consideration of the contributions of different
+      `FieldOp` in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+
+    declString: |
+      lemma sign_insert_some_of_not_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+          (hk : ¬ i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+          (φsΛ ↩Λ φ i (some k)).sign =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x < ↑k)⟩)
+          * 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩) *
+          φsΛ.sign := by
+        rw [sign_insert_some,
+          ← signInsertSome_mul_filter_contracted_of_not_lt φ φs φsΛ i k hk hg]
+        rw [← mul_assoc]
+        congr 1
+        rw [mul_comm, ← mul_assoc]
+        simp
+    declNo: "5.15"
+
+  - type: name
+    name: WickContraction.sign_insert_some_of_lt
+    line: 857
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/InsertSome.lean#L857"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k<i`,
+      the sign of `φsΛ ↩Λ φ i (some k)` is equal to the product of
+      - the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ`,
+      - the sign associated with moving `φ` through all `FieldOp` in `φ₀…φᵢ₋₁`,
+      - the sign of `φsΛ`.
+
+      The proof of this result involves a careful consideration of the contributions of different
+      `FieldOp` in `φs` to the sign of `φsΛ ↩Λ φ i (some k)`.
+
+    declString: |
+      lemma sign_insert_some_of_lt (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+          (hk : i.succAbove k < i) (hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = 𝓕 |>ₛ φs[k.1]) :
+          (φsΛ ↩Λ φ i (some k)).sign =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => x ≤ ↑k)⟩)
+          * 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, Finset.univ.filter (fun x => i.succAbove x < i)⟩)
+          * φsΛ.sign := by
+        rw [sign_insert_some,
+          ← signInsertSome_mul_filter_contracted_of_lt φ φs φsΛ i k hk hg]
+        rw [← mul_assoc]
+        congr 1
+        rw [mul_comm, ← mul_assoc]
+        simp
+    declNo: "5.16"
+
+  - type: name
+    name: WickContraction.sign_insert_some_zero
+    line: 907
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/InsertSome.lean#L907"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, and a `k` in `φsΛ.uncontracted`,
+      the sign of `φsΛ ↩Λ φ 0 (some k)` is equal to the product of
+      - the sign associated with moving `φ` through the `φsΛ`-uncontracted `FieldOp` in `φ₀…φₖ₋₁`,
+      - the sign of `φsΛ`.
+
+      This is a direct corollary of `sign_insert_some_of_not_lt`.
+
+    declString: |
+      lemma sign_insert_some_zero (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
+          (hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = 𝓕|>ₛφs[k.1]) :
+          (φsΛ ↩Λ φ 0 k).sign = 𝓢(𝓕|>ₛφ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < ↑k))⟩) *
+          φsΛ.sign := by
+        rw [sign_insert_some_of_not_lt]
+        · simp
+        · simp
+        · exact hn
+    declNo: "5.17"
+
+  - type: h2
+    sectionNo: "5.6"
+    content: "Normal order"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_none
+    line: 28
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/WickContractions.lean#L28"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, and a `i ≤ φs.length`, then the following relation holds:
+
+      `𝓝([φsΛ ↩Λ φ i none]ᵘᶜ) = s • 𝓝(φ :: [φsΛ]ᵘᶜ)`
+
+      where `s` is the exchange sign for `φ` and the uncontracted fields in `φ₀…φᵢ₋₁`.
+
+      The proof of this result ultimately is a consequence of `normalOrder_superCommute_eq_zero`.
+
+    declString: |
+      lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
+          𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ)
+          = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, φsΛ.uncontracted.filter (fun x => i.succAbove x < i)⟩) •
+          𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ)) := by
+        simp only [Nat.succ_eq_add_one, instCommGroup.eq_1]
+        rw [ofFieldOpList_normalOrder_insert φ [φsΛ]ᵘᶜ
+          ⟨(φsΛ.uncontractedListOrderPos i), by simp [uncontractedListGet]⟩, smul_smul]
+        trans (1 : ℂ) • (𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ))
+        · simp
+        congr 1
+        simp only [instCommGroup.eq_1, uncontractedListGet]
+        rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
+        have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) φsΛ.uncontractedList))
+              = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
+            simp only [Nat.succ_eq_add_one, ofFinset]
+            congr
+            rw [uncontractedList_eq_sort]
+            have hdup : (List.filter (fun x => decide (x.1 < i.1))
+                (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
+              exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+            have hsort : (List.filter (fun x => decide (x.1 < i.1))
+                (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
+              exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+            rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
+            congr
+            ext a
+            simp
+        rw [h1]
+        simp only [Nat.succ_eq_add_one]
+        have h2 : (Finset.filter (fun x => x.1 < i.1) φsΛ.uncontracted) =
+          (Finset.filter (fun x => i.succAbove x < i) φsΛ.uncontracted) := by
+          ext a
+          simp only [Nat.succ_eq_add_one, Finset.mem_filter, and_congr_right_iff]
+          intro ha
+          simp only [Fin.succAbove]
+          split
+          · apply Iff.intro
+            · intro h
+              omega
+            · intro h
+              rename_i h
+              rw [Fin.lt_def] at h
+              simp only [Fin.coe_castSucc] at h
+              omega
+          · apply Iff.intro
+            · intro h
+              rename_i h'
+              rw [Fin.lt_def]
+              simp only [Fin.val_succ]
+              rw [Fin.lt_def] at h'
+              simp only [Fin.coe_castSucc, not_lt] at h'
+              omega
+            · intro h
+              rename_i h
+              rw [Fin.lt_def] at h
+              simp only [Fin.val_succ] at h
+              omega
+        rw [h2]
+        simp only [exchangeSign_mul_self]
+        congr
+        simp only [Nat.succ_eq_add_one]
+        rw [insertAndContract_uncontractedList_none_map]
+    declNo: "5.18"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.normalOrder_uncontracted_some
+    line: 101
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/NormalOrder/WickContractions.lean#L101"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+      `𝓝([φsΛ ↩Λ φ i (some k)]ᵘᶜ)` is equal to the normal ordering of `[φsΛ]ᵘᶜ` with the `𝓕.FieldOp`
+      corresponding to `k` removed.
+
+      The proof of this result ultimately is a consequence of definitions.
+
+    declString: |
+      lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted) :
+          𝓝(ofFieldOpList [φsΛ ↩Λ φ i (some k)]ᵘᶜ)
+          = 𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedFieldOpEquiv φs φsΛ) k))) := by
+        simp only [Nat.succ_eq_add_one, insertAndContract, optionEraseZ, uncontractedFieldOpEquiv,
+          Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+          Fin.coe_cast, uncontractedListGet]
+        congr
+        rw [congr_uncontractedList]
+        erw [uncontractedList_extractEquiv_symm_some]
+        simp only [Fin.coe_succAboveEmb, List.map_eraseIdx, List.map_map]
+        congr
+        conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
+    declNo: "5.19"
+
+  - type: h1
+    sectionNo: 6
+    content: "Static Wick's theorem"
+
+  - type: h2
+    sectionNo: "6.1"
+    content: "Static contractions"
+
+  - type: name
+    name: WickContraction.staticContract
+    line: 22
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/StaticContract.lean#L22"
+    isDef: true
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ`, the
+      element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.staticContract` is defined as the product
+      of `[anPart φs[j], φs[k]]ₛ` over contracted pairs `{j, k}` in `φsΛ`
+      with `j < k`.
+    declString: |
+      noncomputable def staticContract {φs : List 𝓕.FieldOp}
+          (φsΛ : WickContraction φs.length) :
+          Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
+        ∏ (a : φsΛ.1), ⟨[anPart (φs.get (φsΛ.fstFieldOfContract a)),
+          ofFieldOp (φs.get (φsΛ.sndFieldOfContract a))]ₛ,
+            superCommute_anPart_ofFieldOp_mem_center _ _⟩
+    declNo: "6.1"
+
+  - type: name
+    name: WickContraction.staticContract_insert_none
+    line: 33
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/StaticContract.lean#L33"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, and a `i ≤ φs.length`, then the following relation holds:
+
+      `(φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract`
+
+      The proof of this result ultimately is a consequence of definitions.
+
+    declString: |
+      lemma staticContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
+          (φsΛ ↩Λ φ i none).staticContract = φsΛ.staticContract := by
+        rw [staticContract, insertAndContract_none_prod_contractions]
+        congr
+        ext a
+        simp
+    declNo: "6.2"
+
+  - type: name
+    name: WickContraction.staticContract_insert_some
+    line: 49
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/StaticContract.lean#L49"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`, then
+      `(φsΛ ↩Λ φ i (some k)).staticContract` is equal to the product of
+      - `[anPart φ, φs[k]]ₛ` if `i ≤ k` or `[anPart φs[k], φ]ₛ` if `k < i`
+      - `φsΛ.staticContract`.
+
+      The proof of this result ultimately is a consequence of definitions.
+
+    declString: |
+      lemma staticContract_insert_some
+          (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
+          (φsΛ ↩Λ φ i (some j)).staticContract =
+          (if i < i.succAbove j then
+            ⟨[anPart φ, ofFieldOp φs[j.1]]ₛ, superCommute_anPart_ofFieldOp_mem_center _ _⟩
+          else ⟨[anPart φs[j.1], ofFieldOp φ]ₛ, superCommute_anPart_ofFieldOp_mem_center _ _⟩) *
+          φsΛ.staticContract := by
+        rw [staticContract, insertAndContract_some_prod_contractions]
+        congr 1
+        · simp only [Nat.succ_eq_add_one, insertAndContract_fstFieldOfContract_some_incl, finCongr_apply,
+          List.get_eq_getElem, insertAndContract_sndFieldOfContract_some_incl, Fin.getElem_fin]
+          split
+          · simp
+          · simp
+        · congr
+          ext a
+          simp
+    declNo: "6.3"
+
+  - type: h2
+    sectionNo: "6.2"
+    content: "Static Wick terms"
+
+  - type: name
+    name: WickContraction.staticWickTerm
+    line: 25
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTerm.lean#L25"
+    isDef: true
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
+      of `𝓕.FieldOpAlgebra`, `φsΛ.staticWickTerm` is defined as
+
+      `φsΛ.sign • φsΛ.staticContract * 𝓝([φsΛ]ᵘᶜ)`.
+
+      This is a term which appears in the static version Wick's theorem.
+    declString: |
+      def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
+        φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
+    declNo: "6.4"
+
+  - type: name
+    name: WickContraction.staticWickTerm_empty_nil
+    line: 34
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTerm.lean#L34"
+    isDef: false
+    isThm: false
+    docString: |
+      For the empty list `[]` of `𝓕.FieldOp`, the `staticWickTerm` of the Wick contraction
+      corresponding to the empty set `∅` (the only Wick contraction of `[]`) is `1`.
+    declString: |
+      lemma staticWickTerm_empty_nil :
+          staticWickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
+        rw [staticWickTerm, uncontractedListGet, nil_zero_uncontractedList]
+        simp [sign, empty, staticContract]
+    declNo: "6.5"
+
+  - type: name
+    name: WickContraction.staticWickTerm_insert_zero_none
+    line: 42
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTerm.lean#L42"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, and an element `φ` of
+        `𝓕.FieldOp`, then `(φsΛ ↩Λ φ 0 none).staticWickTerm` is equal to
+
+      `φsΛ.sign • φsΛ.staticWickTerm * 𝓝(φ :: [φsΛ]ᵘᶜ)`
+
+      The proof of this result relies on
+      - `staticContract_insert_none` to rewrite the static contract.
+      - `sign_insert_none_zero` to rewrite the sign.
+
+    declString: |
+      lemma staticWickTerm_insert_zero_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) :
+          (φsΛ ↩Λ φ 0 none).staticWickTerm =
+          φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ)) := by
+        symm
+        erw [staticWickTerm, sign_insert_none_zero]
+        simp only [staticContract_insert_none, insertAndContract_uncontractedList_none_zero,
+          Algebra.smul_mul_assoc]
+    declNo: "6.6"
+
+  - type: name
+    name: WickContraction.staticWickTerm_insert_zero_some
+    line: 61
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTerm.lean#L61"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, and a `k` in `φsΛ.uncontracted`, `(φsΛ ↩Λ φ 0 (some k)).wickTerm` is equal
+        to the product of
+      - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
+      - the sign `φsΛ.sign`
+      - `φsΛ.staticContract`
+      - `s • [anPart φ, ofFieldOp φs[k]]ₛ` where `s` is the sign associated with moving `φ` through
+        uncontracted fields in `φ₀…φₖ₋₁`
+      - the normal ordering of `[φsΛ]ᵘᶜ` with the field operator `φs[k]` removed.
+
+      The proof of this result ultimately relies on
+      - `staticContract_insert_some` to rewrite static contractions.
+      - `normalOrder_uncontracted_some` to rewrite normal orderings.
+      - `sign_insert_some_zero` to rewrite signs.
+
+    declString: |
+      lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (k : { x // x ∈ φsΛ.uncontracted }) :
+          (φsΛ ↩Λ φ 0 k).staticWickTerm =
+          sign φs φsΛ • (↑φsΛ.staticContract *
+          (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
+          𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ (uncontractedFieldOpEquiv φs φsΛ k))))) := by
+        symm
+        rw [staticWickTerm, normalOrder_uncontracted_some]
+        simp only [← mul_assoc]
+        rw [← smul_mul_assoc]
+        congr 1
+        rw [staticContract_insert_some_of_lt]
+        swap
+        · simp
+        rw [smul_smul]
+        by_cases hn : GradingCompliant φs φsΛ ∧ (𝓕|>ₛφ) = (𝓕|>ₛ φs[k.1])
+        · congr 1
+          swap
+          · rw [Subalgebra.mem_center_iff.mp φsΛ.staticContract.2]
+          · rw [sign_insert_some_zero _ _ _ _ hn, mul_comm, ← mul_assoc]
+            simp
+        · simp only [Fin.getElem_fin, not_and] at hn
+          by_cases h0 : ¬ GradingCompliant φs φsΛ
+          · rw [staticContract_of_not_gradingCompliant]
+            simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
+            exact h0
+          · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
+            have h1 : contractStateAtIndex φ [φsΛ]ᵘᶜ (uncontractedFieldOpEquiv φs φsΛ k) = 0 := by
+              simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+                Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+                instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
+              right
+              simp only [uncontractedListGet, List.getElem_map,
+                uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem]
+              rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+              exact hn
+            rw [h1]
+            simp
+    declNo: "6.7"
+
+  - type: name
+    name: WickContraction.mul_staticWickTerm_eq_sum
+    line: 115
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTerm.lean#L115"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, the following relation
+      holds
+
+      `φ * φsΛ.staticWickTerm = ∑ k, (φsΛ ↩Λ φ 0 k).staticWickTerm`
+
+      where the sum is over all `k` in `Option φsΛ.uncontracted`, so `k` is either `none` or `some k`.
+
+      The proof proceeds as follows:
+      - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
+        a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`.
+      - Then `staticWickTerm_insert_zero_none` and `staticWickTerm_insert_zero_some` are
+        used to equate terms.
+
+    declString: |
+      lemma mul_staticWickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) :
+          ofFieldOp φ * φsΛ.staticWickTerm =
+          ∑ (k : Option φsΛ.uncontracted), (φsΛ ↩Λ φ 0 k).staticWickTerm := by
+        trans (φsΛ.sign • φsΛ.staticContract * (ofFieldOp φ * normalOrder (ofFieldOpList [φsΛ]ᵘᶜ)))
+        · have ht := Subalgebra.mem_center_iff.mp (Subalgebra.smul_mem (Subalgebra.center ℂ _)
+            (φsΛ.staticContract).2 φsΛ.sign)
+          conv_rhs => rw [← mul_assoc, ← ht]
+          simp [mul_assoc, staticWickTerm]
+        rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum]
+        rw [Finset.mul_sum]
+        rw [uncontractedFieldOpEquiv_list_sum]
+        refine Finset.sum_congr rfl (fun n _ => ?_)
+        match n with
+        | none =>
+          simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+            Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
+            Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insert_none,
+            insertAndContract_uncontractedList_none_zero]
+          rw [staticWickTerm_insert_zero_none]
+          simp only [Algebra.smul_mul_assoc]
+          rfl
+        | some n =>
+          simp only [Algebra.smul_mul_assoc, Nat.succ_eq_add_one, Fin.zero_eta, Fin.val_zero,
+            List.insertIdx_zero]
+          rw [staticWickTerm_insert_zero_some]
+    declNo: "6.8"
+
+  - type: h2
+    sectionNo: "6.3"
+    content: "The Static Wick's theorem"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.static_wick_theorem
+    line: 22
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/StaticWickTheorem.lean#L22"
+    isDef: false
+    isThm: true
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, the static version of Wick's theorem states that
+
+      `φs = ∑ φsΛ, φsΛ.staticWickTerm`
+
+      where the sum is over all Wick contraction `φsΛ`.
+
+      The proof is via induction on `φs`.
+      - The base case `φs = []` is handled by `staticWickTerm_empty_nil`.
+
+      The inductive step works as follows:
+
+      For the LHS:
+      1. The proof considers `φ₀…φₙ` as `φ₀(φ₁…φₙ)` and uses the induction hypothesis on `φ₁…φₙ`.
+      2. This gives terms of the form `φ * φsΛ.staticWickTerm` on which
+        `mul_staticWickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₁…φₙ`,
+        to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
+
+      On the LHS we now have a sum over Wick contractions `φsΛ` of `φ₁…φₙ` (from 1) and optional
+      uncontracted elements of `φsΛ` (from 2)
+
+      For the RHS:
+      1. The sum over Wick contractions of `φ₀…φₙ` on the RHS
+        is split via `insertLift_sum` into a sum over Wick contractions `φsΛ` of `φ₁…φₙ` and
+        sum over optional uncontracted elements of `φsΛ`.
+
+      Both sides are now sums over the same thing and their terms equate by the nature of the
+      lemmas used.
+
+
+    declString: |
+      theorem static_wick_theorem : (φs : List 𝓕.FieldOp) →
+          ofFieldOpList φs = ∑ (φsΛ : WickContraction φs.length), φsΛ.staticWickTerm
+        | [] => by
+          simp only [ofFieldOpList, ofFieldOpListF_nil, map_one, List.length_nil]
+          rw [sum_WickContraction_nil]
+          rw [staticWickTerm_empty_nil]
+        | φ :: φs => by
+          rw [ofFieldOpList_cons, static_wick_theorem φs]
+          rw [show (φ :: φs) = φs.insertIdx (⟨0, Nat.zero_lt_succ φs.length⟩ : Fin φs.length.succ) φ
+            from rfl]
+          conv_rhs => rw [insertLift_sum]
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro c _
+          rw [mul_staticWickTerm_eq_sum]
+          rfl
+    declNo: "6.9"
+
+  - type: h1
+    sectionNo: 7
+    content: "Wick's theorem"
+
+  - type: h2
+    sectionNo: "7.1"
+    content: "Time contractions"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeContract
+    line: 26
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeContraction.lean#L26"
+    isDef: true
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, the element of
+      `𝓕.FieldOpAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ) - 𝓝(φψ)`.
+    declString: |
+      def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra :=
+          𝓣(ofFieldOp φ * ofFieldOp ψ) - 𝓝(ofFieldOp φ * ofFieldOp ψ)
+    declNo: "7.1"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeContract_of_timeOrderRel
+    line: 34
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeContraction.lean#L34"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
+      `φ` and `ψ` are time-ordered then
+
+      `timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ`.
+    declString: |
+      lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : timeOrderRel φ ψ) :
+          timeContract φ ψ = [anPart φ, ofFieldOp ψ]ₛ := by
+        conv_rhs =>
+          rw [ofFieldOp_eq_crPart_add_anPart]
+          rw [map_add, superCommute_anPart_anPart, superCommute_anPart_crPart]
+        simp only [timeContract, instCommGroup.eq_1, Algebra.smul_mul_assoc, add_zero]
+        rw [timeOrder_ofFieldOp_ofFieldOp_ordered h]
+        rw [normalOrder_ofFieldOp_mul_ofFieldOp]
+        simp only [instCommGroup.eq_1]
+        rw [ofFieldOp_eq_crPart_add_anPart, ofFieldOp_eq_crPart_add_anPart]
+        simp only [mul_add, add_mul]
+        abel_nf
+    declNo: "7.2"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeContract_of_not_timeOrderRel_expand
+    line: 61
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeContraction.lean#L61"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
+      `φ` and `ψ` are not time-ordered then
+
+      `timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ`.
+    declString: |
+      lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderRel φ ψ) :
+          timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ := by
+        rw [timeContract_of_not_timeOrderRel _ _ h]
+        rw [timeContract_of_timeOrderRel _ _ _]
+        have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
+        simp_all
+    declNo: "7.3"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeContract_mem_center
+    line: 72
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/TimeContraction.lean#L72"
+    isDef: false
+    isThm: false
+    docString: |
+      For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, then
+      `timeContract φ ψ` is in the center of `𝓕.FieldOpAlgebra`.
+    declString: |
+      lemma timeContract_mem_center (φ ψ : 𝓕.FieldOp) :
+          timeContract φ ψ ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
+        by_cases h : timeOrderRel φ ψ
+        · rw [timeContract_of_timeOrderRel _ _ h]
+          exact superCommute_anPart_ofFieldOp_mem_center φ ψ
+        · rw [timeContract_of_not_timeOrderRel _ _ h]
+          refine Subalgebra.smul_mem (Subalgebra.center ℂ _) ?_ 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ)
+          rw [timeContract_of_timeOrderRel]
+          exact superCommute_anPart_ofFieldOp_mem_center _ _
+          have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
+          simp_all
+    declNo: "7.4"
+
+  - type: name
+    name: WickContraction.timeContract
+    line: 22
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeContract.lean#L22"
+    isDef: true
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
+      element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.timeContract` is defined as the product
+      of `timeContract φs[j] φs[k]` over contracted pairs `{j, k}` in `φsΛ`
+      with `j < k`.
+    declString: |
+      noncomputable def timeContract {φs : List 𝓕.FieldOp}
+          (φsΛ : WickContraction φs.length) :
+          Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
+        ∏ (a : φsΛ.1), ⟨FieldOpAlgebra.timeContract
+          (φs.get (φsΛ.fstFieldOfContract a)) (φs.get (φsΛ.sndFieldOfContract a)),
+          timeContract_mem_center _ _⟩
+    declNo: "7.5"
+
+  - type: name
+    name: WickContraction.timeContract_insert_none
+    line: 33
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeContract.lean#L33"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, and a `i ≤ φs.length` the following relation holds
+
+      `(φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract`
+
+      The proof of this result ultimately is a consequence of definitions.
+    declString: |
+      lemma timeContract_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
+          (φsΛ ↩Λ φ i none).timeContract = φsΛ.timeContract := by
+        rw [timeContract, insertAndContract_none_prod_contractions]
+        congr
+        ext a
+        simp
+    declNo: "7.6"
+
+  - type: name
+    name: WickContraction.timeContract_insert_some_of_not_lt
+    line: 126
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeContract.lean#L126"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `k < i`, with the
+      condition that `φs[k]` does not have time greater or equal to `φ`, then
+      `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
+      - `[anPart φ, φs[k]]ₛ`
+      - `φsΛ.timeContract`
+      - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
+      - the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ`.
+
+      The proof of this result ultimately is a consequence of definitions and
+      `timeContract_of_not_timeOrderRel_expand`.
+    declString: |
+      lemma timeContract_insert_some_of_not_lt
+          (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+          (ht : ¬ 𝓕.timeOrderRel φs[k.1] φ) (hik : ¬ i < i.succAbove k) :
+          (φsΛ ↩Λ φ i (some k)).timeContract =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x ≤ k))⟩)
+          • (contractStateAtIndex φ [φsΛ]ᵘᶜ
+            ((uncontractedFieldOpEquiv φs φsΛ) (some k)) * φsΛ.timeContract) := by
+        rw [timeContract_insertAndContract_some]
+        simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
+          contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+          Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+          List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
+          Algebra.smul_mul_assoc, uncontractedListGet]
+        simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
+        rw [timeContract_of_not_timeOrderRel, timeContract_of_timeOrderRel]
+        simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
+        congr
+        have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+            (List.map φs.get φsΛ.uncontractedList))
+            = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
+          simp only [ofFinset]
+          congr
+          rw [← List.map_take]
+          congr
+          rw [take_uncontractedIndexEquiv_symm, filter_uncontractedList]
+        rw [h1]
+        trans 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
+        · rw [exchangeSign_symm, ofFinset_singleton]
+          simp
+        rw [← map_mul]
+        congr
+        rw [ofFinset_union]
+        congr
+        ext a
+        simp only [Finset.mem_singleton, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter,
+          Finset.mem_inter, not_and, not_lt, and_imp]
+        apply Iff.intro
+        · intro h
+          subst h
+          simp
+        · intro h
+          have h1 := h.1
+          rcases h1 with h1 | h1
+          · have h2' := h.2 h1.1 h1.2 h1.1
+            omega
+          · have h2' := h.2 h1.1 (by omega) h1.1
+            omega
+        have ht := IsTotal.total (r := timeOrderRel) φs[k.1] φ
+        simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
+        exact ht
+    declNo: "7.7"
+
+  - type: name
+    name: WickContraction.timeContract_insert_some_of_lt
+    line: 82
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeContract.lean#L82"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+      `𝓕.FieldOp`, a `i ≤ φs.length` and a `k` in `φsΛ.uncontracted` such that `i ≤ k`, with the
+      condition that `φ` has greater or equal time to `φs[k]`, then
+      `(φsΛ ↩Λ φ i (some k)).timeContract` is equal to the product of
+      - `[anPart φ, φs[k]]ₛ`
+      - `φsΛ.timeContract`
+      - two copies of the exchange sign of `φ` with the uncontracted fields in `φ₀…φₖ₋₁`.
+        These two exchange signs cancel each other out but are included for convenience.
+
+      The proof of this result ultimately is a consequence of definitions and
+      `timeContract_of_timeOrderRel`.
+    declString: |
+      lemma timeContract_insert_some_of_lt
+          (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (k : φsΛ.uncontracted)
+          (ht : 𝓕.timeOrderRel φ φs[k.1]) (hik : i < i.succAbove k) :
+          (φsΛ ↩Λ φ i (some k)).timeContract =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x < k))⟩)
+          • (contractStateAtIndex φ [φsΛ]ᵘᶜ ((uncontractedFieldOpEquiv φs φsΛ) (some k)) *
+            φsΛ.timeContract) := by
+        rw [timeContract_insertAndContract_some]
+        simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
+          contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+          Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+          List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
+          Algebra.smul_mul_assoc, uncontractedListGet]
+        · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
+          rw [timeContract_of_timeOrderRel]
+          trans (1 : ℂ) • ((superCommute (anPart φ)) (ofFieldOp φs[k.1]) * ↑φsΛ.timeContract)
+          · simp
+          simp only [smul_smul]
+          congr 1
+          have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+              (List.map φs.get φsΛ.uncontractedList))
+              = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
+            simp only [ofFinset]
+            congr
+            rw [← List.map_take]
+            congr
+            rw [take_uncontractedIndexEquiv_symm]
+            rw [filter_uncontractedList]
+          rw [h1]
+          simp only [exchangeSign_mul_self]
+          · exact ht
+    declNo: "7.8"
+
+  - type: name
+    name: WickContraction.join_sign_timeContract
+    line: 432
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Join
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/Sign/Join.lean#L432"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`,
+      and a Wick contraction `φsucΛ` of `[φsΛ]ᵘᶜ`,
+      `(join φsΛ φsucΛ).sign • (join φsΛ φsucΛ).timeContract` is equal to the product of
+      - `φsΛ.sign • φsΛ.timeContract` and
+      - `φsucΛ.sign • φsucΛ.timeContract`.
+    declString: |
+      lemma join_sign_timeContract {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
+          (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
+          (join φsΛ φsucΛ).sign • (join φsΛ φsucΛ).timeContract.1 =
+          (φsΛ.sign • φsΛ.timeContract.1) * (φsucΛ.sign • φsucΛ.timeContract.1) := by
+        rw [join_timeContract]
+        by_cases h : φsΛ.GradingCompliant
+        · rw [join_sign _ _ h]
+          simp [smul_smul, mul_comm]
+        · rw [timeContract_of_not_gradingCompliant _ _ h]
+          simp
+    declNo: "7.9"
+
+  - type: h2
+    sectionNo: "7.2"
+    content: "Wick terms"
+
+  - type: name
+    name: WickContraction.wickTerm
+    line: 27
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WickTerm.lean#L27"
+    isDef: true
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
+      of `𝓕.FieldOpAlgebra`, `φsΛ.wickTerm` is defined as
+
+      `φsΛ.sign • φsΛ.timeContract * 𝓝([φsΛ]ᵘᶜ)`.
+
+      This is a term which appears in the Wick's theorem.
+    declString: |
+      def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
+        φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
+    declNo: "7.10"
+
+  - type: name
+    name: WickContraction.wickTerm_empty_nil
+    line: 36
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WickTerm.lean#L36"
+    isDef: false
+    isThm: false
+    docString: |
+      For the empty list `[]` of `𝓕.FieldOp`, the `wickTerm` of the Wick contraction
+      corresponding to the empty set `∅` (the only Wick contraction of `[]`) is `1`.
+    declString: |
+      lemma wickTerm_empty_nil :
+          wickTerm (empty (n := ([] : List 𝓕.FieldOp).length)) = 1 := by
+        rw [wickTerm]
+        simp [sign_empty]
+    declNo: "7.11"
+
+  - type: name
+    name: WickContraction.wickTerm_insert_none
+    line: 44
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WickTerm.lean#L44"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, and `i ≤ φs.length`, then `(φsΛ ↩Λ φ i none).wickTerm` is equal to
+
+      `𝓢(φ, φ₀…φᵢ₋₁) φsΛ.sign • φsΛ.timeContract * 𝓝(φ :: [φsΛ]ᵘᶜ)`
+
+      The proof of this result relies on
+      - `normalOrder_uncontracted_none` to rewrite normal orderings.
+      - `timeContract_insert_none` to rewrite the time contract.
+      - `sign_insert_none` to rewrite the sign.
+
+    declString: |
+      lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) :
+          (φsΛ ↩Λ φ i none).wickTerm =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun k => i.succAbove k < i))⟩)
+          • (φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ))) := by
+        rw [wickTerm]
+        by_cases hg : GradingCompliant φs φsΛ
+        · rw [normalOrder_uncontracted_none, sign_insert_none _ _ _ _ hg]
+          simp only [Nat.succ_eq_add_one, timeContract_insert_none, instCommGroup.eq_1,
+            Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_smul]
+          congr 1
+          rw [← mul_assoc]
+          congr 1
+          rw [← map_mul]
+          congr
+          rw [ofFinset_union]
+          congr
+          ext a
+          simp only [Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and,
+            Finset.mem_inter, not_and, not_lt, and_imp]
+          apply Iff.intro
+          · intro ha
+            have ha1 := ha.1
+            rcases ha1 with ha1 | ha1
+            · exact ha1.2
+            · exact ha1.2
+          · intro ha
+            simp only [uncontracted, Finset.mem_filter, Finset.mem_univ, true_and, ha, and_true,
+              forall_const]
+            have hx : φsΛ.getDual? a = none ↔ ¬ (φsΛ.getDual? a).isSome := by
+              simp
+            rw [hx]
+            simp only [Bool.not_eq_true, Bool.eq_false_or_eq_true_self, true_and]
+            intro h1 h2
+            simp_all
+        · simp only [Nat.succ_eq_add_one, timeContract_insert_none, Algebra.smul_mul_assoc,
+          instCommGroup.eq_1]
+          rw [timeContract_of_not_gradingCompliant]
+          simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
+          exact hg
+    declNo: "7.12"
+
+  - type: name
+    name: WickContraction.wickTerm_insert_some
+    line: 96
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WickTerm.lean#L96"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`,
+        such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less than `φ` and
+        `φ` has a time greater than or equal to all `FieldOp` in `φ₀…φₙ`, then
+        `(φsΛ ↩Λ φ i (some k)).staticWickTerm`
+      is equal to the product of
+      - the sign `𝓢(φ, φ₀…φᵢ₋₁) `
+      - the sign `φsΛ.sign`
+      - `φsΛ.timeContract`
+      - `s • [anPart φ, ofFieldOp φs[k]]ₛ` where `s` is the sign associated with moving `φ` through
+        uncontracted fields in `φ₀…φₖ₋₁`
+      - the normal ordering `[φsΛ]ᵘᶜ` with the field corresponding to `k` removed.
+
+      The proof of this result relies on
+      - `timeContract_insert_some_of_not_lt`
+        and `timeContract_insert_some_of_lt` to rewrite time
+        contractions.
+      - `normalOrder_uncontracted_some` to rewrite normal orderings.
+      - `sign_insert_some_of_not_lt` and `sign_insert_some_of_lt` to rewrite signs.
+
+    declString: |
+      lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
+          (i : Fin φs.length.succ) (φsΛ : WickContraction φs.length) (k : φsΛ.uncontracted)
+          (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
+          (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬ timeOrderRel φs[k] φ) :
+          (φsΛ ↩Λ φ i (some k)).wickTerm =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩)
+          • (φsΛ.sign • (contractStateAtIndex φ [φsΛ]ᵘᶜ
+            ((uncontractedFieldOpEquiv φs φsΛ) (some k)) * φsΛ.timeContract)
+          * 𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ (uncontractedFieldOpEquiv φs φsΛ k)))) := by
+        rw [wickTerm]
+        by_cases hg : GradingCompliant φs φsΛ ∧ (𝓕 |>ₛ φ) = (𝓕 |>ₛ φs[k.1])
+        · by_cases hk : i.succAbove k < i
+          · rw [WickContraction.timeContract_insert_some_of_not_lt]
+            swap
+            · exact hn _ hk
+            · rw [normalOrder_uncontracted_some, sign_insert_some_of_lt φ φs φsΛ i k hk hg]
+              simp only [instCommGroup.eq_1, smul_smul, Algebra.smul_mul_assoc]
+              congr 1
+              rw [mul_assoc, mul_assoc, mul_comm, mul_assoc, mul_assoc]
+              simp
+            · omega
+          · have hik : i.succAbove ↑k ≠ i := Fin.succAbove_ne i ↑k
+            rw [timeContract_insert_some_of_lt]
+            swap
+            · exact hlt _
+            · rw [normalOrder_uncontracted_some]
+              rw [sign_insert_some_of_not_lt φ φs φsΛ i k hk hg]
+              simp only [instCommGroup.eq_1, smul_smul, Algebra.smul_mul_assoc]
+              congr 1
+              rw [mul_assoc, mul_assoc, mul_comm, mul_assoc, mul_assoc]
+              simp
+            · omega
+        · rw [timeContract_insertAndContract_some]
+          simp only [Fin.getElem_fin, not_and] at hg
+          by_cases hg' : GradingCompliant φs φsΛ
+          · have hg := hg hg'
+            simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, Algebra.smul_mul_assoc,
+              instCommGroup.eq_1, contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+              Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+              List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
+              uncontractedListGet]
+            by_cases h1 : i < i.succAbove ↑k
+            · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
+              rw [timeContract_zero_of_diff_grade]
+              simp only [zero_mul, smul_zero]
+              rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+              simp only [zero_mul, smul_zero]
+              exact hg
+              exact hg
+            · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
+              rw [timeContract_zero_of_diff_grade]
+              simp only [zero_mul, smul_zero]
+              rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+              simp only [zero_mul, smul_zero]
+              exact hg
+              exact fun a => hg (id (Eq.symm a))
+          · rw [timeContract_of_not_gradingCompliant]
+            simp only [Nat.succ_eq_add_one, Fin.getElem_fin, mul_zero, ZeroMemClass.coe_zero, smul_zero,
+              zero_mul, instCommGroup.eq_1]
+            exact hg'
+    declNo: "7.13"
+
+  - type: name
+    name: WickContraction.mul_wickTerm_eq_sum
+    line: 177
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WickTerm.lean#L177"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
+        `𝓕.FieldOp`, and `i ≤ φs.length`
+        such that all `𝓕.FieldOp` in `φ₀…φᵢ₋₁` have time strictly less than `φ` and
+        `φ` has a time greater than or equal to all `FieldOp` in `φ₀…φₙ`, then
+
+      `φ * φsΛ.wickTerm = 𝓢(φ, φ₀…φᵢ₋₁) • ∑ k, (φsΛ ↩Λ φ i k).wickTerm`
+
+      where the sum is over all `k` in `Option φsΛ.uncontracted`, so `k` is either `none` or `some k`.
+
+      The proof proceeds as follows:
+      - `ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum` is used to expand `φ 𝓝([φsΛ]ᵘᶜ)` as
+        a sum over `k` in `Option φsΛ.uncontracted` of terms involving `[anPart φ, φs[k]]ₛ`.
+      - Then `wickTerm_insert_none` and `wickTerm_insert_some` are used to equate terms.
+
+    declString: |
+      lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin φs.length.succ)
+          (φsΛ : WickContraction φs.length) (hlt : ∀ (k : Fin φs.length), timeOrderRel φ φs[k])
+          (hn : ∀ (k : Fin φs.length), i.succAbove k < i → ¬timeOrderRel φs[k] φ) :
+          ofFieldOp φ * φsΛ.wickTerm =
+          𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, (Finset.univ.filter (fun x => i.succAbove x < i))⟩) •
+          ∑ (k : Option φsΛ.uncontracted), (φsΛ ↩Λ φ i k).wickTerm := by
+        trans (φsΛ.sign • φsΛ.timeContract) * ((ofFieldOp φ) * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ))
+        · have ht := Subalgebra.mem_center_iff.mp (Subalgebra.smul_mem (Subalgebra.center ℂ _)
+            (WickContraction.timeContract φsΛ).2 (φsΛ.sign))
+          rw [wickTerm]
+          rw [← mul_assoc, ht, mul_assoc]
+        rw [ofFieldOp_mul_normalOrder_ofFieldOpList_eq_sum, Finset.mul_sum,
+          uncontractedFieldOpEquiv_list_sum, Finset.smul_sum]
+        simp only [instCommGroup.eq_1, Nat.succ_eq_add_one]
+        congr 1
+        funext n
+        match n with
+        | none =>
+          rw [wickTerm_insert_none]
+          simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
+            Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1,
+            smul_smul]
+          congr 1
+          rw [← mul_assoc, exchangeSign_mul_self]
+          simp
+        | some n =>
+          rw [wickTerm_insert_some _ _ _ _ _
+            (fun k => hlt k) (fun k a => hn k a)]
+          simp only [uncontractedFieldOpEquiv, Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some',
+            Function.comp_apply, finCongr_apply, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
+          congr 1
+          · rw [← mul_assoc, exchangeSign_mul_self]
+            rw [one_mul]
+          · rw [← mul_assoc]
+            congr 1
+            have ht := (WickContraction.timeContract φsΛ).prop
+            rw [@Subalgebra.mem_center_iff] at ht
+            rw [ht]
+    declNo: "7.14"
+
+  - type: h2
+    sectionNo: "7.3"
+    content: "Wick's theorem"
+
+  - type: name
+    name: FieldSpecification.wicks_theorem
+    line: 64
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheorem
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheorem.lean#L64"
+    isDef: false
+    isThm: true
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, Wick's theorem states that
+
+      `𝓣(φs) = ∑ φsΛ, φsΛ.wickTerm`
+
+      where the sum is over all Wick contraction `φsΛ`.
+
+      The proof is via induction on `φs`.
+      - The base case `φs = []` is handled by `wickTerm_empty_nil`.
+
+      The inductive step works as follows:
+
+      For the LHS:
+      1. `timeOrder_eq_maxTimeField_mul_finset` is used to write
+        `𝓣(φ₀…φₙ)` as `𝓢(φᵢ,φ₀…φᵢ₋₁) • φᵢ * 𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` where `φᵢ` is
+        the maximal time field in `φ₀…φₙ`
+      2. The induction hypothesis is then used on `𝓣(φ₀…φᵢ₋₁φᵢ₊₁φₙ)` to expand it as a sum over
+        Wick contractions of `φ₀…φᵢ₋₁φᵢ₊₁φₙ`.
+      3. This gives terms of the form `φᵢ * φsΛ.wickTerm` on which
+        `mul_wickTerm_eq_sum` is used where `φsΛ` is a Wick contraction of `φ₀…φᵢ₋₁φᵢ₊₁φ`,
+        to rewrite terms as a sum over optional uncontracted elements of `φsΛ`
+
+      On the LHS we now have a sum over Wick contractions `φsΛ` of `φ₀…φᵢ₋₁φᵢ₊₁φ` (from 2) and optional
+      uncontracted elements of `φsΛ` (from 3)
+
+      For the RHS:
+      1. The sum over Wick contractions of `φ₀…φₙ` on the RHS
+        is split via `insertLift_sum` into a sum over Wick contractions `φsΛ` of `φ₀…φᵢ₋₁φᵢ₊₁φ` and
+        sum over optional uncontracted elements of `φsΛ`.
+
+      Both sides are now sums over the same thing and their terms equate by the nature of the
+      lemmas used.
+
+    declString: |
+      theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
+          ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
+        | [] => by
+          rw [timeOrder_ofFieldOpList_nil]
+          simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+          rw [sum_WickContraction_nil]
+          simp only [wickTerm_empty_nil]
+        | φ :: φs => by
+          have ih := wicks_theorem (eraseMaxTimeField φ φs)
+          conv_lhs => rw [timeOrder_eq_maxTimeField_mul_finset, ih, Finset.mul_sum]
+          have h1 : φ :: φs =
+              (eraseMaxTimeField φ φs).insertIdx (maxTimeFieldPosFin φ φs) (maxTimeField φ φs) := by
+            simp only [eraseMaxTimeField, insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
+              maxTimeField, insertionSortMin, List.get_eq_getElem]
+            erw [insertIdx_eraseIdx_fin]
+          conv_rhs => rw [wicks_theorem_congr h1]
+          conv_rhs => rw [insertLift_sum]
+          apply Finset.sum_congr rfl
+          intro c _
+          rw [Algebra.smul_mul_assoc, mul_wickTerm_eq_sum
+            (maxTimeField φ φs) (eraseMaxTimeField φ φs) (maxTimeFieldPosFin φ φs) c]
+          trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted },
+            (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).wickTerm
+          swap
+          · simp [uncontractedListGet]
+          rw [smul_smul]
+          simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one,
+            Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insert_none,
+            Finset.univ_eq_attach, smul_add, one_smul, uncontractedListGet]
+          · exact fun k => timeOrder_maxTimeField _ _ k
+          · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
+      termination_by φs => φs.length
+    declNo: "7.15"
+
+  - type: h1
+    sectionNo: 8
+    content: "Normal-ordered Wick's theorem"
+
+  - type: name
+    name: WickContraction.EqTimeOnly.timeOrder_staticContract_of_not_mem
+    line: 250
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeCond
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeCond.lean#L250"
+    isDef: false
+    isThm: false
+    docString: |
+      Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` with
+      at least one contraction between `𝓕.FieldOp` that do not have the same time. Then
+      `𝓣(φsΛ.staticContract.1) = 0`.
+    declString: |
+      lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
+          (hl : ¬ φsΛ.EqTimeOnly) : 𝓣(φsΛ.staticContract.1) = 0 := by
+        obtain ⟨i, j, hij, φsucΛ, rfl, hr⟩ := exists_join_singleton_of_not_eqTimeOnly φsΛ hl
+        rw [join_staticContract]
+        simp only [MulMemClass.coe_mul]
+        rw [singleton_staticContract]
+        rw [timeOrder_timeOrder_left]
+        rw [timeOrder_superCommute_anPart_ofFieldOp_neq_time]
+        simp only [zero_mul, map_zero]
+        intro h
+        simp_all
+    declNo: "8.1"
+
+  - type: name
+    name: WickContraction.EqTimeOnly.staticContract_eq_timeContract_of_eqTimeOnly
+    line: 99
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeCond
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeCond.lean#L99"
+    isDef: false
+    isThm: false
+    docString: |
+      Let `φs` be a list of `𝓕.FieldOp` and `φsΛ` a `WickContraction` of `φs` within
+      which every contraction involves two `𝓕.FieldOp`s that have the same time, then
+      `φsΛ.staticContract = φsΛ.timeContract`.
+    declString: |
+      lemma staticContract_eq_timeContract_of_eqTimeOnly (h : φsΛ.EqTimeOnly) :
+          φsΛ.staticContract = φsΛ.timeContract := by
+        simp only [staticContract, timeContract]
+        apply congrArg
+        funext a
+        ext
+        simp only [List.get_eq_getElem]
+        rw [timeContract_of_timeOrderRel]
+        apply timeOrderRel_of_eqTimeOnly_pair φsΛ
+        rw [← finset_eq_fstFieldOfContract_sndFieldOfContract]
+        exact a.2
+        exact h
+    declNo: "8.2"
+
+  - type: name
+    name: WickContraction.EqTimeOnly.timeOrder_timeContract_mul_of_eqTimeOnly_left
+    line: 196
+    fileName: PhysLean.QFT.PerturbationTheory.WickContraction.TimeCond
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/WickContraction/TimeCond.lean#L196"
+    isDef: false
+    isThm: false
+    docString: |
+      Let `φs` be a list of `𝓕.FieldOp`, `φsΛ` a `WickContraction` of `φs` within
+      which every contraction involves two `𝓕.FieldOp`s that have the same time and
+      `b` a general element in `𝓕.FieldOpAlgebra`. Then
+      `𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b)`.
+
+      This follows from properties of orderings and the ideal defining `𝓕.FieldOpAlgebra`.
+    declString: |
+      lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
+          (φsΛ : WickContraction φs.length)
+          (hl : φsΛ.EqTimeOnly) (b : 𝓕.FieldOpAlgebra) :
+          𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b) := by
+        trans 𝓣(1 * φsΛ.timeContract.1 * b)
+        simp only [one_mul]
+        rw [timeOrder_timeContract_mul_of_eqTimeOnly_mid φsΛ hl]
+        simp
+    declNo: "8.3"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeOrder_ofFieldOpList_eqTimeOnly
+    line: 23
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheoremNormal.lean#L23"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, then
+
+      `𝓣(φs) = ∑ φsΛ, φsΛ.sign • φsΛ.timeContract * 𝓣(𝓝([φsΛ]ᵘᶜ))`
+
+      where the sum is over all Wick contraction `φsΛ` which only have equal time contractions.
+
+      This result follows from
+      - `static_wick_theorem` to rewrite `𝓣(φs)` on the left hand side as a sum of
+        `𝓣(φsΛ.staticWickTerm)`.
+      - `EqTimeOnly.timeOrder_staticContract_of_not_mem` and `timeOrder_timeOrder_mid` to set to
+        those `𝓣(φsΛ.staticWickTerm)` for which `φsΛ` has a contracted pair which are not
+        equal time to zero.
+      - `staticContract_eq_timeContract_of_eqTimeOnly` to rewrite the static contract
+        in the remaining `𝓣(φsΛ.staticWickTerm)` as a time contract.
+      - `timeOrder_timeContract_mul_of_eqTimeOnly_left` to move the time contracts out of the time
+        ordering.
+
+    declString: |
+      lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
+          𝓣(ofFieldOpList φs) = ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs)}),
+          φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
+        rw [static_wick_theorem φs]
+        let e2 : WickContraction φs.length ≃
+          {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly} ⊕
+          {φsΛ : WickContraction φs.length // ¬ φsΛ.EqTimeOnly} :=
+          (Equiv.sumCompl _).symm
+        rw [← e2.symm.sum_comp]
+        simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
+          Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, map_add, map_sum, map_smul, e2]
+        simp only [staticWickTerm, Algebra.smul_mul_assoc, map_smul]
+        conv_lhs =>
+          enter [2, 2, x]
+          rw [timeOrder_timeOrder_left]
+          rw [timeOrder_staticContract_of_not_mem _ x.2]
+        simp only [Finset.univ_eq_attach, zero_mul, map_zero, smul_zero, Finset.sum_const_zero, add_zero]
+        congr
+        funext x
+        rw [staticContract_eq_timeContract_of_eqTimeOnly]
+        rw [timeOrder_timeContract_mul_of_eqTimeOnly_left]
+        exact x.2
+        exact x.2
+    declNo: "8.4"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty
+    line: 92
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheoremNormal.lean#L92"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, then
+
+      `𝓣(𝓝(φs)) = 𝓣(φs) - ∑ φsΛ, φsΛ.sign • φsΛ.timeContract.1 * 𝓣(𝓝([φsΛ]ᵘᶜ))`
+
+      where the sum is over all *non-empty* Wick contraction `φsΛ` which only
+        have equal time contractions.
+
+      This result follows directly from
+      - `timeOrder_ofFieldOpList_eqTimeOnly`
+
+    declString: |
+      lemma normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
+          𝓣(𝓝(ofFieldOpList φs)) = 𝓣(ofFieldOpList φs) -
+          ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}),
+          φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓣(𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ)) := by
+        rw [timeOrder_ofFieldOpList_eq_eqTimeOnly_empty]
+        simp
+    declNo: "8.5"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.timeOrder_haveEqTime_split
+    line: 110
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheoremNormal.lean#L110"
+    isDef: false
+    isThm: false
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, then `𝓣(φs)` is equal to the sum of
+
+      - `∑ φsΛ, φsΛ.wickTerm` where the sum is over all Wick contraction `φsΛ` which have
+        no contractions of equal time.
+      - `∑ φsΛ, φsΛ.sign • φsΛ.timeContract * (∑ φssucΛ, φssucΛ.wickTerm)`, where
+        the first sum is over all Wick contraction `φsΛ` which only have equal time contractions
+        and the second sum is over all Wick contraction `φssucΛ` of the uncontracted elements of `φsΛ`
+        which do not have any equal time contractions.
+
+      The proof proceeds as follows
+      - `wicks_theorem` is used to rewrite `𝓣(φs)` as a sum over all Wick contractions.
+      - The sum over all Wick contractions is then split additively into two parts based on having
+        or not having an equal time contractions.
+      - Using `join`, the sum `∑ φsΛ, _` over Wick contractions which do have equal time contractions
+        is split into two sums `∑ φsΛ, ∑ φsucΛ, _`, the first over non-zero elements
+        which only have equal time contractions and the second over Wick contractions `φsucΛ` of
+        `[φsΛ]ᵘᶜ` which do not have equal time contractions.
+      - `join_sign_timeContract` is then used to equate terms.
+
+    declString: |
+      lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
+          𝓣(ofFieldOpList φs) = (∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}),
+          φsΛ.1.sign • φsΛ.1.timeContract.1 * 𝓝(ofFieldOpList [φsΛ.1]ᵘᶜ))
+          + ∑ (φsΛ : {φsΛ // φsΛ.EqTimeOnly (φs := φs) ∧ φsΛ ≠ empty}), φsΛ.1.sign • φsΛ.1.timeContract *
+          (∑ φssucΛ : { φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ φssucΛ.HaveEqTime },
+            φssucΛ.1.wickTerm) := by
+        rw [wicks_theorem]
+        simp only [wickTerm]
+        let e1 : WickContraction φs.length ≃ {φsΛ // HaveEqTime φsΛ} ⊕ {φsΛ // ¬ HaveEqTime φsΛ} := by
+          exact (Equiv.sumCompl HaveEqTime).symm
+        rw [← e1.symm.sum_comp]
+        simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
+          Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, sub_left_inj, e1]
+        rw [add_comm]
+        congr 1
+        let f : WickContraction φs.length → 𝓕.FieldOpAlgebra := fun φsΛ =>
+          φsΛ.sign • (φsΛ.timeContract.1 * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ))
+        change ∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}), f φsΛ.1 = _
+        rw [sum_haveEqTime]
+        congr
+        funext φsΛ
+        simp only [f]
+        conv_lhs =>
+          enter [2, φsucΛ]
+          rw [← Algebra.smul_mul_assoc]
+          rw [join_sign_timeContract φsΛ.1 φsucΛ.1]
+        conv_lhs =>
+          enter [2, φsucΛ]
+          rw [mul_assoc]
+        rw [← Finset.mul_sum, ← Algebra.smul_mul_assoc]
+        congr
+        funext φsΛ'
+        simp only [ne_eq, Algebra.smul_mul_assoc]
+        congr 1
+        rw [@join_uncontractedListGet]
+    declNo: "8.6"
+
+  - type: name
+    name: FieldSpecification.FieldOpAlgebra.wicks_theorem_normal_order
+    line: 218
+    fileName: PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheoremNormal
+    status: "complete"
+    link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpAlgebra/WicksTheoremNormal.lean#L218"
+    isDef: false
+    isThm: true
+    docString: |
+      For a list `φs` of `𝓕.FieldOp`, the normal-ordered version of Wick's theorem states that
+
+      `𝓣(𝓝(φs)) = ∑ φsΛ, φsΛ.wickTerm`
+
+      where the sum is over all Wick contraction `φsΛ` in which no two contracted elements
+      have the same time.
+
+      The proof proceeds by induction on `φs`, with the base case `[]` holding by following
+      through definitions. and the inductive case holding as a result of
+      - `timeOrder_haveEqTime_split`
+      - `normalOrder_timeOrder_ofFieldOpList_eq_eqTimeOnly_empty`
+      - and the induction hypothesis on `𝓣(𝓝([φsΛ.1]ᵘᶜ))` for contractions `φsΛ` of `φs` which only
+        have equal time contractions and are non-empty.
+
+    declString: |
+      theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
+          𝓣(𝓝(ofFieldOpList φs)) =
+          ∑ (φsΛ : {φsΛ : WickContraction φs.length // ¬ HaveEqTime φsΛ}), φsΛ.1.wickTerm
+        | [] => wicks_theorem_normal_order_empty
+        | φ :: φs => by
+          rw [normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive]
+          simp only [Algebra.smul_mul_assoc, ne_eq, add_right_eq_self]
+          apply Finset.sum_eq_zero
+          intro φsΛ hφsΛ
+          simp only [smul_eq_zero]
+          right
+          have ih := wicks_theorem_normal_order [φsΛ.1]ᵘᶜ
+          rw [ih]
+          simp [wickTerm]
+      termination_by φs => φs.length
+      decreasing_by
+        simp only [uncontractedListGet, List.length_cons, List.length_map, gt_iff_lt]
+        rw [uncontractedList_length_eq_card]
+        have hc := uncontracted_card_eq_iff φsΛ.1
+        simp only [List.length_cons, φsΛ.2.2, iff_false] at hc
+        have hc' := uncontracted_card_le φsΛ.1
+        simp_all only [Algebra.smul_mul_assoc, List.length_cons, Finset.mem_univ, gt_iff_lt]
+        omega
+    declNo: "8.7"
