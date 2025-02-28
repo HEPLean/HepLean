@@ -7,6 +7,7 @@ import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # 1d Harmonic Oscillator
@@ -72,7 +73,8 @@ structure HarmonicOscillator where
 namespace HarmonicOscillator
 
 open Nat
-open PhysLean
+open PhysLean HilbertSpace
+open MeasureTheory
 
 variable (Q : HarmonicOscillator)
 
@@ -96,18 +98,35 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
   have h1 := Q.hℏ
   linarith
 
-/-- The characteristic length of the harmonic oscilator.
-  Defined as `√(ℏ /(m ω))`. -/
+/-!
+
+## The characteristic length
+
+-/
+
+/-- The characteristic length `ξ` of the harmonic oscilator is defined
+  as `√(ℏ /(m ω))`. -/
 noncomputable def ξ : ℝ := √(Q.ℏ / (Q.m * Q.ω))
 
 lemma ξ_nonneg : 0 ≤ Q.ξ := Real.sqrt_nonneg _
 
+@[simp]
 lemma ξ_pos : 0 < Q.ξ := by
   rw [ξ]
   apply Real.sqrt_pos.mpr
   apply div_pos
   · exact Q.hℏ
   · exact mul_pos Q.hm Q.hω
+
+@[simp]
+lemma ξ_ne_zero : Q.ξ ≠ 0 := Ne.symm (_root_.ne_of_lt Q.ξ_pos)
+
+lemma ξ_sq : Q.ξ^2 = Q.ℏ / (Q.m * Q.ω) := by
+  rw [ξ]
+  apply Real.sq_sqrt
+  apply div_nonneg
+  · exact le_of_lt Q.hℏ
+  · exact mul_nonneg (le_of_lt Q.hm) (le_of_lt Q.hω)
 
 @[simp]
 lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
@@ -124,6 +143,28 @@ lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
   rw [one_over_ξ]
   refine Real.sq_sqrt (le_of_lt Q.m_mul_ω_div_ℏ_pos)
 
+TODO "The momentum operator should be moved to a more general file."
+
+/-- The momentum operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
+  `ψ` to `- i ℏ ψ'`.
+
+  The notation `Pᵒᵖ` can be used for the momentum operator. -/
+noncomputable def momentumOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
+  fun x => - Complex.I * Q.ℏ * deriv ψ x
+
+@[inherit_doc momentumOperator]
+scoped[QuantumMechanics.OneDimension.HarmonicOscillator] notation "Pᵒᵖ" => momentumOperator
+
+/-- The position operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
+  `ψ` to `x ψ'`.
+
+  The notation `Xᵒᵖ` can be used for the momentum operator. -/
+noncomputable def positionOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
+  fun x => x * ψ x
+
+@[inherit_doc positionOperator]
+scoped[QuantumMechanics.OneDimension.HarmonicOscillator] notation "Xᵒᵖ" => positionOperator
+
 /-- For a harmonic oscillator, the Schrodinger Operator corresponding to it
   is defined as the function from `ℝ → ℂ` to `ℝ → ℂ` taking
 
@@ -131,7 +172,24 @@ lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) x) + 1/2 * Q.m * Q.ω^2 * x^2 * ψ x
 
-open HilbertSpace
+lemma schrodingerOperator_eq (ψ : ℝ → ℂ) :
+    Q.schrodingerOperator ψ = (- Q.ℏ ^ 2 / (2 * Q.m)) •
+    (deriv (deriv ψ)) + (1/2 * Q.m * Q.ω^2) • ((fun x => Complex.ofReal x ^2) * ψ) := by
+  funext x
+  simp only [schrodingerOperator, one_div, Pi.add_apply, Pi.smul_apply, Complex.real_smul,
+    Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow, Complex.ofReal_mul,
+    Complex.ofReal_ofNat, Pi.mul_apply, Complex.ofReal_inv, add_right_inj]
+  ring
+
+/-- The schrodinger operator written in terms of `ξ`. -/
+lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
+    fun x => (Q.ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) +  (1/Q.ξ^2 )^2 * x^2 * ψ x) := by
+  funext x
+  simp [schrodingerOperator_eq, ξ_sq, ξ_inverse, ξ_ne_zero, ξ_pos, ξ_abs, ← Complex.ofReal_pow]
+  have hm' := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
+  have hℏ' := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
+  field_simp
+  ring
 
 /-- The Schrodinger operator commutes with the parity operator. -/
 lemma schrodingerOperator_parity (ψ : ℝ → ℂ) :
