@@ -162,7 +162,11 @@ lemma deriv_deriv_eigenfunction_succ (n : ℕ) (x : ℝ) :
       (physHermite n (x/Q.ξ)) + (- (1/Q.ξ)) * (1 + (- (1/Q.ξ^2)) * x ^ 2) *
       (physHermite (n + 1) (x/Q.ξ))) * Q.eigenfunction 0 x) := by
   rw [deriv_eigenfunction_succ]
-  simp
+  simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
+    Complex.ofReal_inv, smul_eq_mul, differentiableAt_const, deriv_const_mul_field', neg_mul,
+    mul_eq_mul_left_iff, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
+    Real.sqrt_eq_zero, cast_eq_zero, ne_eq, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false,
+    not_false_eq_true, pow_eq_zero_iff, OfNat.ofNat_ne_zero, or_false, ξ_ne_zero]
   left
   rw [deriv_mul (by fun_prop) (by fun_prop)]
   rw [deriv_eigenfunction_zero]
@@ -252,7 +256,7 @@ lemma deriv_deriv_eigenfunction (n : ℕ) (x : ℝ) :
   match n with
   | 0 =>
     rw [deriv_deriv_eigenfunction_zero]
-    simp
+    simp only [one_div, neg_mul, mul_neg, CharP.cast_eq_zero, mul_zero, zero_add]
     ring
   | 1 =>
     rw [deriv_deriv_eigenfunction_one]

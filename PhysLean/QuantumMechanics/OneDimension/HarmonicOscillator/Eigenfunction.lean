@@ -30,7 +30,8 @@ open MeasureTheory
 
 -/
 noncomputable def eigenfunction (n : ℕ) : ℝ → ℂ := fun x =>
-  1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ)) * physHermite n (x / Q.ξ) * Real.exp (- x^2 / (2 * Q.ξ^2))
+  1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ)) * physHermite n (x / Q.ξ) *
+  Real.exp (- x^2 / (2 * Q.ξ^2))
 
 lemma eigenfunction_eq (n : ℕ) :
     Q.eigenfunction n = fun (x : ℝ) => (1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ))) *
