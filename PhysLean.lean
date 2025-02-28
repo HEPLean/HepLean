@@ -1,3 +1,7 @@
+import PhysLean.ClassicalMechanics.Basic
+import PhysLean.CondensedMatter.Basic
+import PhysLean.Cosmology.Basic
+import PhysLean.Electrodynamics.Basic
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.Mathematics.LinearMaps
@@ -21,6 +25,7 @@ import PhysLean.Meta.Remark.Basic
 import PhysLean.Meta.Remark.Properties
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.TransverseTactics
+import PhysLean.Optics.Basic
 import PhysLean.Particles.BeyondTheStandardModel.GeorgiGlashow.Basic
 import PhysLean.Particles.BeyondTheStandardModel.PatiSalam.Basic
 import PhysLean.Particles.BeyondTheStandardModel.Spin10.Basic
@@ -223,3 +228,5 @@ import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermProd
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdAssoc
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdComm
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdContr
+import PhysLean.StatisticalMechanics.Basic
+import PhysLean.Thermodynamics.Basic
