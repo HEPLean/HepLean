@@ -83,7 +83,7 @@ lemma mem_littleGroup_iff {H : Subgroup (Symmetry C)} {k : BrillouinZone G} (s :
 lemma ker_pointOp_le_littleGroup (H : Subgroup (Symmetry C)) (k : BrillouinZone G) :
     (pointOp C).ker.subgroupOf H ≤ littleGroup H k := by
   intro s hs
-  rw [mem_littleGroup_iff, ← pointOp_smul]
+  rw [mem_littleGroup_iff, ← BrillouinZone.pointOp_smul]
   rw [Subgroup.mem_subgroupOf, MonoidHom.mem_ker] at hs
   rw [hs, one_smul]
 
