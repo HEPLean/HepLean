@@ -665,6 +665,7 @@ public import PhyslibAlpha.QuantumMechanics.AngularMomentum.ClebschGordanCoeffic
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.ClebschGordanFormula
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.CouplingSchemes
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.MultipoleSumRule
+public import PhyslibAlpha.QuantumMechanics.AngularMomentum.NineJ
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.NormalizedBasis
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.ProjectionTheorem
 public import PhyslibAlpha.QuantumMechanics.AngularMomentum.SelectionRules
