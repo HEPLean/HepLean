@@ -281,26 +281,6 @@ instance instIsLorentzDeriv :
 -/
 
 omit [Module.Finite ℝ 𝔤] in
-/-- The contragredient Lorentz action passes through a component covector to its spacetime
-  slot: the adjoint index is Lorentz-inert. -/
-lemma _root_.GaugeBoson.repLorentzGroup_dual_componentDual (Λ : SL(2,ℂ))
-    (ω : Module.Dual ℝ Lorentz.CoVector) (φ : Module.Dual ℝ 𝔤) :
-    (GaugeBoson.repLorentzGroup 𝔤).dual Λ ((GaugeBoson.componentDual 𝔤) ω φ)
-      = (GaugeBoson.componentDual 𝔤) (Lorentz.CoVector.sl2Rep.dual Λ ω) φ := by
-  refine LinearMap.ext fun v => ?_
-  obtain ⟨m⟩ := v
-  induction m using TensorProduct.inductionOn with
-  | tmul x a =>
-    rw [Representation.dual_apply, Module.Dual.transpose_apply, LinearMap.comp_apply,
-      show (GaugeBoson.repLorentzGroup 𝔤) Λ⁻¹ (⟨x ⊗ₜ[ℝ] a⟩ : (GaugeBoson 𝔤))
-        = ⟨(Lorentz.CoVector.sl2Rep Λ⁻¹ x) ⊗ₜ[ℝ] a⟩ from rfl,
-      GaugeBoson.componentDual_apply_val_tmul, GaugeBoson.componentDual_apply_val_tmul,
-      Representation.dual_apply, Module.Dual.transpose_apply, LinearMap.comp_apply]
-  | add m₁ m₂ h₁ h₂ =>
-    rw [show (⟨m₁ + m₂⟩ : (GaugeBoson 𝔤)) = (⟨m₁⟩ : (GaugeBoson 𝔤)) + ⟨m₂⟩ from rfl, map_add,
-      map_add, h₁, h₂]
-
-omit [Module.Finite ℝ 𝔤] in
 /-- **The gauge field is a Lorentz covector**: the generator `A_μ^φ` mixes into the `A_a^φ`
   by the columns of the Lorentz matrix, with the adjoint index untouched. -/
 lemma repLorentzGroup_ofA (Λ : SL(2,ℂ)) (μ : Fin 1 ⊕ Fin 3)

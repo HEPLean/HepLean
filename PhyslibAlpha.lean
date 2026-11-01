@@ -2,6 +2,7 @@ module
 
 public import PhyslibAlpha.Basic
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.Basic
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.GaugeCoeff
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.LocalGauge.Basic
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.LocalGauge.FieldStrength
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.LocalGauge.GaugeAction
@@ -67,6 +68,7 @@ public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.Basic
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.Charge
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.CovariantDeriv
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction.Basic
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.JetComponent.Basic
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.JetComponent.GaugeAction
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.JetComponent.TransformsIn
@@ -77,7 +79,10 @@ public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.MatrixRe
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.MatrixRep.Table
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.Pi
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.Prod
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.RepCoeff
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.TransformsIn
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.Species.Basic
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.Species.Lorentz
 public import PhyslibAlpha.ClassicalFieldTheory.Local.Action
 public import PhyslibAlpha.ClassicalFieldTheory.Local.EulerLagrange
 public import PhyslibAlpha.ClassicalFieldTheory.Local.EulerLagrangeEquation

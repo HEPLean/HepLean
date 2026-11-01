@@ -5,13 +5,14 @@ Authors: Jinzheng Li, Nathaneal Sajan, Joseph Tooby-Smith
 -/
 module
 
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.RepCoeff
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.Realization.GaugeLaw
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.LocalField.Jet
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.Realization.TransformsAdjoint
 public import Mathlib.LinearAlgebra.Basis.Defs
 public import Mathlib.LinearAlgebra.Dimension.Free
 /-!
-# Gauge tensors in a general representation
+# The covariant derivative of a matter family
 
 ## i. Overview
 
@@ -19,24 +20,11 @@ The adjoint story of `TransformsInAdjoint` generalizes to an arbitrary represent
 of the jet gauge group: a matter field valued in a representation space `V` has
 symbols `[∂_s ψ^i]` contracted against duals of `V`, and its transformation law is
 the Leibniz convolution of the base-point Taylor coefficients of the representation.
-
-Since the gauge transformations are jets, the representation must act on `V`-valued
-jets `SpaceTimeAlgebra ⊗[ℂ] V` — the value of `rep U` at a constant vector is spacetime
-dependent, and the derivative symbols see its Taylor coefficients. This file provides
-the toolkit for `V`-valued jets:
-
-* `jetOfConstant` — the inclusion of constants, `v ↦ 1 ⊗ v`;
-* `jetDeriv`/`jetIteratedDeriv` — the formal derivative, acting on the jet factor;
-* `jetEval` — evaluation at the base point, `f ⊗ v ↦ (constant coefficient of f) • v`;
-
-and with them
-
-* `repDualCoeff rep U x` — the physicists' `∂_x (rep U)^i_j|₀` transposed to the dual
-  of `V`, the analogue of `adjointDualCoeff` for a general representation;
-The gauge tensors of a representation themselves — `LocalGaugeData.TransformsIn`, the
-generalization of `TransformsInAdjoint` — are defined on top of `repDualCoeff` in
-`PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.TransformsIn`.
-
+Those coefficients, `repCoeff` and `repDualCoeff`, are in
+`PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.RepCoeff`, and the gauge tensors
+built on them, `LocalGaugeData.TransformsIn`, in
+`PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.TransformsIn`. This file builds
+the covariant derivative of such a family.
 
 The covariant derivative `∇_ρ F = D_ρ F + (A_ρ acting on the value index)` requires
 the *infinitesimal* action of the gauge algebra on the value space — physicists'
@@ -49,20 +37,25 @@ case `act = adAction` (the bracket as a bilinear map) literally specializes:
 (`covDerivAction_adAction`).
 
 The compatibility between `rep` and `act` — the structure `IsInfinitesimalActionOf` —
-and the theorem that under it the covariant derivative preserves the gauge tensors live
+is in `PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction.Basic`,
+and the theorem that under it the covariant derivative preserves the gauge tensors
 in `PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction`.
 
 ## ii. Key results
 
-- `repDualCoeff` : the physicists' `∂_x (rep U)^i_j|₀` acting on the complex dual index of a
-  matter-field symbol: the transpose of `repCoeff`
+- `GaugeAlgebraRealization.actionFam` : the action of an adjoint-indexed family on a matter
+  family through `act`.
+- `GaugeAlgebraRealization.covDerivAction`, `GaugeAlgebraRealization.covDerivIter` : the
+  covariant derivative of a matter family and its iterates.
+- `GaugeAlgebraRealization.adjoin_symbols_eq_adjoin_covDerivIter` : covariant derivatives
+  generate the same algebra as ordinary derivatives.
+- `GaugeAlgebraRealization.covDerivIter_map` : the covariant tower is natural in the algebra.
 
 ## iii. Table of contents
 
-- A. The dual representation coefficients and gauge tensors in a representation
-- B. The covariant derivative through an infinitesimal action
-- C. The span lemma
-- D. Naturality in the algebra
+- A. The covariant derivative through an infinitesimal action
+- B. The span lemma
+- C. Naturality in the algebra
 
 ## iv. References
 
@@ -92,59 +85,7 @@ variable (h : GaugeAlgebraRealization jets B repGauge repLorentz)
 
 /-!
 
-## A. The dual representation coefficients and gauge tensors in a representation
-
--/
-
-/-- The base-point Taylor coefficient of the representation: include the constant
-  vector into `V`-valued jets, act by `rep U`, differentiate `x` times, evaluate at
-  the base point. The composite is complex-linear: the physicists'
-  `∂_x (rep U)^i_j|₀` as a ℂ-linear map on the value space. -/
-noncomputable def repCoeff (rep : Representation ℂ GJ (SpaceTimeAlgebra ⊗[ℂ] V))
-    (U : GJ) (x : Multiset (Fin 1 ⊕ Fin 3)) : V →ₗ[ℂ] V :=
-  jetEval ∘ₗ jetIteratedDeriv x ∘ₗ rep U ∘ₗ jetOfConstant
-
-/-- The physicists' `∂_x (rep U)^i_j|₀` acting on the complex dual index of a
-  matter-field symbol: the transpose of `repCoeff`. This is the analogue of
-  `adjointDualCoeff` for a general representation of the jet gauge group; for `x = 0`
-  it is the dual (contragredient) action of the value of `U`, and for `x ≠ 0` it sees
-  the derivatives of the gauge transformation. -/
-noncomputable def repDualCoeff (rep : Representation ℂ GJ (SpaceTimeAlgebra ⊗[ℂ] V))
-    (U : GJ) (x : Multiset (Fin 1 ⊕ Fin 3)) :
-    Module.Dual ℂ V →ₗ[ℂ] Module.Dual ℂ V :=
-  (repCoeff rep U x).dualMap
-
-/-- For a fibrewise representation, evaluating the transform of a jet at the base point
-  is the zeroth Taylor coefficient of the transform of its base-point value: the jet ring
-  factor passes through the action and is then evaluated. -/
-lemma jetEval_rep_of_smul (rep : Representation ℂ GJ (SpaceTimeAlgebra ⊗[ℂ] V))
-    (hlin : ∀ (U : GJ) (χ : SpaceTimeAlgebra) (z : SpaceTimeAlgebra ⊗[ℂ] V), rep U
-        (χ • z) = χ • rep U z)
-    (U : GJ) (z : SpaceTimeAlgebra ⊗[ℂ] V) :
-    jetEval (rep U z) = repCoeff rep U 0 (jetEval z) := by
-  induction z using TensorProduct.inductionOn with
-  | add a b ha hb => rw [map_add, map_add, ha, hb, map_add, map_add]
-  | tmul f v =>
-    rw [show f ⊗ₜ[ℂ] v = f • jetOfConstant v from by
-        rw [jetOfConstant_apply, TensorProduct.smul_tmul', smul_eq_mul, mul_one],
-      hlin, jetEval_smul, jetEval_smul, jetEval_jetOfConstant, map_smul]
-    simp only [repCoeff, LinearMap.comp_apply, jetIteratedDeriv_zero, LinearMap.id_apply]
-
-/-- The zeroth Taylor coefficients of a fibrewise representation are multiplicative: they
-  form a representation of the jet gauge group on the value space. -/
-lemma repCoeff_zero_mul (rep : Representation ℂ GJ (SpaceTimeAlgebra ⊗[ℂ] V))
-    (hlin : ∀ (U : GJ) (χ : SpaceTimeAlgebra) (z : SpaceTimeAlgebra ⊗[ℂ] V), rep U
-        (χ • z) = χ • rep U z)
-    (U W : GJ) : repCoeff rep (U * W) 0 = repCoeff rep U 0 ∘ₗ repCoeff rep W 0 := by
-  refine LinearMap.ext fun v => ?_
-  have h := jetEval_rep_of_smul rep hlin U (rep W (jetOfConstant v))
-  simp only [repCoeff, LinearMap.comp_apply, jetIteratedDeriv_zero, LinearMap.id_apply, map_mul,
-    Module.End.mul_apply] at h ⊢
-  exact h
-
-/-!
-
-## B. The covariant derivative through an infinitesimal action
+## A. The covariant derivative through an infinitesimal action
 
 The covariant derivative `∇_ρ F = [∂_ρ F] + A_ρ · F` requires the *infinitesimal*
 action of the gauge algebra on the value space — physicists' `i dρ(T^a)` — which
@@ -447,7 +388,7 @@ lemma covDerivIter_succ (act : 𝔤 →ₗ[ℝ] V →ₗ[ℂ] V)
 
 /-!
 
-## C. The span lemma
+## B. The span lemma
 
 Replacing derivatives of a matter family by covariant derivatives does not change
 the generated algebra of symbols: the correction terms are products of gauge-field
@@ -676,7 +617,7 @@ lemma adjoin_symbols_eq_adjoin_covDerivIter (act : 𝔤 →ₗ[ℝ] V →ₗ[ℂ
 
 /-!
 
-## D. Naturality in the algebra
+## C. Naturality in the algebra
 
 The matter analogue of `bracketFam_map` and `iteratedCovDerivAdjoint_map`: a
 multiplicative linear map into another algebra carries the derived action, and hence

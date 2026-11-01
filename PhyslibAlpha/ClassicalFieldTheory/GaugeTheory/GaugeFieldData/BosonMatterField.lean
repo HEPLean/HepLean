@@ -20,8 +20,8 @@ sum `MatterField.pi` of the family `T.boson`, and it is the object a physicist m
 "the scalar field" of a theory: for the Standard Model the Higgs doublet, for a
 two-Higgs-doublet model the pair of doublets read as one field.
 
-The bosons here are the matter bosons — the scalars. The gauge bosons are not a species of
-`GaugeFieldData` at all, their generator space being fixed by the gauge algebra alone, so
+The bosons here are the matter bosons — the scalars. The gauge bosons are not among the matter
+entries of `GaugeFieldData`, their generator space being fixed by the gauge algebra alone, so
 they are not part of this assembly.
 
 Beyond the datum, the assembly needs a shared mass weight. The construction packages the

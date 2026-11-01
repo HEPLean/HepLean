@@ -97,8 +97,9 @@ different context. `GaugeFieldData` adds only the matter content on top of it.
   factor of the local field algebra `GaugeFieldData.LocalFieldAlgebra`, and the bosonic family
   those of its symmetric-algebra factor; the fields `fermion_statistic` and `boson_statistic`
   require every entry of each family to be declared with the corresponding statistics.
-  Nothing is repeated from the gauge context either, and the gauge bosons are not a species,
-  since their generator space is determined by `𝔤` alone.
+  Nothing is repeated from the gauge context either, and the gauge field is not among the
+  matter entries `FermionSpecies` and `BosonSpecies`, since its generator space is determined
+  by `𝔤` alone.
 
   This is data before a Lagrangian. Collecting representations of the several species does
   not assert that they are jointly consistent. Gauge-Lorentz compatibility, factorization
@@ -147,12 +148,13 @@ gauge action and the mass-weight scaling on them, are in
 field; the value spaces themselves assemble into the `FermionModule` and `BosonModule` of
 the remaining siblings.
 
-The connection is not a species. It is fixed by the gauge context alone, and its component
-functions `∂_s A_μ^φ` are the existing `GaugeBoson.JetComponentSpace 𝔤`, used without a new
-name. They are real, a connection being a real object, which is why the third generator
-family of the local field algebra is a real vector space, complexified once inside the
-algebra. Finite dimensionality of `𝔤` is what makes `Module.Dual ℝ 𝔤` the span of the
-adjoint components, so that these generators really are the `A_μ^a`.
+The connection is not among the matter entries. Its generators are determined by the gauge
+context alone, its component functions `∂_s A_μ^φ` being the existing
+`GaugeBoson.JetComponentSpace 𝔤`, used without a new name. They are real, a connection being a
+real object, which is why the third generator family of the local field algebra is a real
+vector space, complexified once inside the algebra. Finite dimensionality of `𝔤` is what makes
+`Module.Dual ℝ 𝔤` the span of the adjoint components, so that these generators really are the
+`A_μ^a`.
 
 -/
 

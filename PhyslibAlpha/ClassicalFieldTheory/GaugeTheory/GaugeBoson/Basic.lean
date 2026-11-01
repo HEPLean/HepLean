@@ -32,6 +32,10 @@ Model, `𝔤` is `StandardModel.GaugeAlgebra`.
   representation of the value group.
 - `GaugeBoson.JetComponentSpace` : the span of the component functions `∂_s A_μ^φ`.
 - `GaugeBoson.componentDual` : the covector picking out a spacetime and an adjoint index.
+- `GaugeBoson.componentCovector` : the real covector on gauge-potential values reading the
+  component `A_μ^a`.
+- `GaugeBoson.repLorentzGroup_dual_componentCovector` : the component covectors transform as a
+  Lorentz covector in their spacetime index.
 
 ## iii. Table of contents
 
@@ -50,9 +54,7 @@ Model, `𝔤` is `StandardModel.GaugeAlgebra`.
 
 @[expose] public section
 
-set_option linter.unusedSectionVars false
-
-variable {𝔤 : Type} [LieRing 𝔤] [LieAlgebra ℝ 𝔤] [Module.Finite ℝ 𝔤]
+variable {𝔤 : Type} [LieRing 𝔤] [LieAlgebra ℝ 𝔤]
 
 open TensorProduct
 
@@ -98,22 +100,19 @@ def valLinEquiv : (GaugeBoson 𝔤) ≃ₗ[ℝ] Lorentz.CoVector ⊗[ℝ] 𝔤 w
   map_add' := by intros; rfl
   map_smul' := by intros; rfl
 
-omit [Module.Finite ℝ 𝔤] in
 @[simp]
 lemma valLinEquiv_apply (v : (GaugeBoson 𝔤)) : (valLinEquiv 𝔤) v = v.val := rfl
 
-omit [Module.Finite ℝ 𝔤] in
 lemma valLinEquiv_symm_apply (m : Lorentz.CoVector ⊗[ℝ] 𝔤) :
     (valLinEquiv 𝔤).symm m = ⟨m⟩ := rfl
 
-omit [Module.Finite ℝ 𝔤] in
 @[simp]
 lemma val_add (v₁ v₂ : (GaugeBoson 𝔤)) : (v₁ + v₂).val = v₁.val + v₂.val := rfl
 
-omit [Module.Finite ℝ 𝔤] in
 @[simp]
 lemma val_smul (r : ℝ) (v : (GaugeBoson 𝔤)) : (r • v).val = r • v.val := rfl
 
+variable [Module.Finite ℝ 𝔤] in
 instance : Module.Finite ℝ (GaugeBoson 𝔤) :=
   Module.Finite.equiv (valLinEquiv 𝔤).symm
 
@@ -206,11 +205,48 @@ noncomputable def componentDual :
       RingHom.id_apply, LinearMap.smul_apply]
     rw [← TensorProduct.smul_tmul', map_smul, map_smul]
 
-omit [Module.Finite ℝ 𝔤] in
 @[simp]
 lemma componentDual_apply_val_tmul (ω : Module.Dual ℝ Lorentz.CoVector)
     (φ : Module.Dual ℝ 𝔤) (v : Lorentz.CoVector) (a : 𝔤) :
     (componentDual 𝔤) ω φ ⟨v ⊗ₜ[ℝ] a⟩ = ω v * φ a := by
   simp [componentDual, Module.Dual.transpose_apply]
+
+variable (𝔤) in
+/-- **The component covector** of `A_μ^a`, a real linear functional on the values
+  `CoVector ⊗ 𝔤` of the gauge potential. It selects the `μ`-th spacetime component and pairs the
+  gauge-algebra value with the covector `a`. -/
+noncomputable abbrev componentCovector (μ : Fin 1 ⊕ Fin 3) (a : Module.Dual ℝ 𝔤) :
+    Module.Dual ℝ (GaugeBoson 𝔤) :=
+  componentDual 𝔤 (Lorentz.CoVector.basis.dualBasis μ) a
+
+/-- The contragredient Lorentz action passes through a component covector to its spacetime
+  slot: the adjoint index is Lorentz-inert. -/
+lemma repLorentzGroup_dual_componentDual (Λ : SL(2,ℂ))
+    (ω : Module.Dual ℝ Lorentz.CoVector) (φ : Module.Dual ℝ 𝔤) :
+    (GaugeBoson.repLorentzGroup 𝔤).dual Λ ((GaugeBoson.componentDual 𝔤) ω φ)
+      = (GaugeBoson.componentDual 𝔤) (Lorentz.CoVector.sl2Rep.dual Λ ω) φ := by
+  refine LinearMap.ext fun v => ?_
+  obtain ⟨m⟩ := v
+  induction m using TensorProduct.inductionOn with
+  | tmul x a =>
+    rw [Representation.dual_apply, Module.Dual.transpose_apply, LinearMap.comp_apply,
+      show (GaugeBoson.repLorentzGroup 𝔤) Λ⁻¹ (⟨x ⊗ₜ[ℝ] a⟩ : (GaugeBoson 𝔤))
+        = ⟨(Lorentz.CoVector.sl2Rep Λ⁻¹ x) ⊗ₜ[ℝ] a⟩ from rfl,
+      GaugeBoson.componentDual_apply_val_tmul, GaugeBoson.componentDual_apply_val_tmul,
+      Representation.dual_apply, Module.Dual.transpose_apply, LinearMap.comp_apply]
+  | add m₁ m₂ h₁ h₂ =>
+    rw [show (⟨m₁ + m₂⟩ : (GaugeBoson 𝔤)) = (⟨m₁⟩ : (GaugeBoson 𝔤)) + ⟨m₂⟩ from rfl, map_add,
+      map_add, h₁, h₂]
+
+/-- **The component covectors transform as a Lorentz covector**. Under the contragredient
+  action `A_μ^a` mixes into the `A_b^a` by the columns of the Lorentz matrix, with the adjoint
+  index fixed. -/
+lemma repLorentzGroup_dual_componentCovector (Λ : SL(2,ℂ)) (μ : Fin 1 ⊕ Fin 3)
+    (a : Module.Dual ℝ 𝔤) :
+    (repLorentzGroup 𝔤).dual Λ (componentCovector 𝔤 μ a)
+      = ∑ b, (Lorentz.SL2C.toLorentzGroup Λ).1 b μ • componentCovector 𝔤 b a := by
+  rw [repLorentzGroup_dual_componentDual, Lorentz.CoVector.sl2Rep_dual_dualBasis, map_sum,
+    LinearMap.sum_apply]
+  exact Finset.sum_congr rfl fun b _ => by rw [map_smul, LinearMap.smul_apply]
 
 end GaugeBoson

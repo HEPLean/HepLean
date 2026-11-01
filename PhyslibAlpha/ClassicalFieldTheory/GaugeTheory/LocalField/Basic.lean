@@ -8,6 +8,8 @@ module
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeFieldData.BosonGenerators
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeFieldData.FermionGenerators
 public import PhyslibAlpha.Mathematics.AlgebraGeneration
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.GaugeBoson.Basic
+public import PhyslibAlpha.Mathematics.SymmetricAlgebra
 /-!
 # The local field algebra of a gauge theory and its universal property
 

@@ -27,8 +27,9 @@ enumeration itself and carries no further factor. The matter field does not depe
 generation, three generations being three copies of one multiplet distinguished only by
 their Yukawa couplings, which are not field data. The bosonic family has the single Higgs
 multiplet. The fermions are declared fermionic and the Higgs bosonic, as `GaugeFieldData`
-requires of its two families. The gauge bosons are not a species: their generator space is
-fixed by the gauge algebra alone, and `GaugeFieldData` supplies it as the connection sector.
+requires of its two families. The gauge bosons are not among the datum's matter entries: their
+generator space is fixed by the gauge algebra alone, and `GaugeFieldData` supplies it as the
+connection sector.
 
 From the datum the generic theory produces the generator spaces, the local field algebra
 `fieldData.LocalFieldAlgebra`, the transformation data and the realization arrow, with no

@@ -5,7 +5,7 @@ Authors: Jinzheng Li, Nathaneal Sajan, Joseph Tooby-Smith
 -/
 module
 
-public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.CovariantDeriv
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.RepCoeff
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.LocalGaugeData.Truncation
 /-!
 # Gauge tensors in a representation
