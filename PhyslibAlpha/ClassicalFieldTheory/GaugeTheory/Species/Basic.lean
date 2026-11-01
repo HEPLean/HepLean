@@ -25,7 +25,8 @@ Under a gauge transformation the derivatives of a matter field transform linearl
 of the gauge field also acquire an additive term from the Maurer–Cartan form. The common gauge
 law therefore has coefficients acting on labels and an inhomogeneous term, zero for matter, whose
 composition laws are proved here. The file also states the weight and derivative laws of a symbol
-family. For a matter field the gauge law is `LocalGaugeData.TransformsIn`.
+family. For a matter field the gauge law is `LocalGaugeData.TransformsIn`. The Lorentz law is in
+`PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.Species.Lorentz`.
 
 ## ii. Key results
 

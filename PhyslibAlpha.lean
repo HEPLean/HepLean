@@ -82,6 +82,7 @@ public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.Prod
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.RepCoeff
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.TransformsIn
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.Species.Basic
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.Species.Lorentz
 public import PhyslibAlpha.ClassicalFieldTheory.Local.Action
 public import PhyslibAlpha.ClassicalFieldTheory.Local.EulerLagrange
 public import PhyslibAlpha.ClassicalFieldTheory.Local.EulerLagrangeEquation
