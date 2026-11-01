@@ -6,6 +6,7 @@ Authors: Tom Ole Diem
 module
 
 public import Physlib.CondensedMatter.Crystal.Symmetry.BrillouinZone
+public import Mathlib.GroupTheory.GroupAction.DomAct.Basic
 
 /-!
 # The reduced zone
@@ -32,7 +33,6 @@ symmetries needs to be known on an eighth of the square only. This eighth is an 
   functions.
 - `Symmetry.ReducedZone.equivMapPointOp` : the zones reduced by `H` and by its point operations
   correspond.
-- `Symmetry.IsInvariant` : a function has the same value at symmetry-related momenta.
 - `Symmetry.IsIrreducibleZone` : a set of points that contains each point of the reduced zone once.
 - `Symmetry.exists_isIrreducibleZone` : every group `H` has an irreducible zone.
 - `Symmetry.eq_of_eqOn_irreducibleZone` : a function invariant under `H` is determined on
@@ -109,10 +109,8 @@ noncomputable def ReducedZone.equivMapPointOp (H : Subgroup (Symmetry C)) :
 
 /-! ## D. Irreducible zones -/
 
-/-- A function on the Brillouin zone is invariant under `H` if symmetries in `H` preserve its
-values. -/
-def IsInvariant (H : Subgroup (Symmetry C)) (f : BrillouinZone G → β) : Prop :=
-  ∀ (s : H) k, f (s • k) = f k
+/-! The action on momenta induces an action on functions by precomposition through
+`DomMulAct H`. Invariant functions are the fixed points of this action. -/
 
 /-- A set `D` of points of the Brillouin zone is an irreducible zone for `H` if it contains
 exactly one representative of each orbit under `H`. -/
@@ -127,14 +125,20 @@ lemma exists_isIrreducibleZone (H : Subgroup (Symmetry C)) :
   obtain ⟨D, _, hD⟩ := (hq.surjOn (t := Set.univ)).exists_bijOn_subset
   exact ⟨D, hD⟩
 
-/-- A function that is invariant under `H` is determined by its values on an irreducible zone. -/
-lemma eq_of_eqOn_irreducibleZone {f g : BrillouinZone G → β} (hD : IsIrreducibleZone H D)
-    (hf : IsInvariant H f) (hg : IsInvariant H g) (h : Set.EqOn f g D) : f = g := by
+/-- Functions fixed by the symmetry action are determined by their values on an irreducible
+zone. -/
+lemma eq_of_eqOn_irreducibleZone (hD : IsIrreducibleZone H D)
+    {f g : MulAction.fixedPoints (DomMulAct H) (BrillouinZone G → β)}
+    (h : Set.EqOn f.val g.val D) : f = g := by
+  apply Subtype.ext
   funext k
   obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : ReducedZone H))
   obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 (Quotient.exact' hdk)
-  rw [← hf s k, ← hg s k]
-  exact h hd
+  calc
+    f.val k = f.val (s • k) :=
+      (congrFun (MulAction.mem_fixedPoints.mp f.property (DomMulAct.mk s)) k).symm
+    _ = g.val (s • k) := h hd
+    _ = g.val k := congrFun (MulAction.mem_fixedPoints.mp g.property (DomMulAct.mk s)) k
 
 /-- An irreducible zone corresponds to the zone reduced by `H`. -/
 noncomputable def irreducibleZoneEquiv (hD : IsIrreducibleZone H D) : D ≃ ReducedZone H :=
