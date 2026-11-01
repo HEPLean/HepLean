@@ -115,8 +115,7 @@ def IsInvariant (H : Subgroup (Symmetry C)) (f : BrillouinZone G → β) : Prop 
   ∀ (s : H) k, f (s • k) = f k
 
 /-- A set `D` of points of the Brillouin zone is an irreducible zone for `H` if it contains
-exactly one representative of each orbit under `H`. This includes a choice of boundary
-representatives. -/
+exactly one representative of each orbit under `H`. -/
 def IsIrreducibleZone (H : Subgroup (Symmetry C)) (D : Set (BrillouinZone G)) : Prop :=
   Set.BijOn (Quotient.mk'' : BrillouinZone G → ReducedZone H) D Set.univ
 
