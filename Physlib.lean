@@ -195,6 +195,7 @@ public import Physlib.Mathematics.Modules.CrossProduct
 public import Physlib.Mathematics.Modules.CrossProductMatrix
 public import Physlib.Mathematics.SpecialFunctions.EllipticIntegral
 public import Physlib.Mathematics.SpecialFunctions.PhysHermite
+public import Physlib.Mathematics.Tensors.Color
 public import Physlib.Mathematics.VariationalCalculus.Basic
 public import Physlib.Mathematics.VariationalCalculus.HasVarAdjDeriv
 public import Physlib.Mathematics.VariationalCalculus.HasVarAdjoint
