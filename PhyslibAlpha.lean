@@ -691,6 +691,7 @@ public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialCompleteness
 public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialFunctions
 public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialQuantization
 public import PhyslibAlpha.QuantumMechanics.QuantumHarmonicOscillator
+public import PhyslibAlpha.QuantumMechanics.QubitGates
 public import PhyslibAlpha.QuantumMechanics.StinespringDilation
 public import PhyslibAlpha.Relativity.Fermions.Dirac.MinimalDimension
 public import PhyslibAlpha.Relativity.Fermions.Weyl.BoostWeight
