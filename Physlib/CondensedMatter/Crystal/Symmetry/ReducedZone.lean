@@ -32,11 +32,12 @@ symmetries needs to be known on an eighth of the square only. This eighth is an 
   functions.
 - `Symmetry.ReducedZone.equivMapPointOp` : the zones reduced by `H` and by its point operations
   correspond.
+- `Symmetry.IsInvariant` : a function has the same value at symmetry-related momenta.
 - `Symmetry.IsIrreducibleZone` : a set of points that contains each point of the reduced zone once.
 - `Symmetry.exists_isIrreducibleZone` : every group `H` has an irreducible zone.
-- `Symmetry.IsIrreducibleZone.eq_of_forall_mem` : a function invariant under `H` is determined on
+- `Symmetry.eq_of_eqOn_irreducibleZone` : a function invariant under `H` is determined on
   an irreducible zone.
-- `Symmetry.IsIrreducibleZone.equiv` : an irreducible zone corresponds to the reduced zone.
+- `Symmetry.irreducibleZoneEquiv` : an irreducible zone corresponds to the reduced zone.
 
 ## iii. Table of contents
 
@@ -61,6 +62,7 @@ namespace Symmetry
 
 variable {G : Type*} [AddCommGroup G] [AddGroup.FG G]
   [TopologicalSpace G] [DiscreteTopology G] {C : Crystal G}
+  {H : Subgroup (Symmetry C)} {D : Set (BrillouinZone G)} {β : Type*}
 
 /-! ## A. The reduced zone -/
 
@@ -107,6 +109,11 @@ noncomputable def ReducedZone.equivMapPointOp (H : Subgroup (Symmetry C)) :
 
 /-! ## D. Irreducible zones -/
 
+/-- A function on the Brillouin zone is invariant under `H` if symmetries in `H` preserve its
+values. -/
+def IsInvariant (H : Subgroup (Symmetry C)) (f : BrillouinZone G → β) : Prop :=
+  ∀ (s : H) k, f (s • k) = f k
+
 /-- A set `D` of points of the Brillouin zone is an irreducible zone for `H` if it contains
 exactly one representative of each orbit under `H`. This includes a choice of boundary
 representatives. -/
@@ -121,25 +128,18 @@ lemma exists_isIrreducibleZone (H : Subgroup (Symmetry C)) :
   obtain ⟨D, _, hD⟩ := (hq.surjOn (t := Set.univ)).exists_bijOn_subset
   exact ⟨D, hD⟩
 
-namespace IsIrreducibleZone
-
-variable {H : Subgroup (Symmetry C)} {D : Set (BrillouinZone G)}
-
 /-- A function that is invariant under `H` is determined by its values on an irreducible zone. -/
-lemma eq_of_forall_mem {β : Type*} {f g : BrillouinZone G → β} (hD : IsIrreducibleZone H D)
-    (hf : ∀ (s : H) k, f ((s : Symmetry C) • k) = f k)
-    (hg : ∀ (s : H) k, g ((s : Symmetry C) • k) = g k) (h : ∀ d ∈ D, f d = g d) : f = g := by
+lemma eq_of_eqOn_irreducibleZone {f g : BrillouinZone G → β} (hD : IsIrreducibleZone H D)
+    (hf : IsInvariant H f) (hg : IsInvariant H g) (h : Set.EqOn f g D) : f = g := by
   funext k
   obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : ReducedZone H))
   obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 (Quotient.exact' hdk)
   rw [← hf s k, ← hg s k]
-  exact h _ hd
+  exact h hd
 
 /-- An irreducible zone corresponds to the zone reduced by `H`. -/
-noncomputable def equiv (hD : IsIrreducibleZone H D) : D ≃ ReducedZone H :=
+noncomputable def irreducibleZoneEquiv (hD : IsIrreducibleZone H D) : D ≃ ReducedZone H :=
   (Set.BijOn.equiv _ hD).trans (Equiv.Set.univ _)
-
-end IsIrreducibleZone
 
 end Symmetry
 
