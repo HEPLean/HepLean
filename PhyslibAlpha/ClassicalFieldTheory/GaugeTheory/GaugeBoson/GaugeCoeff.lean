@@ -25,7 +25,7 @@ adjoint transport `GaugeBoson.adjointTransport`, and the additive term is the Ma
 coefficient `LocalGaugeFieldAlgebra.mcBosonCoeff`.
 
 This file holds these coefficients and their composition laws. They are used to build the gauge
-action on the algebra of the gauge field.
+action on the algebra of the gauge field and the gauge-law coefficients of `Species.gauge`.
 
 ## ii. Key results
 
