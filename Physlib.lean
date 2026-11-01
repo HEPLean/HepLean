@@ -199,6 +199,7 @@ public import Physlib.Mathematics.SpecialFunctions.PhysHermite
 public import Physlib.Mathematics.Tensors.Color
 public import Physlib.Mathematics.Tensors.Conjugation
 public import Physlib.Mathematics.Tensors.Contraction
+public import Physlib.Mathematics.Tensors.Elab
 public import Physlib.Mathematics.Tensors.Metric
 public import Physlib.Mathematics.Tensors.Product
 public import Physlib.Mathematics.Tensors.Reindexing
