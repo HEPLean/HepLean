@@ -10,7 +10,7 @@ public import PhyslibAlpha.Mathematics.MultisetAntidiagonal
 /-!
 # The derivative coefficients of a fibrewise representation
 
-The base-point derivative coefficients of a fibrewise representation.
+The base-point derivative coefficients of a fibrewise representation and their composition laws.
 
 ## i. Overview
 
@@ -21,15 +21,24 @@ derivative data.
 
 A representation is fibrewise when it commutes with multiplication by jets,
 `rep U (χ • z) = χ • rep U z`, as an action at each spacetime point does, and every
-`MatterField` has this property (`MatterField.repJet_smul`).
+`MatterField` has this property (`MatterField.repJet_smul`). For such a representation on a
+finite-dimensional value space the coefficients satisfy the composition laws of section C, which
+are the composition laws of the matter part of a species.
 
 ## ii. Key results
 
 - `GaugeAlgebraRealization.repCoeff`, `GaugeAlgebraRealization.repDualCoeff` : the base-point
   derivative coefficients of a representation, and their transposes.
 - `GaugeAlgebraRealization.repCoeff_zero_mul` : the zeroth coefficients are multiplicative.
+- `GaugeAlgebraRealization.repCoeff_mul`, `GaugeAlgebraRealization.repDualCoeff_mul` : the
+  coefficients of a product are the Leibniz convolution of those of the factors.
+- `GaugeAlgebraRealization.repCoeff_one`, `GaugeAlgebraRealization.repDualCoeff_one` : the
+  coefficients of the identity.
 - `JetComponentSpace.jetCoeffAt_jetCoeff` : the derivative coefficients of the gauge coefficient
   `jetCoeff rep U` are those of the representation.
+- `JetComponentSpace.jetCoeffAt_mul`, `JetComponentSpace.jetCoeff_mul` : the derivative
+  coefficients of a product of jets of endomorphisms, and multiplicativity of the gauge
+  coefficient.
 
 ## iii. Table of contents
 
@@ -37,6 +46,9 @@ A representation is fibrewise when it commutes with multiplication by jets,
   - A.1. Iterated derivatives of a pure tensor
   - A.2. The coefficient at a multiset of directions
 - B. The base-point coefficients of a representation
+- C. Composition laws of the coefficients
+  - C.1. Products
+  - C.2. The identity
 
 ## iv. References
 
@@ -125,7 +137,9 @@ result is a derivative value, with no division by the factorial `s!`.
 
 The transposes `repDualCoeff`, which act on the complex covectors that label the components of
 the field, play the role of `LocalGaugeData.adjointDualCoeff` for a general representation of the
-jet gauge group. For a fibrewise representation the zeroth coefficients are multiplicative.
+jet gauge group. For a fibrewise representation the zeroth coefficients are multiplicative, and
+that of the identity is the identity (section C.2), so they form a representation of the jet
+gauge group on the value space. Its contragredient is `U ↦ repDualCoeff rep U⁻¹ 0`.
 
 -/
 
@@ -192,4 +206,117 @@ lemma jetCoeffAt_jetCoeff [Module.Free ℂ V] [Module.Finite ℂ V]
   rw [jetCoeffAt_apply, jetCoeff_spec]
   rfl
 
+/-!
+
+## C. Composition laws of the coefficients
+
+Because the coefficients are derivative values with no factorial division, a product obeys the
+Leibniz rule of `SpaceTimeAlgebra.constantCoeff_iteratedPDeriv_mul`. The coefficients of a product
+are therefore a Leibniz convolution of those of the factors, the sum over all ways of distributing
+the derivative directions between the two factors (the splits in `Multiset.antidiagonal`), with
+the multiplicities prescribed by the Leibniz rule. The dual coefficients compose in the reverse
+order.
+
+### C.1. Products
+
+-/
+
+/-- The derivative coefficients of a product of jets of endomorphisms are the Leibniz convolution of
+  the derivative coefficients of the factors. -/
+lemma jetCoeffAt_mul (x : Multiset (Fin 1 ⊕ Fin 3)) (c d : SpaceTimeAlgebra ⊗[ℂ] Module.End ℂ V) :
+    jetCoeffAt x (c * d)
+      = (x.antidiagonal.map fun p => jetCoeffAt p.1 c * jetCoeffAt p.2 d).sum := by
+  -- `add_mul` and `mul_add` do not rewrite in `SpaceTimeAlgebra ⊗ End V`; the distributive
+  -- laws are applied by `exact`.
+  induction c using TensorProduct.inductionOn with
+  | add c₁ c₂ h₁ h₂ =>
+    have hd : (c₁ + c₂) * d = c₁ * d + c₂ * d := by exact Distrib.right_distrib c₁ c₂ d
+    rw [hd, map_add, h₁, h₂, ← Multiset.sum_map_add]
+    refine congrArg Multiset.sum (Multiset.map_congr rfl fun p _ => ?_)
+    rw [map_add, add_mul]
+  | tmul f T =>
+    induction d using TensorProduct.inductionOn with
+    | add d₁ d₂ h₁ h₂ =>
+      have hd : f ⊗ₜ[ℂ] T * (d₁ + d₂) = f ⊗ₜ[ℂ] T * d₁ + f ⊗ₜ[ℂ] T * d₂ := by
+        exact Distrib.left_distrib _ d₁ d₂
+      rw [hd, map_add, h₁, h₂, ← Multiset.sum_map_add]
+      refine congrArg Multiset.sum (Multiset.map_congr rfl fun p _ => ?_)
+      rw [map_add, mul_add]
+    | tmul g S =>
+      rw [Algebra.TensorProduct.tmul_mul_tmul, jetCoeffAt_tmul,
+        SpaceTimeAlgebra.constantCoeff_iteratedPDeriv_mul, Multiset.sum_smul, Multiset.map_map]
+      refine congrArg Multiset.sum (Multiset.map_congr rfl fun p _ => ?_)
+      rw [Function.comp_apply, jetCoeffAt_tmul, jetCoeffAt_tmul, smul_mul_smul_comm]
+
+/-- The gauge coefficient of a fibrewise representation is multiplicative. -/
+lemma jetCoeff_mul [Module.Free ℂ V] [Module.Finite ℂ V]
+    {rep : Representation ℂ G (SpaceTimeAlgebra ⊗[ℂ] V)}
+    (hlin : ∀ (U : G) (χ : SpaceTimeAlgebra) (z : SpaceTimeAlgebra ⊗[ℂ] V),
+      rep U (χ • z) = χ • rep U z) (U W : G) :
+    jetCoeff rep (U * W) = jetCoeff rep U * jetCoeff rep W :=
+  lift_injective fun v => (jetCoeff_spec rep (U * W) v).trans
+    (coeff_mul_of_smul_comm hlin (jetCoeff rep) (jetCoeff_spec rep) U W v).symm
+
 end JetComponentSpace
+
+namespace GaugeAlgebraRealization
+
+variable {V : Type} [AddCommGroup V] [Module ℂ V]
+variable {G : Type} [Group G] {rep : Representation ℂ G (SpaceTimeAlgebra ⊗[ℂ] V)}
+
+/-- The derivative coefficients of a fibrewise representation compose by Leibniz convolution. -/
+lemma repCoeff_mul [Module.Free ℂ V] [Module.Finite ℂ V]
+    (hlin : ∀ (U : G) (χ : SpaceTimeAlgebra) (z : SpaceTimeAlgebra ⊗[ℂ] V),
+      rep U (χ • z) = χ • rep U z) (U W : G) (x : Multiset (Fin 1 ⊕ Fin 3)) :
+    repCoeff rep (U * W) x
+      = (x.antidiagonal.map fun p => repCoeff rep U p.1 ∘ₗ repCoeff rep W p.2).sum := by
+  rw [← JetComponentSpace.jetCoeffAt_jetCoeff, JetComponentSpace.jetCoeff_mul hlin,
+    JetComponentSpace.jetCoeffAt_mul]
+  refine congrArg Multiset.sum (Multiset.map_congr rfl fun p _ => ?_)
+  rw [JetComponentSpace.jetCoeffAt_jetCoeff, JetComponentSpace.jetCoeffAt_jetCoeff]
+  rfl
+
+/-- The dual coefficients of a product compose by Leibniz convolution, in the reverse order. -/
+lemma repDualCoeff_mul [Module.Free ℂ V] [Module.Finite ℂ V]
+    (hlin : ∀ (U : G) (χ : SpaceTimeAlgebra) (z : SpaceTimeAlgebra ⊗[ℂ] V),
+      rep U (χ • z) = χ • rep U z) (U W : G) (x : Multiset (Fin 1 ⊕ Fin 3))
+    (φ : Module.Dual ℂ V) :
+    repDualCoeff rep (U * W) x φ
+      = (x.antidiagonal.map fun p => repDualCoeff rep W p.2 (repDualCoeff rep U p.1 φ)).sum := by
+  refine LinearMap.ext fun v => ?_
+  simp only [repDualCoeff, repCoeff_mul hlin, LinearMap.dualMap_apply,
+    Multiset.sum_linearMap_apply, Multiset.map_map, map_multiset_sum, Function.comp_apply,
+    LinearMap.comp_apply]
+  exact congrArg Multiset.sum (Multiset.map_congr rfl fun p _ => rfl)
+
+/-!
+
+### C.2. The identity
+
+-/
+
+/-- At the identity the zeroth coefficient is the identity and the higher derivative
+  coefficients vanish. -/
+lemma repCoeff_one (x : Multiset (Fin 1 ⊕ Fin 3)) :
+    repCoeff rep 1 x = if x = 0 then LinearMap.id else 0 := by
+  refine LinearMap.ext fun v => ?_
+  rw [repCoeff, LinearMap.comp_apply, LinearMap.comp_apply, LinearMap.comp_apply, map_one,
+    Module.End.one_apply, jetOfConstant_apply, jetIteratedDeriv_tmul, jetEval_tmul,
+    SpaceTimeAlgebra.constantCoeff_iteratedPDeriv, MvPowerSeries.coeff_one]
+  by_cases hx : x = 0
+  · subst hx
+    simp
+  · simp [hx]
+
+/-- At the identity the zeroth dual coefficient is the identity and the higher derivative dual
+  coefficients vanish. -/
+lemma repDualCoeff_one (x : Multiset (Fin 1 ⊕ Fin 3)) (φ : Module.Dual ℂ V) :
+    repDualCoeff rep 1 x φ = if x = 0 then φ else 0 := by
+  rw [repDualCoeff, repCoeff_one]
+  by_cases hx : x = 0
+  · rw [ite_eq_left hx, ite_eq_left hx]
+    exact LinearMap.ext fun v => rfl
+  · rw [ite_eq_right hx, ite_eq_right hx]
+    exact LinearMap.ext fun v => map_zero φ
+
+end GaugeAlgebraRealization
