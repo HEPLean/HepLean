@@ -38,6 +38,8 @@ action and functions on the zone.
   an irreducible zone.
 - `BrillouinZone.irreducibleZoneEquiv` : a representative region corresponds to the irreducible
   zone.
+- `BrillouinZone.extendFromIrreducibleZone` : extend values on an irreducible zone to an invariant
+  function on all momenta.
 - `BrillouinZone.invariantFunctionsEquiv` : restriction identifies invariant functions with
   functions on an irreducible zone.
 
@@ -108,7 +110,9 @@ lemma orbitRel_map_pointOp (H : Subgroup (Symmetry C)) (k k' : BrillouinZone G) 
 /-- The irreducible zones for `H` and its point operations correspond. -/
 noncomputable def irreducibleZoneEquivPointOp (H : Subgroup (Symmetry C)) :
     IrreducibleZone H ≃ IrreducibleZone (H.map (pointOp C)) :=
-  Quotient.congr (Equiv.refl _) fun k k' => (orbitRel_map_pointOp H k k').symm
+  Quotient.congr (Equiv.refl _) (by
+    intro k k'
+    exact (orbitRel_map_pointOp H k k').symm)
 
 /-! ## D. Irreducible zones
 
@@ -137,36 +141,45 @@ lemma eq_of_eqOn_irreducibleZone (hD : IsIrreducibleZone H D)
   funext k
   obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : IrreducibleZone H))
   obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 (Quotient.exact' hdk)
-  calc
-    f.val k = f.val (s • k) :=
-      (congrFun (MulAction.mem_fixedPoints.mp f.property (DomMulAct.mk s)) k).symm
-    _ = g.val (s • k) := h hd
-    _ = g.val k := congrFun (MulAction.mem_fixedPoints.mp g.property (DomMulAct.mk s)) k
+  have hfg := h hd
+  change (DomMulAct.mk s • f.val) k = (DomMulAct.mk s • g.val) k at hfg
+  simpa only [MulAction.mem_fixedPoints.mp f.property,
+    MulAction.mem_fixedPoints.mp g.property] using hfg
 
 /-- A representative region corresponds to the irreducible Brillouin zone. -/
 noncomputable def irreducibleZoneEquiv (hD : IsIrreducibleZone H D) : D ≃ IrreducibleZone H :=
   (Set.BijOn.equiv _ hD).trans (Equiv.Set.univ _)
 
+/-- Extend a function on an irreducible zone to a symmetry-invariant function on all momenta. -/
+noncomputable def extendFromIrreducibleZone (hD : IsIrreducibleZone H D) (φ : D → β) :
+    MulAction.fixedPoints (DomMulAct H) (BrillouinZone G → β) := by
+  refine ⟨φ ∘ (irreducibleZoneEquiv hD).symm ∘ Quotient.mk'', ?_⟩
+  rw [MulAction.mem_fixedPoints]
+  intro s
+  ext k
+  apply congrArg (φ ∘ (irreducibleZoneEquiv hD).symm)
+  exact MulAction.orbitRel.Quotient.quotient_smul_eq
+    (G := H) (g := DomMulAct.mk.symm s) (a := k)
+
+/-- The invariant extension agrees with the original function on the irreducible zone. -/
+@[simp] lemma extendFromIrreducibleZone_apply (hD : IsIrreducibleZone H D) (φ : D → β) (d : D) :
+    (extendFromIrreducibleZone hD φ).val d = φ d := by
+  change φ ((irreducibleZoneEquiv hD).symm (irreducibleZoneEquiv hD d)) = φ d
+  rw [Equiv.symm_apply_apply]
+
 /-- Restriction to an irreducible zone identifies functions fixed by the symmetry action with
 functions on that zone. -/
 noncomputable def invariantFunctionsEquiv (hD : IsIrreducibleZone H D) :
-    MulAction.fixedPoints (DomMulAct H) (BrillouinZone G → β) ≃ (D → β) := by
-  refine Equiv.ofBijective (fun f d => f.val d) ⟨?_, ?_⟩
-  · intro f g h
-    exact eq_of_eqOn_irreducibleZone hD (fun _ hd => congrFun h ⟨_, hd⟩)
-  · intro φ
-    let e := irreducibleZoneEquiv hD
-    refine ⟨⟨fun k => φ (e.symm (Quotient.mk'' k)), ?_⟩, ?_⟩
-    · rw [MulAction.mem_fixedPoints]
-      intro s
-      funext k
-      change φ (e.symm (Quotient.mk'' (DomMulAct.mk.symm s • k))) =
-        φ (e.symm (Quotient.mk'' k))
-      exact congrArg (φ ∘ e.symm) (MulAction.orbitRel.Quotient.quotient_smul_eq
-        (G := H) (g := DomMulAct.mk.symm s) (a := k))
-    · funext d
-      change φ (e.symm (e d)) = φ d
-      rw [e.symm_apply_apply]
+    MulAction.fixedPoints (DomMulAct H) (BrillouinZone G → β) ≃ (D → β) where
+  toFun f := D.domRestrict f.val
+  invFun := extendFromIrreducibleZone hD
+  left_inv f := by
+    apply eq_of_eqOn_irreducibleZone hD
+    intro k hk
+    exact extendFromIrreducibleZone_apply hD (D.domRestrict f.val) ⟨k, hk⟩
+  right_inv φ := by
+    ext d
+    exact extendFromIrreducibleZone_apply hD φ d
 
 /-- The equivalence with functions on an irreducible zone acts by restriction. -/
 @[simp] lemma invariantFunctionsEquiv_apply (hD : IsIrreducibleZone H D)
