@@ -555,6 +555,7 @@ public import Physlib.Relativity.Tensors.RealTensor.Matrix.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Representation.Contraction
+public import Physlib.Relativity.Tensors.RealTensor.Species
 public import Physlib.Relativity.Tensors.RealTensor.ToComplex
 public import Physlib.Relativity.Tensors.RealTensor.Units.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Units.Pre
