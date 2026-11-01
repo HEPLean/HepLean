@@ -262,16 +262,6 @@ lemma isLorentzCovDerivTransforms_covDerivIter {rep : Representation ℂ SL(2,�
   rw [repLorentz_covDerivIter h hcomm F hF Λ n l 0 φ]
   simp only [lorentzMix_zero]
 
-omit [FiniteDimensional ℂ V] [Module.Finite ℝ 𝔤] in
-/-- Conjugation preserves the commutation of the gauge action with the Lorentz action:
-  both are read on the conjugate module through the same underlying maps. -/
-lemma actionConj_comm_repConj (rep : Representation ℂ SL(2,ℂ) V)
-    (hcomm : ∀ (c : 𝔤) (Λ : SL(2,ℂ)) (v : V), act c (rep Λ v) = rep Λ (act c v))
-    (c : 𝔤) (Λ : SL(2,ℂ)) (v : ConjModule V) :
-    LocalGaugeData.actionConj act c (rep.conj Λ v) =
-      rep.conj Λ (LocalGaugeData.actionConj act c v) :=
-  congrArg (conjEquiv (k := ℂ) (M := V)) (hcomm c Λ _)
-
 /-- The Lorentz law of the covariant tower of a conjugate family, from the commutation of
   the gauge action with the Lorentz action of the unconjugated species. -/
 lemma isLorentzCovDerivTransforms_covDerivIter_conj {rep : Representation ℂ SL(2,ℂ) V}

@@ -5,7 +5,7 @@ Authors: Jinzheng Li, Nathaneal Sajan, Joseph Tooby-Smith
 -/
 module
 
-public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction
+public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.MatterField.InfinitesimalAction.Basic
 public import Physlib.QFT.PerturbationTheory.FieldStatistics.Basic
 /-!
 # Matter fields of a gauge theory
