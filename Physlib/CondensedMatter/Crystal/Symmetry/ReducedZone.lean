@@ -108,23 +108,18 @@ noncomputable def ReducedZone.equivMapPointOp (H : Subgroup (Symmetry C)) :
 /-! ## D. Irreducible zones -/
 
 /-- A set `D` of points of the Brillouin zone is an irreducible zone for `H` if it contains
-exactly one point of each set of points that `H` maps to each other. -/
+exactly one representative of each orbit under `H`. This includes a choice of boundary
+representatives. -/
 def IsIrreducibleZone (H : Subgroup (Symmetry C)) (D : Set (BrillouinZone G)) : Prop :=
-  (∀ k, ∃ d ∈ D, MulAction.orbitRel H (BrillouinZone G) d k) ∧
-    ∀ d ∈ D, ∀ d' ∈ D, MulAction.orbitRel H (BrillouinZone G) d d' → d = d'
+  Set.BijOn (Quotient.mk'' : BrillouinZone G → ReducedZone H) D Set.univ
 
 /-- Every group `H` of symmetries has an irreducible zone. -/
 lemma exists_isIrreducibleZone (H : Subgroup (Symmetry C)) :
     ∃ D : Set (BrillouinZone G), IsIrreducibleZone H D := by
-  refine ⟨Set.range fun q : ReducedZone H => Quotient.out q, ?_, ?_⟩
-  · intro k
-    exact ⟨Quotient.out (Quotient.mk'' k : ReducedZone H), ⟨_, rfl⟩,
-      Quotient.exact' (Quotient.out_eq' (Quotient.mk'' k : ReducedZone H))⟩
-  · rintro _ ⟨q, rfl⟩ _ ⟨q', rfl⟩ h
-    have : q = q' := by
-      rw [← Quotient.out_eq' q, ← Quotient.out_eq' q']
-      exact Quotient.sound' h
-    rw [this]
+  have hq : Function.Surjective (Quotient.mk'' : BrillouinZone G → ReducedZone H) :=
+    Quotient.mk'_surjective (s := MulAction.orbitRel H (BrillouinZone G))
+  obtain ⟨D, _, hD⟩ := (hq.surjOn (t := Set.univ)).exists_bijOn_subset
+  exact ⟨D, hD⟩
 
 namespace IsIrreducibleZone
 
@@ -135,17 +130,14 @@ lemma eq_of_forall_mem {β : Type*} {f g : BrillouinZone G → β} (hD : IsIrred
     (hf : ∀ (s : H) k, f ((s : Symmetry C) • k) = f k)
     (hg : ∀ (s : H) k, g ((s : Symmetry C) • k) = g k) (h : ∀ d ∈ D, f d = g d) : f = g := by
   funext k
-  obtain ⟨d, hd, hdk⟩ := hD.1 k
-  obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 hdk
+  obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : ReducedZone H))
+  obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 (Quotient.exact' hdk)
   rw [← hf s k, ← hg s k]
   exact h _ hd
 
 /-- An irreducible zone corresponds to the zone reduced by `H`. -/
 noncomputable def equiv (hD : IsIrreducibleZone H D) : D ≃ ReducedZone H :=
-  Equiv.ofBijective (fun d => Quotient.mk'' (d : BrillouinZone G))
-    ⟨fun d d' h => Subtype.ext (hD.2 _ d.2 _ d'.2 (Quotient.exact' h)), fun q => by
-      obtain ⟨d, hd, h⟩ := hD.1 (Quotient.out q)
-      exact ⟨⟨d, hd⟩, by rw [← Quotient.out_eq' q]; exact Quotient.sound' h⟩⟩
+  (Set.BijOn.equiv _ hD).trans (Equiv.Set.univ _)
 
 end IsIrreducibleZone
 
