@@ -16,8 +16,8 @@ Symmetry-invariant functions correspond to functions on an irreducible zone.
 
 The translations of a crystal determine its Brillouin zone. A subgroup `H` of crystal
 symmetries acts on the crystal momenta. Symmetry-invariant quantities have equal values at
-momenta in the same orbit. The symmetry quotient identifies these momenta. An irreducible zone
-chooses one representative of each orbit.
+momenta in the same orbit. The irreducible zone identifies these momenta. A representative
+region chooses one momentum from each orbit.
 
 For a square lattice, take `H` to be the group of four rotations and four reflections. A scalar
 band energy with these symmetries is determined by its values on an eighth of the square.
@@ -26,23 +26,24 @@ action and functions on the zone.
 
 ## ii. Key results
 
-- `BrillouinZone.SymmetryQuotient` : the orbit space of the Brillouin zone under `H`.
+- `BrillouinZone.IrreducibleZone` : the irreducible Brillouin zone for `H`.
 - `BrillouinZone.littleGroup` : the symmetries in `H` that fix a point of the zone.
 - `BrillouinZone.ker_pointOp_le_littleGroup` : the shifts in `H` lie in every little group.
 - `BrillouinZone.orbitRel_map_pointOp` : `H` and its point operations give the same momentum orbits.
-- `BrillouinZone.symmetryQuotientEquivMapPointOp` : the symmetry quotients for `H` and its point
+- `BrillouinZone.irreducibleZoneEquivPointOp` : the irreducible zones for `H` and its point
   operations correspond.
 - `BrillouinZone.IsIrreducibleZone` : a set with one representative of each momentum orbit.
 - `BrillouinZone.exists_isIrreducibleZone` : every group `H` has an irreducible zone.
 - `BrillouinZone.eq_of_eqOn_irreducibleZone` : a function invariant under `H` is determined on
   an irreducible zone.
-- `BrillouinZone.irreducibleZoneEquiv` : an irreducible zone corresponds to the symmetry quotient.
+- `BrillouinZone.irreducibleZoneEquiv` : a representative region corresponds to the irreducible
+  zone.
 - `BrillouinZone.invariantFunctionsEquiv` : restriction identifies invariant functions with
   functions on an irreducible zone.
 
 ## iii. Table of contents
 
-- A. The symmetry quotient
+- A. The irreducible zone
 - B. The little group
 - C. Point operations
 - D. Irreducible zones
@@ -67,10 +68,10 @@ variable {G : Type*} [AddCommGroup G] [AddGroup.FG G]
   [TopologicalSpace G] [DiscreteTopology G] {C : Crystal G}
   {H : Subgroup (Symmetry C)} {D : Set (BrillouinZone G)} {β : Type*}
 
-/-! ## A. The symmetry quotient -/
+/-! ## A. The irreducible zone -/
 
-/-- The orbit space of the Brillouin zone under `H`. -/
-abbrev SymmetryQuotient (H : Subgroup (Symmetry C)) :=
+/-- The irreducible Brillouin zone for `H`. Symmetry-related momenta represent the same point. -/
+abbrev IrreducibleZone (H : Subgroup (Symmetry C)) :=
   MulAction.orbitRel.Quotient H (BrillouinZone G)
 
 /-! ## B. The little group -/
@@ -104,9 +105,9 @@ lemma orbitRel_map_pointOp (H : Subgroup (Symmetry C)) (k k' : BrillouinZone G) 
   · rintro ⟨⟨s, hs⟩, h⟩
     exact ⟨⟨pointOp C s, s, hs, rfl⟩, h⟩
 
-/-- The symmetry quotients for `H` and its point operations correspond. -/
-noncomputable def symmetryQuotientEquivMapPointOp (H : Subgroup (Symmetry C)) :
-    SymmetryQuotient H ≃ SymmetryQuotient (H.map (pointOp C)) :=
+/-- The irreducible zones for `H` and its point operations correspond. -/
+noncomputable def irreducibleZoneEquivPointOp (H : Subgroup (Symmetry C)) :
+    IrreducibleZone H ≃ IrreducibleZone (H.map (pointOp C)) :=
   Quotient.congr (Equiv.refl _) fun k k' => (orbitRel_map_pointOp H k k').symm
 
 /-! ## D. Irreducible zones
@@ -117,12 +118,12 @@ The action on momenta induces an action on functions by precomposition through
 /-- A set `D` of points of the Brillouin zone is an irreducible zone for `H` if it contains
 exactly one representative of each orbit under `H`. -/
 def IsIrreducibleZone (H : Subgroup (Symmetry C)) (D : Set (BrillouinZone G)) : Prop :=
-  Set.BijOn (Quotient.mk'' : BrillouinZone G → SymmetryQuotient H) D Set.univ
+  Set.BijOn (Quotient.mk'' : BrillouinZone G → IrreducibleZone H) D Set.univ
 
 /-- Every group `H` of symmetries has an irreducible zone. -/
 lemma exists_isIrreducibleZone (H : Subgroup (Symmetry C)) :
     ∃ D : Set (BrillouinZone G), IsIrreducibleZone H D := by
-  have hq : Function.Surjective (Quotient.mk'' : BrillouinZone G → SymmetryQuotient H) :=
+  have hq : Function.Surjective (Quotient.mk'' : BrillouinZone G → IrreducibleZone H) :=
     Quotient.mk'_surjective (s := MulAction.orbitRel H (BrillouinZone G))
   obtain ⟨D, _, hD⟩ := (hq.surjOn (t := Set.univ)).exists_bijOn_subset
   exact ⟨D, hD⟩
@@ -134,7 +135,7 @@ lemma eq_of_eqOn_irreducibleZone (hD : IsIrreducibleZone H D)
     (h : Set.EqOn f.val g.val D) : f = g := by
   apply Subtype.ext
   funext k
-  obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : SymmetryQuotient H))
+  obtain ⟨d, hd, hdk⟩ := hD.surjOn (Set.mem_univ (Quotient.mk'' k : IrreducibleZone H))
   obtain ⟨s, rfl⟩ := MulAction.orbitRel_apply.1 (Quotient.exact' hdk)
   calc
     f.val k = f.val (s • k) :=
@@ -142,8 +143,8 @@ lemma eq_of_eqOn_irreducibleZone (hD : IsIrreducibleZone H D)
     _ = g.val (s • k) := h hd
     _ = g.val k := congrFun (MulAction.mem_fixedPoints.mp g.property (DomMulAct.mk s)) k
 
-/-- An irreducible zone corresponds to the symmetry quotient. -/
-noncomputable def irreducibleZoneEquiv (hD : IsIrreducibleZone H D) : D ≃ SymmetryQuotient H :=
+/-- A representative region corresponds to the irreducible Brillouin zone. -/
+noncomputable def irreducibleZoneEquiv (hD : IsIrreducibleZone H D) : D ≃ IrreducibleZone H :=
   (Set.BijOn.equiv _ hD).trans (Equiv.Set.univ _)
 
 /-- Restriction to an irreducible zone identifies functions fixed by the symmetry action with
