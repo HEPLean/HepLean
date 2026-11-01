@@ -106,7 +106,7 @@ corresponding iterated derivative, with directions recorded by `s`, written `∂
 of section D.3 relates these symbols to derivative operations on `B`.
 
 Every species has a mass weight, twice its mass dimension, and declared statistics. The gauge
-field has mass weight two and is bosonic. The statistics enters none of the laws of this file.
+field has mass weight two and is bosonic. 
 
 A derivative of the transformed field expands by the Leibniz rule into derivatives of the same or
 lower order. The
