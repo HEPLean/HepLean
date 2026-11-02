@@ -22,7 +22,7 @@ module context, a GitHub link, and the map's title, abstract, claims, Lean
 references and literature references, together with per-map and total
 completion counts.
 
-An API map is a prose document, described in `docs/API_MAP_GUIDE.md`: a title,
+An API map is a prose document, described in `docs/ATLAS_GUIDE.md`: a title,
 a single-paragraph `## Abstract` (or `## Abstract (Alpha)`), `## Content` and/or
 `## Content (Alpha)`, `## Lean References` (a numbered list of
 `file — names` entries) and `## References` (a numbered list of literature and
@@ -50,7 +50,7 @@ the data file keeps the `file (names)` form the website already renders.
 
 ## iv. References
 
-- `docs/API_MAP_GUIDE.md`, the guide to writing API maps.
+- `docs/ATLAS_GUIDE.md`, the guide to writing API maps.
 
 -/
 

@@ -11,7 +11,7 @@ Checks the structure, citations and Lean references of every `API-map.md` in the
 
 ## i. Overview
 
-An API map is a prose document, described in `docs/API_MAP_GUIDE.md`:
+An API map is a prose document, described in `docs/ATLAS_GUIDE.md`:
 
 - a `# ` title;
 - a single-paragraph `## Abstract` (or `## Abstract (Alpha)`) with no citations;
@@ -64,7 +64,7 @@ It exits non-zero on any error. It does not need a Lean environment built to per
 
 ## iv. References
 
-- `docs/API_MAP_GUIDE.md`, the guide to writing API maps, which this linter enforces.
+- `docs/ATLAS_GUIDE.md`, the guide to writing API maps, which this linter enforces.
 
 -/
 
@@ -90,7 +90,7 @@ structure TextReference where
 
 end APIMapData
 
-/-- An API map: an `API-map.md` file, as described in `docs/API_MAP_GUIDE.md`, read into its
+/-- An API map: an `API-map.md` file, as described in `docs/ATLAS_GUIDE.md`, read into its
 parts. Each prose section is given by its paragraphs, each folded onto one line, and is empty
 when the map lacks it. -/
 structure APIMapData where
