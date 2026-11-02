@@ -93,10 +93,10 @@ lemma fourier_solutionSlice {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) (ξ : E) :
   refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Iic
     Set.Ioc_subset_Iic_self ?_).symm
   intro s hs
-  have hsa : s ≤ min a t := by
+  have hsmin : s ≤ min a t := by
     by_contra h
     exact hs.2 ⟨not_le.mp h, hs.1⟩
-  simp [sourceHat, slice_eq_zero_of_notMem F f (ha' s hsa)]
+  simp [sourceHat, slice_eq_zero_of_notMem F f (ha' s hsmin)]
 
 omit [CompleteSpace F] in
 /-- After the last time of the source the Fourier mode of the retarded solution is the free
