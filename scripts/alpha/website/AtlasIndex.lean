@@ -303,11 +303,11 @@ def parseAtlas (path : System.FilePath) : IO AtlasData := do
   return map
 
 /-- The paths of every `Atlas.md` under `directory`. -/
-partial def findAtlass (directory : System.FilePath) : IO (List System.FilePath) := do
+partial def findAtlases (directory : System.FilePath) : IO (List System.FilePath) := do
   let mut paths := []
   for entry in ← directory.readDir do
     if ← entry.path.isDir then
-      paths := paths ++ (← findAtlass entry.path)
+      paths := paths ++ (← findAtlases entry.path)
     else if entry.fileName == "Atlas.md" then
       paths := entry.path :: paths
   return paths
@@ -393,7 +393,7 @@ def main (args : List String) : IO UInt32 := do
   for root in ["Physlib", "PhyslibAlpha", "QuantumInfo"] do
     let rootPath : System.FilePath := { toString := root }
     if ← rootPath.pathExists then
-      paths := paths ++ (← findAtlass rootPath)
+      paths := paths ++ (← findAtlases rootPath)
   let sorted := paths.mergeSort (fun a b => a.toString ≤ b.toString)
   let maps ← sorted.mapM parseAtlas
   let ymlString := indexYAML maps
