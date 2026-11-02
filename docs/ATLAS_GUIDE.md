@@ -131,4 +131,4 @@ on instance claims and Lean names in the prose). It needs no build of Physlib.
 
 ## The generated site index
 
-`lake exe api_map_index` greates a single YAML data file, `docs/_data/APIMap.yml`, from all `API-map.md` files in the repository. It lists the contents of each API map in a structured format.
+`lake exe atlas_index` greates a single YAML data file, `docs/_data/APIMap.yml`, from all `API-map.md` files in the repository. It lists the contents of each API map in a structured format.

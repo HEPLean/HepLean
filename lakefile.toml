@@ -136,8 +136,8 @@ srcDir = "scripts/website"
 supportInterpreter = true
 
 [[lean_exe]]
-name = "api_map_index"
-root = "APIMapIndex"
+name = "atlas_index"
+root = "AtlasIndex"
 srcDir = "scripts/alpha/website"
 
 [[lean_exe]]

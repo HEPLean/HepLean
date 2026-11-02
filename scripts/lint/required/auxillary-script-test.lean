@@ -14,7 +14,7 @@ only run occasionally (e.g. on a version bump):
 - `lake exe TODO_to_yml mkFile`
 - `lake exe stats mkHTML`
 - `lake exe informal mkFile mkDot mkHTML`
-- `lake exe api_map_index mkFile`
+- `lake exe atlas_index mkFile`
 
 Run it from the root of the repository with
 
@@ -178,12 +178,12 @@ def checkInformal (ctx : Ctx) (cwd : FilePath) : Check Unit := do
   ensure (html.containsStr "InformalDot.dot")
     "`docs/InformalGraph.html` does not load `InformalDot.dot`."
 
-/-- Checks `lake exe api_map_index mkFile`: it should make `docs/_data/APIMap.yml`, with a
+/-- Checks `lake exe atlas_index mkFile`: it should make `docs/_data/APIMap.yml`, with a
 `Total:` section whose map count matches the non-zero number of maps listed under `APIMap:`. -/
-def checkAPIMapIndex (ctx : Ctx) (cwd : FilePath) : Check Unit := do
-  let out ← runLakeExe ctx cwd "api_map_index" #["mkFile"]
+def checkAtlasIndex (ctx : Ctx) (cwd : FilePath) : Check Unit := do
+  let out ← runLakeExe ctx cwd "atlas_index" #["mkFile"]
   ensure (out.stdout.containsStr "APIMap file made for")
-    "`lake exe api_map_index mkFile` did not report `APIMap file made for ...`."
+    "`lake exe atlas_index mkFile` did not report `APIMap file made for ...`."
   let yml ← readOutput cwd "docs/_data/APIMap.yml"
   ensure (yml.startsWith "Total:\n") "`docs/_data/APIMap.yml` does not start with `Total:`."
   ensure (yml.containsStr "\nAPIMap:\n") "`docs/_data/APIMap.yml` has no `APIMap:` section."
@@ -204,7 +204,7 @@ def tests : List (String × (Ctx → FilePath → Check Unit)) := [
   ("lake exe TODO_to_yml mkFile", checkTODOToYml),
   ("lake exe stats mkHTML", checkStats),
   ("lake exe informal mkFile mkDot mkHTML", checkInformal),
-  ("lake exe api_map_index mkFile", checkAPIMapIndex)]
+  ("lake exe atlas_index mkFile", checkAtlasIndex)]
 
 def main (_ : List String) : IO UInt32 := do
   let root ← IO.currentDir
