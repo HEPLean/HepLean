@@ -109,7 +109,7 @@ lemma laplacian_fourierInvIntegral {h : E → F} (hm : AEStronglyMeasurable h vo
     ∑ i, ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) F ![b i, b i]
   have hL : ∀ v, L (G v) = ((-(2 * π * Complex.I)) ^ 2 * (‖v‖ ^ 2 : ℝ)) • g v := by
     intro v
-    simp only [L, hG, ContinuousLinearMap.sum_apply, ContinuousMultilinearMap.apply_apply,
+    simp only [L, hG, sum_apply, ContinuousMultilinearMap.apply_apply,
       VectorFourier.fourierPowSMulRight_apply]
     simp only [Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
     have hs : ∑ i, ((innerSL ℝ v) (b i) * (innerSL ℝ v) (b i)) = ‖v‖ ^ 2 := by

@@ -148,7 +148,7 @@ lemma duhamel_eq_intervalIntegral (m : ℝ → E → ℂ) {a : ℝ}
     (ha : ∀ s ≤ a, s ∉ Prod.fst '' tsupport f) {t : ℝ} (hat : a ≤ t) (x : E) :
     duhamel F f m t x = ∫ s in a..t, propagatedSlice F f m (t - s) s x := by
   rw [duhamel, intervalIntegral.integral_of_le hat]
-  refine MeasureTheory.setIntegral_eq_of_subset_of_forall_diff_eq_zero measurableSet_Iic
+  refine MeasureTheory.setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Iic
     Set.Ioc_subset_Iic_self fun s hs => ?_
   have : s ≤ a := by
     by_contra h

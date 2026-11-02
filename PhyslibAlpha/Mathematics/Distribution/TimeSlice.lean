@@ -210,7 +210,7 @@ lemma exists_fourier_bound (N : ℕ) :
     _ = q (slice F f s) := rfl
     _ ≤ (c • S.sup (schwartzSeminormFamily ℂ E F)) (slice F f s) := hS _
     _ ≤ c * T := by
-        simp only [Seminorm.smul_apply, NNReal.smul_def, smul_eq_mul]
+        simp only [smul_apply, NNReal.smul_def, smul_eq_mul]
         exact mul_le_mul_of_nonneg_left h1 c.2
 
 omit [CompleteSpace F] in

@@ -572,7 +572,7 @@ lemma solution_eq_integral {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) (x : E) :
 omit [CompleteSpace F] in
 lemma solution_add {μ : ℝ} (hμ : 0 ≤ μ) (g : 𝓓((⊤ : Opens (ℝ × E)), F)) (t : ℝ) (x : E) :
     solution F (f + g) μ t x = solution F f μ t x + solution F g μ t x := by
-  simp_rw [solution_eq_integral F _ hμ, slice_add, map_add, SchwartzMap.add_apply]
+  simp_rw [solution_eq_integral F _ hμ, slice_add, map_add, add_apply]
   exact MeasureTheory.integral_add (integrableOn_sineEvolution_slice F f hμ t x)
     (integrableOn_sineEvolution_slice F g hμ t x)
 
@@ -582,7 +582,7 @@ lemma solution_smul {μ : ℝ} (hμ : 0 ≤ μ) (c : ℝ) (t : ℝ) (x : E) :
   simp_rw [solution_eq_integral F _ hμ, slice_smul]
   rw [← MeasureTheory.integral_smul]
   refine MeasureTheory.setIntegral_congr_fun measurableSet_Iic fun s _ => ?_
-  rw [← Complex.coe_smul c (slice F f s), map_smul, SchwartzMap.smul_apply, Complex.coe_smul]
+  rw [← Complex.coe_smul c (slice F f s), map_smul, smul_apply, Complex.coe_smul]
 
 /-- The Klein–Gordon operator `∂ₜ² - Δ + μ` on compact spacetime test fields. -/
 def testOperator (μ : ℝ) : 𝓓((⊤ : Opens (ℝ × E)), F) :=

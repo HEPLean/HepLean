@@ -212,7 +212,7 @@ lemma hasDerivAt_evolveU {μ : ℝ} (hμ : 0 ≤ μ) (a b : 𝓢(E, F)) (x : E) 
     HasDerivAt (fun r => evolveU μ r a b x) (evolveV μ τ a b x) τ := by
   have h := (hasDerivAt_cosEvolution_apply hμ a x τ).add (hasDerivAt_sineEvolution_apply hμ b x τ)
   unfold evolveU evolveV
-  simp only [SchwartzMap.add_apply, SchwartzMap.sub_apply]
+  simp only [add_apply, sub_apply]
   convert h using 1
   abel
 
@@ -235,10 +235,10 @@ lemma hasDerivAt_evolveV {μ : ℝ} (hμ : 0 ≤ μ) (a b : 𝓢(E, F)) (x : E) 
   have e : ∀ r, evolveV μ r a b x =
       cosEvolution F r μ b x - sineEvolution F r μ (frequencySqOperator F μ a) x := by
     intro r
-    simp only [evolveV, SchwartzMap.sub_apply, frequencySqOperator_sineEvolution hμ]
+    simp only [evolveV, sub_apply, frequencySqOperator_sineEvolution hμ]
   simp_rw [e]
   convert h using 1
-  simp only [evolveU, map_add, SchwartzMap.add_apply, frequencySqOperator_cosEvolution hμ]
+  simp only [evolveU, map_add, add_apply, frequencySqOperator_cosEvolution hμ]
   abel
 
 open LineDeriv in
@@ -278,11 +278,10 @@ lemma frequencySqOperator_eq (μ : ℝ) (f : 𝓢(E, F)) :
   rw [frequencySqOperator, hf, fourierMultiplierCLM_add F hsm hc,
     SchwartzMap.fourierMultiplierCLM_smul (𝕜 := ℂ) (F := F) hnC]
   have h1 := SchwartzMap.fourierMultiplierCLM_const (𝕜 := ℂ) (F := (F)) (E := E) ((μ : ℝ) : ℂ)
-  simp only [ContinuousLinearMap.smul_apply, neg_smul, neg_neg]
+  simp only [smul_apply, neg_smul, neg_neg]
   rw [h1]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply]
+  simp only [smul_apply, ContinuousLinearMap.id_apply]
   congr 1
-  all_goals first | exact Complex.coe_smul _ _ | (rw [← Complex.coe_smul]; push_cast; rfl)
 
 omit [CompleteSpace F] in
 lemma continuous_sineEvolution_apply' {μ : ℝ} (hμ : 0 ≤ μ) (a : 𝓢(E, F)) :

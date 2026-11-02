@@ -231,7 +231,7 @@ omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 lemma continuous_e : Continuous fun z : ℝ × E => D.e z.1 z.2 := by
   unfold e energyDensity
   have := D.cv; have := D.cu
-  refine ((D.cv.norm.pow 2).add (continuous_finset_sum _ fun i _ => (D.cp i).norm.pow 2)).add
+  refine ((D.cv.norm.pow 2).add (continuous_finsetSum _ fun i _ => (D.cp i).norm.pow 2)).add
     (continuous_const.mul (D.cu.norm.pow 2))
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
@@ -240,8 +240,8 @@ lemma continuous_e' : Continuous fun z : ℝ × E => D.e' z.1 z.2 := by
       Continuous fun z => (inner ℝ (f z) (g z) : ℝ) := fun hf hg => Continuous.inner hf hg
   unfold e'
   refine ((continuous_const.mul (hin D.cv
-    ((continuous_finset_sum _ fun i _ => D.cs i).sub ((continuous_const (y := μ)).smul D.cu)))).add
-    (continuous_finset_sum _ fun i _ =>
+    ((continuous_finsetSum _ fun i _ => D.cs i).sub ((continuous_const (y := μ)).smul D.cu)))).add
+    (continuous_finsetSum _ fun i _ =>
       continuous_const.mul (hin (D.cp i) (D.cq i)))).add
     (continuous_const.mul (continuous_const.mul (hin D.cu D.cv)))
 
@@ -380,14 +380,14 @@ lemma integral_energyDeriv {τ0 : ℝ} (hτ0 : 0 ≤ τ0) :
       intro x; rw [D.e'_eq, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => by ring
     simp_rw [this]
-    rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finset_sum _ fun i _ => iDG i]
+    rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum _ fun i _ => iDG i]
     simp_rw [hibp]
     rw [Finset.sum_neg_distrib]; ring
   have h3 : ∫ x, (W.wτ τ0 x * D.e τ0 x - 2 * ∑ i, W.wg i τ0 x * D.flux i τ0 x) =
       (∫ x, W.wτ τ0 x * D.e τ0 x) - 2 * ∑ i, ∫ x, W.wg i τ0 x * D.flux i τ0 x := by
     rw [MeasureTheory.integral_sub iA
-      ((MeasureTheory.integrable_finset_sum _ fun i _ => iWG i).const_mul 2),
-      MeasureTheory.integral_const_mul, MeasureTheory.integral_finset_sum _ fun i _ => iWG i]
+      ((MeasureTheory.integrable_finsetSum _ fun i _ => iWG i).const_mul 2),
+      MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum _ fun i _ => iWG i]
   rw [h3, h1, h2]; ring
 
 lemma integral_energyDeriv_nonpos (hμ : 0 ≤ μ) {τ0 : ℝ} (hτ0 : 0 ≤ τ0) : ∫ x, D.energyDeriv W τ0 x ≤
@@ -511,7 +511,7 @@ def evolveFields {μ : ℝ} (hμ : 0 ≤ μ) (f0 f1 : 𝓢(E, ℂ)) :
     have h := hasDerivAt_evolveV hμ f0 f1 x τ
     convert h using 1
     rw [frequencySqOperator_eq, SchwartzMap.laplacian_eq_sum (stdOrthonormalBasis ℝ E)]
-    simp [SchwartzMap.neg_apply, SchwartzMap.smul_apply]
+    simp only [Complex.real_smul, add_apply, neg_apply, sum_apply, smul_apply, neg_add_rev, neg_neg]
     ring
   hp i τ x := by
     simp_rw [lineDeriv_evolveU hμ]

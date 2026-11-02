@@ -287,7 +287,7 @@ lemma fourier_smul_fourierInv_of_even {G : Type*} [NormedAddCommGroup G] [Normed
   have h : (fun x => m x • 𝓕⁻ g x) = (fun x => m x • 𝓕 g x) ∘ (LinearIsometryEquiv.neg ℝ (E :=
     E)) := by
     funext x
-    simp only [Function.comp_apply, LinearIsometryEquiv.coe_neg, Pi.neg_apply, id_eq, hm,
+    simp only [Function.comp_apply, LinearIsometryEquiv.coe_neg, hm,
       Real.fourierInv_eq_fourier_neg]
   rw [h, Real.fourier_comp_linearIsometry, Real.fourierInv_eq_fourier_neg]
   rfl

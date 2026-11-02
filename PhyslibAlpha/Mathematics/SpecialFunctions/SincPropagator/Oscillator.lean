@@ -131,7 +131,8 @@ lemma evolutionMatrix_eq (t ω : ℝ) :
     evolutionMatrix t ω = ((cos (ω * t) : ℝ) : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) +
       ((sincPropagator t ω : ℝ) : ℂ) • generator ω := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [evolutionMatrix, generator] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [evolutionMatrix, generator]
+  ring
 
 /-- The exponential of the generator is the evolution matrix. -/
 lemma exp_generator (t ω : ℝ) :

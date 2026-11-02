@@ -150,7 +150,7 @@ lemma causalFuture_eq_add (K : Set (SpaceTime d)) :
   constructor
   · rintro ⟨p, hp, hpq⟩
     refine ⟨p, hp, q - p, ⟨0, rfl, causallyFollows_zero_sub hpq⟩, ?_⟩
-    abel
+    abel_nf
   · rintro ⟨p, hp, v, ⟨z, hz, hzv⟩, rfl⟩
     have hz0 : z = 0 := hz
     subst z
@@ -177,7 +177,7 @@ lemma causalPast_eq_add_neg (K : Set (SpaceTime d)) :
       have heq : -(q - p) = p - q := neg_sub _ _
       rw [heq]
       exact causallyFollows_zero_sub hqp
-    · abel
+    · abel_nf
   · rintro ⟨p, hp, v, hv, rfl⟩
     change -v ∈ (causalRelation d).causalFuture {0} at hv
     obtain ⟨z, hz, hzv⟩ := hv

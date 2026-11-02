@@ -125,7 +125,7 @@ lemma integrable_pairing_integrand {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) (g : �
     by_cases hs : q.2 ≤ a
     · rw [← propagatedSlice_eq_sineEvolution F f hμ]
       exact propagatedSlice_eq_zero_of_notMem F f _ _ (ha q.2 hs) q.1
-    · push_neg at hs
+    · push Not at hs
       refine sineEvolution_slice_eq_zero F f hμ hqt fun y hy => ?_
       have hy1 : ‖y‖ ≤ R := (norm_snd_le (q.2, y)).trans (hR _ hy)
       have hx : R + |t| + |a| < ‖q.1‖ := by
@@ -138,7 +138,7 @@ lemma integrable_pairing_integrand {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) (g : �
       have h5 := le_abs_self t
       have h6 := neg_abs_le a
       linarith
-  simp only [hz, smul_zero, Pi.zero_apply]
+  simp only [hz, smul_zero]
 
 /-- **The retarded solution as a tempered distribution.** Tested against a Schwartz function `g`
 the spatial slice of the retarded solution at the time `t` is the integral over the source time
