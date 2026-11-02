@@ -5,13 +5,13 @@ Authors: Joseph Tooby-Smith
 -/
 /-!
 
-# API map linter
+# Atlas article linter
 
-Checks the structure, citations and Lean references of every `API-map.md` in the repository.
+Checks the structure, citations and Lean references of every `Atlas.md` in the repository.
 
 ## i. Overview
 
-An API map is a prose document, described in `docs/ATLAS_GUIDE.md`:
+An Atlas article is a prose document, described in `docs/ATLAS_GUIDE.md`:
 
 - a `# ` title;
 - a single-paragraph `## Abstract` (or `## Abstract (Alpha)`) with no citations;
@@ -19,17 +19,17 @@ An API map is a prose document, described in `docs/ATLAS_GUIDE.md`:
   citations `[n]`, `[TODO]` markers and text citations `{n}` in the prose;
 - a numbered `## Lean References` list of the Lean declarations the prose cites;
 - optionally, and directly after it, a numbered `## References` list of the literature and other
-  API maps the prose cites (the text references).
+  Atlas articles the prose cites (the text references).
 
 This executable checks that each map has that shape, that citations and references correspond,
 that links appear only in `## References`, and that every cited declaration really is in the file
 it is attributed to.
 
-Everything in this file is built around a single structure, `APIMapData`, whose fields are the
-parts of an API map: its headers, its abstract, its content, and its Lean and text references.
-`APIMapData.read` reads a map from its file, reporting anything the structure cannot hold (text
+Everything in this file is built around a single structure, `AtlasData`, whose fields are the
+parts of an Atlas article: its headers, its abstract, its content, and its Lean and text references.
+`AtlasData.read` reads a map from its file, reporting anything the structure cannot hold (text
 before the first section, unreadable reference entries); every other check is a definition on
-`APIMapData`.
+`AtlasData`.
 
 Run it from the repository root with `lake exe atlas_lint`; pass `--verbose` to also see the
 notes (instance claims and Lean names in the prose), and `--repo <path>` to lint another checkout.
@@ -37,17 +37,17 @@ It exits non-zero on any error. It does not need a Lean environment built to per
 
 ## ii. Key results
 
-- `APIMapData` is an API map, with its parts as fields.
-- `APIMapData.read` reads a map from the repository.
-- `APIMapData.leanCitations` and `APIMapData.textCitations` give the citations in its prose.
-- `APIMapData.checkHeadings`, `APIMapData.checkProse`, `APIMapData.checkCitations` and
-  `APIMapData.checkDeclarations` check a map.
-- `APIMapData.lint` lints a map, returning its errors, its notes and its counts.
+- `AtlasData` is an Atlas article, with its parts as fields.
+- `AtlasData.read` reads a map from the repository.
+- `AtlasData.leanCitations` and `AtlasData.textCitations` give the citations in its prose.
+- `AtlasData.checkHeadings`, `AtlasData.checkProse`, `AtlasData.checkCitations` and
+  `AtlasData.checkDeclarations` check a map.
+- `AtlasData.lint` lints a map, returning its errors, its notes and its counts.
 - `main` lints every map in the repository and exits non-zero on any error.
 
 ## iii. Table of contents
 
-- A. The API map
+- A. The Atlas article
 - B. String helpers
 - C. Reading a map
   - C.1. Reference entries
@@ -64,17 +64,17 @@ It exits non-zero on any error. It does not need a Lean environment built to per
 
 ## iv. References
 
-- `docs/ATLAS_GUIDE.md`, the guide to writing API maps, which this linter enforces.
+- `docs/ATLAS_GUIDE.md`, the guide to writing Atlas articles, which this linter enforces.
 
 -/
 
 /-!
 
-## A. The API map
+## A. The Atlas article
 
 -/
 
-namespace APIMapData
+namespace AtlasData
 
 /-- One entry of `## Lean References`: its number, its Lean file and the declarations it claims. -/
 structure LeanReference where
@@ -83,17 +83,17 @@ structure LeanReference where
   claims : List String
 
 /-- One entry of `## References`: its number and its text, which cites the literature or another
-API map. -/
+Atlas article. -/
 structure TextReference where
   number : Nat
   text : String
 
-end APIMapData
+end AtlasData
 
-/-- An API map: an `API-map.md` file, as described in `docs/ATLAS_GUIDE.md`, read into its
+/-- An Atlas article: an `Atlas.md` file, as described in `docs/ATLAS_GUIDE.md`, read into its
 parts. Each prose section is given by its paragraphs, each folded onto one line, and is empty
 when the map lacks it. -/
-structure APIMapData where
+structure AtlasData where
   /-- The repository-relative path of the file. -/
   path : String
   /-- The `# ` headings; a well-formed map has exactly one, its title. -/
@@ -109,11 +109,11 @@ structure APIMapData where
   /-- The paragraphs of `## Content (Alpha)`. -/
   contentAlpha : Array String
   /-- The entries of `## Lean References`. -/
-  referencesLean : Array APIMapData.LeanReference
+  referencesLean : Array AtlasData.LeanReference
   /-- The entries of `## References`. -/
-  referencesText : Array APIMapData.TextReference
+  referencesText : Array AtlasData.TextReference
 
-namespace APIMapData
+namespace AtlasData
 
 /-!
 
@@ -195,11 +195,11 @@ def TextReference.ofLine? (line : String) : Option TextReference := do
   guard (text != "")
   return { number, text }
 
-/-- The paths of API maps named in a text reference. -/
+/-- The paths of Atlas articles named in a text reference. -/
 def TextReference.mapPaths (reference : TextReference) : List String :=
   (words reference.text).filterMap fun word =>
-    match word.splitOn "/API-map.md" with
-    | before :: _ :: _ => if before != "" then some (before ++ "/API-map.md") else none
+    match word.splitOn "/Atlas.md" with
+    | before :: _ :: _ => if before != "" then some (before ++ "/Atlas.md") else none
     | _ => none
 
 /-!
@@ -208,10 +208,10 @@ def TextReference.mapPaths (reference : TextReference) : List String :=
 
 -/
 
-/-- Reads an API map from its text. Returns the map, together with the problems found that the
+/-- Reads an Atlas article from its text. Returns the map, together with the problems found that the
 map cannot hold: text between the title and the first section, and reference entries that cannot
 be read. -/
-def parse (path text : String) : APIMapData × Array String := Id.run do
+def parse (path text : String) : AtlasData × Array String := Id.run do
   /- Split the lines into the `# ` titles, the lines before the first `##` section, and the
   `##` sections, ignoring headings inside fenced code blocks. -/
   let mut titles : Array String := #[]
@@ -240,7 +240,7 @@ def parse (path text : String) : APIMapData × Array String := Id.run do
     (fun (refs, bad) line => match TextReference.ofLine? line with
       | some ref => (refs.push ref, bad)
       | none => (refs, bad.push line)) (#[], #[])
-  let map : APIMapData :=
+  let map : AtlasData :=
     { path, titles, headers := sections.toList.map (·.1)
       abstract := paragraphs (linesOf "Abstract")
       abstractAlpha := paragraphs (linesOf "Abstract (Alpha)")
@@ -304,9 +304,9 @@ where
 
 -/
 
-/-- Reads the API map at the repository-relative `path`, together with the problems found that
+/-- Reads the Atlas article at the repository-relative `path`, together with the problems found that
 the map cannot hold. -/
-def read (repo : System.FilePath) (path : String) : IO (APIMapData × Array String) := do
+def read (repo : System.FilePath) (path : String) : IO (AtlasData × Array String) := do
   return parse path (← IO.FS.readFile (repo / path))
 
 /-- The repository-relative paths of the files called `name` under `relative`, skipping hidden
@@ -336,12 +336,12 @@ def isFile (path : System.FilePath) : IO Bool := do
 
 /-- The prose sections of a map, with their headings, in order: the abstract, the alpha abstract,
 the content and the alpha content. -/
-def proseSections (map : APIMapData) : List (String × Array String) :=
+def proseSections (map : AtlasData) : List (String × Array String) :=
   [("Abstract", map.abstract), ("Abstract (Alpha)", map.abstractAlpha),
     ("Content", map.content), ("Content (Alpha)", map.contentAlpha)]
 
 /-- Whether a map is alpha, that is, has not yet been through the stringent review. -/
-def isAlpha (map : APIMapData) : Bool :=
+def isAlpha (map : AtlasData) : Bool :=
   map.headers.contains "Abstract (Alpha)" && !map.headers.contains "Abstract"
 
 /-- A piece of prose: a character of text, or a citation. -/
@@ -406,18 +406,18 @@ def textCitationsOf (paragraph : String) : List Nat :=
     | _ => none
 
 /-- The Lean citations in the prose of a map, one per claim. -/
-def leanCitations (map : APIMapData) : Array LeanCitation :=
+def leanCitations (map : AtlasData) : Array LeanCitation :=
   map.proseSections.toArray.flatMap fun (_, paras) => paras.flatMap leanCitationsOf
 
 /-- The text citations in the prose of a map. -/
-def textCitations (map : APIMapData) : List Nat :=
+def textCitations (map : AtlasData) : List Nat :=
   map.proseSections.flatMap fun (_, paras) => paras.toList.flatMap textCitationsOf
 
 /-- The numbers of the Lean references, in order. -/
-def leanNumbers (map : APIMapData) : List Nat := map.referencesLean.toList.map (·.number)
+def leanNumbers (map : AtlasData) : List Nat := map.referencesLean.toList.map (·.number)
 
 /-- The numbers of the text references, in order. -/
-def textNumbers (map : APIMapData) : List Nat := map.referencesText.toList.map (·.number)
+def textNumbers (map : AtlasData) : List Nat := map.referencesText.toList.map (·.number)
 
 /-!
 
@@ -548,7 +548,7 @@ def headerRank : String → Option Nat
 
 /-- Problems with the title and the headers of a map: exactly one title, only known headers, each
 once, an abstract, some content and the Lean references, in the required order. -/
-def checkHeadings (map : APIMapData) : Array String := Id.run do
+def checkHeadings (map : AtlasData) : Array String := Id.run do
   let mut problems : Array String := #[]
   if map.titles.isEmpty then problems := problems.push "STRUCTURE: no `# Title` heading"
   else if map.titles.size > 1 then
@@ -579,7 +579,7 @@ def checkHeadings (map : APIMapData) : Array String := Id.run do
 /-- Problems with the prose of a map: an abstract must be a single paragraph without citations, a
 content section must not be empty, and neither may contain links, `[planned]` or grouped
 citations. -/
-partial def checkProse (map : APIMapData) : Array String := Id.run do
+partial def checkProse (map : AtlasData) : Array String := Id.run do
   let mut problems : Array String := #[]
   for (heading, paras) in map.proseSections do
     unless map.headers.contains heading do continue
@@ -665,18 +665,18 @@ def checkNumbering (label : String) (numbers : List Nat) : Array String := Id.ru
       break
   return problems
 
-/-- Problems with the text references of a map: the API maps they name must exist. -/
-def checkMapPaths (map : APIMapData) (repo : System.FilePath) : IO (Array String) := do
+/-- Problems with the text references of a map: the Atlas articles they name must exist. -/
+def checkMapPaths (map : AtlasData) (repo : System.FilePath) : IO (Array String) := do
   let mut errors : Array String := #[]
   for reference in map.referencesText do
     for mapPath in reference.mapPaths do
       unless ← isFile (repo / mapPath) do
-        errors := errors.push s!"literature\{{reference.number}} MISSING API MAP: {mapPath}"
+        errors := errors.push s!"literature\{{reference.number}} MISSING ATLAS: {mapPath}"
   return errors
 
 /-- Checks the citations in the prose of a map: every citation resolves, and every reference is
 cited. Also counts the claims, and notes Lean names left in the content. -/
-def checkCitations (map : APIMapData) : Report := Id.run do
+def checkCitations (map : AtlasData) : Report := Id.run do
   let leanNumbers := map.leanNumbers
   let textNumbers := map.textNumbers
   let mut errors : Array String := #[]
@@ -711,7 +711,7 @@ def checkCitations (map : APIMapData) : Report := Id.run do
 
 /-- Checks the Lean references of a map: each file exists and contains the declarations claimed
 of it. -/
-def checkDeclarations (map : APIMapData) (repo : System.FilePath) : IO Report := do
+def checkDeclarations (map : AtlasData) (repo : System.FilePath) : IO Report := do
   let mut report : Report := {}
   for reference in map.referencesLean do
     let path := repo / reference.file
@@ -747,14 +747,14 @@ def checkDeclarations (map : APIMapData) (repo : System.FilePath) : IO Report :=
 
 /-- Lints a map: its headings and prose, its reference lists, its citations and its
 declarations. -/
-def lint (map : APIMapData) (repo : System.FilePath) : IO Report := do
+def lint (map : AtlasData) (repo : System.FilePath) : IO Report := do
   let structural := map.checkHeadings ++ map.checkProse ++
     checkNumbering "REFERENCES" map.leanNumbers ++ checkNumbering "LITERATURE" map.textNumbers ++
     (← map.checkMapPaths repo)
   return (Report.ofErrors structural).append map.checkCitations |>.append
     (← map.checkDeclarations repo)
 
-end APIMapData
+end AtlasData
 
 /-!
 
@@ -762,22 +762,22 @@ end APIMapData
 
 -/
 
-/-- Lints every API map in the repository. -/
+/-- Lints every Atlas article in the repository. -/
 def main (args : List String) : IO UInt32 := do
   let verbose := args.contains "--verbose"
   let repo : System.FilePath := match args.dropWhile (· != "--repo") with
     | _ :: path :: _ => System.FilePath.mk path
     | _ => System.FilePath.mk "."
-  let paths := (← APIMapData.findPaths repo "API-map.md").qsort (· < ·)
-  let stale := (← APIMapData.findPaths repo "API-map.yaml").qsort (· < ·)
+  let paths := (← AtlasData.findPaths repo "Atlas.md").qsort (· < ·)
+  let stale := (← AtlasData.findPaths repo "API-map.yaml").qsort (· < ·)
   if paths.isEmpty then
-    IO.eprintln s!"no API-map.md files under {repo}"
+    IO.eprintln s!"no Atlas.md files under {repo}"
     return 1
-  let mut total : APIMapData.Counts := {}
+  let mut total : AtlasData.Counts := {}
   let mut failed := false
   for path in paths do
-    let (map, readProblems) ← APIMapData.read repo path
-    let report := (APIMapData.Report.ofErrors readProblems).append (← map.lint repo)
+    let (map, readProblems) ← AtlasData.read repo path
+    let report := (AtlasData.Report.ofErrors readProblems).append (← map.lint repo)
     let counts := report.counts
     total := total.add counts
     failed := failed || !report.errors.isEmpty
@@ -788,7 +788,7 @@ def main (args : List String) : IO UInt32 := do
       IO.println s!"  {problem}"
   for path in stale do
     failed := true
-    IO.println s!"[FAIL] {path}: API maps are now `API-map.md`"
+    IO.println s!"[FAIL] {path}: Atlas articles are now `Atlas.md`"
   IO.println "\n=== SUMMARY ==="
   IO.println (s!"files={paths.size} claims={total.claims} done={total.done} " ++
     s!"todo={total.todo} files_checked={total.checked} names_ok={total.namesOk} " ++
