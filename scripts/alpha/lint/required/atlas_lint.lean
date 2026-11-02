@@ -31,7 +31,7 @@ parts of an API map: its headers, its abstract, its content, and its Lean and te
 before the first section, unreadable reference entries); every other check is a definition on
 `APIMapData`.
 
-Run it from the repository root with `lake exe api_map_lint`; pass `--verbose` to also see the
+Run it from the repository root with `lake exe atlas_lint`; pass `--verbose` to also see the
 notes (instance claims and Lean names in the prose), and `--repo <path>` to lint another checkout.
 It exits non-zero on any error. It does not need a Lean environment built to perform its checks.
 

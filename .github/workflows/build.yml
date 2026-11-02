@@ -93,7 +93,7 @@ jobs:
       - name: API map linter
         if: ${{ !cancelled() }}
         run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe api_map_lint"
+          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe atlas_lint"
 
       - name: runLinter on Physlib
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}

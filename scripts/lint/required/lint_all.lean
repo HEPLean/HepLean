@@ -51,7 +51,7 @@ def main (args : List String) : IO UInt32 := do
   println! theoremCheck.stderr
 
   println! "\x1b[36m(5/7) API map linter \x1b[0m"
-  let apiMapCheck ← IO.Process.output {cmd := "lake", args := #["exe", "api_map_lint"]}
+  let apiMapCheck ← IO.Process.output {cmd := "lake", args := #["exe", "atlas_lint"]}
   println! apiMapCheck.stdout
 
   if ¬ "--fast" ∈ args then
