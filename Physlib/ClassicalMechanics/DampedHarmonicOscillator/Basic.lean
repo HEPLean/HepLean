@@ -6,7 +6,6 @@ Authors: Nicola Bernini, Florian Wiesner
 module
 
 public import Physlib.ClassicalMechanics.HarmonicOscillator.Basic
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 /-!
 
 # The damped harmonic oscillator
