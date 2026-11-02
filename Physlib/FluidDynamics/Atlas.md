@@ -49,5 +49,5 @@ is ρ u (½ |u|² + h). [TODO]
 
 1. Landau, L. D. and Lifshitz, E. M., *Fluid Mechanics* (Course of Theoretical Physics, vol. 6),
    2nd ed., Chapter 1 (continuity, Euler equation, Bernoulli equation, energy and momentum flux).
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-3. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+3. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md

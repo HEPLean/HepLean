@@ -102,7 +102,7 @@ def AtlasData.moduleContext (map : AtlasData) : String :=
 /-- The link to a map on GitHub. -/
 def AtlasData.githubLink (map : AtlasData) : String :=
   -- This follows Lean.Name.toGitHubLink in Physlib.Meta.Basic, pointing at
-  -- the repository-relative API-map path instead of a declaration.
+  -- the repository-relative Atlas path instead of a declaration.
   s!"https://github.com/leanprover-community/physlib/blob/master/{map.path}"
 
 /-- The `file (names)` form of a requirement's location, built from the

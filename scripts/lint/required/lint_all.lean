@@ -50,7 +50,7 @@ def main (args : List String) : IO UInt32 := do
   println! theoremCheck.stdout
   println! theoremCheck.stderr
 
-  println! "\x1b[36m(5/7) API map linter \x1b[0m"
+  println! "\x1b[36m(5/7) Atlas article linter \x1b[0m"
   let apiMapCheck ← IO.Process.output {cmd := "lake", args := #["exe", "atlas_lint"]}
   println! apiMapCheck.stdout
 

@@ -59,4 +59,4 @@ rigid body is described by Euler angles. [TODO]
 ## References
 
 1. Landau and Lifshitz, *Mechanics*, Section 32 (page 100).
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md

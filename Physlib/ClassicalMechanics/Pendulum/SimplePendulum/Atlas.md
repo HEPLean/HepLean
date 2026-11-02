@@ -117,8 +117,8 @@ at amplitude θ₀, for amplitudes strictly between zero and the inverted positi
 
 ## References
 
-1. Configuration space for pendulum API map — Physlib/ClassicalMechanics/Pendulum/API-map.md
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
+1. Configuration space for pendulum Atlas article — Physlib/ClassicalMechanics/Pendulum/Atlas.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
 3. Landau & Lifshitz, *Mechanics*, 3rd Edition, Chapter 1 (The Equations of motion), Section 5 (The
    Lagrangian for a system of particles).
 4. Landau & Lifshitz, *Mechanics*, 3rd Edition, Chapter 7 (The canonical equations), Section 40

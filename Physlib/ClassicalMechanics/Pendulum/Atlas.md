@@ -34,8 +34,8 @@ differentiable lift it agrees with the constrained Lagrangian of the bob moving 
 
 ## References
 
-1. Configuration Space API map — Physlib/ClassicalMechanics/Lagrangian/API-map.md
+1. Configuration Space Atlas article — Physlib/ClassicalMechanics/Lagrangian/Atlas.md
 2. Landau & Lifshitz, *Mechanics*, 3rd Edition, Chapter 1 (The Equations of motion), Section 5 (The
    Lagrangian for a system of particles).
-3. Simple pendulum API map — Physlib/ClassicalMechanics/Pendulum/SimplePendulum/API-map.md
-4. Space API map — Physlib/SpaceAndTime/Space/API-map.md
+3. Simple pendulum Atlas article — Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Atlas.md
+4. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md

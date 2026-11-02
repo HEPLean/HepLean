@@ -92,5 +92,5 @@ measures, as the time derivative of the coordinate components. [TODO]
 
 ## References
 
-1. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-2. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+1. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+2. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md

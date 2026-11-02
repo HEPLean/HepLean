@@ -56,9 +56,9 @@ orthochronous Lorentz transformations are characterized topologically within the
 
 ## References
 
-1. SpaceTime API map — Physlib/SpaceAndTime/SpaceTime/API-map.md
-2. Tensors API map — Physlib/Relativity/Tensors/API-map.md
-3. Weyl Fermions API map — Physlib/Relativity/Fermions/Weyl/API-map.md
-4. Dirac Fermions API map — Physlib/Relativity/Fermions/Dirac/API-map.md
+1. SpaceTime Atlas article — Physlib/SpaceAndTime/SpaceTime/Atlas.md
+2. Tensors Atlas article — Physlib/Relativity/Tensors/Atlas.md
+3. Weyl Fermions Atlas article — Physlib/Relativity/Fermions/Weyl/Atlas.md
+4. Dirac Fermions Atlas article — Physlib/Relativity/Fermions/Dirac/Atlas.md
 5. A. Jaffe, *Lorentz Transformations, Rotations, and Boosts*,
    https://cdn.ku.edu.tr/cdn/files/amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf

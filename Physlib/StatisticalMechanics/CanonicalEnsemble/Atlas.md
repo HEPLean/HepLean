@@ -82,7 +82,7 @@ Its Helmholtz free energy has a closed form. [TODO]
 ## References
 
 1. L. D. Landau and E. M. Lifshitz, *Statistical Physics, Part 1*, §31.
-2. Temperature API map — Physlib/Thermodynamics/Temperature/API-map.md
+2. Temperature Atlas article — Physlib/Thermodynamics/Temperature/Atlas.md
 3. D. Tong, *Lectures on Statistical Physics* (Cambridge),
    https://www.damtp.cam.ac.uk/user/tong/statphys/one.pdf and
    https://www.damtp.cam.ac.uk/user/tong/statphys/two.pdf

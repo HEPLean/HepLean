@@ -204,7 +204,7 @@ the integral χ = c ∫ dz / H(z) in the redshift for a(t₀) = 1. [TODO]
 
 ## References
 
-1. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+1. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
 2. S. Weinberg, *Cosmology*, Oxford University Press (2008), Chapter 1.
 3. D. Baumann, *Cosmology*, Cambridge University Press (2022), Chapter 2.
 4. S. Dodelson and F. Schmidt, *Modern Cosmology*, 2nd ed., Chapter 2.

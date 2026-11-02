@@ -110,8 +110,8 @@ identifies a fermion with its charge conjugate. [TODO]
 
 ## References
 
-1. Weyl Fermions API map — Physlib/Relativity/Fermions/Weyl/API-map.md
-2. Lorentz Group API map — Physlib/Relativity/LorentzGroup/API-map.md
+1. Weyl Fermions Atlas article — Physlib/Relativity/Fermions/Weyl/Atlas.md
+2. Lorentz Group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md
 3. H. K. Dreiner, H. E. Haber and S. P. Martin, *Two-component spinor techniques and Feynman rules
    for quantum field theory and supersymmetry*, Phys. Rept. 494 (2010) 1–196, arXiv:0812.1594,
    https://arxiv.org/abs/0812.1594 (Dirac fermions are treated on page 197 of the arXiv version).

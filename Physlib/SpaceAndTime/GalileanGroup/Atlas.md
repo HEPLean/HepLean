@@ -50,5 +50,5 @@ combining a rotation and a translation of space, includes into the Galilean grou
 
 ## References
 
-1. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-2. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+1. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+2. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md

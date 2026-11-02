@@ -62,6 +62,6 @@ Kanai {5}.
 
 1. Landau & Lifshitz, *Mechanics*, page 76, Section 25.
 2. Goldstein, *Classical Mechanics*, Chapter 2.
-3. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+3. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
 4. Caldirola, *Nuovo Cimento* 18 (1941) 393.
 5. Kanai, *Progress of Theoretical Physics* 3 (1948) 440.

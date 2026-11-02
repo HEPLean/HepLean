@@ -72,6 +72,6 @@ vanishes. [13]
 
 ## References
 
-1. Higgs field API map — Physlib/Particles/StandardModel/HiggsBoson/API-map.md
+1. Higgs field Atlas article — Physlib/Particles/StandardModel/HiggsBoson/Atlas.md
 2. arXiv:1605.03237, https://arxiv.org/abs/1605.03237
 3. arXiv:hep-ph/0605184, https://arxiv.org/abs/hep-ph/0605184

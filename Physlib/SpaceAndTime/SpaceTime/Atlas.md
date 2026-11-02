@@ -60,7 +60,7 @@ into a manifold is differentiable. [TODO]
 
 ## References
 
-1. Lorentz tensors API map — Physlib/Relativity/Tensors/API-map.md
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-3. Time API map — Physlib/SpaceAndTime/Time/API-map.md
-4. Lorentz group API map — Physlib/Relativity/LorentzGroup/API-map.md
+1. Lorentz tensors Atlas article — Physlib/Relativity/Tensors/Atlas.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+3. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
+4. Lorentz group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md

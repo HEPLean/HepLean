@@ -73,7 +73,7 @@ the manifold weighted by a group cocycle. [TODO]
    Theoretical Physics* (1988), 165–171.
 3. J. Kock, *Frobenius Algebras and 2D Topological Quantum Field Theories*, Cambridge University
    Press (2003).
-4. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+4. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
 5. Physlib GitHub issue #877, https://github.com/leanprover-community/physlib/issues/877
 6. J. Lurie, *On the classification of topological field theories*, Current Developments in
    Mathematics 2008 (2009), 129–280.

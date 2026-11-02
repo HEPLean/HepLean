@@ -131,8 +131,8 @@ left-handed Weyl fermion to a right-handed one. [TODO]
 
 ## References
 
-1. Lorentz Group API map — Physlib/Relativity/LorentzGroup/API-map.md
-2. Dirac Fermions API map — Physlib/Relativity/Fermions/Dirac/API-map.md
+1. Lorentz Group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md
+2. Dirac Fermions Atlas article — Physlib/Relativity/Fermions/Dirac/Atlas.md
 3. H. K. Dreiner, H. E. Haber and S. P. Martin, *Two-component spinor techniques and Feynman rules
    for quantum field theory and supersymmetry*, Phys. Rept. 494 (2010) 1–196, arXiv:0812.1594,
    https://arxiv.org/abs/0812.1594.

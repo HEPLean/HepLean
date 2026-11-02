@@ -38,5 +38,5 @@ group {3}. [1] Progress on Feynman diagrams is tracked in a GitHub issue {4}.
 
 1. Wikipedia, Feynman diagram, https://en.wikipedia.org/wiki/Feynman_diagram
 2. M. E. Peskin and D. V. Schroeder, *An Introduction to Quantum Field Theory*, chapter 4.
-3. Lorentz group API map — Physlib/Relativity/LorentzGroup/API-map.md
+3. Lorentz group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md
 4. Physlib GitHub issue #882, https://github.com/leanprover-community/physlib/issues/882

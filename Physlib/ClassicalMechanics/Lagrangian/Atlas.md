@@ -52,8 +52,8 @@ coming from a Riemannian metric on M. [TODO]
 
 ## References
 
-1. Configuration Space API map — Physlib/ClassicalMechanics/ConfigurationSpace/API-map.md
-2. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+1. Configuration Space Atlas article — Physlib/ClassicalMechanics/ConfigurationSpace/Atlas.md
+2. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
 3. Ivo Terek, *Introductory Variational Calculus on Manifolds*.
 4. V. I. Arnold, *Mathematical Methods of Classical Mechanics*.
 5. L. D. Landau and E. M. Lifshitz, *Mechanics*.

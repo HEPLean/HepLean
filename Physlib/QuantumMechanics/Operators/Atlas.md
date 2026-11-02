@@ -231,9 +231,9 @@ Hall {1}. The uncertainty bounds go back to Robertson {9} and Schrödinger {10}.
 3. K. Schmüdgen, *Unbounded Self-Adjoint Operators on Hilbert Space*, Springer (2012), Chapters 1
    to 3 (closed, symmetric and self-adjoint operators, and examples 1.3 and 3.8 on multiplication
    operators).
-4. Spectral theory API map — Physlib/QuantumMechanics/Operators/SpectralTheory/API-map.md
-5. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-6. Hilbert space on space API map — Physlib/QuantumMechanics/HilbertSpaces/SpaceD/API-map.md
+4. Spectral theory Atlas article — Physlib/QuantumMechanics/Operators/SpectralTheory/Atlas.md
+5. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+6. Hilbert space on space Atlas article — Physlib/QuantumMechanics/HilbertSpaces/SpaceD/Atlas.md
 7. J. J. Sakurai and J. Napolitano, *Modern Quantum Mechanics*, 2nd ed., Cambridge University Press
    (2017), Chapter 1 (observables, expectation values, the canonical commutation relation, the
    uncertainty relation) and Chapter 3 (angular momentum).

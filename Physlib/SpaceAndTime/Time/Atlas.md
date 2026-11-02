@@ -76,4 +76,4 @@ such as the number of seconds in an hour. [11]
 
 ## References
 
-1. Lorentz tensors API map — Physlib/Relativity/Tensors/API-map.md
+1. Lorentz tensors Atlas article — Physlib/Relativity/Tensors/Atlas.md

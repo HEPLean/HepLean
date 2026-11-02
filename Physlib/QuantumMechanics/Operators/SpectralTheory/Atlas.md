@@ -100,7 +100,7 @@ multiplication operator is the essential range of its multiplier. [TODO]
 
 ## References
 
-1. Operator algebra API map — Physlib/QuantumMechanics/Operators/API-map.md
+1. Operator algebra Atlas article — Physlib/QuantumMechanics/Operators/Atlas.md
 2. B. C. Hall, *Quantum Theory for Mathematicians*, Springer (2013), Chapters 9 and 10 (unbounded
    self-adjoint operators, the spectral theorem).
 3. M. Reed and B. Simon, *Methods of Modern Mathematical Physics I. Functional Analysis*, Academic

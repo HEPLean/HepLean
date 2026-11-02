@@ -50,5 +50,5 @@ The general theory of these operators lives in the operator algebra {2}.
 
 ## References
 
-1. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-2. Operator algebra API map — Physlib/QuantumMechanics/Operators/API-map.md
+1. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+2. Operator algebra Atlas article — Physlib/QuantumMechanics/Operators/Atlas.md

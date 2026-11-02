@@ -43,5 +43,5 @@ the instant, and one with both vanishing is constant. [6]
 
 ## References
 
-1. Time API map — Physlib/SpaceAndTime/Time/API-map.md
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
+1. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md

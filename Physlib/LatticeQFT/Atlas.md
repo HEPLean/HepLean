@@ -86,4 +86,4 @@ species. [TODO]
 
 ## References
 
-1. Gauge theory API map — Physlib/ClassicalFieldTheory/GaugeTheory/API-map.md
+1. Gauge theory Atlas article — Physlib/ClassicalFieldTheory/GaugeTheory/Atlas.md

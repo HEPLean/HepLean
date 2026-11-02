@@ -372,6 +372,6 @@ the numerical oscillator, and has its derivative from the generic transport of d
 5. International Bureau of Weights and Measures (BIPM), *The International System of Units (SI
    Brochure)*, 9th edition (2019), Chapter 1 (quantities and units) and Chapter 2 (the defining
    constants and the seven base units).
-6. Time API map — Physlib/SpaceAndTime/Time/API-map.md
-7. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-8. Temperature API map — Physlib/Thermodynamics/Temperature/API-map.md
+6. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md
+7. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+8. Temperature Atlas article — Physlib/Thermodynamics/Temperature/Atlas.md

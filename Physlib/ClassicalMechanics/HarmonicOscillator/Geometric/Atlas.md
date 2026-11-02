@@ -66,5 +66,5 @@ and recovers the standard mass-scaled coordinate expression ½ m ‖v‖². [9]
 
 1. Ivo Terek, *Introductory Variational Calculus on Manifolds*, Section 1 (pages 1-2), Basic
    definitions and examples.
-2. Space API map — Physlib/SpaceAndTime/Space/API-map.md
-3. Time API map — Physlib/SpaceAndTime/Time/API-map.md
+2. Space Atlas article — Physlib/SpaceAndTime/Space/Atlas.md
+3. Time Atlas article — Physlib/SpaceAndTime/Time/Atlas.md

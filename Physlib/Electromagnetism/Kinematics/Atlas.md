@@ -58,7 +58,7 @@ current, and both have gradients for functions [10] and for distributions. [11]
 
 ## References
 
-1. Spacetime API map — Physlib/SpaceAndTime/SpaceTime/API-map.md
-2. Lorentz group API map — Physlib/Relativity/LorentzGroup/API-map.md
+1. Spacetime Atlas article — Physlib/SpaceAndTime/SpaceTime/Atlas.md
+2. Lorentz group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md
 3. J. D. Jackson, *Classical Electrodynamics*, 3rd ed., Sections 6.2-6.3, on vector and scalar
    potentials and gauge transformations.

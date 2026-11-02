@@ -89,8 +89,8 @@ jobs:
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe module_doc_lint"
 
-      # Reads the API maps and source files directly, so it does not need the build either.
-      - name: API map linter
+      # Reads the Atlas articles and source files directly, so it does not need the build either.
+      - name: Atlas article linter
         if: ${{ !cancelled() }}
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe atlas_lint"

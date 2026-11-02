@@ -81,4 +81,4 @@ together with its representations of the gauge group, forms a single structure. 
 
 1. D. Tong, *Line Operators in the Standard Model*, JHEP 07 (2017) 104, arXiv:1705.01853,
    https://arxiv.org/abs/1705.01853
-2. Higgs field API map — Physlib/Particles/StandardModel/HiggsBoson/API-map.md
+2. Higgs field Atlas article — Physlib/Particles/StandardModel/HiggsBoson/Atlas.md

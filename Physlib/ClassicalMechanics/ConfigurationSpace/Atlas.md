@@ -27,8 +27,8 @@ sense. [TODO]
 
 1. Ivo Terek, *Introductory Variational Calculus on Manifolds*.
 2. V. I. Arnold, *Mathematical Methods of Classical Mechanics*.
-3. Lagrangian mechanics API map — Physlib/ClassicalMechanics/Lagrangian/API-map.md
+3. Lagrangian mechanics Atlas article — Physlib/ClassicalMechanics/Lagrangian/Atlas.md
 4. L. D. Landau and E. M. Lifshitz, *Mechanics*.
-5. Configuration space of the harmonic oscillator API map —
-   Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/API-map.md
-6. Configuration space for pendulum API map — Physlib/ClassicalMechanics/Pendulum/API-map.md
+5. Configuration space of the harmonic oscillator Atlas article —
+   Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/Atlas.md
+6. Configuration space for pendulum Atlas article — Physlib/ClassicalMechanics/Pendulum/Atlas.md

@@ -330,5 +330,5 @@ indices. [62]
 
 1. J. Tooby-Smith, *Formalization of physics index notation in Lean 4*, arXiv:2411.07667,
    https://arxiv.org/abs/2411.07667
-2. Lorentz Group API map — Physlib/Relativity/LorentzGroup/API-map.md
-3. Weyl Fermions API map — Physlib/Relativity/Fermions/Weyl/API-map.md
+2. Lorentz Group Atlas article — Physlib/Relativity/LorentzGroup/Atlas.md
+3. Weyl Fermions Atlas article — Physlib/Relativity/Fermions/Weyl/Atlas.md
