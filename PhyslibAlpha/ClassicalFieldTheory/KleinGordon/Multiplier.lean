@@ -47,8 +47,9 @@ None.
   `μ`.
 - `multiplier` : The Fourier multiplier of the propagation over the time `t`.
 
-Lemmas: `norm_multiplier_le`, `multiplier_eq`, `hasTemperateGrowth_comp_sincSqrt`,
-`hasTemperateGrowth_comp_cosSqrt`, `hasTemperateGrowth_multiplier`.
+Lemmas: `dispersion_zero`, `norm_multiplier_le`, `multiplier_eq`,
+`hasTemperateGrowth_comp_sincSqrt`, `hasTemperateGrowth_comp_cosSqrt`,
+`hasTemperateGrowth_multiplier`.
 
 ## B. The free Klein–Gordon evolution and its group law
 
@@ -94,6 +95,12 @@ variable {E : Type*} [NormedAddCommGroup E]
 
 /-- The dispersion `√((2π)² ‖ξ‖² + μ)` of the Klein–Gordon equation with mass parameter `μ`. -/
 def dispersion (μ : ℝ) (ξ : E) : ℝ := √((2 * π) ^ 2 * ‖ξ‖ ^ 2 + μ)
+
+/-- The massless dispersion is the norm of the frequency. -/
+lemma dispersion_zero (ξ : E) : dispersion 0 ξ = 2 * Real.pi * ‖ξ‖ := by
+  unfold dispersion
+  rw [add_zero, show (2 * Real.pi) ^ 2 * ‖ξ‖ ^ 2 = (2 * Real.pi * ‖ξ‖) ^ 2 by ring]
+  exact Real.sqrt_sq (by positivity)
 
 /-- The Fourier multiplier of the propagation over the time `t`. -/
 def multiplier (t μ : ℝ) (ξ : E) : ℂ := (sincPropagator t (dispersion μ ξ) : ℂ)
