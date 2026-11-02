@@ -77,10 +77,9 @@ variable {G : Type*} [AddCommGroup G] [AddGroup.FG G]
 
 /-! ## A. The irreducible zone -/
 
-/-- The irreducible Brillouin zone for `H`. Momenta related by a symmetry in `H` count as one
-point. Any quantity that respects the symmetries of `H` needs to be known only on this reduced
-zone. -/
-abbrev IrreducibleZone (H : Subgroup (Symmetry C)) :=
+/-- The irreducible Brillouin zone for `H`, defined as the orbit space of the
+Brillouin zone under the action of `H`. -/
+abbrev IrreducibleZone (H : Subgroup (Symmetry C)) : Type _ :=
   MulAction.orbitRel.Quotient H (BrillouinZone G)
 
 /-! ## B. The little group -/
