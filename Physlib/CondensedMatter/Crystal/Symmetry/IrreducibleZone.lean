@@ -10,19 +10,24 @@ public import Physlib.CondensedMatter.Crystal.Symmetry.BrillouinZone
 /-!
 # Symmetry reduction of the Brillouin zone
 
-Symmetry-invariant functions correspond to functions on an irreducible zone.
+Crystal symmetries determine the entire band structure from a smaller part of the Brillouin zone.
 
 ## i. Overview
 
-The translations of a crystal determine its Brillouin zone. A subgroup `H` of crystal
-symmetries acts on the crystal momenta. Symmetry-invariant quantities have equal values at
-momenta in the same orbit. The irreducible zone identifies these momenta. A representative
-region chooses one momentum from each orbit.
+Consider a square lattice with one identical atom at each site. Rotating the crystal by 90 degrees
+or reflecting it leaves the system unchanged. The band energies must therefore be identical at
+momenta related by these symmetries. Instead of calculating the dispersion throughout the square
+Brillouin zone it is enough to calculate it on a triangular region covering just one eighth.
 
-For a square lattice, take `H` to be the group of four rotations and four reflections. A scalar
-band energy with these symmetries is determined by its values on an eighth of the square.
-Restriction to an irreducible zone gives an equivalence between functions fixed by the symmetry
-action and functions on the zone.
+Now consider a crystal with the same square lattice but two different atoms in its unit cell. Some
+rotations or reflections may exchange the two atomic species and therefore no longer be
+symmetries. The Brillouin zone still has the same shape but its irreducible region can be larger.
+It is the symmetry of the crystal and not just the shape of its lattice that determines how far
+the Brillouin zone can be reduced.
+
+Every subgroup `H` of crystal symmetries defines its own irreducible Brillouin zone. The more
+symmetries are used the smaller is the region needed to describe a symmetry-invariant quantity.
+With no symmetries the entire Brillouin zone is needed.
 
 ## ii. Key results
 
@@ -30,7 +35,7 @@ action and functions on the zone.
 - `BrillouinZone.littleGroup` : the symmetries in `H` that fix a point of the zone.
 - `BrillouinZone.ker_pointOp_le_littleGroup` : the shifts in `H` lie in every little group.
 - `BrillouinZone.orbitRel_map_pointOp` : `H` and its point operations give the same momentum orbits.
-- `BrillouinZone.irreducibleZoneEquivPointOp` : the irreducible zones for `H` and its point
+- `BrillouinZone.IrreducibleZone.equivPointOp` : the irreducible zones for `H` and its point
   operations correspond.
 - `BrillouinZone.IsIrreducibleZone` : a set with one representative of each momentum orbit.
 - `BrillouinZone.exists_isIrreducibleZone` : every group `H` has an irreducible zone.
@@ -72,7 +77,9 @@ variable {G : Type*} [AddCommGroup G] [AddGroup.FG G]
 
 /-! ## A. The irreducible zone -/
 
-/-- The irreducible Brillouin zone for `H`. Symmetry-related momenta represent the same point. -/
+/-- The irreducible Brillouin zone for `H`. Momenta related by a symmetry in `H` count as one
+point. Any quantity that respects the symmetries of `H` needs to be known only on this reduced
+zone. -/
 abbrev IrreducibleZone (H : Subgroup (Symmetry C)) :=
   MulAction.orbitRel.Quotient H (BrillouinZone G)
 
@@ -107,12 +114,16 @@ lemma orbitRel_map_pointOp (H : Subgroup (Symmetry C)) (k k' : BrillouinZone G) 
   · rintro ⟨⟨s, hs⟩, h⟩
     exact ⟨⟨pointOp C s, s, hs, rfl⟩, h⟩
 
+namespace IrreducibleZone
+
 /-- The irreducible zones for `H` and its point operations correspond. -/
-noncomputable def irreducibleZoneEquivPointOp (H : Subgroup (Symmetry C)) :
+noncomputable def equivPointOp (H : Subgroup (Symmetry C)) :
     IrreducibleZone H ≃ IrreducibleZone (H.map (pointOp C)) :=
   Quotient.congr (Equiv.refl _) (by
     intro k k'
     exact (orbitRel_map_pointOp H k k').symm)
+
+end IrreducibleZone
 
 /-! ## D. Irreducible zones
 
