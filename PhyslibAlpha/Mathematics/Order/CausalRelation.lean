@@ -23,8 +23,10 @@ Causal futures and pasts describe the allowed support of linear field responses.
 - `causalFuture` : The events reachable from at least one event of a source set.
 - `causalPast` : The events able to influence at least one event of a target set.
 - `causalHull` : The union of the causal past and future of a set.
-- `IsSpacelikeCompact` : A closed field support is spacelike compact when it lies in the causal hull of a compact set.
-- `HasCompactCausalDiamonds` : Compact causal diamonds are the geometric compactness input for Green exactness.
+- `IsSpacelikeCompact` : A closed field support is spacelike compact when it lies in the causal hull
+  of a compact set.
+- `HasCompactCausalDiamonds` : Compact causal diamonds are the geometric compactness input for Green
+  exactness.
 - `causalFuture` : The events reachable from at least one event of a source set.
 
 ## iii. Table of contents
@@ -43,17 +45,23 @@ None.
 - `causalFuture` : The events reachable from at least one event of a source set.
 - `causalPast` : The events able to influence at least one event of a target set.
 - `causalHull` : The union of the causal past and future of a set.
-- `IsSpacelikeCompact` : A closed field support is spacelike compact when it lies in the causal hull of a compact set.
-- `HasCompactCausalDiamonds` : Compact causal diamonds are the geometric compactness input for Green exactness.
+- `IsSpacelikeCompact` : A closed field support is spacelike compact when it lies in the causal hull
+  of a compact set.
+- `HasCompactCausalDiamonds` : Compact causal diamonds are the geometric compactness input for Green
+  exactness.
 
-Lemmas: `subset_causalFuture`, `subset_causalPast`, `causalFuture_mono`, `causalPast_mono`, `causalHull_mono`, `causalFuture_empty`, `causalPast_empty`, `causalFuture_union`, `causalPast_union`, `causalFuture_idem` and more.
+Lemmas: `subset_causalFuture`, `subset_causalPast`, `causalFuture_mono`, `causalPast_mono`,
+`causalHull_mono`, `causalFuture_empty`, `causalPast_empty`, `causalFuture_union`,
+`causalPast_union`, `causalFuture_idem` and more.
 
 ## B. Past-compact and future-compact support
 
 - `causalFuture` : The events reachable from at least one event of a source set.
-- `IsPastCompact` : A set is past compact when its intersection with the causal past of every compact set is compact.
+- `IsPastCompact` : A set is past compact when its intersection with the causal past of every
+  compact set is compact.
 
-Lemmas: `mono`, `isPastCompact_empty`, `union`, `causalFuture_inter_causalPast`, `isPastCompact_of_futureSupported`, `isClosed_causalFuture`.
+Lemmas: `mono`, `isPastCompact_empty`, `union`, `causalFuture_inter_causalPast`,
+`isPastCompact_of_futureSupported`, `isClosed_causalFuture`.
 
 -/
 

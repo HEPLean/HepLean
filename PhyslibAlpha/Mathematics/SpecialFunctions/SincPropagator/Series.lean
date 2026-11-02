@@ -30,7 +30,8 @@ It then proves that every derivative is bounded by `2⁻ʲ` on `[0, ∞)`.
 - `sqrtCoeff` : coefficients `(-1)ⁿ / (2n + k)!`
 - `cosSqrt` : `cos √y` as an entire function of `y`.
 - `sincSqrt` : `sinc √y` as an entire function of `y`.
-- `abs_iteratedDeriv_le` : All derivatives of `cos √y` and `sinc √y` are bounded by `2⁻ʲ` on `[0, ∞)`.
+- `abs_iteratedDeriv_le` : All derivatives of `cos √y` and `sinc √y` are bounded by `2⁻ʲ` on
+  `[0, ∞)`.
 
 ## iii. Table of contents
 
@@ -46,7 +47,9 @@ None.
 - `cosSqrt` : `cos √y` as an entire function of `y`.
 - `sincSqrt` : `sinc √y` as an entire function of `y`.
 
-Lemmas: `radius_sqrtCoeff`, `cosSqrt_eq_sum`, `sincSqrt_eq_sum`, `analyticOnNhd_sqrtSum`, `contDiff_cosSqrt`, `contDiff_sincSqrt`, `sqrt_pow_two_mul`, `cosSqrt_of_nonneg`, `sincSqrt_of_nonneg`, `analyticOnNhd_cosSqrt` and more.
+Lemmas: `radius_sqrtCoeff`, `cosSqrt_eq_sum`, `sincSqrt_eq_sum`, `analyticOnNhd_sqrtSum`,
+`contDiff_cosSqrt`, `contDiff_sincSqrt`, `sqrt_pow_two_mul`, `cosSqrt_of_nonneg`,
+`sincSqrt_of_nonneg`, `analyticOnNhd_cosSqrt` and more.
 
 -/
 
@@ -93,7 +96,8 @@ lemma cosSqrt_eq_sum : cosSqrt = ofScalarsSum (E := ℝ) (sqrtCoeff 0) := by
 lemma sincSqrt_eq_sum : sincSqrt = ofScalarsSum (E := ℝ) (sqrtCoeff 1) := by
   funext y; simp [sincSqrt, ofScalarsSum_eq_tsum]
 
-lemma analyticOnNhd_sqrtSum (k : ℕ) : AnalyticOnNhd ℝ (ofScalarsSum (E := ℝ) (sqrtCoeff k)) Set.univ := by
+lemma analyticOnNhd_sqrtSum (k : ℕ) : AnalyticOnNhd ℝ (ofScalarsSum (E := ℝ) (sqrtCoeff k))
+    Set.univ := by
   have hr : 0 < (ofScalars ℝ (sqrtCoeff k)).radius := by rw [radius_sqrtCoeff]; simp
   have h := (ofScalars ℝ (sqrtCoeff k)).hasFPowerSeriesOnBall hr
   rw [radius_sqrtCoeff] at h
@@ -247,10 +251,11 @@ lemma sincSqrt_eq_integral (y : ℝ) :
     have h3 := (hasDerivAt_id u).mul (h1.comp u h2)
     refine h3.congr_deriv ?_
     rw [cosSqrt_eq_sincSqrt_add]
-    simp
+    simp only [Function.comp_apply, one_mul, id_eq, add_right_inj]
     ring
   have := intervalIntegral.integral_eq_sub_of_hasDerivAt hd
-    ((contDiff_cosSqrt.continuous.comp (by fun_prop : Continuous fun u : ℝ => u ^ 2 * y)).intervalIntegrable _ _)
+    ((contDiff_cosSqrt.continuous.comp (by fun_prop : Continuous fun u : ℝ => u ^ 2 *
+      y)).intervalIntegrable _ _)
   simp at this
   exact this.symm
 
@@ -265,7 +270,8 @@ lemma contDiff_iteratedDeriv_cosSqrt (j : ℕ) : ContDiff ℝ 1 (iteratedDeriv j
   exact ((contDiff_cosSqrt.of_le le_top).iterate_deriv j).of_le (by exact_mod_cast le_top)
 
 lemma iteratedDeriv_sincSqrt (j : ℕ) :
-    iteratedDeriv j sincSqrt = fun y => ∫ u in (0:ℝ)..1, u ^ (2 * j) * iteratedDeriv j cosSqrt (u ^ 2 * y) := by
+    iteratedDeriv j sincSqrt = fun y => ∫ u in (0:ℝ)..1, u ^ (2 * j) * iteratedDeriv j cosSqrt (u ^
+      2 * y) := by
   induction j with
   | zero =>
     funext y

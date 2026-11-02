@@ -21,10 +21,14 @@ Derivative bounds for the Fourier character and the Laplacian of an inverse Four
 
 ## ii. Key results
 
-- `laplacian_fourierInvIntegral` : The Laplacian of the inverse Fourier integral of `h` is the integral of `-(2π)² ‖ξ‖² h`.
-- `char_pow_mul_decay_le` : Polynomial factors from spatial derivatives are absorbed by additional Fourier decay.
-- `fourierInvIntegral_eq_fourier` : The inverse Fourier integral is the Fourier integral of the reflected function.
-- `norm_iteratedFDeriv_timeShift_le` : The derivatives of a time translate are bounded by those of the function.
+- `laplacian_fourierInvIntegral` : The Laplacian of the inverse Fourier integral of `h` is the
+  integral of `-(2π)² ‖ξ‖² h`.
+- `char_pow_mul_decay_le` : Polynomial factors from spatial derivatives are absorbed by additional
+  Fourier decay.
+- `fourierInvIntegral_eq_fourier` : The inverse Fourier integral is the Fourier integral of the
+  reflected function.
+- `norm_iteratedFDeriv_timeShift_le` : The derivatives of a time translate are bounded by those of
+  the function.
 
 ## iii. Table of contents
 
@@ -42,7 +46,8 @@ Lemmas: `fourierInvIntegral_eq_fourier`, `laplacian_fourierInvIntegral`.
 
 ## B. Derivative bounds for the Fourier character and for time translates
 
-Lemmas: `iteratedDeriv_fourierChar`, `norm_iteratedFDeriv_fourierChar`, `contDiff_fourierChar_real`, `norm_iteratedFDeriv_char_le`, `norm_iteratedFDeriv_timeShift_le`, `char_pow_mul_decay_le`.
+Lemmas: `iteratedDeriv_fourierChar`, `norm_iteratedFDeriv_fourierChar`, `contDiff_fourierChar_real`,
+`norm_iteratedFDeriv_char_le`, `norm_iteratedFDeriv_timeShift_le`, `char_pow_mul_decay_le`.
 
 ## C. Smoothness of the retarded solution
 
@@ -61,7 +66,9 @@ universe u
 namespace FourierIntegral
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 omit [CompleteSpace F] in
 /-- The inverse Fourier integral is the Fourier integral of the reflected function. -/
@@ -80,7 +87,8 @@ lemma laplacian_fourierInvIntegral {h : E → F} (hm : AEStronglyMeasurable h vo
     intro n hn
     have := (hi n (by exact_mod_cast hn)).comp_neg
     simpa using this
-  have hgm : AEStronglyMeasurable (fun v : E => h (-v)) volume := (hm.comp_measurePreserving (Measure.measurePreserving_neg (volume : Measure E)))
+  have hgm : AEStronglyMeasurable (fun v : E => h (-v)) volume := (hm.comp_measurePreserving
+    (Measure.measurePreserving_neg (volume : Measure E)))
   simp_rw [fourierInvIntegral_eq_fourier]
   rw [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis,
     Real.iteratedFDeriv_fourier hg hgm (le_refl _)]
@@ -179,7 +187,8 @@ lemma norm_iteratedFDeriv_char_le (ξ : E) (i : ℕ) (q : ℝ × E) :
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℝ F]
 
 /-- The derivatives of a time translate are bounded by those of the function. -/
 lemma norm_iteratedFDeriv_timeShift_le (g : ℝ → F) (hg : ContDiff ℝ ∞ g) (r : ℝ) (j : ℕ)
@@ -218,7 +227,8 @@ lemma char_pow_mul_decay_le {E : Type*} [NormedAddCommGroup E] (ξ : E) (i N : �
       ring
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 lemma contDiff_char_pair : ContDiff ℝ ∞ fun w : (ℝ × E) × (ℝ × E) =>

@@ -61,7 +61,10 @@ Lemmas: `sineEvolution_zero`, `cosEvolution_zero`.
 - `evolveU` : The field `u τ = C τ a + S τ b` evolved from the Cauchy data `(a, b)`.
 - `evolveV` : The velocity `v τ = C τ b - ω² S τ a` of the evolved field.
 
-Lemmas: `hasDerivAt_sineEvolution_apply`, `hasDerivAt_cosEvolution_apply`, `hasDerivAt_evolveU`, `frequencySqOperator_sineEvolution`, `frequencySqOperator_cosEvolution`, `hasDerivAt_evolveV`, `lineDeriv_evolveU`, `lineDeriv_evolveV`, `frequencySqOperator_eq`, `continuous_sineEvolution_apply'` and more.
+Lemmas: `hasDerivAt_sineEvolution_apply`, `hasDerivAt_cosEvolution_apply`, `hasDerivAt_evolveU`,
+`frequencySqOperator_sineEvolution`, `frequencySqOperator_cosEvolution`, `hasDerivAt_evolveV`,
+`lineDeriv_evolveU`, `lineDeriv_evolveV`, `frequencySqOperator_eq`,
+`continuous_sineEvolution_apply'` and more.
 
 -/
 
@@ -75,7 +78,8 @@ open FourierMultiplier Real TopologicalSpace Topology
 namespace KleinGordon
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
 
 /-- The propagation over the time `t` on Schwartz functions. -/
 def sineEvolution (t μ : ℝ) : 𝓢(E, F) →L[ℂ] 𝓢(E, F) :=
@@ -93,7 +97,9 @@ lemma sineEvolutionTempered_coe [CompleteSpace F] (t : ℝ) {μ : ℝ} (hμ : 0 
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 /-- The cosine evolution on Schwartz functions. -/
 def cosEvolution (t μ : ℝ) : 𝓢(E, F) →L[ℂ] 𝓢(E, F) :=
@@ -125,7 +131,9 @@ lemma cosEvolution_zero (μ : ℝ) : cosEvolution (E := E) F 0 μ = ContinuousLi
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 omit [CompleteSpace F] in
 /-- The time derivative of the sine evolution of Schwartz data is the cosine evolution. -/

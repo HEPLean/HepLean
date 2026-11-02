@@ -16,11 +16,13 @@ The dispersion relation and the sine and cosine multipliers of the Klein–Gordo
 
 ## i. Overview
 
-The dispersion relation and the sine and cosine multipliers of the Klein–Gordon evolution. They are smooth and have temperate growth.
+The dispersion relation and the sine and cosine multipliers of the Klein–Gordon evolution. They are
+smooth and have temperate growth.
 
 ## ii. Key results
 
-- `dispersion` : The dispersion `√((2π)² ‖ξ‖² + μ)` of the Klein–Gordon equation with mass parameter `μ`.
+- `dispersion` : The dispersion `√((2π)² ‖ξ‖² + μ)` of the Klein–Gordon equation with mass parameter
+  `μ`.
 - `multiplier` : The Fourier multiplier of the propagation over the time `t`.
 - `cosMultiplier` : The Fourier multiplier `cos (ω t)`.
 - `frequencySq` : The Fourier multiplier `ω² = (2π)² ‖ξ‖² + μ`.
@@ -41,10 +43,12 @@ None.
 
 ## A. The Klein–Gordon propagation multiplier
 
-- `dispersion` : The dispersion `√((2π)² ‖ξ‖² + μ)` of the Klein–Gordon equation with mass parameter `μ`.
+- `dispersion` : The dispersion `√((2π)² ‖ξ‖² + μ)` of the Klein–Gordon equation with mass parameter
+  `μ`.
 - `multiplier` : The Fourier multiplier of the propagation over the time `t`.
 
-Lemmas: `norm_multiplier_le`, `multiplier_eq`, `hasTemperateGrowth_comp_sincSqrt`, `hasTemperateGrowth_comp_cosSqrt`, `hasTemperateGrowth_multiplier`.
+Lemmas: `norm_multiplier_le`, `multiplier_eq`, `hasTemperateGrowth_comp_sincSqrt`,
+`hasTemperateGrowth_comp_cosSqrt`, `hasTemperateGrowth_multiplier`.
 
 ## B. The free Klein–Gordon evolution and its group law
 
@@ -128,7 +132,8 @@ lemma hasTemperateGrowth_multiplier (t : ℝ) {μ : ℝ} (hμ : 0 ≤ μ) :
     (multiplier t μ : E → ℂ).HasTemperateGrowth := by
   have hq : (fun ξ : E => t ^ 2 * ((2 * π) ^ 2 * ‖ξ‖ ^ 2 + μ)).HasTemperateGrowth :=
     (HasTemperateGrowth.const _).mul
-      (((HasTemperateGrowth.const _).mul (hasTemperateGrowth_norm_sq E)).add (HasTemperateGrowth.const _))
+      (((HasTemperateGrowth.const _).mul (hasTemperateGrowth_norm_sq E)).add
+        (HasTemperateGrowth.const _))
   have h := hasTemperateGrowth_comp_sincSqrt t hq (fun ξ => by positivity)
   have h2 := Complex.hasTemperateGrowth_ofReal.comp h
   convert h2 using 1
@@ -157,7 +162,9 @@ lemma cosMultiplier_eq (t : ℝ) {μ : ℝ} (hμ : 0 ≤ μ) (ξ : E) :
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 lemma hasTemperateGrowth_cosMultiplier (t : ℝ) {μ : ℝ} (hμ : 0 ≤ μ) :
@@ -180,20 +187,24 @@ lemma hasTemperateGrowth_frequencySq (μ : ℝ) :
       (Function.HasTemperateGrowth.const _)
   exact Complex.hasTemperateGrowth_ofReal.comp h
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [NormedSpace ℂ F] [CompleteSpace F] in
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [NormedSpace
+    ℂ F] [CompleteSpace F] in
 lemma continuous_dispersion (μ : ℝ) : Continuous fun ξ : E => dispersion μ ξ := by
   unfold dispersion; fun_prop
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [NormedSpace ℂ F] [CompleteSpace F] in
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [NormedSpace
+    ℂ F] [CompleteSpace F] in
 lemma continuous_multiplier_uncurry (μ : ℝ) :
     Continuous fun p : ℝ × E => multiplier p.1 μ p.2 := by
   unfold multiplier
   exact Complex.continuous_ofReal.comp
-    (continuous_sincPropagator.comp (continuous_fst.prodMk ((continuous_dispersion μ).comp continuous_snd)))
+    (continuous_sincPropagator.comp (continuous_fst.prodMk ((continuous_dispersion μ).comp
+      continuous_snd)))
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 omit [InnerProductSpace ℝ E] [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 lemma continuous_cosMultiplier_uncurry (μ : ℝ) :
@@ -215,7 +226,8 @@ lemma dispersion_sq_le {μ : ℝ} (hμ : 0 ≤ μ) (ξ : E) :
 end
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 lemma contDiff_multiplier_joint {μ : ℝ} (hμ : 0 ≤ μ) :
@@ -227,7 +239,8 @@ lemma contDiff_multiplier_joint {μ : ℝ} (hμ : 0 ≤ μ) :
   have h1 : ContDiff ℝ ∞ fun z : ℝ × E => ‖z.2‖ ^ 2 := (contDiff_norm_sq ℝ).comp contDiff_snd
   have h2 : ContDiff ℝ ∞ fun z : ℝ × E => z.1 ^ 2 * ((2 * π) ^ 2 * ‖z.2‖ ^ 2 + μ) :=
     (contDiff_fst.pow 2).mul ((contDiff_const.mul h1).add contDiff_const)
-  have h3 : ContDiff ℝ ∞ fun z : ℝ × E => z.1 * sincSqrt (z.1 ^ 2 * ((2 * π) ^ 2 * ‖z.2‖ ^ 2 + μ)) :=
+  have h3 : ContDiff ℝ ∞ fun z : ℝ × E => z.1 * sincSqrt (z.1 ^ 2 * ((2 * π) ^ 2 * ‖z.2‖ ^ 2 +
+    μ)) :=
     contDiff_fst.mul ((Real.contDiff_sincSqrt.of_le le_top).comp h2)
   exact Complex.ofRealCLM.contDiff.comp h3
 

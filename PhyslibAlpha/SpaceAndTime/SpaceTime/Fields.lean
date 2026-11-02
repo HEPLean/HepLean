@@ -17,7 +17,8 @@ Smooth fields form a local space of functions on `SpaceTime d` with derivatives.
 
 ## i. Overview
 
-Smooth fields form a local space of functions on `SpaceTime d` with derivatives. Distribution fields are the distributions with values in a normed space.
+Smooth fields form a local space of functions on `SpaceTime d` with derivatives. Distribution fields
+are the distributions with values in a normed space.
 
 ## ii. Key results
 
@@ -25,8 +26,10 @@ Smooth fields form a local space of functions on `SpaceTime d` with derivatives.
 - `TestField` : Smooth compactly supported test fields on Minkowski spacetime.
 - `smoothDerivative` : The existing spacetime derivative restricted to smooth fields.
 - `smoothFiberMap` : Apply a constant continuous linear transformation to each field value.
-- `DistributionField` : Distributional fields on all of Minkowski spacetime use Mathlib's native continuous dual.
-- `testFunctionEquiv` : The existing compact smooth test fields are Mathlib test functions on the whole spacetime.
+- `DistributionField` : Distributional fields on all of Minkowski spacetime use Mathlib's native
+  continuous dual.
+- `testFunctionEquiv` : The existing compact smooth test fields are Mathlib test functions on the
+  whole spacetime.
 
 ## iii. Table of contents
 
@@ -44,12 +47,15 @@ None.
 - `smoothDerivative` : The existing spacetime derivative restricted to smooth fields.
 - `smoothFiberMap` : Apply a constant continuous linear transformation to each field value.
 
-Lemmas: `smoothFields_contDiff`, `smoothFields_isLocal`, `smoothDerivative_coe`, `smoothDerivative_support`, `smoothField_support_sum`, `smoothFiberMap_derivative`.
+Lemmas: `smoothFields_contDiff`, `smoothFields_isLocal`, `smoothDerivative_coe`,
+`smoothDerivative_support`, `smoothField_support_sum`, `smoothFiberMap_derivative`.
 
 ## B. Minkowski test fields and distributions
 
-- `DistributionField` : Distributional fields on all of Minkowski spacetime use Mathlib's native continuous dual.
-- `testFunctionEquiv` : The existing compact smooth test fields are Mathlib test functions on the whole spacetime.
+- `DistributionField` : Distributional fields on all of Minkowski spacetime use Mathlib's native
+  continuous dual.
+- `testFunctionEquiv` : The existing compact smooth test fields are Mathlib test functions on the
+  whole spacetime.
 
 -/
 

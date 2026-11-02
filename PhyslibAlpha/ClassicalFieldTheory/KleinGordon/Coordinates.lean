@@ -17,14 +17,16 @@ Spacetime is identified with time and space.
 
 ## i. Overview
 
-Spacetime is identified with time and space. The causal relation and the second derivatives are transported along the identification.
+Spacetime is identified with time and space. The causal relation and the second derivatives are
+transported along the identification.
 
 ## ii. Key results
 
 - `coordinates` : Time and space coordinates in units with speed of light equal to one.
 - `sourceEquiv` : Compact smooth sources transported to time-space coordinates.
 - `sourceOperator` : The transported compact Klein–Gordon operator on Minkowski test sources.
-- `operator_of_coordinates` : The neighbour's Klein–Gordon operator has the Fourier coordinate differential expression.
+- `operator_of_coordinates` : The neighbour's Klein–Gordon operator has the Fourier coordinate
+  differential expression.
 
 ## iii. Table of contents
 
@@ -45,7 +47,10 @@ Lemmas: `tsupport_sourceEquiv`.
 
 ## B. Coordinate form of the Minkowski Klein–Gordon operator
 
-Lemmas: `coordinates_time`, `coordinates_space`, `precedes_iff_coordinates`, `causalFuture_coordinates`, `causalPast_coordinates`, `coordinates_basis_time`, `coordinates_basis_space`, `second_spacetime_deriv`, `second_spacetime_deriv_coordinates`, `second_time_slice` and more.
+Lemmas: `coordinates_time`, `coordinates_space`, `precedes_iff_coordinates`,
+`causalFuture_coordinates`, `causalPast_coordinates`, `coordinates_basis_time`,
+`coordinates_basis_space`, `second_spacetime_deriv`, `second_spacetime_deriv_coordinates`,
+`second_time_slice` and more.
 
 -/
 
@@ -167,7 +172,8 @@ lemma second_spacetime_deriv_coordinates (g : ℝ × Space d → F) (hg : ContDi
         ![coordinates d (Lorentz.Vector.basis μ), coordinates d (Lorentz.Vector.basis μ)] := by
   rw [second_spacetime_deriv _ (hg.comp (coordinates d).contDiff)]
   change (iteratedFDeriv ℝ 2 (g ∘ (coordinates d).toContinuousLinearMap) p) _ = _
-  rw [ContinuousLinearMap.iteratedFDeriv_comp_right (coordinates d).toContinuousLinearMap hg p (by simp)]
+  rw [ContinuousLinearMap.iteratedFDeriv_comp_right (coordinates d).toContinuousLinearMap hg p (by
+    simp)]
   simp [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   funext i

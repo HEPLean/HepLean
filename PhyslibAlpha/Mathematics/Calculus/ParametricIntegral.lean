@@ -19,8 +19,10 @@ An integral of a smooth family of functions is smooth when the derivatives have 
 
 ## ii. Key results
 
-- `continuous_iteratedFDeriv_partial` : The derivatives in the first variable of a jointly smooth function are jointly continuous.
-- `norm_iteratedFDeriv_integral_le` : Uniform integrable domination bounds every derivative of a parametric integral.
+- `continuous_iteratedFDeriv_partial` : The derivatives in the first variable of a jointly smooth
+  function are jointly continuous.
+- `norm_iteratedFDeriv_integral_le` : Uniform integrable domination bounds every derivative of a
+  parametric integral.
 - `contDiffOn_integral`
 
 ## iii. Table of contents
@@ -33,7 +35,8 @@ None.
 
 ## A. Smoothness of parametric integrals
 
-Lemmas: `contDiffOn_integral`, `norm_iteratedFDeriv_integral_le`, `continuous_iteratedFDeriv_partial`.
+Lemmas: `contDiffOn_integral`, `norm_iteratedFDeriv_integral_le`,
+`continuous_iteratedFDeriv_partial`.
 
 -/
 
@@ -102,7 +105,8 @@ lemma contDiffOn_integral {P α : Type u} [NormedAddCommGroup P] [NormedSpace �
         ?_ ?_ ?_ hb1i ?_
       · refine hb0i.mono' (hmeas p) (hb0d.mono fun a ha => ?_)
         simpa using ha p hp
-      · have := (continuousMultilinearCurryFin0 ℝ P (P →L[ℝ] F)).continuous.comp_aestronglyMeasurable
+      · have := (continuousMultilinearCurryFin0 ℝ P (P →L[ℝ]
+        F)).continuous.comp_aestronglyMeasurable
           (hc' 0 (Nat.zero_le _) p)
         simpa [Function.comp_def, iteratedFDeriv_zero_eq_comp] using this
       · exact hb1d.mono fun a ha q hq => by simpa using ha q hq
@@ -146,9 +150,11 @@ lemma norm_iteratedFDeriv_integral_le {P α : Type u} [NormedAddCommGroup P] [No
           (∫ a, fderiv ℝ (fun r => H r a) q ∂μ) q := by
         refine hasFDerivAt_integral_of_dominated_of_fderiv_le (F := H)
           (F' := fun q a => fderiv ℝ (fun r => H r a) q) (bound := b 1)
-          (s := Set.univ) (by simp) (Filter.Eventually.of_forall (fun r => hm r)) ?_ ?_ ?_ (hbi 1) ?_
+          (s := Set.univ) (by simp) (Filter.Eventually.of_forall (fun r => hm r)) ?_ ?_ ?_ (hbi 1)
+            ?_
         · exact (hbi 0).mono' (hm q) ((hbd 0).mono fun a ha => by simpa using ha q)
-        · have := (continuousMultilinearCurryFin0 ℝ P (P →L[ℝ] F)).continuous.comp_aestronglyMeasurable
+        · have := (continuousMultilinearCurryFin0 ℝ P (P →L[ℝ]
+          F)).continuous.comp_aestronglyMeasurable
             (hc' 0 q)
           simpa [Function.comp_def, iteratedFDeriv_zero_eq_comp] using this
         · exact (hbd 1).mono fun a ha r hr => by simpa using ha r

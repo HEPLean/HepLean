@@ -17,18 +17,22 @@ A past compact source is cut off to compact pieces.
 
 ## i. Overview
 
-A past compact source is cut off to compact pieces. The retarded responses to the pieces define a response to the whole source.
+A past compact source is cut off to compact pieces. The retarded responses to the pieces define a
+response to the whole source.
 
 ## ii. Key results
 
-- `PastLocalization` : The geometric and cutoff data for localizing past-compact sections to compact test sections.
+- `PastLocalization` : The geometric and cutoff data for localizing past-compact sections to compact
+  test sections.
 - `sourceAt` : Each source has a compact truncation adapted to the observation event.
-- `retardedValue` : The pointwise retarded response obtained from observation-adapted compact truncations.
+- `retardedValue` : The pointwise retarded response obtained from observation-adapted compact
+  truncations.
 - `retardedSection` : The glued retarded field as an admissible section.
 - `retardedExtension` : The two-sided linear Green extension to all past-compact sources.
 - `truncationRadius` : A positive ball radius enclosing the relevant compact part of the source.
 - `truncationBump` : A smooth compact bump equal to one near the relevant source intersection.
-- `bumpTruncate` : A bump truncation is a compact admissible source, not an assumed larger-support solution.
+- `bumpTruncate` : A bump truncation is a compact admissible source, not an assumed larger-support
+  solution.
 
 ## iii. Table of contents
 
@@ -42,27 +46,37 @@ None.
 
 ## A. Compact localization of past-compact sources
 
-- `PastLocalization` : The geometric and cutoff data for localizing past-compact sections to compact test sections.
+- `PastLocalization` : The geometric and cutoff data for localizing past-compact sections to compact
+  test sections.
 - `sourceAt` : Each source has a compact truncation adapted to the observation event.
-- `retardedValue` : The pointwise retarded response obtained from observation-adapted compact truncations.
+- `retardedValue` : The pointwise retarded response obtained from observation-adapted compact
+  truncations.
 
-Lemmas: `mem_past_bound`, `sourceAt_agrees`, `predecessor_mem_past_bound`, `retardedValue_eq_on_past_bound`, `retardedValue_eventuallyEq`, `retardedValue_mem`, `homogeneous_eq_zero`, `pastCompactOperator_injective`.
+Lemmas: `mem_past_bound`, `sourceAt_agrees`, `predecessor_mem_past_bound`,
+`retardedValue_eq_on_past_bound`, `retardedValue_eventuallyEq`, `retardedValue_mem`,
+`homogeneous_eq_zero`, `pastCompactOperator_injective`.
 
 ## B. Constructing Green extensions by local compact truncation
 
 - `retardedSection` : The glued retarded field as an admissible section.
 - `retardedExtension` : The two-sided linear Green extension to all past-compact sources.
 
-Lemmas: `retardedSection_solves`, `retardedValue_support`, `retardedSection_support`, `retardedSection_mem_pastCompactFields`, `pastCompactOperator_surjective`, `retardedExtension_solves`, `retardedExtension_eq_section`, `retardedExtension_support`, `pastCompact_unique`, `futureSupportedOperator_injective` and more.
+Lemmas: `retardedSection_solves`, `retardedValue_support`, `retardedSection_support`,
+`retardedSection_mem_pastCompactFields`, `pastCompactOperator_surjective`,
+`retardedExtension_solves`, `retardedExtension_eq_section`, `retardedExtension_support`,
+`pastCompact_unique`, `futureSupportedOperator_injective` and more.
 
 ## C. Compact source localization by smooth bump functions
 
 - `truncationRadius` : A positive ball radius enclosing the relevant compact part of the source.
 - `truncationBump` : A smooth compact bump equal to one near the relevant source intersection.
-- `bumpTruncate` : A bump truncation is a compact admissible source, not an assumed larger-support solution.
-- `ofBumpFunctions` : Construct all local compact-source truncation data from bump stability and causal topology.
+- `bumpTruncate` : A bump truncation is a compact admissible source, not an assumed larger-support
+  solution.
+- `ofBumpFunctions` : Construct all local compact-source truncation data from bump stability and
+  causal topology.
 
-Lemmas: `truncationRadius_pos`, `mem_truncation_ball`, `bumpTruncate_support`, `bumpTruncate_agrees`.
+Lemmas: `truncationRadius_pos`, `mem_truncation_ball`, `bumpTruncate_support`,
+`bumpTruncate_agrees`.
 
 -/
 
@@ -76,7 +90,8 @@ open CausalRelation LocalOperator Topology
 namespace GreenOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 
 /-- The geometric and cutoff data for localizing past-compact sections to compact test sections. -/
 structure PastLocalization (C : CausalRelation M) (P : LocalOperator S) where
@@ -105,7 +120,8 @@ end GreenOperator
 namespace GreenOperator.PastLocalization
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 variable {C : CausalRelation M} {P : LocalOperator S} (L : PastLocalization C P)
 
 lemma mem_past_bound (x : M) : x ∈ C.causalPast (L.bound x) :=
@@ -187,7 +203,9 @@ lemma pastCompactOperator_injective (G : RetardedGreenOperator C P) :
 end
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (L : PastLocalization C P) (G : RetardedGreenOperator C P)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (L : PastLocalization C P) (G :
+    RetardedGreenOperator C P)
 
 /-- The glued retarded field as an admissible section. -/
 def retardedSection (f : P.pastCompactFields C) : S :=
@@ -313,7 +331,9 @@ lemma futureSupportedOperator_surjective (hC : C.HasCompactCausalDiamonds) :
 end
 
 section
-variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [AddCommGroup V] [Module ℝ V] {S : Submodule ℝ (E → V)} {P : LocalOperator S} {C : CausalRelation E} (hmul : ∀ (b : ContDiffBump (0 : E)) (u : S), (fun x => b x • u.val x) ∈ S)
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [AddCommGroup V] [Module ℝ V] {S : Submodule ℝ (E → V)} {P : LocalOperator S} {C :
+    CausalRelation E} (hmul : ∀ (b : ContDiffBump (0 : E)) (u : S), (fun x => b x • u.val x) ∈ S)
 
 /-- A positive ball radius enclosing the relevant compact part of the source. -/
 def truncationRadius (f : P.pastCompactFields C) (K : Set E) (hK : IsCompact K) : ℝ :=

@@ -17,17 +17,22 @@ Retarded and advanced Green operators of a local operator.
 
 ## i. Overview
 
-Retarded and advanced Green operators of a local operator. Fields with spacelike compact, future or past compact support.
+Retarded and advanced Green operators of a local operator. Fields with spacelike compact, future or
+past compact support.
 
 ## ii. Key results
 
-- `spacelikeCompactFields` : Admissible fields with support contained in the causal hull of a compact set.
+- `spacelikeCompactFields` : Admissible fields with support contained in the causal hull of a
+  compact set.
 - `futureSupportedFields` : Fields supported in the future of a compact set.
-- `futureSupportedOperator` : Restrict the field equation to fields supported to the future of compact sets.
+- `futureSupportedOperator` : Restrict the field equation to fields supported to the future of
+  compact sets.
 - `spacelikeCompactSolution` : Spacelike-compact homogeneous solutions.
 - `spacelikeCompactOperator` : The field equation restricted to spacelike-compact admissible fields.
-- `RetardedGreenOperator` : A retarded two-sided inverse on compact sources with future causal support.
-- `AdvancedGreenOperator` : An advanced two-sided inverse on compact sources with past causal support.
+- `RetardedGreenOperator` : A retarded two-sided inverse on compact sources with future causal
+  support.
+- `AdvancedGreenOperator` : An advanced two-sided inverse on compact sources with past causal
+  support.
 - `GreenOperators` : A pair of causal Green inverses for the same field equation.
 
 ## iii. Table of contents
@@ -42,18 +47,23 @@ None.
 
 ## A. Linear field equations and compact sources
 
-- `spacelikeCompactFields` : Admissible fields with support contained in the causal hull of a compact set.
+- `spacelikeCompactFields` : Admissible fields with support contained in the causal hull of a
+  compact set.
 - `futureSupportedFields` : Fields supported in the future of a compact set.
-- `futureSupportedOperator` : Restrict the field equation to fields supported to the future of compact sets.
+- `futureSupportedOperator` : Restrict the field equation to fields supported to the future of
+  compact sets.
 - `spacelikeCompactSolution` : Spacelike-compact homogeneous solutions.
 - `spacelikeCompactOperator` : The field equation restricted to spacelike-compact admissible fields.
 
-Lemmas: `operator_mem_futureSupportedFields`, `operator_mem_spacelikeCompactFields`, `futureSupportedFields_le_spacelikeCompactFields`, `pastSupportedFields_le_spacelikeCompactFields`.
+Lemmas: `operator_mem_futureSupportedFields`, `operator_mem_spacelikeCompactFields`,
+`futureSupportedFields_le_spacelikeCompactFields`, `pastSupportedFields_le_spacelikeCompactFields`.
 
 ## B. Retarded and advanced Green operators
 
-- `RetardedGreenOperator` : A retarded two-sided inverse on compact sources with future causal support.
-- `AdvancedGreenOperator` : An advanced two-sided inverse on compact sources with past causal support.
+- `RetardedGreenOperator` : A retarded two-sided inverse on compact sources with future causal
+  support.
+- `AdvancedGreenOperator` : An advanced two-sided inverse on compact sources with past causal
+  support.
 - `GreenOperators` : A pair of causal Green inverses for the same field equation.
 - `reverse` : Reverse time orientation and exchange the Green operators.
 
@@ -164,7 +174,8 @@ namespace GreenOperator
 open LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 
 /-- A retarded two-sided inverse on compact sources with future causal support. -/
 structure RetardedGreenOperator (C : CausalRelation M) (P : LocalOperator S) where
@@ -206,7 +217,8 @@ namespace GreenOperator.GreenOperators
 open LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 variable {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
 
 /-- Reverse time orientation and exchange the Green operators. -/
@@ -222,7 +234,8 @@ end GreenOperator.GreenOperators
 namespace LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} (P : LocalOperator S) (C : CausalRelation M)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} (P : LocalOperator S) (C : CausalRelation M)
 
 /-- The full past-compact admissible source and field space. -/
 def pastCompactFields (_P : LocalOperator S) (C : CausalRelation M) : Submodule 𝕜 S where

@@ -11,7 +11,8 @@ public import PhyslibAlpha.Mathematics.SpecialFunctions.SincPropagator.Series
 
 # The sine propagation function `t ↦ sin (ω t) / ω`
 
-The function `sincPropagator t ω = sin (ω t) / ω` solves `u'' + ω² u = 0` with `u 0 = 0` and `u' 0 = 1`.
+The function `sincPropagator t ω = sin (ω t) / ω` solves `u'' + ω² u = 0` with `u 0 = 0` and
+`u' 0 = 1`.
 
 ## i. Overview
 
@@ -41,7 +42,9 @@ None.
 
 - `sincPropagator` : The function `sin (ω t) / ω`, with the value `t` at `ω = 0`.
 
-Lemmas: `sincPropagator_zero_left`, `sincPropagator_zero_right`, `sincPropagator_eq_sin_div`, `sincPropagator_neg_left`, `abs_sincPropagator_le`, `hasDerivAt_sincPropagator`, `hasDerivAt_cos_mul`, `continuous_sincPropagator`.
+Lemmas: `sincPropagator_zero_left`, `sincPropagator_zero_right`, `sincPropagator_eq_sin_div`,
+`sincPropagator_neg_left`, `abs_sincPropagator_le`, `hasDerivAt_sincPropagator`,
+`hasDerivAt_cos_mul`, `continuous_sincPropagator`.
 
 ## B. Equivalent forms of the sine propagation function
 
@@ -82,7 +85,8 @@ lemma abs_sincPropagator_le (t ω : ℝ) : |sincPropagator t ω| ≤ |t| := by
   rw [sincPropagator, abs_mul]
   exact mul_le_of_le_one_right (abs_nonneg _) (abs_sinc_le_one _)
 
-lemma hasDerivAt_sincPropagator (ω t : ℝ) : HasDerivAt (fun s => sincPropagator s ω) (cos (ω * t)) t := by
+lemma hasDerivAt_sincPropagator (ω t : ℝ) : HasDerivAt (fun s => sincPropagator s ω) (cos (ω * t))
+    t := by
   by_cases hω : ω = 0
   · simpa [hω] using hasDerivAt_id' t
   · have h : (fun s => sincPropagator s ω) = fun s => sin (ω * s) / ω := by

@@ -101,7 +101,8 @@ for the kernel `K` in a given dimension are not proved here.
 noncomputable section
 
 open scoped SchwartzMap Distributions FourierTransform
-open Minkowski CausalRelation LocalOperator Distribution KleinGordon.Spacetime TimeSlice TopologicalSpace MeasureTheory
+open Minkowski CausalRelation LocalOperator Distribution KleinGordon.Spacetime TimeSlice
+    TopologicalSpace MeasureTheory
 universe u
 
 namespace KleinGordon.Solution

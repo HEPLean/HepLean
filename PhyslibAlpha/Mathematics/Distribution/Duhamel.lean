@@ -15,14 +15,20 @@ The slice of a source at each time is propagated by a Fourier multiplier.
 
 ## i. Overview
 
-The slice of a source at each time is propagated by a Fourier multiplier. The Duhamel integral adds the contributions of all earlier times.
+The slice of a source at each time is propagated by a Fourier multiplier. The Duhamel integral adds
+the contributions of all earlier times.
 
 ## ii. Key results
 
-- `propagatedSlice` : The spatial Fourier propagation of the slice `f(s, ·)` by a multiplier family `m` over the time `r`, evaluated at the position `x`.
-- `duhamel` : The retarded Duhamel integral of the sources `f` for a multiplier family `m`: the source at the time `s` is propagated over the time `t - s` and summed over `s ≤ t`.
-- `continuous_propagatedSlice` : The propagated slices are jointly continuous in the propagation time, the source time and the position, for every multiplier family that is jointly continuous and locally bounded in time.
-- `duhamel_eq_integral_fourier` : The Duhamel integral is the inverse Fourier integral of the per-frequency Duhamel integral of the Fourier transformed slices.
+- `propagatedSlice` : The spatial Fourier propagation of the slice `f(s, ·)` by a multiplier family
+  `m` over the time `r`, evaluated at the position `x`.
+- `duhamel` : The retarded Duhamel integral of the sources `f` for a multiplier family `m`: the
+  source at the time `s` is propagated over the time `t - s` and summed over `s ≤ t`.
+- `continuous_propagatedSlice` : The propagated slices are jointly continuous in the propagation
+  time, the source time and the position, for every multiplier family that is jointly continuous and
+  locally bounded in time.
+- `duhamel_eq_integral_fourier` : The Duhamel integral is the inverse Fourier integral of the
+  per-frequency Duhamel integral of the Fourier transformed slices.
 
 ## iii. Table of contents
 
@@ -34,10 +40,13 @@ None.
 
 ## A. The Duhamel integral of Fourier multiplied slices
 
-- `propagatedSlice` : The spatial Fourier propagation of the slice `f(s, ·)` by a multiplier family `m` over the time `r`, evaluated at the position `x`.
-- `duhamel` : The retarded Duhamel integral of the sources `f` for a multiplier family `m`: the source at the time `s` is propagated over the time `t - s` and summed over `s ≤ t`.
+- `propagatedSlice` : The spatial Fourier propagation of the slice `f(s, ·)` by a multiplier family
+  `m` over the time `r`, evaluated at the position `x`.
+- `duhamel` : The retarded Duhamel integral of the sources `f` for a multiplier family `m`: the
+  source at the time `s` is propagated over the time `t - s` and summed over `s ≤ t`.
 
-Lemmas: `continuous_propagatedSlice`, `propagatedSlice_eq_zero_of_notMem`, `integrable_duhamel`, `exists_timeBound`, `duhamel_eq_intervalIntegral`, `duhamel_eq_integral_fourier`.
+Lemmas: `continuous_propagatedSlice`, `propagatedSlice_eq_zero_of_notMem`, `integrable_duhamel`,
+`exists_timeBound`, `duhamel_eq_intervalIntegral`, `duhamel_eq_integral_fourier`.
 
 -/
 
@@ -51,7 +60,9 @@ open TimeSlice TopologicalSpace Topology
 namespace Duhamel
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 variable (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- The spatial Fourier propagation of the slice `f(s, ·)` by a multiplier family `m` over the

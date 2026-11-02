@@ -14,14 +14,20 @@ public import PhyslibAlpha.ClassicalFieldTheory.GreenOperator.Localization
 
 ## i. Overview
 
-Existence and uniqueness of retarded solutions and the exact sequence of compact sources and spacelike compact fields.
+Existence and uniqueness of retarded solutions and the exact sequence of compact sources and
+spacelike compact fields.
 
 ## ii. Key results
 
-- `sourceOfCausalSplit` : The compact source obtained from a causal splitting of a homogeneous field.
-- `solutionSpaceEquivQuotient` : Compact test fields modulo the equation of motion are equivalent to spacelike-compact homogeneous solutions.
-- `solutionSpaceEquivQuotientOfLocalization` : Homogeneous spacelike-compact solutions are source classes, with one-sided inverse and uniqueness hypotheses discharged by local compact constructions.
-- `toSpacelikeCompact` : The causal propagator with the support codomain required in the exact sequence.
+- `sourceOfCausalSplit` : The compact source obtained from a causal splitting of a homogeneous
+  field.
+- `solutionSpaceEquivQuotient` : Compact test fields modulo the equation of motion are equivalent to
+  spacelike-compact homogeneous solutions.
+- `solutionSpaceEquivQuotientOfLocalization` : Homogeneous spacelike-compact solutions are source
+  classes, with one-sided inverse and uniqueness hypotheses discharged by local compact
+  constructions.
+- `toSpacelikeCompact` : The causal propagator with the support codomain required in the exact
+  sequence.
 
 ## iii. Table of contents
 
@@ -40,17 +46,25 @@ Lemmas: `distribution_eq_zero_of_retarded`.
 
 ## B. Homogeneous solutions as source classes
 
-- `sourceOfCausalSplit` : The compact source obtained from a causal splitting of a homogeneous field.
-- `solutionSpaceEquivQuotient` : Compact test fields modulo the equation of motion are equivalent to spacelike-compact homogeneous solutions.
-- `solutionSpaceEquivQuotientOfLocalization` : Homogeneous spacelike-compact solutions are source classes, with one-sided inverse and uniqueness hypotheses discharged by local compact constructions.
+- `sourceOfCausalSplit` : The compact source obtained from a causal splitting of a homogeneous
+  field.
+- `solutionSpaceEquivQuotient` : Compact test fields modulo the equation of motion are equivalent to
+  spacelike-compact homogeneous solutions.
+- `solutionSpaceEquivQuotientOfLocalization` : Homogeneous spacelike-compact solutions are source
+  classes, with one-sided inverse and uniqueness hypotheses discharged by local compact
+  constructions.
 
-Lemmas: `compact_equation_of_causal_split`, `causalPropagator_sourceOfCausalSplit`, `toSolutionSpace_surjective`, `solutionSpaceEquivQuotient_symm_mk`, `solutionSpaceEquivQuotient_toSolutionSpace`, `spacelikeCompactOperator_surjective_of_localization`.
+Lemmas: `compact_equation_of_causal_split`, `causalPropagator_sourceOfCausalSplit`,
+`toSolutionSpace_surjective`, `solutionSpaceEquivQuotient_symm_mk`,
+`solutionSpaceEquivQuotient_toSolutionSpace`, `spacelikeCompactOperator_surjective_of_localization`.
 
 ## C. The causal Green exact sequence
 
-- `toSpacelikeCompact` : The causal propagator with the support codomain required in the exact sequence.
+- `toSpacelikeCompact` : The causal propagator with the support codomain required in the exact
+  sequence.
 
-Lemmas: `toSpacelikeCompact_ker`, `exact_compactSources`, `exact_spacelikeCompactFields`, `causalGreen_exactSequence`.
+Lemmas: `toSpacelikeCompact_ker`, `exact_compactSources`, `exact_spacelikeCompactFields`,
+`causalGreen_exactSequence`.
 
 ## D. General sourced field equations
 
@@ -67,7 +81,8 @@ open CausalRelation LocalOperator Topology TopologicalSpace Submodule
 namespace GreenOperator
 
 section
-variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V] {S : Submodule ℝ (E → ℝ)} {P : LocalOperator S} {C : CausalRelation E}
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace
+    ℝ V] {S : Submodule ℝ (E → ℝ)} {P : LocalOperator S} {C : CausalRelation E}
 
 /-- Compact advanced Green data and causal localization force a retarded weak homogeneous
 solution to vanish. The native test model preserves the underlying scalar test fields. -/
@@ -116,7 +131,8 @@ end GreenOperator
 namespace GreenOperator.GreenOperators
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
 
 /-- Fix the inherited field addition for nested quotient inference. -/
 local instance solutionFieldAddGroup : AddCommGroup S := S.addCommGroup
@@ -290,7 +306,8 @@ end GreenOperator.GreenOperators
 namespace GreenOperator.RetardedGreenOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S}
 variable (G : RetardedGreenOperator C P)
 
 include G in

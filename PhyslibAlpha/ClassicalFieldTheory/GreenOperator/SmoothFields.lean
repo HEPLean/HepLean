@@ -19,10 +19,14 @@ Smooth fields on spacetime admit past and future localization and temporal cutof
 
 ## ii. Key results
 
-- `pastLocalization` : Retarded localization for every admissible field space with local gluing and bump stability.
-- `futureLocalization` : Advanced localization uses the same field hypotheses and the reversed verified causal geometry.
-- `smoothPastLocalization` : All past-compact smooth fields admit the compact truncations required by the general theory.
-- `smoothFutureLocalization` : The same analytic field class supplies advanced localization after causal reversal.
+- `pastLocalization` : Retarded localization for every admissible field space with local gluing and
+  bump stability.
+- `futureLocalization` : Advanced localization uses the same field hypotheses and the reversed
+  verified causal geometry.
+- `smoothPastLocalization` : All past-compact smooth fields admit the compact truncations required
+  by the general theory.
+- `smoothFutureLocalization` : The same analytic field class supplies advanced localization after
+  causal reversal.
 
 ## iii. Table of contents
 
@@ -36,19 +40,24 @@ None.
 
 ## A. Localization of admissible fields in Minkowski spacetime
 
-- `pastLocalization` : Retarded localization for every admissible field space with local gluing and bump stability.
-- `futureLocalization` : Advanced localization uses the same field hypotheses and the reversed verified causal geometry.
+- `pastLocalization` : Retarded localization for every admissible field space with local gluing and
+  bump stability.
+- `futureLocalization` : Advanced localization uses the same field hypotheses and the reversed
+  verified causal geometry.
 
 ## B. Localization of smooth spacetime fields
 
-- `smoothPastLocalization` : All past-compact smooth fields admit the compact truncations required by the general theory.
-- `smoothFutureLocalization` : The same analytic field class supplies advanced localization after causal reversal.
+- `smoothPastLocalization` : All past-compact smooth fields admit the compact truncations required
+  by the general theory.
+- `smoothFutureLocalization` : The same analytic field class supplies advanced localization after
+  causal reversal.
 
 Lemmas: `smoothFields_bumpStable`.
 
 ## C. Temporal cutoffs of spacelike-compact smooth fields
 
-Lemmas: `isCompact_causalPast_inter`, `isCompact_causalFuture_inter`, `tsupport_cutoff_subset`, `tsupport_cutoff_sub_subset`, `smoothHasCausalCutoffs`.
+Lemmas: `isCompact_causalPast_inter`, `isCompact_causalFuture_inter`, `tsupport_cutoff_subset`,
+`tsupport_cutoff_sub_subset`, `smoothHasCausalCutoffs`.
 
 -/
 
@@ -62,7 +71,8 @@ open CausalRelation Minkowski Lorentz.Vector Topology
 namespace GreenOperator.Minkowski
 
 section
-variable {d : ℕ} {V : Type*} [AddCommGroup V] [Module ℝ V] {S : Submodule ℝ (SpaceTime d → V)} {P : LocalOperator S}
+variable {d : ℕ} {V : Type*} [AddCommGroup V] [Module ℝ V] {S : Submodule ℝ (SpaceTime d → V)} {P :
+    LocalOperator S}
 
 /-- Retarded localization for every admissible field space with local gluing and bump stability. -/
 def pastLocalization (hlocal : IsLocalFieldSpace S)

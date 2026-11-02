@@ -17,11 +17,16 @@ Cutting the response off by a test function is continuous in the source.
 
 ## ii. Key results
 
-- `solutionEvaluation` : Evaluation of the retarded response at a fixed event is continuous in the native LF topology.
-- `advancedSolutionEvaluation` : Evaluation of the advanced response is continuous in the native LF source topology.
-- `cutoffSolutionSupported` : A compactly cut off retarded response is continuous between fixed-support source and target spaces in every derivative seminorm.
-- `cutoffSolution` : Multiplying the retarded Fourier response by a compact smooth cutoff is continuous on the native LF test-function space.
-- `cutoffAdvancedSolution` : A compactly cut off advanced response is continuous on native smooth tests.
+- `solutionEvaluation` : Evaluation of the retarded response at a fixed event is continuous in the
+  native LF topology.
+- `advancedSolutionEvaluation` : Evaluation of the advanced response is continuous in the native LF
+  source topology.
+- `cutoffSolutionSupported` : A compactly cut off retarded response is continuous between
+  fixed-support source and target spaces in every derivative seminorm.
+- `cutoffSolution` : Multiplying the retarded Fourier response by a compact smooth cutoff is
+  continuous on the native LF test-function space.
+- `cutoffAdvancedSolution` : A compactly cut off advanced response is continuous on native smooth
+  tests.
 
 ## iii. Table of contents
 
@@ -36,25 +41,32 @@ None.
 
 ## A. Continuous seminorm bounds for Fourier sources
 
-- `solutionEvaluation` : Evaluation of the retarded response at a fixed event is continuous in the native LF topology.
-- `advancedSolutionEvaluation` : Evaluation of the advanced response is continuous in the native LF source topology.
+- `solutionEvaluation` : Evaluation of the retarded response at a fixed event is continuous in the
+  native LF topology.
+- `advancedSolutionEvaluation` : Evaluation of the advanced response is continuous in the native LF
+  source topology.
 
-Lemmas: `exists_solution_supported_seminorm`, `solutionEvaluation_apply`, `advancedSolutionEvaluation_apply`.
+Lemmas: `exists_solution_supported_seminorm`, `solutionEvaluation_apply`,
+`advancedSolutionEvaluation_apply`.
 
 ## B. Continuous source bounds for parameter derivatives
 
-Lemmas: `exists_integrand_derivative_supported_seminorm`, `exists_integral_derivative_supported_seminorm`, `exists_solution_derivative_supported_seminorm`.
+Lemmas: `exists_integrand_derivative_supported_seminorm`,
+`exists_integral_derivative_supported_seminorm`, `exists_solution_derivative_supported_seminorm`.
 
 ## C. Continuous compactly cut off Green responses
 
-- `cutoffSolutionSupported` : A compactly cut off retarded response is continuous between fixed-support source and target spaces in every derivative seminorm.
-- `cutoffSolution` : Multiplying the retarded Fourier response by a compact smooth cutoff is continuous on the native LF test-function space.
+- `cutoffSolutionSupported` : A compactly cut off retarded response is continuous between
+  fixed-support source and target spaces in every derivative seminorm.
+- `cutoffSolution` : Multiplying the retarded Fourier response by a compact smooth cutoff is
+  continuous on the native LF test-function space.
 
 Lemmas: `cutoffSolution_apply`.
 
 ## D. Continuous compactly cut off advanced response
 
-- `cutoffAdvancedSolution` : A compactly cut off advanced response is continuous on native smooth tests.
+- `cutoffAdvancedSolution` : A compactly cut off advanced response is continuous on native smooth
+  tests.
 
 Lemmas: `cutoffAdvancedSolution_apply`.
 
@@ -71,7 +83,9 @@ universe u
 namespace KleinGordon
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 /-- On bounded time intervals the response is controlled by a continuous source seminorm,
 uniformly over every spatial observation point. -/
@@ -88,7 +102,8 @@ lemma exists_solution_supported_seminorm (K : Compacts (ℝ × E)) {μ : ℝ} (h
   have hR : ∀ y ∈ K, ‖y‖ ≤ R := fun y hy => (hR₀ y hy).trans (le_max_left _ _)
   let L := |T| + R + 1
   have hL : 0 ≤ L := by dsimp [L]; positivity
-  let ν := (MeasureTheory.volume.restrict (Set.Ioc 0 L)).prod (MeasureTheory.volume : MeasureTheory.Measure E)
+  let ν := (MeasureTheory.volume.restrict (Set.Ioc 0 L)).prod (MeasureTheory.volume :
+    MeasureTheory.Measure E)
   let B : ℝ × E → ℝ := fun z => L * (1 + ‖z.2‖) ^ (-(N : ℝ))
   have hBi : MeasureTheory.Integrable B ν :=
     ((integrable_one_add_norm (E := E) (r := (N : ℝ)) (by simp [N])).const_mul L).comp_snd _
@@ -185,13 +200,15 @@ lemma exists_integrand_derivative_supported_seminorm (K : Compacts (ℝ × E))
     intro i hi
     calc
       _ = (k.choose i : ℝ) * |z.1| * ((2 * π * ‖z.2‖) ^ i *
-          ‖iteratedDeriv (k - i) (fun s => 𝓕 (slice F (supportedSource F K f) s) z.2) (p.1 - z.1)‖) := by ring
+          ‖iteratedDeriv (k - i) (fun s => 𝓕 (slice F (supportedSource F K f) s) z.2) (p.1 -
+            z.1)‖) := by ring
       _ ≤ (k.choose i : ℝ) * R * (q i f * (1 + ‖z.2‖) ^ (-(N : ℝ))) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hz (Nat.cast_nonneg _))
           (hq i f (p.1 - z.1) z.2) (by positivity) (by positivity)
       _ = _ := by ring
 
-/-- Every derivative of a fixed-interval Fourier response is controlled continuously by the source. -/
+/-- Every derivative of a fixed-interval Fourier response is controlled continuously by the source.
+-/
 lemma exists_integral_derivative_supported_seminorm (K : Compacts (ℝ × E))
     {μ : ℝ} (hμ : 0 ≤ μ) (k : ℕ) (R : ℝ≥0) :
     ∃ q : Seminorm ℝ (ContDiffMapSupportedIn (ℝ × E) F ⊤ K), Continuous q ∧
@@ -209,12 +226,14 @@ lemma exists_integral_derivative_supported_seminorm (K : Compacts (ℝ × E))
   have hz : ∀ᵐ z : ℝ × E ∂ν, z.1 ∈ Set.Ioc 0 (R : ℝ) :=
     Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_Ioc)
   have hb : ∀ j, ∀ᵐ z ∂ν, ∀ w,
-      ‖iteratedFDeriv ℝ j (fun w => solutionIntegrand F (supportedSource F K f) μ w z) w‖ ≤ q j f * B z := by
+      ‖iteratedFDeriv ℝ j (fun w => solutionIntegrand F (supportedSource F K f) μ w z) w‖ ≤ q j f *
+        B z := by
     intro j
     filter_upwards [hz] with z hz w
     exact hq j f w z (by rw [abs_of_pos hz.1]; exact hz.2)
   have hm : ∀ j w, AEStronglyMeasurable
-      (fun z => iteratedFDeriv ℝ j (fun w => solutionIntegrand F (supportedSource F K f) μ w z) w) ν := by
+      (fun z => iteratedFDeriv ℝ j (fun w => solutionIntegrand F (supportedSource F K f) μ w z) w)
+        ν := by
     intro j w
     exact ((continuous_iteratedFDeriv_partial _
       (contDiff_solutionIntegrand_joint F (supportedSource F K f) hμ) j).comp
@@ -255,7 +274,8 @@ lemma exists_solution_derivative_supported_seminorm (K : Compacts (ℝ × E))
       (fun w => ∫ z : ℝ × E, solutionIntegrand F (supportedSource F K f) μ w z
         ∂((volume.restrict (Set.Ioc 0 (L : ℝ))).prod volume)) := by
     filter_upwards [continuous_fst.continuousAt.eventually (gt_mem_nhds hpL)] with w hw
-    exact solution_eq_integral_solutionIntegrand F (supportedSource F K f) hμ (R := (L : ℝ)) L.2 ha w ((sub_le_iff_le_add).mpr hw.le)
+    exact solution_eq_integral_solutionIntegrand F (supportedSource F K f) hμ (R := (L : ℝ)) L.2 ha
+      w ((sub_le_iff_le_add).mpr hw.le)
   rw [(he.iteratedFDeriv ℝ k).eq_of_nhds]
   exact hq f p
 
@@ -296,7 +316,8 @@ def cutoffSolutionSupported {μ : ℝ} (hμ : 0 ≤ μ) (K₁ K₂ : Compacts (�
         intro i hi
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left
-            (ContDiffMapSupportedIn.norm_iteratedFDeriv_apply_le_seminorm_top ℝ) (Nat.cast_nonneg _))
+            (ContDiffMapSupportedIn.norm_iteratedFDeriv_apply_le_seminorm_top ℝ) (Nat.cast_nonneg
+              _))
           (hq (n - i) f p hpR) (norm_nonneg _) (by positivity)
       exact hb.trans (hbound f))
 

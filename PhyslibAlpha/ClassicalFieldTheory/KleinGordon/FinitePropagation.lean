@@ -17,15 +17,18 @@ The weighted local energy decreases.
 
 ## i. Overview
 
-The weighted local energy decreases. The retarded solution vanishes outside the causal future of the source.
+The weighted local energy decreases. The retarded solution vanishes outside the causal future of the
+source.
 
 ## ii. Key results
 
 - `energyDensity` : The energy density `‖v‖² + ∑ᵢ ‖pᵢ‖² + μ ‖u‖²`.
-- `EnergyFields` : Fields with the pointwise derivatives needed for the energy identity of the Klein–Gordon equation, in the basis vectors `b i`.
+- `EnergyFields` : Fields with the pointwise derivatives needed for the energy identity of the
+  Klein–Gordon equation, in the basis vectors `b i`.
 - `e` : The energy density of the fields.
 - `e'` : The time derivative of the energy density.
-- `WeightFields` : A weight for the energy: smooth, compactly supported in space uniformly in time, decreasing in time, with a spatial gradient bounded by its time derivative.
+- `WeightFields` : A weight for the energy: smooth, compactly supported in space uniformly in time,
+  decreasing in time, with a spatial gradient bounded by its time derivative.
 - `flux` : The Lie derivative of the energy flux `⟪v, pᵢ⟫` along `b i`.
 - `energyDeriv` : The time derivative of the weighted energy density.
 - `coneWeight` : The cone weight `N (c - τ - ψ x)` as a weight for the energy estimate.
@@ -44,14 +47,18 @@ None.
 ## A. The weighted local energy
 
 - `energyDensity` : The energy density `‖v‖² + ∑ᵢ ‖pᵢ‖² + μ ‖u‖²`.
-- `EnergyFields` : Fields with the pointwise derivatives needed for the energy identity of the Klein–Gordon equation, in the basis vectors `b i`.
+- `EnergyFields` : Fields with the pointwise derivatives needed for the energy identity of the
+  Klein–Gordon equation, in the basis vectors `b i`.
 - `e` : The energy density of the fields.
 - `e'` : The time derivative of the energy density.
-- `WeightFields` : A weight for the energy: smooth, compactly supported in space uniformly in time, decreasing in time, with a spatial gradient bounded by its time derivative.
+- `WeightFields` : A weight for the energy: smooth, compactly supported in space uniformly in time,
+  decreasing in time, with a spatial gradient bounded by its time derivative.
 - `flux` : The Lie derivative of the energy flux `⟪v, pᵢ⟫` along `b i`.
 - `energyDeriv` : The time derivative of the weighted energy density.
 
-Lemmas: `hasDerivAt_e`, `energy_integrand_nonneg`, `continuous_e`, `continuous_e'`, `hasLineDerivAt_flux`, `e'_eq`, `continuous_energyDeriv`, `hasCompactSupport_of_vanishing`, `hasDerivAt_energy`, `integral_energyDeriv` and more.
+Lemmas: `hasDerivAt_e`, `energy_integrand_nonneg`, `continuous_e`, `continuous_e'`,
+`hasLineDerivAt_flux`, `e'_eq`, `continuous_energyDeriv`, `hasCompactSupport_of_vanishing`,
+`hasDerivAt_energy`, `integral_energyDeriv` and more.
 
 ## B. The cone weight
 
@@ -61,13 +68,17 @@ Lemmas: `continuous_coneArg`.
 
 ## C. Finite propagation speed for the homogeneous Klein–Gordon evolution
 
-- `evolveFields` : The evolved field of the Cauchy data `(f0, f1)` as fields for the energy estimate, in the orthonormal basis `stdOrthonormalBasis`.
+- `evolveFields` : The evolved field of the Cauchy data `(f0, f1)` as fields for the energy
+  estimate, in the orthonormal basis `stdOrthonormalBasis`.
 
-Lemmas: `evolveU_zero_time`, `evolveV_zero_time`, `sineEvolution_apply_eq_zero`, `functional_sineEvolution`, `sineEvolution_apply_eq_zero'`.
+Lemmas: `evolveU_zero_time`, `evolveV_zero_time`, `sineEvolution_apply_eq_zero`,
+`functional_sineEvolution`, `sineEvolution_apply_eq_zero'`.
 
 ## D. Causal support of the retarded solution
 
-Lemmas: `sineEvolution_slice_eq_zero`, `solution_eq_zero_of_not_mem_causalFuture`, `tsupport_solution_subset`, `advancedSolution_eq_zero_of_not_mem_causalPast`, `tsupport_advancedSolution_subset`.
+Lemmas: `sineEvolution_slice_eq_zero`, `solution_eq_zero_of_not_mem_causalFuture`,
+`tsupport_solution_subset`, `advancedSolution_eq_zero_of_not_mem_causalPast`,
+`tsupport_advancedSolution_subset`.
 
 -/
 
@@ -76,12 +87,14 @@ Lemmas: `sineEvolution_slice_eq_zero`, `solution_eq_zero_of_not_mem_causalFuture
 noncomputable section
 
 open scoped InnerProductSpace SchwartzMap LineDeriv Distributions
-open Duhamel FourierMultiplier SmoothDistance TimeSlice TimeSpace MeasureTheory Real TopologicalSpace Topology
+open Duhamel FourierMultiplier SmoothDistance TimeSlice TimeSpace MeasureTheory Real
+    TopologicalSpace Topology
 
 namespace KleinGordon
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 /-- The energy density `‖v‖² + ∑ᵢ ‖pᵢ‖² + μ ‖u‖²`. -/
 def energyDensity {ι : Type*} [Fintype ι] (μ : ℝ) (u v : ℂ) (p : ι → ℂ) : ℝ :=
@@ -118,7 +131,8 @@ end KleinGordon
 namespace KleinGordon.EnergyFields
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 variable {ι : Type*} [Fintype ι] {μ : ℝ} {b : ι → E} (D : EnergyFields μ b)
 
 /-- The energy density of the fields. -/
@@ -146,7 +160,8 @@ end KleinGordon.EnergyFields
 namespace KleinGordon
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 /-- The pointwise inequality behind the monotonicity of the weighted energy. -/
 lemma energy_integrand_nonneg {ι : Type*} [Fintype ι] (m V : ℝ) (hm : 0 ≤ m)
@@ -208,7 +223,8 @@ end KleinGordon
 namespace KleinGordon.EnergyFields
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 variable {ι : Type*} [Fintype ι] {μ : ℝ} {b : ι → E} (D : EnergyFields μ b)
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
@@ -251,7 +267,8 @@ lemma e'_eq (τ : ℝ) (x : E) : D.e' τ x =
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 variable {ι : Type*} [Fintype ι] {μ : ℝ} {b : ι → E} (D : EnergyFields μ b)
 variable (W : WeightFields b)
 
@@ -288,7 +305,8 @@ lemma hasDerivAt_energy {τ0 : ℝ} (hτ0 : 0 ≤ τ0) :
     (bound := (Metric.closedBall (0 : E) W.R).indicator fun _ => max C 0)
     (Metric.ball_mem_nhds τ0 one_pos)
     (Filter.Eventually.of_forall fun τ => (hcx τ).aestronglyMeasurable)
-    ((hcx τ0).integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing W _ (fun x hx => hF0 τ0 x (by linarith) hx)))
+    ((hcx τ0).integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing W _ (fun x hx => hF0
+      τ0 x (by linarith) hx)))
     (hcx' τ0).aestronglyMeasurable ?_ ?_ ?_).2
   · refine Filter.Eventually.of_forall fun x τ hτ => ?_
     by_cases hx : ‖x‖ ≤ W.R
@@ -298,7 +316,8 @@ lemma hasDerivAt_energy {τ0 : ℝ} (hτ0 : 0 ≤ τ0) :
         rw [Real.dist_eq, abs_lt] at this
         exact ⟨by linarith, by linarith⟩
       exact (hC (τ, x) ⟨hτ', by simpa using hx⟩).trans (le_max_left _ _)
-    · rw [hF'0 τ x (by have := Metric.mem_ball.1 hτ; rw [Real.dist_eq, abs_lt] at this; linarith) (not_le.1 hx)]
+    · rw [hF'0 τ x (by have := Metric.mem_ball.1 hτ; rw [Real.dist_eq, abs_lt] at this; linarith)
+      (not_le.1 hx)]
       simp only [norm_zero]
       exact Set.indicator_nonneg (fun _ _ => le_max_right _ _) _
   · exact (MeasureTheory.integrableOn_const (MeasureTheory.measure_closedBall_lt_top
@@ -342,7 +361,8 @@ lemma integral_energyDeriv {τ0 : ℝ} (hτ0 : 0 ≤ τ0) :
       (hI _ (cw0.mul (cflux i)) fun x hx => by simp [(W.hR τ0 x (by linarith) hx).1])
       (fun x _ => W.hwx i τ0 x) (fun x _ => D.hasLineDerivAt_flux i τ0 x)
     simpa using this
-  have cwτ0 : Continuous fun x : E => W.wτ τ0 x := W.cwτ.comp (continuous_const.prodMk continuous_id)
+  have cwτ0 : Continuous fun x : E => W.wτ τ0 x := W.cwτ.comp (continuous_const.prodMk
+    continuous_id)
   have ce0 : Continuous fun x : E => D.e τ0 x := hce.comp (continuous_const.prodMk continuous_id)
   have ce'0 : Continuous fun x : E => D.e' τ0 x :=
     Continuous.comp (g := fun z : ℝ × E => D.e' z.1 z.2) (f := fun x : E => (τ0, x)) hce'
@@ -370,7 +390,8 @@ lemma integral_energyDeriv {τ0 : ℝ} (hτ0 : 0 ≤ τ0) :
       MeasureTheory.integral_const_mul, MeasureTheory.integral_finset_sum _ fun i _ => iWG i]
   rw [h3, h1, h2]; ring
 
-lemma integral_energyDeriv_nonpos (hμ : 0 ≤ μ) {τ0 : ℝ} (hτ0 : 0 ≤ τ0) : ∫ x, D.energyDeriv W τ0 x ≤ 0 := by
+lemma integral_energyDeriv_nonpos (hμ : 0 ≤ μ) {τ0 : ℝ} (hτ0 : 0 ≤ τ0) : ∫ x, D.energyDeriv W τ0 x ≤
+    0 := by
   rw [integral_energyDeriv D W hτ0]
   refine MeasureTheory.integral_nonpos fun x => ?_
   show W.wτ τ0 x * D.e τ0 x - 2 * ∑ i, W.wg i τ0 x * D.flux i τ0 x ≤ 0
@@ -426,7 +447,8 @@ def coneWeight {ε : ℝ} (hε : 0 < ε) (x₀ : E) (c : ℝ) :
     have hg : HasFDerivAt (fun y : E => c - τ - smoothDist ε x₀ y)
         (-((1 / smoothDist ε x₀ x) • innerSL ℝ (x - x₀))) x :=
       ((hasFDerivAt_smoothDist hε x₀ x).const_sub (c - τ)) |>.congr_fderiv (by simp)
-    have := ((hasDerivAt_expNegInvGlue (c - τ - smoothDist ε x₀ x)).comp_hasFDerivAt x hg).hasLineDerivAt
+    have := ((hasDerivAt_expNegInvGlue (c - τ - smoothDist ε x₀ x)).comp_hasFDerivAt x
+      hg).hasLineDerivAt
       (stdOrthonormalBasis ℝ E i)
     refine this.congr_deriv ?_
     simp only [smul_apply, neg_apply, innerSL_apply_apply, smul_eq_mul]
@@ -472,7 +494,8 @@ def coneWeight {ε : ℝ} (hε : 0 < ε) (x₀ : E) (c : ℝ) :
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 /-- The evolved field of the Cauchy data `(f0, f1)` as fields for the energy estimate, in the
 orthonormal basis `stdOrthonormalBasis`. -/
@@ -561,7 +584,8 @@ lemma sineEvolution_apply_eq_zero {μ : ℝ} (hμ : 0 ≤ μ) (g : 𝓢(E, ℂ))
         fun x hx => by simp [(W.hR τ x (by linarith) hx).1])
     have := (MeasureTheory.integral_eq_zero_iff_of_nonneg
       (fun x => mul_nonneg (hwnn τ x) (hennn τ x)) hi).1 (hEzero τ hτ)
-    have h := (Continuous.ae_eq_iff_eq MeasureTheory.volume hc (continuous_const (y := (0 : ℝ)))).1 this
+    have h := (Continuous.ae_eq_iff_eq MeasureTheory.volume hc (continuous_const (y := (0 : ℝ)))).1
+      this
     exact fun x => congrFun h x
   have hwpos : ∀ τ, τ ≤ r → 0 < W.w τ x₀ := by
     intro τ hτ
@@ -601,7 +625,8 @@ lemma sineEvolution_apply_eq_zero {μ : ℝ} (hμ : 0 ≤ μ) (g : 𝓢(E, ℂ))
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
 
 /-- A continuous linear functional commutes with the sine evolution. -/
@@ -629,7 +654,9 @@ lemma sineEvolution_apply_eq_zero' {μ : ℝ} (hμ : 0 ≤ μ) (g : 𝓢(E, F)) 
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- Each slice of the source propagates only inside the light cone. -/
 lemma sineEvolution_slice_eq_zero {μ : ℝ} (hμ : 0 ≤ μ) {s t : ℝ} (hst : s ≤ t) {x₀ : E}
@@ -639,9 +666,11 @@ lemma sineEvolution_slice_eq_zero {μ : ℝ} (hμ : 0 ≤ μ) {s t : ℝ} (hst :
     (isClosedEmbedding_prodMk s).isCompact_preimage f.hasCompactSupport.isCompact
   by_cases hne : {y : E | (s, y) ∈ tsupport f}.Nonempty
   · obtain ⟨y₀, hy₀, hmin⟩ := hA.exists_isMinOn hne
-      ((continuous_id.sub continuous_const).norm.continuousOn : ContinuousOn (fun y : E => ‖y - x₀‖) _)
+      ((continuous_id.sub continuous_const).norm.continuousOn : ContinuousOn (fun y : E => ‖y - x₀‖)
+        _)
     have hδ : 0 < ‖y₀ - x₀‖ - (t - s) := sub_pos.2 (hfut y₀ hy₀)
-    refine sineEvolution_apply_eq_zero' (r := t - s) (δ := ‖y₀ - x₀‖ - (t - s)) hμ _ x₀ (by linarith) hδ ?_
+    refine sineEvolution_apply_eq_zero' (r := t - s) (δ := ‖y₀ - x₀‖ - (t - s)) hμ _ x₀ (by
+      linarith) hδ ?_
     intro y hy
     have hy' : (s, y) ∈ tsupport f := subset_tsupport _ (by simpa using hy)
     have := hmin hy'

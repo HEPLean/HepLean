@@ -17,16 +17,21 @@ Compactly supported distributions have retarded and advanced responses.
 
 ## i. Overview
 
-Compactly supported distributions have retarded and advanced responses. The point source is a corollary.
+Compactly supported distributions have retarded and advanced responses. The point source is a
+corollary.
 
 ## ii. Key results
 
-- `retardedPointSource` : The retarded native point-source distribution obtained by transposing advanced evaluation.
-- `advancedPointSource` : The advanced native point-source distribution obtained by transposing retarded evaluation.
+- `retardedPointSource` : The retarded native point-source distribution obtained by transposing
+  advanced evaluation.
+- `advancedPointSource` : The advanced native point-source distribution obtained by transposing
+  retarded evaluation.
 - `realRetardedCutoff` : The continuous cut off real retarded response on native smooth tests.
 - `realAdvancedCutoff` : The continuous cut off real advanced response on native smooth tests.
-- `retardedLocalizedResponse` : Transposing the cut off advanced test map gives a retarded response on all distributions.
-- `advancedLocalizedResponse` : Transposing the cut off retarded test map gives an advanced response on all distributions.
+- `retardedLocalizedResponse` : Transposing the cut off advanced test map gives a retarded response
+  on all distributions.
+- `advancedLocalizedResponse` : Transposing the cut off retarded test map gives an advanced response
+  on all distributions.
 - `retardedCompactResponse` : The retarded response of a compactly supported distribution.
 - `advancedCompactResponse` : The advanced response of a compactly supported distribution.
 
@@ -42,10 +47,15 @@ None.
 
 ## A. Causal Klein–Gordon responses to a Dirac source
 
-- `retardedPointSource` : The retarded native point-source distribution obtained by transposing advanced evaluation.
-- `advancedPointSource` : The advanced native point-source distribution obtained by transposing retarded evaluation.
+- `retardedPointSource` : The retarded native point-source distribution obtained by transposing
+  advanced evaluation.
+- `advancedPointSource` : The advanced native point-source distribution obtained by transposing
+  retarded evaluation.
 
-Lemmas: `nativeTestDerivative_coe`, `nativeTestOperator_equiv`, `distributionOperator_retardedPointSource`, `distributionOperator_advancedPointSource`, `retardedPointSource_vanishes`, `advancedPointSource_vanishes`, `dsupport_retardedPointSource_subset`, `dsupport_advancedPointSource_subset`.
+Lemmas: `nativeTestDerivative_coe`, `nativeTestOperator_equiv`,
+`distributionOperator_retardedPointSource`, `distributionOperator_advancedPointSource`,
+`retardedPointSource_vanishes`, `advancedPointSource_vanishes`,
+`dsupport_retardedPointSource_subset`, `dsupport_advancedPointSource_subset`.
 
 ## B. The retarded point source through the spatial Fourier multiplier
 
@@ -55,13 +65,20 @@ Lemmas: `retardedPointSource_apply`.
 
 - `realRetardedCutoff` : The continuous cut off real retarded response on native smooth tests.
 - `realAdvancedCutoff` : The continuous cut off real advanced response on native smooth tests.
-- `retardedLocalizedResponse` : Transposing the cut off advanced test map gives a retarded response on all distributions.
-- `advancedLocalizedResponse` : Transposing the cut off retarded test map gives an advanced response on all distributions.
+- `retardedLocalizedResponse` : Transposing the cut off advanced test map gives a retarded response
+  on all distributions.
+- `advancedLocalizedResponse` : Transposing the cut off retarded test map gives an advanced response
+  on all distributions.
 - `retardedCompactResponse` : The retarded response of a compactly supported distribution.
 - `advancedCompactResponse` : The advanced response of a compactly supported distribution.
-- `compactDistributionOperator` : The field operator restricts to an endomorphism of compactly supported distributions.
+- `compactDistributionOperator` : The field operator restricts to an endomorphism of compactly
+  supported distributions.
 
-Lemmas: `realRetardedCutoff_apply`, `realAdvancedCutoff_apply`, `retardedLocalizedResponse_solves`, `advancedLocalizedResponse_solves`, `retardedLocalizedResponse_vanishes`, `advancedLocalizedResponse_vanishes`, `retardedDistribution_eq_zero`, `advancedDistribution_eq_zero`, `retardedDistribution_unique`, `advancedDistribution_unique` and more.
+Lemmas: `realRetardedCutoff_apply`, `realAdvancedCutoff_apply`, `retardedLocalizedResponse_solves`,
+`advancedLocalizedResponse_solves`, `retardedLocalizedResponse_vanishes`,
+`advancedLocalizedResponse_vanishes`, `retardedDistribution_eq_zero`,
+`advancedDistribution_eq_zero`, `retardedDistribution_unique`, `advancedDistribution_unique` and
+more.
 
 -/
 
@@ -70,7 +87,8 @@ Lemmas: `realRetardedCutoff_apply`, `realAdvancedCutoff_apply`, `retardedLocaliz
 noncomputable section
 
 open scoped Distributions
-open CausalRelation Distribution LocalOperator Minkowski TestFunction TimeSlice WaveEquation TopologicalSpace Topology GreenOperator
+open CausalRelation Distribution LocalOperator Minkowski TestFunction TimeSlice WaveEquation
+    TopologicalSpace Topology GreenOperator
 open Minkowski (DistributionField)
 
 namespace KleinGordon.Spacetime

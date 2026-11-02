@@ -17,10 +17,13 @@ The wave operator on smooth fields and on distributions on spacetime.
 
 ## ii. Key results
 
-- `smoothWaveOperator` : The smooth wave operator as the Minkowski metric trace of the second derivative.
-- `distributionWaveOperator` : The wave operator on all distributions is the metric trace of weak second derivatives.
+- `smoothWaveOperator` : The smooth wave operator as the Minkowski metric trace of the second
+  derivative.
+- `distributionWaveOperator` : The wave operator on all distributions is the metric trace of weak
+  second derivatives.
 - `testWaveOperator` : The transpose wave operator on native smooth compact test functions.
-- `smoothFiberMap_waveOperator` : Constant fibre transformations commute with the metric-trace wave operator.
+- `smoothFiberMap_waveOperator` : Constant fibre transformations commute with the metric-trace wave
+  operator.
 
 ## iii. Table of contents
 
@@ -33,13 +36,15 @@ None.
 
 ## A. The Minkowski wave equation
 
-- `smoothWaveOperator` : The smooth wave operator as the Minkowski metric trace of the second derivative.
+- `smoothWaveOperator` : The smooth wave operator as the Minkowski metric trace of the second
+  derivative.
 
 Lemmas: `smoothWaveOperator_coe`, `smoothWaveOperator_support`, `smoothFiberMap_waveOperator`.
 
 ## B. The distributional wave operator
 
-- `distributionWaveOperator` : The wave operator on all distributions is the metric trace of weak second derivatives.
+- `distributionWaveOperator` : The wave operator on all distributions is the metric trace of weak
+  second derivatives.
 - `testWaveOperator` : The transpose wave operator on native smooth compact test functions.
 
 Lemmas: `distributionWaveOperator_apply`.

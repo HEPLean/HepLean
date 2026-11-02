@@ -16,14 +16,16 @@ The difference of the retarded and advanced response solves the homogeneous equa
 
 ## i. Overview
 
-The difference of the retarded and advanced response solves the homogeneous equation. Uniqueness of one-sided solutions follows from the support of the response.
+The difference of the retarded and advanced response solves the homogeneous equation. Uniqueness of
+one-sided solutions follows from the support of the response.
 
 ## ii. Key results
 
 - `causalPropagator` : The causal propagator uses the sign convention retarded minus advanced.
 - `toSolutionSpace` : The causal propagator with its proven solution-space codomain.
 - `HasCausalCutoffs` : Temporal cutoff splitting of spacelike-compact admissible fields.
-- `eq_of_local_truncations` : Compact truncations agreeing with the same field in the observation's causal past give identical retarded responses.
+- `eq_of_local_truncations` : Compact truncations agreeing with the same field in the observation's
+  causal past give identical retarded responses.
 
 ## iii. Table of contents
 
@@ -40,13 +42,18 @@ None.
 - `causalPropagator` : The causal propagator uses the sign convention retarded minus advanced.
 - `toSolutionSpace` : The causal propagator with its proven solution-space codomain.
 
-Lemmas: `causalPropagator_solves`, `causalPropagator_comp_operator`, `causalPropagator_support`, `causalPropagator_mem_solution`, `range_compactOperator_le_ker`, `compactOperator_injective`, `retarded_compact_of_causalPropagator_eq_zero`, `mem_range_of_causalPropagator_eq_zero`, `causalPropagator_ker`, `toSolutionSpace_ker`.
+Lemmas: `causalPropagator_solves`, `causalPropagator_comp_operator`, `causalPropagator_support`,
+`causalPropagator_mem_solution`, `range_compactOperator_le_ker`, `compactOperator_injective`,
+`retarded_compact_of_causalPropagator_eq_zero`, `mem_range_of_causalPropagator_eq_zero`,
+`causalPropagator_ker`, `toSolutionSpace_ker`.
 
 ## B. Causal splitting and one-sided uniqueness
 
 - `HasCausalCutoffs` : Temporal cutoff splitting of spacelike-compact admissible fields.
 
-Lemmas: `futureSupported_unique`, `retarded_mem_futureSupportedFields`, `advanced_mem_futureSupportedFields_reverse`, `retarded_eq_of_futureSupported`, `advanced_eq_of_pastSupported`.
+Lemmas: `futureSupported_unique`, `retarded_mem_futureSupportedFields`,
+`advanced_mem_futureSupportedFields_reverse`, `retarded_eq_of_futureSupported`,
+`advanced_eq_of_pastSupported`.
 
 ## C. Local field equations and causal agreement
 
@@ -66,7 +73,8 @@ namespace GreenOperator.GreenOperators
 open LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
 
 /-- Fix the inherited field addition for nested quotient inference. -/
 local instance greenFieldAddGroup : AddCommGroup S := S.addCommGroup
@@ -160,7 +168,8 @@ end GreenOperator.GreenOperators
 namespace LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} (P : LocalOperator S) (C : CausalRelation M)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} (P : LocalOperator S) (C : CausalRelation M)
 
 /-- Every two future-supported fields with the same equation coincide. -/
 lemma futureSupported_unique (h : Function.Injective (P.futureSupportedOperator C))
@@ -186,7 +195,8 @@ namespace GreenOperator.GreenOperators
 open LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)} {C : CausalRelation M} {P : LocalOperator S} (G : GreenOperators C P)
 
 /-- Retarded compact-source responses belong to the extension's support class. -/
 lemma retarded_mem_futureSupportedFields (f : P.compactSources) :
@@ -220,7 +230,8 @@ namespace GreenOperator.RetardedGreenOperator
 open LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 variable {C : CausalRelation M} {P : LocalOperator S} (G : RetardedGreenOperator C P)
 
 /-- A compact source unable to reach the observation event has zero retarded response there. -/

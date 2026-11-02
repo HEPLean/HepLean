@@ -16,7 +16,8 @@ A test function on time and space has a Schwartz function as its slice at a fixe
 
 ## i. Overview
 
-A test function on time and space has a Schwartz function as its slice at a fixed time. Time and space derivatives and the time reflection commute with slicing.
+A test function on time and space has a Schwartz function as its slice at a fixed time. Time and
+space derivatives and the time reflection commute with slicing.
 
 ## ii. Key results
 
@@ -46,7 +47,9 @@ None.
 
 - `slice` : The slice `f(s, ·)` of a spacetime test function at the time `s` is a Schwartz function.
 
-Lemmas: `isClosedEmbedding_prodMk`, `hasCompactSupport_slice`, `contDiff_slice`, `slice_apply`, `norm_iteratedFDeriv_slice_le`, `exists_bound_iteratedFDeriv`, `exists_radius`, `exists_seminorm_slice_le`, `exists_fourier_bound`, `exists_fourier_decay_pow` and more.
+Lemmas: `isClosedEmbedding_prodMk`, `hasCompactSupport_slice`, `contDiff_slice`, `slice_apply`,
+`norm_iteratedFDeriv_slice_le`, `exists_bound_iteratedFDeriv`, `exists_radius`,
+`exists_seminorm_slice_le`, `exists_fourier_bound`, `exists_fourier_decay_pow` and more.
 
 ## B. Causal support of the retarded solution
 
@@ -78,7 +81,8 @@ Lemmas: `timeReflectionCLE_apply`.
 - `dx` : Spatial differentiation of a spacetime test field in the direction `m`.
 - `spatialLaplacian` : The spatial Laplacian on compact spacetime test fields.
 
-Lemmas: `slice_dx`, `slice_spatialLaplacian`, `dt_reflect`, `dt_neg`, `dt_dt_reflect`, `slice_reflect`, `dx_reflect`, `spatialLaplacian_reflect`.
+Lemmas: `slice_dx`, `slice_spatialLaplacian`, `dt_reflect`, `dt_neg`, `dt_dt_reflect`,
+`slice_reflect`, `dx_reflect`, `spatialLaplacian_reflect`.
 
 -/
 
@@ -93,7 +97,9 @@ universe u
 namespace TimeSlice
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 variable (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 omit [InnerProductSpace ℝ E] [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
@@ -230,7 +236,8 @@ lemma exists_fourier_decay_pow (N : ℕ) :
 
 omit [CompleteSpace F] in
 lemma exists_fourier_decay :
-    ∃ K : ℝ, ∀ s (ξ : E), ‖𝓕 (slice F f s) ξ‖ ≤ K * (1 + ‖ξ‖) ^ (-((Module.finrank ℝ E + 1 : ℕ) : ℝ)) :=
+    ∃ K : ℝ, ∀ s (ξ : E), ‖𝓕 (slice F f s) ξ‖ ≤ K * (1 + ‖ξ‖) ^ (-((Module.finrank ℝ E + 1 : ℕ) :
+      ℝ)) :=
   exists_fourier_decay_pow F f _
 
 omit [CompleteSpace F] in
@@ -265,7 +272,8 @@ lemma continuous_fourier_slice :
   · exact (MeasureTheory.integrableOn_const (MeasureTheory.measure_closedBall_lt_top
       (x := (0 : E)) (r := R)).ne).integrable_indicator measurableSet_closedBall
   · refine Filter.Eventually.of_forall fun x => ?_
-    have h1 : Continuous fun p : ℝ × E => (inner ℝ x p.2 : ℝ) := continuous_const.inner continuous_snd
+    have h1 : Continuous fun p : ℝ × E => (inner ℝ x p.2 : ℝ) := continuous_const.inner
+      continuous_snd
     have h2 : Continuous fun p : ℝ × E => f (p.1, x) := f.continuous.comp (by fun_prop)
     exact (Real.continuous_fourierChar.comp h1.neg).smul h2
 
@@ -282,7 +290,9 @@ lemma isCompact_timeSupport : IsCompact (Prod.fst '' tsupport f) :=
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- Reflection in time. -/
 def timeReflect : ℝ × E ≃ₜ ℝ × E :=
@@ -337,7 +347,9 @@ lemma hasDerivAt_time (s : ℝ) (y : E) : HasDerivAt (fun r : ℝ => f (r, y)) (
 end
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 /-- Time reflection acts continuously on the native compact source space. -/
 def reflectSourceCLM :
@@ -361,7 +373,9 @@ omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- Spatial differentiation of a spacetime test field in the direction `m`. -/
 def dx (m : E) : 𝓓((⊤ : Opens (ℝ × E)), F) :=

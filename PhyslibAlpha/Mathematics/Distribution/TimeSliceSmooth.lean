@@ -17,14 +17,19 @@ The Fourier transform of the slices depends smoothly on time and space.
 
 ## i. Overview
 
-The Fourier transform of the slices depends smoothly on time and space. The seminorms of the slices are bounded by seminorms of the source.
+The Fourier transform of the slices depends smoothly on time and space. The seminorms of the slices
+are bounded by seminorms of the source.
 
 ## ii. Key results
 
-- `fourierIntegrand` : The integrand of the partial Fourier transform, as a function of the parameter `(s, ξ)` and the position `y`.
-- `supportedSource` : The native continuous inclusion of fixed-support sources into all compact test sources.
-- `supportedDt` : Time differentiation is a continuous endomorphism of every fixed-support source space.
-- `hasDerivAt_fourier_slice` : The time derivative of the Fourier transformed slice is the Fourier transformed slice of the time derivative.
+- `fourierIntegrand` : The integrand of the partial Fourier transform, as a function of the
+  parameter `(s, ξ)` and the position `y`.
+- `supportedSource` : The native continuous inclusion of fixed-support sources into all compact test
+  sources.
+- `supportedDt` : Time differentiation is a continuous endomorphism of every fixed-support source
+  space.
+- `hasDerivAt_fourier_slice` : The time derivative of the Fourier transformed slice is the Fourier
+  transformed slice of the time derivative.
 
 ## iii. Table of contents
 
@@ -40,11 +45,13 @@ None.
 
 ## A. The time dependence of the Fourier transformed slices
 
-Lemmas: `hasDerivAt_fourier_slice`, `deriv_fourier_slice`, `iteratedDeriv_fourier_slice`, `contDiff_fourier_slice`, `exists_iteratedDeriv_fourier_slice_bound`.
+Lemmas: `hasDerivAt_fourier_slice`, `deriv_fourier_slice`, `iteratedDeriv_fourier_slice`,
+`contDiff_fourier_slice`, `exists_iteratedDeriv_fourier_slice_bound`.
 
 ## B. Joint smoothness of the Fourier transformed slices
 
-- `fourierIntegrand` : The integrand of the partial Fourier transform, as a function of the parameter `(s, ξ)` and the position `y`.
+- `fourierIntegrand` : The integrand of the partial Fourier transform, as a function of the
+  parameter `(s, ξ)` and the position `y`.
 
 Lemmas: `contDiff_fourierIntegrand`, `fourierIntegrand_eq_zero`, `contDiff_fourier_slice_joint`.
 
@@ -54,15 +61,19 @@ Lemmas: `contDiff_fourier_slice_joint_infty`.
 
 ## D. Continuous seminorm bounds for Fourier sources
 
-- `supportedSource` : The native continuous inclusion of fixed-support sources into all compact test sources.
+- `supportedSource` : The native continuous inclusion of fixed-support sources into all compact test
+  sources.
 
-Lemmas: `seminorm_slice_supported_le`, `exists_fourier_supported_seminorm`, `exists_fourier_decay_supported_seminorm`.
+Lemmas: `seminorm_slice_supported_le`, `exists_fourier_supported_seminorm`,
+`exists_fourier_decay_supported_seminorm`.
 
 ## E. Continuous source bounds for parameter derivatives
 
-- `supportedDt` : Time differentiation is a continuous endomorphism of every fixed-support source space.
+- `supportedDt` : Time differentiation is a continuous endomorphism of every fixed-support source
+  space.
 
-Lemmas: `supportedSource_dt`, `supportedSource_iterate_dt`, `exists_timeDeriv_fourier_supported_seminorm`, `exists_char_timeDeriv_supported_seminorm`.
+Lemmas: `supportedSource_dt`, `supportedSource_iterate_dt`,
+`exists_timeDeriv_fourier_supported_seminorm`, `exists_char_timeDeriv_supported_seminorm`.
 
 -/
 
@@ -77,7 +88,9 @@ universe u
 namespace TimeSlice
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 omit [CompleteSpace F] in
 /-- The time derivative of the Fourier transformed slice is the Fourier transformed slice of the
@@ -164,7 +177,9 @@ lemma exists_iteratedDeriv_fourier_slice_bound (k N : ℕ) :
 end
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- The integrand of the partial Fourier transform, as a function of the parameter `(s, ξ)` and the
 position `y`. -/
@@ -184,7 +199,8 @@ lemma contDiff_fourierIntegrand : ContDiff ℝ ∞ (fourierIntegrand F f) := by
       contDiff_const.mul hin.neg
     have h4 : ContDiff ℝ ∞ fun z : (ℝ × E) × E => (((2 * π * (-inner ℝ z.2 z.1.2) : ℝ)) : ℂ) :=
       Complex.ofRealCLM.contDiff.comp h3
-    have hexp : ContDiff ℝ ∞ Complex.exp := ContDiff.restrict_scalars ℝ (𝕜' := ℂ) Complex.contDiff_exp
+    have hexp : ContDiff ℝ ∞ Complex.exp := ContDiff.restrict_scalars ℝ (𝕜' := ℂ)
+      Complex.contDiff_exp
     exact hexp.comp (h4.mul contDiff_const)
   have h2 : ContDiff ℝ ∞ fun z : (ℝ × E) × E => f (z.1.1, z.2) :=
     f.contDiff.comp ((contDiff_fst.comp contDiff_fst).prodMk contDiff_snd)
@@ -216,7 +232,8 @@ lemma contDiff_fourier_slice_joint (n : ℕ) :
         (continuous_const.prodMk continuous_id : Continuous fun y : E => (p, y))
       exact this.aestronglyMeasurable
     · have hc := (continuous_iteratedFDeriv_partial (fourierIntegrand F f) hH k).norm
-      obtain ⟨C, hC⟩ := ((isCompact_closedBall p₀ 1).prod (isCompact_closedBall (0 : E) R)).exists_bound_of_continuousOn
+      obtain ⟨C, hC⟩ := ((isCompact_closedBall p₀ 1).prod (isCompact_closedBall (0 : E)
+        R)).exists_bound_of_continuousOn
         hc.continuousOn
       refine ⟨(Metric.closedBall (0 : E) R).indicator fun _ => max C 0, ?_, ?_⟩
       · exact (MeasureTheory.integrableOn_const (MeasureTheory.measure_closedBall_lt_top
@@ -245,7 +262,9 @@ lemma contDiff_fourier_slice_joint_infty :
 end
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 /-- The native continuous inclusion of fixed-support sources into all compact test sources. -/
 def supportedSource (K : Compacts (ℝ × E)) :
@@ -370,8 +389,10 @@ lemma exists_timeDeriv_fourier_supported_seminorm (K : Compacts (ℝ × E)) (j N
   obtain ⟨q, hqc, hq⟩ := exists_fourier_decay_supported_seminorm F K N
   let D := (supportedDt F K) ^ j
   refine ⟨q.comp D.toLinearMap, hqc.comp D.continuous, fun f s ξ => ?_⟩
-  rw [iteratedDeriv_fourier_slice F ξ j (supportedSource F K f), ← supportedSource_iterate_dt F K j f]
-  simpa [D, Seminorm.comp_apply, FunLike.coe_pow_eq_iterate, Module.End.pow_apply] using hq ((supportedDt F K)^[j] f) s ξ
+  rw [iteratedDeriv_fourier_slice F ξ j (supportedSource F K f), ← supportedSource_iterate_dt F K j
+    f]
+  simpa [D, Seminorm.comp_apply, FunLike.coe_pow_eq_iterate, Module.End.pow_apply] using hq
+    ((supportedDt F K)^[j] f) s ξ
 
 omit [CompleteSpace F] in
 lemma exists_char_timeDeriv_supported_seminorm (K : Compacts (ℝ × E)) (i j N : ℕ) :

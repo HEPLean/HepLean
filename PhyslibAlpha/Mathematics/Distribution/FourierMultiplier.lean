@@ -17,14 +17,20 @@ Sums and commutation of Fourier multipliers and their derivatives in a parameter
 
 ## i. Overview
 
-Sums and commutation of Fourier multipliers and their derivatives in a parameter. Compositions with bounded smooth functions have temperate growth.
+Sums and commutation of Fourier multipliers and their derivatives in a parameter. Compositions with
+bounded smooth functions have temperate growth.
 
 ## ii. Key results
 
-- `continuous_multiplierFamily_apply` : The evolution of fixed Schwartz data is jointly continuous in time and position, for every multiplier family that is jointly continuous and locally dominated against the Fourier transform of the data.
-- `hasTemperateGrowth_comp_of_bounded` : Composition of a smooth function with bounded derivatives on `[0, ∞)` with a nonnegative function of temperate growth has temperate growth.
-- `functional_fourier` : A continuous linear functional commutes with the Fourier transform of a Schwartz function.
-- `hasDerivAt_multiplierFamily` : Differentiation in time of a family of Fourier multipliers, under the Fourier integral.
+- `continuous_multiplierFamily_apply` : The evolution of fixed Schwartz data is jointly continuous
+  in time and position, for every multiplier family that is jointly continuous and locally dominated
+  against the Fourier transform of the data.
+- `hasTemperateGrowth_comp_of_bounded` : Composition of a smooth function with bounded derivatives
+  on `[0, ∞)` with a nonnegative function of temperate growth has temperate growth.
+- `functional_fourier` : A continuous linear functional commutes with the Fourier transform of a
+  Schwartz function.
+- `hasDerivAt_multiplierFamily` : Differentiation in time of a family of Fourier multipliers, under
+  the Fourier integral.
 
 ## iii. Table of contents
 
@@ -53,7 +59,8 @@ Lemmas: `multiplier_comm`.
 
 ## D. The homogeneous Klein–Gordon evolution of Schwartz data
 
-Lemmas: `multiplier_apply_eq`, `hasDerivAt_multiplierFamily`, `lineDeriv_fourierMultiplier`, `continuous_multiplierFamily_apply`.
+Lemmas: `multiplier_apply_eq`, `hasDerivAt_multiplierFamily`, `lineDeriv_fourierMultiplier`,
+`continuous_multiplierFamily_apply`.
 
 ## E. Finite propagation speed for the homogeneous Klein–Gordon evolution
 
@@ -95,7 +102,9 @@ lemma hasTemperateGrowth_comp_of_bounded {g : ℝ → ℝ} (hg : ContDiff ℝ �
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 omit [CompleteSpace F] in
 lemma fourierMultiplierCLM_add {g₁ g₂ : E → ℂ} (h₁ : g₁.HasTemperateGrowth)
@@ -117,7 +126,9 @@ lemma multiplier_comm {g₁ g₂ : E → ℂ} (h₁ : g₁.HasTemperateGrowth) (
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F]
 
 omit [CompleteSpace F] in
 /-- The pointwise Fourier integral of a Fourier multiplier with temperate growth. -/
@@ -219,7 +230,8 @@ lemma continuous_multiplierFamily_apply (a : 𝓢(E, F)) (g : ℝ → E → ℂ)
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] in
 lemma hasLineDerivAt_lineDerivOp (f : 𝓢(E, ℂ)) (m x : E) :
@@ -229,7 +241,8 @@ lemma hasLineDerivAt_lineDerivOp (f : 𝓢(E, ℂ)) (m x : E) :
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F]
 
 /-- A continuous linear functional commutes with the Fourier transform of a Schwartz function. -/
@@ -264,13 +277,15 @@ lemma integrable_fourier_integrand {g : E → ℂ} (hg : g.HasTemperateGrowth) (
 end
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 /-- An even multiplier acts the same on a function and on its transpose. -/
 lemma fourier_smul_fourierInv_of_even {G : Type*} [NormedAddCommGroup G] [NormedSpace ℂ G]
     (m : E → ℂ) (hm : ∀ x, m (-x) = m x) (g : E → G) (y : E) :
     𝓕 (fun x => m x • 𝓕⁻ g x) y = 𝓕⁻ (fun x => m x • 𝓕 g x) y := by
-  have h : (fun x => m x • 𝓕⁻ g x) = (fun x => m x • 𝓕 g x) ∘ (LinearIsometryEquiv.neg ℝ (E := E)) := by
+  have h : (fun x => m x • 𝓕⁻ g x) = (fun x => m x • 𝓕 g x) ∘ (LinearIsometryEquiv.neg ℝ (E :=
+    E)) := by
     funext x
     simp only [Function.comp_apply, LinearIsometryEquiv.coe_neg, Pi.neg_apply, id_eq, hm,
       Real.fourierInv_eq_fourier_neg]

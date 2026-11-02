@@ -18,15 +18,18 @@ The retarded solution of a test function source is the Duhamel integral of the s
 
 ## i. Overview
 
-The retarded solution of a test function source is the Duhamel integral of the sine evolution. It solves the equation and is linear in the source.
+The retarded solution of a test function source is the Duhamel integral of the sine evolution. It
+solves the equation and is linear in the source.
 
 ## ii. Key results
 
 - `sourceHat` : The Fourier transform of the source at the frequency `ξ`, as a function of the time.
-- `freqSolution` : The retarded solution at the spatial frequency `ξ`, with zero data at the time `a`.
+- `freqSolution` : The retarded solution at the spatial frequency `ξ`, with zero data at the time
+  `a`.
 - `freqSolution1` : The time derivative of the per-frequency solution.
 - `solution` : The retarded solution of the Klein–Gordon equation with the source `f`.
-- `advancedSolution` : The advanced solution: the retarded solution of the time-reflected source, reflected back.
+- `advancedSolution` : The advanced solution: the retarded solution of the time-reflected source,
+  reflected back.
 - `testOperator` : The Klein–Gordon operator `∂ₜ² - Δ + μ` on compact spacetime test fields.
 
 ## iii. Table of contents
@@ -42,23 +45,31 @@ None.
 ## A. The retarded Klein–Gordon solution of a test-function source
 
 - `sourceHat` : The Fourier transform of the source at the frequency `ξ`, as a function of the time.
-- `freqSolution` : The retarded solution at the spatial frequency `ξ`, with zero data at the time `a`.
+- `freqSolution` : The retarded solution at the spatial frequency `ξ`, with zero data at the time
+  `a`.
 - `freqSolution1` : The time derivative of the per-frequency solution.
 - `solution` : The retarded solution of the Klein–Gordon equation with the source `f`.
 
-Lemmas: `continuous_sourceHat`, `freqSolution_eq`, `hasDerivAt_freqSolution`, `hasDerivAt_freqSolution1`, `norm_freqSolution1_le`, `norm_freqSolution_le`, `continuous_freqSolution_xi`, `continuous_freqSolution1_xi`, `hasDerivAt_solution_time`, `hasDerivAt_solution_time1` and more.
+Lemmas: `continuous_sourceHat`, `freqSolution_eq`, `hasDerivAt_freqSolution`,
+`hasDerivAt_freqSolution1`, `norm_freqSolution1_le`, `norm_freqSolution_le`,
+`continuous_freqSolution_xi`, `continuous_freqSolution1_xi`, `hasDerivAt_solution_time`,
+`hasDerivAt_solution_time1` and more.
 
 ## B. Causal support of the retarded solution
 
-- `advancedSolution` : The advanced solution: the retarded solution of the time-reflected source, reflected back.
+- `advancedSolution` : The advanced solution: the retarded solution of the time-reflected source,
+  reflected back.
 
-Lemmas: `propagatedSlice_eq_sineEvolution`, `advancedSolution_equation`, `integrableOn_sineEvolution_slice`, `solution_eq_integral`, `solution_add`, `solution_smul`.
+Lemmas: `propagatedSlice_eq_sineEvolution`, `advancedSolution_equation`,
+`integrableOn_sineEvolution_slice`, `solution_eq_integral`, `solution_add`, `solution_smul`.
 
 ## C. The two-sided Klein–Gordon inverse on compact test fields
 
 - `testOperator` : The Klein–Gordon operator `∂ₜ² - Δ + μ` on compact spacetime test fields.
 
-Lemmas: `slice_testOperator`, `testOperator_apply`, `fourier_frequencySqOperator`, `sourceHat_testOperator`, `freqSolution_testOperator`, `solution_testOperator`, `solution_equation_at`, `testOperator_reflect`, `advancedSolution_testOperator`.
+Lemmas: `slice_testOperator`, `testOperator_apply`, `fourier_frequencySqOperator`,
+`sourceHat_testOperator`, `freqSolution_testOperator`, `solution_testOperator`,
+`solution_equation_at`, `testOperator_reflect`, `advancedSolution_testOperator`.
 
 -/
 
@@ -72,7 +83,9 @@ open Duhamel FourierIntegral TimeSlice TopologicalSpace Real Topology LineDeriv
 namespace KleinGordon
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- The Fourier transform of the source at the frequency `ξ`, as a function of the time. -/
 def sourceHat (ξ : E) (s : ℝ) : F := 𝓕 (slice F f s) ξ
@@ -111,7 +124,9 @@ lemma hasDerivAt_freqSolution1 (μ a : ℝ) (ξ : E) (t : ℝ) :
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 variable {F f}
 
 omit [CompleteSpace F] in
@@ -148,12 +163,15 @@ lemma norm_freqSolution_le {K N : ℝ} (hK : ∀ (ξ : E) s, ‖sourceHat F f ξ
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 variable {F f}
 variable (F f)
 
 omit [CompleteSpace F] in
-lemma continuous_freqSolution_xi (μ a t : ℝ) : Continuous fun ξ : E => freqSolution F f μ a ξ t := by
+lemma continuous_freqSolution_xi (μ a t : ℝ) : Continuous fun ξ : E => freqSolution F f μ a ξ
+    t := by
   unfold freqSolution sourceHat
   refine intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' ?_ a t
   have h1 : Continuous fun p : E × ℝ => multiplier (t - p.2) μ p.1 :=
@@ -164,7 +182,8 @@ lemma continuous_freqSolution_xi (μ a t : ℝ) : Continuous fun ξ : E => freqS
   exact h1.smul h2
 
 omit [CompleteSpace F] in
-lemma continuous_freqSolution1_xi (μ a t : ℝ) : Continuous fun ξ : E => freqSolution1 F f μ a ξ t := by
+lemma continuous_freqSolution1_xi (μ a t : ℝ) : Continuous fun ξ : E => freqSolution1 F f μ a ξ
+    t := by
   unfold freqSolution1 duhamelOscCos sourceHat
   refine intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' ?_ a t
   have h1 : Continuous fun p : E × ℝ => cos (dispersion μ p.1 * (t - p.2)) :=
@@ -269,7 +288,8 @@ lemma hasDerivAt_solution_time1 {μ : ℝ} (hμ : 0 ≤ μ) (a t : ℝ) (x : E) 
         ≤ ‖sourceHat F f ξ t'‖ + ‖(dispersion μ ξ ^ 2) • freqSolution F f μ a ξ t'‖ :=
           norm_sub_le _ _
       _ ≤ |K| * (1 + ‖ξ‖) ^ (-((d + 3 : ℕ) : ℝ)) +
-          dispersion μ ξ ^ 2 * (|K| * (1 + ‖ξ‖) ^ (-((d + 3 : ℕ) : ℝ)) * (|t' - a| * |t' - a|)) := by
+          dispersion μ ξ ^ 2 * (|K| * (1 + ‖ξ‖) ^ (-((d + 3 : ℕ) : ℝ)) * (|t' - a| * |t' -
+            a|)) := by
           refine add_le_add hs ?_
           rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
           exact mul_le_mul_of_nonneg_left (hu.trans_eq (by ring)) (sq_nonneg _)
@@ -499,7 +519,9 @@ lemma solution_equation {μ : ℝ} (hμ : 0 ≤ μ) {a : ℝ}
 end
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type*) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 omit [CompleteSpace F] in
 lemma propagatedSlice_eq_sineEvolution {μ : ℝ} (hμ : 0 ≤ μ) (r s : ℝ) (x : E) :

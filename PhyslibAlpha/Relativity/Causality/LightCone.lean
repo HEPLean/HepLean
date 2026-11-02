@@ -19,14 +19,18 @@ Causal future and past of sets in time and space and in Minkowski spacetime.
 
 ## i. Overview
 
-Causal future and past of sets in time and space and in Minkowski spacetime. Causal futures of compact sets are closed and causal diamonds are compact.
+Causal future and past of sets in time and space and in Minkowski spacetime. Causal futures of
+compact sets are closed and causal diamonds are compact.
 
 ## ii. Key results
 
-- `causalFuture` : The causal future of a set of spacetime points, in units where the speed of light is `1`.
+- `causalFuture` : The causal future of a set of spacetime points, in units where the speed of light
+  is `1`.
 - `causalPast` : The causal past of a set of spacetime points.
-- `precedes_iff_time_space` : In any speed-of-light units the existing geometric causal relation has the familiar elapsed-time and spatial-distance characterization.
-- `causallyFollows_iff_norm` : The existing Lorentzian causal order is equivalently the spatial norm bounded by elapsed Lorentz time.
+- `precedes_iff_time_space` : In any speed-of-light units the existing geometric causal relation has
+  the familiar elapsed-time and spatial-distance characterization.
+- `causallyFollows_iff_norm` : The existing Lorentzian causal order is equivalently the spatial norm
+  bounded by elapsed Lorentz time.
 
 ## iii. Table of contents
 
@@ -39,11 +43,15 @@ None.
 
 ## A. Minkowski causal geometry for Green operators
 
-Lemmas: `causallyFollows_iff_displacement`, `causallyFollows_iff_norm`, `norm_space_eq_spatialPart`, `precedes_iff_time_space`, `isClosed_causalFuture_zero`, `causalFuture_eq_add`, `isClosed_causalFuture`, `causalPast_eq_add_neg`, `isClosed_causalPast`, `component_bound_of_causalDiamond` and more.
+Lemmas: `causallyFollows_iff_displacement`, `causallyFollows_iff_norm`, `norm_space_eq_spatialPart`,
+`precedes_iff_time_space`, `isClosed_causalFuture_zero`, `causalFuture_eq_add`,
+`isClosed_causalFuture`, `causalPast_eq_add_neg`, `isClosed_causalPast`,
+`component_bound_of_causalDiamond` and more.
 
 ## B. Causal support of the retarded solution
 
-- `causalFuture` : The causal future of a set of spacetime points, in units where the speed of light is `1`.
+- `causalFuture` : The causal future of a set of spacetime points, in units where the speed of light
+  is `1`.
 - `causalPast` : The causal past of a set of spacetime points.
 
 Lemmas: `isClosed_causalFuture`.
@@ -288,7 +296,8 @@ end Minkowski
 namespace TimeSpace
 
 section
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
 
 /-- The causal future of a set of spacetime points, in units where the speed of light is `1`. -/
 def causalFuture (K : Set (ℝ × E)) : Set (ℝ × E) :=

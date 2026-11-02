@@ -18,9 +18,12 @@ A compactly supported distribution is unchanged by a cutoff that equals one near
 
 ## ii. Key results
 
-- `compactDistributions` : Compactly supported native distributions, defined by annihilation outside a compact bound.
-- `compactDistributionBound` : A chosen compact support bound for a native compact distributional source.
-- `multiplyDistribution` : Smooth multiplication of a distribution is the transpose of native test multiplication.
+- `compactDistributions` : Compactly supported native distributions, defined by annihilation outside
+  a compact bound.
+- `compactDistributionBound` : A chosen compact support bound for a native compact distributional
+  source.
+- `multiplyDistribution` : Smooth multiplication of a distribution is the transpose of native test
+  multiplication.
 - `compactCutoffRadius` : A positive radius containing a compact set in its open ball.
 - `compactCutoffBump` : The canonical support-bound cutoff is a smooth compact bump.
 - `compactCutoff` : A native compact test cutoff equal to one in a neighborhood of the compact set.
@@ -36,14 +39,17 @@ None.
 
 ## A. Compact distributional sources
 
-- `compactDistributions` : Compactly supported native distributions, defined by annihilation outside a compact bound.
-- `compactDistributionBound` : A chosen compact support bound for a native compact distributional source.
+- `compactDistributions` : Compactly supported native distributions, defined by annihilation outside
+  a compact bound.
+- `compactDistributionBound` : A chosen compact support bound for a native compact distributional
+  source.
 
 Lemmas: `compactDistributionBound_vanishes`.
 
 ## B. Localization of native distributions
 
-- `multiplyDistribution` : Smooth multiplication of a distribution is the transpose of native test multiplication.
+- `multiplyDistribution` : Smooth multiplication of a distribution is the transpose of native test
+  multiplication.
 - `compactCutoffRadius` : A positive radius containing a compact set in its open ball.
 - `compactCutoffBump` : The canonical support-bound cutoff is a smooth compact bump.
 - `compactCutoff` : A native compact test cutoff equal to one in a neighborhood of the compact set.
@@ -62,7 +68,8 @@ open TestFunction Topology TopologicalSpace
 namespace Distribution
 
 section
-variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V]
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace
+    ℝ V]
 
 /-- Compactly supported native distributions, defined by annihilation outside a compact bound. -/
 def compactDistributions (E V : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]

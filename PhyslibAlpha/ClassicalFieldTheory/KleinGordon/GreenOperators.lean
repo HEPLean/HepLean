@@ -19,18 +19,27 @@ Retarded and advanced Green operators of the Klein–Gordon equation on `SpaceTi
 
 ## i. Overview
 
-Retarded and advanced Green operators of the Klein–Gordon equation on `SpaceTime d` for every mass. Uniqueness and the exact sequence follow.
+Retarded and advanced Green operators of the Klein–Gordon equation on `SpaceTime d` for every mass.
+Uniqueness and the exact sequence follow.
 
 ## ii. Key results
 
-- `retardedResponse` : The retarded spatial Fourier response of a compact source on Minkowski spacetime.
-- `advancedResponse` : The advanced spatial Fourier response of a compact source on Minkowski spacetime.
-- `testFieldEquiv` : The neighbour's compact smooth fields and Mathlib's bundled test functions have the same data.
-- `retardedMap` : The retarded Fourier response as a real linear map into the existing smooth-field space.
-- `advancedMap` : The advanced Fourier response as a real linear map into the existing smooth-field space.
-- `retardedGreenOperator` : The retarded Fourier Green inverse for the existing Minkowski equation in every dimension.
-- `advancedGreenOperator` : The advanced Fourier Green inverse for the existing Minkowski equation in every dimension.
-- `greenOperators` : The spatial Fourier Green pair for Klein–Gordon fields in arbitrary spatial dimension.
+- `retardedResponse` : The retarded spatial Fourier response of a compact source on Minkowski
+  spacetime.
+- `advancedResponse` : The advanced spatial Fourier response of a compact source on Minkowski
+  spacetime.
+- `testFieldEquiv` : The neighbour's compact smooth fields and Mathlib's bundled test functions have
+  the same data.
+- `retardedMap` : The retarded Fourier response as a real linear map into the existing smooth-field
+  space.
+- `advancedMap` : The advanced Fourier response as a real linear map into the existing smooth-field
+  space.
+- `retardedGreenOperator` : The retarded Fourier Green inverse for the existing Minkowski equation
+  in every dimension.
+- `advancedGreenOperator` : The advanced Fourier Green inverse for the existing Minkowski equation
+  in every dimension.
+- `greenOperators` : The spatial Fourier Green pair for Klein–Gordon fields in arbitrary spatial
+  dimension.
 
 ## iii. Table of contents
 
@@ -46,43 +55,61 @@ None.
 
 ## A. The spatial Fourier Green construction on Minkowski spacetime
 
-- `retardedResponse` : The retarded spatial Fourier response of a compact source on Minkowski spacetime.
-- `advancedResponse` : The advanced spatial Fourier response of a compact source on Minkowski spacetime.
+- `retardedResponse` : The retarded spatial Fourier response of a compact source on Minkowski
+  spacetime.
+- `advancedResponse` : The advanced spatial Fourier response of a compact source on Minkowski
+  spacetime.
 
-Lemmas: `contDiff_retardedResponse`, `contDiff_advancedResponse`, `tsupport_retardedResponse_subset`, `tsupport_advancedResponse_subset`, `retardedResponse_sourceOperator`, `advancedResponse_sourceOperator`.
+Lemmas: `contDiff_retardedResponse`, `contDiff_advancedResponse`,
+`tsupport_retardedResponse_subset`, `tsupport_advancedResponse_subset`,
+`retardedResponse_sourceOperator`, `advancedResponse_sourceOperator`.
 
 ## B. Fourier Klein–Gordon Green operators in every dimension
 
-- `testFieldEquiv` : The neighbour's compact smooth fields and Mathlib's bundled test functions have the same data.
-- `retardedMap` : The retarded Fourier response as a real linear map into the existing smooth-field space.
-- `advancedMap` : The advanced Fourier response as a real linear map into the existing smooth-field space.
-- `retardedGreenOperator` : The retarded Fourier Green inverse for the existing Minkowski equation in every dimension.
-- `advancedGreenOperator` : The advanced Fourier Green inverse for the existing Minkowski equation in every dimension.
-- `greenOperators` : The spatial Fourier Green pair for Klein–Gordon fields in arbitrary spatial dimension.
+- `testFieldEquiv` : The neighbour's compact smooth fields and Mathlib's bundled test functions have
+  the same data.
+- `retardedMap` : The retarded Fourier response as a real linear map into the existing smooth-field
+  space.
+- `advancedMap` : The advanced Fourier response as a real linear map into the existing smooth-field
+  space.
+- `retardedGreenOperator` : The retarded Fourier Green inverse for the existing Minkowski equation
+  in every dimension.
+- `advancedGreenOperator` : The advanced Fourier Green inverse for the existing Minkowski equation
+  in every dimension.
+- `greenOperators` : The spatial Fourier Green pair for Klein–Gordon fields in arbitrary spatial
+  dimension.
 
 Lemmas: `testFieldEquiv_compactOperator`, `retardedMap_solves`, `advancedMap_solves`.
 
 ## C. Real scalar Fourier Green operators
 
-- `fiberIntertwiner` : A constant fibre transformation intertwines the equal-mass Klein–Gordon equations.
-- `realRetardedGreenOperator` : The real part of the complex retarded response is a real scalar Green inverse.
-- `realAdvancedGreenOperator` : The real part of the complex advanced response is a real scalar Green inverse.
-- `realGreenOperators` : The real scalar Klein–Gordon Green pair for transposition in arbitrary spatial dimension.
+- `fiberIntertwiner` : A constant fibre transformation intertwines the equal-mass Klein–Gordon
+  equations.
+- `realRetardedGreenOperator` : The real part of the complex retarded response is a real scalar
+  Green inverse.
+- `realAdvancedGreenOperator` : The real part of the complex advanced response is a real scalar
+  Green inverse.
+- `realGreenOperators` : The real scalar Klein–Gordon Green pair for transposition in arbitrary
+  spatial dimension.
 
 Lemmas: `fiberIntertwiner_compactOperator`.
 
 ## D. Continuous evaluation of the spacetime Fourier response
 
-- `retardedEvaluation` : Continuous evaluation of the complex Banach-valued retarded Fourier response.
-- `advancedEvaluation` : Continuous evaluation of the complex Banach-valued advanced Fourier response.
+- `retardedEvaluation` : Continuous evaluation of the complex Banach-valued retarded Fourier
+  response.
+- `advancedEvaluation` : Continuous evaluation of the complex Banach-valued advanced Fourier
+  response.
 - `realRetardedEvaluation` : Continuous evaluation of the real scalar retarded Green response.
 - `realAdvancedEvaluation` : Continuous evaluation of the real scalar advanced Green response.
 
-Lemmas: `retardedEvaluation_apply`, `advancedEvaluation_apply`, `realRetardedEvaluation_apply`, `realAdvancedEvaluation_apply`.
+Lemmas: `retardedEvaluation_apply`, `advancedEvaluation_apply`, `realRetardedEvaluation_apply`,
+`realAdvancedEvaluation_apply`.
 
 ## E. Uniqueness for the Fourier Klein–Gordon Green operators
 
-- `solutionSpaceEquivQuotient` : Spacelike-compact homogeneous solutions of the Klein–Gordon equation are the compact source classes modulo the equation of motion, in every spatial dimension.
+- `solutionSpaceEquivQuotient` : Spacelike-compact homogeneous solutions of the Klein–Gordon
+  equation are the compact source classes modulo the equation of motion, in every spatial dimension.
 
 Lemmas: `existsUnique_retardedSolution`, `causalGreen_exactSequence`.
 
@@ -93,7 +120,8 @@ Lemmas: `existsUnique_retardedSolution`, `causalGreen_exactSequence`.
 noncomputable section
 
 open scoped Distributions ContDiff
-open CausalRelation FieldIntertwiner LocalOperator Minkowski TestFunction TimeSlice TimeSpace WaveEquation TopologicalSpace Topology GreenOperator
+open CausalRelation FieldIntertwiner LocalOperator Minkowski TestFunction TimeSlice TimeSpace
+    WaveEquation TopologicalSpace Topology GreenOperator
 
 namespace KleinGordon.Spacetime
 
@@ -121,7 +149,8 @@ lemma tsupport_retardedResponse_subset {μ : ℝ} (hμ : 0 ≤ μ)
     (f : 𝓓((⊤ : Opens (SpaceTime d)), F)) :
     tsupport (retardedResponse F μ f) ⊆ (coordinates d) ⁻¹'
       causalFuture (coordinates d '' tsupport f) := by
-  change tsupport ((fun p => solution F (sourceEquiv F f) μ p.1 p.2) ∘ (coordinates d).toHomeomorph) ⊆ _
+  change tsupport ((fun p => solution F (sourceEquiv F f) μ p.1 p.2) ∘ (coordinates d).toHomeomorph)
+    ⊆ _
   rw [tsupport_comp_eq_preimage _ (coordinates d).toHomeomorph]
   intro p hp
   rw [← tsupport_sourceEquiv F f]
@@ -132,7 +161,8 @@ lemma tsupport_advancedResponse_subset {μ : ℝ} (hμ : 0 ≤ μ)
     (f : 𝓓((⊤ : Opens (SpaceTime d)), F)) :
     tsupport (advancedResponse F μ f) ⊆ (coordinates d) ⁻¹'
       causalPast (coordinates d '' tsupport f) := by
-  change tsupport ((fun p => advancedSolution F (sourceEquiv F f) μ p.1 p.2) ∘ (coordinates d).toHomeomorph) ⊆ _
+  change tsupport ((fun p => advancedSolution F (sourceEquiv F f) μ p.1 p.2) ∘ (coordinates
+    d).toHomeomorph) ⊆ _
   rw [tsupport_comp_eq_preimage _ (coordinates d).toHomeomorph]
   intro p hp
   rw [← tsupport_sourceEquiv F f]
@@ -160,7 +190,8 @@ end
 section
 variable {d : ℕ} (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The neighbour's compact smooth fields and Mathlib's bundled test functions have the same data. -/
+/-- The neighbour's compact smooth fields and Mathlib's bundled test functions have the same data.
+-/
 def testFieldEquiv : TestField d F ≃ₗ[ℝ] 𝓓((⊤ : Opens (SpaceTime d)), F) where
   toFun f := {
     toFun := f.val.val
@@ -208,7 +239,8 @@ def advancedMap (m : ℝ) : TestField d F →ₗ[ℝ] smoothFields d F where
     funext p
     simp only [advancedResponse, advancedSolution, map_add]
     have he : reflect F (sourceEquiv F (testFieldEquiv F f) + sourceEquiv F (testFieldEquiv F g)) =
-        reflect F (sourceEquiv F (testFieldEquiv F f)) + reflect F (sourceEquiv F (testFieldEquiv F g)) := by
+        reflect F (sourceEquiv F (testFieldEquiv F f)) + reflect F (sourceEquiv F (testFieldEquiv F
+          g)) := by
       ext q; rfl
     rw [he]
     exact solution_add F _ (sq_nonneg m) _ _ _
@@ -239,7 +271,8 @@ lemma advancedMap_solves (m : ℝ) (f : TestField d F) :
   apply Subtype.ext
   funext p
   change (KleinGordon.Spacetime.operator m
-    ⟨(fun q => advancedSolution F (sourceEquiv F (testFieldEquiv F f)) (m ^ 2) q.1 q.2) ∘ coordinates d,
+    ⟨(fun q => advancedSolution F (sourceEquiv F (testFieldEquiv F f)) (m ^ 2) q.1 q.2) ∘
+      coordinates d,
       _⟩ : SpaceTime d → F) p = _
   rw [operator_of_coordinates m _ (contDiff_advancedSolution F _ (sq_nonneg m))]
   rw [advancedSolution_equation F _ (sq_nonneg m)]
@@ -290,7 +323,8 @@ def greenOperators (m : ℝ) :
 end
 
 section
-variable {d : ℕ} {V W : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup W] [NormedSpace ℝ W]
+variable {d : ℕ} {V W : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup W]
+    [NormedSpace ℝ W]
 
 /-- A constant fibre transformation intertwines the equal-mass Klein–Gordon equations. -/
 def fiberIntertwiner (m : ℝ) (L : V →L[ℝ] W) :
@@ -319,7 +353,8 @@ def realRetardedGreenOperator (m : ℝ) :
   solves f := by
     change (equation m).operator
       ((fiberIntertwiner m Complex.reCLM).toLinearMap _) = _
-    rw [(fiberIntertwiner m Complex.reCLM).commutes, LinearMap.comp_apply, (retardedGreenOperator ℂ m).solves]
+    rw [(fiberIntertwiner m Complex.reCLM).commutes, LinearMap.comp_apply, (retardedGreenOperator ℂ
+      m).solves]
     apply Subtype.ext
     funext p
     exact Complex.ofReal_re _
@@ -347,7 +382,8 @@ def realAdvancedGreenOperator (m : ℝ) :
   solves f := by
     change (equation m).operator
       ((fiberIntertwiner m Complex.reCLM).toLinearMap _) = _
-    rw [(fiberIntertwiner m Complex.reCLM).commutes, LinearMap.comp_apply, (advancedGreenOperator ℂ m).solves]
+    rw [(fiberIntertwiner m Complex.reCLM).commutes, LinearMap.comp_apply, (advancedGreenOperator ℂ
+      m).solves]
     apply Subtype.ext
     funext p
     exact Complex.ofReal_re _

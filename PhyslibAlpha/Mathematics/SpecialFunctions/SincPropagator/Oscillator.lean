@@ -19,7 +19,8 @@ The matrix exponential of the generator and the Duhamel formula for the oscillat
 
 ## ii. Key results
 
-- `generator` : The generator `[[0, 1], [-ω², 0]]` of the free evolution of Cauchy data at frequency `ω`.
+- `generator` : The generator `[[0, 1], [-ω², 0]]` of the free evolution of Cauchy data at frequency
+  `ω`.
 - `evolutionMatrix` : The evolution matrix of the Cauchy data at frequency `ω` over the time `t`.
 - `duhamelOsc` : The retarded solution of `u'' + ω² u = G` with zero data at the time `a`.
 - `duhamelOscCos` : The derivative of `duhamelOsc`: the same integral with the cosine kernel.
@@ -35,17 +36,22 @@ None.
 
 ## A. The exponential of the Klein–Gordon generator
 
-- `generator` : The generator `[[0, 1], [-ω², 0]]` of the free evolution of Cauchy data at frequency `ω`.
+- `generator` : The generator `[[0, 1], [-ω², 0]]` of the free evolution of Cauchy data at frequency
+  `ω`.
 - `evolutionMatrix` : The evolution matrix of the Cauchy data at frequency `ω` over the time `t`.
 
-Lemmas: `generator_sq`, `generator_pow_even`, `generator_pow_odd`, `hasSum_sincPropagator`, `hasSum_exp_generator`, `evolutionMatrix_eq`, `exp_generator`, `evolutionMatrix_add`, `sincPropagator_add`, `cos_mul_add`.
+Lemmas: `generator_sq`, `generator_pow_even`, `generator_pow_odd`, `hasSum_sincPropagator`,
+`hasSum_exp_generator`, `evolutionMatrix_eq`, `exp_generator`, `evolutionMatrix_add`,
+`sincPropagator_add`, `cos_mul_add`.
 
 ## B. Duhamel's formula for the harmonic oscillator
 
 - `duhamelOsc` : The retarded solution of `u'' + ω² u = G` with zero data at the time `a`.
 - `duhamelOscCos` : The derivative of `duhamelOsc`: the same integral with the cosine kernel.
 
-Lemmas: `sincPropagator_sub_split`, `cos_sub_split`, `cos_sq_add_sq_mul`, `continuous_sincPropagator_smul`, `continuous_cos_smul`, `duhamelOsc_eq`, `duhamelOscCos_eq`, `hasDerivAt_cosIntegral`, `hasDerivAt_sinIntegral`, `hasDerivAt_duhamelOsc` and more.
+Lemmas: `sincPropagator_sub_split`, `cos_sub_split`, `cos_sq_add_sq_mul`,
+`continuous_sincPropagator_smul`, `continuous_cos_smul`, `duhamelOsc_eq`, `duhamelOscCos_eq`,
+`hasDerivAt_cosIntegral`, `hasDerivAt_sinIntegral`, `hasDerivAt_duhamelOsc` and more.
 
 -/
 
@@ -63,7 +69,8 @@ open Real
 /-- The generator `[[0, 1], [-ω², 0]]` of the free evolution of Cauchy data at frequency `ω`. -/
 def generator (ω : ℝ) : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -((ω ^ 2 : ℝ) : ℂ), 0]
 
-lemma generator_sq (ω : ℝ) : generator ω ^ 2 = (-((ω ^ 2 : ℝ) : ℂ)) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+lemma generator_sq (ω : ℝ) : generator ω ^ 2 = (-((ω ^ 2 : ℝ) : ℂ)) • (1 : Matrix (Fin 2) (Fin 2)
+    ℂ) := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [generator, sq, Matrix.mul_apply, Fin.sum_univ_two]
 
@@ -82,7 +89,8 @@ lemma hasSum_sincPropagator (t ω : ℝ) :
   by_cases hω : ω = 0
   · subst hω
     rw [sincPropagator_zero_right]
-    convert hasSum_single 0 (f := fun n : ℕ => (-1) ^ n * t ^ (2 * n + 1) * (0:ℝ) ^ (2 * n) / (2 * n + 1)!) ?_ using 1
+    convert hasSum_single 0 (f := fun n : ℕ => (-1) ^ n * t ^ (2 * n + 1) * (0:ℝ) ^ (2 * n) / (2 * n
+      + 1)!) ?_ using 1
     · simp
     · intro n hn; simp [hn]
   · rw [sincPropagator_eq_sin_div hω]

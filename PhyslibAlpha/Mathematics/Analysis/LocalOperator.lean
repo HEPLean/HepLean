@@ -18,15 +18,19 @@ A linear operator on a space of functions with support contained in the support 
 
 ## i. Overview
 
-A linear operator on a space of functions with support contained in the support of the argument. It acts on compactly supported functions and has a kernel. Such operators agree at a point when their arguments agree near it.
+A linear operator on a space of functions with support contained in the support of the argument. It
+acts on compactly supported functions and has a kernel. Such operators agree at a point when their
+arguments agree near it.
 
 ## ii. Key results
 
 - `compactFields` : Compactly supported admissible fields form the source space of Green operators.
-- `compactSources` : The compact test-field space depends on the admissible fields rather than the operator.
+- `compactSources` : The compact test-field space depends on the admissible fields rather than the
+  operator.
 - `compactOperator` : The restriction of the equation to compactly supported admissible fields.
 - `solutionSpace` : Homogeneous admissible fields are the kernel of the field operator.
-- `IsLocalFieldSpace` : Admissibility is local when a function locally agreeing with admissible fields is admissible.
+- `IsLocalFieldSpace` : Admissibility is local when a function locally agreeing with admissible
+  fields is admissible.
 - `FieldIntertwiner` : A local linear map that commutes with two field equations.
 - `compactMap` : Restrict the local intertwiner to compact test fields.
 
@@ -43,7 +47,8 @@ None.
 ## A. Linear field equations and compact sources
 
 - `compactFields` : Compactly supported admissible fields form the source space of Green operators.
-- `compactSources` : The compact test-field space depends on the admissible fields rather than the operator.
+- `compactSources` : The compact test-field space depends on the admissible fields rather than the
+  operator.
 - `compactOperator` : The restriction of the equation to compactly supported admissible fields.
 - `solutionSpace` : Homogeneous admissible fields are the kernel of the field operator.
 
@@ -51,9 +56,11 @@ Lemmas: `operator_mem_compactSources`, `compactOperator_coe`, `mem_solutionSpace
 
 ## B. Local field equations and causal agreement
 
-- `IsLocalFieldSpace` : Admissibility is local when a function locally agreeing with admissible fields is admissible.
+- `IsLocalFieldSpace` : Admissibility is local when a function locally agreeing with admissible
+  fields is admissible.
 
-Lemmas: `notMem_tsupport_sub_iff_eventuallyEq`, `operator_eventuallyEq`, `operator_eq_of_eventuallyEq`.
+Lemmas: `notMem_tsupport_sub_iff_eventuallyEq`, `operator_eventuallyEq`,
+`operator_eq_of_eventuallyEq`.
 
 ## C. Differential constraints and Green responses
 
@@ -124,7 +131,8 @@ end
 end LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 
 /-- Admissibility is local when a function locally agreeing with admissible fields is admissible. -/
 def IsLocalFieldSpace (S : Submodule 𝕜 (M → V)) : Prop :=
@@ -142,7 +150,8 @@ end
 namespace LocalOperator
 
 section
-variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule 𝕜 (M → V)}
+variable {𝕜 M V : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] {S : Submodule
+    𝕜 (M → V)}
 variable (P : LocalOperator S)
 
 /-- A local field operator preserves equality of germs. -/
@@ -166,7 +175,8 @@ end
 end LocalOperator
 
 section
-variable {𝕜 M V W : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] [AddCommGroup W] [Module 𝕜 W] {S : Submodule 𝕜 (M → V)} {T : Submodule 𝕜 (M → W)}
+variable {𝕜 M V W : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] [AddCommGroup
+    W] [Module 𝕜 W] {S : Submodule 𝕜 (M → V)} {T : Submodule 𝕜 (M → W)}
 
 /-- A local linear map that commutes with two field equations.
 The two equations may act on different field types, as for divergence of a vector wave equation. -/
@@ -182,7 +192,8 @@ end
 namespace FieldIntertwiner
 
 section
-variable {𝕜 M V W : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] [AddCommGroup W] [Module 𝕜 W] {S : Submodule 𝕜 (M → V)} {T : Submodule 𝕜 (M → W)}
+variable {𝕜 M V W : Type*} [Ring 𝕜] [TopologicalSpace M] [AddCommGroup V] [Module 𝕜 V] [AddCommGroup
+    W] [Module 𝕜 W] {S : Submodule 𝕜 (M → V)} {T : Submodule 𝕜 (M → W)}
 variable {P : LocalOperator S} {R : LocalOperator T} (Q : FieldIntertwiner P R)
 
 /-- Restrict the local intertwiner to compact test fields. -/

@@ -15,14 +15,21 @@ public import PhyslibAlpha.ClassicalFieldTheory.KleinGordon.Smoothness
 
 ## i. Overview
 
-At each time the retarded solution pairs with Schwartz functions through the sine evolution of the source slices.
+At each time the retarded solution pairs with Schwartz functions through the sine evolution of the
+source slices.
 
 ## ii. Key results
 
 - `solutionSlice` : The spatial slice of the retarded solution as a Schwartz function.
-- `solutionSlice_pairing` : **The retarded solution as a tempered distribution.** Tested against a Schwartz function `g` the spatial slice of the retarded solution at the time `t` is the integral over the source time `s ≤ t` of the Fourier multiplier `sincPropagator (t - s)` applied to the tempered slice of the source.
-- `advancedSolution_eq_dirac` : **Advanced response at a point.** The advanced solution at the point `(t, y)` is the integral over the later source times of the pairing of the propagated Dirac distribution at `y` with the slice of the source.
-- `sineEvolution_apply_eq_delta` : The propagation of a Schwartz function at a point is the pairing of the propagated Dirac distribution with it.
+- `solutionSlice_pairing` : **The retarded solution as a tempered distribution.** Tested against a
+  Schwartz function `g` the spatial slice of the retarded solution at the time `t` is the integral
+  over the source time `s ≤ t` of the Fourier multiplier `sincPropagator (t - s)` applied to the
+  tempered slice of the source.
+- `advancedSolution_eq_dirac` : **Advanced response at a point.** The advanced solution at the point
+  `(t, y)` is the integral over the later source times of the pairing of the propagated Dirac
+  distribution at `y` with the slice of the source.
+- `sineEvolution_apply_eq_delta` : The propagation of a Schwartz function at a point is the pairing
+  of the propagated Dirac distribution with it.
 
 ## iii. Table of contents
 
@@ -36,7 +43,9 @@ None.
 
 - `solutionSlice` : The spatial slice of the retarded solution as a Schwartz function.
 
-Lemmas: `hasCompactSupport_solution_slice`, `solutionSlice_apply`, `integrable_pairing_integrand`, `solutionSlice_pairing`, `sineEvolution_apply_eq_delta`, `advancedSolution_eq_integral`, `advancedSolution_eq_dirac`.
+Lemmas: `hasCompactSupport_solution_slice`, `solutionSlice_apply`, `integrable_pairing_integrand`,
+`solutionSlice_pairing`, `sineEvolution_apply_eq_delta`, `advancedSolution_eq_integral`,
+`advancedSolution_eq_dirac`.
 
 -/
 
@@ -51,7 +60,9 @@ universe u
 namespace KleinGordon
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- The spatial slice of the retarded solution has compact support. -/
 lemma hasCompactSupport_solution_slice {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) :
@@ -175,7 +186,8 @@ lemma advancedSolution_eq_integral {μ : ℝ} (hμ : 0 ≤ μ) (t : ℝ) (y : E)
 end
 
 section
-variable {D : Type} [NormedAddCommGroup D] [InnerProductSpace ℝ D] [FiniteDimensional ℝ D] [MeasurableSpace D] [BorelSpace D]
+variable {D : Type} [NormedAddCommGroup D] [InnerProductSpace ℝ D] [FiniteDimensional ℝ D]
+    [MeasurableSpace D] [BorelSpace D]
 
 /-- **Advanced response at a point.** The advanced solution at the point `(t, y)` is the integral
 over the later source times of the pairing of the propagated Dirac distribution at `y` with the

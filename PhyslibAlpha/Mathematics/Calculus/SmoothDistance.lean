@@ -19,7 +19,8 @@ The function `sqrt (ε^2 + ‖x - x₀‖^2)` is smooth and bounds the distance.
 
 ## i. Overview
 
-The function `sqrt (ε^2 + ‖x - x₀‖^2)` is smooth and bounds the distance. The derivative of `expNegInvGlue` is continuous.
+The function `sqrt (ε^2 + ‖x - x₀‖^2)` is smooth and bounds the distance. The derivative of
+`expNegInvGlue` is continuous.
 
 ## ii. Key results
 
@@ -40,7 +41,9 @@ None.
 
 - `smoothDist` : The smooth distance `√(ε² + ‖x - x₀‖²)`.
 
-Lemmas: `smoothDist_pos`, `norm_sub_le_smoothDist`, `continuous_smoothDist`, `hasFDerivAt_smoothDist`, `deriv_expNegInvGlue_nonneg`, `deriv_expNegInvGlue_of_nonpos`, `continuous_deriv_expNegInvGlue`, `hasDerivAt_expNegInvGlue`.
+Lemmas: `smoothDist_pos`, `norm_sub_le_smoothDist`, `continuous_smoothDist`,
+`hasFDerivAt_smoothDist`, `deriv_expNegInvGlue_nonneg`, `deriv_expNegInvGlue_of_nonpos`,
+`continuous_deriv_expNegInvGlue`, `hasDerivAt_expNegInvGlue`.
 
 -/
 

@@ -14,15 +14,21 @@ public import Mathlib.Topology.ContinuousMap.CompactlySupported
 
 ## i. Overview
 
-Multiplication by a weight and composition with a linear equivalence are continuous on test functions.
+Multiplication by a weight and composition with a linear equivalence are continuous on test
+functions.
 
 ## ii. Key results
 
-- `precompLinearEquivSupportedCLM` : Pullback between fixed-support smooth test spaces by an invertible linear coordinate map.
-- `precompLinearEquivCLM` : Pullback by an invertible continuous linear coordinate change is continuous on smooth tests.
-- `weightedTestBCFLinear` : Weight a compact smooth test field and retain its bounded continuous representative.
-- `weightedTestBCF` : Arbitrary continuous weights give continuous maps from the native LF test-function space into the uniform norm.
-- `smoothWeightTest` : Multiplication by a smooth weight is continuous in the native LF test topology.
+- `precompLinearEquivSupportedCLM` : Pullback between fixed-support smooth test spaces by an
+  invertible linear coordinate map.
+- `precompLinearEquivCLM` : Pullback by an invertible continuous linear coordinate change is
+  continuous on smooth tests.
+- `weightedTestBCFLinear` : Weight a compact smooth test field and retain its bounded continuous
+  representative.
+- `weightedTestBCF` : Arbitrary continuous weights give continuous maps from the native LF
+  test-function space into the uniform norm.
+- `smoothWeightTest` : Multiplication by a smooth weight is continuous in the native LF test
+  topology.
 
 ## iii. Table of contents
 
@@ -35,16 +41,21 @@ None.
 
 ## A. Continuous linear changes of test-function coordinates
 
-- `precompLinearEquivSupportedCLM` : Pullback between fixed-support smooth test spaces by an invertible linear coordinate map.
-- `precompLinearEquivCLM` : Pullback by an invertible continuous linear coordinate change is continuous on smooth tests.
+- `precompLinearEquivSupportedCLM` : Pullback between fixed-support smooth test spaces by an
+  invertible linear coordinate map.
+- `precompLinearEquivCLM` : Pullback by an invertible continuous linear coordinate change is
+  continuous on smooth tests.
 
 Lemmas: `precompLinearEquivCLM_apply`.
 
 ## B. Weighted test functions in the uniform norm
 
-- `weightedTestBCFLinear` : Weight a compact smooth test field and retain its bounded continuous representative.
-- `weightedTestBCF` : Arbitrary continuous weights give continuous maps from the native LF test-function space into the uniform norm.
-- `smoothWeightTest` : Multiplication by a smooth weight is continuous in the native LF test topology.
+- `weightedTestBCFLinear` : Weight a compact smooth test field and retain its bounded continuous
+  representative.
+- `weightedTestBCF` : Arbitrary continuous weights give continuous maps from the native LF
+  test-function space into the uniform norm.
+- `smoothWeightTest` : Multiplication by a smooth weight is continuous in the native LF test
+  topology.
 
 Lemmas: `weightedTestBCF_apply`, `smoothWeightTest_apply`.
 
@@ -60,7 +71,8 @@ open TopologicalSpace Topology MeasureTheory
 namespace TestFunction
 
 section
-variable {A B F : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [NormedAddCommGroup B] [NormedSpace ℝ B] [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable {A B F : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [NormedAddCommGroup B]
+    [NormedSpace ℝ B] [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 /-- Pullback between fixed-support smooth test spaces by an invertible linear coordinate map. -/
 def precompLinearEquivSupportedCLM (e : A ≃L[ℝ] B) (K : Compacts B) :
@@ -114,7 +126,8 @@ lemma precompLinearEquivCLM_apply (e : A ≃L[ℝ] B) (f : 𝓓((⊤ : Opens B),
 end
 
 section
-variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V]
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace
+    ℝ V]
 
 /-- Weight a compact smooth test field and retain its bounded continuous representative. -/
 def weightedTestBCFLinear (w : E → ℝ) (hw : Continuous w) :

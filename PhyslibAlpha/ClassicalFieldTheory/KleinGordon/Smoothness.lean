@@ -17,10 +17,14 @@ The retarded solution is jointly smooth in time and space.
 
 ## ii. Key results
 
-- `solutionIntegrand` : The integrand of the retarded solution in the variables `(r, ξ)`, at the point `p = (t, x)`.
-- `solution_eq_integral_solutionIntegrand` : A fixed propagation interval represents the solution when its lower source time precedes the support.
-- `contDiff_solution` : The retarded Klein–Gordon solution of a smooth compactly supported source is smooth on spacetime.
-- `integrable_solutionIntegrand` : The Fourier integrand is integrable over a bounded propagation interval and all frequencies.
+- `solutionIntegrand` : The integrand of the retarded solution in the variables `(r, ξ)`, at the
+  point `p = (t, x)`.
+- `solution_eq_integral_solutionIntegrand` : A fixed propagation interval represents the solution
+  when its lower source time precedes the support.
+- `contDiff_solution` : The retarded Klein–Gordon solution of a smooth compactly supported source is
+  smooth on spacetime.
+- `integrable_solutionIntegrand` : The Fourier integrand is integrable over a bounded propagation
+  interval and all frequencies.
 
 ## iii. Table of contents
 
@@ -32,9 +36,14 @@ None.
 
 ## A. Smoothness of the retarded solution
 
-- `solutionIntegrand` : The integrand of the retarded solution in the variables `(r, ξ)`, at the point `p = (t, x)`.
+- `solutionIntegrand` : The integrand of the retarded solution in the variables `(r, ξ)`, at the
+  point `p = (t, x)`.
 
-Lemmas: `contDiff_solutionIntegrand_joint`, `contDiff_solutionIntegrand_p`, `norm_iteratedFDeriv_solutionIntegrand_le`, `exists_char_mul_timeDeriv_bound`, `exists_solutionIntegrand_bound`, `integrable_solutionIntegrand`, `solution_eq_integral_solutionIntegrand`, `contDiff_integral_solutionIntegrand`, `contDiff_solution`, `contDiff_advancedSolution`.
+Lemmas: `contDiff_solutionIntegrand_joint`, `contDiff_solutionIntegrand_p`,
+`norm_iteratedFDeriv_solutionIntegrand_le`, `exists_char_mul_timeDeriv_bound`,
+`exists_solutionIntegrand_bound`, `integrable_solutionIntegrand`,
+`solution_eq_integral_solutionIntegrand`, `contDiff_integral_solutionIntegrand`,
+`contDiff_solution`, `contDiff_advancedSolution`.
 
 -/
 
@@ -49,7 +58,9 @@ universe u
 namespace KleinGordon
 
 section
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F] [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
+variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (F : Type u) [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [CompleteSpace F] (f : 𝓓((⊤ : Opens (ℝ × E)), F))
 
 /-- The integrand of the retarded solution in the variables `(r, ξ)`, at the point `p = (t, x)`. -/
 def solutionIntegrand (μ : ℝ) (p : ℝ × E) (z : ℝ × E) : F :=
@@ -90,7 +101,8 @@ lemma norm_iteratedFDeriv_solutionIntegrand_le (μ : ℝ) (k : ℕ) (p z : ℝ �
   have hm : ‖iteratedFDeriv ℝ (k - i)
       (fun q : ℝ × E => multiplier z.1 μ z.2 • 𝓕 (slice F f (q.1 - z.1)) z.2) p‖ ≤
       |z.1| * ‖iteratedDeriv (k - i) (fun s => 𝓕 (slice F f s) z.2) (p.1 - z.1)‖ := by
-    rw [iteratedFDeriv_const_smul_apply' (ht.of_le (show ((k - i : ℕ) : ℕ∞ω) ≤ ∞ by simp)).contDiffAt,
+    rw [iteratedFDeriv_const_smul_apply' (ht.of_le (show ((k - i : ℕ) : ℕ∞ω) ≤ ∞ by
+      simp)).contDiffAt,
       norm_smul]
     exact mul_le_mul (norm_multiplier_le _ _ _)
       (norm_iteratedFDeriv_timeShift_le _ hg z.1 (k - i) p) (norm_nonneg _) (abs_nonneg _)
