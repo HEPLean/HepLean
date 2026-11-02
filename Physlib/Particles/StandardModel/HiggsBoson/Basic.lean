@@ -61,6 +61,9 @@ In this module we define the Higgs field and prove some basic properties.
     - C.4.4. Smoothness of the norm-squared
     - C.4.5. Norm-squared of constant Higgs fields
   - C.5. The action of the gauge group on Higgs fields
+    - C.5.1. The global gauge action
+    - C.5.2. Invariance of the inner product and norm
+    - C.5.3. Local gauge transformations
 
 ## iv. References
 
@@ -745,12 +748,63 @@ lemma const_normSq (φ : HiggsVec) (x : SpaceTime) :
 
 ### C.5. The action of the gauge group on Higgs fields
 
-The results in this section are currently informal.
 -/
 
-TODO "Define the global gauge action on HiggsField."
-TODO "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
-TODO "Prove invariance of potential under global gauge action."
+/-!
+
+#### C.5.1. The global gauge action
+
+The global gauge group acts on Higgs fields pointwise, with the same group element at every
+spacetime point.
+
+-/
+
+/-- The global gauge group `GaugeGroupI` acts on Higgs fields pointwise through
+  `HiggsVec.repGaugeGroupI`, with the same group element at every spacetime point. -/
+instance : MulAction GaugeGroupI HiggsField where
+  smul g φ := {
+    toFun := fun x => repGaugeGroupI g (φ x),
+    contMDiff_toFun := by
+      intro x
+      rw [Bundle.contMDiffAt_section]
+      exact (((LinearMap.toContinuousLinearMap (repGaugeGroupI g)).restrictScalars ℝ).contMDiff
+        |>.comp φ.toHiggsVec_smooth) x }
+  one_smul φ := by
+    ext1 x
+    show repGaugeGroupI 1 (φ x) = φ x
+    simp
+  mul_smul g₁ g₂ φ := by
+    ext1 x
+    exact repGaugeGroupI_mul_apply g₁ g₂ (φ x)
+
+@[simp]
+lemma gaugeGroupI_smul_apply (g : GaugeGroupI) (φ : HiggsField) (x : SpaceTime) :
+    (g • φ) x = repGaugeGroupI g (φ x) := rfl
+
+/-!
+
+#### C.5.2. Invariance of the inner product and norm
+
+-/
+
+/-- The pointwise inner product of Higgs fields is invariant under the global gauge action. -/
+@[simp]
+lemma inner_gaugeGroupI_smul (g : GaugeGroupI) (φ1 φ2 : HiggsField) :
+    ⟪g • φ1, g • φ2⟫_(SpaceTime → ℂ) = ⟪φ1, φ2⟫_(SpaceTime → ℂ) :=
+  funext fun x => repGaugeGroupI_inner g (φ1 x) (φ2 x)
+
+/-- The pointwise norm squared of a Higgs field is invariant under the global gauge action. -/
+lemma normSq_gaugeGroupI_smul (g : GaugeGroupI) (φ : HiggsField) :
+    ‖g • φ‖_H^2 = ‖φ‖_H^2 :=
+  funext fun x => by simp [repGaugeGroupI_norm]
+
+/-!
+
+#### C.5.3. Local gauge transformations
+
+The results in this subsection are currently informal.
+
+-/
 
 /-- The action of `gaugeTransformI` on `HiggsField` acting pointwise through
   `HiggsVec.repGaugeGroupI`. -/
