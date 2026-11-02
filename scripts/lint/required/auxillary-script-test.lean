@@ -178,19 +178,19 @@ def checkInformal (ctx : Ctx) (cwd : FilePath) : Check Unit := do
   ensure (html.containsStr "InformalDot.dot")
     "`docs/InformalGraph.html` does not load `InformalDot.dot`."
 
-/-- Checks `lake exe atlas_index mkFile`: it should make `docs/_data/APIMap.yml`, with a
-`Total:` section whose map count matches the non-zero number of maps listed under `APIMap:`. -/
+/-- Checks `lake exe atlas_index mkFile`: it should make `docs/_data/Atlas.yml`, with a
+`Total:` section whose map count matches the non-zero number of maps listed under `Atlas:`. -/
 def checkAtlasIndex (ctx : Ctx) (cwd : FilePath) : Check Unit := do
   let out ← runLakeExe ctx cwd "atlas_index" #["mkFile"]
-  ensure (out.stdout.containsStr "APIMap file made for")
-    "`lake exe atlas_index mkFile` did not report `APIMap file made for ...`."
-  let yml ← readOutput cwd "docs/_data/APIMap.yml"
-  ensure (yml.startsWith "Total:\n") "`docs/_data/APIMap.yml` does not start with `Total:`."
-  ensure (yml.containsStr "\nAPIMap:\n") "`docs/_data/APIMap.yml` has no `APIMap:` section."
+  ensure (out.stdout.containsStr "Atlas file made for")
+    "`lake exe atlas_index mkFile` did not report `Atlas file made for ...`."
+  let yml ← readOutput cwd "docs/_data/Atlas.yml"
+  ensure (yml.startsWith "Total:\n") "`docs/_data/Atlas.yml` does not start with `Total:`."
+  ensure (yml.containsStr "\nAtlas:\n") "`docs/_data/Atlas.yml` has no `Atlas:` section."
   let maps := yml.countStr "\n  - path: "
-  ensure (maps > 0) "`docs/_data/APIMap.yml` contains no API maps."
+  ensure (maps > 0) "`docs/_data/Atlas.yml` contains no Atlas articles."
   ensure (yml.containsStr s!"\n  maps: {maps}\n")
-    s!"`docs/_data/APIMap.yml` lists {maps} API maps, but its `Total:` section disagrees."
+    s!"`docs/_data/Atlas.yml` lists {maps} Atlas articles, but its `Total:` section disagrees."
 
 /-!
 

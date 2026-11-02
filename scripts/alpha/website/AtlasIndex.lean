@@ -5,14 +5,14 @@ Authors: Robert Sneiderman
 -/
 /-!
 
-# API map index
+# Atlas article index
 
-Gathers every `API-map.md` in the library into the website's data file `docs/_data/APIMap.yml`.
+Gathers every `Atlas.md` in the library into the website's data file `docs/_data/Atlas.yml`.
 
 ## i. Overview
 
-This executable gathers every `API-map.md` in the library into a single
-YAML data file, `docs/_data/APIMap.yml`, for the website to render. It follows
+This executable gathers every `Atlas.md` in the library into a single
+YAML data file, `docs/_data/Atlas.yml`, for the website to render. It follows
 the pattern of `scripts/website/TODO_to_yml.lean`, which builds
 `docs/_data/TODO.yml` for the website's TODO list: the YAML is printed to
 standard output, and passing `mkFile` writes the file.
@@ -22,11 +22,11 @@ module context, a GitHub link, and the map's title, abstract, claims, Lean
 references and literature references, together with per-map and total
 completion counts.
 
-An API map is a prose document, described in `docs/ATLAS_GUIDE.md`: a title,
+An Atlas article is a prose document, described in `docs/ATLAS_GUIDE.md`: a title,
 a single-paragraph `## Abstract` (or `## Abstract (Alpha)`), `## Content` and/or
 `## Content (Alpha)`, `## Lean References` (a numbered list of
 `file — names` entries) and `## References` (a numbered list of literature and
-other API maps). The content prose points at the Lean references with `[n]`
+other Atlas articles). The content prose points at the Lean references with `[n]`
 citations, marks what is not yet formalized with `[TODO]`, and points at the
 literature with `{n}` citations, which do not affect the claims. Each run of
 citations closes a claim: the prose since the previous run. The parser below
@@ -36,33 +36,33 @@ the data file keeps the `file (names)` form the website already renders.
 
 ## ii. Key results
 
-- `APIMapData` is the content of one API map.
+- `AtlasData` is the content of one Atlas article.
 - `claimsOf` splits a content paragraph into its claims.
-- `parseAPIMap` reads one `API-map.md`.
+- `parseAtlas` reads one `Atlas.md`.
 - `indexYAML` renders the parsed maps as the YAML data file.
 
 ## iii. Table of contents
 
-- A. The data of an API map
+- A. The data of an Atlas article
 - B. Parsing
 - C. Creating the YAML file
 - D. Main function
 
 ## iv. References
 
-- `docs/ATLAS_GUIDE.md`, the guide to writing API maps.
+- `docs/ATLAS_GUIDE.md`, the guide to writing Atlas articles.
 
 -/
 
 /-!
 
-## A. The data of an API map
+## A. The data of an Atlas article
 
 -/
 
 /-- One entry of the `## Lean References` list: the number it is cited by,
 the Lean file, and the declarations claimed to be in it. -/
-structure APIMapReference where
+structure AtlasReference where
   index : Nat
   file : String
   declarations : List String
@@ -71,43 +71,43 @@ deriving Inhabited
 /-- One claim of the content: the prose closed by a run of citations.
 `citations` are the reference numbers in that run, and `alpha` records whether
 the claim sits in `## Content (Alpha)`. -/
-structure APIMapRequirement where
+structure AtlasRequirement where
   description : String := ""
   done : Bool := false
   citations : List Nat := []
   alpha : Bool := false
 
-/-- The contents of one `API-map.md` file. -/
-structure APIMapData where
+/-- The contents of one `Atlas.md` file. -/
+structure AtlasData where
   path : System.FilePath
   title : String := ""
   overview : String := ""
   alpha : Bool := false
-  requirements : List APIMapRequirement := []
-  declarations : List APIMapReference := []
+  requirements : List AtlasRequirement := []
+  declarations : List AtlasReference := []
   references : List String := []
 
 /-- The number of claims of a map that are done. -/
-def APIMapData.doneCount (map : APIMapData) : Nat :=
+def AtlasData.doneCount (map : AtlasData) : Nat :=
   (map.requirements.filter (fun requirement => requirement.done)).length
 
 /-- The number of claims of a map. -/
-def APIMapData.totalCount (map : APIMapData) : Nat :=
+def AtlasData.totalCount (map : AtlasData) : Nat :=
   map.requirements.length
 
 /-- The dotted module context of a map, e.g. `Physlib.SpaceAndTime.Time`. -/
-def APIMapData.moduleContext (map : APIMapData) : String :=
+def AtlasData.moduleContext (map : AtlasData) : String :=
   ((map.path.parent.getD map.path).toString.replace "/" ".")
 
 /-- The link to a map on GitHub. -/
-def APIMapData.githubLink (map : APIMapData) : String :=
+def AtlasData.githubLink (map : AtlasData) : String :=
   -- This follows Lean.Name.toGitHubLink in Physlib.Meta.Basic, pointing at
   -- the repository-relative API-map path instead of a declaration.
   s!"https://github.com/leanprover-community/physlib/blob/master/{map.path}"
 
 /-- The `file (names)` form of a requirement's location, built from the
 entries it cites, or `N/A` when it cites none. -/
-def APIMapData.locationOf (map : APIMapData) (requirement : APIMapRequirement) : String :=
+def AtlasData.locationOf (map : AtlasData) (requirement : AtlasRequirement) : String :=
   let groups := requirement.citations.filterMap (fun index =>
     (map.declarations.find? (fun reference => reference.index == index)).map
       (fun reference =>
@@ -185,10 +185,10 @@ def stripLiterature (paragraph : String) : String :=
 claim, whose description is the prose since the previous run; a run is done
 unless it contains `[TODO]`. Prose after the last run cites nothing and is
 not a claim. -/
-def claimsOf (alpha : Bool) (paragraph : String) : List APIMapRequirement := Id.run do
-  let close (prose : String) (numbers : List Nat) (todo : Bool) : APIMapRequirement :=
+def claimsOf (alpha : Bool) (paragraph : String) : List AtlasRequirement := Id.run do
+  let close (prose : String) (numbers : List Nat) (todo : Bool) : AtlasRequirement :=
     { description := trim prose, done := !todo, citations := numbers, alpha := alpha }
-  let mut claims : List APIMapRequirement := []
+  let mut claims : List AtlasRequirement := []
   let mut prose := ""
   let mut run : Option (List Nat × Bool) := none
   for token in tokenize (stripLiterature paragraph) do
@@ -207,7 +207,7 @@ def claimsOf (alpha : Bool) (paragraph : String) : List APIMapRequirement := Id.
   return claims
 
 /-- Reads a `## Lean References` entry, `n. File.lean — `a`, `b``. -/
-def declarationEntry (line : String) : Option APIMapReference := do
+def declarationEntry (line : String) : Option AtlasReference := do
   let trimmed := trim line
   let (number, rest) ← match trimmed.splitOn ". " with
     | number :: rest => pure (number, String.intercalate ". " rest)
@@ -243,11 +243,11 @@ def sectionOf (heading : String) : Section :=
   | "References" => .literature
   | _ => .unknown
 
-/-- Reads one `API-map.md`. The parser is line-based and graceful: fields it
+/-- Reads one `Atlas.md`. The parser is line-based and graceful: fields it
 cannot read are left at their defaults instead of raising errors. -/
-def parseAPIMap (path : System.FilePath) : IO APIMapData := do
+def parseAtlas (path : System.FilePath) : IO AtlasData := do
   let lines := (← IO.FS.readFile path).splitOn "\n"
-  let mut map : APIMapData := { path }
+  let mut map : AtlasData := { path }
   let mut current := Section.preamble
   let mut paragraph : List String := []
   let mut abstractParagraphs : List String := []
@@ -302,13 +302,13 @@ def parseAPIMap (path : System.FilePath) : IO APIMapData := do
     requirements := contentParagraphs.flatMap (fun (alpha, text) => claimsOf alpha text) }
   return map
 
-/-- The paths of every `API-map.md` under `directory`. -/
-partial def findAPIMaps (directory : System.FilePath) : IO (List System.FilePath) := do
+/-- The paths of every `Atlas.md` under `directory`. -/
+partial def findAtlass (directory : System.FilePath) : IO (List System.FilePath) := do
   let mut paths := []
   for entry in ← directory.readDir do
     if ← entry.path.isDir then
-      paths := paths ++ (← findAPIMaps entry.path)
-    else if entry.fileName == "API-map.md" then
+      paths := paths ++ (← findAtlass entry.path)
+    else if entry.fileName == "Atlas.md" then
       paths := entry.path :: paths
   return paths
 
@@ -338,13 +338,13 @@ def yamlScalarOrBlock (key : String) (indent : String) (value : String) : String
       if valueLine == "" then "\n" else s!"\n{indent}  {valueLine}"))
 
 /-- A Lean reference as a YAML list item. -/
-def APIMapReference.toYAML (reference : APIMapReference) : String :=
+def AtlasReference.toYAML (reference : AtlasReference) : String :=
   s!"      - index: {reference.index}\n" ++
   s!"        file: {yamlQuote reference.file}\n" ++
   yamlStringList "declarations" "        " reference.declarations
 
 /-- A claim of a map as a YAML list item, with its location. -/
-def APIMapData.requirementYAML (map : APIMapData) (requirement : APIMapRequirement) : String :=
+def AtlasData.requirementYAML (map : AtlasData) (requirement : AtlasRequirement) : String :=
   yamlScalarOrBlock "- description" "      " requirement.description ++ "\n" ++
   s!"        done: {requirement.done}\n" ++
   s!"        location: {yamlQuote (map.locationOf requirement)}\n" ++
@@ -352,7 +352,7 @@ def APIMapData.requirementYAML (map : APIMapData) (requirement : APIMapRequireme
   s!"        alpha: {requirement.alpha}"
 
 /-- A map as a YAML list item. -/
-def APIMapData.toYAML (map : APIMapData) : String :=
+def AtlasData.toYAML (map : AtlasData) : String :=
   let requirementsPart :=
     if map.requirements.isEmpty then "    requirements: []"
     else "    requirements:\n" ++
@@ -360,7 +360,7 @@ def APIMapData.toYAML (map : APIMapData) : String :=
   let declarationsPart :=
     if map.declarations.isEmpty then "    leanDeclarations: []"
     else "    leanDeclarations:\n" ++
-      String.intercalate "\n" (map.declarations.map APIMapReference.toYAML)
+      String.intercalate "\n" (map.declarations.map AtlasReference.toYAML)
   s!"  - path: {yamlQuote map.path.toString}\n" ++
   s!"    module: {yamlQuote map.moduleContext}\n" ++
   s!"    githubLink: {yamlQuote map.githubLink}\n" ++
@@ -374,12 +374,12 @@ def APIMapData.toYAML (map : APIMapData) : String :=
   declarationsPart
 
 /-- The YAML data file for all the maps: the totals, then each map. -/
-def indexYAML (maps : List APIMapData) : String :=
+def indexYAML (maps : List AtlasData) : String :=
   let done := maps.foldl (fun count map => count + map.doneCount) 0
   let total := maps.foldl (fun count map => count + map.totalCount) 0
   s!"Total:\n  maps: {maps.length}\n  requirements: {total}\n  done: {done}\n" ++
-  "APIMap:\n\n" ++
-  String.intercalate "\n\n" (maps.map APIMapData.toYAML) ++ "\n"
+  "Atlas:\n\n" ++
+  String.intercalate "\n\n" (maps.map AtlasData.toYAML) ++ "\n"
 
 /-!
 
@@ -393,14 +393,14 @@ def main (args : List String) : IO UInt32 := do
   for root in ["Physlib", "PhyslibAlpha", "QuantumInfo"] do
     let rootPath : System.FilePath := { toString := root }
     if ← rootPath.pathExists then
-      paths := paths ++ (← findAPIMaps rootPath)
+      paths := paths ++ (← findAtlass rootPath)
   let sorted := paths.mergeSort (fun a b => a.toString ≤ b.toString)
-  let maps ← sorted.mapM parseAPIMap
+  let maps ← sorted.mapM parseAtlas
   let ymlString := indexYAML maps
   IO.println ymlString
-  let fileOut : System.FilePath := { toString := "./docs/_data/APIMap.yml" }
+  let fileOut : System.FilePath := { toString := "./docs/_data/Atlas.yml" }
   if "mkFile" ∈ args then
-    IO.println s!"APIMap file made for {maps.length} map(s)."
+    IO.println s!"Atlas file made for {maps.length} map(s)."
     let dir : System.FilePath := { toString := "./docs/_data" }
     if !(← System.FilePath.pathExists dir) then
       IO.FS.createDirAll dir

@@ -1,35 +1,35 @@
-# Writing good API maps
+# Writing good Atlas articles
 
-## What is an API map
+## What is an Atlas article
 
-In Physlib an API map is a human-readable document which discusses the physics
+In Physlib an Atlas article is a human-readable document which discusses the physics
 in a given area, and links to the corresponding Lean declarations.
 
 It can be thought of as a `Roadmap`, a `Blueprint`, or as a `Wiki`.
 
-## The file format of an API map
+## The file format of an Atlas article
 
-An API map is a `.md` file. This allows it to easily be viewed and edited both in VSCode, and on GitHub.
+An Atlas article is a `.md` file. This allows it to easily be viewed and edited both in VSCode, and on GitHub.
 
 ## Structure
 
-The API map should have the following structure:
+The Atlas article should have the following structure:
 - **Title**: A single `# ` heading with the API's name.
 - **Abstract**: A single section titled with either `## Abstract` or `## Abstract (Alpha)`.
 
-  The distinction between `## Abstract` and `## Abstract (Alpha)` is that the latter is used for API maps which have not gone under the stringent review process. Similar to the distinction between Physlib and PhyslibAlpha.
+  The distinction between `## Abstract` and `## Abstract (Alpha)` is that the latter is used for Atlas articles which have not gone under the stringent review process. Similar to the distinction between Physlib and PhyslibAlpha.
 
   The abstract should be a single paragraph.
 - **Content**: A section titled `## Content`. This is a discussion of the concepts in a given area, with references to the corresponding Lean declarations.
-- **Content (Alpha)**: A section titled `## Content (Alpha)`. Same as `## Content`, but for API maps which have not gone under the stringent review process. It should extend what is in `## Content`.
+- **Content (Alpha)**: A section titled `## Content (Alpha)`. Same as `## Content`, but for Atlas articles which have not gone under the stringent review process. It should extend what is in `## Content`.
 
-  An API map can have both `## Content` and `## Content (Alpha)` sections, or just one.
+  An Atlas article can have both `## Content` and `## Content (Alpha)` sections, or just one.
 
   Both `## Content` and `## Content (Alpha)` sections can cite Physlib or PhyslibAlpha, the
   `Alpha` here refers to the less strictly reviewed version of the content, not the content.
 
 - **Lean References**: A section titled `## Lean References` linking concepts discussed in the content sections to their corresponding Lean declarations.
-- **References**: A section titled `## References` linking to external sources, such as papers, textbooks, or websites, that provide additional context or background for the concepts discussed in the API map. This must come directly after **Lean References**.
+- **References**: A section titled `## References` linking to external sources, such as papers, textbooks, or websites, that provide additional context or background for the concepts discussed in the Atlas article. This must come directly after **Lean References**.
 
 Some notes:
 - You can have a `## Abstract (Alpha)` with a `## Content` section, although this is advised against.
@@ -47,9 +47,9 @@ The abstract must not contain any citations, whether Lean or literature.
 
 ## Literature citations
 
-Literature citations should be cited using curly brackets e.g. `{1}`. This helps distinguish them from Lean citations, which use square brackets. This should include links to other API maps.
+Literature citations should be cited using curly brackets e.g. `{1}`. This helps distinguish them from Lean citations, which use square brackets. This should include links to other Atlas articles.
 
-No raw link should be included in an API map; all references should be properly cited in the `## References` section using the curly bracket notation. No `[markdown](links)` should appear directly in the content or abstract. This is because these are not easy to parse when looking at raw markdown files.
+No raw link should be included in an Atlas article; all references should be properly cited in the `## References` section using the curly bracket notation. No `[markdown](links)` should appear directly in the content or abstract. This is because these are not easy to parse when looking at raw markdown files.
 
 Each citation must come in its own curly bracket e.g. `{1}{2}` not `{1,2}`.
 
@@ -69,7 +69,7 @@ The general non-abelian theory remains planned. It will allow an arbitrary Lie g
 
 ## When to write one
 
-Write an `API-map.md` for any API that groups a coherent body of definitions
+Write an `Atlas.md` for any API that groups a coherent body of definitions
 and results, for example `Time`, `Space`, the Lorentz group, or the quantum
 operators. If a directory holds an API worth documenting as a unit, it gets a
 map. Requirements that are planned but not yet formalized still belong in the
@@ -77,11 +77,11 @@ map, marked `[TODO]`, so the map doubles as the API's roadmap.
 
 ## File location
 
-One `API-map.md` sits in the top directory of the API it describes:
+One `Atlas.md` sits in the top directory of the API it describes:
 
-    Physlib/SpaceAndTime/Time/API-map.md
-    Physlib/Relativity/LorentzGroup/API-map.md
-    Physlib/QuantumMechanics/HilbertSpaces/SpaceD/API-map.md
+    Physlib/SpaceAndTime/Time/Atlas.md
+    Physlib/Relativity/LorentzGroup/Atlas.md
+    Physlib/QuantumMechanics/HilbertSpaces/SpaceD/Atlas.md
 
 The map's own path is the API's directory; the reference entries at the end
 then point at the specific `.lean` files under (or near) it.
@@ -131,4 +131,4 @@ on instance claims and Lean names in the prose). It needs no build of Physlib.
 
 ## The generated site index
 
-`lake exe atlas_index` greates a single YAML data file, `docs/_data/APIMap.yml`, from all `API-map.md` files in the repository. It lists the contents of each API map in a structured format.
+`lake exe atlas_index mkFile` creates a single YAML data file, `docs/_data/Atlas.yml`, from all `Atlas.md` files in the repository. It lists the contents of each Atlas article in a structured format.
