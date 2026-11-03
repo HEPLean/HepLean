@@ -312,6 +312,12 @@ omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] [CompleteSpace
 @[simp] lemma reflect_apply (p : ℝ × E) : reflect F f p = f (-p.1, p.2) := rfl
 
 omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] [CompleteSpace F] in
+/-- Time reflection is an involution. -/
+lemma reflect_reflect : reflect F (reflect F f) = f := by
+  ext p
+  simp
+
+omit [MeasurableSpace E] [FiniteDimensional ℝ E] [BorelSpace E] [CompleteSpace F] in
 lemma tsupport_reflect : tsupport (reflect F f) = timeReflect ⁻¹' tsupport f := by
   have : (⇑(reflect F f)) = (⇑f) ∘ timeReflect := rfl
   rw [this, tsupport, tsupport, Function.support_comp_eq_preimage, ← Homeomorph.preimage_closure]
