@@ -26,10 +26,16 @@ covectors as momentum vectors. [TODO]
 
 A Hamiltonian system consists of a phase space and a smooth real-valued Hamiltonian, possibly
 time-dependent and defined on an open domain. The phase space describes kinematics; choosing the
-Hamiltonian specifies dynamics. A shared structure packages these data {2}. [TODO] In coordinates,
-curves p(t) and q(t) satisfy Hamilton's equations q̇ = ∇ₚH and ṗ = −∇qH exactly when the Hamilton
-equation operator vanishes. [3] For a smooth Hamiltonian and a smooth phase-space curve, the
+Hamiltonian specifies dynamics through the symplectic form {2}{6}. [TODO] In coordinates, curves
+p(t) and q(t) satisfy Hamilton's equations q̇ = ∇ₚH and ṗ = −∇qH exactly when the Hamilton
+equation operator vanishes. [3] The symplectic definition of Hamiltonian trajectories agrees with
+these coordinate equations. [TODO] For a smooth Hamiltonian and a smooth phase-space curve, the
 variational gradient of the action ∫ (⟨p, q̇⟩ − H(t, p, q)) dt is that operator. [4]
+
+The Legendre map sends a velocity v to its conjugate momentum p = ∂L/∂v. If this map has a smooth
+inverse over time and configuration space, the Hamiltonian H(t, p, q) = p(v) − L(t, q, v), with
+v recovered from (t, p, q), gives the equivalent Hamiltonian description of a Lagrangian system
+{5}{6}. [TODO]
 
 ### Poisson brackets and observable evolution
 
@@ -42,12 +48,16 @@ observables satisfy the Jacobi identity. [TODO]
 
 ### Symmetries and conserved quantities
 
+For a time-independent differentiable observable along a differentiable Hamiltonian trajectory,
+a vanishing Poisson bracket with the Hamiltonian implies zero time derivative. [6] A smooth
+autonomous Hamiltonian Poisson-commutes with itself and has zero time derivative along its
+Hamiltonian trajectories. [5][6] These quantities are constant on connected time intervals,
+giving energy conservation in the autonomous case. [TODO]
+
 On a finite-dimensional real symplectic vector space, an affine infinitesimally symplectic Lie
 algebra action has a moment map whose components generate the action's vector fields through
 their symplectic gradients. [7] If an autonomous Hamiltonian is invariant under a generator, the
-corresponding moment-map component is constant along its Hamiltonian trajectories. [8] The
-symplectic vector-field description and the coordinate Hamilton equations describe the same
-dynamics through a shared phase-space interface. [TODO]
+corresponding moment-map component is constant along its Hamiltonian trajectories. [8]
 
 ### Integrability
 
@@ -62,23 +72,18 @@ local action–angle coordinates {6}. [TODO]
 
 ### Existing examples and their connections
 
-The harmonic oscillator {3} has canonical momentum p = m q̇ and Hamiltonian
-H = ‖p‖²/(2m) + k ‖q‖²/2. Along smooth trajectories, its Hamiltonian equations agree with its
-Newtonian and variational formulations. [12] For the simple pendulum {4}, using a real lift θ of
-the angle and moment of inertia I, the momentum is p = I θ̇ and the Hamiltonian is
-H = ‖p‖²/(2I) + V(θ). Its Hamiltonian, Newtonian and variational formulations also agree for smooth
-lifted trajectories. [13]
+The harmonic oscillator {3} and simple pendulum {4} have explicit canonical momenta and
+Hamiltonians, with Hamiltonian, Newtonian and variational descriptions agreeing for smooth
+trajectories. The pendulum is expressed using a real lift of its angle. [12][13]
 
-A three-dimensional central-force system has positive mass m and radial potential V, with
-H = ‖p‖²/(2m) + V(‖q‖). Its Hamiltonian is smooth away from q = 0. [14] Its angular momentum is
-L = q × p; L² and Lz Poisson-commute with each other, and each Poisson-commutes with H away from
-q = 0. [15] Their functional independence on a suitable open dense domain gives central-force
-Liouville integrability. [TODO]
+Three-dimensional central-force systems have Hamiltonians smooth away from the centre. [14]
+Their angular-momentum observables L² and Lz Poisson-commute with each other and with the
+Hamiltonian away from the centre. [15] Their functional independence on a suitable open dense
+domain gives central-force Liouville integrability. [TODO]
 
-A Euclidean point-particle configuration space admits reusable constructors for its phase space
-and, given positive mass m and a smooth potential V, for the Lagrangian
-L(q, v) = m ‖v‖²/2 − V(q) and Hamiltonian H(p, q) = ‖p‖²/(2m) + V(q). The momentum p = m v
-connects these descriptions {5}. [TODO]
+A point particle of positive mass m in a Euclidean configuration space with a smooth potential V
+has Lagrangian L(q, v) = m ‖v‖²/2 − V(q) and Hamiltonian H(p, q) = ‖p‖²/(2m) + V(q), linked by
+the momentum p = m v. [TODO]
 
 ## Lean References
 
