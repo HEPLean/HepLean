@@ -460,3 +460,11 @@ lemma CarriesDimension.toDimensionful_apply_apply_units
 lemma CarriesDimension.toDimensionful_apply_apply
     {M : Type} [HasDim M] [MulAction ℝ≥0 M] (u1 u2 : LTMCTUnitChoices) (m : M) :
     (toDimensionful u1 m).1 u2 = (u1.dimScale u2 (dim M)) • m := by rfl
+
+/-- Reading a quantity built by `toDimensionful u` back in the same unit choice `u` returns the
+  value it was built from. -/
+@[simp]
+lemma CarriesDimension.toDimensionful_apply_self
+    {M : Type} [CarriesDimension M] (u : LTMCTUnitChoices) (m : M) :
+    toDimensionful u m u = m :=
+  (toDimensionful u).symm_apply_apply m

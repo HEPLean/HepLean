@@ -100,7 +100,7 @@ the positive reals act. [22] A function from unit choices to a dimension-carryin
 dimension when it rescales by the factor of that dimension under every change of unit. [23] The
 functions with this property form a subtype carrying a scalar action. [24] For each fixed unit
 choice, a value of a dimension-carrying type is equivalent to a quantity given in every unit
-system. [25]
+system, and reading that quantity back in the same unit choice returns the value. [25]
 
 A unit-dependent type comes with a transformation of its elements under a change of unit, which
 composes along a chain of unit choices and is trivial on an unchanged choice. [39] Stronger
@@ -243,7 +243,7 @@ the numerical oscillator, and has its derivative from the generic transport of d
 23. Physlib/Units/Basic.lean — `HasDimension`, `hasDimension_iff`
 24. Physlib/Units/Basic.lean — `Dimensionful`, `Dimensionful.ext`, `Dimensionful.smul_apply`
 25. Physlib/Units/Basic.lean — `CarriesDimension.toDimensionful`,
-   `CarriesDimension.toDimensionful_apply_apply`
+   `CarriesDimension.toDimensionful_apply_apply`, `CarriesDimension.toDimensionful_apply_self`
 26. Physlib/Units/ParametricUnits.lean — `UnitScale`, `UnitScale.ratio_ne_zero`
 27. Physlib/Units/ParametricUnits.lean — `UnitScale.dimScale`, `UnitScale.dimScale_self`,
    `UnitScale.dimScale_one`, `UnitScale.dimScale_transitive`
