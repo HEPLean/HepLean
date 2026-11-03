@@ -231,7 +231,6 @@ noncomputable def evolvedBlochVector (A : Hamiltonian) (rho : State) (t : ℝ) :
   (Matrix.trace (PauliMatrix.pauliMatrix (Sum.inr i) *
     (evolutionMatrix A t * rho.val * (evolutionMatrix A t).conjTranspose))).re
 
-set_option maxRecDepth 2000 in
 /-- Hamiltonian time evolution rotates the initial Bloch vector according to `blochTrajectory`. -/
 lemma evolvedBlochVector_eq_blochTrajectory (A : Hamiltonian) (rho : State) (t : ℝ) :
     evolvedBlochVector A rho t = blochTrajectory A rho t := by
