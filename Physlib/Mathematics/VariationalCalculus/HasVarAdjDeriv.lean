@@ -809,6 +809,7 @@ lemma div {d} (u : Space d → EuclideanSpace ℝ (Fin d)) (hu : ContDiff ℝ �
         · fun_prop
         · apply function_differentiableAt_snd
           exact hφ.differentiable (by simp)
+      simp only [PiLp.proj_apply] at h1
       conv =>
         enter [2, s]
         rw [h1]
