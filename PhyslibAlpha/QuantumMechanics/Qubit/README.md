@@ -27,3 +27,12 @@ The control results include a geometric Ramsey signal. They do not prove that an
 - Recover the remaining mathematical statements with proofs using the current Alpha APIs.
 
 The human author must still check that the recovered statements express the intended physics.
+
+## Validation on 2026-11-03
+
+- Full build of `Physlib`, `QuantumInfo` and `PhyslibAlpha`: passed.
+- Alpha Lean linters, theorem linter, module documentation, import checks and ForMathlib checks: passed.
+- Auxiliary script tests and committed source style checks: passed.
+- `lake exe lint_all`: ran to completion. The Physlib and QuantumInfo Lean linters passed. The redundant-import check reported errors in 46 untouched upstream Physlib files. The command itself returned zero despite these diagnostics. No Physlib source files differ from the upstream base.
+
+The recovered Lean files contain no proof placeholders, axioms or `native_decide`.

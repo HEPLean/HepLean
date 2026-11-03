@@ -180,7 +180,7 @@ noncomputable def ContinuousLinearMap.negIMul
     (A : K →L[ℂ] K) (r : ℝ) : K →L[ℂ] K := (-(r : ℂ) * Complex.I) • A
 
 lemma ContinuousLinearMap.negIMul_pow_even
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
     (A : K →L[ℂ] K) (hA : A * A = 1) (r : ℝ) (n : ℕ) :
     negIMul A r ^ (2 * n) = ((-1 : ℂ) ^ n * (r : ℂ) ^ (2 * n)) • 1 := by
   rw [negIMul, smul_pow]
@@ -195,7 +195,7 @@ lemma ContinuousLinearMap.negIMul_pow_even
   conv_rhs => rw [pow_mul]
 
 lemma ContinuousLinearMap.negIMul_pow_odd
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
     (A : K →L[ℂ] K) (hA : A * A = 1) (r : ℝ) (n : ℕ) :
     negIMul A r ^ (2 * n + 1) =
       ((-1 : ℂ) ^ n * (r : ℂ) ^ (2 * n + 1) * (-Complex.I)) • A := by
@@ -206,7 +206,7 @@ lemma ContinuousLinearMap.negIMul_pow_odd
   ring_nf
 
 lemma ContinuousLinearMap.hasSum_even_negIMul
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
     (A : K →L[ℂ] K) (hA : A * A = 1) (r : ℝ) :
     HasSum (fun n : ℕ ↦ ((2 * n).factorial : ℂ)⁻¹ • negIMul A r ^ (2 * n))
       ((Real.cos r : ℂ) • 1) := by
@@ -219,7 +219,7 @@ lemma ContinuousLinearMap.hasSum_even_negIMul
   · simp
 
 lemma ContinuousLinearMap.hasSum_odd_negIMul
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
     (A : K →L[ℂ] K) (hA : A * A = 1) (r : ℝ) :
     HasSum (fun n : ℕ ↦ ((2 * n + 1).factorial : ℂ)⁻¹ • negIMul A r ^ (2 * n + 1))
       ((-(Real.sin r : ℂ) * Complex.I) • A) := by
