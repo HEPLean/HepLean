@@ -10,7 +10,16 @@ The ambient algebra now uses Mathlib’s `CStarAlgebra` directly. Observables an
 
 The abstract class assumes a Pauli basis. The quaternion construction proves the basis property for an algebraic model. It does not equip that model with a C⋆-norm or instantiate the abstract class. A matrix realization and a bridge to the existing Alpha Bloch-ball model remain open.
 
-The old backup files for spectrum, effects, states, unitaries, dynamics and adjoint actions contained unfinished proofs. They remain in the source history. They are not imported into this recovery.
+The remaining completed declarations from the backup files are recovered in:
+
+- `Algebra/Dynamics.lean`: unitary Hamiltonian evolution, its zero and addition laws and the inner automorphism flow. The flow uses Alpha's existing `AutomorphismGroup` and Mathlib's `Unitary.conjStarAlgAut`.
+- `Algebra/AdjointAction.lean`: the real-linear generator `v ↦ 2(h × v)` and its evaluation formula.
+- `Algebra/State.lean`: the Bloch expectation vector of an existing Alpha state `𝓢[ℂ, A]`.
+- `Algebra/Unitary.lean`: the rotation, scalar-unitary and special-unitary predicates.
+
+The Hamiltonian convention is `U(t) = exp(-itH)` with `ℏ = 1`. Mathlib's `expUnitary` uses a positive imaginary exponent, so the recovered definition passes `-t • H`. The old source passed `t • H` despite documenting the negative exponent. Alpha's normalized observable bracket does not change the Hamiltonian factor `2(h × v)`.
+
+The finite rotation action, its norm and determinant proofs, the Bloch equation and the double-cover results depended on unfinished proofs in the old source. The spectrum, effect and Bloch-ball correspondence proofs were also unfinished. Those statements remain in the source history and are not asserted here.
 
 ## Matrix calculations
 
