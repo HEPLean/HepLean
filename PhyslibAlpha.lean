@@ -777,6 +777,15 @@ public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialCompleteness
 public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialFunctions
 public import PhyslibAlpha.QuantumMechanics.Hydrogen.RadialQuantization
 public import PhyslibAlpha.QuantumMechanics.QuantumHarmonicOscillator
+public import PhyslibAlpha.QuantumMechanics.Qubit.Algebra.Basic
+public import PhyslibAlpha.QuantumMechanics.Qubit.Algebra.Lie
+public import PhyslibAlpha.QuantumMechanics.Qubit.Algebra.Observable
+public import PhyslibAlpha.QuantumMechanics.Qubit.Algebra.PauliVector
+public import PhyslibAlpha.QuantumMechanics.Qubit.Algebra.Presentation
+public import PhyslibAlpha.QuantumMechanics.Qubit.Control
+public import PhyslibAlpha.QuantumMechanics.Qubit.Hamiltonian
+public import PhyslibAlpha.QuantumMechanics.Qubit.Measurement
+public import PhyslibAlpha.QuantumMechanics.Qubit.State
 public import PhyslibAlpha.QuantumMechanics.StinespringDilation
 public import PhyslibAlpha.Relativity.Causality.LightCone
 public import PhyslibAlpha.Relativity.Fermions.Dirac.MinimalDimension
