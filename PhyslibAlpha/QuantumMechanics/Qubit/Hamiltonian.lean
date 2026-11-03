@@ -8,7 +8,7 @@ module
 public import Physlib.Mathematics.ForMathlib.OneParameterSubgroups.Unitary
 public import Physlib.QuantumMechanics.PlanckConstant
 public import PhyslibAlpha.Relativity.PauliMatrices.SelfAdjoint
-public import QuantumInfo.States.Pure.Qubit
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
@@ -150,7 +150,7 @@ def Qubit.operator (A : Matrix (Fin 2) (Fin 2) ℂ) :
   Matrix.toEuclideanCLM (n := Fin 2) (𝕜 := ℂ) A
 
 lemma Qubit.operator_isSelfAdjoint {A : Matrix (Fin 2) (Fin 2) ℂ}
-    (hA : A.IsHermitian) : IsSelfAdjoint (operator A) := by
+    (hA : Matrix.IsHermitian A) : IsSelfAdjoint (operator A) := by
   rw [isSelfAdjoint_iff]
   calc
     star (operator A) = operator (star A) := by

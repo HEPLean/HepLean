@@ -16,6 +16,8 @@ The old backup files for spectrum, effects, states, unitaries, dynamics and adjo
 
 `Hamiltonian.lean`, `State.lean`, `Measurement.lean` and `Control.lean` recover `Backlog/Qubit/` from commit `8488457a` in the `lie-group-one-parameter-subgroup` worktree.
 
+States use the existing Alpha `densityMatrix` type from `StinespringDilation.lean`. Self-adjoint matrices and spectral data use Mathlib directly. The qubit modules have no direct or transitive QuantumInfo dependency.
+
 The files contain Pauli decompositions, the explicit Hamiltonian evolution matrix, Bloch purity and entropy, conjugation evolution, observable formulas and pulse sequences. These calculations currently form a separate concrete layer. They are not yet specializations of `QubitAlgebra`.
 
 The control results include a geometric Ramsey signal. They do not prove that an arbitrary pulse axis is normalized or identify pulse matrix evolution with that geometric signal.
