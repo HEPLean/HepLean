@@ -320,8 +320,9 @@ lemma insertionSortEquiv_insertionSort_append {α : Type} (r : α → α → Pro
     refine hl.trans ?_
     have ih := insertionSortEquiv_insertionSort_append r a l1 l2
     have hl' := insertionSort_insertionSort_append r l1 (a :: l2)
-    change Fin.cast _ (orderedInsertEquiv r (List.insertionSort r (List.insertionSort r l1 ++ a :: l2)) b
-      ((insertionSortEquiv r (List.insertionSort r l1 ++ a :: l2) ⟨l1.length, by simp⟩).succ)) = _
+    change Fin.cast _ (orderedInsertEquiv r (List.insertionSort r (List.insertionSort r l1 ++ a
+      :: l2)) b ((insertionSortEquiv r (List.insertionSort r l1 ++ a :: l2)
+      ⟨l1.length, by simp⟩).succ)) = _
     rw [ih]
     ext
     simp only [Fin.val_cast, finCongr_apply]
