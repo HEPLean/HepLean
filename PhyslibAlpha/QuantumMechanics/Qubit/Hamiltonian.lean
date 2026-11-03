@@ -52,6 +52,7 @@ namespace Qubit
 
 section Qubit
 
+/-- The standard two-dimensional complex Hilbert space of a qubit. -/
 abbrev HilbertSpace := EuclideanSpace ℂ (Fin 2)
 
 /-- A Hamiltonian of a qubit in the standard basis. -/
@@ -175,7 +176,7 @@ lemma Qubit.timeEvolution_apply (A : Qubit.Hamiltonian) (t : ℝ) :
 
 /-- The operator `-irA`. -/
 noncomputable def ContinuousLinearMap.negIMul
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
     (A : K →L[ℂ] K) (r : ℝ) : K →L[ℂ] K := (-(r : ℂ) * Complex.I) • A
 
 lemma ContinuousLinearMap.negIMul_pow_even
@@ -254,7 +255,7 @@ lemma ContinuousLinearMap.exp_neg_I_mul_of_sq_eq_one
     ((hasSum_even_negIMul A hA r).add (hasSum_odd_negIMul A hA r))
 
 lemma ContinuousLinearMap.exp_smul_one
-    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (z : ℂ) :
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] (z : ℂ) :
     NormedSpace.exp (z • (1 : K →L[ℂ] K)) = Complex.exp z • 1 := by
   change NormedSpace.exp (algebraMap ℂ (K →L[ℂ] K) z) = _
   rw [← NormedSpace.algebraMap_exp_comm, Complex.exp_eq_exp_ℂ]
