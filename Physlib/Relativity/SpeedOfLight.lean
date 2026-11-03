@@ -16,12 +16,19 @@ public import Physlib.Units.WithDim.Basic
 In this module we define a type for the speed of light in a vacuum,
 along with some basic properties. An element of this type is a positive real number,
 and should be thought of as the speed of light in some chosen but arbitrary system of units.
+We give this type the dimension of a length divided by a time, and record the speed of light in
+our world as a dimensionful quantity, that is, as a quantity given in every system of units at
+once rather than in one.
+
+The module follows the format for physical constants described in `Physlib/Units/Constants.lean`.
 
 ## ii. Key results
 
 - `SpeedOfLight` : The type of speeds of light in a vacuum.
 - `SpeedOfLight.instPositiveRealUnitCore` : The instance making `SpeedOfLight` a positive-real
   unit type, supplying the shared magnitude, ratio and rescaling API.
+- `SpeedOfLight.instHasDim` : The speed of light has the dimension of a length divided by a time.
+- `speedOfLight` : The speed of light in our world, `299792458 m s⁻¹`.
 - `SpeedOfLight.toWithDim` : The speed of light as a quantity with the dimension of
   length over time.
 - `SpeedOfLight.toWithDim_scaleUnit` : The map `toWithDim` commutes with changes of units.
@@ -30,13 +37,16 @@ and should be thought of as the speed of light in some chosen but arbitrary syst
 
 - A. The Speed of Light type
 - B. Instances on the type
-- C. The instance of one
-- D. Positivity properties
-- E. As a dimensioned quantity
+- C. Positivity properties
+- D. The dimension
+- E. The value in our world
+- F. Specific to the speed of light
+  - F.1. The instance of one
+  - F.2. As a dimensioned quantity
 
 ## iv. References
 
-* None.
+* The defining value of the speed of light. [ref: bipm_si_brochure_2019]
 -/
 
 @[expose] public section
@@ -79,20 +89,6 @@ instance instPositiveRealUnitCore : PositiveRealUnitCore SpeedOfLight where
 
 instance : Coe SpeedOfLight ℝ := ⟨SpeedOfLight.val⟩
 
-/-!
-
-## C. The instance of one
-
-We define the instance of one for `SpeedOfLight` to be the speed of light equal to `1`.
-This is useful when we are working in units where the speed of light is equal to one.
-
--/
-
-instance : One SpeedOfLight := ⟨1, by grind⟩
-
-@[simp]
-lemma val_one : (1 : SpeedOfLight).val = 1 := rfl
-
 /-- The magnitude supplied to `PositiveRealUnitCore` is the underlying value, so that the
   generic positive-real lemmas apply to `SpeedOfLight`. -/
 @[simp]
@@ -100,7 +96,7 @@ lemma positiveRealUnitCore_val (c : SpeedOfLight) : PositiveRealUnitCore.val c =
 
 /-!
 
-## D. Positivity properties
+## C. Positivity properties
 
 -/
 
@@ -115,7 +111,61 @@ lemma val_ne_zero (c : SpeedOfLight) : (c : ℝ) ≠ 0 := ne_of_gt c.pos
 
 /-!
 
-## E. As a dimensioned quantity
+## D. The dimension
+
+Together with the action of `ℝ≥0ˣ` supplied by `PositiveRealUnitCore.instMulActionUnitsNNReal`,
+the dimension makes `SpeedOfLight` a type carrying a dimension.
+
+-/
+
+/-- The speed of light has the dimension of a length divided by a time. -/
+instance instHasDim : HasDim SpeedOfLight where
+  d := L𝓭 * T𝓭⁻¹
+
+end SpeedOfLight
+
+/-!
+
+## E. The value in our world
+
+-/
+
+section
+
+open LTMCTUnitChoices CarriesDimension
+
+/-- The speed of light in our world, `299792458 m s⁻¹`. It is one of the defining constants of
+  the SI, so this value is exact. -/
+noncomputable def speedOfLight : Dimensionful SpeedOfLight :=
+  toDimensionful SI ⟨299792458, by norm_num⟩
+
+@[simp]
+lemma speedOfLight_in_SI : speedOfLight SI = ⟨299792458, by norm_num⟩ :=
+  toDimensionful_apply_self SI _
+
+end
+
+namespace SpeedOfLight
+
+/-!
+
+## F. Specific to the speed of light
+
+### F.1. The instance of one
+
+We define the instance of one for `SpeedOfLight` to be the speed of light equal to `1`.
+This is useful when we are working in units where the speed of light is equal to one.
+
+-/
+
+instance : One SpeedOfLight := ⟨1, by grind⟩
+
+@[simp]
+lemma val_one : (1 : SpeedOfLight).val = 1 := rfl
+
+/-!
+
+### F.2. As a dimensioned quantity
 
 -/
 
