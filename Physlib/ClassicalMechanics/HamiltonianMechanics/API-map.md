@@ -16,7 +16,7 @@ provide examples, alongside a symplectic vector-space formulation of moment maps
 A configuration space Q is a smooth manifold without boundary {1}. [1] For finite-dimensional Q,
 its canonical Hamiltonian phase space is the cotangent bundle T*Q: a state consists of a
 configuration q and a momentum covector at q. This space carries a canonical symplectic form,
-independently of the choice of Hamiltonian. [TODO] In the coordinate formulation on a complete
+independently of the choice of Hamiltonian {6}. [TODO] In the coordinate formulation on a complete
 real inner-product space X, states are pairs (p, q) in X × X, and observables are real-valued
 functions f(p, q), with momentum first. [2] Identifying the cotangent phase space of a Euclidean
 configuration space with this coordinate representation uses the inner product to represent
@@ -58,7 +58,7 @@ has zero time derivative along a differentiable Hamiltonian trajectory at times 
 lies in U. [10] With one degree of freedom, the Hamiltonian alone gives integrability on any open
 dense domain where it is smooth and its phase-space gradient is nonzero. [11] The Liouville–Arnold
 theorem identifies compact connected regular common level sets as invariant tori and supplies
-local action–angle coordinates. [TODO]
+local action–angle coordinates {6}. [TODO]
 
 ### Existing examples and their connections
 
@@ -123,3 +123,4 @@ connects these descriptions {5}. [TODO]
    Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/API-map.md
 4. Simple pendulum API map — Physlib/ClassicalMechanics/Pendulum/SimplePendulum/API-map.md
 5. Lagrangian mechanics API map — Physlib/ClassicalMechanics/Lagrangian/API-map.md
+6. V. I. Arnold, *Mathematical Methods of Classical Mechanics*.
