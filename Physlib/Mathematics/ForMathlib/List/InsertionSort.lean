@@ -193,7 +193,8 @@ lemma insertionSortEquiv_cons_succ {α : Type} (r : α → α → Prop) [Decidab
       ((Fin.succAbove ⟨orderedInsertPos r (List.insertionSort r l) a,
           orderedInsertPos_lt_length r (List.insertionSort r l) a⟩)
         (insertionSortEquiv r l ⟨n, by simpa using hn⟩)) :=
-  orderedInsertEquiv_fin_succ r (List.insertionSort r l) a (insertionSortEquiv r l ⟨n, by simpa using hn⟩)
+  orderedInsertEquiv_fin_succ r (List.insertionSort r l) a
+    (insertionSortEquiv r l ⟨n, by simpa using hn⟩)
 
 set_option backward.isDefEq.respectTransparency false in
 lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [DecidableRel r]
@@ -320,7 +321,8 @@ lemma insertionSortEquiv_insertionSort_append {α : Type} (r : α → α → Pro
     refine hl.trans ?_
     have ih := insertionSortEquiv_insertionSort_append r a l1 l2
     have hl' := insertionSort_insertionSort_append r l1 (a :: l2)
-    change Fin.cast _ (orderedInsertEquiv r (List.insertionSort r (List.insertionSort r l1 ++ a :: l2)) b
+    change Fin.cast _ (orderedInsertEquiv r (List.insertionSort r
+      (List.insertionSort r l1 ++ a :: l2)) b
       ((insertionSortEquiv r (List.insertionSort r l1 ++ a :: l2) ⟨l1.length, by simp⟩).succ)) = _
     rw [ih]
     ext
