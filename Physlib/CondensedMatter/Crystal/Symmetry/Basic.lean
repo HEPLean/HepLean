@@ -165,7 +165,10 @@ noncomputable def toPerm (C : Crystal G) : Symmetry C →* Equiv.Perm C.Site whe
   map_mul' _ _ := Equiv.ext (congrFun rfl)
 
 /-- The crystal symmetries act on the sites. -/
-noncomputable instance : MulAction (Symmetry C) C.Site := MulAction.compHom _ (toPerm C)
+instance : MulAction (Symmetry C) C.Site where
+  smul φ x := φ x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
 
 /-- The action of a symmetry on the sites is its application. -/
 lemma smul_site (φ : Symmetry C) (x : C.Site) : φ • x = φ x := rfl

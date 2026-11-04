@@ -101,7 +101,8 @@ def ofSemidirect (C : Crystal G) (y : ShiftPointOp C) : Symmetry C :=
 
 /-- `ofSemidirect C (b, (A, σ))` sends `⟨n, i⟩` to `⟨A n + b (σ i), σ i⟩`. -/
 @[simp] lemma ofSemidirect_apply (y : ShiftPointOp C) (x : C.Site) :
-    ofSemidirect C y x = ofSemidirectEquiv C y x := rfl
+    ofSemidirect C y x = ⟨Multiplicative.toAdd y.right.1 x.cell +
+      Multiplicative.toAdd y.left (y.right.2 x.label), y.right.2 x.label⟩ := rfl
 
 /-- The lattice automorphism of `ofSemidirect C (b, (A, σ))` is `A`. -/
 @[simp] lemma lattice_ofSemidirect (y : ShiftPointOp C) :
@@ -117,7 +118,7 @@ lemma ofSemidirect_mul (x y : ShiftPointOp C) :
     ofSemidirect C (x * y) = ofSemidirect C x * ofSemidirect C y := by
   ext z : 1
   refine Site.ext ?_ rfl
-  simp [ofSemidirectEquiv, shiftAction, AddEquiv.arrowCongr]
+  simp [shiftAction, AddEquiv.arrowCongr]
   rw [← add_assoc, add_right_comm]
 
 /-- The symmetry group of a crystal is isomorphic to the semidirect product of the shifts, `UnitCell
@@ -130,11 +131,11 @@ noncomputable def semidirectEquiv (C : Crystal G) : ShiftPointOp C ≃* Symmetry
     refine SemidirectProduct.ext (Multiplicative.toAdd.injective ?_)
       (Prod.ext (by simp) (by simp))
     ext i
-    simp [ofSemidirectEquiv, offset]
+    simp [offset]
   right_inv φ := by
     ext x : 1
     refine Site.ext ?_ ?_
-    · simp [ofSemidirectEquiv, cell_apply]
+    · simp [cell_apply]
     · exact (label_apply φ x.cell x.label).symm
   map_mul' := ofSemidirect_mul
 
@@ -162,6 +163,9 @@ noncomputable def pointOp (C : Crystal G) : Symmetry C →* Symmetry C :=
 
 /-- `shift C b` sends `⟨n, i⟩` to `⟨n + bᵢ, i⟩`. -/
 @[simp] lemma shift_apply (x : C.Site) : shift C b x = ⟨x.cell + b x.label, x.label⟩ := rfl
+
+/-- The lattice automorphism of `linear C A σ` is `A`. -/
+@[simp] lemma lattice_linear : (linear C A σ).lattice = A := rfl
 
 /-- `linear C A σ` sends `⟨n, i⟩` to `⟨A n, σ i⟩`. -/
 @[simp] lemma linear_apply (x : C.Site) : linear C A σ x = ⟨A x.cell, σ x.label⟩ :=
