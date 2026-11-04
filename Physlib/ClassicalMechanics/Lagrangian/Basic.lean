@@ -9,6 +9,7 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 public import Physlib.ClassicalMechanics.ConfigurationSpace.Variation
 public import Physlib.SpaceAndTime.Time.ManifoldCurves
+public import Physlib.Meta.TODO.Basic
 
 /-!
 # Lagrangian systems
@@ -31,6 +32,9 @@ The motions of a Lagrangian system are the critical points of its action, see
 ## iii. Table of contents
 
 - A. Lagrangian systems
+  - A.1. Basic instances
+  - A.2. The coordinate form
+  - A.3. The action
 
 ## iv. References
 
@@ -61,9 +65,26 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {H : Type*} [Top
 
 namespace LagrangianSystem
 
+/-!
+
+### A.1. Basic instances
+
+-/
+
 instance : FunLike (LagrangianSystem I M) (Time × TangentBundle I M) ℝ where
   coe := toFun
   coe_injective _ _ h := LagrangianSystem.ext h
+
+TODO "Define the instance of a module on `LagrangianSystem I M`."
+
+TODO "Add a constructor for `LagrangianSystem I M` from a point particle configuration space and
+  a potential."
+
+/-!
+
+### A.2. The coordinate form
+
+-/
 
 /-- The Lagrangian system on a normed space `E` given by a smooth `L(t, q, q̇)`. -/
 def ofNormedSpace (L : Time × E × E → ℝ)
@@ -93,6 +114,12 @@ lemma contDiff_coord (S : LagrangianSystem 𝓘(ℝ, E) ⟨E⟩) (t₀ : Time) :
     (ofNormedSpace L hL).coord t₀ p = L (p.1 +ᵥ t₀, p.2) := rfl
 
 variable {I M} (S : LagrangianSystem I M) {γ : Time → M} {t₀ t₁ : Time}
+
+/-!
+
+### A.3. The action
+
+-/
 
 /-- The action `∫ L(t, γ, γ̇) dt` over `[t₀, t₁]`. -/
 noncomputable def action (γ : Time → M) (t₀ t₁ : Time) : ℝ :=

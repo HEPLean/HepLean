@@ -6,7 +6,7 @@ Authors: Jinzheng Li, Nathaneal Sajan, Joseph Tooby-Smith
 module
 
 public import PhyslibAlpha.ClassicalFieldTheory.GaugeTheory.LocalField.Jet
-public import PhyslibAlpha.Relativity.Tensors.ComplexTensor.Vector.Pre.Basic
+public import PhyslibAlpha.Relativity.Tensors.ComplexTensor.Vector.Basic
 public import PhyslibAlpha.Relativity.IsLorentzDeriv
 public import Mathlib.RepresentationTheory.Basic
 public import Mathlib.LinearAlgebra.Contraction

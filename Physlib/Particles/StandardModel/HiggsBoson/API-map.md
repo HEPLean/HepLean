@@ -42,15 +42,17 @@ and is smooth. [12]
 
 Gauge transformations act on Higgs fields pointwise; two Higgs fields lie in the same orbit
 exactly when their pointwise norms squared agree, and every smooth nonnegative function on
-spacetime is the norm squared of some Higgs field. [13][TODO] The pointwise inner product, the
-norm squared and the potential are invariant under the global gauge action. [TODO]
+spacetime is the norm squared of some Higgs field. [13][TODO] Since the gauge group preserves
+inner products and norms of Higgs vectors, the pointwise inner product and norm squared of Higgs
+fields are gauge invariant. [5]
 
 ### The Higgs potential
 
 The Standard Model Higgs potential {4} has a mass parameter and a quartic coupling, and evaluates
 smoothly on a Higgs field; negating both parameters negates the potential, and the potential
-vanishes on the zero field. [14] Completing the square writes it as a quadratic in the norm squared,
-whose discriminant is nonnegative and vanishes exactly in a characterized case. [15]
+vanishes on the zero field; at each spacetime point it is gauge invariant. [14] Completing the
+square writes it as a quadratic in the norm squared, whose discriminant is nonnegative and
+vanishes exactly in a characterized case. [15]
 
 A bounded-below potential has nonnegative quartic coupling, and a positive quartic coupling makes
 it bounded below. [16] The values it attains, its bounds when the discriminant vanishes, and its
@@ -100,7 +102,8 @@ gauge connection over spacetime. [TODO]
 13. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `gaugeAction`, `guage_orbit`,
    `gauge_orbit_surject`
 14. Physlib/Particles/StandardModel/HiggsBoson/Potential.lean — `Potential`, `toFun`,
-   `toFun_smooth`, `neg`, `toFun_neg`, `μ2_neg`, `𝓵_neg`, `toFun_zero`
+   `toFun_smooth`, `neg`, `toFun_neg`, `μ2_neg`, `𝓵_neg`, `toFun_zero`,
+   `toFun_eq_of_repGaugeGroupI`
 15. Physlib/Particles/StandardModel/HiggsBoson/Potential.lean — `complete_square`, `as_quad`,
    `toFun_eq_zero_iff`, `quadDiscrim`, `quadDiscrim_nonneg`, `quadDiscrim_eq_zero_iff`,
    `quadDiscrim_eq_zero_iff_normSq`

@@ -5,7 +5,7 @@ Authors: Tom Ole Diem
 -/
 module
 
-public import Physlib.CondensedMatter.Crystal.Symmetries
+public import Physlib.CondensedMatter.Crystal.Symmetry.Basic
 public import Mathlib.GroupTheory.SemidirectProduct
 
 /-!
@@ -47,9 +47,8 @@ the foundation for studying crystallographic symmetries once geometry is introdu
 ## iii. Table of contents
 
 - A. The components of a symmetry
-  - A.1. Offsets
-  - A.2. Symmetries from components
-  - A.3. Products
+  - A.1. Symmetries from components
+  - A.2. Products
 - B. Point operations
   - B.1. Point operations from components
   - B.2. The point operation of a symmetry
@@ -74,33 +73,16 @@ variable {G : Type*} [AddCommGroup G] [AddGroup.FG G]
 namespace Symmetry
 
 variable {C : Crystal G} (A B : G ≃+ G) (σ τ : Equiv.Perm C.UnitCell)
-  (b b' : C.UnitCell → G)
+  (b b' : Offsets C)
 
 /-! ## A. The components of a symmetry -/
 
-/-! ### A.1. Offsets -/
-
-/-- The offset of a symmetry at the label `i`: the cell in which the image of the reference site
-`⟨0, i⟩` lies, as a lattice vector in `G`. -/
-def offset (φ : Symmetry C) (i : C.UnitCell) : G := (φ ⟨0, i⟩).cell
-
-/-- A symmetry sends the site `⟨n, i⟩` to the cell `A n + bᵢ` with label `σ i`, where `A` is its
-lattice automorphism, `σ` its label permutation and `bᵢ` its offset at `i`. -/
-lemma apply_eq_data (φ : Symmetry C) (x : C.Site) :
-    φ x = ⟨φ.lattice x.cell + φ.offset x.label, labelHom C φ x.label⟩ :=
-  apply_eq φ x.cell x.label
-
-/-- The cell of the image of `⟨n, i⟩` is `A n + bᵢ`. -/
-lemma cell_apply (φ : Symmetry C) (x : C.Site) :
-    (φ x).cell = φ.lattice x.cell + φ.offset x.label :=
-  congrArg Site.cell (apply_eq_data φ x)
-
-/-! ### A.2. Symmetries from components -/
+/-! ### A.1. Symmetries from components -/
 
 /-- The bijection of the sites `⟨n, i⟩ ↦ ⟨A n + bᵢ, σ i⟩` given by a lattice automorphism `A`, a
 label permutation `σ` and offsets `b`. -/
 def componentsEquiv (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell)
-    (b : C.UnitCell → G) :
+    (b : Offsets C) :
     C.Site ≃ C.Site where
   toFun x := ⟨A x.cell + b x.label, σ x.label⟩
   invFun x := ⟨A.symm (x.cell - b (σ.symm x.label)), σ.symm x.label⟩
@@ -110,7 +92,7 @@ def componentsEquiv (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell)
 /-- The symmetry with lattice automorphism `A`, label permutation `σ` and offsets `b`. It is
 equivariant for `A`, since translating `⟨n, i⟩` by `a` translates its image by `A a`. -/
 def ofComponents (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell)
-    (b : C.UnitCell → G) :
+    (b : Offsets C) :
     Symmetry C :=
   ⟨A, { toFun := componentsEquiv C A σ b
         map_vadd' _ _ := Site.ext (by simp [componentsEquiv, Site.vadd_def, add_assoc]) rfl },
@@ -141,9 +123,9 @@ automorphism, label permutation and offsets. -/
 lemma eq_ofComponents (φ : Symmetry C) :
     φ = ofComponents C φ.lattice (labelHom C φ) φ.offset := by
   ext x : 1
-  exact apply_eq_data φ x
+  exact apply_eq_components φ x
 
-/-! ### A.3. Products -/
+/-! ### A.2. Products -/
 
 /-- The product of two symmetries in components: `(A, σ, b) * (A', σ', b') = (A + A', σ * σ', A ∘ b'
 + b ∘ σ')`, where `A + A'` is the composite `A ∘ A'` of lattice automorphisms. -/
@@ -203,7 +185,7 @@ noncomputable def pointOp (C : Crystal G) : Symmetry C →* Symmetry C where
 
 /-- The shift by `b`: it moves every site with label `i` by the lattice vector `bᵢ` and fixes the
 labels and the lattice. -/
-def shift (C : Crystal G) (b : C.UnitCell → G) : Symmetry C := ofComponents C 0 1 b
+def shift (C : Crystal G) (b : Offsets C) : Symmetry C := ofComponents C 0 1 b
 
 /-- A shift has trivial lattice automorphism. -/
 @[simp] lemma lattice_shift : (shift C b).lattice = 0 := rfl
@@ -288,7 +270,7 @@ lemma pointOp_translation (a : G) : pointOp C (translation C a) = 1 := by
 permutation `σ` send `b` to `A ∘ b ∘ σ⁻¹`. -/
 def shiftAction (C : Crystal G) :
     Multiplicative (AddAut G) × Equiv.Perm C.UnitCell →*
-      MulAut (Multiplicative (C.UnitCell → G)) where
+      MulAut (Multiplicative (Offsets C)) where
   toFun p := (AddEquiv.arrowCongr p.2 (Multiplicative.toAdd p.1)).toMultiplicative
   map_one' := MulEquiv.ext (congrFun rfl)
   map_mul' _ _ := MulEquiv.ext (congrFun rfl)
@@ -296,7 +278,7 @@ def shiftAction (C : Crystal G) :
 /-- The symmetry group of a crystal is isomorphic to the semidirect product of the shifts, `UnitCell
 → G`, by the point operations, `Aut G × Perm UnitCell`, acting through `shiftAction`. -/
 noncomputable def semidirectEquiv (C : Crystal G) :
-    Multiplicative (C.UnitCell → G) ⋊[shiftAction C]
+    Multiplicative (Offsets C) ⋊[shiftAction C]
       (Multiplicative (AddAut G) × Equiv.Perm C.UnitCell) ≃* Symmetry C where
   toFun y := shift C (Multiplicative.toAdd y.left) *
     linear C (Multiplicative.toAdd y.right.1) y.right.2
