@@ -377,7 +377,7 @@ lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.FieldOp}
           simp only [ofFinset_singleton, List.get_eq_getElem]
           simp only [Fin.getElem_fin] at hs
           rw [hs]
-          simp only [Fin.getElem_fin, mul_self, map_one]
+          simp only [mul_self, map_one]
           simp only [Finset.disjoint_singleton_right, Finset.mem_singleton]
           exact Fin.ne_of_lt h
 
