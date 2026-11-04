@@ -229,14 +229,14 @@ lemma vadd_map_vadd (c b : G) (x : C.Site) : c +ᵥ (b +ᵥ x) = AddEquiv.refl G
 
 /-- Translation as a homomorphism, with the lattice written multiplicatively. It is only used to
 form the subgroup of translations; use `translation`. -/
-noncomputable def translationHom (C : Crystal G) : Multiplicative G →* Symmetry C where
+def translationHom (C : Crystal G) : Multiplicative G →* Symmetry C where
   toFun a := ⟨AddEquiv.refl G, ⟨AddAction.toPerm (Multiplicative.toAdd a), vadd_map_vadd _⟩,
     (AddAction.toPerm (Multiplicative.toAdd a)).bijective⟩
   map_one' := ext (zero_vadd G)
   map_mul' a b := ext (add_vadd (Multiplicative.toAdd a) (Multiplicative.toAdd b))
 
 /-- Translation by a lattice vector, as a symmetry. -/
-noncomputable def translation (C : Crystal G) (a : G) : Symmetry C :=
+def translation (C : Crystal G) (a : G) : Symmetry C :=
   translationHom C (Multiplicative.ofAdd a)
 
 /-- The translation by `a` moves a site by `a`. -/
@@ -276,9 +276,9 @@ section Bonds
 variable (φ : Symmetry C)
 
 /-- The image of a bond under a crystal symmetry, with displacement `A δ + bⱼ - bᵢ`. -/
-noncomputable def mapBond (b : Bond C) : Bond C where
-  source := labelHom C φ b.source
-  target := labelHom C φ b.target
+def mapBond (b : Bond C) : Bond C where
+  source := φ • b.source
+  target := φ • b.target
   displacement := φ.lattice b.displacement + φ.offset b.target - φ.offset b.source
 
 /-- A symmetry maps sites connected by a bond to sites connected by its image. -/
@@ -304,7 +304,7 @@ lemma mapBond_one (b : Bond C) : (1 : Symmetry C).mapBond b = b := by
   exact Bond.eq_of_links ((1 : Symmetry C).mapBond_links hl) hl
 
 /-- The crystal symmetries act on the bonds. -/
-noncomputable instance : MulAction (Symmetry C) (Bond C) where
+instance : MulAction (Symmetry C) (Bond C) where
   smul φ b := φ.mapBond b
   one_smul := mapBond_one
   mul_smul := mapBond_mul

@@ -59,7 +59,7 @@ variable {C : Crystal G} {E : Type*} [NormedAddCommGroup E] (R : Embedding C E) 
 /-! ## A. Distance-preserving symmetries -/
 
 /-- The distance between the positions of two sites. -/
-noncomputable def sitesDist (x : C.Site × C.Site) : ℝ := dist (R.position x.1) (R.position x.2)
+def sitesDist (x : C.Site × C.Site) : ℝ := dist (R.position x.1) (R.position x.2)
 
 /-- The crystal symmetries act on the functions of two sites by moving both sites. -/
 noncomputable local instance : MulAction (Symmetry C) (C.Site × C.Site → ℝ) := arrowAction
