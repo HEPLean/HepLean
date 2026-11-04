@@ -11,23 +11,16 @@ public import Physlib.Units.WithDim.Basic
 
 # The Speed of Light
 
+The speed of light in a vacuum, in the format of `Physlib/Units/Constants.lean`.
+
 ## i. Overview
 
-In this module we define a type for the speed of light in a vacuum,
-along with some basic properties. An element of this type is a positive real number,
-and should be thought of as the speed of light in some chosen but arbitrary system of units.
-We give this type the dimension of a length divided by a time, and record the speed of light in
-our world as a dimensionful quantity, that is, as a quantity given in every system of units at
-once rather than in one.
-
-The module follows the format for physical constants described in `Physlib/Units/Constants.lean`.
+The speed of light has the dimension `L T⁻¹`, and its value in SI units is exact. Section F adds
+the instance of one and the speed of light as a dimensioned quantity.
 
 ## ii. Key results
 
-- `SpeedOfLight` : The type of speeds of light in a vacuum.
-- `SpeedOfLight.instPositiveRealUnitCore` : The instance making `SpeedOfLight` a positive-real
-  unit type, supplying the shared magnitude, ratio and rescaling API.
-- `SpeedOfLight.instHasDim` : The speed of light has the dimension of a length divided by a time.
+- `SpeedOfLight` : The speed of light in a chosen but arbitrary system of units.
 - `speedOfLight` : The speed of light in our world, `299792458 m s⁻¹`.
 - `SpeedOfLight.toWithDim` : The speed of light as a quantity with the dimension of
   length over time.
@@ -35,9 +28,9 @@ The module follows the format for physical constants described in `Physlib/Units
 
 ## iii. Table of contents
 
-- A. The Speed of Light type
-- B. Instances on the type
-- C. Positivity properties
+- A. The type
+- B. Instances
+- C. Positivity
 - D. The dimension
 - E. The value in our world
 - F. Specific to the speed of light
@@ -51,17 +44,16 @@ The module follows the format for physical constants described in `Physlib/Units
 
 @[expose] public section
 
-open Dimension UnitDependent
+open Dimension UnitDependent LTMCTUnitChoices CarriesDimension
 open scoped NNReal
 
 /-!
 
-## A. The Speed of Light type
+## A. The type
 
 -/
 
-/-- The speed of light in a vacuum. An element of this type should be thought of as
-  the speed of light in some chosen but arbitrary system of units. -/
+/-- The speed of light in a vacuum, in a chosen but arbitrary system of units. -/
 structure SpeedOfLight where
   /-- The underlying value of the speed of light. -/
   val : ℝ
@@ -71,12 +63,7 @@ namespace SpeedOfLight
 
 /-!
 
-## B. Instances on the type
-
-The speed of light is a positive real magnitude, so it is an instance of
-`PositiveRealUnitCore`. This supplies the ratio of two speeds of light as a non-negative
-real, the rescaling of a speed of light by a positive factor, and the arithmetic laws
-relating them, all shared with the fundamental unit types.
+## B. Instances
 
 -/
 
@@ -89,14 +76,12 @@ instance instPositiveRealUnitCore : PositiveRealUnitCore SpeedOfLight where
 
 instance : Coe SpeedOfLight ℝ := ⟨SpeedOfLight.val⟩
 
-/-- The magnitude supplied to `PositiveRealUnitCore` is the underlying value, so that the
-  generic positive-real lemmas apply to `SpeedOfLight`. -/
 @[simp]
 lemma positiveRealUnitCore_val (c : SpeedOfLight) : PositiveRealUnitCore.val c = c.val := rfl
 
 /-!
 
-## C. Positivity properties
+## C. Positivity
 
 -/
 
@@ -113,12 +98,9 @@ lemma val_ne_zero (c : SpeedOfLight) : (c : ℝ) ≠ 0 := ne_of_gt c.pos
 
 ## D. The dimension
 
-Together with the action of `ℝ≥0ˣ` supplied by `PositiveRealUnitCore.instMulActionUnitsNNReal`,
-the dimension makes `SpeedOfLight` a type carrying a dimension.
-
 -/
 
-/-- The speed of light has the dimension of a length divided by a time. -/
+/-- The speed of light has the dimension `L T⁻¹`. -/
 instance instHasDim : HasDim SpeedOfLight where
   d := L𝓭 * T𝓭⁻¹
 
@@ -130,20 +112,13 @@ end SpeedOfLight
 
 -/
 
-section
-
-open LTMCTUnitChoices CarriesDimension
-
-/-- The speed of light in our world, `299792458 m s⁻¹`. It is one of the defining constants of
-  the SI, so this value is exact. -/
+/-- The speed of light in our world, `299792458 m s⁻¹`, exact. -/
 noncomputable def speedOfLight : Dimensionful SpeedOfLight :=
   toDimensionful SI ⟨299792458, by norm_num⟩
 
 @[simp]
 lemma speedOfLight_in_SI : speedOfLight SI = ⟨299792458, by norm_num⟩ :=
   toDimensionful_apply_self SI _
-
-end
 
 namespace SpeedOfLight
 
