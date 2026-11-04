@@ -17,8 +17,8 @@ An index of the physical constants in Physlib, and the format of their files.
 ## i. Overview
 
 Each constant has its own file, which this module imports. Use these constants instead of defining
-new ones or writing out their values. A new constant gets a file in the format of section A, a row
-in the table below, an import above and a condition in `exists_units_constants_eq_one`.
+new ones or writing out their values. A new constant gets a file in the format of section A, an
+import above, a row in the table below and a checked line in section B.
 
 ## ii. Key results
 
@@ -28,12 +28,13 @@ in the table below, an import above and a condition in `exists_units_constants_e
 
 Not yet in this format: `Constants.h`, `Constants.ℏ` and `Constants.kB`.
 
-- `exists_units_constants_eq_one` : There are units in which the constants above are `1`.
+- `exists_units_constants_eq_one` : There are units in which the speed of light is `1`.
 
 ## iii. Table of contents
 
 - A. The format of a constant
-- B. Natural units
+- B. The table, checked
+- C. Natural units
 
 ## iv. References
 
@@ -65,11 +66,25 @@ open NNReal Dimension LTMCTUnitChoices
 
 /-!
 
-## B. Natural units
+## B. The table, checked
+
+One line for each row of the table: the dimension and the value in SI units.
 
 -/
 
-/-- There are units in which the constants of this index are `1`. -/
+example : dim SpeedOfLight = L𝓭 * T𝓭⁻¹ ∧ (speedOfLight SI).val = 299792458 := ⟨rfl, by simp⟩
+
+/-!
+
+## C. Natural units
+
+Natural units are units in which `c`, `ℏ`, `G` and `k_B` are all `1`; so far the lemma below covers
+`c`. Constants can only be `1` together if their dimensions are independent, so the lemma does not
+extend to every constant: `h` cannot join `ℏ`, and no particle mass can join `c`, `ℏ` and `G`.
+
+-/
+
+/-- There are units in which the speed of light is `1`. -/
 lemma exists_units_constants_eq_one : ∃ u : LTMCTUnitChoices, (speedOfLight u).val = 1 := by
   refine ⟨{SI with length := PositiveRealUnitCore.scale 299792458 LengthUnit.meters}, ?_⟩
   change ((SI.dimScale _ (L𝓭 * T𝓭⁻¹) : ℝ≥0) : ℝ) * 299792458 = 1
