@@ -199,7 +199,8 @@ lemma shift_mul_linear_mul :
   · simp [map_add, add_comm, add_left_comm]
   · rfl
 
-/-- Every symmetry is a point operation followed by a shift. The shift vectors are `offset ∘ σ⁻¹`. -/
+/-- Every symmetry is a point operation followed by a shift.
+The shift vectors are `offset ∘ σ⁻¹`. -/
 lemma eq_shift_mul_linear (φ : Symmetry C) :
     φ = shift C (φ.offset ∘ (labelHom C φ).symm) * linear C φ.lattice (labelHom C φ) := by
   change φ = semidirectEquiv C _ * semidirectEquiv C _
