@@ -65,7 +65,7 @@ variable {g : PeriodicGraph C} {φ ψ : Symmetry C}
 /-! ## A. Space group and translations -/
 
 /-- The subgroup of crystal symmetries preserving adjacency. -/
-noncomputable def spaceGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
+def spaceGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
   g.graphAutomorphisms.comap (Symmetry.toPerm C)
 
 /-- A crystal symmetry belongs to the space group exactly when it preserves adjacency. -/
@@ -86,7 +86,7 @@ lemma translations_le_spaceGroup : Symmetry.translations C ≤ g.spaceGroup := b
 /-! ## B. Point group -/
 
 /-- The image of the space group under the point-operation homomorphism. -/
-noncomputable def pointGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
+def pointGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
   g.spaceGroup.map (Symmetry.pointOp C)
 
 /-- A symmetry is in the point group exactly when it is a point operation of a space-group

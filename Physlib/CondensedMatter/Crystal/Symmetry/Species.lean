@@ -57,10 +57,10 @@ variable {C : Crystal G} {Q : Type*}
 /-! ## A. Species-preserving symmetries -/
 
 /-- The crystal symmetries act on the species assignments through their action on the labels. -/
-noncomputable local instance : MulAction (Symmetry C) (Species C Q) := arrowAction
+local instance : MulAction (Symmetry C) (Species C Q) := arrowAction
 
 /-- The crystal symmetries that preserve the species assignment `q`. -/
-noncomputable def speciesGroup (q : Species C Q) : Subgroup (Symmetry C) :=
+def speciesGroup (q : Species C Q) : Subgroup (Symmetry C) :=
   MulAction.stabilizer (Symmetry C) q
 
 /-- A symmetry preserves `q` exactly when it sends every label to one of the same species. -/

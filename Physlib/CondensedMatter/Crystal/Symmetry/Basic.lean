@@ -77,16 +77,20 @@ that carries the action along. -/
 structure Symmetry (C : Crystal G) where
   /-- The automorphism of the translation group. -/
   lattice : G ≃+ G
-  /-- The map of the sites, equivariant for `lattice`: it carries the action along. -/
-  toHom : AddActionHom ⇑lattice C.Site C.Site
-  /-- The map of the sites is a bijection. -/
-  bijective : Function.Bijective toHom
+  /-- The equivalence of the sites. -/
+  sites : C.Site ≃ C.Site
+  /-- The site equivalence carries translations along the lattice automorphism. -/
+  map_vadd' : ∀ a x, sites (a +ᵥ x) = lattice a +ᵥ sites x
 
 namespace Symmetry
 
 variable {C : Crystal G}
 
 /-! ### A.1. Action on the sites -/
+
+/-- The site map as an equivariant map for the lattice automorphism. -/
+def toHom (φ : Symmetry C) : AddActionHom ⇑φ.lattice C.Site C.Site :=
+  ⟨φ.sites, φ.map_vadd'⟩
 
 /-- Symmetries with the same action on the sites are equal, since translations act freely. -/
 lemma ext' {φ ψ : Symmetry C} (h : ∀ x, φ.toHom x = ψ.toHom x) : φ = ψ := by
@@ -97,7 +101,7 @@ lemma ext' {φ ψ : Symmetry C} (h : ∀ x, φ.toHom x = ψ.toHom x) : φ = ψ :
   obtain ⟨A, f, hf⟩ := φ
   obtain ⟨B, g, hg⟩ := ψ
   obtain rfl : A = B := AddEquiv.ext hA
-  obtain rfl : f = g := AddActionHom.ext h
+  obtain rfl : f = g := Equiv.ext h
   rfl
 
 /-- A symmetry acts on the sites. -/
@@ -107,6 +111,9 @@ instance : FunLike (Symmetry C) C.Site C.Site where
 
 /-- A symmetry is determined by its action on the sites. -/
 @[ext] lemma ext {φ ψ : Symmetry C} (h : ∀ x, φ x = ψ x) : φ = ψ := ext' h
+
+/-- The map of the sites is a bijection. -/
+lemma bijective (φ : Symmetry C) : Function.Bijective φ := φ.sites.bijective
 
 /-- Mapping a translated site is translating the mapped site by the image of the vector. -/
 lemma map_vadd (φ : Symmetry C) (a : G) (x : C.Site) : φ (a +ᵥ x) = φ.lattice a +ᵥ φ x :=
@@ -118,7 +125,7 @@ lemma apply_eq (φ : Symmetry C) (n : G) (i : C.UnitCell) :
   simpa [Site.vadd_def] using φ.map_vadd n (Site.ref i)
 
 /-- A symmetry as a permutation of the sites. -/
-noncomputable def toEquiv (φ : Symmetry C) : C.Site ≃ C.Site := Equiv.ofBijective φ φ.bijective
+def toEquiv (φ : Symmetry C) : C.Site ≃ C.Site := φ.sites
 
 /-- Composing equivariant maps gives an equivariant map. -/
 lemma comp_map_vadd (φ ψ : Symmetry C) (a : G) (x : C.Site) :
@@ -138,10 +145,10 @@ lemma symm_map_vadd (φ : Symmetry C) (a : G) (x : C.Site) :
 /-! ### A.2. Group structure -/
 
 /-- Symmetries form a group under composition. -/
-noncomputable instance (C : Crystal G) : Group (Symmetry C) where
-  mul φ ψ := ⟨ψ.lattice.trans φ.lattice, ⟨φ ∘ ψ, comp_map_vadd φ ψ⟩, φ.bijective.comp ψ.bijective⟩
-  one := ⟨AddEquiv.refl G, ⟨id, id_map_vadd⟩, Function.bijective_id⟩
-  inv φ := ⟨φ.lattice.symm, ⟨φ.toEquiv.symm, symm_map_vadd φ⟩, φ.toEquiv.symm.bijective⟩
+instance (C : Crystal G) : Group (Symmetry C) where
+  mul φ ψ := ⟨ψ.lattice.trans φ.lattice, ψ.sites.trans φ.sites, comp_map_vadd φ ψ⟩
+  one := ⟨AddEquiv.refl G, Equiv.refl _, id_map_vadd⟩
+  inv φ := ⟨φ.lattice.symm, φ.sites.symm, symm_map_vadd φ⟩
   mul_assoc _ _ _ := rfl
   one_mul _ := rfl
   mul_one _ := rfl
@@ -159,7 +166,7 @@ noncomputable instance (C : Crystal G) : Group (Symmetry C) where
   φ.toEquiv.apply_symm_apply x
 
 /-- The permutation of the sites underlying a symmetry. -/
-noncomputable def toPerm (C : Crystal G) : Symmetry C →* Equiv.Perm C.Site where
+def toPerm (C : Crystal G) : Symmetry C →* Equiv.Perm C.Site where
   toFun := toEquiv
   map_one' := Equiv.ext (congrFun rfl)
   map_mul' _ _ := Equiv.ext (congrFun rfl)
@@ -193,7 +200,7 @@ instance : MulAction (Symmetry C) C.UnitCell where
   mul_smul φ ψ i := label_apply φ (ψ (Site.ref i)).cell (ψ (Site.ref i)).label
 
 /-- The permutation of the labels by a symmetry, as a homomorphism. -/
-noncomputable def labelHom (C : Crystal G) : Symmetry C →* Equiv.Perm C.UnitCell :=
+def labelHom (C : Crystal G) : Symmetry C →* Equiv.Perm C.UnitCell :=
   MulAction.toPermHom (Symmetry C) C.UnitCell
 
 /-- The label permutation of a symmetry sends `i` to the label of the image of `⟨0, i⟩`. -/
@@ -230,8 +237,7 @@ lemma vadd_map_vadd (c b : G) (x : C.Site) : c +ᵥ (b +ᵥ x) = AddEquiv.refl G
 /-- Translation as a homomorphism, with the lattice written multiplicatively. It is only used to
 form the subgroup of translations; use `translation`. -/
 def translationHom (C : Crystal G) : Multiplicative G →* Symmetry C where
-  toFun a := ⟨AddEquiv.refl G, ⟨AddAction.toPerm (Multiplicative.toAdd a), vadd_map_vadd _⟩,
-    (AddAction.toPerm (Multiplicative.toAdd a)).bijective⟩
+  toFun a := ⟨AddEquiv.refl G, AddAction.toPerm (Multiplicative.toAdd a), vadd_map_vadd _⟩
   map_one' := ext (zero_vadd G)
   map_mul' a b := ext (add_vadd (Multiplicative.toAdd a) (Multiplicative.toAdd b))
 
@@ -250,7 +256,7 @@ lemma translation_add (a b : G) : translation C (a + b) = translation C a * tran
 lemma translation_zero : translation C 0 = 1 := map_one (translationHom C)
 
 /-- The translations as a subgroup of the symmetries. -/
-noncomputable def translations (C : Crystal G) : Subgroup (Symmetry C) :=
+def translations (C : Crystal G) : Subgroup (Symmetry C) :=
   (translationHom C).range
 
 /-- Translations have trivial lattice automorphism. -/

@@ -62,11 +62,11 @@ variable {C : Crystal G} {E : Type*} [NormedAddCommGroup E] (R : Embedding C E) 
 def sitesDist (x : C.Site × C.Site) : ℝ := dist (R.position x.1) (R.position x.2)
 
 /-- The crystal symmetries act on the functions of two sites by moving both sites. -/
-noncomputable local instance : MulAction (Symmetry C) (C.Site × C.Site → ℝ) := arrowAction
+local instance : MulAction (Symmetry C) (C.Site × C.Site → ℝ) := arrowAction
 
 /-- The crystal symmetries that preserve distances between all pairs of site positions: the
 stabilizer of the distance function. -/
-noncomputable def isometries : Subgroup (Symmetry C) :=
+def isometries : Subgroup (Symmetry C) :=
   MulAction.stabilizer (Symmetry C) R.sitesDist
 
 /-- A symmetry is an isometry exactly when it preserves every distance between site positions. -/

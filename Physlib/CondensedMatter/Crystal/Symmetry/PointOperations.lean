@@ -95,9 +95,8 @@ def ofSemidirectEquiv (C : Crystal G) (y : ShiftPointOp C) : C.Site ≃ C.Site w
 `⟨n, i⟩` to `⟨A n + b (σ i), σ i⟩`. -/
 def ofSemidirect (C : Crystal G) (y : ShiftPointOp C) : Symmetry C :=
   ⟨Multiplicative.toAdd y.right.1,
-    { toFun := ofSemidirectEquiv C y
-      map_vadd' _ _ := Site.ext (by simp [ofSemidirectEquiv, Site.vadd_def, add_assoc]) rfl },
-    (ofSemidirectEquiv C y).bijective⟩
+    ofSemidirectEquiv C y,
+    fun _ _ => Site.ext (by simp [ofSemidirectEquiv, Site.vadd_def, add_assoc]) rfl⟩
 
 /-- `ofSemidirect C (b, (A, σ))` sends `⟨n, i⟩` to `⟨A n + b (σ i), σ i⟩`. -/
 @[simp] lemma ofSemidirect_apply (y : ShiftPointOp C) (x : C.Site) :
@@ -123,7 +122,7 @@ lemma ofSemidirect_mul (x y : ShiftPointOp C) :
 
 /-- The symmetry group of a crystal is isomorphic to the semidirect product of the shifts, `UnitCell
 → G`, by the point operations, `Aut G × Perm UnitCell`, acting through `shiftAction`. -/
-noncomputable def semidirectEquiv (C : Crystal G) : ShiftPointOp C ≃* Symmetry C where
+def semidirectEquiv (C : Crystal G) : ShiftPointOp C ≃* Symmetry C where
   toFun := ofSemidirect C
   invFun φ := ⟨Multiplicative.ofAdd (φ.offset ∘ (labelHom C φ).symm),
     Multiplicative.ofAdd φ.lattice, labelHom C φ⟩
@@ -154,7 +153,7 @@ def linear (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell) : Symmetr
 /-- The point operation of a symmetry: the point operation with the same lattice automorphism and
 label permutation, dropping the shifts. It is a homomorphism. For `ℤᵈ` it is the rotation or
 reflection of the lattice. -/
-noncomputable def pointOp (C : Crystal G) : Symmetry C →* Symmetry C :=
+def pointOp (C : Crystal G) : Symmetry C →* Symmetry C :=
   (semidirectEquiv C).toMonoidHom.comp (SemidirectProduct.inr.comp
     (SemidirectProduct.rightHom.comp (semidirectEquiv C).symm.toMonoidHom))
 
