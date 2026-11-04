@@ -11,22 +11,20 @@ public import Physlib.CondensedMatter.Crystal.Symmetry.Basic
 /-!
 # Isometries of an embedded crystal
 
-An embedding assigns a position to each crystal site. This file studies the crystal symmetries
-that preserve distances between those positions.
+An isometry preserves the distances between the positions of all crystal sites.
 
 ## i. Overview
 
-A symmetry `φ` is an isometry of the embedded crystal when, for every pair of sites `x` and `y`,
+An embedding assigns a position in space to each site. These positions determine the distance
+between every pair of sites. The isometries form the stabilizer of this distance function.
 
-`dist (R.position (φ x)) (R.position (φ y)) = dist (R.position x) (R.position y)`.
+The standard square lattice illustrates the geometric restriction. The shear
+`(n, m) ↦ (n + m, m)` preserves the periodic site pattern. It sends a vertical unit step to a
+longer diagonal step. The isometry subgroup selects transformations preserving every distance.
+Every lattice translation belongs to this subgroup.
 
-These symmetries form a subgroup. Every translation belongs to it because translating both
-sites leaves their distance unchanged.
-
-Every site is a lattice translate of a site in the reference cell, and translating both sites
-leaves their distance unchanged. Consequently it suffices to check the condition on pairs in
-which one site lies in the reference cell: a symmetry is an isometry exactly when it preserves the
-distance from every site to every site of the reference cell.
+Distances from all sites to the reference cell determine the isometry condition. Translation
+invariance extends this check to every pair of sites.
 
 ## ii. Key results
 
@@ -61,15 +59,14 @@ variable {C : Crystal G} {E : Type*} [NormedAddCommGroup E] (R : Embedding C E) 
 /-- The distance between the positions of two sites. -/
 def sitesDist (x : C.Site × C.Site) : ℝ := dist (R.position x.1) (R.position x.2)
 
-/-- The crystal symmetries act on the functions of two sites by moving both sites. -/
+/-- The pullback action on pair functions induced by the diagonal action on sites. -/
 local instance : MulAction (Symmetry C) (C.Site × C.Site → ℝ) := arrowAction
 
-/-- The crystal symmetries that preserve distances between all pairs of site positions: the
-stabilizer of the distance function. -/
+/-- The stabilizer of the embedding's pairwise distance function. -/
 def isometries : Subgroup (Symmetry C) :=
   MulAction.stabilizer (Symmetry C) R.sitesDist
 
-/-- A symmetry is an isometry exactly when it preserves every distance between site positions. -/
+/-- Membership in `isometries` is equivalent to preservation of all pairwise distances. -/
 lemma mem_isometries_iff : φ ∈ R.isometries ↔
     ∀ x y, dist (R.position (φ x)) (R.position (φ y)) = dist (R.position x) (R.position y) := by
   rw [← inv_mem_iff, isometries, MulAction.mem_stabilizer_iff, funext_iff, Prod.forall]
@@ -77,7 +74,7 @@ lemma mem_isometries_iff : φ ∈ R.isometries ↔
   rw [inv_inv]
   rfl
 
-/-- Translating both sites by the same lattice vector preserves their distance. -/
+/-- The translation subgroup is contained in the isometry subgroup. -/
 lemma translations_le_isometries : Symmetry.translations C ≤ R.isometries := by
   rintro _ ⟨a, rfl⟩
   exact R.mem_isometries_iff.2 (R.dist_position_vadd _)
@@ -88,8 +85,8 @@ lemma translations_le_isometries : Symmetry.translations C ≤ R.isometries := b
 lemma site_eq_vadd (x : C.Site) : x = x.cell +ᵥ (Site.ref x.label) :=
   Site.ext (by simp) rfl
 
-/-- A symmetry is an isometry exactly when it preserves the distance from every site `(d, i)` to
-every site `(0, j)` of the reference cell. -/
+/-- Distance preservation can be checked on pairs `⟨d, i⟩` and `⟨0, j⟩`
+for all lattice vectors `d` and unit-cell labels `i` and `j`. -/
 lemma mem_isometries_iff_reference : φ ∈ R.isometries ↔ ∀ (i j : C.UnitCell) (d : G),
     dist (R.position (φ ⟨d, i⟩)) (R.position (φ (Site.ref j))) =
       dist (R.position ⟨d, i⟩) (R.position (Site.ref j)) := by

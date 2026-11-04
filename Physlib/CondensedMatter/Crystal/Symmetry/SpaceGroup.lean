@@ -11,23 +11,20 @@ public import Physlib.CondensedMatter.Crystal.Symmetry.PointOperations
 /-!
 # Space group of a periodic graph
 
-The crystal symmetries preserving the bonds of a periodic graph.
+The space group consists of crystal symmetries preserving the bonds of a periodic graph.
 
 ## i. Overview
 
-The atoms of a real crystal are linked by bonds. Many symmetries of the bare lattice destroy these
-links. A square lattice with bonds only along one axis loses the quarter turn. The symmetries
-that keep every link in place form the space group of the bonded crystal. A symmetry belongs to it
-when two sites are linked exactly if their images are linked,
+Consider a square lattice with horizontal bonds. A quarter-turn sends these bonds to vertical
+pairs of sites. The horizontal bond pattern therefore selects a smaller group of symmetries.
 
-`Adj (φ x) (φ y) ↔ Adj x y`.
+The space group consists of the symmetries preserving the graph's bonds. Periodicity allows the
+bonds to be specified relative to one reference cell. Every lattice translation preserves this
+structure. The space group is the stabilizer of the reference-cell bond set.
 
-A periodic graph is fixed by finitely many bonds of the reference cell. A symmetry therefore
-belongs to the space group exactly when it permutes these bonds. The space group is the
-stabilizer of the bond set.
-
-Dropping the shifts of a space group leaves its point group. In a crystal embedded in space the
-point group consists of rotations and reflections.
+The point group is the image of the space group under the point-operation homomorphism. It
+records lattice automorphisms and unit-cell label permutations. Each full space-group symmetry
+also carries label-dependent shifts. Bond preservation applies to this full symmetry.
 
 ## ii. Key results
 
@@ -64,7 +61,7 @@ variable {g : PeriodicGraph C} {φ ψ : Symmetry C}
 
 /-! ## A. Space group and translations -/
 
-/-- The subgroup of crystal symmetries preserving adjacency. -/
+/-- The adjacency-preserving subgroup of `Symmetry C`. -/
 def spaceGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
   g.graphAutomorphisms.comap (Symmetry.toPerm C)
 
@@ -85,11 +82,11 @@ lemma translations_le_spaceGroup : Symmetry.translations C ≤ g.spaceGroup := b
 
 /-! ## B. Point group -/
 
-/-- The image of the space group under the point-operation homomorphism. -/
+/-- The image of the space group under `Symmetry.pointOp`. -/
 def pointGroup (g : PeriodicGraph C) : Subgroup (Symmetry C) :=
   g.spaceGroup.map (Symmetry.pointOp C)
 
-/-- A symmetry is in the point group exactly when it is a point operation of a space-group
+/-- Membership in the point group is equivalent to being the point operation of a space-group
 element. -/
 lemma mem_pointGroup_iff :
     ψ ∈ g.pointGroup ↔ ∃ φ ∈ g.spaceGroup, Symmetry.pointOp C φ = ψ :=
