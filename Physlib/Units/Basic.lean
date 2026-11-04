@@ -132,6 +132,16 @@ lemma dimScale_one (u1 u2 : LTMCTUnitChoices) :
     dimScale u1 u2 1 = 1 := by
   simp [dimScale]
 
+/-- The scale factor of the dimension of length is the ratio of the length units. -/
+lemma dimScale_L𝓭 (u1 u2 : LTMCTUnitChoices) :
+    dimScale u1 u2 Dimension.L𝓭 = u1.length / u2.length := by
+  simp [dimScale_apply]
+
+/-- The scale factor of the dimension of time is the ratio of the time units. -/
+lemma dimScale_T𝓭 (u1 u2 : LTMCTUnitChoices) :
+    dimScale u1 u2 Dimension.T𝓭 = u1.time / u2.time := by
+  simp [dimScale_apply]
+
 lemma dimScale_transitive (u1 u2 u3 : LTMCTUnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
   simp [dimScale]

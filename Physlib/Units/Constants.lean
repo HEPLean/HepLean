@@ -18,7 +18,7 @@ An index of the physical constants in Physlib, and the format of their files.
 
 Each constant has its own file, which this module imports. Use these constants instead of defining
 new ones or writing out their values. A new constant gets a file in the format of section A, a row
-in the table below and an import above.
+in the table below, an import above and a condition in `exists_units_constants_eq_one`.
 
 ## ii. Key results
 
@@ -28,9 +28,12 @@ in the table below and an import above.
 
 Not yet in this format: `Constants.h`, `Constants.ℏ` and `Constants.kB`.
 
+- `exists_units_constants_eq_one` : There are units in which the constants above are `1`.
+
 ## iii. Table of contents
 
 - A. The format of a constant
+- B. Natural units
 
 ## iv. References
 
@@ -55,3 +58,21 @@ The value `x` is `X` in lower camel case, defined by `toDimensionful SI`, and `x
 `exact` or, for a measured constant, the CODATA edition.
 
 -/
+
+@[expose] public section
+
+open NNReal Dimension LTMCTUnitChoices
+
+/-!
+
+## B. Natural units
+
+-/
+
+/-- There are units in which the constants of this index are `1`. -/
+lemma exists_units_constants_eq_one : ∃ u : LTMCTUnitChoices, (speedOfLight u).val = 1 := by
+  refine ⟨{SI with length := PositiveRealUnitCore.scale 299792458 LengthUnit.meters}, ?_⟩
+  change ((SI.dimScale _ (L𝓭 * T𝓭⁻¹) : ℝ≥0) : ℝ) * 299792458 = 1
+  simp only [map_mul, map_inv, NNReal.coe_mul, NNReal.coe_inv, dimScale_L𝓭, dimScale_T𝓭]
+  change (1 / (299792458 * 1) : ℝ) * (1 / 1)⁻¹ * 299792458 = 1
+  norm_num

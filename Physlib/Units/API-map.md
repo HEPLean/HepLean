@@ -166,7 +166,9 @@ of the quantity it measures. The speed of light is such a constant. Its type con
 strictly positive reals, which is why it needs the scaling by a strictly positive factor, and it
 carries the dimension of a length over a time; its value in our world is exactly 299792458
 metres per second. [74][75] Newton's constant, Planck's constant and the Boltzmann constant are
-recorded in the same way. [TODO]
+recorded in the same way. [TODO] There are units in which the speed of light is one. [76] In
+natural units Newton's constant, the reduced Planck constant and the Boltzmann constant are one
+as well. [TODO]
 
 ### Calculus and dimensional correctness
 
@@ -232,7 +234,8 @@ the numerical oscillator, and has its derivative from the generic transport of d
    `LTMCTUnitChoices.SI_charge`, `LTMCTUnitChoices.SI_temperature`
 17. Physlib/Units/Basic.lean — `LTMCTUnitChoices.SIPrimed`,
    `LTMCTUnitChoices.dimScale_SI_SIPrimed`, `LTMCTUnitChoices.dimScale_SIPrimed_SI`
-18. Physlib/Units/Basic.lean — `LTMCTUnitChoices.dimScale`, `LTMCTUnitChoices.dimScale_apply`
+18. Physlib/Units/Basic.lean — `LTMCTUnitChoices.dimScale`, `LTMCTUnitChoices.dimScale_apply`,
+   `LTMCTUnitChoices.dimScale_L𝓭`, `LTMCTUnitChoices.dimScale_T𝓭`
 19. Physlib/Units/Basic.lean — `LTMCTUnitChoices.dimScale_self`, `LTMCTUnitChoices.dimScale_one`
 20. Physlib/Units/Basic.lean — `LTMCTUnitChoices.dimScale_ne_zero`,
    `LTMCTUnitChoices.dimScale_pos`, `LTMCTUnitChoices.dimScale_transitive`,
@@ -357,6 +360,7 @@ the numerical oscillator, and has its derivative from the generic transport of d
    `SpeedOfLight.instPositiveRealUnitCore`, `SpeedOfLight.positiveRealUnitCore_val`
 75. Physlib/Relativity/SpeedOfLight.lean — `SpeedOfLight.instHasDim`, `speedOfLight`,
    `speedOfLight_in_SI`
+76. Physlib/Units/Constants.lean — `exists_units_constants_eq_one`
 
 ## References
 
