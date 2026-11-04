@@ -98,7 +98,6 @@ lemma mem_subContraction_or_quotContraction {S : Finset (Finset (Fin φs.length)
     Finset.mem_univ, true_and]
   exact ha
 
-@[simp]
 lemma subContraction_uncontractedList_get {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     {a : Fin [subContraction S hs]ᵘᶜ.length} :
     [subContraction S hs]ᵘᶜ[a.1] = φs[(uncontractedListEmd a).1] :=
