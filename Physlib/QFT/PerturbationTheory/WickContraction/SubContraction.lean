@@ -101,9 +101,8 @@ lemma mem_subContraction_or_quotContraction {S : Finset (Finset (Fin φs.length)
 @[simp]
 lemma subContraction_uncontractedList_get {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     {a : Fin [subContraction S hs]ᵘᶜ.length} :
-    [subContraction S hs]ᵘᶜ[a] = φs[uncontractedListEmd a] := by
-  erw [← getElem_uncontractedListEmd]
-  rfl
+    [subContraction S hs]ᵘᶜ[a.1] = φs[(uncontractedListEmd a).1] :=
+  (getElem_uncontractedListEmd a).symm
 
 @[simp]
 lemma subContraction_fstFieldOfContract {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
@@ -180,9 +179,9 @@ lemma quotContraction_gradingCompliant {S : Finset (Finset (Fin φs.length))} {h
     GradingCompliant [φsΛ.subContraction S hs]ᵘᶜ (quotContraction S hs) := by
   simp only [GradingCompliant, Subtype.forall]
   intro a ha
-  erw [subContraction_uncontractedList_get]
-  erw [subContraction_uncontractedList_get]
-  simp only [quotContraction_fstFieldOfContract_uncontractedListEmd, Fin.getElem_fin,
+  rw [subContraction_uncontractedList_get]
+  rw [subContraction_uncontractedList_get]
+  simp only [quotContraction_fstFieldOfContract_uncontractedListEmd,
     quotContraction_sndFieldOfContract_uncontractedListEmd]
   apply hsΛ
 
