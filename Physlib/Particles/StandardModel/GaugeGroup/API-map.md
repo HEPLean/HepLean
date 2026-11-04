@@ -17,9 +17,7 @@ of the Higgs sector; the Higgs field builds on this group.
 The full gauge group is SU(3) × SU(2) × U(1); it projects onto each of its three factors, and an
 element is determined by its three projections. [1] Its star operation commutes with the three
 projections. [2] Sending a phase a to the diagonal matrix diag(a, ā) gives a homomorphism from
-U(1) into SU(2). With it, the electromagnetic U(1), the subgroup that leaves a Higgs vacuum of the
-form (v, 0) unchanged, embeds in the gauge group by the homomorphism u ↦ (1, diag(ū³, u³), u),
-whose components in SU(3), SU(2) and U(1) are computed. [3]
+U(1) into SU(2). The electromagnetic U(1) embeds in the gauge group as u ↦ (1, diag(ū³, u³), u), fixing a nonzero Higgs vacuum of the form (v, 0). Its projections onto SU(3), SU(2) and U(1) are computed explicitly. [3]
 The gauge groups are Lie groups. [11][TODO]
 The gauge bundle over spacetime and its global sections, the gauge transformations, are built
 from the full gauge group. [12][TODO]
