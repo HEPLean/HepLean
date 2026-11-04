@@ -157,6 +157,7 @@ public import Physlib.Mathematics.Calculus.Wirtinger.Hessian
 public import Physlib.Mathematics.Distribution.PowMul
 public import Physlib.Mathematics.Distribution.TemperedDistribution
 public import Physlib.Mathematics.ForMathlib.ComplexLinear
+public import Physlib.Mathematics.ForMathlib.Contraction
 public import Physlib.Mathematics.ForMathlib.DataStructures.Matrix.LieTrace
 public import Physlib.Mathematics.ForMathlib.FDerivCurry
 public import Physlib.Mathematics.ForMathlib.Fin
@@ -196,6 +197,14 @@ public import Physlib.Mathematics.Modules.CrossProduct
 public import Physlib.Mathematics.Modules.CrossProductMatrix
 public import Physlib.Mathematics.SpecialFunctions.EllipticIntegral
 public import Physlib.Mathematics.SpecialFunctions.PhysHermite
+public import Physlib.Mathematics.Tensors.Color
+public import Physlib.Mathematics.Tensors.Conjugation
+public import Physlib.Mathematics.Tensors.Contraction
+public import Physlib.Mathematics.Tensors.Elab
+public import Physlib.Mathematics.Tensors.Metric
+public import Physlib.Mathematics.Tensors.Product
+public import Physlib.Mathematics.Tensors.Reindexing
+public import Physlib.Mathematics.Tensors.Species
 public import Physlib.Mathematics.VariationalCalculus.Basic
 public import Physlib.Mathematics.VariationalCalculus.HasVarAdjDeriv
 public import Physlib.Mathematics.VariationalCalculus.HasVarAdjoint
@@ -547,6 +556,7 @@ public import Physlib.Relativity.Tensors.RealTensor.Matrix.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Representation.Contraction
+public import Physlib.Relativity.Tensors.RealTensor.Species
 public import Physlib.Relativity.Tensors.RealTensor.ToComplex
 public import Physlib.Relativity.Tensors.RealTensor.Units.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Units.Pre
