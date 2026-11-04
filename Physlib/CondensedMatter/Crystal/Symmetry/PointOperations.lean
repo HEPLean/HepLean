@@ -142,13 +142,13 @@ noncomputable def semidirectEquiv (C : Crystal G) : ShiftPointOp C ≃* Symmetry
 
 /-- The shift by `b`: it moves every site with label `i` by the lattice vector `bᵢ` and fixes the
 labels and the lattice. -/
-noncomputable def shift (C : Crystal G) (b : Offsets C) : Symmetry C :=
-  semidirectEquiv C (SemidirectProduct.inl (Multiplicative.ofAdd b))
+def shift (C : Crystal G) (b : Offsets C) : Symmetry C :=
+  ofSemidirect C (SemidirectProduct.inl (Multiplicative.ofAdd b))
 
 /-- The point operation with lattice automorphism `A` and label permutation `σ`: it sends `⟨n, i⟩`
 to `⟨A n, σ i⟩` and has no offsets. -/
-noncomputable def linear (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell) : Symmetry C :=
-  semidirectEquiv C (SemidirectProduct.inr (Multiplicative.ofAdd A, σ))
+def linear (C : Crystal G) (A : G ≃+ G) (σ : Equiv.Perm C.UnitCell) : Symmetry C :=
+  ofSemidirect C (SemidirectProduct.inr (Multiplicative.ofAdd A, σ))
 
 /-- The point operation of a symmetry: the point operation with the same lattice automorphism and
 label permutation, dropping the shifts. It is a homomorphism. For `ℤᵈ` it is the rotation or
@@ -169,12 +169,12 @@ noncomputable def pointOp (C : Crystal G) : Symmetry C →* Symmetry C :=
 
 /-- Shifts compose by adding their vectors: `shift (b + b') = shift b * shift b'`. -/
 lemma shift_add : shift C (b + b') = shift C b * shift C b' := by
-  rw [shift, shift, shift, ofAdd_add, map_mul, map_mul]
+  simp only [shift, ofAdd_add, map_mul, ofSemidirect_mul]
 
 /-- Point operations compose through their components: `linear (A + B) (σ * τ) = linear A σ * linear
 B τ`. -/
 lemma linear_add_mul : linear C (A + B) (σ * τ) = linear C A σ * linear C B τ := by
-  rw [linear, linear, linear, ← map_mul, ← map_mul]
+  rw [linear, linear, linear, ← ofSemidirect_mul, ← map_mul]
   rfl
 
 /-- A shift by the same vector `a` on every label is the translation by `a`. -/
@@ -185,16 +185,22 @@ lemma shift_const (a : G) : shift C (Function.const C.UnitCell a) = translation 
 /-- Every symmetry is a point operation followed by a shift. -/
 lemma exists_eq_shift_mul_pointOp (φ : Symmetry C) : ∃ b, φ = shift C b * pointOp C φ :=
   ⟨Multiplicative.toAdd ((semidirectEquiv C).symm φ).left, by
-    simp [shift, pointOp, ← map_mul]⟩
+    change φ = semidirectEquiv C _ * _
+    simp [pointOp, ← map_mul]⟩
 
 /-- A shift has trivial point operation. -/
 @[simp] lemma pointOp_shift : pointOp C (shift C b) = 1 := by
-  simp [pointOp, shift]
+  change pointOp C (semidirectEquiv C _) = 1
+  simp [pointOp]
 
 /-- A symmetry has trivial point operation exactly when it is a shift. -/
-lemma pointOp_eq_one_iff (φ : Symmetry C) : pointOp C φ = 1 ↔ ∃ b, φ = shift C b :=
-  ⟨fun h => let ⟨b, hb⟩ := exists_eq_shift_mul_pointOp φ; ⟨b, by rw [hb, h, mul_one]⟩,
-    by rintro ⟨b, rfl⟩; exact pointOp_shift b⟩
+lemma pointOp_eq_one_iff (φ : Symmetry C) : pointOp C φ = 1 ↔ ∃ b, φ = shift C b := by
+  constructor
+  · intro h
+    obtain ⟨b, hb⟩ := exists_eq_shift_mul_pointOp φ
+    exact ⟨b, by rw [hb, h, mul_one]⟩
+  · rintro ⟨b, rfl⟩
+    exact pointOp_shift b
 
 /-- A translation has trivial point operation. -/
 lemma pointOp_translation (a : G) : pointOp C (translation C a) = 1 := by
