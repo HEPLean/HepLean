@@ -186,11 +186,35 @@ lemma shift_const (a : G) : shift C (Function.const C.UnitCell a) = translation 
   ext x : 1
   exact Site.ext (add_comm _ _) rfl
 
+/-- A shift does not change the label permutation of a point operation. -/
+@[simp] lemma labelHom_shift_mul_linear : labelHom C (shift C b * linear C A σ) = σ := by
+  simp [shift, linear]
+
+/-- The offsets of the point operation `(A, σ)` followed by the shift `b` are `b ∘ σ`. -/
+@[simp] lemma offset_shift_mul_linear : (shift C b * linear C A σ).offset = b ∘ σ := by
+  ext i
+  simp [offset, shift_apply, linear_apply]
+
+/-- The product in the decomposition into shifts and point operations: `(b, A, σ) * (b', B, τ) = (b
++ A ∘ b' ∘ σ⁻¹, A + B, σ * τ)`, where `A + B` is the composite `A ∘ B`. -/
+lemma shift_mul_linear_mul :
+    (shift C b * linear C A σ) * (shift C b' * linear C B τ) =
+      shift C (b + A ∘ b' ∘ σ.symm) * linear C (A + B) (σ * τ) := by
+  ext x : 1
+  apply Site.ext
+  · simp [map_add, add_comm, add_left_comm]
+  · rfl
+
+/-- Every symmetry is a point operation followed by a shift, with shift vectors `offset ∘ σ⁻¹`. -/
+lemma eq_shift_mul_linear (φ : Symmetry C) :
+    φ = shift C (φ.offset ∘ (labelHom C φ).symm) * linear C φ.lattice (labelHom C φ) := by
+  change φ = semidirectEquiv C _ * semidirectEquiv C _
+  rw [← map_mul, ← SemidirectProduct.mk_eq_inl_mul_inr]
+  exact ((semidirectEquiv C).apply_symm_apply φ).symm
+
 /-- Every symmetry is a point operation followed by a shift. -/
 lemma exists_eq_shift_mul_pointOp (φ : Symmetry C) : ∃ b, φ = shift C b * pointOp C φ :=
-  ⟨Multiplicative.toAdd ((semidirectEquiv C).symm φ).left, by
-    change φ = semidirectEquiv C _ * _
-    simp [pointOp, ← map_mul]⟩
+  ⟨_, eq_shift_mul_linear φ⟩
 
 /-- A shift has trivial point operation. -/
 @[simp] lemma pointOp_shift : pointOp C (shift C b) = 1 := by
