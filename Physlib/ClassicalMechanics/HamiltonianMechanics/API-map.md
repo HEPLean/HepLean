@@ -15,7 +15,7 @@ provide examples, alongside a symplectic vector-space formulation of moment maps
 
 A configuration space Q is a smooth manifold without boundary {1}. [1] For finite-dimensional Q,
 its canonical Hamiltonian phase space is the cotangent bundle T*Q: a state consists of a
-configuration q and a momentum covector at q. This space carries a canonical symplectic form,
+configuration q and a momentum covector at q. [TODO] This space carries a canonical symplectic form,
 independently of the choice of Hamiltonian {6}. [TODO] In the coordinate formulation on a complete
 real inner-product space X, states are pairs (p, q) in X × X, and observables are real-valued
 functions f(p, q), with momentum first. [2] Identifying the cotangent phase space of a Euclidean
