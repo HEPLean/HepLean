@@ -25,12 +25,23 @@ covectors as momentum vectors. [TODO]
 ### Hamiltonians and Hamiltonian trajectories
 
 A Hamiltonian system consists of a phase space and a smooth real-valued Hamiltonian, possibly
-time-dependent and defined on an open domain. [TODO] The phase space describes kinematics; choosing the
-Hamiltonian specifies dynamics through the symplectic form {2}{6}. [TODO] In coordinates, curves
-p(t) and q(t) satisfy Hamilton's equations q̇ = ∇ₚH and ṗ = −∇qH exactly when the Hamilton
+time-dependent and defined on an open domain. [TODO] The phase space describes kinematics;
+choosing the Hamiltonian specifies dynamics through the symplectic form {2}{6}. [TODO] In coordinates,
+curves p(t) and q(t) satisfy Hamilton's equations q̇ = ∇ₚH and ṗ = −∇qH exactly when the Hamilton
 equation operator vanishes. [3] The symplectic definition of Hamiltonian trajectories agrees with
 these coordinate equations. [TODO] For a smooth Hamiltonian and a smooth phase-space curve, the
 variational gradient of the action ∫ (⟨p, q̇⟩ − H(t, p, q)) dt is that operator. [4]
+
+For a finite-dimensional real normed configuration space E, an open domain U in E* × E and a
+smooth Hamiltonian H on Time × U determine a Hamiltonian system on U with the canonical symplectic
+form; E* denotes the continuous dual, containing the momenta {6}. [TODO]
+
+Taking E = ℝ, positive mass m and spring constant k gives the harmonic-oscillator Hamiltonian
+H(p, q) = p²/(2m) + k q²/2, which is smooth on the whole phase space. [12] Taking E = ℝ³, positive
+mass m and a radial potential V smooth at positive radii gives the central-force Hamiltonian
+H(p, q) = ‖p‖²/(2m) + V(‖q‖), smooth on the open domain U = {(p, q) | q ≠ 0}. [14] Using the
+Euclidean inner product to identify momenta with vectors, both are Hamiltonian systems obtained
+by the preceding construction. [TODO]
 
 The Legendre map sends a velocity v to its conjugate momentum p = ∂L/∂v. If this map has a smooth
 inverse over time and configuration space, the Hamiltonian H(t, p, q) = p(v) − L(t, q, v), with
@@ -110,7 +121,7 @@ the momentum p = m v. [TODO]
 11. PhyslibAlpha/ClassicalMechanics/LiouvilleIntegrable/Basic.lean —
     `LiouvilleIntegrableOn.oneDegreeOfFreedom`
 12. Physlib/ClassicalMechanics/HarmonicOscillator/Basic.lean — `toCanonicalMomentum_eq`,
-    `hamiltonian_eq`, `equationOfMotion_tfae`
+    `hamiltonian_eq`, `hamiltonian_contDiff`, `equationOfMotion_tfae`
 13. Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Hamiltonian.lean — `canonicalMomentum_eq`,
     `hamiltonian_eq`, `equationOfMotion_tfae`
 14. PhyslibAlpha/ClassicalMechanics/CentralForce/Basic.lean — `CentralForce`, `hamiltonian`,
