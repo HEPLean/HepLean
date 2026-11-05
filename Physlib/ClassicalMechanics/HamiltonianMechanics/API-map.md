@@ -25,7 +25,7 @@ covectors as momentum vectors. [TODO]
 ### Hamiltonians and Hamiltonian trajectories
 
 A Hamiltonian system consists of a phase space and a smooth real-valued Hamiltonian, possibly
-time-dependent and defined on an open domain. The phase space describes kinematics; choosing the
+time-dependent and defined on an open domain. [TODO] The phase space describes kinematics; choosing the
 Hamiltonian specifies dynamics through the symplectic form {2}{6}. [TODO] In coordinates, curves
 p(t) and q(t) satisfy Hamilton's equations q̇ = ∇ₚH and ṗ = −∇qH exactly when the Hamilton
 equation operator vanishes. [3] The symplectic definition of Hamiltonian trajectories agrees with
