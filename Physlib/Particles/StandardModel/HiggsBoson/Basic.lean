@@ -28,19 +28,18 @@ In this module we define the Higgs field and prove some basic properties.
 
 - A. The Higgs vector space
   - A.1. Definition of the Higgs vector space
-  - A.2. Relation to `(Fin 2 → ℂ)`
-  - A.3. Orthonormal basis
-  - A.4. Generating Higgs vectors from real numbers
-  - A.5. Action of the gauge group on `HiggsVec`
-    - A.5.1. Definition of the representation
-    - A.5.2. Unitary nature of the action
-    - A.5.3. Group properties of the representation applied to vectors
-  - A.6. The Gauge orbit of a Higgs vector
-    - A.6.1. The rotation matrix to ofReal
-    - A.6.2. Members of orbits
-  - A.7. The stability group of a Higgs vector
-  - A.8. Gauge action removing phase from second component
-  - A.9. To real scalars
+  - A.2. Orthonormal basis
+  - A.3. Generating Higgs vectors from real numbers
+  - A.4. Action of the gauge group on `HiggsVec`
+    - A.4.1. Definition of the representation
+    - A.4.2. Unitary nature of the action
+    - A.4.3. Group properties of the representation applied to vectors
+  - A.5. The Gauge orbit of a Higgs vector
+    - A.5.1. The rotation matrix to ofReal
+    - A.5.2. Members of orbits
+  - A.6. The stability group of a Higgs vector
+  - A.7. Gauge action removing phase from second component
+  - A.8. To real scalars
 - B. The Higgs bundle
   - B.1. Definition of the Higgs bundle
   - B.2. Instance of a vector bundle
@@ -102,27 +101,7 @@ namespace HiggsVec
 
 /-!
 
-### A.2. Relation to `(Fin 2 → ℂ)`
-
-We define the continuous linear map from `HiggsVec` to `(Fin 2 → ℂ)` achieved by
-casting vectors, we also show that this map is smooth.
-
--/
-
-/-- The continuous linear map from the vector space `HiggsVec` to `(Fin 2 → ℂ)` achieved by
-casting vectors. -/
-def toFin2ℂ : HiggsVec →L[ℝ] (Fin 2 → ℂ) where
-  toFun x := x
-  map_add' x y := rfl
-  map_smul' a x := rfl
-
-/-- The map `toFin2ℂ` is smooth. -/
-lemma smooth_toFin2ℂ : ContMDiff 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) ⊤ toFin2ℂ :=
-  toFin2ℂ.contMDiff
-
-/-!
-
-### A.3. Orthonormal basis
+### A.2. Orthonormal basis
 
 We define an orthonormal basis of `HiggsVec`.
 
@@ -134,7 +113,7 @@ def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
 
 /-!
 
-### A.4. Generating Higgs vectors from real numbers
+### A.3. Generating Higgs vectors from real numbers
 
 Given a real number `a` we define the Higgs vector corresponding to that real number
 as `(√a, 0)`. This has the property that it's norm is equal to `a`.
@@ -152,7 +131,7 @@ lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by
 
 /-!
 
-### A.5. Action of the gauge group on `HiggsVec`
+### A.4. Action of the gauge group on `HiggsVec`
 
 The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplication.
 
@@ -160,7 +139,7 @@ The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplicatio
 
 /-!
 
-#### A.5.1. Definition of the representation
+#### A.4.1. Definition of the representation
 
 -/
 
@@ -193,7 +172,7 @@ lemma repGaugeGroupI_apply_eq_U1_smul_SU2 (g : StandardModel.GaugeGroupI) (φ : 
 
 /-!
 
-#### A.5.2. Unitary nature of the action
+#### A.4.2. Unitary nature of the action
 
 The action of `StandardModel.GaugeGroupI` on `HiggsVec` is unitary.
 
@@ -216,7 +195,7 @@ lemma repGaugeGroupI_norm (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
 
 /-!
 
-#### A.5.3. Group properties of the representation applied to vectors
+#### A.4.3. Group properties of the representation applied to vectors
 
 -/
 
@@ -234,7 +213,7 @@ lemma repGaugeGroupI_inv_apply_eq_iff (g : StandardModel.GaugeGroupI) (φ ψ : H
 
 /-!
 
-### A.6. The Gauge orbit of a Higgs vector
+### A.5. The Gauge orbit of a Higgs vector
 
 We show that two Higgs vectors are in the same gauge orbit if and only if they have the same norm.
 
@@ -242,7 +221,7 @@ We show that two Higgs vectors are in the same gauge orbit if and only if they h
 
 /-!
 
-#### A.6.1. The rotation matrix to ofReal
+#### A.5.1. The rotation matrix to ofReal
 
 We define an element of `GaugeGroupI` which takes a given Higgs vector to the
 corresponding `ofReal` Higgs vector.
@@ -306,7 +285,7 @@ lemma toRealGroupElem_apply_self (φ : HiggsVec) :
 
 /-!
 
-#### A.6.2. Members of orbits
+#### A.5.2. Members of orbits
 
 Members of the orbit of a Higgs vector under the action of `GaugeGroupI` are exactly those
 Higgs vectors with the same norm.
@@ -328,7 +307,7 @@ lemma exists_repGaugeGroupI_eq_iff_norm_eq (φ : HiggsVec) (ψ : HiggsVec) :
 
 /-!
 
-### A.7. The stability group of a Higgs vector
+### A.6. The stability group of a Higgs vector
 
 We find the stability group of a Higgs vector, and the stability group of the set of
 all Higgs vectors.
@@ -356,7 +335,7 @@ informal_lemma stability_group where
 
 /-!
 
-## A.8. Gauge action removing phase from second component
+### A.7. Gauge action removing phase from second component
 
 -/
 
@@ -400,7 +379,7 @@ lemma repGaugeGroupI_phase_snd (φ : HiggsVec) :
 
 /-!
 
-### A.9 To real scalars
+### A.8. To real scalars
 
 -/
 
@@ -536,9 +515,6 @@ lemma toHiggsVec_smooth (φ : HiggsField) :
 
 lemma const_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
     const (φ.toHiggsVec x) x = φ x := rfl
-
-lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
-    φ.toHiggsVec = φ := rfl
 
 /-!
 

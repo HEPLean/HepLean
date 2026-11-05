@@ -14,10 +14,9 @@ pointwise values; the two Higgs doublet model builds on this area.
 
 ### Pointwise Higgs values
 
-The pointwise Higgs values form a two-dimensional complex vector space, continuously and linearly
-identified with pairs of complex numbers. [1] They carry an orthonormal basis, and a real mass
-scale determines a Higgs vector with the expected norm. [2] They correspond to four real scalar
-coordinates. [3]
+The pointwise Higgs values form a two-dimensional complex Euclidean space. [1] They carry an
+orthonormal basis, and a real mass scale determines a Higgs vector with the expected norm. [2]
+They correspond to four real scalar coordinates. [3]
 
 The global Standard Model gauge group {1} acts on them through a representation, given explicitly as
 a U(1) phase times an SU(2) matrix and compatible with the group law. [4] That representation
@@ -71,8 +70,7 @@ gauge connection over spacetime. [TODO]
 
 ## Lean References
 
-1. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `HiggsVec`, `toFin2ℂ`,
-   `smooth_toFin2ℂ`
+1. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `HiggsVec`
 2. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `orthonormBasis`, `ofReal`,
    `ofReal_normSq`
 3. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `toRealScalars`,
@@ -92,7 +90,7 @@ gauge connection over spacetime. [TODO]
 9. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `HiggsField`, `const`,
    `const_apply`, `toHiggsVec`, `toHiggsVec_smooth`, `const_toHiggsVec_apply`
 10. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `contDiff`, `toVec_smooth`,
-   `apply_smooth`, `apply_re_smooth`, `apply_im_smooth`, `toFin2ℂ_comp_toHiggsVec`
+   `apply_smooth`, `apply_re_smooth`, `apply_im_smooth`
 11. Physlib/Particles/StandardModel/HiggsBoson/Basic.lean — `inner_apply`, `inner_eq_expand`,
    `inner_expand_conj`, `inner_symm`, `inner_add_left`, `inner_add_right`, `inner_zero_left`,
    `inner_zero_right`, `inner_neg_left`, `inner_neg_right`, `inner_smooth`
