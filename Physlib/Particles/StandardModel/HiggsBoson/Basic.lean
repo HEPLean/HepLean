@@ -363,17 +363,13 @@ informal_lemma stability_group where
 lemma ofU1Subgroup_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
     repGaugeGroupI (StandardModel.GaugeGroupI.ofU1Subgroup g) φ =
     (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
-  rw [repGaugeGroupI_apply_eq_U1_smul_SU2]
-  simp only [GaugeGroupI.ofU1Subgroup_toU1, GaugeGroupI.ofU1Subgroup_toSU2, SubmonoidClass.coe_pow,
-    star_pow, RCLike.star_def, smul_of, smul_cons, smul_zero, smul_empty, cons_mulVec,
-    cons_dotProduct, zero_mul, dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, one_mul,
-    WithLp.toLp.injEq, vecCons_inj, mul_eq_mul_right_iff, and_true]
-  refine ⟨?_, Or.inl ?_⟩
-  · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3 = 1 := by
-      simp only [starRingEnd_apply, Submonoid.smul_def, smul_eq_mul, SubmonoidClass.coe_pow,
-        ← mul_pow, Unitary.mul_star_self_of_mem g.2, one_pow]
-    simp [h0]
-  · show (g : ℂ) ^ 3 * (g : ℂ) ^ 3 = (g : ℂ) ^ 6
+  have h : (g : ℂ) * (starRingEnd ℂ) g = 1 := g.2.2
+  rw [repGaugeGroupI_apply, GaugeGroupI.ofU1Subgroup_toU1, GaugeGroupI.ofU1Subgroup_toSU2,
+    GaugeGroupI.diagSU2_coe]
+  ext i
+  fin_cases i
+  · simp [Submonoid.smul_def, ← mul_assoc, ← mul_pow, h]
+  · simp [Submonoid.smul_def]
     ring
 
 lemma repGaugeGroupI_phase_snd (φ : HiggsVec) :
