@@ -340,11 +340,6 @@ informal_lemma stability_group where
 
 ### A.7. Gauge action removing phase from second component
 
-The electromagnetic `U(1)` (`GaugeGroupI.emU1`) acts on a Higgs vector as `diag(u⁶, 1)`, so the
-second (neutral) component is invariant. The subgroup `GaugeGroupI.ofU1Subgroup` acts as
-`diag(1, u⁶)`: it fixes vectors of the form `(a, 0)` and is used to remove the phase of the
-second component.
-
 -/
 
 /-- The electromagnetic `U(1)` acts on a Higgs vector as `diag(u⁶, 1)`: the upper component

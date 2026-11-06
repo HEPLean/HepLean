@@ -62,7 +62,7 @@ lemma eq_of_norm_eq {φ1 φ2 : HiggsVec} {V : EffectivePotential} (h : IsInvaria
 
 lemma factors_through_norm {V : EffectivePotential} (h : IsInvariant V) :
     ∃ (f : ℝ → ℝ), V = f ∘ norm := by
-  use fun a => V !₂[0, a]
+  use fun a => V !₂[a, 0]
   ext φ
   apply h.eq_of_norm_eq
   conv_rhs => rw [PiLp.norm_eq_of_L2]
@@ -172,9 +172,9 @@ lemma termOfMassDim_isInvariant {V : EffectivePotential} {n : ℕ} (h : HasMaxMa
 lemma termOfMassDim_eq_mul_norm {V : EffectivePotential} {n : ℕ}
     (h : HasMaxMassDimLE V n) (m : ℕ) (hV : IsInvariant V) (φ : HiggsVec) :
     ∃ c, termOfMassDim V h m φ = c * ‖φ‖ ^ m := by
-  use termOfMassDim V h m !₂[0, 1]
-  rw [(termOfMassDim_isInvariant h m hV).eq_of_norm_eq (φ2 := ‖φ‖ • !₂[0, 1])
-    (by simp [PiLp.norm_eq_of_L2]), termOfMassDim_homogeneity h m !₂[0, 1] ‖φ‖]
+  use termOfMassDim V h m !₂[1, 0]
+  rw [(termOfMassDim_isInvariant h m hV).eq_of_norm_eq (φ2 := ‖φ‖ • !₂[1, 0])
+    (by simp [PiLp.norm_eq_of_L2]), termOfMassDim_homogeneity h m !₂[1, 0] ‖φ‖]
   ring
 
 lemma termOfMassDim_zero_of_odd {V : EffectivePotential} {n : ℕ} (h : HasMaxMassDimLE V n) (m : ℕ)
