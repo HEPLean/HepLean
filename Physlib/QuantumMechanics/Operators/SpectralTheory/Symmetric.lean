@@ -261,7 +261,7 @@ lemma isEssentiallySelfAdjoint_of_defectNumber_eq_zero
   `T (v j) = c j • v j` for complex numbers `c j`, and whose span is dense, is essentially
   self-adjoint. No orthonormality, no nonzero condition and no reality of the `c j` is assumed. -/
 lemma isEssentiallySelfAdjoint_of_dense_span_eigenvectors {ι : Type*} (v : ι → T.domain)
-    (c : ι → ℂ) (hv : ∀ j, T (v j) = c j • (v j : H))
+    {c : ι → ℂ} (hv : ∀ j, T (v j) = c j • (v j : H))
     (hspan : Dense (Submodule.span ℂ (Set.range fun j ↦ (v j : H)) : Set H)) :
     T.IsEssentiallySelfAdjoint := by
   -- Off the real axis, the range of `T - z • 1` contains every `v j`, hence their dense span.
