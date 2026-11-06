@@ -1,10 +1,11 @@
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Gregory J. Loges
+Authors: Philippe Kevorkian, Gregory J. Loges
 -/
 module
 
+public import Physlib.QuantumMechanics.Operators.StateObservables.IsEigenvector
 public import Physlib.QuantumMechanics.Operators.Unbounded
 /-!
 
@@ -735,6 +736,14 @@ lemma pointSpectrum_eq (T : H →ₗ.[ℂ] H) : σᵖ T = {z | (T - z • 1).toF
 
 lemma mem_pointSpectrum_iff {T : H →ₗ.[ℂ] H} {z : ℂ} : z ∈ σᵖ T ↔ (T - z • 1).toFun.ker ≠ ⊥ :=
   Iff.rfl
+
+/-- If `x` is an eigenvector of `T` with eigenvalue `c`, then `c` lies in the point spectrum
+  of `T`. -/
+lemma IsEigenvector.mem_pointSpectrum {T : H →ₗ.[ℂ] H} {x : T.domain} {c : ℂ}
+    (hx : T.IsEigenvector x c) : c ∈ σᵖ T := by
+  refine (Submodule.ne_bot_iff _).mpr ⟨⟨x, by simp [sub_domain]⟩, ?_, fun h ↦ hx.ne_zero ?_⟩
+  · simp [toFun_eq_coe, sub_apply, smul_apply, hx.apply_eq]
+  · simpa using congrArg Subtype.val h
 
 lemma pointSpectrum_subset_spectrum (T : H →ₗ.[ℂ] H) : σᵖ T ⊆ σ T :=
   fun _ h ↦ mem_spectrum_iff.mpr (Or.inl h)

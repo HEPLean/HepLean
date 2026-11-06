@@ -71,7 +71,8 @@ multiplication operator is the essential range of its multiplier. [TODO]
    `IsClosed.resolventSet_eq`, `IsClosed.resolventSet_eq'`
 2. Physlib/QuantumMechanics/Operators/SpectralTheory/Basic.lean — `spectrum`, `notation σ`,
    `spectrum_isClosed`, `spectrum_eq_univ`, `pointSpectrum`, `residualSpectrum`,
-   `continuousSpectrum`, `IsClosed.spectrum_eq`, `pointSpectrum_inter_residualSpectrum`
+   `continuousSpectrum`, `IsClosed.spectrum_eq`, `pointSpectrum_inter_residualSpectrum`,
+   `IsEigenvector.mem_pointSpectrum`
 3. Physlib/QuantumMechanics/Operators/SpectralTheory/Basic.lean — `resolvent_sub`,
    `resolvent_sub'`
 4. Physlib/QuantumMechanics/Operators/SpectralTheory/Basic.lean — `regularityDomain`,
