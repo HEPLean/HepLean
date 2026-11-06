@@ -117,6 +117,8 @@ def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
 
 Given a real number `a` we define the Higgs vector corresponding to that real number
 as `(0, √a)`. This has the property that its norm-squared is equal to `a`.
+Following the textbook convention, the non-zero entry sits in the second (lower) component,
+which is the electrically neutral component of the Higgs doublet (see `GaugeGroupI.emU1`).
 
 -/
 
@@ -145,7 +147,8 @@ The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplicatio
 
 /-- The representation of the gauge group `GaugeGroupI` on `HiggsVec`: the `SU(2)`
   factor acts by matrix multiplication, and the `U(1)` factor by scalar
-  multiplication with its third power. -/
+  multiplication with its third power. Hypercharges are normalised as `6Y`, so the
+  power `3` corresponds to the textbook hypercharge `Y = 1/2`. -/
 def repGaugeGroupI : Representation ℂ GaugeGroupI HiggsVec where
   toFun g :=
     { toFun φ := WithLp.toLp 2 <| g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ.ofLp)
@@ -337,7 +340,26 @@ informal_lemma stability_group where
 
 ### A.7. Gauge action removing phase from second component
 
+The electromagnetic `U(1)` (`GaugeGroupI.emU1`) acts on a Higgs vector as `diag(u⁶, 1)`, so the
+second (neutral) component is invariant. The subgroup `GaugeGroupI.ofU1Subgroup` acts as
+`diag(1, u⁶)`: it fixes vectors of the form `(a, 0)` and is used to remove the phase of the
+second component.
+
 -/
+
+/-- The electromagnetic `U(1)` acts on a Higgs vector as `diag(u⁶, 1)`: the upper component
+  has electric charge `+1` and the lower component is neutral. -/
+lemma emU1_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
+    repGaugeGroupI (StandardModel.GaugeGroupI.emU1 g) φ =
+    (WithLp.toLp 2 <| !![g.1 ^ 6, 0; 0, 1] *ᵥ φ.ofLp) := by
+  have h : (g : ℂ) * (starRingEnd ℂ) g = 1 := g.2.2
+  rw [repGaugeGroupI_apply, GaugeGroupI.emU1_toU1, GaugeGroupI.emU1_toSU2,
+    GaugeGroupI.diagSU2_coe]
+  ext i
+  fin_cases i
+  · simp [Submonoid.smul_def]
+    ring
+  · simp [Submonoid.smul_def, ← mul_assoc, ← mul_pow, h]
 
 lemma ofU1Subgroup_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
     repGaugeGroupI (StandardModel.GaugeGroupI.ofU1Subgroup g) φ =
@@ -351,6 +373,10 @@ lemma ofU1Subgroup_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
   · simp [Submonoid.smul_def]
     ring
 
+/-- There is a gauge transformation making the second component of a Higgs vector real and
+  non-negative, while fixing first components and vectors of the form `(a, 0)`. It is given by
+  an element of `GaugeGroupI.ofU1Subgroup`. This is used to gauge-fix two-Higgs-doublet
+  configurations to `Φ1 = (‖Φ1‖, 0)`. -/
 lemma repGaugeGroupI_phase_snd (φ : HiggsVec) :
     ∃ g : StandardModel.GaugeGroupI,
       (repGaugeGroupI g φ).ofLp 1 = ‖(φ.ofLp 1)‖ ∧
@@ -375,7 +401,6 @@ lemma repGaugeGroupI_phase_snd (φ : HiggsVec) :
   · intro a
     ext i
     fin_cases i <;> simp [ofU1Subgroup_repGaugeGroupI_apply]
-
 
 /-!
 

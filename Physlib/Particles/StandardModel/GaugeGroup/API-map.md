@@ -49,7 +49,8 @@ together with its representations of the gauge group, forms a single structure. 
 1. Physlib/Particles/StandardModel/GaugeGroup/Basic.lean — `GaugeGroupI`, `toSU3`, `toSU2`, `toU1`, `ext`
 2. Physlib/Particles/StandardModel/GaugeGroup/Basic.lean — `star_eq`, `star_toSU3`, `star_toSU2`,
    `star_toU1`
-3. Physlib/Particles/StandardModel/GaugeGroup/Basic.lean — `diagSU2`, `diagSU2_coe`, `ofU1Subgroup`,
+3. Physlib/Particles/StandardModel/GaugeGroup/Basic.lean — `diagSU2`, `diagSU2_coe`, `emU1`,
+   `emU1_toSU3`, `emU1_toSU2`, `emU1_toU1`, `ofU1Subgroup`,
    `ofU1Subgroup_toSU3`, `ofU1Subgroup_toSU2`, `ofU1Subgroup_toU1`
 4. Physlib/Particles/StandardModel/GaugeGroup/Basic.lean — `gaugeGroupℤ₆UnitaryOfRoot`,
    `gaugeGroupℤ₆SU3OfRoot`, `gaugeGroupℤ₆SU2OfRoot`, `gaugeGroupℤ₆OfRoot`,
