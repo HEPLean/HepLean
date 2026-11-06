@@ -135,7 +135,7 @@ instance [IsFinite 𝓒] (n : ℕ) : IsFinite (nsmul n 𝓒) where
       have h :
         ((𝓒 + nsmul n 𝓒).congr
             (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0)).μ
-          = Measure.count := by erw [IsFinite.μ_eq_count]; aesop
+          = Measure.count := by rw [IsFinite.μ_eq_count]; aesop
       rw [← h]; rw [← @nsmul_succ]
   dof_eq_zero := by
     simp [CanonicalEnsemble.dof_nsmul, IsFinite.dof_eq_zero (𝓒:=𝓒)]

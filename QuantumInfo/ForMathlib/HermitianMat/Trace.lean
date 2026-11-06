@@ -30,9 +30,8 @@ namespace HermitianMat
 variable {R n m α : Type*} [Star R] [TrivialStar R] [Fintype n] [Fintype m]
 
 section star
-variable [AddGroup α] [StarAddMonoid α] [CommSemiring R] [Semiring α] [Algebra R α] [IsMaximalSelfAdjoint R α]
+variable [Ring α] [StarAddMonoid α] [CommSemiring R] [Algebra R α] [IsMaximalSelfAdjoint R α]
 
-set_option linter.overlappingInstances false in
 /-- The trace of the matrix. This requires a `IsMaximalSelfAdjoint R α` instance, and then maps from
   `HermitianMat n α` to `R`. This means that the trace of (say) a `HermitianMat n ℤ` gives values in ℤ,
   but that the trace of a `HermitianMat n ℂ` gives values in ℝ. The fact that traces are "automatically"
@@ -40,14 +39,12 @@ set_option linter.overlappingInstances false in
 def trace (A : HermitianMat n α) : R :=
   IsMaximalSelfAdjoint.selfadjMap (A.mat.trace)
 
-set_option linter.overlappingInstances false in
 /-- `HermitianMat.trace` reduces to `Matrix.trace` in the algebra.-/
 theorem trace_eq_trace (A : HermitianMat n α) : algebraMap R α A.trace = Matrix.trace A.mat := by
   rw [trace, Matrix.trace, map_sum, map_sum]
   congr! 1
   exact IsMaximalSelfAdjoint.selfadj_algebra (Matrix.IsHermitian.apply A.H _ _)
 
-set_option linter.overlappingInstances false in
 variable [StarModule R α] in
 @[simp]
 lemma trace_smul (A : HermitianMat n α) (r : R) : (r • A).trace = r * A.trace := by

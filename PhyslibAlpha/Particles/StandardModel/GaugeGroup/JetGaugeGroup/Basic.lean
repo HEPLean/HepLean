@@ -13,7 +13,7 @@ public import Mathlib.LinearAlgebra.SymmetricAlgebra.Basic
 public import Mathlib.LinearAlgebra.SymmetricAlgebra.Basis
 public import Mathlib.RepresentationTheory.Basic
 public import Mathlib.RingTheory.TensorProduct.Basic
-public import PhyslibAlpha.Relativity.Tensors.ComplexTensor.Vector.Pre.Basic
+public import PhyslibAlpha.Relativity.Tensors.ComplexTensor.Vector.Basic
 /-!
 
 # The jet gauge group
