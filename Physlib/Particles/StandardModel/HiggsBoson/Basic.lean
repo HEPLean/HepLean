@@ -361,6 +361,14 @@ lemma emU1_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
     ring
   · simp [Submonoid.smul_def, ← mul_assoc, ← mul_pow, h]
 
+/-- The electromagnetic `U(1)` leaves the Higgs vector `ofReal a = (0, √a)` invariant:
+  the Higgs vacuum is electrically neutral, so electromagnetism is unbroken. -/
+lemma emU1_repGaugeGroupI_ofReal (g : unitary ℂ) (a : ℝ) :
+    repGaugeGroupI (StandardModel.GaugeGroupI.emU1 g) (ofReal a) = ofReal a := by
+  rw [emU1_repGaugeGroupI_apply]
+  ext i
+  fin_cases i <;> simp [ofReal]
+
 lemma ofU1Subgroup_repGaugeGroupI_apply (g : unitary ℂ) (φ : HiggsVec) :
     repGaugeGroupI (StandardModel.GaugeGroupI.ofU1Subgroup g) φ =
     (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
