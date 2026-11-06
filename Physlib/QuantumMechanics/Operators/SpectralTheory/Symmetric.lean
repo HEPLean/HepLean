@@ -264,16 +264,11 @@ lemma isEssentiallySelfAdjoint_of_dense_span_eigenvectors {ι : Type*} (v : ι �
     (c : ι → ℂ) (hv : ∀ j, T (v j) = c j • (v j : H))
     (hspan : Dense (Submodule.span ℂ (Set.range fun j ↦ (v j : H)) : Set H)) :
     T.IsEssentiallySelfAdjoint := by
-  have hbot : (Submodule.span ℂ (Set.range fun j ↦ (v j : H)))ᗮ = ⊥ :=
-    Submodule.topologicalClosure_eq_top_iff.mp
-      (Submodule.dense_iff_topologicalClosure_eq_top.mp hspan)
-  have hdef (z : ℂ) (hz : z.im ≠ 0) : T.defectNumber z = 0 := by
-    have hle : Submodule.span ℂ (Set.range fun j ↦ (v j : H)) ≤ (T - z • 1).toFun.range :=
-      Submodule.span_le.mpr (Set.range_subset_iff.mpr fun j ↦
-        hT.mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero (hv j) hz)
-    have h : Module.rank ℂ ((T - z • 1).toFun.range)ᗮ = 0 :=
-      Submodule.rank_eq_zero.mpr (eq_bot_iff.mpr (hbot ▸ Submodule.orthogonal_le hle))
-    exact h
+  -- Off the real axis, the range of `T - z • 1` contains every `v j`, hence their dense span.
+  have hdef (z : ℂ) (hz : z.im ≠ 0) : T.defectNumber z = 0 :=
+    defectNumber_eq_zero_iff_dense.mpr <| hspan.mono <| Submodule.span_le.mpr <|
+      Set.range_subset_iff.mpr fun j ↦
+        hT.mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero (hv j) hz
   exact hT.isEssentiallySelfAdjoint_of_defectNumber_eq_zero
     (hspan.mono (Submodule.span_le.mpr (Set.range_subset_iff.mpr fun j ↦ (v j).2)))
     (hdef I (by simp)) (hdef (-I) (by simp))

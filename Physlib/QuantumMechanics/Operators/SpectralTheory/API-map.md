@@ -28,10 +28,10 @@ Schmüdgen {4}.
 
 A point z is a point of regularity when T - z is bounded below. The regularity domain is open, the
 deficiency subspace at z is the orthogonal complement of the range of T - z, and its dimension is
-the defect number; for a closable operator it is constant on each connected component of the
-regularity domain. [4] The numerical range is the set of values of the pairing of a unit vector with
-its image; it is convex by the Toeplitz-Hausdorff theorem, and the exterior of its closure consists
-of points of regularity. [5]
+the defect number, which vanishes exactly when this range is dense; for a closable operator the
+defect number is constant on each connected component of the regularity domain. [4] The numerical
+range is the set of values of the pairing of a unit vector with its image; it is convex by the
+Toeplitz-Hausdorff theorem, and the exterior of its closure consists of points of regularity. [5]
 
 ### Symmetric operators
 
@@ -77,8 +77,8 @@ multiplication operator is the essential range of its multiplier. [TODO]
    `resolvent_sub'`
 4. Physlib/QuantumMechanics/Operators/SpectralTheory/Basic.lean — `regularityDomain`,
    `regularityDomain_isOpen`, `regularityDomain_closure`, `deficiencySubspace`, `defectNumber`,
-   `IsClosed.defectNumber_eq_zero_iff`, `IsClosable.defectNumber_const`,
-   `IsClosable.closure_range_sub_eq_range_closure_sub`
+   `IsClosed.defectNumber_eq_zero_iff`, `defectNumber_eq_zero_iff_dense`,
+   `IsClosable.defectNumber_const`, `IsClosable.closure_range_sub_eq_range_closure_sub`
 5. Physlib/QuantumMechanics/Operators/SpectralTheory/Basic.lean — `numericalRange`,
    `notation Θ`, `mem_numericalRange`, `numericalRange_sub_const`, `numericalRange_convex`,
    `compl_closure_numericalRange_subset_regularityDomain`

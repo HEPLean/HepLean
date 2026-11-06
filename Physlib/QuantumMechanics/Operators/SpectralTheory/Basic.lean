@@ -329,6 +329,13 @@ lemma IsClosed.defectNumber_eq_zero_iff [CompleteSpace H]
   have := hT.sub_range_isClosed hz -- needed for HasOrthogonalProjection
   exact rank_eq_zero.trans orthogonal_eq_bot_iff
 
+/-- The defect number of `T` at `z` vanishes if and only if the range of `T - z • 1` is dense. -/
+lemma defectNumber_eq_zero_iff_dense [CompleteSpace H] {T : H →ₗ.[ℂ] H} {z : ℂ} :
+    T.defectNumber z = 0 ↔ Dense ((T - z • 1).toFun.range : Set H) := by
+  rw [defectNumber_eq, Submodule.dense_iff_topologicalClosure_eq_top,
+    Submodule.topologicalClosure_eq_top_iff, ← deficiencySubspace_coe]
+  exact Submodule.rank_eq_zero
+
 /-- `T` and `T.closure` have the same defect number at points in their regularity domain. -/
 lemma defectNumber_closure [CompleteSpace H]
     {T : H →ₗ.[ℂ] H} {z : ℂ} (hz : z ∈ T.regularityDomain) :
