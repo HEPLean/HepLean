@@ -116,14 +116,14 @@ def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
 ### A.3. Generating Higgs vectors from real numbers
 
 Given a real number `a` we define the Higgs vector corresponding to that real number
-as `(√a, 0)`. This has the property that it's norm is equal to `a`.
+as `(0, √a)`. This has the property that its norm-squared is equal to `a`.
 
 -/
 
-/-- Generating a Higgs vector from a real number, such that the norm-squared of that Higgs vector
-  is the given real number. -/
+/-- Generating a Higgs vector `(0, √a)` from a real number `a`, such that the norm-squared of
+  that Higgs vector is `a`. -/
 def ofReal (a : ℝ) : HiggsVec :=
-  !₂[Real.sqrt a, 0]
+  !₂[0, Real.sqrt a]
 
 @[simp]
 lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by
@@ -228,15 +228,15 @@ corresponding `ofReal` Higgs vector.
 
 -/
 
-/-- Given a Higgs vector, a rotation matrix which puts the second component of the
-  vector to zero, and the first component to a real -/
+/-- Given a Higgs vector, a rotation matrix which puts the first component of the
+  vector to zero, and the second component to a non-negative real. -/
 def toRealGroupElem (φ : HiggsVec) : GaugeGroupI :=
   if hφ : φ = 0 then 1 else by
   have h0' : (‖φ‖ ^ 2 : ℂ) = φ 0 * (starRingEnd ℂ) (φ 0) + φ 1 * (starRingEnd ℂ) (φ 1) := by
     rw [← ofReal_pow, ← @real_inner_self_eq_norm_sq]
     simp only [Fin.isValue, mul_conj, PiLp.inner_apply, Complex.inner, ofReal_re,
       Fin.sum_univ_two, ofReal_add]
-  refine ⟨1, ⟨!![conj (φ 0) / ‖φ‖, conj (φ 1) / ‖φ‖; -φ 1 /‖φ‖, φ 0 /‖φ‖;], ?_, ?_⟩, 1⟩
+  refine ⟨1, ⟨!![φ 1 / ‖φ‖, -φ 0 / ‖φ‖; conj (φ 0) / ‖φ‖, conj (φ 1) / ‖φ‖;], ?_, ?_⟩, 1⟩
   /- Member of the unitary group. -/
   · simp only [Fin.isValue, SetLike.mem_coe]
     rw [mem_unitaryGroup_iff']
@@ -251,7 +251,7 @@ def toRealGroupElem (φ : HiggsVec) : GaugeGroupI :=
       field_simp
       rw [h0']
       ring
-  /- Determinant equals zero. -/
+  /- Determinant equals one. -/
   · have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     simp [det_fin_two]
     field_simp
@@ -277,10 +277,10 @@ lemma toRealGroupElem_apply_self (φ : HiggsVec) :
   fin_cases i
   · simp [ofReal, vecHead, vecTail]
     field_simp
-    rw [h0']
     ring
   · simp [ofReal, vecHead, vecTail]
     field_simp
+    rw [h0']
     ring
 
 /-!
@@ -401,12 +401,12 @@ lemma toRealScalars_smul_real (a : ℝ) (φ : HiggsVec) :
     toRealScalars (a • φ) = a • toRealScalars φ := map_smul toRealScalars a φ
 
 lemma ofReal_toRealScalars (a : ℝ) :
-    toRealScalars (ofReal a) = !₄[Real.sqrt a, 0, 0, 0] := by
+    toRealScalars (ofReal a) = !₄[0, 0, Real.sqrt a, 0] := by
   funext i
   fin_cases i <;> simp [ofReal, toRealScalars]
 
 lemma ofReal_toRealScalars_norm (φ : HiggsVec) :
-    toRealScalars (ofReal (‖φ‖ ^ 2)) = !₄[‖φ‖, 0, 0, 0] := by
+    toRealScalars (ofReal (‖φ‖ ^ 2)) = !₄[0, 0, ‖φ‖, 0] := by
   rw [ofReal_toRealScalars, Real.sqrt_sq (norm_nonneg φ)]
 
 end HiggsVec
