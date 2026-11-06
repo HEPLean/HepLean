@@ -17,8 +17,9 @@ An index of the physical constants in Physlib, and the format of their files.
 ## i. Overview
 
 Each constant has its own file, which this module imports. Use these constants instead of defining
-new ones or writing out their values. A new constant gets a file in the format of section A, an
-import above, a row in the table below and a checked line in section B.
+new ones or writing out their values: a result in any units takes the type, such as
+`c : SpeedOfLight`, and the value in our world is `speedOfLight`. A new constant gets a file in the
+format of section A, an import above, a row in the table below and a checked line in section B.
 
 ## ii. Key results
 
@@ -26,15 +27,16 @@ import above, a row in the table below and a checked line in section B.
 |---|---|---|
 | `speedOfLight` | `L T⁻¹` | `299792458 m s⁻¹`, exact |
 
-Not yet in this format: `Constants.h`, `Constants.ℏ` and `Constants.kB`.
+Not yet in this format: `Constants.h`, `Constants.ℏ`, `Constants.kB` and
+`ChargeUnit.elementaryCharge`.
 
 - `exists_units_constants_eq_one` : There are units in which the speed of light is `1`.
 
 ## iii. Table of contents
 
 - A. The format of a constant
-- B. The table, checked
-- C. Natural units
+- B. Checked values
+- C. Planck units
 
 ## iv. References
 
@@ -66,9 +68,10 @@ open NNReal Dimension LTMCTUnitChoices
 
 /-!
 
-## B. The table, checked
+## B. Checked values
 
-One line for each row of the table: the dimension and the value in SI units.
+One line for each row of the table, giving the dimension and the value in SI units. Lean checks
+these lines against the definitions; it does not read the table.
 
 -/
 
@@ -76,11 +79,12 @@ example : dim SpeedOfLight = L𝓭 * T𝓭⁻¹ ∧ (speedOfLight SI).val = 2997
 
 /-!
 
-## C. Natural units
+## C. Planck units
 
-Natural units are units in which `c`, `ℏ`, `G` and `k_B` are all `1`; so far the lemma below covers
-`c`. Constants can only be `1` together if their dimensions are independent, so the lemma does not
-extend to every constant: `h` cannot join `ℏ`, and no particle mass can join `c`, `ℏ` and `G`.
+Planck units are units in which `c`, `ℏ`, `G` and `k_B` are all `1`; so far the lemma below covers
+`c`. Constants with independent dimensions can always be `1` together, while constants with
+dependent dimensions can only if their dimensionless ratios are `1`. So the lemma does not extend
+to every constant: `h` cannot join `ℏ`, and the electron mass cannot join `c`, `ℏ` and `G`.
 
 -/
 

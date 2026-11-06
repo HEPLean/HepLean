@@ -167,7 +167,7 @@ strictly positive reals, which is why it needs the scaling by a strictly positiv
 carries the dimension of a length over a time; its value in our world is exactly 299792458
 metres per second. [74][75] Newton's constant, Planck's constant and the Boltzmann constant are
 recorded in the same way. [TODO] There are units in which the speed of light is one. [76] In
-natural units Newton's constant, the reduced Planck constant and the Boltzmann constant are one
+Planck units Newton's constant, the reduced Planck constant and the Boltzmann constant are one
 as well. [TODO]
 
 ### Calculus and dimensional correctness
