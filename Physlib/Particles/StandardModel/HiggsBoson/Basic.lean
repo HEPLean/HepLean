@@ -161,6 +161,10 @@ def repGaugeGroupI : Representation ℂ GaugeGroupI HiggsVec where
     ext φ
     simp [Module.End.mul_apply, smul_smul, mulVec_mulVec, mul_pow, mul_comm]
 
+TODO "When the hypercharge coupling `g′` is introduced, fix its normalisation relative to the
+  integer charges `6Y` used here (e.g. the power `3` in `repGaugeGroupI`), so that it agrees with
+  the textbook coupling `g′` for the hypercharges `Y`."
+
 lemma repGaugeGroupI_apply (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
     repGaugeGroupI g φ = (WithLp.toLp 2 <| g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ.ofLp)) := rfl
 
@@ -404,6 +408,11 @@ lemma repGaugeGroupI_phase_snd (φ : HiggsVec) :
   · intro a
     ext i
     fin_cases i <;> simp [ofU1Subgroup_repGaugeGroupI_apply]
+
+TODO "Gauge-fix two-Higgs-doublet configurations to the textbook Higgs basis
+  `Φ1 = (0, ‖Φ1‖)`, using `GaugeGroupI.emU1` to remove the remaining phase. Then
+  `GaugeGroupI.ofU1Subgroup` and `repGaugeGroupI_phase_snd` are no longer needed and can be
+  removed."
 
 /-!
 
