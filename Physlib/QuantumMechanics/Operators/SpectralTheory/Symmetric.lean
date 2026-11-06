@@ -226,22 +226,10 @@ lemma pointSpectrum_real : σᵖ T ⊆ range ofReal := by
 lemma mem_range_sub_smul_of_apply_eq_smul {x : T.domain} {c z : ℂ} (hx : T x = c • (x : H))
     (hz : z.im ≠ 0) : (x : H) ∈ (T - z • 1).toFun.range := by
   by_cases h0 : (x : H) = 0
-  · rw [h0]
-    exact Submodule.zero_mem _
-  have hcz : c - z ≠ 0 := by
-    intro hcz
-    apply hz
-    have h1 := hT x x
-    rw [hx, inner_smul_left, inner_smul_right] at h1
-    rw [← sub_eq_zero.mp hcz]
-    exact conj_eq_iff_im.mp (mul_right_cancel₀ (inner_self_ne_zero.mpr h0) h1)
-  have hxT : (c - z)⁻¹ • (x : H) ∈ T.domain := T.domain.smul_mem _ x.2
-  have hx' : (c - z)⁻¹ • (x : H) ∈ (T - z • 1).domain := by simp [sub_domain, hxT]
-  refine ⟨⟨_, hx'⟩, ?_⟩
-  have h1 : T ⟨(c - z)⁻¹ • (x : H), hxT⟩ = (c - z)⁻¹ • T x := T.map_smul _ x
-  simp only [toFun_eq_coe, sub_apply, h1, hx, smul_smul, smul_domain, one_domain, coe_smul,
-    one_coe, LinearEquiv.coe_coe, Pi.smul_apply, Submodule.topEquiv_apply]
-  rw [mul_comm z, ← sub_smul, ← mul_sub, inv_mul_cancel₀ hcz, one_smul]
+  · simp [h0]
+  -- `c` is an eigenvalue of the symmetric operator `T`, so it is real, while `z` is not real.
+  obtain ⟨r, hr⟩ := hT.pointSpectrum_real (IsEigenvector.mem_pointSpectrum ⟨hx, h0⟩)
+  exact mem_range_sub_smul_of_apply_eq_smul_of_ne hx fun h ↦ hz (by rw [← h, ← hr, ofReal_im])
 
 /-!
 ## D. Essential self-adjointness
