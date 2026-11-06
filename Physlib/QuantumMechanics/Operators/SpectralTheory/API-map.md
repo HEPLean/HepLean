@@ -100,7 +100,7 @@ multiplication operator is the essential range of its multiplier. [TODO]
    `isStarProjection`, `univ`
 14. Physlib/QuantumMechanics/Operators/SpectralTheory/SpectralMeasure.lean — `comp_self`,
    `comp_of_disjoint`, `comp_eq_of_inter`, `commute`
-15. Physlib/QuantumMechanics/Operators/SpectralTheory/Symmetric.lean — `mem_range_sub_smul_of_apply_eq_smul`,
+15. Physlib/QuantumMechanics/Operators/SpectralTheory/Symmetric.lean — `mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero`,
    `isEssentiallySelfAdjoint_of_dense_span_eigenvectors`
 
 ## References

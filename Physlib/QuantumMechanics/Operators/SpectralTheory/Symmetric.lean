@@ -223,8 +223,8 @@ lemma pointSpectrum_real : σᵖ T ⊆ range ofReal := by
 
 /-- An eigenvector `x` of a symmetric operator `T`, `T x = c • x`, lies in the range of
   `T - z • 1` for every `z` with nonzero imaginary part. -/
-lemma mem_range_sub_smul_of_apply_eq_smul {x : T.domain} {c z : ℂ} (hx : T x = c • (x : H))
-    (hz : z.im ≠ 0) : (x : H) ∈ (T - z • 1).toFun.range := by
+lemma mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero {x : T.domain} {c z : ℂ}
+    (hx : T x = c • (x : H)) (hz : z.im ≠ 0) : (x : H) ∈ (T - z • 1).toFun.range := by
   by_cases h0 : (x : H) = 0
   · simp [h0]
   -- `c` is an eigenvalue of the symmetric operator `T`, so it is real, while `z` is not real.
@@ -270,7 +270,7 @@ lemma isEssentiallySelfAdjoint_of_dense_span_eigenvectors {ι : Type*} (v : ι �
   have hdef (z : ℂ) (hz : z.im ≠ 0) : T.defectNumber z = 0 := by
     have hle : Submodule.span ℂ (Set.range fun j ↦ (v j : H)) ≤ (T - z • 1).toFun.range :=
       Submodule.span_le.mpr (Set.range_subset_iff.mpr fun j ↦
-        hT.mem_range_sub_smul_of_apply_eq_smul (hv j) hz)
+        hT.mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero (hv j) hz)
     have h : Module.rank ℂ ((T - z • 1).toFun.range)ᗮ = 0 :=
       Submodule.rank_eq_zero.mpr (eq_bot_iff.mpr (hbot ▸ Submodule.orthogonal_le hle))
     exact h
