@@ -45,7 +45,7 @@ Definitions (corresponding to an operator `T : H →ₗ.[ℂ] H`)
     has a continuous (equivalently, bounded) inverse with domain all of `H`.
 - `LinearPMap.spectrum` (`σ`) : The complement of the resolvent set.
 - `LinearPMap.pointSpectrum` (`σᵖ`) : The set of complex numbers `z` for which `T - z • 1`
-    fails to be invertible.
+    is not injective, that is, the eigenvalues of `T`.
 - `LinearPMap.residualSpectrum` (`σʳ`) : The set of complex numbers `z` for which `T - z • 1`
     has a continuous (equivalently, bounded) inverse with domain not all of `H`.
 - `LinearPMap.continuousSpectrum` (`σᶜ`) : The set of complex numbers `z` for which

@@ -20,6 +20,10 @@ to discuss its upper/lower bounds. To facilitate this, we define `LinearPMap.rea
 as the projection of `LinearPMap.numericalRange` onto the real axis. For symmetric operators this
 simply reinterprets the numerical range as a subset of ℝ.
 
+A Hamiltonian must be self-adjoint for the time evolution it generates to be unitary. It is often
+first defined on a convenient dense domain, where it is only symmetric. Section D gives criteria
+for such an operator to be essentially self-adjoint, that is, to have a self-adjoint closure.
+
 ## ii. Key results
 
 - `realNumericalRange` (`Θᵣₑ`) : The projection of the numerical range onto the real axis.
@@ -29,8 +33,8 @@ simply reinterprets the numerical range as a subset of ℝ.
     if and only if it contains a real number.
 - `IsSymmetric.isEssentiallySelfAdjoint_of_defectNumber_eq_zero` : The basic criterion for
     essential self-adjointness: symmetric + densely defined + vanishing defect numbers at `± i`.
-- `IsSymmetric.isEssentiallySelfAdjoint_of_dense_span_eigenvectors` : A symmetric operator with a
-    family of eigenvectors in its domain whose span is dense is essentially self-adjoint.
+- `IsSymmetric.isEssentiallySelfAdjoint_of_dense_span_eigenvectors` : A symmetric operator whose
+    eigenvectors span a dense subspace is essentially self-adjoint.
 
 ## iii. Table of contents
 
@@ -221,8 +225,8 @@ lemma pointSpectrum_real : σᵖ T ⊆ range ofReal := by
     _ = ⟪x, z • x⟫_ℂ := by simp [← toFun_eq_coe, LinearMap.mem_ker.mp hx]
     _ = ↑(‖x‖ ^ 2) * z := by simp [inner_smul_right, mul_comm]
 
-/-- An eigenvector `x` of a symmetric operator `T`, `T x = c • x`, lies in the range of
-  `T - z • 1` for every `z` with nonzero imaginary part. -/
+/-- If `T` is symmetric and `T x = c • x`, then `x` lies in the range of `T - z • 1` for every `z`
+  with non-zero imaginary part. -/
 lemma mem_range_sub_smul_of_apply_eq_smul_of_im_ne_zero {x : T.domain} {c z : ℂ}
     (hx : T x = c • (x : H)) (hz : z.im ≠ 0) : (x : H) ∈ (T - z • 1).toFun.range := by
   by_cases h0 : (x : H) = 0
@@ -257,9 +261,10 @@ lemma isEssentiallySelfAdjoint_of_defectNumber_eq_zero
     exact hrange (by norm_num) hneg
   · exact hrange (by norm_num) hpos
 
-/-- A symmetric operator `T` with a family `v` of vectors of its domain which are eigenvectors,
-  `T (v j) = c j • v j` for complex numbers `c j`, and whose span is dense, is essentially
-  self-adjoint. No orthonormality, no nonzero condition and no reality of the `c j` is assumed. -/
+/-- A symmetric operator `T` is essentially self-adjoint if a family of vectors `v j` of its
+  domain, with `T (v j) = c j • v j`, spans a dense subspace. The `v j` need not be orthonormal,
+  and some of them may be zero. In quantum mechanics this applies to a Hamiltonian whose domain
+  contains a complete set of its eigenstates, as for the harmonic oscillator. -/
 lemma isEssentiallySelfAdjoint_of_dense_span_eigenvectors {ι : Type*} (v : ι → T.domain)
     {c : ι → ℂ} (hv : ∀ j, T (v j) = c j • (v j : H))
     (hspan : Dense (Submodule.span ℂ (Set.range fun j ↦ (v j : H)) : Set H)) :
