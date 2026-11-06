@@ -396,8 +396,8 @@ theorem energyVariance_eq_meanSquareEnergy_sub_meanEnergy_sq
   have h_int_E_mul_const : Integrable (fun i => 2 * U * 𝓒.energy i) (𝓒.μProd T) :=
     hE_int.const_mul (2 * U)
   rw [h_expand]
-  erw [integral_add (hE2_int.sub h_int_E_mul_const) (integrable_const _)]
-  erw [integral_sub hE2_int h_int_E_mul_const]
+  rw [integral_add (hE2_int.sub' h_int_E_mul_const) (integrable_const _)]
+  rw [integral_sub hE2_int h_int_E_mul_const]
   rw [integral_const_mul, integral_const, ← hU, probReal_univ, smul_eq_mul]
   ring
 

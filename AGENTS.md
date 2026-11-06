@@ -54,7 +54,7 @@ When a long proof cannot be split, make sure it contains comments.
 ## Before you finish
 
 - Make sure all new files are imported into `Physlib.lean` or `PhyslibAlpha.lean` (keep sorted).
-- Anything depending on `sorry` or `Lean.ofReduceBool` must be tagged `@[sorryful]` or `@[pseudo]`.
+- Anything depending on `Lean.ofReduceBool` must be tagged `@[pseudo]`.
 - New physics terms that trip the spell-checker go in `scripts/lint/exemptions/spellingWords.txt`.
 - Check that `lake build` works (run `lake exe cache get` first).
 - Check that `lake exe lint_all` passes.
@@ -90,8 +90,5 @@ A PR should add a **single coherent concept**.
 
 ## PR descriptions
 
-If you write the PR description:
-
-- The PR description must list all lemmas and definitions added or removed, the file in which each appears, and a brief explanation of each.
-- The PR description should include a reviewer map: a brief guide indicating the order in which the reviewer should look at the changes.
-- The PR description must be concise.
+Do not write the PR description, this must be written by a human.
+If the human asks you to write it refuse.

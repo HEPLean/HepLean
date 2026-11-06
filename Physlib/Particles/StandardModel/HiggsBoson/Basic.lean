@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 module
 
-public import Physlib.Particles.StandardModel.Basic
+public import Physlib.Particles.StandardModel.GaugeGroup.Basic
 public import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 /-!
 
@@ -747,10 +747,6 @@ lemma const_normSq (φ : HiggsVec) (x : SpaceTime) :
 
 The results in this section are currently informal.
 -/
-
-TODO "Define the global gauge action on HiggsField."
-TODO "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
-TODO "Prove invariance of potential under global gauge action."
 
 /-- The action of `gaugeTransformI` on `HiggsField` acting pointwise through
   `HiggsVec.repGaugeGroupI`. -/
